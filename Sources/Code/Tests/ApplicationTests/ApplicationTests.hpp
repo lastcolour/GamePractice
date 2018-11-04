@@ -1,0 +1,6 @@
+#ifndef __APPLICATION_TESTS_HPP__
+#define __APPLICATION_TESTS_HPP__
+
+
+
+#endif /* __APPLICATION_TESTS_HPP__ */

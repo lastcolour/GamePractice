@@ -1,0 +1,50 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Python compiled files
+*.pyc
+
+# Submile Project File
+*.sublime-project
+*.sublime-workspace
+
+# Idea project File
+.idea
+*.iml
+
+# Output build direcotries
+_build/
+_cmake/
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Android Studio files
+*config.local
+*local.properties
+*.gradle
+*.vscode

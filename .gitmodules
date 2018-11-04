@@ -1,0 +1,15 @@
+[submodule "Sources/Libs/RapidJSON"]
+	path = Sources/Libs/RapidJSON
+	url = https://github.com/miloyip/rapidjson.git
+[submodule "Sources/Libs/GLFW"]
+	path = Sources/Libs/GLFW
+	url = https://github.com/glfw/glfw.git
+[submodule "Sources/Libs/GTEST"]
+	path = Sources/Libs/GTEST
+	url = https://github.com/google/googletest.git
+[submodule "Sources/Libs/GLAD"]
+	path = Sources/Libs/GLAD
+	url = https://github.com/Dav1dde/glad.git
+[submodule "Sources/Libs/FreeType2"]
+	path = Sources/Libs/FreeType2
+	url = git://git.sv.nongnu.org/freetype/freetype2.git

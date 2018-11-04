@@ -1,0 +1,44 @@
+{
+    "build": {
+        "build-vars": {
+            "root_path:path": "{this-file-path}/../../../..",
+            "cmake_out_path:path": "{root_path}/_cmake/{args:platform}{self:platform-suffix}/{self:build-type}",
+            "android_bins_out_path:path" : "{root_path}/_build/{args:platform}/{args:build-type}",
+            "bins_out_path:path": "{root_path}/_build/{args:platform}{self:platform-suffix}/{args:build-type}",
+            "default_ext:path": "{this-file-path}/build_step_extension.json",
+            "android-project:path": "{root_path}/Platform/Android/app"
+        },
+        "build-steps": [
+            {
+                "step-name": "Game01",
+                "supported-platforms": [
+                    "Linux",
+                    "Windows",
+                    "Android"
+                ],
+                "build-type": "{args:build-type}",
+                "step-extension": "{default_ext}",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/Game01",
+                    "run-dir": "{root_path}/Sources/Code",
+                    "defs": {
+                        "All": {
+                            "APP_BUILD_PLATFORM": "{args:platform}"
+                        }
+                    }
+                }
+            }
+        ],
+        "test-steps": {
+            "unittests": {
+                "platform": [
+                    "Linux",
+                    "Windows"
+                ],
+                "platform-suffix": "",
+                "name": "{bins_out_path}/Game01Tests",
+                "run-dir": "{bins_out_path}"
+            }
+        }
+    }
+}
