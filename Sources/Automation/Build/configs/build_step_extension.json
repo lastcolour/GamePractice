@@ -23,8 +23,14 @@
             "All": {},
             "Linux": {
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "{bins_out_path}",
+                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": "{bins_out_path}",
+                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": "{bins_out_path}",
                 "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "{bins_out_path}",
-                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "{bins_out_path}"
+                "CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG": "{bins_out_path}",
+                "CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE": "{bins_out_path}",
+                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "{bins_out_path}",
+                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG": "{bins_out_path}",
+                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE": "{bins_out_path}"
             },
             "Windows": {
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "{bins_out_path}",
@@ -73,7 +79,7 @@
         },
         "compiler-args": {
             "make": [
-                "-j4"
+                "-j8"
             ],
             "devenv.com": [
                 "ALL_BUILD.vcxproj /Build {self:build-type}"

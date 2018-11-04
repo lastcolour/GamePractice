@@ -10,6 +10,89 @@
         },
         "build-steps": [
             {
+                "step-name": "GLFW",
+                "supported-platforms": [
+                    "Linux",
+                    "Windows"
+                ],
+                "step-extension": "{default_ext}",
+                "build-type": "Release",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/GLFW",
+                    "run-dir": "{root_path}/Sources/Libs/GLFW",
+                    "defs": {
+                        "All": {
+                            "BUILD_SHARED_LIBS": "ON",
+                            "GLFW_BUILD_EXAMPLES": "OFF",
+                            "GLFW_BUILD_TESTS": "OFF",
+                            "GLFW_BUILD_DOCS": "OFF"
+                        }
+                    }
+                }
+            },
+            {
+                "step-name": "GLAD",
+                "supported-platforms": [
+                    "Linux",
+                    "Windows"
+                ],
+                "build-type": "{args:build-type}",
+                "step-extension": "{default_ext}",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/GLAD",
+                    "run-dir": "{root_path}/Sources/Libs/GLAD",
+                    "defs": {
+                        "Windows": {
+                            "CMAKE_CXX_FLAGS_DEBUG": "\"/MTd\"",
+                            "CMAKE_CXX_FLAGS_RELEASE": "\"/MT\""
+                        },
+                        "Debug": {
+                            "GLAD_GENERATOR": "c-debug"
+                        }
+                    }
+                },
+                "install": {
+                    "include-dir": {
+                        "dir": "include",
+                        "from": "{cmake_out_path}/GLAD",
+                        "to": "{bins_out_path}/GLAD",
+                        "force": true
+                    }
+                }
+            },
+            {
+                "step-name": "FreeType2",
+                "supported-platforms": [
+                    "Linux",
+                    "Windows",
+                    "Android"
+                ],
+                "step-extension": "{default_ext}",
+                "build-type": "Release",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/FreeType2",
+                    "run-dir": "{root_path}/Sources/Libs/FreeType2",
+                    "defs" : {
+                        "All" : {
+                            "FT_WITH_ZQLIB" : "ON"
+                        }
+                    }
+                }
+            },
+            {
+                "step-name": "GTEST",
+                "build-type": "Debug",
+                "supported-platforms": [
+                    "Linux",
+                    "Windows"
+                ],
+                "step-extension": "{default_ext}",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/GTEST",
+                    "run-dir": "{root_path}/Sources/Libs/GTEST"
+                }
+            },
+            {
                 "step-name": "Game01",
                 "supported-platforms": [
                     "Linux",

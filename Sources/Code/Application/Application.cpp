@@ -9,8 +9,12 @@ Application::~Application() {
 }
 
 int Application::run() {
-    if(platform || !platform->init()) {
+    if(!platform || !platform->init()) {
         return -1;
     }
+    mainLoop();
     return 0;
+}
+
+void Application::mainLoop() {
 }

@@ -1,22 +1,40 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(Game01)
+set(MAIN_PROJECT_NAME "Game01" CACHE INTERNAL "Build target name of main project")
+set(MAIN_PROJECT_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Path to sources of main project")
 
-set(TESTS_PROJECT_NAME ${PROJECT_NAME}Tests)
+project(${MAIN_PROJECT_NAME})
+
+# Detect & verify project configuration
+
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(FATAL_ERROR "In-source builds not allowed for this project")
+else()
+    message(STATUS "Binaries output directory: ${CMAKE_BINARY_DIR}")
+endif()
 
 if(APP_BUILD_PLATFORM)
     message(STATUS "Build platform: ${APP_BUILD_PLATFORM}")
+    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 else()
     message(FATAL_ERROR "Build platform variable APP_BUILD_PLATFORM not specified")
 endif()
 
+if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
+    set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
+    message(STATUS "Build unittests: ${BUILD_UNITTESTS}")
+    add_subdirectory(Tests)
+else()
+    message(STATUS "Skip unittests build (Not supported for such platform)")
+endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/dependicies.cmake)
+
+# Build target project
+
 add_subdirectory(Application)
-add_subdirectory(Tests)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Application)
 
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/desktop_main.cpp)
 target_link_libraries(${PROJECT_NAME} Application)
-
-add_executable(${TESTS_PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/tests_main.cpp)
-target_link_libraries(${TESTS_PROJECT_NAME} Application)

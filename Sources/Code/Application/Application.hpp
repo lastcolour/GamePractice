@@ -15,6 +15,10 @@ public:
 
 private:
 
+    void mainLoop();
+
+private:
+
     std::unique_ptr<Platform> platform;
 };
 
