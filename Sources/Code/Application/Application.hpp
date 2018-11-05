@@ -4,14 +4,19 @@
 #include <memory>
 
 class Platform;
+class Game;
 
 class Application {
 public:
 
     Application(Platform* pltfrm);
-    ~Application();
+    virtual ~Application();
 
     int run();
+
+protected:
+
+    virtual std::unique_ptr<Game> createGame();
 
 private:
 
@@ -20,6 +25,7 @@ private:
 private:
 
     std::unique_ptr<Platform> platform;
+    std::unique_ptr<Game> game;
 };
 
 #endif /* __APPLICATION_HPP__ */

@@ -6,6 +6,8 @@ public:
 
     virtual ~Platform() {}
     virtual bool init() = 0;
+    virtual bool shouldRun() = 0;
+    virtual void update() = 0;
 };
 
 #endif /* __PLATFORM_HPP__ */
