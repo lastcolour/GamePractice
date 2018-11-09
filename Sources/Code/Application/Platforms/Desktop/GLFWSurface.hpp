@@ -3,10 +3,12 @@
 
 #include <memory>
 
+#include "Platforms/Surface.hpp"
+
 struct GlfwInit;
 struct GLFWwindow;
 
-class GLFWSurface {
+class GLFWSurface : public Surface {
 public:
 
     GLFWSurface();
@@ -16,6 +18,9 @@ public:
     bool shouldRun();
     void update();
     void close();
+
+    int getHeight() const override;
+    int getWidth() const override;
 
 private:
 

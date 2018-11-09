@@ -21,6 +21,9 @@ else()
 endif()
 
 if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
+
+    add_definitions(-DDESKTOP_APP_BUILD)
+
     message(STATUS "Build unittests: ${BUILD_UNITTESTS}")
     set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
     add_subdirectory(Tests)

@@ -1,13 +1,17 @@
 #include "Application.hpp"
 #include "Platform.hpp"
+#include "Environment.hpp"
 #include "Game/Game.hpp"
 
 Application::Application(Platform* pltfrm) :
     platform(pltfrm),
     game(nullptr) {
+
+    Environment::InitEnv(*this);
 }
 
 Application::~Application() {
+    Environment::DeinitEnv();
 }
 
 std::unique_ptr<Game> Application::createGame() {

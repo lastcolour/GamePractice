@@ -5,6 +5,12 @@ TEST_F(GLFWSurfaceTest, TestInit) {
     GLFWSurface surface;
     bool res = surface.init();
     ASSERT_TRUE(res);
+
+    int w = surface.getWidth();
+    int h = surface.getHeight();
+
+    ASSERT_GT(w, 0);
+    ASSERT_GT(h, 0);
 }
 
 TEST_F(GLFWSurfaceTest, TestShouldRun) {

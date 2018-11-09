@@ -1,6 +1,6 @@
 #include "Platforms/Desktop/GLFWSurface.hpp"
 
-#include <GLFW/glfw3.h>
+#include "Platforms/OpenGL.hpp"
 
 class GlfwInit {
 public:
@@ -41,7 +41,9 @@ bool GLFWSurface::init() {
     if (!window) {
         return false;
     }
+
     glfwMakeContextCurrent(window);
+    gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
     return true;
 }
@@ -53,10 +55,20 @@ bool GLFWSurface::shouldRun() {
 void GLFWSurface::update() {
     glfwSwapBuffers(window);
     glfwPollEvents();
+    glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void GLFWSurface::close() {
     if(window) {
         glfwSetWindowShouldClose(window, true);
     }
+}
+
+int GLFWSurface::getHeight() const {
+    return 480;
+}
+
+int GLFWSurface::getWidth() const {
+    return 600;
 }
