@@ -12,4 +12,4 @@
 	url = https://github.com/Dav1dde/glad.git
 [submodule "Sources/Libs/FreeType2"]
 	path = Sources/Libs/FreeType2
-	url = git://git.sv.nongnu.org/freetype/freetype2.
+	url = git://git.sv.nongnu.org/freetype/freetype2.git
