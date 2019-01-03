@@ -13,7 +13,7 @@ if(APP_BUILD_PLATFORM STREQUAL "Windows")
     set(GLAD_LIBRARY_NAME glad)
     set(GLFW_LIBRARY_NAME glfw3dll)
     set(FREETYPE2_LIBRARY_NAME freetype)
-    set(GTEST_LIBRRY_NAME gtest)
+    set(GTEST_LIBRRY_NAME gtestd)
 
 elseif(APP_BUILD_PLATFORM STREQUAL "Linux" OR APP_BUILD_PLATFORM STREQUAL "Android")
 

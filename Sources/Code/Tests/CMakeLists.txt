@@ -20,4 +20,5 @@ add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/tests_main.cpp
 target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIB_STATIC_BIN}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${APP_LIB_DEPENDICIES}
     Application)

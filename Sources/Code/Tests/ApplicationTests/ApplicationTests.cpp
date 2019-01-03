@@ -40,7 +40,7 @@ public:
     void update() override { updated.store(true); }
 
     void setShouldRun(bool flag) { shouldRunStatus.store(flag); }
-    int isUpdated() { updated.load(); }
+    bool isUpdated() { return updated.load(); }
 
 private:
 

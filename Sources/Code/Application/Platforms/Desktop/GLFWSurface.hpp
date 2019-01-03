@@ -5,7 +5,7 @@
 
 #include "Platforms/Surface.hpp"
 
-struct GlfwInit;
+class GlfwInit;
 struct GLFWwindow;
 
 class GLFWSurface : public Surface {

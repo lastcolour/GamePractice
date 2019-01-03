@@ -6,13 +6,14 @@
     #endif
   #endif
 
+  #include <glad/glad.h>
+
   #ifdef _WINDOWS_
     #ifndef GLAD_DEBUG
       #error GLAD ERROR: windows.h was included
     #endif
   #endif
 
-  #include <glad/glad.h>
   #include <GLFW/glfw3.h>
 
 #else

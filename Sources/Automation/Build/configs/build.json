@@ -42,10 +42,6 @@
                     "out-dir": "{cmake_out_path}/GLAD",
                     "run-dir": "{root_path}/Sources/Libs/GLAD",
                     "defs": {
-                        "Windows": {
-                            "CMAKE_CXX_FLAGS_DEBUG": "\"/MTd\"",
-                            "CMAKE_CXX_FLAGS_RELEASE": "\"/MT\""
-                        },
                         "Debug": {
                             "GLAD_GENERATOR": "c-debug"
                         }
@@ -89,7 +85,12 @@
                 "step-extension": "{default_ext}",
                 "cmake": {
                     "out-dir": "{cmake_out_path}/GTEST",
-                    "run-dir": "{root_path}/Sources/Libs/GTEST"
+                    "run-dir": "{root_path}/Sources/Libs/GTEST",
+                    "defs": {
+                        "All": {
+                            "gtest_force_shared_crt": "ON"
+                        }
+                    }
                 }
             },
             {

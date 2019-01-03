@@ -21,23 +21,23 @@ else()
 endif()
 
 if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
-
     add_definitions(-DDESKTOP_APP_BUILD)
-
-    message(STATUS "Build unittests: ${BUILD_UNITTESTS}")
     set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
-    add_subdirectory(Tests)
 else()
     message(STATUS "Skip unittests build (Not supported for such platform)")
 endif()
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/compile_flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/dependicies.cmake)
 
 # Build target project
 
 add_subdirectory(Application)
+if (BUILD_UNITTESTS)
+    add_subdirectory(Tests)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Application)
 
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/desktop_main.cpp)
-target_link_libraries(${PROJECT_NAME} Application ${APPLICATION_LIB_DEPENDECIES})
+target_link_libraries(${PROJECT_NAME} Application ${APP_LIB_DEPENDICIES})
