@@ -1,0 +1,16 @@
+{
+    "GameObjects":[
+        {
+            "name":"Simple",
+            "logics": [
+                {
+                    "type":"RenderLogic",
+                    "data":{
+                        "mat":"solic_color",
+                        "geom":"cube"
+                    }
+                }
+            ]
+        }
+    ]
+}

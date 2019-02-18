@@ -27,6 +27,8 @@ def parseArgs():
         dest='runTests', required=False, action="store_const", const=True)
     parser.add_argument('-platform', choices=['Linux', 'Windows', 'Android', 'All'], help='target platform',
         dest='platform', metavar='TargetPlatform', required=False, default=_getPlatformName())
+    parser.add_argument('-filter', metavar="FilterTag", help="Skip targets by tags", required=False,
+        dest="filterTag", type=str)
     return parser.parse_args()
 
 def main():
@@ -37,6 +39,7 @@ def main():
     configs.load(_BUILD_CONFIG_FILE)
 
     proj = Project(configs)
+    proj.filter(buildArgs.filterTag)
     if buildArgs.cleanBuild:
         proj.clean()
     proj.build()

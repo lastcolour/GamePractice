@@ -1,0 +1,6 @@
+{
+    "solid_color": {
+        "vert": "Shaders/base.vert",
+        "frag": "Shaders/single_color.frag"
+    }
+}

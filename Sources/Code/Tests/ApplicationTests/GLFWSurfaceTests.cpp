@@ -25,6 +25,6 @@ TEST_F(GLFWSurfaceTest, TestUpdate) {
     ASSERT_TRUE(surface.init());
     ASSERT_TRUE(surface.shouldRun());
     surface.update();
-    surface.close();
+    surface.terminate();
     ASSERT_FALSE(surface.shouldRun());
 }

@@ -1,26 +1,27 @@
 #include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "Platforms/Desktop/GLFWSurface.hpp"
+#include "Platforms/Desktop/DesktopLogStream.hpp"
+#include "Platforms/Desktop/DesktopAssets.hpp"
 #include "Environment.hpp"
 
-DesktopPlatform::DesktopPlatform(int argc, char* argv[]) :
-    surface(new GLFWSurface) {
+DesktopPlatform::DesktopPlatform(int argc, char* argv[]) {
 }
 
 DesktopPlatform::~DesktopPlatform() {
 }
 
 bool DesktopPlatform::init() {
-    if(!surface || !surface->init()) {
-        return false;
-    }
-    GetEnv()->registerSurface(surface.get());
     return true;
 }
 
-bool DesktopPlatform::shouldRun() {
-    return surface->shouldRun();
+std::unique_ptr<Surface> DesktopPlatform::createSurface() {
+    return std::unique_ptr<Surface>(new GLFWSurface);
 }
 
-void DesktopPlatform::update() {
-    surface->update();
+std::unique_ptr<LogStream> DesktopPlatform::createLogStream() {
+    return std::unique_ptr<LogStream>(new DesktopLogStream);
+}
+
+std::unique_ptr<Assets> DesktopPlatform::createAssets() {
+    return std::unique_ptr<Assets>(new DesktopAssets);
 }

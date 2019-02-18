@@ -14,8 +14,6 @@
     #endif
   #endif
 
-  #include <GLFW/glfw3.h>
-
 #else
 
     #error OpenGL API not specified

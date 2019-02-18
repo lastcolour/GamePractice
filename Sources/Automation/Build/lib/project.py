@@ -55,6 +55,19 @@ class Project:
         self._initBuildSteps(configs)
         self._initTestSteps(configs)
 
+    def filter(self, filterTag):
+        if filterTag is "":
+            log.info("[Info] Skip filter spet while filter tag is empty")
+            return
+        log.debug("[Debug] Appling filter tag: '{0}'".format(filterTag))
+        filteredBuildSteps = []
+        for buildStep in self._buildSteps:
+            if buildStep.hasTag(filterTag):
+                log.info("[Ifno] Skip build target while it has filter tag: {0}".format(buildStep.getName()))
+            else:
+                filteredBuildSteps.append(buildStep)
+        self._buildSteps = filteredBuildSteps
+
     def build(self):
         for step in self._buildSteps:
             step.run()

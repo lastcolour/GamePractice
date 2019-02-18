@@ -4,7 +4,11 @@
 #include "Application.hpp"
 
 class Environment;
+class Platform;
+class Logger;
 class Surface;
+class Render;
+class Game;
 
 Environment* GetEnv();
 
@@ -20,7 +24,7 @@ private:
 
 private:
 
-    static void InitEnv(Application& application);
+    static bool InitEnv(Application& application);
     static void DeinitEnv();
 
 private:
@@ -31,14 +35,16 @@ private:
 public:
 
     Application& getApp();
+    Platform& getPlatform();
+    Logger* getLogger();
+    Assets* getAssets();
     Surface* getSurface();
-
-    void registerSurface(Surface* surf);
+    Render* getRender();
+    Game* getGame();
 
 private:
 
     Application& app;
-    Surface* surface;
 };
 
 #endif /* __ENVIRONMENT_HPP__ */

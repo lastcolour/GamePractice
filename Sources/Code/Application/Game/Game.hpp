@@ -19,8 +19,15 @@ public:
     virtual bool shouldRun();
     virtual void update();
 
+    std::unique_ptr<GameObject> createObject(const std::string& objectName);
+
 private:
 
+    std::string createNewNameForObject(const std::string& baseName);
+
+private:
+
+    size_t objCount;
     std::vector<GameObjectPtrT> gameObjects;
 };
 

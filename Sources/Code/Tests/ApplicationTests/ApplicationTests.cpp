@@ -1,99 +1,12 @@
 #include "ApplicationTests.hpp"
 #include "Application.hpp"
-#include "Platform.hpp"
 #include "Environment.hpp"
-#include "Game/Game.hpp"
+#include "TestUtils/VoidTestPlatform.hpp"
+#include "TestUtils/VoidTestApplication.hpp"
+#include "Platforms/Desktop/DesktopPlatform.hpp"
 
 #include <thread>
 #include <atomic>
-
-namespace {
-
-class TestPlatform : public Platform {
-public:
-    TestPlatform(bool initOK, bool shouldRunOk) : updated(false), initStatus(initOK), shouldRunStatus(shouldRunOk) {}
-    virtual ~TestPlatform() {}
-    virtual bool init() override { return initStatus; }
-    virtual bool shouldRun() override { return shouldRunStatus.load(); }
-    virtual void update() override { updated.store(true); }
-
-    void setShouldRun(bool flag) { shouldRunStatus.store(flag); }
-    bool isUpdated() const { return updated.load(); }
-
-private:
-    std::atomic<bool> updated;
-    std::atomic<bool> shouldRunStatus;
-    bool initStatus;
-};
-
-class TestGame : public Game {
-public:
-
-    TestGame(bool initFlag, bool shouldRunFlag) :
-        updated(false),
-        shouldRunStatus(shouldRunFlag),
-        initStatus(initFlag) {}
-
-    virtual ~TestGame() {}
-    bool init() override { return initStatus; }
-    bool shouldRun() override { return shouldRunStatus.load(); }
-    void update() override { updated.store(true); }
-
-    void setShouldRun(bool flag) { shouldRunStatus.store(flag); }
-    bool isUpdated() { return updated.load(); }
-
-private:
-
-    std::atomic<bool> updated;
-    std::atomic<bool> shouldRunStatus;
-    bool initStatus;
-};
-
-class TestApp : public Application {
-public:
-
-    TestApp(Platform* platform) :
-        Application(platform),
-        testGame(nullptr),
-        needCreateGame(true),
-        initStatus(true),
-        shouldRunStatus(true) {}
-
-    virtual ~TestApp() {}
-
-    void setGameFlags(bool needCreate, bool initFlag, bool shouldRunFlag) {
-        needCreateGame = needCreate;
-        initStatus = initFlag;
-        shouldRunStatus = shouldRunFlag;
-    }
-
-    TestGame* getTestGame() {
-        TestGame* gamePtr = nullptr;
-        {
-            std::unique_lock<std::mutex> lock(mutex);
-            gamePtr = testGame;
-        }
-        return gamePtr;
-    }
-
-protected:
-
-    std::unique_ptr<Game> createGame() override {
-        std::lock_guard<std::mutex> lock(mutex);
-        testGame = needCreateGame ? new TestGame(initStatus, shouldRunStatus) : nullptr;
-        return std::unique_ptr<Game>(testGame);
-    }
-
-private:
-
-    std::mutex mutex;
-    TestGame* testGame;
-    bool needCreateGame;
-    bool initStatus;
-    bool shouldRunStatus;
-};
-
-}
 
 ApplicationTests::ApplicationTests() :
     appRes(-1),
@@ -132,111 +45,17 @@ bool ApplicationTests::isAppFinished() {
     return appRes == 0;
 }
 
-
 TEST_F(ApplicationTests, StartAppWithNullPlatform) {
-    TestApp app(nullptr);
+    VoidTestApplication app(nullptr);
     int res = app.run();
+
     ASSERT_FALSE(res == 0);
 }
 
-TEST_F(ApplicationTests, StartAppWithInvalidPlatform) {
-    bool initStatus = false;
-    bool shouldRunStatus = false;
-    TestApp app(new TestPlatform(initStatus, shouldRunStatus));
-    int res = app.run();
-    ASSERT_FALSE(res == 0);
-}
-
-TEST_F(ApplicationTests, DoNotUpdateMainLoopIfNoNeedToRun) {
-    bool initStatus = true;
-    bool shouldRunStatus = false;
-    TestApp app(new TestPlatform(initStatus, shouldRunStatus));
-    int res = app.run();
-    ASSERT_TRUE(res == 0);
-}
-
-TEST_F(ApplicationTests, CheckUpdateWhenPlatformOk) {
-    bool initStatus = true;
-    bool shouldRunStatus = true;
-    TestPlatform* testPlatform = new TestPlatform(initStatus, shouldRunStatus);
-    TestApp app(testPlatform);
-
-    ASSERT_TRUE(startAppThread(app));
-
-    while(!testPlatform->isUpdated());
-
-    testPlatform->setShouldRun(false);
-
-    ASSERT_TRUE(isAppFinished());
-}
-
-TEST_F(ApplicationTests, TestInvalidGame) {
-    bool initStatus = true;
-    bool shouldRunStatus = true;
-    TestApp app(new TestPlatform(initStatus, shouldRunStatus));
-
-    bool needCreateGame = false;
-    initStatus = true;
-    shouldRunStatus = false;
-    app.setGameFlags(needCreateGame, initStatus, shouldRunStatus);
-    int res = app.run();
-    ASSERT_FALSE(res == 0);
-}
-
-TEST_F(ApplicationTests, TestCantInitGame) {
-    bool initStatus = true;
-    bool shouldRunStatus = true;
-    TestApp app(new TestPlatform(initStatus, shouldRunStatus));
-
-    bool needCreateGame = true;
-    initStatus = false;
-    shouldRunStatus = false;
-    app.setGameFlags(needCreateGame, initStatus, shouldRunStatus);
-    int res = app.run();
-    ASSERT_FALSE(res == 0);
-}
-
-TEST_F(ApplicationTests, TestGameShouldntRun) {
-    bool initStatus = true;
-    bool shouldRunStatus = true;
-    TestApp app(new TestPlatform(initStatus, shouldRunStatus));
-
-    bool needCreateStatus = true;
-    initStatus = true;
-    shouldRunStatus = false;
-    app.setGameFlags(needCreateStatus, initStatus, shouldRunStatus);
-    int res = app.run();
-
-    ASSERT_TRUE(res == 0);
-}
-
-TEST_F(ApplicationTests, CheckUpdateWhenGameOk) {
-    bool initStatus = true;
-    bool shouldRunStatus = true;
-    TestApp app(new TestPlatform(initStatus, shouldRunStatus));
-
-    bool needCreateStatus = true;
-    initStatus = true;
-    shouldRunStatus = true;
-    app.setGameFlags(needCreateStatus, initStatus, shouldRunStatus);
-
-    ASSERT_TRUE(startAppThread(app));
-
-    TestGame* testGame = nullptr;
-    while(!(testGame = app.getTestGame()));
-    while(!testGame->isUpdated());
-
-    testGame->setShouldRun(false);
-
-    ASSERT_TRUE(isAppFinished());
-}
-
-TEST_F(ApplicationTests, CheckEnvironmentInited) {
+TEST_F(ApplicationTests, CheckEnvironmet) {
     ASSERT_FALSE(GetEnv());
 
-    bool initStatus = true;
-    bool shouldRunStatus = true;
-    std::unique_ptr<TestApp> app(new TestApp(new TestPlatform(initStatus, shouldRunStatus)));
+    std::unique_ptr<VoidTestApplication> app(new VoidTestApplication(new VoidTestPlatform));
 
     ASSERT_TRUE(GetEnv());
     ASSERT_EQ(&(GetEnv()->getApp()), &(*app));
@@ -244,4 +63,181 @@ TEST_F(ApplicationTests, CheckEnvironmentInited) {
     app.reset();
 
     ASSERT_FALSE(GetEnv());
+}
+
+TEST_F(ApplicationTests, StartAppWithPlatformInitFail) {
+    VoidTestPlatform* testPlatform = new VoidTestPlatform;
+    testPlatform->retRes_init = false;
+    VoidTestApplication app(testPlatform);
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithLoggerCreateFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createLogger = nullptr;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithAssetsCreateFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createAssets = nullptr;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithAssetsInitFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createAssets->retRes_init = false;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithSurfaceInitFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createSurface->retRes_init = false;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithSurfaceShowFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createSurface->retRes_show = false;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithRenderCreateFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createRender = nullptr;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithRenderInitFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createRender->retRes_init = false;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithGameCreateFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createGame = nullptr;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, StartAppWithGameInitFail) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    factory->retRes_createGame->retRes_init = false;
+
+    int res = app.run();
+    ASSERT_FALSE(res == 0);
+}
+
+TEST_F(ApplicationTests, CheckSurfaceUpdate) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    VoidTestSurface* surface = factory->retRes_createSurface.get();
+
+    ASSERT_TRUE(startAppThread(app));
+
+    while(true) {
+        std::lock_guard<std::mutex> lock(surface->mutex);
+        if(surface->callCount_update) {
+            break;
+        }
+    }
+    {
+        std::lock_guard<std::mutex> lock(surface->mutex);
+        surface->retRes_shouldRun = false;
+    }
+
+    ASSERT_TRUE(isAppFinished());
+}
+
+TEST_F(ApplicationTests, CheckGameUpdate) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    VoidTestGame* game = factory->retRes_createGame.get();
+
+    ASSERT_TRUE(startAppThread(app));
+
+    while(true) {
+        std::lock_guard<std::mutex> lock(game->mutex);
+        if(game->callCount_update) {
+            break;
+        }
+    }
+    {
+        std::lock_guard<std::mutex> lock(game->mutex);
+        game->retRes_shouldRun = false;
+    }
+
+    ASSERT_TRUE(isAppFinished());
+}
+
+TEST_F(ApplicationTests, CheckRenderUpdate) {
+    VoidTestApplication app(new VoidTestPlatform);
+    auto factory = reinterpret_cast<VoidTestModuleFactory*>(app.retRes_createModuleFactory.get());
+    VoidTestGame* game = factory->retRes_createGame.get();
+    VoidTestRender* render = factory->retRes_createRender.get();
+
+    ASSERT_TRUE(startAppThread(app));
+
+    while(true) {
+        std::lock_guard<std::mutex> lock(render->mutex);
+        if(render->callCount_update) {
+            break;
+        }
+    }
+    {
+        std::lock_guard<std::mutex> lock(game->mutex);
+        game->retRes_shouldRun = false;
+    }
+
+    ASSERT_TRUE(isAppFinished());
+}
+
+TEST_F(ApplicationTests, CheckApplicationWithVoidGame) {
+    auto factory = new OnlyVoidGameModuleFactory;
+    VoidTestGame* game = factory->retRes_createGame.get();
+
+    VoidTestApplication app(new DesktopPlatform(0, nullptr));
+    app.retRes_createModuleFactory.reset(factory);
+
+    ASSERT_TRUE(startAppThread(app));
+
+    while(true) {
+        std::lock_guard<std::mutex> lock(game->mutex);
+        if(game->callCount_update) {
+            break;
+        }
+    }
+    {
+        std::lock_guard<std::mutex> lock(game->mutex);
+        game->retRes_shouldRun = false;
+    }
+
+    ASSERT_TRUE(isAppFinished());
 }

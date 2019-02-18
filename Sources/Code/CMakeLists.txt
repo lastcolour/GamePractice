@@ -22,6 +22,11 @@ endif()
 
 if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
     add_definitions(-DDESKTOP_APP_BUILD)
+    if(APP_BUILD_PLATFORM STREQUAL "Windows")
+        add_definitions(-DAPP_BUILD_PLATFORM_WINDOWS)
+    else()
+        add_definitions(-DAPP_BUILD_PLATFORM_LINUX)
+    endif()
     set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
 else()
     message(STATUS "Skip unittests build (Not supported for such platform)")
@@ -29,11 +34,12 @@ endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/compile_flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/dependicies.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/assets_dir.cmake)
 
 # Build target project
 
 add_subdirectory(Application)
-if (BUILD_UNITTESTS)
+if(BUILD_UNITTESTS)
     add_subdirectory(Tests)
 endif()
 

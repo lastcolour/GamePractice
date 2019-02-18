@@ -2,16 +2,22 @@ cmake_minimum_required(VERSION 3.10)
 
 project(${MAIN_PROJECT_NAME}Tests)
 
+set(APPLICATION_TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests)
+
 include_directories(${GTEST_INCLUDE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${STB_INCLUDE_DIR}
+    ${GLAD_INCLUDE_DIR}
+    ${APPLICATION_TEST_SOURCES}
     ${MAIN_PROJECT_SOURCE_ROOT}/Application)
 
 find_package(Threads REQUIRED)
 
 file(GLOB APPLICATION_TESTS_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests/*.cpp)
+    ${APPLICATION_TEST_SOURCES}/TestUtils/*.cpp
+    ${APPLICATION_TEST_SOURCES}/*.cpp)
 file(GLOB APPLICATION_TESTS_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests/*.hpp)
+    ${APPLICATION_TEST_SOURCES}/TestUtils/*.hpp
+    ${APPLICATION_TEST_SOURCES}/*.hpp)
 
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/tests_main.cpp
     ${APPLICATION_TESTS_HEADERS}

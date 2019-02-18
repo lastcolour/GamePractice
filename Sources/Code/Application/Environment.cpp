@@ -1,22 +1,25 @@
 #include "Environment.hpp"
 
 #include <cassert>
+#include <iostream>
 
 Environment* Environment::ENV = nullptr;
 
 Environment::Environment(Application& application) :
-    app(application),
-    surface(nullptr) {
+    app(application) {
 }
 
 Environment::~Environment() {
 }
 
-void Environment::InitEnv(Application& application) {
-    if(!ENV)
+bool Environment::InitEnv(Application& application) {
+    if(!ENV) {
         ENV = new Environment(application);
-    else
+    } else {
         assert(false && "Environment already inited");
+        return false;
+    }
+    return true;
 }
 
 void Environment::DeinitEnv() {
@@ -24,18 +27,34 @@ void Environment::DeinitEnv() {
     ENV = nullptr;
 }
 
+Environment* GetEnv() {
+    return Environment::ENV;
+}
+
 Application& Environment::getApp() {
     return app;
 }
 
-void Environment::registerSurface(Surface* surf) {
-    surface = surf;
+Platform& Environment::getPlatform() {
+    return *app.platform;
+}
+
+Logger* Environment::getLogger() {
+    return app.logger.get();
+}
+
+Assets* Environment::getAssets() {
+    return app.assets.get();
 }
 
 Surface* Environment::getSurface() {
-    return surface;
+    return app.surface.get();
 }
 
-Environment* GetEnv() {
-    return Environment::ENV;
+Render* Environment::getRender() {
+    return app.render.get();
+}
+
+Game* Environment::getGame() {
+    return app.game.get();
 }

@@ -1,46 +1,114 @@
 #include "Platforms/Desktop/GLFWSurface.hpp"
-
 #include "Platforms/OpenGL.hpp"
+#include "Render/Render.hpp"
+#include "Logger.hpp"
 
-class GlfwInit {
+#include <GLFW/glfw3.h>
+
+#include <cassert>
+namespace {
+    const int DEF_WIDTH = 600;
+    const int DEF_HEIGHT = 480;
+    const char* DEF_WINDOW_NAME = "Game01";
+}
+
+class GlfwLibInitData {
 public:
 
-    GlfwInit() : status(false) {}
-    ~GlfwInit() { glfwTerminate(); status = false; }
+    GlfwLibInitData() :
+        activeSurface(nullptr),
+        status(false) {}
 
-    void init() { status = glfwInit(); }
-    bool getStatus() { return status; }
+    ~GlfwLibInitData() {
+        if(status) {
+            glfwTerminate();
+        }
+        status = false;
+    }
+
+    bool init() {
+        if(!status) {
+            status = glfwInit();
+        }
+        return status;
+    }
+
+    bool setActiveSurface(GLFWSurface* surface) {
+        if(!activeSurface) {
+            activeSurface = surface;
+            return true;
+        } else {
+            assert(false && "Try Create second surface");
+            LogError("[GlfwLibInitData:setActiveSurface] Can't set other surface as active");
+            return false;
+        }
+    }
+
+    void resetActiveSurface(GLFWSurface* surface) {
+        if(surface == activeSurface) {
+            activeSurface = nullptr;
+        } else {
+            assert(false && "Try reset other surface");
+            LogError("[GlfwLibInitData:resetActiveSurface] Can't reset other surface");
+        }
+    }
+
+    GLFWSurface* getActiveSurface() {
+        return activeSurface;
+    }
 
 private:
 
+    GLFWSurface* activeSurface;
     bool status;
 };
 
-std::unique_ptr<GlfwInit> GLFWSurface::GLFW = nullptr;
+std::unique_ptr<GlfwLibInitData> GLFWSurface::GLFW = nullptr;
 
-GLFWSurface::GLFWSurface() : window(nullptr) {
+GLFWSurface::GLFWSurface() :
+    window(nullptr),
+    width(0),
+    height(0) {
 }
 
 GLFWSurface::~GLFWSurface() {
     if(window) {
         glfwDestroyWindow(window);
     }
+    GLFW->resetActiveSurface(this);
     window = nullptr;
 }
 
 bool GLFWSurface::init() {
     if(!GLFW) {
-        GLFW.reset(new GlfwInit);
-        GLFW->init();
+        GLFW.reset(new GlfwLibInitData);
     }
-    if(!GLFW->getStatus()) {
+    if(!GLFW->init()) {
+        LogError("[GLFWSurface::init] Can't init GLFW library");
+        return false;
+    }
+    if(!GLFW->setActiveSurface(this)) {
         return false;
     }
 
-    window = glfwCreateWindow(640, 480, "Surface", nullptr, nullptr);
-    if (!window) {
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(DEF_WIDTH, DEF_HEIGHT, DEF_WINDOW_NAME, nullptr, nullptr);
+    if(!window) {
+        const char* errStr = nullptr;
+        int errCode = glfwGetError(&errStr);
+        LogError("[GLFWSurface] Can't create window: '%s' (%d)", errStr, errCode);
         return false;
     }
+
+    width = DEF_WIDTH;
+    height = DEF_HEIGHT;
+
+    glfwSetFramebufferSizeCallback(window, SetFramebufferSizeCallback);
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -48,27 +116,59 @@ bool GLFWSurface::init() {
     return true;
 }
 
-bool GLFWSurface::shouldRun() {
-    return window != nullptr && !glfwWindowShouldClose(window);
+bool GLFWSurface::show() {
+    if(window) {
+        glfwShowWindow(window);
+        return true;
+    }
+    return false;
 }
 
-void GLFWSurface::update() {
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-    glClearColor(0.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+bool GLFWSurface::hide() {
+    if(window) {
+        glfwHideWindow(window);
+        return true;
+    }
+    return false;
 }
 
-void GLFWSurface::close() {
+void GLFWSurface::terminate() {
     if(window) {
         glfwSetWindowShouldClose(window, true);
     }
 }
 
+bool GLFWSurface::shouldRun() {
+    return window != nullptr && !glfwWindowShouldClose(window);
+}
+
+void GLFWSurface::update() {
+    glfwPollEvents();
+}
+
+void GLFWSurface::swapBuffers() {
+    if(window) {
+        glfwSwapBuffers(window);
+    }
+}
+
+void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* windwos, int w, int h) {
+    auto surface = GLFW->getActiveSurface();
+    if(!surface) {
+        LogError("[GLFWSurface::SetFramebufferSizeCallback] No active surface");
+        return;
+    }
+    surface->width = w;
+    surface->height = h;
+    if(auto render = GetEnv()->getRender()) {
+        render->setViewport(w, h);
+    }
+}
+
 int GLFWSurface::getHeight() const {
-    return 480;
+    return width;
 }
 
 int GLFWSurface::getWidth() const {
-    return 600;
+    return height;
 }
