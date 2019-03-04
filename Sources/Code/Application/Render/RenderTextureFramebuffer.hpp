@@ -2,14 +2,14 @@
 #define __RENDER_TEXTURE_FRAMEBUFFER_HPP__
 
 #include "Color.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Math/Vector.hpp"
 
 #include <memory>
 
 class RenderTextureFramebuffer {
 public:
 
-    RenderTextureFramebuffer(GLsizei w, GLsizei h);
+    RenderTextureFramebuffer(int w, int h);
     ~RenderTextureFramebuffer();
 
     bool init();
@@ -20,17 +20,14 @@ public:
     void clear();
     const void* getPtr() const;
 
-    GLsizei getWidth() const;
-    GLsizei getHeight() const;
-    int getCompCount() const;
-    ColorF getColor(GLsizei i, GLsizei j) const;
+    Vec2i getSize() const;
+    ColorF getColor(int i, int j) const;
 
 private:
 
-    GLsizei width;
-    GLsizei height;
-    GLuint framebufferId;
-    GLuint textureId;
+    Vec2i size;
+    unsigned int framebufferId;
+    unsigned int textureId;
     std::unique_ptr<Color::Color_RGBA_Byte[]> textureBuffer;
 };
 

@@ -1,11 +1,11 @@
 #include "Platforms/Desktop/GLFWSurface.hpp"
+#include "ETApplicationInterfaces.hpp"
 #include "Platforms/OpenGL.hpp"
-#include "Render/Render.hpp"
-#include "Logger.hpp"
 
 #include <GLFW/glfw3.h>
 
 #include <cassert>
+
 namespace {
     const int DEF_WIDTH = 600;
     const int DEF_HEIGHT = 480;
@@ -67,8 +67,7 @@ std::unique_ptr<GlfwLibInitData> GLFWSurface::GLFW = nullptr;
 
 GLFWSurface::GLFWSurface() :
     window(nullptr),
-    width(0),
-    height(0) {
+    size(0) {
 }
 
 GLFWSurface::~GLFWSurface() {
@@ -79,7 +78,7 @@ GLFWSurface::~GLFWSurface() {
     window = nullptr;
 }
 
-bool GLFWSurface::init() {
+bool GLFWSurface::onInit() {
     if(!GLFW) {
         GLFW.reset(new GlfwLibInitData);
     }
@@ -97,7 +96,8 @@ bool GLFWSurface::init() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(DEF_WIDTH, DEF_HEIGHT, DEF_WINDOW_NAME, nullptr, nullptr);
+    size = Vec2i(DEF_WIDTH, DEF_HEIGHT);
+    window = glfwCreateWindow(size.x, size.y, DEF_WINDOW_NAME, nullptr, nullptr);
     if(!window) {
         const char* errStr = nullptr;
         int errCode = glfwGetError(&errStr);
@@ -105,18 +105,26 @@ bool GLFWSurface::init() {
         return false;
     }
 
-    width = DEF_WIDTH;
-    height = DEF_HEIGHT;
-
     glfwSetFramebufferSizeCallback(window, SetFramebufferSizeCallback);
+    glfwSetMouseButtonCallback(window, SetMouseButtonCallback);
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
+    ETNode<ETSurface>::connect(getEntityId());
+
     return true;
 }
 
-bool GLFWSurface::show() {
+void GLFWSurface::onUpdate() {
+    glfwPollEvents();
+}
+
+bool GLFWSurface::onShouldRun() {
+    return window != nullptr && !glfwWindowShouldClose(window);
+}
+
+bool GLFWSurface::ET_show() {
     if(window) {
         glfwShowWindow(window);
         return true;
@@ -124,7 +132,7 @@ bool GLFWSurface::show() {
     return false;
 }
 
-bool GLFWSurface::hide() {
+bool GLFWSurface::ET_hide() {
     if(window) {
         glfwHideWindow(window);
         return true;
@@ -132,24 +140,33 @@ bool GLFWSurface::hide() {
     return false;
 }
 
-void GLFWSurface::terminate() {
+void GLFWSurface::ET_terminate() {
     if(window) {
         glfwSetWindowShouldClose(window, true);
     }
 }
 
-bool GLFWSurface::shouldRun() {
-    return window != nullptr && !glfwWindowShouldClose(window);
-}
-
-void GLFWSurface::update() {
-    glfwPollEvents();
-}
-
-void GLFWSurface::swapBuffers() {
+void GLFWSurface::ET_swapBuffers() {
     if(window) {
         glfwSwapBuffers(window);
     }
+}
+
+Vec2i GLFWSurface::ET_getSize() const {
+    return size;
+}
+
+bool GLFWSurface::ET_canRender() const {
+    return window != nullptr;
+}
+
+void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    double x = 0;
+    double y = 0;
+    glfwGetCursorPos(window, &x, &y);
+
+    ET_SendEventToAll(&ETSurfaceEvents::ET_onSurfaceTouch,
+        Vec2i(static_cast<int>(x), static_cast<int>(y)));
 }
 
 void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* windwos, int w, int h) {
@@ -158,17 +175,6 @@ void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* windwos, int w, int h) 
         LogError("[GLFWSurface::SetFramebufferSizeCallback] No active surface");
         return;
     }
-    surface->width = w;
-    surface->height = h;
-    if(auto render = GetEnv()->getRender()) {
-        render->setViewport(w, h);
-    }
-}
-
-int GLFWSurface::getHeight() const {
-    return width;
-}
-
-int GLFWSurface::getWidth() const {
-    return height;
+    surface->size = Vec2i(w, h);
+    ET_SendEventToAll(&ETSurfaceEvents::ET_onSurfaceResize, surface->size);
 }

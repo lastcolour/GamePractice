@@ -1,7 +1,7 @@
 #ifndef __DESKTOP_ASSETS_HPP__
 #define __DESKTOP_ASSETS_HPP__
 
-#include "Assets.hpp"
+#include "Platform.hpp"
 
 class DesktopAssets : public Assets {
 public:
@@ -9,8 +9,16 @@ public:
     DesktopAssets() = default;
     virtual ~DesktopAssets() = default;
 
-    bool init() override;
-    Buffer loadAsset(const std::string& assetName) override;
+    // ETAssets
+    JSONNode ET_loadJSONAsset(const std::string& assetName) override;
+    Buffer ET_loadAsset(const std::string& assetName) override;
+
+protected:
+
+    // SystemLogic
+    bool onInit() override;
+    bool onShouldRun() override { return true; }
+    void onUpdate() override {}
 
 private:
 

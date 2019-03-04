@@ -11,7 +11,16 @@ public:
     VoidTestRender() = default;
     virtual ~VoidTestRender() = default;
 
-    bool init() override {
+    // ETRender
+    Vec2i ET_getRenderPort() const override { return Vec2i(0); }
+    void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override {}
+    std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) override { return nullptr; }
+    std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) override { return nullptr; }
+
+protected:
+
+    // SystemLogic
+    bool onInit() override {
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -19,7 +28,7 @@ public:
         }
         return res;
     }
-    void update() override {
+    void onUpdate() override {
         std::lock_guard<std::mutex> lock(mutex);
         ++callCount_update;
     }

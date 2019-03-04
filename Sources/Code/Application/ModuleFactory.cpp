@@ -1,26 +1,18 @@
 #include "ModuleFactory.hpp"
 #include "Platform.hpp"
-#include "Logger.hpp"
-#include "Assets.hpp"
-#include "Surface.hpp"
 #include "Game/Game.hpp"
 #include "Render/Render.hpp"
 
 std::unique_ptr<Logger> ModuleFactory::createLogger() {
-    auto logStream = GetEnv()->getPlatform().createLogStream();
-    if(!logStream) {
-        return nullptr;
-    }
-    return std::unique_ptr<Logger>(new Logger(std::move(logStream)));
+    return GetEnv()->getPlatform()->createLogger();
 }
 
 std::unique_ptr<Assets> ModuleFactory::createAssets() {
-    return GetEnv()->getPlatform().createAssets();
+    return GetEnv()->getPlatform()->createAssets();
 }
 
 std::unique_ptr<Surface> ModuleFactory::createSurface() {
-    auto& platform = GetEnv()->getPlatform();
-    return platform.createSurface();
+    return GetEnv()->getPlatform()->createSurface();
 }
 
 std::unique_ptr<Render> ModuleFactory::createRender() {

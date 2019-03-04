@@ -1,23 +1,28 @@
 #include "Render/RenderTextureFramebuffer.hpp"
-#include "Logger.hpp"
+#include "ETApplicationInterfaces.hpp"
+#include "ETRenderInterfaces.hpp"
+#include "Platforms/OpenGL.hpp"
 
 #include <cassert>
 
-RenderTextureFramebuffer::RenderTextureFramebuffer(GLsizei w, GLsizei h) :
-    width(w),
-    height(h),
+RenderTextureFramebuffer::RenderTextureFramebuffer(int w, int h) :
+    size(w, h),
     framebufferId(0),
-    textureId(0) {
+    textureId(0),
+    textureBuffer() {
 }
 
 RenderTextureFramebuffer::~RenderTextureFramebuffer() {
     glDeleteTextures(1, &textureId);
     glDeleteFramebuffers(1, &framebufferId);
+
+    ET_SendEvent(&ETRender::ET_setRenderToFramebuffer, nullptr);
 }
 
 bool RenderTextureFramebuffer::init() {
-    if(!GetEnv()->getRender()) {
-        LogWarning("[RenderTextureFramebuffer] Cant init without render");
+    bool canRender = ET_SendEventReturn(&ETSurface::ET_canRender);
+    if(!canRender) {
+        LogWarning("[RenderTextureFramebuffer::init] Can't init render FB without render");
         return false;
     }
     if(framebufferId) {
@@ -34,7 +39,7 @@ bool RenderTextureFramebuffer::init() {
 
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     if(!textureId) {
         LogError("[RenderTextureFramebuffer] Can't create texture");
@@ -50,9 +55,9 @@ bool RenderTextureFramebuffer::init() {
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    textureBuffer.reset(new Color::Color_RGBA_Byte[width*height]);
+    textureBuffer.reset(new Color::Color_RGBA_Byte[size.x * size.y]);
     if(!textureBuffer) {
-        auto bufferSize = width * height * sizeof(Color::Color_RGBA_Byte);
+        auto bufferSize = size.x * size.y * sizeof(Color::Color_RGBA_Byte);
         LogError("[RenderTextureFramebuffer] Can't allocate bytes for read buffer %d", bufferSize);
         return false;
     }
@@ -60,15 +65,16 @@ bool RenderTextureFramebuffer::init() {
     return glGetError() == GL_NO_ERROR;
 }
 
-int RenderTextureFramebuffer::getCompCount() const {
-    return 4;
-}
-
 bool RenderTextureFramebuffer::bind() {
     if(!isBinded()) {
+        ET_SendEvent(&ETRender::ET_setRenderToFramebuffer, this);
         glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
     }
     return true;
+}
+
+Vec2i RenderTextureFramebuffer::getSize() const {
+    return size;
 }
 
 bool RenderTextureFramebuffer::isBinded() const {
@@ -90,7 +96,7 @@ bool RenderTextureFramebuffer::read() {
     }
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     GLvoid* texturePtr = static_cast<GLvoid*>(&textureBuffer[0]);
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, texturePtr);
+    glReadPixels(0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, texturePtr);
 
     auto errCode = glGetError();
     return errCode == GL_NO_ERROR;
@@ -100,31 +106,24 @@ void RenderTextureFramebuffer::clear() {
     if(!textureBuffer) {
         return;
     }
-    for(GLsizei i=0; i< width * height; ++i) {
+    for(int i=0; i < size.x * size.y; ++i) {
         textureBuffer[i] = Color::Color_RGBA_Byte(0, 0, 0);
     }
 }
 
 void RenderTextureFramebuffer::unbind() {
     if(isBinded()) {
+        ET_SendEvent(&ETRender::ET_setRenderToFramebuffer, nullptr);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 }
 
-GLsizei RenderTextureFramebuffer::getWidth() const {
-    return width;
-}
-
-GLsizei RenderTextureFramebuffer::getHeight() const {
-    return height;
-}
-
-ColorF RenderTextureFramebuffer::getColor(GLsizei w, GLsizei h) const {
+ColorF RenderTextureFramebuffer::getColor(int w, int h) const {
     if(!textureBuffer) {
         return ColorF();
     }
-    assert((w < width && h < height) && "Invalid access");
-    auto offset = width * w + h;
+    assert((w < size.x && h < size.y) && "Invalid access to pixel");
+    auto offset = size.x * h + size.x;
     const auto& color = textureBuffer[offset];
     return ColorF(color.r / 255.f, color.g / 255.f, color.b / 255.f);
 }

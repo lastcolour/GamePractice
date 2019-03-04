@@ -1,39 +1,58 @@
 #ifndef __RENDER_HPP__
 #define __RENDER_HPP__
 
-#include "Platforms/OpenGL.hpp"
-#include "Render/Color.hpp"
+#include "Render/ETRenderInterfaces.hpp"
+#include "ETApplicationInterfaces.hpp"
+#include "Core/SystemLogic.hpp"
+#include "Render/Camera2D.hpp"
 
 #include <unordered_map>
+#include <vector>
 #include <string>
 #include <memory>
 
 class RenderMaterial;
 class RenderGeometry;
+class RenderLogic;
 
-class Render {
+class Render : public SystemLogic,
+    public ETNode<ETSurfaceEvents>,
+    public ETNode<ETRender> {
 public:
 
     Render();
     virtual ~Render() = default;
 
-    virtual bool init();
-    virtual void update();
+    // ETRender
+    const ColorF& ET_getClearColor() const override;
+    void ET_setClearColor(const ColorF& col) override;
+    void ET_drawFrame() override;
+    void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
+    Vec2i ET_getRenderPort() const override;
+    const Mat4& ET_getProj2DMat4() const override;
+    std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) override;
+    std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) override;
 
-    void setClearColor(const ColorF& col);
-    void setViewport(int width, int heigth);
+    // ETSurfaceEvents
+    void ET_onSurfaceResize(const Vec2i& size) override;
 
-    std::shared_ptr<RenderGeometry> createGeometry(const std::string& geomName);
-    std::shared_ptr<RenderMaterial> createMaterial(const std::string& matName);
+protected:
+
+    // SystemLogic
+    bool onInit() override;
+    void onUpdate() override;
 
 private:
 
+    void setViewport(const Vec2i& size);
     std::shared_ptr<RenderGeometry> createSquare();
-    GLuint createProgram(const std::string& vert, const std::string& frag);
-    GLuint createProgramImpl(const std::string& vertSrc, const std::string& fragSrc);
+    int createProgram(const std::string& vert, const std::string& frag);
+    int createProgramImpl(const std::string& vertSrc, const std::string& fragSrc);
 
 private:
 
+    RenderTextureFramebuffer* renderFb;
+    Camera2D camera2d;
     ColorF clearColor;
     std::unordered_map<std::string, std::weak_ptr<RenderMaterial>> materials;
     std::unordered_map<std::string, std::weak_ptr<RenderGeometry>> geometris;

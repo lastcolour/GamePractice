@@ -8,6 +8,7 @@ class ModuleFactory;
 class Logger;
 class Assets;
 class Surface;
+class ETSystem;
 class Render;
 class Game;
 
@@ -44,6 +45,7 @@ private:
 
 private:
 
+    std::unique_ptr<ETSystem> etSystem;
     std::unique_ptr<Platform> platform;
     std::unique_ptr<Logger> logger;
     std::unique_ptr<Assets> assets;

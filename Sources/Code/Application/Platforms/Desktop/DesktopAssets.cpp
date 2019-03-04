@@ -1,5 +1,5 @@
 #include "Platforms/Desktop/DesktopAssets.hpp"
-#include "Logger.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <chrono>
 #include <fstream>
@@ -101,12 +101,31 @@ namespace {
 
 } // namespace
 
-bool DesktopAssets::init() {
+bool DesktopAssets::onInit() {
     assetRootPath = getAssetDirPath();
-    return !assetRootPath.empty();
+    if(assetRootPath.empty()) {
+        LogError("[DesktopAssets::onInit] Can't get assets root dir");
+        return false;
+    }
+    ETNode<ETAsset>::connect(getEntityId());
+    return true;
 }
 
-Buffer DesktopAssets::loadAsset(const std::string& assetName) {
+JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {
+    auto buffer = ET_loadAsset(assetName);
+    if(!buffer) {
+        LogError("[DesktopAssets::loadJSONAsset] Can't load asset from: %s", assetName);
+        return JSONNode();
+    }
+    auto rootNode = JSONNode::ParseBuffer(buffer);
+    if(!rootNode) {
+        LogError("[DesktopAssets::loadJSONAsset] Can't parse asset: %s", assetName);
+        return JSONNode();
+    }
+    return rootNode;
+}
+
+Buffer DesktopAssets::ET_loadAsset(const std::string& assetName) {
     auto loadStartT = std::chrono::high_resolution_clock::now();
 
     Buffer buff = loadAssetImpl(assetName);

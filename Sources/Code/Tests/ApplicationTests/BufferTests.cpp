@@ -1,5 +1,5 @@
 #include "BufferTests.hpp"
-#include "Buffer.hpp"
+#include "Core/Buffer.hpp"
 
 namespace {
     const size_t TEST_SIZE = 32;

@@ -1,66 +1,110 @@
 #include "Render/Render.hpp"
 #include "Render/RenderMaterial.hpp"
 #include "Render/RenderGeometry.hpp"
-#include "Environment.hpp"
-#include "Surface.hpp"
-#include "Logger.hpp"
-#include "Assets.hpp"
-#include "JSONNode.hpp"
+#include "Render/ETRenderInterfaces.hpp"
+#include "Render/RenderTextureFramebuffer.hpp"
+
+#include "Platforms/OpenGL.hpp"
 
 #include <cassert>
 #include <algorithm>
+#include <type_traits>
+
+static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");
+static_assert(std::is_same<int, GLint>::value, "int != GLint");
+static_assert(std::is_same<float, GLfloat>::value, "float != GLfloat");
+static_assert(std::is_same<unsigned int, GLuint>::value, "unsigned int != GLuint");
 
 namespace {
-    const GLsizei MAX_INFO_BUFF_SIZE = 255u;
+    const int MAX_INFO_BUFF_SIZE = 255u;
     const char* MATERIALS = "Render/Materials.json";
     const char* SHADERS_ROOT_DIR = "Render/";
     const char* SQUARE_GEOM_NAME = "square";
 }
 
 Render::Render() :
-    clearColor(0.f, 0.f, 0.f) {
+    clearColor(0.f, 0.f, 0.f),
+    renderFb(nullptr) {
 }
 
-bool Render::init() {
-    auto surface = GetEnv()->getSurface();
-    if(!surface) {
-        assert(false && "Invalid surface");
+bool Render::onInit() {
+    bool canRender = ET_SendEventReturn(&ETSurface::ET_canRender);
+    if(!canRender) {
         return false;
     }
 
-    glViewport(0, 0, surface->getWidth(), surface->getHeight());
+    ETNode<ETRender>::connect(getEntityId());
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
+
+    Vec2i size = ET_SendEventReturn(&ETSurface::ET_getSize);
+    setViewport(size);
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
+
     return true;
 }
 
-void Render::update() {
+void Render::onUpdate() {
+    ET_drawFrame();
+}
+
+void Render::ET_drawFrame() {
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    GetEnv()->getSurface()->swapBuffers();
+    RenderContext renderCtx;
+    renderCtx.proj2dMat = camera2d.getProjMat4();
+
+    ET_SendEventToAll(&ETRenderEvents::ET_onRender, renderCtx);
+
+    if(!renderFb) {
+        ET_SendEvent(&ETSurface::ET_swapBuffers);
+    }
 }
 
-void Render::setClearColor(const ColorF& col) {
+const Mat4& Render::ET_getProj2DMat4() const {
+    return camera2d.getProjMat4();
+}
+
+const ColorF& Render::ET_getClearColor() const {
+    return clearColor;
+}
+
+void Render::ET_setClearColor(const ColorF& col) {
     clearColor = col;
 }
 
-void Render::setViewport(int width, int heigth) {
-    LogDebug("[Render::setViewport] Set viewport: [%ix%i]", width, heigth);
-    glViewport(0, 0, width, heigth);
+Vec2i Render::ET_getRenderPort() const {
+    Vec2 renderPort = camera2d.getViewport();
+    return Vec2i(static_cast<int>(renderPort.x), static_cast<int>(renderPort.y));
 }
 
-std::shared_ptr<RenderGeometry> Render::createGeometry(const std::string& geomName) {
-    auto it = geometris.find(geomName);
+void Render::ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFramebuffer) {
+    if(renderFb == renderFramebuffer) {
+        return;
+    } else if(renderFramebuffer == nullptr) {
+        auto size = ET_SendEventReturn(&ETSurface::ET_getSize);
+        setViewport(size);
+    } else {
+        renderFb = renderFramebuffer;
+        setViewport(renderFramebuffer->getSize());
+    }
+}
+
+std::shared_ptr<RenderGeometry> Render::ET_createGeometry(const std::string& geomName) {
+    std::string reqGeomName = geomName;
+    std::transform(reqGeomName.begin(), reqGeomName.end(), reqGeomName.begin(), tolower);
+    auto it = geometris.find(reqGeomName);
     if(it != geometris.end() && !it->second.expired()) {
         return it->second.lock();
     }
-    if(geomName == SQUARE_GEOM_NAME) {
+    if(reqGeomName == SQUARE_GEOM_NAME) {
         auto geom = createSquare();
-        geometris[SQUARE_GEOM_NAME] = geom;
-        return createSquare();
+        geometris[reqGeomName] = geom;
+        return geom;
     } else {
-        LogWarning("[Render::createGeometry] Can't create unknown type of geometry: '%s'", geomName);
+        LogWarning("[Render::createGeometry] Can't create unknown type of geometry: '%s'", reqGeomName);
         return nullptr;
     }
 }
@@ -91,6 +135,7 @@ std::shared_ptr<RenderGeometry> Render::createSquare() {
     glEnableVertexAttribArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
+    geometry->aabb = AABB(Vec3(-1, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = sizeof(squareVerts) / vertElemSize;
@@ -98,28 +143,24 @@ std::shared_ptr<RenderGeometry> Render::createSquare() {
     return geometry;
 }
 
-std::shared_ptr<RenderMaterial> Render::createMaterial(const std::string& matName) {
-    if(matName.empty()) {
+std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& matName) {
+    std::string reqMatName = matName;
+    std::transform(reqMatName.begin(), reqMatName.end(), reqMatName.begin(), tolower);
+    if(reqMatName.empty()) {
         LogError("[Render::createMaterial] Can't create material with empty name");
         return nullptr;
     }
-    auto it = materials.find(matName);
+    auto it = materials.find(reqMatName);
     if(it != materials.end() && !it->second.expired()) {
         return it->second.lock();
     }
-    auto assets = GetEnv()->getAssets();
-    auto buffer = assets->loadAsset(MATERIALS);
-    if(!buffer) {
-        LogError("[Render::createMaterial] Can't load material from: %s", MATERIALS);
-        return nullptr;
-    }
-    auto rootNode = JSONNode::ParseBuffer(buffer);
+    auto rootNode = ET_SendEventReturn(&ETAsset::ET_loadJSONAsset, MATERIALS);
     if(!rootNode) {
-        LogError("[Render::createMaterial] Can't parse materials: %s", MATERIALS);
+        LogError("[Render::createMaterial] Can't create materials '%s' from: %s", matName, MATERIALS);
         return nullptr;
     }
     for(auto& matNode : rootNode) {
-        if(matName != matNode.key()) {
+        if(reqMatName != matNode.key()) {
             continue;
         }
         std::string vertShaderPath;
@@ -127,11 +168,11 @@ std::shared_ptr<RenderMaterial> Render::createMaterial(const std::string& matNam
         matNode.value("vert", vertShaderPath);
         matNode.value("frag", fragShaderPath);
         if(vertShaderPath.empty()) {
-            LogError("[Render::createMaterial] Empty vert shader path in material: %s", matName);
+            LogError("[Render::createMaterial] Empty vert shader path in material: %s", reqMatName);
             continue;
         }
         if(fragShaderPath.empty()) {
-            LogError("[Render::createMaterial] Empty frag shader path in material: %s", matName);
+            LogError("[Render::createMaterial] Empty frag shader path in material: %s", reqMatName);
             continue;
         }
         vertShaderPath = SHADERS_ROOT_DIR + vertShaderPath;
@@ -139,20 +180,19 @@ std::shared_ptr<RenderMaterial> Render::createMaterial(const std::string& matNam
         auto program = createProgram(vertShaderPath, fragShaderPath);
         if(!program) {
             LogError("[Render::createProgram] Can't create render material '%s' from vert: '%s' and frag: '%s' shaders",
-                matName, vertShaderPath, fragShaderPath);
+                reqMatName, vertShaderPath, fragShaderPath);
             return nullptr;
         }
-        LogDebug("[Render::createMaterial] Load material: '%s'", matName);
+        LogDebug("[Render::createMaterial] Load material: '%s'", reqMatName);
         std::shared_ptr<RenderMaterial> material(new RenderMaterial(program));
-        materials[matName] = material;
+        materials[reqMatName] = material;
         return material;
     }
     return nullptr;
 }
 
-GLuint Render::createProgram(const std::string& vertFile, const std::string& fragFile) {
-    auto assets = GetEnv()->getAssets();
-    auto buffer = assets->loadAsset(vertFile);
+int Render::createProgram(const std::string& vertFile, const std::string& fragFile) {
+    auto buffer =  ET_SendEventReturn(&ETAsset::ET_loadAsset, vertFile);
     if(!buffer) {
         LogError("[Render::createProgram] Can't load vert shader file: %s", vertFile.c_str());
         return 0;
@@ -162,7 +202,7 @@ GLuint Render::createProgram(const std::string& vertFile, const std::string& fra
         LogError("[Render::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
         return 0;
     }
-    buffer = assets->loadAsset(fragFile);
+    buffer = ET_SendEventReturn(&ETAsset::ET_loadAsset, fragFile);
     if(!buffer) {
         LogError("[Render::createProgram] Can't load frag shader file: %s", fragFile.c_str());
         return 0;
@@ -175,7 +215,7 @@ GLuint Render::createProgram(const std::string& vertFile, const std::string& fra
     return createProgramImpl(vertSrc, fragSrc);
 }
 
-GLuint Render::createProgramImpl(const std::string& vertSrc, const std::string& fragSrc) {
+int Render::createProgramImpl(const std::string& vertSrc, const std::string& fragSrc) {
     GLuint vertShaderId = glCreateShader(GL_VERTEX_SHADER);
     if(!vertShaderId) {
         LogWarning("[Render::createProgramImpl] Can't create vertext shader");
@@ -229,4 +269,16 @@ GLuint Render::createProgramImpl(const std::string& vertSrc, const std::string& 
     glDeleteShader(vertShaderId);
     glDeleteShader(fragShaderId);
     return programId;
+}
+
+void Render::ET_onSurfaceResize(const Vec2i& size) {
+    if(!renderFb) {
+        setViewport(size);
+    }
+}
+
+void Render::setViewport(const Vec2i& viewport) {
+    LogDebug("[Render::setViewport] Set viewport: [%ix%i]", viewport.x, viewport.y);
+    camera2d.setViewport(viewport.x, viewport.y);
+    glViewport(0, 0, viewport.x, viewport.y);
 }

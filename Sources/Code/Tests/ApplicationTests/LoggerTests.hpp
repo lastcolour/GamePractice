@@ -1,12 +1,11 @@
 #ifndef __LOGGER_TESTS_HPP__
 #define __LOGGER_TESTS_HPP__
 
-#include <gtest/gtest.h>
+#include "TestUtils/ConsoleAppTests.hpp"
 
-class LogStream;
-class Logger;
+class TestLogger;
 
-class LoggerTests : public ::testing::Test {
+class LoggerTests : public ConsoleAppTests {
 protected:
 
     void SetUp() override;
@@ -16,8 +15,7 @@ protected:
 
 protected:
 
-    LogStream* stream;
-    std::unique_ptr<Logger> logger;
+    std::unique_ptr<TestLogger> logger;
 };
 
 #endif /* __LOGGER_TESTS_HPP__ */

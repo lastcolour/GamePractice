@@ -1,25 +1,31 @@
 #ifndef __RENDER_MATERIAL_HPP__
 #define __RENDER_MATERIAL_HPP__
 
-#include <string>
-
-#include "Platforms/OpenGL.hpp"
+#include "Math/Matrix.hpp"
 #include "Render/Color.hpp"
+
+#include <string>
 
 class RenderMaterial {
 public:
 
-    RenderMaterial(GLuint progId);
+    RenderMaterial(int progId);
     ~RenderMaterial();
 
     void bind();
     void unbind();
 
-    void setUniform(const std::string& name, const ColorF& col);
+    void setUniform4f(const std::string& name, const Vec4& vec);
+    void setUniform4f(const std::string& name, const ColorF& col);
+    void setUniformMat4(const std::string& name, const Mat4& mat);
 
-public:
+private:
 
-    GLuint programId;
+    bool findUniform(const std::string& name, int& resUniLoc) const;
+
+private:
+
+    int programId;
 };
 
 #endif /* __RENDER_MATERIAL_HPP__ */

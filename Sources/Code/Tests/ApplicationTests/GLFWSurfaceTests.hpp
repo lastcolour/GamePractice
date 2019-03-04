@@ -1,9 +1,10 @@
 #ifndef __GLFW_SURFACE_TESTS_HPP__
 #define __GLFW_SURFACE_TESTS_HPP__
 
-#include <gtest/gtest.h>
+#include "TestUtils/ConsoleAppTests.hpp"
 
-class GLFWSurfaceTest : public ::testing::Test {
+class GLFWSurfaceTest : public ConsoleAppTests {
+protected:
 
 };
 

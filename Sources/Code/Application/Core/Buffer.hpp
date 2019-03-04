@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-class JSONNode;
-
 class Buffer {
 public:
 

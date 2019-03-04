@@ -6,11 +6,10 @@ TEST_F(GLFWSurfaceTest, TestInit) {
     bool res = surface.init();
     ASSERT_TRUE(res);
 
-    int w = surface.getWidth();
-    int h = surface.getHeight();
+    auto size = surface.ET_getSize();
 
-    ASSERT_GT(w, 0);
-    ASSERT_GT(h, 0);
+    ASSERT_GT(size.x, 0);
+    ASSERT_GT(size.y, 0);
 }
 
 TEST_F(GLFWSurfaceTest, TestShouldRun) {
@@ -25,6 +24,6 @@ TEST_F(GLFWSurfaceTest, TestUpdate) {
     ASSERT_TRUE(surface.init());
     ASSERT_TRUE(surface.shouldRun());
     surface.update();
-    surface.terminate();
+    surface.ET_terminate();
     ASSERT_FALSE(surface.shouldRun());
 }

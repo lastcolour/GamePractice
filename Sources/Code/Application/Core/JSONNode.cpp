@@ -1,5 +1,5 @@
 #include "JSONNode.hpp"
-#include "Logger.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
@@ -308,7 +308,7 @@ size_t JSONNode::size() const {
     } else if(nodeImpl->val->IsObject()) {
         return nodeImpl->val->MemberCount();
     } else if(nodeImpl->val->IsArray()) {
-        nodeImpl->val->Size();
+        return nodeImpl->val->Size();
     }
     return 0u;
 }

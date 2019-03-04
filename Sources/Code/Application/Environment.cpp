@@ -1,4 +1,5 @@
 #include "Environment.hpp"
+#include "Application.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -6,7 +7,7 @@
 Environment* Environment::ENV = nullptr;
 
 Environment::Environment(Application& application) :
-    app(application) {
+    app(&application) {
 }
 
 Environment::~Environment() {
@@ -31,30 +32,18 @@ Environment* GetEnv() {
     return Environment::ENV;
 }
 
-Application& Environment::getApp() {
-    return app;
+ETSystem* Environment::getETSystem() {
+    if(app) {
+        return app->etSystem.get();
+    } else {
+        return nullptr;
+    }
 }
 
-Platform& Environment::getPlatform() {
-    return *app.platform;
-}
-
-Logger* Environment::getLogger() {
-    return app.logger.get();
-}
-
-Assets* Environment::getAssets() {
-    return app.assets.get();
-}
-
-Surface* Environment::getSurface() {
-    return app.surface.get();
-}
-
-Render* Environment::getRender() {
-    return app.render.get();
-}
-
-Game* Environment::getGame() {
-    return app.game.get();
+Platform* Environment::getPlatform() {
+    if(app) {
+        return app->platform.get();
+    } else {
+        return nullptr;
+    }
 }

@@ -1,7 +1,7 @@
 #ifndef __RENDER_GEOMETRY_HPP_
 #define __RENDER_GEOMETRY_HPP_
 
-#include "Platforms/OpenGL.hpp"
+#include "Math/AABB.hpp"
 
 class RenderGeometry {
 public:
@@ -13,9 +13,10 @@ public:
 
 public:
 
-    GLuint vaoId;
-    GLuint vboId;
-    size_t vertCount;
+    AABB aabb;
+    unsigned int vaoId;
+    unsigned int vboId;
+    unsigned int vertCount;
 };
 
 #endif /* __RENDER_GEOMETRY_HPP_ */

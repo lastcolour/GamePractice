@@ -23,6 +23,11 @@ protected:
 
     void SetUp() override;
     void TearDown() override;
+
+protected:
+
+    void checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t yEnd);
+    void dumpFramebuffer();
 };
 
 #endif /* __RENDER_TESTS_HPP__ */

@@ -1,6 +1,6 @@
 #include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "Platforms/Desktop/GLFWSurface.hpp"
-#include "Platforms/Desktop/DesktopLogStream.hpp"
+#include "Platforms/Desktop/DesktopLogger.hpp"
 #include "Platforms/Desktop/DesktopAssets.hpp"
 #include "Environment.hpp"
 
@@ -18,8 +18,8 @@ std::unique_ptr<Surface> DesktopPlatform::createSurface() {
     return std::unique_ptr<Surface>(new GLFWSurface);
 }
 
-std::unique_ptr<LogStream> DesktopPlatform::createLogStream() {
-    return std::unique_ptr<LogStream>(new DesktopLogStream);
+std::unique_ptr<Logger> DesktopPlatform::createLogger() {
+    return std::unique_ptr<Logger>(new DesktopLogger);
 }
 
 std::unique_ptr<Assets> DesktopPlatform::createAssets() {

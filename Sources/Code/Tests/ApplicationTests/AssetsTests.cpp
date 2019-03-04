@@ -1,29 +1,12 @@
 #include "AssetsTests.hpp"
-#include "Environment.hpp"
-#include "TestUtils/VoidTestApplication.hpp"
-#include "Platforms/Desktop/DesktopPlatform.hpp"
-#include "Assets.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 namespace {
     const char* TEST_FILE_PATH = "Render/Materials.json";
 }
 
-std::unique_ptr<Application> AssetsTests::APP;
-
-void AssetsTests::SetUpTestCase() {
-    VoidTestApplication* testApp = new VoidTestApplication(new DesktopPlatform(0, nullptr));
-    testApp->retRes_createModuleFactory.reset(new ConsoleAppModuleFactory);
-    ASSERT_TRUE(testApp->init());
-    ASSERT_TRUE(GetEnv()->getAssets());
-    APP.reset(testApp);
-}
-
-void AssetsTests::TearDownTestCase() {
-    APP.reset();
-}
-
 TEST_F(AssetsTests, CheckLoadEmptyPath) {
-    Buffer buff = GetEnv()->getAssets()->loadAsset("");
+    Buffer buff = ET_SendEventReturn(&ETAsset::ET_loadAsset, "");
 
     ASSERT_FALSE(buff);
     ASSERT_EQ(buff.getSize(), 0u);
@@ -32,7 +15,7 @@ TEST_F(AssetsTests, CheckLoadEmptyPath) {
 }
 
 TEST_F(AssetsTests, CheckLoadValidAsset) {
-    Buffer buff = GetEnv()->getAssets()->loadAsset(TEST_FILE_PATH);
+    Buffer buff = ET_SendEventReturn(&ETAsset::ET_loadAsset, TEST_FILE_PATH);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -40,11 +23,16 @@ TEST_F(AssetsTests, CheckLoadValidAsset) {
     ASSERT_NE(buff.getString(), "");
 }
 
+TEST_F(AssetsTests, CheckLoadValidJSONAsset) {
+    JSONNode node = ET_SendEventReturn(&ETAsset::ET_loadJSONAsset, TEST_FILE_PATH);
+    ASSERT_TRUE(node);
+}
+
 TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     std::string assetNameWithSlash = "\\";
     assetNameWithSlash += TEST_FILE_PATH;
 
-    Buffer buff = GetEnv()->getAssets()->loadAsset(assetNameWithSlash);
+    Buffer buff = ET_SendEventReturn(&ETAsset::ET_loadAsset, assetNameWithSlash);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -54,7 +42,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     assetNameWithSlash = "/";
     assetNameWithSlash += TEST_FILE_PATH;
 
-    buff = GetEnv()->getAssets()->loadAsset(assetNameWithSlash);
+    buff = ET_SendEventReturn(&ETAsset::ET_loadAsset, assetNameWithSlash);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -66,7 +54,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithInvalidSlashes) {
     std::string path = TEST_FILE_PATH;
     std::replace(path.begin(), path.end(), '/', '\\');
 
-    Buffer buff = GetEnv()->getAssets()->loadAsset(path);
+    Buffer buff = ET_SendEventReturn(&ETAsset::ET_loadAsset, path);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);

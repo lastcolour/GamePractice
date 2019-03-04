@@ -11,7 +11,10 @@ public:
     VoidTestGame() = default;
     virtual ~VoidTestGame() = default;
 
-    bool init() {
+protected:
+
+    // SystemLogic
+    bool onInit() override {
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -19,7 +22,7 @@ public:
         }
         return res;
     }
-    bool shouldRun() { 
+    bool onShouldRun() override { 
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -27,7 +30,7 @@ public:
         }
         return res;
     }
-    void update() {
+    void onUpdate() override {
         std::lock_guard<std::mutex> lock(mutex);
         ++callCount_update;
     }

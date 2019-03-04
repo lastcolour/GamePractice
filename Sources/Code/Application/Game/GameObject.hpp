@@ -1,32 +1,45 @@
 #ifndef __GAME_OBJECT_HPP__
 #define __GAME_OBJECT_HPP__
 
-#include "Math/Transform.hpp"
+#include "Game/GameETInterfaces.hpp"
 
 #include <string>
 #include <memory>
 #include <vector>
 
-class RenderLogic;
+class BaseGameLogic;
 
-class GameObject {
+class GameObject :
+    public ETNode<ETGameObject> {
+
+    typedef std::unique_ptr<BaseGameLogic> GameLogicPtr;
+
 public:
 
-    GameObject(const std::string& objectName);
+    GameObject(const std::string& objectName, int entId);
     ~GameObject();
 
     void update();
 
-    void addRender(std::unique_ptr<RenderLogic>&& renderLogic);
+    void addLogic(GameLogicPtr&& logic);
+    template<typename T>
+    T* getLogic() {
+        for(auto& logic : logics) {
+            if(logic->getTypeId() == GetTypeId<T>()) {
+                return reinterpret_cast<T*>(logic.get());
+            }
+        }
+        return nullptr;
+    }
 
-    RenderLogic* getRender();
-    const std::string& getName() const;
+    const std::string& ET_getName() const override { return name; }
+    EntityId getEntityId() const { return entityId; }
 
 private:
 
     std::string name;
-    Math::Transform tm;
-    std::unique_ptr<RenderLogic> render;
+    std::vector<GameLogicPtr> logics;
+    EntityId entityId;
 };
 
 #endif /* __GAME_OBJECT_HPP__ */

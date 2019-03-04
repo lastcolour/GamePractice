@@ -2,12 +2,28 @@
     "GameObjects":[
         {
             "name":"Simple",
-            "logics": [
+            "logics":[
                 {
                     "type":"RenderLogic",
                     "data":{
-                        "mat":"solic_color",
-                        "geom":"cube"
+                        "mat":"solid_color",
+                        "geom":"square"
+                    }
+                }
+            ]
+        },
+        {
+            "name":"GameRootObject",
+            "logics":[
+                {
+                    "type":"GameBoardLogic",
+                    "data":{
+                        "size":{"w":10, "h":10},
+                        "space":0.8,
+                        "cell":{
+                            "object":"Simple",
+                            "scale":0.9
+                        }
                     }
                 }
             ]

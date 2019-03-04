@@ -1,25 +1,18 @@
 #ifndef __VOID_TEST_SURFACE_HPP__
 #define __VOID_TEST_SURFACE_HPP__
 
-#include "Surface.hpp"
+#include "Platform.hpp"
 
 #include <mutex>
 
 class VoidTestSurface : public Surface {
 public:
 
-    VoidTestSurface() = default;
+    VoidTestSurface() : retRes_size(640, 480) {}
     virtual ~VoidTestSurface() = default;
 
-    bool init() override { 
-        bool res = false;
-        {
-            std::lock_guard<std::mutex> lock(mutex);
-            res = retRes_init;
-        }
-        return res;
-    }
-    bool show() override {
+    // ETSurface
+    bool ET_show() override {
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -27,7 +20,7 @@ public:
         }
         return res;
     }
-    bool hide() override {
+    bool ET_hide() override {
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -35,7 +28,30 @@ public:
         }
         return res;
     }
-    bool shouldRun() override {
+    Vec2i ET_getSize() const override {
+        Vec2i res(0);
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            res = retRes_size;
+        }
+        return res;
+    }
+    void ET_terminate() override { }
+    void ET_swapBuffers() override { }
+    bool ET_canRender() const override { return false; }
+
+protected:
+
+    // SystemLogic
+    bool onInit() override { 
+        bool res = false;
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            res = retRes_init;
+        }
+        return res;
+    }
+    bool onShouldRun() override {
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -43,28 +59,10 @@ public:
         }
         return res;
     }
-    int getWidth() const override {
-        int res = 0;
-        {
-            std::lock_guard<std::mutex> lock(mutex);
-            res = retRes_getWidth;
-        }
-        return res;
-    }
-    int getHeight() const {
-        int res = 0;
-        {
-            std::lock_guard<std::mutex> lock(mutex);
-            res = retRes_getWidth;
-        }
-        return res;
-    }
-    void update() override {
+    void onUpdate() override {
         std::lock_guard<std::mutex> lock(mutex);
         ++callCount_update;
     }
-    void terminate() override { }
-    void swapBuffers() override { }
 
 public:
 
@@ -73,8 +71,7 @@ public:
     bool retRes_show { true };
     bool retRes_hide { true };
     bool retRes_shouldRun { true };
-    int retRes_getWidth { 600 };
-    int retRes_getHeight { 480 };
+    Vec2i retRes_size;
     size_t callCount_update { 0 };
 };
 

@@ -1,6 +1,6 @@
 #include "JSONNodeTests.hpp"
-#include "JSONNode.hpp"
-#include "Buffer.hpp"
+#include "Core/JSONNode.hpp"
+#include "Core/Buffer.hpp"
 
 #include <map>
 #include <vector>
@@ -19,6 +19,12 @@ TEST_F(JSONNodeTests, ParseEmptyString) {
 TEST_F(JSONNodeTests, ParseStringWithEmptyObject) {
     auto node = JSONNode::ParseString("{}");
     ASSERT_TRUE(node);
+}
+
+TEST_F(JSONNodeTests, CheckObjectSize) {
+    auto node = JSONNode::ParseString("{\"obj\":{}}");
+    ASSERT_TRUE(node);
+    ASSERT_EQ(node.size(), 1);
 }
 
 TEST_F(JSONNodeTests, CheckSimpleObject) {

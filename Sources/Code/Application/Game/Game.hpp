@@ -1,12 +1,15 @@
 #ifndef __GAME_HPP__
 #define __GAME_HPP__
 
+#include "Core/SystemLogic.hpp"
+#include "Game/GameObjectCreator.hpp"
+#include "Game/GameETInterfaces.hpp"
+
 #include <vector>
 #include <memory>
 
-#include "Game/GameObject.hpp"
-
-class Game {
+class Game : public SystemLogic,
+    public ETNode<ETGame> {
 
     typedef std::unique_ptr<GameObject> GameObjectPtrT;
 
@@ -15,19 +18,19 @@ public:
     Game();
     virtual ~Game();
 
-    virtual bool init();
-    virtual bool shouldRun();
-    virtual void update();
+    // ETGame
+    EntityId ET_createGameObject(const std::string& objectName) override;
 
-    std::unique_ptr<GameObject> createObject(const std::string& objectName);
+protected:
+
+    // SystemLogic
+    bool onInit() override;
+    bool onShouldRun() override;
+    void onUpdate() override;
 
 private:
 
-    std::string createNewNameForObject(const std::string& baseName);
-
-private:
-
-    size_t objCount;
+    GameObjectCreator gameObjCreator;
     std::vector<GameObjectPtrT> gameObjects;
 };
 

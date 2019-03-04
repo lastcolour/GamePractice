@@ -2,8 +2,10 @@
 
 precision mediump float;
 
+uniform mat4 MVP;
+
 layout(location = 0) in vec3 pos;
 
 void main() {
-    gl_Position = vec4(pos, 1.f);
+    gl_Position = MVP * vec4(pos, 1.f);
 }

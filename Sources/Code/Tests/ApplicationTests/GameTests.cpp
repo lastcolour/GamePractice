@@ -1,52 +1,34 @@
 #include "GameTests.hpp"
 #include "Game/Game.hpp"
-#include "Platforms/Desktop/DesktopPlatform.hpp"
-#include "TestUtils/VoidTestApplication.hpp"
-#include "ModuleFactory.hpp"
+#include "Game/GameObject.hpp"
+#include "Environment.hpp"
 
 namespace {
     const char* TEST_OBJECT_NAME = "Simple";
 }
 
-std::unique_ptr<VoidTestApplication> GameTests::app;
-
-void GameTests::SetUp() {
-}
-
-void GameTests::TearDown() {
-}
-
-void GameTests::SetUpTestCase() {
-    app.reset(new VoidTestApplication(new DesktopPlatform(0, nullptr)));
-    app->retRes_createModuleFactory.reset(new ModuleFactory);
-    ASSERT_TRUE(app->init());
-
-    ASSERT_TRUE(GetEnv()->getGame());
-}
-
-void GameTests::TearDownTestCase() {
-    app.reset();
-}
-
 TEST_F(GameTests, CreateSimpleGameObject) {
-    auto game = GetEnv()->getGame();
-    auto obj = game->createObject(TEST_OBJECT_NAME);
-    ASSERT_TRUE(obj);
-    ASSERT_FALSE(obj->getName().empty());
+    auto objId = ET_SendEventReturn(&ETGame::ET_createGameObject, TEST_OBJECT_NAME);
+    ASSERT_NE(objId, InvalidEntityId);
+    auto& name = ET_SendEventReturn(objId, &ETGameObject::ET_getName);
+    ASSERT_FALSE(name.empty());
 }
 
 TEST_F(GameTests, CreateTwoSimpleObjects) {
-    auto game = GetEnv()->getGame();
-    auto obj1 = game->createObject(TEST_OBJECT_NAME);
-    auto obj2 = game->createObject(TEST_OBJECT_NAME);
+    auto objId1 = ET_SendEventReturn(&ETGame::ET_createGameObject, TEST_OBJECT_NAME);
+    auto objId2 = ET_SendEventReturn(&ETGame::ET_createGameObject, TEST_OBJECT_NAME);
 
-    ASSERT_TRUE(obj1);
-    ASSERT_TRUE(obj2);
-    ASSERT_NE(obj1->getName(), obj2->getName());
+    ASSERT_NE(objId1, InvalidEntityId);
+    ASSERT_NE(objId2, InvalidEntityId);
+    ASSERT_NE(objId1, objId2);
+
+    auto& name1 = ET_SendEventReturn(objId1, &ETGameObject::ET_getName);
+    auto& name2 = ET_SendEventReturn(objId2, &ETGameObject::ET_getName);
+
+    ASSERT_NE(name1, name1);
 }
 
 TEST_F(GameTests, CreateInvalidGameObject) {
-    auto game = GetEnv()->getGame();
-    auto obj = game->createObject("");
-    ASSERT_FALSE(obj);
+    auto objId = ET_SendEventReturn(&ETGame::ET_createGameObject, "");
+    ASSERT_EQ(objId, InvalidEntityId);
 }

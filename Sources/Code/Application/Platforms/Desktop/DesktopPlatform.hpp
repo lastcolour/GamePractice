@@ -12,7 +12,7 @@ public:
     bool init() override;
 
     std::unique_ptr<Surface> createSurface() override;
-    std::unique_ptr<LogStream> createLogStream() override;
+    std::unique_ptr<Logger> createLogger() override;
     std::unique_ptr<Assets> createAssets() override;
 };
 

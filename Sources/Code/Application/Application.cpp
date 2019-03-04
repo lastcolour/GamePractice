@@ -2,13 +2,12 @@
 #include "Platform.hpp"
 #include "Environment.hpp"
 #include "ModuleFactory.hpp"
-#include "Logger.hpp"
-#include "Assets.hpp"
-#include "Surface.hpp"
+#include "Core/ETSystem.hpp"
 #include "Render/Render.hpp"
 #include "Game/Game.hpp"
 
 Application::Application(Platform* pltfrm) :
+    etSystem(new ETSystem),
     platform(pltfrm),
     logger(),
     assets(),
@@ -16,14 +15,17 @@ Application::Application(Platform* pltfrm) :
     render(),
     game() {
 
-    if(platform && platform->init()) {
-        Environment::InitEnv(*this);
-    } else {
-        platform.reset();
-    }
+    Environment::InitEnv(*this);
 }
 
 Application::~Application() {
+    game.reset();
+    render.reset();
+    surface.reset();
+    assets.reset();
+    logger.reset();
+    platform.reset();
+    etSystem.reset();
     Environment::DeinitEnv();
 }
 
@@ -32,7 +34,7 @@ std::unique_ptr<ModuleFactory> Application::createModuleFactory() {
 }
 
 bool Application::initLogger(Logger& logger) {
-    logger.setLogLevel(LogLevel::Debug);
+    logger.ET_setLogLevel(LogLevel::Debug);
     return true;
 }
 
@@ -44,7 +46,7 @@ bool Application::initSurface(Surface& surface) {
     if(!surface.init()) {
         return false;
     }
-    if(!surface.show()) {
+    if(!surface.ET_show()) {
         return false;
     }
     return true;
@@ -59,7 +61,7 @@ bool Application::initGame(Game& game) {
 }
 
 bool Application::init() {
-    if(!platform) {
+    if(!platform || !platform->init()) {
         return false;
     }
     auto moduleFactory = createModuleFactory();

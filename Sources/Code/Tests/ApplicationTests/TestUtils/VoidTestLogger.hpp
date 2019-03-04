@@ -1,19 +1,28 @@
 #ifndef __VOID_TEST_LOGGER_HPP__
 #define __VOID_TEST_LOGGER_HPP__
 
-#include "Logger.hpp"
-
-#include "TestUtils/VoidTestLogStream.hpp"
+#include "Platform.hpp"
 
 class VoidTestLogger : public Logger {
 public:
 
-    VoidTestLogger(std::unique_ptr<LogStream>&& logStream) : Logger(std::move(logStream)) {}
+    VoidTestLogger() = default;
     virtual ~VoidTestLogger() = default;
 
-    void message(LogLevel logLevel, const std::string& msg) override {}
-    void setLogLevel(LogLevel logLvl) override {}
-    void addStream(std::unique_ptr<LogStream>&& stream) override {}
+    // ETLogger
+    void ET_logMessage(LogLevel lvl, const std::string& msg) override {}
+    void ET_setLogLevel(LogLevel lvl) override {}
+
+protected:
+
+    // SystemLogic
+    bool onInit() override { return true; }
+
+protected:
+
+    // Logger
+    virtual void printMessasge(LogLevel logLevel, const std::string& msg) override {}
+    virtual std::string formatMessage(LogLevel logLevel, const std::string& msg) override { return ""; }
 };
 
 #endif /* __VOID_TEST_LOGGER_HPP__ */

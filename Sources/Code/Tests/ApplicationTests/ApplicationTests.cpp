@@ -58,7 +58,6 @@ TEST_F(ApplicationTests, CheckEnvironmet) {
     std::unique_ptr<VoidTestApplication> app(new VoidTestApplication(new VoidTestPlatform));
 
     ASSERT_TRUE(GetEnv());
-    ASSERT_EQ(&(GetEnv()->getApp()), &(*app));
 
     app.reset();
 

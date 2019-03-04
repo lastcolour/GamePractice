@@ -44,17 +44,12 @@ public:
 class VoidTestModuleFactory : public ModuleFactory {
 public:
 
-    VoidTestModuleFactory() {
-        if(GetEnv()) {
-            auto logStream = GetEnv()->getPlatform().createLogStream();
-            retRes_createLogger.reset(new VoidTestLogger(std::move(logStream)));
-        }
-    }
+    VoidTestModuleFactory() = default;
     virtual ~VoidTestModuleFactory() = default;
 
 public:
 
-    std::unique_ptr<VoidTestLogger> retRes_createLogger;
+    std::unique_ptr<VoidTestLogger> retRes_createLogger { new VoidTestLogger };
     std::unique_ptr<VoidTestAssets> retRes_createAssets { new VoidTestAssets };
     std::unique_ptr<VoidTestSurface> retRes_createSurface { new VoidTestSurface };
     std::unique_ptr<VoidTestRender> retRes_createRender { new VoidTestRender };

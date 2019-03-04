@@ -1,16 +1,8 @@
 #ifndef __ENVIRONMENT_HPP__
 #define __ENVIRONMENT_HPP__
 
-#include "Application.hpp"
-
-class Environment;
 class Platform;
-class Logger;
-class Surface;
-class Render;
-class Game;
-
-Environment* GetEnv();
+class ETSystem;
 
 class Environment {
 private:
@@ -34,17 +26,14 @@ private:
 
 public:
 
-    Application& getApp();
-    Platform& getPlatform();
-    Logger* getLogger();
-    Assets* getAssets();
-    Surface* getSurface();
-    Render* getRender();
-    Game* getGame();
+    ETSystem* getETSystem();
+    Platform* getPlatform();
 
 private:
 
-    Application& app;
+    Application* app;
 };
+
+Environment* GetEnv();
 
 #endif /* __ENVIRONMENT_HPP__ */

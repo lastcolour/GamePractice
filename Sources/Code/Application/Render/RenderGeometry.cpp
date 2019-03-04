@@ -1,6 +1,11 @@
 #include "Render/RenderGeometry.hpp"
+#include "Platforms/OpenGL.hpp"
 
-RenderGeometry::RenderGeometry() {
+RenderGeometry::RenderGeometry() :
+    aabb(Vec3(0.f), Vec3(0.f)),
+    vaoId(0),
+    vboId(0),
+    vertCount(0) {
 }
 
 RenderGeometry::~RenderGeometry() {
