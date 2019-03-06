@@ -18,34 +18,34 @@ GameBoardLogic::~GameBoardLogic() {
 bool GameBoardLogic::serialize(const JSONNode& node) {
     node.value("space", space);
     if(space <= 0.f || space > 1.f) {
-        LogWarning("[GameBoard::init] Invalid space: %f", space);
+        LogWarning("[GameBoard::serialize] Invalid space: %f", space);
         return false;
     }
     if(auto sizeNode = node.object("size")) {
         sizeNode.value("w", width);
         if(width <= 0) {
-            LogWarning("[GameBoard::init] Invalid width: %d", width);
+            LogWarning("[GameBoard::serialize] Invalid width: %d", width);
             return false;
         }
         sizeNode.value("h", height);
         if(height <= 0) {
-            LogWarning("[GameBoard::init] Invalid width: %d", height);
+            LogWarning("[GameBoard::serialize] Invalid width: %d", height);
             return false;
         }
     }
     if(auto cellNode = node.object("cell")) {
         cellNode.value("scale", cellScale);
         if(cellScale <= 0.f || cellScale > 1.f) {
-            LogWarning("[GameBoard::init] Invalid cell scale: %f", cellScale);
+            LogWarning("[GameBoard::serialize] Invalid cell scale: %f", cellScale);
             return false;
         }
         cellNode.value("object", cellObject);
         if(cellObject.empty()) {
-            LogWarning("[GameBoard::init] Empty cell object name");
+            LogWarning("[GameBoard::serialize] Empty cell object name");
             return false;
         }
     } else {
-        LogWarning("[GameBoard::init] Can't find required child node: %f", "cell");
+        LogWarning("[GameBoard::serialize] Can't find required child node: %f", "cell");
         return false;
     }
     return true;
@@ -74,22 +74,35 @@ bool GameBoardLogic::init(const JSONNode& node) {
                 Vec2 pt = aabb.bot;
                 pt.x += cellSize * (i + 0.5f);
                 pt.y += cellSize * (j + 0.5f);
-    
                 params.pt = pt;
                 params.col = ColorF(1.f, 1.f, 0.f);
                 params.size = Vec2(objSize);
                 ET_SendEvent(cellObjId, &ETRenderLogic::ET_setRenderParams, params);
+
+                TouchAaabb touchBox;
+                touchBox.entId = cellObjId;
+                touchBox.box.bot = Vec2i(aabb.bot.x + cellSize * i, aabb.bot.y + cellSize * j);
+                touchBox.box.top = touchBox.box.bot + Vec2i(cellSize);
+                touchMap.push_back(touchBox);
             } else {
                 LogWarning("[GameBoard::init] Can't create cell object: %s", cellObject);
                 return false;
             }
         }
     }
+
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
     return true;
 }
 
-void GameBoardLogic::update() {
-    for(auto& obj : boardObjects) {
-        obj->update();
+void GameBoardLogic::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
+    for(const auto& item : touchMap) {
+        const auto& box = item.box;
+        if(pt > box.bot && pt < box.top) {
+            RenderLogicParams params;
+            ET_SendEvent(item.entId, &ETRenderLogic::ET_getRenderParams, params);
+            params.col = ColorF(1.f, 0.f, 0.f);
+            ET_SendEvent(item.entId, &ETRenderLogic::ET_setRenderParams, params);
+        }
     }
 }

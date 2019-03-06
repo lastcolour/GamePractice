@@ -8,7 +8,6 @@ class Assets;
 class Surface;
 class Render;
 class Game;
-class ETSystem;
 
 class ModuleFactory {
 public:

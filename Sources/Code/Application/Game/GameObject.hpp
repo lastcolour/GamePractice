@@ -7,33 +7,24 @@
 #include <memory>
 #include <vector>
 
-class BaseGameLogic;
+class GameLogic;
 
 class GameObject :
     public ETNode<ETGameObject> {
 
-    typedef std::unique_ptr<BaseGameLogic> GameLogicPtr;
+    typedef std::unique_ptr<GameLogic> GameLogicPtr;
 
 public:
 
     GameObject(const std::string& objectName, int entId);
     ~GameObject();
 
-    void update();
-
     void addLogic(GameLogicPtr&& logic);
-    template<typename T>
-    T* getLogic() {
-        for(auto& logic : logics) {
-            if(logic->getTypeId() == GetTypeId<T>()) {
-                return reinterpret_cast<T*>(logic.get());
-            }
-        }
-        return nullptr;
-    }
 
-    const std::string& ET_getName() const override { return name; }
     EntityId getEntityId() const { return entityId; }
+
+    // ETGameObject
+    const std::string& ET_getName() const override { return name; }
 
 private:
 

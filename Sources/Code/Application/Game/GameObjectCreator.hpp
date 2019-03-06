@@ -6,11 +6,11 @@
 #include <unordered_map>
 
 class GameObject;
-class BaseGameLogic;
+class GameLogic;
 
 class GameObjectCreator {
 
-    typedef std::unique_ptr<BaseGameLogic>(*LogicCreateFunc)();
+    typedef std::unique_ptr<GameLogic>(*LogicCreateFunc)();
 
 public:
 
@@ -24,13 +24,13 @@ private:
     template<typename T>
     void registerLogic(const std::string& logicName) {
         auto createFunc = [](){
-            return std::unique_ptr<BaseGameLogic>(new T);
+            return std::unique_ptr<GameLogic>(new T);
         };
         registerCreateLogic(logicName, createFunc);
     }
 
     void registerCreateLogic(const std::string& logicName, LogicCreateFunc createFunc);
-    std::unique_ptr<BaseGameLogic> createLogic(const std::string& logicName);
+    std::unique_ptr<GameLogic> createLogic(const std::string& logicName);
 
 private:
 

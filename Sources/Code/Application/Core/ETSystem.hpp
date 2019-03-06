@@ -66,19 +66,6 @@ public:
     // ==--------------- Const ETs ---------------==
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
-    void sendEventToAll(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        for(auto& currConn : it->second) {
-            auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-            (obj->*func)(std::forward<ParamType>(params)...);
-        }
-    }
-
-    template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
@@ -119,7 +106,6 @@ public:
         for(auto& currConn : it->second) {
             auto obj = static_cast<ETNode<ETType>*>(currConn.node);
             (obj->*func)(std::forward<ParamType>(params)...);
-            break;
         }
     }
 
@@ -138,19 +124,6 @@ public:
     }
 
     // ==--------------- Regular ETs ---------------==
-
-    template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
-    void sendEventToAll(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        for(auto& currConn : it->second) {
-            auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-            (obj->*func)(std::forward<ParamType>(params)...);
-        }
-    }
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
@@ -193,7 +166,6 @@ public:
         for(auto& currConn : it->second) {
             auto obj = static_cast<ETNode<ETType>*>(currConn.node);
             (obj->*func)(std::forward<ParamType>(params)...);
-            break;
         }
     }
 
@@ -209,17 +181,6 @@ public:
             return (obj->*func)(std::forward<ParamType>(params)...);
         }
         return RetType{};
-    }
-
-    template<typename ETType>
-    ETType* getFirstET() {
-        auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return nullptr;
-        }
-        const auto& currNode = it->second.front();
-        return static_cast<ETNode<ETType>*>(currNode.node);
     }
 
 private:

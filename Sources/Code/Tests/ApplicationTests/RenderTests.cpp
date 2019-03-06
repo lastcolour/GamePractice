@@ -22,20 +22,17 @@ namespace {
     const char* TEST_GEOM_1 = "square";
     const char* TEST_GEOM_2 = "Square";
 
+    const char* SIMPLE_OBJECT = "Simple";
     const float SCALE_FACTOR = 0.8f;
 
     const ColorF DRAW_COLOR(0.f, 1.f, 0.f);
     const ColorF CLEAR_COLOR(0.f, 0.f, 0.f);
 }
 
-std::unique_ptr<VoidTestApplication> RenderTests::app;
 std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;
 
 void RenderTests::SetUpTestCase() {
-    app.reset(new VoidTestApplication(new DesktopPlatform(0, nullptr)));
-    app->retRes_createModuleFactory.reset(new OnlyVoidGameModuleFactory);
-    ASSERT_TRUE(app->init());
-    ASSERT_TRUE(GetEnv()->getETSystem()->getFirstET<ETRender>());
+    ConsoleAppTests::SetUpTestCase();
 
     textureFramebuffer.reset(new RenderTextureFramebuffer(RENDER_WIDTH, RENDER_HEIGHT));
     ASSERT_TRUE(textureFramebuffer->init());
@@ -44,7 +41,7 @@ void RenderTests::SetUpTestCase() {
 
 void RenderTests::TearDownTestCase() {
     textureFramebuffer.reset();
-    app.reset();
+    ConsoleAppTests::TearDownTestCase();
 }
 
 void RenderTests::SetUp() {
@@ -256,13 +253,9 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     dumpFramebuffer();
 }
 
-TEST_F(RenderTests, CheckRenderOfRenderLogic) {
-    std::string renderLogicData = StringFormat("{\"mat\":\"%s\", \"geom\":\"%s\"}", TEST_MATERIAL_1, TEST_GEOM_1);
-    auto nodeData = JSONNode::ParseString(renderLogicData);
-
-    ASSERT_TRUE(nodeData);
-    RenderLogic logic;
-    ASSERT_TRUE(logic.init(nodeData));
+TEST_F(RenderTests, CheckRenderOfSimpleObject) {
+    auto objId = ET_SendEventReturn(&ETGame::ET_createGameObject, SIMPLE_OBJECT);
+    ASSERT_NE(objId, InvalidEntityId);
 
     auto size = textureFramebuffer->getSize();
     const Vec2 center(size.x * 0.5f, size.y * 0.5f);
@@ -271,7 +264,8 @@ TEST_F(RenderTests, CheckRenderOfRenderLogic) {
     params.pt = center;
     params.size = Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR);
     params.col = DRAW_COLOR;
-    logic.ET_setRenderParams(params);
+    params.rot = 0.f;
+    ET_SendEvent(objId, &ETRenderLogic::ET_setRenderParams, params);
 
     ET_SendEvent(&ETRender::ET_drawFrame);
 
@@ -282,14 +276,24 @@ TEST_F(RenderTests, CheckRenderOfRenderLogic) {
 
     checkSquare(xStart, xEnd, yStart, yEnd);
     dumpFramebuffer();
+
+    ET_SendEvent(&ETGame::ET_destroyObject, objId);
 }
 
 TEST_F(RenderTests, CheckGameRenderAfterInit) {
     Game game;
     ASSERT_TRUE(game.init());
 
+    const Vec2i fbSize = textureFramebuffer->getSize();
+    Vec2i touchPt = fbSize * 0.5f;
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, touchPt);
+
     ET_SendEvent(&ETRender::ET_drawFrame);
 
     ASSERT_TRUE(textureFramebuffer->read());
     dumpFramebuffer();
+}
+
+TEST_F(RenderTests, CheckDontRenderWithoutFrambebufferOrSurface) {
+    ASSERT_FALSE(true);
 }

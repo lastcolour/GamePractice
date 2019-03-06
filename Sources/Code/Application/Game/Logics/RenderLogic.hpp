@@ -10,7 +10,7 @@
 class RenderMaterial;
 class RenderGeometry;
 
-class RenderLogic : public GameLogic<RenderLogic>,
+class RenderLogic : public GameLogic,
     public ETNode<ETRenderEvents>,
     public ETNode<ETRenderLogic> {
 public:
@@ -19,15 +19,16 @@ public:
     virtual ~RenderLogic();
 
     bool init(const JSONNode& node) override;
-    void update() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;
 
     // ETRenderLogic
     void ET_setRenderParams(const RenderLogicParams& params) override;
+    void ET_getRenderParams(RenderLogicParams& params) override;
 
-    RenderMaterial& getMaterial();
+private:
+
     Mat4 getModelMat() const;
 
 private:

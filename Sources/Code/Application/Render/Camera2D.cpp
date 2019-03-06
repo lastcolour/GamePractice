@@ -8,19 +8,19 @@ namespace {
 
 Camera2D::Camera2D() :
     projection(1.f),
-    viewport(0.f, 0.f) {
+    viewport(0, 0) {
 }
 
 Camera2D::~Camera2D() {
 }
 
 void Camera2D::setViewport(int w, int h) {
-    viewport = Vec2(static_cast<float>(w), static_cast<float>(h));
-    Math::ProjectOrtho(projection, 0.f, viewport.x,
-        0.f, viewport.y, DEF_Z_NEAR, DEF_Z_FAR);
+    viewport = Vec2i(w, h);
+    Math::ProjectOrtho(projection, 0.f, static_cast<float>(viewport.x),
+        0.f, static_cast<float>(viewport.y), DEF_Z_NEAR, DEF_Z_FAR);
 }
 
-const Vec2& Camera2D::getViewport() const {
+const Vec2i& Camera2D::getViewport() const {
     return viewport;
 }
 

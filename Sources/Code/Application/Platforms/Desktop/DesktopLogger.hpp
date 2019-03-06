@@ -16,7 +16,7 @@ public:
 protected:
 
     // SystemLogic
-    bool onInit() override { return true; }
+    bool onInit() override;
 
 protected:
 

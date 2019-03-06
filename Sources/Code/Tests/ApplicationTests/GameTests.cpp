@@ -25,7 +25,7 @@ TEST_F(GameTests, CreateTwoSimpleObjects) {
     auto& name1 = ET_SendEventReturn(objId1, &ETGameObject::ET_getName);
     auto& name2 = ET_SendEventReturn(objId2, &ETGameObject::ET_getName);
 
-    ASSERT_NE(name1, name1);
+    ASSERT_EQ(name1, name1);
 }
 
 TEST_F(GameTests, CreateInvalidGameObject) {

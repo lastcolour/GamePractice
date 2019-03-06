@@ -10,7 +10,7 @@ public:
     ~Camera2D();
 
     void setViewport(int w, int h);
-    const Vec2& getViewport() const;
+    const Vec2i& getViewport() const;
     const Mat4& getProjMat4() const;
 
 private:
@@ -21,7 +21,7 @@ private:
 private:
 
     Mat4 projection;
-    Vec2 viewport;
+    Vec2i viewport;
 };
 
 #endif /* __CAMERA_2D_HPP__ */

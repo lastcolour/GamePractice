@@ -107,6 +107,7 @@ bool GLFWSurface::onInit() {
 
     glfwSetFramebufferSizeCallback(window, SetFramebufferSizeCallback);
     glfwSetMouseButtonCallback(window, SetMouseButtonCallback);
+    glfwSetCursorPosCallback(window, SetCursorePosCallback);
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -122,6 +123,13 @@ void GLFWSurface::onUpdate() {
 
 bool GLFWSurface::onShouldRun() {
     return window != nullptr && !glfwWindowShouldClose(window);
+}
+
+bool GLFWSurface::ET_isVisible() const {
+    if(window) {
+        return glfwGetWindowAttrib(window, GLFW_VISIBLE);
+    }
+    return false;
 }
 
 bool GLFWSurface::ET_show() {
@@ -156,17 +164,53 @@ Vec2i GLFWSurface::ET_getSize() const {
     return size;
 }
 
-bool GLFWSurface::ET_canRender() const {
-    return window != nullptr;
+GLContextType GLFWSurface::ET_getGLContextType() const {
+    if(window) {
+        return GLContextType::ES30;
+    }
+    return GLContextType::None;
+}
+
+void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) {
+    auto surface = GLFW->getActiveSurface();
+    if(!surface) {
+        LogError("[GLFWSurface::SetCursorePosCallbac] No active surface");
+        return;
+    }
+    auto& activeGesture = surface->activeGesture;
+    if(activeGesture.empty()) {
+        return;
+    }
+    Vec2i pt(static_cast<int>(x), static_cast<int>(y));
+    pt.y = surface->size.y - pt.y;
+    activeGesture.push_back(pt);
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Move, pt);
 }
 
 void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    auto surface = GLFW->getActiveSurface();
+    if(!surface) {
+        LogError("[GLFWSurface::SetMouseButtonCallback] No active surface");
+        return;
+    }
+    if(button != GLFW_MOUSE_BUTTON_LEFT) {
+        return;
+    }
     double x = 0;
     double y = 0;
     glfwGetCursorPos(window, &x, &y);
+    auto& activeGesture = surface->activeGesture;
 
-    ET_SendEventToAll(&ETSurfaceEvents::ET_onSurfaceTouch,
-        Vec2i(static_cast<int>(x), static_cast<int>(y)));
+    Vec2i pt(static_cast<int>(x), static_cast<int>(y));
+    pt.y = surface->size.y - pt.y;
+
+    if(action == GLFW_PRESS) {
+        activeGesture.push_back(pt);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);
+    } else if (action == GLFW_RELEASE) {
+        activeGesture.clear();
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Release, pt);
+    }
 }
 
 void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* windwos, int w, int h) {
@@ -176,5 +220,5 @@ void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* windwos, int w, int h) 
         return;
     }
     surface->size = Vec2i(w, h);
-    ET_SendEventToAll(&ETSurfaceEvents::ET_onSurfaceResize, surface->size);
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResize, surface->size);
 }

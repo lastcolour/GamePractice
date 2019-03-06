@@ -38,9 +38,6 @@ bool RenderLogic::init(const JSONNode& node) {
     return true;
 }
 
-void RenderLogic::update() {
-}
-
 void RenderLogic::ET_onRender(const RenderContext& renderCtx) {
     Mat4 mvp = getModelMat();
     mvp = renderCtx.proj2dMat * mvp;
@@ -50,11 +47,6 @@ void RenderLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->setUniform4f("color", params.col);
     geom->draw();
     mat->unbind();
-}
-
-RenderMaterial& RenderLogic::getMaterial() {
-    assert(mat && "Invalid material");
-    return *mat.get();
 }
 
 Mat4 RenderLogic::getModelMat() const {
@@ -72,4 +64,8 @@ void RenderLogic::ET_setRenderParams(const RenderLogicParams& logicParams) {
     Vec3 modelScale = Vec3(params.size, 1.f) / geom->aabb.getSize();
     scale.x = modelScale.x;
     scale.y = modelScale.y;
+}
+
+void RenderLogic::ET_getRenderParams(RenderLogicParams& logicParams) {
+    logicParams = params;
 }

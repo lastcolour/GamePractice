@@ -3,23 +3,24 @@
 
 #include "Game/GameLogic.hpp"
 #include "Math/AABB.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <vector>
 #include <memory>
 
 class GameObject;
 
-class GameBoardLogic : public GameLogic<GameBoardLogic> {
-
-    typedef std::unique_ptr<GameObject> GameObjectPtr;
-
+class GameBoardLogic : public GameLogic,
+    public ETNode<ETSurfaceEvents> {
 public:
 
     GameBoardLogic();
     virtual ~GameBoardLogic();
 
     bool init(const JSONNode& node) override;
-    void update() override;
+
+    // ETSurfaceEvents
+    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
 
 private:
 
@@ -32,7 +33,13 @@ private:
     float space;
     float cellScale;
     std::string cellObject;
-    std::vector<GameObjectPtr> boardObjects;
+
+    struct TouchAaabb {
+        AABB2Di box;
+        EntityId entId;
+    };
+
+    std::vector<TouchAaabb> touchMap;
 };
 
 #endif /* __GAME_BOARD_LOGIC_HPP__ */

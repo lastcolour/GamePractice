@@ -1,10 +1,9 @@
 #ifndef __GLFW_SURFACE_TESTS_HPP__
 #define __GLFW_SURFACE_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/VoidAppTests.hpp"
 
-class GLFWSurfaceTest : public ConsoleAppTests {
-protected:
+class GLFWSurfaceTest : public VoidAppTests {
 
 };
 

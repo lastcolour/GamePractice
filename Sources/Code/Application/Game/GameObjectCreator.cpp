@@ -2,7 +2,6 @@
 #include "Game/GameObject.hpp"
 #include "ETApplicationInterfaces.hpp"
 
-#include "Game/Logics/TouchLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/Logics/RenderLogic.hpp"
 
@@ -15,7 +14,6 @@ namespace {
 GameObjectCreator::GameObjectCreator() {
     registerLogic<RenderLogic>("RenderLogic");
     registerLogic<GameBoardLogic>("GameBoardLogic");
-    registerLogic<TouchLogic>("TouchLogic");
 }
 
 GameObjectCreator::~GameObjectCreator() {
@@ -33,7 +31,7 @@ void GameObjectCreator::registerCreateLogic(const std::string& logicName, LogicC
     }
 }
 
-std::unique_ptr<BaseGameLogic> GameObjectCreator::createLogic(const std::string& logicName) {
+std::unique_ptr<GameLogic> GameObjectCreator::createLogic(const std::string& logicName) {
     std::string reqLogicName = logicName;
     std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
@@ -79,11 +77,11 @@ std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& o
                 LogWarning("[GameObjectCreator::createObject] Can't find logic data for '%s' for object '%s'", logicType, objectName);
                 continue;
             }
+            logicPtr->setGameObject(objPtr.get());
             if(!logicPtr->init(logicData)) {
                 LogWarning("[GameObjectCreator::createObject] Can't init logic '%s' for object '%s'", logicType, objectName);
                 continue;
             }
-            logicPtr->setGameObject(objPtr.get());
             objPtr->addLogic(std::move(logicPtr));
         }
         LogDebug("[GameObjectCreator::createObject] Create object: '%s'", objectName);

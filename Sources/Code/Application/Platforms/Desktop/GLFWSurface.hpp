@@ -4,6 +4,7 @@
 #include "Platform.hpp"
 
 #include <memory>
+#include <vector>
 
 class GlfwLibInitData;
 struct GLFWwindow;
@@ -20,7 +21,8 @@ public:
     void ET_terminate() override;
     void ET_swapBuffers() override;
     Vec2i ET_getSize() const override;
-    bool ET_canRender() const override;
+    GLContextType ET_getGLContextType() const override;
+    bool ET_isVisible() const override;
 
 protected:
 
@@ -31,6 +33,7 @@ protected:
 
 private:
 
+    static void SetCursorePosCallback(GLFWwindow* window, double x, double y);
     static void SetFramebufferSizeCallback(GLFWwindow* window, int w, int h);
     static void SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
@@ -42,6 +45,7 @@ private:
 
     GLFWwindow* window;
     Vec2i size;
+    std::vector<Vec2i> activeGesture;
 };
 
 #endif /* __GLFWS_SURFACE_HPP__ */

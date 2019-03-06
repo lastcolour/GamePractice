@@ -18,8 +18,11 @@ public:
     Game();
     virtual ~Game();
 
+    void setRootObject(const std::string& rootObjectName);
+
     // ETGame
     EntityId ET_createGameObject(const std::string& objectName) override;
+    void ET_destroyObject(EntityId entId) override;
 
 protected:
 
@@ -30,6 +33,7 @@ protected:
 
 private:
 
+    std::string rootObject;
     GameObjectCreator gameObjCreator;
     std::vector<GameObjectPtrT> gameObjects;
 };

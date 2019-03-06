@@ -38,7 +38,8 @@ public:
     }
     void ET_terminate() override { }
     void ET_swapBuffers() override { }
-    bool ET_canRender() const override { return false; }
+    bool ET_isVisible() const override { return false; }
+    GLContextType ET_getGLContextType() const override { return GLContextType::None; }
 
 protected:
 

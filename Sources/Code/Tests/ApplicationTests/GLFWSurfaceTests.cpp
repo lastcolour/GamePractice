@@ -1,7 +1,7 @@
 #include "GLFWSurfaceTests.hpp"
 #include "Platforms/Desktop/GLFWSurface.hpp"
 
-TEST_F(GLFWSurfaceTest, TestInit) {
+TEST_F(GLFWSurfaceTest, TestCommonFlow) {
     GLFWSurface surface;
     bool res = surface.init();
     ASSERT_TRUE(res);
@@ -10,20 +10,26 @@ TEST_F(GLFWSurfaceTest, TestInit) {
 
     ASSERT_GT(size.x, 0);
     ASSERT_GT(size.y, 0);
-}
 
-TEST_F(GLFWSurfaceTest, TestShouldRun) {
-    GLFWSurface surface;
-    ASSERT_TRUE(surface.init());
-    bool res = surface.shouldRun();
-    ASSERT_TRUE(res);
-}
+    auto glCtxType = surface.ET_getGLContextType();
 
-TEST_F(GLFWSurfaceTest, TestUpdate) {
-    GLFWSurface surface;
-    ASSERT_TRUE(surface.init());
-    ASSERT_TRUE(surface.shouldRun());
-    surface.update();
+    ASSERT_NE(glCtxType, GLContextType::None);
+
+    auto isVisible = surface.ET_isVisible();
+    ASSERT_FALSE(isVisible);
+
+    surface.ET_show();
+    isVisible = surface.ET_isVisible();
+    ASSERT_TRUE(isVisible);
+
+    surface.ET_hide();
+    isVisible = surface.ET_isVisible();
+    ASSERT_FALSE(isVisible);
+
+    bool shouldRun = surface.shouldRun();
+    ASSERT_TRUE(shouldRun);
+
     surface.ET_terminate();
-    ASSERT_FALSE(surface.shouldRun());
+    shouldRun = surface.shouldRun();
+    ASSERT_FALSE(shouldRun);
 }

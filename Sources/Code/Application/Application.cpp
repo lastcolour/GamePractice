@@ -34,6 +34,9 @@ std::unique_ptr<ModuleFactory> Application::createModuleFactory() {
 }
 
 bool Application::initLogger(Logger& logger) {
+    if(!logger.init()) {
+        return false;
+    }
     logger.ET_setLogLevel(LogLevel::Debug);
     return true;
 }

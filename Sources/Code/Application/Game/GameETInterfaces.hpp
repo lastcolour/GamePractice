@@ -12,36 +12,28 @@ struct RenderLogicParams {
     Vec2 size;
     ColorF col;
     float rot;
+
+    RenderLogicParams() :
+        pt(0.f),
+        size(0.f),
+        col(1.f, 1.f, 1.f),
+        rot(0.f) {}
 };
 
-class ETRenderLogic {
-public:
-
+struct ETRenderLogic {
     virtual ~ETRenderLogic() = default;
-
     virtual void ET_setRenderParams(const RenderLogicParams& params) = 0;
+    virtual void ET_getRenderParams(RenderLogicParams& params) = 0;
 };
 
-class ETTouchLogic {
-public:
-
-    virtual ~ETTouchLogic() = default;
-
-    virtual void ET_onTouch(int x, int y) {}
-};
-
-class ETGameObject {
-public:
-
+struct ETGameObject {
     virtual ~ETGameObject() = default;
-
     virtual const std::string& ET_getName() const = 0;
 };
 
-class ETGame {
-public:
-
+struct ETGame {
     virtual EntityId ET_createGameObject(const std::string& objectName) = 0;
+    virtual void ET_destroyObject(EntityId entId) = 0;
 };
 
 #endif /* __LOGICS_ET_INTERFACES_HPP__ */

@@ -1,11 +1,11 @@
 #ifndef __LOGGER_TESTS_HPP__
 #define __LOGGER_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/VoidAppTests.hpp"
 
 class TestLogger;
 
-class LoggerTests : public ConsoleAppTests {
+class LoggerTests : public VoidAppTests {
 protected:
 
     void SetUp() override;

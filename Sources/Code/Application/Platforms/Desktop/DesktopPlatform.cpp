@@ -2,7 +2,6 @@
 #include "Platforms/Desktop/GLFWSurface.hpp"
 #include "Platforms/Desktop/DesktopLogger.hpp"
 #include "Platforms/Desktop/DesktopAssets.hpp"
-#include "Environment.hpp"
 
 DesktopPlatform::DesktopPlatform(int argc, char* argv[]) {
 }

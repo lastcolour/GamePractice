@@ -1,9 +1,7 @@
 #include "LoggerTests.hpp"
-#include "TestUtils/ConsoleAppTests.hpp"
 #include "Platforms/Desktop/DesktopLogger.hpp"
 
 namespace {
-
     const char* TEST_LOG_MSG = "TestMessage";
 }
 
@@ -20,6 +18,7 @@ protected:
     // SystemLogic
     bool onInit() {
         ETNode<ETLogger>::connect(getEntityId());
+        return true;
     }
 
     void printMessasge(LogLevel logLevel, const std::string& msg) {
@@ -55,31 +54,31 @@ TEST_F(LoggerTests, CheckLogEmptyMessage) {
 
 TEST_F(LoggerTests, CheckLogDebug) {
     logger->ET_setLogLevel(LogLevel::Debug);
-    LogDebug("D");
-    LogInfo("I");
-    LogWarning("W");
-    LogError("E");
-    LogFatal("F");
+    logger->ET_logMessage(LogLevel::Debug, "D");
+    logger->ET_logMessage(LogLevel::Info, "I");
+    logger->ET_logMessage(LogLevel::Warning, "W");
+    logger->ET_logMessage(LogLevel::Error, "E");
+    logger->ET_logMessage(LogLevel::Fatal, "F");
     ASSERT_STREQ(getLoggedMessage(), "DIWEF");
 }
 
 TEST_F(LoggerTests, CheckLogInfo) {
     logger->ET_setLogLevel(LogLevel::Info);
-    LogDebug("D");
-    LogInfo("I");
-    LogWarning("W");
-    LogError("E");
-    LogFatal("F");
+    logger->ET_logMessage(LogLevel::Debug, "D");
+    logger->ET_logMessage(LogLevel::Info, "I");
+    logger->ET_logMessage(LogLevel::Warning, "W");
+    logger->ET_logMessage(LogLevel::Error, "E");
+    logger->ET_logMessage(LogLevel::Fatal, "F");
     ASSERT_STREQ(getLoggedMessage(), "IWEF");
 }
 
 TEST_F(LoggerTests, CheckLogWarning) {
     logger->ET_setLogLevel(LogLevel::Warning);
-    LogDebug("D");
-    LogInfo("I");
-    LogWarning("W");
-    LogError("E");
-    LogFatal("F");
+    logger->ET_logMessage(LogLevel::Debug, "D");
+    logger->ET_logMessage(LogLevel::Info, "I");
+    logger->ET_logMessage(LogLevel::Warning, "W");
+    logger->ET_logMessage(LogLevel::Error, "E");
+    logger->ET_logMessage(LogLevel::Fatal, "F");
     ASSERT_STREQ(getLoggedMessage(), "WEF");
 }
 
@@ -95,20 +94,30 @@ TEST_F(LoggerTests, CheckLogError) {
 
 TEST_F(LoggerTests, CheckLogFatal) {
     logger->ET_setLogLevel(LogLevel::Fatal);
-    LogDebug("D");
-    LogInfo("I");
-    LogWarning("W");
-    LogError("E");
-    LogFatal("F");
+    logger->ET_logMessage(LogLevel::Debug, "D");
+    logger->ET_logMessage(LogLevel::Info, "I");
+    logger->ET_logMessage(LogLevel::Warning, "W");
+    logger->ET_logMessage(LogLevel::Error, "E");
+    logger->ET_logMessage(LogLevel::Fatal, "F");
     ASSERT_STREQ(getLoggedMessage(), "F");
 }
 
 TEST_F(LoggerTests, CheckLogSilent) {
     logger->ET_setLogLevel(LogLevel::Silent);
+    logger->ET_logMessage(LogLevel::Debug, "D");
+    logger->ET_logMessage(LogLevel::Info, "I");
+    logger->ET_logMessage(LogLevel::Warning, "W");
+    logger->ET_logMessage(LogLevel::Error, "E");
+    logger->ET_logMessage(LogLevel::Fatal, "F");
+    ASSERT_STREQ(getLoggedMessage(), "");
+}
+
+TEST_F(LoggerTests, CheckLogThroughET) {
+    logger->ET_setLogLevel(LogLevel::Debug);
     LogDebug("D");
     LogInfo("I");
     LogWarning("W");
     LogError("E");
     LogFatal("F");
-    ASSERT_STREQ(getLoggedMessage(), "");
+    ASSERT_STREQ(getLoggedMessage(), "DIWEF");
 }

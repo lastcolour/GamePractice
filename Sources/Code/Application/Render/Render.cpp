@@ -28,8 +28,9 @@ Render::Render() :
 }
 
 bool Render::onInit() {
-    bool canRender = ET_SendEventReturn(&ETSurface::ET_canRender);
-    if(!canRender) {
+    bool glCtxType = ET_SendEventReturn(&ETSurface::ET_getGLContextType);
+    if(glCtxType == GLContextType::None) {
+        LogError("[Render::onInit] Can't init render without GL context");
         return false;
     }
 
@@ -50,13 +51,18 @@ void Render::onUpdate() {
 }
 
 void Render::ET_drawFrame() {
+    bool isVisible = ET_SendEventReturn(&ETSurface::ET_isVisible);
+    if(!isVisible && !renderFb) {
+        return;
+    }
+
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
     RenderContext renderCtx;
     renderCtx.proj2dMat = camera2d.getProjMat4();
 
-    ET_SendEventToAll(&ETRenderEvents::ET_onRender, renderCtx);
+    ET_SendEvent(&ETRenderEvents::ET_onRender, renderCtx);
 
     if(!renderFb) {
         ET_SendEvent(&ETSurface::ET_swapBuffers);
@@ -76,8 +82,7 @@ void Render::ET_setClearColor(const ColorF& col) {
 }
 
 Vec2i Render::ET_getRenderPort() const {
-    Vec2 renderPort = camera2d.getViewport();
-    return Vec2i(static_cast<int>(renderPort.x), static_cast<int>(renderPort.y));
+    return camera2d.getViewport();
 }
 
 void Render::ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFramebuffer) {
@@ -86,6 +91,7 @@ void Render::ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFramebuff
     } else if(renderFramebuffer == nullptr) {
         auto size = ET_SendEventReturn(&ETSurface::ET_getSize);
         setViewport(size);
+        renderFb = nullptr;
     } else {
         renderFb = renderFramebuffer;
         setViewport(renderFramebuffer->getSize());

@@ -59,6 +59,11 @@ TEST_F(MathTests, Vec2CheckOperators) {
     Vec2 v15(2.f, 4.f);
     v15 = v15 / 2.f;
     ASSERT_EQ(v15, Vec2(1.f, 2.f));
+
+    Vec2 v16(1.f, 2.f);
+    Vec2 v17(2.f, 3.f);
+    ASSERT_TRUE(v16 < v17);
+    ASSERT_FALSE(v16 > v17);
 }
 
 TEST_F(MathTests, Vec2CheckMethods) {
@@ -133,6 +138,11 @@ TEST_F(MathTests, Vec3CheckOperators) {
     Vec3 v15(2.f, 4.f, 6.f);
     v15 = v15 / 2.f;
     ASSERT_EQ(v15, Vec3(1.f, 2.f, 3.f));
+
+    Vec3 v16(1.f, 2.f, 3.f);
+    Vec3 v17(4.f, 5.f, 6.f);
+    ASSERT_TRUE(v16 < v17);
+    ASSERT_FALSE(v16 > v17);
 }
 
 TEST_F(MathTests, Vec3CheckMethods) {
@@ -211,6 +221,11 @@ TEST_F(MathTests, Vec4CheckOperators) {
     Vec4 v15(2.f, 4.f, 6.f, 8.f);
     v15 = v15 / 2.f;
     ASSERT_EQ(v15, Vec4(1.f, 2.f, 3.f, 4.f));
+
+    Vec4 v16(1.f, 2.f, 3.f, 4.f);
+    Vec4 v17(5.f, 6.f, 7.f, 8.f);
+    ASSERT_TRUE(v16 < v17);
+    ASSERT_FALSE(v16 > v17);
 }
 
 TEST_F(MathTests, Vec4CheckMethods) {
@@ -401,42 +416,4 @@ TEST_F(MathTests, AABBCheckOperators) {
     aabb1.setCenter(Vec3(2.f));
     ASSERT_EQ(aabb1.bot, Vec3(1.f));
     ASSERT_EQ(aabb1.top, Vec3(3.f));
-}
-
-TEST_F(MathTests, AABB2DCheckConstructor) {
-    AABB2D aabb1(Vec2(0.f), Vec2(1.f));
-    ASSERT_EQ(aabb1.bot, Vec2(0.f));
-    ASSERT_EQ(aabb1.top, Vec2(1.f));
-
-    AABB2D aabb2;
-    AABB2D aabb3(Vec2(0.f), Vec2(1.f));
-    aabb2 = aabb3;
-    ASSERT_EQ(aabb2.bot, Vec2(0.f));
-    ASSERT_EQ(aabb2.top, Vec2(1.f));
-
-    AABB2D aabb4(Vec2(0.f), Vec2(1.f));
-    AABB2D aabb5(aabb4);
-    ASSERT_EQ(aabb5.bot, Vec2(0.f));
-    ASSERT_EQ(aabb5.top, Vec2(1.f));
-}
-
-TEST_F(MathTests, AABB2DCheckOperators) {
-    AABB2D aabb;
-    aabb.bot = Vec2(0.f);
-    aabb.top = Vec2(2.f);
-
-    Vec2 center = aabb.getCenter();
-    ASSERT_EQ(center, Vec2(1.f));
-
-    Vec2 size = aabb.getSize();
-    ASSERT_EQ(size, Vec2(2.f));
-
-    aabb = aabb + Vec2(2.f);
-    ASSERT_EQ(aabb.getCenter(), Vec2(3.f));
-    ASSERT_EQ(aabb.getSize(), Vec2(2.f));
-
-    AABB2D aabb1(Vec2(0.f), Vec2(2.f));
-    aabb1.setCenter(Vec2(2.f));
-    ASSERT_EQ(aabb1.bot, Vec2(1.f));
-    ASSERT_EQ(aabb1.top, Vec2(3.f));
 }

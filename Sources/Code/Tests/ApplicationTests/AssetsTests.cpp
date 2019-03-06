@@ -1,8 +1,23 @@
 #include "AssetsTests.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Platforms/Desktop/DesktopAssets.hpp"
 
 namespace {
     const char* TEST_FILE_PATH = "Render/Materials.json";
+}
+
+std::unique_ptr<Assets> AssetsTests::ASSETS;
+
+void AssetsTests::SetUpTestCase() {
+    VoidAppTests::SetUpTestCase();
+
+    ASSETS.reset(new DesktopAssets);
+    ASSERT_TRUE(ASSETS->init());
+}
+
+void AssetsTests::TearDownTestCase() {
+    ASSETS.reset();
+    VoidAppTests::TearDownTestCase();
 }
 
 TEST_F(AssetsTests, CheckLoadEmptyPath) {

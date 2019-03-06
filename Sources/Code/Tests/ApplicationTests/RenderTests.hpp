@@ -1,14 +1,11 @@
 #ifndef __RENDER_TESTS_HPP__
 #define __RENDER_TESTS_HPP__
 
-#include <gtest/gtest.h>
+#include "TestUtils/ConsoleAppTests.hpp"
 
-#include <memory>
-
-class VoidTestApplication;
 class RenderTextureFramebuffer;
 
-class RenderTests : public ::testing::Test {
+class RenderTests : public ConsoleAppTests {
 protected:
 
     static void SetUpTestCase();
@@ -16,7 +13,6 @@ protected:
 
 protected:
 
-    static std::unique_ptr<VoidTestApplication> app;
     static std::unique_ptr<RenderTextureFramebuffer> textureFramebuffer;
 
 protected:

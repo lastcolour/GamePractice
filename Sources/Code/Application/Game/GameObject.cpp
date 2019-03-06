@@ -15,14 +15,7 @@ GameObject::GameObject(const std::string& objectName, int entId) :
 GameObject::~GameObject() {
 }
 
-void GameObject::addLogic(std::unique_ptr<BaseGameLogic>&& logic) {
-    assert(logic && "Add invalid render logic");
-    logic->setGameObject(this);
+void GameObject::addLogic(std::unique_ptr<GameLogic>&& logic) {
+    assert(logic && "Add invalid game logic");
     logics.emplace_back(std::move(logic));
-}
-
-void GameObject::update() {
-    for(auto& logic : logics) {
-        logic->update();
-    }
 }

@@ -20,9 +20,9 @@ RenderTextureFramebuffer::~RenderTextureFramebuffer() {
 }
 
 bool RenderTextureFramebuffer::init() {
-    bool canRender = ET_SendEventReturn(&ETSurface::ET_canRender);
-    if(!canRender) {
-        LogWarning("[RenderTextureFramebuffer::init] Can't init render FB without render");
+    bool glCtxType = ET_SendEventReturn(&ETSurface::ET_getGLContextType);
+    if(glCtxType == GLContextType::None) {
+        LogWarning("[RenderTextureFramebuffer::init] Can't init render FB without GL context");
         return false;
     }
     if(framebufferId) {
@@ -123,7 +123,7 @@ ColorF RenderTextureFramebuffer::getColor(int w, int h) const {
         return ColorF();
     }
     assert((w < size.x && h < size.y) && "Invalid access to pixel");
-    auto offset = size.x * h + size.x;
+    auto offset = size.x * h + w;
     const auto& color = textureBuffer[offset];
     return ColorF(color.r / 255.f, color.g / 255.f, color.b / 255.f);
 }

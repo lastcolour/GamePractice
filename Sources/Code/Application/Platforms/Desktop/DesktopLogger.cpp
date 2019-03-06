@@ -4,11 +4,15 @@
 
 DesktopLogger::DesktopLogger() :
     logLevel(LogLevel::Debug) {
-    ETNode<ETLogger>::connect(getEntityId());
 }
 
 DesktopLogger::~DesktopLogger() {
     ETNode<ETLogger>::disconnect();
+}
+
+bool DesktopLogger::onInit() {
+    ETNode<ETLogger>::connect(getEntityId());
+    return true;
 }
 
 void DesktopLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {

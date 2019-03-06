@@ -1,10 +1,19 @@
 #ifndef __ASSETS_TEST_HPP__
 #define __ASSETS_TEST_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/VoidAppTests.hpp"
 
-class AssetsTests : public ConsoleAppTests {
+class Assets;
+
+class AssetsTests : public VoidAppTests {
 protected:
+
+    static void SetUpTestCase();
+    static void TearDownTestCase();
+
+protected:
+
+    static std::unique_ptr<Assets> ASSETS;
 };
 
 #endif /* __ASSETS_TEST_HPP__ */ 

@@ -1,9 +1,9 @@
 #ifndef __CORE_TEST_HPP__
 #define __CORE_TEST_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/VoidAppTests.hpp"
 
-class CoreTests : public ConsoleAppTests {
+class CoreTests : public VoidAppTests {
 
 };
 

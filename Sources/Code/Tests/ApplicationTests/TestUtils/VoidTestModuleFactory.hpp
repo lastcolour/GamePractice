@@ -24,23 +24,6 @@ public:
     std::unique_ptr<VoidTestGame> retRes_createGame { new VoidTestGame };
 };
 
-class ConsoleAppModuleFactory : public ModuleFactory {
-public:
-
-    ConsoleAppModuleFactory() = default;
-    virtual ~ConsoleAppModuleFactory() = default;
-
-    std::unique_ptr<Surface> createSurface() { return std::move(retRes_createSurface); }
-    std::unique_ptr<Render> createRender() { return std::move(retRes_createRender); }
-    std::unique_ptr<Game> createGame() { return std::move(retRes_createGame); }
-
-public:
-
-    std::unique_ptr<VoidTestSurface> retRes_createSurface { new VoidTestSurface };
-    std::unique_ptr<VoidTestRender> retRes_createRender { new VoidTestRender };
-    std::unique_ptr<VoidTestGame> retRes_createGame { new VoidTestGame };
-};
-
 class VoidTestModuleFactory : public ModuleFactory {
 public:
 
