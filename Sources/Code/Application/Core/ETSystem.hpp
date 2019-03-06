@@ -9,6 +9,9 @@
 
 class ETNodeBase;
 
+template<typename T>
+class ETNode;
+
 class ETSystem {
 private:
 

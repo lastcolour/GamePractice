@@ -135,6 +135,7 @@ bool GLFWSurface::ET_isVisible() const {
 bool GLFWSurface::ET_show() {
     if(window) {
         glfwShowWindow(window);
+        glfwFocusWindow(window);
         return true;
     }
     return false;

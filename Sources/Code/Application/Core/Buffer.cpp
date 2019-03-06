@@ -1,5 +1,7 @@
 #include "Buffer.hpp"
 
+#include <cstring>
+
 Buffer::Buffer() :
     size(0u),
     data() {}

@@ -4,6 +4,7 @@
 #include "Math/Primitivies.hpp"
 
 #include <type_traits>
+#include <cmath>
 
 namespace Math {
 
@@ -23,8 +24,8 @@ public:
     }
     ~Vector2() = default;
 
-    T& operator[](size_t i) { return (&x)[i]; }
-    T operator[](size_t i) const { return (&x)[i]; }
+    T& operator[](int i) { return (&x)[i]; }
+    T operator[](int i) const { return (&x)[i]; }
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y; }
@@ -59,8 +60,8 @@ public:
 
     ~Vector3() = default;
 
-    T& operator[](size_t i) { return (&x)[i]; }
-    T operator[](size_t i) const { return (&x)[i]; }
+    T& operator[](int i) { return (&x)[i]; }
+    T operator[](int i) const { return (&x)[i]; }
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y + z * z; }
@@ -97,8 +98,8 @@ public:
 
     ~Vector4() = default;
 
-    T& operator[](size_t i) { return (&x)[i]; }
-    T operator[](size_t i) const { return (&x)[i]; }
+    T& operator[](int i) { return (&x)[i]; }
+    T operator[](int i) const { return (&x)[i]; }
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y + z * z + w * w; }

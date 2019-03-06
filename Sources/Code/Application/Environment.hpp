@@ -3,6 +3,7 @@
 
 class Platform;
 class ETSystem;
+class Application;
 
 class Environment {
 private:

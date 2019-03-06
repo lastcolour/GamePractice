@@ -58,27 +58,27 @@ struct ETLogger {
 
 template<typename ... ArgsT>
 void LogDebug(const char* msg, const ArgsT& ... args) {
-    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Debug, StringFormat(msg, args ... ));
+    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Debug, StringFormat(msg, args...));
 }
 
 template<typename ... ArgsT>
 void LogInfo(const char* msg, const ArgsT& ... args) {
-    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Info, StringFormat(msg, args ... ));
+    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Info, StringFormat(msg, args...));
 }
 
 template<typename ... ArgsT>
 void LogWarning(const char* msg, const ArgsT& ... args) {
-    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Warning, StringFormat(msg, args ... ));
+    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Warning, StringFormat(msg, args...));
 }
 
 template<typename ... ArgsT>
 void LogError(const char* msg, const ArgsT& ... args) {
-    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Error, StringFormat(msg, args ... ));
+    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Error, StringFormat(msg, args...));
 }
 
 template<typename ... ArgsT>
 void LogFatal(const char* msg, const ArgsT& ... args) {
-    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Fatal, StringFormat(msg, args ... ));
+    ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Fatal, StringFormat(msg, args...));
 }
 
 

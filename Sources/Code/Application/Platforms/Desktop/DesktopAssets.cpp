@@ -69,7 +69,9 @@ namespace {
             assert(false && "Can't get app run dir");
             return ".";
         }
-        std::string tPath(cwd);
+        std::string tPath;
+        tPath += VALID_SLASH;
+        tPath += cwd;
         if(tPath.back() != '\\' || tPath.back() != '/') {
             tPath += VALID_SLASH;
         }

@@ -39,12 +39,12 @@ Matrix4& Matrix4::operator=(const Matrix4& mat) {
     return *this;
 }
 
-Vec4& Matrix4::operator[](size_t i) {
+Vec4& Matrix4::operator[](int i) {
     assert( (i >= 0 && i <= 3) && "Access to wrong element");
     return data[i];
 }
 
-const Vec4& Matrix4::operator[](size_t i) const {
+const Vec4& Matrix4::operator[](int i) const {
     assert( (i >= 0 && i <= 3) && "Access to wrong element");
     return data[i];
 }

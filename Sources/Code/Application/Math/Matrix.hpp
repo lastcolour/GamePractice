@@ -14,8 +14,8 @@ public:
     Matrix4(const Matrix4& mat);
     Matrix4& operator=(const Matrix4& mat);
 
-    Vec4& operator[](size_t i);
-    const Vec4& operator[](size_t i) const;
+    Vec4& operator[](int i);
+    const Vec4& operator[](int i) const;
 
     const float* getPtr() const;
 
