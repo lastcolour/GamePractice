@@ -12,7 +12,6 @@ T ConvertToPrintable(T& val) {
 
 const char* ConvertToPrintable(const std::string& str);
 
-
 template <typename... ArgsT>
 void StringFormatImpl(Buffer& buff, const std::string& format, const ArgsT& ... args) {
     auto resStrSize = std::snprintf(static_cast<char*>(buff.getData()), buff.getSize(), format.c_str(), args...);

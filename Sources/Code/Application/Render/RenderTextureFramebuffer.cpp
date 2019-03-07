@@ -20,7 +20,8 @@ RenderTextureFramebuffer::~RenderTextureFramebuffer() {
 }
 
 bool RenderTextureFramebuffer::init() {
-    bool glCtxType = ET_SendEventReturn(&ETSurface::ET_getGLContextType);
+    GLContextType glCtxType = GLContextType::None;
+    ET_SendEventReturn(glCtxType, &ETSurface::ET_getGLContextType);
     if(glCtxType == GLContextType::None) {
         LogWarning("[RenderTextureFramebuffer::init] Can't init render FB without GL context");
         return false;

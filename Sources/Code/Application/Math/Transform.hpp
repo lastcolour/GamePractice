@@ -1,18 +1,29 @@
 #ifndef __TRANSFORM_HPP__
 #define __TRANSFORM_HPP__
 
-#include "Math/Matrix.hpp"
+#include "Math/Vector.hpp"
+#include "Math/Quaternion.hpp"
 
 namespace Math {
 
-    void ProjectOrtho(Mat4& tm, float left, float right, float bot, float top, float zNear, float zFar);
+class Transform {
+public:
 
-    void Translate(Mat4& tm, const Vec3& pos);
+    Transform();
+    Transform(const Transform& tm);
+    ~Transform();
 
-    void Rotate(Mat4& tm, float angle, const Vec3& rot);
+    Transform& operator=(const Transform& tm);
 
-    void Scale(Mat4& tm, const Vec3& scale);
+public:
+
+    Vec3 pt;
+    Vec3 scale;
+    Quat quat;
+};
 
 } // namespace Math
+
+typedef Math::Transform Transform;
 
 #endif /* __TRANSFORM_HPP__ */

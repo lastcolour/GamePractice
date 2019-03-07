@@ -17,5 +17,4 @@ protected:
     static std::unique_ptr<Application> APP;
 };
 
-
 #endif /* __CONSOLE_APP_TESTS_HPP__ */

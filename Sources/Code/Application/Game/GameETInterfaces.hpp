@@ -2,22 +2,24 @@
 #define __LOGICS_ET_INTERFACES_HPP__
 
 #include "Core/ETPrimitives.hpp"
-#include "Math/Vector.hpp"
 #include "Render/Color.hpp"
+#include "Math/Transform.hpp"
 
 #include <string>
 
 struct RenderLogicParams {
-    Vec2 pt;
     Vec2 size;
     ColorF col;
-    float rot;
 
     RenderLogicParams() :
-        pt(0.f),
         size(0.f),
-        col(1.f, 1.f, 1.f),
-        rot(0.f) {}
+        col(1.f, 1.f, 1.f) {}
+};
+
+struct ETGameBoardElemLogic {
+    virtual ~ETGameBoardElemLogic() = default;
+    virtual void ET_setBoardPos(const Vec2i& pt) = 0;
+    virtual const Vec2i& ET_getBoardPos() const = 0;
 };
 
 struct ETRenderLogic {
@@ -29,6 +31,8 @@ struct ETRenderLogic {
 struct ETGameObject {
     virtual ~ETGameObject() = default;
     virtual const std::string& ET_getName() const = 0;
+    virtual const Transform& ET_getTransform() const = 0;
+    virtual void ET_setTransform(const Transform& tm) = 0;
 };
 
 struct ETGame {
