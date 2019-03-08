@@ -5,7 +5,7 @@
 
 namespace {
     const char* TEST_OBJECT_NAME = "Simple";
-}
+} // namespace
 
 TEST_F(GameTests, CreateSimpleGameObject) {
     auto objId = ET_SendEventReturn(&ETGame::ET_createGameObject, TEST_OBJECT_NAME);

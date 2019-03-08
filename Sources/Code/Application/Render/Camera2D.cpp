@@ -4,7 +4,7 @@
 namespace {
     const float DEF_Z_NEAR = -1.f;
     const float DEF_Z_FAR = 1.f;
-}
+} // namespace
 
 Camera2D::Camera2D() :
     projection(1.f),

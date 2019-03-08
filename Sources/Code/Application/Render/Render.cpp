@@ -20,7 +20,7 @@ namespace {
     const char* MATERIALS = "Render/Materials.json";
     const char* SHADERS_ROOT_DIR = "Render/";
     const char* SQUARE_GEOM_NAME = "square";
-}
+} // namespace
 
 Render::Render() :
     clearColor(0.f, 0.f, 0.f),

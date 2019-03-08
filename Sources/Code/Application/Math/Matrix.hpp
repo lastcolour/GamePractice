@@ -27,7 +27,7 @@ private:
 Vec4 operator*(const Matrix4& m, const Vec4& v);
 Matrix4 operator*(const Matrix4& m1, const Matrix4& m2);
 
-} // namescpace Math
+} // namespace Math
 
 typedef Math::Matrix4 Mat4;
 

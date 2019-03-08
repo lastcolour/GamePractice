@@ -3,7 +3,7 @@
 
 namespace {
     const char* TEST_LOG_MSG = "TestMessage";
-}
+} // namespace
 
 class TestLogger : public DesktopLogger {
 public:

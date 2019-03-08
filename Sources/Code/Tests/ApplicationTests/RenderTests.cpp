@@ -27,7 +27,7 @@ namespace {
 
     const ColorF DRAW_COLOR(0.f, 1.f, 0.f);
     const ColorF CLEAR_COLOR(0.f, 0.f, 0.f);
-}
+} // namespace
 
 std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;
 

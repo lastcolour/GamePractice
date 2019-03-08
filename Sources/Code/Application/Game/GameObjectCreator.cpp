@@ -9,7 +9,7 @@
 
 namespace {
     const char* GAME_OBJECTS = "Game/GameObjects.json";
-}
+} // namespace
 
 GameObjectCreator::GameObjectCreator() {
     registerLogic<RenderLogic>("RenderLogic");

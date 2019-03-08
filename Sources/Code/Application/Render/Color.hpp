@@ -82,7 +82,7 @@ namespace Color {
         uint8_t a;
     };
 
-} // Color
+} // namespace Color
 
 typedef Color::Color_RGBA_Float ColorF;
 

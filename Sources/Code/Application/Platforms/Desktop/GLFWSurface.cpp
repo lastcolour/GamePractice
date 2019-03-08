@@ -10,7 +10,7 @@ namespace {
     const int DEF_WIDTH = 600;
     const int DEF_HEIGHT = 480;
     const char* DEF_WINDOW_NAME = "Game01";
-}
+} // namespace
 
 class GlfwLibInitData {
 public:

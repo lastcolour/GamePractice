@@ -3,7 +3,7 @@
 
 namespace {
     const size_t TEST_SIZE = 32;
-}
+} // namespace
 
 TEST_F(BufferTests, CheckVoidBuffer) {
     Buffer buff;
