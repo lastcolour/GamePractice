@@ -1,5 +1,5 @@
 #include "Render/Camera2D.hpp"
-#include "Math/Transform.hpp"
+#include "Math/MatrixTransform.hpp"
 
 namespace {
     const float DEF_Z_NEAR = -1.f;

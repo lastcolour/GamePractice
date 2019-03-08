@@ -19,3 +19,15 @@ void GameObject::addLogic(std::unique_ptr<GameLogic>&& logic) {
     assert(logic && "Add invalid game logic");
     logics.emplace_back(std::move(logic));
 }
+
+const std::string& GameObject::ET_getName() const {
+    return name;
+}
+
+const Transform& GameObject::ET_getTransform() const {
+    return tm;
+}
+
+void GameObject::ET_setTransform(const Transform& transform) {
+    tm = transform;
+}

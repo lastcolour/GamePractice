@@ -57,12 +57,11 @@ void ET_SendEvent(RetType (ETType::*method)(ArgsType...) const, ParamType&& ... 
     }
 }
 
-template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
-RetType ET_SendEventReturn(RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     if(auto et = GetEnv()->getETSystem()) {
-        return et->sendEventReturn(method, std::forward<ParamType>(params)...);
+        et->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
     }
-    return RetType{};
 }
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
@@ -72,12 +71,11 @@ void ET_SendEvent(int addressId, RetType (ETType::*method)(ArgsType...) const, P
     }
 }
 
-template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
-RetType ET_SendEventReturn(int addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_SendEventReturn(ValRetType& retVal, int addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     if(auto et = GetEnv()->getETSystem()) {
-        return et->sendEventReturn(addressId, method, std::forward<ParamType>(params)...);
+        et->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
     }
-    return RetType{};
 }
 
 // ==--------------- Regural ETs ---------------==
@@ -89,12 +87,11 @@ void ET_SendEvent(RetType (ETType::*method)(ArgsType...), ParamType&& ... params
     }
 }
 
-template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
-RetType ET_SendEventReturn(RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     if(auto et = GetEnv()->getETSystem()) {
-        return et->sendEventReturn(method, std::forward<ParamType>(params)...);
+        et->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
     }
-    return RetType{};
 }
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
@@ -104,12 +101,11 @@ void ET_SendEvent(int addressId, RetType (ETType::*method)(ArgsType...), ParamTy
     }
 }
 
-template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
-RetType ET_SendEventReturn(int addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_SendEventReturn(ValRetType& retVal, int addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     if(auto et = GetEnv()->getETSystem()) {
-        return et->sendEventReturn(addressId, method, std::forward<ParamType>(params)...);
+        et->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
     }
-    return RetType{};
 }
 
 #endif /* __ET_PRIMITIVES_HPP__ */

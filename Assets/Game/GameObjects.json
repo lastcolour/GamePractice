@@ -1,32 +1,48 @@
 {
-    "GameObjects":[
+  "GameObjects":[
+    {
+      "name":"Simple",
+      "logics":[
         {
-            "name":"Simple",
-            "logics":[
-                {
-                    "type":"RenderLogic",
-                    "data":{
-                        "mat":"solid_color",
-                        "geom":"square"
-                    }
-                }
-            ]
+          "type":"RenderLogic",
+          "data":{
+            "mat":"solid_color",
+            "geom":"square"
+          }
+        }
+      ]
+    },
+    {
+      "name":"GameBoardElem",
+      "logics":[
+        {
+          "type":"RenderLogic",
+          "data":{
+            "mat":"solid_color",
+            "geom":"square"
+          }
         },
         {
-            "name":"GameRootObject",
-            "logics":[
-                {
-                    "type":"GameBoardLogic",
-                    "data":{
-                        "size":{"w":10, "h":10},
-                        "space":0.8,
-                        "cell":{
-                            "object":"Simple",
-                            "scale":0.9
-                        }
-                    }
-                }
-            ]
+          "type":"GameBoardElemLogic",
+          "data":{}
         }
-    ]
+      ]
+    },
+    {
+      "name":"GameRootObject",
+      "logics":[
+        {
+          "type":"GameBoardLogic",
+          "data":{
+            "size":{"w":10, "h":10},
+            "space":0.8,
+            "cell":{
+              "object":"GameBoardElem",
+              "scale":0.9
+            }
+          }
+        }
+      ]
+    }
+  ]
 }

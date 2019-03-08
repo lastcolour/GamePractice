@@ -2,7 +2,7 @@
 #include "Render/RenderGeometry.hpp"
 #include "Render/RenderMaterial.hpp"
 #include "Core/JSONNode.hpp"
-#include "Math/Transform.hpp"
+#include "Math/MatrixTransform.hpp"
 
 #include <cassert>
 
@@ -22,12 +22,12 @@ bool RenderLogic::init(const JSONNode& node) {
     node.value("mat", matName);
     node.value("geom", geomName);
 
-    geom = ET_SendEventReturn(&ETRender::ET_createGeometry, geomName);
+    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, geomName);
     if(!geom) {
         return false;
     }
 
-    mat = ET_SendEventReturn(&ETRender::ET_createMaterial, matName);
+    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
     if(!mat) {
         return false;
     }
@@ -50,11 +50,13 @@ void RenderLogic::ET_onRender(const RenderContext& renderCtx) {
 }
 
 Mat4 RenderLogic::getModelMat() const {
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
     Mat4 model(1.f);
     const Vec3 center = geom->aabb.getCenter();
     Math::Translate(model, center);
-    Math::Rotate(model, params.rot, Vec3(0.f, 0.f, 1.f));
-    Math::Translate(model, Vec3(params.pt, 1.f));
+    Math::Rotate(model, tm.quat);
+    Math::Translate(model, tm.pt);
     Math::Scale(model, Vec3(scale, 1.f));
     return model;
 }

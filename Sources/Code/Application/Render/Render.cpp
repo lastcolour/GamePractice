@@ -28,7 +28,8 @@ Render::Render() :
 }
 
 bool Render::onInit() {
-    bool glCtxType = ET_SendEventReturn(&ETSurface::ET_getGLContextType);
+    GLContextType glCtxType = GLContextType::None;
+    ET_SendEventReturn(glCtxType, &ETSurface::ET_getGLContextType);
     if(glCtxType == GLContextType::None) {
         LogError("[Render::onInit] Can't init render without GL context");
         return false;
@@ -37,7 +38,8 @@ bool Render::onInit() {
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
 
-    Vec2i size = ET_SendEventReturn(&ETSurface::ET_getSize);
+    Vec2i size;
+    ET_SendEventReturn(size, &ETSurface::ET_getSize);
     setViewport(size);
 
     glEnable(GL_CULL_FACE);
@@ -51,7 +53,8 @@ void Render::onUpdate() {
 }
 
 void Render::ET_drawFrame() {
-    bool isVisible = ET_SendEventReturn(&ETSurface::ET_isVisible);
+    bool isVisible = false;
+    ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);
     if(!isVisible && !renderFb) {
         return;
     }
@@ -89,7 +92,8 @@ void Render::ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFramebuff
     if(renderFb == renderFramebuffer) {
         return;
     } else if(renderFramebuffer == nullptr) {
-        auto size = ET_SendEventReturn(&ETSurface::ET_getSize);
+        Vec2i size;
+        ET_SendEventReturn(size, &ETSurface::ET_getSize);
         setViewport(size);
         renderFb = nullptr;
     } else {
@@ -160,7 +164,8 @@ std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& mat
     if(it != materials.end() && !it->second.expired()) {
         return it->second.lock();
     }
-    auto rootNode = ET_SendEventReturn(&ETAsset::ET_loadJSONAsset, MATERIALS);
+    JSONNode rootNode;
+    ET_SendEventReturn(rootNode, &ETAsset::ET_loadJSONAsset, MATERIALS);
     if(!rootNode) {
         LogError("[Render::createMaterial] Can't create materials '%s' from: %s", matName, MATERIALS);
         return nullptr;
@@ -198,7 +203,8 @@ std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& mat
 }
 
 int Render::createProgram(const std::string& vertFile, const std::string& fragFile) {
-    auto buffer =  ET_SendEventReturn(&ETAsset::ET_loadAsset, vertFile);
+    Buffer buffer;
+    ET_SendEventReturn(buffer, &ETAsset::ET_loadAsset, vertFile);
     if(!buffer) {
         LogError("[Render::createProgram] Can't load vert shader file: %s", vertFile.c_str());
         return 0;
@@ -208,7 +214,7 @@ int Render::createProgram(const std::string& vertFile, const std::string& fragFi
         LogError("[Render::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
         return 0;
     }
-    buffer = ET_SendEventReturn(&ETAsset::ET_loadAsset, fragFile);
+    ET_SendEventReturn(buffer, &ETAsset::ET_loadAsset, fragFile);
     if(!buffer) {
         LogError("[Render::createProgram] Can't load frag shader file: %s", fragFile.c_str());
         return 0;

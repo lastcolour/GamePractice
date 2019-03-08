@@ -28,8 +28,11 @@ private:
 
 private:
 
-    int width;
-    int height;
+    EntityId findTouchedEntity(const Vec2i& pt) const;
+
+private:
+
+    Vec2i boardSize;
     float space;
     float cellScale;
     std::string cellObject;
@@ -40,6 +43,7 @@ private:
     };
 
     std::vector<TouchAaabb> touchMap;
+    EntityId activeTouchEntId;
 };
 
 #endif /* __GAME_BOARD_LOGIC_HPP__ */

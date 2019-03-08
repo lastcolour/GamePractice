@@ -24,12 +24,15 @@ public:
     EntityId getEntityId() const { return entityId; }
 
     // ETGameObject
-    const std::string& ET_getName() const override { return name; }
+    const std::string& ET_getName() const override;
+    const Transform& ET_getTransform() const override;
+    void ET_setTransform(const Transform& transform) override;
 
 private:
 
-    std::string name;
+    Transform tm;
     std::vector<GameLogicPtr> logics;
+    std::string name;
     EntityId entityId;
 };
 

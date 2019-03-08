@@ -2,6 +2,7 @@
 #include "Game/GameObject.hpp"
 #include "ETApplicationInterfaces.hpp"
 
+#include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/Logics/RenderLogic.hpp"
 
@@ -14,6 +15,7 @@ namespace {
 GameObjectCreator::GameObjectCreator() {
     registerLogic<RenderLogic>("RenderLogic");
     registerLogic<GameBoardLogic>("GameBoardLogic");
+    registerLogic<GameBoardElemLogic>("GameBoardElemLogic");
 }
 
 GameObjectCreator::~GameObjectCreator() {
@@ -42,7 +44,8 @@ std::unique_ptr<GameLogic> GameObjectCreator::createLogic(const std::string& log
 }
 
 std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& objectName) {
-    auto rootNode = ET_SendEventReturn(&ETAsset::ET_loadJSONAsset, GAME_OBJECTS);
+    JSONNode rootNode;
+    ET_SendEventReturn(rootNode, &ETAsset::ET_loadJSONAsset, GAME_OBJECTS);
     if(!rootNode) {
         LogWarning("[GameObjectCreator::createObject] Can't load game objects: %s", GAME_OBJECTS);
         return nullptr;

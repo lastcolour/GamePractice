@@ -148,7 +148,9 @@ TEST_F(CoreTests, CheclWithAruments) {
 TEST_F(CoreTests, CheckWithReturnValue) {
     TestETNode node;
     node.connect(1);
-    int reValue = ET_SendEventReturn(1, &ET_TestInterface::ET_OnReturnParamValue);
+
+    int retVal = 0;
+    ET_SendEventReturn(retVal, 1, &ET_TestInterface::ET_OnReturnParamValue);
     
-    ASSERT_EQ(node.eventRecieved, reValue);
+    ASSERT_EQ(node.eventRecieved, retVal);
 }

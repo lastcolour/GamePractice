@@ -81,5 +81,4 @@ void LogFatal(const char* msg, const ArgsT& ... args) {
     ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Fatal, StringFormat(msg, args...));
 }
 
-
 #endif /* __ET_APPLICATION_INTERFACES_HPP__ */
