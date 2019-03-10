@@ -22,7 +22,7 @@ TEST_F(GLFWSurfaceTest, TestCommonFlow) {
     isVisible = surface.ET_isVisible();
     ASSERT_TRUE(isVisible);
 
-    surface.update();
+    surface.update(0.f);
 
     surface.ET_hide();
     isVisible = surface.ET_isVisible();

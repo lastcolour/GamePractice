@@ -36,7 +36,8 @@ bool Game::onShouldRun() {
     return true;
 }
 
-void Game::onUpdate() {
+void Game::onUpdate(float dt) {
+    ET_SendEvent(&ETGameTick::ET_onGameTick, dt);
 }
 
 EntityId Game::ET_createGameObject(const std::string& objectName) {

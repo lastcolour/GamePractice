@@ -16,7 +16,7 @@ class GameObject :
 
 public:
 
-    GameObject(const std::string& objectName, int entId);
+    GameObject(const std::string& objectName, EntityId entId);
     ~GameObject();
 
     void addLogic(GameLogicPtr&& logic);

@@ -11,14 +11,14 @@ public:
 
     bool init();
     bool shouldRun();
-    void update();
+    void update(float dt);
     EntityId getEntityId() const;
 
 protected:
 
     virtual bool onInit() = 0;
     virtual bool onShouldRun() { return true; }
-    virtual void onUpdate() {}
+    virtual void onUpdate(float dt) {}
 
 private:
 

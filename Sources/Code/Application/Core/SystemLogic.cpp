@@ -24,8 +24,8 @@ bool SystemLogic::shouldRun() {
     return onShouldRun();
 }
 
-void SystemLogic::update() {
-    onUpdate();
+void SystemLogic::update(float dt) {
+    onUpdate(dt);
 }
 
 EntityId SystemLogic::getEntityId() const {

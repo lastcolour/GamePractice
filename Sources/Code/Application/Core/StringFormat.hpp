@@ -3,6 +3,8 @@
 
 #include "Core/Buffer.hpp"
 
+#include <cstring>
+
 namespace Core {
 
 template<typename T>
@@ -26,8 +28,12 @@ void StringFormatImpl(Buffer& buff, const std::string& format, const ArgsT& ... 
 template<typename ... ArgsT>
 std::string StringFormat(const std::string& format, const ArgsT& ... args)
 {
-    Buffer buff(format.size());
-    Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);
+    Buffer buff(format.size() + 1);
+    if(sizeof...(args) > 0u) {
+        Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);
+    } else {
+        strcpy(static_cast<char*>(buff.getData()), format.c_str());
+    }
     return buff.getString();
 }
 

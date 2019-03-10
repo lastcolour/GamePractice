@@ -40,7 +40,7 @@ protected:
 
     // SystemLogic
     bool onInit() override;
-    void onUpdate() override;
+    void onUpdate(float dt) override;
 
 private:
 

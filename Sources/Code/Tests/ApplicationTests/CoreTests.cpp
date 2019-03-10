@@ -82,30 +82,35 @@ TEST_F(CoreTests, CheckVoidFormats) {
 
 TEST_F(CoreTests, CheckBaseEventLogicToOneListener) {
     TestETNode node;
-    node.connect(1);
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    EntityId entId;
+    entId.setRawId(1);
+    node.connect(entId);
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
 
     ASSERT_EQ(node.eventRecieved, 1);
 
     node.disconnect();
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
 
     ASSERT_EQ(node.eventRecieved, 1);
 }
 
 TEST_F(CoreTests, CheckBaseEventLogicToTwoListener) {
+    EntityId entId;
+    entId.setRawId(1);
+
     TestETNode node1;
-    node1.connect(1);
+    node1.connect(entId);
 
     TestETNode node2;
-    node2.connect(1);
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    node2.connect(entId);
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
 
     ASSERT_EQ(node1.eventRecieved, 1);
     ASSERT_EQ(node2.eventRecieved, 1);
 
     node1.disconnect();
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
 
     ASSERT_EQ(node1.eventRecieved, 1);
     ASSERT_EQ(node2.eventRecieved, 2);
@@ -117,40 +122,49 @@ TEST_F(CoreTests, CheckBaseEventLogicToTwoListener) {
 }
 
 TEST_F(CoreTests, CheckAutoUnsubscribeAfterDelete) {
-    std::unique_ptr<TestETNode> nodePtr(new TestETNode);
-    nodePtr->connect(1);
+    EntityId entId;
+    entId.setRawId(1);
 
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    std::unique_ptr<TestETNode> nodePtr(new TestETNode);
+    nodePtr->connect(entId);
+
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
     ASSERT_EQ(nodePtr->eventRecieved, 1);
 
     nodePtr.reset();
 
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
 }
 
 TEST_F(CoreTests, CheckDoubleConnect) {
     TestETNode node;
-    node.connect(1);
-    node.connect(1);
-    ET_SendEvent(1, &ET_TestInterface::ET_onEvent);
+    EntityId entId;
+    entId.setRawId(1);
+    node.connect(entId);
+    node.connect(entId);
+    ET_SendEvent(entId, &ET_TestInterface::ET_onEvent);
 
     ASSERT_EQ(node.eventRecieved, 1);
 }
 
 TEST_F(CoreTests, CheclWithAruments) {
     TestETNode node;
-    node.connect(1);
-    ET_SendEvent(1, &ET_TestInterface::ET_OnParamEvent, 3);
+    EntityId entId;
+    entId.setRawId(1);
+    node.connect(entId);
+    ET_SendEvent(entId, &ET_TestInterface::ET_OnParamEvent, 3);
 
     ASSERT_EQ(node.eventRecieved, 1);
 }
 
 TEST_F(CoreTests, CheckWithReturnValue) {
     TestETNode node;
-    node.connect(1);
+    EntityId entId;
+    entId.setRawId(1);
+    node.connect(entId);
 
     int retVal = 0;
-    ET_SendEventReturn(retVal, 1, &ET_TestInterface::ET_OnReturnParamValue);
+    ET_SendEventReturn(retVal, entId, &ET_TestInterface::ET_OnReturnParamValue);
     
     ASSERT_EQ(node.eventRecieved, retVal);
 }

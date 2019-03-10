@@ -229,6 +229,23 @@ Vector4<T> operator*(T a, const Vector4<T>& v) {
     return v * a;
 }
 
+// ==--------------- Vec != Vec ---------------==
+
+template<typename T>
+bool operator!=(const Vector2<T>& a, const Vector2<T>& b) {
+    return !(a == b);
+}
+
+template<typename T>
+bool operator!=(const Vector3<T>& a, const Vector3<T>& b) {
+    return !(a == b);
+}
+
+template<typename T>
+bool operator!=(const Vector4<T>& a, const Vector4<T>& b) {
+    return !(a == b);
+}
+
 // ==--------------- Vec == Vec ---------------==
 
 template<typename T>

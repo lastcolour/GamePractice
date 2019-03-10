@@ -48,7 +48,7 @@ bool Render::onInit() {
     return true;
 }
 
-void Render::onUpdate() {
+void Render::onUpdate(float dt) {
     ET_drawFrame();
 }
 

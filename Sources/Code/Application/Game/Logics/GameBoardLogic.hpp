@@ -10,8 +10,33 @@
 
 class GameObject;
 
+enum class BoardElemType {
+    Red = 0,
+    Blue,
+    Green,
+    Purple,
+    Yellow,
+    ENUM_COUNT
+};
+
+enum class BoardElemState {
+    Static = 0,
+    Moving,
+    Void
+};
+
+struct BoardElement {
+    AABB2Di box;
+    Vec2i boardPt;
+    Vec2i movePt;
+    EntityId entId;
+    BoardElemType color;
+    BoardElemState state;
+};
+
 class GameBoardLogic : public GameLogic,
-    public ETNode<ETSurfaceEvents> {
+    public ETNode<ETSurfaceEvents>,
+    public ETNode<ETGameTick> {
 public:
 
     GameBoardLogic();
@@ -22,28 +47,46 @@ public:
     // ETSurfaceEvents
     void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
 
-private:
+    // ETGameTick
+    void ET_onGameTick(float dt) override;
 
-    bool serialize(const JSONNode& node);
+protected:
 
-private:
+    virtual bool serialize(const JSONNode& node);
+    virtual BoardElemType getElemType() const;
+    Vec3 getPosFromBoardPos(const Vec2i& boardPt);
+    bool lerpElem(int elemId, float dt);
+    void removeElems(const std::vector<int>& elems);
+    bool isElemMatch(int firstElemId, int secondElemId) const;
+    int findTouchedElemId(const Vec2i& pt) const;
+    int getElemIdByBoardPos(const Vec2i& boardPt) const;
+    int getVoidElemsBelow(const Vec2i& boardPt) const;
+    int spawnNewElement(const Vec2i& boardPt);
+    bool isElementBelow(int elemId, const Vec2i& boardPt) const;
+    void setElemBoardPos(int elemId, const Vec2i& boardPt);
+    void switchElements(int firstElem, int secondElem);
+    ColorF getElemColor(BoardElemType color) const;
+    void updateBoard();
 
-    EntityId findTouchedEntity(const Vec2i& pt) const;
+    void onStartElemMove();
+    void onElemMove();
+    void onEndElemMove(const Vec2i& pt);
 
-private:
+    void removeVerticalLines(const Vec2i& boardPt, int lineLen);
+    void removeHorizontalLines(const Vec2i& boardPt, int lineLen);
 
+protected:
+
+    std::vector<BoardElement> elements;
+    std::string cellObject;
+    AABB2D boardBox;
     Vec2i boardSize;
     float space;
     float cellScale;
-    std::string cellObject;
-
-    struct TouchAaabb {
-        AABB2Di box;
-        EntityId entId;
-    };
-
-    std::vector<TouchAaabb> touchMap;
-    EntityId activeTouchEntId;
+    float cellSize;
+    float moveSpeed;
+    float objectSize;
+    int activeTouchedElemId;
 };
 
 #endif /* __GAME_BOARD_LOGIC_HPP__ */

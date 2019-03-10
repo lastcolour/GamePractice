@@ -23,11 +23,12 @@ private:
 public:
 
     ETSystem() :
-        entityIdGen(InvalidEntityId) {}
+        entityIdGen() {}
     ~ETSystem() = default;
 
     EntityId createNewEntityId() {
-        ++entityIdGen;
+        auto id = entityIdGen.getRawId();
+        entityIdGen.setRawId(++id);
         return entityIdGen;
     }
 
@@ -194,7 +195,7 @@ private:
 private:
 
     typedef std::vector<ETConnection> ConnectionArrayT;
-    std::unordered_map<EntityId, ConnectionArrayT> activeConnection;
+    std::unordered_map<TypeId, ConnectionArrayT> activeConnection;
 
     EntityId entityIdGen;
 };

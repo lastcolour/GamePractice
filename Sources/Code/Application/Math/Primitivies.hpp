@@ -17,6 +17,8 @@ namespace Math {
 
     float Rad2deg(float radians);
 
+    int RandomInt(int min, int max);
+
 } // namespace Math
 
 #endif /* __PRIMITIEVS_HPP__ */

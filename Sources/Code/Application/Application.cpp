@@ -5,9 +5,11 @@
 #include "Core/ETSystem.hpp"
 #include "Render/Render.hpp"
 #include "Game/Game.hpp"
+#include "Timer.hpp"
 
 Application::Application(Platform* pltfrm) :
     etSystem(new ETSystem),
+    timer(new Timer),
     platform(pltfrm),
     logger(),
     assets(),
@@ -25,6 +27,7 @@ Application::~Application() {
     assets.reset();
     logger.reset();
     platform.reset();
+    timer.reset();
     etSystem.reset();
     Environment::DeinitEnv();
 }
@@ -108,16 +111,17 @@ int Application::run() {
 
 void Application::mainLoop() {
     while(true) {
-        surface->update();
+        float dt = timer->tick();
+        surface->update(dt);
         if(!surface->shouldRun()) {
             LogDebug("[Application] Break mainLoop due to Surface");
             break;
         }
-        game->update();
+        game->update(dt);
         if(!game->shouldRun()) {
             LogDebug("[Application] Break mainLoop due to Game");
             break;
         }
-        render->update();
+        render->update(dt);
     }
 }

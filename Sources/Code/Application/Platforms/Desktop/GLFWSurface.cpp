@@ -117,7 +117,7 @@ bool GLFWSurface::onInit() {
     return true;
 }
 
-void GLFWSurface::onUpdate() {
+void GLFWSurface::onUpdate(float dt) {
     glfwPollEvents();
 }
 

@@ -60,7 +60,7 @@ protected:
         }
         return res;
     }
-    void onUpdate() override {
+    void onUpdate(float dt) override {
         std::lock_guard<std::mutex> lock(mutex);
         ++callCount_update;
     }
