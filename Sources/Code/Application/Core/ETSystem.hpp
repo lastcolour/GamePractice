@@ -55,7 +55,6 @@ public:
             return;
         }
         auto& etConnection = it->second;
-        auto removeIt = etConnection.end();
         for(auto etIt = etConnection.begin(), etEnd = etConnection.end(); etIt != etEnd; ++etIt) {
             if(etIt->node == node) {
                 etConnection.erase(etIt);

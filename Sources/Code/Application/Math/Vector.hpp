@@ -170,46 +170,36 @@ Vector4<T> operator/(const Vector4<T>& v1, const Vector4<T>& v2) {
 
 // ==--------------- Vec * Scalar ---------------==
 
-template<typename T, typename F>
-Vector2<T> operator*(const Vector2<T>& v, F a) {
-    static_assert(std::is_fundamental<F>::value, "Only fundamental type are appliable");
-    return Vector2<T>(static_cast<T>(static_cast<F>(v.x) * a), static_cast<T>(static_cast<F>(v.y) * a));
+template<typename T>
+Vector2<T> operator*(const Vector2<T>& v, T a) {
+    return Vector2<T>(v.x * a, v.y * a);
 }
 
-template<typename T, typename F>
-Vector3<T> operator*(const Vector3<T>& v, F a) {
-    static_assert(std::is_fundamental<F>::value, "Only fundamental type are appliable");
-    return Vector3<T>(static_cast<T>(static_cast<F>(v.x) * a), static_cast<T>(static_cast<F>(v.y) * a),
-        static_cast<T>(static_cast<F>(v.z) * a));
+template<typename T>
+Vector3<T> operator*(const Vector3<T>& v, T a) {
+    return Vector3<T>(v.x * a, v.y * a, v.z * a);
 }
 
-template<typename T, typename F>
-Vector4<T> operator*(const Vector4<T>& v, F a) {
-    static_assert(std::is_fundamental<F>::value, "Only fundamental type are appliable");
-    return Vector4<T>(static_cast<T>(static_cast<F>(v.x) * a), static_cast<T>(static_cast<F>(v.y) * a),
-        static_cast<T>(static_cast<F>(v.z) * a), static_cast<T>(static_cast<F>(v.w) * a));
+template<typename T>
+Vector4<T> operator*(const Vector4<T>& v, T a) {
+    return Vector4<T>(v.x * a, v.y * a, v.z * a, v.w * a);
 }
 
 // ==--------------- Vec / Scalar ---------------==
 
-template<typename T, typename F>
-Vector2<T> operator/(const Vector2<T>& v, F a) {
-    static_assert(std::is_fundamental<F>::value, "Only fundamental type are appliable");
-    return Vector2<T>(static_cast<T>(static_cast<F>(v.x) / a), static_cast<T>(static_cast<F>(v.y) / a));
+template<typename T>
+Vector2<T> operator/(const Vector2<T>& v, T a) {
+    return Vector2<T>(v.x / a, v.y / a);
 }
 
-template<typename T, typename F>
-Vector3<T> operator/(const Vector3<T>& v, F a) {
-    static_assert(std::is_fundamental<F>::value, "Only fundamental type are appliable");
-    return Vector3<T>(static_cast<T>(static_cast<F>(v.x) / a), static_cast<T>(static_cast<F>(v.y) / a),
-        static_cast<T>(static_cast<F>(v.z) / a));
+template<typename T>
+Vector3<T> operator/(const Vector3<T>& v, T a) {
+    return Vector3<T>(v.x / a, v.y / a, v.z / a);
 }
 
-template<typename T, typename F>
-Vector4<T> operator/(const Vector4<T>& v, F a) {
-    static_assert(std::is_fundamental<F>::value, "Only fundamental type are appliable");
-    return Vector4<T>(static_cast<T>(static_cast<F>(v.x) / a), static_cast<T>(static_cast<F>(v.y) / a),
-        static_cast<T>(static_cast<F>(v.z) / a), static_cast<T>(static_cast<F>(v.w) / a));
+template<typename T>
+Vector4<T> operator/(const Vector4<T>& v, T a) {
+    return Vector4<T>(v.x / a, v.y / a, v.z / a, v.w / a);
 }
 
 // ==--------------- Scalar * Vec ---------------==

@@ -18,7 +18,7 @@ protected:
     // SystemLogic
     bool onInit() override;
     bool onShouldRun() override { return true; }
-    void onUpdate(float dt) override {}
+    void onUpdate(float dt) override { (void)dt; }
 
 private:
 

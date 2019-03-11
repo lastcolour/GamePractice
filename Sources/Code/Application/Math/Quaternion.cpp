@@ -10,6 +10,7 @@ Quaternion::Quaternion(const Quaternion& quat) :
 }
 
 Quaternion& Quaternion::operator=(const Quaternion& quat) {
+    (void)quat;
     return *this;
 }
 

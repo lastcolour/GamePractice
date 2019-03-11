@@ -10,6 +10,22 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
+set(CMAKE_CXX_FLAGS
+"${CMAKE_CXX_FLAGS} \
+-Wextra \
+-Wall \
+-Wundef \
+-Wshadow \
+-Wpointer-arith \
+-Wcast-align \
+-Wstrict-overflow=5 \
+-Wwrite-strings \
+-Wcast-qual \
+-Wswitch-default \
+-Wswitch-enum \
+-Wconversion \
+-Wunreachable-code")
+
 else()
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")
 endif()

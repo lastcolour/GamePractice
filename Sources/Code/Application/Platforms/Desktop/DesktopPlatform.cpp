@@ -4,6 +4,8 @@
 #include "Platforms/Desktop/DesktopAssets.hpp"
 
 DesktopPlatform::DesktopPlatform(int argc, char* argv[]) {
+    (void)argc;
+    (void)argv;
 }
 
 DesktopPlatform::~DesktopPlatform() {

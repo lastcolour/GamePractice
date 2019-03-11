@@ -18,7 +18,7 @@ protected:
 
     virtual bool onInit() = 0;
     virtual bool onShouldRun() { return true; }
-    virtual void onUpdate(float dt) {}
+    virtual void onUpdate(float dt) { (void)dt; }
 
 private:
 

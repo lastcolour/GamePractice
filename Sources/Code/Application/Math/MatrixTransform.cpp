@@ -21,8 +21,8 @@ void Translate(Mat4& tm, const Vec3& pos) {
 
 void Rotate(Mat4& tm, float angle, const Vec3& rotAxis) {
     const float ang = Deg2rad(angle);
-    const float cosA = cos(ang);
-    const float sinA = sin(ang);
+    const float cosA = static_cast<float>(cos(ang));
+    const float sinA = static_cast<float>(sin(ang));
     const Vec3 axis = rotAxis.getNormilized();
     const Vec3 temp = (1.f - cosA) * axis;
     Mat4 rotTm;
@@ -48,6 +48,8 @@ void Rotate(Mat4& tm, float angle, const Vec3& rotAxis) {
 }
 
 void Rotate(Mat4& tm, const Quat& quat) {
+    (void)tm;
+    (void)quat;
     return;
 }
 

@@ -35,6 +35,7 @@ public:
 
     // ETSurfaceEvents
     void ET_onSurfaceResize(const Vec2i& size) override;
+    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
 
 protected:
 

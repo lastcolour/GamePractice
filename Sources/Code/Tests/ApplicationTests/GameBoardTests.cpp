@@ -31,7 +31,15 @@ public:
         GameBoardLogic::updateBoard();
     }
 
-    std::vector<BoardElement>& getElements() { return elements; }
+    std::vector<BoardElement>& getElements() {
+        return elements;
+    }
+    Vec2i getBoardPosFromPos(const Vec3& pt) const {
+        return GameBoardLogic::getBoardPosFromPos(pt);
+    }
+    Vec3 getPosFromBoardPos(const Vec2i& pt) const {
+        return GameBoardLogic::getPosFromBoardPos(pt);
+    }
     bool removeVerticalLine(const Vec2i& boardPt, int lineLen) {
         return GameBoardLogic::removeVerticalLine(boardPt, lineLen);
     }
@@ -80,6 +88,17 @@ TEST_F(GameBoardTests, CheckInit) {
     ASSERT_EQ(elems.size(), 1);
     ASSERT_EQ(elems[0].state, BoardElemState::Static);
     ASSERT_EQ(elems[0].boardPt, Vec2i(0));
+}
+
+TEST_F(GameBoardTests, CheckPosConverts) {
+    TestBoardParams params;
+    params.boardSize = Vec2i(1);
+    board->setParams(params);
+    ASSERT_TRUE(board->init());
+
+    auto pt = board->getPosFromBoardPos(Vec2i(0));
+    auto boardPt = board->getBoardPosFromPos(pt);
+    ASSERT_EQ(boardPt, Vec2i(0));
 }
 
 TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
@@ -165,53 +184,36 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
 TEST_F(GameBoardTests, CheckMoving) {
     TestBoardParams params;
-    params.boardSize = Vec2i(1, 3);
+    params.boardSize = Vec2i(1, 2);
     params.moveSpeed = 1.f;
     board->setParams(params);
     ASSERT_TRUE(board->init());
-    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 3));
+    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 2));
     board->updateAfterRemoves();
 
-    ASSERT_TRUE(board->getElem(Vec2i(0, 5)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 4)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 2)));
+    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));;
     ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 
-    board->ET_onGameTick(0.49f);
+    board->ET_onGameTick(0.5f);
 
-    ASSERT_TRUE(board->getElem(Vec2i(0, 5)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 4)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 2)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
-
-    board->ET_onGameTick(0.52f);
-
-    ASSERT_FALSE(board->getElem(Vec2i(0, 5)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 4)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 
-    board->ET_onGameTick(1.f);
+    board->ET_onGameTick(0.5f);
 
-    ASSERT_FALSE(board->getElem(Vec2i(0, 5)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 4)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
+    ASSERT_FALSE(board->getElem(Vec2i(0, 3)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 
     board->ET_onGameTick(1.f);
 
-    ASSERT_FALSE(board->getElem(Vec2i(0, 5)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 4)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
+    ASSERT_FALSE(board->getElem(Vec2i(0, 2)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 1)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 0)));
 }

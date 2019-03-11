@@ -31,8 +31,8 @@ enum class ETouchType {
 
 struct ETSurfaceEvents {
     virtual ~ETSurfaceEvents() = default;
-    virtual void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {}
-    virtual void ET_onSurfaceResize(const Vec2i& size) {}
+    virtual void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) = 0;
+    virtual void ET_onSurfaceResize(const Vec2i& size) = 0;
 };
 
 struct ETAsset {

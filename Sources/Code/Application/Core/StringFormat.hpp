@@ -16,9 +16,13 @@ const char* ConvertToPrintable(const std::string& str);
 
 template <typename... ArgsT>
 void StringFormatImpl(Buffer& buff, const std::string& format, const ArgsT& ... args) {
-    auto resStrSize = std::snprintf(static_cast<char*>(buff.getData()), buff.getSize(), format.c_str(), args...);
-    if(resStrSize + 1 > buff.getSize()) {
-        buff.resize(resStrSize + 1);
+    int resStrSize = std::snprintf(static_cast<char*>(buff.getData()), buff.getSize(), format.c_str(), args...);
+    if(resStrSize < 0) {
+        return;
+    }
+    size_t resSize = static_cast<size_t>(resStrSize + 1);
+    if(resSize > buff.getSize()) {
+        buff.resize(resSize);
         StringFormatImpl(buff, format, args...);
     }
 }

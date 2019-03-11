@@ -1,6 +1,7 @@
 #include "Platforms/Desktop/DesktopLogger.hpp"
 
 #include <iostream>
+#include <cassert>
 
 DesktopLogger::DesktopLogger() :
     logLevel(LogLevel::Debug) {
@@ -51,6 +52,9 @@ std::string DesktopLogger::formatMessage(LogLevel lvl, const std::string& msg) {
         case LogLevel::Fatal:
             prefix = "[Fatal] ";
             break;
+        case LogLevel::Silent:
+            assert(false && "Invalid log level");
+            break;
         default:
             prefix = "[NO_LVL] ";
     }
@@ -60,5 +64,6 @@ std::string DesktopLogger::formatMessage(LogLevel lvl, const std::string& msg) {
 }
 
 void DesktopLogger::printMessasge(LogLevel lvl, const std::string& msg) {
+    (void)lvl;
     std::cout << msg << std::endl;
 }

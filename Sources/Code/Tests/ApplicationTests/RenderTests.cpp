@@ -306,7 +306,7 @@ TEST_F(RenderTests, CheckGameRenderAfterInit) {
     ASSERT_TRUE(game.init());
 
     const Vec2i fbSize = textureFramebuffer->getSize();
-    Vec2i touchPt = fbSize * 0.5f;
+    Vec2i touchPt = fbSize / 2;
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, touchPt);
 
     ET_SendEvent(&ETRender::ET_drawFrame);

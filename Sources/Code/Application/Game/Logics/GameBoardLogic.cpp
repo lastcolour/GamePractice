@@ -107,10 +107,16 @@ bool GameBoardLogic::init(const JSONNode& node) {
 
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
-            if (INVALID_BOARD_ELEM_ID == spawnNewElement(Vec2i(i, j))) {
-                LogWarning("[GameBoard::init] Can't create cell object: %s", cellObject);
+            EntityId cellObjId = InvalidEntityId;
+            ET_SendEventReturn(cellObjId, &ETGame::ET_createGameObject, cellObject);
+            if(cellObjId == InvalidEntityId) {
+                LogWarning("[GameBoardLogic::init] Can't spawn element");
                 return false;
             }
+            BoardElement elem;
+            elem.entId = cellObjId;
+            initNewElem(elem, Vec2i(i, j));
+            elements.push_back(elem);
         }
     }
 
@@ -172,12 +178,15 @@ Vec3 GameBoardLogic::getPosFromBoardPos(const Vec2i& boardPt) const {
 }
 
 Vec2i GameBoardLogic::getBoardPosFromPos(const Vec3& pt) const {
-    Vec3 pos = pt - Vec3(boardBox.bot, 1.f);
-    pos = pt / cellSize;
-    return Vec2i(std::round(pos.x - 0.5f), std::round(pos.y - 0.5f));
+    Vec3 pos = pt - getPosFromBoardPos(Vec2i(0));
+    pos = pos / cellSize;
+    Vec2i boardPt;
+    boardPt.x = std::round(pos.x);
+    boardPt.y = std::round(pos.y);
+    return boardPt;
 }
 
-void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) {
+void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const {
     elem.box.bot = Vec2i(static_cast<int>(boardBox.bot.x + cellSize * boardPt.x),
         static_cast<int>(boardBox.bot.y + cellSize * boardPt.y));
     elem.box.top = elem.box.bot + Vec2i(static_cast<int>(cellSize));
@@ -200,29 +209,23 @@ void GameBoardLogic::switchElements(int firstElemId, int secondElemId) {
 bool GameBoardLogic::isElemMatch(int firstElemId, int secondElemId) const {
     const BoardElement& firstElem = elements[firstElemId];
     const BoardElement& secondElem = elements[secondElemId];
-    return firstElem.color == secondElem.color;
+    if(firstElem.state == BoardElemState::Static && secondElem.state == BoardElemState::Static) {
+        return firstElem.color == secondElem.color;
+    }
+    return false;
 }
 
-int GameBoardLogic::spawnNewElement(const Vec2i& boardPt) {
-    EntityId cellObjId = InvalidEntityId;
-    ET_SendEventReturn(cellObjId, &ETGame::ET_createGameObject, cellObject);
-    if(cellObjId == InvalidEntityId) {
-        LogWarning("[GameBoardLogic::spawnNewElement] Can't spawn element");
-        return INVALID_BOARD_ELEM_ID;
-    }
-    BoardElement boardElem;
-    boardElem.color = getElemType();
-    boardElem.entId = cellObjId;
-    boardElem.state = BoardElemState::Static;
+void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const {
+    elem.state = BoardElemState::Static;
+    elem.movePt = boardPt;
+    elem.color = getElemType();
+    elem.state = BoardElemState::Static;
+    setElemBoardPos(elem, boardPt);
 
-    elements.push_back(boardElem);
-
-    setElemBoardPos(elements.back(), boardPt);
     RenderLogicParams params;
-    params.col = getElemColor(boardElem.color);
+    params.col = getElemColor(elem.color);
     params.size = Vec2(objectSize);
-    ET_SendEvent(cellObjId, &ETRenderLogic::ET_setRenderParams, params);
-    return elements.size() - 1;
+    ET_SendEvent(elem.entId, &ETRenderLogic::ET_setRenderParams, params);
 }
 
 void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {
@@ -297,10 +300,10 @@ void GameBoardLogic::updateAfterRemoves() {
                 elem.movePt = Vec2i(elem.boardPt.x, elem.boardPt.y - voidCount.x);
             }
         } else if(elem.state == BoardElemState::Void) {
+            Vec2i boardPt = Vec2i(elem.boardPt.x, boardSize.y + 1 + voidCount.x - 1);
+            initNewElem(elem, boardPt);
             elem.state = BoardElemState::Moving;
             elem.movePt = Vec2i(elem.boardPt.x, boardSize.y - voidCount.y - 1);
-            Vec2i boardPt = Vec2i(elem.boardPt.x, boardSize.y + 1 + voidCount.x - 1);
-            setElemBoardPos(elem, boardPt);
         }
     }
 }
@@ -348,6 +351,11 @@ void GameBoardLogic::onEndElemMove(const Vec2i& endPt) {
     }
 }
 
+void GameBoardLogic::ET_onSurfaceResize(const Vec2i& pt) {
+    (void)pt;
+    return;
+}
+
 void GameBoardLogic::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
     if(touchType == ETouchType::Press) {
         int touchedElemId = findTouchedElemId(pt);
@@ -368,7 +376,7 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     ET_SendEventReturn(tm, elem.entId, &ETGameObject::ET_getTransform);
     tm.pt.y -= moveSpeed * dt * cellSize;
     Vec3 desirePt = getPosFromBoardPos(elem.movePt);
-    if(tm.pt.y <= desirePt.y) {
+    if(tm.pt.y > desirePt.y) {
         elem.boardPt = getBoardPosFromPos(tm.pt);
         ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, tm);
         return true;

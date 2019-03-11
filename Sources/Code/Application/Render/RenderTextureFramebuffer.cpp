@@ -81,11 +81,11 @@ Vec2i RenderTextureFramebuffer::getSize() const {
 bool RenderTextureFramebuffer::isBinded() const {
     if(framebufferId)
     {
-        GLint currentReadFramebuffer = 0;
-        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &currentReadFramebuffer);
-        bool res = framebufferId == currentReadFramebuffer;
-        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &currentReadFramebuffer);
-        res &= framebufferId == currentReadFramebuffer;
+        GLint currentFb = 0;
+        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &currentFb);
+        bool res = framebufferId == static_cast<GLuint>(currentFb);
+        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &currentFb);
+        res &= framebufferId == static_cast<GLuint>(currentFb);
         return res;
     }
     return false;

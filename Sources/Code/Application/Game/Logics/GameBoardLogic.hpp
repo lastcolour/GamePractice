@@ -46,6 +46,7 @@ public:
 
     // ETSurfaceEvents
     void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
+    void ET_onSurfaceResize(const Vec2i& pt) override;
 
     // ETGameTick
     void ET_onGameTick(float dt) override;
@@ -64,8 +65,8 @@ protected:
     void markForRemoveElems(const std::vector<int>& elems);
     bool isElemMatch(int firstElemId, int secondElemId) const;
     int findTouchedElemId(const Vec2i& pt) const;
-    int spawnNewElement(const Vec2i& boardPt);
-    void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt);
+    void initNewElem(BoardElement& elem, const Vec2i& boardPt) const;
+    void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
     ColorF getElemColor(BoardElemType color) const;
     void updateAfterRemoves();

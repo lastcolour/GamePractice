@@ -34,8 +34,8 @@
         {
           "type":"GameBoardLogic",
           "data":{
-            "fallSpeed":450.0,
-            "size":{"w":5, "h":5},
+            "fallSpeed":0.5,
+            "size":{"w":8, "h":8},
             "space":0.8,
             "cell":{
               "object":"GameBoardElem",

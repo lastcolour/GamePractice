@@ -283,6 +283,11 @@ int Render::createProgramImpl(const std::string& vertSrc, const std::string& fra
     return programId;
 }
 
+void Render::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
+    (void)touchType;
+    (void)pt;
+}
+
 void Render::ET_onSurfaceResize(const Vec2i& size) {
     if(!renderFb) {
         setViewport(size);
