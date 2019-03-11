@@ -54,26 +54,29 @@ protected:
 
     virtual bool serialize(const JSONNode& node);
     virtual BoardElemType getElemType() const;
-    Vec3 getPosFromBoardPos(const Vec2i& boardPt);
-    bool lerpElem(int elemId, float dt);
-    void removeElems(const std::vector<int>& elems);
+    int getElemId(const Vec2i& boardPt) const;
+    Vec2i getBoardPosFromPos(const Vec3& pt) const;
+    Vec3 getPosFromBoardPos(const Vec2i& boardPt) const;
+    BoardElement* getElem(const Vec2i& boardPt);
+    const BoardElement* getElem(const Vec2i& boardPt) const;
+    Vec2i getVoidBelowAndAbove(const Vec2i& boardPt) const;
+    bool moveElem(BoardElement& elem, float dt);
+    void markForRemoveElems(const std::vector<int>& elems);
     bool isElemMatch(int firstElemId, int secondElemId) const;
     int findTouchedElemId(const Vec2i& pt) const;
-    int getElemIdByBoardPos(const Vec2i& boardPt) const;
-    int getVoidElemsBelow(const Vec2i& boardPt) const;
     int spawnNewElement(const Vec2i& boardPt);
-    bool isElementBelow(int elemId, const Vec2i& boardPt) const;
-    void setElemBoardPos(int elemId, const Vec2i& boardPt);
+    void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt);
     void switchElements(int firstElem, int secondElem);
     ColorF getElemColor(BoardElemType color) const;
+    void updateAfterRemoves();
     void updateBoard();
 
     void onStartElemMove();
     void onElemMove();
     void onEndElemMove(const Vec2i& pt);
 
-    void removeVerticalLines(const Vec2i& boardPt, int lineLen);
-    void removeHorizontalLines(const Vec2i& boardPt, int lineLen);
+    bool removeVerticalLine(const Vec2i& boardPt, int lineLen);
+    bool removeHorizontalLine(const Vec2i& boardPt, int lineLen);
 
 protected:
 
