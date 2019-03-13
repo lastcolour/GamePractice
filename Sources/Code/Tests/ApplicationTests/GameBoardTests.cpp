@@ -81,7 +81,7 @@ TEST_F(GameBoardTests, CheckInit) {
     ASSERT_TRUE(board->init());
 
     const auto& elems = board->getElements();
-    ASSERT_EQ(elems.size(), 1);
+    ASSERT_EQ(elems.size(), 1u);
     ASSERT_EQ(elems[0].state, BoardElemState::Static);
     ASSERT_EQ(elems[0].boardPt, Vec2i(0));
 }
@@ -104,13 +104,13 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     ASSERT_TRUE(board->init());
 
     const auto& elems = board->getElements();
-    ASSERT_EQ(elems.size(), 3);
+    ASSERT_EQ(elems.size(), 3u);
 
     ASSERT_TRUE(board->removeHorizontalLine(Vec2i(0, 0), 3));
 
     board->updateAfterRemoves();
 
-    ASSERT_EQ(elems.size(), 3);
+    ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
         ASSERT_EQ(elem.state, BoardElemState::Moving);
@@ -125,13 +125,13 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     ASSERT_TRUE(board->init());
 
     const auto& elems = board->getElements();
-    ASSERT_EQ(elems.size(), 3);
+    ASSERT_EQ(elems.size(), 3u);
 
     ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 3));
 
     board->updateAfterRemoves();
 
-    ASSERT_EQ(elems.size(), 3);
+    ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
         ASSERT_EQ(elem.state, BoardElemState::Moving);

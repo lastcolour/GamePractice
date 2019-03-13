@@ -349,7 +349,7 @@ void GameBoardLogic::onEndElemMove(const Vec2i& endPt) {
         return;
     }
     int nextElemId = getElemId(nextBoardPt);
-    if(nextElemId != INVALID_BOARD_ELEM_ID) {
+    if(nextElemId != INVALID_BOARD_ELEM_ID && elements[nextElemId].state == BoardElemState::Static) {
         switchElements(activeTouchedElemId, nextElemId);
         updateBoard();
     }

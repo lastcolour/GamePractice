@@ -3,7 +3,7 @@
 #include "ETApplicationInterfaces.hpp"
 
 namespace {
-    const char* GAME_ROOT_OBJECT = "MainMenu";
+    const char* GAME_ROOT_OBJECT = "GameRootObject";
 }
 
 Game::Game() :

@@ -13,6 +13,9 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
+    // ETUIButton
+    void ET_onPress() override;
+
 private:
 
     std::string text;

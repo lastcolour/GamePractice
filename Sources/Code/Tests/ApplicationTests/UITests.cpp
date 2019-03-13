@@ -139,4 +139,20 @@ TEST_F(UITests, CheckVerticalUIList) {
     uiList->addElem(uiBox2->getEntityId());
 
     ASSERT_TRUE(uiList->init());
+
+    const auto& aabbList = uiList->ET_getAaabb2di();
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ASSERT_EQ(aabbList.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 4));
+    ASSERT_EQ(aabbList.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), 0));
+    ASSERT_EQ(aabbList.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), renderPort.y));
+
+    const auto& aabbBox1 = uiBox1->ET_getAaabb2di();
+    ASSERT_EQ(aabbBox1.bot, Vec2i(0));
+    ASSERT_EQ(aabbBox1.top, Vec2i(0));
+
+    const auto& aabbBox2 = uiBox2->ET_getAaabb2di();
+    ASSERT_EQ(aabbBox2.bot, Vec2i(0));
+    ASSERT_EQ(aabbBox2.top, Vec2i(0));
 }

@@ -10,9 +10,9 @@ namespace {
 class ET_TestInterface {
 public:
     virtual ~ET_TestInterface() = default;
-    virtual void ET_onEvent() {}
-    virtual void ET_OnParamEvent(int param) {}
-    virtual int ET_OnReturnParamValue() { return -1; }
+    virtual void ET_onEvent() = 0;
+    virtual void ET_OnParamEvent(int param) = 0;
+    virtual int ET_OnReturnParamValue() = 0;
 };
 
 class TestETNode : public ETNode<ET_TestInterface> {

@@ -23,8 +23,8 @@ namespace {
 } // namespace
 
 Render::Render() :
-    clearColor(0.f, 0.f, 0.f),
-    renderFb(nullptr) {
+    renderFb(nullptr),
+    clearColor(0.f, 0.f, 0.f) {
 }
 
 bool Render::onInit() {
@@ -49,6 +49,7 @@ bool Render::onInit() {
 }
 
 void Render::onUpdate(float dt) {
+    (void)dt;
     ET_drawFrame();
 }
 

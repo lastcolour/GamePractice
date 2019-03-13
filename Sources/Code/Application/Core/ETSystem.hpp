@@ -5,6 +5,7 @@
 #include "Core/Core.hpp"
 
 #include <unordered_map>
+#include <type_traits>
 #include <vector>
 
 class ETNodeBase;
@@ -86,6 +87,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -101,6 +103,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -117,6 +120,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -130,6 +134,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -146,6 +151,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -161,6 +167,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -177,6 +184,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {
@@ -190,6 +198,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);
         if(it == activeConnection.end()) {

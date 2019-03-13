@@ -13,9 +13,17 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
+    // ETUIList
+    Vec2i ET_getElemOffset(int idx) const override;
+    ListType ET_getListType() const override;
+
 protected:
 
     void addElement(EntityId entId);
+
+private:
+
+    void calcResListBox();
 
 private:
 

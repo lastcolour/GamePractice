@@ -5,6 +5,7 @@
 #include "Core/ETSystem.hpp"
 
 #include <vector>
+#include <type_traits>
 
 class ETNodeBase {
 protected:
@@ -15,7 +16,9 @@ template<typename T>
 class ETNode : public ETNodeBase, public T {
 public:
 
-    ETNode() = default;
+    ETNode() {
+        static_assert(std::is_abstract<T>::value, "ETType can be only abstract class");
+    }
     virtual ~ETNode() {
         disconnect();
     }

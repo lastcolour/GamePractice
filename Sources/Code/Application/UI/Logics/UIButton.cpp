@@ -8,6 +8,9 @@ UIButton::UIButton() {
 UIButton::~UIButton() {
 }
 
+void UIButton::ET_onPress() {
+}
+
 bool UIButton::serialize(const JSONNode& node) {
     if(!UIBox::serialize(node)) {
         LogWarning("[UIButton::serialize] UIBox searilization failed");

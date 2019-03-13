@@ -18,6 +18,8 @@ public:
 
     // ETUIBox
     const AABB2Di& ET_getAaabb2di() const override;
+    void ET_setUIListPos(int pos) override;
+
 
 protected:
 
@@ -27,6 +29,9 @@ protected:
 private:
 
     AABB2Di calcBox() const;
+    Vec2i calcSize(const AABB2Di& parentBox) const;
+    Vec2i calcCenter(const AABB2Di& parentBox) const;
+    AABB2Di caclParentBox() const;
 };
 
 #endif /* __UIBOX_HPP__ */

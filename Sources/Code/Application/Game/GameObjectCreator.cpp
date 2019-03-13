@@ -68,12 +68,12 @@ std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& o
             continue;
         }
         std::unique_ptr<GameObject> objPtr(new GameObject(baseName, GetEnv()->getETSystem()->createNewEntityId()));
-        auto logics = objNode.object("logics");
-        if(!logics || logics.size() == 0u) {
+        auto logicsNodes = objNode.object("logics");
+        if(!logicsNodes || logicsNodes.size() == 0u) {
             LogWarning("[GameObjectCreator::createObject] Skip object '%s' while it doesn't have any logic", objectName);
             continue;
         }
-        for(const auto& logicNode : logics) {
+        for(const auto& logicNode : logicsNodes) {
             std::string logicType;
             logicNode.value("type", logicType);
             auto logicPtr = createLogic(logicType);

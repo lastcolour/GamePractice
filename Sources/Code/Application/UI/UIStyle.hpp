@@ -5,6 +5,8 @@
 
 class JSONNode;
 
+const int InvalidListPos = -1;
+
 enum class ListType {
     Vertical = 0,
     Horizontal
@@ -22,6 +24,7 @@ public:
     ListType listType;
     AlignType alignType;
     Vec2 size;
+    int listPos;
 
 public:
 

@@ -234,6 +234,8 @@ void JSONNode::value(const std::string& key, float& value) const {
     if(memIt != nodeImpl->val->MemberEnd()) {
         if(memIt->value.IsFloat()) {
             value = memIt->value.GetFloat();
+        } else if(memIt->value.IsInt()) {
+            value = static_cast<float>(memIt->value.GetInt());
         }
     }
 }
@@ -268,6 +270,8 @@ void JSONNode::value(float& value) const {
     }
     if(nodeImpl->val->IsFloat()) {
         value = nodeImpl->val->GetFloat();
+    } else if(nodeImpl->val->IsInt()) {
+        value = static_cast<float>(nodeImpl->val->GetInt());
     }
 }
 

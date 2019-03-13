@@ -4,7 +4,8 @@
 UIStyle::UIStyle() :
     listType(ListType::Vertical),
     alignType(AlignType::Center),
-    size(1.f) {
+    size(1.f),
+    listPos(InvalidListPos) {
 }
 
 UIStyle::~UIStyle() {

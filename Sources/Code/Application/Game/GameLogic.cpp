@@ -20,3 +20,11 @@ EntityId GameLogic::getEntityId() const {
     assert(false && "No valid game object to query entity Id");
     return InvalidEntityId;
 }
+
+EntityId GameLogic::getParentId() const {
+    if(gameObj) {
+        return gameObj->ET_getParentId();
+    }
+    assert(false && "No valid game object to query parent's entity Id");
+    return InvalidEntityId;
+}

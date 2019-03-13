@@ -15,6 +15,7 @@ public:
 
     void setGameObject(const GameObject* obj);
     EntityId getEntityId() const;
+    EntityId getParentId() const;
 
 protected:
 
