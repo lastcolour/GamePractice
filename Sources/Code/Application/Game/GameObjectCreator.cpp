@@ -6,6 +6,9 @@
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/Logics/RenderLogic.hpp"
 
+#include "UI/Logics/UIButton.hpp"
+#include "UI/Logics/UIList.hpp"
+
 #include <algorithm>
 
 namespace {
@@ -16,6 +19,9 @@ GameObjectCreator::GameObjectCreator() {
     registerLogic<RenderLogic>("RenderLogic");
     registerLogic<GameBoardLogic>("GameBoardLogic");
     registerLogic<GameBoardElemLogic>("GameBoardElemLogic");
+
+    registerLogic<UIButton>("UIButton");
+    registerLogic<UIList>("UIList");
 }
 
 GameObjectCreator::~GameObjectCreator() {
@@ -81,7 +87,11 @@ std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& o
                 continue;
             }
             logicPtr->setGameObject(objPtr.get());
-            if(!logicPtr->init(logicData)) {
+            if(!logicPtr->serialize(logicData)) {
+                LogWarning("[GameObjectCreator::createObject] Can't serialize logic '%s' for object '%s'", logicType, objectName);
+                continue;
+            }
+            if(!logicPtr->init()) {
                 LogWarning("[GameObjectCreator::createObject] Can't init logic '%s' for object '%s'", logicType, objectName);
                 continue;
             }

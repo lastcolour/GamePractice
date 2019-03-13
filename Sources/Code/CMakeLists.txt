@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 set(MAIN_PROJECT_NAME "Game01" CACHE INTERNAL "Build target name of main project")
 set(MAIN_PROJECT_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Path to sources of main project")
 
-project(${MAIN_PROJECT_NAME})
+project(${MAIN_PROJECT_NAME} CXX)
 
 # Detect & verify project configuration
 

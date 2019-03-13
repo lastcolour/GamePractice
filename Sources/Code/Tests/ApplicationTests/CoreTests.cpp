@@ -10,7 +10,7 @@ namespace {
 class ET_TestInterface {
 public:
     virtual ~ET_TestInterface() = default;
-    virtual void ET_onEvent() {} 
+    virtual void ET_onEvent() {}
     virtual void ET_OnParamEvent(int param) {}
     virtual int ET_OnReturnParamValue() { return -1; }
 };
@@ -19,7 +19,7 @@ class TestETNode : public ETNode<ET_TestInterface> {
 public:
 
     TestETNode() : eventRecieved(0) {}
-    virtual ~TestETNode() {}
+    virtual ~TestETNode() = default;
 
     void connect(EntityId id) {
         ETNode<ET_TestInterface>::connect(id);

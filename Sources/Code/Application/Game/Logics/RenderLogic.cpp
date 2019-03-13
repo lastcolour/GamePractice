@@ -16,25 +16,25 @@ RenderLogic::RenderLogic() :
 RenderLogic::~RenderLogic() {
 }
 
-bool RenderLogic::init(const JSONNode& node) {
-    std::string matName;
+bool RenderLogic::serialize(const JSONNode& node) {
     std::string geomName;
-    node.value("mat", matName);
     node.value("geom", geomName);
-
     ET_SendEventReturn(geom, &ETRender::ET_createGeometry, geomName);
     if(!geom) {
         return false;
     }
-
+    std::string matName;
+    node.value("mat", matName);
     ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
     if(!mat) {
         return false;
     }
+    return true;
+}
 
+bool RenderLogic::init() {
     ETNode<ETRenderEvents>::connect(getEntityId());
     ETNode<ETRenderLogic>::connect(getEntityId());
-
     return true;
 }
 

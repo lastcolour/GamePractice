@@ -314,7 +314,3 @@ TEST_F(RenderTests, CheckGameRenderAfterInit) {
     ASSERT_TRUE(textureFramebuffer->read());
     dumpFramebuffer();
 }
-
-TEST_F(RenderTests, CheckDontRenderWithoutFrambebufferOrSurface) {
-    ASSERT_FALSE(true);
-}

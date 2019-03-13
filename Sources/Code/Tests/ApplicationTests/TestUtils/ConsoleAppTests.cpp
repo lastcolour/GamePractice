@@ -1,10 +1,13 @@
 #include "TestUtils/ConsoleAppTests.hpp"
 #include "TestUtils/VoidTestApplication.hpp"
 #include "Platforms/Desktop/DesktopPlatform.hpp"
+#include "Game/GameObject.hpp"
 
 std::unique_ptr<Application> ConsoleAppTests::APP;
 
 namespace {
+
+const char* TEST_OBJECT_NAME = "TestObj";
 
 class ConsoleApplication : public Application {
 public:
@@ -29,7 +32,7 @@ protected:
 
 void ConsoleAppTests::SetUpTestCase() {
     ConsoleApplication* consoleApp = new ConsoleApplication;
-    
+
     ASSERT_TRUE(consoleApp->init());
 
     ASSERT_TRUE(GetEnv()->getETSystem());
@@ -42,4 +45,9 @@ void ConsoleAppTests::SetUpTestCase() {
 
 void ConsoleAppTests::TearDownTestCase() {
     APP.reset();
+}
+
+std::unique_ptr<GameObject> ConsoleAppTests::createVoidObject() const {
+    std::unique_ptr<GameObject> objectPtr(new GameObject(TEST_OBJECT_NAME, GetEnv()->getETSystem()->createNewEntityId()));
+    return objectPtr;
 }

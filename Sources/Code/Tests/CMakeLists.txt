@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(${MAIN_PROJECT_NAME}Tests)
+project(${MAIN_PROJECT_NAME}Tests CXX)
 
 set(APPLICATION_TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests)
 

@@ -8,7 +8,7 @@ Transform::Transform() :
     quat() {
 }
 
-Transform::Transform(const Transform& tm) : 
+Transform::Transform(const Transform& tm) :
     pt(tm.pt),
     scale(tm.scale),
     quat(tm.quat) {

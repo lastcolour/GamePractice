@@ -10,7 +10,8 @@ public:
 
     virtual ~GameLogic();
 
-    virtual bool init(const JSONNode& node) { return true; }
+    virtual bool serialize(const JSONNode& node) = 0;
+    virtual bool init() = 0;
 
     void setGameObject(const GameObject* obj);
     EntityId getEntityId() const;

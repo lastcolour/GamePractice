@@ -42,6 +42,57 @@
               "scale":0.9
             }
           }
+        },
+        {
+          "type":"UIBox",
+          "data":{
+            "style":{
+              
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name":"StartButton",
+      "logics":[
+        {
+          "type":"Button",
+          "data":{
+            "text":"Start"
+          }
+        }
+      ]
+    },
+    {
+      "name":"OptionButton",
+      "logics":[
+        {
+          "type":"Button",
+          "data":{
+            "text":"Options"
+          }
+        }
+      ]
+    },
+    {
+      "name":"MainMenu",
+      "logics":[
+        {
+          "type":"UIList",
+          "data":{
+            "children":[
+              "StartButton",
+              "OptionButton"
+            ],
+            "style":{
+              "size": {
+                "width": 0.9,
+                "height": "*"
+              },
+              "align":"center"
+            }
+          }
         }
       ]
     }

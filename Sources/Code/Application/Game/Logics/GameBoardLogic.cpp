@@ -90,10 +90,7 @@ BoardElemType GameBoardLogic::getElemType() const {
     return static_cast<BoardElemType>(Math::RandomInt(0, static_cast<int>(BoardElemType::ENUM_COUNT) - 1));
 }
 
-bool GameBoardLogic::init(const JSONNode& node) {
-    if(!serialize(node)) {
-        return false;
-    }
+bool GameBoardLogic::init() {
     Vec2i viewport(0);
     ET_SendEventReturn(viewport, &ETRender::ET_getRenderPort);
     float cellSizeY = space * viewport.x / boardSize.x;
@@ -128,7 +125,7 @@ bool GameBoardLogic::init(const JSONNode& node) {
 int GameBoardLogic::getElemId(const Vec2i& boardPt) const {
     for(size_t i = 0, sz = elements.size(); i < sz; ++i) {
         if(elements[i].boardPt == boardPt) {
-            return i;
+            return static_cast<int>(i);
         }
     }
     return INVALID_BOARD_ELEM_ID;
@@ -157,7 +154,7 @@ int GameBoardLogic::findTouchedElemId(const Vec2i& pt) const {
         const auto& boardElem = elements[i];
         if(boardElem.state == BoardElemState::Static) {
             if(boardElem.box.bot < pt && pt < boardElem.box.top) {
-                return i;
+                return static_cast<int>(i);
             }
         }
     }
@@ -175,15 +172,6 @@ Vec3 GameBoardLogic::getPosFromBoardPos(const Vec2i& boardPt) const {
     pt.x += cellSize * (boardPt.x + 0.5f);
     pt.y += cellSize * (boardPt.y + 0.5f);
     return Vec3(pt, 0.f);
-}
-
-Vec2i GameBoardLogic::getBoardPosFromPos(const Vec3& pt) const {
-    Vec3 pos = pt - getPosFromBoardPos(Vec2i(0));
-    pos = pos / cellSize;
-    Vec2i boardPt;
-    boardPt.x = std::round(pos.x);
-    boardPt.y = std::round(pos.y);
-    return boardPt;
 }
 
 void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const {
@@ -236,7 +224,7 @@ void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {
 }
 
 bool GameBoardLogic::removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
-    assert(lineLen > 1 && "Invalid line len");
+    assert(lineLen >= 1 && "Invalid line len");
     std::vector<int> lineElemIds;
     lineElemIds.reserve(lineLen);
     int firstElemId = getElemId(boardPt);
@@ -256,7 +244,7 @@ bool GameBoardLogic::removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
 }
 
 bool GameBoardLogic::removeVerticalLine(const Vec2i& boardPt, int lineLen) {
-    assert(lineLen > 1 && "Invalid line len");
+    assert(lineLen >= 1 && "Invalid line len");
     std::vector<int> lineElemIds;
     lineElemIds.reserve(lineLen);
     int firstElemId = getElemId(boardPt);
@@ -275,35 +263,51 @@ bool GameBoardLogic::removeVerticalLine(const Vec2i& boardPt, int lineLen) {
     return true;
 }
 
-Vec2i GameBoardLogic::getVoidBelowAndAbove(const Vec2i& boardPt) const {
-    int voidBelow = 0;
-    int voidAbove = 0;
-    for(int i = 0; i < boardSize.y; ++i) {
-        Vec2i pt(boardPt.x, i);
-        auto elem = getElem(pt);
-        bool isVoid = elem ? elem->state == BoardElemState::Void : true;
-        if(i > boardPt.y && isVoid) {
-            ++voidAbove;
-        } else if(i < boardPt.y && isVoid) {
-            ++voidBelow;
+const BoardElement* GameBoardLogic::getTopElem(const Vec2i& boardPt) const {
+    const BoardElement* topElem = nullptr;
+    for(auto& elem: elements) {
+        if(elem.boardPt.x == boardPt.x) {
+            if(!topElem || topElem->boardPt.y < elem.boardPt.y) {
+                topElem = &elem;
+            }
         }
     }
-    return Vec2i(voidBelow, voidAbove);
+    assert(topElem && "Invalid top board element");
+    return topElem;
+}
+
+int GameBoardLogic::getVoidElemBelow(const Vec2i& boardPt) const {
+    auto count = 0;
+    for(int i = 0; i < boardPt.y; ++i) {
+        auto elem = getElem(Vec2i(boardPt.x, i));
+        if(!elem || elem->state == BoardElemState::Void) {
+            ++count;
+        }
+    }
+    return count;
 }
 
 void GameBoardLogic::updateAfterRemoves() {
     for(auto& elem : elements) {
-        auto voidCount = getVoidBelowAndAbove(elem.boardPt);
         if(elem.state == BoardElemState::Static || elem.state == BoardElemState::Moving) {
-            if(voidCount.x > 0) {
+            int voidBelow = getVoidElemBelow(elem.boardPt);
+            if(voidBelow > 0) {
                 elem.state = BoardElemState::Moving;
-                elem.movePt = Vec2i(elem.boardPt.x, elem.boardPt.y - voidCount.x);
+                elem.movePt = Vec2i(elem.boardPt.x, elem.boardPt.y - voidBelow);
             }
         } else if(elem.state == BoardElemState::Void) {
-            Vec2i boardPt = Vec2i(elem.boardPt.x, boardSize.y + 1 + voidCount.x - 1);
-            initNewElem(elem, boardPt);
+            auto topElem = getTopElem(elem.boardPt);
+            Vec2i topPt = topElem->boardPt;
+            topPt.y += 1;
+            initNewElem(elem, topPt);
+            int voidBelow = getVoidElemBelow(elem.boardPt);
             elem.state = BoardElemState::Moving;
-            elem.movePt = Vec2i(elem.boardPt.x, boardSize.y - voidCount.y - 1);
+            elem.movePt = Vec2i(topPt.x, topPt.y - voidBelow);
+
+            Transform topTm;
+            ET_SendEventReturn(topTm, topElem->entId, &ETGameObject::ET_getTransform);
+            topTm.pt.y += cellSize;
+            ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, topTm);
         }
     }
 }
@@ -371,13 +375,27 @@ void GameBoardLogic::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
     }
 }
 
+Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const {
+    Vec2i resPt;
+    resPt.x = boardPt.x;
+    Vec3 pos = pt - getPosFromBoardPos(boardPt);
+    float yShift = pos.y;
+    yShift = yShift / cellSize;
+    int shift = static_cast<int>(yShift);
+    if(std::abs(yShift - static_cast<float>(shift)) > 0.5f) {
+        shift = shift > 0 ? ++shift : --shift; 
+    }
+    resPt.y = std::max(0, boardPt.y + shift);
+    return resPt;
+}
+
 bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     Transform tm;
     ET_SendEventReturn(tm, elem.entId, &ETGameObject::ET_getTransform);
     tm.pt.y -= moveSpeed * dt * cellSize;
     Vec3 desirePt = getPosFromBoardPos(elem.movePt);
     if(tm.pt.y > desirePt.y) {
-        elem.boardPt = getBoardPosFromPos(tm.pt);
+        elem.boardPt = getBoardPosFromPos(elem.boardPt, tm.pt);
         ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, tm);
         return true;
     } else {

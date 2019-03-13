@@ -15,8 +15,7 @@ template<typename T>
 class ETNode : public ETNodeBase, public T {
 public:
 
-    ETNode() : addressId(InvalidEntityId) {}
-
+    ETNode() = default;
     virtual ~ETNode() {
         disconnect();
     }
@@ -106,6 +105,14 @@ void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType:
     if(auto et = GetEnv()->getETSystem()) {
         et->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
     }
+}
+
+template<typename ETType>
+bool ET_IsExistNode(EntityId addressId) {
+    if(auto et = GetEnv()->getETSystem()) {
+        return et->isExistNode<ETType>(addressId);
+    }
+    return false;
 }
 
 #endif /* __ET_PRIMITIVES_HPP__ */

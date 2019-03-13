@@ -22,7 +22,7 @@ protected:
         }
         return res;
     }
-    bool onShouldRun() override { 
+    bool onShouldRun() override {
         bool res = false;
         {
             std::lock_guard<std::mutex> lock(mutex);

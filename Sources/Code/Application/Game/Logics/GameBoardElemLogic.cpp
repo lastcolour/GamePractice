@@ -7,7 +7,11 @@ GameBoardElemLogic::GameBoardElemLogic() :
 GameBoardElemLogic::~GameBoardElemLogic() {
 }
 
-bool GameBoardElemLogic::init(const JSONNode& node) {
+bool GameBoardElemLogic::serialize(const JSONNode& node) {
+    return true;
+}
+
+bool GameBoardElemLogic::init() {
     ETNode<ETGameBoardElemLogic>::connect(getEntityId());
     return true;
 }

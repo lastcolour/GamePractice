@@ -32,6 +32,22 @@ public:
         return entityIdGen;
     }
 
+    template<typename ETType>
+    bool isExistNode(EntityId addressId) const {
+        auto etId = GetTypeId<ETType>();
+        auto it = activeConnection.find(etId);
+        if(it == activeConnection.end()) {
+            return false;
+        }
+        auto& etConnection = it->second;
+        for(auto etIt = etConnection.begin(), etEnd = etConnection.end(); etIt != etEnd; ++etIt) {
+            if(etIt->addressId == addressId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     template<template<class> class ETNode, class ETType>
     void connectNode(ETNode<ETType>* node, EntityId addressId) {
         auto etId = GetTypeId<ETType>();

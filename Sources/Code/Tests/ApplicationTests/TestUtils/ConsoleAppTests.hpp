@@ -5,6 +5,7 @@
 #include <memory>
 
 class Application;
+class GameObject;
 
 class ConsoleAppTests : public ::testing::Test {
 protected:
@@ -15,6 +16,10 @@ protected:
 protected:
 
     static std::unique_ptr<Application> APP;
+
+protected:
+
+    std::unique_ptr<GameObject> createVoidObject() const;
 };
 
 #endif /* __CONSOLE_APP_TESTS_HPP__ */

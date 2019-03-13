@@ -42,3 +42,23 @@ TEST_F(GameTests, CreateInvalidGameObject) {
     ET_SendEventReturn(objId, &ETGame::ET_createGameObject, "");
     ASSERT_EQ(objId, InvalidEntityId);
 }
+
+TEST_F(GameTests, CreateParentWithChildObject) {
+    EntityId objId1 = InvalidEntityId;
+    ET_SendEventReturn(objId1, &ETGame::ET_createGameObject, TEST_OBJECT_NAME);
+
+    EntityId objId2 = InvalidEntityId;
+    ET_SendEventReturn(objId2, &ETGame::ET_createGameObject, TEST_OBJECT_NAME);
+
+    ET_SendEvent(objId2, &ETGameObject::ET_setParent, objId1);
+
+    EntityId parentId;
+    ET_SendEventReturn(parentId, objId2, &ETGameObject::ET_getParentId);
+
+    ASSERT_EQ(parentId, objId1);
+
+    ET_SendEvent(&ETGame::ET_destroyObject, objId1);
+
+    ASSERT_FALSE(ET_IsExistNode<ETGameObject>(objId1));
+    ASSERT_FALSE(ET_IsExistNode<ETGameObject>(objId2));
+}

@@ -30,6 +30,10 @@ struct ETRenderLogic {
 
 struct ETGameObject {
     virtual ~ETGameObject() = default;
+    virtual void ET_setParent(EntityId entId) = 0;
+    virtual void ET_addChild(EntityId entId) = 0;
+    virtual void ET_removeChild(EntityId entId) = 0;
+    virtual EntityId ET_getParentId() const = 0;
     virtual const std::string& ET_getName() const = 0;
     virtual const Transform& ET_getTransform() const = 0;
     virtual void ET_setTransform(const Transform& tm) = 0;

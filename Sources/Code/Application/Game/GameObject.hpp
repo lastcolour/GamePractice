@@ -25,6 +25,10 @@ public:
 
     // ETGameObject
     const std::string& ET_getName() const override;
+    void ET_setParent(EntityId entId) override;
+    void ET_addChild(EntityId entId) override;
+    void ET_removeChild(EntityId entId) override;
+    EntityId ET_getParentId() const override;
     const Transform& ET_getTransform() const override;
     void ET_setTransform(const Transform& transform) override;
 
@@ -32,7 +36,9 @@ private:
 
     Transform tm;
     std::vector<GameLogicPtr> logics;
+    std::vector<EntityId> children;
     std::string name;
+    EntityId parentId;
     EntityId entityId;
 };
 

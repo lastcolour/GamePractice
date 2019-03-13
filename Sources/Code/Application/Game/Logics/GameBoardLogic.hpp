@@ -42,7 +42,8 @@ public:
     GameBoardLogic();
     virtual ~GameBoardLogic();
 
-    bool init(const JSONNode& node) override;
+    bool serialize(const JSONNode& node) override;
+    bool init() override;
 
     // ETSurfaceEvents
     void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
@@ -53,14 +54,14 @@ public:
 
 protected:
 
-    virtual bool serialize(const JSONNode& node);
     virtual BoardElemType getElemType() const;
     int getElemId(const Vec2i& boardPt) const;
-    Vec2i getBoardPosFromPos(const Vec3& pt) const;
+    Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const;
     Vec3 getPosFromBoardPos(const Vec2i& boardPt) const;
     BoardElement* getElem(const Vec2i& boardPt);
     const BoardElement* getElem(const Vec2i& boardPt) const;
-    Vec2i getVoidBelowAndAbove(const Vec2i& boardPt) const;
+    int getVoidElemBelow(const Vec2i& boardPt) const;
+    const BoardElement* getTopElem(const Vec2i& boardPt) const;
     bool moveElem(BoardElement& elem, float dt);
     void markForRemoveElems(const std::vector<int>& elems);
     bool isElemMatch(int firstElemId, int secondElemId) const;

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(Application)
+project(Application CXX)
 
 if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
     set(APPLCATION_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Desktop)
@@ -16,6 +16,8 @@ file(GLOB APPLICATION_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Render/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/Logics/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.cpp
     ${APPLCATION_PLATFORM_SOURCES}/*.cpp)
 file(GLOB APPLICATION_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
@@ -25,6 +27,8 @@ file(GLOB APPLICATION_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.cpp
     ${APPLCATION_PLATFORM_SOURCES}/*.hpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}

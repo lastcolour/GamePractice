@@ -9,17 +9,20 @@ template<typename T>
 struct AABB {
 public:
 
-    AABB() {}
+    AABB() = default;
     AABB(const T& bt, const T& tp) :
         bot(bt), top(tp) {}
     AABB(const AABB& other) :
         bot(other.bot), top(other.top) {}
+    template<typename F>
+    AABB(const F& val) :
+        bot(val), top(val) {}
 
     T getSize() const {
         return top - bot;
     }
     T getCenter() const {
-        return (top + bot) * 0.5f;
+        return (top + bot) / static_cast<T>(2);
     }
     void setCenter(const T& pt) {
         T shift = pt - getCenter();

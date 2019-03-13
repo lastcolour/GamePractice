@@ -15,13 +15,7 @@ struct TestBoardParams {
 
 class TestGameBoardLogic : public GameBoardLogic {
 public:
-    TestGameBoardLogic() {}
-    virtual ~TestGameBoardLogic() {}
-
-    bool init() {
-        JSONNode node; 
-        return GameBoardLogic::init(node);
-    }
+    virtual ~TestGameBoardLogic() = default;
 
     void updateAfterRemoves() {
         GameBoardLogic::updateAfterRemoves();
@@ -34,8 +28,8 @@ public:
     std::vector<BoardElement>& getElements() {
         return elements;
     }
-    Vec2i getBoardPosFromPos(const Vec3& pt) const {
-        return GameBoardLogic::getBoardPosFromPos(pt);
+    Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const {
+        return GameBoardLogic::getBoardPosFromPos(boardPt, pt);
     }
     Vec3 getPosFromBoardPos(const Vec2i& pt) const {
         return GameBoardLogic::getPosFromBoardPos(pt);
@@ -45,6 +39,9 @@ public:
     }
     bool removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
         return GameBoardLogic::removeHorizontalLine(boardPt, lineLen);
+    }
+    float getCellSize() const {
+        return cellSize;
     }
 
     void setParams(const TestBoardParams& params) {
@@ -66,10 +63,9 @@ protected:
 };
 
 void GameBoardTests::SetUp() {
+    object = createVoidObject();
     std::unique_ptr<TestGameBoardLogic> boardPtr(new TestGameBoardLogic);
     board = boardPtr.get();
-    object.reset(new GameObject("testObj", GetEnv()->getETSystem()->createNewEntityId()));
-    board->setGameObject(object.get());
     object->addLogic(std::move(boardPtr));
 }
 
@@ -97,7 +93,7 @@ TEST_F(GameBoardTests, CheckPosConverts) {
     ASSERT_TRUE(board->init());
 
     auto pt = board->getPosFromBoardPos(Vec2i(0));
-    auto boardPt = board->getBoardPosFromPos(pt);
+    auto boardPt = board->getBoardPosFromPos(Vec2i(0), pt);
     ASSERT_EQ(boardPt, Vec2i(0));
 }
 
@@ -216,4 +212,44 @@ TEST_F(GameBoardTests, CheckMoving) {
     ASSERT_FALSE(board->getElem(Vec2i(0, 2)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 1)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 0)));
+}
+
+TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
+    TestBoardParams params;
+    params.boardSize = Vec2i(1, 3);
+    params.moveSpeed = 1.f;
+    board->setParams(params);
+    ASSERT_TRUE(board->init());
+
+    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 1), 1));
+    board->updateAfterRemoves();
+
+    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
+    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
+    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
+    ASSERT_TRUE(board->getElem(Vec2i(0, 0)));
+
+    board->ET_onGameTick(0.5f);
+
+    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 1));
+    board->updateAfterRemoves();
+
+    ASSERT_TRUE(board->getElem(Vec2i(0, 4)));
+    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
+    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
+    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
+    ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
+
+    auto elem1 = board->getElem(Vec2i(0, 3));
+    Transform tm1;
+    ET_SendEventReturn(tm1, elem1->entId, &ETGameObject::ET_getTransform);
+
+    auto elem2 = board->getElem(Vec2i(0, 4));
+    Transform tm2;
+    ET_SendEventReturn(tm2, elem2->entId, &ETGameObject::ET_getTransform);
+
+    Vec3 ptDiff = tm2.pt - tm1.pt;
+    ASSERT_FLOAT_EQ(ptDiff.x, 0.f);
+    ASSERT_FLOAT_EQ(ptDiff.y, board->getCellSize());
+    ASSERT_FLOAT_EQ(ptDiff.z, 0.f);
 }

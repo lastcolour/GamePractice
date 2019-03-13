@@ -18,7 +18,8 @@ public:
     RenderLogic();
     virtual ~RenderLogic();
 
-    bool init(const JSONNode& node) override;
+    bool serialize(const JSONNode& node) override;
+    bool init() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;

@@ -64,7 +64,7 @@ TEST_F(JSONNodeTests, CheckNodeAccessThroughtIterator) {
 
     std::string nodeKey = begIt->key();
     ASSERT_STREQ(nodeKey.c_str(), "obj1");
-    
+
     int intVal = 0;
     begIt->value(intVal);
     ASSERT_EQ(intVal, 1);

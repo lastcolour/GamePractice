@@ -11,7 +11,8 @@ public:
     GameBoardElemLogic();
     virtual ~GameBoardElemLogic();
 
-    bool init(const JSONNode& node) override;
+    bool serialize(const JSONNode& node) override;
+    bool init() override;
 
     // ETGameBoardElemLogic
     void ET_setBoardPos(const Vec2i& pt) override;

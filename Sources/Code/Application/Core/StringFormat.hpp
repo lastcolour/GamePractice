@@ -36,7 +36,7 @@ std::string StringFormat(const std::string& format, const ArgsT& ... args)
     if(sizeof...(args) > 0u) {
         Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);
     } else {
-        strcpy(static_cast<char*>(buff.getData()), format.c_str());
+        strcpy_s(static_cast<char*>(buff.getData()), buff.getSize(), format.c_str());
     }
     return buff.getString();
 }

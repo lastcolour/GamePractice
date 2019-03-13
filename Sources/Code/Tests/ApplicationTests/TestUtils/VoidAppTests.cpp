@@ -6,7 +6,7 @@ std::unique_ptr<Application> VoidAppTests::APP;
 
 void VoidAppTests::SetUpTestCase() {
     VoidTestApplication* testApp = new VoidTestApplication(new DesktopPlatform(0, nullptr));
-    
+
     ASSERT_TRUE(testApp->init());
 
     ASSERT_TRUE(GetEnv()->getETSystem());
