@@ -9,7 +9,7 @@ public:
     virtual ~TestUIBox() = default;
 
     void setStyle(const UIStyle& uiStyle) {
-        style = uiStyle;
+        UIBox::setStyle(uiStyle);
     }
 
 protected:
@@ -22,11 +22,10 @@ public:
     virtual ~TestUIList() = default;
 
     void setStyle(const UIStyle& uiStyle) {
-        style = uiStyle;
+        UIList::setStyle(uiStyle);
     }
-
-    void addElem(EntityId entId) {
-        UIList::addElement(entId);
+    void setType(ListType type) {
+        listType = type;
     }
 
 protected:
@@ -122,37 +121,74 @@ TEST_F(UITests, CheckVerticalUIList) {
     TestUIList* uiList = createUIList();
     UIStyle listStyle;
     listStyle.alignType = AlignType::Center;
-    listStyle.listType = ListType::Vertical;
     uiList->setStyle(listStyle);
+    uiList->setType(ListType::Vertical);
+    ASSERT_TRUE(uiList->init());
 
     UIStyle boxStyle;
     boxStyle.size = Vec2(0.5f, 0.5f);
-    boxStyle.alignType = AlignType::Center;
 
     TestUIBox* uiBox1 = createUIBox();
+    uiBox1->setStyle(boxStyle);
     ASSERT_TRUE(uiBox1->init());
 
     TestUIBox* uiBox2 = createUIBox();
+    uiBox2->setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->addElem(uiBox1->getEntityId());
-    uiList->addElem(uiBox2->getEntityId());
-
-    ASSERT_TRUE(uiList->init());
+    uiList->ET_addElement(uiBox1->getEntityId());
+    uiList->ET_addElement(uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAaabb2di();
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
-    ASSERT_EQ(aabbList.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 4));
     ASSERT_EQ(aabbList.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), 0));
     ASSERT_EQ(aabbList.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), renderPort.y));
 
     const auto& aabbBox1 = uiBox1->ET_getAaabb2di();
-    ASSERT_EQ(aabbBox1.bot, Vec2i(0));
-    ASSERT_EQ(aabbBox1.top, Vec2i(0));
+    ASSERT_EQ(aabbBox1.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), renderPort.y / 2));
+    ASSERT_EQ(aabbBox1.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), renderPort.y));
 
     const auto& aabbBox2 = uiBox2->ET_getAaabb2di();
-    ASSERT_EQ(aabbBox2.bot, Vec2i(0));
-    ASSERT_EQ(aabbBox2.top, Vec2i(0));
+    ASSERT_EQ(aabbBox2.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), 0));
+    ASSERT_EQ(aabbBox2.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), renderPort.y / 2));
+}
+
+TEST_F(UITests, CheckHorizontalUIList) {
+    TestUIList* uiList = createUIList();
+    UIStyle listStyle;
+    listStyle.alignType = AlignType::Center;
+    uiList->setStyle(listStyle);
+    uiList->setType(ListType::Horizontal);
+    ASSERT_TRUE(uiList->init());
+
+    UIStyle boxStyle;
+    boxStyle.size = Vec2(0.5f, 0.5f);
+
+    TestUIBox* uiBox1 = createUIBox();
+    uiBox1->setStyle(boxStyle);
+    ASSERT_TRUE(uiBox1->init());
+
+    TestUIBox* uiBox2 = createUIBox();
+    uiBox2->setStyle(boxStyle);
+    ASSERT_TRUE(uiBox2->init());
+
+    uiList->ET_addElement(uiBox1->getEntityId());
+    uiList->ET_addElement(uiBox2->getEntityId());
+
+    const auto& aabbList = uiList->ET_getAaabb2di();
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ASSERT_EQ(aabbList.bot, Vec2i(0, static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabbList.top, Vec2i(renderPort.x, static_cast<int>(renderPort.y * 0.75f)));
+
+    const auto& aabbBox1 = uiBox1->ET_getAaabb2di();
+    ASSERT_EQ(aabbBox1.bot, Vec2i(0, static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabbBox1.top, Vec2i(renderPort.x / 2, static_cast<int>(renderPort.y * 0.75f)));
+
+    const auto& aabbBox2 = uiBox2->ET_getAaabb2di();
+    ASSERT_EQ(aabbBox2.bot, Vec2i(renderPort.x / 2, static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabbBox2.top, Vec2i(renderPort.x, static_cast<int>(renderPort.y * 0.75f)));
 }

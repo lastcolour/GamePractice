@@ -3,7 +3,7 @@
 #include "ETApplicationInterfaces.hpp"
 
 namespace {
-    const char* GAME_ROOT_OBJECT = "GameRootObject";
+    const char* GAME_ROOT_OBJECT = "MainMenu";
 }
 
 Game::Game() :
@@ -12,6 +12,7 @@ Game::Game() :
 }
 
 Game::~Game() {
+    ETNode<ETGame>::disconnect();
 }
 
 void Game::setRootObject(const std::string& rootObjectName) {

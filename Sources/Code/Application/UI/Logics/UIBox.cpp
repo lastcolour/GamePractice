@@ -1,6 +1,7 @@
 #include "UI/Logics/UIBox.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Game/GameETInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
@@ -11,11 +12,20 @@ UIBox::UIBox() {
 UIBox::~UIBox() {
 }
 
+void UIBox::ET_alignInBox(const AABB2Di& alignBox) {
+    Vec2i center = calcCenter(box, alignBox);
+    box.setCenter(center);
+}
+
+void UIBox::ET_setCenter(const Vec2i& center) {
+    box.setCenter(center);
+}
+
 const AABB2Di& UIBox::ET_getAaabb2di() const {
     return box;
 }
 
-AABB2Di UIBox::caclParentBox() const {
+AABB2Di UIBox::ET_getParentAaabb2di() const {
     AABB2Di parentAabb;
     parentAabb.bot = Vec2i(0);
     ET_SendEventReturn(parentAabb.top, &ETRender::ET_getRenderPort);
@@ -33,25 +43,13 @@ Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
     return resSize;
 }
 
-Vec2i UIBox::calcCenter(const AABB2Di& parentBox) const {
-    auto parentCenter = parentBox.getCenter();
-    Vec2i resCenter(0);
-    if(style.listPos != InvalidListPos) {
-        Vec2i offset;
-        ET_SendEventReturn(offset, getParentId(), &ETUIList::ET_getElemOffset, style.listPos);
-        ListType listType;
-        ET_SendEventReturn(listType, getParentId(), &ETUIList::ET_getListType);
-        if(listType == ListType::Horizontal) {
-            resCenter = Vec2i(parentCenter.x, offset.y);
-        } else {
-            resCenter = Vec2i(offset.x, parentCenter.y);
-        }
-    }
+Vec2i UIBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const {
+    Vec2i resCenter = selfBox.getCenter();
     switch (style.alignType)
     {
         case AlignType::Center:
         {
-            resCenter = parentCenter;
+            resCenter = parentBox.getCenter();
             break;
         }
         case AlignType::Left:
@@ -70,18 +68,41 @@ Vec2i UIBox::calcCenter(const AABB2Di& parentBox) const {
     return resCenter;
 }
 
+void UIBox::setBox(const AABB2Di& newBox) {
+    box = newBox;
+    auto center = box.getCenter();
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
+    ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
+
+    if(!ET_IsExistNode<ETRenderLogic>(getEntityId())) {
+        LogWarning("[UIBox::setBox] No RenderLogic attached to UIBox adress");
+        return;
+    }
+    const Vec2i size = box.getSize(); 
+    RenderLogicParams params;
+    params.col = ColorF(1.f, 0.f, 0.f);
+    params.size = Vec2(static_cast<float>(size.x), static_cast<float>(size.y));
+    ET_SendEvent(getEntityId(), &ETRenderLogic::ET_setRenderParams, params);
+}
+
+const UIStyle& UIBox::getStyle() const {
+    return style;
+}
+
+void UIBox::setStyle(const UIStyle& uiStyle) {
+    style = uiStyle;
+}
+
 AABB2Di UIBox::calcBox() const {
-    auto parentBox = caclParentBox();
+    auto parentBox = ET_getParentAaabb2di();
     AABB2Di resAabb;
     resAabb.bot = Vec2i(0);
     resAabb.top = calcSize(parentBox);
-    resAabb.setCenter(calcCenter(parentBox));
+    resAabb.setCenter(calcCenter(resAabb, parentBox));
     return resAabb;
-}
-
-void UIBox::ET_setUIListPos(int pos) {
-    style.listPos = pos;
-    calcBox();
 }
 
 bool UIBox::serialize(const JSONNode& node) {
@@ -90,12 +111,15 @@ bool UIBox::serialize(const JSONNode& node) {
         LogWarning("[UIList::init] Can't find require style node");
         return false;
     }
-    style.serialize(styleNode);
+    if(!style.serialize(styleNode)) {
+        LogWarning("[UIBox::serialize] Can't serialize style node");
+        return false;
+    }
     return true;
 }
 
 bool UIBox::init() {
-    box = calcBox();
+    setBox(calcBox());
     ETNode<ETUIBox>::connect(getEntityId());
     return true;
 }

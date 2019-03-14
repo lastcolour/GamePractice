@@ -3,6 +3,11 @@
 
 #include "UI/Logics/UIBox.hpp"
 
+enum class ListType {
+    Vertical = 0,
+    Horizontal
+};
+
 class UIList : public UIBox,
     public ETNode<ETUIList> {
 public:
@@ -14,12 +19,11 @@ public:
     bool init() override;
 
     // ETUIList
-    Vec2i ET_getElemOffset(int idx) const override;
-    ListType ET_getListType() const override;
+    void ET_addElement(EntityId newElemId) override;
 
 protected:
 
-    void addElement(EntityId entId);
+    ListType listType;
 
 private:
 

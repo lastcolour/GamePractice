@@ -46,9 +46,7 @@
         {
           "type":"UIBox",
           "data":{
-            "style":{
-              
-            }
+            "style":{}
           }
         }
       ]
@@ -57,9 +55,21 @@
       "name":"StartButton",
       "logics":[
         {
-          "type":"Button",
+          "type":"RenderLogic",
           "data":{
-            "text":"Start"
+            "mat":"solid_color",
+            "geom":"square"
+          }
+        },
+        {
+          "type":"UIButton",
+          "data":{
+            "text":"Start",
+            "style":{
+              "color":{"r":255, "g":0, "b":255},
+              "align":"center",
+              "size":{"h":0.5, "w":0.5}
+            }
           }
         }
       ]
@@ -68,9 +78,21 @@
       "name":"OptionButton",
       "logics":[
         {
-          "type":"Button",
+          "type":"RenderLogic",
           "data":{
-            "text":"Options"
+            "mat":"solid_color",
+            "geom":"square"
+          }
+        },
+        {
+          "type":"UIButton",
+          "data":{
+            "text":"Options",
+            "style":{
+              "color":{"r":255, "g":255, "b":0},
+              "align":"center",
+              "size":{"h":0.5, "w":0.5}
+            }
           }
         }
       ]
@@ -81,16 +103,14 @@
         {
           "type":"UIList",
           "data":{
+            "type":"vert",
             "children":[
               "StartButton",
               "OptionButton"
             ],
             "style":{
-              "size": {
-                "width": 0.9,
-                "height": "*"
-              },
-              "align":"center"
+              "align":"center",
+              "size":{"h":1, "w":1}
             }
           }
         }

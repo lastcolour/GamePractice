@@ -5,56 +5,77 @@
 
 #include <cassert>
 
-UIList::UIList() {
+UIList::UIList() :
+    listType(ListType::Vertical) {
 }
 
 UIList::~UIList() {
 }
 
-Vec2i UIList::ET_getElemOffset(int idx) const {
-    assert(idx >= 0 && "Negative list pos");
-    if(idx == 0) {
-        return Vec2i(0);
+void  UIList::ET_addElement(EntityId newElemId) {
+    const auto& box = ET_getAaabb2di();
+    Vec2i offset = Vec2i(0, box.top.y);
+    AABB2Di elemBox;
+    if(!children.empty()) {
+        ET_SendEventReturn(elemBox, children.back(), &ETUIBox::ET_getAaabb2di);
+        if(listType == ListType::Horizontal) {
+            offset.x = elemBox.top.x;
+        } else {
+            offset.y = elemBox.bot.y;
+        }
     }
-    assert(idx <= children.size() && "Out of bound list pos");
-    auto childId = children[idx - 1];
-    AABB2Di childBox;
-    AABB2Di selfBox = ET_getAaabb2di();
-    ET_SendEventReturn(childBox, childId, &ETUIBox::ET_getAaabb2di);
-    if(style.listType == ListType::Horizontal) {
-        Vec2i offset = selfBox.top - childBox.bot;
-        return offset;
+    elemBox = AABB2Di(0);
+    ET_SendEventReturn(elemBox, newElemId, &ETUIBox::ET_getAaabb2di);
+    elemBox.setCenter(elemBox.getSize() / 2);
+    Vec2i center = elemBox.getCenter();
+    if(listType == ListType::Horizontal) {
+        center = Vec2i(center.x + offset.x, center.y); 
     } else {
-        return Vec2i(0);
+        center = Vec2i(center.x, offset.y - center.y);
     }
-}
 
-ListType UIList::ET_getListType() const {
-    return style.listType;
-}
+    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, newElemId);
+    ET_SendEvent(newElemId, &ETUIBox::ET_setCenter, center);
+    children.push_back(newElemId);
 
-void UIList::addElement(EntityId entId) {
-    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, entId);
-    ET_SendEvent(entId, &ETUIBox::ET_setUIListPos, children.size());
-    children.push_back(entId);
+    calcResListBox();
 }
 
 void UIList::calcResListBox() {
-    if(children.empty()) {
-        box = AABB2Di(0);
-        return;
-    }
-    AABB2Di childBox;
-    ET_SendEventReturn(childBox, children[0], &ETUIBox::ET_getAaabb2di);
-    box = childBox;
-    for(size_t i = 1, sz = children.size(); i < sz; ++i) {
-        ET_SendEventReturn(box, children[0], &ETUIBox::ET_getAaabb2di);
-        if(style.listType == ListType::Horizontal) {
-            box.top.y = std::max(box.top.y, childBox.top.y);
-            box.bot.y = childBox.bot.y;
-            box.bot.x = std::min(box.top.x, childBox.bot.x);
+    AABB2Di listBox(0);
+    for(auto entId : children) {
+        AABB2Di childBox = AABB2Di(0);
+        ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAaabb2di);
+        auto center = childBox.getCenter();
+        auto size = childBox.getSize();
+
+        if(listType == ListType::Horizontal) {
+            Vec2i pt(center.x, size.y / 2);
+            childBox.setCenter(pt);
         } else {
+            Vec2i pt(size.x / 2, center.y);
+            childBox.setCenter(pt);
         }
+        listBox.top.x = std::max(listBox.top.x, childBox.top.x);
+        listBox.top.y = std::max(listBox.top.y, childBox.top.y);
+        listBox.bot.x = std::min(listBox.bot.x, childBox.bot.x);
+        listBox.bot.y = std::min(listBox.bot.y, childBox.bot.x);
+        ET_SendEvent(entId, &ETUIBox::ET_setCenter, childBox.getCenter());
+    }
+
+    setBox(listBox);
+    ET_alignInBox(ET_getParentAaabb2di());
+    const auto& box = ET_getAaabb2di();
+
+    for(auto entId : children) {
+        AABB2Di childBox = AABB2Di(0);
+        ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAaabb2di);
+        if(listType == ListType::Horizontal) {
+            childBox = childBox + Vec2i(0, box.bot.y);
+        } else {
+            childBox = childBox + Vec2i(box.bot.x, 0);
+        }
+        ET_SendEvent(entId, &ETUIBox::ET_alignInBox, childBox);
     }
 }
 
@@ -68,6 +89,20 @@ bool UIList::serialize(const JSONNode& node) {
         LogWarning("[UIList::serialize] Can't find required children node");
         return false;
     }
+    if(!childrenNode.size()) {
+        LogWarning("[UIList::serialize] Empty children list");
+        return false;
+    }
+    std::string list("vert");
+    node.value("type", list);
+    if(list == "vert") {
+        listType = ListType::Vertical;
+    } else if(list == "horz") {
+        listType = ListType::Horizontal;
+    } else {
+        LogWarning("[UIList::serialize] Invalid list type: %s", list);
+        return false;
+    }
     for(auto& childNode : childrenNode) {
         std::string childObjName;
         childNode.value(childObjName);
@@ -77,6 +112,7 @@ bool UIList::serialize(const JSONNode& node) {
             children.push_back(childEntId);
         }
     }
+    return true;
 }
 
 bool UIList::init() {
@@ -84,13 +120,10 @@ bool UIList::init() {
         LogWarning("[UIList::init] UIBox init failed");
         return false;
     }
-
-    ETNode<ETUIList>::connect(getEntityId());
-
-    std::vector<EntityId> elem = std::move(children);
-    for(auto entId : elem) {
-        addElement(entId);
+    std::vector<EntityId> elems = std::move(children);
+    for(auto entId : elems) {
+        ET_addElement(entId);
     }
-    calcResListBox();
+    ETNode<ETUIList>::connect(getEntityId());
     return true;
 }

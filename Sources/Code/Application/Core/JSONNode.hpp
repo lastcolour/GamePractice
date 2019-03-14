@@ -58,6 +58,17 @@ public:
     void value(float& value) const;
     void value(int& value) const;
 
+    template<typename ObjType>
+    void value(const std::string& key, ObjType& val) const {
+        auto node = object(key);
+        // ObjType::Serialize(node, val);
+    }
+
+    template<typename ObjType>
+    void value(ObjType& val) const {
+        // ObjType::Serialize(*this, val);
+    }
+
     const char* key() const;
     JSONNode object(const std::string& key) const;
 

@@ -5,13 +5,6 @@
 
 class JSONNode;
 
-const int InvalidListPos = -1;
-
-enum class ListType {
-    Vertical = 0,
-    Horizontal
-};
-
 enum class AlignType {
     Center = 0,
     Left,
@@ -21,16 +14,14 @@ enum class AlignType {
 struct UIStyle {
 public:
 
-    ListType listType;
     AlignType alignType;
     Vec2 size;
-    int listPos;
 
 public:
 
     UIStyle();
     ~UIStyle();
-    void serialize(const JSONNode& node);
+    bool serialize(const JSONNode& node);
 };
 
 #endif /* __UI_STYLE_HPP__ */
