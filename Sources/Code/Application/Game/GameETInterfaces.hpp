@@ -9,11 +9,11 @@
 
 struct RenderLogicParams {
     Vec2 size;
-    ColorF col;
+    ColorB col;
 
     RenderLogicParams() :
         size(0.f),
-        col(1.f, 1.f, 1.f) {}
+        col(255, 255, 255) {}
 };
 
 struct ETGameBoardElemLogic {

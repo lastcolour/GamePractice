@@ -2,6 +2,7 @@
 #define __UI_STYLE_HPP__
 
 #include "Math/Vector.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 
 class JSONNode;
 
@@ -11,11 +12,21 @@ enum class AlignType {
     Right
 };
 
+enum class SizeInvariant {
+    Relative = 0,
+    RelativeBiggestSquare,
+    Absolute,
+    AbsoluteBiggestSquare,
+    Pixel
+};
+
 struct UIStyle {
 public:
 
-    AlignType alignType;
     Vec2 size;
+    ColorB color;
+    SizeInvariant sizeInv;
+    AlignType alignType;
 
 public:
 

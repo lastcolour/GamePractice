@@ -24,8 +24,8 @@ public:
     virtual ~Render() = default;
 
     // ETRender
-    const ColorF& ET_getClearColor() const override;
-    void ET_setClearColor(const ColorF& col) override;
+    const ColorB& ET_getClearColor() const override;
+    void ET_setClearColor(const ColorB& col) override;
     void ET_drawFrame() override;
     void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
     Vec2i ET_getRenderPort() const override;
@@ -54,7 +54,7 @@ private:
 
     RenderTextureFramebuffer* renderFb;
     Camera2D camera2d;
-    ColorF clearColor;
+    ColorB clearColor;
     std::unordered_map<std::string, std::weak_ptr<RenderMaterial>> materials;
     std::unordered_map<std::string, std::weak_ptr<RenderGeometry>> geometris;
 };

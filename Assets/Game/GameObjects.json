@@ -32,6 +32,15 @@
       "name":"GameRootObject",
       "logics":[
         {
+          "type":"UIBox",
+          "data":{
+            "style":{
+              "align":"center",
+              "size":{"h":1, "w":1, "inv":"rel"}
+            }
+          }
+        },
+        {
           "type":"GameBoardLogic",
           "data":{
             "fallSpeed":5,
@@ -41,12 +50,6 @@
               "object":"GameBoardElem",
               "scale":0.9
             }
-          }
-        },
-        {
-          "type":"UIBox",
-          "data":{
-            "style":{}
           }
         }
       ]

@@ -72,6 +72,14 @@ namespace Color {
             return &r;
         }
 
+        Color_RGBA_Float getColorF() const {
+            return Color_RGBA_Float(
+                static_cast<float>(r / 255.f),
+                static_cast<float>(g / 255.f),
+                static_cast<float>(b / 255.f),
+                static_cast<float>(a / 255.f));
+        }
+
         uint8_t r;
         uint8_t g;
         uint8_t b;
@@ -81,5 +89,6 @@ namespace Color {
 } // namespace Color
 
 typedef Color::Color_RGBA_Float ColorF;
+typedef Color::Color_RGBA_Byte ColorB;
 
 #endif /* __COLOR_HPP__ */

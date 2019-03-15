@@ -36,10 +36,42 @@ AABB2Di UIBox::ET_getParentAaabb2di() const {
 }
 
 Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
-    Vec2i parentSize = parentBox.getSize();
-    Vec2i resSize = parentSize;
-    resSize.x = static_cast<int>(resSize.x * style.size.x);
-    resSize.y = static_cast<int>(resSize.y * style.size.y);
+    Vec2i resSize(0);
+    switch (style.sizeInv)
+    {
+        case SizeInvariant::Absolute:
+        {
+            Vec2i renderPort;
+            ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+            resSize.x = static_cast<int>(renderPort.x * style.size.x);
+            resSize.y = static_cast<int>(renderPort.y * style.size.y);
+            break;
+        }
+        case SizeInvariant::AbsoluteBiggestSquare:
+        {
+            break;
+        }
+        case SizeInvariant::Relative:
+        {
+            Vec2i parentSize = parentBox.getSize();
+            resSize.x = static_cast<int>(parentSize.x * style.size.x);
+            resSize.y = static_cast<int>(parentSize.y * style.size.y);
+            break;
+        }
+        case SizeInvariant::RelativeBiggestSquare:
+        {
+            break;
+        }
+        case SizeInvariant::Pixel:
+        {
+            resSize.x = static_cast<int>(style.size.x);
+            resSize.y = static_cast<int>(style.size.y);
+            break;
+        }
+        default:
+            assert(false && "Invalid style size invariant type");
+            break;
+    }
     return resSize;
 }
 
@@ -83,7 +115,7 @@ void UIBox::setBox(const AABB2Di& newBox) {
     }
     const Vec2i size = box.getSize(); 
     RenderLogicParams params;
-    params.col = ColorF(1.f, 0.f, 0.f);
+    params.col = style.color;
     params.size = Vec2(static_cast<float>(size.x), static_cast<float>(size.y));
     ET_SendEvent(getEntityId(), &ETRenderLogic::ET_setRenderParams, params);
 }

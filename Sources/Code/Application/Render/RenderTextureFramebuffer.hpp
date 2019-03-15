@@ -21,7 +21,7 @@ public:
     const void* getPtr() const;
 
     Vec2i getSize() const;
-    ColorF getColor(int i, int j) const;
+    ColorB getColor(int i, int j) const;
 
 private:
 

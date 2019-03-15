@@ -58,7 +58,7 @@ TestUIBox* UITests::createUIBox() {
     return uiBox;
 }
 
-TEST_F(UITests, CheckUIBoxSize) {
+TEST_F(UITests, CheckUIBoxAlignCenter) {
     TestUIBox* uiBox = createUIBox();
 
     UIStyle style;
@@ -82,6 +82,61 @@ TEST_F(UITests, CheckUIBoxSize) {
     Vec2i expectedTop = Vec2i(static_cast<int>(renderPort.x * (style.size.x + shiftX)), 
         static_cast<int>(renderPort.y * (style.size.y + shiftX)));
     ASSERT_EQ(box.top, expectedTop);
+}
+
+TEST_F(UITests, CheckUIBoxSizeInvariants) {
+    TestUIBox* uiBox = createUIBox();
+    UIStyle style;
+    style.size = Vec2(0.5f, 0.5f);
+    style.alignType = AlignType::Center;
+    AABB2Di aabb(0);
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+
+    style.sizeInv = SizeInvariant::Absolute;
+    uiBox->setStyle(style);
+    ASSERT_TRUE(uiBox->init());
+    aabb = uiBox->ET_getAaabb2di();
+    ASSERT_EQ(aabb.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabb.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), static_cast<int>(renderPort.y * 0.75f)));
+
+    style.sizeInv = SizeInvariant::AbsoluteBiggestSquare;
+    uiBox->setStyle(style);
+    ASSERT_TRUE(uiBox->init());
+    aabb = uiBox->ET_getAaabb2di();
+    ASSERT_EQ(aabb.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabb.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), static_cast<int>(renderPort.y * 0.75f)));
+
+    style.sizeInv = SizeInvariant::Pixel;
+    style.size = Vec2(100.f, 300.f);
+    uiBox->setStyle(style);
+    ASSERT_TRUE(uiBox->init());
+    aabb = uiBox->ET_getAaabb2di();
+    ASSERT_EQ(aabb.bot, Vec2i(static_cast<int>((renderPort.x - style.size.x) / 2.f),
+        static_cast<int>((renderPort.y - style.size.y) / 2.f)));
+    ASSERT_EQ(aabb.top, Vec2i(static_cast<int>((renderPort.x + style.size.x) / 2.f),
+        static_cast<int>((renderPort.y + style.size.y) / 2.f)));
+
+    TestUIBox* parentUIBox = createUIBox();
+    style.sizeInv = SizeInvariant::Relative;
+    style.size = Vec2(1.f, 1.f);
+    parentUIBox->setStyle(style);
+    ASSERT_TRUE(parentUIBox->init());
+    ET_SendEvent(parentUIBox->getEntityId(), &ETGameObject::ET_addChild, uiBox->getEntityId());
+
+    style.sizeInv = SizeInvariant::Relative;
+    uiBox->setStyle(style);
+    ASSERT_TRUE(uiBox->init());
+    aabb = uiBox->ET_getAaabb2di();
+    ASSERT_EQ(aabb.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabb.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), static_cast<int>(renderPort.y * 0.75f)));
+
+    style.sizeInv = SizeInvariant::RelativeBiggestSquare;
+    uiBox->setStyle(style);
+    ASSERT_TRUE(uiBox->init());
+    aabb = uiBox->ET_getAaabb2di();
+    ASSERT_EQ(aabb.bot, Vec2i(static_cast<int>(renderPort.x * 0.25f), static_cast<int>(renderPort.y * 0.25f)));
+    ASSERT_EQ(aabb.top, Vec2i(static_cast<int>(renderPort.x * 0.75f), static_cast<int>(renderPort.y * 0.75f)));
 }
 
 TEST_F(UITests, CheckUIBoxInsideUIBox) {

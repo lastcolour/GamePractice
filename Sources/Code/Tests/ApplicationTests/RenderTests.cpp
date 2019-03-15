@@ -25,8 +25,8 @@ namespace {
     const char* SIMPLE_OBJECT = "Simple";
     const float SCALE_FACTOR = 0.8f;
 
-    const ColorF DRAW_COLOR(0.f, 1.f, 0.f);
-    const ColorF CLEAR_COLOR(0.f, 0.f, 0.f);
+    const ColorB DRAW_COLOR(0, 255, 0);
+    const ColorB CLEAR_COLOR(0, 0, 0);
 } // namespace
 
 std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;
@@ -67,7 +67,7 @@ void RenderTests::checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t 
     const Vec2i size = textureFramebuffer->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorF& col = textureFramebuffer->getColor(i, j);
+            const ColorB& col = textureFramebuffer->getColor(i, j);
             if(i > xStart && i < xEnd && j > yStart && j < yEnd) {
                 if(col != DRAW_COLOR) {
                     ++failPixCount;
@@ -130,8 +130,8 @@ TEST_F(RenderTests, CheckClear) {
     const Vec2i size = textureFramebuffer->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorF col = textureFramebuffer->getColor(i, j);
-            if(col != clearColor) {
+            const ColorB col = textureFramebuffer->getColor(i, j);
+            if(col.getColorF() != clearColor) {
                 ++failPixCount;
             }
         }
@@ -141,7 +141,7 @@ TEST_F(RenderTests, CheckClear) {
 
 TEST_F(RenderTests, CheckEmptyRender) {
     ET_SendEvent(&ETRender::ET_setClearColor, DRAW_COLOR);
-    ColorF clearCol(0.f, 0.f, 0.f);
+    ColorB clearCol(0, 0, 0);
     ET_SendEventReturn(clearCol, &ETRender::ET_getClearColor);
     ASSERT_EQ(DRAW_COLOR, clearCol);
 
@@ -153,7 +153,7 @@ TEST_F(RenderTests, CheckEmptyRender) {
     const Vec2i size = textureFramebuffer->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorF col = textureFramebuffer->getColor(i, j);
+            const ColorB col = textureFramebuffer->getColor(i, j);
             if(col != DRAW_COLOR) {
                 ++failPixCount;
             }
@@ -225,7 +225,7 @@ TEST_F(RenderTests, CheckRenderSquare) {
     const Vec2i size = textureFramebuffer->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorF col = textureFramebuffer->getColor(i, j);
+            const ColorB col = textureFramebuffer->getColor(i, j);
             if(col != DRAW_COLOR) {
                 ++failPixCount;
             }

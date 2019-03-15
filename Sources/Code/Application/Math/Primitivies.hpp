@@ -19,6 +19,16 @@ namespace Math {
 
     int RandomInt(int min, int max);
 
+    template<typename T>
+    T Clamp(const T& val, const T& min, const T& max) {
+        if(val < min) {
+            return min;
+        } else if(val > max) {
+            return max;
+        }
+        return val;
+    }
+
 } // namespace Math
 
 #endif /* __PRIMITIEVS_HPP__ */

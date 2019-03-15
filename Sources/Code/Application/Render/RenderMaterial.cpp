@@ -37,8 +37,9 @@ void RenderMaterial::setUniformMat4(const std::string& name, const Mat4& mat) {
     }
 }
 
-void RenderMaterial::setUniform4f(const std::string& name, const ColorF& col) {
-    setUniform4f(name, Vec4(col.r, col.g, col.b, col.a));
+void RenderMaterial::setUniform4f(const std::string& name, const ColorB& col) {
+    ColorF colF = col.getColorF();
+    setUniform4f(name, Vec4(colF.r, colF.g, colF.b, colF.a));
 }
 
 void RenderMaterial::setUniform4f(const std::string& name, const Vec4& vec) {

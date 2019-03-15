@@ -28,8 +28,8 @@ struct ETRender {
 
     virtual ~ETRender() = default;
 
-    virtual const ColorF& ET_getClearColor() const = 0;
-    virtual void ET_setClearColor(const ColorF& col) = 0;
+    virtual const ColorB& ET_getClearColor() const = 0;
+    virtual void ET_setClearColor(const ColorB& col) = 0;
     virtual const Mat4& ET_getProj2DMat4() const = 0;
     virtual Vec2i ET_getRenderPort() const = 0;
     virtual void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) = 0;

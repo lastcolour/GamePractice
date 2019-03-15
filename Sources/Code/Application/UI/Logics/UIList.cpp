@@ -4,6 +4,7 @@
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 UIList::UIList() :
     listType(ListType::Vertical) {

@@ -24,7 +24,7 @@ namespace {
 
 Render::Render() :
     renderFb(nullptr),
-    clearColor(0.f, 0.f, 0.f) {
+    clearColor(0, 0, 0) {
 }
 
 bool Render::onInit() {
@@ -60,7 +60,8 @@ void Render::ET_drawFrame() {
         return;
     }
 
-    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    auto clearColF = clearColor.getColorF();
+    glClearColor(clearColF.r, clearColF.g, clearColF.b, clearColF.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
     RenderContext renderCtx;
@@ -77,11 +78,11 @@ const Mat4& Render::ET_getProj2DMat4() const {
     return camera2d.getProjMat4();
 }
 
-const ColorF& Render::ET_getClearColor() const {
+const ColorB& Render::ET_getClearColor() const {
     return clearColor;
 }
 
-void Render::ET_setClearColor(const ColorF& col) {
+void Render::ET_setClearColor(const ColorB& col) {
     clearColor = col;
 }
 

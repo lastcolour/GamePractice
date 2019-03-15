@@ -8,7 +8,6 @@ namespace {
 
 struct TestBoardParams {
     Vec2i boardSize;
-    float space { 1.f };
     float cellScale { 1.f };
     float moveSpeed { 1.f };
 };
@@ -45,7 +44,6 @@ public:
     }
 
     void setParams(const TestBoardParams& params) {
-        space = params.space;
         boardSize = params.boardSize;
         cellScale = params.cellScale;
         moveSpeed = params.moveSpeed;

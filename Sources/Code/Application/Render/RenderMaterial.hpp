@@ -16,7 +16,7 @@ public:
     void unbind();
 
     void setUniform4f(const std::string& name, const Vec4& vec);
-    void setUniform4f(const std::string& name, const ColorF& col);
+    void setUniform4f(const std::string& name, const ColorB& col);
     void setUniformMat4(const std::string& name, const Mat4& mat);
 
 private:

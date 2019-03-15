@@ -119,14 +119,13 @@ void RenderTextureFramebuffer::unbind() {
     }
 }
 
-ColorF RenderTextureFramebuffer::getColor(int w, int h) const {
+ColorB RenderTextureFramebuffer::getColor(int w, int h) const {
     if(!textureBuffer) {
-        return ColorF();
+        return ColorB();
     }
     assert((w < size.x && h < size.y) && "Invalid access to pixel");
     auto offset = size.x * h + w;
-    const auto& color = textureBuffer[offset];
-    return ColorF(color.r / 255.f, color.g / 255.f, color.b / 255.f);
+    return textureBuffer[offset];
 }
 
 const void* RenderTextureFramebuffer::getPtr() const {
