@@ -2,6 +2,7 @@
 #include "Game/GameETInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Core/JSONNode.hpp"
 
 #include <algorithm>
 #include <cassert>

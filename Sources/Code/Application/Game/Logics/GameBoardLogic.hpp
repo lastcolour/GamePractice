@@ -4,11 +4,10 @@
 #include "Game/GameLogic.hpp"
 #include "Math/AABB.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Game/GameETInterfaces.hpp"
 
 #include <vector>
 #include <memory>
-
-class GameObject;
 
 enum class BoardElemType {
     Red = 0,

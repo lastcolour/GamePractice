@@ -2,6 +2,7 @@
 #define __VOID_TEST_ASSETS_HPP__
 
 #include "Platform.hpp"
+#include "Core/JSONNode.hpp"
 
 class VoidTestAssets : public Assets {
 public:

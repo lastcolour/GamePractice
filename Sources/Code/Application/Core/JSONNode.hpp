@@ -13,7 +13,7 @@ class JSONNodeIterator {
 public:
 
     JSONNodeIterator();
-    JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>&& iterImpl);
+    explicit JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>&& iterImpl);
     JSONNodeIterator(JSONNodeIterator&& other);
     ~JSONNodeIterator();
 

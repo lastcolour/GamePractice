@@ -9,7 +9,7 @@
 class RenderMaterial {
 public:
 
-    RenderMaterial(int progId);
+    explicit RenderMaterial(int progId);
     ~RenderMaterial();
 
     void bind();

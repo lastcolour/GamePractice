@@ -9,7 +9,7 @@ class Matrix4 {
 public:
 
     Matrix4();
-    Matrix4(float val);
+    explicit Matrix4(float val);
     Matrix4(const Vec4& col0, const Vec4& col1, const Vec4& col2, const Vec4& col3);
     Matrix4(const Matrix4& mat);
     Matrix4& operator=(const Matrix4& mat);

@@ -2,14 +2,20 @@
 #define __UI_STYLE_HPP__
 
 #include "Math/Vector.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/Color.hpp"
 
 class JSONNode;
 
-enum class AlignType {
+enum class XAlignType {
     Center = 0,
     Left,
     Right
+};
+
+enum class YAlignType {
+    Center = 0,
+    Top,
+    Bot
 };
 
 enum class SizeInvariant {
@@ -20,13 +26,24 @@ enum class SizeInvariant {
     Pixel
 };
 
+struct Margin {
+    float left;
+    float right;
+    float bot;
+    float top;
+
+    Margin();
+};
+
 struct UIStyle {
 public:
 
     Vec2 size;
     ColorB color;
     SizeInvariant sizeInv;
-    AlignType alignType;
+    XAlignType xAlignType;
+    YAlignType yAlignType;
+    Margin margin;
 
 public:
 

@@ -1,6 +1,7 @@
 #include "Game/GameObjectCreator.hpp"
 #include "Game/GameObject.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
 
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"

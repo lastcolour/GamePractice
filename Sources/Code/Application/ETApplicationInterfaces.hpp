@@ -4,7 +4,8 @@
 #include "Core/StringFormat.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Math/Vector.hpp"
-#include "Core/JSONNode.hpp"
+
+class JSONNode;
 
 enum GLContextType {
     None = 0,

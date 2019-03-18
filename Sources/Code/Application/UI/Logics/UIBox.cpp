@@ -5,6 +5,7 @@
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 UIBox::UIBox() {
 }
@@ -23,7 +24,7 @@ void UIBox::ET_setCenter(const Vec2i& center) {
     syncTransform();
 }
 
-const AABB2Di& UIBox::ET_getAaabb2di() const {
+const AABB2Di& UIBox::ET_getAabb2di() const {
     return box;
 }
 
@@ -32,7 +33,7 @@ AABB2Di UIBox::ET_getParentAaabb2di() const {
     parentAabb.bot = Vec2i(0);
     ET_SendEventReturn(parentAabb.top, &ETRender::ET_getRenderPort);
     if(getParentId() != InvalidEntityId) {
-        ET_SendEventReturn(parentAabb, getParentId(), &ETUIBox::ET_getAaabb2di);
+        ET_SendEventReturn(parentAabb, getParentId(), &ETUIBox::ET_getAabb2di);
     }
     return parentAabb;
 }
@@ -88,21 +89,34 @@ Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
 
 Vec2i UIBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const {
     Vec2i resCenter = selfBox.getCenter();
-    switch (style.alignType)
-    {
-        case AlignType::Center:
-        {
-            resCenter = parentBox.getCenter();
+    const auto halfSize = selfBox.getSize() / 2;
+    switch (style.xAlignType) {
+        case XAlignType::Center: {
+            resCenter.x = parentBox.getCenter().x;
             break;
         }
-        case AlignType::Left:
-        {
-            assert(false && "Not implemented");
+        case XAlignType::Left: {
+            resCenter.x = parentBox.bot.x + halfSize.x;
             break;
         }
-        case AlignType::Right:
-        {
-            assert(false && "Not implemented");
+        case XAlignType::Right: {
+            resCenter.x = parentBox.top.x - halfSize.x;
+            break;
+        }
+        default:
+            assert(false && "Invalid align type");
+    }
+    switch (style.yAlignType) {
+        case YAlignType::Center: {
+            resCenter.y = parentBox.getCenter().y;
+            break;
+        }
+        case YAlignType::Top: {
+            resCenter.y = parentBox.top.y - halfSize.y;
+            break;
+        }
+        case YAlignType::Bot: {
+            resCenter.y = parentBox.bot.y + halfSize.y;
             break;
         }
         default:
@@ -130,9 +144,13 @@ void UIBox::syncTransform() const {
     ET_SendEvent(getEntityId(), &ETRenderLogic::ET_setRenderParams, params);
 }
 
-void UIBox::ET_onSurfaceResize(const Vec2i& size) {
+void UIBox::ET_boxResize() {
+    setBox(calcBox());
+}
+
+void UIBox::ET_onRenderPortResize(const Vec2i& size) {
     if(!ET_IsExistNode<ETUIList>(getParentId())) {
-        setBox(calcBox());
+        ET_boxResize();
     }
 }
 
@@ -169,6 +187,6 @@ bool UIBox::serialize(const JSONNode& node) {
 bool UIBox::init() {
     setBox(calcBox());
     ETNode<ETUIBox>::connect(getEntityId());
-    ETNode<ETSurfaceEvents>::connect(getEntityId());
+    ETNode<ETRenderEvents>::connect(getEntityId());
     return true;
 }

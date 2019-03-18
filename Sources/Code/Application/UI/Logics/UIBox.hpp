@@ -4,11 +4,11 @@
 #include "Game/GameLogic.hpp"
 #include "UI/UIETInterfaces.hpp"
 #include "UI/UIStyle.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 
 class UIBox : public GameLogic,
     public ETNode<ETUIBox>,
-    public ETNode<ETSurfaceEvents> {
+    public ETNode<ETRenderEvents> {
 public:
 
     UIBox();
@@ -19,14 +19,15 @@ public:
     bool init() override;
 
     // ETUIBox
-    const AABB2Di& ET_getAaabb2di() const override;
+    const AABB2Di& ET_getAabb2di() const override;
     void ET_setCenter(const Vec2i& center) override;
     void ET_alignInBox(const AABB2Di& alingBox) override;
     AABB2Di ET_getParentAaabb2di() const override;
+    virtual void ET_boxResize() override;
 
-    // ETSurfaceEvents
-    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override {}
-    void ET_onSurfaceResize(const Vec2i& size) override;
+    // ETRenderEvents
+    void ET_onRender(const RenderContext& renderCtx) override {}
+    void ET_onRenderPortResize(const Vec2i& size) override;
 
 protected:
 

@@ -1,8 +1,9 @@
 #ifndef __GAME_LOGIC_HPP__
 #define __GAME_LOGIC_HPP__
 
-#include "Game/GameObject.hpp"
+#include "Core/Core.hpp"
 
+class GameObject;
 class JSONNode;
 
 class GameLogic {

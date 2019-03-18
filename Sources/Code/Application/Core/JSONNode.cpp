@@ -7,14 +7,6 @@
 
 typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
 
-enum class JSONNodeType {
-    None = 0,
-    Document,
-    Array,
-    ArrayElement,
-    Object
-};
-
 struct JSONNodeImpl {
 
     JSONValue* val;

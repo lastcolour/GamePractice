@@ -1,9 +1,9 @@
 #ifndef __LOGICS_ET_INTERFACES_HPP__
 #define __LOGICS_ET_INTERFACES_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Render/Color.hpp"
 #include "Math/Transform.hpp"
+#include "Core/ETPrimitives.hpp"
 
 #include <string>
 

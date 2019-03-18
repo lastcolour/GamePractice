@@ -70,8 +70,8 @@
             "text":"Start",
             "style":{
               "color":{"r":255, "g":0, "b":255},
-              "align":"center",
-              "size":{"h":0.5, "w":0.5}
+              "align":{"x":"center", "y":"center"},
+              "size":{"h":0.2, "w":0.3, "inv":"relBS"}
             }
           }
         }
@@ -93,8 +93,8 @@
             "text":"Options",
             "style":{
               "color":{"r":255, "g":255, "b":0},
-              "align":"center",
-              "size":{"h":0.5, "w":0.5}
+              "align":{"x":"center", "y":"center"},
+              "size":{"h":0.2, "w":0.3, "inv":"relBS"}
             }
           }
         }
@@ -119,8 +119,9 @@
               "OptionButton"
             ],
             "style":{
-              "align":"center",
-              "size":{"h":1, "w":1}
+              "color":{"r":255, "g":255, "b":255},
+              "align":{"x":"center", "y":"center"},
+              "size":{"h":1, "w":1, "inv":"rel"}
             }
           }
         }

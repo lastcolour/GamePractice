@@ -1,10 +1,12 @@
 #include "UI/Logics/UIList.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Game/GameETInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
 #include <algorithm>
+#include <limits>
 
 UIList::UIList() :
     listType(ListType::Vertical) {
@@ -13,26 +15,33 @@ UIList::UIList() :
 UIList::~UIList() {
 }
 
-void  UIList::ET_addElement(EntityId newElemId) {
-    const auto& box = ET_getAaabb2di();
-    Vec2i offset = Vec2i(0, box.top.y);
+void UIList::ET_addElement(EntityId newElemId) {
+    const auto& box = ET_getAabb2di();
+    int offset = 0;
     AABB2Di elemBox;
     if(!children.empty()) {
-        ET_SendEventReturn(elemBox, children.back(), &ETUIBox::ET_getAaabb2di);
+        ET_SendEventReturn(elemBox, children.back(), &ETUIBox::ET_getAabb2di);
         if(listType == ListType::Horizontal) {
-            offset.x = elemBox.top.x;
+            offset = elemBox.top.x;
         } else {
-            offset.y = elemBox.bot.y;
+            offset = elemBox.bot.y;
+        }
+    } else {
+        if(listType == ListType::Horizontal) {
+            offset = box.top.x;
+        } else {
+            offset = box.bot.y;
         }
     }
     elemBox = AABB2Di(0);
-    ET_SendEventReturn(elemBox, newElemId, &ETUIBox::ET_getAaabb2di);
+    ET_SendEventReturn(elemBox, newElemId, &ETUIBox::ET_getAabb2di);
     elemBox.setCenter(elemBox.getSize() / 2);
+
     Vec2i center = elemBox.getCenter();
     if(listType == ListType::Horizontal) {
-        center = Vec2i(center.x + offset.x, center.y); 
+        center.x += + offset;
     } else {
-        center = Vec2i(center.x, offset.y - center.y);
+        center.y = offset - center.y;
     }
 
     ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, newElemId);
@@ -43,10 +52,12 @@ void  UIList::ET_addElement(EntityId newElemId) {
 }
 
 void UIList::calcResListBox() {
-    AABB2Di listBox(0);
+    AABB2Di listBox;
+    listBox.top = Vec2i(std::numeric_limits<int>::min());
+    listBox.bot = Vec2i(std::numeric_limits<int>::max());
     for(auto entId : children) {
         AABB2Di childBox = AABB2Di(0);
-        ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAaabb2di);
+        ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAabb2di);
         auto center = childBox.getCenter();
         auto size = childBox.getSize();
 
@@ -60,23 +71,34 @@ void UIList::calcResListBox() {
         listBox.top.x = std::max(listBox.top.x, childBox.top.x);
         listBox.top.y = std::max(listBox.top.y, childBox.top.y);
         listBox.bot.x = std::min(listBox.bot.x, childBox.bot.x);
-        listBox.bot.y = std::min(listBox.bot.y, childBox.bot.x);
+        listBox.bot.y = std::min(listBox.bot.y, childBox.bot.y);
         ET_SendEvent(entId, &ETUIBox::ET_setCenter, childBox.getCenter());
     }
 
     setBox(listBox);
     ET_alignInBox(ET_getParentAaabb2di());
-    const auto& box = ET_getAaabb2di();
+
+    const auto& box = ET_getAabb2di();
+    const auto center = box.getCenter();
+    int offset = box.bot.x;
+    if(listType == ListType::Vertical) {
+        offset = box.top.y;
+    }
 
     for(auto entId : children) {
-        AABB2Di childBox = AABB2Di(0);
-        ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAaabb2di);
+        AABB2Di childBox(0);
+        ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAabb2di);
+        Vec2i childCenter(0);
+        Vec2i childSize = childBox.getSize();
         if(listType == ListType::Horizontal) {
-            childBox = childBox + Vec2i(0, box.bot.y);
+            childCenter = Vec2i(offset + childSize.x / 2, center.y);
+            offset += childSize.x;
         } else {
-            childBox = childBox + Vec2i(box.bot.x, 0);
+            childCenter = Vec2i(center.x, offset - childSize.y / 2);
+            offset -= childSize.y;
         }
-        ET_SendEvent(entId, &ETUIBox::ET_alignInBox, childBox);
+
+        ET_SendEvent(entId, &ETUIBox::ET_setCenter, childCenter);
     }
 }
 
@@ -123,7 +145,7 @@ void UIList::calcList() {
     }
 }
 
-void UIList::ET_onSurfaceResize(const Vec2i& size) {
+void UIList::ET_boxResize() {
     calcList();
 }
 

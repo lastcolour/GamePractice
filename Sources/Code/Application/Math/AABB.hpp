@@ -15,7 +15,7 @@ public:
     AABB(const AABB& other) :
         bot(other.bot), top(other.top) {}
     template<typename F>
-    AABB(const F& val) :
+    explicit AABB(const F& val) :
         bot(val), top(val) {}
 
     T getSize() const {

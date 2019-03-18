@@ -22,7 +22,7 @@ private:
 
 private:
 
-    Environment(Application& application);
+    explicit Environment(Application& application);
     ~Environment();
 
 public:

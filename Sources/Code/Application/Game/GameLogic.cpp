@@ -1,4 +1,5 @@
 #include "Game/GameLogic.hpp"
+#include "Game/GameObject.hpp"
 
 #include <cassert>
 

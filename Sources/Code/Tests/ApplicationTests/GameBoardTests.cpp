@@ -1,6 +1,7 @@
 #include "GameBoardTests.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Core/JSONNode.hpp"
+#include "Game/GameObject.hpp"
 
 namespace {
     const char* TEST_CELL_OBJECT = "Simple";

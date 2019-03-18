@@ -21,8 +21,8 @@ public:
     // ETUIList
     void ET_addElement(EntityId newElemId) override;
 
-    // ETSurfaceEvents
-    void ET_onSurfaceResize(const Vec2i& size) override;
+    // ETUIBox
+    void ET_boxResize() override;
 
 protected:
 
@@ -32,6 +32,7 @@ private:
 
     void calcList();
     void calcResListBox();
+    int sfiftCenterByOffset(int offset, Vec2i& center) const;
 
 private:
 

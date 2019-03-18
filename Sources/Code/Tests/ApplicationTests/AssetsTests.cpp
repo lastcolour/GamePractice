@@ -1,6 +1,7 @@
 #include "AssetsTests.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Platforms/Desktop/DesktopAssets.hpp"
+#include "Core/JSONNode.hpp"
 
 namespace {
     const char* TEST_FILE_PATH = "Render/Materials.json";

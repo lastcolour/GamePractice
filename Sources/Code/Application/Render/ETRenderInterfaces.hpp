@@ -1,9 +1,9 @@
 #ifndef __ET_RENDER_INTERFACES_HPP__
 #define __ET_RENDER_INTERFACES_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Math/Matrix.hpp"
 #include "Render/Color.hpp"
+#include "Core/ETPrimitives.hpp"
 
 #include <memory>
 #include <string>
@@ -22,6 +22,7 @@ public:
     virtual ~ETRenderEvents() = default;
 
     virtual void ET_onRender(const RenderContext& renderCtx) = 0;
+    virtual void ET_onRenderPortResize(const Vec2i& size) = 0;
 };
 
 struct ETRender {

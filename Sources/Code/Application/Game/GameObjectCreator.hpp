@@ -1,12 +1,13 @@
 #ifndef __GAME_OBJECT_CREATOR_HPP__
 #define __GAME_OBJECT_CREATOR_HPP__
 
+#include "Game/GameLogic.hpp"
+
 #include <memory>
 #include <string>
 #include <unordered_map>
 
 class GameObject;
-class GameLogic;
 
 class GameObjectCreator {
 

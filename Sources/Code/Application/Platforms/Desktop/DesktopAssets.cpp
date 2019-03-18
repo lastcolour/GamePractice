@@ -1,5 +1,6 @@
 #include "Platforms/Desktop/DesktopAssets.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
 
 #include <chrono>
 #include <fstream>
@@ -84,7 +85,7 @@ namespace {
         return tPath;
     }
 
-    std::string transformToAssetPath(const std::string assetRootPath, const std::string& assetPath) {
+    std::string transformToAssetPath(const std::string& assetRootPath, const std::string& assetPath) {
         if(assetPath.empty()) {
             return "";
         }

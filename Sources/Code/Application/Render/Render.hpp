@@ -13,7 +13,7 @@
 
 class RenderMaterial;
 class RenderGeometry;
-class RenderLogic;
+class RenderFontSystem;
 
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
@@ -55,6 +55,7 @@ private:
     RenderTextureFramebuffer* renderFb;
     Camera2D camera2d;
     ColorB clearColor;
+    std::unique_ptr<RenderFontSystem> fontSystem;
     std::unordered_map<std::string, std::weak_ptr<RenderMaterial>> materials;
     std::unordered_map<std::string, std::weak_ptr<RenderGeometry>> geometris;
 };
