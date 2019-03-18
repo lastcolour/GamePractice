@@ -137,7 +137,7 @@ void UIBox::syncTransform() const {
     tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
     ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
 
-    const Vec2i size = box.getSize(); 
+    const Vec2i size = box.getSize();
     RenderLogicParams params;
     params.col = style.color;
     params.size = Vec2(static_cast<float>(size.x), static_cast<float>(size.y));
@@ -148,7 +148,7 @@ void UIBox::ET_boxResize() {
     setBox(calcBox());
 }
 
-void UIBox::ET_onRenderPortResize(const Vec2i& size) {
+void UIBox::ET_onRenderPortResized() {
     if(!ET_IsExistNode<ETUIList>(getParentId())) {
         ET_boxResize();
     }

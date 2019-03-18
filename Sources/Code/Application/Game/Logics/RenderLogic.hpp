@@ -23,7 +23,7 @@ public:
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;
-    void ET_onRenderPortResize(const Vec2i& size) override {}
+    void ET_onRenderPortResized() override { }
 
     // ETRenderLogic
     void ET_setRenderParams(const RenderLogicParams& params) override;

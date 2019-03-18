@@ -25,20 +25,19 @@ namespace {
 } // namespace
 
 Render::Render() :
-    fontSystem(new RenderFontSystem),
     renderFb(nullptr),
+    fontSystem(new RenderFontSystem),
     clearColor(0, 0, 0) {
 }
+
+ Render::~Render() {
+ }
 
 bool Render::onInit() {
     GLContextType glCtxType = GLContextType::None;
     ET_SendEventReturn(glCtxType, &ETSurface::ET_getGLContextType);
     if(glCtxType == GLContextType::None) {
         LogError("[Render::onInit] Can't init render without GL context");
-        return false;
-    }
-    if(!fontSystem->init()) {
-        LogError("[Render::onInit] Can't init font system");
         return false;
     }
 
@@ -307,5 +306,5 @@ void Render::setViewport(const Vec2i& viewport) {
     LogDebug("[Render::setViewport] Set viewport: [%ix%i]", viewport.x, viewport.y);
     camera2d.setViewport(viewport.x, viewport.y);
     glViewport(0, 0, viewport.x, viewport.y);
-    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResize, viewport);
+    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
 }

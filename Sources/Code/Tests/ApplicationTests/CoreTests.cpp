@@ -165,6 +165,6 @@ TEST_F(CoreTests, CheckWithReturnValue) {
 
     int retVal = 0;
     ET_SendEventReturn(retVal, entId, &ET_TestInterface::ET_OnReturnParamValue);
-    
+
     ASSERT_EQ(node.eventRecieved, retVal);
 }

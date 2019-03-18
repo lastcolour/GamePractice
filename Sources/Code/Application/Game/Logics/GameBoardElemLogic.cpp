@@ -8,6 +8,7 @@ GameBoardElemLogic::~GameBoardElemLogic() {
 }
 
 bool GameBoardElemLogic::serialize(const JSONNode& node) {
+    (void)node;
     return true;
 }
 

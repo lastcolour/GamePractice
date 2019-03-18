@@ -31,6 +31,6 @@ float Timer::tick() {
     auto timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>
         (timeNow - timePoint->lastTickT).count();
     timePoint->lastTickT = timeNow;
-    timePoint->tickDuration = timeDiff / 1000.f;
+    timePoint->tickDuration = static_cast<float>(timeDiff / 1000.f);
     return timePoint->tickDuration;
 }

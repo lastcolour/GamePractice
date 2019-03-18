@@ -26,8 +26,8 @@ public:
     virtual void ET_boxResize() override;
 
     // ETRenderEvents
-    void ET_onRender(const RenderContext& renderCtx) override {}
-    void ET_onRenderPortResize(const Vec2i& size) override;
+    void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
+    void ET_onRenderPortResized() override;
 
 protected:
 

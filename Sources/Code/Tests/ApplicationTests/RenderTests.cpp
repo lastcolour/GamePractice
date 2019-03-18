@@ -83,7 +83,7 @@ void RenderTests::checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t 
             }
         }
     }
-    ASSERT_EQ(failPixCount, 0);
+    ASSERT_EQ(failPixCount, 0u);
 }
 
 void RenderTests::dumpFramebuffer() {

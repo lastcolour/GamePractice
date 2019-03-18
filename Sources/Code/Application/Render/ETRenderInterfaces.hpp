@@ -22,7 +22,7 @@ public:
     virtual ~ETRenderEvents() = default;
 
     virtual void ET_onRender(const RenderContext& renderCtx) = 0;
-    virtual void ET_onRenderPortResize(const Vec2i& size) = 0;
+    virtual void ET_onRenderPortResized() = 0;
 };
 
 struct ETRender {

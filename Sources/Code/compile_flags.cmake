@@ -23,8 +23,9 @@ set(CMAKE_CXX_FLAGS
 -Wcast-qual \
 -Wswitch-default \
 -Wswitch-enum \
--Wconversion \
 -Wunreachable-code")
+
+ # -Wconversion
 
 else()
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")

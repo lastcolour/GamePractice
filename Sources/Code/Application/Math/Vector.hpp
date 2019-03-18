@@ -29,7 +29,7 @@ public:
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y; }
-    T getLenght() const { return sqrt(getLenghtSq()); }
+    T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
     Vector2<T> getNormilized() const {
         const auto len = getLenght();
         return Vector2<T>(x / len, y / len);
@@ -65,7 +65,7 @@ public:
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y + z * z; }
-    T getLenght() const { return sqrt(getLenghtSq()); }
+    T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
     Vector3<T> getNormilized() const {
         const auto len = getLenght();
         return Vector3<T>(x / len, y / len, z / len);
@@ -103,7 +103,7 @@ public:
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y + z * z + w * w; }
-    T getLenght() const { return sqrt(getLenghtSq()); }
+    T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
     Vector4<T> getNormilized() const {
         const auto len = getLenght();
         return Vector4(x / len, y / len, z / len, w / len);

@@ -21,7 +21,7 @@ class Render : public SystemLogic,
 public:
 
     Render();
-    virtual ~Render() = default;
+    virtual ~Render();
 
     // ETRender
     const ColorB& ET_getClearColor() const override;

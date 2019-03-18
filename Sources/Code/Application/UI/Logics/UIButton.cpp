@@ -26,8 +26,7 @@ bool UIButton::init() {
         LogWarning("[UIButton::init] UIBox init failed");
         return false;
     }
-    if(text.empty()) {
-        ET_SendEvent(getEntityId(), &ETRenderLogic::ET_setRenderText, text);
+    if(!text.empty()) {
     }
     return true;
 }
