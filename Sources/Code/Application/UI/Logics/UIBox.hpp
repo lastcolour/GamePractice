@@ -4,9 +4,11 @@
 #include "Game/GameLogic.hpp"
 #include "UI/UIETInterfaces.hpp"
 #include "UI/UIStyle.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 class UIBox : public GameLogic,
-    public ETNode<ETUIBox> {
+    public ETNode<ETUIBox>,
+    public ETNode<ETSurfaceEvents> {
 public:
 
     UIBox();
@@ -22,6 +24,10 @@ public:
     void ET_alignInBox(const AABB2Di& alingBox) override;
     AABB2Di ET_getParentAaabb2di() const override;
 
+    // ETSurfaceEvents
+    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override {}
+    void ET_onSurfaceResize(const Vec2i& size) override;
+
 protected:
 
     AABB2Di calcBox() const;
@@ -32,6 +38,10 @@ protected:
     void setBox(const AABB2Di& newBox);
     const UIStyle& getStyle() const;
     void setStyle(const UIStyle& style);
+
+private:
+
+    void syncTransform() const;
 
 private:
 

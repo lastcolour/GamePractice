@@ -21,12 +21,16 @@ public:
     // ETUIList
     void ET_addElement(EntityId newElemId) override;
 
+    // ETSurfaceEvents
+    void ET_onSurfaceResize(const Vec2i& size) override;
+
 protected:
 
     ListType listType;
 
 private:
 
+    void calcList();
     void calcResListBox();
 
 private:

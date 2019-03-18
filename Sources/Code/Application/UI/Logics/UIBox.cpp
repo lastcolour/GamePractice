@@ -15,10 +15,12 @@ UIBox::~UIBox() {
 void UIBox::ET_alignInBox(const AABB2Di& alignBox) {
     Vec2i center = calcCenter(box, alignBox);
     box.setCenter(center);
+    syncTransform();
 }
 
 void UIBox::ET_setCenter(const Vec2i& center) {
     box.setCenter(center);
+    syncTransform();
 }
 
 const AABB2Di& UIBox::ET_getAaabb2di() const {
@@ -49,6 +51,11 @@ Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
         }
         case SizeInvariant::AbsoluteBiggestSquare:
         {
+            Vec2i renderPort;
+            ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+            int minSide = std::min(renderPort.x, renderPort.y);
+            resSize.x = static_cast<int>(minSide * style.size.x);
+            resSize.y = static_cast<int>(minSide * style.size.y);
             break;
         }
         case SizeInvariant::Relative:
@@ -60,6 +67,10 @@ Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
         }
         case SizeInvariant::RelativeBiggestSquare:
         {
+            Vec2i parentSize = parentBox.getSize();
+            int minSide = std::min(parentSize.x, parentSize.y);
+            resSize.x = static_cast<int>(minSide * style.size.x);
+            resSize.y = static_cast<int>(minSide * style.size.y);
             break;
         }
         case SizeInvariant::Pixel:
@@ -102,22 +113,27 @@ Vec2i UIBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const 
 
 void UIBox::setBox(const AABB2Di& newBox) {
     box = newBox;
-    auto center = box.getCenter();
+    syncTransform();
+}
 
+void UIBox::syncTransform() const {
     Transform tm;
+    auto center = box.getCenter();
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
     tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
     ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
 
-    if(!ET_IsExistNode<ETRenderLogic>(getEntityId())) {
-        LogWarning("[UIBox::setBox] No RenderLogic attached to UIBox adress");
-        return;
-    }
     const Vec2i size = box.getSize(); 
     RenderLogicParams params;
     params.col = style.color;
     params.size = Vec2(static_cast<float>(size.x), static_cast<float>(size.y));
     ET_SendEvent(getEntityId(), &ETRenderLogic::ET_setRenderParams, params);
+}
+
+void UIBox::ET_onSurfaceResize(const Vec2i& size) {
+    if(!ET_IsExistNode<ETUIList>(getParentId())) {
+        setBox(calcBox());
+    }
 }
 
 const UIStyle& UIBox::getStyle() const {
@@ -153,5 +169,6 @@ bool UIBox::serialize(const JSONNode& node) {
 bool UIBox::init() {
     setBox(calcBox());
     ETNode<ETUIBox>::connect(getEntityId());
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
     return true;
 }

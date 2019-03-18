@@ -104,6 +104,13 @@
       "name":"MainMenu",
       "logics":[
         {
+          "type":"RenderLogic",
+          "data":{
+            "mat":"solid_color",
+            "geom":"square"
+          }
+        },
+        {
           "type":"UIList",
           "data":{
             "type":"vert",

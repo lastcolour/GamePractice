@@ -116,15 +116,23 @@ bool UIList::serialize(const JSONNode& node) {
     return true;
 }
 
+void UIList::calcList() {
+    std::vector<EntityId> elems = std::move(children);
+    for(auto entId : elems) {
+        ET_addElement(entId);
+    }
+}
+
+void UIList::ET_onSurfaceResize(const Vec2i& size) {
+    calcList();
+}
+
 bool UIList::init() {
     if(!UIBox::init()) {
         LogWarning("[UIList::init] UIBox init failed");
         return false;
     }
-    std::vector<EntityId> elems = std::move(children);
-    for(auto entId : elems) {
-        ET_addElement(entId);
-    }
+    calcList();
     ETNode<ETUIList>::connect(getEntityId());
     return true;
 }
