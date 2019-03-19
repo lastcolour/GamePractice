@@ -65,7 +65,7 @@ void RenderFontSystem::buildFont(const std::string& fontName, int fontSize) {
     glBindTexture(GL_TEXTURE_2D, texId);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
 
     int shift = 0;
     for(int i = 32; i < 128; ++i) {

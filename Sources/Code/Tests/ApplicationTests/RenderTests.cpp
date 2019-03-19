@@ -314,3 +314,9 @@ TEST_F(RenderTests, CheckGameRenderAfterInit) {
     ASSERT_TRUE(textureFramebuffer->read());
     dumpFramebuffer();
 }
+
+TEST_F(RenderTests, CheckCreateFont) {
+    std::shared_ptr<RenderFont> font;
+    ET_SendEventReturn(font, &ETRender::ET_createFont, "");
+    ASSERT_TRUE(font);
+}

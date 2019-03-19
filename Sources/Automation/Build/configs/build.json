@@ -71,11 +71,21 @@
                 "cmake": {
                     "out-dir": "{cmake_out_path}/FreeType2",
                     "run-dir": "{root_path}/Sources/Libs/FreeType2",
-                    "defs" : {
-                        "All" : {
-                            "FT_WITH_ZQLIB" : "ON"
-                        }
-                    }
+                    "defs" : {}
+                }
+            },
+            {
+                "step-name": "ZLib",
+                "tags": ["3dParty"],
+                "supported-platforms": [
+                    "Windows"
+                ],
+                "step-extension": "{default_ext}",
+                "build-type": "Release",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/ZLIB",
+                    "run-dir": "{root_path}/Sources/Libs/ZLIB",
+                    "defs" : {}
                 }
             },
             {

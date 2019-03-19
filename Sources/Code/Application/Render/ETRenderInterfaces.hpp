@@ -11,6 +11,7 @@
 class RenderGeometry;
 class RenderMaterial;
 class RenderTextureFramebuffer;
+class RenderFont;
 
 struct RenderContext {
     Mat4 proj2dMat;
@@ -37,6 +38,7 @@ struct ETRender {
     virtual void ET_drawFrame() = 0;
     virtual std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) = 0;
     virtual std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) = 0;
+    virtual std::shared_ptr<RenderFont> ET_createFont(const std::string& fontName) = 0;
 };
 
 #endif /* __ET_RENDER_INTERFACES_HPP__ */

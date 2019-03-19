@@ -296,6 +296,11 @@ void Render::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
     (void)pt;
 }
 
+std::shared_ptr<RenderFont> Render::ET_createFont(const std::string& fontName) {
+    const int defFontSize = 38;
+    return fontSystem->createFont(fontName, defFontSize);
+}
+
 void Render::ET_onSurfaceResize(const Vec2i& size) {
     if(!renderFb) {
         setViewport(size);
