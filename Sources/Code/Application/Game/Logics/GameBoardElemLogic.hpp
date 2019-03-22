@@ -2,7 +2,7 @@
 #define __GAME_BOARD_ELEM_LOGIC_HPP__
 
 #include "Game/GameLogic.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 class GameBoardElemLogic : public GameLogic,
     public ETNode<ETGameBoardElemLogic> {

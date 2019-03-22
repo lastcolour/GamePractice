@@ -5,7 +5,8 @@
 
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
-#include "Game/Logics/RenderLogic.hpp"
+#include "Render/Logics/RenderSimpleLogic.hpp"
+#include "Render/Logics/RenderTextLogic.hpp"
 
 #include "UI/Logics/UIButton.hpp"
 #include "UI/Logics/UIList.hpp"
@@ -17,12 +18,15 @@ namespace {
 } // namespace
 
 GameObjectCreator::GameObjectCreator() {
-    registerLogic<RenderLogic>("RenderLogic");
-    registerLogic<GameBoardLogic>("GameBoardLogic");
-    registerLogic<GameBoardElemLogic>("GameBoardElemLogic");
+    registerLogic<RenderSimpleLogic>("RenderSimple");
+    registerLogic<RenderTextLogic>("RenderText");
 
-    registerLogic<UIButton>("UIButton");
+    registerLogic<GameBoardLogic>("GameBoard");
+    registerLogic<GameBoardElemLogic>("GameBoardElem");
+
+    registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");
+    registerLogic<UIButton>("UIButton");
 }
 
 GameObjectCreator::~GameObjectCreator() {

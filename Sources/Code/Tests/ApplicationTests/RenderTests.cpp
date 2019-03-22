@@ -5,7 +5,8 @@
 #include "Render/RenderTextureFramebuffer.hpp"
 #include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "TestUtils/VoidTestApplication.hpp"
-#include "Game/Logics/RenderLogic.hpp"
+#include "Render/Logics/RenderSimpleLogic.hpp"
+#include "Render/RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Game/Game.hpp"
 #include "Math/MatrixTransform.hpp"
@@ -17,8 +18,8 @@ namespace {
     const size_t RENDER_WIDTH = 400;
     const size_t RENDER_HEIGHT = 300;
 
-    const char* TEST_MATERIAL_1 = "solid_color";
-    const char* TEST_MATERIAL_2 = "Solid_color";
+    const char* TEST_MATERIAL_1 = "geom_solid_color";
+    const char* TEST_MATERIAL_2 = "geom_Solid_color";
     const char* TEST_GEOM_1 = "square";
     const char* TEST_GEOM_2 = "Square";
 
@@ -165,12 +166,6 @@ TEST_F(RenderTests, CheckEmptyRender) {
     ASSERT_EQ(failPixCount, 0);
 }
 
-TEST_F(RenderTests, CheckCreateMaterial) {
-    std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
-    ASSERT_TRUE(material);
-}
-
 TEST_F(RenderTests, CheckCreateInvalidMaterial) {
     std::shared_ptr<RenderMaterial> material;
     ET_SendEventReturn(material, &ETRender::ET_createMaterial, "");
@@ -179,9 +174,12 @@ TEST_F(RenderTests, CheckCreateInvalidMaterial) {
 
 TEST_F(RenderTests, CheckCreateSameMaterial) {
     std::shared_ptr<RenderMaterial> mat1;
-    std::shared_ptr<RenderMaterial> mat2;
     ET_SendEventReturn(mat1, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
+
+    std::shared_ptr<RenderMaterial> mat2;
     ET_SendEventReturn(mat2, &ETRender::ET_createMaterial, TEST_MATERIAL_2);
+
+    ASSERT_TRUE(mat1);
     ASSERT_EQ(mat1.get(), mat2.get());
 }
 
@@ -200,9 +198,12 @@ TEST_F(RenderTests, CheckCreateSquareGeom) {
 
 TEST_F(RenderTests, CheckCreateSameSquareGeom) {
     std::shared_ptr<RenderGeometry> geom1;
-    std::shared_ptr<RenderGeometry> geom2;
     ET_SendEventReturn(geom1, &ETRender::ET_createGeometry, TEST_GEOM_1);
+
+    std::shared_ptr<RenderGeometry> geom2;
     ET_SendEventReturn(geom2, &ETRender::ET_createGeometry, TEST_GEOM_2);
+
+    ASSERT_TRUE(geom1);
     ASSERT_EQ(geom1.get(), geom2.get());
 }
 
@@ -286,7 +287,7 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     RenderLogicParams params;
     params.size = Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR);
     params.col = DRAW_COLOR;
-    ET_SendEvent(objId, &ETRenderLogic::ET_setRenderParams, params);
+    ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setRenderParams, params);
 
     ET_SendEvent(&ETRender::ET_drawFrame);
 
@@ -315,8 +316,100 @@ TEST_F(RenderTests, CheckGameRenderAfterInit) {
     dumpFramebuffer();
 }
 
-TEST_F(RenderTests, CheckCreateFont) {
+TEST_F(RenderTests, CheckCreateSameFontTwice) {
+    std::shared_ptr<RenderFont> font1;
+    ET_SendEventReturn(font1, &ETRender::ET_createDefaultFont);
+
+    std::shared_ptr<RenderFont> font2;
+    ET_SendEventReturn(font2, &ETRender::ET_createDefaultFont);
+
+    ASSERT_TRUE(font1);
+    ASSERT_EQ(font1.get(), font2.get());
+}
+
+TEST_F(RenderTests, CheckRenderText) {
     std::shared_ptr<RenderFont> font;
-    ET_SendEventReturn(font, &ETRender::ET_createFont, "");
-    ASSERT_TRUE(font);
+    ET_SendEventReturn(font, &ETRender::ET_createDefaultFont);
+
+    std::string str = "Hello";
+    const size_t vertCount = 6u * str.size();
+    std::unique_ptr<Vec4[]> vertex(new Vec4[vertCount]);
+
+    GLuint VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    Vec2 scale(1.f);
+    Vec2 pos(0.f);
+    Vec2i textSize = font->getAtlasTexSize();
+    int i = 0;
+    for(auto ch : str) {
+        if(auto glyph = font->getGlyph(ch)) {
+            auto vert = vertex[i];
+            Vec2 pt;
+            pt.x =  pos.x + glyph->bearing.x * scale.x;
+            pt.y =  pos.y + glyph->bearing.y * scale.y;
+            const float w = glyph->size.x * scale.x;
+            const float h = glyph->size.y * scale.y;
+
+            pos.x += glyph->advance.x * scale.x;
+            pos.y += glyph->advance.y * scale.y;
+            // First tri
+            vertex[i++] = {
+                pt.x,
+                pt.y,
+                glyph->offset,
+                0
+            };
+            vertex[i++] = {
+                pt.x + w,
+                pt.y,
+                glyph->offset + glyph->bearing.x / static_cast<float>(textSize.x),
+                0
+            };
+            vertex[i++] = {
+                pt.x,
+                pt.y - h,
+                glyph->offset,
+                glyph->bearing.y / static_cast<float>(textSize.y)
+            };
+            // Second tri
+            vertex[i++] = {
+                pt.x + w,
+                pt.y,
+                glyph->offset + glyph->bearing.x / static_cast<float>(textSize.x),
+                0
+            };
+            vertex[i++] = {
+                pt.x,
+                pt.y - h,
+                glyph->offset,
+                glyph->bearing.y / static_cast<float>(textSize.y)
+            };
+            vertex[i++] = { 
+                pt.x + w,
+                pt.y - h,
+                glyph->offset + glyph->bearing.x / static_cast<float>(textSize.x),
+                glyph->bearing.y / static_cast<float>(textSize.y)
+            };
+        }
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, vertCount);
+
+    ASSERT_TRUE(textureFramebuffer->read());
+    dumpFramebuffer();
 }

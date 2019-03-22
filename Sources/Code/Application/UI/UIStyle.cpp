@@ -49,7 +49,6 @@ SizeInvariant parseSizeInvariant(const std::string& strType) {
 
 } // namespace
 
-
 Margin::Margin() :
     left(0.f),
     right(0.f),

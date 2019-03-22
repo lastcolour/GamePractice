@@ -1,7 +1,7 @@
 #include "UI/Logics/UIButton.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 UIButton::UIButton() {
 }
@@ -26,7 +26,6 @@ bool UIButton::init() {
         LogWarning("[UIButton::init] UIBox init failed");
         return false;
     }
-    if(!text.empty()) {
-    }
+    ET_SendEvent(getEntityId(), &ETRenderTextLogic::ET_setText, text);
     return true;
 }

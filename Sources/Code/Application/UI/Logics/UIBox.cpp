@@ -1,7 +1,7 @@
 #include "UI/Logics/UIBox.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
@@ -141,7 +141,7 @@ void UIBox::syncTransform() const {
     RenderLogicParams params;
     params.col = style.color;
     params.size = Vec2(static_cast<float>(size.x), static_cast<float>(size.y));
-    ET_SendEvent(getEntityId(), &ETRenderLogic::ET_setRenderParams, params);
+    ET_SendEvent(getEntityId(), &ETRenderSimpleLogic::ET_setRenderParams, params);
 }
 
 void UIBox::ET_boxResize() {

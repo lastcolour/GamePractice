@@ -1,5 +1,5 @@
-#ifndef __LOGICS_ET_INTERFACES_HPP__
-#define __LOGICS_ET_INTERFACES_HPP__
+#ifndef __ET_GAME_INTERFACES_HPP__
+#define __ET_GAME_INTERFACES_HPP__
 
 #include "Render/Color.hpp"
 #include "Math/Transform.hpp"
@@ -7,25 +7,10 @@
 
 #include <string>
 
-struct RenderLogicParams {
-    Vec2 size;
-    ColorB col;
-
-    RenderLogicParams() :
-        size(0.f),
-        col(255, 255, 255) {}
-};
-
 struct ETGameBoardElemLogic {
     virtual ~ETGameBoardElemLogic() = default;
     virtual void ET_setBoardPos(const Vec2i& pt) = 0;
     virtual const Vec2i& ET_getBoardPos() const = 0;
-};
-
-struct ETRenderLogic {
-    virtual ~ETRenderLogic() = default;
-    virtual void ET_setRenderParams(const RenderLogicParams& params) = 0;
-    virtual void ET_getRenderParams(RenderLogicParams& params) = 0;
 };
 
 struct ETGameObject {
@@ -50,4 +35,4 @@ struct ETGame {
     virtual void ET_destroyObject(EntityId entId) = 0;
 };
 
-#endif /* __LOGICS_ET_INTERFACES_HPP__ */
+#endif /* __ET_GAME_INTERFACES_HPP__ */

@@ -1,4 +1,5 @@
 #include "Render/RenderFontSystem.hpp"
+#include "Render/RenderFont.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Platforms/OpenGL.hpp"
 
@@ -7,73 +8,115 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-namespace {
-    const char* DEFAULT_FONT = "Render/Fonts/Shanti-Regular.ttf";
-}
-
 RenderFontSystem::RenderFontSystem() {
+    characterSet = {
+        'A', 'a',
+        'B', 'b',
+        'C', 'c',
+        'D', 'd',
+        'E', 'e',
+        'F', 'f',
+        'G', 'g',
+        'H', 'h',
+        'I', 'i',
+        'J', 'j',
+        'K', 'k',
+        'L', 'l',
+        'M', 'm',
+        'N', 'n',
+        'O', 'o',
+        'p', 'p',
+        'Q', 'q',
+        'R', 'r',
+        'S', 's',
+        'T', 't',
+        'U', 'u',
+        'V', 'v',
+        'W', 'w',
+        'X', 'x',
+        'Y', 'y',
+        'Z', 'z',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '+', '-', '*', '(', ')', '/', '%', '$', '[', ']', '{', '}', '<', '>', '=',
+        '.', ',', ';', ':', '\'', '\\', '"', '@', '!', '?', '_'
+    };
 }
 
 RenderFontSystem::~RenderFontSystem() {
 }
 
 std::shared_ptr<RenderFont> RenderFontSystem::createFont(const std::string& reqFontName, int fontSize) {
-    auto it = fonts.find(reqFontName);
+    std::string fontName = reqFontName + '_' + std::to_string(fontSize);
+    auto it = fonts.find(fontName);
     if(it != fonts.end() && !it->second.expired()) {
         return it->second.lock();
     }
-    buildFont(DEFAULT_FONT, fontSize);
+    auto font = createFontImpl(reqFontName, fontSize);
+    if(font) {
+        fonts[fontName] = font;
+        return font;
+    }
     return nullptr;
 }
 
-void RenderFontSystem::buildFont(const std::string& fontName, int fontSize) {
+std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& fontName, int fontSize) {
     FT_Library ftLib;
     if(FT_Init_FreeType(&ftLib)) {
-        LogError("[RenderFontSystem::buildFont] Can't init FreeType library");
-        return;
+        LogError("[RenderFontSystem::createFontImpl] Can't init FreeType library");
+        return nullptr;
     }
     Buffer buff;
     ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, fontName);
     if(!buff) {
-        LogError("[RenderFontSystem::buildFont] Can't load default font: %s", fontName);
-        return;
+        LogError("[RenderFontSystem::createFontImpl] Can't load default font: %s", fontName);
+        return nullptr;
     }
     FT_Face fontFace = nullptr;
     if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getData()),
         static_cast<FT_Long>(buff.getSize()), 0, &fontFace)) {
-        LogError("[RenderFontSystem::buildFont] Can't create memory font face for font: %s", fontName);
-        return;
+        LogError("[RenderFontSystem::createFontImpl] Can't create memory font face for font: %s", fontName);
+        return nullptr;
     }
+
     FT_Set_Pixel_Sizes(fontFace, 0, fontSize);
 
-    FT_GlyphSlot glyph = fontFace->glyph;
     unsigned int width = 0;
     unsigned int height = 0;
 
-    for(int i = 32; i < 128; ++i) {
-        if(FT_Load_Char(fontFace, i, FT_LOAD_RENDER)) {
-            LogWarning("[RenderFontSystem::buildFont] Failed to load character '%c'", i);
+    FT_GlyphSlot glyph = fontFace->glyph;
+    for(auto ch : characterSet) {
+        if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
+            LogWarning("[RenderFontSystem::createFontImpl] Failed to load character '%c'", ch);
             continue;
         }
         width += glyph->bitmap.width;
         height = std::max(height, glyph->bitmap.rows);
     }
 
-    GLuint texId;
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &texId);
-    glBindTexture(GL_TEXTURE_2D, texId);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+    std::shared_ptr<RenderFont> font(new RenderFont);
+    if(!font->createAtlas(width, height)) {
+        LogWarning("[RenderFontSystem::createFontImpl] Counld not create atlas for font: %s", fontName);
+        return nullptr;
+    }
 
     int shift = 0;
-    for(int i = 32; i < 128; ++i) {
-        if(FT_Load_Char(fontFace, i, FT_LOAD_RENDER)) {
+    for(auto ch : characterSet) {
+        if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
             continue;
         }
-        glTexSubImage2D(GL_TEXTURE_2D, 0, shift, 0, glyph->bitmap.width, glyph->bitmap.rows,
-            GL_ALPHA, GL_UNSIGNED_BYTE, glyph->bitmap.buffer);
+
+        RenderGlyph glyphData;
+        glyphData.advance.x = glyph->advance.x;
+        glyphData.advance.y = glyph->advance.y;
+        glyphData.size.x = glyph->bitmap.width;
+        glyphData.size.y = glyph->bitmap.rows;
+        glyphData.bearing.x = glyph->bitmap_left;
+        glyphData.bearing.y = glyph->bitmap_top;
+        glyphData.offset = shift / static_cast<float>(width);
+
+        font->addGlyph(ch, glyphData, glyph->bitmap.buffer);
+
         shift += glyph->bitmap.width;
     }
+    return font;
 }

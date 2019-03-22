@@ -1,5 +1,5 @@
 #include "Game/Logics/GameBoardLogic.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/JSONNode.hpp"
@@ -214,7 +214,7 @@ void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const
     RenderLogicParams params;
     params.col = getElemColor(elem.color);
     params.size = Vec2(objectSize);
-    ET_SendEvent(elem.entId, &ETRenderLogic::ET_setRenderParams, params);
+    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setRenderParams, params);
 }
 
 void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {

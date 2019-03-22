@@ -1,7 +1,7 @@
 #include "UI/Logics/UIList.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>

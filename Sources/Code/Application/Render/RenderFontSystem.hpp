@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class RenderFont;
 
@@ -19,12 +20,14 @@ public:
 
 private:
 
-    void buildFont(const std::string& fontName, int fontSize);
+    std::shared_ptr<RenderFont> createFontImpl(const std::string& fontName, int fontSize);
 
 private:
 
     typedef std::weak_ptr<RenderFont> RenderFontPtrT;
     std::unordered_map<std::string, RenderFontPtrT> fonts;
+
+    std::vector<int> characterSet;
 };
 
 #endif /* __RENDER_FONT_SYSTEM_HPP__ */

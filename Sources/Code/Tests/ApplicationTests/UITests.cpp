@@ -3,7 +3,7 @@
 #include "UI/Logics/UIList.hpp"
 #include "Core/JSONNode.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 #include "Game/GameObject.hpp"
 
 class TestUIBox : public UIBox {

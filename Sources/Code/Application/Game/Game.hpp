@@ -3,7 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Game/GameObjectCreator.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 #include <vector>
 #include <memory>

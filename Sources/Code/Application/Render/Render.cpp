@@ -22,6 +22,8 @@ namespace {
     const char* MATERIALS = "Render/Materials.json";
     const char* SHADERS_ROOT_DIR = "Render/";
     const char* SQUARE_GEOM_NAME = "square";
+    const char* DEF_FONT_NAME = "Render/Fonts/Shanti-Regular.ttf";
+    const int DEF_FONT_SIZE = 38;
 } // namespace
 
 Render::Render() :
@@ -296,9 +298,8 @@ void Render::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
     (void)pt;
 }
 
-std::shared_ptr<RenderFont> Render::ET_createFont(const std::string& fontName) {
-    const int defFontSize = 38;
-    return fontSystem->createFont(fontName, defFontSize);
+std::shared_ptr<RenderFont> Render::ET_createDefaultFont() {
+    return fontSystem->createFont(DEF_FONT_NAME, DEF_FONT_SIZE);
 }
 
 void Render::ET_onSurfaceResize(const Vec2i& size) {

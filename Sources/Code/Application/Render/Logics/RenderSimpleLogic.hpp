@@ -1,22 +1,22 @@
-#ifndef __RENDER_LOGIC_HPP__
-#define __RENDER_LOGIC_HPP__
+#ifndef __RENDER_SIMPLE_LOGIC_HPP__
+#define __RENDER_SIMPLE_LOGIC_HPP__
 
 #include "Game/GameLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 #include <memory>
 
 class RenderMaterial;
 class RenderGeometry;
 
-class RenderLogic : public GameLogic,
+class RenderSimpleLogic : public GameLogic,
     public ETNode<ETRenderEvents>,
-    public ETNode<ETRenderLogic> {
+    public ETNode<ETRenderSimpleLogic> {
 public:
 
-    RenderLogic();
-    virtual ~RenderLogic();
+    RenderSimpleLogic();
+    virtual ~RenderSimpleLogic();
 
     bool serialize(const JSONNode& node) override;
     bool init() override;
@@ -25,7 +25,7 @@ public:
     void ET_onRender(const RenderContext& renderCtx) override;
     void ET_onRenderPortResized() override { }
 
-    // ETRenderLogic
+    // ETRenderSimpleLogic
     void ET_setRenderParams(const RenderLogicParams& params) override;
     void ET_getRenderParams(RenderLogicParams& params) override;
 
@@ -41,4 +41,4 @@ private:
     std::shared_ptr<RenderGeometry> geom;
 };
 
-#endif /* __RENDER_LOGIC_HPP__ */
+#endif /* __RENDER_SIMPLE_LOGIC_HPP__ */

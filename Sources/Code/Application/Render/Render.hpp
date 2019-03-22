@@ -32,7 +32,7 @@ public:
     const Mat4& ET_getProj2DMat4() const override;
     std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) override;
     std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) override;
-    std::shared_ptr<RenderFont> ET_createFont(const std::string& fontName) override;
+    std::shared_ptr<RenderFont> ET_createDefaultFont() override;
 
     // ETSurfaceEvents
     void ET_onSurfaceResize(const Vec2i& size) override;
@@ -48,6 +48,7 @@ private:
 
     void setViewport(const Vec2i& size);
     std::shared_ptr<RenderGeometry> createSquare();
+    std::shared_ptr<RenderGeometry> createTextGeomChunk();
     int createProgram(const std::string& vert, const std::string& frag);
     int createProgramImpl(const std::string& vertSrc, const std::string& fragSrc);
 

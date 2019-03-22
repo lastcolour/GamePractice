@@ -4,7 +4,7 @@
 #include "Game/GameLogic.hpp"
 #include "Math/AABB.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 #include <vector>
 #include <memory>

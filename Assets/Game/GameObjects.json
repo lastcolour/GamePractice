@@ -4,9 +4,9 @@
       "name":"Simple",
       "logics":[
         {
-          "type":"RenderLogic",
+          "type":"RenderSimple",
           "data":{
-            "mat":"solid_color",
+            "mat":"geom_solid_color",
             "geom":"square"
           }
         }
@@ -16,9 +16,9 @@
       "name":"GameBoardElem",
       "logics":[
         {
-          "type":"RenderLogic",
+          "type":"RenderSimple",
           "data":{
-            "mat":"solid_color",
+            "mat":"geom_solid_color",
             "geom":"square"
           }
         },
@@ -29,19 +29,20 @@
       ]
     },
     {
-      "name":"GameRootObject",
+      "name":"GameBoard",
       "logics":[
         {
           "type":"UIBox",
           "data":{
             "style":{
               "align":"center",
-              "size":{"h":1, "w":1, "inv":"rel"}
+              "size":{"h":1, "w":1, "inv":"rel"},
+              "margin":{}
             }
           }
         },
         {
-          "type":"GameBoardLogic",
+          "type":"GameBoard",
           "data":{
             "fallSpeed":5,
             "size":{"w":8, "h":8},
@@ -58,11 +59,15 @@
       "name":"StartButton",
       "logics":[
         {
-          "type":"RenderLogic",
+          "type":"RenderSimple",
           "data":{
-            "mat":"solid_color",
+            "mat":"geom_solid_color",
             "geom":"square"
           }
+        },
+        {
+          "type":"RenderText",
+          "data":{}
         },
         {
           "type":"UIButton",
@@ -71,7 +76,8 @@
             "style":{
               "color":{"r":255, "g":0, "b":255},
               "align":{"x":"center", "y":"center"},
-              "size":{"h":0.2, "w":0.3, "inv":"relBS"}
+              "size":{"h":0.2, "w":0.3, "inv":"relBS"},
+              "margin":{}
             }
           }
         }
@@ -81,11 +87,15 @@
       "name":"OptionButton",
       "logics":[
         {
-          "type":"RenderLogic",
+          "type":"RenderSimple",
           "data":{
-            "mat":"solid_color",
+            "mat":"geom_solid_color",
             "geom":"square"
           }
+        },
+        {
+          "type":"RenderText",
+          "data":{}
         },
         {
           "type":"UIButton",
@@ -94,7 +104,8 @@
             "style":{
               "color":{"r":255, "g":255, "b":0},
               "align":{"x":"center", "y":"center"},
-              "size":{"h":0.2, "w":0.3, "inv":"relBS"}
+              "size":{"h":0.2, "w":0.3, "inv":"relBS"},
+              "margin":{}
             }
           }
         }
@@ -104,9 +115,9 @@
       "name":"MainMenu",
       "logics":[
         {
-          "type":"RenderLogic",
+          "type":"RenderSimple",
           "data":{
-            "mat":"solid_color",
+            "mat":"geom_solid_color",
             "geom":"square"
           }
         },
@@ -121,7 +132,8 @@
             "style":{
               "color":{"r":255, "g":255, "b":255},
               "align":{"x":"center", "y":"center"},
-              "size":{"h":1, "w":1, "inv":"rel"}
+              "size":{"h":1, "w":1, "inv":"rel"},
+              "margin":{}
             }
           }
         }

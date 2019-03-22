@@ -1,4 +1,4 @@
-#include "Game/Logics/RenderLogic.hpp"
+#include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/RenderGeometry.hpp"
 #include "Render/RenderMaterial.hpp"
 #include "Core/JSONNode.hpp"
@@ -6,17 +6,17 @@
 
 #include <cassert>
 
-RenderLogic::RenderLogic() :
+RenderSimpleLogic::RenderSimpleLogic() :
     params(),
     scale(1.f),
     mat(),
     geom() {
 }
 
-RenderLogic::~RenderLogic() {
+RenderSimpleLogic::~RenderSimpleLogic() {
 }
 
-bool RenderLogic::serialize(const JSONNode& node) {
+bool RenderSimpleLogic::serialize(const JSONNode& node) {
     std::string geomName;
     node.value("geom", geomName);
     ET_SendEventReturn(geom, &ETRender::ET_createGeometry, geomName);
@@ -32,13 +32,13 @@ bool RenderLogic::serialize(const JSONNode& node) {
     return true;
 }
 
-bool RenderLogic::init() {
+bool RenderSimpleLogic::init() {
     ETNode<ETRenderEvents>::connect(getEntityId());
-    ETNode<ETRenderLogic>::connect(getEntityId());
+    ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     return true;
 }
 
-void RenderLogic::ET_onRender(const RenderContext& renderCtx) {
+void RenderSimpleLogic::ET_onRender(const RenderContext& renderCtx) {
     Mat4 mvp = getModelMat();
     mvp = renderCtx.proj2dMat * mvp;
 
@@ -49,7 +49,7 @@ void RenderLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->unbind();
 }
 
-Mat4 RenderLogic::getModelMat() const {
+Mat4 RenderSimpleLogic::getModelMat() const {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
     Mat4 model(1.f);
@@ -61,13 +61,13 @@ Mat4 RenderLogic::getModelMat() const {
     return model;
 }
 
-void RenderLogic::ET_setRenderParams(const RenderLogicParams& logicParams) {
+void RenderSimpleLogic::ET_setRenderParams(const RenderLogicParams& logicParams) {
     params = logicParams;
     Vec3 modelScale = Vec3(params.size, 1.f) / geom->aabb.getSize();
     scale.x = modelScale.x;
     scale.y = modelScale.y;
 }
 
-void RenderLogic::ET_getRenderParams(RenderLogicParams& logicParams) {
+void RenderSimpleLogic::ET_getRenderParams(RenderLogicParams& logicParams) {
     logicParams = params;
 }

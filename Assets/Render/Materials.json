@@ -1,6 +1,10 @@
 {
-    "solid_color": {
-        "vert": "Shaders/base.vert",
-        "frag": "Shaders/single_color.frag"
+    "geom_solid_color":{
+        "vert":"Shaders/geom_base.vert",
+        "frag":"Shaders/geom_single_color.frag"
+    },
+    "text_solid_color":{
+        "vert":"Shaders/text_base.vert",
+        "frag":"Shaders/text_single_color.frag"
     }
 }

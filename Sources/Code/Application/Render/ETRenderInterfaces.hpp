@@ -13,6 +13,26 @@ class RenderMaterial;
 class RenderTextureFramebuffer;
 class RenderFont;
 
+struct RenderLogicParams {
+    Vec2 size;
+    ColorB col;
+
+    RenderLogicParams() :
+        size(0.f),
+        col(255, 255, 255) {}
+};
+
+struct ETRenderSimpleLogic {
+    virtual ~ETRenderSimpleLogic() = default;
+    virtual void ET_setRenderParams(const RenderLogicParams& params) = 0;
+    virtual void ET_getRenderParams(RenderLogicParams& params) = 0;
+};
+
+struct ETRenderTextLogic {
+    virtual ~ETRenderTextLogic() = default;
+    virtual void ET_setText(const std::string& text) = 0;
+};
+
 struct RenderContext {
     Mat4 proj2dMat;
 };
@@ -38,7 +58,7 @@ struct ETRender {
     virtual void ET_drawFrame() = 0;
     virtual std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) = 0;
     virtual std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) = 0;
-    virtual std::shared_ptr<RenderFont> ET_createFont(const std::string& fontName) = 0;
+    virtual std::shared_ptr<RenderFont> ET_createDefaultFont() = 0;
 };
 
 #endif /* __ET_RENDER_INTERFACES_HPP__ */

@@ -1,7 +1,7 @@
 #ifndef __GAME_OBJECT_HPP__
 #define __GAME_OBJECT_HPP__
 
-#include "Game/GameETInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 #include <string>
 #include <memory>
