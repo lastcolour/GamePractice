@@ -2,6 +2,7 @@
 #define __ET_RENDER_INTERFACES_HPP__
 
 #include "Math/Matrix.hpp"
+#include "Math/AABB.hpp"
 #include "Render/Color.hpp"
 #include "Core/ETPrimitives.hpp"
 
@@ -31,6 +32,7 @@ struct ETRenderSimpleLogic {
 struct ETRenderTextLogic {
     virtual ~ETRenderTextLogic() = default;
     virtual void ET_setText(const std::string& text) = 0;
+    virtual AABB2D ET_getTextAABB() const = 0;
 };
 
 struct RenderContext {

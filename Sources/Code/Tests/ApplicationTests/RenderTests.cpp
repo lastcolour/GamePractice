@@ -332,3 +332,7 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
 
     ASSERT_EQ(font1.get(), font2.get());
 }
+
+TEST_F(RenderTests, CheckRenderTextLogic) {
+    
+}

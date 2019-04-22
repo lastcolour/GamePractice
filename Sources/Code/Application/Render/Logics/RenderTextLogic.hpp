@@ -26,6 +26,7 @@ public:
 
     // ETRenderTestLogic
     void ET_setText(const std::string& str) override;
+    virtual AABB2D ET_getTextAABB() const override;
 
 private:
 
