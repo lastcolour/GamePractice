@@ -34,6 +34,20 @@ public:
     }
 
     template<typename ETType>
+    std::vector<EntityId> getAll() const {
+        std::vector<EntityId> nodes;
+        auto etId = GetTypeId<ETType>();
+        auto it = activeConnection.find(etId);
+        if(it == activeConnection.end()) {
+            return nodes;
+        }
+        for(auto& currConn : it->second) {
+            nodes.push_back(currConn.addressId);
+        }
+        return nodes;
+    }
+
+    template<typename ETType>
     bool isExistNode(EntityId addressId) const {
         auto etId = GetTypeId<ETType>();
         auto it = activeConnection.find(etId);

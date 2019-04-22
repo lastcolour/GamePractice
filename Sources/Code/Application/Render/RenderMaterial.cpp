@@ -4,7 +4,8 @@
 
 #include <cassert>
 
-RenderMaterial::RenderMaterial(int progId) : programId(progId) {
+RenderMaterial::RenderMaterial(int progId) : programId(progId),
+    activeTexUnitId(0) {
     assert(programId && "Invalid program id");
 }
 
@@ -18,6 +19,14 @@ void RenderMaterial::bind() {
 
 void RenderMaterial::unbind() {
     glUseProgram(0);
+    activeTexUnitId = 0;
+}
+
+void RenderMaterial::setTexture2D(const std::string& name, int texId) {
+    setUniform1i(name, activeTexUnitId);
+    glActiveTexture(GL_TEXTURE0 + activeTexUnitId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    ++activeTexUnitId;
 }
 
 bool RenderMaterial::findUniform(const std::string& name, int& resUniLoc) const {
@@ -28,6 +37,13 @@ bool RenderMaterial::findUniform(const std::string& name, int& resUniLoc) const 
     }
     resUniLoc = uniLoc;
     return true;
+}
+
+void RenderMaterial::setUniform1i(const std::string& name, int val) {
+    GLint uniLoc = -1;
+    if(findUniform(name, uniLoc)) {
+        glUniform1i(uniLoc, val);
+    }
 }
 
 void RenderMaterial::setUniformMat4(const std::string& name, const Mat4& mat) {

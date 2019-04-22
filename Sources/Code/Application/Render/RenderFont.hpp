@@ -18,7 +18,8 @@ public:
     RenderFont();
     ~RenderFont();
 
-    const Vec2i& getAtlasTexSize() const;
+    const Vec2i& getTexSize() const;
+    int getTexId() const;
     bool createAtlas(unsigned int width, unsigned int height);
     void addGlyph(int ch, const RenderGlyph& glyphData, const void* buffer);
     const RenderGlyph* getGlyph(int ch) const;

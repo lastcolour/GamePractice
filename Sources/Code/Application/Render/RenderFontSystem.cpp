@@ -91,6 +91,7 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
         }
         width += glyph->bitmap.width;
         height = std::max(height, glyph->bitmap.rows);
+        break;
     }
 
     std::shared_ptr<RenderFont> font(new RenderFont);
@@ -106,17 +107,19 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
         }
 
         RenderGlyph glyphData;
-        glyphData.advance.x = glyph->advance.x;
-        glyphData.advance.y = glyph->advance.y;
+        glyphData.advance.x = glyph->advance.x >> 6;
+        glyphData.advance.y = glyph->advance.y >> 6;
         glyphData.size.x = glyph->bitmap.width;
         glyphData.size.y = glyph->bitmap.rows;
         glyphData.bearing.x = glyph->bitmap_left;
         glyphData.bearing.y = glyph->bitmap_top;
-        glyphData.offset = shift / static_cast<float>(width);
+        glyphData.offset = shift;
 
         font->addGlyph(ch, glyphData, glyph->bitmap.buffer);
 
-        shift += glyph->bitmap.width;
+        shift += glyph->bitmap.width + 10;
+
+        break;
     }
     return font;
 }

@@ -75,7 +75,18 @@ void Render::ET_drawFrame() {
     RenderContext renderCtx;
     renderCtx.proj2dMat = camera2d.getProjMat4();
 
-    ET_SendEvent(&ETRenderEvents::ET_onRender, renderCtx);
+    for(auto entId : ET_GetAll<ETRenderSimpleLogic>()) {
+        ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
+    }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    for(auto entId : ET_GetAll<ETRenderTextLogic>()) {
+        ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
+    }
+
+    glDisable(GL_BLEND);
 
     if(!renderFb) {
         ET_SendEvent(&ETSurface::ET_swapBuffers);

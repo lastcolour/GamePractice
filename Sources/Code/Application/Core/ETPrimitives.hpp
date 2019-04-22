@@ -37,6 +37,9 @@ protected:
         }
     }
     void disconnect() {
+        if(addressId == InvalidEntityId) {
+            return;
+        }
         if(auto env = GetEnv()) {
             if(auto et = env->getETSystem()) {
                 et->disconnectNode(this);
@@ -44,6 +47,11 @@ protected:
         }
         addressId.setInvalidId();
     }
+
+private:
+
+    ETNode(const ETNode&) = delete;
+    ETNode& operator=(const ETNode&) = delete;
 
 private:
 
@@ -116,6 +124,13 @@ bool ET_IsExistNode(EntityId addressId) {
         return et->isExistNode<ETType>(addressId);
     }
     return false;
+}
+template<typename ETType>
+std::vector<EntityId> ET_GetAll() {
+    if(auto et = GetEnv()->getETSystem()) {
+        return et->getAll<ETType>();
+    }
+    return std::vector<EntityId>();
 }
 
 #endif /* __ET_PRIMITIVES_HPP__ */

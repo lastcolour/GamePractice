@@ -324,92 +324,11 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
     ET_SendEventReturn(font2, &ETRender::ET_createDefaultFont);
 
     ASSERT_TRUE(font1);
+    const Vec2i texSize = font1->getTexSize();
+    ASSERT_GT(texSize, Vec2i(0));
+
+    const int texId = font1->getTexId();
+    ASSERT_NE(texId, 0);
+
     ASSERT_EQ(font1.get(), font2.get());
-}
-
-TEST_F(RenderTests, CheckRenderText) {
-    std::shared_ptr<RenderFont> font;
-    ET_SendEventReturn(font, &ETRender::ET_createDefaultFont);
-
-    std::string str = "Hello";
-    const size_t vertCount = 6u * str.size();
-    std::unique_ptr<Vec4[]> vertex(new Vec4[vertCount]);
-
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    Vec2 scale(1.f);
-    Vec2 pos(0.f);
-    Vec2i textSize = font->getAtlasTexSize();
-    int i = 0;
-    for(auto ch : str) {
-        if(auto glyph = font->getGlyph(ch)) {
-            auto vert = vertex[i];
-            Vec2 pt;
-            pt.x =  pos.x + glyph->bearing.x * scale.x;
-            pt.y =  pos.y + glyph->bearing.y * scale.y;
-            const float w = glyph->size.x * scale.x;
-            const float h = glyph->size.y * scale.y;
-
-            pos.x += glyph->advance.x * scale.x;
-            pos.y += glyph->advance.y * scale.y;
-            // First tri
-            vertex[i++] = {
-                pt.x,
-                pt.y,
-                glyph->offset,
-                0
-            };
-            vertex[i++] = {
-                pt.x + w,
-                pt.y,
-                glyph->offset + glyph->bearing.x / static_cast<float>(textSize.x),
-                0
-            };
-            vertex[i++] = {
-                pt.x,
-                pt.y - h,
-                glyph->offset,
-                glyph->bearing.y / static_cast<float>(textSize.y)
-            };
-            // Second tri
-            vertex[i++] = {
-                pt.x + w,
-                pt.y,
-                glyph->offset + glyph->bearing.x / static_cast<float>(textSize.x),
-                0
-            };
-            vertex[i++] = {
-                pt.x,
-                pt.y - h,
-                glyph->offset,
-                glyph->bearing.y / static_cast<float>(textSize.y)
-            };
-            vertex[i++] = { 
-                pt.x + w,
-                pt.y - h,
-                glyph->offset + glyph->bearing.x / static_cast<float>(textSize.x),
-                glyph->bearing.y / static_cast<float>(textSize.y)
-            };
-        }
-    }
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glDrawArrays(GL_TRIANGLES, 0, vertCount);
-
-    ASSERT_TRUE(textureFramebuffer->read());
-    dumpFramebuffer();
 }

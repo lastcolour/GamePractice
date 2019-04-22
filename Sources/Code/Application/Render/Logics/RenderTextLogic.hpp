@@ -4,6 +4,9 @@
 #include "Game/GameLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Math/AABB.hpp"
+
+class RenderGlyph;
 
 class RenderTextLogic : public GameLogic,
     public ETNode<ETRenderEvents>,
@@ -26,8 +29,18 @@ public:
 
 private:
 
+    Mat4 getModelMat() const;
+    void createVAO();
+    void calcTextAABB();
+    Vec2 initVertexForGlyph(const Vec2& pt, const RenderGlyph& glyph);
+
+private:
+
+    unsigned int vaoId;
+    unsigned int vboId;
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
+    AABB2D aabb;
     std::string text;
 };
 

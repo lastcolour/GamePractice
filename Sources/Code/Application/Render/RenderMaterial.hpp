@@ -15,6 +15,8 @@ public:
     void bind();
     void unbind();
 
+    void setTexture2D(const std::string& name, int texId);
+    void setUniform1i(const std::string& name, int val);
     void setUniform4f(const std::string& name, const Vec4& vec);
     void setUniform4f(const std::string& name, const ColorB& col);
     void setUniformMat4(const std::string& name, const Mat4& mat);
@@ -25,6 +27,7 @@ private:
 
 private:
 
+    unsigned int activeTexUnitId;
     int programId;
 };
 

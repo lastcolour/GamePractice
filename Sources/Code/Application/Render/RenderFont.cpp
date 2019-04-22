@@ -2,16 +2,22 @@
 #include "Platforms/OpenGL.hpp"
 #include "ETApplicationInterfaces.hpp"
 
+#include <cassert>
+
 RenderFont::RenderFont() :
-    textureId(0),
-    texSize(0) {
+    texSize(0),
+    textureId(0) {
 }
 
 RenderFont::~RenderFont() {
 }
 
-const Vec2i& RenderFont::getAtlasTexSize() const {
+const Vec2i& RenderFont::getTexSize() const {
     return texSize;
+}
+
+int RenderFont::getTexId() const {
+    return textureId;
 }
 
 bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
@@ -25,9 +31,11 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    Buffer buff(width * height / 2);
+    memset(buff.getData(), 0, buff.getSize());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getData());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     textureId = texId;
     texSize = Vec2i(width, height);
@@ -38,7 +46,7 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
 void RenderFont::addGlyph(int ch, const RenderGlyph& glyphData, const void* buffer) {
     glyphs[ch] = glyphData;
     glTexSubImage2D(GL_TEXTURE_2D, 0, glyphData.offset, 0, glyphData.size.x, glyphData.size.y,
-        GL_ALPHA, GL_UNSIGNED_BYTE, buffer);
+        GL_RED, GL_UNSIGNED_BYTE, buffer);
 }
 
 const RenderGlyph* RenderFont::getGlyph(int ch) const {

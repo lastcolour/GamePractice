@@ -74,7 +74,7 @@
           "data":{
             "text":"Start",
             "style":{
-              "color":{"r":255, "g":0, "b":255},
+              "color":{"r":255, "g":0, "b":255, "a":50},
               "align":{"x":"center", "y":"center"},
               "size":{"h":0.2, "w":0.3, "inv":"relBS"},
               "margin":{}
@@ -100,9 +100,9 @@
         {
           "type":"UIButton",
           "data":{
-            "text":"Options",
+            "text":"",
             "style":{
-              "color":{"r":255, "g":255, "b":0},
+              "color":{"r":255, "g":255, "b":0, "a":50},
               "align":{"x":"center", "y":"center"},
               "size":{"h":0.2, "w":0.3, "inv":"relBS"},
               "margin":{}
