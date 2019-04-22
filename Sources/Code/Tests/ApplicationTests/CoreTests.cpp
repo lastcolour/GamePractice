@@ -13,6 +13,7 @@ public:
     virtual void ET_onEvent() = 0;
     virtual void ET_OnParamEvent(int param) = 0;
     virtual int ET_OnReturnParamValue() = 0;
+    virtual void ET_OnAcceptNoCopyArgs(std::unique_ptr<int>& val) = 0;
 };
 
 class TestETNode : public ETNode<ET_TestInterface> {
@@ -40,6 +41,11 @@ public:
     int ET_OnReturnParamValue() override {
         ++eventRecieved;
         return eventRecieved;
+    }
+
+    void ET_OnAcceptNoCopyArgs(std::unique_ptr<int>& val) {
+        ++eventRecieved;
+        ++(*val);
     }
 
 public:
@@ -167,4 +173,15 @@ TEST_F(CoreTests, CheckWithReturnValue) {
     ET_SendEventReturn(retVal, entId, &ET_TestInterface::ET_OnReturnParamValue);
 
     ASSERT_EQ(node.eventRecieved, retVal);
+}
+
+TEST_F(CoreTests, CheckArgsNoCopy) {
+    TestETNode node;
+    EntityId entId;
+    entId.setRawId(1);
+    node.connect(entId);
+
+    std::unique_ptr<int> pVal(new int(0));
+    ET_SendEvent(entId, &ET_TestInterface::ET_OnAcceptNoCopyArgs, pVal);
+    ASSERT_EQ(*pVal, 1);
 }
