@@ -5,11 +5,12 @@
 
 #include <unordered_map>
 
-struct RenderGlyph {
+class RenderGlyph {
+public:
     Vec2i advance;
     Vec2i size;
     Vec2i bearing;
-    float offset;
+    AABB2D texCoords;
 };
 
 class RenderFont {

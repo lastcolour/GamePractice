@@ -28,6 +28,7 @@ private:
     std::unordered_map<std::string, RenderFontPtrT> fonts;
 
     std::vector<int> characterSet;
+    int padding;
 };
 
 #endif /* __RENDER_FONT_SYSTEM_HPP__ */

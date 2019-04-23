@@ -6,9 +6,11 @@
 #include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "TestUtils/VoidTestApplication.hpp"
 #include "Render/Logics/RenderSimpleLogic.hpp"
+#include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Game/Game.hpp"
+#include "Game/GameObject.hpp"
 #include "Math/MatrixTransform.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -333,6 +335,60 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
     ASSERT_EQ(font1.get(), font2.get());
 }
 
-TEST_F(RenderTests, CheckRenderTextLogic) {
-    
+TEST_F(RenderTests, CheckRenderSimpleText) {
+    auto gameObj = createVoidObject();
+    RenderTextLogic* renderText = new RenderTextLogic;
+    gameObj->addLogic(std::unique_ptr<GameLogic>(renderText));
+    ASSERT_TRUE(renderText->init());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+
+    Vec2 portCenter;
+    portCenter.x = renderPort.x / 2.f;
+    portCenter.y = renderPort.y / 2.f;
+
+    Transform tm;
+    tm.pt = Vec3(portCenter, 0.f);
+    gameObj->ET_setTransform(tm);
+
+    renderText->ET_setText("");
+    AABB2D box = renderText->ET_getTextAABB();
+    ASSERT_EQ(box.getSize(), Vec2(0.f));
+    ASSERT_EQ(box.getCenter(), portCenter);
+
+    for(char ch = 32; ch < 128; ++ch)
+    {
+        renderText->ET_setText(std::string(1, ch));
+        box = renderText->ET_getTextAABB();
+        if (ch == ' ')
+        {
+            auto size = box.getSize();
+            ASSERT_GT(size.x, 0.f);
+            ASSERT_FLOAT_EQ(size.y, 0.f);
+        }
+        else
+        {
+            ASSERT_GT(box.getSize(), Vec2(0.f));
+        }
+    }
+
+    renderText->ET_setText("Hello World!");
+    ET_SendEvent(&ETRender::ET_drawFrame);
+
+    ASSERT_TRUE(textureFramebuffer->read());
+
+    int changedPixels = 0;
+    const Vec2i size = textureFramebuffer->getSize();
+    for(int i = 0; i < size.x; ++i) {
+        for(int j = 0; j < size.y; ++j) {
+            const ColorB& col = textureFramebuffer->getColor(i, j);
+            if(col != CLEAR_COLOR) {
+                ++changedPixels;
+            }
+        }
+    }
+    dumpFramebuffer();
+
+    ASSERT_GT(changedPixels, 0);
 }

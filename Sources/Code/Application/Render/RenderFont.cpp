@@ -45,7 +45,7 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
 
 void RenderFont::addGlyph(int ch, const RenderGlyph& glyphData, const void* buffer) {
     glyphs[ch] = glyphData;
-    glTexSubImage2D(GL_TEXTURE_2D, 0, glyphData.offset, 0, glyphData.size.x, glyphData.size.y,
+    glTexSubImage2D(GL_TEXTURE_2D, 0, glyphData.texCoords.bot.x, 0, glyphData.size.x, glyphData.size.y,
         GL_RED, GL_UNSIGNED_BYTE, buffer);
 }
 

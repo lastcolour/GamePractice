@@ -8,7 +8,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-RenderFontSystem::RenderFontSystem() {
+RenderFontSystem::RenderFontSystem() :
+    padding(10) {
     characterSet = {
         'A', 'a',
         'B', 'b',
@@ -38,7 +39,7 @@ RenderFontSystem::RenderFontSystem() {
         'Z', 'z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         '+', '-', '*', '(', ')', '/', '%', '$', '[', ']', '{', '}', '<', '>', '=',
-        '.', ',', ';', ':', '\'', '\\', '"', '@', '!', '?', '_'
+        '.', ',', ';', ':', '\'', '\\', '"', '@', '!', '?', '_', ' '
     };
 }
 
@@ -80,8 +81,8 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
 
     FT_Set_Pixel_Sizes(fontFace, 0, fontSize);
 
-    unsigned int width = 0;
-    unsigned int height = 0;
+    unsigned int texWidth = 0;
+    unsigned int texHeight = 0;
 
     FT_GlyphSlot glyph = fontFace->glyph;
     for(auto ch : characterSet) {
@@ -89,13 +90,12 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
             LogWarning("[RenderFontSystem::createFontImpl] Failed to load character '%c'", ch);
             continue;
         }
-        width += glyph->bitmap.width;
-        height = std::max(height, glyph->bitmap.rows);
-        break;
+        texWidth += glyph->bitmap.width + padding;
+        texHeight = std::max(texHeight, glyph->bitmap.rows);
     }
 
     std::shared_ptr<RenderFont> font(new RenderFont);
-    if(!font->createAtlas(width, height)) {
+    if(!font->createAtlas(texWidth, texHeight)) {
         LogWarning("[RenderFontSystem::createFontImpl] Counld not create atlas for font: %s", fontName);
         return nullptr;
     }
@@ -113,13 +113,13 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
         glyphData.size.y = glyph->bitmap.rows;
         glyphData.bearing.x = glyph->bitmap_left;
         glyphData.bearing.y = glyph->bitmap_top;
-        glyphData.offset = shift;
+        glyphData.texCoords.bot = Vec2(shift, 0);
+        glyphData.texCoords.top = Vec2(shift + glyph->bitmap_left / static_cast<float>(texWidth),
+            glyph->bitmap_top / static_cast<float>(texHeight));
 
         font->addGlyph(ch, glyphData, glyph->bitmap.buffer);
 
-        shift += glyph->bitmap.width + 10;
-
-        break;
+        shift += glyph->bitmap.width + padding;
     }
     return font;
 }

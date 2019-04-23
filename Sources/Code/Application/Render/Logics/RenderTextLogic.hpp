@@ -33,7 +33,6 @@ private:
     Mat4 getModelMat() const;
     void createVAO();
     void calcTextAABB();
-    Vec2 initVertexForGlyph(const Vec2& pt, const RenderGlyph& glyph);
 
 private:
 
