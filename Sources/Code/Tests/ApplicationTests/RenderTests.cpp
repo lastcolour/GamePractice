@@ -357,19 +357,12 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     ASSERT_EQ(box.getSize(), Vec2(0.f));
     ASSERT_EQ(box.getCenter(), portCenter);
 
-    for(char ch = 32; ch < 128; ++ch)
+    for(int ch = 32; ch < 127; ++ch)
     {
         renderText->ET_setText(std::string(1, ch));
         box = renderText->ET_getTextAABB();
-        if (ch == ' ')
-        {
-            auto size = box.getSize();
-            ASSERT_GT(size.x, 0.f);
-            ASSERT_FLOAT_EQ(size.y, 0.f);
-        }
-        else
-        {
-            ASSERT_GT(box.getSize(), Vec2(0.f));
+        if (ch != '\n') {
+            EXPECT_GT(box.getSize(), Vec2(0.f)) << "Char: '" << static_cast<char>(ch) << "', code: " << ch;
         }
     }
 

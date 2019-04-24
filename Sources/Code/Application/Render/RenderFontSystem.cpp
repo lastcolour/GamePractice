@@ -26,7 +26,7 @@ RenderFontSystem::RenderFontSystem() :
         'M', 'm',
         'N', 'n',
         'O', 'o',
-        'p', 'p',
+        'P', 'p',
         'Q', 'q',
         'R', 'r',
         'S', 's',
@@ -39,7 +39,7 @@ RenderFontSystem::RenderFontSystem() :
         'Z', 'z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         '+', '-', '*', '(', ')', '/', '%', '$', '[', ']', '{', '}', '<', '>', '=',
-        '.', ',', ';', ':', '\'', '\\', '"', '@', '!', '?', '_', ' '
+        '.', ',', ';', ':', '\'', '\\', '"', '@', '!', '?', '_', ' ', '#', '&', '^', '`', '~', '|'
     };
 }
 
@@ -69,12 +69,14 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
     Buffer buff;
     ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, fontName);
     if(!buff) {
+        FT_Done_FreeType(ftLib);
         LogError("[RenderFontSystem::createFontImpl] Can't load default font: %s", fontName);
         return nullptr;
     }
     FT_Face fontFace = nullptr;
     if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getData()),
         static_cast<FT_Long>(buff.getSize()), 0, &fontFace)) {
+        FT_Done_FreeType(ftLib);
         LogError("[RenderFontSystem::createFontImpl] Can't create memory font face for font: %s", fontName);
         return nullptr;
     }
@@ -97,6 +99,8 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
     std::shared_ptr<RenderFont> font(new RenderFont);
     if(!font->createAtlas(texWidth, texHeight)) {
         LogWarning("[RenderFontSystem::createFontImpl] Counld not create atlas for font: %s", fontName);
+        FT_Done_Face(fontFace);
+        FT_Done_FreeType(ftLib);
         return nullptr;
     }
 
@@ -113,13 +117,15 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
         glyphData.size.y = glyph->bitmap.rows;
         glyphData.bearing.x = glyph->bitmap_left;
         glyphData.bearing.y = glyph->bitmap_top;
-        glyphData.texCoords.bot = Vec2(shift, 0);
-        glyphData.texCoords.top = Vec2(shift + glyph->bitmap_left / static_cast<float>(texWidth),
-            glyph->bitmap_top / static_cast<float>(texHeight));
+        glyphData.texCoords.bot = Vec2(shift / static_cast<float>(texWidth), 0.f);
+        glyphData.texCoords.top = Vec2((shift + glyph->bitmap.width) / static_cast<float>(texWidth),
+            glyph->bitmap.rows / static_cast<float>(texHeight));
 
-        font->addGlyph(ch, glyphData, glyph->bitmap.buffer);
+        font->addGlyph(ch, shift, glyphData, glyph->bitmap.buffer);
 
         shift += glyph->bitmap.width + padding;
     }
+    FT_Done_Face(fontFace);
+    FT_Done_FreeType(ftLib);
     return font;
 }

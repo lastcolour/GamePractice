@@ -152,24 +152,23 @@ std::shared_ptr<RenderGeometry> Render::createSquare() {
          1.f, -1.f, 0.f,
     };
 
-    const size_t vertElemSize = 3u * sizeof(GLfloat);
-
     GLuint vaoId;
+    GLuint vboId;
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
-
-    GLuint vboId;
     glGenBuffers(1, &vboId);
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(squareVerts), squareVerts, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertElemSize, static_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), static_cast<void*>(0));
     glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
     geometry->aabb = AABB(Vec3(-1, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
-    geometry->vertCount = sizeof(squareVerts) / vertElemSize;
+    geometry->vertCount = 6u;
 
     return geometry;
 }
