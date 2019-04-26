@@ -1,6 +1,5 @@
 #include "ApplicationTests.hpp"
 #include "Application.hpp"
-#include "Environment.hpp"
 #include "TestUtils/VoidTestPlatform.hpp"
 #include "TestUtils/VoidTestApplication.hpp"
 #include "Platforms/Desktop/DesktopPlatform.hpp"

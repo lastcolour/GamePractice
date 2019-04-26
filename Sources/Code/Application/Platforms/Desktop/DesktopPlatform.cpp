@@ -1,28 +1,7 @@
 #include "Platforms/Desktop/DesktopPlatform.hpp"
-#include "Platforms/Desktop/GLFWSurface.hpp"
-#include "Platforms/Desktop/DesktopLogger.hpp"
-#include "Platforms/Desktop/DesktopAssets.hpp"
+#include "Platforms/Desktop/DesktopModule.hpp"
+#include "Core/SystemModule.hpp"
 
-DesktopPlatform::DesktopPlatform(int argc, char* argv[]) {
-    (void)argc;
-    (void)argv;
-}
-
-DesktopPlatform::~DesktopPlatform() {
-}
-
-bool DesktopPlatform::init() {
-    return true;
-}
-
-std::unique_ptr<Surface> DesktopPlatform::createSurface() {
-    return std::unique_ptr<Surface>(new GLFWSurface);
-}
-
-std::unique_ptr<Logger> DesktopPlatform::createLogger() {
-    return std::unique_ptr<Logger>(new DesktopLogger);
-}
-
-std::unique_ptr<Assets> DesktopPlatform::createAssets() {
-    return std::unique_ptr<Assets>(new DesktopAssets);
+std::unique_ptr<SystemModule> DesktopPlatform::createPlatformModule() const {
+    return std::unique_ptr<SystemModule>(new DesktopModule);
 }

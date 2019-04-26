@@ -13,13 +13,15 @@ public:
         return loggedMsg.c_str();
     }
 
-protected:
-
     // SystemLogic
-    bool onInit() {
+    bool init() override {
         ETNode<ETLogger>::connect(getEntityId());
         return true;
     }
+
+    void deinit() override {}
+
+protected:
 
     void printMessasge(LogLevel logLevel, const std::string& msg) {
         loggedMsg += msg;

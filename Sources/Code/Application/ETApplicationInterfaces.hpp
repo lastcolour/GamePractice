@@ -36,8 +36,8 @@ struct ETSurfaceEvents {
     virtual void ET_onSurfaceResize(const Vec2i& size) = 0;
 };
 
-struct ETAsset {
-    virtual ~ETAsset() = default;
+struct ETAssets {
+    virtual ~ETAssets() = default;
     virtual Buffer ET_loadAsset(const std::string& assetName) = 0;
     virtual JSONNode ET_loadJSONAsset(const std::string& assetName) = 0;
 };
@@ -55,6 +55,16 @@ struct ETLogger {
     virtual ~ETLogger() = default;
     virtual void ET_logMessage(LogLevel lvl, const std::string& msg) = 0;
     virtual void ET_setLogLevel(LogLevel lvl) = 0;
+};
+
+struct ETTimer {
+    virtual ~ETTimer() = default;
+    virtual void ET_onFrameStart() = 0;
+};
+
+struct ETTimerEvents {
+    virtual ~ETTimerEvents() = default;
+    virtual void ET_onTick(float dt) = 0;
 };
 
 template<typename ... ArgsT>

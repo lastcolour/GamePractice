@@ -67,7 +67,7 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
         return nullptr;
     }
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, fontName);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fontName);
     if(!buff) {
         FT_Done_FreeType(ftLib);
         LogError("[RenderFontSystem::createFontImpl] Can't load default font: %s", fontName);

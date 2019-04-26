@@ -11,6 +11,10 @@ public:
     VoidTestGame() = default;
     virtual ~VoidTestGame() = default;
 
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
+
 protected:
 
     // SystemLogic

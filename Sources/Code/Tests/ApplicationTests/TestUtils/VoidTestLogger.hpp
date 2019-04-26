@@ -9,14 +9,13 @@ public:
     VoidTestLogger() = default;
     virtual ~VoidTestLogger() = default;
 
+    // SystemLogic
+    bool init() override { return true; }
+    void deinit() override {}
+
     // ETLogger
     void ET_logMessage(LogLevel lvl, const std::string& msg) override {}
     void ET_setLogLevel(LogLevel lvl) override {}
-
-protected:
-
-    // SystemLogic
-    bool onInit() override { return true; }
 
 protected:
 

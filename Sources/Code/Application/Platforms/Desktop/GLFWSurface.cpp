@@ -78,7 +78,7 @@ GLFWSurface::~GLFWSurface() {
     window = nullptr;
 }
 
-bool GLFWSurface::onInit() {
+bool GLFWSurface::init() {
     if(!GLFW) {
         GLFW.reset(new GlfwLibInitData);
     }
@@ -117,6 +117,11 @@ bool GLFWSurface::onInit() {
     return true;
 }
 
+void GLFWSurface::deinit() {
+    ETNode<ETSurface>::disconnect();
+}
+
+/*
 void GLFWSurface::onUpdate(float dt) {
     glfwPollEvents();
 }
@@ -124,6 +129,7 @@ void GLFWSurface::onUpdate(float dt) {
 bool GLFWSurface::onShouldRun() {
     return window != nullptr && !glfwWindowShouldClose(window);
 }
+*/
 
 bool GLFWSurface::ET_isVisible() const {
     if(window) {

@@ -2,16 +2,10 @@
 #define __APPLICATION_HPP__
 
 #include <memory>
+#include <vector>
 
+class SystemModule;
 class Platform;
-class ModuleFactory;
-class Logger;
-class Assets;
-class Surface;
-class ETSystem;
-class Render;
-class Game;
-class Timer;
 
 class Application {
 
@@ -19,19 +13,10 @@ class Application {
 
 public:
 
-    explicit Application(Platform* pltfrm);
-    virtual ~Application();
+    explicit Application(std::unique_ptr<Platform>&& platform);
+    virtual ~Application() = default;
 
     int run();
-
-protected:
-
-    virtual std::unique_ptr<ModuleFactory> createModuleFactory();
-    virtual bool initLogger(Logger& logger);
-    virtual bool initAssets(Assets& assets);
-    virtual bool initSurface(Surface& surface);
-    virtual bool initRender(Render& render);
-    virtual bool initGame(Game& game);
 
 protected:
 
@@ -46,14 +31,8 @@ private:
 
 private:
 
-    std::unique_ptr<ETSystem> etSystem;
-    std::unique_ptr<Timer> timer;
-    std::unique_ptr<Platform> platform;
-    std::unique_ptr<Logger> logger;
-    std::unique_ptr<Assets> assets;
-    std::unique_ptr<Surface> surface;
-    std::unique_ptr<Render> render;
-    std::unique_ptr<Game> game;
+    typedef std::unique_ptr<SystemModule> SystemModulePtrT;
+    std::vector<SystemModulePtrT> systemModules;
 };
 
 #endif /* __APPLICATION_HPP__ */

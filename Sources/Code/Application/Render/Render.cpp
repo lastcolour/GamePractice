@@ -35,7 +35,7 @@ Render::Render() :
  Render::~Render() {
  }
 
-bool Render::onInit() {
+bool Render::init() {
     GLContextType glCtxType = GLContextType::None;
     ET_SendEventReturn(glCtxType, &ETSurface::ET_getGLContextType);
     if(glCtxType == GLContextType::None) {
@@ -56,10 +56,17 @@ bool Render::onInit() {
     return true;
 }
 
+void Render::deinit() {
+    ETNode<ETRender>::disconnect();
+    ETNode<ETSurfaceEvents>::disconnect();
+}
+
+/*
 void Render::onUpdate(float dt) {
     (void)dt;
     ET_drawFrame();
 }
+*/
 
 void Render::ET_drawFrame() {
     bool isVisible = false;
@@ -185,7 +192,7 @@ std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& mat
         return it->second.lock();
     }
     JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAsset::ET_loadJSONAsset, MATERIALS);
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, MATERIALS);
     if(!rootNode) {
         LogError("[Render::createMaterial] Can't create materials '%s' from: %s", matName, MATERIALS);
         return nullptr;
@@ -224,7 +231,7 @@ std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& mat
 
 int Render::createProgram(const std::string& vertFile, const std::string& fragFile) {
     Buffer buffer;
-    ET_SendEventReturn(buffer, &ETAsset::ET_loadAsset, vertFile);
+    ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, vertFile);
     if(!buffer) {
         LogError("[Render::createProgram] Can't load vert shader file: %s", vertFile.c_str());
         return 0;
@@ -234,7 +241,7 @@ int Render::createProgram(const std::string& vertFile, const std::string& fragFi
         LogError("[Render::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
         return 0;
     }
-    ET_SendEventReturn(buffer, &ETAsset::ET_loadAsset, fragFile);
+    ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, fragFile);
     if(!buffer) {
         LogError("[Render::createProgram] Can't load frag shader file: %s", fragFile.c_str());
         return 0;

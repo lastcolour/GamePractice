@@ -1,18 +1,26 @@
 #ifndef __TIMER_HPP__
 #define __TIMER_HPP__
 
+#include "Core/SystemLogic.hpp"
+#include "ETApplicationInterfaces.hpp"
+
 #include <memory>
 
 struct TimePoint;
 
-class Timer {
+class Timer : SystemLogic,
+    public ETNode<ETTimer> {
 public:
 
     Timer();
-    ~Timer();
+    virtual ~Timer();
 
-    float tick();
-    float getFrameTime() const;
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
+
+    // ETTimer
+    void ET_onFrameStart() override;
 
 private:
 

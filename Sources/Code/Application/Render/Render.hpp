@@ -23,6 +23,10 @@ public:
     Render();
     virtual ~Render();
 
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
+
     // ETRender
     const ColorB& ET_getClearColor() const override;
     void ET_setClearColor(const ColorB& col) override;
@@ -37,12 +41,6 @@ public:
     // ETSurfaceEvents
     void ET_onSurfaceResize(const Vec2i& size) override;
     void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
-
-protected:
-
-    // SystemLogic
-    bool onInit() override;
-    void onUpdate(float dt) override;
 
 private:
 

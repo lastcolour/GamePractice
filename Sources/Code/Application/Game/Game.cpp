@@ -19,7 +19,7 @@ void Game::setRootObject(const std::string& rootObjectName) {
     rootObject = rootObjectName;
 }
 
-bool Game::onInit() {
+bool Game::init() {
     ETNode<ETGame>::connect(getEntityId());
     if(rootObject.empty()) {
         LogDebug("[Game::onInit] Skip init phase while game doesn't have root object");
@@ -33,12 +33,8 @@ bool Game::onInit() {
     return true;
 }
 
-bool Game::onShouldRun() {
-    return true;
-}
-
-void Game::onUpdate(float dt) {
-    ET_SendEvent(&ETGameTick::ET_onGameTick, dt);
+void Game::deinit() {
+    ETNode<ETGame>::disconnect();
 }
 
 EntityId Game::ET_createGameObject(const std::string& objectName) {

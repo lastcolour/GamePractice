@@ -3,7 +3,6 @@
 #include "Core/TypeId.hpp"
 #include "Core/StringFormat.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Environment.hpp"
 
 namespace {
 

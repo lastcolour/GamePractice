@@ -2,6 +2,7 @@
 #define __GAME_HPP__
 
 #include "Core/SystemLogic.hpp"
+#include "Core/SystemModule.hpp"
 #include "Game/GameObjectCreator.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
@@ -9,6 +10,7 @@
 #include <memory>
 
 class Game : public SystemLogic,
+    // public SystemModule,
     public ETNode<ETGame> {
 
     typedef std::unique_ptr<GameObject> GameObjectPtrT;
@@ -20,16 +22,13 @@ public:
 
     void setRootObject(const std::string& rootObjectName);
 
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
+
     // ETGame
     EntityId ET_createGameObject(const std::string& objectName) override;
     void ET_destroyObject(EntityId entId) override;
-
-protected:
-
-    // SystemLogic
-    bool onInit() override;
-    bool onShouldRun() override;
-    void onUpdate(float dt) override;
 
 private:
 

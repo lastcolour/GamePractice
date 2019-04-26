@@ -1,7 +1,6 @@
 #include "GameTests.hpp"
 #include "Game/Game.hpp"
 #include "Game/GameObject.hpp"
-#include "Environment.hpp"
 
 namespace {
     const char* TEST_OBJECT_NAME = "Simple";

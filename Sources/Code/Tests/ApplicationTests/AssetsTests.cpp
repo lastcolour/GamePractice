@@ -23,7 +23,7 @@ void AssetsTests::TearDownTestCase() {
 
 TEST_F(AssetsTests, CheckLoadEmptyPath) {
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, "");
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, "");
 
     ASSERT_FALSE(buff);
     ASSERT_EQ(buff.getSize(), 0u);
@@ -33,7 +33,7 @@ TEST_F(AssetsTests, CheckLoadEmptyPath) {
 
 TEST_F(AssetsTests, CheckLoadValidAsset) {
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, TEST_FILE_PATH);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -43,7 +43,7 @@ TEST_F(AssetsTests, CheckLoadValidAsset) {
 
 TEST_F(AssetsTests, CheckLoadValidJSONAsset) {
     JSONNode node;
-    ET_SendEventReturn(node, &ETAsset::ET_loadJSONAsset, TEST_FILE_PATH);
+    ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, TEST_FILE_PATH);
     ASSERT_TRUE(node);
 }
 
@@ -52,7 +52,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     assetNameWithSlash += TEST_FILE_PATH;
 
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, assetNameWithSlash);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -62,7 +62,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     assetNameWithSlash = "/";
     assetNameWithSlash += TEST_FILE_PATH;
 
-    ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, assetNameWithSlash);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -75,7 +75,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithInvalidSlashes) {
     std::replace(path.begin(), path.end(), '/', '\\');
 
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAsset::ET_loadAsset, path);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, path);
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);

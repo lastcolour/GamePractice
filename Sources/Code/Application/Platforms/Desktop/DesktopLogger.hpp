@@ -1,13 +1,18 @@
 #ifndef __DESKTOP_LOGGER_HPP__
 #define __DESKTOP_LOGGER_HPP__
 
-#include "Platform.hpp"
+#include "ETApplicationInterfaces.hpp"
 
-class DesktopLogger: public Logger {
+class DesktopLogger: public SystemLogic,
+    public ETNode<ETLogger> {
 public:
 
     DesktopLogger();
     virtual ~DesktopLogger();
+
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
 
     // ETLogger
     void ET_logMessage(LogLevel lvl, const std::string& msg) override;
@@ -15,14 +20,8 @@ public:
 
 protected:
 
-    // SystemLogic
-    bool onInit() override;
-
-protected:
-
-    // Logger
-    std::string formatMessage(LogLevel lvl, const std::string& msg) override;
-    void printMessasge(LogLevel lvl, const std::string& msg) override;
+    std::string formatMessage(LogLevel lvl, const std::string& msg);
+    void printMessasge(LogLevel lvl, const std::string& msg);
 
 private:
 

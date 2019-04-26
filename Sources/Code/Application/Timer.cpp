@@ -22,15 +22,21 @@ Timer::Timer() :
 Timer::~Timer() {
 }
 
-float Timer::getFrameTime() const {
-    return timePoint->tickDuration;
+bool Timer::init() {
+    ETNode<ETTimer>::connect(getEntityId());
+    return true;
 }
 
-float Timer::tick() {
+void Timer::deinit() {
+    ETNode<ETTimer>::disconnect();
+}
+
+void Timer::ET_onFrameStart() {
     auto timeNow = TimePoint::ClockT::now();
     auto timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>
         (timeNow - timePoint->lastTickT).count();
     timePoint->lastTickT = timeNow;
     timePoint->tickDuration = static_cast<float>(timeDiff / 1000.f);
-    return timePoint->tickDuration;
+
+    ET_SendEvent(&ETTimerEvents::ET_onTick, timePoint->tickDuration);
 }

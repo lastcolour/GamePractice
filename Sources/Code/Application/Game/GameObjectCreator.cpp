@@ -56,7 +56,7 @@ std::unique_ptr<GameLogic> GameObjectCreator::createLogic(const std::string& log
 
 std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& objectName) {
     JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAsset::ET_loadJSONAsset, GAME_OBJECTS);
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, GAME_OBJECTS);
     if(!rootNode) {
         LogWarning("[GameObjectCreator::createObject] Can't load game objects: %s", GAME_OBJECTS);
         return nullptr;
@@ -72,7 +72,7 @@ std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& o
         if(objectName != baseName) {
             continue;
         }
-        std::unique_ptr<GameObject> objPtr(new GameObject(baseName, GetEnv()->getETSystem()->createNewEntityId()));
+        std::unique_ptr<GameObject> objPtr(new GameObject(baseName, GetETSystem()->createNewEntityId()));
         auto logicsNodes = objNode.object("logics");
         if(!logicsNodes || logicsNodes.size() == 0u) {
             LogWarning("[GameObjectCreator::createObject] Skip object '%s' while it doesn't have any logic", objectName);
