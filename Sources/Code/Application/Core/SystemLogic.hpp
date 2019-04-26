@@ -5,24 +5,14 @@
 
 class SystemLogic {
 public:
+    virtual ~SystemLogic() = default;
 
-    SystemLogic();
-    virtual ~SystemLogic();
-
-    bool init();
-    bool shouldRun();
-    void update(float dt);
-    EntityId getEntityId() const;
+    virtual bool init() = 0;
+    virtual void deinit() = 0;
 
 protected:
 
-    virtual bool onInit() = 0;
-    virtual bool onShouldRun() { return true; }
-    virtual void onUpdate(float dt) { (void)dt; }
-
-private:
-
-    EntityId entityId;
+    EntityId getEntityId() const { return InvalidEntityId; }
 };
 
 #endif /* __SYSTEM_LOGIC_HPP__ */

@@ -3,6 +3,7 @@
 
 #include "Core/TypeId.hpp"
 #include "Core/Core.hpp"
+#include "Core/SystemLogic.hpp"
 
 #include <unordered_map>
 #include <type_traits>
@@ -13,7 +14,7 @@ class ETNodeBase;
 template<typename T>
 class ETNode;
 
-class ETSystem {
+class ETSystem : public SystemLogic {
 private:
 
     struct ETConnection {
@@ -26,6 +27,10 @@ public:
     ETSystem() :
         entityIdGen() {}
     ~ETSystem() = default;
+
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
 
     EntityId createNewEntityId() {
         auto id = entityIdGen.getRawId();
@@ -237,5 +242,7 @@ private:
 
     EntityId entityIdGen;
 };
+
+ETSystem* GetETSystem();
 
 #endif /* __ET_SYSTEM_HPP__ */

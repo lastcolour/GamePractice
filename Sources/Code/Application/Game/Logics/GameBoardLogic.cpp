@@ -64,7 +64,7 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
 }
 
 ColorB GameBoardLogic::getElemColor(BoardElemType elemType) const {
-    ColorB retCol(1.f, 1.f, 1.f);
+    ColorB retCol(255, 255, 255);
     switch (elemType) {
         case BoardElemType::Red:
             retCol = ColorB(255, 0, 0);

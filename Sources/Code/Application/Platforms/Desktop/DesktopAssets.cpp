@@ -104,14 +104,18 @@ namespace {
 
 } // namespace
 
-bool DesktopAssets::onInit() {
+bool DesktopAssets::init() {
     assetRootPath = getAssetDirPath();
     if(assetRootPath.empty()) {
         LogError("[DesktopAssets::onInit] Can't get assets root dir");
         return false;
     }
-    ETNode<ETAsset>::connect(getEntityId());
+    ETNode<ETAssets>::connect(getEntityId());
     return true;
+}
+
+void DesktopAssets::deinit() {
+    ETNode<ETAssets>::disconnect();
 }
 
 JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {

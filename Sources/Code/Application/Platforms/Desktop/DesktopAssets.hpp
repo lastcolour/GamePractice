@@ -1,24 +1,22 @@
 #ifndef __DESKTOP_ASSETS_HPP__
 #define __DESKTOP_ASSETS_HPP__
 
-#include "Platform.hpp"
+#include "ETApplicationInterfaces.hpp"
 
-class DesktopAssets : public Assets {
+class DesktopAssets : public SystemLogic,
+    public ETNode<ETAssets> {
 public:
 
     DesktopAssets() = default;
     virtual ~DesktopAssets() = default;
 
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
+
     // ETAssets
     JSONNode ET_loadJSONAsset(const std::string& assetName) override;
     Buffer ET_loadAsset(const std::string& assetName) override;
-
-protected:
-
-    // SystemLogic
-    bool onInit() override;
-    bool onShouldRun() override { return true; }
-    void onUpdate(float dt) override { (void)dt; }
 
 private:
 

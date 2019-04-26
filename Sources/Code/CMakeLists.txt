@@ -40,7 +40,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/assets_dir.cmake)
 
 add_subdirectory(Application)
 if(BUILD_UNITTESTS)
-    add_subdirectory(Tests)
+    # add_subdirectory(Tests)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Application)

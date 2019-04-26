@@ -10,6 +10,10 @@ public:
     VoidTestAssets() = default;
     virtual ~VoidTestAssets() = default;
 
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
+
     // ETAssets
     Buffer ET_loadAsset(const std::string& assetName) override { return Buffer(); }
     JSONNode ET_loadJSONAsset(const std::string& assetName) override { return JSONNode(); }

@@ -6,14 +6,10 @@
 class DesktopPlatform : public Platform {
 public:
 
-    DesktopPlatform(int argc, char* argv[]);
-    virtual ~DesktopPlatform();
+    DesktopPlatform(int argc, char* argv[]) {}
+    virtual ~DesktopPlatform() = default;
 
-    bool init() override;
-
-    std::unique_ptr<Surface> createSurface() override;
-    std::unique_ptr<Logger> createLogger() override;
-    std::unique_ptr<Assets> createAssets() override;
+    std::unique_ptr<SystemModule> createPlatformModule() const override;
 };
 
 #endif /* __DESKTOP_PLATFORM_HPP__ */

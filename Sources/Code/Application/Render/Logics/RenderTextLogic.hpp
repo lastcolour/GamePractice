@@ -30,7 +30,6 @@ public:
 
 private:
 
-    Mat4 getModelMat() const;
     void createVAO();
     void calcTextAABB();
 

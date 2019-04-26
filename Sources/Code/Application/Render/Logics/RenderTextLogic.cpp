@@ -11,10 +11,14 @@ namespace {
     const char* TEXT_RENDER_MATERIAL = "text_solid_color";
 } // namespace
 
-RenderTextLogic::RenderTextLogic() {
+RenderTextLogic::RenderTextLogic() :
+    vaoId(0),
+    vboId(0) {
 }
 
 RenderTextLogic::~RenderTextLogic() {
+    glDeleteBuffers(1, &vboId);
+    glDeleteVertexArrays(1, &vaoId);
 }
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
@@ -23,12 +27,12 @@ bool RenderTextLogic::serialize(const JSONNode& node) {
 
 void RenderTextLogic::createVAO() {
     glGenVertexArrays(1, &vaoId);
-    glGenBuffers(1, &vboId);
     glBindVertexArray(vaoId);
+    glGenBuffers(1, &vboId);
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * 6, nullptr, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), static_cast<void*>(0));
+    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -48,20 +52,17 @@ bool RenderTextLogic::init() {
 }
 
 void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
-    Mat4 mvp = getModelMat();
-    mvp = renderCtx.proj2dMat * mvp;
-
     mat->bind();
     mat->setTexture2D("tex", font->getTexId());
-    mat->setUniformMat4("MVP", mvp);
+    mat->setUniformMat4("MVP", renderCtx.proj2dMat);
     mat->setUniform4f("color", ColorB(0, 0, 255));
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
     const auto scale = Vec2(tm.scale.x, tm.scale.y);
     Vec2 pt = Vec2(aabb.bot.x, aabb.top.y);
 
-    glBindVertexArray(vaoId);
     for(auto ch : text) {
         if(auto glyph = font->getGlyph(ch)) {
             Vec2 glyphPt(0);
@@ -73,62 +74,60 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
             const auto& txBot = glyph->texCoords.bot;
             const auto& txTop = glyph->texCoords.top;
 
-            Vec4 vertex[6];
+            Vec4 vertecies[6];
             // First tri
-            vertex[0] = { glyphPt.x    , glyphPt.y + h, txBot.x, txTop.y };
-            vertex[1] = { glyphPt.x + w, glyphPt.y    , txTop.x, txBot.y };
-            vertex[2] = { glyphPt.x    , glyphPt.y    , txBot.x, txBot.y };
+            vertecies[0] = { glyphPt.x    , glyphPt.y + h, txBot.x, txTop.y };
+            vertecies[1] = { glyphPt.x + w, glyphPt.y    , txTop.x, txBot.y };
+            vertecies[2] = { glyphPt.x    , glyphPt.y    , txBot.x, txBot.y };
             // Second tri
-            vertex[3] = { glyphPt.x    , glyphPt.y + h, txBot.x, txTop.y };
-            vertex[4] = { glyphPt.x + w, glyphPt.y + h, txTop.x, txTop.y };
-            vertex[5] = { glyphPt.x + w, glyphPt.y    , txTop.x, txBot.y };
+            vertecies[3] = { glyphPt.x    , glyphPt.y + h, txBot.x, txTop.y };
+            vertecies[4] = { glyphPt.x + w, glyphPt.y + h, txTop.x, txTop.y };
+            vertecies[5] = { glyphPt.x + w, glyphPt.y    , txTop.x, txBot.y };
 
             pt.x += glyph->advance.x * scale.x;
             pt.y += glyph->advance.y * scale.y;
 
             glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex), &vertex);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertecies), &vertecies);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+            glBindVertexArray(vaoId);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            glBindVertexArray(0);
         }
     }
-    glBindVertexArray(0);
 
     mat->unbind();
 }
 
 void RenderTextLogic::calcTextAABB() {
-    Vec2i botPt(0);
-    for(size_t i = 0, sz = text.size(); i < sz; ++i) {
-        if(auto glyph = font->getGlyph(text[i])) {
-            botPt.x += std::max(glyph->advance.x, glyph->size.x);
-            botPt.y = glyph->advance.y;
+    Vec2 pt(0.f);
+    pt.y = text.empty() ? 0.f : static_cast<float>(font->getHeight());
+    for(size_t i = 0u, sz = text.size(); i < sz; ++i) {
+        auto ch = text[i];
+        if(auto glyph = font->getGlyph(ch)) {
+            if (i + 1u < sz) {
+                pt.x += glyph->advance.x;
+            } else {
+                if (ch == ' ') {
+                    pt.x += glyph->advance.x;
+                } else {
+                    pt.x += glyph->size.x;
+                }
+            }
         }
     }
-    aabb.bot = Vec2(0.f);
-    aabb.top = Vec2(static_cast<float>(botPt.x),
-        static_cast<float>(botPt.y));
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+
+    aabb.bot = Vec2(0.f);
+    aabb.top = Vec2(pt.x * tm.scale.x, pt.y * tm.scale.y);
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
 }
 
 AABB2D RenderTextLogic::ET_getTextAABB() const {
     return aabb;
-}
-
-Mat4 RenderTextLogic::getModelMat() const {
-    Transform tm;
-    ET_SendEventReturn(tm, &ETGameObject::ET_getTransform);
-    Mat4 model(1.f);
-    const Vec3 center = Vec3(aabb.getCenter(), 1.f);
-    Math::Translate(model, center);
-    Math::Rotate(model, tm.quat);
-    Math::Translate(model, center);
-    Math::Scale(model, tm.scale);
-    return model;
 }
 
 void RenderTextLogic::ET_setText(const std::string& str) {

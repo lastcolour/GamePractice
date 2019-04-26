@@ -1,7 +1,7 @@
 #ifndef __GLFWS_SURFACE_HPP__
 #define __GLFWS_SURFACE_HPP__
 
-#include "Platform.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <memory>
 #include <vector>
@@ -9,11 +9,16 @@
 class GlfwLibInitData;
 struct GLFWwindow;
 
-class GLFWSurface : public Surface {
+class GLFWSurface : public SystemLogic,
+    public ETNode<ETSurface> {
 public:
 
     GLFWSurface();
     virtual ~GLFWSurface();
+
+    // SystemLogic
+    bool init() override;
+    void deinit() override;
 
     // ETSurface
     bool ET_show() override;
@@ -23,13 +28,6 @@ public:
     Vec2i ET_getSize() const override;
     GLContextType ET_getGLContextType() const override;
     bool ET_isVisible() const override;
-
-protected:
-
-    // SystemLogic
-    bool onInit() override;
-    bool onShouldRun() override;
-    void onUpdate(float dt) override;
 
 private:
 

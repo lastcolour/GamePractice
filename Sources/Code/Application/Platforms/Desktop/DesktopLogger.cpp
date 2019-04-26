@@ -11,9 +11,13 @@ DesktopLogger::~DesktopLogger() {
     ETNode<ETLogger>::disconnect();
 }
 
-bool DesktopLogger::onInit() {
+bool DesktopLogger::init() {
     ETNode<ETLogger>::connect(getEntityId());
     return true;
+}
+
+void DesktopLogger::deinit() {
+    ETNode<ETLogger>::disconnect();
 }
 
 void DesktopLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
@@ -53,10 +57,8 @@ std::string DesktopLogger::formatMessage(LogLevel lvl, const std::string& msg) {
             prefix = "[Fatal] ";
             break;
         case LogLevel::Silent:
-            assert(false && "Invalid log level");
-            break;
         default:
-            prefix = "[NO_LVL] ";
+            assert(false && "Invalid log level");
     }
     std::string logMsg = prefix;
     logMsg += msg;
