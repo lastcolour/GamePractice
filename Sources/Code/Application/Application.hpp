@@ -6,6 +6,7 @@
 
 class SystemModule;
 class Platform;
+class ETSystem;
 
 class Application {
 
@@ -14,7 +15,7 @@ class Application {
 public:
 
     explicit Application(std::unique_ptr<Platform>&& platform);
-    virtual ~Application() = default;
+    virtual ~Application();
 
     int run();
 
@@ -31,8 +32,8 @@ private:
 
 private:
 
-    typedef std::unique_ptr<SystemModule> SystemModulePtrT;
-    std::vector<SystemModulePtrT> systemModules;
+    std::unique_ptr<ETSystem> etSystem;
+    std::vector<std::unique_ptr<SystemModule>> systemModules;
 };
 
 #endif /* __APPLICATION_HPP__ */

@@ -3,17 +3,23 @@
 #include "CoreModule.hpp"
 #include "Render/RenderModule.hpp"
 #include "Game/GameModule.hpp"
+#include "Core/ETSystem.hpp"
 
 namespace {
     const int APP_SUCCESSED = 0;
     const int APP_FAILED = -1;
 } // namespace
 
-Application::Application(std::unique_ptr<Platform>&& platform) {
+Application::Application(std::unique_ptr<Platform>&& platform)  :
+    etSystem(new ETSystem()) {
+
     systemModules.emplace_back(new CoreModule);
     systemModules.emplace_back(platform ? platform->createPlatformModule() : nullptr);
     systemModules.emplace_back(new RenderModule);
     systemModules.emplace_back(new GameModule);
+}
+
+Application::~Application() {
 }
 
 bool Application::init() {

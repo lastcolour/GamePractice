@@ -14,7 +14,7 @@ class ETNodeBase;
 template<typename T>
 class ETNode;
 
-class ETSystem : public SystemLogic {
+class ETSystem {
 private:
 
     struct ETConnection {
@@ -24,13 +24,8 @@ private:
 
 public:
 
-    ETSystem() :
-        entityIdGen() {}
-    ~ETSystem() = default;
-
-    // SystemLogic
-    bool init() override;
-    void deinit() override;
+    ETSystem();
+    ~ETSystem();
 
     EntityId createNewEntityId() {
         auto id = entityIdGen.getRawId();

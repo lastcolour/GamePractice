@@ -8,7 +8,7 @@
 
 struct TimePoint;
 
-class Timer : SystemLogic,
+class Timer : public SystemLogic,
     public ETNode<ETTimer> {
 public:
 
