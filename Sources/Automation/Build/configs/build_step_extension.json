@@ -67,7 +67,7 @@
         "generator": {
             "Android": "Android Gradle - Ninja",
             "Linux": "Unix Makefiles",
-            "Windows": "Visual Studio 15 2017 Win64"
+            "Windows": "Visual Studio 16 2019"
         }
     },
     "compile": {

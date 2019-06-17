@@ -16,6 +16,6 @@
 [submodule "Sources/Libs/STB"]
 	path = Sources/Libs/STB
 	url = https://github.com/nothings/stb.git
-[submodule "Sources\\Libs\\ZLIB"]
-	path = Sources\\Libs\\ZLIB
+[submodule "Sources/Libs/ZLIB"]
+	path = Sources/Libs/ZLIB
 	url = https://github.com/madler/zlib.git
