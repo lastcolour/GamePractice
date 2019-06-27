@@ -5,7 +5,16 @@
 
 class EntityId {
 
-    const int INVALID_ID = 0;
+    static const int SYSTEM_MODULE_ID = 0;
+    static const int INVALID_ID = 1;
+
+public:
+
+    static EntityId CreateSystemId() {
+        EntityId id;
+        id.setRawId(SYSTEM_MODULE_ID);
+        return id;
+    }
 
 public:
 
@@ -35,6 +44,7 @@ namespace std {
 }
 
 const EntityId InvalidEntityId;
+const EntityId SystemEntityId = EntityId::CreateSystemId();
 
 typedef int TypeId;
 const TypeId InvalidTypeId = 0;

@@ -113,6 +113,7 @@ bool GLFWSurface::init() {
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
     ETNode<ETSurface>::connect(getEntityId());
+    ETNode<ETTimerEvents>::connect(getEntityId());
 
     return true;
 }
@@ -121,15 +122,12 @@ void GLFWSurface::deinit() {
     ETNode<ETSurface>::disconnect();
 }
 
-/*
-void GLFWSurface::onUpdate(float dt) {
+void GLFWSurface::ET_onTick(float dt) {
     glfwPollEvents();
+    if(window != nullptr && glfwWindowShouldClose(window)) {
+        ET_SendEvent(&ETAppRunStateEvents::ET_onTerminate);
+    }
 }
-
-bool GLFWSurface::onShouldRun() {
-    return window != nullptr && !glfwWindowShouldClose(window);
-}
-*/
 
 bool GLFWSurface::ET_isVisible() const {
     if(window) {

@@ -23,13 +23,13 @@ protected:
     bool onInit() override {
         bool res = false;
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::scoped_lock<std::mutex> lock(mutex);
             res = retRes_init;
         }
         return res;
     }
     void onUpdate(float dt) override {
-        std::lock_guard<std::mutex> lock(mutex);
+        std::scoped_lock<std::mutex> lock(mutex);
         ++callCount_update;
     }
 

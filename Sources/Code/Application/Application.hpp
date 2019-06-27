@@ -14,7 +14,13 @@ class Application {
 
 public:
 
-    explicit Application(std::unique_ptr<Platform>&& platform);
+    using ETSystemPtrT = std::unique_ptr<ETSystem>;
+    using PlatformPtrT = std::unique_ptr<Platform>;
+    using ModuleListT = std::vector<std::unique_ptr<SystemModule>>;
+
+public:
+
+    explicit Application(PlatformPtrT&& runPlatform);
     virtual ~Application();
 
     int run();
@@ -23,6 +29,11 @@ protected:
 
     bool init();
     void mainLoop();
+    void deinit();
+
+protected:
+
+    virtual ModuleListT&& createModules();
 
 private:
 
@@ -32,8 +43,9 @@ private:
 
 private:
 
-    std::unique_ptr<ETSystem> etSystem;
-    std::vector<std::unique_ptr<SystemModule>> systemModules;
+    ETSystemPtrT etSystem;
+    PlatformPtrT platform;
+    ModuleListT systemModules;
 };
 
 #endif /* __APPLICATION_HPP__ */

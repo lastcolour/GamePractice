@@ -5,9 +5,15 @@
 #include <chrono>
 
 SystemModule::SystemModule(const std::string& moduleName) :
-    name(moduleName),
-    moduleId(GetETSystem()->createNewEntityId()) {
+    name(moduleName) {
     assert(!name.empty() && "Empty module name");
+}
+
+SystemModule::~SystemModule() {
+    LogDebug("[SystemModule::SystemModule] Deinit module: '%s'", name);
+    if (logicsContainer) {
+        logicsContainer->deinit();
+    }
 }
 
 bool SystemModule::init() {
@@ -29,8 +35,6 @@ bool SystemModule::init() {
         return false;
     }
 
-    logicsContainer->setParentModule(*this);
-
     if(!logicsContainer->init()) {
         LogError("[SystemModule::init] Init fail of module: '%s'", name);
         return false;
@@ -41,8 +45,4 @@ bool SystemModule::init() {
             std::chrono::high_resolution_clock::now() - initStartT).count());
 
     return true;
-}
-
-EntityId SystemModule::getEntityId() const {
-    return moduleId;
 }

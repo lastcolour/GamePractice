@@ -67,6 +67,12 @@ struct ETTimerEvents {
     virtual void ET_onTick(float dt) = 0;
 };
 
+struct ETAppRunStateEvents {
+    virtual ~ETAppRunStateEvents() = default;
+    virtual void ET_onTerminate() = 0;
+    virtual bool ET_isNeedRun() const = 0;
+};
+
 template<typename ... ArgsT>
 void LogDebug(const char* msg, const ArgsT& ... args) {
     ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Debug, StringFormat(msg, args...));

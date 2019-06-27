@@ -31,13 +31,13 @@ protected:
             disconnect();
         }
         addressId = adId;
-        GetETSystem()->connectNode(this, addressId);
+        GetETSystem()->connectNode(*this, addressId);
     }
     void disconnect() {
         if(addressId == InvalidEntityId) {
             return;
         }
-        GetETSystem()->disconnectNode(this);
+        GetETSystem()->disconnectNode(*this);
         addressId.setInvalidId();
     }
 
@@ -55,21 +55,25 @@ private:
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEvent(method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEvent(addressId, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
 }
 
@@ -77,30 +81,44 @@ void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType:
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEvent(method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     GetETSystem()->sendEvent(addressId, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(!std::is_same<RetType, void>::value, "Can't return void type");
     GetETSystem()->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ETType>
+bool ET_IsExistNode() {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    return GetETSystem()->isExistNode<ETType>(SystemEntityId);
+}
+
+template<typename ETType>
 bool ET_IsExistNode(EntityId addressId) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     return GetETSystem()->isExistNode<ETType>(addressId);
 }
+
 template<typename ETType>
 std::vector<EntityId> ET_GetAll() {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     return GetETSystem()->getAll<ETType>();
 }
 

@@ -2,6 +2,7 @@
 #define __DESKTOP_LOGGER_HPP__
 
 #include "ETApplicationInterfaces.hpp"
+#include "Core/SystemLogic.hpp"
 
 class DesktopLogger: public SystemLogic,
     public ETNode<ETLogger> {

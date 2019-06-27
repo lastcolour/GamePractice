@@ -15,7 +15,7 @@ public:
     bool ET_show() override {
         bool res = false;
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::scoped_lock<std::mutex> lock(mutex);
             res = retRes_show;
         }
         return res;
@@ -23,7 +23,7 @@ public:
     bool ET_hide() override {
         bool res = false;
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::scoped_lock<std::mutex> lock(mutex);
             res = retRes_hide;
         }
         return res;
@@ -31,7 +31,7 @@ public:
     Vec2i ET_getSize() const override {
         Vec2i res(0);
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::scoped_lock<std::mutex> lock(mutex);
             res = retRes_size;
         }
         return res;
@@ -47,7 +47,7 @@ protected:
     bool onInit() override {
         bool res = false;
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::scoped_lock<std::mutex> lock(mutex);
             res = retRes_init;
         }
         return res;
@@ -55,13 +55,13 @@ protected:
     bool onShouldRun() override {
         bool res = false;
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::scoped_lock<std::mutex> lock(mutex);
             res = retRes_shouldRun;
         }
         return res;
     }
     void onUpdate(float dt) override {
-        std::lock_guard<std::mutex> lock(mutex);
+        std::scoped_lock<std::mutex> lock(mutex);
         ++callCount_update;
     }
 

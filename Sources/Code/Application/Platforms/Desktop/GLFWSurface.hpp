@@ -2,6 +2,7 @@
 #define __GLFWS_SURFACE_HPP__
 
 #include "ETApplicationInterfaces.hpp"
+#include "Core/SystemLogic.hpp"
 
 #include <memory>
 #include <vector>
@@ -10,7 +11,8 @@ class GlfwLibInitData;
 struct GLFWwindow;
 
 class GLFWSurface : public SystemLogic,
-    public ETNode<ETSurface> {
+    public ETNode<ETSurface>,
+    public ETNode<ETTimerEvents> {
 public:
 
     GLFWSurface();
@@ -28,6 +30,9 @@ public:
     Vec2i ET_getSize() const override;
     GLContextType ET_getGLContextType() const override;
     bool ET_isVisible() const override;
+
+    // ETTimerEvenets
+    void ET_onTick(float dt) override;
 
 private:
 

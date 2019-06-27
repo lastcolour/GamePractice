@@ -2,6 +2,7 @@
 #define __DESKTOP_ASSETS_HPP__
 
 #include "ETApplicationInterfaces.hpp"
+#include "Core/SystemLogic.hpp"
 
 class DesktopAssets : public SystemLogic,
     public ETNode<ETAssets> {

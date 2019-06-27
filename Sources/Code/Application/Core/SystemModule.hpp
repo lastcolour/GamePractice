@@ -16,7 +16,6 @@ public:
     virtual bool init() = 0;
     virtual void deinit() = 0;
     virtual bool empty() const = 0;
-    virtual void setParentModule(SystemModule& module) = 0;
 };
 
 template<typename ... ArgsT>
@@ -42,14 +41,8 @@ public:
         return true;
     }
 
-    void setParentModule(SystemModule& module) override {
-        ApplyTuple(logicsTuple, [this, &module](auto& logic){
-            this->setParentModule(static_cast<SystemLogic&>(logic), module);
-        });
-    }
-
     void deinit() override {
-        ApplyTuple(logicsTuple, [](auto& logic){
+        ApplyTupleReverse(logicsTuple, [](auto& logic){
             logic.deinit();
         });
     }
@@ -60,28 +53,20 @@ public:
 
 private:
 
-    void setParentModule(SystemLogic& logic, SystemModule& module) {
-        logic.setParentModule(module);
-    }
-
-private:
-
     LogicsTupleT logicsTuple;
 };
 
 class SystemModule {
 public:
 
-    typedef std::unique_ptr<SystemLogicContainerBase> LogicsContainerPtrT;
+    using LogicsContainerPtrT = std::unique_ptr<SystemLogicContainerBase>;
 
 public:
 
-    SystemModule(const std::string& moduleName);
-    virtual ~SystemModule() = default;
+    explicit SystemModule(const std::string& moduleName);
+    virtual ~SystemModule();
 
     bool init();
-
-    EntityId getEntityId() const;
 
 protected:
 
@@ -97,7 +82,6 @@ private:
 
     std::string name;
     LogicsContainerPtrT logicsContainer;
-    EntityId moduleId;
 };
 
 #endif /* __SYSTEM_MODULE_HPP__ */
