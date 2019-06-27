@@ -224,7 +224,7 @@ TEST_F(ETSystemTests, CheckSendEventReturn) {
     EXPECT_EQ(outObj.doSomethingCount, 1u);
     EXPECT_EQ(outObj.voidConstructCount, 1u);
     EXPECT_EQ(outObj.copyConstructCount, 0u);
-    EXPECT_EQ(outObj.moveConstructCount, 1u);
+    EXPECT_EQ(outObj.moveConstructCount, 0u);
     EXPECT_EQ(outObj.copyAssingCount, 0u);
     EXPECT_EQ(outObj.moveAssignCount, 1u);
 }

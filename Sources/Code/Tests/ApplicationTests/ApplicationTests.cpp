@@ -54,9 +54,8 @@ public:
 
 protected:
 
-    ModuleListT&& createModules() override {
+    void buildModules(ModuleListT& modules) override {
         sysModules.emplace_back(new TestSystemModule);
-        return std::move(sysModules);
     }
 };
 

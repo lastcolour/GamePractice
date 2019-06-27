@@ -33,7 +33,7 @@ protected:
 
 protected:
 
-    virtual ModuleListT&& createModules();
+    virtual void buildModules(ModuleListT& modules);
 
 private:
 

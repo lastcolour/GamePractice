@@ -19,17 +19,17 @@ Application::Application(Application::PlatformPtrT&& runPlatform) :
 Application::~Application() {
 }
 
-Application::ModuleListT&& Application::createModules() {
-    ModuleListT moduleList;
-    moduleList.emplace_back(new CoreModule);
-    moduleList.emplace_back(platform ? platform->createPlatformModule() : nullptr);
-    moduleList.emplace_back(new RenderModule);
-    moduleList.emplace_back(new GameModule);
-    return std::move(moduleList);
+void Application::buildModules(ModuleListT& modules) {
+    modules.emplace_back(new CoreModule);
+    if (platform) {
+        modules.emplace_back(platform->createPlatformModule());
+    }
+    modules.emplace_back(new RenderModule);
+    modules.emplace_back(new GameModule);
 }
 
 bool Application::init() {
-    systemModules = createModules();
+    buildModules(systemModules);
     for(const auto& module : systemModules) {
         if(!module || !module->init()) {
             return false;
@@ -39,12 +39,13 @@ bool Application::init() {
 }
 
 int Application::run() {
-    if(!init()) {
-        return APP_FAILED;
+    int retCode = APP_FAILED;
+    if (init()) {
+        mainLoop();
+        retCode = APP_SUCCESSED;
     }
-    mainLoop();
     deinit();
-    return APP_SUCCESSED;
+    return retCode;
 }
 
 void Application::deinit() {

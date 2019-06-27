@@ -63,7 +63,7 @@ if(NOT APP_BUILD_PLATFORM STREQUAL "Android")
         CACHE INTERNAL "Application link depedicies")
 
     if(APP_BUILD_PLATFORM STREQUAL "Linux")
-        set(APP_LIB_DEPENDICIES ${APP_LIB_DEPENDICIES} dl)
+        set(APP_LIB_DEPENDICIES ${APP_LIB_DEPENDICIES} dl png)
     elseif()
 
     endif()
