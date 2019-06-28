@@ -7,6 +7,8 @@
 #include <cassert>
 #include <algorithm>
 
+#include <sys/stat.h>
+
 #ifdef APP_BUILD_PLATFORM_WINDOWS
   #include <direct.h>
   #define GetCurrentWorkingDir _getcwd
@@ -17,13 +19,19 @@
   #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
 #endif
 
-#ifndef APP_ASSETS_ROOT_DIR
-  #error APP_ASSETS_ROOT_DIR not defined
-#endif
-
 namespace {
 
     const char VALID_SLASH = '/';
+
+    bool isDirExist(const std::string& dirName) {
+        struct stat info;
+        if(stat(dirName.c_str(), &info) != 0) {
+            return false;
+        } else if(info.st_mode & S_IFDIR) {
+            return true;
+        }
+        return false;
+    }
 
     void fixSlashes(std::string& origPath) {
         std::replace(origPath.begin(), origPath.end(), '\\', VALID_SLASH);
@@ -38,6 +46,7 @@ namespace {
                 lastPos = ++i;
             }
         }
+        tokens.push_back(origPath.substr(lastPos, origPath.size()-lastPos));
         std::vector<std::string> resPath;
         resPath.reserve(tokens.size());
         for(auto& token : tokens) {
@@ -63,26 +72,35 @@ namespace {
     }
 
     std::string getAssetDirPath() {
-        char cwd[FILENAME_MAX];
-        if(GetCurrentWorkingDir(cwd, sizeof(cwd))) {
-            cwd[sizeof(cwd) - 1] = '\0';
-        } else {
-            assert(false && "Can't get app run dir");
-            return ".";
+        std::string cwdPath;
+        {
+            char temp[FILENAME_MAX];
+            if(GetCurrentWorkingDir(temp, sizeof(temp))) {
+                temp[sizeof(temp) - 1] = '\0';
+                cwdPath = temp;
+            } else {
+                return "";
+            }
         }
-        std::string tPath;
-        tPath += VALID_SLASH;
-        tPath += cwd;
-        if(tPath.back() != '\\' || tPath.back() != '/') {
-            tPath += VALID_SLASH;
+
+        std::vector<std::string> possiblePaths = {
+            "/Assets"
+            "/../Assets",
+            "/../../Assets",
+            "/../../../Assets",
+        };
+
+        for(const auto& path : possiblePaths) {
+            auto dirPath = cwdPath + path;
+            fixSlashes(dirPath);
+            normalizePath(dirPath);
+            dirPath = VALID_SLASH + dirPath;
+            if (isDirExist(dirPath)) {
+                return dirPath;
+            }
         }
-        tPath += APP_ASSETS_ROOT_DIR;
-        if(!tPath.empty() && (tPath.back() != '\\' || tPath.back() != '/')) {
-            tPath += VALID_SLASH;
-        }
-        fixSlashes(tPath);
-        normalizePath(tPath);
-        return tPath;
+
+        return "";
     }
 
     std::string transformToAssetPath(const std::string& assetRootPath, const std::string& assetPath) {

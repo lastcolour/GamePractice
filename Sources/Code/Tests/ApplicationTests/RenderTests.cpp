@@ -211,9 +211,11 @@ TEST_F(RenderTests, CheckCreateSameSquareGeom) {
 TEST_F(RenderTests, CheckRenderSquare) {
     std::shared_ptr<RenderGeometry> geom;
     ET_SendEventReturn(geom, &ETRender::ET_createGeometry, TEST_GEOM_1);
+    ASSERT_TRUE(geom);
 
     std::shared_ptr<RenderMaterial> material;
     ET_SendEventReturn(material, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
+    ASSERT_TRUE(material);
 
     material->bind();
     material->setUniformMat4("MVP", Mat4(1.f));
@@ -245,6 +247,8 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
 
     std::shared_ptr<RenderGeometry> geom;
     ET_SendEventReturn(geom, &ETRender::ET_createGeometry, TEST_GEOM_1);
+    ASSERT_TRUE(geom);
+
     const Vec3 size = geom->aabb.getSize();
     const Vec3 scale = SCALE_FACTOR * Vec3(w / size.x, h / size.y, 1.f);
 
@@ -257,6 +261,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
 
     std::shared_ptr<RenderMaterial> material;
     ET_SendEventReturn(material, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
+    ASSERT_TRUE(material);
 
     material->bind();
     material->setUniformMat4("MVP", tm);

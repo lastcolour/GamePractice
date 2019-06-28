@@ -21,7 +21,7 @@ public:
 
 private:
 
-     Buffer loadAssetImpl(const std::string& assetName);
+    Buffer loadAssetImpl(const std::string& assetName);
 
 private:
 

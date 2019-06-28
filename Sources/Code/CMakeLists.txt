@@ -21,7 +21,6 @@ else()
 endif()
 
 if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
-    add_definitions(-DDESKTOP_APP_BUILD)
     if(APP_BUILD_PLATFORM STREQUAL "Windows")
         add_definitions(-DAPP_BUILD_PLATFORM_WINDOWS)
     else()
@@ -34,7 +33,6 @@ endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/compile_flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/dependicies.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/assets_dir.cmake)
 
 # Build target project
 
