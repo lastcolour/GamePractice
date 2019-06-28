@@ -112,6 +112,8 @@ bool GLFWSurface::init() {
     glfwMakeContextCurrent(window);
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
+    ET_show();
+
     ETNode<ETSurface>::connect(getEntityId());
     ETNode<ETTimerEvents>::connect(getEntityId());
 

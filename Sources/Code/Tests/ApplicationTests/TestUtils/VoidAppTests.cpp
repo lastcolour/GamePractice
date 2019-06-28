@@ -14,6 +14,8 @@ public:
     VoidTestApp() : Application(nullptr) {}
     virtual ~VoidTestApp() = default;
 
+    bool init() { return Application::init(); }
+
 protected:
 
     void buildModules(ModuleListT& modules) override {
@@ -24,7 +26,12 @@ protected:
 } // namespace
 
 void VoidAppTests::SetUpTestCase() {
-    APP.reset(new VoidTestApp());
+    VoidTestApp* voidApp = new VoidTestApp();
+    if (!voidApp->init()) {
+        delete voidApp;
+        ASSERT_TRUE(false);
+    }
+    APP.reset(voidApp);
 }
 
 void VoidAppTests::TearDownTestCase() {

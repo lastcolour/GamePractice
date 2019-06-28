@@ -4,9 +4,7 @@
 #include <Platforms/Desktop/DesktopAssets.hpp>
 
 namespace {
-
-const char* TEST_FILE_PATH = "Render/Materials.json";
-
+    const char* TEST_FILE_PATH = "Render/Materials.json";
 } // namepsace
 
 std::unique_ptr<DesktopAssets> AssetsTests::ASSETS;

@@ -17,7 +17,8 @@ class RenderFontSystem;
 
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
-    public ETNode<ETRender> {
+    public ETNode<ETRender>,
+    public ETNode<ETTimerEvents> {
 public:
 
     Render();
@@ -41,6 +42,9 @@ public:
     // ETSurfaceEvents
     void ET_onSurfaceResize(const Vec2i& size) override;
     void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
+
+    // ETTimerEvents
+    void ET_onTick(float dt) override;
 
 private:
 

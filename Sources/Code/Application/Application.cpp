@@ -17,6 +17,7 @@ Application::Application(Application::PlatformPtrT&& runPlatform) :
 }
 
 Application::~Application() {
+    deinit();
 }
 
 void Application::buildModules(ModuleListT& modules) {
@@ -52,6 +53,7 @@ void Application::deinit() {
     for(auto it = systemModules.rbegin(), end = systemModules.rend(); it != end; ++it) {
         it->reset();
     }
+    systemModules.clear();
 }
 
 void Application::mainLoop() {

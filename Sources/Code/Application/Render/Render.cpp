@@ -43,9 +43,6 @@ bool Render::init() {
         return false;
     }
 
-    ETNode<ETRender>::connect(getEntityId());
-    ETNode<ETSurfaceEvents>::connect(getEntityId());
-
     Vec2i size;
     ET_SendEventReturn(size, &ETSurface::ET_getSize);
     setViewport(size);
@@ -53,20 +50,23 @@ bool Render::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
 
+    ETNode<ETRender>::connect(getEntityId());
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
+    ETNode<ETTimerEvents>::connect(getEntityId());
+
     return true;
 }
 
 void Render::deinit() {
     ETNode<ETRender>::disconnect();
     ETNode<ETSurfaceEvents>::disconnect();
+    ETNode<ETTimerEvents>::disconnect();
 }
 
-/*
-void Render::onUpdate(float dt) {
+void Render::ET_onTick(float dt) {
     (void)dt;
     ET_drawFrame();
 }
-*/
 
 void Render::ET_drawFrame() {
     bool isVisible = false;

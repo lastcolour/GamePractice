@@ -15,11 +15,12 @@ protected:
 
 protected:
 
-    static std::unique_ptr<Application> APP;
+    static std::unique_ptr<GameObject> createVoidObject();
 
 protected:
 
-    std::unique_ptr<GameObject> createVoidObject() const;
-};
+    static std::unique_ptr<Application> APP;
+}; 
 
 #endif /* __CONSOLE_APP_TESTS_HPP__ */
+
