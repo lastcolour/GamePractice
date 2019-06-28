@@ -29,8 +29,8 @@ struct ETGameTick {
     virtual void ET_onGameTick(float dt) = 0;
 };
 
-struct ETGame {
-    virtual ~ETGame() = default;
+struct ETGameObjectManager {
+    virtual ~ETGameObjectManager() = default;
     virtual EntityId ET_createGameObject(const std::string& objectName) = 0;
     virtual void ET_destroyObject(EntityId entId) = 0;
 };

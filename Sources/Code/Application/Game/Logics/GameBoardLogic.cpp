@@ -106,7 +106,7 @@ bool GameBoardLogic::init() {
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             EntityId cellObjId = InvalidEntityId;
-            ET_SendEventReturn(cellObjId, &ETGame::ET_createGameObject, cellObject);
+            ET_SendEventReturn(cellObjId, &ETGameObjectManager::ET_createGameObject, cellObject);
             if(cellObjId == InvalidEntityId) {
                 LogWarning("[GameBoardLogic::init] Can't spawn element");
                 return false;
@@ -119,7 +119,7 @@ bool GameBoardLogic::init() {
     }
 
     ETNode<ETSurfaceEvents>::connect(getEntityId());
-    ETNode<ETGameTick>::connect(getEntityId());
+    ETNode<ETTimerEvents>::connect(getEntityId());
     return true;
 }
 
@@ -406,7 +406,7 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     }
 }
 
-void GameBoardLogic::ET_onGameTick(float dt) {
+void GameBoardLogic::ET_onTick(float dt) {
     bool moveFinished = false;
     for(auto& elem : elements) {
         if(elem.state == BoardElemState::Moving) {

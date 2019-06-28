@@ -8,9 +8,9 @@
 #include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
-#include "Game/Game.hpp"
 #include "Game/GameObject.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Game/GameInitModule.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -280,7 +280,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
 
 TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     EntityId objId = InvalidEntityId;
-    ET_SendEventReturn(objId, &ETGame::ET_createGameObject, SIMPLE_OBJECT);
+    ET_SendEventReturn(objId, &ETGameObjectManager::ET_createGameObject, SIMPLE_OBJECT);
     ASSERT_NE(objId, InvalidEntityId);
 
     auto size = textureFramebuffer->getSize();
@@ -305,12 +305,12 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     checkSquare(xStart, xEnd, yStart, yEnd);
     dumpFramebuffer();
 
-    ET_SendEvent(&ETGame::ET_destroyObject, objId);
+    ET_SendEvent(&ETGameObjectManager::ET_destroyObject, objId);
 }
 
 TEST_F(RenderTests, CheckGameRenderAfterInit) {
-    Game game;
-    ASSERT_TRUE(game.init());
+    GameInitModule gameInit;
+    ASSERT_TRUE(gameInit.init());
 
     const Vec2i fbSize = textureFramebuffer->getSize();
     Vec2i touchPt = fbSize / 2;

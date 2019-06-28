@@ -29,7 +29,7 @@ protected:
         DesktopPlatform platform(0, nullptr);
         modules.emplace_back(platform.createPlatformModule());
         modules.emplace_back(new RenderModule);
-        // modules.emplace_back(new GameModule);
+        modules.emplace_back(new GameModule);
     }
 };
 

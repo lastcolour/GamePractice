@@ -1,4 +1,4 @@
-#include "Game/GameObjectCreator.hpp"
+#include "Game/GameObjectManager.hpp"
 #include "Game/GameObject.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
@@ -17,7 +17,13 @@ namespace {
     const char* GAME_OBJECTS = "Game/GameObjects.json";
 } // namespace
 
-GameObjectCreator::GameObjectCreator() {
+GameObjectManager::GameObjectManager() {
+}
+
+GameObjectManager::~GameObjectManager() {
+}
+
+bool GameObjectManager::init() {
     registerLogic<RenderSimpleLogic>("RenderSimple");
     registerLogic<RenderTextLogic>("RenderText");
 
@@ -27,12 +33,39 @@ GameObjectCreator::GameObjectCreator() {
     registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");
     registerLogic<UIButton>("UIButton");
+
+    ETNode<ETGameObjectManager>::connect(getEntityId());
+    return true;
 }
 
-GameObjectCreator::~GameObjectCreator() {
+void GameObjectManager::deinit() {
+    ETNode<ETGameObjectManager>::disconnect();
 }
 
-void GameObjectCreator::registerCreateLogic(const std::string& logicName, LogicCreateFunc createFunc) {
+EntityId GameObjectManager::ET_createGameObject(const std::string& objectName) {
+    auto obj = createObject(objectName);
+    if(!obj) {
+        return InvalidEntityId;
+    }
+    auto objId = obj->getEntityId();
+    gameObjects.emplace_back(std::move(obj));
+    return objId;
+}
+
+void GameObjectManager::ET_destroyObject(EntityId entId) {
+    auto eraseIt = gameObjects.end();
+    for(auto it = gameObjects.begin(), end = gameObjects.end(); it != end; ++it) {
+        if((*it)->getEntityId() == entId) {
+            eraseIt = it;
+            break;
+        }
+    }
+    if(eraseIt != gameObjects.end()) {
+        gameObjects.erase(eraseIt);
+    }
+}
+
+void GameObjectManager::registerCreateLogic(const std::string& logicName, LogicCreateFunc createFunc) {
     std::string reqLogicName = logicName;
     std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
@@ -44,7 +77,7 @@ void GameObjectCreator::registerCreateLogic(const std::string& logicName, LogicC
     }
 }
 
-std::unique_ptr<GameLogic> GameObjectCreator::createLogic(const std::string& logicName) {
+std::unique_ptr<GameLogic> GameObjectManager::createLogic(const std::string& logicName) {
     std::string reqLogicName = logicName;
     std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
@@ -54,16 +87,16 @@ std::unique_ptr<GameLogic> GameObjectCreator::createLogic(const std::string& log
     return nullptr;
 }
 
-std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& objectName) {
+std::unique_ptr<GameObject> GameObjectManager::createObject(const std::string& objectName) {
     JSONNode rootNode;
     ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, GAME_OBJECTS);
     if(!rootNode) {
-        LogWarning("[GameObjectCreator::createObject] Can't load game objects: %s", GAME_OBJECTS);
+        LogWarning("[GameObjectManager::createObject] Can't load game objects: %s", GAME_OBJECTS);
         return nullptr;
     }
     rootNode = rootNode.object("GameObjects");
     if(!rootNode) {
-        LogWarning("[GameObjectCreator::createObject] Can't find required root node in '%s'", GAME_OBJECTS);
+        LogWarning("[GameObjectManager::createObject] Can't find required root node in '%s'", GAME_OBJECTS);
         return nullptr;
     }
     for(const auto& objNode : rootNode) {
@@ -75,7 +108,7 @@ std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& o
         std::unique_ptr<GameObject> objPtr(new GameObject(baseName, GetETSystem()->createNewEntityId()));
         auto logicsNodes = objNode.object("logics");
         if(!logicsNodes || logicsNodes.size() == 0u) {
-            LogWarning("[GameObjectCreator::createObject] Skip object '%s' while it doesn't have any logic", objectName);
+            LogWarning("[GameObjectManager::createObject] Skip object '%s' while it doesn't have any logic", objectName);
             continue;
         }
         for(const auto& logicNode : logicsNodes) {
@@ -83,26 +116,26 @@ std::unique_ptr<GameObject> GameObjectCreator::createObject(const std::string& o
             logicNode.value("type", logicType);
             auto logicPtr = createLogic(logicType);
             if(!logicPtr) {
-                LogWarning("[GameObjectCreator::createObject] Can't create logic '%s' for object '%s'", logicType, objectName);
+                LogWarning("[GameObjectManager::createObject] Can't create logic '%s' for object '%s'", logicType, objectName);
                 continue;
             }
             auto logicData = logicNode.object("data");
             if(!logicData) {
-                LogWarning("[GameObjectCreator::createObject] Can't find logic data for '%s' for object '%s'", logicType, objectName);
+                LogWarning("[GameObjectManager::createObject] Can't find logic data for '%s' for object '%s'", logicType, objectName);
                 continue;
             }
             logicPtr->setGameObject(objPtr.get());
             if(!logicPtr->serialize(logicData)) {
-                LogWarning("[GameObjectCreator::createObject] Can't serialize logic '%s' for object '%s'", logicType, objectName);
+                LogWarning("[GameObjectManager::createObject] Can't serialize logic '%s' for object '%s'", logicType, objectName);
                 continue;
             }
             if(!logicPtr->init()) {
-                LogWarning("[GameObjectCreator::createObject] Can't init logic '%s' for object '%s'", logicType, objectName);
+                LogWarning("[GameObjectManager::createObject] Can't init logic '%s' for object '%s'", logicType, objectName);
                 continue;
             }
             objPtr->addLogic(std::move(logicPtr));
         }
-        LogDebug("[GameObjectCreator::createObject] Create object: '%s'", objectName);
+        LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);
         return std::move(objPtr);
     }
     return nullptr;

@@ -130,7 +130,7 @@ bool UIList::serialize(const JSONNode& node) {
         std::string childObjName;
         childNode.value(childObjName);
         EntityId childEntId;
-        ET_SendEventReturn(childEntId, &ETGame::ET_createGameObject, childObjName);
+        ET_SendEventReturn(childEntId, &ETGameObjectManager::ET_createGameObject, childObjName);
         if(childEntId != InvalidEntityId) {
             children.push_back(childEntId);
         }

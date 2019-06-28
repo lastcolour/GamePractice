@@ -191,21 +191,21 @@ TEST_F(GameBoardTests, CheckMoving) {
     ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 
-    board->ET_onGameTick(0.5f);
+    board->ET_onTick(0.5f);
 
     ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 
-    board->ET_onGameTick(0.5f);
+    board->ET_onTick(0.5f);
 
     ASSERT_FALSE(board->getElem(Vec2i(0, 3)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 
-    board->ET_onGameTick(1.f);
+    board->ET_onTick(1.f);
 
     ASSERT_FALSE(board->getElem(Vec2i(0, 3)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 2)));
@@ -228,7 +228,7 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
     ASSERT_TRUE(board->getElem(Vec2i(0, 0)));
 
-    board->ET_onGameTick(0.5f);
+    board->ET_onTick(0.5f);
 
     ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 1));
     board->updateAfterRemoves();

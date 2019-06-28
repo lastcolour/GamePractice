@@ -24,6 +24,7 @@ public:
     ~EntityId() = default;
     bool operator==(const EntityId& entId) const { return id == entId.id; }
     bool operator!=(const EntityId& entId) const { return id != entId.id; }
+    bool isValid() const { return id != INVALID_ID; }
 
     void setRawId(int entId) { id = entId; }
     int getRawId() const { return id; }

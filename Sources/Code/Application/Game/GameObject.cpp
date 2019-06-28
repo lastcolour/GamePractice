@@ -14,7 +14,7 @@ GameObject::GameObject(const std::string& objectName, EntityId entId) :
 
 GameObject::~GameObject() {
     for(auto it = children.rbegin(), end = children.rend(); it != end; ++it) {
-        ET_SendEvent(&ETGame::ET_destroyObject, *it);
+        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, *it);
     }
 }
 

@@ -1,5 +1,5 @@
 #include "Game/GameModule.hpp"
-#include "Game/Game.hpp"
+#include "Game/GameObjectManager.hpp"
 
 GameModule::GameModule() :
     SystemModule("Game") {}
@@ -7,7 +7,7 @@ GameModule::GameModule() :
 GameModule::LogicsContainerPtrT GameModule::getSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
-            Game>()
+            GameObjectManager>()
         );
     return container;
 }
