@@ -5,38 +5,41 @@
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 
-typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
+
+using JSONValueT = rapidjson::GenericValue<rapidjson::UTF8<>>;
+using JSONDocPtrT = std::shared_ptr<rapidjson::Document>;
 
 struct JSONNodeImpl {
 
-    JSONValue* val;
-    bool isOwnValue;
-    bool isDocument;
+    JSONDocPtrT root;
+    JSONValueT* val;
 
 public:
 
-    JSONNodeImpl() :
-        val(nullptr), isOwnValue(false), isDocument(false) {}
+    JSONNodeImpl(JSONNodeImpl&& node) :
+        root(std::move(node.root)), val(node.val) {
+        node.val = nullptr;
+    }
 
-    explicit JSONNodeImpl(JSONValue* jsonVal) :
-        val(jsonVal), isOwnValue(false), isDocument(false) {}
+    explicit JSONNodeImpl(const JSONDocPtrT& document) :
+        root(document), val(nullptr) {}
 
-    ~JSONNodeImpl() {
-        if(isOwnValue) {
-            if (isDocument) {
-                delete static_cast<rapidjson::Document*>(val);
-            } else {
-                delete val;
-            }
+    ~JSONNodeImpl() = default;
+
+    JSONNodeImpl& operator=(JSONNodeImpl&& node) {
+        if (this != &node) {
+            root = std::move(node.root);
+            val = node.val;
+            node.val = nullptr;
         }
-        val = nullptr;
+        return *this;
     }
 };
 
 struct JSONNodeIteratorImpl {
 
-    typedef JSONValue::MemberIterator MemberIterator;
-    typedef JSONValue::ValueIterator ValueIterator;
+    typedef JSONValueT::MemberIterator MemberIterator;
+    typedef JSONValueT::ValueIterator ValueIterator;
 
 public:
 
@@ -49,16 +52,14 @@ public:
 
 public:
 
-    JSONNodeIteratorImpl(MemberIterator& iter) :
+    JSONNodeIteratorImpl(MemberIterator& iter, JSONDocPtrT& doc) :
         memIt(iter), isMemIter(true) {
-        node.nodeImpl.reset(new JSONNodeImpl);
-        node.nodeImpl->isOwnValue = false;
+        node.nodeImpl.reset(new JSONNodeImpl(doc));
     }
 
-    JSONNodeIteratorImpl(ValueIterator& iter) :
+    JSONNodeIteratorImpl(ValueIterator& iter, JSONDocPtrT& doc) :
         valIt(iter), isMemIter(false) {
-        node.nodeImpl.reset(new JSONNodeImpl);
-        node.nodeImpl->isOwnValue = false;
+        node.nodeImpl.reset(new JSONNodeImpl(doc));
     }
 
     ~JSONNodeIteratorImpl() {
@@ -156,7 +157,7 @@ JSONNode* JSONNodeIterator::operator->() {
 }
 
 JSONNode::JSONNode() :
-    nodeImpl(new JSONNodeImpl) {
+    nodeImpl(new JSONNodeImpl(JSONDocPtrT())) {
 }
 
 JSONNode::JSONNode(JSONNode&& node) :
@@ -184,10 +185,12 @@ JSONNodeIterator JSONNode::begin() {
         return JSONNodeIterator();
     } else if(nodeImpl->val->IsObject()) {
         auto begIt = nodeImpl->val->MemberBegin();
-        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(new JSONNodeIteratorImpl(begIt)));
+        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(
+            new JSONNodeIteratorImpl(begIt, nodeImpl->root)));
     } else if(nodeImpl->val->IsArray()) {
         auto begIt = nodeImpl->val->Begin();
-        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(new JSONNodeIteratorImpl(begIt)));
+        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(
+            new JSONNodeIteratorImpl(begIt, nodeImpl->root)));
     }
     return JSONNodeIterator();
 }
@@ -197,10 +200,12 @@ JSONNodeIterator JSONNode::end() {
         return JSONNodeIterator();
     } else if(nodeImpl->val->IsObject()) {
         auto endIt = nodeImpl->val->MemberEnd();
-        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(new JSONNodeIteratorImpl(endIt)));
+        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(
+            new JSONNodeIteratorImpl(endIt, nodeImpl->root)));
     } else if(nodeImpl->val->IsArray()) {
         auto endIt = nodeImpl->val->End();
-        return JSONNodeIterator(std::unique_ptr<q>(new JSONNodeIteratorImpl(endIt)));
+        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(
+            new JSONNodeIteratorImpl(endIt, nodeImpl->root)));
     }
     return JSONNodeIterator();
 }
@@ -289,9 +294,8 @@ JSONNode JSONNode::object(const std::string& key) const {
     if(nodeImpl->val->IsObject()) {
         auto it = nodeImpl->val->FindMember(key.c_str());
         if(it != nodeImpl->val->MemberEnd()) {
-            std::unique_ptr<JSONNodeImpl> newNodeImpl(new JSONNodeImpl());
+            std::unique_ptr<JSONNodeImpl> newNodeImpl(new JSONNodeImpl(nodeImpl->root));
             newNodeImpl->val = &(it->value);
-            newNodeImpl->isOwnValue = false;
             node.nodeKey = key;
             node.nodeImpl = std::move(newNodeImpl);
         }
@@ -333,9 +337,8 @@ JSONNode JSONNode::ParseString(const std::string& str) {
             doc.GetParseError()), doc.GetErrorOffset());
         return JSONNode();
     }
-    std::unique_ptr<JSONNodeImpl> impl(new JSONNodeImpl);
-    impl->isOwnValue = true;
-    impl->isDocument = true;
-    impl->val = new rapidjson::Document(std::move(doc));
+    JSONDocPtrT docPtr(new rapidjson::Document(std::move(doc)));
+    std::unique_ptr<JSONNodeImpl> impl(new JSONNodeImpl(docPtr));
+    impl->val = impl->root.get();
     return JSONNode(std::move(impl));
 }
