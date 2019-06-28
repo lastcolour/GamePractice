@@ -3,7 +3,7 @@
 
 #include "TestUtils/VoidAppTests.hpp"
 
-class Assets;
+class DesktopAssets;
 
 class AssetsTests : public VoidAppTests {
 protected:
@@ -13,7 +13,7 @@ protected:
 
 protected:
 
-    static std::unique_ptr<Assets> ASSETS;
+    static std::unique_ptr<DesktopAssets> ASSETS;
 };
 
 #endif /* __ASSETS_TEST_HPP__ */ 

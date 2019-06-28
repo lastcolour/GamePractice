@@ -22,6 +22,7 @@ RenderTextLogic::~RenderTextLogic() {
 }
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
+    (void)node;
     return true;
 }
 

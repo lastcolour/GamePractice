@@ -21,8 +21,8 @@ public:
 
 protected:
 
-    std::string formatMessage(LogLevel lvl, const std::string& msg);
-    void printMessasge(LogLevel lvl, const std::string& msg);
+    virtual std::string formatMessage(LogLevel lvl, const std::string& msg);
+    virtual void printMessasge(LogLevel lvl, const std::string& msg);
 
 private:
 

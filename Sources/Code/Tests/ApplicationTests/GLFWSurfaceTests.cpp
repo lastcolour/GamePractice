@@ -1,7 +1,7 @@
 #include "GLFWSurfaceTests.hpp"
 #include "Platforms/Desktop/GLFWSurface.hpp"
 
-TEST_F(GLFWSurfaceTest, TestCommonFlow) {
+TEST_F(GLFWSurfaceTest, CheckNormalFlow) {
     GLFWSurface surface;
     bool res = surface.init();
     ASSERT_TRUE(res);
@@ -22,16 +22,15 @@ TEST_F(GLFWSurfaceTest, TestCommonFlow) {
     isVisible = surface.ET_isVisible();
     EXPECT_TRUE(isVisible);
 
-    surface.update(0.f);
+    surface.ET_onTick(0.f);
 
     surface.ET_hide();
     isVisible = surface.ET_isVisible();
     ASSERT_FALSE(isVisible);
 
-    bool shouldRun = surface.shouldRun();
-    ASSERT_TRUE(shouldRun);
+    EXPECT_TRUE(surface.ET_isValid());
 
-    surface.ET_terminate();
-    shouldRun = surface.shouldRun();
-    ASSERT_FALSE(shouldRun);
+    surface.ET_close();
+
+    EXPECT_FALSE(surface.ET_isValid());
 }

@@ -2,7 +2,9 @@
 #include "Platforms/Desktop/DesktopLogger.hpp"
 
 namespace {
-    const char* TEST_LOG_MSG = "TestMessage";
+
+const char* TEST_LOG_MSG = "TestMessage";
+
 } // namespace
 
 class TestLogger : public DesktopLogger {
@@ -13,21 +15,13 @@ public:
         return loggedMsg.c_str();
     }
 
-    // SystemLogic
-    bool init() override {
-        ETNode<ETLogger>::connect(getEntityId());
-        return true;
-    }
-
-    void deinit() override {}
-
 protected:
 
-    void printMessasge(LogLevel logLevel, const std::string& msg) {
+    void printMessasge(LogLevel logLevel, const std::string& msg) override {
         loggedMsg += msg;
     }
 
-    std::string formatMessage(LogLevel logLevel, const std::string& msg) {
+    std::string formatMessage(LogLevel logLevel, const std::string& msg) override {
         return msg;
     }
 

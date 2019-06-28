@@ -12,22 +12,24 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
-    set(CMAKE_CXX_FLAGS
-"${CMAKE_CXX_FLAGS} \
--Wextra \
--Wall \
--Wundef \
--Wshadow \
--Wpointer-arith \
--Wcast-align \
--Wstrict-overflow=5 \
--Wwrite-strings \
--Wcast-qual \
--Wswitch-default \
--Wswitch-enum \
--Wunreachable-code")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fsanitize=address -fno-omit-frame-pointer")
 
- # -Wconversion
+    set(CXX_APP_CHECK_FLAGS
+-Wextra
+-Wall
+-Wundef
+-Wshadow
+-Wpointer-arith
+-Wcast-align
+-Wwrite-strings
+-Wcast-qual
+-Wswitch-default
+-Wunreachable-code
+-Werror CACHE INTERNAL "Compile flags for app")
+
+# -Wswitch-enum
+# -Wstrict-overflow=5
+# -Wconversion
 
 else()
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")

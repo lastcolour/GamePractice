@@ -11,18 +11,23 @@ struct JSONNodeImpl {
 
     JSONValue* val;
     bool isOwnValue;
+    bool isDocument;
 
 public:
 
     JSONNodeImpl() :
-        val(nullptr) {}
+        val(nullptr), isOwnValue(false), isDocument(false) {}
 
     explicit JSONNodeImpl(JSONValue* jsonVal) :
-        val(jsonVal), isOwnValue(false) {}
+        val(jsonVal), isOwnValue(false), isDocument(false) {}
 
     ~JSONNodeImpl() {
         if(isOwnValue) {
-            delete val;
+            if (isDocument) {
+                delete static_cast<rapidjson::Document*>(val);
+            } else {
+                delete val;
+            }
         }
         val = nullptr;
     }
@@ -195,7 +200,7 @@ JSONNodeIterator JSONNode::end() {
         return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(new JSONNodeIteratorImpl(endIt)));
     } else if(nodeImpl->val->IsArray()) {
         auto endIt = nodeImpl->val->End();
-        return JSONNodeIterator(std::unique_ptr<JSONNodeIteratorImpl>(new JSONNodeIteratorImpl(endIt)));
+        return JSONNodeIterator(std::unique_ptr<q>(new JSONNodeIteratorImpl(endIt)));
     }
     return JSONNodeIterator();
 }
@@ -330,6 +335,7 @@ JSONNode JSONNode::ParseString(const std::string& str) {
     }
     std::unique_ptr<JSONNodeImpl> impl(new JSONNodeImpl);
     impl->isOwnValue = true;
+    impl->isDocument = true;
     impl->val = new rapidjson::Document(std::move(doc));
     return JSONNode(std::move(impl));
 }

@@ -17,11 +17,12 @@ struct ETSurface {
     virtual ~ETSurface() = default;
     virtual bool ET_show() = 0;
     virtual bool ET_hide() = 0;
-    virtual void ET_terminate() = 0;
+    virtual void ET_close() = 0;
     virtual Vec2i ET_getSize() const = 0;
     virtual void ET_swapBuffers() = 0;
     virtual GLContextType ET_getGLContextType() const = 0;
     virtual bool ET_isVisible() const = 0;
+    virtual bool ET_isValid() const = 0;
 };
 
 enum class ETouchType {

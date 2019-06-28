@@ -4,8 +4,9 @@
 
 #include <cassert>
 
-RenderMaterial::RenderMaterial(int progId) : programId(progId),
-    activeTexUnitId(0) {
+RenderMaterial::RenderMaterial(int progId) :
+    activeTexUnitId(0),
+    programId(progId) {
     assert(programId && "Invalid program id");
 }
 

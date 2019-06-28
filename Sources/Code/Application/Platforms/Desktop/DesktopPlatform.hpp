@@ -6,7 +6,10 @@
 class DesktopPlatform : public Platform {
 public:
 
-    DesktopPlatform(int argc, char* argv[]) {}
+    DesktopPlatform(int argc, char* argv[]) {
+        (void)argc;
+        (void)argv;
+    }
     virtual ~DesktopPlatform() = default;
 
     std::unique_ptr<SystemModule> createPlatformModule() const override;

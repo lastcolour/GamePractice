@@ -25,11 +25,12 @@ public:
     // ETSurface
     bool ET_show() override;
     bool ET_hide() override;
-    void ET_terminate() override;
+    void ET_close() override;
     void ET_swapBuffers() override;
     Vec2i ET_getSize() const override;
     GLContextType ET_getGLContextType() const override;
     bool ET_isVisible() const override;
+    bool ET_isValid() const override;
 
     // ETTimerEvenets
     void ET_onTick(float dt) override;

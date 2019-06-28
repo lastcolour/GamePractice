@@ -8,7 +8,7 @@
 
 namespace {
     const int APP_SUCCESSED = 0;
-    const int APP_FAILED = -1;
+    const int APP_FAILED = 1;
 } // namespace
 
 Application::Application(Application::PlatformPtrT&& runPlatform) :

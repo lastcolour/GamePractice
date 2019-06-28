@@ -384,7 +384,7 @@ Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) c
     yShift = yShift / cellSize;
     int shift = static_cast<int>(yShift);
     if(std::abs(yShift - static_cast<float>(shift)) > 0.5f) {
-        shift = shift > 0 ? ++shift : --shift;
+        shift > 0 ? ++shift : --shift;
     }
     resPt.y = std::max(0, boardPt.y + shift);
     return resPt;

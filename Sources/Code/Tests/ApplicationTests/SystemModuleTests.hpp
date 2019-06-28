@@ -1,9 +1,9 @@
 #ifndef __SYSTEM_MODULE_TESTS_HPP__
 #define __SYSTEM_MODULE_TESTS_HPP__
 
-#include <gtest/gtest.h>
+#include "TestUtils/VoidAppTests.hpp"
 
-class SystemModuleTests : public ::testing::Test {
+class SystemModuleTests : public VoidAppTests {
 protected:
 
     void SetUp() override;

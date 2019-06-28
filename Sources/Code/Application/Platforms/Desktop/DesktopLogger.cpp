@@ -40,7 +40,7 @@ void DesktopLogger::ET_setLogLevel(LogLevel lvl) {
 
 std::string DesktopLogger::formatMessage(LogLevel lvl, const std::string& msg) {
     const char* prefix = nullptr;
-    switch(logLevel) {
+    switch(lvl) {
         case LogLevel::Debug:
             prefix = "[Debug] ";
             break;

@@ -16,7 +16,7 @@ UIList::~UIList() {
 }
 
 void UIList::ET_addElement(EntityId newElemId) {
-    const auto& box = ET_getAabb2di();
+    const auto& currBox = ET_getAabb2di();
     int offset = 0;
     AABB2Di elemBox;
     if(!children.empty()) {
@@ -28,9 +28,9 @@ void UIList::ET_addElement(EntityId newElemId) {
         }
     } else {
         if(listType == ListType::Horizontal) {
-            offset = box.top.x;
+            offset = currBox.top.x;
         } else {
-            offset = box.bot.y;
+            offset = currBox.bot.y;
         }
     }
     elemBox = AABB2Di(0);
@@ -78,11 +78,11 @@ void UIList::calcResListBox() {
     setBox(listBox);
     ET_alignInBox(ET_getParentAaabb2di());
 
-    const auto& box = ET_getAabb2di();
-    const auto center = box.getCenter();
-    int offset = box.bot.x;
+    const auto& currBox = ET_getAabb2di();
+    const auto center = currBox.getCenter();
+    int offset = currBox.bot.x;
     if(listType == ListType::Vertical) {
-        offset = box.top.y;
+        offset = currBox.top.y;
     }
 
     for(auto entId : children) {

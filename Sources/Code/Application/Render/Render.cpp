@@ -28,8 +28,8 @@ namespace {
 
 Render::Render() :
     renderFb(nullptr),
-    fontSystem(new RenderFontSystem),
-    clearColor(0, 0, 0) {
+    clearColor(0, 0, 0),
+    fontSystem(new RenderFontSystem) {
 }
 
  Render::~Render() {

@@ -123,6 +123,7 @@ void GLFWSurface::deinit() {
 }
 
 void GLFWSurface::ET_onTick(float dt) {
+    (void)dt;
     glfwPollEvents();
     if(window != nullptr && glfwWindowShouldClose(window)) {
         ET_SendEvent(&ETAppRunStateEvents::ET_onTerminate);
@@ -153,7 +154,7 @@ bool GLFWSurface::ET_hide() {
     return false;
 }
 
-void GLFWSurface::ET_terminate() {
+void GLFWSurface::ET_close() {
     if(window) {
         glfwSetWindowShouldClose(window, true);
     }
@@ -169,6 +170,13 @@ Vec2i GLFWSurface::ET_getSize() const {
     return size;
 }
 
+bool GLFWSurface::ET_isValid() const {
+    if(window) {
+        return !glfwWindowShouldClose(window);
+    }
+    return false;
+}
+
 GLContextType GLFWSurface::ET_getGLContextType() const {
     if(window) {
         return GLContextType::ES30;
@@ -177,6 +185,8 @@ GLContextType GLFWSurface::ET_getGLContextType() const {
 }
 
 void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) {
+    (void)window;
+
     auto surface = GLFW->getActiveSurface();
     if(!surface) {
         LogError("[GLFWSurface::SetCursorePosCallbac] No active surface");
@@ -193,6 +203,8 @@ void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) 
 }
 
 void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    (void)mods;
+
     auto surface = GLFW->getActiveSurface();
     if(!surface) {
         LogError("[GLFWSurface::SetMouseButtonCallback] No active surface");
@@ -218,7 +230,8 @@ void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int act
     }
 }
 
-void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* windwos, int w, int h) {
+void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* window, int w, int h) {
+    (void)window;
     auto surface = GLFW->getActiveSurface();
     if(!surface) {
         LogError("[GLFWSurface::SetFramebufferSizeCallback] No active surface");

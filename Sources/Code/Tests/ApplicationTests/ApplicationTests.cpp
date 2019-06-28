@@ -20,7 +20,7 @@ public:
     virtual ~TestSystemLogic() = default;
 
     bool init() override {
-        return true;
+        return false;
     }
     void deinit() {} 
 };
@@ -48,23 +48,19 @@ public:
     TestApplication() : Application(nullptr) {}
     virtual ~TestApplication() = default;
 
-public:
-
-    ModuleListT sysModules;
-
 protected:
 
     void buildModules(ModuleListT& modules) override {
-        sysModules.emplace_back(new TestSystemModule);
+        modules.emplace_back(new TestSystemModule);
     }
 };
 
-}
+} // namespace
 
 TEST_F(ApplicationTests, CheckRunWithInvalidModule) {
     TestApplication app;
     int retRes = app.run();
-    ASSERT_EQ(retRes, 0);
+    ASSERT_EQ(retRes, 1);
 }
 
 TEST_F(ApplicationTests, CheckNormalFlow) {

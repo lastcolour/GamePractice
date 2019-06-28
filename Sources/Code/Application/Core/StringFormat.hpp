@@ -30,8 +30,12 @@ void StringFormatImpl(Buffer& buff, const std::string& format, const ArgsT& ... 
 } // namespace Core
 
 template<typename ... ArgsT>
-std::string StringFormat(const std::string& format, const ArgsT& ... args)
-{
+std::string StringFormat(const std::string& format) {
+    return format;
+}
+
+template<typename ... ArgsT>
+std::string StringFormat(const std::string& format, const ArgsT& ... args) {
     Buffer buff(format.size() + 1);
     if(sizeof...(args) > 0u) {
         Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);

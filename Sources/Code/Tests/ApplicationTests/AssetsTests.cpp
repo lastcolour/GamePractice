@@ -1,13 +1,15 @@
 #include "AssetsTests.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Platforms/Desktop/DesktopAssets.hpp"
 #include "Core/JSONNode.hpp"
+#include <Platforms/Desktop/DesktopAssets.hpp>
 
 namespace {
-    const char* TEST_FILE_PATH = "Render/Materials.json";
-}
 
-std::unique_ptr<Assets> AssetsTests::ASSETS;
+const char* TEST_FILE_PATH = "Render/Materials.json";
+
+} // namepsace
+
+std::unique_ptr<DesktopAssets> AssetsTests::ASSETS;
 
 void AssetsTests::SetUpTestCase() {
     VoidAppTests::SetUpTestCase();
@@ -17,7 +19,9 @@ void AssetsTests::SetUpTestCase() {
 }
 
 void AssetsTests::TearDownTestCase() {
+    ASSETS->deinit();
     ASSETS.reset();
+
     VoidAppTests::TearDownTestCase();
 }
 
