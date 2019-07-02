@@ -12,9 +12,11 @@
 #ifdef APP_BUILD_PLATFORM_WINDOWS
   #include <direct.h>
   #define GetCurrentWorkingDir _getcwd
+  const char* CWD_PREFIX = "";
 #elif defined APP_BUILD_PLATFORM_LINUX
   #include <unistd.h>
   #define GetCurrentWorkingDir getcwd
+  const char CWD_PREFIX = "/";
 #else
   #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
 #endif
@@ -78,13 +80,14 @@ namespace {
             if(GetCurrentWorkingDir(temp, sizeof(temp))) {
                 temp[sizeof(temp) - 1] = '\0';
                 cwdPath = temp;
+                cwdPath = CWD_PREFIX + cwdPath;
             } else {
                 return "";
             }
         }
 
         std::vector<std::string> possiblePaths = {
-            "/Assets"
+            "/Assets",
             "/../Assets",
             "/../../Assets",
             "/../../../Assets",
@@ -94,7 +97,6 @@ namespace {
             auto dirPath = cwdPath + path;
             fixSlashes(dirPath);
             normalizePath(dirPath);
-            dirPath = VALID_SLASH + dirPath;
             if (isDirExist(dirPath)) {
                 return dirPath;
             }

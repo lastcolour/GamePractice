@@ -31,7 +31,7 @@ public:
     }
     TestObject& operator=(TestObject&& obj) {
         copyState(obj);
-        ++moveAssignCount;   
+        ++moveAssignCount;
         return *this;
     }
     void doSomething() {
