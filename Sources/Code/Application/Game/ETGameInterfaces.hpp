@@ -15,6 +15,7 @@ struct ETGameBoardElemLogic {
 
 struct ETGameObject {
     virtual ~ETGameObject() = default;
+    virtual const std::vector<EntityId>& ET_getChildren() const = 0;
     virtual void ET_setParent(EntityId entId) = 0;
     virtual void ET_addChild(EntityId entId) = 0;
     virtual void ET_removeChild(EntityId entId) = 0;

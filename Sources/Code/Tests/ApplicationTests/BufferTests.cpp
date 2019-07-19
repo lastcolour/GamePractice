@@ -1,5 +1,6 @@
 #include "BufferTests.hpp"
 #include "Core/Buffer.hpp"
+#include "Core/StringFormat.hpp"
 
 namespace {
     const size_t TEST_SIZE = 32;
@@ -36,7 +37,7 @@ TEST_F(BufferTests, CheckResize) {
 TEST_F(BufferTests, CheckWriteStr) {
     std::string testStr = "test_str ";
     Buffer buff(testStr.size());
-    strcpy(static_cast<char*>(buff.getData()), testStr.c_str());
+    Core::StringCopyUnsafe(static_cast<char*>(buff.getData()), testStr.c_str());
 
     ASSERT_TRUE(buff);
     ASSERT_EQ(buff.getSize(), testStr.size());

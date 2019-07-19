@@ -4,16 +4,14 @@
 #include "Math/MatrixTransform.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
 
 #include <algorithm>
 
-namespace {
-    const char* TEXT_RENDER_MATERIAL = "text_solid_color";
-} // namespace
-
 RenderTextLogic::RenderTextLogic() :
     vaoId(0),
-    vboId(0) {
+    vboId(0),
+    color(255, 255, 255) {
 }
 
 RenderTextLogic::~RenderTextLogic() {
@@ -22,7 +20,9 @@ RenderTextLogic::~RenderTextLogic() {
 }
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
-    (void)node;
+    std::string matName;
+    node.value("mat", matName);
+    ET_setMaterial(matName);
     return true;
 }
 
@@ -40,11 +40,10 @@ void RenderTextLogic::createVAO() {
 
 bool RenderTextLogic::init() {
     ET_SendEventReturn(font, &ETRender::ET_createDefaultFont);
-    if(!font) {
+    if(!mat) {
         return false;
     }
-    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, TEXT_RENDER_MATERIAL);
-    if(!mat) {
+    if(!font) {
         return false;
     }
     createVAO();
@@ -56,7 +55,7 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->bind();
     mat->setTexture2D("tex", font->getTexId());
     mat->setUniformMat4("MVP", renderCtx.proj2dMat);
-    mat->setUniform4f("color", ColorB(0, 0, 255));
+    mat->setUniform4f("color", color);
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
@@ -127,8 +126,20 @@ void RenderTextLogic::calcTextAABB() {
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
 }
 
+void RenderTextLogic::ET_setFontSize(size_t newFontSize) {
+    fontSize = newFontSize;
+}
+
 AABB2D RenderTextLogic::ET_getTextAABB() const {
     return aabb;
+}
+
+void RenderTextLogic::ET_setMaterial(const std::string& matName) {
+    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
+}
+
+void RenderTextLogic::ET_setColor(const ColorB& col) {
+    color = col;
 }
 
 void RenderTextLogic::ET_setText(const std::string& str) {

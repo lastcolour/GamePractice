@@ -6,35 +6,6 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/GameObject.hpp"
 
-class TestUIBox : public UIBox {
-public:
-    virtual ~TestUIBox() = default;
-
-    void setStyle(const UIStyle& uiStyle) {
-        UIBox::setStyle(uiStyle);
-    }
-
-protected:
-
-    bool serialize(const JSONNode& node) override { return true; }
-};
-
-class TestUIList : public UIList {
-public:
-    virtual ~TestUIList() = default;
-
-    void setStyle(const UIStyle& uiStyle) {
-        UIList::setStyle(uiStyle);
-    }
-    void setType(ListType type) {
-        listType = type;
-    }
-
-protected:
-
-    bool serialize(const JSONNode& node) override { return true; }
-};
-
 void UITests::SetUp() {
 }
 
@@ -42,26 +13,26 @@ void UITests::TearDown() {
     tempObject.clear();
 }
 
-TestUIList* UITests::createUIList() {
+UIList* UITests::createUIList() {
     auto object = createVoidObject();
-    std::unique_ptr<TestUIList> uiListPtr(new TestUIList);
-    TestUIList* uiList = uiListPtr.get();
+    std::unique_ptr<UIList> uiListPtr(new UIList);
+    UIList* uiList = uiListPtr.get();
     object->addLogic(std::move(uiListPtr));
     tempObject.push_back(std::move(object));
     return uiList;
 }
 
-TestUIBox* UITests::createUIBox() {
+UIBox* UITests::createUIBox() {
     auto object = createVoidObject();
-    std::unique_ptr<TestUIBox> uiBoxPtr(new TestUIBox);
-    TestUIBox* uiBox = uiBoxPtr.get();
+    std::unique_ptr<UIBox> uiBoxPtr(new UIBox);
+    UIBox* uiBox = uiBoxPtr.get();
     object->addLogic(std::move(uiBoxPtr));
     tempObject.push_back(std::move(object));
     return uiBox;
 }
 
 TEST_F(UITests, CheckXAlign) {
-    TestUIBox* uiBox = createUIBox();
+    UIBox* uiBox = createUIBox();
     UIStyle style;
     style.size = Vec2(0.5f);
     style.yAlignType = YAlignType::Center;
@@ -69,26 +40,26 @@ TEST_F(UITests, CheckXAlign) {
     ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
 
     style.xAlignType = XAlignType::Center;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     AABB2Di aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
     style.xAlignType = XAlignType::Left;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 4, renderPort.y / 2));
 
     style.xAlignType = XAlignType::Right;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(3 * renderPort.x / 4, renderPort.y / 2));
 }
 
 TEST_F(UITests, CheckYAlign) {
-    TestUIBox* uiBox = createUIBox();
+    UIBox* uiBox = createUIBox();
     UIStyle style;
     style.size = Vec2(0.5f);
     style.xAlignType = XAlignType::Center;
@@ -96,20 +67,20 @@ TEST_F(UITests, CheckYAlign) {
     ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
 
     style.yAlignType = YAlignType::Top;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     AABB2Di aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 2, 3 * renderPort.y / 4));
 
     style.yAlignType = YAlignType::Bot;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 4));
 }
 
 TEST_F(UITests, CheckUIBoxSizeInvariants) {
-    TestUIBox* uiBox = createUIBox();
+    UIBox* uiBox = createUIBox();
     UIStyle style;
     style.size = Vec2(0.5f, 0.5f);
     AABB2Di aabb(0);
@@ -118,14 +89,14 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
     int minSide = std::min(renderPort.x, renderPort.y);
 
     style.sizeInv = SizeInvariant::Absolute;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 2, renderPort.y / 2));
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
     style.sizeInv = SizeInvariant::AbsoluteBiggestSquare;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(minSide / 2));
@@ -133,29 +104,29 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
 
     style.sizeInv = SizeInvariant::Pixel;
     style.size = Vec2(100.f, 300.f);
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(100, 300));
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
-    TestUIBox* parentUIBox = createUIBox();
+    UIBox* parentUIBox = createUIBox();
     style.sizeInv = SizeInvariant::Relative;
     style.size = Vec2(0.5f, 0.5f);
-    parentUIBox->setStyle(style);
+    parentUIBox->ET_setStyle(style);
     ASSERT_TRUE(parentUIBox->init());
     ET_SendEvent(parentUIBox->getEntityId(), &ETGameObject::ET_addChild, uiBox->getEntityId());
 
     style.sizeInv = SizeInvariant::Relative;
     style.size = Vec2(0.5f, 0.5f);
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 4, renderPort.y / 4));
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
     style.sizeInv = SizeInvariant::RelativeBiggestSquare;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(minSide / 4));
@@ -163,18 +134,18 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
 }
 
 TEST_F(UITests, CheckUIBoxInsideUIBox) {
-    TestUIBox* uiBox1 = createUIBox();
-    TestUIBox* uiBox2 = createUIBox();
+    UIBox* uiBox1 = createUIBox();
+    UIBox* uiBox2 = createUIBox();
 
     ET_SendEvent(uiBox1->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
 
     UIStyle style;
     style.size = Vec2(0.5f, 0.5f);
 
-    uiBox1->setStyle(style);
+    uiBox1->ET_setStyle(style);
     ASSERT_TRUE(uiBox1->init());
 
-    uiBox2->setStyle(style);
+    uiBox2->ET_setStyle(style);
     ASSERT_TRUE(uiBox2->init());
 
     auto& parentBox = uiBox1->ET_getAabb2di();
@@ -186,23 +157,23 @@ TEST_F(UITests, CheckUIBoxInsideUIBox) {
 }
 
 TEST_F(UITests, CheckVerticalUIList) {
-    TestUIList* uiList = createUIList();
-    uiList->setType(ListType::Vertical);
+    UIList* uiList = createUIList();
+    uiList->ET_setType(UIListType::Vertical);
     ASSERT_TRUE(uiList->init());
 
     UIStyle boxStyle;
     boxStyle.size = Vec2(0.25f, 0.25f);
 
-    TestUIBox* uiBox1 = createUIBox();
-    uiBox1->setStyle(boxStyle);
+    UIBox* uiBox1 = createUIBox();
+    uiBox1->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox1->init());
 
-    TestUIBox* uiBox2 = createUIBox();
-    uiBox2->setStyle(boxStyle);
+    UIBox* uiBox2 = createUIBox();
+    uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->ET_addElement(uiBox1->getEntityId());
-    uiList->ET_addElement(uiBox2->getEntityId());
+    uiList->ET_addChildElement(uiBox1->getEntityId());
+    uiList->ET_addChildElement(uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
@@ -234,23 +205,23 @@ TEST_F(UITests, CheckVerticalUIList) {
 }
 
 TEST_F(UITests, CheckHorizontalUIList) {
-    TestUIList* uiList = createUIList();
-    uiList->setType(ListType::Horizontal);
+    UIList* uiList = createUIList();
+    uiList->ET_setType(UIListType::Horizontal);
     ASSERT_TRUE(uiList->init());
 
     UIStyle boxStyle;
     boxStyle.size = Vec2(0.25f, 0.25f);
 
-    TestUIBox* uiBox1 = createUIBox();
-    uiBox1->setStyle(boxStyle);
+    UIBox* uiBox1 = createUIBox();
+    uiBox1->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox1->init());
 
-    TestUIBox* uiBox2 = createUIBox();
-    uiBox2->setStyle(boxStyle);
+    UIBox* uiBox2 = createUIBox();
+    uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->ET_addElement(uiBox1->getEntityId());
-    uiList->ET_addElement(uiBox2->getEntityId());
+    uiList->ET_addChildElement(uiBox1->getEntityId());
+    uiList->ET_addChildElement(uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
@@ -279,4 +250,46 @@ TEST_F(UITests, CheckHorizontalUIList) {
     expSize = renderPort / 4;
     resSize = aabbBox2.getSize();
     ASSERT_EQ(resSize, expSize);
+}
+
+TEST_F(UITests, CheckUIListResize) {
+    auto rootUiBox = createUIBox();
+    UIStyle rootBoxStyle;
+    rootBoxStyle.size = Vec2(0.5f);
+    rootUiBox->ET_setStyle(rootBoxStyle);
+    ASSERT_TRUE(rootUiBox->init());
+
+    auto uiList = createUIList();
+    UIStyle uiListStyle;
+    uiList->ET_setStyle(uiListStyle);
+    ASSERT_TRUE(uiList->init());
+
+    auto innerUiBox = createUIBox();
+    UIStyle innerBoxStyle;
+    innerBoxStyle.size = Vec2(0.5f);
+    innerUiBox->ET_setStyle(innerBoxStyle);
+    ASSERT_TRUE(innerUiBox->init());
+
+    rootUiBox->ET_addChildElement(uiList->getEntityId());
+    uiList->ET_addChildElement(innerUiBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+
+    auto aabb = innerUiBox->ET_getAabb2di();
+
+    auto size = aabb.getSize();
+    auto center = aabb.getCenter();
+    EXPECT_EQ(size, renderPort / 4);
+    EXPECT_EQ(center, renderPort / 2);
+
+    rootBoxStyle.size = Vec2(1.f);
+    rootUiBox->ET_setStyle(rootBoxStyle);
+
+    aabb = innerUiBox->ET_getAabb2di();
+
+    size = aabb.getSize();
+    center = aabb.getCenter();
+    EXPECT_EQ(size, renderPort / 2);
+    EXPECT_EQ(center, renderPort / 2);
 }

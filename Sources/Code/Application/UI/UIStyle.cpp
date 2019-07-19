@@ -1,6 +1,7 @@
 #include "UI/UIStyle.hpp"
 #include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 namespace {
 
@@ -34,13 +35,13 @@ SizeInvariant parseSizeInvariant(const std::string& strType) {
     if(strType == "rel") {
         return SizeInvariant::Relative;
     } else if(strType == "relBS") {
-        return SizeInvariant::Relative;
+        return SizeInvariant::RelativeBiggestSquare;
     } else if(strType == "abs") {
-        return SizeInvariant::Relative;
+        return SizeInvariant::Absolute;
     } else if(strType == "absBS") {
-        return SizeInvariant::Relative;
+        return SizeInvariant::AbsoluteBiggestSquare;
     } else if(strType == "pix") {
-        return SizeInvariant::Relative;
+        return SizeInvariant::Pixel;
     } else {
         LogWarning("[UIStyle::parseSizeInvariant] Invalid size invariant type: %s", strType);
     }
@@ -67,7 +68,7 @@ UIStyle::UIStyle() :
 UIStyle::~UIStyle() {
 }
 
-bool UIStyle::serialize(const JSONNode& node) {
+void UIStyle::serialize(const JSONNode& node) {
     if(auto alignNode = node.object("align")) {
         std::string alignTypeStr("center");
         node.value("x", alignTypeStr);
@@ -114,5 +115,5 @@ bool UIStyle::serialize(const JSONNode& node) {
     } else {
         LogWarning("[UIStyle::serialize] Can't find required node: 'margin'");
     }
-    return true;
+    node.value("renderer", renderer);
 }

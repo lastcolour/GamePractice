@@ -5,8 +5,8 @@
 
 #include <vector>
 
-class TestUIBox;
-class TestUIList;
+class UIBox;
+class UIList;
 class GameObject;
 
 class UITests : public ConsoleAppTests {
@@ -15,8 +15,8 @@ protected:
     void SetUp();
     void TearDown();
 
-    TestUIBox* createUIBox();
-    TestUIList* createUIList();
+    UIBox* createUIBox();
+    UIList* createUIList();
 
 protected:
 

@@ -1,0 +1,33 @@
+{
+    "logics": [
+        {
+            "type": "UIBox",
+            "data": {
+                "style": {
+                    "align": "center",
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                }
+            }
+        },
+        {
+            "type": "GameBoard",
+            "data": {
+                "fallSpeed": 5,
+                "size": {
+                    "w": 8,
+                    "h": 8
+                },
+                "space": 0.8,
+                "cell": {
+                    "object": "Game/GameBoardElem.json",
+                    "scale": 0.9
+                }
+            }
+        }
+    ]
+}

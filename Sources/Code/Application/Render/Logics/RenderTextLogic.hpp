@@ -25,7 +25,10 @@ public:
     void ET_onRenderPortResized() override {}
 
     // ETRenderTestLogic
+    void ET_setMaterial(const std::string& matName) override;
+    void ET_setColor(const ColorB& col) override;
     void ET_setText(const std::string& str) override;
+    void ET_setFontSize(size_t fontSize) override;
     virtual AABB2D ET_getTextAABB() const override;
 
 private:
@@ -35,12 +38,14 @@ private:
 
 private:
 
-    unsigned int vaoId;
-    unsigned int vboId;
+    AABB2D aabb;
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
-    AABB2D aabb;
     std::string text;
+    size_t fontSize;
+    unsigned int vaoId;
+    unsigned int vboId;
+    ColorB color;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */

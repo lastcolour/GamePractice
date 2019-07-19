@@ -1,0 +1,11 @@
+{
+    "logics": [
+        {
+            "type": "RenderSimple",
+            "data": {
+                "mat": "geom_solid_color",
+                "geom": "square"
+            }
+        }
+    ]
+}

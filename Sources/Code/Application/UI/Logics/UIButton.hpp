@@ -18,7 +18,8 @@ public:
 
 private:
 
-    std::string text;
+    std::string eventName;
+    EntityId labelEntId;
 };
 
 #endif /* __UI_BUTTON_HPP__ */

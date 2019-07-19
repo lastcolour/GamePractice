@@ -4,7 +4,7 @@
 #include "Game/GameObject.hpp"
 
 namespace {
-    const char* TEST_CELL_OBJECT = "Simple";
+    const char* TEST_CELL_OBJECT = "Game/Simple.json";
 }
 
 struct TestBoardParams {

@@ -31,13 +31,13 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
     node.value("space", space);
     if(space <= 0.f || space > 1.f) {
         LogWarning("[GameBoard::serialize] Invalid space: %f", space);
-        return false;
+            return false;
     }
     if(auto sizeNode = node.object("size")) {
         sizeNode.value("w", boardSize.x);
         if(boardSize.x <= 0) {
             LogWarning("[GameBoard::serialize] Invalid width: %d", boardSize.x);
-            return false;
+                return false;
         }
         sizeNode.value("h", boardSize.y);
         if(boardSize.y <= 0) {
@@ -211,10 +211,8 @@ void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const
     elem.state = BoardElemState::Static;
     setElemBoardPos(elem, boardPt);
 
-    RenderLogicParams params;
-    params.col = getElemColor(elem.color);
-    params.size = Vec2(objectSize);
-    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setRenderParams, params);
+    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setColor, getElemColor(elem.color));
+    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setSize, Vec2(objectSize));
 }
 
 void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {

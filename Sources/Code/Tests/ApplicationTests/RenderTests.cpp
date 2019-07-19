@@ -24,7 +24,7 @@ namespace {
     const char* TEST_GEOM_1 = "square";
     const char* TEST_GEOM_2 = "Square";
 
-    const char* SIMPLE_OBJECT = "Simple";
+    const char* SIMPLE_OBJECT = "Game/Simple.json";
     const float SCALE_FACTOR = 0.8f;
 
     const ColorB DRAW_COLOR(0, 255, 0);
@@ -290,10 +290,8 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     tm.pt = center;
     ET_SendEvent(objId, &ETGameObject::ET_setTransform, tm);
 
-    RenderLogicParams params;
-    params.size = Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR);
-    params.col = DRAW_COLOR;
-    ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setRenderParams, params);
+    ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
+    ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
 
     ET_SendEvent(&ETRender::ET_drawFrame);
 
@@ -342,6 +340,7 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
 TEST_F(RenderTests, CheckRenderSimpleText) {
     auto gameObj = createVoidObject();
     RenderTextLogic* renderText = new RenderTextLogic;
+    renderText->ET_setMaterial("text_solid_color");
     gameObj->addLogic(std::unique_ptr<GameLogic>(renderText));
     ASSERT_TRUE(renderText->init());
 

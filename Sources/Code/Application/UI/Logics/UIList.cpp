@@ -9,25 +9,28 @@
 #include <limits>
 
 UIList::UIList() :
-    listType(ListType::Vertical) {
+    listType(UIListType::Vertical) {
 }
 
 UIList::~UIList() {
 }
 
-void UIList::ET_addElement(EntityId newElemId) {
+void UIList::ET_addChildElement(EntityId newElemId) {
+    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, newElemId);
+    ET_SendEvent(newElemId, &ETUIBox::ET_boxResizeInsize, getParentAaabb2di());
+
     const auto& currBox = ET_getAabb2di();
     int offset = 0;
     AABB2Di elemBox;
     if(!children.empty()) {
         ET_SendEventReturn(elemBox, children.back(), &ETUIBox::ET_getAabb2di);
-        if(listType == ListType::Horizontal) {
+        if(listType == UIListType::Horizontal) {
             offset = elemBox.top.x;
         } else {
             offset = elemBox.bot.y;
         }
     } else {
-        if(listType == ListType::Horizontal) {
+        if(listType == UIListType::Horizontal) {
             offset = currBox.top.x;
         } else {
             offset = currBox.bot.y;
@@ -38,13 +41,12 @@ void UIList::ET_addElement(EntityId newElemId) {
     elemBox.setCenter(elemBox.getSize() / 2);
 
     Vec2i center = elemBox.getCenter();
-    if(listType == ListType::Horizontal) {
+    if(listType == UIListType::Horizontal) {
         center.x += + offset;
     } else {
         center.y = offset - center.y;
     }
 
-    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, newElemId);
     ET_SendEvent(newElemId, &ETUIBox::ET_setCenter, center);
     children.push_back(newElemId);
 
@@ -61,7 +63,7 @@ void UIList::calcResListBox() {
         auto center = childBox.getCenter();
         auto size = childBox.getSize();
 
-        if(listType == ListType::Horizontal) {
+        if(listType == UIListType::Horizontal) {
             Vec2i pt(center.x, size.y / 2);
             childBox.setCenter(pt);
         } else {
@@ -76,12 +78,12 @@ void UIList::calcResListBox() {
     }
 
     setBox(listBox);
-    ET_alignInBox(ET_getParentAaabb2di());
+    ET_alignInBox(getParentAaabb2di());
 
     const auto& currBox = ET_getAabb2di();
     const auto center = currBox.getCenter();
     int offset = currBox.bot.x;
-    if(listType == ListType::Vertical) {
+    if(listType == UIListType::Vertical) {
         offset = currBox.top.y;
     }
 
@@ -90,7 +92,7 @@ void UIList::calcResListBox() {
         ET_SendEventReturn(childBox, entId, &ETUIBox::ET_getAabb2di);
         Vec2i childCenter(0);
         Vec2i childSize = childBox.getSize();
-        if(listType == ListType::Horizontal) {
+        if(listType == UIListType::Horizontal) {
             childCenter = Vec2i(offset + childSize.x / 2, center.y);
             offset += childSize.x;
         } else {
@@ -119,9 +121,9 @@ bool UIList::serialize(const JSONNode& node) {
     std::string list("vert");
     node.value("type", list);
     if(list == "vert") {
-        listType = ListType::Vertical;
+        listType = UIListType::Vertical;
     } else if(list == "horz") {
-        listType = ListType::Horizontal;
+        listType = UIListType::Horizontal;
     } else {
         LogWarning("[UIList::serialize] Invalid list type: %s", list);
         return false;
@@ -141,11 +143,17 @@ bool UIList::serialize(const JSONNode& node) {
 void UIList::calcList() {
     std::vector<EntityId> elems = std::move(children);
     for(auto entId : elems) {
-        ET_addElement(entId);
+        ET_addChildElement(entId);
     }
 }
 
+void UIList::ET_setType(UIListType newListType) {
+    listType = newListType;
+    calcList();
+}
+
 void UIList::ET_boxResize() {
+    UIBox::ET_boxResize();
     calcList();
 }
 

@@ -14,24 +14,19 @@ class RenderMaterial;
 class RenderTextureFramebuffer;
 class RenderFont;
 
-struct RenderLogicParams {
-    Vec2 size;
-    ColorB col;
-
-    RenderLogicParams() :
-        size(0.f),
-        col(255, 255, 255) {}
-};
-
 struct ETRenderSimpleLogic {
     virtual ~ETRenderSimpleLogic() = default;
-    virtual void ET_setRenderParams(const RenderLogicParams& params) = 0;
-    virtual void ET_getRenderParams(RenderLogicParams& params) = 0;
+    virtual void ET_setMaterial(const std::string& matName) = 0;
+    virtual void ET_setColor(const ColorB& color) = 0;
+    virtual void ET_setSize(const Vec2& size) = 0;
 };
 
 struct ETRenderTextLogic {
     virtual ~ETRenderTextLogic() = default;
+    virtual void ET_setMaterial(const std::string& matName) = 0;
     virtual void ET_setText(const std::string& text) = 0;
+    virtual void ET_setColor(const ColorB& color) = 0;
+    virtual void ET_setFontSize(size_t fontSize) = 0;
     virtual AABB2D ET_getTextAABB() const = 0;
 };
 

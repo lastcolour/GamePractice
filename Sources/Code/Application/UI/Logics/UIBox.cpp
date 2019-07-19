@@ -13,6 +13,11 @@ UIBox::UIBox() {
 UIBox::~UIBox() {
 }
 
+void UIBox::ET_addChildElement(EntityId childId) {
+    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, childId);
+    ET_SendEvent(childId, &ETUIBox::ET_boxResize);
+}
+
 void UIBox::ET_alignInBox(const AABB2Di& alignBox) {
     Vec2i center = calcCenter(box, alignBox);
     box.setCenter(center);
@@ -28,7 +33,7 @@ const AABB2Di& UIBox::ET_getAabb2di() const {
     return box;
 }
 
-AABB2Di UIBox::ET_getParentAaabb2di() const {
+AABB2Di UIBox::getParentAaabb2di() const {
     AABB2Di parentAabb;
     parentAabb.bot = Vec2i(0);
     ET_SendEventReturn(parentAabb.top, &ETRender::ET_getRenderPort);
@@ -127,6 +132,9 @@ Vec2i UIBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const 
 
 void UIBox::setBox(const AABB2Di& newBox) {
     box = newBox;
+    const Vec2i size = box.getSize();
+    ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setSize, Vec2(static_cast<float>(size.x), static_cast<float>(size.y)));
+
     syncTransform();
 }
 
@@ -136,16 +144,20 @@ void UIBox::syncTransform() const {
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
     tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
     ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
+}
 
-    const Vec2i size = box.getSize();
-    RenderLogicParams params;
-    params.col = style.color;
-    params.size = Vec2(static_cast<float>(size.x), static_cast<float>(size.y));
-    ET_SendEvent(getEntityId(), &ETRenderSimpleLogic::ET_setRenderParams, params);
+void UIBox::ET_boxResizeInsize(const AABB2Di& resizeBox) {
+    setBox(calcBox(resizeBox));
+    std::vector<EntityId> childrenIds;
+    ET_SendEventReturn(childrenIds, getEntityId(), &ETGameObject::ET_getChildren);
+    for(auto childId : childrenIds) {
+        ET_SendEvent(childId, &ETUIBox::ET_boxResize);
+    }
 }
 
 void UIBox::ET_boxResize() {
-    setBox(calcBox());
+    const auto& rootBox = getParentAaabb2di(); 
+    ET_boxResizeInsize(rootBox);
 }
 
 void UIBox::ET_onRenderPortResized() {
@@ -154,16 +166,7 @@ void UIBox::ET_onRenderPortResized() {
     }
 }
 
-const UIStyle& UIBox::getStyle() const {
-    return style;
-}
-
-void UIBox::setStyle(const UIStyle& uiStyle) {
-    style = uiStyle;
-}
-
-AABB2Di UIBox::calcBox() const {
-    auto parentBox = ET_getParentAaabb2di();
+AABB2Di UIBox::calcBox(const AABB2Di& parentBox) const {
     AABB2Di resAabb;
     resAabb.bot = Vec2i(0);
     resAabb.top = calcSize(parentBox);
@@ -177,16 +180,74 @@ bool UIBox::serialize(const JSONNode& node) {
         LogWarning("[UIList::init] Can't find require style node");
         return false;
     }
-    if(!style.serialize(styleNode)) {
-        LogWarning("[UIBox::serialize] Can't serialize style node");
-        return false;
+    style.serialize(styleNode);
+    return true;
+}
+
+bool UIBox::createRenderer() {
+    if(renderId.isValid()) {
+        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, renderId);
+        renderId = InvalidEntityId;
+    }
+    if(!style.renderer.empty()) {
+        ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, style.renderer);
+        if(renderId.isValid()) {
+            ET_SendEvent(renderId, &ETGameObject::ET_setParent, getEntityId());
+            ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, style.color);
+        } else {
+            LogWarning("[UIBox::init] Can't create renderer: %s", style.renderer);
+            return false;
+        }
     }
     return true;
 }
 
+const UIStyle& UIBox::ET_getStyle() const {
+    return style;
+}
+
+void UIBox::ET_setStyle(const UIStyle& newStyle) {
+    bool updateRender = false;
+    if(style.renderer != newStyle.renderer) {
+        updateRender = true;
+    }
+    style = newStyle;
+    if (updateRender) {
+        createRenderer();
+    }
+    updateRendererParams();
+    auto rootEntId = getRootUIBox();
+    if(rootEntId == InvalidEntityId) {
+        ET_boxResize();
+    } else {
+        ET_SendEvent(rootEntId, &ETUIBox::ET_boxResize);
+    }
+}
+
+void UIBox::updateRendererParams() {
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, style.color);
+    }
+}
+
 bool UIBox::init() {
-    setBox(calcBox());
+    createRenderer();
+    updateRendererParams();
+    setBox(calcBox(getParentAaabb2di()));
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     return true;
+}
+
+EntityId UIBox::getRootUIBox() const {
+    auto entId = getParentId();
+    auto lastValidEntId = entId;
+    while(entId != InvalidEntityId) {
+        lastValidEntId = entId;
+        ET_SendEventReturn(entId, entId, &ETGameObject::ET_getParentId);
+        if (!ET_IsExistNode<ETUIBox>(entId)) {
+            break;
+        }
+    }
+    return lastValidEntId;
 }

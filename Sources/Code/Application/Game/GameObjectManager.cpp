@@ -10,11 +10,12 @@
 
 #include "UI/Logics/UIButton.hpp"
 #include "UI/Logics/UIList.hpp"
+#include "UI/Logics/UILabel.hpp"
 
 #include <algorithm>
 
 namespace {
-    const char* GAME_OBJECTS = "Game/GameObjects.json";
+    const char* GAME_OBJECTS = "Game/GameObjects";
 } // namespace
 
 GameObjectManager::GameObjectManager() {
@@ -33,6 +34,7 @@ bool GameObjectManager::init() {
     registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");
     registerLogic<UIButton>("UIButton");
+    registerLogic<UILabel>("UILabel");
 
     ETNode<ETGameObjectManager>::connect(getEntityId());
     return true;
@@ -88,55 +90,43 @@ std::unique_ptr<GameLogic> GameObjectManager::createLogic(const std::string& log
 }
 
 std::unique_ptr<GameObject> GameObjectManager::createObject(const std::string& objectName) {
+    std::string objectFilePath = StringFormat("%s/%s", GAME_OBJECTS, objectName);
     JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, GAME_OBJECTS);
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, objectFilePath);
     if(!rootNode) {
-        LogWarning("[GameObjectManager::createObject] Can't load game objects: %s", GAME_OBJECTS);
+        LogWarning("[GameObjectManager::createObject] Can't load game objects from: %s", objectFilePath);
         return nullptr;
     }
-    rootNode = rootNode.object("GameObjects");
-    if(!rootNode) {
-        LogWarning("[GameObjectManager::createObject] Can't find required root node in '%s'", GAME_OBJECTS);
+    std::unique_ptr<GameObject> objPtr(new GameObject(objectName, GetETSystem()->createNewEntityId()));
+    auto logicsNodes = rootNode.object("logics");
+    if(!logicsNodes || logicsNodes.size() == 0u) {
+        LogWarning("[GameObjectManager::createObject] Skip object '%s' while it doesn't have any logic", objectName);
         return nullptr;
     }
-    for(const auto& objNode : rootNode) {
-        std::string baseName;
-        objNode.value("name", baseName);
-        if(objectName != baseName) {
+    for(const auto& logicNode : logicsNodes) {
+        std::string logicType;
+        logicNode.value("type", logicType);
+        auto logicPtr = createLogic(logicType);
+        if(!logicPtr) {
+            LogWarning("[GameObjectManager::createObject] Can't find logic type '%s' for object '%s'", logicType, objectName);
             continue;
         }
-        std::unique_ptr<GameObject> objPtr(new GameObject(baseName, GetETSystem()->createNewEntityId()));
-        auto logicsNodes = objNode.object("logics");
-        if(!logicsNodes || logicsNodes.size() == 0u) {
-            LogWarning("[GameObjectManager::createObject] Skip object '%s' while it doesn't have any logic", objectName);
+        auto logicData = logicNode.object("data");
+        if(!logicData) {
+            LogWarning("[GameObjectManager::createObject] Can't find logic data for '%s' for object '%s'", logicType, objectName);
             continue;
         }
-        for(const auto& logicNode : logicsNodes) {
-            std::string logicType;
-            logicNode.value("type", logicType);
-            auto logicPtr = createLogic(logicType);
-            if(!logicPtr) {
-                LogWarning("[GameObjectManager::createObject] Can't create logic '%s' for object '%s'", logicType, objectName);
-                continue;
-            }
-            auto logicData = logicNode.object("data");
-            if(!logicData) {
-                LogWarning("[GameObjectManager::createObject] Can't find logic data for '%s' for object '%s'", logicType, objectName);
-                continue;
-            }
-            logicPtr->setGameObject(objPtr.get());
-            if(!logicPtr->serialize(logicData)) {
-                LogWarning("[GameObjectManager::createObject] Can't serialize logic '%s' for object '%s'", logicType, objectName);
-                continue;
-            }
-            if(!logicPtr->init()) {
-                LogWarning("[GameObjectManager::createObject] Can't init logic '%s' for object '%s'", logicType, objectName);
-                continue;
-            }
-            objPtr->addLogic(std::move(logicPtr));
+        logicPtr->setGameObject(objPtr.get());
+        if(!logicPtr->serialize(logicData)) {
+            LogWarning("[GameObjectManager::createObject] Can't serialize logic '%s' for object '%s'", logicType, objectName);
+            continue;
         }
-        LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);
-        return std::move(objPtr);
+        if(!logicPtr->init()) {
+            LogWarning("[GameObjectManager::createObject] Can't init logic '%s' for object '%s'", logicType, objectName);
+            continue;
+        }
+        objPtr->addLogic(std::move(logicPtr));
     }
-    return nullptr;
+    LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);
+    return std::move(objPtr);
 }

@@ -7,6 +7,8 @@
 
 namespace Core {
 
+char* StringCopyUnsafe(char *dest, const char *src);
+
 template<typename T>
 T ConvertToPrintable(T& val) {
     return std::forward<T>(val);

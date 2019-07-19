@@ -31,6 +31,7 @@ public:
     EntityId ET_getParentId() const override;
     const Transform& ET_getTransform() const override;
     void ET_setTransform(const Transform& transform) override;
+    const std::vector<EntityId>& ET_getChildren() const override;
 
 private:
 

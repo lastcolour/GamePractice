@@ -22,8 +22,11 @@ public:
     const AABB2Di& ET_getAabb2di() const override;
     void ET_setCenter(const Vec2i& center) override;
     void ET_alignInBox(const AABB2Di& alingBox) override;
-    AABB2Di ET_getParentAaabb2di() const override;
-    virtual void ET_boxResize() override;
+    void ET_boxResize() override;
+    const UIStyle& ET_getStyle() const override;
+    void ET_setStyle(const UIStyle& newStyle) override;
+    void ET_addChildElement(EntityId childId) override;
+    void ET_boxResizeInsize(const AABB2Di& resizeBox) override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
@@ -31,23 +34,24 @@ public:
 
 protected:
 
-    AABB2Di calcBox() const;
+    AABB2Di calcBox(const AABB2Di& parentBox) const;
     Vec2i calcSize(const AABB2Di& parentBox) const;
     Vec2i calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const;
-    AABB2Di caclParentBox() const;
-
+    AABB2Di getParentAaabb2di() const;
     void setBox(const AABB2Di& newBox);
-    const UIStyle& getStyle() const;
-    void setStyle(const UIStyle& style);
 
 private:
 
     void syncTransform() const;
+    bool createRenderer();
+    void updateRendererParams();
+    EntityId getRootUIBox() const;
 
 private:
 
     UIStyle style;
     AABB2Di box;
+    EntityId renderId;
 };
 
 #endif /* __UIBOX_HPP__ */

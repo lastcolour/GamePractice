@@ -6,6 +6,7 @@
 #include "Core/ETSystem.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/GameInitModule.hpp"
+#include "UI/UIModule.hpp"
 
 namespace {
     const int APP_SUCCESSED = 0;
@@ -29,6 +30,7 @@ void Application::buildModules(ModuleListT& modules) {
     modules.emplace_back(new RenderModule);
     modules.emplace_back(new GameModule);
     modules.emplace_back(new GameInitModule);
+    modules.emplace_back(new UIModule);
 }
 
 bool Application::init() {

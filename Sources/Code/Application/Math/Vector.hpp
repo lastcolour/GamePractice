@@ -27,6 +27,18 @@ public:
     T& operator[](int i) { return (&x)[i]; }
     T operator[](int i) const { return (&x)[i]; }
 
+    Vector2& operator-=(const Vector2& v) {
+        x -= v.x;
+        y -= v.y;
+        return *this;
+    }
+
+    Vector2& operator+=(const Vector2& v) {
+        x += v.x;
+        y += v.y;
+        return *this;
+    }
+
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y; }
     T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
@@ -62,6 +74,20 @@ public:
 
     T& operator[](int i) { return (&x)[i]; }
     T operator[](int i) const { return (&x)[i]; }
+
+    Vector3& operator-=(const Vector3& v) {
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
+        return *this;
+    }
+
+    Vector3& operator+=(const Vector3& v) {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y + z * z; }
@@ -100,6 +126,22 @@ public:
 
     T& operator[](int i) { return (&x)[i]; }
     T operator[](int i) const { return (&x)[i]; }
+
+    Vector4& operator-=(const Vector4& v) {
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
+        w -= v.w;
+        return *this;
+    }
+
+    Vector4& operator+=(const Vector4& v) {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        w += v.w;
+        return *this;
+    }
 
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y + z * z + w * w; }

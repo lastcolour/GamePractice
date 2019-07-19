@@ -26,8 +26,9 @@ public:
     void ET_onRenderPortResized() override { }
 
     // ETRenderSimpleLogic
-    void ET_setRenderParams(const RenderLogicParams& params) override;
-    void ET_getRenderParams(RenderLogicParams& params) override;
+    void ET_setColor(const ColorB& col) override;
+    void ET_setSize(const Vec2& size) override;
+    void ET_setMaterial(const std::string& matName) override;
 
 private:
 
@@ -35,8 +36,8 @@ private:
 
 private:
 
-    RenderLogicParams params;
     Vec2 scale;
+    ColorB color;
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderGeometry> geom;
 };
