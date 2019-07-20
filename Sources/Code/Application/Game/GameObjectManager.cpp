@@ -22,6 +22,8 @@ GameObjectManager::GameObjectManager() {
 }
 
 GameObjectManager::~GameObjectManager() {
+    auto tempObject = std::move(gameObjects);
+    tempObject.clear();
 }
 
 bool GameObjectManager::init() {
@@ -45,7 +47,7 @@ void GameObjectManager::deinit() {
 }
 
 EntityId GameObjectManager::ET_createGameObject(const std::string& objectName) {
-    auto obj = createObject(objectName);
+    auto obj = createObject(nullptr, objectName);
     if(!obj) {
         return InvalidEntityId;
     }
@@ -55,15 +57,18 @@ EntityId GameObjectManager::ET_createGameObject(const std::string& objectName) {
 }
 
 void GameObjectManager::ET_destroyObject(EntityId entId) {
-    auto eraseIt = gameObjects.end();
+    GameObjectPtrT objectToRemove;
     for(auto it = gameObjects.begin(), end = gameObjects.end(); it != end; ++it) {
-        if((*it)->getEntityId() == entId) {
-            eraseIt = it;
+        if(*it && (*it)->getEntityId() == entId) {
+            objectToRemove = std::move(*it);
             break;
         }
     }
-    if(eraseIt != gameObjects.end()) {
-        gameObjects.erase(eraseIt);
+    if(objectToRemove) {
+        objectToRemove.reset();
+        gameObjects.erase(std::remove_if(gameObjects.begin(), gameObjects.end(), [](const GameObjectPtrT& obj){
+            return obj == nullptr;
+        }), gameObjects.end());
     }
 }
 
@@ -89,7 +94,7 @@ std::unique_ptr<GameLogic> GameObjectManager::createLogic(const std::string& log
     return nullptr;
 }
 
-std::unique_ptr<GameObject> GameObjectManager::createObject(const std::string& objectName) {
+std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj, const std::string& objectName) {
     std::string objectFilePath = StringFormat("%s/%s", GAME_OBJECTS, objectName);
     JSONNode rootNode;
     ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, objectFilePath);
@@ -97,7 +102,15 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(const std::string& o
         LogWarning("[GameObjectManager::createObject] Can't load game objects from: %s", objectFilePath);
         return nullptr;
     }
+    auto childrenNode = rootNode.object("children");
+    if (!childrenNode) {
+        LogWarning("[GameObjectManager::createObject] Can't find require children node in object file '%s'", objectName);
+        return nullptr;
+    }
     std::unique_ptr<GameObject> objPtr(new GameObject(objectName, GetETSystem()->createNewEntityId()));
+    if(rootObj) {
+        rootObj->ET_addChild(objPtr->getEntityId());
+    }
     auto logicsNodes = rootNode.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
         LogWarning("[GameObjectManager::createObject] Skip object '%s' while it doesn't have any logic", objectName);
@@ -126,6 +139,12 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(const std::string& o
             continue;
         }
         objPtr->addLogic(std::move(logicPtr));
+    }
+    std::vector<GameObjectPtrT> childrenObjects;
+    for(const auto& childNode : childrenNode) {
+        std::string childObjName;
+        childNode.value(childObjName);
+        auto childGameObj = createObject(objPtr.get(), childObjName);
     }
     LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);
     return std::move(objPtr);

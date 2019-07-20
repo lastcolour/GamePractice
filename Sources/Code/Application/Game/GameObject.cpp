@@ -24,8 +24,8 @@ void GameObject::addLogic(std::unique_ptr<GameLogic>&& logic) {
     logics.emplace_back(std::move(logic));
 }
 
-const std::string& GameObject::ET_getName() const {
-    return name;
+const char* GameObject::ET_getName() const {
+    return name.c_str();
 }
 
 const std::vector<EntityId>& GameObject::ET_getChildren() const {

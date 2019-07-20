@@ -25,7 +25,10 @@ struct ETUIBox {
 
 struct ETUIButton {
     virtual ~ETUIButton() = default;
+    virtual void ET_setEventName(const std::string& newEventName) = 0;
     virtual void ET_onPress() = 0;
+    virtual void ET_onHover(bool flag) = 0;
+    virtual bool ET_isHovered() const = 0;
 };
 
 struct ETUILabel {
@@ -36,6 +39,11 @@ struct ETUILabel {
 struct ETUIList {
     virtual ~ETUIList() = default;
     virtual void ET_setType(UIListType listType) = 0;
+};
+
+struct ETUIViewManager {
+    virtual ~ETUIViewManager() = default;
+    virtual bool ET_openView(const std::string& viewName) = 0;
 };
 
 struct ETUIEventManager {

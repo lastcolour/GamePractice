@@ -1,16 +1,16 @@
 {
+    "children":[],
     "logics": [
         {
             "type": "UIButton",
             "data": {
-                "event": "OnMainStart",
+                "event": "OnMainOptions",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 0,
-                        "g": 255,
-                        "b": 255,
-                        "a": 255
+                        "g": 0,
+                        "b": 255
                     },
                     "align": {
                         "x": "center",
@@ -24,8 +24,8 @@
                     "margin": {}
                 },
                 "label": {
-                    "object": "UI/SimpleButtonLabel.json",
-                    "text": "Start",
+                    "object": "UI/MainView/SimpleButtonLabel.json",
+                    "text": "Options",
                     "style": {
                         "color": {
                             "r": 0,

@@ -293,7 +293,7 @@ JSONNode JSONNode::object(const std::string& key) const {
     }
     if(nodeImpl->val->IsObject()) {
         auto it = nodeImpl->val->FindMember(key.c_str());
-        if(it != nodeImpl->val->MemberEnd()) {
+        if(it != nodeImpl->val->MemberEnd() && !it->value.IsNull()) {
             std::unique_ptr<JSONNodeImpl> newNodeImpl(new JSONNodeImpl(nodeImpl->root));
             newNodeImpl->val = &(it->value);
             node.nodeKey = key;

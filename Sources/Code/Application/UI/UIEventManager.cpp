@@ -26,8 +26,7 @@ void UIEventManager::processEvent(EUIEventType eventType) {
     {
         case EUIEventType::OnMainStart:
         {
-            const std::string objectName = "Game/GameBoard.json";
-            ET_SendEvent(&ETGameObjectManager::ET_createGameObject, objectName);
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/GameView/Root.json");
             break;
         }
         default:

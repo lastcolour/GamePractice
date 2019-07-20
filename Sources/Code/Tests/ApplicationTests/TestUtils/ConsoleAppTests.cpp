@@ -7,6 +7,7 @@
 #include <Game/GameObject.hpp>
 #include <Core/ETPrimitives.hpp>
 #include <Game/GameModule.hpp>
+#include <UI/UIModule.hpp>
 
 std::unique_ptr<Application> ConsoleAppTests::APP;
 
@@ -30,6 +31,7 @@ protected:
         modules.emplace_back(platform.createPlatformModule());
         modules.emplace_back(new RenderModule);
         modules.emplace_back(new GameModule);
+        modules.emplace_back(new UIModule);
     }
 };
 

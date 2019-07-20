@@ -4,6 +4,7 @@
 #include "TestUtils/ConsoleAppTests.hpp"
 
 class UIButton;
+class TestButtonEventListener;
 
 class UIButtonTests : public ConsoleAppTests {
 protected:
@@ -15,6 +16,7 @@ protected:
 
 protected:
 
+    std::unique_ptr<TestButtonEventListener> buttonListener;
     std::vector<std::unique_ptr<GameObject>> tempObject;
 };
 

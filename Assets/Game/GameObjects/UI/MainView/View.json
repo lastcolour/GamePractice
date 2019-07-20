@@ -1,21 +1,21 @@
 {
+    "children":[],
     "logics": [
+        {
+            "type":"UIView",
+            "data":{}
+        },
         {
             "type": "UIList",
             "data": {
                 "type": "vert",
                 "children": [
-                    "UI/MainStartButton.json",
-                    "UI/MainOptionsButton.json"
+                    "UI/MainView/StartButton.json",
+                    "UI/MainView/OptionsButton.json"
                 ],
                 "style": {
                     "renderer": null,
-                    "color": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 255,
-                        "a":0
-                    },
+                    "color": {},
                     "align": {
                         "x": "center",
                         "y": "center"

@@ -25,9 +25,13 @@ private:
     void onMove(const Vec2i& pt);
     void onRelease(const Vec2i& pt);
 
+    bool isHover(const Vec2i& pt, EntityId entId) const;
+    EntityId getHoveredEntity(const Vec2i& pt) const;
+
 private:
 
-    EntityId touchedEntId;
+    EntityId pressElemId;
+    EntityId hoveredElemId;
 };
 
 #endif /* __UI_SURFACE_TOUCH_MANAGER_HPP__ */

@@ -25,7 +25,8 @@ EntityId createUIObject(const JSONNode& node) {
 
 } // namespace
 
-UIButton::UIButton() {
+UIButton::UIButton() :
+    isHovered(false) {
 }
 
 UIButton::~UIButton() {
@@ -66,6 +67,14 @@ bool UIButton::serialize(const JSONNode& node) {
     return true;
 }
 
+void UIButton::ET_setEventName(const std::string& newEventName) {
+    if(newEventName.empty()) {
+        LogWarning("[UIButton::ET_setEventName] Set empty event name for button: %s", getEntityName());
+    }
+    eventName = newEventName;
+}
+
+
 bool UIButton::init() {
     if(!UIBox::init()) {
         LogError("[UIButton::init] Can't init box");
@@ -73,4 +82,12 @@ bool UIButton::init() {
     }
     ETNode<ETUIButton>::connect(getEntityId());
     return true;
+}
+
+void UIButton::ET_onHover(bool flag) {
+    isHovered = flag;
+}
+
+bool UIButton::ET_isHovered() const {
+    return isHovered;
 }

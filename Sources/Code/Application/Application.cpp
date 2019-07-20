@@ -29,8 +29,8 @@ void Application::buildModules(ModuleListT& modules) {
     }
     modules.emplace_back(new RenderModule);
     modules.emplace_back(new GameModule);
-    modules.emplace_back(new GameInitModule);
     modules.emplace_back(new UIModule);
+    modules.emplace_back(new GameInitModule);
 }
 
 bool Application::init() {

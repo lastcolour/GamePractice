@@ -3,6 +3,7 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+#include "UI/UIETInterfaces.hpp"
 
 namespace {
 
@@ -20,16 +21,16 @@ public:
             LogError("Can't load root game config file: %s", GAME_CONFIG_FILE);
             return false;
         }
-        std::string rootObjectName;
-        node.value("rootObject", rootObjectName);
-        if(rootObjectName.empty()) {
-            LogError("Empty root object in config file: %s", GAME_CONFIG_FILE);
+        std::string mainView;
+        node.value("mainView", mainView);
+        if(mainView.empty()) {
+            LogError("Empty main view in config file: %s", GAME_CONFIG_FILE);
             return false;
         }
-        EntityId rootObjId;
-        ET_SendEventReturn(rootObjId, &ETGameObjectManager::ET_createGameObject, rootObjectName);
-        if (!rootObjId.isValid()) {
-            LogError("Can't cretae root object '%s' from config file: %s", rootObjectName, GAME_CONFIG_FILE);
+        bool openRes;
+        ET_SendEventReturn(openRes, &ETUIViewManager::ET_openView, mainView);
+        if (!openRes) {
+            LogError("Can't cretae main view '%s' from config file: %s", mainView, GAME_CONFIG_FILE);
             return false;
         }
         ET_SendEvent(&ETSurface::ET_show);
@@ -37,10 +38,6 @@ public:
     }
 
     void deinit() override {}
-
-private:
-
-    EntityId rootGameObjectId;
 };
 
 } // namespace

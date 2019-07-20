@@ -16,28 +16,56 @@ void UISurfaceTouchManager::deinit() {
     ETNode<ETSurfaceEvents>::disconnect();
 }
 
-void UISurfaceTouchManager::onPress(const Vec2i& pt) {
+bool UISurfaceTouchManager::isHover(const Vec2i& pt, EntityId entId) const {
+    AABB2Di elemBox(0);
+    ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
+    return pt >= elemBox.bot && pt <= elemBox.top;
+}
+
+EntityId UISurfaceTouchManager::getHoveredEntity(const Vec2i& pt) const {
     auto interactiveElems = ET_GetAll<ETUIButton>();
     for(auto elemId : interactiveElems) {
-        AABB2Di elemBox(0);
-        ET_SendEventReturn(elemBox, elemId, &ETUIBox::ET_getAabb2di);
-        if(pt >= elemBox.bot && pt <= elemBox.top) {
-            touchedEntId = elemId;
-            return;
+        if (isHover(pt, elemId)) {
+            return elemId;
         }
+    }
+    return InvalidEntityId;
+}
+
+void UISurfaceTouchManager::onPress(const Vec2i& pt) {
+    hoveredElemId = getHoveredEntity(pt);
+    if(hoveredElemId.isValid()) {
+        pressElemId = hoveredElemId;
+        ET_SendEvent(hoveredElemId, &ETUIButton::ET_onHover, true);
     }
 }
 
 void UISurfaceTouchManager::onMove(const Vec2i& pt) {
-    if(touchedEntId.isValid()) {
+    auto currHoveredId = getHoveredEntity(pt);
+    if (currHoveredId == InvalidEntityId) {
+        if(hoveredElemId.isValid()) {
+            ET_SendEvent(hoveredElemId, &ETUIButton::ET_onHover, false);
+            hoveredElemId = InvalidEntityId;
+        }
+    } else if (currHoveredId != hoveredElemId) {
+        if(hoveredElemId.isValid()) {
+            ET_SendEvent(hoveredElemId, &ETUIButton::ET_onHover, false);
+        }
+        ET_SendEvent(currHoveredId, &ETUIButton::ET_onHover, true);
+        hoveredElemId = currHoveredId;
     }
 }
 
 void UISurfaceTouchManager::onRelease(const Vec2i& pt) {
-    if(touchedEntId.isValid()) {
-        ET_SendEvent(touchedEntId, &ETUIButton::ET_onPress);
-        touchedEntId = InvalidEntityId;
+    auto releseElemId = getHoveredEntity(pt);
+    if (hoveredElemId.isValid()) {
+        ET_SendEvent(hoveredElemId, &ETUIButton::ET_onHover, false);
+        if(releseElemId == pressElemId) {
+            ET_SendEvent(hoveredElemId, &ETUIButton::ET_onPress);
+        }
     }
+    hoveredElemId = InvalidEntityId;
+    pressElemId = InvalidEntityId;
 }
 
 void UISurfaceTouchManager::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {

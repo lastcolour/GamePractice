@@ -89,6 +89,7 @@ void RenderTests::checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t 
 }
 
 void RenderTests::dumpFramebuffer() {
+    stbi_flip_vertically_on_write(1);
     std::string testName = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     testName += ".png";
     const Vec2i size = textureFramebuffer->getSize();

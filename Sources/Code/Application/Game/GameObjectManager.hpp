@@ -33,7 +33,7 @@ public:
 
 private:
 
-    std::unique_ptr<GameObject> createObject(const std::string& objectName);
+    std::unique_ptr<GameObject> createObject(GameObject* rootObj, const std::string& objectName);
 
     template<typename T>
     void registerLogic(const std::string& logicName) {
