@@ -120,7 +120,7 @@ public:
         connReq.conn.addressId = addressId;
 
         if(isRouteSafe(connReq.etId)) {
-            updateConnections(connReq);
+            registerConnection(connReq);
         } else {
             pendingConnection.push_back(connReq);
         }
@@ -136,7 +136,7 @@ public:
         connReq.conn.node = &node;
 
         if(isRouteSafe(connReq.etId)) {
-            updateConnections(connReq);
+            registerConnection(connReq);
         } else {
             pendingConnection.push_back(connReq);
         }
@@ -258,7 +258,7 @@ public:
             if(currConn.addressId == addressId) {
                 auto obj = static_cast<ETNode<ETType>*>(currConn.node);
                 retVal = (obj->*func)(std::forward<ParamType>(params)...);
-                return;
+                break;
             }
         }
         activeRoute.pop_back();
@@ -296,7 +296,7 @@ public:
         for(auto& currConn : it->second) {
             auto obj = static_cast<ETNode<ETType>*>(currConn.node);
             retVal = (obj->*func)(std::forward<ParamType>(params)...);
-            return;
+            break;
         }
         activeRoute.pop_back();
         updatePendingConnections();
@@ -309,7 +309,7 @@ private:
 
 private:
 
-    void updateConnections(const ETConnectionRequest& connReq);
+    void registerConnection(const ETConnectionRequest& connReq);
     void updatePendingConnections();
     bool isRouteSafe(TypeId etId) const;
 

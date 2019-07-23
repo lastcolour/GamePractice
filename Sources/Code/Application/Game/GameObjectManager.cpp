@@ -65,6 +65,7 @@ void GameObjectManager::ET_destroyObject(EntityId entId) {
         }
     }
     if(objectToRemove) {
+        LogDebug("[GameObjectManager::ET_destroyObject] Detroy object: %s", objectToRemove->ET_getName());
         objectToRemove.reset();
         gameObjects.erase(std::remove_if(gameObjects.begin(), gameObjects.end(), [](const GameObjectPtrT& obj){
             return obj == nullptr;
@@ -145,6 +146,7 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
         std::string childObjName;
         childNode.value(childObjName);
         auto childGameObj = createObject(objPtr.get(), childObjName);
+        gameObjects.push_back(std::move(childGameObj));
     }
     LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);
     return std::move(objPtr);

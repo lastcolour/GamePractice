@@ -2,10 +2,19 @@
     "children":[],
     "logics": [
         {
-            "type": "UIBox",
-            "data": {
+            "type":"UIBox",
+            "data":{
                 "style": {
-                    "align": "center",
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 255,
+                        "g": 255,
+                        "b": 255
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
                     "size": {
                         "h": 1,
                         "w": 1,
@@ -23,7 +32,6 @@
                     "w": 8,
                     "h": 8
                 },
-                "space": 0.8,
                 "cell": {
                     "object": "Game/GameBoardElem.json",
                     "scale": 0.9

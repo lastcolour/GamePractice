@@ -29,6 +29,10 @@ void UIBox::ET_setCenter(const Vec2i& center) {
     syncTransform();
 }
 
+EntityId UIBox::getRendererId() const {
+    return renderId;
+}
+
 const AABB2Di& UIBox::ET_getAabb2di() const {
     return box;
 }
@@ -146,7 +150,7 @@ void UIBox::syncTransform() const {
     ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
 }
 
-void UIBox::ET_boxResizeInsize(const AABB2Di& resizeBox) {
+void UIBox::ET_boxResizeInside(const AABB2Di& resizeBox) {
     setBox(calcBox(resizeBox));
     std::vector<EntityId> childrenIds;
     ET_SendEventReturn(childrenIds, getEntityId(), &ETGameObject::ET_getChildren);
@@ -157,7 +161,7 @@ void UIBox::ET_boxResizeInsize(const AABB2Di& resizeBox) {
 
 void UIBox::ET_boxResize() {
     const auto& rootBox = getParentAaabb2di(); 
-    ET_boxResizeInsize(rootBox);
+    ET_boxResizeInside(rootBox);
 }
 
 void UIBox::ET_onRenderPortResized() {

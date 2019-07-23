@@ -25,7 +25,8 @@ bool UILabel::init() {
 }
 
 void UILabel::ET_setText(const std::string& text) {
-    ET_SendEvent(&ETRenderTextLogic::ET_setText, text);
-    //ET_SendEvent(&ETRenderTextLogic::ET_setColor, style.color);
+    const auto& style = ET_getStyle();
+    ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setText, text);
+    ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setColor, style.color);
     //ET_SendEvent(&ETRenderTextLogic::ET_setFontSize, style.fontSize);
 }

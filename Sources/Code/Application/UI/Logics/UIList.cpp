@@ -17,7 +17,7 @@ UIList::~UIList() {
 
 void UIList::ET_addChildElement(EntityId newElemId) {
     ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, newElemId);
-    ET_SendEvent(newElemId, &ETUIBox::ET_boxResizeInsize, getParentAaabb2di());
+    ET_SendEvent(newElemId, &ETUIBox::ET_boxResizeInside, getParentAaabb2di());
 
     const auto& currBox = ET_getAabb2di();
     int offset = 0;

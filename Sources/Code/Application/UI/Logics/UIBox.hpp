@@ -26,7 +26,7 @@ public:
     const UIStyle& ET_getStyle() const override;
     void ET_setStyle(const UIStyle& newStyle) override;
     void ET_addChildElement(EntityId childId) override;
-    void ET_boxResizeInsize(const AABB2Di& resizeBox) override;
+    void ET_boxResizeInside(const AABB2Di& resizeBox) override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
@@ -39,6 +39,7 @@ protected:
     Vec2i calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const;
     AABB2Di getParentAaabb2di() const;
     void setBox(const AABB2Di& newBox);
+    EntityId getRendererId() const;
 
 private:
 

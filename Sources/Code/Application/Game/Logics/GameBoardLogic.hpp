@@ -79,17 +79,19 @@ protected:
     bool removeVerticalLine(const Vec2i& boardPt, int lineLen);
     bool removeHorizontalLine(const Vec2i& boardPt, int lineLen);
 
+    void initBoardBox();
+
 protected:
 
     std::vector<BoardElement> elements;
     std::string cellObject;
-    AABB2D boardBox;
+    AABB2Di boardBox;
     Vec2i boardSize;
+    Vec2i objectSize;
     float space;
     float cellScale;
-    float cellSize;
     float moveSpeed;
-    float objectSize;
+    int cellSize;
     int activeTouchedElemId;
 };
 

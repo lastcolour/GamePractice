@@ -21,7 +21,6 @@ public:
 
 private:
 
-
     std::string text;
 };
 

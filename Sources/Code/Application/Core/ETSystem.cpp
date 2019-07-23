@@ -32,7 +32,7 @@ bool ETSystem::isRouteSafe(TypeId etId) const {
     return true;
 }
 
-void ETSystem::updateConnections(const ETConnectionRequest& connReq) {
+void ETSystem::registerConnection(const ETConnectionRequest& connReq) {
     if(connReq.isDisconnect) {
         auto it = activeConnection.find(connReq.etId);
         if(it == activeConnection.end()) {
@@ -58,7 +58,7 @@ void ETSystem::updatePendingConnections() {
     auto it = pendingConnection.begin();
     while(it != pendingConnection.end()) {
         if(isRouteSafe(it->etId)) {
-            updateConnections(*it);
+            registerConnection(*it);
             it = pendingConnection.erase(it);
         } else {
             ++it;
