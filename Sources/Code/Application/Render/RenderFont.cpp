@@ -35,8 +35,8 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
     glBindTexture(GL_TEXTURE_2D, texId);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     Buffer buff(width * height * 2);
-    memset(buff.getData(), 0, buff.getSize());
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getData());
+    memset(buff.getWriteData(), 0, buff.getSize());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getWriteData());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 

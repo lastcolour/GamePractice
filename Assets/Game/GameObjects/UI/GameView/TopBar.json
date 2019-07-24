@@ -4,7 +4,7 @@
     ],
     "logics":[
         {
-            "type":"UIBox",
+            "type":"UIButton",
             "data":{
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",

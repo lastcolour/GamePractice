@@ -10,7 +10,7 @@ TEST_F(BufferTests, CheckVoidBuffer) {
     Buffer buff;
     ASSERT_FALSE(buff);
     ASSERT_EQ(buff.getSize(), 0u);
-    ASSERT_EQ(buff.getData(), nullptr);
+    ASSERT_EQ(buff.getReadData(), nullptr);
     std::string voidStr = "";
     ASSERT_EQ(buff.getString(), voidStr);
 }
@@ -19,7 +19,7 @@ TEST_F(BufferTests, CheckNormalBuffer) {
     Buffer buff(TEST_SIZE);
     ASSERT_TRUE(buff);
     ASSERT_EQ(buff.getSize(), TEST_SIZE);
-    ASSERT_NE(buff.getData(), nullptr);
+    ASSERT_NE(buff.getReadData(), nullptr);
     std::string voidStr = "";
     ASSERT_EQ(buff.getString(), voidStr);
 }
@@ -29,7 +29,7 @@ TEST_F(BufferTests, CheckResize) {
     buff.resize(TEST_SIZE);
     ASSERT_TRUE(buff);
     ASSERT_EQ(buff.getSize(), TEST_SIZE);
-    ASSERT_NE(buff.getData(), nullptr);
+    ASSERT_NE(buff.getReadData(), nullptr);
     std::string voidStr = "";
     ASSERT_EQ(buff.getString(), voidStr);
 }
@@ -37,11 +37,11 @@ TEST_F(BufferTests, CheckResize) {
 TEST_F(BufferTests, CheckWriteStr) {
     std::string testStr = "test_str ";
     Buffer buff(testStr.size());
-    Core::StringCopyUnsafe(static_cast<char*>(buff.getData()), testStr.c_str());
+    Core::StringCopyUnsafe(static_cast<char*>(buff.getWriteData()), testStr.c_str());
 
     ASSERT_TRUE(buff);
     ASSERT_EQ(buff.getSize(), testStr.size());
-    ASSERT_NE(buff.getData(), nullptr);
+    ASSERT_NE(buff.getReadData(), nullptr);
     ASSERT_EQ(buff.getString(), testStr);
 }
 
@@ -51,7 +51,7 @@ TEST_F(BufferTests, CheckResizeToZero) {
 
     ASSERT_FALSE(buff);
     ASSERT_EQ(buff.getSize(), 0u);
-    ASSERT_EQ(buff.getData(), nullptr);
+    ASSERT_EQ(buff.getReadData(), nullptr);
     std::string voidStr = "";
     ASSERT_EQ(buff.getString(), voidStr);
 }
@@ -64,12 +64,17 @@ TEST_F(BufferTests, CheckMoveBuffer) {
 
     ASSERT_FALSE(firstBuffer);
     ASSERT_EQ(firstBuffer.getSize(), 0u);
-    ASSERT_EQ(firstBuffer.getData(), nullptr);
+    ASSERT_EQ(firstBuffer.getReadData(), nullptr);
     std::string voidStr = "";
     ASSERT_EQ(firstBuffer.getString(), voidStr);
 
     ASSERT_TRUE(secondBuffer);
     ASSERT_EQ(secondBuffer.getSize(), TEST_SIZE);
-    ASSERT_NE(secondBuffer.getData(), nullptr);
+    ASSERT_NE(secondBuffer.getReadData(), nullptr);
     ASSERT_EQ(secondBuffer.getString(), voidStr);
+}
+
+TEST_F(BufferTests, CheckEqualOfWriteReadData) {
+    Buffer buff(TEST_SIZE);
+    ASSERT_EQ(buff.getReadData(), buff.getWriteData());
 }

@@ -74,6 +74,14 @@ struct ETAppRunStateEvents {
     virtual bool ET_isNeedRun() const = 0;
 };
 
+struct ETAssetsCacheManager {
+    virtual ~ETAssetsCacheManager() = default;
+    virtual Buffer ET_getAssetFromCache(const std::string& assetName) = 0;
+    virtual void ET_putAssetToCache(const std::string& assetName, const Buffer& buff) = 0;
+    virtual void ET_setCacheLifetime(float seconds) = 0;
+    virtual float ET_getCacheLifetime() const = 0;
+};
+
 template<typename ... ArgsT>
 void LogDebug(const char* msg, const ArgsT& ... args) {
     ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Debug, StringFormat(msg, args...));

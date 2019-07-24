@@ -153,9 +153,19 @@ JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {
 }
 
 Buffer DesktopAssets::ET_loadAsset(const std::string& assetName) {
+    Buffer buff;
+    ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
+    if (buff) {
+        return buff;
+    }
+
     auto loadStartT = std::chrono::high_resolution_clock::now();
 
-    Buffer buff = loadAssetImpl(assetName);
+    buff = loadAssetImpl(assetName);
+
+    if(buff) {
+        ET_SendEvent(&ETAssetsCacheManager::ET_putAssetToCache, assetName, buff);
+    }
 
     if(buff) {
         LogDebug("[DesktopAssets] Loaded file '%s' in %d ms", assetName,
@@ -189,7 +199,7 @@ Buffer DesktopAssets::loadAssetImpl(const std::string& assetName) {
         LogError("[DesktopAssets] Can't allocate buffer of size %d to load file: '%s'", fileSize, assetPath);
         return Buffer();
     }
-    if(!fin.read(static_cast<char*>(buffer.getData()), fileSize)) {
+    if(!fin.read(static_cast<char*>(buffer.getWriteData()), fileSize)) {
         LogError("[DesktopAssets] Can't read file: '%s'", assetPath);
         return Buffer();
     }

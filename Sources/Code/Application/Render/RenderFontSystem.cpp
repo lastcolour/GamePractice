@@ -74,7 +74,7 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
         return nullptr;
     }
     FT_Face fontFace = nullptr;
-    if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getData()),
+    if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getWriteData()),
         static_cast<FT_Long>(buff.getSize()), 0, &fontFace)) {
         FT_Done_FreeType(ftLib);
         LogError("[RenderFontSystem::createFontImpl] Can't create memory font face for font: %s", fontName);
