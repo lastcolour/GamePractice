@@ -25,9 +25,9 @@ public:
     void ET_onRenderPortResized() override {}
 
     // ETRenderTestLogic
-    void ET_setMaterial(const std::string& matName) override;
+    void ET_setMaterial(const char* matName) override;
     void ET_setColor(const ColorB& col) override;
-    void ET_setText(const std::string& str) override;
+    void ET_setText(const char* str) override;
     void ET_setFontSize(size_t fontSize) override;
     virtual AABB2D ET_getTextAABB() const override;
 

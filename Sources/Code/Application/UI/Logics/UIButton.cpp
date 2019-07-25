@@ -9,7 +9,7 @@ EntityId createUIObject(const JSONNode& node) {
     std::string objName;
     node.value("object", objName);
     EntityId entId;
-    ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, objName);
+    ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, objName.c_str());
     if(!entId.isValid()) {
         return entId;
     }
@@ -41,7 +41,7 @@ void UIButton::ET_onPress() {
     style.color = col;
     ET_setStyle(style);
 
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, eventName);
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, eventName.c_str());
 }
 
 bool UIButton::serialize(const JSONNode& node) {
@@ -62,13 +62,13 @@ bool UIButton::serialize(const JSONNode& node) {
     }
     std::string labelText;
     labelNode.value("text", labelText);
-    ET_SendEvent(labelEntId, &ETUILabel::ET_setText, labelText);
+    ET_SendEvent(labelEntId, &ETUILabel::ET_setText, labelText.c_str());
     ET_SendEvent(labelEntId, &ETGameObject::ET_setParent, getEntityId());
     return true;
 }
 
-void UIButton::ET_setEventName(const std::string& newEventName) {
-    if(newEventName.empty()) {
+void UIButton::ET_setEventName(const char* newEventName) {
+    if(!newEventName || !newEventName[0]) {
         LogWarning("[UIButton::ET_setEventName] Set empty event name for button: %s", getEntityName());
     }
     eventName = newEventName;
@@ -81,6 +81,7 @@ bool UIButton::init() {
         return false;
     }
     ETNode<ETUIButton>::connect(getEntityId());
+    ETNode<ETUIInteractionBox>::connect(getEntityId());
     return true;
 }
 
@@ -90,4 +91,8 @@ void UIButton::ET_onHover(bool flag) {
 
 bool UIButton::ET_isHovered() const {
     return isHovered;
+}
+
+const AABB2Di& UIButton::ET_getHitBox() const {
+    return ET_getAabb2di();
 }

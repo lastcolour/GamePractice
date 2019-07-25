@@ -34,8 +34,11 @@ public:
 
 protected:
 
+    virtual Vec2i UIBox::calculateBoxSize(const AABB2Di& parentBox) const;
+
+protected:
+
     AABB2Di calcBox(const AABB2Di& parentBox) const;
-    Vec2i calcSize(const AABB2Di& parentBox) const;
     Vec2i calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const;
     AABB2Di getParentAaabb2di() const;
     void setBox(const AABB2Di& newBox);

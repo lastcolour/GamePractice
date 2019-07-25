@@ -34,7 +34,7 @@ void UIEventManager::processEvent(EUIEventType eventType) {
     }
 }
 
-void UIEventManager::ET_onEvent(const std::string& eventName) {
+void UIEventManager::ET_onEvent(const char* eventName) {
     auto it = eventMap.find(eventName);
     if (it == eventMap.end()) {
         LogWarning("[UIEventManager::ET_onEvent] Unknown event name: %s", eventName);

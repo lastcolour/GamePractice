@@ -16,11 +16,11 @@ public:
 
     bool init();
 
-    std::shared_ptr<RenderFont> createFont(const std::string& fontName, int fontSize);
+    std::shared_ptr<RenderFont> createFont(const char* fontName, int fontSize);
 
 private:
 
-    std::shared_ptr<RenderFont> createFontImpl(const std::string& fontName, int fontSize);
+    std::shared_ptr<RenderFont> createFontImpl(const char* fontName, int fontSize);
 
 private:
 

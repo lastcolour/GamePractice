@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-GameObject::GameObject(const std::string& objectName, EntityId entId) :
+GameObject::GameObject(const char* objectName, EntityId entId) :
     name(objectName),
     entityId(entId) {
 

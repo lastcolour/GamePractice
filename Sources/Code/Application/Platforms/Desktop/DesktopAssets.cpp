@@ -25,9 +25,12 @@ namespace {
 
     const char VALID_SLASH = '/';
 
-    bool isDirExist(const std::string& dirName) {
+    bool isDirExist(const char* dirName) {
+        if(!dirName || !dirName[0]) {
+            return false;
+        }
         struct stat info;
-        if(stat(dirName.c_str(), &info) != 0) {
+        if(stat(dirName, &info) != 0) {
             return false;
         } else if(info.st_mode & S_IFDIR) {
             return true;
@@ -97,7 +100,7 @@ namespace {
             auto dirPath = cwdPath + path;
             fixSlashes(dirPath);
             normalizePath(dirPath);
-            if (isDirExist(dirPath)) {
+            if (isDirExist(dirPath.c_str())) {
                 return dirPath;
             }
         }
@@ -138,7 +141,7 @@ void DesktopAssets::deinit() {
     ETNode<ETAssets>::disconnect();
 }
 
-JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {
+JSONNode DesktopAssets::ET_loadJSONAsset(const char* assetName) {
     auto buffer = ET_loadAsset(assetName);
     if(!buffer) {
         LogError("[DesktopAssets::loadJSONAsset] Can't load asset from: %s", assetName);
@@ -152,7 +155,7 @@ JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {
     return rootNode;
 }
 
-Buffer DesktopAssets::ET_loadAsset(const std::string& assetName) {
+Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     Buffer buff;
     ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
     if (buff) {

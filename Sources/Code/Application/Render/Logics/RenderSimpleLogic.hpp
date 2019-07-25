@@ -28,7 +28,7 @@ public:
     // ETRenderSimpleLogic
     void ET_setColor(const ColorB& col) override;
     void ET_setSize(const Vec2& size) override;
-    void ET_setMaterial(const std::string& matName) override;
+    void ET_setMaterial(const char* matName) override;
 
 private:
 

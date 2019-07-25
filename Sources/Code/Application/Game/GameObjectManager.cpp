@@ -46,7 +46,7 @@ void GameObjectManager::deinit() {
     ETNode<ETGameObjectManager>::disconnect();
 }
 
-EntityId GameObjectManager::ET_createGameObject(const std::string& objectName) {
+EntityId GameObjectManager::ET_createGameObject(const char* objectName) {
     auto obj = createObject(nullptr, objectName);
     if(!obj) {
         return InvalidEntityId;
@@ -73,7 +73,7 @@ void GameObjectManager::ET_destroyObject(EntityId entId) {
     }
 }
 
-void GameObjectManager::registerCreateLogic(const std::string& logicName, LogicCreateFunc createFunc) {
+void GameObjectManager::registerCreateLogic(const char* logicName, LogicCreateFunc createFunc) {
     std::string reqLogicName = logicName;
     std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
@@ -85,7 +85,7 @@ void GameObjectManager::registerCreateLogic(const std::string& logicName, LogicC
     }
 }
 
-std::unique_ptr<GameLogic> GameObjectManager::createLogic(const std::string& logicName) {
+std::unique_ptr<GameLogic> GameObjectManager::createLogic(const char* logicName) {
     std::string reqLogicName = logicName;
     std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
@@ -95,10 +95,10 @@ std::unique_ptr<GameLogic> GameObjectManager::createLogic(const std::string& log
     return nullptr;
 }
 
-std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj, const std::string& objectName) {
+std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj, const char* objectName) {
     std::string objectFilePath = StringFormat("%s/%s", GAME_OBJECTS, objectName);
     JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, objectFilePath);
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, objectFilePath.c_str());
     if(!rootNode) {
         LogWarning("[GameObjectManager::createObject] Can't load game objects from: %s", objectFilePath);
         return nullptr;
@@ -120,7 +120,7 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
     for(const auto& logicNode : logicsNodes) {
         std::string logicType;
         logicNode.value("type", logicType);
-        auto logicPtr = createLogic(logicType);
+        auto logicPtr = createLogic(logicType.c_str());
         if(!logicPtr) {
             LogWarning("[GameObjectManager::createObject] Can't find logic type '%s' for object '%s'", logicType, objectName);
             continue;
@@ -145,7 +145,7 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
     for(const auto& childNode : childrenNode) {
         std::string childObjName;
         childNode.value(childObjName);
-        auto childGameObj = createObject(objPtr.get(), childObjName);
+        auto childGameObj = createObject(objPtr.get(), childObjName.c_str());
         gameObjects.push_back(std::move(childGameObj));
     }
     LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);

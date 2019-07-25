@@ -125,7 +125,7 @@ bool GameBoardLogic::init() {
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             EntityId cellObjId = InvalidEntityId;
-            ET_SendEventReturn(cellObjId, &ETGameObjectManager::ET_createGameObject, cellObject);
+            ET_SendEventReturn(cellObjId, &ETGameObjectManager::ET_createGameObject, cellObject.c_str());
             if(cellObjId == InvalidEntityId) {
                 LogWarning("[GameBoardLogic::init] Can't spawn element");
                 return false;

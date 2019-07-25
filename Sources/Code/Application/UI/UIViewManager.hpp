@@ -16,7 +16,7 @@ public:
     void deinit() override;
 
     // ETUIViewManager
-    bool ET_openView(const std::string& viewName) override;
+    bool ET_openView(const char* viewName) override;
 
 private:
 

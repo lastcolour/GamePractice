@@ -17,7 +17,11 @@ void UIViewManager::deinit() {
     ETNode<ETUIViewManager>::disconnect();
 }
 
-bool UIViewManager::ET_openView(const std::string& viewName) {
+bool UIViewManager::ET_openView(const char* viewName) {
+    if(!viewName || !viewName[0]) {
+        LogWarning("[UIViewManager::ET_openView] Can't open empty view");
+        return false;
+    }
     EntityId newViewId;
     ET_SendEventReturn(newViewId, &ETGameObjectManager::ET_createGameObject, viewName);
     if(!newViewId.isValid()) {

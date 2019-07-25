@@ -14,7 +14,7 @@ public:
     virtual ~TestButtonEventListener() = default;
 
     // ETUIEventManager
-    void ET_onEvent(const std::string& eventName) override {
+    void ET_onEvent(const char* eventName) override {
         eventQueue.push_back(eventName);
     }
 
@@ -57,7 +57,7 @@ TEST_F(UIButtonTests, CheckTouchInside) {
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);
 
     bool isHovered = false;
-    ET_SendEventReturn(isHovered, button->getEntityId(), &ETUIButton::ET_isHovered);
+    ET_SendEventReturn(isHovered, button->getEntityId(), &ETUIInteractionBox::ET_isHovered);
     ASSERT_TRUE(isHovered);
 
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Release, pt);
@@ -114,17 +114,26 @@ TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);
 
     bool isHovered = false;
-    ET_SendEventReturn(isHovered, botButton->getEntityId(), &ETUIButton::ET_isHovered);
+    ET_SendEventReturn(isHovered, botButton->getEntityId(), &ETUIInteractionBox::ET_isHovered);
     ASSERT_TRUE(isHovered);
 
     pt.y = renderPort.y * 3 / 4;
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Move, pt);
 
     isHovered = false;
-    ET_SendEventReturn(isHovered, topButton->getEntityId(), &ETUIButton::ET_isHovered);
+    ET_SendEventReturn(isHovered, topButton->getEntityId(), &ETUIInteractionBox::ET_isHovered);
     ASSERT_TRUE(isHovered);
 
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Release, pt);
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
+}
+
+TEST_F(UIButtonTests, CheckButtonConnections) {
+    auto button = createUIButton();
+    button->init();
+
+    ASSERT_TRUE(ET_IsExistNode<ETUIButton>(button->getEntityId()));
+    ASSERT_TRUE(ET_IsExistNode<ETUIInteractionBox>(button->getEntityId()));
+    ASSERT_TRUE(ET_IsExistNode<ETUIBox>(button->getEntityId()));
 }

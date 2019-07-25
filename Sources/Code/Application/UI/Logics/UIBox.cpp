@@ -47,7 +47,7 @@ AABB2Di UIBox::getParentAaabb2di() const {
     return parentAabb;
 }
 
-Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
+Vec2i UIBox::calculateBoxSize(const AABB2Di& parentBox) const {
     Vec2i resSize(0);
     switch (style.sizeInv)
     {
@@ -173,7 +173,7 @@ void UIBox::ET_onRenderPortResized() {
 AABB2Di UIBox::calcBox(const AABB2Di& parentBox) const {
     AABB2Di resAabb;
     resAabb.bot = Vec2i(0);
-    resAabb.top = calcSize(parentBox);
+    resAabb.top = calculateBoxSize(parentBox);
     resAabb.setCenter(calcCenter(resAabb, parentBox));
     return resAabb;
 }
@@ -194,7 +194,7 @@ bool UIBox::createRenderer() {
         renderId = InvalidEntityId;
     }
     if(!style.renderer.empty()) {
-        ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, style.renderer);
+        ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, style.renderer.c_str());
         if(renderId.isValid()) {
             ET_SendEvent(renderId, &ETGameObject::ET_setParent, getEntityId());
             ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, style.color);

@@ -23,17 +23,23 @@ struct ETUIBox {
     virtual void ET_boxResizeInside(const AABB2Di& resizeBox) = 0;
 };
 
-struct ETUIButton {
-    virtual ~ETUIButton() = default;
-    virtual void ET_setEventName(const std::string& newEventName) = 0;
+struct ETUIInteractionBox {
+    virtual ~ETUIInteractionBox() = default;
     virtual void ET_onPress() = 0;
     virtual void ET_onHover(bool flag) = 0;
     virtual bool ET_isHovered() const = 0;
+    virtual const AABB2Di& ET_getHitBox() const = 0;
+};
+
+struct ETUIButton {
+    virtual ~ETUIButton() = default;
+    virtual void ET_setEventName(const char* newEventName) = 0;
 };
 
 struct ETUILabel {
     virtual ~ETUILabel() = default;
-    virtual void ET_setText(const std::string& text) = 0;
+    virtual void ET_setText(const char* text) = 0;
+    virtual const char* ET_getText() const = 0;
 };
 
 struct ETUIList {
@@ -43,12 +49,12 @@ struct ETUIList {
 
 struct ETUIViewManager {
     virtual ~ETUIViewManager() = default;
-    virtual bool ET_openView(const std::string& viewName) = 0;
+    virtual bool ET_openView(const char* viewName) = 0;
 };
 
 struct ETUIEventManager {
     virtual ~ETUIEventManager() = default;
-    virtual void ET_onEvent(const std::string& eventName) = 0;
+    virtual void ET_onEvent(const char* eventName) = 0;
 };
 
 #endif /* __UI_ET_INTERFACES_HPP__ */

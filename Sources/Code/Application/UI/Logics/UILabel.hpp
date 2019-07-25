@@ -10,14 +10,21 @@ public:
     UILabel();
     virtual ~UILabel();
 
+    // UIBox
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
     // ETUIBox
-    void ET_addChildElement(EntityId childId) {}
+    void ET_addChildElement(EntityId childId) override {}
+    void ET_setStyle(const UIStyle& newStyle) override;
 
     // ETUILabel
-    void ET_setText(const std::string& text) override;
+    void ET_setText(const char* newText) override;
+    const char* ET_getText() const override;
+
+protected:
+
+    Vec2i calculateBoxSize(const AABB2Di& parentBox) const override;
 
 private:
 

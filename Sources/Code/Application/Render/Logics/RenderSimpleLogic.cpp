@@ -19,13 +19,13 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 bool RenderSimpleLogic::serialize(const JSONNode& node) {
     std::string geomName;
     node.value("geom", geomName);
-    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, geomName);
+    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, geomName.c_str());
     if(!geom) {
         return false;
     }
     std::string matName;
     node.value("mat", matName);
-    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
+    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName.c_str());
     if(!mat) {
         return false;
     }
@@ -61,7 +61,7 @@ Mat4 RenderSimpleLogic::getModelMat() const {
     return model;
 }
 
-void RenderSimpleLogic::ET_setMaterial(const std::string& matName) {
+void RenderSimpleLogic::ET_setMaterial(const char* matName) {
     ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
 }
 

@@ -63,7 +63,7 @@ public:
 
 public:
 
-    explicit SystemModule(const std::string& moduleName);
+    explicit SystemModule(const char* moduleName);
     virtual ~SystemModule();
 
     bool init();

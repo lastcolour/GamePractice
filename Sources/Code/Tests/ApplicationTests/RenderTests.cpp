@@ -363,7 +363,8 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
 
     for(int ch = 32; ch < 127; ++ch)
     {
-        renderText->ET_setText(std::string(1, ch));
+        std::string text(1, ch); 
+        renderText->ET_setText(text.c_str());
         box = renderText->ET_getTextAABB();
         if (ch != '\n') {
             EXPECT_GT(box.getSize(), Vec2(0.f)) << "Char: '" << static_cast<char>(ch) << "', code: " << ch;

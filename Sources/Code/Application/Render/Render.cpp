@@ -130,7 +130,7 @@ void Render::ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFramebuff
     }
 }
 
-std::shared_ptr<RenderGeometry> Render::ET_createGeometry(const std::string& geomName) {
+std::shared_ptr<RenderGeometry> Render::ET_createGeometry(const char* geomName) {
     std::string reqGeomName = geomName;
     std::transform(reqGeomName.begin(), reqGeomName.end(), reqGeomName.begin(), tolower);
     auto it = geometris.find(reqGeomName);
@@ -180,7 +180,7 @@ std::shared_ptr<RenderGeometry> Render::createSquare() {
     return geometry;
 }
 
-std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& matName) {
+std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const char* matName) {
     std::string reqMatName = matName;
     std::transform(reqMatName.begin(), reqMatName.end(), reqMatName.begin(), tolower);
     if(reqMatName.empty()) {
@@ -231,7 +231,7 @@ std::shared_ptr<RenderMaterial> Render::ET_createMaterial(const std::string& mat
 
 int Render::createProgram(const std::string& vertFile, const std::string& fragFile) {
     Buffer buffer;
-    ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, vertFile);
+    ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, vertFile.c_str());
     if(!buffer) {
         LogError("[Render::createProgram] Can't load vert shader file: %s", vertFile.c_str());
         return 0;
@@ -241,7 +241,7 @@ int Render::createProgram(const std::string& vertFile, const std::string& fragFi
         LogError("[Render::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
         return 0;
     }
-    ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, fragFile);
+    ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, fragFile.c_str());
     if(!buffer) {
         LogError("[Render::createProgram] Can't load frag shader file: %s", fragFile.c_str());
         return 0;

@@ -22,7 +22,7 @@ RenderTextLogic::~RenderTextLogic() {
 bool RenderTextLogic::serialize(const JSONNode& node) {
     std::string matName;
     node.value("mat", matName);
-    ET_setMaterial(matName);
+    ET_setMaterial(matName.c_str());
     return true;
 }
 
@@ -134,7 +134,7 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
     return aabb;
 }
 
-void RenderTextLogic::ET_setMaterial(const std::string& matName) {
+void RenderTextLogic::ET_setMaterial(const char* matName) {
     ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
 }
 
@@ -142,7 +142,7 @@ void RenderTextLogic::ET_setColor(const ColorB& col) {
     color = col;
 }
 
-void RenderTextLogic::ET_setText(const std::string& str) {
+void RenderTextLogic::ET_setText(const char* str) {
     text = str;
     calcTextAABB();
     if(!text.empty()) {

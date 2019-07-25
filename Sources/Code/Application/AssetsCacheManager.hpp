@@ -29,8 +29,8 @@ public:
     void deinit() override;
 
     // ETAssetsCacheManager
-    Buffer ET_getAssetFromCache(const std::string& assetName) override;
-    void ET_putAssetToCache(const std::string& assetName, const Buffer& buff) override;
+    Buffer ET_getAssetFromCache(const char* assetName) override;
+    void ET_putAssetToCache(const char* assetName, const Buffer& buff) override;
     void ET_setCacheLifetime(float seconds) override;
     float ET_getCacheLifetime() const override;
 

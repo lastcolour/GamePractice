@@ -54,7 +54,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     assetNameWithSlash += TEST_FILE_PATH;
 
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash.c_str());
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -64,7 +64,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     assetNameWithSlash = "/";
     assetNameWithSlash += TEST_FILE_PATH;
 
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash.c_str());
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);
@@ -77,7 +77,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithInvalidSlashes) {
     std::replace(path.begin(), path.end(), '/', '\\');
 
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, path);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, path.c_str());
 
     ASSERT_TRUE(buff);
     ASSERT_NE(buff.getSize(), 0u);

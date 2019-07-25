@@ -15,15 +15,15 @@ public:
     void bind();
     void unbind();
 
-    void setTexture2D(const std::string& name, int texId);
-    void setUniform1i(const std::string& name, int val);
-    void setUniform4f(const std::string& name, const Vec4& vec);
-    void setUniform4f(const std::string& name, const ColorB& col);
-    void setUniformMat4(const std::string& name, const Mat4& mat);
+    void setTexture2D(const char* name, int texId);
+    void setUniform1i(const char* name, int val);
+    void setUniform4f(const char* name, const Vec4& vec);
+    void setUniform4f(const char* name, const ColorB& col);
+    void setUniformMat4(const char* name, const Mat4& mat);
 
 private:
 
-    bool findUniform(const std::string& name, int& resUniLoc) const;
+    bool findUniform(const char* name, int& resUniLoc) const;
 
 private:
 

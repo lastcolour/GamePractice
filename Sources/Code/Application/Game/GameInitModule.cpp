@@ -28,7 +28,7 @@ public:
             return false;
         }
         bool openRes;
-        ET_SendEventReturn(openRes, &ETUIViewManager::ET_openView, mainView);
+        ET_SendEventReturn(openRes, &ETUIViewManager::ET_openView, mainView.c_str());
         if (!openRes) {
             LogError("Can't cretae main view '%s' from config file: %s", mainView, GAME_CONFIG_FILE);
             return false;

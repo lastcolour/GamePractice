@@ -1,17 +1,20 @@
 {
-    "children":[
-        "UI/GameView/BackButton.json"
-    ],
+    "children":[],
     "logics":[
         {
-            "type":"UIButton",
+            "type":"UIList",
             "data":{
+                "type":"vert",
+                "children":[
+                    "UI/GameView/BackButton.json",
+                    "UI/GameView/InfoBar.json"
+                ],
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {
-                        "r": 255,
-                        "g": 0,
-                        "b": 0
+                        "r": 200,
+                        "g": 200,
+                        "b": 200
                     },
                     "align": {
                         "x": "center",

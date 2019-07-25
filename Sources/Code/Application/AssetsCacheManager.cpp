@@ -37,7 +37,7 @@ void AssetsCacheManager::ET_onTick(float dt) {
     }
 }
 
-Buffer AssetsCacheManager::ET_getAssetFromCache(const std::string& assetName) {
+Buffer AssetsCacheManager::ET_getAssetFromCache(const char* assetName) {
     auto it = assetsCacheMap.find(assetName);
     if (it == assetsCacheMap.end()) {
         return Buffer();
@@ -47,8 +47,8 @@ Buffer AssetsCacheManager::ET_getAssetFromCache(const std::string& assetName) {
     return node.buff;
 }
 
-void AssetsCacheManager::ET_putAssetToCache(const std::string& assetName, const Buffer& buff) {
-    if(assetName.empty()) {
+void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer& buff) {
+    if(!assetName || !assetName[0]) {
         assert(false && "empty asset name");
         return;
     }

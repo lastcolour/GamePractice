@@ -16,15 +16,15 @@ class RenderFont;
 
 struct ETRenderSimpleLogic {
     virtual ~ETRenderSimpleLogic() = default;
-    virtual void ET_setMaterial(const std::string& matName) = 0;
+    virtual void ET_setMaterial(const char* matName) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setSize(const Vec2& size) = 0;
 };
 
 struct ETRenderTextLogic {
     virtual ~ETRenderTextLogic() = default;
-    virtual void ET_setMaterial(const std::string& matName) = 0;
-    virtual void ET_setText(const std::string& text) = 0;
+    virtual void ET_setMaterial(const char* matName) = 0;
+    virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setFontSize(size_t fontSize) = 0;
     virtual AABB2D ET_getTextAABB() const = 0;
@@ -53,8 +53,8 @@ struct ETRender {
     virtual Vec2i ET_getRenderPort() const = 0;
     virtual void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) = 0;
     virtual void ET_drawFrame() = 0;
-    virtual std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) = 0;
-    virtual std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) = 0;
+    virtual std::shared_ptr<RenderGeometry> ET_createGeometry(const char* geomName) = 0;
+    virtual std::shared_ptr<RenderMaterial> ET_createMaterial(const char* matName) = 0;
     virtual std::shared_ptr<RenderFont> ET_createDefaultFont() = 0;
 };
 

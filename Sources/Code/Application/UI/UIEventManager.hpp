@@ -22,7 +22,7 @@ public:
     void deinit() override;
 
     // ETUIEventManager
-    void ET_onEvent(const std::string& eventName) override;
+    void ET_onEvent(const char* eventName) override;
 
 private:
 

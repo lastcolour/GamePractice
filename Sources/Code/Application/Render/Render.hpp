@@ -35,8 +35,8 @@ public:
     void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
     Vec2i ET_getRenderPort() const override;
     const Mat4& ET_getProj2DMat4() const override;
-    std::shared_ptr<RenderGeometry> ET_createGeometry(const std::string& geomName) override;
-    std::shared_ptr<RenderMaterial> ET_createMaterial(const std::string& matName) override;
+    std::shared_ptr<RenderGeometry> ET_createGeometry(const char* geomName) override;
+    std::shared_ptr<RenderMaterial> ET_createMaterial(const char* matName) override;
     std::shared_ptr<RenderFont> ET_createDefaultFont() override;
 
     // ETSurfaceEvents

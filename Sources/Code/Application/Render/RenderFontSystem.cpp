@@ -46,7 +46,7 @@ RenderFontSystem::RenderFontSystem() :
 RenderFontSystem::~RenderFontSystem() {
 }
 
-std::shared_ptr<RenderFont> RenderFontSystem::createFont(const std::string& reqFontName, int fontSize) {
+std::shared_ptr<RenderFont> RenderFontSystem::createFont(const char* reqFontName, int fontSize) {
     std::string fontName = reqFontName + '_' + std::to_string(fontSize);
     auto it = fonts.find(fontName);
     if(it != fonts.end() && !it->second.expired()) {
@@ -60,7 +60,7 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFont(const std::string& reqF
     return nullptr;
 }
 
-std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& fontName, int fontSize) {
+std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const char* fontName, int fontSize) {
     FT_Library ftLib;
     if(FT_Init_FreeType(&ftLib)) {
         LogError("[RenderFontSystem::createFontImpl] Can't init FreeType library");

@@ -39,8 +39,8 @@ struct ETSurfaceEvents {
 
 struct ETAssets {
     virtual ~ETAssets() = default;
-    virtual Buffer ET_loadAsset(const std::string& assetName) = 0;
-    virtual JSONNode ET_loadJSONAsset(const std::string& assetName) = 0;
+    virtual Buffer ET_loadAsset(const char* assetName) = 0;
+    virtual JSONNode ET_loadJSONAsset(const char* assetName) = 0;
 };
 
 enum class LogLevel {
@@ -76,8 +76,8 @@ struct ETAppRunStateEvents {
 
 struct ETAssetsCacheManager {
     virtual ~ETAssetsCacheManager() = default;
-    virtual Buffer ET_getAssetFromCache(const std::string& assetName) = 0;
-    virtual void ET_putAssetToCache(const std::string& assetName, const Buffer& buff) = 0;
+    virtual Buffer ET_getAssetFromCache(const char* assetName) = 0;
+    virtual void ET_putAssetToCache(const char* assetName, const Buffer& buff) = 0;
     virtual void ET_setCacheLifetime(float seconds) = 0;
     virtual float ET_getCacheLifetime() const = 0;
 };

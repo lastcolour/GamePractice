@@ -4,7 +4,8 @@
 #include "UI/Logics/UIBox.hpp"
 
 class UIButton : public UIBox,
-    public ETNode<ETUIButton> {
+    public ETNode<ETUIButton>,
+    public ETNode<ETUIInteractionBox> {
 public:
 
     UIButton();
@@ -13,9 +14,10 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
-    // ETUIButton
+    // ETUIInteractionBox
+    const AABB2Di& ET_getHitBox() const override;
     void ET_onPress() override;
-    void ET_setEventName(const std::string& newEventName) override;
+    void ET_setEventName(const char* newEventName) override;
     void ET_onHover(bool flag) override;
     bool ET_isHovered() const override;
 
