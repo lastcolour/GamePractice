@@ -37,7 +37,7 @@ TEST_F(UITests, CheckXAlign) {
     style.size = Vec2(0.5f);
     style.yAlignType = YAlignType::Center;
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     style.xAlignType = XAlignType::Center;
     uiBox->ET_setStyle(style);
@@ -64,7 +64,7 @@ TEST_F(UITests, CheckYAlign) {
     style.size = Vec2(0.5f);
     style.xAlignType = XAlignType::Center;
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     style.yAlignType = YAlignType::Top;
     uiBox->ET_setStyle(style);
@@ -85,7 +85,7 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
     style.size = Vec2(0.5f, 0.5f);
     AABB2Di aabb(0);
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     int minSide = std::min(renderPort.x, renderPort.y);
 
     style.sizeInv = SizeInvariant::Absolute;
@@ -178,7 +178,7 @@ TEST_F(UITests, CheckVerticalUIList) {
     const auto& aabbList = uiList->ET_getAabb2di();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i expCenter = renderPort / 2;
     Vec2i resCenter = aabbList.getCenter();
@@ -226,7 +226,7 @@ TEST_F(UITests, CheckHorizontalUIList) {
     const auto& aabbList = uiList->ET_getAabb2di();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i expCenter = renderPort / 2;
     Vec2i resCenter = aabbList.getCenter();
@@ -274,7 +274,7 @@ TEST_F(UITests, CheckUIListResize) {
     uiList->ET_addChildElement(innerUiBox->getEntityId());
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     auto aabb = innerUiBox->ET_getAabb2di();
 

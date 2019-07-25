@@ -51,7 +51,7 @@ TEST_F(UIButtonTests, CheckTouchInside) {
     button->init();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     Vec2i pt = renderPort / 2;
 
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);
@@ -77,7 +77,7 @@ TEST_F(UIButtonTests, CheckTouchMoveRelease) {
     button->init();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     Vec2i pt = renderPort / 2;
 
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);
@@ -108,7 +108,7 @@ TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
     botButton->init();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i pt = Vec2i(renderPort.x / 2, renderPort.y / 4);
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);

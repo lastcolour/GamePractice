@@ -16,7 +16,6 @@ public:
 
     // ETUIBox
     void ET_addChildElement(EntityId childId) override {}
-    void ET_setStyle(const UIStyle& newStyle) override;
 
     // ETUILabel
     void ET_setText(const char* newText) override;

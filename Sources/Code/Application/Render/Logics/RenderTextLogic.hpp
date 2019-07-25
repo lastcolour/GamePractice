@@ -28,8 +28,8 @@ public:
     void ET_setMaterial(const char* matName) override;
     void ET_setColor(const ColorB& col) override;
     void ET_setText(const char* str) override;
-    void ET_setFontSize(size_t fontSize) override;
-    virtual AABB2D ET_getTextAABB() const override;
+    void ET_setFontSize(float fontSize) override;
+    virtual const AABB2D& ET_getTextAABB() const override;
 
 private:
 
@@ -42,7 +42,7 @@ private:
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
     std::string text;
-    size_t fontSize;
+    float fontSize;
     unsigned int vaoId;
     unsigned int vboId;
     ColorB color;

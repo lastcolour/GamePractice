@@ -69,7 +69,7 @@ void GameBoardLogic::initBoardBox() {
     AABB2Di box;
 
     Vec2i viewport(0);
-    ET_SendEventReturn(viewport, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(viewport, &ETRenderCamera::ET_getRenderPort);
     box.bot = Vec2i(0);
     box.top = viewport;
 

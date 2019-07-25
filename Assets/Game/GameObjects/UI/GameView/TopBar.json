@@ -12,9 +12,9 @@
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {
-                        "r": 200,
-                        "g": 200,
-                        "b": 200
+                        "r": 230,
+                        "g": 230,
+                        "b": 230
                     },
                     "align": {
                         "x": "center",

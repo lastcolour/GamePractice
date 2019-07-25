@@ -1,0 +1,77 @@
+#include "Render/RenderGeometryManager.hpp"
+#include "ETApplicationInterfaces.hpp"
+#include "Platforms/OpenGL.hpp"
+#include "Render/RenderGeometry.hpp"
+
+#include <algorithm>
+
+namespace {
+
+const char* SQUARE_GEOM_NAME = "square";
+
+} // namespace
+
+RenderGeometryManager::RenderGeometryManager() {
+}
+
+RenderGeometryManager::~RenderGeometryManager() {
+}
+
+bool RenderGeometryManager::init() {
+    ETNode<ETRenderGeometryManager>::connect(getEntityId());
+    return true;
+}
+
+void RenderGeometryManager::deinit() {
+    ETNode<ETRenderGeometryManager>::disconnect();
+}
+
+std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(const char* geomName) {
+    std::string reqGeomName = geomName;
+    std::transform(reqGeomName.begin(), reqGeomName.end(), reqGeomName.begin(), tolower);
+    auto it = geometris.find(reqGeomName);
+    if(it != geometris.end() && !it->second.expired()) {
+        return it->second.lock();
+    }
+    if(reqGeomName == SQUARE_GEOM_NAME) {
+        auto geom = createSquare();
+        geometris[reqGeomName] = geom;
+        return geom;
+    } else {
+        LogWarning("[Render::createGeometry] Can't create unknown type of geometry: '%s'", reqGeomName);
+        return nullptr;
+    }
+}
+
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
+    static const GLfloat squareVerts[] = {
+        // first tri
+        -1.f, -1.f, 0.f,
+        -1.f,  1.f, 0.f,
+         1.f, -1.f, 0.f,
+        // second tri
+        -1.f,  1.f, 0.f,
+         1.f,  1.f, 0.f,
+         1.f, -1.f, 0.f,
+    };
+
+    GLuint vaoId;
+    GLuint vboId;
+    glGenVertexArrays(1, &vaoId);
+    glBindVertexArray(vaoId);
+    glGenBuffers(1, &vboId);
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(squareVerts), squareVerts, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), static_cast<void*>(0));
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
+    geometry->aabb = AABB(Vec3(-1, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
+    geometry->vaoId = vaoId;
+    geometry->vboId = vboId;
+    geometry->vertCount = 6u;
+
+    return geometry;
+}

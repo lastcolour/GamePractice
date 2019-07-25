@@ -47,6 +47,7 @@ public:
     YAlignType yAlignType;
     Margin margin;
     std::string renderer;
+    float fontSize;
 
 public:
 

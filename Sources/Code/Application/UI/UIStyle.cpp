@@ -62,7 +62,10 @@ UIStyle::UIStyle() :
     color(255, 255, 255),
     sizeInv(SizeInvariant::Relative),
     xAlignType(XAlignType::Center),
-    yAlignType(YAlignType::Center) {
+    yAlignType(YAlignType::Center),
+    margin(),
+    renderer(),
+    fontSize(1.f) {
 }
 
 UIStyle::~UIStyle() {
@@ -115,5 +118,6 @@ void UIStyle::serialize(const JSONNode& node) {
     } else {
         LogWarning("[UIStyle::serialize] Can't find required node: 'margin'");
     }
+    node.value("fontSize", fontSize);
     node.value("renderer", renderer);
 }

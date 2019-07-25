@@ -39,7 +39,7 @@ void RenderTextLogic::createVAO() {
 }
 
 bool RenderTextLogic::init() {
-    ET_SendEventReturn(font, &ETRender::ET_createDefaultFont);
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
     if(!mat) {
         return false;
     }
@@ -126,16 +126,16 @@ void RenderTextLogic::calcTextAABB() {
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
 }
 
-void RenderTextLogic::ET_setFontSize(size_t newFontSize) {
+void RenderTextLogic::ET_setFontSize(float newFontSize) {
     fontSize = newFontSize;
 }
 
-AABB2D RenderTextLogic::ET_getTextAABB() const {
+const AABB2D& RenderTextLogic::ET_getTextAABB() const {
     return aabb;
 }
 
 void RenderTextLogic::ET_setMaterial(const char* matName) {
-    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
+    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName);
 }
 
 void RenderTextLogic::ET_setColor(const ColorB& col) {

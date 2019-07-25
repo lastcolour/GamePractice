@@ -43,13 +43,13 @@ protected:
     AABB2Di getParentAaabb2di() const;
     void setBox(const AABB2Di& newBox);
     EntityId getRendererId() const;
+    EntityId getRootUIBox() const;
 
 private:
 
     void syncTransform() const;
     bool createRenderer();
     void updateRendererParams();
-    EntityId getRootUIBox() const;
 
 private:
 

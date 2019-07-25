@@ -40,7 +40,7 @@ const AABB2Di& UIBox::ET_getAabb2di() const {
 AABB2Di UIBox::getParentAaabb2di() const {
     AABB2Di parentAabb;
     parentAabb.bot = Vec2i(0);
-    ET_SendEventReturn(parentAabb.top, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(parentAabb.top, &ETRenderCamera::ET_getRenderPort);
     if(getParentId() != InvalidEntityId) {
         ET_SendEventReturn(parentAabb, getParentId(), &ETUIBox::ET_getAabb2di);
     }
@@ -54,7 +54,7 @@ Vec2i UIBox::calculateBoxSize(const AABB2Di& parentBox) const {
         case SizeInvariant::Absolute:
         {
             Vec2i renderPort;
-            ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+            ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
             resSize.x = static_cast<int>(renderPort.x * style.size.x);
             resSize.y = static_cast<int>(renderPort.y * style.size.y);
             break;
@@ -62,7 +62,7 @@ Vec2i UIBox::calculateBoxSize(const AABB2Di& parentBox) const {
         case SizeInvariant::AbsoluteBiggestSquare:
         {
             Vec2i renderPort;
-            ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+            ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
             int minSide = std::min(renderPort.x, renderPort.y);
             resSize.x = static_cast<int>(minSide * style.size.x);
             resSize.y = static_cast<int>(minSide * style.size.y);
@@ -229,8 +229,14 @@ void UIBox::ET_setStyle(const UIStyle& newStyle) {
 }
 
 void UIBox::updateRendererParams() {
-    if(renderId.isValid()) {
+    if(!renderId.isValid()) {
+        return;
+    }
+    if(ET_IsExistNode<ETRenderSimpleLogic>(renderId)) {
         ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, style.color);
+    } else if(ET_IsExistNode<ETRenderTextLogic>(renderId)) {
+        ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setColor, style.color);
+        ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setFontSize, style.fontSize);
     }
 }
 

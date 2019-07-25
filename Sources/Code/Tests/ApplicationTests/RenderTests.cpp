@@ -104,19 +104,19 @@ TEST_F(RenderTests, RestoreViewPortAfterRenderToFramebuffer) {
     textureFramebuffer->unbind();
 
     Vec2i origRenderPort(0);
-    ET_SendEventReturn(origRenderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(origRenderPort, &ETRenderCamera::ET_getRenderPort);
 
     textureFramebuffer->bind();
 
     Vec2i fbRenderPort(0);
-    ET_SendEventReturn(fbRenderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(fbRenderPort, &ETRenderCamera::ET_getRenderPort);
 
     ASSERT_EQ(fbRenderPort, textureFramebuffer->getSize());
 
     textureFramebuffer->unbind();
 
     Vec2i resRenderPort(0);
-    ET_SendEventReturn(resRenderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(resRenderPort, &ETRenderCamera::ET_getRenderPort);
 
     ASSERT_EQ(origRenderPort, resRenderPort);
 }
@@ -170,16 +170,16 @@ TEST_F(RenderTests, CheckEmptyRender) {
 
 TEST_F(RenderTests, CheckCreateInvalidMaterial) {
     std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRender::ET_createMaterial, "");
+    ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, "");
     ASSERT_FALSE(material);
 }
 
 TEST_F(RenderTests, CheckCreateSameMaterial) {
     std::shared_ptr<RenderMaterial> mat1;
-    ET_SendEventReturn(mat1, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
+    ET_SendEventReturn(mat1, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
 
     std::shared_ptr<RenderMaterial> mat2;
-    ET_SendEventReturn(mat2, &ETRender::ET_createMaterial, TEST_MATERIAL_2);
+    ET_SendEventReturn(mat2, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_2);
 
     ASSERT_TRUE(mat1);
     ASSERT_EQ(mat1.get(), mat2.get());
@@ -187,7 +187,7 @@ TEST_F(RenderTests, CheckCreateSameMaterial) {
 
 TEST_F(RenderTests, CheckCreateSquareGeom) {
     std::shared_ptr<RenderGeometry> geom;
-    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
 
     const Vec3 size = geom->aabb.getSize();
     ASSERT_EQ(size, Vec3(2.f, 2.f, 0.f));
@@ -200,10 +200,10 @@ TEST_F(RenderTests, CheckCreateSquareGeom) {
 
 TEST_F(RenderTests, CheckCreateSameSquareGeom) {
     std::shared_ptr<RenderGeometry> geom1;
-    ET_SendEventReturn(geom1, &ETRender::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom1, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
 
     std::shared_ptr<RenderGeometry> geom2;
-    ET_SendEventReturn(geom2, &ETRender::ET_createGeometry, TEST_GEOM_2);
+    ET_SendEventReturn(geom2, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_2);
 
     ASSERT_TRUE(geom1);
     ASSERT_EQ(geom1.get(), geom2.get());
@@ -211,11 +211,11 @@ TEST_F(RenderTests, CheckCreateSameSquareGeom) {
 
 TEST_F(RenderTests, CheckRenderSquare) {
     std::shared_ptr<RenderGeometry> geom;
-    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
     ASSERT_TRUE(geom);
 
     std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
+    ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
     ASSERT_TRUE(material);
 
     material->bind();
@@ -247,21 +247,21 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     const Vec3 center(w * 0.5f, h * 0.5f, 0.f);
 
     std::shared_ptr<RenderGeometry> geom;
-    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
     ASSERT_TRUE(geom);
 
     const Vec3 size = geom->aabb.getSize();
     const Vec3 scale = SCALE_FACTOR * Vec3(w / size.x, h / size.y, 1.f);
 
     Mat4 proj;
-    ET_SendEventReturn(proj, &ETRender::ET_getProj2DMat4);
+    ET_SendEventReturn(proj, &ETRenderCamera::ET_getProj2DMat4);
     Mat4 tm(1.f);
     Math::Translate(tm, center);
     Math::Scale(tm, scale);
     tm = proj * tm;
 
     std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRender::ET_createMaterial, TEST_MATERIAL_1);
+    ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
     ASSERT_TRUE(material);
 
     material->bind();
@@ -323,10 +323,10 @@ TEST_F(RenderTests, CheckGameRenderAfterInit) {
 
 TEST_F(RenderTests, CheckCreateSameFontTwice) {
     std::shared_ptr<RenderFont> font1;
-    ET_SendEventReturn(font1, &ETRender::ET_createDefaultFont);
+    ET_SendEventReturn(font1, &ETRenderFontManager::ET_createDefaultFont);
 
     std::shared_ptr<RenderFont> font2;
-    ET_SendEventReturn(font2, &ETRender::ET_createDefaultFont);
+    ET_SendEventReturn(font2, &ETRenderFontManager::ET_createDefaultFont);
 
     ASSERT_TRUE(font1);
     const Vec2i texSize = font1->getTexSize();
@@ -346,7 +346,7 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     ASSERT_TRUE(renderText->init());
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2 portCenter;
     portCenter.x = renderPort.x / 2.f;

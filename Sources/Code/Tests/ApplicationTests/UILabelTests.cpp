@@ -3,6 +3,13 @@
 #include <Game/GameObject.hpp>
 #include <UI/Logics/UILabel.hpp>
 
+namespace {
+
+    const char* TEST_TEXT_RENDERER = "Render/RenderTextSimple.json";
+    const float TEST_FONT_SIZE = 1.f;
+
+} // namespace
+
 UILabel* UILabelTests::createUILabel() {
     auto object = createVoidObject();
     std::unique_ptr<UILabel> uiButtonPtr(new UILabel);
@@ -14,6 +21,10 @@ UILabel* UILabelTests::createUILabel() {
 
 TEST_F(UILabelTests, CheckLabelConnection) {
     auto uiLabel = createUILabel();
+    UIStyle style;
+    style.fontSize = TEST_FONT_SIZE;
+    style.renderer = TEST_TEXT_RENDERER;
+    uiLabel->ET_setStyle(style);
     ASSERT_TRUE(uiLabel->init());
 
     ASSERT_TRUE(ET_IsExistNode<ETUIBox>(uiLabel->getEntityId()));
@@ -22,6 +33,10 @@ TEST_F(UILabelTests, CheckLabelConnection) {
 
 TEST_F(UILabelTests, CheckLabelBox) {
     auto uiLabel = createUILabel();
+    UIStyle style;
+    style.fontSize = TEST_FONT_SIZE;
+    style.renderer = TEST_TEXT_RENDERER;
+    uiLabel->ET_setStyle(style);
     ASSERT_TRUE(uiLabel->init());
 
     auto emptyBox = uiLabel->ET_getAabb2di();
@@ -41,7 +56,7 @@ TEST_F(UILabelTests, CheckLabelBox) {
     auto aaBox = uiLabel->ET_getAabb2di();
     auto aaBoxSize = aaBox.getSize();
     EXPECT_GT(aaBoxSize.x, aBoxSize.x);
-    EXPECT_GT(aaBoxSize.y, aBoxSize.y);
+    EXPECT_EQ(aaBoxSize.y, aBoxSize.y);
 }
 
 TEST_F(UILabelTests, CheckLabelLocation) {
@@ -50,6 +65,8 @@ TEST_F(UILabelTests, CheckLabelLocation) {
     UIStyle style;
     style.xAlignType = XAlignType::Center;
     style.yAlignType = YAlignType::Center;
+    style.fontSize = TEST_FONT_SIZE;
+    style.renderer = TEST_TEXT_RENDERER;
     uiLabel->ET_setStyle(style);
     ASSERT_TRUE(uiLabel->init());
 
@@ -57,12 +74,11 @@ TEST_F(UILabelTests, CheckLabelLocation) {
     ET_SendEventReturn(tm, uiLabel->getEntityId(), &ETGameObject::ET_getTransform);
 
     Vec2i renderPort;
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec3 midPt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
     EXPECT_EQ(tm.pt, midPt); 
 }
 
 TEST_F(UILabelTests, CheckLabelResize) {
-
 }
