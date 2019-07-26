@@ -37,7 +37,7 @@ const AABB2Di& UIBox::ET_getAabb2di() const {
     return box;
 }
 
-AABB2Di UIBox::getParentAaabb2di() const {
+AABB2Di UIBox::getParentAabb2di() const {
     AABB2Di parentAabb;
     parentAabb.bot = Vec2i(0);
     ET_SendEventReturn(parentAabb.top, &ETRenderCamera::ET_getRenderPort);
@@ -160,7 +160,7 @@ void UIBox::ET_boxResizeInside(const AABB2Di& resizeBox) {
 }
 
 void UIBox::ET_boxResize() {
-    const auto& rootBox = getParentAaabb2di(); 
+    const auto& rootBox = getParentAabb2di(); 
     ET_boxResizeInside(rootBox);
 }
 
@@ -243,7 +243,7 @@ void UIBox::updateRendererParams() {
 bool UIBox::init() {
     createRenderer();
     updateRendererParams();
-    setBox(calcBox(getParentAaabb2di()));
+    setBox(calcBox(getParentAabb2di()));
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     return true;

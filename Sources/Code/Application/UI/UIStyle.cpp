@@ -74,11 +74,11 @@ UIStyle::~UIStyle() {
 void UIStyle::serialize(const JSONNode& node) {
     if(auto alignNode = node.object("align")) {
         std::string alignTypeStr("center");
-        node.value("x", alignTypeStr);
+        alignNode.value("x", alignTypeStr);
         xAlignType = parseXAlignType(alignTypeStr);
 
         alignTypeStr = "center";
-        node.value("y", alignTypeStr);
+        alignNode.value("y", alignTypeStr);
         yAlignType = parseYAlignType(alignTypeStr);
     } else {
         LogWarning("[UIStyle::serialize] Can't find required node: 'align'");

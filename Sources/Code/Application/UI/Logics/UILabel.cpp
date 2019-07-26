@@ -43,8 +43,9 @@ Vec2i UILabel::calculateBoxSize(const AABB2Di& parentBox) const {
     return size;
 }
 
-void UILabel::ET_setText(const char* text) {
-    ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setText, text);
+void UILabel::ET_setText(const char* newText) {
+    text = newText;
+    ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setText, text.c_str());
     auto rootEntId = getRootUIBox();
     if(rootEntId == InvalidEntityId) {
         ET_boxResize();

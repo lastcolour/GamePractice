@@ -4,7 +4,6 @@
 
 #include "Platforms/OpenGL.hpp"
 
-#include <algorithm>
 #include <type_traits>
 
 static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");

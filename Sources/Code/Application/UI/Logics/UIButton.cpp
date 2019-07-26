@@ -74,7 +74,6 @@ void UIButton::ET_setEventName(const char* newEventName) {
     eventName = newEventName;
 }
 
-
 bool UIButton::init() {
     if(!UIBox::init()) {
         LogError("[UIButton::init] Can't init box");

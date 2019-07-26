@@ -81,4 +81,27 @@ TEST_F(UILabelTests, CheckLabelLocation) {
 }
 
 TEST_F(UILabelTests, CheckLabelResize) {
+    auto uiLabel = createUILabel();
+    uiLabel->ET_setText("A");
+    UIStyle style;
+    style.xAlignType = XAlignType::Center;
+    style.yAlignType = YAlignType::Center;
+    style.fontSize = TEST_FONT_SIZE;
+    style.renderer = TEST_TEXT_RENDERER;
+    uiLabel->ET_setStyle(style);
+    ASSERT_TRUE(uiLabel->init());
+
+    auto smallBox = uiLabel->ET_getAabb2di();
+    auto smallBoxSize = smallBox.getSize();
+
+    style.fontSize = style.fontSize * 2.f;
+    uiLabel->ET_setStyle(style);
+
+    auto bigBox = uiLabel->ET_getAabb2di();
+    auto bigBoxSize = bigBox.getSize();
+
+    EXPECT_GT(bigBoxSize.x, smallBoxSize.x);
+    EXPECT_GT(bigBoxSize.x, smallBoxSize.x);
+
+    EXPECT_EQ(bigBox.getCenter(), smallBox.getCenter());
 }

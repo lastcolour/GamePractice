@@ -2,10 +2,6 @@
     "children":[],
     "logics": [
         {
-            "type":"UIView",
-            "data":{}
-        },
-        {
             "type": "UIList",
             "data": {
                 "type": "vert",

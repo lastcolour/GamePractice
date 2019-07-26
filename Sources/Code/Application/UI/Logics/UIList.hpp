@@ -17,21 +17,18 @@ public:
     void ET_setType(UIListType newListType) override;
 
     // ETUIBox
-    void ET_boxResize() override;
+    void UIList::ET_boxResizeInside(const AABB2Di& rootBox) override;
     void ET_addChildElement(EntityId newElemId) override;
-
-protected:
-
-    UIListType listType;
 
 private:
 
     void calcList();
-    void calcResListBox();
-    int sfiftCenterByOffset(int offset, Vec2i& center) const;
+    AABB2Di getAligntBox(const AABB2Di& elemBox) const;
+    Vec2i caclCenterUpdateOffset(Vec2i& offset, AABB2Di& box);
 
 private:
 
+    UIListType listType;
     std::vector<EntityId> children;
 };
 

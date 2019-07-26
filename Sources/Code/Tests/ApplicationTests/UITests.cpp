@@ -293,3 +293,116 @@ TEST_F(UITests, CheckUIListResize) {
     EXPECT_EQ(size, renderPort / 2);
     EXPECT_EQ(center, renderPort / 2);
 }
+
+TEST_F(UITests, CheckUIListCombined) {
+    auto rootVertUIList = createUIList();
+    {
+        UIStyle rootListStyle;
+        rootListStyle.size = Vec2(1.f);
+        rootListStyle.sizeInv = SizeInvariant::Relative;
+        rootVertUIList->ET_setType(UIListType::Vertical);
+        ASSERT_TRUE(rootVertUIList->init());
+    }
+
+    auto topUIBox = createUIBox();
+    {
+        UIStyle topBoxStyle;
+        topBoxStyle.size = Vec2(0.5f);
+        topBoxStyle.sizeInv = SizeInvariant::Relative;
+        topUIBox->ET_setStyle(topBoxStyle);
+        ASSERT_TRUE(topUIBox->init());
+    }
+
+    rootVertUIList->ET_addChildElement(topUIBox->getEntityId());
+
+    auto leftUIBox = createUIBox();
+    {
+        UIStyle leftBoxStyle;
+        leftBoxStyle.size = Vec2(0.5f);
+        leftBoxStyle.sizeInv = SizeInvariant::Relative;
+        leftUIBox->ET_setStyle(leftBoxStyle);
+        ASSERT_TRUE(leftUIBox->init());
+    }
+
+    auto rightUIBox = createUIBox();
+    {
+        UIStyle rightBoxStyle;
+        rightBoxStyle.size = Vec2(0.5f);
+        rightBoxStyle.sizeInv = SizeInvariant::Relative;
+        rightUIBox->ET_setStyle(rightBoxStyle);
+        ASSERT_TRUE(rightUIBox->init());
+    }
+
+    auto botHorzUIlist = createUIList();
+    {
+        UIStyle botListStyle;
+        botListStyle.size = Vec2(0.5f);
+        botListStyle.sizeInv = SizeInvariant::Relative;
+        botHorzUIlist->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(botHorzUIlist->init());
+    }
+
+    botHorzUIlist->ET_addChildElement(leftUIBox->getEntityId());
+    botHorzUIlist->ET_addChildElement(rightUIBox->getEntityId());
+
+    rootVertUIList->ET_addChildElement(botHorzUIlist->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto rootBox = rootVertUIList->ET_getAabb2di();
+    auto rootBoxSize = rootBox.getSize();
+    EXPECT_EQ(rootBoxSize, renderPort);
+    EXPECT_EQ(rootBox.getCenter(), renderPort / 2);
+
+    auto botBox = botHorzUIlist->ET_getAabb2di();
+    auto botBoxSize = botBox.getSize();
+    EXPECT_EQ(botBoxSize, Vec2i(renderPort.x, renderPort.y / 2));
+    EXPECT_EQ(botBox.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 4));
+
+    auto leftBox = leftUIBox->ET_getAabb2di();
+    auto leftBoxSize = leftBox.getSize();
+    EXPECT_EQ(leftBoxSize, renderPort / 2);
+
+    auto rightBox = rightUIBox->ET_getAabb2di();
+    auto rightBoxSize = rightBox.getSize();
+    EXPECT_EQ(rightBoxSize, renderPort / 2);
+}
+
+TEST_F(UITests, CheckListWithAlignVariation) {
+    UIList* uiList = createUIList();
+    uiList->ET_setType(UIListType::Vertical);
+    ASSERT_TRUE(uiList->init());
+
+    UIStyle boxStyle;
+    boxStyle.size = Vec2(0.5);
+    boxStyle.xAlignType = XAlignType::Left;
+
+    UIBox* leftUIBox = createUIBox();
+    leftUIBox->ET_setStyle(boxStyle);
+    ASSERT_TRUE(leftUIBox->init());
+
+    boxStyle.xAlignType = XAlignType::Right;
+
+    UIBox* rightUIBox = createUIBox();
+    rightUIBox->ET_setStyle(boxStyle);
+    ASSERT_TRUE(rightUIBox->init());
+
+    uiList->ET_addChildElement(leftUIBox->getEntityId());
+    uiList->ET_addChildElement(rightUIBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto listBox = uiList->ET_getAabb2di();
+    EXPECT_EQ(listBox.getSize(), renderPort);
+    EXPECT_EQ(listBox.getCenter(), renderPort / 2);
+
+    auto leftBox = leftUIBox->ET_getAabb2di();
+    EXPECT_EQ(leftBox.getSize(), renderPort / 2);
+    EXPECT_EQ(leftBox.getCenter(), Vec2i(renderPort.x / 4, 3 * renderPort.y /4));
+
+    auto rightBox = rightUIBox->ET_getAabb2di();
+    EXPECT_EQ(rightBox.getSize(), renderPort / 2);
+    EXPECT_EQ(rightBox.getCenter(), Vec2i(3 * renderPort.x / 4, renderPort.y /4));
+}
