@@ -21,6 +21,7 @@ public:
 private:
 
     std::shared_ptr<RenderGeometry> createSquare();
+    std::shared_ptr<RenderGeometry> createTextVertexChunks();
 
 private:
 

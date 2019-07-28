@@ -20,15 +20,6 @@ bool UIList::serialize(const JSONNode& node) {
         LogWarning("[UIList::serialize] UIBox searilization failed");
         return false;
     }
-    auto childrenNode = node.object("children");
-    if(!childrenNode) {
-        LogWarning("[UIList::serialize] Can't find required children node");
-        return false;
-    }
-    if(!childrenNode.size()) {
-        LogWarning("[UIList::serialize] Empty children list");
-        return false;
-    }
     std::string list("vert");
     node.value("type", list);
     if(list == "vert") {
@@ -38,16 +29,6 @@ bool UIList::serialize(const JSONNode& node) {
     } else {
         LogWarning("[UIList::serialize] Invalid list type: %s", list);
         return false;
-    }
-    for(auto& childNode : childrenNode) {
-        std::string childObjName;
-        childNode.value(childObjName);
-        EntityId childEntId;
-        ET_SendEventReturn(childEntId, &ETGameObjectManager::ET_createGameObject, childObjName.c_str());
-        if(childEntId != InvalidEntityId) {
-            ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, childEntId);
-            children.push_back(childEntId);
-        }
     }
     return true;
 }
@@ -62,8 +43,7 @@ bool UIList::init() {
     return true;
 }
 
-void UIList::ET_addChildElement(EntityId newElemId) {
-    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, newElemId);
+void UIList::ET_onChildAdded(EntityId newElemId) {
     children.push_back(newElemId);
     calcList();
 }
@@ -110,7 +90,7 @@ void UIList::calcList() {
     listBox.bot = Vec2i(std::numeric_limits<int>::max());
 
     for(auto entId : children) {
-        ET_SendEvent(entId, &ETUIBox::ET_boxResizeInside, ET_getAabb2di());
+        ET_SendEvent(entId, &ETUIBox::ET_boxResize);
         AABB2Di elemBox(0);
         ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
         
@@ -159,7 +139,6 @@ void UIList::ET_setType(UIListType newListType) {
     }
 }
 
-void UIList::ET_boxResizeInside(const AABB2Di& rootBox) {
-    UIBox::ET_boxResizeInside(rootBox);
+void UIList::ET_boxResize() {
     calcList();
 }

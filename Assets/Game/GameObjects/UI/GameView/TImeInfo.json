@@ -2,27 +2,37 @@
     "children":[],
     "logics": [
         {
-            "type": "UILabel",
+            "type": "UIButton",
             "data": {
-                "text":"Time: 999",
+                "event": "OnGameTime",
                 "style": {
-                    "renderer": "Render/RenderTextSimple.json",
+                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 0,
-                        "a": 255
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
                     },
                     "align": {
-                        "x": "center",
+                        "x": "left",
                         "y": "center"
                     },
                     "size": {
-                        "h": 30,
-                        "w": 30,
-                        "inv": "relBS"
+                        "h": 0.7,
+                        "w": 0.5,
+                        "inv": "rel"
                     },
                     "margin": {}
+                },
+                "label": {
+                    "object": "UI/MainView/SimpleButtonLabel.json",
+                    "text": "Time: 999",
+                    "style": {
+                        "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                        }
+                    }
                 }
             }
         }

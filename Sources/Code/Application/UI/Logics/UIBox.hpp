@@ -5,10 +5,12 @@
 #include "UI/UIETInterfaces.hpp"
 #include "UI/UIStyle.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 class UIBox : public GameLogic,
     public ETNode<ETUIBox>,
-    public ETNode<ETRenderEvents> {
+    public ETNode<ETRenderEvents>,
+    public ETNode<ETGameObjectEvents> {
 public:
 
     UIBox();
@@ -19,22 +21,24 @@ public:
     bool init() override;
 
     // ETUIBox
-    const AABB2Di& ET_getAabb2di() const override;
-    void ET_setCenter(const Vec2i& center) override;
-    void ET_alignInBox(const AABB2Di& alingBox) override;
-    void ET_boxResize() override;
     const UIStyle& ET_getStyle() const override;
     void ET_setStyle(const UIStyle& newStyle) override;
-    void ET_addChildElement(EntityId childId) override;
-    void ET_boxResizeInside(const AABB2Di& resizeBox) override;
+    void ET_setCenter(const Vec2i& center) override;
+    const AABB2Di& ET_getAabb2di() const override;
+    void ET_alignInBox(const AABB2Di& alingBox) override;
+    void ET_boxResize() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
     void ET_onRenderPortResized() override;
 
+    // ETGameObjectEvents
+    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onChildAdded(EntityId childId) override;
+
 protected:
 
-    virtual Vec2i UIBox::calculateBoxSize(const AABB2Di& parentBox) const;
+    virtual Vec2i calculateBoxSize(const AABB2Di& parentBox) const;
 
 protected:
 

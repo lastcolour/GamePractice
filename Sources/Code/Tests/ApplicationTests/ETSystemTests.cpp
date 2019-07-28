@@ -65,6 +65,7 @@ struct TestETInterface {
     virtual ~TestETInterface() = default;
     virtual TestObject ET_DoSomething(TestObject& inObj) = 0;
     virtual void ET_CreateObject(size_t count, std::vector<std::unique_ptr<TestETNode>>& objects, ETSystem& etSystem) = 0;
+    virtual void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) = 0;
 };
 
 struct TestETNode : public ETNode<TestETInterface> {
@@ -77,7 +78,7 @@ struct TestETNode : public ETNode<TestETInterface> {
         return outObj;
     }
 
-    virtual void ET_CreateObject(size_t count, std::vector<std::unique_ptr<TestETNode>>& objects, ETSystem& etSystem) override {
+    void ET_CreateObject(size_t count, std::vector<std::unique_ptr<TestETNode>>& objects, ETSystem& etSystem) override {
         for(size_t i = 0; i < count; ++i) {
             auto entId = etSystem.createNewEntityId();
             std::unique_ptr<TestETNode> node(new TestETNode);
@@ -85,6 +86,11 @@ struct TestETNode : public ETNode<TestETInterface> {
             objects.push_back(std::move(node));
         }
     }
+
+    void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) override {
+        etSystem.disconnectNode(etNode);
+    }
+
 };
 
 } // namespace
@@ -276,4 +282,21 @@ TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
     etSystem->sendEvent(entId, &TestETInterface::ET_DoSomething, inObj);
 
     ASSERT_EQ(inObj.doSomethingCount, 2);
+}
+
+TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
+    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+
+    auto entId_1 = etSystem->createNewEntityId();
+    TestETNode node_1;
+    etSystem->connectNode(node_1, entId_1);
+
+    auto entId_2 = etSystem->createNewEntityId();
+    TestETNode node_2;
+    etSystem->connectNode(node_2, entId_2);
+
+    etSystem->sendEvent(entId_1, &TestETInterface::ET_DisconnectObject, node_2, *etSystem);
+
+    auto activeConn = etSystem->getAll<TestETInterface>();
+    ASSERT_EQ(activeConn.size(), 1u);
 }

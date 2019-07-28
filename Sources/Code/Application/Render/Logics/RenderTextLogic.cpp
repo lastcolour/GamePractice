@@ -1,22 +1,20 @@
 #include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/RenderMaterial.hpp"
 #include "Render/RenderFont.hpp"
+#include "Render/RenderGeometry.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 RenderTextLogic::RenderTextLogic() :
-    vaoId(0),
-    vboId(0),
     color(255, 255, 255) {
 }
 
 RenderTextLogic::~RenderTextLogic() {
-    glDeleteBuffers(1, &vboId);
-    glDeleteVertexArrays(1, &vaoId);
 }
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
@@ -26,27 +24,20 @@ bool RenderTextLogic::serialize(const JSONNode& node) {
     return true;
 }
 
-void RenderTextLogic::createVAO() {
-    glGenVertexArrays(1, &vaoId);
-    glBindVertexArray(vaoId);
-    glGenBuffers(1, &vboId);
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * 6, nullptr, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), static_cast<void*>(0));
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
 bool RenderTextLogic::init() {
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
     if(!mat) {
         return false;
     }
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
     if(!font) {
         return false;
     }
-    createVAO();
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, "text_chunk");
+    if(!geom) {
+        return false;
+    }
+    assert(geom->vertCount >= 6 && "Invalid chunk vertext count");
+    assert(geom->vertType == VertexType::Vec4 && "Invalid vertext type");
     ETNode<ETRenderTextLogic>::connect(getEntityId());
     return true;
 }
@@ -61,42 +52,52 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
     const auto scale = Vec2(tm.scale.x, tm.scale.y);
-    Vec2 pt = Vec2(aabb.bot.x, aabb.top.y);
+    Vec2 pt = Vec2(aabb.bot.x, aabb.bot.y);
 
-    for(auto ch : text) {
-        if(auto glyph = font->getGlyph(ch)) {
-            Vec2 glyphPt(0);
-            glyphPt.x = pt.x + glyph->bearing.x * scale.x;
-            glyphPt.y = pt.y - glyph->bearing.y * scale.y;
-            const float w = glyph->size.x * scale.x;
-            const float h = glyph->size.y * scale.y;
+    std::vector<Vec4> vertChunk(geom->vertCount);
+    unsigned int vertShift = 0;
+    for(auto it = text.begin();;) {
+        Vec2 glyphPt(0);
+        if (it != text.end()) {
+            if(auto glyph = font->getGlyph(*it)) {
+                glyphPt.x = pt.x + glyph->bearing.x * scale.x;
+                glyphPt.y = pt.y - (glyph->size.y - glyph->bearing.y) * scale.y;
+                const float w = glyph->size.x * scale.x;
+                const float h = glyph->size.y * scale.y;
 
-            const auto& txBot = glyph->texCoords.bot;
-            const auto& txTop = glyph->texCoords.top;
+                const auto& txBot = glyph->texCoords.bot;
+                const auto& txTop = glyph->texCoords.top;
 
-            Vec4 vertecies[6];
-            // First tri
-            vertecies[0] = { glyphPt.x    , glyphPt.y + h, txBot.x, txTop.y };
-            vertecies[1] = { glyphPt.x + w, glyphPt.y    , txTop.x, txBot.y };
-            vertecies[2] = { glyphPt.x    , glyphPt.y    , txBot.x, txBot.y };
-            // Second tri
-            vertecies[3] = { glyphPt.x    , glyphPt.y + h, txBot.x, txTop.y };
-            vertecies[4] = { glyphPt.x + w, glyphPt.y + h, txTop.x, txTop.y };
-            vertecies[5] = { glyphPt.x + w, glyphPt.y    , txTop.x, txBot.y };
+                // First tri
+                vertChunk[vertShift + 0] = { glyphPt.x    , glyphPt.y + h, txBot.x, txBot.y };
+                vertChunk[vertShift + 1] = { glyphPt.x + w, glyphPt.y    , txTop.x, txTop.y };
+                vertChunk[vertShift + 2] = { glyphPt.x    , glyphPt.y    , txBot.x, txTop.y };
+                // Second tri
+                vertChunk[vertShift + 3] = { glyphPt.x    , glyphPt.y + h, txBot.x, txBot.y };
+                vertChunk[vertShift + 4] = { glyphPt.x + w, glyphPt.y + h, txTop.x, txBot.y };
+                vertChunk[vertShift + 5] = { glyphPt.x + w, glyphPt.y    , txTop.x, txTop.y };
+                vertShift += 6;
 
-            pt.x += glyph->advance.x * scale.x;
-            pt.y += glyph->advance.y * scale.y;
+                pt.x += glyph->advance.x * scale.x;
+                pt.y += glyph->advance.y * scale.y;
+            }
+        }
 
-            glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertecies), &vertecies);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-            glBindVertexArray(vaoId);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
+        if(vertShift >= geom->vertCount) {
+            if (vertShift == geom->vertCount) {
+                ++it;
+                geom->drawChunk(&vertChunk[0], vertShift);
+            } else {
+                geom->drawChunk(&vertChunk[0], vertShift - 6);
+            }
+            vertShift = 0;
+        } else if(it == text.end()) {
+            geom->drawChunk(&vertChunk[0], vertShift);
+            break;
+        } else {
+            ++it;
         }
     }
-
     mat->unbind();
 }
 

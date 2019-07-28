@@ -17,8 +17,8 @@ public:
     void ET_setType(UIListType newListType) override;
 
     // ETUIBox
-    void UIList::ET_boxResizeInside(const AABB2Di& rootBox) override;
-    void ET_addChildElement(EntityId newElemId) override;
+    void ET_boxResize() override;
+    void ET_onChildAdded(EntityId newElemId) override;
 
 private:
 

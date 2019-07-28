@@ -1,6 +1,6 @@
 {
     "children":[
-        "Game/GameBoard_1.json"
+        "Game/GameBoard.json"
     ],
     "logics":[
         {

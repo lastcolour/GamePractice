@@ -13,6 +13,12 @@ struct ETGameBoardElemLogic {
     virtual const Vec2i& ET_getBoardPos() const = 0;
 };
 
+struct ETGameObjectEvents {
+    virtual ~ETGameObjectEvents() = default;
+    virtual void ET_onTransformChanged(const Transform& newTm) = 0;
+    virtual void ET_onChildAdded(EntityId childId) = 0;
+};
+
 struct ETGameObject {
     virtual ~ETGameObject() = default;
     virtual const std::vector<EntityId>& ET_getChildren() const = 0;

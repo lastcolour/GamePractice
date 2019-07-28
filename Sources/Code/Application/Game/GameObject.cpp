@@ -60,6 +60,7 @@ void GameObject::ET_addChild(EntityId entId) {
     if(entParentId != entityId) {
         ET_SendEvent(entId, &ETGameObject::ET_setParent, entityId);
     }
+    ET_SendEvent(entityId, &ETGameObjectEvents::ET_onChildAdded, entId);
 }
 
 void GameObject::ET_removeChild(EntityId entId) {
@@ -96,4 +97,5 @@ void GameObject::ET_setTransform(const Transform& transform) {
         childTm.pt += ptOffset;
         ET_SendEvent(childId, &ETGameObject::ET_setTransform, childTm);
     }
+    ET_SendEvent(entityId, &ETGameObjectEvents::ET_onTransformChanged, tm);
 }

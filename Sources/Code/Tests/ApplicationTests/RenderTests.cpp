@@ -307,20 +307,6 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     ET_SendEvent(&ETGameObjectManager::ET_destroyObject, objId);
 }
 
-TEST_F(RenderTests, CheckGameRenderAfterInit) {
-    GameInitModule gameInit;
-    ASSERT_TRUE(gameInit.init());
-
-    const Vec2i fbSize = textureFramebuffer->getSize();
-    Vec2i touchPt = fbSize / 2;
-    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, touchPt);
-
-    ET_SendEvent(&ETRender::ET_drawFrame);
-
-    ASSERT_TRUE(textureFramebuffer->read());
-    dumpFramebuffer();
-}
-
 TEST_F(RenderTests, CheckCreateSameFontTwice) {
     std::shared_ptr<RenderFont> font1;
     ET_SendEventReturn(font1, &ETRenderFontManager::ET_createDefaultFont);

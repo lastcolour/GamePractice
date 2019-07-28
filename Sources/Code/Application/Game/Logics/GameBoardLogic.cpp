@@ -130,6 +130,7 @@ bool GameBoardLogic::init() {
                 LogWarning("[GameBoardLogic::init] Can't spawn element");
                 return false;
             }
+            ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, cellObjId);
             BoardElement elem;
             elem.entId = cellObjId;
             initNewElem(elem, Vec2i(i, j));

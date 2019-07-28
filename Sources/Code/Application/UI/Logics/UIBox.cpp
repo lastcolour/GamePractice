@@ -13,8 +13,7 @@ UIBox::UIBox() {
 UIBox::~UIBox() {
 }
 
-void UIBox::ET_addChildElement(EntityId childId) {
-    ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, childId);
+void UIBox::ET_onChildAdded(EntityId childId) {
     ET_SendEvent(childId, &ETUIBox::ET_boxResize);
 }
 
@@ -45,6 +44,13 @@ AABB2Di UIBox::getParentAabb2di() const {
         ET_SendEventReturn(parentAabb, getParentId(), &ETUIBox::ET_getAabb2di);
     }
     return parentAabb;
+}
+
+void UIBox::ET_onTransformChanged(const Transform& newTm) {
+    Vec2i newCenter = Vec2i(static_cast<int>(newTm.pt.x), static_cast<int>(newTm.pt.y));
+    if(box.getCenter() != newCenter) {
+        box.setCenter(newCenter);
+    }
 }
 
 Vec2i UIBox::calculateBoxSize(const AABB2Di& parentBox) const {
@@ -150,18 +156,13 @@ void UIBox::syncTransform() const {
     ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
 }
 
-void UIBox::ET_boxResizeInside(const AABB2Di& resizeBox) {
-    setBox(calcBox(resizeBox));
+void UIBox::ET_boxResize() {
+    setBox(calcBox(getParentAabb2di()));
     std::vector<EntityId> childrenIds;
     ET_SendEventReturn(childrenIds, getEntityId(), &ETGameObject::ET_getChildren);
     for(auto childId : childrenIds) {
         ET_SendEvent(childId, &ETUIBox::ET_boxResize);
     }
-}
-
-void UIBox::ET_boxResize() {
-    const auto& rootBox = getParentAabb2di(); 
-    ET_boxResizeInside(rootBox);
 }
 
 void UIBox::ET_onRenderPortResized() {
@@ -246,6 +247,7 @@ bool UIBox::init() {
     setBox(calcBox(getParentAabb2di()));
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
+    ETNode<ETGameObjectEvents>::connect(getEntityId());
     return true;
 }
 

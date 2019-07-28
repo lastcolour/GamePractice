@@ -13,6 +13,7 @@ class RenderGeometry;
 class RenderMaterial;
 class RenderTextureFramebuffer;
 class RenderFont;
+class TextVertexChunk;
 
 struct ETRenderSimpleLogic {
     virtual ~ETRenderSimpleLogic() = default;

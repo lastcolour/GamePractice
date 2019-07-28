@@ -14,9 +14,6 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
-    // ETUIBox
-    void ET_addChildElement(EntityId childId) override {}
-
     // ETUILabel
     void ET_setText(const char* newText) override;
     const char* ET_getText() const override;

@@ -103,15 +103,7 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
         LogWarning("[GameObjectManager::createObject] Can't load game objects from: %s", objectFilePath);
         return nullptr;
     }
-    auto childrenNode = rootNode.object("children");
-    if (!childrenNode) {
-        LogWarning("[GameObjectManager::createObject] Can't find require children node in object file '%s'", objectName);
-        return nullptr;
-    }
     std::unique_ptr<GameObject> objPtr(new GameObject(objectName, GetETSystem()->createNewEntityId()));
-    if(rootObj) {
-        rootObj->ET_addChild(objPtr->getEntityId());
-    }
     auto logicsNodes = rootNode.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
         LogWarning("[GameObjectManager::createObject] Skip object '%s' while it doesn't have any logic", objectName);
@@ -141,12 +133,20 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
         }
         objPtr->addLogic(std::move(logicPtr));
     }
+    auto childrenNode = rootNode.object("children");
+    if (!childrenNode) {
+        LogWarning("[GameObjectManager::createObject] Can't find require children node in object file '%s'", objectName);
+        return nullptr;
+    }
     std::vector<GameObjectPtrT> childrenObjects;
     for(const auto& childNode : childrenNode) {
         std::string childObjName;
         childNode.value(childObjName);
         auto childGameObj = createObject(objPtr.get(), childObjName.c_str());
         gameObjects.push_back(std::move(childGameObj));
+    }
+    if(rootObj) {
+        rootObj->ET_addChild(objPtr->getEntityId());
     }
     LogDebug("[GameObjectManager::createObject] Create object: '%s'", objectName);
     return std::move(objPtr);

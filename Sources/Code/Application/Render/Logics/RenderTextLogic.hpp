@@ -7,6 +7,7 @@
 #include "Math/AABB.hpp"
 
 class RenderGlyph;
+class RenderGeometry;
 
 class RenderTextLogic : public GameLogic,
     public ETNode<ETRenderEvents>,
@@ -33,7 +34,6 @@ public:
 
 private:
 
-    void createVAO();
     void calcTextAABB();
 
 private:
@@ -41,10 +41,9 @@ private:
     AABB2D aabb;
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
+    std::shared_ptr<RenderGeometry> geom;
     std::string text;
     float fontSize;
-    unsigned int vaoId;
-    unsigned int vboId;
     ColorB color;
 };
 

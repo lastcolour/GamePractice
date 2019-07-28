@@ -13,6 +13,9 @@ protected:
 
 template<typename T>
 class ETNode : public ETNodeBase, public T {
+
+    friend class ETSystem;
+
 public:
 
     ETNode() {
@@ -30,8 +33,10 @@ protected:
         } else if(addressId != adId && addressId != InvalidEntityId) {
             disconnect();
         }
+        if(adId != InvalidEntityId) {
+            GetETSystem()->connectNode(*this, adId);
+        }
         addressId = adId;
-        GetETSystem()->connectNode(*this, addressId);
     }
     void disconnect() {
         if(addressId == InvalidEntityId) {

@@ -4,10 +4,12 @@
 
 enum class EUIEventType {
     OnMainStart,
+    OnGameBack
 };
 
 UIEventManager::UIEventManager() {
     eventMap["OnMainStart"] = EUIEventType::OnMainStart;
+    eventMap["OnGameBack"] = EUIEventType::OnGameBack;
 }
 
 UIEventManager::~UIEventManager() {
@@ -27,6 +29,11 @@ void UIEventManager::processEvent(EUIEventType eventType) {
         case EUIEventType::OnMainStart:
         {
             ET_SendEvent(&ETUIViewManager::ET_openView, "UI/GameView/Root.json");
+            break;
+        }
+        case EUIEventType::OnGameBack:
+        {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
             break;
         }
         default:

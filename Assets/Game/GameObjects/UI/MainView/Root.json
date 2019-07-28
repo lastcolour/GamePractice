@@ -1,14 +1,13 @@
 {
-    "children":[],
+    "children": [
+        "UI/MainView/StartButton.json",
+        "UI/MainView/OptionsButton.json"
+    ],
     "logics": [
         {
             "type": "UIList",
             "data": {
                 "type": "vert",
-                "children": [
-                    "UI/MainView/StartButton.json",
-                    "UI/MainView/OptionsButton.json"
-                ],
                 "style": {
                     "renderer": null,
                     "color": {},

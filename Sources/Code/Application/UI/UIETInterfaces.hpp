@@ -19,8 +19,6 @@ struct ETUIBox {
     virtual void ET_boxResize() = 0;
     virtual const UIStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIStyle& newStyle) = 0;
-    virtual void ET_addChildElement(EntityId childId) = 0;
-    virtual void ET_boxResizeInside(const AABB2Di& resizeBox) = 0;
 };
 
 struct ETUIInteractionBox {

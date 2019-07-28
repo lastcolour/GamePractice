@@ -130,10 +130,22 @@ public:
     void disconnectNode(ETNode<ETType>& node) {
         LockTypeT lock(mutex);
 
+        auto etId = GetTypeId<ETType>();
+        auto it = activeConnection.find(etId);
+        if(it != activeConnection.end()) {
+            auto& connections = it->second;
+            for(auto& currConn: connections) {
+                if(currConn.node == &node) {
+                    currConn.addressId = InvalidEntityId;
+                }
+            }
+        }
+
         ETConnectionRequest connReq;
-        connReq.etId = GetTypeId<ETType>();
+        connReq.etId = etId;
         connReq.isDisconnect = true;
         connReq.conn.node = &node;
+        connReq.conn.addressId = InvalidEntityId;
 
         if(isRouteSafe(connReq.etId)) {
             registerConnection(connReq);
@@ -146,6 +158,10 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        if(!addressId.isValid()) {
+            return;
+        }
+
         LockTypeT lock(mutex);
 
         auto etId = GetTypeId<ETType>();
@@ -166,6 +182,10 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        if(!addressId.isValid()) {
+            return;
+        }
+
         LockTypeT lock(mutex);
 
         auto etId = GetTypeId<ETType>();
@@ -196,8 +216,10 @@ public:
         }
         activeRoute.push_back(etId);
         for(auto& currConn : it->second) {
-            auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-            (obj->*func)(std::forward<ParamType>(params)...);
+            if(currConn.addressId != InvalidEntityId) {
+                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                (obj->*func)(std::forward<ParamType>(params)...);
+            }
         }
         activeRoute.pop_back();
         updatePendingConnections();
@@ -214,9 +236,11 @@ public:
         }
         activeRoute.push_back(etId);
         for(auto& currConn : it->second) {
-            auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-            retVal = (obj->*func)(std::forward<ParamType>(params)...);
-            break;
+            if(currConn.addressId != InvalidEntityId) {
+                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                retVal = (obj->*func)(std::forward<ParamType>(params)...);
+                break;
+            }
         }
         activeRoute.pop_back();
         updatePendingConnections();
@@ -226,6 +250,10 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        if(!addressId.isValid()) {
+            return;
+        }
+
         LockTypeT lock(mutex);
 
         auto etId = GetTypeId<ETType>();
@@ -246,6 +274,10 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        if(!addressId.isValid()) {
+            return;
+        }
+
         LockTypeT lock(mutex);
 
         auto etId = GetTypeId<ETType>();
@@ -276,8 +308,10 @@ public:
         }
         activeRoute.push_back(etId);
         for(auto& currConn : it->second) {
-            auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-            (obj->*func)(std::forward<ParamType>(params)...);
+            if (currConn.addressId != InvalidEntityId) {
+                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                (obj->*func)(std::forward<ParamType>(params)...);
+            }
         }
         activeRoute.pop_back();
         updatePendingConnections();
@@ -294,9 +328,11 @@ public:
         }
         activeRoute.push_back(etId);
         for(auto& currConn : it->second) {
-            auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-            retVal = (obj->*func)(std::forward<ParamType>(params)...);
-            break;
+            if(currConn.addressId != InvalidEntityId) {
+                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                retVal = (obj->*func)(std::forward<ParamType>(params)...);
+                break;
+            }
         }
         activeRoute.pop_back();
         updatePendingConnections();

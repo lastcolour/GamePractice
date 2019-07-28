@@ -1,15 +1,14 @@
 {
-    "children":[],
+    "children": [
+        "UI/GameView/TopBar.json",
+        "UI/GameView/MiddleBar.json",
+        "UI/GameView/BotBar.json"
+    ],
     "logics":[
         {
             "type": "UIList",
             "data": {
                 "type": "vert",
-                "children": [
-                    "UI/GameView/TopBar.json",
-                    "UI/GameView/MiddleBar.json",
-                    "UI/GameView/BotBar.json"
-                ],
                 "style": {
                     "renderer": null,
                     "color": null,

@@ -31,6 +31,31 @@ UIBox* UITests::createUIBox() {
     return uiBox;
 }
 
+TEST_F(UITests, CheckUIBoxUpdatedAfterUpdatedTransform) {
+    auto object = createUIBox();
+    UIStyle style;
+    style.size = Vec2(0.5f);
+    object->ET_setStyle(style);
+    ASSERT_TRUE(object->init());
+
+    auto origCenter = object->ET_getAabb2di().getCenter();
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Transform tm;
+    ET_SendEventReturn(tm, object->getEntityId(), &ETGameObject::ET_getTransform);
+
+    auto shift = renderPort.x / 2;
+    tm.pt.x += static_cast<float>(shift);
+    ET_SendEvent(object->getEntityId(), &ETGameObject::ET_setTransform, tm);
+
+    auto shfitCenter = object->ET_getAabb2di().getCenter();
+
+    EXPECT_EQ(shfitCenter.x, origCenter.x + shift);
+    EXPECT_EQ(shfitCenter.y, origCenter.y);
+}
+
 TEST_F(UITests, CheckXAlign) {
     UIBox* uiBox = createUIBox();
     UIStyle style;
@@ -172,8 +197,8 @@ TEST_F(UITests, CheckVerticalUIList) {
     uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->ET_addChildElement(uiBox1->getEntityId());
-    uiList->ET_addChildElement(uiBox2->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox1->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
@@ -220,8 +245,8 @@ TEST_F(UITests, CheckHorizontalUIList) {
     uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->ET_addChildElement(uiBox1->getEntityId());
-    uiList->ET_addChildElement(uiBox2->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox1->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
@@ -270,8 +295,8 @@ TEST_F(UITests, CheckUIListResize) {
     innerUiBox->ET_setStyle(innerBoxStyle);
     ASSERT_TRUE(innerUiBox->init());
 
-    rootUiBox->ET_addChildElement(uiList->getEntityId());
-    uiList->ET_addChildElement(innerUiBox->getEntityId());
+    ET_SendEvent(rootUiBox->getEntityId(), &ETGameObject::ET_addChild, uiList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, innerUiBox->getEntityId());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -313,7 +338,7 @@ TEST_F(UITests, CheckUIListCombined) {
         ASSERT_TRUE(topUIBox->init());
     }
 
-    rootVertUIList->ET_addChildElement(topUIBox->getEntityId());
+    ET_SendEvent(rootVertUIList->getEntityId(), &ETGameObject::ET_addChild, topUIBox->getEntityId());
 
     auto leftUIBox = createUIBox();
     {
@@ -342,10 +367,11 @@ TEST_F(UITests, CheckUIListCombined) {
         ASSERT_TRUE(botHorzUIlist->init());
     }
 
-    botHorzUIlist->ET_addChildElement(leftUIBox->getEntityId());
-    botHorzUIlist->ET_addChildElement(rightUIBox->getEntityId());
 
-    rootVertUIList->ET_addChildElement(botHorzUIlist->getEntityId());
+    ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
+    ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
+
+    ET_SendEvent(rootVertUIList->getEntityId(), &ETGameObject::ET_addChild, botHorzUIlist->getEntityId());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -388,8 +414,8 @@ TEST_F(UITests, CheckListWithAlignVariation) {
     rightUIBox->ET_setStyle(boxStyle);
     ASSERT_TRUE(rightUIBox->init());
 
-    uiList->ET_addChildElement(leftUIBox->getEntityId());
-    uiList->ET_addChildElement(rightUIBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
