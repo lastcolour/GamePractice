@@ -40,6 +40,10 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 # -Wstrict-overflow=5
 # -Wconversion
 
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+    
+
 else()
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")
 endif()

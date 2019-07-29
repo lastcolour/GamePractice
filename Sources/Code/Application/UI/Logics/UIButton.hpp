@@ -15,7 +15,7 @@ public:
     bool init() override;
 
     // ETUIInteractionBox
-    const AABB2Di& ET_getHitBox() const override;
+    AABB2Di ET_getHitBox() const override;
     void ET_onPress() override;
     void ET_setEventName(const char* newEventName) override;
     void ET_onHover(bool flag) override;

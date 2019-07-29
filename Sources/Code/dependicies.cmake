@@ -64,11 +64,16 @@ if(NOT APP_BUILD_PLATFORM STREQUAL "Android")
 
     if(APP_BUILD_PLATFORM STREQUAL "Linux")
         set(APP_LIB_DEPENDICIES ${APP_LIB_DEPENDICIES} dl png)
-    elseif()
-
     endif()
-endif()
 
+else()
+
+    set(APP_LIB_DEPENDICIES
+        ${FREETYPE2_LIB_STATIC_BIN}
+        GLESv3 EGL log android z
+        CACHE INTERNAL "Application link depedicies")
+
+endif()
 
 if(BUILD_UNITTESTS)
     set(GTEST_PROJECT_PATH ${LIBS_ROOT_DIR}/GTEST)

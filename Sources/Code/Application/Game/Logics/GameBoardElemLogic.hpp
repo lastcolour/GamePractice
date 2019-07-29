@@ -24,7 +24,7 @@ public:
     void ET_onPress() override;
     void ET_onHover(bool flag) override;
     bool ET_isHovered() const override;
-    const AABB2Di& ET_getHitBox() const override;
+    AABB2Di ET_getHitBox() const override;
 
 private:
 

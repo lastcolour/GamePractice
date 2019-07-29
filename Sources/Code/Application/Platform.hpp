@@ -7,7 +7,6 @@
 
 class Platform {
 public:
-
     virtual ~Platform() = default;
     virtual std::unique_ptr<SystemModule> createPlatformModule() const = 0;
 };

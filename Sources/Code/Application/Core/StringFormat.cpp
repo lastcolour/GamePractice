@@ -4,7 +4,7 @@ namespace Core {
 
 char* StringCopyUnsafe(char *dest, const char *src) {
    char* ptr = dest;
-   while(*dest++ = *src++);
+   while((*dest++ = *src++));
    return ptr;
 }
 

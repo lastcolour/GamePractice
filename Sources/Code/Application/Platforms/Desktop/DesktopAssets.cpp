@@ -16,7 +16,7 @@
 #elif defined APP_BUILD_PLATFORM_LINUX
   #include <unistd.h>
   #define GetCurrentWorkingDir getcwd
-  const char CWD_PREFIX = "/";
+  const char* CWD_PREFIX = "/";
 #else
   #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
 #endif
@@ -157,6 +157,9 @@ JSONNode DesktopAssets::ET_loadJSONAsset(const char* assetName) {
 
 Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     Buffer buff;
+    if(!assetName || !assetName[0]) {
+        return buff;
+    }
     ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
     if (buff) {
         return buff;
@@ -186,11 +189,11 @@ Buffer DesktopAssets::loadAssetImpl(const std::string& assetName) {
         return Buffer();
     }
     std::ifstream fin(assetPath, std::ios::binary | std::ios::ate);
-    if(!fin.is_open()) {
+    if(!fin.good() || !fin.is_open()) {
         LogError("[DesktopAssets] Can't load file: '%s'", assetPath);
         return Buffer();
     }
-    auto fileSize = fin.tellg();
+    long int fileSize = fin.tellg();
     if(fileSize == -1) {
         LogError("[DesktopAssets] Can't get file size: '%s'", assetName);
         return Buffer();

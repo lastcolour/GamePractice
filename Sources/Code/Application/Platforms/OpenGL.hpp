@@ -14,6 +14,11 @@
     #endif
   #endif
 
+#elif defined APP_BUILD_PLATFORM_ANDROID
+
+  #include <GLES3/gl3.h>
+  #include <GLES3/gl3ext.h>
+
 #else
 
     #error OpenGL API not specified

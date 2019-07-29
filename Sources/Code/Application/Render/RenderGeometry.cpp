@@ -6,9 +6,9 @@ namespace {
     int getVertexSize(VertexType vertType) {
         switch(vertType)
         {
-        case VertexType::Vec3:
+        case VertexType::Vector3:
             return sizeof(Vec3);
-        case VertexType::Vec4:
+        case VertexType::Vector4:
             return sizeof(Vec4);
         default:
             return 0;
@@ -23,7 +23,7 @@ RenderGeometry::RenderGeometry() :
     vaoId(0),
     vboId(0),
     vertCount(0),
-    vertType(VertexType::Vec3) {
+    vertType(VertexType::Vector3) {
 }
 
 RenderGeometry::~RenderGeometry() {

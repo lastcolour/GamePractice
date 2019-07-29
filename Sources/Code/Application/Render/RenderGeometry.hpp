@@ -4,8 +4,8 @@
 #include "Math/AABB.hpp"
 
 enum class VertexType {
-    Vec3,
-    Vec4
+    Vector3,
+    Vector4
 };
 
 class RenderGeometry {

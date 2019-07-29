@@ -26,24 +26,6 @@ android {
     buildTypes {
 
         debug {
-
-            task buildLibrary(type:Exec) {
-                workingDir '../../Sources/Automation/Build'
-
-                //on windows:
-                commandLine 'python', 'build.py', '-build=Debug', '-platform=Android'
-
-                //on linux
-                commandLine 'python', 'build.py', '-build=Debug', '-platform=Android'
-
-                //store the output instead of printing to the console:
-                standardOutput = new ByteArrayOutputStream()
-
-                //extension method stopTomcat.output() can be used to obtain the output:
-                ext.output = {
-                    return standardOutput.toString()
-                }
-            }
         }
 
         release {

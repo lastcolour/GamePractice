@@ -27,6 +27,8 @@ if(APP_BUILD_PLATFORM STREQUAL "Windows" OR APP_BUILD_PLATFORM STREQUAL "Linux")
         add_definitions(-DAPP_BUILD_PLATFORM_LINUX)
     endif()
     set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
+elseif(APP_BUILD_PLATFORM STREQUAL "Android")
+    add_definitions(-DAPP_BUILD_PLATFORM_ANDROID)
 else()
     message(STATUS "Skip unittests build (Not supported for such platform)")
 endif()
@@ -43,5 +45,12 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Application)
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/desktop_main.cpp)
+if(APP_BUILD_PLATFORM STREQUAL "Android")
+    add_library(${PROJECT_NAME} SHARED
+        ${CMAKE_CURRENT_SOURCE_DIR}/android_main.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/android_main.cpp)
+else()
+    add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/desktop_main.cpp)
+endif()
+
 target_link_libraries(${PROJECT_NAME} Application ${APP_LIB_DEPENDICIES})

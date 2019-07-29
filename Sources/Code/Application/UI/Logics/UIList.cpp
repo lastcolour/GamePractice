@@ -62,9 +62,9 @@ AABB2Di UIList::getAligntBox(const AABB2Di& elemBox) const {
     return resBox;
 }
 
-Vec2i UIList::caclCenterUpdateOffset(Vec2i& offset, AABB2Di& box) {
-    auto boxSize = box.getSize();
-    auto center = box.getCenter();
+Vec2i UIList::caclCenterUpdateOffset(Vec2i& offset, const AABB2Di& elemBox) {
+    auto boxSize = elemBox.getSize();
+    auto center = elemBox.getCenter();
     if(listType == UIListType::Vertical) {
         center.y = offset.y - boxSize.y / 2;
         offset.y -= boxSize.y;
@@ -108,7 +108,7 @@ void UIList::calcList() {
         listBox.top.x = std::max(listBox.top.x, elemBox.top.x);
     }
 
-    auto& origBoxCenter = ET_getAabb2di().getCenter();
+    auto origBoxCenter = ET_getAabb2di().getCenter();
     if(listType == UIListType::Vertical) {
         auto diff = std::max(origBoxCenter.x - listBox.bot.x, listBox.top.x - origBoxCenter.x);
         listBox.bot.x = origBoxCenter.x - diff;

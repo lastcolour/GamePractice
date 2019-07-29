@@ -10,7 +10,7 @@
     ],
     "cmake": {
         "cmake-bin-path": {
-            "Android": "{config:android-cmake-path}",
+            "Android": "",
             "Windows": "",
             "Linux": ""
         },
@@ -52,7 +52,7 @@
                 "CMAKE_BUILD_TYPE": "{self:build-type}",
                 "CMAKE_MAKE_PROGRAM": "{config:android-cmake-path}/ninja",
                 "CMAKE_TOOLCHAIN_FILE": "{config:android-sdk}/ndk-bundle/build/cmake/android.toolchain.cmake",
-                "CMAKE_CXX_FLAGS": "-std=c++11",
+                "CMAKE_CXX_FLAGS": "-std=c++14",
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "{android_bins_out_path}/{self:android-abi}",
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": "{android_bins_out_path}/{self:android-abi}",
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": "{android_bins_out_path}/{self:android-abi}",
@@ -65,7 +65,7 @@
             }
         },
         "generator": {
-            "Android": "Android Gradle - Ninja",
+            "Android": "Ninja",
             "Linux": "Unix Makefiles",
             "Windows": "Visual Studio 16 2019"
         }

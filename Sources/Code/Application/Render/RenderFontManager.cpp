@@ -67,7 +67,8 @@ std::shared_ptr<RenderFont> RenderFontManager::ET_createDefaultFont() {
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontName, int fontSize) {
-    std::string fontName = reqFontName + '_' + std::to_string(fontSize);
+    std::string fontName = reqFontName;
+    fontName += '_' + std::to_string(fontSize);
     auto it = fonts.find(fontName);
     if(it != fonts.end() && !it->second.expired()) {
         return it->second.lock();

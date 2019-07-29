@@ -31,7 +31,7 @@ struct ETUIInteractionBox {
     virtual void ET_onPress() = 0;
     virtual void ET_onHover(bool flag) = 0;
     virtual bool ET_isHovered() const = 0;
-    virtual const AABB2Di& ET_getHitBox() const = 0;
+    virtual AABB2Di ET_getHitBox() const = 0;
 };
 
 struct ETUIButton {

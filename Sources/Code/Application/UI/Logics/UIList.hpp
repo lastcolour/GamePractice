@@ -24,7 +24,7 @@ private:
 
     void calcList();
     AABB2Di getAligntBox(const AABB2Di& elemBox) const;
-    Vec2i caclCenterUpdateOffset(Vec2i& offset, AABB2Di& box);
+    Vec2i caclCenterUpdateOffset(Vec2i& offset, const AABB2Di& elemBox);
 
 private:
 

@@ -37,9 +37,9 @@ void UIButton::ET_onPress() {
     col.r = rand() % 256;
     col.g = rand() % 256;
     col.b = rand() % 256;
-    UIStyle style = ET_getStyle();
-    style.color = col;
-    ET_setStyle(style);
+    UIStyle newStyle = ET_getStyle();
+    newStyle.color = col;
+    ET_setStyle(newStyle);
 
     ET_SendEvent(&ETUIEventManager::ET_onEvent, eventName.c_str());
 }
@@ -92,6 +92,6 @@ bool UIButton::ET_isHovered() const {
     return isHovered;
 }
 
-const AABB2Di& UIButton::ET_getHitBox() const {
+AABB2Di UIButton::ET_getHitBox() const {
     return ET_getAabb2di();
 }

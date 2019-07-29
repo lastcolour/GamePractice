@@ -12,8 +12,8 @@ public:
     virtual ~RenderGeometryManager();
 
     // SystemLogic
-    bool init();
-    void deinit();
+    bool init() override;
+    void deinit() override;
 
     // ETRenderGeometryManager
     std::shared_ptr<RenderGeometry> ET_createGeometry(const char* geomName) override;

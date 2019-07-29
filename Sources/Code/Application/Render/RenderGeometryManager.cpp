@@ -78,7 +78,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = 6u;
-    geometry->vertType = VertexType::Vec3;
+    geometry->vertType = VertexType::Vector3;
 
     return geometry;
 }
@@ -101,7 +101,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = TEXT_CHUNK_VERTEX_COUNT;
-    geometry->vertType = VertexType::Vec4;
+    geometry->vertType = VertexType::Vector4;
 
     return geometry;
 }

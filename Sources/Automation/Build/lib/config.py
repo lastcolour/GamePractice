@@ -226,7 +226,11 @@ class ConfigNode:
                     log.error("[Error] Can't format value: {0}. Can't find config key: '{1}'"
                               .format(fmtString, tFmtValueExt))
                     raise RuntimeError("Can't format config value")
-                tStr += ConfigNode._CONFIG_VARS[tFmtValueExt]
+                try:
+                    tStr += ConfigNode._CONFIG_VARS[tFmtValueExt]
+                except:
+                    log.error("[Error] Can't format require variable: {0}".format(fmtString))
+                    raise
                 continue
             if tFmtValue == "args":
                 if tFmtValueExt not in ConfigNode._ARGS_VARS:

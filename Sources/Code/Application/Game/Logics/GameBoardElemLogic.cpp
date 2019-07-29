@@ -30,13 +30,14 @@ void GameBoardElemLogic::ET_onPress() {
 }
 
 void GameBoardElemLogic::ET_onHover(bool flag) {
+    (void)flag;
 }
 
 bool GameBoardElemLogic::ET_isHovered() const {
     return false;
 }
 
-const AABB2Di& GameBoardElemLogic::ET_getHitBox() const {
+AABB2Di GameBoardElemLogic::ET_getHitBox() const {
     AABB2Di box(0);
     ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getAabb2di);
     return box;
