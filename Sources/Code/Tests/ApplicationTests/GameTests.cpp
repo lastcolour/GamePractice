@@ -2,7 +2,7 @@
 #include "Game/GameObject.hpp"
 
 namespace {
-    const char* TEST_OBJECT_NAME = "Simple";
+    const char* TEST_OBJECT_NAME = "Game/Simple.json";
 } // namespace
 
 TEST_F(GameTests, CreateSimpleGameObject) {
@@ -59,4 +59,33 @@ TEST_F(GameTests, CreateParentWithChildObject) {
 
     ASSERT_FALSE(ET_IsExistNode<ETGameObject>(objId1));
     ASSERT_FALSE(ET_IsExistNode<ETGameObject>(objId2));
+}
+
+TEST_F(GameTests, CheckChildInheritParentTransform) {
+    EntityId objId1 = InvalidEntityId;
+    ET_SendEventReturn(objId1, &ETGameObjectManager::ET_createGameObject, TEST_OBJECT_NAME);
+
+    EntityId objId2 = InvalidEntityId;
+    ET_SendEventReturn(objId2, &ETGameObjectManager::ET_createGameObject, TEST_OBJECT_NAME);
+
+    ET_SendEvent(objId2, &ETGameObject::ET_setParent, objId1);
+
+    Vec3 offset = Vec3(0.5f);
+
+    Transform childTm;
+    ET_SendEventReturn(childTm, objId2, &ETGameObject::ET_getTransform);
+    childTm.pt += offset;
+    ET_SendEvent(objId2, &ETGameObject::ET_setTransform, childTm);
+
+    Transform parentTm;
+    ET_SendEventReturn(parentTm, objId1, &ETGameObject::ET_getTransform);
+    parentTm.pt += offset;
+    ET_SendEvent(objId1, &ETGameObject::ET_setTransform, parentTm);
+
+    ET_SendEventReturn(childTm, objId2, &ETGameObject::ET_getTransform);
+    Vec3 diff = childTm.pt - parentTm.pt;
+
+    ASSERT_FLOAT_EQ(diff.x, offset.x);
+    ASSERT_FLOAT_EQ(diff.y, offset.x);
+    ASSERT_FLOAT_EQ(diff.z, offset.x);
 }

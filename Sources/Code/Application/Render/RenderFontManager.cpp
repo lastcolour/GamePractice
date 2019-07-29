@@ -1,4 +1,4 @@
-#include "Render/RenderFontSystem.hpp"
+#include "Render/RenderFontManager.hpp"
 #include "Render/RenderFont.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Platforms/OpenGL.hpp"
@@ -8,7 +8,14 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-RenderFontSystem::RenderFontSystem() :
+namespace {
+
+const char* DEF_FONT_NAME = "Render/Fonts/Shanti-Regular.ttf";
+const int DEF_FONT_SIZE = 38;
+
+} // namespace
+
+RenderFontManager::RenderFontManager() :
     padding(10) {
     characterSet = {
         'A', 'a',
@@ -43,10 +50,23 @@ RenderFontSystem::RenderFontSystem() :
     };
 }
 
-RenderFontSystem::~RenderFontSystem() {
+RenderFontManager::~RenderFontManager() {
 }
 
-std::shared_ptr<RenderFont> RenderFontSystem::createFont(const std::string& reqFontName, int fontSize) {
+bool RenderFontManager::init() {
+    ETNode<ETRenderFontManager>::connect(getEntityId());
+    return true;
+}
+
+void RenderFontManager::deinit() {
+    ETNode<ETRenderFontManager>::disconnect();
+}
+
+std::shared_ptr<RenderFont> RenderFontManager::ET_createDefaultFont() {
+    return createFont(DEF_FONT_NAME, DEF_FONT_SIZE);
+}
+
+std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontName, int fontSize) {
     std::string fontName = reqFontName + '_' + std::to_string(fontSize);
     auto it = fonts.find(fontName);
     if(it != fonts.end() && !it->second.expired()) {
@@ -60,24 +80,24 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFont(const std::string& reqF
     return nullptr;
 }
 
-std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& fontName, int fontSize) {
+std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontName, int fontSize) {
     FT_Library ftLib;
     if(FT_Init_FreeType(&ftLib)) {
-        LogError("[RenderFontSystem::createFontImpl] Can't init FreeType library");
+        LogError("[RenderFontManager::createFontImpl] Can't init FreeType library");
         return nullptr;
     }
     Buffer buff;
     ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fontName);
     if(!buff) {
         FT_Done_FreeType(ftLib);
-        LogError("[RenderFontSystem::createFontImpl] Can't load default font: %s", fontName);
+        LogError("[RenderFontManager::createFontImpl] Can't load default font: %s", fontName);
         return nullptr;
     }
     FT_Face fontFace = nullptr;
-    if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getData()),
+    if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getWriteData()),
         static_cast<FT_Long>(buff.getSize()), 0, &fontFace)) {
         FT_Done_FreeType(ftLib);
-        LogError("[RenderFontSystem::createFontImpl] Can't create memory font face for font: %s", fontName);
+        LogError("[RenderFontManager::createFontImpl] Can't create memory font face for font: %s", fontName);
         return nullptr;
     }
 
@@ -89,7 +109,7 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
     FT_GlyphSlot glyph = fontFace->glyph;
     for(auto ch : characterSet) {
         if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
-            LogWarning("[RenderFontSystem::createFontImpl] Failed to load character '%c'", ch);
+            LogWarning("[RenderFontManager::createFontImpl] Failed to load character '%c'", ch);
             continue;
         }
         texWidth += glyph->bitmap.width + padding;
@@ -98,7 +118,7 @@ std::shared_ptr<RenderFont> RenderFontSystem::createFontImpl(const std::string& 
 
     std::shared_ptr<RenderFont> font(new RenderFont);
     if(!font->createAtlas(texWidth, texHeight)) {
-        LogWarning("[RenderFontSystem::createFontImpl] Counld not create atlas for font: %s", fontName);
+        LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: %s", fontName);
         FT_Done_Face(fontFace);
         FT_Done_FreeType(ftLib);
         return nullptr;

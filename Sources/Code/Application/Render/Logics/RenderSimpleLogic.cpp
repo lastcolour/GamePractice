@@ -7,8 +7,8 @@
 #include <cassert>
 
 RenderSimpleLogic::RenderSimpleLogic() :
-    params(),
     scale(1.f),
+    color(255, 255, 255),
     mat(),
     geom() {
 }
@@ -19,13 +19,13 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 bool RenderSimpleLogic::serialize(const JSONNode& node) {
     std::string geomName;
     node.value("geom", geomName);
-    ET_SendEventReturn(geom, &ETRender::ET_createGeometry, geomName);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomName.c_str());
     if(!geom) {
         return false;
     }
     std::string matName;
     node.value("mat", matName);
-    ET_SendEventReturn(mat, &ETRender::ET_createMaterial, matName);
+    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName.c_str());
     if(!mat) {
         return false;
     }
@@ -44,7 +44,7 @@ void RenderSimpleLogic::ET_onRender(const RenderContext& renderCtx) {
 
     mat->bind();
     mat->setUniformMat4("MVP", mvp);
-    mat->setUniform4f("color", params.col);
+    mat->setUniform4f("color", color);
     geom->draw();
     mat->unbind();
 }
@@ -61,13 +61,16 @@ Mat4 RenderSimpleLogic::getModelMat() const {
     return model;
 }
 
-void RenderSimpleLogic::ET_setRenderParams(const RenderLogicParams& logicParams) {
-    params = logicParams;
-    Vec3 modelScale = Vec3(params.size, 1.f) / geom->aabb.getSize();
-    scale.x = modelScale.x;
-    scale.y = modelScale.y;
+void RenderSimpleLogic::ET_setMaterial(const char* matName) {
+    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName);
 }
 
-void RenderSimpleLogic::ET_getRenderParams(RenderLogicParams& logicParams) {
-    logicParams = params;
+void RenderSimpleLogic::ET_setColor(const ColorB& col) {
+    color = col;
+}
+
+void RenderSimpleLogic::ET_setSize(const Vec2& sz) {
+    Vec3 modelScale = Vec3(sz, 1.f) / geom->aabb.getSize();
+    scale.x = modelScale.x;
+    scale.y = modelScale.y;
 }

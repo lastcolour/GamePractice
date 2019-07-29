@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-GameObject::GameObject(const std::string& objectName, EntityId entId) :
+GameObject::GameObject(const char* objectName, EntityId entId) :
     name(objectName),
     entityId(entId) {
 
@@ -24,8 +24,12 @@ void GameObject::addLogic(std::unique_ptr<GameLogic>&& logic) {
     logics.emplace_back(std::move(logic));
 }
 
-const std::string& GameObject::ET_getName() const {
-    return name;
+const char* GameObject::ET_getName() const {
+    return name.c_str();
+}
+
+const std::vector<EntityId>& GameObject::ET_getChildren() const {
+    return children;
 }
 
 void GameObject::ET_setParent(EntityId entId) {
@@ -56,6 +60,7 @@ void GameObject::ET_addChild(EntityId entId) {
     if(entParentId != entityId) {
         ET_SendEvent(entId, &ETGameObject::ET_setParent, entityId);
     }
+    ET_SendEvent(entityId, &ETGameObjectEvents::ET_onChildAdded, entId);
 }
 
 void GameObject::ET_removeChild(EntityId entId) {
@@ -84,5 +89,13 @@ const Transform& GameObject::ET_getTransform() const {
 }
 
 void GameObject::ET_setTransform(const Transform& transform) {
+    Vec3 ptOffset = transform.pt - tm.pt;
     tm = transform;
+    for(auto childId : children) {
+        Transform childTm;
+        ET_SendEventReturn(childTm, childId, &ETGameObject::ET_getTransform);
+        childTm.pt += ptOffset;
+        ET_SendEvent(childId, &ETGameObject::ET_setTransform, childTm);
+    }
+    ET_SendEvent(entityId, &ETGameObjectEvents::ET_onTransformChanged, tm);
 }

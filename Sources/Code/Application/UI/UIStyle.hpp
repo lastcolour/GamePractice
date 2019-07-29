@@ -4,6 +4,8 @@
 #include "Math/Vector.hpp"
 #include "Render/Color.hpp"
 
+#include <string>
+
 class JSONNode;
 
 enum class XAlignType {
@@ -44,12 +46,14 @@ public:
     XAlignType xAlignType;
     YAlignType yAlignType;
     Margin margin;
+    std::string renderer;
+    float fontSize;
 
 public:
 
     UIStyle();
     ~UIStyle();
-    bool serialize(const JSONNode& node);
+    void serialize(const JSONNode& node);
 };
 
 #endif /* __UI_STYLE_HPP__ */

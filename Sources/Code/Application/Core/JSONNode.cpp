@@ -210,14 +210,14 @@ JSONNodeIterator JSONNode::end() {
     return JSONNodeIterator();
 }
 
-void JSONNode::value(const std::string& key, std::string& value) const {
-    if(key.empty()) {
+void JSONNode::value(const char* key, std::string& value) const {
+    if(!key || !key[0]) {
         return;
     }
     if(!nodeImpl->val) {
         return;
     }
-    auto memIt = nodeImpl->val->FindMember(key.c_str());
+    auto memIt = nodeImpl->val->FindMember(key);
     if(memIt != nodeImpl->val->MemberEnd()) {
         if(memIt->value.IsString()) {
             value = memIt->value.GetString();
@@ -225,14 +225,14 @@ void JSONNode::value(const std::string& key, std::string& value) const {
     }
 }
 
-void JSONNode::value(const std::string& key, float& value) const {
-    if(key.empty()) {
+void JSONNode::value(const char* key, float& value) const {
+    if(!key || !key[0]) {
         return;
     }
     if(!nodeImpl->val) {
         return;
     }
-    auto memIt = nodeImpl->val->FindMember(key.c_str());
+    auto memIt = nodeImpl->val->FindMember(key);
     if(memIt != nodeImpl->val->MemberEnd()) {
         if(memIt->value.IsFloat()) {
             value = memIt->value.GetFloat();
@@ -242,14 +242,14 @@ void JSONNode::value(const std::string& key, float& value) const {
     }
 }
 
-void JSONNode::value(const std::string& key, int& value) const {
-    if(key.empty()) {
+void JSONNode::value(const char* key, int& value) const {
+    if(!key || !key[0]) {
         return;
     }
     if(!nodeImpl->val) {
         return;
     }
-    auto memIt = nodeImpl->val->FindMember(key.c_str());
+    auto memIt = nodeImpl->val->FindMember(key);
     if(memIt != nodeImpl->val->MemberEnd()) {
         if(memIt->value.IsInt()) {
             value = memIt->value.GetInt();
@@ -286,14 +286,17 @@ void JSONNode::value(int& value) const {
     }
 }
 
-JSONNode JSONNode::object(const std::string& key) const {
+JSONNode JSONNode::object(const char* key) const {
     JSONNode node;
+    if(!key || !key[0]) {
+        return node;
+    }
     if(!nodeImpl->val) {
         return node;
     }
     if(nodeImpl->val->IsObject()) {
-        auto it = nodeImpl->val->FindMember(key.c_str());
-        if(it != nodeImpl->val->MemberEnd()) {
+        auto it = nodeImpl->val->FindMember(key);
+        if(it != nodeImpl->val->MemberEnd() && !it->value.IsNull()) {
             std::unique_ptr<JSONNodeImpl> newNodeImpl(new JSONNodeImpl(nodeImpl->root));
             newNodeImpl->val = &(it->value);
             node.nodeKey = key;
@@ -323,15 +326,16 @@ JSONNode::operator bool() const {
 }
 
 JSONNode JSONNode::ParseBuffer(const Buffer& buff) {
-    return ParseString(buff.getString());
+    auto str = buff.getString();
+    return ParseString(str.c_str());
 }
 
-JSONNode JSONNode::ParseString(const std::string& str) {
-    if(str.empty()) {
+JSONNode JSONNode::ParseString(const char* str) {
+    if(!str || !str[0]) {
         return JSONNode();
     }
     rapidjson::Document doc;
-    doc.Parse(str.c_str());
+    doc.Parse(str);
     if(doc.HasParseError()) {
         LogError("Unexpected JSON parse error: %s (Offset %i)", rapidjson::GetParseError_En(
             doc.GetParseError()), doc.GetErrorOffset());

@@ -3,11 +3,6 @@
 
 #include "UI/Logics/UIBox.hpp"
 
-enum class ListType {
-    Vertical = 0,
-    Horizontal
-};
-
 class UIList : public UIBox,
     public ETNode<ETUIList> {
 public:
@@ -19,23 +14,21 @@ public:
     bool init() override;
 
     // ETUIList
-    void ET_addElement(EntityId newElemId) override;
+    void ET_setType(UIListType newListType) override;
 
     // ETUIBox
     void ET_boxResize() override;
-
-protected:
-
-    ListType listType;
+    void ET_onChildAdded(EntityId newElemId) override;
 
 private:
 
     void calcList();
-    void calcResListBox();
-    int sfiftCenterByOffset(int offset, Vec2i& center) const;
+    AABB2Di getAligntBox(const AABB2Di& elemBox) const;
+    Vec2i caclCenterUpdateOffset(Vec2i& offset, AABB2Di& box);
 
 private:
 
+    UIListType listType;
     std::vector<EntityId> children;
 };
 

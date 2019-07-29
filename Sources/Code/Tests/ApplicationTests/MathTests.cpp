@@ -64,6 +64,16 @@ TEST_F(MathTests, Vec2CheckOperators) {
     Vec2 v17(2.f, 3.f);
     ASSERT_TRUE(v16 < v17);
     ASSERT_FALSE(v16 > v17);
+
+    Vec2 v18(1.f, 2.f);
+    Vec2 v19(3.f, 4.f);
+    v18 -= v19;
+    ASSERT_EQ(v18, Vec2(-2.f));
+
+    Vec2 v20(1.f, 2.f);
+    Vec2 v21(3.f, 4.f);
+    v20 += v21;
+    ASSERT_EQ(v20, Vec2(4.f, 6.f));
 }
 
 TEST_F(MathTests, Vec2CheckMethods) {
@@ -143,6 +153,16 @@ TEST_F(MathTests, Vec3CheckOperators) {
     Vec3 v17(4.f, 5.f, 6.f);
     ASSERT_TRUE(v16 < v17);
     ASSERT_FALSE(v16 > v17);
+
+    Vec3 v18(1.f, 2.f, 3.f);
+    Vec3 v19(4.f, 5.f, 6.f);
+    v18 -= v19;
+    ASSERT_EQ(v18, Vec3(-3.f));
+
+    Vec3 v20(1.f, 2.f, 3.f);
+    Vec3 v21(4.f, 5.f, 6.f);
+    v20 += v21;
+    ASSERT_EQ(v20, Vec3(5.f, 7.f, 9.f));
 }
 
 TEST_F(MathTests, Vec3CheckMethods) {
@@ -226,6 +246,16 @@ TEST_F(MathTests, Vec4CheckOperators) {
     Vec4 v17(5.f, 6.f, 7.f, 8.f);
     ASSERT_TRUE(v16 < v17);
     ASSERT_FALSE(v16 > v17);
+
+    Vec4 v18(1.f, 2.f, 3.f, 4.f);
+    Vec4 v19(5.f, 6.f, 7.f, 8.f);
+    v18 -= v19;
+    ASSERT_EQ(v18, Vec4(-4.f));
+
+    Vec4 v20(1.f, 2.f, 3.f, 4.f);
+    Vec4 v21(5.f, 6.f, 7.f, 8.f);
+    v20 += v21;
+    ASSERT_EQ(v20, Vec4(6.f, 8.f, 10.f, 12.f));
 }
 
 TEST_F(MathTests, Vec4CheckMethods) {

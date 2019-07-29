@@ -6,35 +6,6 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/GameObject.hpp"
 
-class TestUIBox : public UIBox {
-public:
-    virtual ~TestUIBox() = default;
-
-    void setStyle(const UIStyle& uiStyle) {
-        UIBox::setStyle(uiStyle);
-    }
-
-protected:
-
-    bool serialize(const JSONNode& node) override { return true; }
-};
-
-class TestUIList : public UIList {
-public:
-    virtual ~TestUIList() = default;
-
-    void setStyle(const UIStyle& uiStyle) {
-        UIList::setStyle(uiStyle);
-    }
-    void setType(ListType type) {
-        listType = type;
-    }
-
-protected:
-
-    bool serialize(const JSONNode& node) override { return true; }
-};
-
 void UITests::SetUp() {
 }
 
@@ -42,90 +13,115 @@ void UITests::TearDown() {
     tempObject.clear();
 }
 
-TestUIList* UITests::createUIList() {
+UIList* UITests::createUIList() {
     auto object = createVoidObject();
-    std::unique_ptr<TestUIList> uiListPtr(new TestUIList);
-    TestUIList* uiList = uiListPtr.get();
+    std::unique_ptr<UIList> uiListPtr(new UIList);
+    UIList* uiList = uiListPtr.get();
     object->addLogic(std::move(uiListPtr));
     tempObject.push_back(std::move(object));
     return uiList;
 }
 
-TestUIBox* UITests::createUIBox() {
+UIBox* UITests::createUIBox() {
     auto object = createVoidObject();
-    std::unique_ptr<TestUIBox> uiBoxPtr(new TestUIBox);
-    TestUIBox* uiBox = uiBoxPtr.get();
+    std::unique_ptr<UIBox> uiBoxPtr(new UIBox);
+    UIBox* uiBox = uiBoxPtr.get();
     object->addLogic(std::move(uiBoxPtr));
     tempObject.push_back(std::move(object));
     return uiBox;
 }
 
+TEST_F(UITests, CheckUIBoxUpdatedAfterUpdatedTransform) {
+    auto object = createUIBox();
+    UIStyle style;
+    style.size = Vec2(0.5f);
+    object->ET_setStyle(style);
+    ASSERT_TRUE(object->init());
+
+    auto origCenter = object->ET_getAabb2di().getCenter();
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Transform tm;
+    ET_SendEventReturn(tm, object->getEntityId(), &ETGameObject::ET_getTransform);
+
+    auto shift = renderPort.x / 2;
+    tm.pt.x += static_cast<float>(shift);
+    ET_SendEvent(object->getEntityId(), &ETGameObject::ET_setTransform, tm);
+
+    auto shfitCenter = object->ET_getAabb2di().getCenter();
+
+    EXPECT_EQ(shfitCenter.x, origCenter.x + shift);
+    EXPECT_EQ(shfitCenter.y, origCenter.y);
+}
+
 TEST_F(UITests, CheckXAlign) {
-    TestUIBox* uiBox = createUIBox();
+    UIBox* uiBox = createUIBox();
     UIStyle style;
     style.size = Vec2(0.5f);
     style.yAlignType = YAlignType::Center;
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     style.xAlignType = XAlignType::Center;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     AABB2Di aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
     style.xAlignType = XAlignType::Left;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 4, renderPort.y / 2));
 
     style.xAlignType = XAlignType::Right;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(3 * renderPort.x / 4, renderPort.y / 2));
 }
 
 TEST_F(UITests, CheckYAlign) {
-    TestUIBox* uiBox = createUIBox();
+    UIBox* uiBox = createUIBox();
     UIStyle style;
     style.size = Vec2(0.5f);
     style.xAlignType = XAlignType::Center;
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     style.yAlignType = YAlignType::Top;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     AABB2Di aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 2, 3 * renderPort.y / 4));
 
     style.yAlignType = YAlignType::Bot;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 4));
 }
 
 TEST_F(UITests, CheckUIBoxSizeInvariants) {
-    TestUIBox* uiBox = createUIBox();
+    UIBox* uiBox = createUIBox();
     UIStyle style;
     style.size = Vec2(0.5f, 0.5f);
     AABB2Di aabb(0);
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     int minSide = std::min(renderPort.x, renderPort.y);
 
     style.sizeInv = SizeInvariant::Absolute;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 2, renderPort.y / 2));
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
     style.sizeInv = SizeInvariant::AbsoluteBiggestSquare;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(minSide / 2));
@@ -133,29 +129,29 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
 
     style.sizeInv = SizeInvariant::Pixel;
     style.size = Vec2(100.f, 300.f);
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(100, 300));
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
-    TestUIBox* parentUIBox = createUIBox();
+    UIBox* parentUIBox = createUIBox();
     style.sizeInv = SizeInvariant::Relative;
     style.size = Vec2(0.5f, 0.5f);
-    parentUIBox->setStyle(style);
+    parentUIBox->ET_setStyle(style);
     ASSERT_TRUE(parentUIBox->init());
     ET_SendEvent(parentUIBox->getEntityId(), &ETGameObject::ET_addChild, uiBox->getEntityId());
 
     style.sizeInv = SizeInvariant::Relative;
     style.size = Vec2(0.5f, 0.5f);
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 4, renderPort.y / 4));
     ASSERT_EQ(aabb.getCenter(), renderPort / 2);
 
     style.sizeInv = SizeInvariant::RelativeBiggestSquare;
-    uiBox->setStyle(style);
+    uiBox->ET_setStyle(style);
     ASSERT_TRUE(uiBox->init());
     aabb = uiBox->ET_getAabb2di();
     ASSERT_EQ(aabb.getSize(), Vec2i(minSide / 4));
@@ -163,18 +159,18 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
 }
 
 TEST_F(UITests, CheckUIBoxInsideUIBox) {
-    TestUIBox* uiBox1 = createUIBox();
-    TestUIBox* uiBox2 = createUIBox();
+    UIBox* uiBox1 = createUIBox();
+    UIBox* uiBox2 = createUIBox();
 
     ET_SendEvent(uiBox1->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
 
     UIStyle style;
     style.size = Vec2(0.5f, 0.5f);
 
-    uiBox1->setStyle(style);
+    uiBox1->ET_setStyle(style);
     ASSERT_TRUE(uiBox1->init());
 
-    uiBox2->setStyle(style);
+    uiBox2->ET_setStyle(style);
     ASSERT_TRUE(uiBox2->init());
 
     auto& parentBox = uiBox1->ET_getAabb2di();
@@ -186,28 +182,28 @@ TEST_F(UITests, CheckUIBoxInsideUIBox) {
 }
 
 TEST_F(UITests, CheckVerticalUIList) {
-    TestUIList* uiList = createUIList();
-    uiList->setType(ListType::Vertical);
+    UIList* uiList = createUIList();
+    uiList->ET_setType(UIListType::Vertical);
     ASSERT_TRUE(uiList->init());
 
     UIStyle boxStyle;
     boxStyle.size = Vec2(0.25f, 0.25f);
 
-    TestUIBox* uiBox1 = createUIBox();
-    uiBox1->setStyle(boxStyle);
+    UIBox* uiBox1 = createUIBox();
+    uiBox1->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox1->init());
 
-    TestUIBox* uiBox2 = createUIBox();
-    uiBox2->setStyle(boxStyle);
+    UIBox* uiBox2 = createUIBox();
+    uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->ET_addElement(uiBox1->getEntityId());
-    uiList->ET_addElement(uiBox2->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox1->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i expCenter = renderPort / 2;
     Vec2i resCenter = aabbList.getCenter();
@@ -234,28 +230,28 @@ TEST_F(UITests, CheckVerticalUIList) {
 }
 
 TEST_F(UITests, CheckHorizontalUIList) {
-    TestUIList* uiList = createUIList();
-    uiList->setType(ListType::Horizontal);
+    UIList* uiList = createUIList();
+    uiList->ET_setType(UIListType::Horizontal);
     ASSERT_TRUE(uiList->init());
 
     UIStyle boxStyle;
     boxStyle.size = Vec2(0.25f, 0.25f);
 
-    TestUIBox* uiBox1 = createUIBox();
-    uiBox1->setStyle(boxStyle);
+    UIBox* uiBox1 = createUIBox();
+    uiBox1->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox1->init());
 
-    TestUIBox* uiBox2 = createUIBox();
-    uiBox2->setStyle(boxStyle);
+    UIBox* uiBox2 = createUIBox();
+    uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    uiList->ET_addElement(uiBox1->getEntityId());
-    uiList->ET_addElement(uiBox2->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox1->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
     Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i expCenter = renderPort / 2;
     Vec2i resCenter = aabbList.getCenter();
@@ -279,4 +275,160 @@ TEST_F(UITests, CheckHorizontalUIList) {
     expSize = renderPort / 4;
     resSize = aabbBox2.getSize();
     ASSERT_EQ(resSize, expSize);
+}
+
+TEST_F(UITests, CheckUIListResize) {
+    auto rootUiBox = createUIBox();
+    UIStyle rootBoxStyle;
+    rootBoxStyle.size = Vec2(0.5f);
+    rootUiBox->ET_setStyle(rootBoxStyle);
+    ASSERT_TRUE(rootUiBox->init());
+
+    auto uiList = createUIList();
+    UIStyle uiListStyle;
+    uiList->ET_setStyle(uiListStyle);
+    ASSERT_TRUE(uiList->init());
+
+    auto innerUiBox = createUIBox();
+    UIStyle innerBoxStyle;
+    innerBoxStyle.size = Vec2(0.5f);
+    innerUiBox->ET_setStyle(innerBoxStyle);
+    ASSERT_TRUE(innerUiBox->init());
+
+    ET_SendEvent(rootUiBox->getEntityId(), &ETGameObject::ET_addChild, uiList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, innerUiBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto aabb = innerUiBox->ET_getAabb2di();
+
+    auto size = aabb.getSize();
+    auto center = aabb.getCenter();
+    EXPECT_EQ(size, renderPort / 4);
+    EXPECT_EQ(center, renderPort / 2);
+
+    rootBoxStyle.size = Vec2(1.f);
+    rootUiBox->ET_setStyle(rootBoxStyle);
+
+    aabb = innerUiBox->ET_getAabb2di();
+
+    size = aabb.getSize();
+    center = aabb.getCenter();
+    EXPECT_EQ(size, renderPort / 2);
+    EXPECT_EQ(center, renderPort / 2);
+}
+
+TEST_F(UITests, CheckUIListCombined) {
+    auto rootVertUIList = createUIList();
+    {
+        UIStyle rootListStyle;
+        rootListStyle.size = Vec2(1.f);
+        rootListStyle.sizeInv = SizeInvariant::Relative;
+        rootVertUIList->ET_setType(UIListType::Vertical);
+        ASSERT_TRUE(rootVertUIList->init());
+    }
+
+    auto topUIBox = createUIBox();
+    {
+        UIStyle topBoxStyle;
+        topBoxStyle.size = Vec2(0.5f);
+        topBoxStyle.sizeInv = SizeInvariant::Relative;
+        topUIBox->ET_setStyle(topBoxStyle);
+        ASSERT_TRUE(topUIBox->init());
+    }
+
+    ET_SendEvent(rootVertUIList->getEntityId(), &ETGameObject::ET_addChild, topUIBox->getEntityId());
+
+    auto leftUIBox = createUIBox();
+    {
+        UIStyle leftBoxStyle;
+        leftBoxStyle.size = Vec2(0.5f);
+        leftBoxStyle.sizeInv = SizeInvariant::Relative;
+        leftUIBox->ET_setStyle(leftBoxStyle);
+        ASSERT_TRUE(leftUIBox->init());
+    }
+
+    auto rightUIBox = createUIBox();
+    {
+        UIStyle rightBoxStyle;
+        rightBoxStyle.size = Vec2(0.5f);
+        rightBoxStyle.sizeInv = SizeInvariant::Relative;
+        rightUIBox->ET_setStyle(rightBoxStyle);
+        ASSERT_TRUE(rightUIBox->init());
+    }
+
+    auto botHorzUIlist = createUIList();
+    {
+        UIStyle botListStyle;
+        botListStyle.size = Vec2(0.5f);
+        botListStyle.sizeInv = SizeInvariant::Relative;
+        botHorzUIlist->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(botHorzUIlist->init());
+    }
+
+
+    ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
+    ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
+
+    ET_SendEvent(rootVertUIList->getEntityId(), &ETGameObject::ET_addChild, botHorzUIlist->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto rootBox = rootVertUIList->ET_getAabb2di();
+    auto rootBoxSize = rootBox.getSize();
+    EXPECT_EQ(rootBoxSize, renderPort);
+    EXPECT_EQ(rootBox.getCenter(), renderPort / 2);
+
+    auto botBox = botHorzUIlist->ET_getAabb2di();
+    auto botBoxSize = botBox.getSize();
+    EXPECT_EQ(botBoxSize, Vec2i(renderPort.x, renderPort.y / 2));
+    EXPECT_EQ(botBox.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 4));
+
+    auto leftBox = leftUIBox->ET_getAabb2di();
+    auto leftBoxSize = leftBox.getSize();
+    EXPECT_EQ(leftBoxSize, renderPort / 2);
+
+    auto rightBox = rightUIBox->ET_getAabb2di();
+    auto rightBoxSize = rightBox.getSize();
+    EXPECT_EQ(rightBoxSize, renderPort / 2);
+}
+
+TEST_F(UITests, CheckListWithAlignVariation) {
+    UIList* uiList = createUIList();
+    uiList->ET_setType(UIListType::Vertical);
+    ASSERT_TRUE(uiList->init());
+
+    UIStyle boxStyle;
+    boxStyle.size = Vec2(0.5);
+    boxStyle.xAlignType = XAlignType::Left;
+
+    UIBox* leftUIBox = createUIBox();
+    leftUIBox->ET_setStyle(boxStyle);
+    ASSERT_TRUE(leftUIBox->init());
+
+    boxStyle.xAlignType = XAlignType::Right;
+
+    UIBox* rightUIBox = createUIBox();
+    rightUIBox->ET_setStyle(boxStyle);
+    ASSERT_TRUE(rightUIBox->init());
+
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto listBox = uiList->ET_getAabb2di();
+    EXPECT_EQ(listBox.getSize(), renderPort);
+    EXPECT_EQ(listBox.getCenter(), renderPort / 2);
+
+    auto leftBox = leftUIBox->ET_getAabb2di();
+    EXPECT_EQ(leftBox.getSize(), renderPort / 2);
+    EXPECT_EQ(leftBox.getCenter(), Vec2i(renderPort.x / 4, 3 * renderPort.y /4));
+
+    auto rightBox = rightUIBox->ET_getAabb2di();
+    EXPECT_EQ(rightBox.getSize(), renderPort / 2);
+    EXPECT_EQ(rightBox.getCenter(), Vec2i(3 * renderPort.x / 4, renderPort.y /4));
 }

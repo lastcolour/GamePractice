@@ -3,6 +3,11 @@
 
 #include "Math/AABB.hpp"
 
+enum class VertexType {
+    Vec3,
+    Vec4
+};
+
 class RenderGeometry {
 public:
 
@@ -10,6 +15,7 @@ public:
     ~RenderGeometry();
 
     void draw();
+    void drawChunk(const void* chunkBuffer, unsigned int chunkVertexCount);
 
 public:
 
@@ -17,6 +23,11 @@ public:
     unsigned int vaoId;
     unsigned int vboId;
     unsigned int vertCount;
+    VertexType vertType;
+
+private:
+
+    int getVertSize() const;
 };
 
 #endif /* __RENDER_GEOMETRY_HPP_ */

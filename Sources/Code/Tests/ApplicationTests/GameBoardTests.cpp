@@ -2,9 +2,10 @@
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Core/JSONNode.hpp"
 #include "Game/GameObject.hpp"
+#include "UI/Logics/UIBox.hpp"
 
 namespace {
-    const char* TEST_CELL_OBJECT = "Simple";
+    const char* TEST_CELL_OBJECT = "Game/Simple.json";
 }
 
 struct TestBoardParams {
@@ -40,7 +41,7 @@ public:
     bool removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
         return GameBoardLogic::removeHorizontalLine(boardPt, lineLen);
     }
-    float getCellSize() const {
+    int getCellSize() const {
         return cellSize;
     }
 
@@ -249,6 +250,55 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
 
     Vec3 ptDiff = tm2.pt - tm1.pt;
     ASSERT_FLOAT_EQ(ptDiff.x, 0.f);
-    ASSERT_FLOAT_EQ(ptDiff.y, board->getCellSize());
+    ASSERT_FLOAT_EQ(ptDiff.y, static_cast<float>(board->getCellSize()));
     ASSERT_FLOAT_EQ(ptDiff.z, 0.f);
+}
+
+TEST_F(GameBoardTests, CheckGameBoardConnections) {
+    TestBoardParams params;
+    params.boardSize = Vec2i(1);
+    params.moveSpeed = 1.f;
+    board->setParams(params);
+    ASSERT_TRUE(board->init());
+
+    auto entId = board->getEntityId();
+
+    ASSERT_TRUE(ET_IsExistNode<ETSurfaceEvents>(entId));
+}
+
+TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
+    std::unique_ptr<UIBox> uiBoxLogicPtr(new UIBox);
+    auto uiBoxPtr = uiBoxLogicPtr.get();
+    object->addLogic(std::move(uiBoxLogicPtr));
+    UIStyle style;
+    style.size = Vec2(0.5f);
+    style.sizeInv = SizeInvariant::RelativeBiggestSquare;
+    style.yAlignType = YAlignType::Top;
+    uiBoxPtr->ET_setStyle(style);
+    ASSERT_TRUE(uiBoxPtr->init());
+
+    TestBoardParams params;
+    params.boardSize = Vec2i(1, 1);
+    params.cellScale = 1.f;
+    board->setParams(params);
+    ASSERT_TRUE(board->init());
+
+    const auto& uiBox = uiBoxPtr->ET_getAabb2di();
+    auto cellSize = board->getCellSize();
+
+    auto uiBoxSize = uiBox.getSize();
+    EXPECT_EQ(cellSize, uiBoxSize.x);
+    EXPECT_EQ(cellSize, uiBoxSize.y);
+
+    auto elem = board->getElem(Vec2i(0, 0));
+    Transform tm;
+    ET_SendEventReturn(tm, elem->entId, &ETGameObject::ET_getTransform);
+
+    auto uiBoxCenter = Vec3(static_cast<float>(uiBox.getCenter().x),
+        static_cast<float>(uiBox.getCenter().y), 0.f);
+    ASSERT_EQ(tm.pt, uiBoxCenter);
+}
+
+TEST_F(GameBoardTests, CheckResize) {
+    ASSERT_FALSE(true);
 }

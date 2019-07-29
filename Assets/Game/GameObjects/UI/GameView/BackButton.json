@@ -1,0 +1,40 @@
+{
+    "children":[],
+    "logics": [
+        {
+            "type": "UIButton",
+            "data": {
+                "event": "OnGameBack",
+                "style": {
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 255,
+                        "g": 100,
+                        "b": 100
+                    },
+                    "align": {
+                        "x": "left",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 0.3,
+                        "w": 0.8,
+                        "inv": "relBS"
+                    },
+                    "margin": {}
+                },
+                "label": {
+                    "object": "UI/MainView/SimpleButtonLabel.json",
+                    "text": "<-",
+                    "style": {
+                        "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

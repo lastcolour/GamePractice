@@ -1,0 +1,28 @@
+{
+    "children": [
+        "UI/GameView/TimeInfo.json",
+        "UI/GameView/ScoreInfo.json"
+    ],
+    "logics":[
+        {
+            "type": "UIList",
+            "data": {
+                "type": "horz",
+                "style": {
+                    "renderer": null,
+                    "color": null,
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                }
+            }
+        }
+    ]
+}

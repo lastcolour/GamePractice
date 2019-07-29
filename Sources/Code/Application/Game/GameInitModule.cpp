@@ -2,10 +2,12 @@
 #include "Core/SystemLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
+#include "UI/UIETInterfaces.hpp"
 
 namespace {
 
-const char* ROOT_GAME_OBJECT = "GameBoard";
+const char* GAME_CONFIG_FILE = "Game/GameConfig.json";
 
 class GameInitLogic : public SystemLogic {
 public:
@@ -13,18 +15,29 @@ public:
     virtual ~GameInitLogic() = default;
     
     bool init() override {
-        ET_SendEventReturn(rootGameObjectId, &ETGameObjectManager::ET_createGameObject, ROOT_GAME_OBJECT);
-        if (rootGameObjectId.isValid()) {
-            ET_SendEvent(&ETSurface::ET_show);
+        JSONNode node;
+        ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, GAME_CONFIG_FILE);
+        if(!node) {
+            LogError("Can't load root game config file: %s", GAME_CONFIG_FILE);
+            return false;
         }
+        std::string mainView;
+        node.value("mainView", mainView);
+        if(mainView.empty()) {
+            LogError("Empty main view in config file: %s", GAME_CONFIG_FILE);
+            return false;
+        }
+        bool openRes;
+        ET_SendEventReturn(openRes, &ETUIViewManager::ET_openView, mainView.c_str());
+        if (!openRes) {
+            LogError("Can't cretae main view '%s' from config file: %s", mainView, GAME_CONFIG_FILE);
+            return false;
+        }
+        ET_SendEvent(&ETSurface::ET_show);
         return true;
     }
 
     void deinit() override {}
-
-private:
-
-    EntityId rootGameObjectId;
 };
 
 } // namespace

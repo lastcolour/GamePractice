@@ -16,7 +16,7 @@ class GameObject :
 
 public:
 
-    GameObject(const std::string& objectName, EntityId entId);
+    GameObject(const char* objectName, EntityId entId);
     ~GameObject();
 
     void addLogic(GameLogicPtr&& logic);
@@ -24,13 +24,14 @@ public:
     EntityId getEntityId() const { return entityId; }
 
     // ETGameObject
-    const std::string& ET_getName() const override;
+    const char* ET_getName() const override;
     void ET_setParent(EntityId entId) override;
     void ET_addChild(EntityId entId) override;
     void ET_removeChild(EntityId entId) override;
     EntityId ET_getParentId() const override;
     const Transform& ET_getTransform() const override;
     void ET_setTransform(const Transform& transform) override;
+    const std::vector<EntityId>& ET_getChildren() const override;
 
 private:
 

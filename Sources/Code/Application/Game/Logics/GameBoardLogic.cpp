@@ -3,6 +3,8 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+#include "UI/UIETInterfaces.hpp"
+#include "UI/UIStyle.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -14,7 +16,6 @@ namespace {
 
 GameBoardLogic::GameBoardLogic() :
     boardSize(0),
-    space(1.f),
     cellScale(1.f),
     activeTouchedElemId(INVALID_BOARD_ELEM_ID) {
 }
@@ -28,16 +29,11 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
         LogWarning("[GameBoard::serialize] Invalid move speed: %f", moveSpeed);
         return false;
     }
-    node.value("space", space);
-    if(space <= 0.f || space > 1.f) {
-        LogWarning("[GameBoard::serialize] Invalid space: %f", space);
-        return false;
-    }
     if(auto sizeNode = node.object("size")) {
         sizeNode.value("w", boardSize.x);
         if(boardSize.x <= 0) {
             LogWarning("[GameBoard::serialize] Invalid width: %d", boardSize.x);
-            return false;
+                return false;
         }
         sizeNode.value("h", boardSize.y);
         if(boardSize.y <= 0) {
@@ -61,6 +57,51 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
         return false;
     }
     return true;
+}
+
+void GameBoardLogic::ET_onBoxResized() {
+    initBoardBox();
+    for(auto& elem : elements) {
+        if (elem.state == BoardElemState::Moving) {
+            setElemBoardPos(elem, elem.boardPt);
+        } else {
+            setElemBoardPos(elem, elem.boardPt);
+        }
+        Vec2 renderSize;
+        renderSize.x = static_cast<float>(objectSize.x);
+        renderSize.y = static_cast<float>(objectSize.y);
+        ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setSize, renderSize);
+    }
+}
+
+void GameBoardLogic::initBoardBox() {
+    AABB2Di box;
+
+    Vec2i viewport(0);
+    ET_SendEventReturn(viewport, &ETRenderCamera::ET_getRenderPort);
+    box.bot = Vec2i(0);
+    box.top = viewport;
+
+    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getAabb2di);
+    Vec2i uiBoxSize = box.getSize();
+
+    float cellSizeY = uiBoxSize.x / static_cast<float>(boardSize.x);
+    float cellSizeZ = uiBoxSize.y / static_cast<float>(boardSize.y);
+    cellSize = static_cast<int>(floorf(std::min(cellSizeY, cellSizeZ)));
+    objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
+    Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
+
+    UIStyle style;
+    ET_SendEventReturn(style, getEntityId(), &ETUIBox::ET_getStyle);
+    style.size = Vec2(style.size.x * boardBoxSize.x / static_cast<float>(uiBoxSize.x),
+        style.size.y * boardBoxSize.y / static_cast<float>(uiBoxSize.y));
+
+    ETNode<ETUIBoxEvents>::disconnect();
+    ET_SendEvent(getEntityId(), &ETUIBox::ET_setStyle, style);
+    ETNode<ETUIBoxEvents>::connect(getEntityId());
+
+    boardBox = box;
+    ET_SendEventReturn(boardBox, getEntityId(), &ETUIBox::ET_getAabb2di);
 }
 
 ColorB GameBoardLogic::getElemColor(BoardElemType elemType) const {
@@ -92,25 +133,17 @@ BoardElemType GameBoardLogic::getElemType() const {
 }
 
 bool GameBoardLogic::init() {
-    Vec2i viewport(0);
-    ET_SendEventReturn(viewport, &ETRender::ET_getRenderPort);
-    float cellSizeY = space * viewport.x / boardSize.x;
-    float cellSizeZ = space * viewport.y / boardSize.y;
-    cellSize = std::min(cellSizeY, cellSizeZ);
-
-    boardBox.bot = Vec2(0.f);
-    boardBox.top = Vec2(cellSize * boardSize.x, cellSize * boardSize.y);
-    boardBox.setCenter(Vec2(static_cast<float>(viewport.x), static_cast<float>(viewport.y)) / 2.f);
-    objectSize = cellSize * cellScale;
+    initBoardBox();
 
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             EntityId cellObjId = InvalidEntityId;
-            ET_SendEventReturn(cellObjId, &ETGameObjectManager::ET_createGameObject, cellObject);
+            ET_SendEventReturn(cellObjId, &ETGameObjectManager::ET_createGameObject, cellObject.c_str());
             if(cellObjId == InvalidEntityId) {
                 LogWarning("[GameBoardLogic::init] Can't spawn element");
                 return false;
             }
+            ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, cellObjId);
             BoardElement elem;
             elem.entId = cellObjId;
             initNewElem(elem, Vec2i(i, j));
@@ -120,6 +153,7 @@ bool GameBoardLogic::init() {
 
     ETNode<ETSurfaceEvents>::connect(getEntityId());
     ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETUIBoxEvents>::connect(getEntityId());
     return true;
 }
 
@@ -169,7 +203,7 @@ void GameBoardLogic::onElemMove() {
 }
 
 Vec3 GameBoardLogic::getPosFromBoardPos(const Vec2i& boardPt) const {
-    Vec2 pt = boardBox.bot;
+    Vec2 pt = Vec2(static_cast<float>(boardBox.bot.x), static_cast<float>(boardBox.bot.y));
     pt.x += cellSize * (boardPt.x + 0.5f);
     pt.y += cellSize * (boardPt.y + 0.5f);
     return Vec3(pt, 0.f);
@@ -211,10 +245,11 @@ void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const
     elem.state = BoardElemState::Static;
     setElemBoardPos(elem, boardPt);
 
-    RenderLogicParams params;
-    params.col = getElemColor(elem.color);
-    params.size = Vec2(objectSize);
-    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setRenderParams, params);
+    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setColor, getElemColor(elem.color));
+    Vec2 renderSize;
+    renderSize.x = static_cast<float>(objectSize.x);
+    renderSize.y = static_cast<float>(objectSize.y);
+    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setSize, renderSize);
 }
 
 void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {

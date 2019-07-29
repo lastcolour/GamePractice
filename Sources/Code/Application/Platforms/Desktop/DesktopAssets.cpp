@@ -12,9 +12,11 @@
 #ifdef APP_BUILD_PLATFORM_WINDOWS
   #include <direct.h>
   #define GetCurrentWorkingDir _getcwd
+  const char* CWD_PREFIX = "";
 #elif defined APP_BUILD_PLATFORM_LINUX
   #include <unistd.h>
   #define GetCurrentWorkingDir getcwd
+  const char CWD_PREFIX = "/";
 #else
   #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
 #endif
@@ -23,9 +25,12 @@ namespace {
 
     const char VALID_SLASH = '/';
 
-    bool isDirExist(const std::string& dirName) {
+    bool isDirExist(const char* dirName) {
+        if(!dirName || !dirName[0]) {
+            return false;
+        }
         struct stat info;
-        if(stat(dirName.c_str(), &info) != 0) {
+        if(stat(dirName, &info) != 0) {
             return false;
         } else if(info.st_mode & S_IFDIR) {
             return true;
@@ -78,13 +83,14 @@ namespace {
             if(GetCurrentWorkingDir(temp, sizeof(temp))) {
                 temp[sizeof(temp) - 1] = '\0';
                 cwdPath = temp;
+                cwdPath = CWD_PREFIX + cwdPath;
             } else {
                 return "";
             }
         }
 
         std::vector<std::string> possiblePaths = {
-            "/Assets"
+            "/Assets",
             "/../Assets",
             "/../../Assets",
             "/../../../Assets",
@@ -94,8 +100,7 @@ namespace {
             auto dirPath = cwdPath + path;
             fixSlashes(dirPath);
             normalizePath(dirPath);
-            dirPath = VALID_SLASH + dirPath;
-            if (isDirExist(dirPath)) {
+            if (isDirExist(dirPath.c_str())) {
                 return dirPath;
             }
         }
@@ -136,7 +141,7 @@ void DesktopAssets::deinit() {
     ETNode<ETAssets>::disconnect();
 }
 
-JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {
+JSONNode DesktopAssets::ET_loadJSONAsset(const char* assetName) {
     auto buffer = ET_loadAsset(assetName);
     if(!buffer) {
         LogError("[DesktopAssets::loadJSONAsset] Can't load asset from: %s", assetName);
@@ -150,10 +155,20 @@ JSONNode DesktopAssets::ET_loadJSONAsset(const std::string& assetName) {
     return rootNode;
 }
 
-Buffer DesktopAssets::ET_loadAsset(const std::string& assetName) {
+Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
+    Buffer buff;
+    ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
+    if (buff) {
+        return buff;
+    }
+
     auto loadStartT = std::chrono::high_resolution_clock::now();
 
-    Buffer buff = loadAssetImpl(assetName);
+    buff = loadAssetImpl(assetName);
+
+    if(buff) {
+        ET_SendEvent(&ETAssetsCacheManager::ET_putAssetToCache, assetName, buff);
+    }
 
     if(buff) {
         LogDebug("[DesktopAssets] Loaded file '%s' in %d ms", assetName,
@@ -187,7 +202,7 @@ Buffer DesktopAssets::loadAssetImpl(const std::string& assetName) {
         LogError("[DesktopAssets] Can't allocate buffer of size %d to load file: '%s'", fileSize, assetPath);
         return Buffer();
     }
-    if(!fin.read(static_cast<char*>(buffer.getData()), fileSize)) {
+    if(!fin.read(static_cast<char*>(buffer.getWriteData()), fileSize)) {
         LogError("[DesktopAssets] Can't read file: '%s'", assetPath);
         return Buffer();
     }

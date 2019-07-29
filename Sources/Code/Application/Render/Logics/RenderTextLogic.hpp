@@ -7,6 +7,7 @@
 #include "Math/AABB.hpp"
 
 class RenderGlyph;
+class RenderGeometry;
 
 class RenderTextLogic : public GameLogic,
     public ETNode<ETRenderEvents>,
@@ -25,22 +26,25 @@ public:
     void ET_onRenderPortResized() override {}
 
     // ETRenderTestLogic
-    void ET_setText(const std::string& str) override;
-    virtual AABB2D ET_getTextAABB() const override;
+    void ET_setMaterial(const char* matName) override;
+    void ET_setColor(const ColorB& col) override;
+    void ET_setText(const char* str) override;
+    void ET_setFontSize(float fontSize) override;
+    virtual const AABB2D& ET_getTextAABB() const override;
 
 private:
 
-    void createVAO();
     void calcTextAABB();
 
 private:
 
-    unsigned int vaoId;
-    unsigned int vboId;
+    AABB2D aabb;
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
-    AABB2D aabb;
+    std::shared_ptr<RenderGeometry> geom;
     std::string text;
+    float fontSize;
+    ColorB color;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */

@@ -28,23 +28,23 @@ public:
     void deinit() override;
 
     // ETGameObjectManager
-    EntityId ET_createGameObject(const std::string& objectName) override;
+    EntityId ET_createGameObject(const char* objectName) override;
     void ET_destroyObject(EntityId entId) override;
 
 private:
 
-    std::unique_ptr<GameObject> createObject(const std::string& objectName);
+    std::unique_ptr<GameObject> createObject(GameObject* rootObj, const char* objectName);
 
     template<typename T>
-    void registerLogic(const std::string& logicName) {
+    void registerLogic(const char* logicName) {
         auto createFunc = [](){
             return std::unique_ptr<GameLogic>(new T);
         };
         registerCreateLogic(logicName, createFunc);
     }
 
-    void registerCreateLogic(const std::string& logicName, LogicCreateFunc createFunc);
-    std::unique_ptr<GameLogic> createLogic(const std::string& logicName);
+    void registerCreateLogic(const char* logicName, LogicCreateFunc createFunc);
+    std::unique_ptr<GameLogic> createLogic(const char* logicName);
 
 private:
 

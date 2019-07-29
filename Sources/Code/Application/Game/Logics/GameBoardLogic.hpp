@@ -5,6 +5,7 @@
 #include "Math/AABB.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "UI/UIETInterfaces.hpp"
 
 #include <vector>
 #include <memory>
@@ -35,7 +36,8 @@ struct BoardElement {
 
 class GameBoardLogic : public GameLogic,
     public ETNode<ETSurfaceEvents>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETTimerEvents>,
+    public ETNode<ETUIBoxEvents> {
 public:
 
     GameBoardLogic();
@@ -50,6 +52,9 @@ public:
 
     // ETTimerEvents
     void ET_onTick(float dt) override;
+
+    // ETUIBoxEvents
+    void ET_onBoxResized() override;
 
 protected:
 
@@ -79,17 +84,18 @@ protected:
     bool removeVerticalLine(const Vec2i& boardPt, int lineLen);
     bool removeHorizontalLine(const Vec2i& boardPt, int lineLen);
 
+    void initBoardBox();
+
 protected:
 
     std::vector<BoardElement> elements;
     std::string cellObject;
-    AABB2D boardBox;
+    AABB2Di boardBox;
     Vec2i boardSize;
-    float space;
+    Vec2i objectSize;
     float cellScale;
-    float cellSize;
     float moveSpeed;
-    float objectSize;
+    int cellSize;
     int activeTouchedElemId;
 };
 

@@ -36,7 +36,7 @@ class JSONNode {
 public:
 
     static JSONNode ParseBuffer(const Buffer& buff);
-    static JSONNode ParseString(const std::string& str);
+    static JSONNode ParseString(const char* str);
 
 public:
 
@@ -50,16 +50,16 @@ public:
 
     explicit operator bool() const;
 
-    void value(const std::string& key, std::string& value) const;
-    void value(const std::string& key, float& value) const;
-    void value(const std::string& key, int& value) const;
+    void value(const char* key, std::string& value) const;
+    void value(const char* key, float& value) const;
+    void value(const char* key, int& value) const;
 
     void value(std::string& value) const;
     void value(float& value) const;
     void value(int& value) const;
 
     const char* key() const;
-    JSONNode object(const std::string& key) const;
+    JSONNode object(const char* key) const;
 
     size_t size() const;
 

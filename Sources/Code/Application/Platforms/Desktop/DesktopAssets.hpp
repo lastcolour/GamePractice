@@ -16,8 +16,8 @@ public:
     void deinit() override;
 
     // ETAssets
-    JSONNode ET_loadJSONAsset(const std::string& assetName) override;
-    Buffer ET_loadAsset(const std::string& assetName) override;
+    JSONNode ET_loadJSONAsset(const char* assetName) override;
+    Buffer ET_loadAsset(const char* assetName) override;
 
 private:
 

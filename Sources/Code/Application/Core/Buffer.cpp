@@ -1,77 +1,118 @@
 #include "Buffer.hpp"
 
 #include <cstring>
+#include <cassert>
+
+struct BufferImpl {
+    size_t size;
+    std::unique_ptr<uint8_t[]> data;
+
+    BufferImpl() : size(0u), data() {}
+    BufferImpl(size_t buffSize) : size(buffSize) {
+        if(buffSize > 0) {
+            data.reset(new uint8_t[buffSize]);
+            if(!data) {
+                assert(false && "Can't allocate memory");
+            } else {
+                data[0] = 0u;
+            }
+        }
+    }
+    BufferImpl(BufferImpl&& buff) : size(buff.size), data(std::move(buff.data)) {
+        buff.size = 0u;
+    }
+};
 
 Buffer::Buffer() :
-    size(0u),
-    data() {}
+    buffImpl(nullptr) {}
 
-Buffer::Buffer(Buffer&& buff) :
-    size(buff.size),
-    data(std::move(buff.data)) {
-
-    buff.size = 0u;
+Buffer::Buffer(const Buffer& buff) :
+    buffImpl(buff.buffImpl) {
 }
 
-Buffer::Buffer(size_t buffSize) : size(0u) {
-    if(buffSize > 0) {
+Buffer::Buffer(Buffer&& buff) :
+    buffImpl(std::move(buff.buffImpl)) {
+}
+
+Buffer::Buffer(size_t buffSize) :
+    buffImpl() {
+    if (buffSize > 0) {
         resize(buffSize);
     }
 }
 
+Buffer& Buffer::operator=(const Buffer& buff) {
+    if(this != &buff) {
+        buffImpl = buff.buffImpl;
+    }
+    return *this;
+}
+
 Buffer& Buffer::operator=(Buffer&& buff) {
     if(this != &buff) {
-        data = std::move(buff.data);
-        size = buff.size;
-        buff.size = 0u;
+        buffImpl = std::move(buff.buffImpl);
     }
     return *this;
 }
 
 Buffer::operator bool() const {
-    return size != 0u;
+    return buffImpl != nullptr && buffImpl->size > 0u;
 }
 
 std::string Buffer::getString() const {
-    if(size == 0) {
+    if(buffImpl == nullptr || buffImpl->size == 0u) {
         return "";
     }
-    auto cStr = reinterpret_cast<const char*>(data.get());
+    auto cStr = reinterpret_cast<const char*>(buffImpl->data.get());
     auto cStrLength = strlen(cStr);
     return std::string(cStr, cStrLength);
 }
 
 size_t Buffer::getSize() const {
-    if(size) {
-        return size-1;
+    if(buffImpl != nullptr && buffImpl->size > 0u) {
+        return buffImpl->size - 1;
     }
     return 0u;
 }
 
-void* Buffer::getData() {
-    return static_cast<void*>(data.get());
+const void* Buffer::getReadData() const {
+    if(buffImpl != nullptr) {
+        return static_cast<const void*>(buffImpl->data.get());
+    }
+    return nullptr;
+}
+
+void* Buffer::getWriteData() {
+    if(buffImpl != nullptr) {
+        if (buffImpl.use_count() > 1u) {
+            auto prevBuffer = buffImpl;
+            buffImpl.reset(new BufferImpl(prevBuffer->size));
+            memcpy(buffImpl->data.get(), prevBuffer->data.get(), prevBuffer->size);
+        }
+        return static_cast<void*>(buffImpl->data.get());
+    }
+    return nullptr;
 }
 
 void Buffer::resize(size_t newSize) {
     if(newSize == 0u) {
-        size = 0u;
-        data.reset();
+        buffImpl.reset();
         return;
     }
     size_t actualNewSize = newSize + 1;
-    if(actualNewSize < size) {
+    if(buffImpl != nullptr && buffImpl->size > actualNewSize) {
         return;
     }
-    uint8_t* newData = new uint8_t[actualNewSize];
-    if(!newData) {
-        data.reset();
+    auto prevBuffer = buffImpl;
+    buffImpl.reset(new BufferImpl(actualNewSize));
+    if(!buffImpl->size) {
+        buffImpl.reset();
     } else {
-        newData[actualNewSize-1] = 0u;
-        if(!size) {
-            newData[0] = 0u;
+        buffImpl->data[actualNewSize-1] = 0u;
+        if(prevBuffer != nullptr && prevBuffer->size > 0) {
+            memcpy(buffImpl->data.get(), prevBuffer->data.get(), prevBuffer->size);
+        } else {
+            buffImpl->data[0] = 0u;
         }
-        memcpy(newData, data.get(), size);
-        size = actualNewSize;
-        data.reset(newData);
     }
 }

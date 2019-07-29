@@ -1,0 +1,11 @@
+{
+    "children":[],
+    "logics": [
+        {
+            "type": "RenderText",
+            "data": {
+                "mat": "text_solid_color"
+            }
+        }
+    ]
+}

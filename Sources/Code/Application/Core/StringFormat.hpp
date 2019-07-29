@@ -7,6 +7,8 @@
 
 namespace Core {
 
+char* StringCopyUnsafe(char *dest, const char *src);
+
 template<typename T>
 T ConvertToPrintable(T& val) {
     return std::forward<T>(val);
@@ -16,7 +18,7 @@ const char* ConvertToPrintable(const std::string& str);
 
 template <typename... ArgsT>
 void StringFormatImpl(Buffer& buff, const std::string& format, const ArgsT& ... args) {
-    int resStrSize = std::snprintf(static_cast<char*>(buff.getData()), buff.getSize(), format.c_str(), args...);
+    int resStrSize = std::snprintf(static_cast<char*>(buff.getWriteData()), buff.getSize(), format.c_str(), args...);
     if(resStrSize < 0) {
         return;
     }
@@ -41,7 +43,7 @@ std::string StringFormat(const std::string& format, const ArgsT& ... args) {
         Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);
     } else {
         size_t i = 0u;
-        auto destPtr = static_cast<char*>(buff.getData());
+        auto destPtr = static_cast<char*>(buff.getWriteData());
         while((destPtr[i] = format[i]) != '\0') {
             ++i;
         }
