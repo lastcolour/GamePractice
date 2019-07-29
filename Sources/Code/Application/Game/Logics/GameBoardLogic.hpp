@@ -5,6 +5,7 @@
 #include "Math/AABB.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "UI/UIETInterfaces.hpp"
 
 #include <vector>
 #include <memory>
@@ -35,7 +36,8 @@ struct BoardElement {
 
 class GameBoardLogic : public GameLogic,
     public ETNode<ETSurfaceEvents>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETTimerEvents>,
+    public ETNode<ETUIBoxEvents> {
 public:
 
     GameBoardLogic();
@@ -50,6 +52,9 @@ public:
 
     // ETTimerEvents
     void ET_onTick(float dt) override;
+
+    // ETUIBoxEvents
+    void ET_onBoxResized() override;
 
 protected:
 
@@ -88,7 +93,6 @@ protected:
     AABB2Di boardBox;
     Vec2i boardSize;
     Vec2i objectSize;
-    float space;
     float cellScale;
     float moveSpeed;
     int cellSize;

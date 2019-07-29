@@ -163,6 +163,7 @@ void UIBox::ET_boxResize() {
     for(auto childId : childrenIds) {
         ET_SendEvent(childId, &ETUIBox::ET_boxResize);
     }
+    ET_SendEvent(getEntityId(), &ETUIBoxEvents::ET_onBoxResized);
 }
 
 void UIBox::ET_onRenderPortResized() {

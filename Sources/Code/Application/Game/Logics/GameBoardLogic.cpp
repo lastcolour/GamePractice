@@ -16,7 +16,6 @@ namespace {
 
 GameBoardLogic::GameBoardLogic() :
     boardSize(0),
-    space(1.f),
     cellScale(1.f),
     activeTouchedElemId(INVALID_BOARD_ELEM_ID) {
 }
@@ -29,11 +28,6 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
     if(moveSpeed <= 0.f) {
         LogWarning("[GameBoard::serialize] Invalid move speed: %f", moveSpeed);
         return false;
-    }
-    node.value("space", space);
-    if(space <= 0.f || space > 1.f) {
-        LogWarning("[GameBoard::serialize] Invalid space: %f", space);
-            return false;
     }
     if(auto sizeNode = node.object("size")) {
         sizeNode.value("w", boardSize.x);
@@ -65,6 +59,21 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
     return true;
 }
 
+void GameBoardLogic::ET_onBoxResized() {
+    initBoardBox();
+    for(auto& elem : elements) {
+        if (elem.state == BoardElemState::Moving) {
+            setElemBoardPos(elem, elem.boardPt);
+        } else {
+            setElemBoardPos(elem, elem.boardPt);
+        }
+        Vec2 renderSize;
+        renderSize.x = static_cast<float>(objectSize.x);
+        renderSize.y = static_cast<float>(objectSize.y);
+        ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setSize, renderSize);
+    }
+}
+
 void GameBoardLogic::initBoardBox() {
     AABB2Di box;
 
@@ -76,8 +85,8 @@ void GameBoardLogic::initBoardBox() {
     ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getAabb2di);
     Vec2i uiBoxSize = box.getSize();
 
-    float cellSizeY = space * uiBoxSize.x / boardSize.x;
-    float cellSizeZ = space * uiBoxSize.y / boardSize.y;
+    float cellSizeY = uiBoxSize.x / static_cast<float>(boardSize.x);
+    float cellSizeZ = uiBoxSize.y / static_cast<float>(boardSize.y);
     cellSize = static_cast<int>(floorf(std::min(cellSizeY, cellSizeZ)));
     objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
     Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
@@ -86,8 +95,12 @@ void GameBoardLogic::initBoardBox() {
     ET_SendEventReturn(style, getEntityId(), &ETUIBox::ET_getStyle);
     style.size = Vec2(style.size.x * boardBoxSize.x / static_cast<float>(uiBoxSize.x),
         style.size.y * boardBoxSize.y / static_cast<float>(uiBoxSize.y));
-    ET_SendEvent(getEntityId(), &ETUIBox::ET_setStyle, style);
 
+    ETNode<ETUIBoxEvents>::disconnect();
+    ET_SendEvent(getEntityId(), &ETUIBox::ET_setStyle, style);
+    ETNode<ETUIBoxEvents>::connect(getEntityId());
+
+    boardBox = box;
     ET_SendEventReturn(boardBox, getEntityId(), &ETUIBox::ET_getAabb2di);
 }
 
@@ -140,6 +153,7 @@ bool GameBoardLogic::init() {
 
     ETNode<ETSurfaceEvents>::connect(getEntityId());
     ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETUIBoxEvents>::connect(getEntityId());
     return true;
 }
 

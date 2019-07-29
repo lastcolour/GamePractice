@@ -11,6 +11,11 @@ enum class UIListType {
     Horizontal
 };
 
+struct ETUIBoxEvents {
+    virtual ~ETUIBoxEvents() = default;
+    virtual void ET_onBoxResized() = 0;
+};
+
 struct ETUIBox {
     virtual ~ETUIBox() = default;
     virtual const AABB2Di& ET_getAabb2di() const = 0;

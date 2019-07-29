@@ -298,3 +298,7 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
         static_cast<float>(uiBox.getCenter().y), 0.f);
     ASSERT_EQ(tm.pt, uiBoxCenter);
 }
+
+TEST_F(GameBoardTests, CheckResize) {
+    ASSERT_FALSE(true);
+}

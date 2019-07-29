@@ -36,8 +36,10 @@ bool RenderTextLogic::init() {
     if(!geom) {
         return false;
     }
+
     assert(geom->vertCount >= 6 && "Invalid chunk vertext count");
     assert(geom->vertType == VertexType::Vec4 && "Invalid vertext type");
+
     ETNode<ETRenderTextLogic>::connect(getEntityId());
     return true;
 }

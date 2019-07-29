@@ -3,9 +3,11 @@
 
 #include "Game/GameLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "UI/UIETInterfaces.hpp"
 
 class GameBoardElemLogic : public GameLogic,
-    public ETNode<ETGameBoardElemLogic> {
+    public ETNode<ETGameBoardElemLogic>,
+    public ETNode<ETUIInteractionBox> {
 public:
 
     GameBoardElemLogic();
@@ -17,6 +19,12 @@ public:
     // ETGameBoardElemLogic
     void ET_setBoardPos(const Vec2i& pt) override;
     const Vec2i& ET_getBoardPos() const override;
+
+    // ETUIInteractionBox
+    void ET_onPress() override;
+    void ET_onHover(bool flag) override;
+    bool ET_isHovered() const override;
+    const AABB2Di& ET_getHitBox() const override;
 
 private:
 
