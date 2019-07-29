@@ -44,7 +44,7 @@ Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
     {
         case SizeInvariant::Absolute:
         {
-            Vec2i renderPort;
+            Vec2i renderPort(0);
             ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
             resSize.x = static_cast<int>(renderPort.x * style.size.x);
             resSize.y = static_cast<int>(renderPort.y * style.size.y);
@@ -52,7 +52,7 @@ Vec2i UIBox::calcSize(const AABB2Di& parentBox) const {
         }
         case SizeInvariant::AbsoluteBiggestSquare:
         {
-            Vec2i renderPort;
+            Vec2i renderPort(0);
             ET_SendEventReturn(renderPort, &ETRender::ET_getRenderPort);
             int minSide = std::min(renderPort.x, renderPort.y);
             resSize.x = static_cast<int>(minSide * style.size.x);

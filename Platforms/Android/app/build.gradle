@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion 29
+
+    buildToolsVersion "29.0.0"
+
+    defaultConfig {
+
+        applicationId 'com.lastcolour.Game01'
+
+        // Defines the minimum API level required to run the app.
+        minSdkVersion 15
+
+        // Specifies the API level used to test the app.
+        targetSdkVersion 28
+
+        // Defines the version number of your app.
+        versionCode 1
+
+        // Defines a user-friendly version name for your app.
+        versionName "1.0"
+    }
+
+    buildTypes {
+
+        debug {
+
+            task buildLibrary(type:Exec) {
+                workingDir '../../Sources/Automation/Build'
+
+                //on windows:
+                commandLine 'python', 'build.py', '-build=Debug', '-platform=Android'
+
+                //on linux
+                commandLine 'python', 'build.py', '-build=Debug', '-platform=Android'
+
+                //store the output instead of printing to the console:
+                standardOutput = new ByteArrayOutputStream()
+
+                //extension method stopTomcat.output() can be used to obtain the output:
+                ext.output = {
+                    return standardOutput.toString()
+                }
+            }
+        }
+
+        release {
+
+            minifyEnabled true // Enables code shrinking for the release build type.
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["$rootProject.projectDir.absolutePath/../../_build/Android/Debug"]
+            jni.srcDirs = []
+            assets.srcDirs =
+                    ["$rootProject.projectDir.absolutePath/../../Assets"]
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}

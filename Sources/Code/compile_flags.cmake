@@ -12,7 +12,15 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+
+    if(COMPILE_FLAGS_SATINE_MEMORY)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    endif()
+
+    if(COMPILE_FLAGS_PROFILE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    endif()
 
     set(CXX_APP_CHECK_FLAGS
 -Wextra

@@ -46,5 +46,4 @@ _cmake/
 # Android Studio files
 *config.local
 *local.properties
-*.gradle
 *.vscode
