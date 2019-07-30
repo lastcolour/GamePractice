@@ -71,6 +71,8 @@ struct ETTimerEvents {
 struct ETAppRunStateEvents {
     virtual ~ETAppRunStateEvents() = default;
     virtual void ET_onTerminate() = 0;
+    virtual void ET_onPause() = 0;
+    virtual void ET_onResume() = 0;
     virtual bool ET_isNeedRun() const = 0;
 };
 

@@ -3,11 +3,9 @@
 
 #include "Platform.hpp"
 
-struct ANativeActivity;
-
 class AndroidPlatform : public Platform {
 public:
-    AndroidPlatform(ANativeActivity* activity, void* savedState, size_t savedStateSize);
+    AndroidPlatform();
     virtual ~AndroidPlatform();
 
     // Platform

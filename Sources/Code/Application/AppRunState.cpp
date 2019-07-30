@@ -20,3 +20,9 @@ void AppRunState::ET_onTerminate() {
 bool AppRunState::ET_isNeedRun() const {
     return needRun;
 }
+
+void AppRunState::ET_onPause() {
+}
+
+void AppRunState::ET_onResume() {
+}

@@ -17,6 +17,8 @@ public:
 
     // ETAppRunStateEvents
     void ET_onTerminate() override;
+    void ET_onPause() override;
+    void ET_onResume() override;
     bool ET_isNeedRun() const override;
 
 public:
