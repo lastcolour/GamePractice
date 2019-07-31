@@ -259,7 +259,7 @@ void AndroidSurface::ET_onTick(float dt) {
     }
     if(currSize != size) {
         size = currSize;
-        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResize, size);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, size);
     }
 }
 

@@ -17,19 +17,26 @@ void UIViewManager::deinit() {
     ETNode<ETUIViewManager>::disconnect();
 }
 
-bool UIViewManager::ET_openView(const char* viewName) {
+EntityId UIViewManager::ET_openView(const char* viewName) {
     if(!viewName || !viewName[0]) {
         LogWarning("[UIViewManager::ET_openView] Can't open empty view");
-        return false;
+        return InvalidEntityId;
     }
     EntityId newViewId;
     ET_SendEventReturn(newViewId, &ETGameObjectManager::ET_createGameObject, viewName);
     if(!newViewId.isValid()) {
         LogWarning("[UIViewManager::ET_openView] Can't open view: %s", viewName);
-        return false;
+        return InvalidEntityId;
     }
 
     ET_SendEvent(&ETGameObjectManager::ET_destroyObject, activeViewId);
     activeViewId = newViewId;
-    return true;
+    return activeViewId;
+}
+
+void UIViewManager::ET_closeView(EntityId viewId) {
+    if(activeViewId == viewId && activeViewId.isValid()) {
+        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, activeViewId);
+        activeViewId = InvalidEntityId;
+    }
 }

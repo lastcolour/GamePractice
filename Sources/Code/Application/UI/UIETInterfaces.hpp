@@ -52,7 +52,8 @@ struct ETUIList {
 
 struct ETUIViewManager {
     virtual ~ETUIViewManager() = default;
-    virtual bool ET_openView(const char* viewName) = 0;
+    virtual EntityId ET_openView(const char* viewName) = 0;
+    virtual void ET_closeView(EntityId viewId) = 0;
 };
 
 struct ETUIEventManager {

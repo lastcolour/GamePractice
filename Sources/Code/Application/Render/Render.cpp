@@ -13,22 +13,19 @@ static_assert(std::is_same<unsigned int, GLuint>::value, "unsigned int != GLuint
 
 Render::Render() :
     renderFb(nullptr),
-    clearColor(0, 0, 0) {
+    clearColor(0, 0, 0),
+    canOffscrenRender(false),
+    canScreenRender(false) {
 }
 
  Render::~Render() {
  }
 
 bool Render::init() {
-    GLContextType glCtxType = GLContextType::None;
-    ET_SendEventReturn(glCtxType, &ETSurface::ET_getGLContextType);
-    if(glCtxType == GLContextType::None) {
-        LogError("[Render::onInit] Can't init render without GL context");
-        return false;
+    ET_SendEventReturn(canOffscrenRender, &ETSurface::ET_isValid);
+    if(canOffscrenRender) {
+        ET_onSurfaceCreated();
     }
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
 
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
@@ -49,11 +46,15 @@ void Render::ET_onTick(float dt) {
 }
 
 void Render::ET_drawFrame() {
-    bool isVisible = false;
-    ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);
-    if(!isVisible && !renderFb) {
+    if(renderFb && !canOffscrenRender) {
         return;
     }
+    if(!renderFb && !canScreenRender) {
+        return;
+    }
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 
     auto clearColF = clearColor.getColorF();
     glClearColor(clearColF.r, clearColF.g, clearColF.b, clearColF.a);
@@ -102,12 +103,32 @@ void Render::ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFramebuff
     }
 }
 
-void Render::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
-    (void)touchType;
-    (void)pt;
+void Render::ET_onSurfaceDestroyed() {
+    canOffscrenRender = false;
+    canScreenRender = false;
 }
 
-void Render::ET_onSurfaceResize(const Vec2i& size) {
+void Render::ET_onSurfaceCreated() {
+    canOffscrenRender = true;
+    canScreenRender = false; 
+    ET_SendEventReturn(canScreenRender, &ETSurface::ET_isVisible);
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETSurface::ET_getSize);
+    setViewport(renderPort);
+}
+
+void Render::ET_onSurfaceHidden() {
+    canOffscrenRender = true;
+    canScreenRender = false;
+}
+
+void Render::ET_onSurfaceShown() {
+    canOffscrenRender = true;
+    canScreenRender = true;
+}
+
+void Render::ET_onSurfaceResized(const Vec2i& size) {
     if(!renderFb) {
         setViewport(size);
     }

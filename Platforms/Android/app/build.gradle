@@ -2,6 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
 
+    def ProjectRootRit = "rootProject.projectDir.absolutePath/../.."
+    def BuildRootDir = "$ProjectRootRit/_build/Android"
+
     compileSdkVersion 29
 
     buildToolsVersion "29.0.0"
@@ -40,8 +43,7 @@ android {
         main {
             jniLibs.srcDirs = ["$rootProject.projectDir.absolutePath/../../_build/Android/Debug"]
             jni.srcDirs = []
-            assets.srcDirs =
-                    ["$rootProject.projectDir.absolutePath/../../Assets"]
+            assets.srcDirs = ["$rootProject.projectDir.absolutePath/../../Assets"]
         }
     }
 }

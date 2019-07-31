@@ -16,7 +16,8 @@ public:
     void deinit() override;
 
     // ETUIViewManager
-    bool ET_openView(const char* viewName) override;
+    EntityId ET_openView(const char* viewName) override;
+    void ET_closeView(EntityId viewId) override;
 
 private:
 

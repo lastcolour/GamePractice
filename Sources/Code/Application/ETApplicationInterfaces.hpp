@@ -31,10 +31,19 @@ enum class ETouchType {
     Release
 };
 
+struct ETInputEvents {
+    virtual void ET_onTouch(ETouchType touchType, const Vec2i& pt) = 0;
+};
+
 struct ETSurfaceEvents {
     virtual ~ETSurfaceEvents() = default;
-    virtual void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) = 0;
-    virtual void ET_onSurfaceResize(const Vec2i& size) = 0;
+    virtual void ET_onSurfaceCreated() = 0;
+    virtual void ET_onSurfaceDestroyed() = 0;
+    virtual void ET_onSurfaceHidden() = 0;
+    virtual void ET_onSurfaceShown() = 0;
+    virtual void ET_onSurfaceLostFocus() = 0;
+    virtual void ET_onSurfaceGainFocus() = 0;
+    virtual void ET_onSurfaceResized(const Vec2i& size) = 0;
 };
 
 struct ETAssets {

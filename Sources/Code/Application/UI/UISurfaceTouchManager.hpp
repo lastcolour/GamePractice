@@ -5,7 +5,7 @@
 #include "ETApplicationInterfaces.hpp"
 
 class UISurfaceTouchManager : public SystemLogic,
-    public ETNode<ETSurfaceEvents> {
+    public ETNode<ETInputEvents> {
 public:
 
     UISurfaceTouchManager();
@@ -16,8 +16,7 @@ public:
     virtual void deinit() override;
 
     // ETSurfaceEvents
-    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
-    void ET_onSurfaceResize(const Vec2i& size) override { (void)size; }
+    void ET_onTouch(ETouchType touchType, const Vec2i& pt) override;
 
 private:
 

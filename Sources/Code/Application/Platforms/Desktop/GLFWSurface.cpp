@@ -202,7 +202,7 @@ void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) 
     Vec2i pt(static_cast<int>(x), static_cast<int>(y));
     pt.y = surface->size.y - pt.y;
     activeGesture.push_back(pt);
-    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Move, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Move, pt);
 }
 
 void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -226,10 +226,10 @@ void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int act
 
     if(action == GLFW_PRESS) {
         activeGesture.push_back(pt);
-        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Press, pt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Press, pt);
     } else if (action == GLFW_RELEASE) {
         activeGesture.clear();
-        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceTouch, ETouchType::Release, pt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Release, pt);
     }
 }
 
@@ -241,5 +241,5 @@ void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* window, int w, int h) {
         return;
     }
     surface->size = Vec2i(w, h);
-    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResize, surface->size);
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, surface->size);
 }

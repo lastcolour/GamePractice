@@ -151,7 +151,7 @@ bool GameBoardLogic::init() {
         }
     }
 
-    ETNode<ETSurfaceEvents>::connect(getEntityId());
+    ETNode<ETInputEvents>::connect(getEntityId());
     ETNode<ETTimerEvents>::connect(getEntityId());
     ETNode<ETUIBoxEvents>::connect(getEntityId());
     return true;
@@ -391,12 +391,7 @@ void GameBoardLogic::onEndElemMove(const Vec2i& endPt) {
     }
 }
 
-void GameBoardLogic::ET_onSurfaceResize(const Vec2i& pt) {
-    (void)pt;
-    return;
-}
-
-void GameBoardLogic::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
+void GameBoardLogic::ET_onTouch(ETouchType touchType, const Vec2i& pt) {
     if(touchType == ETouchType::Press) {
         int touchedElemId = findTouchedElemId(pt);
         if(touchedElemId != INVALID_BOARD_ELEM_ID) {

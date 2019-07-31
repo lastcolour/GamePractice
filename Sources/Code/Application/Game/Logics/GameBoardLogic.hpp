@@ -35,7 +35,7 @@ struct BoardElement {
 };
 
 class GameBoardLogic : public GameLogic,
-    public ETNode<ETSurfaceEvents>,
+    public ETNode<ETInputEvents>,
     public ETNode<ETTimerEvents>,
     public ETNode<ETUIBoxEvents> {
 public:
@@ -46,9 +46,8 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
-    // ETSurfaceEvents
-    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
-    void ET_onSurfaceResize(const Vec2i& pt) override;
+    // ETInputEvents
+    void ET_onTouch(ETouchType touchType, const Vec2i& pt) override;
 
     // ETTimerEvents
     void ET_onTick(float dt) override;

@@ -263,7 +263,7 @@ TEST_F(GameBoardTests, CheckGameBoardConnections) {
 
     auto entId = board->getEntityId();
 
-    ASSERT_TRUE(ET_IsExistNode<ETSurfaceEvents>(entId));
+    ASSERT_TRUE(ET_IsExistNode<ETInputEvents>(entId));
 }
 
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {

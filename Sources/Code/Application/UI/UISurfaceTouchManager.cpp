@@ -8,12 +8,12 @@ UISurfaceTouchManager::~UISurfaceTouchManager() {
 }
 
 bool UISurfaceTouchManager::init() {
-    ETNode<ETSurfaceEvents>::connect(getEntityId());
+    ETNode<ETInputEvents>::connect(getEntityId());
     return true;
 }
 
 void UISurfaceTouchManager::deinit() {
-    ETNode<ETSurfaceEvents>::disconnect();
+    ETNode<ETInputEvents>::disconnect();
 }
 
 bool UISurfaceTouchManager::isHover(const Vec2i& pt, EntityId entId) const {
@@ -68,7 +68,7 @@ void UISurfaceTouchManager::onRelease(const Vec2i& pt) {
     pressElemId = InvalidEntityId;
 }
 
-void UISurfaceTouchManager::ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) {
+void UISurfaceTouchManager::ET_onTouch(ETouchType touchType, const Vec2i& pt) {
     switch (touchType)
     {
     case ETouchType::Press:

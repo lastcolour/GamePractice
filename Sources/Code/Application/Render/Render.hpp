@@ -25,8 +25,13 @@ public:
     void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
 
     // ETSurfaceEvents
-    void ET_onSurfaceResize(const Vec2i& size) override;
-    void ET_onSurfaceTouch(ETouchType touchType, const Vec2i& pt) override;
+    void ET_onSurfaceDestroyed() override;
+    void ET_onSurfaceCreated() override;
+    void ET_onSurfaceHidden() override;
+    void ET_onSurfaceShown() override;
+    void ET_onSurfaceLostFocus() override {}
+    void ET_onSurfaceGainFocus() override {}
+    void ET_onSurfaceResized(const Vec2i& size) override;
 
     // ETTimerEvents
     void ET_onTick(float dt) override;
@@ -39,6 +44,8 @@ private:
 
     RenderTextureFramebuffer* renderFb;
     ColorB clearColor;
+    bool canOffscrenRender;
+    bool canScreenRender;
 };
 
 #endif /* __RENDER_HPP__ */
