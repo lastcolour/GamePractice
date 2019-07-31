@@ -134,6 +134,7 @@ void AndroindPlatformHandler::start() {
         app.run();
         deinitAppThread();
     });
+    thread.detach();
 
     {
         std::unique_lock<std::mutex> uniqueLock(mutex);
@@ -184,20 +185,10 @@ void AndroindPlatformHandler::pollInputEvents() {
     if(AInputQueue_preDispatchEvent(inputQueue, inputEvent)) {
         return;
     }
-    int32_t eventType = AInputEvent_getType(inputEvent);
-    switch(eventType) {
-        case AINPUT_EVENT_TYPE_MOTION: {
-            break;
-        }
-        case AINPUT_EVENT_TYPE_KEY: {
-            break;
-        }
-        default: {
-            LogAndroidError("[AndroindPlatformHandler::pollInputEvents] Unknown input event: %d", eventType);
-            break;
-        }
-    }
-    AInputQueue_finishEvent(inputQueue, inputEvent, ::InputEventNotHandled);
+    bool isHandled = false;
+    ET_SendEventReturn(isHandled, &ETAndroidInputEvents::ET_onInputEvent, inputEvent);
+    AInputQueue_finishEvent(inputQueue, inputEvent,
+        isHandled ? ::InputEventHandled : ::InputEventNotHandled);
 }
 
 void AndroindPlatformHandler::pollActivityEvents() {
@@ -221,7 +212,7 @@ void AndroindPlatformHandler::pollActivityEvents() {
     markEventHandled(eventType);
 }
 
-void AndroindPlatformHandler::onActivityEvent(ActivityEventType eventType) {;
+void AndroindPlatformHandler::onActivityEvent(ActivityEventType eventType) {
     if(write(eventsWritePipe, &eventType, sizeof(ActivityEventType)) != sizeof(ActivityEventType)) {
         LogAndroidError("[AndroindPlatformHandler::onActivityEvent] Can't write android event to pipe: %s", strerror(errno));
         return;
@@ -311,7 +302,7 @@ void AndroindPlatformHandler::markEventHandled(ActivityEventType eventType) {
 }
 
 void AndroindPlatformHandler::waitUntilEventHandler(ActivityEventType eventType) {
-    std::unique_lock<std::mutex> uniqueLock;
+    std::unique_lock<std::mutex> uniqueLock(mutex);
     cond.wait(uniqueLock, [this, eventType](){
         if(handledEventMap[static_cast<size_t>(eventType)]) {
             handledEventMap[static_cast<size_t>(eventType)] = false;

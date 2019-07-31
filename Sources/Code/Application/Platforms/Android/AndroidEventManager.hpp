@@ -7,7 +7,8 @@
 
 class AndroidEventManager : public SystemLogic,
     public ETNode<ETTimerEvents>,
-    public ETNode<ETAndroidActivityEvents> {
+    public ETNode<ETAndroidActivityEvents>,
+    public ETNode<ETAndroidInputEvents> {
 public:
 
     AndroidEventManager();
@@ -22,6 +23,13 @@ public:
 
     // ETAndroidActivityEvents
     void ET_onActivityEvent(ActivityEventType eventType) override;
+
+    // ETAndroidInputEvents
+    bool ET_onInputEvent(AInputEvent* inputEvent) override;
+
+private:
+
+    bool hadleMotionEvent(AInputEvent* inputEvent);
 };
 
 #endif /* __ANDROIND_EVENT_MANGER_HPP__ */

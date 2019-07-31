@@ -85,9 +85,9 @@ void GameBoardLogic::initBoardBox() {
     ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getAabb2di);
     Vec2i uiBoxSize = box.getSize();
 
-    float cellSizeY = uiBoxSize.x / static_cast<float>(boardSize.x);
-    float cellSizeZ = uiBoxSize.y / static_cast<float>(boardSize.y);
-    cellSize = static_cast<int>(floorf(std::min(cellSizeY, cellSizeZ)));
+    float cellSizeX = uiBoxSize.x / static_cast<float>(boardSize.x);
+    float cellSizeY = uiBoxSize.y / static_cast<float>(boardSize.y);
+    cellSize = static_cast<int>(floorf(std::min(cellSizeX, cellSizeY)));
     objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
     Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
 

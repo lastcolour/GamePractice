@@ -4,6 +4,10 @@
 
 #include <android/log.h>
 
+namespace {
+const char* LOG_TAG = "App";
+}
+
 AndroidLogger::AndroidLogger() :
     logLevel(LogLevel::Debug) {
 }
@@ -92,5 +96,5 @@ void AndroidLogger::printMessasge(LogLevel lvl, const std::string& msg) {
             break;
         }
     }
-    __android_log_print(logPriority, nullptr, "%s", msg.c_str());
+    __android_log_print(logPriority, LOG_TAG, "%s", msg.c_str());
 }

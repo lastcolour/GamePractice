@@ -300,5 +300,27 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
 }
 
 TEST_F(GameBoardTests, CheckResize) {
-    ASSERT_FALSE(true);
+    UIBox* uiBox = nullptr;
+    {
+        std::unique_ptr<UIBox> uiBoxLogicPtr(new UIBox);
+        uiBox = uiBoxLogicPtr.get();
+        object->addLogic(std::move(uiBoxLogicPtr));
+        UIStyle style;
+        style.size = Vec2(200.f, 400.f);
+        style.sizeInv = SizeInvariant::Pixel;
+        style.yAlignType = YAlignType::Center;
+        uiBox->ET_setStyle(style);
+        ASSERT_TRUE(uiBox->init());
+    }
+    {
+        TestBoardParams params;
+        params.boardSize = Vec2i(10, 10);
+        params.cellScale = 0.9f;
+        board->setParams(params);
+        ASSERT_TRUE(board->init());
+    }
+
+    auto box = uiBox->ET_getAabb2di();
+    Vec2i boxSize = box.getSize();
+    ASSERT_EQ(boxSize, Vec2i(200));
 }

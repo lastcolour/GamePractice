@@ -47,3 +47,4 @@ _cmake/
 *config.local
 *local.properties
 *.vscode
+.gradle

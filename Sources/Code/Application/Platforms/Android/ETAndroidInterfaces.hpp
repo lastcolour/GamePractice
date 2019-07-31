@@ -1,6 +1,8 @@
 #ifndef __ET_ANDROIND_INTERFACES_HPP__
 #define __ET_ANDROIND_INTERFACES_HPP__
 
+struct AInputEvent;
+
 enum class ActivityEventType {
     OnStart = 0,
     OnPause,
@@ -19,6 +21,11 @@ enum class ActivityEventType {
 struct ETAndroidActivityEvents {
     virtual ~ETAndroidActivityEvents() = default;
     virtual void ET_onActivityEvent(ActivityEventType eventType) = 0;
+};
+
+struct ETAndroidInputEvents {
+    virtual ~ETAndroidInputEvents() = default;
+    virtual bool ET_onInputEvent(AInputEvent* inputEvent) = 0;
 };
 
 #endif /* __ET_ANDROIND_INTERFACES_HPP__ */

@@ -143,7 +143,9 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
         std::string childObjName;
         childNode.value(childObjName);
         auto childGameObj = createObject(objPtr.get(), childObjName.c_str());
-        gameObjects.push_back(std::move(childGameObj));
+        if(childGameObj) {
+            gameObjects.push_back(std::move(childGameObj));
+        }
     }
     if(rootObj) {
         rootObj->ET_addChild(objPtr->getEntityId());

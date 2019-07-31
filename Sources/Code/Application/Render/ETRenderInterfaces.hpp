@@ -71,4 +71,9 @@ struct ETRender {
     virtual void ET_drawFrame() = 0;
 };
 
+struct ETRenderContextEvents {
+    virtual ~ETRenderContextEvents();
+    virtual void ET_onContextLost() = 0;
+};
+
 #endif /* __ET_RENDER_INTERFACES_HPP__ */

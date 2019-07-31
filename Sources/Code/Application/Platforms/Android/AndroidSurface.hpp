@@ -37,11 +37,12 @@ public:
 
 private:
 
+    void onNativeWindowCreated();
+    void onNativeWindowDestoryed();
+
+    bool createEGLSurface();
     bool createEGLDisplay();
     bool createEGLContext();
-    void updateEGLContext();
-    void suspendEGLContext();
-    void destroyEGLContext();
 
 private:
 

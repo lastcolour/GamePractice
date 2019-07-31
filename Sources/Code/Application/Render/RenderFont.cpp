@@ -1,6 +1,7 @@
 #include "Render/RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Render/RenderUtils.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -29,29 +30,41 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
         return false;
     }
 
+    Buffer buff(width * height * 2);
+    memset(buff.getWriteData(), 0, buff.getSize());
+
     GLuint texId;
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    Buffer buff(width * height * 2);
-    memset(buff.getWriteData(), 0, buff.getSize());
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getWriteData());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
+
+    if(!CheckGLError()) {
+        LogError("[RenderFont::createAtlas] Can't create font atlas texture of size: [%dx%d]", width, height);
+        return false;
+    }
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     textureId = texId;
     texSize = Vec2i(width, height);
 
-    auto errCode = glGetError();
-    return errCode == GL_NO_ERROR;
+    return true;
 }
 
 void RenderFont::addGlyph(int ch, int shift, const RenderGlyph& glyphData, const void* buffer) {
     fontHeight = std::max(fontHeight, glyphData.size.y);
     glyphs[ch] = glyphData;
-    glTexSubImage2D(GL_TEXTURE_2D, 0, shift, 0, glyphData.size.x, glyphData.size.y,
-        GL_RED, GL_UNSIGNED_BYTE, buffer);
+    if(glyphData.size > Vec2i(0)) {
+        glTexSubImage2D(GL_TEXTURE_2D, 0, shift, 0, glyphData.size.x, glyphData.size.y,
+            GL_RED, GL_UNSIGNED_BYTE, buffer);
+
+        if(!CheckGLError()) {
+            LogError("[RenderFont::addGlyph] Can't add glyph '%c' to font atlas", static_cast<char>(ch));
+        }
+    }
 }
 
 int RenderFont::getHeight() const {

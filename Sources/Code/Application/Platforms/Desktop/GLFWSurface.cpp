@@ -92,7 +92,7 @@ bool GLFWSurface::init() {
 
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -144,14 +144,16 @@ bool GLFWSurface::ET_show() {
     if(window) {
         glfwShowWindow(window);
         glfwFocusWindow(window);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
         return true;
     }
     return false;
 }
 
 bool GLFWSurface::ET_hide() {
-    if(window) {
+    if(window && !ET_isVisible()) {
         glfwHideWindow(window);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
         return true;
     }
     return false;

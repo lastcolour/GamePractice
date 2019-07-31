@@ -2,6 +2,7 @@
 #include "ETApplicationInterfaces.hpp"
 #include "ETRenderInterfaces.hpp"
 #include "Platforms/OpenGL.hpp"
+#include "Render/RenderUtils.hpp"
 
 #include <cassert>
 
@@ -27,14 +28,14 @@ bool RenderTextureFramebuffer::init() {
         return false;
     }
     if(framebufferId) {
-        LogWarning("[RenderTextureFramebuffer] Double init");
+        LogWarning("[RenderTextureFramebuffer::init] Double init");
         return false;
     }
 
     glGenFramebuffers(1, &framebufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
     if(!framebufferId) {
-        LogError("[RenderTextureFramebuffer] Can't create framebuffer");
+        LogError("[RenderTextureFramebuffer::init] Can't create framebuffer");
         return false;
     }
 
@@ -43,7 +44,7 @@ bool RenderTextureFramebuffer::init() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     if(!textureId) {
-        LogError("[RenderTextureFramebuffer] Can't create texture");
+        LogError("[RenderTextureFramebuffer::init] Can't create texture");
         return false;
     }
 
@@ -59,11 +60,15 @@ bool RenderTextureFramebuffer::init() {
     textureBuffer.reset(new Color::Color_RGBA_Byte[size.x * size.y]);
     if(!textureBuffer) {
         auto bufferSize = size.x * size.y * sizeof(Color::Color_RGBA_Byte);
-        LogError("[RenderTextureFramebuffer] Can't allocate bytes for read buffer %d", bufferSize);
+        LogError("[RenderTextureFramebuffer::init] Can't allocate bytes for read buffer %d", bufferSize);
         return false;
     }
 
-    return glGetError() == GL_NO_ERROR;
+    if(!CheckGLError()) {
+        LogError("[RenderTextureFramebuffer::init] Can't init framebuffer");
+        return false;
+    }
+    return true;
 }
 
 bool RenderTextureFramebuffer::bind() {

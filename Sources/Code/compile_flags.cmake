@@ -42,8 +42,6 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
-    
-
 else()
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")
 endif()

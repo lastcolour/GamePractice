@@ -188,6 +188,10 @@ Buffer DesktopAssets::loadAssetImpl(const std::string& assetName) {
         LogError("[DesktopAssets] Can't load file by invalid path: '%s'", assetName);
         return Buffer();
     }
+    if(isDirExist(assetPath.c_str())) {
+        LogWarning("[DesktopAssets::loadAssetImpl] Can't opend dir as file: '%s'", assetName);
+        return Buffer();
+    }
     std::ifstream fin(assetPath, std::ios::binary | std::ios::ate);
     if(!fin.good() || !fin.is_open()) {
         LogError("[DesktopAssets] Can't load file: '%s'", assetPath);
@@ -199,7 +203,6 @@ Buffer DesktopAssets::loadAssetImpl(const std::string& assetName) {
         return Buffer();
     }
     fin.seekg(0u, std::ios::beg);
-
     Buffer buffer(fileSize);
     if(!buffer) {
         LogError("[DesktopAssets] Can't allocate buffer of size %d to load file: '%s'", fileSize, assetPath);
