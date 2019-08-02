@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "OnGameBack",
+                "event": "Game_OnBackButton",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {

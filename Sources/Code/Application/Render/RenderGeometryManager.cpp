@@ -61,8 +61,8 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
          1.f, -1.f, 0.f,
     };
 
-    GLuint vaoId;
-    GLuint vboId;
+    GLuint vaoId = 0;
+    GLuint vboId = 0;
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
     glGenBuffers(1, &vboId);
@@ -84,8 +84,8 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
 }
 
 std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() {
-    GLuint vaoId;
-    GLuint vboId;
+    GLuint vaoId = 0;
+    GLuint vboId = 0;
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
     glGenBuffers(1, &vboId);

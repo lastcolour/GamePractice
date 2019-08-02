@@ -1,8 +1,8 @@
 {
     "children": [
-        "UI/MainView/TopBar.json",
-        "UI/MainView/MiddleBar.json",
-        "UI/MainView/BotBar.json"
+        "UI/AboutView/TopBar.json",
+        "UI/AboutView/DescriptionBox.json",
+        "UI/AboutView/VersionLabelBox.json"
     ],
     "logics": [
         {

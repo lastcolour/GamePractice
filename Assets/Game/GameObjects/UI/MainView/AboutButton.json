@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "Main_OnOptionsButton",
+                "event": "Main_OnAboutButton",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {
@@ -25,7 +25,7 @@
                 },
                 "label": {
                     "object": "UI/MainView/SimpleButtonLabel.json",
-                    "text": "Options",
+                    "text": "About",
                     "style": {
                         "color": {
                             "r": 255,

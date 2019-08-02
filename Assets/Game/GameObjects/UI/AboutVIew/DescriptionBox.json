@@ -1,23 +1,22 @@
 {
-    "children": [
-        "UI/MainView/TopBar.json",
-        "UI/MainView/MiddleBar.json",
-        "UI/MainView/BotBar.json"
-    ],
+    "children":[],
     "logics": [
         {
-            "type": "UIList",
+            "type": "UIBox",
             "data": {
-                "type": "vert",
                 "style": {
-                    "renderer": null,
-                    "color": {},
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 120,
+                        "g": 120,
+                        "b": 120
+                    },
                     "align": {
                         "x": "center",
                         "y": "center"
                     },
                     "size": {
-                        "h": 1,
+                        "h": 0.4,
                         "w": 1,
                         "inv": "rel"
                     },

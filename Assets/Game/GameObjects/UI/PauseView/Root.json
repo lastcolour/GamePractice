@@ -1,0 +1,34 @@
+{
+    "children":[
+        "UI/PauseView/ResumeButton.json",
+        "UI/PauseView/RestartButton.json",
+        "UI/PauseView/OptionsButton.json",
+        "UI/PauseView/ExitToMainButton.json"
+    ],
+    "logics":[
+        {
+            "type":"UIList",
+            "data":{
+                "type":"vert",
+                "style": {
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 255,
+                        "g": 255,
+                        "b": 255
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                }
+            }
+        }
+    ]
+}

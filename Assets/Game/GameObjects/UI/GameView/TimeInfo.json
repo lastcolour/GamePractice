@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "OnGameTime",
+                "event": "Game_OnTimeButton",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {

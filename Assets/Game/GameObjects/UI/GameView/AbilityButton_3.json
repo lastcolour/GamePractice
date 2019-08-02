@@ -4,16 +4,16 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "Main_OnOptionsButton",
+                "event": "Game_OnAbiltyButton_3",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {
-                        "r": 75,
-                        "g": 75,
-                        "b": 75
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
                     },
                     "align": {
-                        "x": "center",
+                        "x": "left",
                         "y": "center"
                     },
                     "size": {
@@ -25,12 +25,12 @@
                 },
                 "label": {
                     "object": "UI/MainView/SimpleButtonLabel.json",
-                    "text": "Options",
+                    "text": "Ability 3",
                     "style": {
                         "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
                         }
                     }
                 }

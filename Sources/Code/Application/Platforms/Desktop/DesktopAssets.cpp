@@ -197,7 +197,7 @@ Buffer DesktopAssets::loadAssetImpl(const std::string& assetName) {
         LogError("[DesktopAssets] Can't load file: '%s'", assetPath);
         return Buffer();
     }
-    long int fileSize = fin.tellg();
+    std::streamoff fileSize = fin.tellg();
     if(fileSize == -1) {
         LogError("[DesktopAssets] Can't get file size: '%s'", assetName);
         return Buffer();

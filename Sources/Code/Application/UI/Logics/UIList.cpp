@@ -69,7 +69,7 @@ Vec2i UIList::caclCenterUpdateOffset(Vec2i& offset, const AABB2Di& elemBox) {
         center.y = offset.y - boxSize.y / 2;
         offset.y -= boxSize.y;
     } else {
-        center.x = offset.x + boxSize.y / 2;
+        center.x = offset.x + boxSize.x / 2;
         offset.x += boxSize.x;
     }
     return center;

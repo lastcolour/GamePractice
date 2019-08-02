@@ -1,0 +1,32 @@
+{
+    "children":[
+        "UI/OptionsView/VibrationLabelBox.json",
+        "UI/OptionsVIew/VibrationSwitcherButton.json"
+    ],
+    "logics":[
+        {
+            "type":"UIList",
+            "data":{
+                "type":"horz",
+                "style":{
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 125,
+                        "g": 125,
+                        "b": 125
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size":{
+                        "w":1,
+                        "h":0.3,
+                        "sizeInv":"rel"
+                    },
+                    "margin":{}
+                }
+            }
+        }
+    ]
+}

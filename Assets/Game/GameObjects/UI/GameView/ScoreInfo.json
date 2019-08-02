@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "OnGameScore",
+                "event": "Game_OnScoreButton",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {

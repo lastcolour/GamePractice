@@ -1,0 +1,33 @@
+{
+    "children":[
+        "UI/OptionsView/BackButton.json",
+        "UI/OptionsView/OptionsLabelBox.json",
+        "UI/OptionsView/BlankTopBar.json"
+    ],
+    "logics":[
+        {
+            "type":"UIList",
+            "data":{
+                "type":"horz",
+                "style":{
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 255,
+                        "g": 255,
+                        "b": 255
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size":{
+                        "w":1,
+                        "h":0.2,
+                        "sizeInv":"rel"
+                    },
+                    "margin":{}
+                }
+            }
+        }
+    ]
+}

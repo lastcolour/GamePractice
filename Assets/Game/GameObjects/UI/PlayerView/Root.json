@@ -1,8 +1,7 @@
 {
     "children": [
-        "UI/MainView/TopBar.json",
-        "UI/MainView/MiddleBar.json",
-        "UI/MainView/BotBar.json"
+        "UI/PlayerView/TopBar.json",
+        "UI/PlayerView/AchievementsBox.json"
     ],
     "logics": [
         {

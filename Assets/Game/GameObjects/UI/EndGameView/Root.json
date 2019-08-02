@@ -1,0 +1,33 @@
+{
+    "children":[
+        "UI/EndGameView/ResultInfo.json",
+        "UI/EndGameView/PlayAgainButton.json",
+        "UI/EndGameView/ExitToMainButton.json"
+    ],
+    "logics":[
+        {
+            "type":"UIList",
+            "data":{
+                "type":"vert",
+                "style": {
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 255,
+                        "g": 255,
+                        "b": 255
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                }
+            }
+        }
+    ]
+}

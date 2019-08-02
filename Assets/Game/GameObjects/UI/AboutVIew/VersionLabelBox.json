@@ -1,23 +1,24 @@
 {
-    "children": [
-        "UI/MainView/TopBar.json",
-        "UI/MainView/MiddleBar.json",
-        "UI/MainView/BotBar.json"
+    "children":[
+        "UI/AboutView/VersionLabelText.json"
     ],
     "logics": [
         {
-            "type": "UIList",
+            "type": "UIBox",
             "data": {
-                "type": "vert",
                 "style": {
-                    "renderer": null,
-                    "color": {},
+                    "renderer": "Render/RenderGeomSimple.json",
+                    "color": {
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
+                    },
                     "align": {
                         "x": "center",
                         "y": "center"
                     },
                     "size": {
-                        "h": 1,
+                        "h": 0.1,
                         "w": 1,
                         "inv": "rel"
                     },

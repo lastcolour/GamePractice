@@ -2,9 +2,8 @@
     "children":[],
     "logics": [
         {
-            "type": "UIButton",
+            "type": "UIBox",
             "data": {
-                "event": "Main_OnOptionsButton",
                 "style": {
                     "renderer": "Render/RenderGeomSimple.json",
                     "color": {
@@ -17,22 +16,11 @@
                         "y": "center"
                     },
                     "size": {
-                        "h": 1,
-                        "w": 0.3,
+                        "h": 0.8,
+                        "w": 1,
                         "inv": "rel"
                     },
                     "margin": {}
-                },
-                "label": {
-                    "object": "UI/MainView/SimpleButtonLabel.json",
-                    "text": "Options",
-                    "style": {
-                        "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255
-                        }
-                    }
                 }
             }
         }
