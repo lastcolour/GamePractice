@@ -59,7 +59,8 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
     ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
     const auto scale = Vec2(tm.scale.x, tm.scale.y) * fontScale;
-    Vec2 pt = Vec2(aabb.bot.x, aabb.bot.y);
+    Vec2 pt = Vec2(aabb.bot.x, aabb.top.y);
+    pt.y -= font->getHeight() * scale.y;
 
     std::vector<Vec4> vertChunk(geom->vertCount);
     unsigned int vertShift = 0;
