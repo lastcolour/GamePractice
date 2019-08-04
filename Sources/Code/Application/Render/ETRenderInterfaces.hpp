@@ -27,7 +27,7 @@ struct ETRenderTextLogic {
     virtual void ET_setMaterial(const char* matName) = 0;
     virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
-    virtual void ET_setFontSize(float fontSize) = 0;
+    virtual void ET_setFontSize(int fontSize) = 0;
     virtual const AABB2D& ET_getTextAABB() const = 0;
 };
 

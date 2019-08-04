@@ -59,6 +59,11 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
     return true;
 }
 
+void GameBoardLogic::ET_onTransformChanged(const Transform& newTm) {
+    (void)newTm;
+    ET_onBoxResized();
+}
+
 void GameBoardLogic::ET_onBoxResized() {
     initBoardBox();
     for(auto& elem : elements) {

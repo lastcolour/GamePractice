@@ -36,7 +36,10 @@ const char* UILabel::ET_getText() const {
 }
 
 Vec2i UILabel::calculateBoxSize(const AABB2Di& parentBox) const {
-    (void)parentBox;
+    auto parentBoxSize = parentBox.getSize();
+    int renderFontSize = static_cast<int>(parentBoxSize.y * ET_getStyle().fontSize);
+    ET_SendEvent(&ETRenderTextLogic::ET_setFontSize, renderFontSize);
+
     AABB2D renderTextBox(0.f);
     ET_SendEventReturn(renderTextBox, getRendererId(), &ETRenderTextLogic::ET_getTextAABB);
     auto renderBoxSize = renderTextBox.getSize();

@@ -37,7 +37,8 @@ struct BoardElement {
 class GameBoardLogic : public GameLogic,
     public ETNode<ETInputEvents>,
     public ETNode<ETTimerEvents>,
-    public ETNode<ETUIBoxEvents> {
+    public ETNode<ETUIBoxEvents>,
+    public ETNode<ETGameObjectEvents> {
 public:
 
     GameBoardLogic();
@@ -54,6 +55,10 @@ public:
 
     // ETUIBoxEvents
     void ET_onBoxResized() override;
+
+    // ETGameObjectEvents
+    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onChildAdded(EntityId childId) override { (void)childId; }
 
 protected:
 

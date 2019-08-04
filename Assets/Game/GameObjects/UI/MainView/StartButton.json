@@ -25,7 +25,7 @@
                 },
                 "label": {
                     "object": "UI/MainView/SimpleButtonLabel.json",
-                    "text": "Start",
+                    "text": "Start\nGame",
                     "style": {
                         "color": {
                             "r": 0,

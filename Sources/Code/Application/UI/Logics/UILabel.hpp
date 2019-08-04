@@ -21,6 +21,7 @@ public:
 protected:
 
     Vec2i calculateBoxSize(const AABB2Di& parentBox) const override;
+    void syncFontSize();
 
 private:
 

@@ -80,6 +80,49 @@ TEST_F(UILabelTests, CheckLabelLocation) {
     EXPECT_EQ(tm.pt, midPt); 
 }
 
+TEST_F(UILabelTests, CheckLabelCapitalSize) {
+    auto uiLabel = createUILabel();
+    UIStyle style;
+    style.fontSize = TEST_FONT_SIZE;
+    style.renderer = TEST_TEXT_RENDERER;
+    uiLabel->ET_setStyle(style);
+    uiLabel->ET_setText("A");
+    ASSERT_TRUE(uiLabel->init());
+
+    auto capitalABox = uiLabel->ET_getAabb2di();
+    auto capitalABoxSize = capitalABox.getSize();
+
+    uiLabel->ET_setText("a");
+
+    auto smallABox = uiLabel->ET_getAabb2di();
+    auto smallABoxSize = smallABox.getSize();
+
+    EXPECT_LE(smallABoxSize.x, capitalABoxSize.x);
+    EXPECT_EQ(smallABoxSize.y, capitalABoxSize.y);
+}
+
+TEST_F(UILabelTests, CheckLineBreak) {
+    auto uiLabel = createUILabel();
+    UIStyle style;
+    style.fontSize = TEST_FONT_SIZE;
+    style.renderer = TEST_TEXT_RENDERER;
+    uiLabel->ET_setStyle(style);
+    uiLabel->ET_setText("A");
+    ASSERT_TRUE(uiLabel->init());
+
+    auto aBox = uiLabel->ET_getAabb2di();
+    auto aBoxSize = aBox.getSize();
+
+    uiLabel->ET_setText("A\nA");
+
+    auto aaBox = uiLabel->ET_getAabb2di();
+    auto aaBoxSize = aaBox.getSize();
+
+    EXPECT_EQ(aBox.getCenter(), aaBox.getCenter());
+    EXPECT_EQ(aaBoxSize.x, aBoxSize.x);
+    EXPECT_GT(aaBoxSize.y, 2 * aBoxSize.y);
+}
+
 TEST_F(UILabelTests, CheckLabelResize) {
     auto uiLabel = createUILabel();
     uiLabel->ET_setText("A");
@@ -101,7 +144,7 @@ TEST_F(UILabelTests, CheckLabelResize) {
     auto bigBoxSize = bigBox.getSize();
 
     EXPECT_GT(bigBoxSize.x, smallBoxSize.x);
-    EXPECT_GT(bigBoxSize.x, smallBoxSize.x);
+    EXPECT_GT(bigBoxSize.y, smallBoxSize.y);
 
     EXPECT_EQ(bigBox.getCenter(), smallBox.getCenter());
 }

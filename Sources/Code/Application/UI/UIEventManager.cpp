@@ -3,13 +3,25 @@
 #include "Game/ETGameInterfaces.hpp"
 
 enum class EUIEventType {
-    OnMainStart,
-    OnGameBack
+    Main_OnStartButton,
+    Main_onPlayerButton,
+    Main_OnAboutButton,
+    Main_OnOptionsButton,
+    Player_OnBackButton,
+    About_OnBackButton,
+    Options_OnBackButton,
+    Game_OnBackButton
 };
 
 UIEventManager::UIEventManager() {
-    eventMap["OnMainStart"] = EUIEventType::OnMainStart;
-    eventMap["OnGameBack"] = EUIEventType::OnGameBack;
+    eventMap["Main_OnStartButton"] = EUIEventType::Main_OnStartButton;
+    eventMap["Main_OnPlayerButton"] = EUIEventType::Main_onPlayerButton;
+    eventMap["Main_OnAboutButton"] = EUIEventType::Main_OnAboutButton;
+    eventMap["Main_OnOptionsButton"] = EUIEventType::Main_OnOptionsButton;
+    eventMap["Player_OnBackButton"] = EUIEventType::Player_OnBackButton;
+    eventMap["About_OnBackButton"] = EUIEventType::About_OnBackButton;
+    eventMap["Options_OnBackButton"] = EUIEventType::Options_OnBackButton;
+    eventMap["Game_OnBackButton"] = EUIEventType::Game_OnBackButton;
 }
 
 UIEventManager::~UIEventManager() {
@@ -26,15 +38,35 @@ void UIEventManager::deinit() {
 void UIEventManager::processEvent(EUIEventType eventType) {
     switch (eventType)
     {
-        case EUIEventType::OnMainStart:
-        {
+        case EUIEventType::Main_OnStartButton: {
             ET_SendEvent(&ETUIViewManager::ET_openView, "UI/GameView/Root.json");
             break;
         }
-        case EUIEventType::OnGameBack:
-        {
+        case EUIEventType::Main_onPlayerButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/PlayerView/Root.json");
+            break;
+        }
+        case EUIEventType::Main_OnAboutButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/AboutView/Root.json");
+            break;
+        }
+        case EUIEventType::Main_OnOptionsButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/OptionsView/Root.json");
+            break;
+        }
+        case EUIEventType::Player_OnBackButton: {
             ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
             break;
+        }
+        case EUIEventType::About_OnBackButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
+            break;
+        }
+        case EUIEventType::Options_OnBackButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
+        }
+        case EUIEventType::Game_OnBackButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
         }
         default:
             break;

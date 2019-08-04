@@ -238,7 +238,6 @@ void UIBox::updateRendererParams() {
         ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, style.color);
     } else if(ET_IsExistNode<ETRenderTextLogic>(renderId)) {
         ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setColor, style.color);
-        ET_SendEvent(getRendererId(), &ETRenderTextLogic::ET_setFontSize, style.fontSize);
     }
 }
 
