@@ -11,6 +11,7 @@ public:
     UIButton();
     virtual ~UIButton();
 
+    // UIBox
     bool serialize(const JSONNode& node) override;
     bool init() override;
 

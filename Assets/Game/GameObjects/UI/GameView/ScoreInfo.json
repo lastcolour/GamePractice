@@ -1,19 +1,20 @@
 {
-    "children":[],
+    "children":[
+        "UI/GameView/ScoreLabelList.json"
+    ],
     "logics": [
         {
             "type": "UIButton",
             "data": {
                 "event": "Game_OnScoreButton",
                 "style": {
-                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 150,
                         "g": 150,
                         "b": 150
                     },
                     "align": {
-                        "x": "left",
+                        "x": "center",
                         "y": "center"
                     },
                     "size": {
@@ -24,13 +25,13 @@
                     "margin": {}
                 },
                 "label": {
-                    "object": "UI/MainView/SimpleButtonLabel.json",
-                    "text": "Score: 999999",
+                    "text":" ",
                     "style": {
-                        "color": {
-                            "r": 0,
-                            "g": 0,
-                            "b": 0
+                        "fontSize":0.5,
+                        "fontColor":{
+                            "r":150,
+                            "g":150,
+                            "b":150
                         }
                     }
                 }

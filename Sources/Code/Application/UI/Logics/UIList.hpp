@@ -1,9 +1,9 @@
 #ifndef __UI_LIST_HPP__
 #define __UI_LIST_HPP__
 
-#include "UI/Logics/UIBox.hpp"
+#include "UI/Logics/UIBaseBox.hpp"
 
-class UIList : public UIBox,
+class UIList : public UIBaseBox,
     public ETNode<ETUIList> {
 public:
 

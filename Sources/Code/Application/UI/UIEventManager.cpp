@@ -10,7 +10,10 @@ enum class EUIEventType {
     Player_OnBackButton,
     About_OnBackButton,
     Options_OnBackButton,
-    Game_OnBackButton
+    Game_OnBackButton,
+    Game_OnGameEnd,
+    EndGame_OnExitToMainButton,
+    EndGame_OnPlayAgainButton
 };
 
 UIEventManager::UIEventManager() {
@@ -22,6 +25,9 @@ UIEventManager::UIEventManager() {
     eventMap["About_OnBackButton"] = EUIEventType::About_OnBackButton;
     eventMap["Options_OnBackButton"] = EUIEventType::Options_OnBackButton;
     eventMap["Game_OnBackButton"] = EUIEventType::Game_OnBackButton;
+    eventMap["Game_OnGameEnd"] = EUIEventType::Game_OnGameEnd;
+    eventMap["EndGame_OnExitToMainButton"] = EUIEventType::EndGame_OnExitToMainButton;
+    eventMap["EndGame_OnPlayAgainButton"] = EUIEventType::EndGame_OnPlayAgainButton;
 }
 
 UIEventManager::~UIEventManager() {
@@ -64,9 +70,23 @@ void UIEventManager::processEvent(EUIEventType eventType) {
         }
         case EUIEventType::Options_OnBackButton: {
             ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
+            break;
         }
         case EUIEventType::Game_OnBackButton: {
             ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
+            break;
+        }
+        case EUIEventType::Game_OnGameEnd: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/EndGameView/Root.json");
+            break;
+        }
+        case EUIEventType::EndGame_OnExitToMainButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
+            break;
+        }
+        case EUIEventType::EndGame_OnPlayAgainButton: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/GameView/Root.json");
+            break;
         }
         default:
             break;

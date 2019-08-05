@@ -16,8 +16,8 @@ UIList::~UIList() {
 }
 
 bool UIList::serialize(const JSONNode& node) {
-    if(!UIBox::serialize(node)) {
-        LogWarning("[UIList::serialize] UIBox searilization failed");
+    if(!UIBaseBox::serialize(node)) {
+        LogWarning("[UIList::serialize] UIBaseBox searilization failed");
         return false;
     }
     std::string list("vert");
@@ -34,8 +34,8 @@ bool UIList::serialize(const JSONNode& node) {
 }
 
 bool UIList::init() {
-    if(!UIBox::init()) {
-        LogWarning("[UIList::init] UIBox init failed");
+    if(!UIBaseBox::init()) {
+        LogWarning("[UIList::init] UIBaseBox init failed");
         return false;
     }
     ETNode<ETUIList>::connect(getEntityId());

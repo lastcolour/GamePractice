@@ -48,6 +48,7 @@ public:
     Margin margin;
     std::string renderer;
     float fontSize;
+    ColorB fontColor;
 
 public:
 

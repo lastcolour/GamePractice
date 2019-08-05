@@ -96,17 +96,9 @@ void GameBoardLogic::initBoardBox() {
     objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
     Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
 
-    UIStyle style;
-    ET_SendEventReturn(style, getEntityId(), &ETUIBox::ET_getStyle);
-    style.size = Vec2(style.size.x * boardBoxSize.x / static_cast<float>(uiBoxSize.x),
-        style.size.y * boardBoxSize.y / static_cast<float>(uiBoxSize.y));
-
-    ETNode<ETUIBoxEvents>::disconnect();
-    ET_SendEvent(getEntityId(), &ETUIBox::ET_setStyle, style);
-    ETNode<ETUIBoxEvents>::connect(getEntityId());
-
-    boardBox = box;
-    ET_SendEventReturn(boardBox, getEntityId(), &ETUIBox::ET_getAabb2di);
+    boardBox.bot = Vec2i(0);
+    boardBox.top = boardBoxSize;
+    boardBox.setCenter(box.getCenter());
 }
 
 ColorB GameBoardLogic::getElemColor(BoardElemType elemType) const {
@@ -159,6 +151,7 @@ bool GameBoardLogic::init() {
     ETNode<ETInputEvents>::connect(getEntityId());
     ETNode<ETTimerEvents>::connect(getEntityId());
     ETNode<ETUIBoxEvents>::connect(getEntityId());
+    ETNode<ETGameObjectEvents>::connect(getEntityId());
     return true;
 }
 

@@ -61,4 +61,10 @@ struct ETUIEventManager {
     virtual void ET_onEvent(const char* eventName) = 0;
 };
 
+struct ETUIConfigManager {
+    virtual ~ETUIConfigManager() = default;
+    virtual const char* ET_getDefaultGeomRenderer() = 0;
+    virtual const char* ET_getDefaultTextRenderer() = 0;
+};
+
 #endif /* __UI_ET_INTERFACES_HPP__ */

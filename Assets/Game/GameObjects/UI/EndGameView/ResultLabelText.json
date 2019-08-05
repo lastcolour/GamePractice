@@ -6,7 +6,6 @@
             "data": {
                 "text":"Result: 999;\nHigh Score: 999",
                 "style": {
-                    "renderer": "Render/RenderTextSimple.json",
                     "color": {
                         "r": 255,
                         "g": 255,

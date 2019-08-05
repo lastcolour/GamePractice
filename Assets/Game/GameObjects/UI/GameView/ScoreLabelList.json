@@ -1,8 +1,7 @@
 {
     "children":[
-        "UI/AboutView/BackButton.json",
-        "UI/AboutView/AboutLabelBox.json",
-        "UI/AboutView/BlankTopBar.json"
+        "UI/GameView/ScoreTextLabelBox.json",
+        "UI/GameView/SocreAmountLabelBox.json"
     ],
     "logics":[
         {
@@ -15,7 +14,7 @@
                         "y": "center"
                     },
                     "size":{
-                        "w":1,
+                        "w":0.5,
                         "h":0.2,
                         "sizeInv":"rel"
                     },

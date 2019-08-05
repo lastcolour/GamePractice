@@ -4,7 +4,6 @@
         {
             "type": "UILabel",
             "data": {
-                "text":"Vibration",
                 "style": {
                     "color": {
                         "r": 255,
@@ -12,16 +11,7 @@
                         "b": 255,
                         "a": 255
                     },
-                    "align": {
-                        "x": "center",
-                        "y": "center"
-                    },
-                    "size": {
-                        "h": 30,
-                        "w": 30,
-                        "inv": "relBS"
-                    },
-                    "margin": {}
+                    "fontSize":0.3
                 }
             }
         }

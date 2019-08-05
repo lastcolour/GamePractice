@@ -6,14 +6,13 @@
             "data": {
                 "event": "Game_OnAbiltyButton_1",
                 "style": {
-                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 150,
                         "g": 150,
                         "b": 150
                     },
                     "align": {
-                        "x": "left",
+                        "x": "center",
                         "y": "center"
                     },
                     "size": {
@@ -24,9 +23,9 @@
                     "margin": {}
                 },
                 "label": {
-                    "object": "UI/MainView/SimpleButtonLabel.json",
                     "text": "Ability 1",
                     "style": {
+                        "fontSize": 0.7,
                         "color": {
                             "r": 0,
                             "g": 0,

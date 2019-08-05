@@ -48,6 +48,23 @@ SizeInvariant parseSizeInvariant(const std::string& strType) {
     return SizeInvariant::Relative;
 }
 
+ColorB parseColor(const JSONNode& node) {
+    ColorB color;
+    int val = 0;
+    node.value("r", val);
+    color.r = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
+    val = 0;
+    node.value("g", val);
+    color.g = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
+    val = 0;
+    node.value("b", val);
+    color.b = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
+    val = 255;
+    node.value("a", val);
+    color.a = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
+    return color;
+}
+
 } // namespace
 
 Margin::Margin() :
@@ -65,7 +82,8 @@ UIStyle::UIStyle() :
     yAlignType(YAlignType::Center),
     margin(),
     renderer(),
-    fontSize(1.f) {
+    fontSize(0.5f),
+    fontColor(0, 0, 0) {
 }
 
 UIStyle::~UIStyle() {
@@ -80,8 +98,6 @@ void UIStyle::serialize(const JSONNode& node) {
         alignTypeStr = "center";
         alignNode.value("y", alignTypeStr);
         yAlignType = parseYAlignType(alignTypeStr);
-    } else {
-        LogWarning("[UIStyle::serialize] Can't find required node: 'align'");
     }
     if(auto sizeNode = node.object("size")) {
         sizeNode.value("w", size.x);
@@ -93,31 +109,19 @@ void UIStyle::serialize(const JSONNode& node) {
         std::string sizeInvStr("rel");
         sizeNode.value("inv", sizeInvStr);
         sizeInv = parseSizeInvariant(sizeInvStr);
-    } else {
-        LogWarning("[UIStyle::serialize] Can't find required node: 'size'");
     }
     if(auto colorNode = node.object("color")) {
-        int val = 0;
-        colorNode.value("r", val);
-        color.r = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-        val = 0;
-        colorNode.value("g", val);
-        color.g = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-        val = 0;
-        colorNode.value("b", val);
-        color.b = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-        val = 255;
-        colorNode.value("a", val);
-        color.a = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
+        color = parseColor(colorNode);
     }
+    if(auto fontColorNode = node.object("fontColor")) {
+        fontColor = parseColor(fontColorNode);
+    }
+    node.value("fontSize", fontSize);
     if(auto marginNode = node.object("margin")) {
         marginNode.value("left", margin.left);
         marginNode.value("right", margin.right);
         marginNode.value("top", margin.bot);
         marginNode.value("bot", margin.top);
-    } else {
-        LogWarning("[UIStyle::serialize] Can't find required node: 'margin'");
     }
-    node.value("fontSize", fontSize);
     node.value("renderer", renderer);
 }

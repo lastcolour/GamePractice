@@ -6,7 +6,6 @@
             "data": {
                 "text":"About",
                 "style": {
-                    "renderer": "Render/RenderTextSimple.json",
                     "color": {
                         "r": 255,
                         "g": 255,

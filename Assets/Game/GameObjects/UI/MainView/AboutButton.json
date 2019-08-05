@@ -6,7 +6,6 @@
             "data": {
                 "event": "Main_OnAboutButton",
                 "style": {
-                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 75,
                         "g": 75,
@@ -24,10 +23,9 @@
                     "margin": {}
                 },
                 "label": {
-                    "object": "UI/MainView/SimpleButtonLabel.json",
                     "text": "About",
                     "style": {
-                        "color": {
+                        "fontColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255

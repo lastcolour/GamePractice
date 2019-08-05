@@ -27,15 +27,21 @@
         {
             "type": "GameBoard",
             "data": {
-                "fallSpeed": 5,
+                "fallSpeed": 8,
                 "size": {
-                    "w": 8,
-                    "h": 8
+                    "w": 9,
+                    "h": 9
                 },
                 "cell": {
                     "object": "Game/GameBoardElem.json",
                     "scale": 0.9
                 }
+            }
+        },
+        {
+            "type": "GameEndTimer",
+            "data": {
+                "time":60
             }
         }
     ]

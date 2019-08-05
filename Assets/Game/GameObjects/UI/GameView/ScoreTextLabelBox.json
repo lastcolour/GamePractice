@@ -1,11 +1,10 @@
 {
-    "children":[
-        "Game/GameBoard.json"
-    ],
+    "children":[],
     "logics":[
         {
             "type":"UIBox",
             "data":{
+                "text":"Hello",
                 "style": {
                     "color": {
                         "r": 50,
@@ -21,7 +20,21 @@
                         "w": 1,
                         "inv": "rel"
                     },
+                    "fontColor": {
+
+                    },
+                    "fontSize": {
+                    },
                     "margin": {}
+                },
+                "label":{
+                    "text":"Hello",
+                    "fontSize":0.3,
+                    "fontColor":{
+                        "r":255,
+                        "g":255,
+                        "b":255
+                    }
                 }
             }
         }

@@ -9,8 +9,6 @@
             "data": {
                 "type": "horz",
                 "style": {
-                    "renderer": null,
-                    "color": null,
                     "align": {
                         "x": "center",
                         "y": "center"

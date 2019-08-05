@@ -2,26 +2,29 @@
     "children":[],
     "logics": [
         {
-            "type": "UILabel",
+            "type": "UIButton",
             "data": {
+                "event": "Game_OnBackButton",
                 "style": {
-                    "renderer": "Render/RenderTextSimple.json",
                     "color": {
                         "r": 255,
-                        "g": 255,
-                        "b": 0,
-                        "a": 255
+                        "g": 100,
+                        "b": 100
                     },
                     "align": {
                         "x": "center",
                         "y": "center"
                     },
                     "size": {
+                        "h": 0.3,
+                        "w": 0.8,
                         "inv": "relBS"
                     },
-                    "fontSize":0.3,
                     "margin": {}
                 }
+            },
+            "label": {
+                "object":""
             }
         }
     ]

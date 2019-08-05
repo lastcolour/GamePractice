@@ -5,7 +5,6 @@
             "type": "UIBox",
             "data": {
                 "style": {
-                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 100,
                         "g": 100,

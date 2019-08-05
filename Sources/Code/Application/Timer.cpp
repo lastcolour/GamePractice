@@ -1,28 +1,21 @@
 #include "Timer.hpp"
 
-#include <chrono>
+namespace {
 
-struct TimePoint {
-public:
+const float MIN_TICK_DURATION = 0.001f;
 
-    typedef typename std::chrono::high_resolution_clock ClockT;
-    typedef typename std::chrono::time_point<ClockT> TimePointT;
-
-public:
-
-    TimePointT lastTickT;
-    float tickDuration;
-};
+} // namespace
 
 Timer::Timer() :
-    timePoint(new TimePoint) {
-    timePoint->tickDuration = 0;
+    lastTickT(),
+    tickDuration(0.f) {
 }
 
 Timer::~Timer() {
 }
 
 bool Timer::init() {
+    lastTickT = ClockT::now();
     ETNode<ETTimer>::connect(getEntityId());
     return true;
 }
@@ -32,11 +25,13 @@ void Timer::deinit() {
 }
 
 void Timer::ET_onFrameStart() {
-    auto timeNow = TimePoint::ClockT::now();
+    auto timeNow = ClockT::now();
     auto timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>
-        (timeNow - timePoint->lastTickT).count();
-    timePoint->lastTickT = timeNow;
-    timePoint->tickDuration = static_cast<float>(timeDiff / 1000.f);
+        (timeNow - lastTickT).count();
+    tickDuration = static_cast<float>(timeDiff / 1000.f);
 
-    ET_SendEvent(&ETTimerEvents::ET_onTick, timePoint->tickDuration);
+    if(tickDuration > 0.001f) {
+        lastTickT = timeNow;
+        ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+    }
 }

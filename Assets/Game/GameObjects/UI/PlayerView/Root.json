@@ -9,8 +9,6 @@
             "data": {
                 "type": "vert",
                 "style": {
-                    "renderer": null,
-                    "color": {},
                     "align": {
                         "x": "center",
                         "y": "center"

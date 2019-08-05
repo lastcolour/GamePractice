@@ -264,6 +264,9 @@ TEST_F(GameBoardTests, CheckGameBoardConnections) {
     auto entId = board->getEntityId();
 
     ASSERT_TRUE(ET_IsExistNode<ETInputEvents>(entId));
+    ASSERT_TRUE(ET_IsExistNode<ETGameObjectEvents>(entId));
+    ASSERT_TRUE(ET_IsExistNode<ETUIBoxEvents>(entId));
+    ASSERT_TRUE(ET_IsExistNode<ETTimerEvents>(entId));
 }
 
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {

@@ -6,7 +6,6 @@
             "data": {
                 "event": "EndGame_OnPlayAgainButton",
                 "style": {
-                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 200,
                         "g": 200,
@@ -24,10 +23,9 @@
                     "margin": {}
                 },
                 "label": {
-                    "object": "UI/MainView/SimpleButtonLabel.json",
                     "text": "Play Again",
                     "style": {
-                        "color": {
+                        "fontColor": {
                             "r": 0,
                             "g": 0,
                             "b": 0
