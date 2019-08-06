@@ -42,13 +42,13 @@ void UILabel::ET_setStyle(const UIStyle& newStyle) {
     }
     UIBaseBox::ET_setStyle(newStyle);
     updateRendererParams();
-    onResizeFromTop();
+    forceResizeFromTop();
 }
 
 void UILabel::ET_setText(const char* newText) {
     text = newText;
     ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
-    onResizeFromTop();
+    forceResizeFromTop();
 }
 
 const char* UILabel::ET_getText() const {

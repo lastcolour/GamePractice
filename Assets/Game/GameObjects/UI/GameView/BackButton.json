@@ -25,6 +25,7 @@
                 "label": {
                     "text": "<-",
                     "style": {
+                        "fontSize": 0.8,
                         "fontColor": {
                             "r": 0,
                             "g": 0,

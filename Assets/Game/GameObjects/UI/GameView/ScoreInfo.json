@@ -1,6 +1,6 @@
 {
     "children":[
-        "UI/GameView/ScoreLabelList.json"
+        "UI/GameView/ScoreInfoList.json"
     ],
     "logics": [
         {

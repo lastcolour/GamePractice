@@ -41,6 +41,16 @@ AABB<T> operator+(const AABB<T>& aabb, const T& pos) {
     return AABB<T>(aabb.bot + pos, aabb.top + pos);
 }
 
+template<typename T>
+bool operator==(const AABB<T>& first, const AABB<T>& second) {
+    return first.top == second.top && first.bot == second.bot;
+}
+
+template<typename T>
+bool operator!=(const AABB<T>& first, const AABB<T>& second) {
+    return !(first == second);
+}
+
 } // namespace Math
 
 typedef Math::AABB<Vec2> AABB2D;

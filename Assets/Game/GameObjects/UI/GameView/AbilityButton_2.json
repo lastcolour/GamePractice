@@ -25,6 +25,7 @@
                 "label": {
                     "text": "Ability 2",
                     "style": {
+                        "fontSize": 0.2,
                         "fontColor": {
                             "r": 0,
                             "g": 0,

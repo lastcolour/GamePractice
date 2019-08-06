@@ -7,7 +7,10 @@
 #include <cassert>
 #include <algorithm>
 
-UIBaseBox::UIBaseBox() {
+UIBaseBox::UIBaseBox() :
+    style(),
+    box(0),
+    lastResizeBox(0) {
 }
 
 UIBaseBox::~UIBaseBox() {
@@ -150,7 +153,19 @@ void UIBaseBox::syncTransform() const {
     ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
 }
 
+bool UIBaseBox::isNeedResize() {
+    auto currParentBox = getParentAabb2di();
+    if (currParentBox == lastResizeBox) {
+        return false;
+    }
+    lastResizeBox = currParentBox;
+    return true;
+}
+
 void UIBaseBox::ET_boxResize() {
+    if(!isNeedResize()) {
+        return;
+    }
     setBox(calcBox(getParentAabb2di()));
     std::vector<EntityId> childrenIds;
     ET_SendEventReturn(childrenIds, getEntityId(), &ETGameObject::ET_getChildren);
@@ -190,7 +205,7 @@ const UIStyle& UIBaseBox::ET_getStyle() const {
 
 void UIBaseBox::ET_setStyle(const UIStyle& newStyle) {
     style = newStyle;
-    onResizeFromTop();
+    forceResizeFromTop();
 }
 
 bool UIBaseBox::init() {
@@ -201,7 +216,8 @@ bool UIBaseBox::init() {
     return true;
 }
 
-void UIBaseBox::onResizeFromTop() {
+void UIBaseBox::forceResizeFromTop() {
+    lastResizeBox = AABB2Di(0);
     auto rootEntId = getRootUIList();
     if(rootEntId == InvalidEntityId) {
         ET_boxResize();

@@ -432,3 +432,52 @@ TEST_F(UITests, CheckListWithAlignVariation) {
     EXPECT_EQ(rightBox.getSize(), renderPort / 2);
     EXPECT_EQ(rightBox.getCenter(), Vec2i(3 * renderPort.x / 4, renderPort.y /4));
 }
+
+TEST_F(UITests, CheckUIElementResized) {
+    auto uiList = createUIList();
+    {
+        UIStyle style;
+        style.size = Vec2(400.f);
+        style.sizeInv = SizeInvariant::Pixel;
+        uiList->ET_setType(UIListType::Horizontal);
+        uiList->ET_setStyle(style);
+        ASSERT_TRUE(uiList->init());
+    }
+    auto firstBox = createUIBox();
+    {
+        UIStyle style;
+        style.size = Vec2(0.25f);
+        style.sizeInv = SizeInvariant::Relative;
+        firstBox->ET_setStyle(style);
+        ASSERT_TRUE(firstBox->init());
+    }
+    auto secondBox = createUIBox();
+    {
+        UIStyle style;
+        style.size = Vec2(0.25f);
+        style.sizeInv = SizeInvariant::Relative;
+        secondBox->ET_setStyle(style);
+        ASSERT_TRUE(secondBox->init());
+    }
+    
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, firstBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, secondBox->getEntityId());
+
+    auto listBox = uiList->ET_getAabb2di();
+    auto listBoxSize = listBox.getSize();
+
+    EXPECT_EQ(listBoxSize.x, 200);
+    EXPECT_EQ(listBoxSize.y, 100);
+
+    {
+        UIStyle style = secondBox->ET_getStyle();
+        style.size = Vec2(0.75f, 0.25f);
+        secondBox->ET_setStyle(style);
+    }
+
+    listBox = uiList->ET_getAabb2di();
+    listBoxSize = listBox.getSize();
+
+    EXPECT_EQ(listBoxSize.x, 400);
+    EXPECT_EQ(listBoxSize.y, 100);
+}

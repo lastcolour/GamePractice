@@ -63,6 +63,7 @@ void UIBox::ET_setStyle(const UIStyle& newStyle) {
         createRenderer();
     }
     updateRenderParams();
+    forceResizeFromTop();
 }
 
 void UIBox::ET_boxResize() {
