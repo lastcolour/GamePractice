@@ -29,6 +29,11 @@ namespace Math {
         return val;
     }
 
+    template<typename T>
+    T Lerp(const T& first, const T& second, float prog) {
+        return first * (1 - prog) + second * prog;
+    }
+
 } // namespace Math
 
 #endif /* __PRIMITIEVS_HPP__ */

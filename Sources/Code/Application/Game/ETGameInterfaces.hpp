@@ -7,12 +7,6 @@
 
 #include <string>
 
-struct ETGameBoardElemLogic {
-    virtual ~ETGameBoardElemLogic() = default;
-    virtual void ET_setBoardPos(const Vec2i& pt) = 0;
-    virtual const Vec2i& ET_getBoardPos() const = 0;
-};
-
 struct ETGameObjectEvents {
     virtual ~ETGameObjectEvents() = default;
     virtual void ET_onTransformChanged(const Transform& newTm) = 0;
@@ -45,6 +39,31 @@ struct ETGameObjectManager {
 struct ETGameEndTimerUpdater {
     virtual ~ETGameEndTimerUpdater() = default;
     virtual void ET_setEndTime(float endTime) = 0; 
+};
+
+struct ETGameBoardElemSwitcher {
+    virtual ~ETGameBoardElemSwitcher() = default;
+    virtual void ET_switchBoardElems(EntityId firstId, EntityId secondId) = 0;
+};
+
+enum class EBoardElemState {
+    Static = 0,
+    Moving,
+    Removing,
+    Switching,
+    Void
+};
+
+struct ETGameBoard {
+    virtual ~ETGameBoard() = default;
+    virtual void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) = 0;
+    virtual void ET_setElemState(EntityId elemEntId, EBoardElemState newState) = 0;
+    virtual EBoardElemState ET_getElemState(EntityId elemEntId) const = 0;
+    virtual void ET_updateBoard() = 0;
+    virtual EntityId ET_getElemByPos(const Vec2i& pt) const = 0;
+    virtual EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const = 0;
+    virtual Vec2i ET_getElemBoardPos(EntityId elemEntId) const = 0;
+    virtual int ET_getCellSize() const = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */

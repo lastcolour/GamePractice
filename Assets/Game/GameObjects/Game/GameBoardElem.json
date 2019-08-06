@@ -10,7 +10,9 @@
         },
         {
             "type": "GameBoardElem",
-            "data": {}
+            "data": {
+                "scale":0.9
+            }
         }
     ]
 }

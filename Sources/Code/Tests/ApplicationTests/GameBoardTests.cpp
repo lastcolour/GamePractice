@@ -5,8 +5,10 @@
 #include "UI/Logics/UIBox.hpp"
 
 namespace {
-    const char* TEST_CELL_OBJECT = "Game/Simple.json";
-}
+
+const char* TEST_CELL_OBJECT = "Game/Simple.json";
+
+} // namespace
 
 struct TestBoardParams {
     Vec2i boardSize;
@@ -82,7 +84,7 @@ TEST_F(GameBoardTests, CheckInit) {
 
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 1u);
-    ASSERT_EQ(elems[0].state, BoardElemState::Static);
+    ASSERT_EQ(elems[0].state, EBoardElemState::Static);
     ASSERT_EQ(elems[0].boardPt, Vec2i(0));
 }
 
@@ -113,7 +115,7 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        ASSERT_EQ(elem.state, BoardElemState::Moving);
+        ASSERT_EQ(elem.state, EBoardElemState::Moving);
         ASSERT_EQ(elem.boardPt, Vec2i(elem.movePt.x, elem.movePt.y + 1));
     }
 }
@@ -134,7 +136,7 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        ASSERT_EQ(elem.state, BoardElemState::Moving);
+        ASSERT_EQ(elem.state, EBoardElemState::Moving);
         if(elem.movePt == Vec2i(0)) {
             ASSERT_EQ(elem.boardPt, Vec2i(0, 3));
         } else if(elem.movePt == Vec2i(0, 1)) {
@@ -155,26 +157,26 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     auto elem1 = board->getElem(Vec2i(0, 0));
     ASSERT_TRUE(elem1);
-    elem1->state = BoardElemState::Void;
+    elem1->state = EBoardElemState::Void;
 
     board->updateAfterRemoves();
 
     auto elem2 = board->getElem(Vec2i(0, 1));
     ASSERT_TRUE(elem2);
-    ASSERT_EQ(elem2->state, BoardElemState::Moving);
+    ASSERT_EQ(elem2->state, EBoardElemState::Moving);
     ASSERT_EQ(elem2->movePt, Vec2i(0, 0));
 
     auto elem3 = board->getElem(Vec2i(0, 2));
     ASSERT_TRUE(elem3);
-    ASSERT_EQ(elem3->state, BoardElemState::Moving);
+    ASSERT_EQ(elem3->state, EBoardElemState::Moving);
     ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
 
-    elem2->state = BoardElemState::Void;
+    elem2->state = EBoardElemState::Void;
 
     board->updateAfterRemoves();
 
     ASSERT_TRUE(elem3);
-    ASSERT_EQ(elem3->state, BoardElemState::Moving);
+    ASSERT_EQ(elem3->state, EBoardElemState::Moving);
     ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
 }
 
@@ -263,10 +265,10 @@ TEST_F(GameBoardTests, CheckGameBoardConnections) {
 
     auto entId = board->getEntityId();
 
-    ASSERT_TRUE(ET_IsExistNode<ETInputEvents>(entId));
     ASSERT_TRUE(ET_IsExistNode<ETGameObjectEvents>(entId));
     ASSERT_TRUE(ET_IsExistNode<ETUIBoxEvents>(entId));
     ASSERT_TRUE(ET_IsExistNode<ETTimerEvents>(entId));
+    ASSERT_TRUE(ET_IsExistNode<ETGameBoard>(entId));
 }
 
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {

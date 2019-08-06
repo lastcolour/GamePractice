@@ -1,7 +1,5 @@
 {
-    "children":[
-        "UI/EndGameView/ResultLabelText.json"
-    ],
+    "children":[],
     "logics": [
         {
             "type": "UIBox",
@@ -22,6 +20,17 @@
                         "inv": "rel"
                     },
                     "margin": {}
+                },
+                "label":{
+                    "text":"Result: 999\nHight Score: 999",
+                    "style":{
+                        "fontSize":0.3,
+                        "fontColor": {
+                            "r":0,
+                            "g":0,
+                            "b":0
+                        }
+                    }
                 }
             }
         }

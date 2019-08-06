@@ -5,7 +5,6 @@
             "type":"UIBox",
             "data":{
                 "style": {
-                    "renderer": "Render/RenderGeomSimple.json",
                     "color": {
                         "r": 255,
                         "g": 255,
@@ -43,6 +42,16 @@
             "data": {
                 "time":60
             }
+        },
+        {
+            "type":"GameBoardElemSwitcher",
+            "data": {
+                "switchDuration":0.2
+            }
+        },
+        {
+            "type":"GameBoardInteraction",
+            "data":{}
         }
     ]
 }

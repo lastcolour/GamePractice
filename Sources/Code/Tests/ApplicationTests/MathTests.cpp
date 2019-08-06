@@ -447,3 +447,23 @@ TEST_F(MathTests, AABBCheckOperators) {
     ASSERT_EQ(aabb1.bot, Vec3(1.f));
     ASSERT_EQ(aabb1.top, Vec3(3.f));
 }
+
+TEST_F(MathTests, CheckLerpVec) {
+    Vec3 start(0.f);
+    Vec3 end(1.f);
+
+    Vec3 res = Math::Lerp(start, end, 0.f);
+    ASSERT_EQ(res, start);
+
+    res = Math::Lerp(start, end, 0.2f);
+    ASSERT_EQ(res, Vec3(0.2f));
+
+    res = Math::Lerp(start, end, 0.5f);
+    ASSERT_EQ(res, Vec3(0.5f));
+
+    res = Math::Lerp(start, end, 0.7f);
+    ASSERT_EQ(res, Vec3(0.7f));
+
+    res = Math::Lerp(start, end, 1.f);
+    ASSERT_EQ(res, end);
+}

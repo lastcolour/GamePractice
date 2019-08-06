@@ -7,6 +7,8 @@
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/Logics/GameEndTimerLogic.hpp"
 #include "Game/Logics/GameEndTimerUpdaterLogic.hpp"
+#include "Game/Logics/GameBoardElemSwitcherLogic.hpp"
+#include "Game/Logics/GameBoardInteractionLogic.hpp"
 
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
@@ -37,6 +39,8 @@ bool GameObjectManager::init() {
     registerLogic<GameBoardElemLogic>("GameBoardElem");
     registerLogic<GameEndTimerLogic>("GameEndTimer");
     registerLogic<GameEndTimerUpdaterLogic>("GameEndTimerUpdater");
+    registerLogic<GameBoardElemSwitcherLogic>("GameBoardElemSwitcher");
+    registerLogic<GameBoardInteractionLogic>("GameBoardInteraction");
 
     registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");
