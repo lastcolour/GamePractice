@@ -147,7 +147,7 @@ void RenderTextLogic::calcTextAABB() {
 
 void RenderTextLogic::ET_setFontSize(int fontSize) {
     auto heigth = font->getHeight();
-    fontScale = fontSize / (2 * static_cast<float>(heigth));
+    fontScale = fontSize / static_cast<float>(heigth);
     calcTextAABB();
 }
 

@@ -42,4 +42,9 @@ struct ETGameObjectManager {
     virtual void ET_destroyObject(EntityId entId) = 0;
 };
 
+struct ETGameEndTimerUpdater {
+    virtual ~ETGameEndTimerUpdater() = default;
+    virtual void ET_setEndTime(float endTime) = 0; 
+};
+
 #endif /* __ET_GAME_INTERFACES_HPP__ */

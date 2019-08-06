@@ -19,13 +19,15 @@ public:
     void ET_setText(const char* newText) override;
     const char* ET_getText() const override;
 
+    // ETGameObjectEvents
+    void ET_onTransformChanged(const Transform& newTm) override;
+
 protected:
 
     Vec2i calculateBoxSize(const AABB2Di& parentBox) const override;
-    void syncFontSize();
 
     void createRenderer();
-    void updateRenderer();
+    void updateRendererParams() const;
 
 private:
 

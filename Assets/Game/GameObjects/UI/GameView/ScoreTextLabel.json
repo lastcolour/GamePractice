@@ -2,29 +2,17 @@
     "children":[],
     "logics": [
         {
-            "type": "UIButton",
+            "type": "UILabel",
             "data": {
-                "event": "Game_OnBackButton",
+                "text":"Score: ",
                 "style": {
-                    "color": {
-                        "r": 255,
-                        "g": 100,
-                        "b": 100
-                    },
-                    "align": {
-                        "x": "center",
-                        "y": "center"
-                    },
-                    "size": {
-                        "h": 0.3,
-                        "w": 0.8,
-                        "inv": "relBS"
-                    },
-                    "margin": {}
+                    "fontSize":0.8,
+                    "fontColor":{
+                        "r":50,
+                        "g":50,
+                        "b":50
+                    }
                 }
-            },
-            "label": {
-                "object":""
             }
         }
     ]

@@ -3,12 +3,14 @@
 
 #include "TestUtils/ConsoleAppTests.hpp"
 
+class UIList;
 class UILabel;
 
 class UILabelTests : public ConsoleAppTests {
 protected:
 
     UILabel* createUILabel();
+    UIList* createUIList();
 
 protected:
 

@@ -14,8 +14,8 @@
                         "y": "center"
                     },
                     "size":{
-                        "w":0.5,
-                        "h":0.2,
+                        "w":1,
+                        "h":1,
                         "sizeInv":"rel"
                     },
                     "margin":{}

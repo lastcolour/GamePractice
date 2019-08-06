@@ -1,5 +1,7 @@
 {
-    "children":[],
+    "children":[
+        "UI/GameView/TimeInfoList.json"
+    ],
     "logics": [
         {
             "type": "UIButton",
@@ -22,16 +24,7 @@
                     },
                     "margin": {}
                 },
-                "label": {
-                    "text": "Time: 999",
-                    "style": {
-                        "fontColor": {
-                            "r": 0,
-                            "g": 0,
-                            "b": 0
-                        }
-                    }
-                }
+                "label": null
             }
         }
     ]

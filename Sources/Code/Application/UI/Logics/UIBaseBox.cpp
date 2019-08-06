@@ -36,8 +36,9 @@ AABB2Di UIBaseBox::getParentAabb2di() const {
     AABB2Di parentAabb;
     parentAabb.bot = Vec2i(0);
     ET_SendEventReturn(parentAabb.top, &ETRenderCamera::ET_getRenderPort);
-    if(getParentId() != InvalidEntityId) {
-        ET_SendEventReturn(parentAabb, getParentId(), &ETUIBox::ET_getAabb2di);
+    auto parentId = getParentId();
+    if(parentId != InvalidEntityId) {
+        ET_SendEventReturn(parentAabb, parentId, &ETUIBox::ET_getAabb2di);
     }
     return parentAabb;
 }
@@ -189,12 +190,7 @@ const UIStyle& UIBaseBox::ET_getStyle() const {
 
 void UIBaseBox::ET_setStyle(const UIStyle& newStyle) {
     style = newStyle;
-    auto rootEntId = getRootUIBox();
-    if(rootEntId == InvalidEntityId) {
-        ET_boxResize();
-    } else {
-        ET_SendEvent(rootEntId, &ETUIBox::ET_boxResize);
-    }
+    onResizeFromTop();
 }
 
 bool UIBaseBox::init() {
@@ -205,13 +201,22 @@ bool UIBaseBox::init() {
     return true;
 }
 
-EntityId UIBaseBox::getRootUIBox() const {
+void UIBaseBox::onResizeFromTop() {
+    auto rootEntId = getRootUIList();
+    if(rootEntId == InvalidEntityId) {
+        ET_boxResize();
+    } else {
+        ET_SendEvent(rootEntId, &ETUIBox::ET_boxResize);
+    }
+}
+
+EntityId UIBaseBox::getRootUIList() const {
     auto entId = getParentId();
     auto lastValidEntId = entId;
     while(entId != InvalidEntityId) {
         lastValidEntId = entId;
         ET_SendEventReturn(entId, entId, &ETGameObject::ET_getParentId);
-        if (!ET_IsExistNode<ETUIBox>(entId)) {
+        if (!ET_IsExistNode<ETUIList>(entId)) {
             break;
         }
     }

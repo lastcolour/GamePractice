@@ -24,13 +24,13 @@ bool UILabel::serialize(const JSONNode& node) {
 }
 
 bool UILabel::init() {
+    createRenderer();
     if(!UIBaseBox::init()) {
         LogWarning("[UILabel::init] Can't init UIbox");
         return false;
     }
-    createRenderer();
-    updateRenderer();
-    ET_setText(text.c_str());
+
+    updateRendererParams();
     ETNode<ETUILabel>::connect(getEntityId());
     return true;
 }
@@ -38,28 +38,25 @@ bool UILabel::init() {
 void UILabel::ET_setStyle(const UIStyle& newStyle) {
     bool isNewRenderer = false;
     if(ET_getStyle().renderer != newStyle.renderer) {
-        isNewRenderer = true;
-    }
-    UIBaseBox::ET_setStyle(newStyle);
-    if (isNewRenderer) {
         createRenderer();
     }
-    updateRenderer();
+    UIBaseBox::ET_setStyle(newStyle);
+    updateRendererParams();
+    onResizeFromTop();
 }
 
 void UILabel::ET_setText(const char* newText) {
     text = newText;
     ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
-    auto rootEntId = getRootUIBox();
-    if(rootEntId == InvalidEntityId) {
-        ET_boxResize();
-    } else {
-        ET_SendEvent(rootEntId, &ETUIBox::ET_boxResize);
-    }
+    onResizeFromTop();
 }
 
 const char* UILabel::ET_getText() const {
     return text.c_str();
+}
+
+void UILabel::ET_onTransformChanged(const Transform& newTm) {
+    UIBaseBox::ET_onTransformChanged(newTm);
 }
 
 void UILabel::createRenderer() {
@@ -75,7 +72,7 @@ void UILabel::createRenderer() {
     ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, rendererName.c_str());
     if(renderId.isValid()) {
         ET_SendEvent(renderId, &ETGameObject::ET_setParent, getEntityId());
-        ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, boxStyle.color);
+        ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
 
         Transform tm;
         ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
@@ -85,7 +82,7 @@ void UILabel::createRenderer() {
     }
 }
 
-void UILabel::updateRenderer() {
+void UILabel::updateRendererParams() const {
     if(renderId.isValid()) {
         ET_SendEvent(renderId, &ETRenderTextLogic::ET_setColor, ET_getStyle().fontColor);
     }
@@ -94,7 +91,7 @@ void UILabel::updateRenderer() {
 Vec2i UILabel::calculateBoxSize(const AABB2Di& parentBox) const {
     auto parentBoxSize = parentBox.getSize();
     int renderFontSize = static_cast<int>(parentBoxSize.y * ET_getStyle().fontSize);
-    ET_SendEvent(&ETRenderTextLogic::ET_setFontSize, renderFontSize);
+    ET_SendEvent(renderId, &ETRenderTextLogic::ET_setFontSize, renderFontSize);
 
     AABB2D renderTextBox(0.f);
     ET_SendEventReturn(renderTextBox, renderId, &ETRenderTextLogic::ET_getTextAABB);

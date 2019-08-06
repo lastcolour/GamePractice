@@ -46,10 +46,11 @@ protected:
     Vec2i calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const;
     AABB2Di getParentAabb2di() const;
     void setBox(const AABB2Di& newBox);
-    EntityId getRootUIBox() const;
+    void onResizeFromTop();
 
 private:
 
+    EntityId getRootUIList() const;
     void syncTransform() const;
 
 private:

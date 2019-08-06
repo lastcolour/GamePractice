@@ -24,17 +24,7 @@
                     },
                     "margin": {}
                 },
-                "label": {
-                    "text":" ",
-                    "style": {
-                        "fontSize":0.5,
-                        "fontColor":{
-                            "r":150,
-                            "g":150,
-                            "b":150
-                        }
-                    }
-                }
+                "label": null
             }
         }
     ]

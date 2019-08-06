@@ -16,7 +16,7 @@ const int DEF_FONT_SIZE = 38;
 } // namespace
 
 RenderFontManager::RenderFontManager() :
-    padding(10) {
+    padding(2) {
     characterSet = {
         'A', 'a',
         'B', 'b',

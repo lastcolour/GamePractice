@@ -2,6 +2,7 @@
 
 #include <Game/GameObject.hpp>
 #include <UI/Logics/UILabel.hpp>
+#include <UI/Logics/UIList.hpp>
 
 namespace {
 
@@ -12,9 +13,18 @@ namespace {
 
 UILabel* UILabelTests::createUILabel() {
     auto object = createVoidObject();
-    std::unique_ptr<UILabel> uiButtonPtr(new UILabel);
-    UILabel* uiLabel = uiButtonPtr.get();
-    object->addLogic(std::move(uiButtonPtr));
+    std::unique_ptr<UILabel> uiListPtr(new UILabel);
+    UILabel* uiLabel = uiListPtr.get();
+    object->addLogic(std::move(uiListPtr));
+    tempObject.push_back(std::move(object));
+    return uiLabel;
+}
+
+UIList* UILabelTests::createUIList() {
+    auto object = createVoidObject();
+    std::unique_ptr<UIList> uiListPtr(new UIList);
+    UIList* uiLabel = uiListPtr.get();
+    object->addLogic(std::move(uiListPtr));
     tempObject.push_back(std::move(object));
     return uiLabel;
 }
@@ -63,8 +73,6 @@ TEST_F(UILabelTests, CheckLabelLocation) {
     auto uiLabel = createUILabel();
     uiLabel->ET_setText("A");
     UIStyle style;
-    style.xAlignType = XAlignType::Center;
-    style.yAlignType = YAlignType::Center;
     style.fontSize = TEST_FONT_SIZE;
     style.renderer = TEST_TEXT_RENDERER;
     uiLabel->ET_setStyle(style);
@@ -127,8 +135,6 @@ TEST_F(UILabelTests, CheckLabelResize) {
     auto uiLabel = createUILabel();
     uiLabel->ET_setText("A");
     UIStyle style;
-    style.xAlignType = XAlignType::Center;
-    style.yAlignType = YAlignType::Center;
     style.fontSize = TEST_FONT_SIZE;
     style.renderer = TEST_TEXT_RENDERER;
     uiLabel->ET_setStyle(style);
@@ -147,4 +153,118 @@ TEST_F(UILabelTests, CheckLabelResize) {
     EXPECT_GT(bigBoxSize.y, smallBoxSize.y);
 
     EXPECT_EQ(bigBox.getCenter(), smallBox.getCenter());
+}
+
+TEST_F(UILabelTests, CheckLabelResizeInsideList) {
+    auto uiList = createUIList();
+    {
+        UIStyle style;
+        style.xAlignType = XAlignType::Center;
+        style.yAlignType = YAlignType::Center;
+        style.size = Vec2(200.f);
+        style.sizeInv = SizeInvariant::Pixel;
+        uiList->ET_setStyle(style);
+        uiList->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(uiList->init());
+    }
+    auto uiLabel = createUILabel();
+    {
+        UIStyle style;
+        style.fontSize = 1.f;
+        uiLabel->ET_setText("Ap|");
+        uiLabel->ET_setStyle(style);
+        ASSERT_TRUE(uiLabel->init());
+    }
+
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiLabel->getEntityId());
+
+    auto box = uiLabel->ET_getAabb2di();
+    auto boxSize = box.getSize();
+    auto boxCenter = box.getCenter();
+
+    EXPECT_GT(boxSize.x, 100);
+    EXPECT_EQ(boxSize.y, 200);
+
+    {
+        UIStyle style;
+        style.fontSize = 0.5f;
+        uiLabel->ET_setStyle(style);
+    }
+
+    box = uiLabel->ET_getAabb2di();
+    boxSize = box.getSize();
+    boxCenter = box.getCenter();
+
+    EXPECT_GT(boxSize.x, 50);
+    EXPECT_EQ(boxSize.y, 100);
+}
+
+TEST_F(UILabelTests, CheckListOfLabels) {
+    auto uiList = createUIList();
+    {
+        UIStyle style;
+        style.xAlignType = XAlignType::Center;
+        style.yAlignType = YAlignType::Center;
+        style.size = Vec2(0.5f);
+        style.sizeInv = SizeInvariant::Relative;
+        uiList->ET_setStyle(style);
+        uiList->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(uiList->init());
+    }
+    auto uiFirstLabel = createUILabel();
+    auto uiFirstInnnerList = createUIList();
+    {
+        {
+            UIStyle style;
+            style.xAlignType = XAlignType::Center;
+            style.yAlignType = YAlignType::Center;
+            style.size = Vec2(0.5f);
+            style.sizeInv = SizeInvariant::Relative;
+            uiFirstInnnerList->ET_setStyle(style);
+            uiFirstInnnerList->ET_setType(UIListType::Horizontal);
+            ASSERT_TRUE(uiFirstInnnerList->init());
+        }
+        {
+            UIStyle style;
+            style.fontSize = 0.5f;
+            uiFirstLabel->ET_setText("A");
+            uiFirstLabel->ET_setStyle(style);
+            ASSERT_TRUE(uiFirstLabel->init());
+        }
+        ET_SendEvent(uiFirstInnnerList->getEntityId(), &ETGameObject::ET_addChild, uiFirstLabel->getEntityId());
+    }
+    auto uiSecondLabel = createUILabel();
+    auto uiSecondInnerList = createUIList();
+    {
+        {
+            UIStyle style;
+            style.xAlignType = XAlignType::Center;
+            style.yAlignType = YAlignType::Center;
+            style.size = Vec2(0.5f);
+            style.sizeInv = SizeInvariant::Relative;
+            uiSecondInnerList->ET_setStyle(style);
+            uiSecondInnerList->ET_setType(UIListType::Horizontal);
+            ASSERT_TRUE(uiSecondInnerList->init());
+        }
+        {
+            UIStyle style;
+            style.fontSize = 0.5f;
+            uiSecondLabel->ET_setText("A");
+            uiSecondLabel->ET_setStyle(style);
+            ASSERT_TRUE(uiSecondLabel->init());
+        }
+        ET_SendEvent(uiSecondInnerList->getEntityId(), &ETGameObject::ET_addChild, uiSecondLabel->getEntityId());
+    }
+
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiFirstInnnerList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiSecondInnerList->getEntityId());
+
+    auto fisrtBox = uiFirstLabel->ET_getAabb2di();
+    auto firstBoxSize = fisrtBox.getSize();
+
+    auto secondBox = uiSecondLabel->ET_getAabb2di();
+    auto secondBoxSize = secondBox.getSize();
+
+    EXPECT_EQ(firstBoxSize.x, secondBoxSize.x);
+    EXPECT_EQ(firstBoxSize.y, secondBoxSize.y);
 }
