@@ -10,6 +10,8 @@
 #include "Game/Logics/GameBoardElemSwitcherLogic.hpp"
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/Logics/GameBoardElemDestroyLogic.hpp"
+#include "Game/Logics/GameScoreLogic.hpp"
+#include "Game/Logics/GameScoreUpdaterLogic.hpp"
 
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
@@ -21,7 +23,9 @@
 #include <algorithm>
 
 namespace {
-    const char* GAME_OBJECTS = "Game/GameObjects";
+
+const char* GAME_OBJECTS = "Game/GameObjects";
+
 } // namespace
 
 GameObjectManager::GameObjectManager() {
@@ -43,6 +47,8 @@ bool GameObjectManager::init() {
     registerLogic<GameBoardElemSwitcherLogic>("GameBoardElemSwitcher");
     registerLogic<GameBoardInteractionLogic>("GameBoardInteraction");
     registerLogic<GameBoardElemDestroyLogic>("GameBoardElemDestroy");
+    registerLogic<GameScoreLogic>("GameScore");
+    registerLogic<GameScoreUpdaterLogic>("GameScoreUpdater");
 
     registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");

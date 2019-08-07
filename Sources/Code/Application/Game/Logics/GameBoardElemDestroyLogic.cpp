@@ -32,21 +32,22 @@ void GameBoardElemDestroyLogic::ET_onTick(float dt) {
         ET_SendEvent(task.entId, &ETGameObject::ET_setTransform, tm);
     }
 
-    bool isNeedUpdateBoard = false;
+    int destroyedCount = 0;
     auto it = destroyTasks.begin();
     while(it != destroyTasks.end()) {
         auto& task = *it;
         if(task.duration > destroyDuration) {
             ET_SendEvent(getEntityId(), &ETGameBoard::ET_setElemState, task.entId, EBoardElemState::Void);
             it = destroyTasks.erase(it);
-            isNeedUpdateBoard = true;
+            ++destroyedCount;
         } else {
             ++it;
         }
     }
 
-    if(isNeedUpdateBoard) {
+    if(destroyedCount > 0) {
         ET_SendEvent(getEntityId(), &ETGameBoard::ET_updateBoard);
+        ET_SendEvent(getEntityId(), &ETGameScore::ET_onElemsDestroyed, destroyedCount);
     }
 }
 

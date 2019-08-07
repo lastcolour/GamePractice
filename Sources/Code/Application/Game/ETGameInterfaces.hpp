@@ -5,8 +5,6 @@
 #include "Math/Transform.hpp"
 #include "Core/ETPrimitives.hpp"
 
-#include <string>
-
 struct ETGameObjectEvents {
     virtual ~ETGameObjectEvents() = default;
     virtual void ET_onTransformChanged(const Transform& newTm) = 0;
@@ -39,6 +37,16 @@ struct ETGameObjectManager {
 struct ETGameEndTimerUpdater {
     virtual ~ETGameEndTimerUpdater() = default;
     virtual void ET_setEndTime(float endTime) = 0; 
+};
+
+struct ETGameScore {
+    virtual ~ETGameScore() = default;
+    virtual void ET_onElemsDestroyed(int count) = 0;
+};
+
+struct ETGameScoreUpdater {
+    virtual ~ETGameScoreUpdater() = default;
+    virtual void ET_setGameScore(int score) = 0;
 };
 
 struct ETGameBoardElemSwitcher {

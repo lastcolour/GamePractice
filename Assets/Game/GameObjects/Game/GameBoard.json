@@ -40,7 +40,8 @@
         {
             "type": "GameEndTimer",
             "data": {
-                "time":60
+                "time":60,
+                "event":"Game_OnGameEnd"
             }
         },
         {
@@ -58,6 +59,10 @@
             "data": {
                 "destroyDuration":0.2
             }
+        },
+        {
+            "type":"GameScore",
+            "data": {}
         }
     ]
 }
