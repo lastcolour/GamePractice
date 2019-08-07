@@ -3,6 +3,7 @@
 #include "UI/UIEventManager.hpp"
 #include "UI/UIViewManager.hpp"
 #include "UI/UIConfigManager.hpp"
+#include "UI/UIViewSwitcher.hpp"
 
 UIModule::UIModule() :
     SystemModule("UI") {}
@@ -13,7 +14,8 @@ UIModule::LogicsContainerPtrT UIModule::getSystemLogics() const {
             UIConfigManager,
             UISurfaceTouchManager,
             UIEventManager,
-            UIViewManager>()
+            UIViewManager,
+            UIViewSwitcher>()
         );
     return container;
 }

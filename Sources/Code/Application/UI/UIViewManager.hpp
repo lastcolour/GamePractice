@@ -5,7 +5,8 @@
 #include "UI/UIETInterfaces.hpp"
 
 class UIViewManager : public SystemLogic,
-    public ETNode<ETUIViewManager> {
+    public ETNode<ETUIViewManager>,
+    public ETNode<ETUIViewSwitcherEvents> {
 public:
 
     UIViewManager();
@@ -18,6 +19,9 @@ public:
     // ETUIViewManager
     EntityId ET_openView(const char* viewName) override;
     void ET_closeView(EntityId viewId) override;
+
+    // ETUIViewSwitcherEvents
+    void ET_onViewSwitchedOut(EntityId viewId) override;
 
 private:
 

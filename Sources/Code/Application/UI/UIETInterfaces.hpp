@@ -56,6 +56,16 @@ struct ETUIViewManager {
     virtual void ET_closeView(EntityId viewId) = 0;
 };
 
+struct ETUIViewSwitcher {
+    virtual ~ETUIViewSwitcher() = default;
+    virtual void ET_swtichView(EntityId newViewId, EntityId oldViewId) = 0;
+};
+
+struct ETUIViewSwitcherEvents {
+    virtual ~ETUIViewSwitcherEvents() = default;
+    virtual void ET_onViewSwitchedOut(EntityId viewId) = 0;
+};
+
 struct ETUIEventManager {
     virtual ~ETUIEventManager() = default;
     virtual void ET_onEvent(const char* eventName) = 0;

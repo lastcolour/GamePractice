@@ -10,11 +10,13 @@ UIViewManager::~UIViewManager() {
 
 bool UIViewManager::init() {
     ETNode<ETUIViewManager>::connect(getEntityId());
+    ETNode<ETUIViewSwitcherEvents>::connect(getEntityId());
     return true;
 }
 
 void UIViewManager::deinit() {
     ETNode<ETUIViewManager>::disconnect();
+    ETNode<ETUIViewSwitcherEvents>::disconnect();
 }
 
 EntityId UIViewManager::ET_openView(const char* viewName) {
@@ -29,7 +31,9 @@ EntityId UIViewManager::ET_openView(const char* viewName) {
         return InvalidEntityId;
     }
 
-    ET_SendEvent(&ETGameObjectManager::ET_destroyObject, activeViewId);
+    if (activeViewId.isValid()) {
+        ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, newViewId, activeViewId);
+    }
     activeViewId = newViewId;
     return activeViewId;
 }
@@ -39,4 +43,8 @@ void UIViewManager::ET_closeView(EntityId viewId) {
         ET_SendEvent(&ETGameObjectManager::ET_destroyObject, activeViewId);
         activeViewId = InvalidEntityId;
     }
+}
+
+void UIViewManager::ET_onViewSwitchedOut(EntityId viewId) {
+    ET_SendEvent(&ETGameObjectManager::ET_destroyObject, viewId);
 }
