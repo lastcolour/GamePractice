@@ -309,6 +309,7 @@ void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {
     for(auto elemId : elems) {
         auto& elem = elements[elemId];
         elem.state = EBoardElemState::Void;
+        ET_SendEvent(getEntityId(), &ETGameBoardElemDestroy::ET_destroyBoardElem, elem.entId);
     }
 }
 
@@ -402,14 +403,11 @@ void GameBoardLogic::updateAfterRemoves() {
 }
 
 void GameBoardLogic::updateBoard() {
-    bool wasRemove = false;
     for(auto& elem : elements) {
-        wasRemove |= removeVerticalLine(elem.boardPt, 3);
-        wasRemove |= removeHorizontalLine(elem.boardPt, 3);
+        removeVerticalLine(elem.boardPt, 3);
+        removeHorizontalLine(elem.boardPt, 3);
     }
-    if(wasRemove) {
-        updateAfterRemoves();
-    }
+    updateAfterRemoves();
 }
 
 Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const {
@@ -443,16 +441,15 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
 }
 
 void GameBoardLogic::ET_onTick(float dt) {
-    bool moveFinished = false;
     for(auto& elem : elements) {
         if(elem.state == EBoardElemState::Moving) {
             if(!moveElem(elem, dt)) {
-                moveFinished = true;
+                doUpdate = true;
                 continue;
             }
         }
     }
-    if(moveFinished || doUpdate) {
+    if(doUpdate) {
         updateBoard();
     }
     doUpdate = false;

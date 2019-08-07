@@ -57,7 +57,8 @@ Mat4 RenderSimpleLogic::getModelMat() const {
     Math::Translate(model, center);
     Math::Rotate(model, tm.quat);
     Math::Translate(model, tm.pt);
-    Math::Scale(model, Vec3(scale, 1.f));
+    Vec3 resScale = Vec3(scale.x * tm.scale.x, scale.y * tm.scale.y, 1.f);
+    Math::Scale(model, resScale);
     return model;
 }
 

@@ -46,6 +46,11 @@ struct ETGameBoardElemSwitcher {
     virtual void ET_switchBoardElems(EntityId firstId, EntityId secondId) = 0;
 };
 
+struct ETGameBoardElemDestroy {
+    virtual ~ETGameBoardElemDestroy() = default;
+    virtual void ET_destroyBoardElem(EntityId elemId) = 0;
+};
+
 enum class EBoardElemState {
     Static = 0,
     Moving,

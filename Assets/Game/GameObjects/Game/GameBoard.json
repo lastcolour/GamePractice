@@ -52,6 +52,12 @@
         {
             "type":"GameBoardInteraction",
             "data":{}
+        },
+        {
+            "type":"GameBoardElemDestroy",
+            "data": {
+                "destroyDuration":0.2
+            }
         }
     ]
 }
