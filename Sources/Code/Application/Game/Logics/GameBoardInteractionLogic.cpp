@@ -14,6 +14,7 @@ GameBoardInteractionLogic::~GameBoardInteractionLogic() {
 }
 
 bool GameBoardInteractionLogic::serialize(const JSONNode& node) {
+    (void)node;
     return true;
 }
 

@@ -101,10 +101,10 @@ void UIBox::updateRenderSize() {
     if(!renderId.isValid()) {
         return;
     }
-    const auto& box = ET_getAabb2di();
-    auto boxSize = box.getSize();
+    const auto& uiBox = ET_getAabb2di();
+    auto uiBoxSize = uiBox.getSize();
     ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setSize,
-        Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
+        Vec2(static_cast<float>(uiBoxSize.x), static_cast<float>(uiBoxSize.y)));
 }
 
 void UIBox::updateRenderParams() {
