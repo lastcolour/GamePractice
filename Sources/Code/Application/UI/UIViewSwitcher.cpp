@@ -5,7 +5,7 @@
 #include <algorithm>
 
 UIViewSwitcher::UIViewSwitcher() :
-    swtichDuration(0.2f) {
+    swtichDuration(5.f) {
 }
 
 UIViewSwitcher::~UIViewSwitcher() {
@@ -45,6 +45,10 @@ void UIViewSwitcher::ET_onTick(float dt) {
         ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchedOut, activeTask->oldViewId);
         activeTask.reset();
     }
+}
+
+float UIViewSwitcher::ET_getSwitchDuration() const {
+    return swtichDuration;
 }
 
 void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {

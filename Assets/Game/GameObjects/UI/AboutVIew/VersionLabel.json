@@ -6,20 +6,31 @@
             "data": {
                 "style": {
                     "color": {
-                        "r": 120,
-                        "g": 120,
-                        "b": 120
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
                     },
                     "align": {
                         "x": "center",
                         "y": "center"
                     },
                     "size": {
-                        "h": 0.4,
+                        "h": 1,
                         "w": 1,
                         "inv": "rel"
                     },
                     "margin": {}
+                },
+                "label":{
+                    "text":"Version: 1.0.0",
+                    "style": {
+                        "fontSize":0.3,
+                        "fontColor": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255
+                        }
+                    }
                 }
             }
         }

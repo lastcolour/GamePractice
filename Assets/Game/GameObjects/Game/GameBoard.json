@@ -2,14 +2,9 @@
     "children":[],
     "logics": [
         {
-            "type":"UIBox",
+            "type":"UIBaseBox",
             "data":{
                 "style": {
-                    "color": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 255
-                    },
                     "align": {
                         "x": "center",
                         "y": "center"

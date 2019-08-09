@@ -17,14 +17,15 @@
                     },
                     "size": {
                         "h": 1,
-                        "w": 0.3,
-                        "inv": "rel"
+                        "w": 1,
+                        "inv": "relBS"
                     },
                     "margin": {}
                 },
                 "label": {
                     "text": "Player",
                     "style": {
+                        "fontSize":0.25,
                         "fontColor": {
                             "r": 255,
                             "g": 255,

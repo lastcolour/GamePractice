@@ -180,7 +180,7 @@ JSONNode::JSONNode(std::unique_ptr<JSONNodeImpl>&& jsonImpl) :
 JSONNode::~JSONNode() {
 }
 
-JSONNodeIterator JSONNode::begin() {
+JSONNodeIterator JSONNode::begin() const {
     if(!nodeImpl->val) {
         return JSONNodeIterator();
     } else if(nodeImpl->val->IsObject()) {
@@ -195,7 +195,7 @@ JSONNodeIterator JSONNode::begin() {
     return JSONNodeIterator();
 }
 
-JSONNodeIterator JSONNode::end() {
+JSONNodeIterator JSONNode::end() const {
     if(!nodeImpl->val) {
         return JSONNodeIterator();
     } else if(nodeImpl->val->IsObject()) {

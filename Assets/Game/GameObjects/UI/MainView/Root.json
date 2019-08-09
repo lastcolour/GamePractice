@@ -1,26 +1,35 @@
 {
-    "children": [
-        "UI/MainView/TopBar.json",
-        "UI/MainView/MiddleBar.json",
-        "UI/MainView/BotBar.json"
-    ],
-    "logics": [
+    "children":[],
+    "logics":[
         {
-            "type": "UIList",
-            "data": {
-                "type": "vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+            "type":"UIPartition",
+            "data":{
+                "type":"vert",
+                "children":[
+                    {
+                        "style":{"size":{"w":1, "h":0.25}},
+                        "object":"UI/MainView/LogoImage.json"
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
+                    {
+                        "style":{"size":{"w":1, "h":0.6}},
+                        "object":"UI/MainView/StartButton.json"
                     },
-                    "margin": {}
-                }
+                    {
+                        "type":"horz",
+                        "style":{"size":{"w":1, "h":0.15}},
+                        "children":[
+                            {
+                                "object":"UI/MainView/PlayerButton.json"
+                            },
+                            {
+                                "object":"UI/MainView/AboutButton.json"
+                            },
+                            {
+                                "object":"UI/MainView/OptionsButton.json"
+                            }
+                        ]
+                    }
+                ]
             }
         }
     ]

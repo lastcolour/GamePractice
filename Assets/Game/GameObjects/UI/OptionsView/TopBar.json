@@ -1,25 +1,25 @@
 {
-    "children":[
-        "UI/OptionsView/BackButton.json",
-        "UI/OptionsView/OptionsLabelBox.json",
-        "UI/OptionsView/BlankTopBar.json"
-    ],
-    "logics":[
+    "children":[],
+    "logics": [
         {
-            "type":"UIList",
-            "data":{
-                "type":"horz",
-                "style":{
+            "type": "UIBox",
+            "data": {
+                "style": {
+                    "color": {
+                        "r": 200,
+                        "g": 200,
+                        "b": 200
+                    },
                     "align": {
                         "x": "center",
                         "y": "center"
                     },
-                    "size":{
-                        "w":1,
-                        "h":0.2,
-                        "sizeInv":"rel"
+                    "size": {
+                        "w": 1,
+                        "h": 0.1,
+                        "inv": "rel"
                     },
-                    "margin":{}
+                    "margin": {}
                 }
             }
         }

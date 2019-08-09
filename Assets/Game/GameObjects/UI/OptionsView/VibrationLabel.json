@@ -1,7 +1,5 @@
 {
-    "children":[
-        "UI/OptionsView/SoundLabelText.json"
-    ],
+    "children":[],
     "logics": [
         {
             "type": "UIBox",
@@ -22,6 +20,17 @@
                         "inv": "rel"
                     },
                     "margin": {}
+                },
+                "label":{
+                    "text":"Vibration",
+                    "style":{
+                        "fontSize":0.3,
+                        "fontColor":{
+                            "r":255,
+                            "g":255,
+                            "b":255
+                        }
+                    }
                 }
             }
         }

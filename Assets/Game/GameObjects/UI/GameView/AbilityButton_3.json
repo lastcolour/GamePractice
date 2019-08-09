@@ -12,13 +12,13 @@
                         "b": 150
                     },
                     "align": {
-                        "x": "left",
+                        "x": "center",
                         "y": "center"
                     },
                     "size": {
                         "h": 1,
-                        "w": 0.3,
-                        "inv": "rel"
+                        "w": 1,
+                        "inv": "relBS"
                     },
                     "margin": {}
                 },

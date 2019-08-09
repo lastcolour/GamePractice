@@ -1,26 +1,21 @@
 {
-    "children":[
-        "UI/EndGameView/ResultInfo.json",
-        "UI/EndGameView/PlayAgainButton.json",
-        "UI/EndGameView/ExitToMainButton.json"
-    ],
+    "children":[],
     "logics":[
         {
-            "type":"UIList",
+            "type":"UIPartition",
             "data":{
                 "type":"vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+                "children":[
+                    {
+                        "object":"UI/EndGameView/ResultInfo.json"
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
+                    {
+                        "object":"UI/EndGameView/PlayAgainButton.json"
                     },
-                    "margin": {}
-                }
+                    {
+                        "object":"UI/EndGameView/ExitToMainButton.json"
+                    }
+                ]
             }
         }
     ]

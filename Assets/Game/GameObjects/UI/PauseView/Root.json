@@ -1,27 +1,24 @@
 {
-    "children":[
-        "UI/PauseView/ResumeButton.json",
-        "UI/PauseView/RestartButton.json",
-        "UI/PauseView/OptionsButton.json",
-        "UI/PauseView/ExitToMainButton.json"
-    ],
+    "children":[],
     "logics":[
         {
-            "type":"UIList",
+            "type":"UIPartition",
             "data":{
                 "type":"vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+                "children":[
+                    {
+                        "object":"UI/PauseView/ResumeButton.json"
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
+                    {
+                        "object":"UI/PauseView/RestartButton.json"
                     },
-                    "margin": {}
-                }
+                    {
+                        "object":"UI/PauseView/OptionsButton.json"
+                    },
+                    {
+                        "object":"UI/PauseView/ExitToMainButton.json"
+                    }
+                ]
             }
         }
     ]

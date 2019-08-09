@@ -1,26 +1,41 @@
 {
-    "children": [
-        "UI/AboutView/TopBar.json",
-        "UI/AboutView/DescriptionBox.json",
-        "UI/AboutView/VersionLabelBox.json"
-    ],
+    "children": [],
     "logics": [
         {
-            "type": "UIList",
+            "type": "UIPartition",
             "data": {
                 "type": "vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+                "children":[
+                    {
+                        "object":"UI/AboutView/TopBar.json",
+                        "children":[
+                            {
+                                "type":"horz",
+                                "style":{"size":{"w":1, "h":1}},
+                                "children":[
+                                    {
+                                        "style":{"size":{"w":0.2, "h":1}},
+                                        "object":"UI/AboutView/BackButton.json"
+                                    },
+                                    {
+                                        "style":{"size":{"w":0.6, "h":1}},
+                                        "object":"UI/AboutView/AboutLabel.json"
+                                    },
+                                    {
+                                        "style":{"size":{"w":0.2, "h":1}}
+                                    }
+                                ]
+                            }
+                        ]
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
+                    {
+                        "style":{"size":{"w":1, "h":0.85}}
                     },
-                    "margin": {}
-                }
+                    {
+                        "style":{"size":{"w":1, "h":0.05}},
+                        "object":"UI/AboutView/VersionLabel.json"
+                    }
+                ]
             }
         }
     ]

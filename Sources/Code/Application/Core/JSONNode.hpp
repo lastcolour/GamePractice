@@ -45,8 +45,8 @@ public:
     JSONNode& operator=(JSONNode&& node);
     ~JSONNode();
 
-    JSONNodeIterator begin();
-    JSONNodeIterator end();
+    JSONNodeIterator begin() const;
+    JSONNodeIterator end() const;
 
     explicit operator bool() const;
 

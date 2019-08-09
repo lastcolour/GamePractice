@@ -16,15 +16,16 @@
                         "y": "center"
                     },
                     "size": {
-                        "h": 0.5,
-                        "w": 0.6,
-                        "inv": "rel"
+                        "h": 0.2,
+                        "w": 0.8,
+                        "inv": "relBS"
                     },
                     "margin": {}
                 },
                 "label": {
                     "text": "Start Game",
                     "style": {
+                        "fontSize":0.3,
                         "fontColor": {
                             "r": 0,
                             "g": 0,

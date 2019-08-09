@@ -17,7 +17,7 @@
                     },
                     "size": {
                         "h": 1,
-                        "w": 0.2,
+                        "w": 1,
                         "inv": "rel"
                     },
                     "margin": {}
@@ -25,6 +25,7 @@
                 "label": {
                     "text": "<-",
                     "style": {
+                        "fontSize":0.3,
                         "fontColor": {
                             "r": 0,
                             "g": 0,

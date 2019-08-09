@@ -13,9 +13,9 @@ namespace {
 
 UILabel* UILabelTests::createUILabel() {
     auto object = createVoidObject();
-    std::unique_ptr<UILabel> uiListPtr(new UILabel);
-    UILabel* uiLabel = uiListPtr.get();
-    object->addLogic(std::move(uiListPtr));
+    std::unique_ptr<UILabel> uiLabelPtr(new UILabel);
+    UILabel* uiLabel = uiLabelPtr.get();
+    object->addLogic(std::move(uiLabelPtr));
     tempObject.push_back(std::move(object));
     return uiLabel;
 }

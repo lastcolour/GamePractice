@@ -1,24 +1,18 @@
 {
-    "children":[
-        "UI/OptionsView/OptionsLabelText.json"
-    ],
-    "logics": [
+    "children":[],
+    "logics":[
         {
-            "type": "UIBox",
-            "data": {
+            "type":"UIList",
+            "data":{
+                "type":"horz",
                 "style": {
-                    "color": {
-                        "r": 150,
-                        "g": 150,
-                        "b": 150
-                    },
                     "align": {
                         "x": "center",
                         "y": "center"
                     },
                     "size": {
                         "h": 1,
-                        "w": 0.6,
+                        "w": 1,
                         "inv": "rel"
                     },
                     "margin": {}

@@ -6,7 +6,7 @@
             "data":{
                 "text": "Time: ",
                 "style": {
-                    "fontSize":0.8,
+                    "fontSize":0.3,
                     "fontColor": {
                         "r": 50,
                         "g": 50,

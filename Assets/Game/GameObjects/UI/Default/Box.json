@@ -1,13 +1,9 @@
 {
-    "children": [
-        "UI/GameView/TimeInfo.json",
-        "UI/GameView/ScoreInfo.json"
-    ],
+    "children":[],
     "logics":[
         {
-            "type": "UIList",
-            "data": {
-                "type": "horz",
+            "type":"UIBaseBox",
+            "data":{
                 "style": {
                     "align": {
                         "x": "center",

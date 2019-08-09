@@ -17,14 +17,15 @@
                     },
                     "size": {
                         "h": 0.2,
-                        "w": 0.6,
-                        "inv": "rel"
+                        "w": 0.8,
+                        "inv": "relBS"
                     },
                     "margin": {}
                 },
                 "label": {
                     "text": "Resume",
                     "style": {
+                        "fontSize":0.3,
                         "fontColor": {
                             "r": 0,
                             "g": 0,

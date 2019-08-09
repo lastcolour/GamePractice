@@ -23,6 +23,7 @@ public:
 
     // ETUIViewSwitcher
     void ET_swtichView(EntityId newViewId, EntityId oldViewId) override;
+    float ET_getSwitchDuration() const override;
 
 private:
 

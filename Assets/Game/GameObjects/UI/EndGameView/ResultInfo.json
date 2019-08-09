@@ -15,16 +15,16 @@
                         "y": "center"
                     },
                     "size": {
-                        "h": 0.4,
-                        "w": 0.6,
-                        "inv": "rel"
+                        "h": 0.5,
+                        "w": 0.8,
+                        "inv": "relBS"
                     },
                     "margin": {}
                 },
                 "label":{
                     "text":"Result: 999\nHight Score: 999",
                     "style":{
-                        "fontSize":0.3,
+                        "fontSize":0.15,
                         "fontColor": {
                             "r":0,
                             "g":0,

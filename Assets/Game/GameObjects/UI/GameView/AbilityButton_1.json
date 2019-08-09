@@ -17,8 +17,8 @@
                     },
                     "size": {
                         "h": 1,
-                        "w": 0.3,
-                        "inv": "rel"
+                        "w": 1,
+                        "inv": "relBS"
                     },
                     "margin": {}
                 },
@@ -26,7 +26,7 @@
                     "text": "Ability 1",
                     "style": {
                         "fontSize": 0.2,
-                        "color": {
+                        "fontColor": {
                             "r": 0,
                             "g": 0,
                             "b": 0

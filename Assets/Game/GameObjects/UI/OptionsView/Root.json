@@ -1,26 +1,68 @@
 {
-    "children": [
-        "UI/OptionsView/TopBar.json",
-        "UI/OptionsView/SoundControl.json",
-        "UI/OptionsView/VibrationControl.json"
-    ],
+    "children": [],
     "logics": [
         {
-            "type": "UIList",
+            "type": "UIPartition",
             "data": {
                 "type": "vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+                "children":[
+                    {
+                        "object":"UI/OptionsView/TopBar.json",
+                        "children":[
+                            {
+                                "type":"horz",
+                                "children":[
+                                    {
+                                        "style":{"size":{"w":0.2, "h":1}},
+                                        "object":"UI/OptionsView/BackButton.json"
+                                    },
+                                    {
+                                        "style":{"size":{"w":0.6, "h":1}},
+                                        "object":"UI/OptionsView/OptionsLabel.json"
+                                    },
+                                    {
+                                        "style":{"size":{"w":0.2, "h":1}}
+                                    }
+                                ]
+                            }
+                        ]
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
-                    },
-                    "margin": {}
-                }
+                    {
+                        "style":{"size":{"w":1, "h":0.9}},
+                        "children":[
+                            {
+                                "type":"vert",
+                                "style":{"size":{"w":1, "h":0.9}},
+                                "children":[
+                                    {
+                                        "type":"horz",
+                                        "style":{"size":{"w":1, "h":0.3}},
+                                        "children":[
+                                            {
+                                                "object":"UI/OptionsView/SoundLabel.json"
+                                            },
+                                            {
+                                                "object":"UI/OptionsView/SoundSwitcherButton.json"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type":"horz",
+                                        "style":{"size":{"w":1, "h":0.3}},
+                                        "children":[
+                                            {
+                                                "object":"UI/OptionsView/VibrationLabel.json"
+                                            },
+                                            {
+                                                "object":"UI/OptionsView/VibrationSwitcherButton.json"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         }
     ]

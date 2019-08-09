@@ -1,25 +1,36 @@
 {
-    "children": [
-        "UI/PlayerView/TopBar.json",
-        "UI/PlayerView/AchievementsBox.json"
-    ],
+    "children": [],
     "logics": [
         {
-            "type": "UIList",
+            "type": "UIPartition",
             "data": {
                 "type": "vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+                "children":[
+                    {
+                        "object":"UI/PlayerView/TopBar.json",
+                        "children":[
+                            {
+                                "type":"horz",
+                                "children":[
+                                    {
+                                        "style":{"size":{"w":0.2, "h":1}},
+                                        "object":"UI/PlayerView/BackButton.json"
+                                    },
+                                    {
+                                        "style":{"size":{"w":0.6, "h":1}},
+                                        "object":"UI/PlayerView/PlayerLabel.json"
+                                    },
+                                    {
+                                        "style":{"size":{"w":0.2, "h":1}}
+                                    }
+                                ]
+                            }
+                        ]
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
-                    },
-                    "margin": {}
-                }
+                    {
+                        "style":{"size":{"w":1, "h":0.9}}
+                    }
+                ]
             }
         }
     ]

@@ -58,6 +58,7 @@ struct ETUIViewManager {
 
 struct ETUIViewSwitcher {
     virtual ~ETUIViewSwitcher() = default;
+    virtual float ET_getSwitchDuration() const = 0;
     virtual void ET_swtichView(EntityId newViewId, EntityId oldViewId) = 0;
 };
 

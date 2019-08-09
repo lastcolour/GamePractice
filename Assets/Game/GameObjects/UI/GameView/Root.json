@@ -1,26 +1,45 @@
 {
-    "children": [
-        "UI/GameView/TopBar.json",
-        "UI/GameView/MiddleBar.json",
-        "UI/GameView/BotBar.json"
-    ],
+    "children":[],
     "logics":[
         {
-            "type": "UIList",
-            "data": {
-                "type": "vert",
-                "style": {
-                    "align": {
-                        "x": "center",
-                        "y": "center"
+            "type":"UIPartition",
+            "data":{
+                "type":"vert",
+                "children":[
+                    {
+                        "type":"horz",
+                        "style":{"size":{"w":1, "h":0.1}},
+                        "children":[
+                            {
+                                "style":{"size":{"w":0.5, "h":1}},
+                                "object":"UI/GameView/TimeInfo.json"
+                            },
+                            {
+                                "style":{"size":{"w":0.5, "h":1}},
+                                "object":"UI/GameView/ScoreInfo.json"
+                            }
+                        ]
                     },
-                    "size": {
-                        "h": 1,
-                        "w": 1,
-                        "inv": "rel"
+                    {
+                        "style":{"size":{"w":1, "h":0.8}},
+                        "object":"Game/GameBoard.json"
                     },
-                    "margin": {}
-                }
+                    {
+                        "type":"horz",
+                        "style":{"size":{"w":1, "h":0.1}},
+                        "children":[
+                            {
+                                "object":"UI/GameView/AbilityButton_1.json"
+                            },
+                            {
+                                "object":"UI/GameView/AbilityButton_2.json"
+                            },
+                            {
+                                "object":"UI/GameView/AbilityButton_3.json"
+                            }
+                        ]
+                    }
+                ]
             }
         }
     ]

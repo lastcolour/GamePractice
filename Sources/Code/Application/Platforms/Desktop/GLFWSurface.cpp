@@ -8,7 +8,7 @@
 
 namespace {
     const int DEF_WIDTH = 600;
-    const int DEF_HEIGHT = 480;
+    const int DEF_HEIGHT = 1024;
     const char* DEF_WINDOW_NAME = "Game01";
 } // namespace
 
@@ -151,7 +151,7 @@ bool GLFWSurface::ET_show() {
 }
 
 bool GLFWSurface::ET_hide() {
-    if(window && !ET_isVisible()) {
+    if(window && ET_isVisible()) {
         glfwHideWindow(window);
         ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
         return true;

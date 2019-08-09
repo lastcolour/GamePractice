@@ -4,13 +4,13 @@
         {
             "type": "UILabel",
             "data": {
-                "text":"",
+                "text":"About",
                 "style": {
                     "fontSize":0.3,
-                    "fontColor": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 255
+                    "fontColor":{
+                        "r":255,
+                        "g":255,
+                        "b":255
                     }
                 }
             }

@@ -19,6 +19,8 @@
 #include "UI/Logics/UIButton.hpp"
 #include "UI/Logics/UIList.hpp"
 #include "UI/Logics/UILabel.hpp"
+#include "UI/Logics/UIBaseBox.hpp"
+#include "UI/Logics/UIPartition.hpp"
 
 #include <algorithm>
 
@@ -54,6 +56,8 @@ bool GameObjectManager::init() {
     registerLogic<UIList>("UIList");
     registerLogic<UIButton>("UIButton");
     registerLogic<UILabel>("UILabel");
+    registerLogic<UIBaseBox>("UIBaseBox");
+    registerLogic<UIPartition>("UIPartition");
 
     ETNode<ETGameObjectManager>::connect(getEntityId());
     return true;
@@ -113,6 +117,10 @@ std::unique_ptr<GameLogic> GameObjectManager::createLogic(const char* logicName)
 }
 
 std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj, const char* objectName) {
+    if(!objectName || !objectName[0]) {
+        LogWarning("[GameObjectManager::createObject] Can't create game object with empty name");
+        return nullptr;
+    }
     std::string objectFilePath = StringFormat("%s/%s", GAME_OBJECTS, objectName);
     JSONNode rootNode;
     ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, objectFilePath.c_str());
