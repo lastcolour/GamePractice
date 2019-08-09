@@ -8,6 +8,7 @@ GameScoreLogic::~GameScoreLogic() {
 }
 
 bool GameScoreLogic::serialize(const JSONNode& node) {
+    (void)node;
     return true;
 }
 

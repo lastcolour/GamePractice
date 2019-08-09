@@ -9,6 +9,7 @@ GameScoreUpdaterLogic::~GameScoreUpdaterLogic() {
 }
 
 bool GameScoreUpdaterLogic::serialize(const JSONNode& node) {
+    (void)node;
     return true;
 }
 

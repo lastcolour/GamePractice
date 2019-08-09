@@ -36,7 +36,6 @@ bool UILabel::init() {
 }
 
 void UILabel::ET_setStyle(const UIStyle& newStyle) {
-    bool isNewRenderer = false;
     if(ET_getStyle().renderer != newStyle.renderer) {
         createRenderer();
     }

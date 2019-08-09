@@ -9,6 +9,7 @@ GameEndTimerUpdaterLogic::~GameEndTimerUpdaterLogic() {
 }
 
 bool GameEndTimerUpdaterLogic::serialize(const JSONNode& node) {
+    (void)node;
     return true;
 }
 

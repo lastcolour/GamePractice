@@ -43,8 +43,8 @@ private:
     std::shared_ptr<RenderFont> font;
     std::shared_ptr<RenderGeometry> geom;
     std::string text;
-    float fontScale;
     ColorB color;
+    float fontScale;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */
