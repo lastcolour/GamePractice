@@ -38,9 +38,6 @@ bool UIBox::serialize(const JSONNode& node) {
     UIBaseBox::serialize(node);
     if(auto labelNode = node.object("label")) {
         labelId = createLabel(labelNode);
-        if(labelId.isValid()) {
-            ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, labelId);
-        }
     }
     return true;
 }
@@ -50,6 +47,9 @@ bool UIBox::init() {
     createRenderer();
     updateRenderParams();
     updateRenderSize();
+    if(labelId.isValid()) {
+        ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, labelId);
+    }
     return true;
 }
 
@@ -63,7 +63,6 @@ void UIBox::ET_setStyle(const UIStyle& newStyle) {
         createRenderer();
     }
     updateRenderParams();
-    forceResizeFromTop();
 }
 
 void UIBox::ET_boxResize() {

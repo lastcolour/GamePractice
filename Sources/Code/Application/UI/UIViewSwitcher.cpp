@@ -5,7 +5,7 @@
 #include <algorithm>
 
 UIViewSwitcher::UIViewSwitcher() :
-    swtichDuration(5.f) {
+    swtichDuration(0.2f) {
 }
 
 UIViewSwitcher::~UIViewSwitcher() {

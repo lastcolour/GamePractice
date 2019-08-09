@@ -1,0 +1,25 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIButton",
+            "data":{
+                "event":"Test",
+                "style":{
+                    "size":{"w":0.5, "h":0.5}
+                },
+                "label":{
+                    "text":"Test",
+                    "style":{
+                        "fontSize":0.3,
+                        "fontColor":{
+                            "r":255,
+                            "g":0,
+                            "b":0
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -17,6 +17,9 @@ UIBaseBox::~UIBaseBox() {
 }
 
 void UIBaseBox::ET_onChildAdded(EntityId childId) {
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEvent(childId, &ETGameObject::ET_setTransform, tm);
     ET_SendEvent(childId, &ETUIBox::ET_boxResize);
 }
 
@@ -166,7 +169,8 @@ void UIBaseBox::ET_boxResize() {
     if(!isNeedResize()) {
         return;
     }
-    setBox(calcBox(getParentAabb2di()));
+    lastResizeBox = getParentAabb2di();
+    setBox(calcBox(lastResizeBox));
     std::vector<EntityId> childrenIds;
     ET_SendEventReturn(childrenIds, getEntityId(), &ETGameObject::ET_getChildren);
     for(auto childId : childrenIds) {
@@ -176,7 +180,8 @@ void UIBaseBox::ET_boxResize() {
 }
 
 void UIBaseBox::ET_onRenderPortResized() {
-    if(!ET_IsExistNode<ETUIList>(getParentId())) {
+    auto uiList = getRootUIList();
+    if(uiList == InvalidEntityId) {
         ET_boxResize();
     }
 }
@@ -209,7 +214,8 @@ void UIBaseBox::ET_setStyle(const UIStyle& newStyle) {
 }
 
 bool UIBaseBox::init() {
-    setBox(calcBox(getParentAabb2di()));
+    lastResizeBox = getParentAabb2di();
+    setBox(calcBox(lastResizeBox));
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     ETNode<ETGameObjectEvents>::connect(getEntityId());

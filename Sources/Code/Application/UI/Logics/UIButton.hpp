@@ -25,7 +25,6 @@ public:
 private:
 
     std::string eventName;
-    EntityId labelEntId;
     bool isHovered;
 };
 

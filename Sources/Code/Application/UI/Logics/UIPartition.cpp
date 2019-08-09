@@ -16,15 +16,15 @@ UIPartition::~UIPartition() {
 }
 
 bool UIPartition::serialize(const JSONNode& node) {
-    auto childId = serializeNode(node);
-    if(childId.isValid()) {
-        ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, childId);
-    }
+    rootEntId = serializeNode(node);
     return true;
 }
 
 bool UIPartition::init() {
     UIBaseBox::init();
+    if(rootEntId.isValid()) {
+        ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, rootEntId);
+    }
     return true;
 }
 
@@ -98,6 +98,13 @@ EntityId UIPartition::serializeAsBox(const JSONNode& node) {
 }
 
 EntityId UIPartition::serializeAsList(UIListType listType, const JSONNode& node) {
+    if(auto childrenNode = node.object("children")) {
+        if(!childrenNode.size()) {
+            LogWarning("[UIPartition::serializeAsList] Can't serialize UI list without any children");
+            return InvalidEntityId;
+        }
+    }
+
     EntityId listId;
     ET_SendEventReturn(listId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LIST);
     if(!listId.isValid()) {

@@ -41,7 +41,6 @@ void UILabel::ET_setStyle(const UIStyle& newStyle) {
     }
     UIBaseBox::ET_setStyle(newStyle);
     updateRendererParams();
-    forceResizeFromTop();
 }
 
 void UILabel::ET_setText(const char* newText) {

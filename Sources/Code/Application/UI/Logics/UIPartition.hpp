@@ -21,6 +21,10 @@ private:
     EntityId serializeAsObject(const JSONNode& node);
     EntityId serializeAsSimplified(const JSONNode& node);
     void serializeChildren(EntityId rootEntId, const JSONNode& node);
+
+private:
+
+    EntityId rootEntId;
 };
 
 #endif /* __UI_PARTITION_HPP__ */

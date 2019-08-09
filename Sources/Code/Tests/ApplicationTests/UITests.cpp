@@ -179,6 +179,15 @@ TEST_F(UITests, CheckUIBoxInsideUIBox) {
 
     ASSERT_EQ(aabb.getSize(), Vec2i(parentSize / 2));
     ASSERT_EQ(aabb.getCenter(), parentBox.getCenter());
+
+    Transform box1Tm;
+    ET_SendEventReturn(box1Tm, uiBox1->getEntityId(), &ETGameObject::ET_getTransform);
+
+    Transform box2Tm;
+    ET_SendEventReturn(box2Tm, uiBox2->getEntityId(), &ETGameObject::ET_getTransform);
+
+    EXPECT_FLOAT_EQ(box1Tm.pt.x, box2Tm.pt.x);
+    EXPECT_FLOAT_EQ(box1Tm.pt.y, box2Tm.pt.y);
 }
 
 TEST_F(UITests, CheckVerticalUIList) {
@@ -367,7 +376,6 @@ TEST_F(UITests, CheckUIListCombined) {
         ASSERT_TRUE(botHorzUIlist->init());
     }
 
-
     ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
     ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
 
@@ -480,4 +488,59 @@ TEST_F(UITests, CheckUIElementResized) {
 
     EXPECT_EQ(listBoxSize.x, 400);
     EXPECT_EQ(listBoxSize.y, 100);
+}
+
+TEST_F(UITests, CheckUIListTransformInsideBox) {
+    Vec2i uiBoxPt = Vec2i(200);
+    auto uiBox = createUIBox();
+    {
+        UIStyle style;
+        style.size = Vec2(1.f);
+        uiBox->ET_setStyle(style);
+        ASSERT_TRUE(uiBox->init());
+        Transform tm;
+        tm.pt = Vec3(static_cast<float>(uiBoxPt.x), static_cast<float>(uiBoxPt.y), 0.f);
+        ET_SendEvent(uiBox->getEntityId(), &ETGameObject::ET_setTransform, tm);
+    }
+
+    auto uiList = createUIList();
+    {
+        UIStyle style;
+        style.size = Vec2(1.f);
+        uiList->ET_setType(UIListType::Vertical);
+        ASSERT_TRUE(uiList->init());
+    }
+
+    auto childBox = createUIBox();
+    {
+        UIStyle style;
+        style.size = Vec2(0.5f);
+        childBox->ET_setStyle(style);
+        ASSERT_TRUE(childBox->init());
+    }
+
+    ET_SendEvent(uiBox->getEntityId(), &ETGameObject::ET_addChild, uiList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, childBox->getEntityId());
+
+    uiBoxPt = Vec2i(400, 200);
+
+    {
+        Transform tm;
+        tm.pt = Vec3(static_cast<float>(uiBoxPt.x), static_cast<float>(uiBoxPt.y), 0.f);
+        ET_SendEvent(uiBox->getEntityId(), &ETGameObject::ET_setTransform, tm);
+    }
+
+    {
+        Transform tm;
+        ET_SendEventReturn(tm, uiList->getEntityId(), &ETGameObject::ET_getTransform);
+        EXPECT_EQ(static_cast<int>(tm.pt.x), uiBoxPt.x);
+        EXPECT_EQ(static_cast<int>(tm.pt.y), uiBoxPt.y);
+    }
+
+    {
+        Transform tm;
+        ET_SendEventReturn(tm, childBox->getEntityId(), &ETGameObject::ET_getTransform);
+        EXPECT_EQ(static_cast<int>(tm.pt.x), uiBoxPt.x);
+        EXPECT_EQ(static_cast<int>(tm.pt.y), uiBoxPt.y);
+    }
 }
