@@ -13,7 +13,7 @@ class RenderGeometry;
 class RenderMaterial;
 class RenderTextureFramebuffer;
 class RenderFont;
-class TextVertexChunk;
+class RenderTexture;
 
 struct ETRenderSimpleLogic {
     virtual ~ETRenderSimpleLogic() = default;
@@ -29,6 +29,13 @@ struct ETRenderTextLogic {
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setFontSize(int fontSize) = 0;
     virtual const AABB2D& ET_getTextAABB() const = 0;
+};
+
+struct ETRenderImageLogic {
+    virtual ~ETRenderImageLogic() = default;
+    virtual void ET_setImage(const char* imageName) = 0;
+    virtual void ET_setMaterial(const char* matName) = 0;
+    virtual Vec2i ET_getSize() const = 0;
 };
 
 struct RenderContext {
@@ -54,6 +61,11 @@ struct ETRenderMaterialManager {
 struct ETRenderFontManager {
     virtual ~ETRenderFontManager() = default;
     virtual std::shared_ptr<RenderFont> ET_createDefaultFont() = 0;
+};
+
+struct ETRenderTextureManger {
+    virtual ~ETRenderTextureManger() = default;
+    virtual std::shared_ptr<RenderTexture> ET_createTexture(const char* textureName) = 0;
 };
 
 struct ETRenderCamera {

@@ -25,7 +25,7 @@ public:
     void ET_onRender(const RenderContext& renderCtx) override;
     void ET_onRenderPortResized() override {}
 
-    // ETRenderTestLogic
+    // ETRenderTextLogic
     void ET_setMaterial(const char* matName) override;
     void ET_setColor(const ColorB& col) override;
     void ET_setText(const char* str) override;

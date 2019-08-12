@@ -11,6 +11,7 @@
 #include "Game/GameObject.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Game/GameInitModule.hpp"
+#include "Render/Logics/RenderImageLogic.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -22,7 +23,6 @@ namespace {
     const char* TEST_MATERIAL_1 = "geom_solid_color";
     const char* TEST_MATERIAL_2 = "geom_Solid_color";
     const char* TEST_GEOM_1 = "square";
-    const char* TEST_GEOM_2 = "Square";
 
     const char* SIMPLE_OBJECT = "Game/Simple.json";
     const float SCALE_FACTOR = 0.8f;
@@ -198,17 +198,6 @@ TEST_F(RenderTests, CheckCreateSquareGeom) {
     ASSERT_TRUE(geom);
 }
 
-TEST_F(RenderTests, CheckCreateSameSquareGeom) {
-    std::shared_ptr<RenderGeometry> geom1;
-    ET_SendEventReturn(geom1, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
-
-    std::shared_ptr<RenderGeometry> geom2;
-    ET_SendEventReturn(geom2, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_2);
-
-    ASSERT_TRUE(geom1);
-    ASSERT_EQ(geom1.get(), geom2.get());
-}
-
 TEST_F(RenderTests, CheckRenderSquare) {
     std::shared_ptr<RenderGeometry> geom;
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
@@ -358,6 +347,45 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     }
 
     renderText->ET_setText("Hello World!");
+    ET_SendEvent(&ETRender::ET_drawFrame);
+
+    ASSERT_TRUE(textureFramebuffer->read());
+
+    int changedPixels = 0;
+    const Vec2i size = textureFramebuffer->getSize();
+    for(int i = 0; i < size.x; ++i) {
+        for(int j = 0; j < size.y; ++j) {
+            const ColorB& col = textureFramebuffer->getColor(i, j);
+            if(col != CLEAR_COLOR) {
+                ++changedPixels;
+            }
+        }
+    }
+    dumpFramebuffer();
+
+    ASSERT_GT(changedPixels, 0);
+}
+
+TEST_F(RenderTests, CheckRenderSimpleImage) {
+    auto gameObj = createVoidObject();
+    RenderImageLogic* renderImage = new RenderImageLogic;
+    renderImage->ET_setMaterial("simple_image");
+    gameObj->addLogic(std::unique_ptr<GameLogic>(renderImage));
+    ASSERT_TRUE(renderImage->init());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Transform tm;
+    tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
+    gameObj->ET_setTransform(tm);
+
+    renderImage->ET_setImage("Images/options.png");
+
+    Vec2i imageSize = renderImage->ET_getSize();
+    ASSERT_GT(imageSize.x, 0);
+    ASSERT_GT(imageSize.y, 0);
+
     ET_SendEvent(&ETRender::ET_drawFrame);
 
     ASSERT_TRUE(textureFramebuffer->read());

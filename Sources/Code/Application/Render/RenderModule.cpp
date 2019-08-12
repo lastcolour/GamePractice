@@ -4,6 +4,7 @@
 #include "Render/RenderFontManager.hpp"
 #include "Render/RenderMaterialManager.hpp"
 #include "Render/RenderCamera.hpp"
+#include "Render/RenderTextureManager.hpp"
 
 RenderModule::RenderModule() :
     SystemModule("Render") {}
@@ -15,6 +16,7 @@ RenderModule::LogicsContainerPtrT RenderModule::getSystemLogics() const {
             RenderCamera,
             RenderGeometryManager,
             RenderMaterialManager,
+            RenderTextureManager,
             RenderFontManager>()
         );
     return container;

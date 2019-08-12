@@ -70,6 +70,10 @@ void Render::ET_drawFrame() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    for(auto entId : ET_GetAll<ETRenderImageLogic>()) {
+        ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
+    }
+
     for(auto entId : ET_GetAll<ETRenderTextLogic>()) {
         ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
     }

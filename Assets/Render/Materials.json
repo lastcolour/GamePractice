@@ -6,5 +6,9 @@
     "text_solid_color":{
         "vert":"Shaders/text_base.vert",
         "frag":"Shaders/text_single_color.frag"
+    },
+    "simple_image":{
+        "vert":"Shaders/image_base.vert",
+        "frag":"Shaders/image_tex.frag"
     }
 }

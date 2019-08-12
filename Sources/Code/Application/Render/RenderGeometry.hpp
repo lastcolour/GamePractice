@@ -5,6 +5,7 @@
 
 enum class VertexType {
     Vector3,
+    Vector3_Tex,
     Vector4
 };
 

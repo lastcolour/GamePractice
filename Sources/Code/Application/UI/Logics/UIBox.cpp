@@ -5,12 +5,12 @@
 
 namespace {
 
-const char* DEFAULT_LABEL_ID = "UI/Default/Label.json";
+const char* DEFAULT_LABEL = "UI/Default/Label.json";
 const char* DEFAULT_GEOM_RENDERER = "Render/RenderGeomSimple.json";
 
 EntityId createLabel(const JSONNode& node) {
     EntityId entId;
-    ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LABEL_ID);
+    ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LABEL);
     if(!entId.isValid()) {
         return entId;
     }

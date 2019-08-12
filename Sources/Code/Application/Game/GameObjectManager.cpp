@@ -15,12 +15,14 @@
 
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
+#include "Render/Logics/RenderImageLogic.hpp"
 
 #include "UI/Logics/UIButton.hpp"
 #include "UI/Logics/UIList.hpp"
 #include "UI/Logics/UILabel.hpp"
 #include "UI/Logics/UIBaseBox.hpp"
 #include "UI/Logics/UIPartition.hpp"
+#include "UI/Logics/UIImage.hpp"
 
 #include <algorithm>
 
@@ -41,6 +43,7 @@ GameObjectManager::~GameObjectManager() {
 bool GameObjectManager::init() {
     registerLogic<RenderSimpleLogic>("RenderSimple");
     registerLogic<RenderTextLogic>("RenderText");
+    registerLogic<RenderImageLogic>("RenderImage");
 
     registerLogic<GameBoardLogic>("GameBoard");
     registerLogic<GameBoardElemLogic>("GameBoardElem");
@@ -58,6 +61,7 @@ bool GameObjectManager::init() {
     registerLogic<UILabel>("UILabel");
     registerLogic<UIBaseBox>("UIBaseBox");
     registerLogic<UIPartition>("UIPartition");
+    registerLogic<UIImage>("UIImage");
 
     ETNode<ETGameObjectManager>::connect(getEntityId());
     return true;
