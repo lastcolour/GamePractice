@@ -6,7 +6,9 @@
 #include "Game/GameObject.hpp"
 #include "Math/MatrixTransform.hpp"
 
-RenderImageLogic::RenderImageLogic() {
+RenderImageLogic::RenderImageLogic() :
+    texScale(0.f),
+    imageScale(1.f) {
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -60,20 +62,28 @@ void RenderImageLogic::ET_setImage(const char* imageName) {
     }
 }
 
-Vec2i RenderImageLogic::ET_getSize() const {
+Vec2i RenderImageLogic::ET_getOrigSize() const {
     if(tex) {
         return tex->size;
     }
     return Vec2i(0);
 }
 
+Vec2i RenderImageLogic::ET_getSize() const {
+    Vec2i size = ET_getOrigSize();
+    size.x = static_cast<int>(size.x * imageScale.x);
+    size.y = static_cast<int>(size.y * imageScale.x);
+    return size;
+}
+
+void RenderImageLogic::ET_setScale(const Vec2& newScale) {
+    imageScale = newScale;
+}
+
 void RenderImageLogic::updateScale() {
     auto geomSize = geom->aabb.getSize();
-    scale.x = static_cast<float>(tex->size.x) / geomSize.x;
-    scale.y = static_cast<float>(tex->size.y) / geomSize.y;
-    
-    scale.x *= 0.1f;
-    scale.y *= 0.1f;
+    texScale.x = static_cast<float>(tex->size.x) / geomSize.x;
+    texScale.y = static_cast<float>(tex->size.y) / geomSize.y;
 }
 
 Mat4 RenderImageLogic::getModelMat() const {
@@ -84,7 +94,8 @@ Mat4 RenderImageLogic::getModelMat() const {
     Math::Translate(model, center);
     Math::Rotate(model, tm.quat);
     Math::Translate(model, tm.pt);
-    Vec3 resScale = Vec3(scale.x * tm.scale.x, scale.y * tm.scale.y, 1.f);
-    Math::Scale(model, resScale);
+    Vec3 scale = Vec3(texScale.x * imageScale.x * tm.scale.x,
+        texScale.y * imageScale.y * tm.scale.y, 1.f);
+    Math::Scale(model, scale);
     return model;
 }

@@ -26,6 +26,8 @@ protected:
 
     Vec2i calculateBoxSize(const AABB2Di& parentBox) const override;
 
+protected:
+
     void createRenderer();
     void updateRendererParams() const;
 

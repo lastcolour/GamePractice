@@ -2,14 +2,10 @@
     "children":[],
     "logics":[
         {
-            "type":"UIBox",
+            "type":"UIImage",
             "data":{
+                "image":"Images/options.png",
                 "style": {
-                    "color": {
-                        "r": 50,
-                        "g": 50,
-                        "b": 50
-                    },
                     "align": {
                         "x": "center",
                         "y": "center"

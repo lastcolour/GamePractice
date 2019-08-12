@@ -45,8 +45,10 @@ void UILabel::ET_setStyle(const UIStyle& newStyle) {
 
 void UILabel::ET_setText(const char* newText) {
     text = newText;
-    ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
-    forceResizeFromTop();
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
+        forceResizeFromTop();
+    }
 }
 
 const char* UILabel::ET_getText() const {

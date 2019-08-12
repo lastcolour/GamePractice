@@ -35,7 +35,9 @@ struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
     virtual void ET_setImage(const char* imageName) = 0;
     virtual void ET_setMaterial(const char* matName) = 0;
+    virtual Vec2i ET_getOrigSize() const = 0;
     virtual Vec2i ET_getSize() const = 0;
+    virtual void ET_setScale(const Vec2& newSize) = 0; 
 };
 
 struct RenderContext {

@@ -50,6 +50,14 @@ void ConsoleAppTests::TearDownTestCase() {
     APP.reset();
 }
 
+void ConsoleAppTests::TearDown() {
+    tempObject.clear();
+}
+
+void ConsoleAppTests::addLogicToOject(std::unique_ptr<GameObject>& obj, std::unique_ptr<GameLogic>& logic) {
+    obj->addLogic(std::move(logic));
+}
+
 std::unique_ptr<GameObject> ConsoleAppTests::createVoidObject() {
     std::unique_ptr<GameObject> objectPtr(new GameObject(TEST_OBJECT_NAME, GetETSystem()->createNewEntityId()));
     return objectPtr;

@@ -45,6 +45,11 @@ struct ETUILabel {
     virtual const char* ET_getText() const = 0;
 };
 
+struct ETUIImage {
+    virtual ~ETUIImage() = default;
+    virtual void ET_setImage(const char* image) = 0; 
+};
+
 struct ETUIList {
     virtual ~ETUIList() = default;
     virtual void ET_setType(UIListType listType) = 0;

@@ -280,6 +280,7 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
 
     Transform tm;
     tm.pt = getPosFromBoardPos(boardPt);
+    tm.scale = Vec3(1.f);
     ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, tm);
 }
 
@@ -397,6 +398,7 @@ void GameBoardLogic::updateAfterRemoves() {
             Transform topTm;
             ET_SendEventReturn(topTm, topElem->entId, &ETGameObject::ET_getTransform);
             topTm.pt.y += cellSize;
+            topTm.scale = Vec3(1.f);
             ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, topTm);
         }
     }

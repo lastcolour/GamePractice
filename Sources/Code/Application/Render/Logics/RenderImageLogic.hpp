@@ -23,7 +23,9 @@ public:
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
     void ET_setMaterial(const char* matName) override;
+    Vec2i ET_getOrigSize() const override;
     Vec2i ET_getSize() const override;
+    void ET_setScale(const Vec2& newScale) override; 
 
 private:
 
@@ -35,7 +37,8 @@ private:
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderGeometry> geom;
     std::shared_ptr<RenderTexture> tex;
-    Vec2 scale;
+    Vec2 imageScale;
+    Vec2 texScale;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */
