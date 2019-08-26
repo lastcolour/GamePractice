@@ -24,7 +24,7 @@ RenderTextLogic::~RenderTextLogic() {
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
     std::string matName;
-    node.value("mat", matName);
+    node.read("mat", matName);
     ET_setMaterial(matName.c_str());
     return true;
 }

@@ -12,7 +12,7 @@ GameBoardElemSwitcherLogic::~GameBoardElemSwitcherLogic() {
 }
 
 bool GameBoardElemSwitcherLogic::serialize(const JSONNode& node) {
-    node.value("switchDuration", switchDuration);
+    node.read("switchDuration", switchDuration);
     return true;
 }
 

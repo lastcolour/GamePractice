@@ -26,30 +26,30 @@ GameBoardLogic::~GameBoardLogic() {
 }
 
 bool GameBoardLogic::serialize(const JSONNode& node) {
-    node.value("fallSpeed", moveSpeed);
+    node.read("fallSpeed", moveSpeed);
     if(moveSpeed <= 0.f) {
         LogWarning("[GameBoard::serialize] Invalid move speed: %f", moveSpeed);
         return false;
     }
     if(auto sizeNode = node.object("size")) {
-        sizeNode.value("w", boardSize.x);
+        sizeNode.read("w", boardSize.x);
         if(boardSize.x <= 0) {
             LogWarning("[GameBoard::serialize] Invalid width: %d", boardSize.x);
                 return false;
         }
-        sizeNode.value("h", boardSize.y);
+        sizeNode.read("h", boardSize.y);
         if(boardSize.y <= 0) {
             LogWarning("[GameBoard::serialize] Invalid width: %d", boardSize.y);
             return false;
         }
     }
     if(auto cellNode = node.object("cell")) {
-        cellNode.value("scale", cellScale);
+        cellNode.read("scale", cellScale);
         if(cellScale <= 0.f || cellScale > 1.f) {
             LogWarning("[GameBoard::serialize] Invalid cell scale: %f", cellScale);
             return false;
         }
-        cellNode.value("object", cellObject);
+        cellNode.read("object", cellObject);
         if(cellObject.empty()) {
             LogWarning("[GameBoard::serialize] Empty cell object name");
             return false;

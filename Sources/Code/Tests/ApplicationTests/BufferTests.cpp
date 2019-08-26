@@ -3,7 +3,9 @@
 #include "Core/StringFormat.hpp"
 
 namespace {
-    const size_t TEST_SIZE = 32;
+
+const size_t TEST_SIZE = 32;
+
 } // namespace
 
 TEST_F(BufferTests, CheckVoidBuffer) {
@@ -77,4 +79,12 @@ TEST_F(BufferTests, CheckMoveBuffer) {
 TEST_F(BufferTests, CheckEqualOfWriteReadData) {
     Buffer buff(TEST_SIZE);
     ASSERT_EQ(buff.getReadData(), buff.getWriteData());
+}
+
+TEST_F(BufferTests, CheckConstructWithData) {
+    std::string writeStr = "Test";
+    Buffer buff(static_cast<const void*>(writeStr.c_str()), writeStr.length());
+    ASSERT_EQ(buff.getSize(), writeStr.length());
+    std::string readStr = buff.getString();
+    ASSERT_EQ(writeStr, readStr);
 }

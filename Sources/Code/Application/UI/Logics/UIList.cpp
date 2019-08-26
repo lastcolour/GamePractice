@@ -21,7 +21,7 @@ bool UIList::serialize(const JSONNode& node) {
         return false;
     }
     std::string list("vert");
-    node.value("type", list);
+    node.read("type", list);
     if(list == "vert") {
         listType = UIListType::Vertical;
     } else if(list == "horz") {

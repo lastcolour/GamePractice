@@ -50,18 +50,28 @@ public:
 
     explicit operator bool() const;
 
-    void value(const char* key, std::string& value) const;
-    void value(const char* key, float& value) const;
-    void value(const char* key, int& value) const;
+    void read(const char* key, std::string& value) const;
+    void read(const char* key, float& value) const;
+    void read(const char* key, int& value) const;
+    void read(const char* key, bool& value) const;
 
-    void value(std::string& value) const;
-    void value(float& value) const;
-    void value(int& value) const;
+    void read(std::string& value) const;
+    void read(float& value) const;
+    void read(int& value) const;
+    void read(bool& value) const;
+
+    void write(const char* key, const JSONNode& node);
+    void write(const char* key, const std::string& value);
+    void write(const char* key, float value);
+    void write(const char* key, int value);
+    void write(const char* key, bool value);
 
     const char* key() const;
     JSONNode object(const char* key) const;
 
     size_t size() const;
+
+    Buffer flushToBuffer() const;
 
 private:
 

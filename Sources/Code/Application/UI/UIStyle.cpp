@@ -51,16 +51,16 @@ SizeInvariant parseSizeInvariant(const std::string& strType) {
 ColorB parseColor(const JSONNode& node) {
     ColorB color;
     int val = 0;
-    node.value("r", val);
+    node.read("r", val);
     color.r = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
     val = 0;
-    node.value("g", val);
+    node.read("g", val);
     color.g = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
     val = 0;
-    node.value("b", val);
+    node.read("b", val);
     color.b = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
     val = 255;
-    node.value("a", val);
+    node.read("a", val);
     color.a = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
     return color;
 }
@@ -92,36 +92,40 @@ UIStyle::~UIStyle() {
 void UIStyle::serialize(const JSONNode& node) {
     if(auto alignNode = node.object("align")) {
         std::string alignTypeStr("center");
-        alignNode.value("x", alignTypeStr);
+        alignNode.read("x", alignTypeStr);
         xAlignType = parseXAlignType(alignTypeStr);
 
         alignTypeStr = "center";
-        alignNode.value("y", alignTypeStr);
+        alignNode.read("y", alignTypeStr);
         yAlignType = parseYAlignType(alignTypeStr);
     }
     if(auto sizeNode = node.object("size")) {
-        sizeNode.value("w", size.x);
-        sizeNode.value("h", size.y);
+        sizeNode.read("w", size.x);
+        sizeNode.read("h", size.y);
         if(size.x <= 0 || size.y <= 0) {
             LogWarning("[UIStyle::serialize] Invalid negative size: [%d, %d]", size.x, size.y);
             size = Vec2(1.f);
         }
         std::string sizeInvStr("rel");
-        sizeNode.value("inv", sizeInvStr);
+        sizeNode.read("inv", sizeInvStr);
         sizeInv = parseSizeInvariant(sizeInvStr);
     }
     if(auto colorNode = node.object("color")) {
         color = parseColor(colorNode);
+    } else {
+        color = ColorB(0, 0, 0, 0);
     }
     if(auto fontColorNode = node.object("fontColor")) {
         fontColor = parseColor(fontColorNode);
+    } else {
+        fontColor = ColorB(0, 0, 0, 0);
     }
-    node.value("fontSize", fontSize);
+    node.read("fontSize", fontSize);
     if(auto marginNode = node.object("margin")) {
-        marginNode.value("left", margin.left);
-        marginNode.value("right", margin.right);
-        marginNode.value("top", margin.bot);
-        marginNode.value("bot", margin.top);
+        marginNode.read("left", margin.left);
+        marginNode.read("right", margin.right);
+        marginNode.read("top", margin.bot);
+        marginNode.read("bot", margin.top);
     }
-    node.value("renderer", renderer);
+    node.read("renderer", renderer);
 }

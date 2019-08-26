@@ -260,7 +260,6 @@ void AndroidSurface::onNativeWindowCreated() {
         }
     }
     LogFatal("[AndroidSurface::onNativeWindowCreated] Can't create EGL context");
-    exit(1);
 }
 
 void AndroidSurface::onNativeWindowDestoryed() {

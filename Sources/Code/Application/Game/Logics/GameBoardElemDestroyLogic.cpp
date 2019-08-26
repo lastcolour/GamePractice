@@ -10,7 +10,7 @@ GameBoardElemDestroyLogic::~GameBoardElemDestroyLogic() {
 }
 
 bool GameBoardElemDestroyLogic::serialize(const JSONNode& node) {
-    node.value("destroyDuration", destroyDuration);
+    node.read("destroyDuration", destroyDuration);
     return true;
 }
 

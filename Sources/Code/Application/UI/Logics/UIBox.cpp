@@ -6,13 +6,28 @@
 namespace {
 
 const char* DEFAULT_LABEL = "UI/Default/Label.json";
+const char* DEFAULT_IMAGE = "UI/Default/Image.json";
 const char* DEFAULT_GEOM_RENDERER = "Render/RenderGeomSimple.json";
 
 EntityId createLabel(const JSONNode& node) {
     EntityId entId;
-    ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LABEL);
-    if(!entId.isValid()) {
-        return entId;
+    std::string content;
+    node.read("text", content);
+    if(!content.empty()) {
+        ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LABEL);
+        if(!entId.isValid()) {
+            return entId;
+        }
+        ET_SendEvent(entId, &ETUILabel::ET_setText, content.c_str());
+    } else {
+        node.read("image", content);
+        if(!content.empty()) {
+            ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_IMAGE);
+            if(!entId.isValid()) {
+                return entId;
+            }
+            ET_SendEvent(entId, &ETUIImage::ET_setImage, content.c_str());
+        }
     }
     if(auto styleNode = node.object("style")) {
         UIStyle style;
@@ -20,9 +35,6 @@ EntityId createLabel(const JSONNode& node) {
         style.serialize(styleNode);
         ET_SendEvent(entId, &ETUIBox::ET_setStyle, style);
     }
-    std::string labelText;
-    node.value("text", labelText);
-    ET_SendEvent(entId, &ETUILabel::ET_setText, labelText.c_str());
     return entId;
 }
 
@@ -81,8 +93,10 @@ void UIBox::createRenderer() {
     }
     const auto& boxStyle = ET_getStyle();
     std::string rendererName = boxStyle.renderer;
-    if(rendererName.empty()) {
+    if(rendererName.empty() && boxStyle.color != ColorB(0, 0, 0, 0)) {
        rendererName = DEFAULT_GEOM_RENDERER;
+    } else {
+        return;
     }
     ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, rendererName.c_str());
     if(renderId.isValid()) {

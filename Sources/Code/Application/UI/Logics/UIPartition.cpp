@@ -30,7 +30,7 @@ bool UIPartition::init() {
 
 EntityId UIPartition::serializeNode(const JSONNode& node) {
     std::string typeVal;
-    node.value("type", typeVal);
+    node.read("type", typeVal);
     if(typeVal == "vert") {
         return serializeAsList(UIListType::Vertical, node);
     } else if(typeVal == "horz") {
@@ -60,7 +60,7 @@ EntityId UIPartition::serializeAsSimplified(const JSONNode& node) {
         return serializeAsObject(node);
     }
     std::string objVal;
-    node.value("object", objVal);
+    node.read("object", objVal);
     if(objVal.empty()) {
         return serializeAsBox(node);
     }
@@ -127,7 +127,7 @@ EntityId UIPartition::serializeAsList(UIListType listType, const JSONNode& node)
 
 EntityId UIPartition::serializeAsObject(const JSONNode& node) {
     std::string objectVal;
-    node.value("object", objectVal);
+    node.read("object", objectVal);
 
     EntityId objId;
     ET_SendEventReturn(objId, &ETGameObjectManager::ET_createGameObject, objectVal.c_str());

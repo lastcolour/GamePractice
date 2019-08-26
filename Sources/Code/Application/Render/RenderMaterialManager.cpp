@@ -7,9 +7,11 @@
 #include <algorithm>
 
 namespace {
-    const int MAX_INFO_BUFF_SIZE = 255u;
-    const char* MATERIALS = "Render/Materials.json";
-    const char* SHADERS_ROOT_DIR = "Render/";
+
+const int MAX_INFO_BUFF_SIZE = 255u;
+const char* MATERIALS = "Render/Materials.json";
+const char* SHADERS_ROOT_DIR = "Render/";
+
 } // namespace
 
 RenderMaterialManager::RenderMaterialManager() {
@@ -50,8 +52,8 @@ std::shared_ptr<RenderMaterial> RenderMaterialManager::ET_createMaterial(const c
         }
         std::string vertShaderPath;
         std::string fragShaderPath;
-        matNode.value("vert", vertShaderPath);
-        matNode.value("frag", fragShaderPath);
+        matNode.read("vert", vertShaderPath);
+        matNode.read("frag", fragShaderPath);
         if(vertShaderPath.empty()) {
             LogError("[RenderMaterialManager::createMaterial] Empty vert shader path in material: %s", reqMatName);
             continue;

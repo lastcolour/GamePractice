@@ -27,7 +27,7 @@ bool UIButton::serialize(const JSONNode& node) {
         LogWarning("[UIButton::serialize] Can't serialize UIBox");
         return false;
     }
-    node.value("event", eventName);
+    node.read("event", eventName);
     return true;
 }
 

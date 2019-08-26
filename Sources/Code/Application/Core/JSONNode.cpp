@@ -4,9 +4,12 @@
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/memorybuffer.h>
+#include <rapidjson/writer.h>
 
-
-using JSONValueT = rapidjson::GenericValue<rapidjson::UTF8<>>;
+using JSONValueT = rapidjson::Value;
 using JSONDocPtrT = std::shared_ptr<rapidjson::Document>;
 
 struct JSONNodeImpl {
@@ -210,7 +213,7 @@ JSONNodeIterator JSONNode::end() const {
     return JSONNodeIterator();
 }
 
-void JSONNode::value(const char* key, std::string& value) const {
+void JSONNode::read(const char* key, std::string& value) const {
     if(!key || !key[0]) {
         return;
     }
@@ -225,7 +228,7 @@ void JSONNode::value(const char* key, std::string& value) const {
     }
 }
 
-void JSONNode::value(const char* key, float& value) const {
+void JSONNode::read(const char* key, float& value) const {
     if(!key || !key[0]) {
         return;
     }
@@ -242,7 +245,7 @@ void JSONNode::value(const char* key, float& value) const {
     }
 }
 
-void JSONNode::value(const char* key, int& value) const {
+void JSONNode::read(const char* key, int& value) const {
     if(!key || !key[0]) {
         return;
     }
@@ -257,7 +260,22 @@ void JSONNode::value(const char* key, int& value) const {
     }
 }
 
-void JSONNode::value(std::string& value) const {
+void JSONNode::read(const char* key, bool& value) const {
+    if(!key || !key[0]) {
+        return;
+    }
+    if(!nodeImpl->val) {
+        return;
+    }
+    auto memIt = nodeImpl->val->FindMember(key);
+    if(memIt != nodeImpl->val->MemberEnd()) {
+        if(memIt->value.IsBool()) {
+            value = memIt->value.GetBool();
+        }
+    }
+}
+
+void JSONNode::read(std::string& value) const {
     if(!nodeImpl->val) {
         return;
     }
@@ -266,7 +284,7 @@ void JSONNode::value(std::string& value) const {
     }
 }
 
-void JSONNode::value(float& value) const {
+void JSONNode::read(float& value) const {
     if(!nodeImpl->val) {
         return;
     }
@@ -277,13 +295,104 @@ void JSONNode::value(float& value) const {
     }
 }
 
-void JSONNode::value(int& value) const {
+void JSONNode::read(int& value) const {
     if(!nodeImpl->val) {
         return;
     }
     if(nodeImpl->val->IsInt()) {
         value = nodeImpl->val->GetInt();
     }
+}
+
+void JSONNode::read(bool& value) const {
+    if(!nodeImpl->val) {
+        return;
+    }
+    if(nodeImpl->val->IsBool()) {
+        value = nodeImpl->val->GetBool();
+    }
+}
+
+void JSONNode::write(const char* key, const JSONNode& node) {
+    if(!key || !key[0]) {
+        return;
+    }
+    if(!node.nodeImpl->val) {
+        return;
+    }
+    if(!nodeImpl->root) {
+        nodeImpl->root.reset(new rapidjson::Document);
+        nodeImpl->root->SetObject();
+        nodeImpl->val = nodeImpl->root.get();
+    }
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT copyValue(*(node.nodeImpl->val), nodeImpl->root->GetAllocator());
+    nodeImpl->val->AddMember(keyObject.Move(), copyValue, nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(const char* key, const std::string& value) {
+    if(!key || !key[0]) {
+        return;
+    }
+    if(!nodeImpl->root) {
+        nodeImpl->root.reset(new rapidjson::Document);
+        nodeImpl->root->SetObject();
+        nodeImpl->val = nodeImpl->root.get();
+    }
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT valObject;
+    valObject.SetString(value.c_str(), nodeImpl->root->GetAllocator());
+    nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(const char* key, float value) {
+    if(!key || !key[0]) {
+        return;
+    }
+    if(!nodeImpl->root) {
+        nodeImpl->root.reset(new rapidjson::Document);
+        nodeImpl->root->SetObject();
+        nodeImpl->val = nodeImpl->root.get();
+    }
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT valObject;
+    valObject.SetFloat(value);
+    nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(const char* key, int value) {
+    if(!key || !key[0]) {
+        return;
+    }
+    if(!nodeImpl->root) {
+        nodeImpl->root.reset(new rapidjson::Document);
+        nodeImpl->root->SetObject();
+        nodeImpl->val = nodeImpl->root.get();
+    }
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT valObject;
+    valObject.SetInt(value);
+    nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(const char* key, bool value) {
+    if(!key || !key[0]) {
+        return;
+    }
+    if(!nodeImpl->root) {
+        nodeImpl->root.reset(new rapidjson::Document);
+        nodeImpl->root->SetObject();
+        nodeImpl->val = nodeImpl->root.get();
+    }
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT valObject;
+    valObject.SetBool(value);
+    nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
 }
 
 JSONNode JSONNode::object(const char* key) const {
@@ -345,4 +454,15 @@ JSONNode JSONNode::ParseString(const char* str) {
     std::unique_ptr<JSONNodeImpl> impl(new JSONNodeImpl(docPtr));
     impl->val = impl->root.get();
     return JSONNode(std::move(impl));
+}
+
+Buffer JSONNode::flushToBuffer() const {
+    if(!nodeImpl->root) {
+        return Buffer();
+    }
+    rapidjson::MemoryBuffer jsonMemBuffer;
+    rapidjson::PrettyWriter<rapidjson::MemoryBuffer> writer(jsonMemBuffer);
+    nodeImpl->root->Accept(writer);
+    Buffer buff(jsonMemBuffer.GetBuffer(), jsonMemBuffer.GetSize());
+    return buff;
 }

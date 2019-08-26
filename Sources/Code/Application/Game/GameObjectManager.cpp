@@ -140,7 +140,7 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
     }
     for(const auto& logicNode : logicsNodes) {
         std::string logicType;
-        logicNode.value("type", logicType);
+        logicNode.read("type", logicType);
         auto logicPtr = createLogic(logicType.c_str());
         if(!logicPtr) {
             LogWarning("[GameObjectManager::createObject] Can't find logic type '%s' for object '%s'", logicType, objectName);
@@ -170,7 +170,7 @@ std::unique_ptr<GameObject> GameObjectManager::createObject(GameObject* rootObj,
     std::vector<GameObjectPtrT> childrenObjects;
     for(const auto& childNode : childrenNode) {
         std::string childObjName;
-        childNode.value(childObjName);
+        childNode.read(childObjName);
         auto childGameObj = createObject(objPtr.get(), childObjName.c_str());
         if(childGameObj) {
             gameObjects.push_back(std::move(childGameObj));

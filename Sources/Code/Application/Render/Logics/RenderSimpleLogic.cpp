@@ -18,13 +18,13 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 
 bool RenderSimpleLogic::serialize(const JSONNode& node) {
     std::string geomName;
-    node.value("geom", geomName);
+    node.read("geom", geomName);
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomName.c_str());
     if(!geom) {
         return false;
     }
     std::string matName;
-    node.value("mat", matName);
+    node.read("mat", matName);
     ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName.c_str());
     if(!mat) {
         return false;

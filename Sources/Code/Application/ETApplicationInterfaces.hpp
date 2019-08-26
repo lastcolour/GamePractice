@@ -50,6 +50,10 @@ struct ETAssets {
     virtual ~ETAssets() = default;
     virtual Buffer ET_loadAsset(const char* assetName) = 0;
     virtual JSONNode ET_loadJSONAsset(const char* assetName) = 0;
+    virtual Buffer ET_loadLocalFile(const char* fileName) = 0;
+    virtual JSONNode ET_loadLocalJSONFile(const char* fileName) = 0;
+    virtual bool ET_saveLocalFile(const char* fileName, const Buffer& buff) = 0;
+    virtual bool ET_removeLocalFile(const char* fileName) = 0;
 };
 
 enum class LogLevel {

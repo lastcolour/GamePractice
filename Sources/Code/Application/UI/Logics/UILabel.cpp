@@ -19,7 +19,7 @@ bool UILabel::serialize(const JSONNode& node) {
         LogWarning("[UILabel::serialize] Can't serialize UIbox");
         return false;
     }
-    node.value("text", text);
+    node.read("text", text);
     return true;
 }
 

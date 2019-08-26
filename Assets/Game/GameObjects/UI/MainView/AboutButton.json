@@ -6,11 +6,6 @@
             "data": {
                 "event": "Main_OnAboutButton",
                 "style": {
-                    "color": {
-                        "r": 75,
-                        "g": 75,
-                        "b": 75
-                    },
                     "align": {
                         "x": "center",
                         "y": "center"
@@ -23,13 +18,12 @@
                     "margin": {}
                 },
                 "label": {
-                    "text": "About",
+                    "image":"Images/about.png",
                     "style": {
-                        "fontSize":0.25,
-                        "fontColor": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255
+                        "size":{
+                            "h":0.5,
+                            "w":0.5,
+                            "inv":"relBS"
                         }
                     }
                 }

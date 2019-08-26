@@ -28,7 +28,7 @@ TEST_F(UIImageTests, CheckEmptyImage) {
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    
+
     EXPECT_EQ(imageCenter.x, renderPort.x / 2);
     EXPECT_EQ(imageCenter.y, renderPort.y / 2);
 }

@@ -36,9 +36,13 @@ Buffer::Buffer(Buffer&& buff) :
 
 Buffer::Buffer(size_t buffSize) :
     buffImpl() {
-    if (buffSize > 0) {
-        resize(buffSize);
-    }
+    resize(buffSize);
+}
+
+Buffer::Buffer(const void* dataPtr, size_t dataSize) :
+    buffImpl() {
+    resize(dataSize);
+    memcpy(buffImpl->data.get(), dataPtr, dataSize);
 }
 
 Buffer& Buffer::operator=(const Buffer& buff) {

@@ -16,7 +16,7 @@ RenderImageLogic::~RenderImageLogic() {
 
 bool RenderImageLogic::serialize(const JSONNode& node) {
     std::string matName;
-    node.value("mat", matName);
+    node.read("mat", matName);
     ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName.c_str());
     if(!mat) {
         return false;
@@ -53,7 +53,11 @@ void RenderImageLogic::ET_setMaterial(const char* matName) {
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName);
+    if(!imageName || !imageName[0]) {
+        tex.reset();
+    } else {
+        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName);
+    }
     if(!tex) {
         ETNode<ETRenderEvents>::disconnect();
     } else {

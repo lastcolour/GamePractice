@@ -4,7 +4,10 @@
 #include <Platforms/Desktop/DesktopAssets.hpp>
 
 namespace {
-    const char* TEST_FILE_PATH = "Render/Materials.json";
+
+const char* TEST_FILE_PATH = "Render/Materials.json";
+const char* TEST_LOCAL_PATH = "Test.txt";
+
 } // namepsace
 
 std::unique_ptr<DesktopAssets> AssetsTests::ASSETS;
@@ -108,4 +111,29 @@ TEST_F(AssetsTests, CheckAssetsCache) {
 
     ASSERT_TRUE(buff3);
     ASSERT_NE(buff3.getReadData(), buff2.getReadData());
+}
+
+TEST_F(AssetsTests, CheckSaveDeleteLocalFile) {
+    {
+        Buffer buff;
+        ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
+        bool saveRes = false;
+        ET_SendEventReturn(saveRes, &ETAssets::ET_saveLocalFile, TEST_LOCAL_PATH, buff);
+        ASSERT_TRUE(saveRes);
+    }
+    {
+        Buffer buff;
+        ET_SendEventReturn(buff, &ETAssets::ET_loadLocalFile, TEST_LOCAL_PATH);
+        ASSERT_TRUE(buff);
+    }
+    {
+        bool removeRes = false;
+        ET_SendEventReturn(removeRes, &ETAssets::ET_removeLocalFile, TEST_LOCAL_PATH);
+        ASSERT_TRUE(removeRes);
+    }
+    {
+        Buffer buff;
+        ET_SendEventReturn(buff, &ETAssets::ET_loadLocalFile, TEST_LOCAL_PATH);
+        ASSERT_FALSE(buff);
+    }
 }

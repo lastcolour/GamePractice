@@ -1,0 +1,14 @@
+{
+    "GameConfig":{
+        "Options":{
+            "sound":true,
+            "vibration":true
+        },
+        "Game":{
+            "highScore":0
+        },
+        "Main":{
+            "mainView":"UI/MainView/Root.json"
+        }
+    }
+}

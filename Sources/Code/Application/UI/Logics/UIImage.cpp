@@ -18,10 +18,7 @@ UIImage::~UIImage() {
 
 bool UIImage::serialize(const JSONNode& node) {
     UIBaseBox::serialize(node);
-    node.value("image", image);
-    if(image.empty()) {
-        LogWarning("[UIImage::serialize] Empty image");
-    }
+    node.read("image", image);
     return true;
 }
 
@@ -41,22 +38,20 @@ void UIImage::ET_setImage(const char* newImage) {
 }
 
 Vec2i UIImage::calculateBoxSize(const AABB2Di& parentBox) const {
-    auto parentSize = parentBox.getSize();
+    auto boxSize = UIBaseBox::calculateBoxSize(parentBox);
+
     Vec2i imageSize(0);
     ET_SendEventReturn(imageSize, imageRendererId, &ETRenderImageLogic::ET_getOrigSize);
     if(imageSize.x == 0 || imageSize.y == 0) {
         return Vec2i(0);
     }
 
-    float scale = std::min(parentSize.x / static_cast<float>(imageSize.x),
-        parentSize.y / static_cast<float>(imageSize.y));
+    Vec2 scale = Vec2(boxSize.x / static_cast<float>(imageSize.x),
+        boxSize.y / static_cast<float>(imageSize.y));
 
-    ET_SendEvent(imageRendererId, &ETRenderImageLogic::ET_setScale, Vec2(scale));
+    ET_SendEvent(imageRendererId, &ETRenderImageLogic::ET_setScale, scale);
 
-    imageSize = Vec2i(0);
-    ET_SendEventReturn(imageSize, imageRendererId, &ETRenderImageLogic::ET_getSize);
-
-    return imageSize;
+    return boxSize;
 }
 
 void UIImage::createRenderer() {

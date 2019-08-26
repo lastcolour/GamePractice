@@ -18,14 +18,20 @@ public:
     // ETAssets
     JSONNode ET_loadJSONAsset(const char* assetName) override;
     Buffer ET_loadAsset(const char* assetName) override;
+    Buffer ET_loadLocalFile(const char* assetName) override;
+    JSONNode ET_loadLocalJSONFile(const char* fileName) override;
+    bool ET_saveLocalFile(const char* fileName, const Buffer& buff) override;
+    bool ET_removeLocalFile(const char* fileName) override;
 
 private:
 
-    Buffer loadAssetImpl(const std::string& assetName);
+    bool saveFileToDir(const std::string& dirPath, const std::string& fileName);
+    Buffer loadFileFromDir(const std::string& dirPath, const std::string& fileName);
 
 private:
 
     std::string assetRootPath;
+    std::string localRootPath;
 };
 
 #endif /* __DESKTOP_ASSETS_HPP__ */

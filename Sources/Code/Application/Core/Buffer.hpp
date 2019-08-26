@@ -12,6 +12,7 @@ public:
     Buffer();
     Buffer(const Buffer& buff);
     Buffer(Buffer&& buff);
+    Buffer(const void* dataPtr, size_t dataSize);
     explicit Buffer(size_t buffSize);
 
     ~Buffer() = default;

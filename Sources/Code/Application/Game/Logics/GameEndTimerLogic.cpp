@@ -14,8 +14,8 @@ GameEndTimerLogic::~GameEndTimerLogic() {
 }
 
 bool GameEndTimerLogic::serialize(const JSONNode& node) {
-    node.value("time", endTime);
-    node.value("event", endEvent);
+    node.read("time", endTime);
+    node.read("event", endEvent);
     return true;
 }
 

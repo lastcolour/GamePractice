@@ -32,15 +32,15 @@ TEST_F(JSONNodeTests, CheckSimpleObject) {
     ASSERT_TRUE(node);
 
     int intVal = 0;
-    node.value("int", intVal);
+    node.read("int", intVal);
     ASSERT_EQ(intVal, 1);
 
     float floatVal = 0;
-    node.value("float", floatVal);
+    node.read("float", floatVal);
     ASSERT_EQ(floatVal, 1.f);
 
     std::string strVal;
-    node.value("str", strVal);
+    node.read("str", strVal);
     ASSERT_STREQ(strVal.c_str(), "1");
 }
 
@@ -66,7 +66,7 @@ TEST_F(JSONNodeTests, CheckNodeAccessThroughtIterator) {
     ASSERT_STREQ(nodeKey.c_str(), "obj1");
 
     int intVal = 0;
-    begIt->value(intVal);
+    begIt->read(intVal);
     ASSERT_EQ(intVal, 1);
 }
 
@@ -77,7 +77,7 @@ TEST_F(JSONNodeTests, CheckForLoop) {
     size_t totalIteration = 0;
     int intVal = 0;
     for(const auto& item : node) {
-        item.value(intVal);
+        item.read(intVal);
         keyVal[item.key()] = intVal;
         ++totalIteration;
     }
@@ -100,7 +100,7 @@ TEST_F(JSONNodeTests, CheckForLoopInArray) {
     std::vector<int> intVals;
     for(const auto& elem : arr) {
         int intVal = 0;
-        elem.value(intVal);
+        elem.read(intVal);
         intVals.push_back(intVal);
     }
 
@@ -120,21 +120,21 @@ TEST_F(JSONNodeTests, CheckAccessToInvalidElements) {
     ASSERT_FALSE(objNode);
 
     std::string str = "empty_val";
-    objNode.value("invalid", str);
+    objNode.read("invalid", str);
     ASSERT_STREQ(str.c_str(), "empty_val");
-    objNode.value(str);
+    objNode.read(str);
     ASSERT_STREQ(str.c_str(), "empty_val");
 
     float floatVal = -1.f;
-    objNode.value("invalid", floatVal);
+    objNode.read("invalid", floatVal);
     ASSERT_EQ(floatVal, -1.f);
-    objNode.value(floatVal);
+    objNode.read(floatVal);
     ASSERT_EQ(floatVal, -1.f);
 
     int intVal = -1;
-    objNode.value("invalid", intVal);
+    objNode.read("invalid", intVal);
     ASSERT_EQ(intVal, -1);
-    objNode.value(intVal);
+    objNode.read(intVal);
     ASSERT_EQ(intVal, -1);
 
     size_t iterCount = 0;
@@ -144,4 +144,83 @@ TEST_F(JSONNodeTests, CheckAccessToInvalidElements) {
 
     ASSERT_EQ(iterCount, 0);
     ASSERT_EQ(objNode.begin(), objNode.end());
+}
+
+TEST_F(JSONNodeTests, CheckWriteSimpleValues) {
+    JSONNode node;
+    {
+        bool writeVal = false;
+        node.write("bool_value", writeVal);
+
+        bool readVal = true;
+        node.read("bool_value", readVal);
+
+        EXPECT_EQ(writeVal, readVal);
+    }
+
+    {
+        int writeVal = 1;
+        node.write("int_value", writeVal);
+
+        int readVal = 0;
+        node.read("int_value", readVal);
+
+        EXPECT_EQ(writeVal, readVal);
+    }
+
+    {
+        float writeVal = -1.f;
+        node.write("float_value", writeVal);
+
+        float readVal = 0.f;
+        node.read("float_value", readVal);
+
+        EXPECT_FLOAT_EQ(writeVal, readVal);
+    }
+
+    {
+        std::string writeVal = "test";
+        node.write("string_value", writeVal);
+
+        std::string readVal = "";
+        node.read("string_value", readVal);
+
+        EXPECT_EQ(writeVal, readVal);
+    }
+}
+
+TEST_F(JSONNodeTests, CheckWriteObject) {
+    JSONNode rootNode;
+    int writeVal = 1;
+    {
+        JSONNode childNode;
+        childNode.write("val", writeVal);
+        rootNode.write("obj", childNode);
+    }
+
+    JSONNode childNode = rootNode.object("obj");
+    EXPECT_TRUE(childNode);
+
+    int readVal = 0;
+    childNode.read("val", readVal);
+    EXPECT_EQ(readVal, writeVal);
+}
+
+TEST_F(JSONNodeTests, CheckCreateReadTheSame) {
+    Buffer buff;
+    int write_val = 1;
+    {
+        JSONNode node;
+        node.write("val", write_val);
+        buff = node.flushToBuffer();
+        ASSERT_TRUE(buff);
+    }
+    int read_val = 0;
+    {
+        std::string str = buff.getString();
+        auto node = JSONNode::ParseString(str.c_str());
+        ASSERT_TRUE(node);
+        node.read("val", read_val);
+    }
+    ASSERT_EQ(write_val, read_val);
 }
