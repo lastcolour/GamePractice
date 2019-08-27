@@ -2,7 +2,7 @@
 
 #include <ETApplicationInterfaces.hpp>
 #include <UI/Logics/UIButton.hpp>
-#include <Game/GameObject.hpp>
+#include <Entity/Entity.hpp>
 
 class TestButtonEventListener : public ETNode<ETUIEventManager> {
 public:

@@ -1,29 +1,27 @@
-#ifndef __GAME_OBJECT_HPP__
-#define __GAME_OBJECT_HPP__
+#ifndef __ENTITY_HPP__
+#define __ENTITY_HPP__
 
-#include "Game/ETGameInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 #include <string>
 #include <memory>
-#include <vector>
 
-class GameLogic;
+class EntityLogic;
 
-class GameObject :
-    public ETNode<ETGameObject> {
+class Entity : public ETNode<ETEntity> {
 
-    typedef std::unique_ptr<GameLogic> GameLogicPtr;
+    using EntityLogicPtrT = std::unique_ptr<EntityLogic>;
 
 public:
 
-    GameObject(const char* objectName, EntityId entId);
-    ~GameObject();
+    Entity(const char* entityName, EntityId entId);
+    ~Entity();
 
-    void addLogic(GameLogicPtr&& logic);
+    void addLogic(EntityLogicPtrT&& logic);
 
     EntityId getEntityId() const { return entityId; }
 
-    // ETGameObject
+    // ETEntity
     const char* ET_getName() const override;
     void ET_setParent(EntityId entId) override;
     void ET_addChild(EntityId entId) override;
@@ -36,11 +34,11 @@ public:
 private:
 
     Transform tm;
-    std::vector<GameLogicPtr> logics;
+    std::vector<EntityLogicPtrT> logics;
     std::vector<EntityId> children;
     std::string name;
     EntityId parentId;
     EntityId entityId;
 };
 
-#endif /* __GAME_OBJECT_HPP__ */
+#endif /* __ENTITY_HPP__ */

@@ -1,6 +1,5 @@
 #include "UI/Logics/UIBox.hpp"
 #include "Core/JSONNode.hpp"
-#include "Game/GameObjectManager.hpp"
 #include "ETApplicationInterfaces.hpp"
 
 namespace {
@@ -14,7 +13,7 @@ EntityId createLabel(const JSONNode& node) {
     std::string content;
     node.read("text", content);
     if(!content.empty()) {
-        ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LABEL);
+        ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, DEFAULT_LABEL);
         if(!entId.isValid()) {
             return entId;
         }
@@ -22,7 +21,7 @@ EntityId createLabel(const JSONNode& node) {
     } else {
         node.read("image", content);
         if(!content.empty()) {
-            ET_SendEventReturn(entId, &ETGameObjectManager::ET_createGameObject, DEFAULT_IMAGE);
+            ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, DEFAULT_IMAGE);
             if(!entId.isValid()) {
                 return entId;
             }
@@ -60,7 +59,7 @@ bool UIBox::init() {
     updateRenderParams();
     updateRenderSize();
     if(labelId.isValid()) {
-        ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, labelId);
+        ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, labelId);
     }
     return true;
 }
@@ -88,7 +87,7 @@ EntityId UIBox::getRendererId() const {
 
 void UIBox::createRenderer() {
     if(renderId.isValid()) {
-        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, renderId);
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, renderId);
         renderId = InvalidEntityId;
     }
     const auto& boxStyle = ET_getStyle();
@@ -98,13 +97,13 @@ void UIBox::createRenderer() {
     } else {
         return;
     }
-    ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, rendererName.c_str());
+    ET_SendEventReturn(renderId, &ETEntityManager::ET_createEntity, rendererName.c_str());
     if(renderId.isValid()) {
-        ET_SendEvent(renderId, &ETGameObject::ET_setParent, getEntityId());
+        ET_SendEvent(renderId, &ETEntity::ET_setParent, getEntityId());
         ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, boxStyle.color);
         Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
-        ET_SendEvent(renderId, &ETGameObject::ET_setTransform, tm);
+        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+        ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
     } else {
         LogWarning("[UIBox::createRenderer] Can't create renderer: %s", rendererName);
     }

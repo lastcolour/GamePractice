@@ -7,7 +7,6 @@
 
 class UIBox;
 class UIList;
-class GameObject;
 
 class UITests : public ConsoleAppTests {
 protected:
@@ -20,7 +19,7 @@ protected:
 
 protected:
 
-    std::vector<std::unique_ptr<GameObject>> tempObject;
+    std::vector<std::unique_ptr<Entity>> tempObject;
 };
 
 #endif /* __UI_TESTS_HPP__ */

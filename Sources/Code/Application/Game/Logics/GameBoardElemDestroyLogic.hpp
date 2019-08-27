@@ -1,11 +1,11 @@
 #ifndef __GAME_BOARD_ELEM_DESTROY_LOGIC_HPP__
 #define __GAME_BOARD_ELEM_DESTROY_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 
-class GameBoardElemDestroyLogic : public GameLogic,
+class GameBoardElemDestroyLogic : public EntityLogic,
     public ETNode<ETTimerEvents>,
     public ETNode<ETGameBoardElemDestroy> {
 public:
@@ -13,7 +13,7 @@ public:
     GameBoardElemDestroyLogic();
     virtual ~GameBoardElemDestroyLogic();
 
-    // GameLogic
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 

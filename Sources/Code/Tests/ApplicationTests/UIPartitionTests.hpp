@@ -12,7 +12,7 @@ public:
 
 protected:
 
-    std::vector<std::unique_ptr<GameObject>> tempObject;
+    std::vector<std::unique_ptr<Entity>> tempObject;
 };
 
 #endif /* __UI_PARTITION_TESTS_HPP__ */

@@ -1,6 +1,6 @@
 #include "UI/UIViewManager.hpp"
-#include "Game/ETGameInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 UIViewManager::UIViewManager() {
 }
@@ -25,7 +25,7 @@ EntityId UIViewManager::ET_openView(const char* viewName) {
         return InvalidEntityId;
     }
     EntityId newViewId;
-    ET_SendEventReturn(newViewId, &ETGameObjectManager::ET_createGameObject, viewName);
+    ET_SendEventReturn(newViewId, &ETEntityManager::ET_createEntity, viewName);
     if(!newViewId.isValid()) {
         LogWarning("[UIViewManager::ET_openView] Can't open view: %s", viewName);
         return InvalidEntityId;
@@ -40,11 +40,11 @@ EntityId UIViewManager::ET_openView(const char* viewName) {
 
 void UIViewManager::ET_closeView(EntityId viewId) {
     if(activeViewId == viewId && activeViewId.isValid()) {
-        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, activeViewId);
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, activeViewId);
         activeViewId = InvalidEntityId;
     }
 }
 
 void UIViewManager::ET_onViewSwitchedOut(EntityId viewId) {
-    ET_SendEvent(&ETGameObjectManager::ET_destroyObject, viewId);
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, viewId);
 }

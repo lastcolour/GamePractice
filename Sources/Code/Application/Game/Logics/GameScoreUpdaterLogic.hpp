@@ -1,17 +1,17 @@
 #ifndef __GAME_SCORE_UPDATER_LOGIC_HPP__
 #define __GAME_SCORE_UPDATER_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
-class GameScoreUpdaterLogic : public GameLogic,
+class GameScoreUpdaterLogic : public EntityLogic,
     public ETNode<ETGameScoreUpdater> {
 public:
 
     GameScoreUpdaterLogic();
     virtual ~GameScoreUpdaterLogic();
 
-    // GameLogic
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 

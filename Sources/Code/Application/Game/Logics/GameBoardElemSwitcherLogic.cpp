@@ -1,4 +1,5 @@
 #include "Game/Logics/GameBoardElemSwitcherLogic.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <algorithm>
@@ -30,11 +31,11 @@ void GameBoardElemSwitcherLogic::ET_onTick(float dt) {
 
         Transform newTm = task.firstTm;
         newTm.pt = Math::Lerp(task.firstTm.pt, task.secondTm.pt, prog);
-        ET_SendEvent(task.firstId, &ETGameObject::ET_setTransform, newTm);
+        ET_SendEvent(task.firstId, &ETEntity::ET_setTransform, newTm);
 
         newTm = task.secondTm;
         newTm.pt = Math::Lerp(task.secondTm.pt, task.firstTm.pt, prog);
-        ET_SendEvent(task.secondId, &ETGameObject::ET_setTransform, newTm);
+        ET_SendEvent(task.secondId, &ETEntity::ET_setTransform, newTm);
     }
 
     bool isNeedUpdateBoard = false;
@@ -65,11 +66,11 @@ void GameBoardElemSwitcherLogic::ET_switchBoardElems(EntityId firstId, EntityId 
     task.duration = 0.f;
 
     task.firstId = firstId;
-    ET_SendEventReturn(task.firstTm, firstId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getTransform);
     ET_SendEvent(getEntityId(), &ETGameBoard::ET_setElemState, firstId, EBoardElemState::Switching);
 
     task.secondId = secondId;
-    ET_SendEventReturn(task.secondTm, secondId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(task.secondTm, secondId, &ETEntity::ET_getTransform);
     ET_SendEvent(getEntityId(), &ETGameBoard::ET_setElemState, secondId, EBoardElemState::Switching);
 
     switchTasks.push_back(task);

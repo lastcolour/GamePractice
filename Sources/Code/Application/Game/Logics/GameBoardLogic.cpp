@@ -200,12 +200,12 @@ bool GameBoardLogic::init() {
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             EntityId cellObjId = InvalidEntityId;
-            ET_SendEventReturn(cellObjId, &ETGameObjectManager::ET_createGameObject, cellObject.c_str());
+            ET_SendEventReturn(cellObjId, &ETEntityManager::ET_createEntity, cellObject.c_str());
             if(cellObjId == InvalidEntityId) {
                 LogWarning("[GameBoardLogic::init] Can't spawn element");
                 return false;
             }
-            ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, cellObjId);
+            ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, cellObjId);
             BoardElement elem;
             elem.entId = cellObjId;
             initNewElem(elem, Vec2i(i, j));
@@ -215,7 +215,7 @@ bool GameBoardLogic::init() {
 
     ETNode<ETTimerEvents>::connect(getEntityId());
     ETNode<ETUIBoxEvents>::connect(getEntityId());
-    ETNode<ETGameObjectEvents>::connect(getEntityId());
+    ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
     return true;
 }
@@ -281,7 +281,7 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     Transform tm;
     tm.pt = getPosFromBoardPos(boardPt);
     tm.scale = Vec3(1.f);
-    ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
 }
 
 bool GameBoardLogic::isElemMatch(int firstElemId, int secondElemId) const {
@@ -396,10 +396,10 @@ void GameBoardLogic::updateAfterRemoves() {
             elem.movePt = Vec2i(topPt.x, topPt.y - voidBelow);
 
             Transform topTm;
-            ET_SendEventReturn(topTm, topElem->entId, &ETGameObject::ET_getTransform);
+            ET_SendEventReturn(topTm, topElem->entId, &ETEntity::ET_getTransform);
             topTm.pt.y += cellSize;
             topTm.scale = Vec3(1.f);
-            ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, topTm);
+            ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, topTm);
         }
     }
 }
@@ -428,12 +428,12 @@ Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) c
 
 bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     Transform tm;
-    ET_SendEventReturn(tm, elem.entId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getTransform);
     tm.pt.y -= moveSpeed * dt * cellSize;
     Vec3 desirePt = getPosFromBoardPos(elem.movePt);
     if(tm.pt.y > desirePt.y) {
         elem.boardPt = getBoardPosFromPos(elem.boardPt, tm.pt);
-        ET_SendEvent(elem.entId, &ETGameObject::ET_setTransform, tm);
+        ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
         return true;
     } else {
         elem.state = EBoardElemState::Static;

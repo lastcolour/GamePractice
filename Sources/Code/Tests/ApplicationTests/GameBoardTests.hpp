@@ -4,7 +4,7 @@
 #include "TestUtils/ConsoleAppTests.hpp"
 
 class TestGameBoardLogic;
-class GameObject;
+class Entity;
 
 class GameBoardTests : public ConsoleAppTests {
 protected:
@@ -14,7 +14,7 @@ protected:
 
 protected:
 
-    std::unique_ptr<GameObject> object;
+    std::unique_ptr<Entity> entity;
     TestGameBoardLogic* board;
 };
 

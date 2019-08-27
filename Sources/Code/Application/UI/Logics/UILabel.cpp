@@ -61,7 +61,7 @@ void UILabel::ET_onTransformChanged(const Transform& newTm) {
 
 void UILabel::createRenderer() {
     if(renderId.isValid()) {
-        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, renderId);
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, renderId);
         renderId = InvalidEntityId;
     }
     const auto& boxStyle = ET_getStyle();
@@ -69,14 +69,14 @@ void UILabel::createRenderer() {
     if(rendererName.empty()) {
         rendererName = DEFAULT_TEXT_RENDERER;
     }
-    ET_SendEventReturn(renderId, &ETGameObjectManager::ET_createGameObject, rendererName.c_str());
+    ET_SendEventReturn(renderId, &ETEntityManager::ET_createEntity, rendererName.c_str());
     if(renderId.isValid()) {
-        ET_SendEvent(renderId, &ETGameObject::ET_setParent, getEntityId());
+        ET_SendEvent(renderId, &ETEntity::ET_setParent, getEntityId());
         ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
 
         Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
-        ET_SendEvent(renderId, &ETGameObject::ET_setTransform, tm);
+        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+        ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
     } else {
         LogWarning("[UILabel::createRenderers] Can't create renderer: %s", rendererName);
     }

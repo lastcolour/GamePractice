@@ -8,7 +8,7 @@
 #include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
-#include "Game/GameObject.hpp"
+#include "Entity/Entity.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Game/GameInitModule.hpp"
 #include "Render/Logics/RenderImageLogic.hpp"
@@ -270,7 +270,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
 
 TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     EntityId objId = InvalidEntityId;
-    ET_SendEventReturn(objId, &ETGameObjectManager::ET_createGameObject, SIMPLE_OBJECT);
+    ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
     ASSERT_NE(objId, InvalidEntityId);
 
     auto size = textureFramebuffer->getSize();
@@ -278,7 +278,7 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
 
     Transform tm;
     tm.pt = center;
-    ET_SendEvent(objId, &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(objId, &ETEntity::ET_setTransform, tm);
 
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
@@ -293,7 +293,7 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     checkSquare(xStart, xEnd, yStart, yEnd);
     dumpFramebuffer();
 
-    ET_SendEvent(&ETGameObjectManager::ET_destroyObject, objId);
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId);
 }
 
 TEST_F(RenderTests, CheckCreateSameFontTwice) {
@@ -317,7 +317,7 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     auto gameObj = createVoidObject();
     RenderTextLogic* renderText = new RenderTextLogic;
     renderText->ET_setMaterial("text_solid_color");
-    gameObj->addLogic(std::unique_ptr<GameLogic>(renderText));
+    gameObj->addLogic(std::unique_ptr<EntityLogic>(renderText));
     ASSERT_TRUE(renderText->init());
 
     Vec2i renderPort(0);
@@ -370,7 +370,7 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     auto gameObj = createVoidObject();
     RenderImageLogic* renderImage = new RenderImageLogic;
     renderImage->ET_setMaterial("simple_image");
-    gameObj->addLogic(std::unique_ptr<GameLogic>(renderImage));
+    gameObj->addLogic(std::unique_ptr<EntityLogic>(renderImage));
     ASSERT_TRUE(renderImage->init());
 
     Vec2i renderPort(0);

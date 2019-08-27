@@ -2,15 +2,17 @@
 #include "Platform.hpp"
 #include "CoreModule.hpp"
 #include "Render/RenderModule.hpp"
-#include "Game/GameModule.hpp"
+#include "Entity/EntityModule.hpp"
 #include "Core/ETSystem.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/GameInitModule.hpp"
 #include "UI/UIModule.hpp"
 
 namespace {
-    const int APP_SUCCESSED = 0;
-    const int APP_FAILED = 1;
+
+const int APP_SUCCESSED = 0;
+const int APP_FAILED = 1;
+
 } // namespace
 
 Application::Application(Application::PlatformPtrT&& runPlatform) :
@@ -28,7 +30,7 @@ void Application::buildModules(ModuleListT& modules) {
         modules.emplace_back(platform->createPlatformModule());
     }
     modules.emplace_back(new RenderModule);
-    modules.emplace_back(new GameModule);
+    modules.emplace_back(new EntityModule);
     modules.emplace_back(new UIModule);
     modules.emplace_back(new GameInitModule);
 }

@@ -1,16 +1,16 @@
 #ifndef __GAME_END_TIMER_UPDATER_LOGIC_HPP__
 #define __GAME_END_TIMER_UPDATER_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
-class GameEndTimerUpdaterLogic : public GameLogic,
+class GameEndTimerUpdaterLogic : public EntityLogic,
     public ETNode<ETGameEndTimerUpdater> {
 public:
     GameEndTimerUpdaterLogic();
     virtual ~GameEndTimerUpdaterLogic();
 
-    // GameLogic
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 

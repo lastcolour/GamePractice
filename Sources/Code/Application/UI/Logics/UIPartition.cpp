@@ -23,7 +23,7 @@ bool UIPartition::serialize(const JSONNode& node) {
 bool UIPartition::init() {
     UIBaseBox::init();
     if(rootEntId.isValid()) {
-        ET_SendEvent(getEntityId(), &ETGameObject::ET_addChild, rootEntId);
+        ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, rootEntId);
     }
     return true;
 }
@@ -50,7 +50,7 @@ void UIPartition::serializeChildren(EntityId rootEntId, const JSONNode& node) {
     for(auto& childNode : node.object("children")) {
         auto childId = serializeNode(childNode);
         if(childId.isValid()) {
-            ET_SendEvent(rootEntId, &ETGameObject::ET_addChild, childId);
+            ET_SendEvent(rootEntId, &ETEntity::ET_addChild, childId);
         }
     }
 }
@@ -72,7 +72,7 @@ EntityId UIPartition::serializeAsSimplified(const JSONNode& node) {
     if(boxId.isValid()) {
         EntityId objId = serializeAsObject(node);
         if(objId.isValid()) {
-            ET_SendEvent(boxId, &ETGameObject::ET_addChild, objId);
+            ET_SendEvent(boxId, &ETEntity::ET_addChild, objId);
         }
     }
     return boxId;
@@ -80,7 +80,7 @@ EntityId UIPartition::serializeAsSimplified(const JSONNode& node) {
 
 EntityId UIPartition::serializeAsBox(const JSONNode& node) {
     EntityId boxId;
-    ET_SendEventReturn(boxId, &ETGameObjectManager::ET_createGameObject, DEFAULT_BOX);
+    ET_SendEventReturn(boxId, &ETEntityManager::ET_createEntity, DEFAULT_BOX);
     if(!boxId.isValid()) {
         LogWarning("[UIPartition::serializeAsObject] Can't create default box");
         return InvalidEntityId;
@@ -106,7 +106,7 @@ EntityId UIPartition::serializeAsList(UIListType listType, const JSONNode& node)
     }
 
     EntityId listId;
-    ET_SendEventReturn(listId, &ETGameObjectManager::ET_createGameObject, DEFAULT_LIST);
+    ET_SendEventReturn(listId, &ETEntityManager::ET_createEntity, DEFAULT_LIST);
     if(!listId.isValid()) {
         LogWarning("[UIPartition::serializeAsList] Can't create default list");
         return InvalidEntityId;
@@ -130,7 +130,7 @@ EntityId UIPartition::serializeAsObject(const JSONNode& node) {
     node.read("object", objectVal);
 
     EntityId objId;
-    ET_SendEventReturn(objId, &ETGameObjectManager::ET_createGameObject, objectVal.c_str());
+    ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, objectVal.c_str());
     if(!objId.isValid()) {
         LogWarning("[UIPartition::serializeAsObject] Can't create object: %s", objectVal);
         return InvalidEntityId;

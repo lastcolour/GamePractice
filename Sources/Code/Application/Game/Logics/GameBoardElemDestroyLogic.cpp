@@ -1,4 +1,5 @@
 #include "Game/Logics/GameBoardElemDestroyLogic.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <algorithm>
@@ -26,10 +27,10 @@ void GameBoardElemDestroyLogic::ET_onTick(float dt) {
         float prog = std::min(task.duration / destroyDuration, 1.f);
         
         Transform tm;
-        ET_SendEventReturn(tm, task.entId, &ETGameObject::ET_getTransform);
+        ET_SendEventReturn(tm, task.entId, &ETEntity::ET_getTransform);
         tm.scale = Math::Lerp(task.startScale, Vec3(0.f), prog);
 
-        ET_SendEvent(task.entId, &ETGameObject::ET_setTransform, tm);
+        ET_SendEvent(task.entId, &ETEntity::ET_setTransform, tm);
     }
 
     int destroyedCount = 0;
@@ -59,7 +60,7 @@ void GameBoardElemDestroyLogic::ET_destroyBoardElem(EntityId elemId) {
     task.duration = 0.f;
 
     Transform tm;
-    ET_SendEventReturn(tm, task.entId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, task.entId, &ETEntity::ET_getTransform);
     task.startScale = tm.scale;
 
     destroyTasks.push_back(task);

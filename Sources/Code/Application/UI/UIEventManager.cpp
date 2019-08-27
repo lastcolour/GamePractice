@@ -1,6 +1,5 @@
 #include "UI/UIEventManager.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
 
 enum class EUIEventType {
     Main_OnStartButton,

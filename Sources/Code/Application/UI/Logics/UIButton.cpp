@@ -1,7 +1,6 @@
 #include "UI/Logics/UIButton.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
-#include "Game/ETGameInterfaces.hpp"
 
 UIButton::UIButton() :
     isHovered(false) {

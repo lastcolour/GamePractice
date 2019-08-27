@@ -56,7 +56,7 @@ Vec2i UIImage::calculateBoxSize(const AABB2Di& parentBox) const {
 
 void UIImage::createRenderer() {
     if(imageRendererId.isValid()) {
-        ET_SendEvent(&ETGameObjectManager::ET_destroyObject, imageRendererId);
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, imageRendererId);
         imageRendererId = InvalidEntityId;
     }
     const auto& boxStyle = ET_getStyle();
@@ -64,14 +64,14 @@ void UIImage::createRenderer() {
     if(rendererName.empty()) {
         rendererName = DEFAULT_IMAGER_RENDERER;
     }
-    ET_SendEventReturn(imageRendererId, &ETGameObjectManager::ET_createGameObject, rendererName.c_str());
+    ET_SendEventReturn(imageRendererId, &ETEntityManager::ET_createEntity, rendererName.c_str());
     if(imageRendererId.isValid()) {
-        ET_SendEvent(imageRendererId, &ETGameObject::ET_setParent, getEntityId());
+        ET_SendEvent(imageRendererId, &ETEntity::ET_setParent, getEntityId());
         ET_SendEvent(imageRendererId, &ETRenderImageLogic::ET_setImage, image.c_str());
 
         Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
-        ET_SendEvent(imageRendererId, &ETGameObject::ET_setTransform, tm);
+        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+        ET_SendEvent(imageRendererId, &ETEntity::ET_setTransform, tm);
     } else {
         LogWarning("[UIImage::createRenderers] Can't create renderer: %s", rendererName);
     }

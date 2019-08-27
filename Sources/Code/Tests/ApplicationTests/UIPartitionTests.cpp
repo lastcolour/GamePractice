@@ -1,6 +1,6 @@
 #include "UIPartitionTests.hpp"
 #include "UI/Logics/UIPartition.hpp"
-#include "Game/GameObject.hpp"
+#include "Entity/Entity.hpp"
 #include "Core/StringFormat.hpp"
 #include "Core/JSONNode.hpp"
 
@@ -29,7 +29,7 @@ TEST_F(UIPartitionTests, TestUIPartitionSimple) {
     ASSERT_TRUE(uiPartion->init());
 
     Transform tm;
-    ET_SendEventReturn(tm, uiPartion->getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, uiPartion->getEntityId(), &ETEntity::ET_getTransform);
     Vec2i partitionPt = Vec2i(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
     
     Vec2i renderPort;
@@ -41,14 +41,14 @@ TEST_F(UIPartitionTests, TestUIPartitionSimple) {
     EXPECT_EQ(partitionBox.getSize(), renderPort);
 
     std::vector<EntityId> children;
-    ET_SendEventReturn(children, uiPartion->getEntityId(), &ETGameObject::ET_getChildren);
+    ET_SendEventReturn(children, uiPartion->getEntityId(), &ETEntity::ET_getChildren);
 
     ASSERT_EQ(children.size(), 1u);
 
     EntityId rootListId = children[0];
     ASSERT_TRUE(ET_IsExistNode<ETUIList>(rootListId));
 
-    ET_SendEventReturn(children, rootListId, &ETGameObject::ET_getChildren);
+    ET_SendEventReturn(children, rootListId, &ETEntity::ET_getChildren);
 
     ASSERT_EQ(children.size(), 2u);
 }

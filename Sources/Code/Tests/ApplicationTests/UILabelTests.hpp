@@ -14,7 +14,7 @@ protected:
 
 protected:
 
-    std::vector<std::unique_ptr<GameObject>> tempObject;
+    std::vector<std::unique_ptr<Entity>> tempObject;
 };
 
 

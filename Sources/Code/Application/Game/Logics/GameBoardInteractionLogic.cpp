@@ -1,5 +1,6 @@
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 namespace {
 
@@ -25,7 +26,7 @@ bool GameBoardInteractionLogic::init() {
 
 void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {
     Transform tm;
-    ET_SendEventReturn(tm, activeElemId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, activeElemId, &ETEntity::ET_getTransform);
     Vec2 moveDir = Vec2(static_cast<float>(endPt.x), static_cast<float>(endPt.y)) - Vec2(tm.pt.x, tm.pt.y);
 
     Vec2i nextBoardPt = startPt;

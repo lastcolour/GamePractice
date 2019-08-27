@@ -1,16 +1,15 @@
 #ifndef __RENDER_SIMPLE_LOGIC_HPP__
 #define __RENDER_SIMPLE_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
 
 #include <memory>
 
 class RenderMaterial;
 class RenderGeometry;
 
-class RenderSimpleLogic : public GameLogic,
+class RenderSimpleLogic : public EntityLogic,
     public ETNode<ETRenderEvents>,
     public ETNode<ETRenderSimpleLogic> {
 public:
@@ -18,6 +17,7 @@ public:
     RenderSimpleLogic();
     virtual ~RenderSimpleLogic();
 
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 

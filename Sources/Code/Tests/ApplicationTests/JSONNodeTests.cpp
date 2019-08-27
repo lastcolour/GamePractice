@@ -206,7 +206,7 @@ TEST_F(JSONNodeTests, CheckWriteObject) {
     EXPECT_EQ(readVal, writeVal);
 }
 
-TEST_F(JSONNodeTests, CheckCreateReadTheSame) {
+TEST_F(JSONNodeTests, CheckCreateReadSame) {
     Buffer buff;
     int write_val = 1;
     {

@@ -1,7 +1,6 @@
 #include "UI/Logics/UIBaseBox.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
@@ -18,8 +17,8 @@ UIBaseBox::~UIBaseBox() {
 
 void UIBaseBox::ET_onChildAdded(EntityId childId) {
     Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
-    ET_SendEvent(childId, &ETGameObject::ET_setTransform, tm);
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    ET_SendEvent(childId, &ETEntity::ET_setTransform, tm);
     ET_SendEvent(childId, &ETUIBox::ET_boxResize);
 }
 
@@ -151,9 +150,9 @@ void UIBaseBox::setBox(const AABB2Di& newBox) {
 void UIBaseBox::syncTransform() const {
     Transform tm;
     auto center = box.getCenter();
-    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
-    ET_SendEvent(getEntityId(), &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, tm);
 }
 
 bool UIBaseBox::isNeedResize() {
@@ -172,7 +171,7 @@ void UIBaseBox::ET_boxResize() {
     lastResizeBox = getParentAabb2di();
     setBox(calcBox(lastResizeBox));
     std::vector<EntityId> childrenIds;
-    ET_SendEventReturn(childrenIds, getEntityId(), &ETGameObject::ET_getChildren);
+    ET_SendEventReturn(childrenIds, getEntityId(), &ETEntity::ET_getChildren);
     for(auto childId : childrenIds) {
         ET_SendEvent(childId, &ETUIBox::ET_boxResize);
     }
@@ -218,7 +217,7 @@ bool UIBaseBox::init() {
     setBox(calcBox(lastResizeBox));
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
-    ETNode<ETGameObjectEvents>::connect(getEntityId());
+    ETNode<ETEntityEvents>::connect(getEntityId());
     return true;
 }
 
@@ -237,7 +236,7 @@ EntityId UIBaseBox::getRootUIList() const {
     auto lastValidEntId = entId;
     while(entId != InvalidEntityId) {
         lastValidEntId = entId;
-        ET_SendEventReturn(entId, entId, &ETGameObject::ET_getParentId);
+        ET_SendEventReturn(entId, entId, &ETEntity::ET_getParentId);
         if (!ET_IsExistNode<ETUIList>(entId)) {
             break;
         }

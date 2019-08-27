@@ -1,7 +1,6 @@
 #include "UI/UIStyle.hpp"
 #include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
 
 namespace {
 

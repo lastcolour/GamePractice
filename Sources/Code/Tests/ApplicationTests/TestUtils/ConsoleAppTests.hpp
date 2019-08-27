@@ -1,7 +1,7 @@
 #ifndef __CONSOLE_APP_TESTS_HPP__
 #define __CONSOLE_APP_TESTS_HPP__
 
-#include <Game/GameObject.hpp>
+#include <Entity/Entity.hpp>
 
 #include <gtest/gtest.h>
 #include <memory>
@@ -18,12 +18,12 @@ protected:
 
 protected:
 
-    static std::unique_ptr<GameObject> createVoidObject();
+    static std::unique_ptr<Entity> createVoidObject();
 
     template<typename LogicType>
     LogicType* createObjectAndLogic() {
         LogicType* logic = new LogicType;
-        std::unique_ptr<GameLogic> logicPtr(logic);
+        std::unique_ptr<EntityLogic> logicPtr(logic);
         auto object = createVoidObject();
         addLogicToOject(object, logicPtr);
         tempObject.push_back(std::move(object));
@@ -36,11 +36,11 @@ protected:
 
 private:
 
-    void addLogicToOject(std::unique_ptr<GameObject>& obj, std::unique_ptr<GameLogic>& logic);
+    void addLogicToOject(std::unique_ptr<Entity>& obj, std::unique_ptr<EntityLogic>& logic);
 
 private:
 
-    std::vector<std::unique_ptr<GameObject>> tempObject;
+    std::vector<std::unique_ptr<Entity>> tempObject;
 }; 
 
 #endif /* __CONSOLE_APP_TESTS_HPP__ */

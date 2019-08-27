@@ -6,6 +6,7 @@
 #include "Platforms/OpenGL.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -56,7 +57,7 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->setUniform4f("color", color);
 
     Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
     const auto scale = Vec2(tm.scale.x, tm.scale.y) * fontScale;
     Vec2 pt = Vec2(aabb.bot.x, aabb.top.y);
@@ -138,7 +139,7 @@ void RenderTextLogic::calcTextAABB() {
     pt.x = std::max(pt.x, currentLineX);
 
     Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
     aabb.bot = Vec2(0.f);
     aabb.top = Vec2(pt.x * tm.scale.x, pt.y ) * fontScale;

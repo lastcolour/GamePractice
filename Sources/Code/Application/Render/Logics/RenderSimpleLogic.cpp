@@ -3,6 +3,7 @@
 #include "Render/RenderMaterial.hpp"
 #include "Core/JSONNode.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 #include <cassert>
 
@@ -51,7 +52,7 @@ void RenderSimpleLogic::ET_onRender(const RenderContext& renderCtx) {
 
 Mat4 RenderSimpleLogic::getModelMat() const {
     Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     Mat4 model(1.f);
     const Vec3 center = geom->aabb.getCenter();
     Math::Translate(model, center);

@@ -1,22 +1,22 @@
 #ifndef __UI_BASE_BOX_HPP__
 #define __UI_BASE_BOX_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "UI/UIETInterfaces.hpp"
 #include "UI/UIStyle.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
-class UIBaseBox : public GameLogic,
+class UIBaseBox : public EntityLogic,
     public ETNode<ETUIBox>,
     public ETNode<ETRenderEvents>,
-    public ETNode<ETGameObjectEvents> {
+    public ETNode<ETEntityEvents> {
 public:
 
     UIBaseBox();
     virtual ~UIBaseBox();
 
-    // GameLogic
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
@@ -32,7 +32,7 @@ public:
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
     void ET_onRenderPortResized() override;
 
-    // ETGameObjectEvents
+    // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onChildAdded(EntityId childId) override;
 

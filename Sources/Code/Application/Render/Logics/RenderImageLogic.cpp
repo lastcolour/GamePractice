@@ -3,7 +3,7 @@
 #include "Render/RenderMaterial.hpp"
 #include "Render/RenderGeometry.hpp"
 #include "Core/JSONNode.hpp"
-#include "Game/GameObject.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 #include "Math/MatrixTransform.hpp"
 
 RenderImageLogic::RenderImageLogic() :
@@ -92,7 +92,7 @@ void RenderImageLogic::updateScale() {
 
 Mat4 RenderImageLogic::getModelMat() const {
     Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     Mat4 model(1.f);
     const Vec3 center = geom->aabb.getCenter();
     Math::Translate(model, center);

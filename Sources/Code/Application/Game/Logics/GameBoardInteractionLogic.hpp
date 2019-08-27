@@ -1,17 +1,17 @@
 #ifndef __GAME_BOARD_INTERACTION_LOGIC_HPP__
 #define __GAME_BOARD_INTERACTION_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
 
-class GameBoardInteractionLogic : public GameLogic,
+class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents> {
 public:
 
     GameBoardInteractionLogic();
     virtual ~GameBoardInteractionLogic();
 
-    // GameLogic
+    // EntityLogic
     bool init() override;
     bool serialize(const JSONNode& node) override;
 

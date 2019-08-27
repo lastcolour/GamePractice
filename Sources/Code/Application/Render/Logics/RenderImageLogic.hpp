@@ -1,10 +1,10 @@
 #ifndef __RENDER_IMAGE_LOGIC_HPP__
 #define __RENDER_IMAGE_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
-class RenderImageLogic : public GameLogic,
+class RenderImageLogic : public EntityLogic,
     public ETNode<ETRenderEvents>,
     public ETNode<ETRenderImageLogic> {
 public:
@@ -12,7 +12,7 @@ public:
     RenderImageLogic();
     virtual ~RenderImageLogic();
 
-    // GameLogic
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 

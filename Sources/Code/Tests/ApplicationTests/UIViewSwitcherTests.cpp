@@ -1,9 +1,8 @@
 #include "UIViewSwitcherTests.hpp"
 
-#include <Game/ETGameInterfaces.hpp>
 #include <UI/UIViewSwitcher.hpp>
 #include <UI/Logics/UIBaseBox.hpp>
-#include <Game/GameObject.hpp>
+#include <Entity/Entity.hpp>
 
 UIBaseBox* UISwitcherTests::createView() {
     auto object = createVoidObject();
@@ -74,7 +73,7 @@ TEST_F(UISwitcherTests, CheckViewSwtich) {
 
     {
         Transform tm;
-        ET_SendEventReturn(tm, firstView->getEntityId(), &ETGameObject::ET_getTransform);
+        ET_SendEventReturn(tm, firstView->getEntityId(), &ETEntity::ET_getTransform);
         Vec2i tmPt = Vec2i(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
         ASSERT_EQ(tmPt, renderPort / 2);
     }

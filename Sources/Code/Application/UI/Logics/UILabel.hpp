@@ -19,7 +19,7 @@ public:
     void ET_setText(const char* newText) override;
     const char* ET_getText() const override;
 
-    // ETGameObjectEvents
+    // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
 
 protected:

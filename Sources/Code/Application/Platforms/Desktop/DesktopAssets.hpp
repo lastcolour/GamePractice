@@ -25,7 +25,6 @@ public:
 
 private:
 
-    bool saveFileToDir(const std::string& dirPath, const std::string& fileName);
     Buffer loadFileFromDir(const std::string& dirPath, const std::string& fileName);
 
 private:

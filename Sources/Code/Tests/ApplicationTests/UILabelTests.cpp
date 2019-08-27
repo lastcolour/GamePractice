@@ -1,13 +1,13 @@
 #include "UILabelTests.hpp"
 
-#include <Game/GameObject.hpp>
+#include <Entity/Entity.hpp>
 #include <UI/Logics/UILabel.hpp>
 #include <UI/Logics/UIList.hpp>
 
 namespace {
 
-    const char* TEST_TEXT_RENDERER = "Render/RenderTextSimple.json";
-    const float TEST_FONT_SIZE = 1.f;
+const char* TEST_TEXT_RENDERER = "Render/RenderTextSimple.json";
+const float TEST_FONT_SIZE = 1.f;
 
 } // namespace
 
@@ -79,7 +79,7 @@ TEST_F(UILabelTests, CheckLabelLocation) {
     ASSERT_TRUE(uiLabel->init());
 
     Transform tm;
-    ET_SendEventReturn(tm, uiLabel->getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, uiLabel->getEntityId(), &ETEntity::ET_getTransform);
 
     Vec2i renderPort;
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -176,7 +176,7 @@ TEST_F(UILabelTests, CheckLabelResizeInsideList) {
         ASSERT_TRUE(uiLabel->init());
     }
 
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiLabel->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiLabel->getEntityId());
 
     auto box = uiLabel->ET_getAabb2di();
     auto boxSize = box.getSize();
@@ -231,7 +231,7 @@ TEST_F(UILabelTests, CheckListOfLabels) {
             uiFirstLabel->ET_setStyle(style);
             ASSERT_TRUE(uiFirstLabel->init());
         }
-        ET_SendEvent(uiFirstInnnerList->getEntityId(), &ETGameObject::ET_addChild, uiFirstLabel->getEntityId());
+        ET_SendEvent(uiFirstInnnerList->getEntityId(), &ETEntity::ET_addChild, uiFirstLabel->getEntityId());
     }
     auto uiSecondLabel = createUILabel();
     auto uiSecondInnerList = createUIList();
@@ -253,11 +253,11 @@ TEST_F(UILabelTests, CheckListOfLabels) {
             uiSecondLabel->ET_setStyle(style);
             ASSERT_TRUE(uiSecondLabel->init());
         }
-        ET_SendEvent(uiSecondInnerList->getEntityId(), &ETGameObject::ET_addChild, uiSecondLabel->getEntityId());
+        ET_SendEvent(uiSecondInnerList->getEntityId(), &ETEntity::ET_addChild, uiSecondLabel->getEntityId());
     }
 
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiFirstInnnerList->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiSecondInnerList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiFirstInnnerList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiSecondInnerList->getEntityId());
 
     auto fisrtBox = uiFirstLabel->ET_getAabb2di();
     auto firstBoxSize = fisrtBox.getSize();

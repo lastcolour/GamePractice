@@ -1,31 +1,31 @@
-#ifndef __GAME_LOGIC_HPP__
-#define __GAME_LOGIC_HPP__
+#ifndef __ENTITY_LOGIC_HPP__
+#define __ENTITY_LOGIC_HPP__
 
 #include "Core/Core.hpp"
 
-class GameObject;
+class Entity;
 class JSONNode;
 
-class GameLogic {
+class EntityLogic {
 public:
 
-    virtual ~GameLogic();
+    virtual ~EntityLogic();
 
     virtual bool serialize(const JSONNode& node) = 0;
     virtual bool init() = 0;
 
-    void setGameObject(const GameObject* obj);
+    void setEntity(const Entity* ownEntity);
     EntityId getEntityId() const;
     const char* getEntityName() const;
     EntityId getParentId() const;
 
 protected:
 
-    GameLogic();
+    EntityLogic();
 
 private:
 
-    const GameObject* gameObj;
+    const Entity* entity;
 };
 
-#endif /* __GAME_LOGIC_HPP__ */
+#endif /* __ENTITY_LOGIC_HPP__ */

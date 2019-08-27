@@ -3,8 +3,7 @@
 #include "UI/Logics/UIList.hpp"
 #include "Core/JSONNode.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
-#include "Game/GameObject.hpp"
+#include "Entity/Entity.hpp"
 
 void UITests::SetUp() {
 }
@@ -44,11 +43,11 @@ TEST_F(UITests, CheckUIBoxUpdatedAfterUpdatedTransform) {
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Transform tm;
-    ET_SendEventReturn(tm, object->getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, object->getEntityId(), &ETEntity::ET_getTransform);
 
     auto shift = renderPort.x / 2;
     tm.pt.x += static_cast<float>(shift);
-    ET_SendEvent(object->getEntityId(), &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(object->getEntityId(), &ETEntity::ET_setTransform, tm);
 
     auto shfitCenter = object->ET_getAabb2di().getCenter();
 
@@ -140,7 +139,7 @@ TEST_F(UITests, CheckUIBoxSizeInvariants) {
     style.size = Vec2(0.5f, 0.5f);
     parentUIBox->ET_setStyle(style);
     ASSERT_TRUE(parentUIBox->init());
-    ET_SendEvent(parentUIBox->getEntityId(), &ETGameObject::ET_addChild, uiBox->getEntityId());
+    ET_SendEvent(parentUIBox->getEntityId(), &ETEntity::ET_addChild, uiBox->getEntityId());
 
     style.sizeInv = SizeInvariant::Relative;
     style.size = Vec2(0.5f, 0.5f);
@@ -162,7 +161,7 @@ TEST_F(UITests, CheckUIBoxInsideUIBox) {
     UIBox* uiBox1 = createUIBox();
     UIBox* uiBox2 = createUIBox();
 
-    ET_SendEvent(uiBox1->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
+    ET_SendEvent(uiBox1->getEntityId(), &ETEntity::ET_addChild, uiBox2->getEntityId());
 
     UIStyle style;
     style.size = Vec2(0.5f, 0.5f);
@@ -181,10 +180,10 @@ TEST_F(UITests, CheckUIBoxInsideUIBox) {
     ASSERT_EQ(aabb.getCenter(), parentBox.getCenter());
 
     Transform box1Tm;
-    ET_SendEventReturn(box1Tm, uiBox1->getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(box1Tm, uiBox1->getEntityId(), &ETEntity::ET_getTransform);
 
     Transform box2Tm;
-    ET_SendEventReturn(box2Tm, uiBox2->getEntityId(), &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(box2Tm, uiBox2->getEntityId(), &ETEntity::ET_getTransform);
 
     EXPECT_FLOAT_EQ(box1Tm.pt.x, box2Tm.pt.x);
     EXPECT_FLOAT_EQ(box1Tm.pt.y, box2Tm.pt.y);
@@ -206,8 +205,8 @@ TEST_F(UITests, CheckVerticalUIList) {
     uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox1->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox1->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
@@ -254,8 +253,8 @@ TEST_F(UITests, CheckHorizontalUIList) {
     uiBox2->ET_setStyle(boxStyle);
     ASSERT_TRUE(uiBox2->init());
 
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox1->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, uiBox2->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox1->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox2->getEntityId());
 
     const auto& aabbList = uiList->ET_getAabb2di();
 
@@ -304,8 +303,8 @@ TEST_F(UITests, CheckUIListResize) {
     innerUiBox->ET_setStyle(innerBoxStyle);
     ASSERT_TRUE(innerUiBox->init());
 
-    ET_SendEvent(rootUiBox->getEntityId(), &ETGameObject::ET_addChild, uiList->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, innerUiBox->getEntityId());
+    ET_SendEvent(rootUiBox->getEntityId(), &ETEntity::ET_addChild, uiList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, innerUiBox->getEntityId());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -347,7 +346,7 @@ TEST_F(UITests, CheckUIListCombined) {
         ASSERT_TRUE(topUIBox->init());
     }
 
-    ET_SendEvent(rootVertUIList->getEntityId(), &ETGameObject::ET_addChild, topUIBox->getEntityId());
+    ET_SendEvent(rootVertUIList->getEntityId(), &ETEntity::ET_addChild, topUIBox->getEntityId());
 
     auto leftUIBox = createUIBox();
     {
@@ -376,10 +375,10 @@ TEST_F(UITests, CheckUIListCombined) {
         ASSERT_TRUE(botHorzUIlist->init());
     }
 
-    ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
-    ET_SendEvent(botHorzUIlist->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
+    ET_SendEvent(botHorzUIlist->getEntityId(), &ETEntity::ET_addChild, leftUIBox->getEntityId());
+    ET_SendEvent(botHorzUIlist->getEntityId(), &ETEntity::ET_addChild, rightUIBox->getEntityId());
 
-    ET_SendEvent(rootVertUIList->getEntityId(), &ETGameObject::ET_addChild, botHorzUIlist->getEntityId());
+    ET_SendEvent(rootVertUIList->getEntityId(), &ETEntity::ET_addChild, botHorzUIlist->getEntityId());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -422,8 +421,8 @@ TEST_F(UITests, CheckListWithAlignVariation) {
     rightUIBox->ET_setStyle(boxStyle);
     ASSERT_TRUE(rightUIBox->init());
 
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, leftUIBox->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, rightUIBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, leftUIBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, rightUIBox->getEntityId());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -468,8 +467,8 @@ TEST_F(UITests, CheckUIElementResized) {
         ASSERT_TRUE(secondBox->init());
     }
     
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, firstBox->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, secondBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, firstBox->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, secondBox->getEntityId());
 
     auto listBox = uiList->ET_getAabb2di();
     auto listBoxSize = listBox.getSize();
@@ -500,7 +499,7 @@ TEST_F(UITests, CheckUIListTransformInsideBox) {
         ASSERT_TRUE(uiBox->init());
         Transform tm;
         tm.pt = Vec3(static_cast<float>(uiBoxPt.x), static_cast<float>(uiBoxPt.y), 0.f);
-        ET_SendEvent(uiBox->getEntityId(), &ETGameObject::ET_setTransform, tm);
+        ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_setTransform, tm);
     }
 
     auto uiList = createUIList();
@@ -519,27 +518,27 @@ TEST_F(UITests, CheckUIListTransformInsideBox) {
         ASSERT_TRUE(childBox->init());
     }
 
-    ET_SendEvent(uiBox->getEntityId(), &ETGameObject::ET_addChild, uiList->getEntityId());
-    ET_SendEvent(uiList->getEntityId(), &ETGameObject::ET_addChild, childBox->getEntityId());
+    ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_addChild, uiList->getEntityId());
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, childBox->getEntityId());
 
     uiBoxPt = Vec2i(400, 200);
 
     {
         Transform tm;
         tm.pt = Vec3(static_cast<float>(uiBoxPt.x), static_cast<float>(uiBoxPt.y), 0.f);
-        ET_SendEvent(uiBox->getEntityId(), &ETGameObject::ET_setTransform, tm);
+        ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_setTransform, tm);
     }
 
     {
         Transform tm;
-        ET_SendEventReturn(tm, uiList->getEntityId(), &ETGameObject::ET_getTransform);
+        ET_SendEventReturn(tm, uiList->getEntityId(), &ETEntity::ET_getTransform);
         EXPECT_EQ(static_cast<int>(tm.pt.x), uiBoxPt.x);
         EXPECT_EQ(static_cast<int>(tm.pt.y), uiBoxPt.y);
     }
 
     {
         Transform tm;
-        ET_SendEventReturn(tm, childBox->getEntityId(), &ETGameObject::ET_getTransform);
+        ET_SendEventReturn(tm, childBox->getEntityId(), &ETEntity::ET_getTransform);
         EXPECT_EQ(static_cast<int>(tm.pt.x), uiBoxPt.x);
         EXPECT_EQ(static_cast<int>(tm.pt.y), uiBoxPt.y);
     }

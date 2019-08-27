@@ -1,11 +1,12 @@
 #ifndef __GAME_BOARD_LOGIC_HPP__
 #define __GAME_BOARD_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "UI/UIETInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 #include <vector>
 #include <memory>
@@ -28,16 +29,17 @@ struct BoardElement {
     EBoardElemState state;
 };
 
-class GameBoardLogic : public GameLogic,
+class GameBoardLogic : public EntityLogic,
     public ETNode<ETTimerEvents>,
     public ETNode<ETUIBoxEvents>,
-    public ETNode<ETGameObjectEvents>,
+    public ETNode<ETEntityEvents>,
     public ETNode<ETGameBoard> {
 public:
 
     GameBoardLogic();
     virtual ~GameBoardLogic();
 
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
@@ -57,7 +59,7 @@ public:
     // ETUIBoxEvents
     void ET_onBoxResized() override;
 
-    // ETGameObjectEvents
+    // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onChildAdded(EntityId childId) override { (void)childId; }
 

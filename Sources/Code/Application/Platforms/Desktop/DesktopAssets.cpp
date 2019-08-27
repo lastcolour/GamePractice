@@ -308,7 +308,3 @@ Buffer DesktopAssets::loadFileFromDir(const std::string& dirPath, const std::str
     }
     return buffer;
 }
-
-bool DesktopAssets::saveFileToDir(const std::string& dirPath, const std::string& fileName) {
-    return false;
-}

@@ -1,6 +1,6 @@
 #include "UI/UIViewSwitcher.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 #include <algorithm>
 
@@ -33,13 +33,13 @@ void UIViewSwitcher::ET_onTick(float dt) {
     float shift = Math::Lerp(0.f, static_cast<float>(renderPort.x), prog);
 
     Transform tm;
-    ET_SendEventReturn(tm, activeTask->newViewId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
     tm.pt.x = activeTask->startTm.pt.x + renderPort.x - shift;
-    ET_SendEvent(activeTask->newViewId, &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
 
-    ET_SendEventReturn(tm, activeTask->oldViewId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, activeTask->oldViewId, &ETEntity::ET_getTransform);
     tm.pt.x = activeTask->startTm.pt.x - shift;
-    ET_SendEvent(activeTask->oldViewId, &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(activeTask->oldViewId, &ETEntity::ET_setTransform, tm);
 
     if(activeTask->duration >= swtichDuration) {
         ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchedOut, activeTask->oldViewId);
@@ -62,13 +62,13 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
     activeTask->newViewId = newViewId;
     activeTask->oldViewId = oldViewId;
     ET_SendEventReturn(activeTask->startTm, activeTask->oldViewId,
-        &ETGameObject::ET_getTransform);
+        &ETEntity::ET_getTransform);
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Transform tm;
-    ET_SendEventReturn(tm, activeTask->newViewId, &ETGameObject::ET_getTransform);
+    ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
     tm.pt.x += static_cast<float>(renderPort.x);
-    ET_SendEvent(activeTask->newViewId, &ETGameObject::ET_setTransform, tm);
+    ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
 }

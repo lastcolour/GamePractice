@@ -1,15 +1,14 @@
 #ifndef __RENDER_TEXT_LOGIC_HPP__
 #define __RENDER_TEXT_LOGIC_HPP__
 
-#include "Game/GameLogic.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Math/AABB.hpp"
 
 class RenderGlyph;
 class RenderGeometry;
 
-class RenderTextLogic : public GameLogic,
+class RenderTextLogic : public EntityLogic,
     public ETNode<ETRenderEvents>,
     public ETNode<ETRenderTextLogic> {
 public:
@@ -17,7 +16,7 @@ public:
     RenderTextLogic();
     virtual ~RenderTextLogic();
 
-    // GameLogic
+    // EntityLogic
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
