@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "Player_OnBackButton",
+                "event": "OnBackButton",
                 "style": {
                     "color": {
                         "r": 100,

@@ -1,22 +1,23 @@
-#ifndef __UI_SURFACE_TOUCH_MANAGER_HPP__
-#define __UI_SURFACE_TOUCH_MANAGER_HPP__
+#ifndef __UI_SURFACE_EVENT_HANDLER_HPP__
+#define __UI_SURFACE_EVENT_HANDLER_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
 
-class UISurfaceTouchManager : public SystemLogic,
+class UISurfaceEventHandler : public SystemLogic,
     public ETNode<ETInputEvents> {
 public:
 
-    UISurfaceTouchManager();
-    virtual ~UISurfaceTouchManager();
+    UISurfaceEventHandler();
+    virtual ~UISurfaceEventHandler();
 
     // SystemLogic
     bool init() override;
     virtual void deinit() override;
 
     // ETSurfaceEvents
-    void ET_onTouch(ETouchType touchType, const Vec2i& pt) override;
+    void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
+    void ET_onButton(EActionType actionType, EButtonId buttonId) override;
 
 private:
 
@@ -33,4 +34,4 @@ private:
     EntityId hoveredElemId;
 };
 
-#endif /* __UI_SURFACE_TOUCH_MANAGER_HPP__ */
+#endif /* __UI_SURFACE_EVENT_HANDLER_HPP__ */

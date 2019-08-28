@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "Pause_OnResumeButton",
+                "event": "OnBackButton",
                 "style": {
                     "color": {
                         "r": 200,

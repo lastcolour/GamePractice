@@ -1,5 +1,5 @@
 #include "Game/Logics/GameEndTimerUpdaterLogic.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 #include "Core/StringFormat.hpp"
 
 GameEndTimerUpdaterLogic::GameEndTimerUpdaterLogic() {

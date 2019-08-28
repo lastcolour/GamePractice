@@ -5,7 +5,7 @@
 #include "Math/AABB.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 
 #include <vector>

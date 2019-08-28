@@ -62,20 +62,20 @@ void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {
     ET_SendEvent(getEntityId(), &ETGameBoardElemSwitcher::ET_switchBoardElems, activeElemId, nextElemId);
 }
 
-void GameBoardInteractionLogic::ET_onTouch(ETouchType touchType, const Vec2i& pt) {
-    switch (touchType)
+void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& pt) {
+    switch (actionType)
     {
-    case ETouchType::Press: {
+    case EActionType::Press: {
         ET_SendEventReturn(activeElemId, getEntityId(), &ETGameBoard::ET_getElemByPos, pt);
         if(activeElemId.isValid()) {
             ET_SendEventReturn(startPt, getEntityId(), &ETGameBoard::ET_getElemBoardPos, activeElemId);
         }
         break;
     }
-    case ETouchType::Move: {
+    case EActionType::Move: {
         break;
     }
-    case ETouchType::Release: {
+    case EActionType::Release: {
         if(activeElemId.isValid()) {
             onEndElemMove(pt);
         }

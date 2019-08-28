@@ -4,7 +4,7 @@
         {
             "type": "UIButton",
             "data": {
-                "event": "OnBackButton",
+                "event": "Exit_OnYesExit",
                 "style": {
                     "color": {
                         "r": 100,
@@ -23,7 +23,7 @@
                     "margin": {}
                 },
                 "label": {
-                    "text": "<-",
+                    "text": "Yes",
                     "style": {
                         "fontSize":0.3,
                         "fontColor": {

@@ -3,7 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 
 class GameIniter : public SystemLogic,
     ETNode<ETSurfaceEvents> {

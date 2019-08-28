@@ -23,7 +23,7 @@
                     "margin": {}
                 },
                 "label": {
-                    "text": "<-",
+                    "text": "No",
                     "style": {
                         "fontSize":0.3,
                         "fontColor": {

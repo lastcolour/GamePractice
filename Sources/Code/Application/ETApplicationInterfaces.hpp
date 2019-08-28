@@ -25,14 +25,19 @@ struct ETSurface {
     virtual bool ET_isValid() const = 0;
 };
 
-enum class ETouchType {
+enum class EActionType {
     Press = 0,
     Move,
     Release
 };
 
+enum class EButtonId {
+    Back = 0,
+};
+
 struct ETInputEvents {
-    virtual void ET_onTouch(ETouchType touchType, const Vec2i& pt) = 0;
+    virtual void ET_onTouch(EActionType actionType, const Vec2i& pt) = 0;
+    virtual void ET_onButton(EActionType actionType, EButtonId buttonId) = 0;
 };
 
 struct ETSurfaceEvents {

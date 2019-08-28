@@ -16,7 +16,8 @@ public:
     bool serialize(const JSONNode& node) override;
 
     // ETInputEvents
-    void ET_onTouch(ETouchType touchType, const Vec2i& pt) override;
+    void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
+    void ET_onButton(EActionType actionType, EButtonId buttonId) override {}
 
 private:
 

@@ -1,5 +1,5 @@
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 #include "Core/StringFormat.hpp"
 
 GameScoreUpdaterLogic::GameScoreUpdaterLogic() {

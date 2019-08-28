@@ -1,35 +1,60 @@
 #include "UI/UIEventManager.hpp"
 #include "ETApplicationInterfaces.hpp"
-
-enum class EUIEventType {
-    Main_OnStartButton,
-    Main_onPlayerButton,
-    Main_OnAboutButton,
-    Main_OnOptionsButton,
-    Player_OnBackButton,
-    About_OnBackButton,
-    Options_OnBackButton,
-    Game_OnBackButton,
-    Game_OnGameEnd,
-    EndGame_OnExitToMainButton,
-    EndGame_OnPlayAgainButton
-};
+#include "Entity/ETEntityInterfaces.hpp"
 
 UIEventManager::UIEventManager() {
-    eventMap["Main_OnStartButton"] = EUIEventType::Main_OnStartButton;
-    eventMap["Main_OnPlayerButton"] = EUIEventType::Main_onPlayerButton;
-    eventMap["Main_OnAboutButton"] = EUIEventType::Main_OnAboutButton;
-    eventMap["Main_OnOptionsButton"] = EUIEventType::Main_OnOptionsButton;
-    eventMap["Player_OnBackButton"] = EUIEventType::Player_OnBackButton;
-    eventMap["About_OnBackButton"] = EUIEventType::About_OnBackButton;
-    eventMap["Options_OnBackButton"] = EUIEventType::Options_OnBackButton;
-    eventMap["Game_OnBackButton"] = EUIEventType::Game_OnBackButton;
-    eventMap["Game_OnGameEnd"] = EUIEventType::Game_OnGameEnd;
-    eventMap["EndGame_OnExitToMainButton"] = EUIEventType::EndGame_OnExitToMainButton;
-    eventMap["EndGame_OnPlayAgainButton"] = EUIEventType::EndGame_OnPlayAgainButton;
+    viewMap["UI/GameView/Root.json"] = EViewType::Game;
+    viewMap["UI/PlayerView/Root.json"] = EViewType::Player;
+    viewMap["UI/AboutView/Root.json"] = EViewType::About;
+    viewMap["UI/OptionsView/Root.json"] = EViewType::Options;
+    viewMap["UI/EndGameView/Root.json"] = EViewType::EndGame;
+    viewMap["UI/MainView/Root.json"] = EViewType::Main;
+    viewMap["UI/ExitView/Root.json"] = EViewType::Exit;
+    viewMap["UI/PauseView/Root.json"] = EViewType::Pause;
+
+    setupCallbacks();
 }
 
 UIEventManager::~UIEventManager() {
+}
+
+void UIEventManager::setupCallbacks() {
+    eventMap["Main_OnStartButton"] = [this](){
+        pushView(EViewType::Game);
+    };
+    eventMap["Main_OnPlayerButton"] = [this](){
+        pushView(EViewType::Player);
+    };
+    eventMap["Main_OnAboutButton"] = [this](){
+        pushView(EViewType::About);
+    };
+    eventMap["Main_OnOptionsButton"] = [this](){
+        pushView(EViewType::Options);
+    };
+    eventMap["Game_OnGameEnd"] = [this](){
+        pushView(EViewType::EndGame);
+    };
+    eventMap["EndGame_OnExitToMainButton"] = [this](){
+        pushView(EViewType::Main);
+    };
+    eventMap["EndGame_OnPlayAgainButton"] = [this](){
+        pushView(EViewType::Game);
+    };
+    eventMap["OnBackButton"] = [this](){
+        processBackButtonEvent();
+    };
+    eventMap["Pause_OnRestartButton"] = [this](){
+        pushView(EViewType::Game);
+    };
+    eventMap["Pause_OnOptionsButton"] = [this](){
+        pushView(EViewType::Options);
+    };
+    eventMap["Pause_OnExitToMainButton"] = [this](){
+        pushView(EViewType::Main);
+    };
+    eventMap["Exit_OnYesExit"] = [this](){
+        ET_SendEvent(&ETAppRunStateEvents::ET_onTerminate);
+    };
 }
 
 bool UIEventManager::init() {
@@ -38,57 +63,63 @@ bool UIEventManager::init() {
 }
 
 void UIEventManager::deinit() {
+    ETNode<ETUIEventManager>::disconnect();
 }
 
-void UIEventManager::processEvent(EUIEventType eventType) {
-    switch (eventType)
+void UIEventManager::pushView(EViewType viewType) {
+    auto viewName = getViewName(viewType);
+    if(viewType == EViewType::EndGame || viewType == EViewType::Main || viewType == EViewType::Game) {
+        ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
+    } else {
+        ET_SendEvent(&ETUIViewStack::ET_pushView, viewName);
+    }
+}
+
+UIEventManager::EViewType UIEventManager::getActiveViewType() const {
+    EntityId activeViewId;
+    ET_SendEventReturn(activeViewId, &ETUIViewStack::ET_getActiveViewId);
+    if(!activeViewId.isValid()) {
+        return EViewType::Other;
+    }
+    std::string viewName;
+    ET_SendEventReturn(viewName, activeViewId, &ETEntity::ET_getName);
+    if(viewName.empty()) {
+        return EViewType::Other;
+    }
+    auto it = viewMap.find(viewName);
+    if(it != viewMap.end()) {
+        return it->second;
+    }
+    return EViewType::Other;
+}
+
+const char* UIEventManager::getViewName(UIEventManager::EViewType viewType) const {
+    for(auto& viewNode : viewMap) {
+        if(viewNode.second == viewType) {
+            return viewNode.first.c_str();
+        }
+    }
+    return nullptr;
+}
+
+void UIEventManager::processBackButtonEvent() {
+    auto activeViewType = getActiveViewType();
+    switch (activeViewType)
     {
-        case EUIEventType::Main_OnStartButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/GameView/Root.json");
-            break;
-        }
-        case EUIEventType::Main_onPlayerButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/PlayerView/Root.json");
-            break;
-        }
-        case EUIEventType::Main_OnAboutButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/AboutView/Root.json");
-            break;
-        }
-        case EUIEventType::Main_OnOptionsButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/OptionsView/Root.json");
-            break;
-        }
-        case EUIEventType::Player_OnBackButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
-            break;
-        }
-        case EUIEventType::About_OnBackButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
-            break;
-        }
-        case EUIEventType::Options_OnBackButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
-            break;
-        }
-        case EUIEventType::Game_OnBackButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
-            break;
-        }
-        case EUIEventType::Game_OnGameEnd: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/EndGameView/Root.json");
-            break;
-        }
-        case EUIEventType::EndGame_OnExitToMainButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/MainView/Root.json");
-            break;
-        }
-        case EUIEventType::EndGame_OnPlayAgainButton: {
-            ET_SendEvent(&ETUIViewManager::ET_openView, "UI/GameView/Root.json");
-            break;
-        }
-        default:
-            break;
+    case EViewType::EndGame: {
+        pushView(EViewType::Main);
+        break;
+    }
+    case EViewType::Main: {
+        pushView(EViewType::Exit);
+        break;
+    }
+    case EViewType::Game: {
+        pushView(EViewType::Pause);
+        break;
+    }
+    default:
+        ET_SendEvent(&ETUIViewStack::ET_popView);
     }
 }
 
@@ -98,5 +129,6 @@ void UIEventManager::ET_onEvent(const char* eventName) {
         LogWarning("[UIEventManager::ET_onEvent] Unknown event name: %s", eventName);
         return;
     }
-    processEvent(it->second);
+    auto callbackFunc = it->second;
+    callbackFunc();
 }

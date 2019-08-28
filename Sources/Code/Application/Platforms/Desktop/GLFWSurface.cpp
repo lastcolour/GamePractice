@@ -7,9 +7,11 @@
 #include <cassert>
 
 namespace {
-    const int DEF_WIDTH = 600;
-    const int DEF_HEIGHT = 1024;
-    const char* DEF_WINDOW_NAME = "Game01";
+
+const int DEF_WIDTH = 600;
+const int DEF_HEIGHT = 1024;
+const char* DEF_WINDOW_NAME = "Game01";
+
 } // namespace
 
 class GlfwLibInitData {
@@ -53,7 +55,15 @@ public:
         }
     }
 
-    GLFWSurface* getActiveSurface() {
+    GLFWSurface* getActiveSurface(GLFWwindow* window) {
+        if(!activeSurface) {
+            LogError("[GlfwLibInitData::getActiveSurface] No active surface!");
+            return nullptr;
+        }
+        if(activeSurface->getWindow() != window) {
+            LogError("[GlfwLibInitData::getActiveSurface] Invalid window from active surface");
+            return nullptr;
+        }
         return activeSurface;
     }
 
@@ -76,6 +86,10 @@ GLFWSurface::~GLFWSurface() {
     }
     GLFW->resetActiveSurface(this);
     window = nullptr;
+}
+
+const GLFWwindow* GLFWSurface::getWindow() const {
+    return window;
 }
 
 bool GLFWSurface::init() {
@@ -108,6 +122,7 @@ bool GLFWSurface::init() {
     glfwSetFramebufferSizeCallback(window, SetFramebufferSizeCallback);
     glfwSetMouseButtonCallback(window, SetMouseButtonCallback);
     glfwSetCursorPosCallback(window, SetCursorePosCallback);
+    glfwSetKeyCallback(window, SetKeyboardButtonCallback);
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -190,11 +205,8 @@ GLContextType GLFWSurface::ET_getGLContextType() const {
 }
 
 void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) {
-    (void)window;
-
-    auto surface = GLFW->getActiveSurface();
+    auto surface = GLFW->getActiveSurface(window);
     if(!surface) {
-        LogError("[GLFWSurface::SetCursorePosCallbac] No active surface");
         return;
     }
     auto& activeGesture = surface->activeGesture;
@@ -204,15 +216,13 @@ void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) 
     Vec2i pt(static_cast<int>(x), static_cast<int>(y));
     pt.y = surface->size.y - pt.y;
     activeGesture.push_back(pt);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Move, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, pt);
 }
 
 void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     (void)mods;
-
-    auto surface = GLFW->getActiveSurface();
+    auto surface = GLFW->getActiveSurface(window);
     if(!surface) {
-        LogError("[GLFWSurface::SetMouseButtonCallback] No active surface");
         return;
     }
     if(button != GLFW_MOUSE_BUTTON_LEFT) {
@@ -220,7 +230,7 @@ void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int act
     }
     double x = 0;
     double y = 0;
-    glfwGetCursorPos(window, &x, &y);
+    glfwGetCursorPos(surface->window, &x, &y);
     auto& activeGesture = surface->activeGesture;
 
     Vec2i pt(static_cast<int>(x), static_cast<int>(y));
@@ -228,20 +238,34 @@ void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int act
 
     if(action == GLFW_PRESS) {
         activeGesture.push_back(pt);
-        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Press, pt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
     } else if (action == GLFW_RELEASE) {
         activeGesture.clear();
-        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Release, pt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
     }
 }
 
 void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* window, int w, int h) {
-    (void)window;
-    auto surface = GLFW->getActiveSurface();
+    auto surface = GLFW->getActiveSurface(window);
     if(!surface) {
-        LogError("[GLFWSurface::SetFramebufferSizeCallback] No active surface");
         return;
     }
     surface->size = Vec2i(w, h);
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, surface->size);
+}
+
+void GLFWSurface::SetKeyboardButtonCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    auto surface = GLFW->getActiveSurface(window);
+    if(!surface) {
+        return;
+    }
+    if(key != GLFW_KEY_ESCAPE) {
+        return;
+    }
+    EButtonId buttonId = EButtonId::Back;
+    if(action == GLFW_PRESS) {
+        ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, buttonId);
+    } else if (action == GLFW_RELEASE) {
+        ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Release, buttonId);
+    }
 }

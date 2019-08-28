@@ -1,7 +1,7 @@
 #include "UI/UIModule.hpp"
-#include "UI/UISurfaceTouchManager.hpp"
+#include "UI/UISurfaceEventHandler.hpp"
 #include "UI/UIEventManager.hpp"
-#include "UI/UIViewManager.hpp"
+#include "UI/UIViewStack.hpp"
 #include "UI/UIConfigManager.hpp"
 #include "UI/UIViewSwitcher.hpp"
 
@@ -12,9 +12,9 @@ UIModule::LogicsContainerPtrT UIModule::getSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             UIConfigManager,
-            UISurfaceTouchManager,
+            UISurfaceEventHandler,
             UIEventManager,
-            UIViewManager,
+            UIViewStack,
             UIViewSwitcher>()
         );
     return container;

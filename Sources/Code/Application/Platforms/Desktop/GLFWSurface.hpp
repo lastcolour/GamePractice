@@ -35,11 +35,14 @@ public:
     // ETTimerEvenets
     void ET_onTick(float dt) override;
 
+    const GLFWwindow* getWindow() const;
+
 private:
 
     static void SetCursorePosCallback(GLFWwindow* window, double x, double y);
     static void SetFramebufferSizeCallback(GLFWwindow* window, int w, int h);
     static void SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void SetKeyboardButtonCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 private:
 

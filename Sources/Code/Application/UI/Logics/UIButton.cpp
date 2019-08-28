@@ -38,10 +38,7 @@ void UIButton::ET_setEventName(const char* newEventName) {
 }
 
 bool UIButton::init() {
-    if(!UIBox::init()) {
-        LogError("[UIButton::init] Can't init box");
-        return false;
-    }
+    UIBox::init();
     ETNode<ETUIButton>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     return true;

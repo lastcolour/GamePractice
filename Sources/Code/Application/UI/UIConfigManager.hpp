@@ -2,7 +2,7 @@
 #define __UI_CONFIG_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 
 class UIConfigManager : public SystemLogic,
     public ETNode<ETUIConfigManager> {

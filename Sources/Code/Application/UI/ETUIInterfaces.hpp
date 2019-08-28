@@ -55,10 +55,12 @@ struct ETUIList {
     virtual void ET_setType(UIListType listType) = 0;
 };
 
-struct ETUIViewManager {
-    virtual ~ETUIViewManager() = default;
-    virtual EntityId ET_openView(const char* viewName) = 0;
-    virtual void ET_closeView(EntityId viewId) = 0;
+struct ETUIViewStack {
+    virtual ~ETUIViewStack() = default;
+    virtual EntityId ET_pushView(const char* viewName) = 0;
+    virtual void ET_clearAllAndPushNewView(const char* viewName) = 0;
+    virtual void ET_popView() = 0;
+    virtual EntityId ET_getActiveViewId() const = 0;
 };
 
 struct ETUIViewSwitcher {

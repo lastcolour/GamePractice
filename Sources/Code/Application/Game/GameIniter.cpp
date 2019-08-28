@@ -1,5 +1,5 @@
 #include "Game/GameIniter.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 GameIniter::GameIniter() {
@@ -29,7 +29,6 @@ void GameIniter::ET_onSurfaceCreated() {
 }
 
 void GameIniter::ET_onSurfaceDestroyed() {
-    ET_SendEvent(&ETUIViewManager::ET_closeView, mainViewId);
     mainViewId = InvalidEntityId;
 }
 
@@ -40,7 +39,7 @@ void GameIniter::openMainView() {
         LogError("[GameIniter::openMainView] Can't open empty main view");
         return;
     }
-    ET_SendEventReturn(mainViewId, &ETUIViewManager::ET_openView, mainView);
+    ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_pushView, mainView);
     if (!mainViewId.isValid()) {
         LogError("Can't cretae main view '%s'", mainView);
     }

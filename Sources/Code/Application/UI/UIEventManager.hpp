@@ -2,16 +2,28 @@
 #define __UI_EVENT_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 
 #include <unordered_map>
-
-enum class EUIEventType;
+#include <functional>
 
 class UIEventManager : public SystemLogic,
     public ETNode<ETUIEventManager> {
 
-    using EventMapT = std::unordered_map<std::string, EUIEventType>;
+    enum class EViewType {
+        Main = 0,
+        Game,
+        Options,
+        About,
+        Player,
+        EndGame,
+        Pause,
+        Exit,
+        Other
+    };
+
+    using EventMapT = std::unordered_map<std::string, std::function<void()>>;
+    using ViewMapT = std::unordered_map<std::string, EViewType>;
 
 public:
     UIEventManager();
@@ -26,11 +38,16 @@ public:
 
 private:
 
-    void processEvent(EUIEventType eventType);
+    void setupCallbacks();
+    void processBackButtonEvent();
+    EViewType getActiveViewType() const;
+    const char* getViewName(EViewType viewType) const;
+    void pushView(EViewType viewType);
 
 private:
 
     EventMapT eventMap;
+    ViewMapT viewMap;
 };
 
 #endif /* __UI_EVENT_MANAGER_HPP__ */

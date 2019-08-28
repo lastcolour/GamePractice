@@ -54,13 +54,13 @@ TEST_F(UIButtonTests, CheckTouchInside) {
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     Vec2i pt = renderPort / 2;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Press, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
 
     bool isHovered = false;
     ET_SendEventReturn(isHovered, button->getEntityId(), &ETUIInteractionBox::ET_isHovered);
     ASSERT_TRUE(isHovered);
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Release, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
     ASSERT_STREQ(buttonListener->eventQueue[0].c_str(), "testEvent");
@@ -80,12 +80,12 @@ TEST_F(UIButtonTests, CheckTouchMoveRelease) {
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     Vec2i pt = renderPort / 2;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Press, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
 
     pt.y = renderPort.y;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Move, pt);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Release, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
 }
@@ -111,20 +111,20 @@ TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i pt = Vec2i(renderPort.x / 2, renderPort.y / 4);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Press, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
 
     bool isHovered = false;
     ET_SendEventReturn(isHovered, botButton->getEntityId(), &ETUIInteractionBox::ET_isHovered);
     ASSERT_TRUE(isHovered);
 
     pt.y = renderPort.y * 3 / 4;
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Move, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, pt);
 
     isHovered = false;
     ET_SendEventReturn(isHovered, topButton->getEntityId(), &ETUIInteractionBox::ET_isHovered);
     ASSERT_TRUE(isHovered);
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Release, pt);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
 }

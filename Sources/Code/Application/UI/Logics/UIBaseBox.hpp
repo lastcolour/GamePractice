@@ -2,7 +2,7 @@
 #define __UI_BASE_BOX_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "UI/UIETInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 #include "UI/UIStyle.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"

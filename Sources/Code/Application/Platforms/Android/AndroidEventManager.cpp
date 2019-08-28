@@ -108,15 +108,15 @@ bool AndroidEventManager::hadleMotionEvent(AInputEvent* inputEvent) {
     switch (eventAction)
     {
     case AMOTION_EVENT_ACTION_DOWN: {
-        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Press, touchPt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, touchPt);
         return true;
     }
     case AMOTION_EVENT_ACTION_MOVE: {
-        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Move, touchPt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, touchPt);
         return true;
     }
     case AMOTION_EVENT_ACTION_UP: {
-        ET_SendEvent(&ETInputEvents::ET_onTouch, ETouchType::Release, touchPt);
+        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, touchPt);
         return true;
     }
     default:
