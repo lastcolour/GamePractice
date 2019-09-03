@@ -4,20 +4,11 @@
 #include <UI/Logics/UIBaseBox.hpp>
 #include <Entity/Entity.hpp>
 
-UIBaseBox* UISwitcherTests::createView() {
-    auto object = createVoidObject();
-    std::unique_ptr<UIBaseBox> uiBaseBoxPtr(new UIBaseBox);
-    UIBaseBox* uiBaseBox = uiBaseBoxPtr.get();
-    object->addLogic(std::move(uiBaseBoxPtr));
-    tempObject.push_back(std::move(object));
-    return uiBaseBox;
-}
-
 TEST_F(UISwitcherTests, CheckViewSwtich) {
-    UIBaseBox* firstView = createView();
+    UIBaseBox* firstView = createObjectAndLogic<UIBaseBox>();
     ASSERT_TRUE(firstView->init());
 
-    UIBaseBox* secondView = createView();
+    UIBaseBox* secondView = createObjectAndLogic<UIBaseBox>();
     ASSERT_TRUE(secondView->init());
 
     UIViewSwitcher switcher;
@@ -77,6 +68,10 @@ TEST_F(UISwitcherTests, CheckViewSwtich) {
         Vec2i tmPt = Vec2i(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
         ASSERT_EQ(tmPt, renderPort / 2);
     }
+}
+
+TEST_F(UISwitcherTests, CheckSwapDuringSwitch) {
+    ASSERT_TRUE(false);
 }
 
 TEST_F(UISwitcherTests, CheckSwtichEndDuringResize) {

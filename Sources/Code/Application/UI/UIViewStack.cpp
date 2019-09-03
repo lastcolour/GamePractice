@@ -2,8 +2,9 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 
-UIViewStack::UIViewStack() :
-    isPopping(false) {
+#include <cassert>
+
+UIViewStack::UIViewStack() {
 }
 
 UIViewStack::~UIViewStack() {
@@ -20,23 +21,33 @@ void UIViewStack::deinit() {
     ETNode<ETUIViewSwitcherEvents>::disconnect();
 }
 
-EntityId UIViewStack::ET_pushView(const char* viewName) {
+void UIViewStack::ET_pushView(const char* viewName) {
     if(!viewName || !viewName[0]) {
-        LogWarning("[UIViewStack::ET_pushView] Can't open empty view");
-        return InvalidEntityId;
+        LogWarning("[UIViewStack::ET_pushView] Can't push view with empty name");
+        return;
     }
-    EntityId newViewId;
-    ET_SendEventReturn(newViewId, &ETEntityManager::ET_createEntity, viewName);
-    if(!newViewId.isValid()) {
-        LogWarning("[UIViewStack::ET_pushView] Can't open view: %s", viewName);
-        return InvalidEntityId;
+    if(viewStack.empty()) {
+        if(!initPush(viewName)) {
+            return;
+        }
+    } else if(taskQueue.empty()) {
+        if(!initPush(viewName)) {
+            return;
+        }
+        EntityId newViewId = viewStack[viewStack.size() - 1];
+        EntityId prevViewId = viewStack[viewStack.size() - 2];
+        ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, newViewId, prevViewId);
+
+        StackTask task;
+        task.viewName = viewName;
+        task.state = ETaskState::Pushing;
+        taskQueue.push_back(task);
+    } else {
+        StackTask task;
+        task.viewName = viewName;
+        task.state = ETaskState::WaitPush;
+        taskQueue.push_back(task);
     }
-    EntityId activeViewId = ET_getActiveViewId();
-    if(activeViewId.isValid()) {
-        ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, newViewId, activeViewId);
-    }
-    viewStack.push_back(newViewId);
-    return newViewId;
 }
 
 EntityId UIViewStack::ET_getActiveViewId() const {
@@ -48,27 +59,101 @@ EntityId UIViewStack::ET_getActiveViewId() const {
 
 void UIViewStack::ET_popView() {
     if(viewStack.size() < 2) {
-        LogError("[UIViewStack::ET_popView] Can't perform view on stack of size: %d", viewStack.size());
+        LogWarning("[UIViewStack::ET_popView] No view to pop from stack");
         return;
     }
-    EntityId topViewId = viewStack.back();
-    viewStack.pop_back();
-    isPopping = true;
-    ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, viewStack.back(), topViewId);
+    if(taskQueue.empty()) {
+        EntityId activeViewId = viewStack.back();
+        viewStack.pop_back();
+        EntityId lastViewId = viewStack.back();
+        ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, lastViewId, activeViewId);
+
+        StackTask task;
+        task.state = ETaskState::Popping;
+        task.viewId = activeViewId;
+        taskQueue.push_back(task);
+    } else if (taskQueue.back().state == ETaskState::WaitPush) {
+        taskQueue.pop_back();
+        return;
+    } else if(taskQueue.back().state == ETaskState::Pushing) {
+        auto& lastTask = taskQueue.back();
+        lastTask.state = ETaskState::Popping;
+        lastTask.viewId = viewStack.back();
+        viewStack.pop_back();
+        ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitching);
+    } else {
+        StackTask task;
+        task.state = ETaskState::WaitPop;
+        taskQueue.push_back(task);
+    }
+}
+
+void UIViewStack::ET_onViewSwitchFinished(EntityId viewId) {
+    if(taskQueue.empty()) {
+        LogWarning("[UIViewStack::ET_onViewSwitchFinished] Can't finish view switch with empty task queue");
+        return;
+    }
+    const auto& activeTask = taskQueue.front();
+    if(activeTask.state == ETaskState::Popping) {
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, activeTask.viewId);
+    } else if(activeTask.state == ETaskState::Pushing) {
+        // Nothing
+    } else {
+        assert(false && "Invalid active task state");
+        return;
+    }
+    taskQueue.erase(taskQueue.begin());
+    startNextTask();
 }
 
 void UIViewStack::ET_clearAllAndPushNewView(const char* viewName) {
+    ET_forceReset();
+    ET_pushView(viewName);
+}
+
+void UIViewStack::ET_forceReset() {
+    ET_SendEvent(&ETUIViewSwitcher::ET_forceSwtichStop);
     for(auto it = viewStack.rbegin(), end = viewStack.rend(); it != end; ++it) {
         EntityId viewId = *it;
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, viewId);
     }
     viewStack.clear();
-    ET_pushView(viewName);
+    taskQueue.clear();
 }
 
-void UIViewStack::ET_onViewSwitchedOut(EntityId viewId) {
-    if(isPopping) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, viewId);
-        isPopping = false;
+bool UIViewStack::initPush(const std::string& viewName) {
+    EntityId newViewId;
+    ET_SendEventReturn(newViewId, &ETEntityManager::ET_createEntity, viewName.c_str());
+    if(!newViewId.isValid()) {
+        LogWarning("[UIViewStack::initPush] Can't create view: %s", viewName);
+        return false;
+    }
+    viewStack.push_back(newViewId);
+    return true;
+}
+
+void UIViewStack::startNextTask() {
+    while(!taskQueue.empty()) {
+        auto& nextTask = taskQueue.front();
+        if(nextTask.state == ETaskState::WaitPop) {
+            if(viewStack.size() > 1) {
+                EntityId activeViewId = viewStack.back();
+                viewStack.pop_back();
+                EntityId lastViewId = viewStack.back();
+                ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, lastViewId, activeViewId);
+
+                nextTask.state = ETaskState::Popping;
+                nextTask.viewId = lastViewId;
+                break;
+            }
+        } else if (nextTask.state == ETaskState::WaitPush) {
+            if(initPush(nextTask.viewName)) {
+                nextTask.state = ETaskState::Pushing;
+                break;
+            }
+        } else {
+            assert(false && "Invalid pending task state");
+        }
+        taskQueue.erase(taskQueue.begin());
     }
 }

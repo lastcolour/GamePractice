@@ -6,13 +6,6 @@
 class UIBaseBox;
 
 class UISwitcherTests : public ConsoleAppTests {
-public:
-
-    UIBaseBox* createView();
-
-protected:
-
-    std::vector<std::unique_ptr<Entity>> tempObject;
 
 };
 

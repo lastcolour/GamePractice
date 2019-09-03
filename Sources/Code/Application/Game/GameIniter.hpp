@@ -31,7 +31,7 @@ private:
 
 private:
 
-    EntityId mainViewId;
+    bool isViewExist;
 };
 
 #endif /* __GAME_INITER_HPP__ */

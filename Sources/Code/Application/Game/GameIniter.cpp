@@ -2,7 +2,8 @@
 #include "UI/ETUIInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
-GameIniter::GameIniter() {
+GameIniter::GameIniter() :
+    isViewExist(false) {
 }
 
 GameIniter::~GameIniter() {
@@ -23,13 +24,13 @@ void GameIniter::deinit() {
 }
 
 void GameIniter::ET_onSurfaceCreated() {
-    if(!mainViewId.isValid()) {
+    if(!isViewExist) {
         openMainView();
     }
 }
 
 void GameIniter::ET_onSurfaceDestroyed() {
-    mainViewId = InvalidEntityId;
+    isViewExist = true;
 }
 
 void GameIniter::openMainView() {
@@ -39,7 +40,9 @@ void GameIniter::openMainView() {
         LogError("[GameIniter::openMainView] Can't open empty main view");
         return;
     }
-    ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_pushView, mainView);
+    ET_SendEvent(&ETUIViewStack::ET_pushView, mainView);
+    EntityId mainViewId;
+    ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
     if (!mainViewId.isValid()) {
         LogError("Can't cretae main view '%s'", mainView);
     }
@@ -48,4 +51,5 @@ void GameIniter::openMainView() {
     if(!isVisible) {
         ET_SendEvent(&ETSurface::ET_show);
     }
+    isViewExist = true;
 }

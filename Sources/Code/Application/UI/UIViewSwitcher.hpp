@@ -22,7 +22,9 @@ public:
     void ET_onTick(float dt) override;
 
     // ETUIViewSwitcher
+    void ET_forceSwtichStop() override;
     void ET_swtichView(EntityId newViewId, EntityId oldViewId) override;
+    void ET_reverseSwitching() override;
     float ET_getSwitchDuration() const override;
 
 private:

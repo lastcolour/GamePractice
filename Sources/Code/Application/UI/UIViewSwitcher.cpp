@@ -42,7 +42,7 @@ void UIViewSwitcher::ET_onTick(float dt) {
     ET_SendEvent(activeTask->oldViewId, &ETEntity::ET_setTransform, tm);
 
     if(activeTask->duration >= swtichDuration) {
-        ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchedOut, activeTask->oldViewId);
+        ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, activeTask->oldViewId);
         activeTask.reset();
     }
 }
@@ -71,4 +71,19 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
     ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
     tm.pt.x += static_cast<float>(renderPort.x);
     ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
+}
+
+void UIViewSwitcher::ET_reverseSwitching() {
+    if(!activeTask) {
+        LogError("[UIViewSwitcher::ET_reverseSwitching] Can't reverse task without task");
+        return;
+    }
+    activeTask->duration = swtichDuration - activeTask->duration;
+    std::swap(activeTask->newViewId, activeTask->oldViewId);
+}
+
+void UIViewSwitcher::ET_forceSwtichStop() {
+    if(activeTask) {
+        activeTask.reset();
+    }
 }

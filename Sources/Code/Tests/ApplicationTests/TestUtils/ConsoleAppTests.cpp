@@ -8,6 +8,7 @@
 #include <Core/ETPrimitives.hpp>
 #include <Entity/EntityModule.hpp>
 #include <UI/UIModule.hpp>
+#include <ETApplicationInterfaces.hpp>
 
 std::unique_ptr<Application> ConsoleAppTests::APP;
 
@@ -44,6 +45,7 @@ void ConsoleAppTests::SetUpTestCase() {
         ASSERT_TRUE(false);
     }
     APP.reset(consoleApp);
+    ET_SendEvent(&ETLogger::ET_setLogLevel, LogLevel::Info);
 }
 
 void ConsoleAppTests::TearDownTestCase() {

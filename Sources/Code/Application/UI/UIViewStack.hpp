@@ -17,17 +17,39 @@ public:
     void deinit() override;
 
     // ETUIViewStack
-    EntityId ET_pushView(const char* viewName) override;
+    void ET_pushView(const char* viewName) override;
     void ET_clearAllAndPushNewView(const char* viewName) override;
     void ET_popView() override;
+    void ET_forceReset() override;
     EntityId ET_getActiveViewId() const override;
 
     // ETUIViewSwitcherEvents
-    void ET_onViewSwitchedOut(EntityId viewId) override;
+    void ET_onViewSwitchFinished(EntityId viewId) override;
 
 private:
 
-    bool isPopping;
+    enum class ETaskState {
+        None = 0,
+        WaitPush,
+        Pushing,
+        WaitPop,
+        Popping
+    };
+
+    struct StackTask {
+        std::string viewName;
+        EntityId viewId;
+        ETaskState state;
+    };
+
+private:
+
+    bool initPush(const std::string& viewName);
+    void startNextTask();
+
+private:
+
+    std::vector<StackTask> taskQueue;
     std::vector<EntityId> viewStack;
 };
 
