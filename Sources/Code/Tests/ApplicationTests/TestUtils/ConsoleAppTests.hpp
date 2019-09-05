@@ -14,7 +14,7 @@ protected:
     static void SetUpTestCase();
     static void TearDownTestCase();
 
-    void TearDown() override;
+    virtual void TearDown() override;
 
 protected:
 

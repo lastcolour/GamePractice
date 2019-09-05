@@ -68,10 +68,20 @@ TEST_F(UIEventTests, CheckFastDoubleBack) {
     CheckExpectedView(MAIN_VIEW);
 }
 
-TEST_F(UIEventTests, CheckFastTripleBack) {
+TEST_F(UIEventTests, CheckFastBackFromOptions) {
     ET_SendEvent(&ETUIViewStack::ET_pushView, MAIN_VIEW);
 
     ET_SendEvent(&ETUIViewStack::ET_pushView, OPTIONS_VIEW);
+
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+
+    CheckExpectedView(MAIN_VIEW);
+}
+
+TEST_F(UIEventTests, CheckTripleBackOnMain) {
+    ET_SendEvent(&ETUIViewStack::ET_pushView, MAIN_VIEW);
 
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);

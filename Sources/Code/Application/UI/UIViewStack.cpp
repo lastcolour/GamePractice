@@ -27,9 +27,7 @@ void UIViewStack::ET_pushView(const char* viewName) {
         return;
     }
     if(viewStack.empty()) {
-        if(!initPush(viewName)) {
-            return;
-        }
+        initPush(viewName);
     } else if(taskQueue.empty()) {
         if(!initPush(viewName)) {
             return;
@@ -42,6 +40,11 @@ void UIViewStack::ET_pushView(const char* viewName) {
         task.viewName = viewName;
         task.state = ETaskState::Pushing;
         taskQueue.push_back(task);
+    } else if (taskQueue.back().state == ETaskState::Popping && taskQueue.front().viewName == viewName) {
+        auto& lastTask = taskQueue.back();
+        lastTask.state = ETaskState::Pushing;
+        viewStack.push_back(lastTask.viewId);
+        ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitching);
     } else {
         StackTask task;
         task.viewName = viewName;
@@ -58,11 +61,11 @@ EntityId UIViewStack::ET_getActiveViewId() const {
 }
 
 void UIViewStack::ET_popView() {
-    if(viewStack.size() < 2) {
-        LogWarning("[UIViewStack::ET_popView] No view to pop from stack");
-        return;
-    }
     if(taskQueue.empty()) {
+        if(viewStack.size() < 2) {
+            LogWarning("[UIViewStack::ET_popView] No view to pop from stack");
+            return;
+        }
         EntityId activeViewId = viewStack.back();
         viewStack.pop_back();
         EntityId lastViewId = viewStack.back();
@@ -71,6 +74,7 @@ void UIViewStack::ET_popView() {
         StackTask task;
         task.state = ETaskState::Popping;
         task.viewId = activeViewId;
+        ET_SendEventReturn(task.viewName, task.viewId, &ETEntity::ET_getName);
         taskQueue.push_back(task);
     } else if (taskQueue.back().state == ETaskState::WaitPush) {
         taskQueue.pop_back();
@@ -144,7 +148,10 @@ void UIViewStack::startNextTask() {
 
                 nextTask.state = ETaskState::Popping;
                 nextTask.viewId = lastViewId;
+                ET_SendEventReturn(nextTask.viewName, nextTask.viewId, &ETEntity::ET_getName);
                 break;
+            } else {
+                LogWarning("[UIViewStack::startNextTask] Can't start next pop without enought views on stack");
             }
         } else if (nextTask.state == ETaskState::WaitPush) {
             if(initPush(nextTask.viewName)) {

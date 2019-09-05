@@ -3,4 +3,6 @@
 
 void CheckExpectedView(const char* expectedView);
 
+void WaitViewSwitchEnd();
+
 #endif /* __UI_TEST_UTILS_HPP__ */
