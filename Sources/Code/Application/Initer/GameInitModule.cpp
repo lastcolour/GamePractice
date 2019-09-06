@@ -1,6 +1,6 @@
-#include "GameInitModule.hpp"
-#include "Game/GameConfig.hpp"
-#include "Game/GameIniter.hpp"
+#include "Initer/GameInitModule.hpp"
+#include "Initer/GameConfig.hpp"
+#include "Initer/GameIniter.hpp"
 
 GameInitModule::LogicsContainerPtrT GameInitModule::getSystemLogics() const {
     LogicsContainerPtrT container(

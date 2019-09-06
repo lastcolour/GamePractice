@@ -1,4 +1,4 @@
-#include "Game/GameIniter.hpp"
+#include "Initer/GameIniter.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 

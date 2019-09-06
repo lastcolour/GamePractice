@@ -16,12 +16,12 @@ bool GameBoardElemDestroyLogic::serialize(const JSONNode& node) {
 }
 
 bool GameBoardElemDestroyLogic::init() {
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoardElemDestroy>::connect(getEntityId());
     return true;
 }
 
-void GameBoardElemDestroyLogic::ET_onTick(float dt) {
+void GameBoardElemDestroyLogic::ET_onGameTick(float dt) {
     for(auto& task : destroyTasks) {
         task.duration += dt;
         float prog = std::min(task.duration / destroyDuration, 1.f);

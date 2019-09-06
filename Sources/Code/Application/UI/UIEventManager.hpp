@@ -8,7 +8,8 @@
 #include <functional>
 
 class UIEventManager : public SystemLogic,
-    public ETNode<ETUIEventManager> {
+    public ETNode<ETUIEventManager>,
+    public ETNode<ETUIViewStackEvents> {
 
     enum class EViewType {
         Main = 0,
@@ -36,6 +37,10 @@ public:
     // ETUIEventManager
     void ET_onEvent(const char* eventName) override;
 
+    // ETUIViewStackEvents
+    void ET_onViewPushed(EntityId viewId) override;
+    void ET_onViewPopped(EntityId viewId) override;
+
 private:
 
     void setupCallbacks();
@@ -43,6 +48,7 @@ private:
     EViewType getActiveViewType() const;
     const char* getViewName(EViewType viewType) const;
     void pushView(EViewType viewType);
+    void popView();
 
 private:
 

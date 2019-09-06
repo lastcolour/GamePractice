@@ -18,12 +18,12 @@ bool GameBoardElemSwitcherLogic::serialize(const JSONNode& node) {
 }
 
 bool GameBoardElemSwitcherLogic::init() {
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoardElemSwitcher>::connect(getEntityId());
     return true;
 }
 
-void GameBoardElemSwitcherLogic::ET_onTick(float dt) {
+void GameBoardElemSwitcherLogic::ET_onGameTick(float dt) {
     for(auto& task : switchTasks) {
         task.duration += dt;
 

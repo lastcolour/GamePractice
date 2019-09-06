@@ -1,6 +1,7 @@
 #include "UI/UIEventManager.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 UIEventManager::UIEventManager() {
     viewMap["UI/GameView/Root.json"] = EViewType::Game;
@@ -66,15 +67,6 @@ void UIEventManager::deinit() {
     ETNode<ETUIEventManager>::disconnect();
 }
 
-void UIEventManager::pushView(EViewType viewType) {
-    auto viewName = getViewName(viewType);
-    if(viewType == EViewType::EndGame || viewType == EViewType::Main || viewType == EViewType::Game) {
-        ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
-    } else {
-        ET_SendEvent(&ETUIViewStack::ET_pushView, viewName);
-    }
-}
-
 UIEventManager::EViewType UIEventManager::getActiveViewType() const {
     EntityId activeViewId;
     ET_SendEventReturn(activeViewId, &ETUIViewStack::ET_getActiveViewId);
@@ -119,7 +111,7 @@ void UIEventManager::processBackButtonEvent() {
         break;
     }
     default:
-        ET_SendEvent(&ETUIViewStack::ET_popView);
+        popView();
     }
 }
 
@@ -131,4 +123,42 @@ void UIEventManager::ET_onEvent(const char* eventName) {
     }
     auto callbackFunc = it->second;
     callbackFunc();
+}
+
+void UIEventManager::pushView(EViewType viewType) {
+    auto viewName = getViewName(viewType);
+    if(viewType == EViewType::EndGame || viewType == EViewType::Main || viewType == EViewType::Game) {
+        ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
+    } else {
+        ET_SendEvent(&ETUIViewStack::ET_pushView, viewName);
+    }
+
+    switch (viewType)
+    {
+    case EViewType::Game: {
+        ET_SendEvent(&ETGameState::ET_startGame);
+        break;
+    }
+    case EViewType::Pause: {
+        ET_SendEvent(&ETGameState::ET_pauseGame);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void UIEventManager::popView() {
+    auto activeViewType = getActiveViewType();
+    switch (activeViewType)
+    {
+    case EViewType::Pause: {
+        ET_SendEvent(&ETGameState::ET_resumeGame);
+        break;
+    }
+    default:
+        break;
+    }
+
+    ET_SendEvent(&ETUIViewStack::ET_popView);
 }

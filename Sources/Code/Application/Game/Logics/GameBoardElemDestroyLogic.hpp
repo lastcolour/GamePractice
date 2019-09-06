@@ -3,10 +3,9 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
 
 class GameBoardElemDestroyLogic : public EntityLogic,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETGameTimerEvents>,
     public ETNode<ETGameBoardElemDestroy> {
 public:
 
@@ -17,8 +16,8 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
 
     // ETGameBoardElemDestroy
     void ET_destroyBoardElem(EntityId elemId) override;

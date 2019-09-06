@@ -2,6 +2,7 @@
 
 #include <UI/ETUIInterfaces.hpp>
 #include <UI/UISurfaceEventHandler.hpp>
+#include <Game/ETGameInterfaces.hpp>
 
 #include "TestUtils/UITestUtils.hpp"
 
@@ -13,6 +14,9 @@ const char* EXIT_VIEW = "UI/ExitView/Root.json";
 const char* GAME_VIEW = "UI/GameView/Root.json";
 const char* PAUSE_VIEW = "UI/PauseView/Root.json";
 const char* END_GAME_VIEW = "UI/EndGameView/Root.json";
+
+const char* RESTART_GAME_EVENT = "Pause_OnRestartButton";
+const char* START_GAME_EVENT = "Main_OnStartButton";
 
 } // namespace
 
@@ -88,4 +92,80 @@ TEST_F(UIEventTests, CheckTripleBackOnMain) {
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
 
     CheckExpectedView(EXIT_VIEW);
+}
+
+TEST_F(UIEventTests, CheckGameTimerStopOnPause) {
+    ET_SendEvent(&ETUIViewStack::ET_pushView, GAME_VIEW);
+
+    float oldRemainingTime = -1.f;
+    ET_SendEventReturn(oldRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
+    ASSERT_GT(oldRemainingTime, 0.f);
+
+    {
+        float tickDuration = 0.5f;
+        ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+
+        float newRemainingTime = -1.f;
+        ET_SendEventReturn(newRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
+        ASSERT_FLOAT_EQ(newRemainingTime, oldRemainingTime - tickDuration);
+    }
+
+    ET_SendEventReturn(oldRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+
+    {
+        float tickDuration = 0.5f;
+        ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+
+        float newRemainingTime = -1.f;
+        ET_SendEventReturn(newRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
+        ASSERT_FLOAT_EQ(newRemainingTime, oldRemainingTime);
+    }
+}
+
+TEST_F(UIEventTests, CheckGameEndTimerResumeAfterBack) {
+    ET_SendEvent(&ETUIViewStack::ET_pushView, GAME_VIEW);
+
+    float oldRemainingTime = -1.f;
+    ET_SendEventReturn(oldRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+
+    ASSERT_GT(oldRemainingTime, 0.f);
+
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+
+    float tickDuration = 0.5f;
+    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+
+    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+
+    float newRemainingTime = -1.f;
+    ET_SendEventReturn(newRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
+
+    ASSERT_FLOAT_EQ(newRemainingTime, oldRemainingTime - tickDuration);
+}
+
+TEST_F(UIEventTests, CheckGameRestart) {
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, START_GAME_EVENT);
+
+    float tickDuration = 1.f;
+    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+
+    float oldPlayTime = -1.f;
+    ET_SendEventReturn(oldPlayTime, &ETGameEndTimer::ET_getRemainingTime);
+
+    ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, RESTART_GAME_EVENT);
+
+    WaitViewSwitchEnd();
+
+    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+
+    float newPlayTime = -1.f;
+    ET_SendEventReturn(newPlayTime, &ETGameEndTimer::ET_getRemainingTime);
+
+    ASSERT_FLOAT_EQ(oldPlayTime, newPlayTime);
 }

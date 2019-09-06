@@ -2,10 +2,11 @@
 #define __GAME_END_TIMER_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 class GameEndTimerLogic : public EntityLogic,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETGameEndTimer>,
+    public ETNode<ETGameTimerEvents> {
 public:
     GameEndTimerLogic();
     virtual ~GameEndTimerLogic();
@@ -14,8 +15,12 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
+
+    // ETGameEndTimer
+    float ET_getRemainingTime() const override;
+    float ET_getInitialEndGameDuration() const override;
 
 private:
 

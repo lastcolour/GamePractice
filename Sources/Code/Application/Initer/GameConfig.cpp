@@ -1,4 +1,4 @@
-#include "Game/GameConfig.hpp"
+#include "Initer/GameConfig.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 

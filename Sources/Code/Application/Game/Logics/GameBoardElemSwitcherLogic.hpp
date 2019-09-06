@@ -8,7 +8,7 @@
 
 class GameBoardElemSwitcherLogic : public EntityLogic,
     public ETNode<ETGameBoardElemSwitcher>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETGameTimerEvents> {
 public:
 
     GameBoardElemSwitcherLogic();
@@ -21,8 +21,8 @@ public:
     // ETGameBoardElemSwitcher
     void ET_switchBoardElems(EntityId firstId, EntityId secondId) override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
 
 private:
 

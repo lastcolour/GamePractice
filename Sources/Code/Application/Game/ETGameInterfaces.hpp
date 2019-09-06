@@ -66,4 +66,29 @@ struct ETGameConfig {
     virtual void ET_setHighScore(int newHighScore) = 0;
 };
 
+struct ETGameEndTimer {
+    virtual ~ETGameEndTimer() = default;
+    virtual float ET_getRemainingTime() const = 0;
+    virtual float ET_getInitialEndGameDuration() const = 0;
+};
+
+struct ETGameTimer {
+    virtual ~ETGameTimer() = default;
+    virtual void ET_pauseTimer() = 0;
+    virtual void ET_resumeTimer() = 0;
+};
+
+struct ETGameTimerEvents {
+    virtual ~ETGameTimerEvents() = default;
+    virtual void ET_onGameTick(float dt) = 0;
+};
+
+struct ETGameState {
+    virtual ~ETGameState() = default;
+    virtual void ET_startGame() = 0;
+    virtual void ET_pauseGame() = 0;
+    virtual void ET_resumeGame() = 0;
+    virtual void ET_endGame() = 0;
+};
+
 #endif /* __ET_GAME_INTERFACES_HPP__ */

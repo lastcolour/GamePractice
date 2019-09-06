@@ -27,7 +27,9 @@ void UIViewStack::ET_pushView(const char* viewName) {
         return;
     }
     if(viewStack.empty()) {
-        initPush(viewName);
+        if(initPush(viewName)) {
+            ET_SendEvent(ETUIViewStackEvents::ET_onViewPushed, ET_getActiveViewId());
+        }
     } else if(taskQueue.empty()) {
         if(!initPush(viewName)) {
             return;
@@ -99,9 +101,10 @@ void UIViewStack::ET_onViewSwitchFinished(EntityId viewId) {
     }
     const auto& activeTask = taskQueue.front();
     if(activeTask.state == ETaskState::Popping) {
+        ET_SendEvent(&ETUIViewStackEvents::ET_onViewPopped, activeTask.viewId);
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, activeTask.viewId);
     } else if(activeTask.state == ETaskState::Pushing) {
-        // Nothing
+        ET_SendEvent(&ETUIViewStackEvents::ET_onViewPushed, activeTask.viewId);
     } else {
         assert(false && "Invalid active task state");
         return;

@@ -30,7 +30,7 @@ struct BoardElement {
 };
 
 class GameBoardLogic : public EntityLogic,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETGameTimerEvents>,
     public ETNode<ETUIBoxEvents>,
     public ETNode<ETEntityEvents>,
     public ETNode<ETGameBoard> {
@@ -53,8 +53,8 @@ public:
     Vec2i ET_getElemBoardPos(EntityId elemEntId) const override;
     int ET_getCellSize() const override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
 
     // ETUIBoxEvents
     void ET_onBoxResized() override;

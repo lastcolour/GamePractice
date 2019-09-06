@@ -64,6 +64,12 @@ struct ETUIViewStack {
     virtual EntityId ET_getActiveViewId() const = 0;
 };
 
+struct ETUIViewStackEvents {
+    virtual ~ETUIViewStackEvents() = default;
+    virtual void ET_onViewPushed(EntityId viewId) = 0;
+    virtual void ET_onViewPopped(EntityId viewId) = 0;
+};
+
 struct ETUIViewSwitcher {
     virtual ~ETUIViewSwitcher() = default;
     virtual float ET_getSwitchDuration() const = 0;

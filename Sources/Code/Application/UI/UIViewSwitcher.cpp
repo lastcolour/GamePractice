@@ -76,7 +76,6 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
 }
 
 void UIViewSwitcher::ET_reverseSwitching() {
-    LogWarning("[TmpLog] UIViewSwitcher::ET_reverseSwitching");
     if(!activeTask) {
         LogError("[UIViewSwitcher::ET_reverseSwitching] Can't reverse task without task");
         return;

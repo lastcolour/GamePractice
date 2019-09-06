@@ -213,7 +213,7 @@ bool GameBoardLogic::init() {
         }
     }
 
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETUIBoxEvents>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
@@ -442,7 +442,7 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     }
 }
 
-void GameBoardLogic::ET_onTick(float dt) {
+void GameBoardLogic::ET_onGameTick(float dt) {
     for(auto& elem : elements) {
         if(elem.state == EBoardElemState::Moving) {
             if(!moveElem(elem, dt)) {

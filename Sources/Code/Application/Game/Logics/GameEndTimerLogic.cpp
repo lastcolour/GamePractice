@@ -21,15 +21,26 @@ bool GameEndTimerLogic::serialize(const JSONNode& node) {
 
 bool GameEndTimerLogic::init() {
     remainingTime = endTime;
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETGameTimerEvents>::connect(getEntityId());
+    ETNode<ETGameEndTimer>::connect(getEntityId());
+
+    ET_SendEvent(&ETGameEndTimerUpdater::ET_setEndTime, std::max(remainingTime, 0.f));
     return true;
 }
 
-void GameEndTimerLogic::ET_onTick(float dt) {
+void GameEndTimerLogic::ET_onGameTick(float dt) {
     remainingTime -= dt;
     ET_SendEvent(&ETGameEndTimerUpdater::ET_setEndTime, std::max(remainingTime, 0.f));
     if(remainingTime < 0.f) {
-        ETNode<ETTimerEvents>::disconnect();
+        ETNode<ETGameTimerEvents>::disconnect();
         ET_SendEvent(&ETUIEventManager::ET_onEvent, endEvent.c_str());
     }
+}
+
+float GameEndTimerLogic::ET_getRemainingTime() const {
+    return remainingTime;
+}
+
+float GameEndTimerLogic::ET_getInitialEndGameDuration() const {
+    return endTime;
 }

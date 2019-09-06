@@ -9,6 +9,7 @@
 #include <Entity/EntityModule.hpp>
 #include <UI/UIModule.hpp>
 #include <ETApplicationInterfaces.hpp>
+#include <Game/GameModule.hpp>
 
 std::unique_ptr<Application> ConsoleAppTests::APP;
 
@@ -33,6 +34,7 @@ protected:
         modules.emplace_back(new RenderModule);
         modules.emplace_back(new EntityModule);
         modules.emplace_back(new UIModule);
+        modules.emplace_back(new GameModule);
     }
 };
 

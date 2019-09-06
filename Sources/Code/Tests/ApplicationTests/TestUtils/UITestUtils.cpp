@@ -18,5 +18,5 @@ void CheckExpectedView(const char* expectedView) {
 void WaitViewSwitchEnd() {
     float switchTime = 0.f;
     ET_SendEventReturn(switchTime, &ETUIViewSwitcher::ET_getSwitchDuration);
-    ET_SendEvent(&ETTimerEvents::ET_onTick, switchTime + 0.1f);
+    ET_SendEvent(&ETTimerEvents::ET_onTick, switchTime + 0.000001f);
 }
