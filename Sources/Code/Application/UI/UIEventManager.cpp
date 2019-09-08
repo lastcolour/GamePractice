@@ -162,3 +162,9 @@ void UIEventManager::popView() {
 
     ET_SendEvent(&ETUIViewStack::ET_popView);
 }
+
+void UIEventManager::ET_onViewPushed(EntityId viewId) {
+}
+
+void UIEventManager::ET_onViewPopped(EntityId viewId) {
+}

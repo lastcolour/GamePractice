@@ -102,27 +102,22 @@ public:
         }
         LockTypeT lock(mutex);
 
-        auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it != activeConnection.end()) {
-            const auto& connections = it->second;
-            for(const auto& currConn: connections) {
-                if(currConn.node == &node) {
-                    return;
-                }
-            }
-        }
-
         ETConnectionRequest connReq;
-        connReq.etId = etId;
+        connReq.etId = GetTypeId<ETType>();
         connReq.isDisconnect = false;
         connReq.conn.node = &node;
         connReq.conn.addressId = addressId;
 
-        if(isRouteSafe(connReq.etId)) {
-            registerConnection(connReq);
-        } else {
+        if(isConnectRequestedDisconnect(node)) {
             pendingConnection.push_back(connReq);
+        } else if (isDoubleConnect(connReq.etId, node)) {
+            return;
+        } else {
+            if(isRouteSafe(connReq.etId)) {
+                registerConnection(connReq);
+            } else {
+                pendingConnection.push_back(connReq);
+            }
         }
     }
 
@@ -348,6 +343,8 @@ private:
     void registerConnection(const ETConnectionRequest& connReq);
     void updatePendingConnections();
     bool isRouteSafe(TypeId etId) const;
+    bool isConnectRequestedDisconnect(const ETNodeBase& node) const;
+    bool isDoubleConnect(TypeId etId, const ETNodeBase& node) const;
 
 private:
 

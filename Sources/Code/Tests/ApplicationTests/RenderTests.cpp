@@ -10,25 +10,28 @@
 #include "Platforms/OpenGL.hpp"
 #include "Entity/Entity.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Game/GameInitModule.hpp"
 #include "Render/Logics/RenderImageLogic.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
 namespace {
-    const size_t RENDER_WIDTH = 400;
-    const size_t RENDER_HEIGHT = 300;
 
-    const char* TEST_MATERIAL_1 = "geom_solid_color";
-    const char* TEST_MATERIAL_2 = "geom_Solid_color";
-    const char* TEST_GEOM_1 = "square";
+const size_t RENDER_WIDTH = 400;
+const size_t RENDER_HEIGHT = 300;
 
-    const char* SIMPLE_OBJECT = "Game/Simple.json";
-    const float SCALE_FACTOR = 0.8f;
+const char* TEST_MATERIAL_1 = "geom_solid_color";
+const char* TEST_MATERIAL_2 = "geom_Solid_color";
 
-    const ColorB DRAW_COLOR(0, 255, 0);
-    const ColorB CLEAR_COLOR(0, 0, 0);
+const char* TEST_GEOM_1 = "square";
+
+const char* SIMPLE_OBJECT = "Game/Simple.json";
+
+const float SCALE_FACTOR = 0.8f;
+
+const ColorB DRAW_COLOR(0, 255, 0);
+const ColorB CLEAR_COLOR(0, 0, 0);
+
 } // namespace
 
 std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;

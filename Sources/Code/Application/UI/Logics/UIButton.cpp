@@ -22,10 +22,7 @@ void UIButton::ET_onPress() {
 }
 
 bool UIButton::serialize(const JSONNode& node) {
-    if(!UIBox::serialize(node)) {
-        LogWarning("[UIButton::serialize] Can't serialize UIBox");
-        return false;
-    }
+    UIBox::serialize(node);
     node.read("event", eventName);
     return true;
 }
@@ -41,6 +38,7 @@ bool UIButton::init() {
     UIBox::init();
     ETNode<ETUIButton>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
+    LogWarning("[TmpLog] Connect button: %s", getEntityName());
     return true;
 }
 

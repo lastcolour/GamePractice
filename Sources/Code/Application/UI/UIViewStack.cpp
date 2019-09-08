@@ -28,7 +28,7 @@ void UIViewStack::ET_pushView(const char* viewName) {
     }
     if(viewStack.empty()) {
         if(initPush(viewName)) {
-            ET_SendEvent(ETUIViewStackEvents::ET_onViewPushed, ET_getActiveViewId());
+            ET_SendEvent(&ETUIViewStackEvents::ET_onViewPushed, ET_getActiveViewId());
         }
     } else if(taskQueue.empty()) {
         if(!initPush(viewName)) {

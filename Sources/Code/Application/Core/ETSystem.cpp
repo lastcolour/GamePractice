@@ -65,3 +65,25 @@ void ETSystem::updatePendingConnections() {
         }
     }
 }
+
+bool ETSystem::isConnectRequestedDisconnect(const ETNodeBase& node) const {
+    for(auto& req : pendingConnection) {
+        if(req.isDisconnect && req.conn.node == &node) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ETSystem::isDoubleConnect(TypeId etId, const ETNodeBase& node) const {
+    auto it = activeConnection.find(etId);
+    if(it != activeConnection.end()) {
+        const auto& connections = it->second;
+        for(const auto& currConn: connections) {
+            if(currConn.node == &node) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
