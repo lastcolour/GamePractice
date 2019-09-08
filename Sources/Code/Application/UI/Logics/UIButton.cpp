@@ -38,7 +38,6 @@ bool UIButton::init() {
     UIBox::init();
     ETNode<ETUIButton>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
-    LogWarning("[TmpLog] Connect button: %s", getEntityName());
     return true;
 }
 

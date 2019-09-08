@@ -38,13 +38,16 @@ public:
     void ET_onEvent(const char* eventName) override;
 
     // ETUIViewStackEvents
-    void ET_onViewPushed(EntityId viewId) override;
-    void ET_onViewPopped(EntityId viewId) override;
+    void ET_onViewStartPush(EntityId viewId) override;
+    void ET_onViewFinishPush(EntityId viewId) override;
+    void ET_onViewStartPop(EntityId viewId) override;
+    void ET_onViewFinishPop(EntityId viewId) override;
 
 private:
 
     void setupCallbacks();
     void processBackButtonEvent();
+    EViewType getViewTypeFromEntityId(EntityId viewId) const;
     EViewType getActiveViewType() const;
     const char* getViewName(EViewType viewType) const;
     void pushView(EViewType viewType);

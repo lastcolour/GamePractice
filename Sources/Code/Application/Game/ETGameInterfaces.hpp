@@ -83,12 +83,19 @@ struct ETGameTimerEvents {
     virtual void ET_onGameTick(float dt) = 0;
 };
 
+enum class EGameState {
+    None,
+    Paused,
+    Running
+};
+
 struct ETGameState {
     virtual ~ETGameState() = default;
     virtual void ET_startGame() = 0;
     virtual void ET_pauseGame() = 0;
     virtual void ET_resumeGame() = 0;
     virtual void ET_endGame() = 0;
+    virtual EGameState ET_getGameState() const = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */

@@ -19,6 +19,11 @@ public:
     void ET_pauseGame() override;
     void ET_resumeGame() override;
     void ET_endGame() override;
+    EGameState ET_getGameState() const override;
+
+private:
+
+    EGameState gameState;
 };
 
 #endif /* __GAME_STATE_HPP__ */

@@ -66,8 +66,10 @@ struct ETUIViewStack {
 
 struct ETUIViewStackEvents {
     virtual ~ETUIViewStackEvents() = default;
-    virtual void ET_onViewPushed(EntityId viewId) = 0;
-    virtual void ET_onViewPopped(EntityId viewId) = 0;
+    virtual void ET_onViewStartPush(EntityId viewId) = 0;
+    virtual void ET_onViewFinishPush(EntityId viewId) = 0;
+    virtual void ET_onViewStartPop(EntityId viewId) = 0;
+    virtual void ET_onViewFinishPop(EntityId viewId) = 0;
 };
 
 struct ETUIViewSwitcher {

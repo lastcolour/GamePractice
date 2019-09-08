@@ -28,16 +28,15 @@ void UIViewStack::ET_pushView(const char* viewName) {
     }
     if(viewStack.empty()) {
         if(initPush(viewName)) {
-            ET_SendEvent(&ETUIViewStackEvents::ET_onViewPushed, ET_getActiveViewId());
+            EntityId viewId = ET_getActiveViewId();
+            ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPush, viewId);
+            ET_SendEvent(&ETUIViewStackEvents::ET_onViewFinishPush, viewId);
         }
     } else if(taskQueue.empty()) {
         if(!initPush(viewName)) {
             return;
         }
-        EntityId newViewId = viewStack[viewStack.size() - 1];
-        EntityId prevViewId = viewStack[viewStack.size() - 2];
-        ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, newViewId, prevViewId);
-
+        notifyNormalPush();
         StackTask task;
         task.viewName = viewName;
         task.state = ETaskState::Pushing;
@@ -46,6 +45,10 @@ void UIViewStack::ET_pushView(const char* viewName) {
         auto& lastTask = taskQueue.back();
         lastTask.state = ETaskState::Pushing;
         viewStack.push_back(lastTask.viewId);
+
+        EntityId viewId = ET_getActiveViewId();
+        ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPush, viewId);
+
         ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitching);
     } else {
         StackTask task;
@@ -68,10 +71,9 @@ void UIViewStack::ET_popView() {
             LogWarning("[UIViewStack::ET_popView] No view to pop from stack");
             return;
         }
-        EntityId activeViewId = viewStack.back();
-        viewStack.pop_back();
-        EntityId lastViewId = viewStack.back();
-        ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, lastViewId, activeViewId);
+        EntityId activeViewId = ET_getActiveViewId();
+
+        notifyNormalPop();
 
         StackTask task;
         task.state = ETaskState::Popping;
@@ -86,6 +88,10 @@ void UIViewStack::ET_popView() {
         lastTask.state = ETaskState::Popping;
         lastTask.viewId = viewStack.back();
         viewStack.pop_back();
+
+        EntityId viewId = ET_getActiveViewId();
+        ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPop, viewId);
+
         ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitching);
     } else {
         StackTask task;
@@ -101,10 +107,10 @@ void UIViewStack::ET_onViewSwitchFinished(EntityId viewId) {
     }
     const auto& activeTask = taskQueue.front();
     if(activeTask.state == ETaskState::Popping) {
-        ET_SendEvent(&ETUIViewStackEvents::ET_onViewPopped, activeTask.viewId);
+        ET_SendEvent(&ETUIViewStackEvents::ET_onViewFinishPop, activeTask.viewId);
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, activeTask.viewId);
     } else if(activeTask.state == ETaskState::Pushing) {
-        ET_SendEvent(&ETUIViewStackEvents::ET_onViewPushed, activeTask.viewId);
+        ET_SendEvent(&ETUIViewStackEvents::ET_onViewFinishPush, activeTask.viewId);
     } else {
         assert(false && "Invalid active task state");
         return;
@@ -139,18 +145,34 @@ bool UIViewStack::initPush(const std::string& viewName) {
     return true;
 }
 
+void UIViewStack::notifyNormalPush() {
+    EntityId newViewId = viewStack[viewStack.size() - 1];
+    EntityId prevViewId = viewStack[viewStack.size() - 2];
+
+    ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPush, ET_getActiveViewId());
+
+    ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, newViewId, prevViewId);
+}
+
+void UIViewStack::notifyNormalPop() {
+    EntityId activeViewId = viewStack.back();
+    viewStack.pop_back();
+    EntityId prevViewId = viewStack.back();
+
+    ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPop, activeViewId);
+
+    ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, prevViewId, activeViewId);
+}
+
 void UIViewStack::startNextTask() {
     while(!taskQueue.empty()) {
         auto& nextTask = taskQueue.front();
         if(nextTask.state == ETaskState::WaitPop) {
             if(viewStack.size() > 1) {
-                EntityId activeViewId = viewStack.back();
-                viewStack.pop_back();
-                EntityId lastViewId = viewStack.back();
-                ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, lastViewId, activeViewId);
+                notifyNormalPop();
 
                 nextTask.state = ETaskState::Popping;
-                nextTask.viewId = lastViewId;
+                nextTask.viewId = viewStack.back();
                 ET_SendEventReturn(nextTask.viewName, nextTask.viewId, &ETEntity::ET_getName);
                 break;
             } else {
@@ -159,6 +181,7 @@ void UIViewStack::startNextTask() {
         } else if (nextTask.state == ETaskState::WaitPush) {
             if(initPush(nextTask.viewName)) {
                 nextTask.state = ETaskState::Pushing;
+                notifyNormalPush();
                 break;
             }
         } else {

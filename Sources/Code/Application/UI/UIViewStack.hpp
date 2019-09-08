@@ -46,6 +46,8 @@ private:
 
     bool initPush(const std::string& viewName);
     void startNextTask();
+    void notifyNormalPush();
+    void notifyNormalPop();
 
 private:
 

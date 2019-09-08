@@ -60,29 +60,19 @@ void UIEventManager::setupCallbacks() {
 
 bool UIEventManager::init() {
     ETNode<ETUIEventManager>::connect(getEntityId());
+    ETNode<ETUIViewStackEvents>::connect(getEntityId());
     return true;
 }
 
 void UIEventManager::deinit() {
     ETNode<ETUIEventManager>::disconnect();
+    ETNode<ETUIViewStackEvents>::disconnect();
 }
 
 UIEventManager::EViewType UIEventManager::getActiveViewType() const {
     EntityId activeViewId;
     ET_SendEventReturn(activeViewId, &ETUIViewStack::ET_getActiveViewId);
-    if(!activeViewId.isValid()) {
-        return EViewType::Other;
-    }
-    std::string viewName;
-    ET_SendEventReturn(viewName, activeViewId, &ETEntity::ET_getName);
-    if(viewName.empty()) {
-        return EViewType::Other;
-    }
-    auto it = viewMap.find(viewName);
-    if(it != viewMap.end()) {
-        return it->second;
-    }
-    return EViewType::Other;
+    return getViewTypeFromEntityId(activeViewId);
 }
 
 const char* UIEventManager::getViewName(UIEventManager::EViewType viewType) const {
@@ -132,13 +122,32 @@ void UIEventManager::pushView(EViewType viewType) {
     } else {
         ET_SendEvent(&ETUIViewStack::ET_pushView, viewName);
     }
+}
 
+void UIEventManager::popView() {
+    ET_SendEvent(&ETUIViewStack::ET_popView);
+}
+
+UIEventManager::EViewType UIEventManager::getViewTypeFromEntityId(EntityId viewId) const {
+    if(!viewId.isValid()) {
+        return EViewType::Other;
+    }
+    std::string viewName;
+    ET_SendEventReturn(viewName, viewId, &ETEntity::ET_getName);
+    if(viewName.empty()) {
+        return EViewType::Other;
+    }
+    auto it = viewMap.find(viewName);
+    if(it != viewMap.end()) {
+        return it->second;
+    }
+    return EViewType::Other;
+}
+
+void UIEventManager::ET_onViewStartPush(EntityId viewId) {
+    auto viewType = getViewTypeFromEntityId(viewId);
     switch (viewType)
     {
-    case EViewType::Game: {
-        ET_SendEvent(&ETGameState::ET_startGame);
-        break;
-    }
     case EViewType::Pause: {
         ET_SendEvent(&ETGameState::ET_pauseGame);
         break;
@@ -148,9 +157,35 @@ void UIEventManager::pushView(EViewType viewType) {
     }
 }
 
-void UIEventManager::popView() {
-    auto activeViewType = getActiveViewType();
-    switch (activeViewType)
+void UIEventManager::ET_onViewFinishPush(EntityId viewId) {
+    auto viewType = getViewTypeFromEntityId(viewId);
+    switch (viewType)
+    {
+    case EViewType::Game: {
+        ET_SendEvent(&ETGameState::ET_startGame);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void UIEventManager::ET_onViewStartPop(EntityId viewId) {
+    auto viewType = getViewTypeFromEntityId(viewId);
+    switch (viewType)
+    {
+    case EViewType::Game: {
+        ET_SendEvent(&ETGameState::ET_endGame);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void UIEventManager::ET_onViewFinishPop(EntityId viewId) {
+    auto viewType = getViewTypeFromEntityId(viewId);
+    switch (viewType)
     {
     case EViewType::Pause: {
         ET_SendEvent(&ETGameState::ET_resumeGame);
@@ -159,12 +194,4 @@ void UIEventManager::popView() {
     default:
         break;
     }
-
-    ET_SendEvent(&ETUIViewStack::ET_popView);
-}
-
-void UIEventManager::ET_onViewPushed(EntityId viewId) {
-}
-
-void UIEventManager::ET_onViewPopped(EntityId viewId) {
 }
