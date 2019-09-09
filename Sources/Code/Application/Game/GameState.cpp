@@ -1,7 +1,17 @@
 #include "Game/GameState.hpp"
+#include "UI/ETUIInterfaces.hpp"
+
+namespace {
+
+const char* END_EVENT_NORMAL = "Game_OnGameNormalEnd";
+const char* END_EVENT_NEW_HIGH_SCORE = "Game_OnGameHighScoreEnd";
+
+}; // namespace
 
 GameState::GameState() :
-    gameState(EGameState::None) {
+    gameState(EGameState::None),
+    startHighScore(0),
+    endHighScore(0) {
 }
 
 GameState::~GameState() {
@@ -33,6 +43,16 @@ void GameState::ET_resumeGame() {
 }
 
 void GameState::ET_endGame() {
+    gameState = EGameState::None;
+
+    if(startHighScore > endHighScore) {
+        ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NORMAL);
+    } else {
+        ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NEW_HIGH_SCORE);
+    }
+}
+
+void GameState::ET_interruptGame() {
     gameState = EGameState::None;
 }
 

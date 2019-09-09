@@ -95,6 +95,7 @@ struct ETGameState {
     virtual void ET_pauseGame() = 0;
     virtual void ET_resumeGame() = 0;
     virtual void ET_endGame() = 0;
+    virtual void ET_interruptGame() = 0;
     virtual EGameState ET_getGameState() const = 0;
 };
 

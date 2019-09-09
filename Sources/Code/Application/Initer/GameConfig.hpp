@@ -6,6 +6,28 @@
 
 class JSONNode;
 
+struct GameGeneralConfig {
+
+    std::string mainView;
+
+public:
+
+    void read(const JSONNode& node);
+};
+
+struct GameLocalConfig {
+    int highScore;
+    bool soundEnabled;
+    bool vibrationEnabled;
+
+public:
+
+    GameLocalConfig();
+
+    void read(const JSONNode& node);
+    void save(JSONNode& node);
+};
+
 class GameConfig : public SystemLogic,
     public ETNode<ETGameConfig> {
 public:
@@ -28,15 +50,15 @@ public:
 
 private:
 
-    void readConfig(const JSONNode& node);
-    void saveConfig();
+    bool loadGeneralConfig();
+    bool loadLocalConfig();
+    JSONNode unpackAndLoadConfig(const char* fromFile, const char* toFile);
+    void updateLocalConfig();
 
 private:
 
-    std::string mainView;
-    int highScore;
-    bool soundEnabled;
-    bool vibrationEnabled;
+    GameGeneralConfig generalConfig;
+    GameLocalConfig localConfig;
 };
 
 #endif /* __GAME_CONFIG_HPP__ */

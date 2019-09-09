@@ -1,5 +1,4 @@
 #include "Game/Logics/GameEndTimerLogic.hpp"
-#include "UI/UIEventManager.hpp"
 #include "Core/JSONNode.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
@@ -15,7 +14,6 @@ GameEndTimerLogic::~GameEndTimerLogic() {
 
 bool GameEndTimerLogic::serialize(const JSONNode& node) {
     node.read("time", endTime);
-    node.read("event", endEvent);
     return true;
 }
 
@@ -32,8 +30,8 @@ void GameEndTimerLogic::ET_onGameTick(float dt) {
     remainingTime -= dt;
     ET_SendEvent(&ETGameEndTimerUpdater::ET_setEndTime, std::max(remainingTime, 0.f));
     if(remainingTime < 0.f) {
+        ET_SendEvent(ETGameState::ET_endGame);
         ETNode<ETGameTimerEvents>::disconnect();
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, endEvent.c_str());
     }
 }
 

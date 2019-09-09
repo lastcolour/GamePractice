@@ -32,7 +32,10 @@ void UIEventManager::setupCallbacks() {
     eventMap["Main_OnOptionsButton"] = [this](){
         pushView(EViewType::Options);
     };
-    eventMap["Game_OnGameEnd"] = [this](){
+    eventMap["Game_OnGameNormalEnd"] = [this](){
+        pushView(EViewType::EndGame);
+    };
+    eventMap["Game_OnGameHighScoreEnd"] = [this](){
         pushView(EViewType::EndGame);
     };
     eventMap["EndGame_OnExitToMainButton"] = [this](){
@@ -175,7 +178,7 @@ void UIEventManager::ET_onViewStartPop(EntityId viewId) {
     switch (viewType)
     {
     case EViewType::Game: {
-        ET_SendEvent(&ETGameState::ET_endGame);
+        ET_SendEvent(&ETGameState::ET_interruptGame);
         break;
     }
     default:

@@ -7,6 +7,7 @@
 class GameState : public SystemLogic,
     public ETNode<ETGameState> {
 public:
+
     GameState();
     virtual ~GameState();
 
@@ -19,11 +20,14 @@ public:
     void ET_pauseGame() override;
     void ET_resumeGame() override;
     void ET_endGame() override;
+    void ET_interruptGame() override;
     EGameState ET_getGameState() const override;
 
 private:
 
     EGameState gameState;
+    int startHighScore;
+    int endHighScore;
 };
 
 #endif /* __GAME_STATE_HPP__ */

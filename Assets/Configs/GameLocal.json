@@ -5,8 +5,5 @@
     },
     "Game": {
         "highScore": 0
-    },
-    "Main": {
-        "mainView": "UI/MainView/Root.json"
     }
 }

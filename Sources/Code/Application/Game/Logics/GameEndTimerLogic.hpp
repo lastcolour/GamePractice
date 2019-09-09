@@ -24,7 +24,6 @@ public:
 
 private:
 
-    std::string endEvent;
     float endTime;
     float remainingTime;
 };
