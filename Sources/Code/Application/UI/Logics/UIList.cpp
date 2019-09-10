@@ -85,26 +85,29 @@ void UIList::calcList() {
         offset.x = listBox.bot.x;
     }
 
-    listBox.top = Vec2i(std::numeric_limits<int>::min());
-    listBox.bot = Vec2i(std::numeric_limits<int>::max());
+    if(!children.empty()) {
 
-    for(auto entId : children) {
-        ET_SendEvent(entId, &ETUIBox::ET_boxResize);
-        AABB2Di elemBox(0);
-        ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
-        
-        ET_SendEvent(entId, &ETUIBox::ET_alignInBox, getAligntBox(elemBox));
-        Vec2i elemBoxSize = elemBox.getSize();
+        listBox.top = Vec2i(std::numeric_limits<int>::min());
+        listBox.bot = Vec2i(std::numeric_limits<int>::max());
 
-        ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
-        auto newCenter = caclCenterUpdateOffset(offset, elemBox);
-        ET_SendEvent(entId, &ETUIBox::ET_setCenter, newCenter);
+        for(auto entId : children) {
+            ET_SendEvent(entId, &ETUIBox::ET_boxResize);
+            AABB2Di elemBox(0);
+            ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
 
-        ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
-        listBox.bot.x = std::min(listBox.bot.x, elemBox.bot.x);
-        listBox.bot.y = std::min(listBox.bot.y, elemBox.bot.y);
-        listBox.top.y = std::max(listBox.top.y, elemBox.top.y);
-        listBox.top.x = std::max(listBox.top.x, elemBox.top.x);
+            ET_SendEvent(entId, &ETUIBox::ET_alignInBox, getAligntBox(elemBox));
+            Vec2i elemBoxSize = elemBox.getSize();
+
+            ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
+            auto newCenter = caclCenterUpdateOffset(offset, elemBox);
+            ET_SendEvent(entId, &ETUIBox::ET_setCenter, newCenter);
+
+            ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
+            listBox.bot.x = std::min(listBox.bot.x, elemBox.bot.x);
+            listBox.bot.y = std::min(listBox.bot.y, elemBox.bot.y);
+            listBox.top.y = std::max(listBox.top.y, elemBox.top.y);
+            listBox.top.x = std::max(listBox.top.x, elemBox.top.x);
+        }
     }
 
     auto origBoxCenter = ET_getAabb2di().getCenter();
@@ -121,7 +124,7 @@ void UIList::calcList() {
     auto oldListCenter = listBox.getCenter();
     setBox(listBox);
     ET_alignInBox(getParentAabb2di());
-    auto centerShift = ET_getAabb2di().getCenter() - oldListCenter;
+    auto centerShift = origBoxCenter - oldListCenter;
 
     for(auto entId : children) {
         AABB2Di elemBox(0);

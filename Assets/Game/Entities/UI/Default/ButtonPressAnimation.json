@@ -4,9 +4,9 @@
         {
             "type":"UIButtonPressAnimation",
             "data":{
-                "inDuration":0.1,
-                "outDuration":0.1,
-                "minScale":0.85
+                "inDuration":0.05,
+                "outDuration":0.05,
+                "minScale":0.9
             }
         }
     ]

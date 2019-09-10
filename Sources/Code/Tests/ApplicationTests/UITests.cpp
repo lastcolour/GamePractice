@@ -4,6 +4,7 @@
 #include "Core/JSONNode.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Entity/Entity.hpp"
+#include "TestUtils/UITestUtils.hpp"
 
 void UITests::SetUp() {
 }
@@ -542,4 +543,112 @@ TEST_F(UITests, CheckUIListTransformInsideBox) {
         EXPECT_EQ(static_cast<int>(tm.pt.x), uiBoxPt.x);
         EXPECT_EQ(static_cast<int>(tm.pt.y), uiBoxPt.y);
     }
+}
+
+TEST_F(UITests, CheckUIListAlignLeftBot) {
+    auto uiBox = createObjectAndLogic<UIBaseBox>();
+    {
+        UIStyle style;
+        style.size = Vec2(0.5f);
+        uiBox->ET_setStyle(style);
+        ASSERT_TRUE(uiBox->init());
+    }
+    auto uiList = createObjectAndLogic<UIList>();
+    {
+        UIStyle style;
+        style.xAlignType = XAlignType::Left;
+        style.yAlignType = YAlignType::Bot;
+        uiList->ET_setStyle(style);
+        uiList->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(uiList->init());
+    }
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Vec2i expectedSize = Vec2i(renderPort.x / 2, renderPort.y / 2);
+    Vec2i expectedCenter = Vec2i(renderPort.x / 4, renderPort.y / 4);
+    CheckUIBoxSizeAndCenter(uiBox, expectedSize, expectedCenter);
+}
+
+TEST_F(UITests, CheckUIListAlignLeftTop) {
+    auto uiBox = createObjectAndLogic<UIBaseBox>();
+    {
+        UIStyle style;
+        style.size = Vec2(0.5f);
+        uiBox->ET_setStyle(style);
+        ASSERT_TRUE(uiBox->init());
+    }
+    auto uiList = createObjectAndLogic<UIList>();
+    {
+        UIStyle style;
+        style.xAlignType = XAlignType::Left;
+        style.yAlignType = YAlignType::Top;
+        uiList->ET_setStyle(style);
+        uiList->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(uiList->init());
+    }
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Vec2i expectedSize = Vec2i(renderPort.x / 2, renderPort.y / 2);
+    Vec2i expectedCenter = Vec2i(renderPort.x / 4, renderPort.y * 3 / 4);
+    CheckUIBoxSizeAndCenter(uiBox, expectedSize, expectedCenter);
+}
+
+TEST_F(UITests, CheckUIListAlignRightTop) {
+    auto uiBox = createObjectAndLogic<UIBaseBox>();
+    {
+        UIStyle style;
+        style.size = Vec2(0.5f);
+        uiBox->ET_setStyle(style);
+        ASSERT_TRUE(uiBox->init());
+    }
+    auto uiList = createObjectAndLogic<UIList>();
+    {
+        UIStyle style;
+        style.xAlignType = XAlignType::Right;
+        style.yAlignType = YAlignType::Top;
+        uiList->ET_setStyle(style);
+        uiList->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(uiList->init());
+    }
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Vec2i expectedSize = Vec2i(renderPort.x / 2, renderPort.y / 2);
+    Vec2i expectedCenter = Vec2i(renderPort.x * 3 / 4, renderPort.y * 3 / 4);
+    CheckUIBoxSizeAndCenter(uiBox, expectedSize, expectedCenter);
+}
+
+TEST_F(UITests, CheckUIListAlignRightBot) {
+    auto uiBox = createObjectAndLogic<UIBaseBox>();
+    {
+        UIStyle style;
+        style.size = Vec2(0.5f);
+        uiBox->ET_setStyle(style);
+        ASSERT_TRUE(uiBox->init());
+    }
+    auto uiList = createObjectAndLogic<UIList>();
+    {
+        UIStyle style;
+        style.xAlignType = XAlignType::Right;
+        style.yAlignType = YAlignType::Bot;
+        uiList->ET_setStyle(style);
+        uiList->ET_setType(UIListType::Horizontal);
+        ASSERT_TRUE(uiList->init());
+    }
+    ET_SendEvent(uiList->getEntityId(), &ETEntity::ET_addChild, uiBox->getEntityId());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Vec2i expectedSize = Vec2i(renderPort.x / 2, renderPort.y / 2);
+    Vec2i expectedCenter = Vec2i(renderPort.x * 3 / 4, renderPort.y / 4);
+    CheckUIBoxSizeAndCenter(uiBox, expectedSize, expectedCenter);
 }
