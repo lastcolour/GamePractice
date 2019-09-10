@@ -44,7 +44,7 @@ void GameIniter::openMainView() {
     EntityId mainViewId;
     ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
     if (!mainViewId.isValid()) {
-        LogError("Can't cretae main view '%s'", mainView);
+        LogError("[GameIniter::openMainView] Can't cretae main view '%s'", mainView);
     }
     bool isVisible = false;
     ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);

@@ -9,9 +9,7 @@ const char* END_EVENT_NEW_HIGH_SCORE = "Game_OnGameHighScoreEnd";
 }; // namespace
 
 GameState::GameState() :
-    gameState(EGameState::None),
-    startHighScore(0),
-    endHighScore(0) {
+    gameState(EGameState::None) {
 }
 
 GameState::~GameState() {
@@ -45,10 +43,17 @@ void GameState::ET_resumeGame() {
 void GameState::ET_endGame() {
     gameState = EGameState::None;
 
-    if(startHighScore > endHighScore) {
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NORMAL);
-    } else {
+    int prevHighScore = 0;
+    ET_SendEventReturn(prevHighScore, &ETGameConfig::ET_getHighScore);
+
+    int currScore = 0;
+    ET_SendEventReturn(currScore, &ETGameScore::ET_getGameScore);
+
+    if(currScore > prevHighScore) {
+        ET_SendEvent(&ETGameConfig::ET_setHighScore, currScore);
         ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NEW_HIGH_SCORE);
+    } else {
+        ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NORMAL);
     }
 }
 

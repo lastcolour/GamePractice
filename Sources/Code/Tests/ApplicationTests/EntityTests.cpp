@@ -91,3 +91,45 @@ TEST_F(EntityTests, CheckChildInheritParentTransform) {
     ASSERT_FLOAT_EQ(diff.y, offset.x);
     ASSERT_FLOAT_EQ(diff.z, offset.x);
 }
+
+TEST_F(EntityTests, CheckChildInheritParentScale) {
+    EntityId parentId;
+    ET_SendEventReturn(parentId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    EntityId childId;
+    ET_SendEventReturn(childId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    ET_SendEvent(childId, &ETEntity::ET_setParent, parentId);
+
+    {
+        Transform childTm;
+        ET_SendEventReturn(childTm, childId, &ETEntity::ET_getTransform);
+        childTm.scale = Vec3(0.5f);
+        ET_SendEvent(childId, &ETEntity::ET_setTransform, childTm);
+    }
+
+    {
+        Transform parentTm;
+        ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+        parentTm.scale = Vec3(0.5f);
+        ET_SendEvent(parentId, &ETEntity::ET_setTransform, parentTm);
+    }
+
+    Transform tm;
+    ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
+    EXPECT_FLOAT_EQ(tm.scale.x, 0.25f);
+    EXPECT_FLOAT_EQ(tm.scale.y, 0.25f);
+    EXPECT_FLOAT_EQ(tm.scale.z, 0.25f);
+
+    {
+        Transform parentTm;
+        ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+        parentTm.scale = Vec3(1.f);
+        ET_SendEvent(parentId, &ETEntity::ET_setTransform, parentTm);
+    }
+
+    ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
+    EXPECT_FLOAT_EQ(tm.scale.x, 0.5f);
+    EXPECT_FLOAT_EQ(tm.scale.y, 0.5f);
+    EXPECT_FLOAT_EQ(tm.scale.z, 0.5f);
+}

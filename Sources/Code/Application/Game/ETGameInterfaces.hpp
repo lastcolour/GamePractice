@@ -17,7 +17,7 @@ struct ETGameEndTimerUpdater {
 
 struct ETGameScore {
     virtual ~ETGameScore() = default;
-    virtual void ET_onElemsDestroyed(int count) = 0;
+    virtual int ET_getGameScore() const = 0;
 };
 
 struct ETGameScoreUpdater {
@@ -33,6 +33,11 @@ struct ETGameBoardElemSwitcher {
 struct ETGameBoardElemDestroy {
     virtual ~ETGameBoardElemDestroy() = default;
     virtual void ET_destroyBoardElem(EntityId elemId) = 0;
+};
+
+struct ETGameBoardElemDestoryEvents {
+    virtual ~ETGameBoardElemDestoryEvents() = default;
+    virtual void ET_onElemsDestroyed(int count) = 0;
 };
 
 enum class EBoardElemState {

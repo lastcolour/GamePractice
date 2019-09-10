@@ -23,6 +23,7 @@
 #include "UI/Logics/UIBaseBox.hpp"
 #include "UI/Logics/UIPartition.hpp"
 #include "UI/Logics/UIImage.hpp"
+#include "UI/Logics/UIButtonPressAnimation.hpp"
 
 #include <algorithm>
 
@@ -62,6 +63,7 @@ bool EntityManager::init() {
     registerLogic<UIBaseBox>("UIBaseBox");
     registerLogic<UIPartition>("UIPartition");
     registerLogic<UIImage>("UIImage");
+    registerLogic<UIButtonPressAnimation>("UIButtonPressAnimation");
 
     ETNode<ETEntityManager>::connect(getEntityId());
     return true;

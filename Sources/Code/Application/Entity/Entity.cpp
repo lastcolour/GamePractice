@@ -90,11 +90,15 @@ const Transform& Entity::ET_getTransform() const {
 
 void Entity::ET_setTransform(const Transform& transform) {
     Vec3 ptOffset = transform.pt - tm.pt;
+    Vec3 scaleFactor = transform.scale / tm.scale;
     tm = transform;
     for(auto childId : children) {
         Transform childTm;
         ET_SendEventReturn(childTm, childId, &ETEntity::ET_getTransform);
         childTm.pt += ptOffset;
+        childTm.scale = Vec3(childTm.scale.x * scaleFactor.x,
+            childTm.scale.y * scaleFactor.y,
+            childTm.scale.z * scaleFactor.z);
         ET_SendEvent(childId, &ETEntity::ET_setTransform, childTm);
     }
     ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);

@@ -26,8 +26,6 @@ public:
 private:
 
     EGameState gameState;
-    int startHighScore;
-    int endHighScore;
 };
 
 #endif /* __GAME_STATE_HPP__ */

@@ -5,4 +5,6 @@ void CheckExpectedView(const char* expectedView);
 
 void WaitViewSwitchEnd();
 
+void WaitButtonReleaseEvent();
+
 #endif /* __UI_TEST_UTILS_HPP__ */

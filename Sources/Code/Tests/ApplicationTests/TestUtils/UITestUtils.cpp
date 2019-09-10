@@ -20,3 +20,9 @@ void WaitViewSwitchEnd() {
     ET_SendEventReturn(switchTime, &ETUIViewSwitcher::ET_getSwitchDuration);
     ET_SendEvent(&ETTimerEvents::ET_onTick, switchTime + 0.000001f);
 }
+
+void WaitButtonReleaseEvent() {
+    float pressDuration = 0.f;
+    ET_SendEventReturn(pressDuration, &ETUIButton::ET_getPressDuration);
+    ET_SendEvent(&ETTimerEvents::ET_onTick, pressDuration + 0.000001f);
+}

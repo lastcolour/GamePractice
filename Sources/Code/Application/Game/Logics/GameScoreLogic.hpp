@@ -5,7 +5,8 @@
 #include "Game/ETGameInterfaces.hpp"
 
 class GameScoreLogic : public EntityLogic,
-    public ETNode<ETGameScore> {
+    public ETNode<ETGameScore>,
+    public ETNode<ETGameBoardElemDestoryEvents> {
 public:
 
     GameScoreLogic();
@@ -15,8 +16,11 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
 
-    // ETGameScore
+    // ETGameBoardElemDestoryEvents
     void ET_onElemsDestroyed(int count) override;
+
+    // ETGameScore
+    int ET_getGameScore() const override;
 
 private:
 

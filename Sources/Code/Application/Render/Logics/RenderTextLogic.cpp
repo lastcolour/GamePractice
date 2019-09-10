@@ -12,8 +12,10 @@
 #include <cassert>
 
 namespace {
+
 const float NEXT_LINE_OFFSET = 1.2f;
-} // 
+
+} // namespace
 
 RenderTextLogic::RenderTextLogic() :
     color(255, 255, 255),
@@ -58,7 +60,12 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+
+    AABB2D aabb;
+    aabb.bot = Vec2(0.f);
+    aabb.top = Vec2(textSize.x * tm.scale.x, textSize.y * tm.scale.y);
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
+
     const auto scale = Vec2(tm.scale.x, tm.scale.y) * fontScale;
     Vec2 pt = Vec2(aabb.bot.x, aabb.top.y);
     pt.y -= font->getHeight() * scale.y;
@@ -114,7 +121,7 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->unbind();
 }
 
-void RenderTextLogic::calcTextAABB() {
+void RenderTextLogic::calcTextSize() {
     Vec2 pt(0.f);
     pt.y = text.empty() ? 0.f : static_cast<float>(font->getHeight());
     float currentLineX = 0.f;
@@ -140,19 +147,24 @@ void RenderTextLogic::calcTextAABB() {
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-
-    aabb.bot = Vec2(0.f);
-    aabb.top = Vec2(pt.x * tm.scale.x, pt.y ) * fontScale;
-    aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
+    textSize = pt * fontScale;
 }
 
 void RenderTextLogic::ET_setFontSize(int fontSize) {
     auto heigth = font->getHeight();
     fontScale = fontSize / static_cast<float>(heigth);
-    calcTextAABB();
+    calcTextSize();
 }
 
-const AABB2D& RenderTextLogic::ET_getTextAABB() const {
+AABB2D RenderTextLogic::ET_getTextAABB() const {
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+
+    AABB2D aabb;
+    aabb.bot = Vec2(0.f);
+    aabb.top = Vec2(textSize.x * tm.scale.x, textSize.y * tm.scale.y);
+    aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
+
     return aabb;
 }
 
@@ -166,7 +178,7 @@ void RenderTextLogic::ET_setColor(const ColorB& col) {
 
 void RenderTextLogic::ET_setText(const char* str) {
     text = str;
-    calcTextAABB();
+    calcTextSize();
     if(!text.empty()) {
         ETNode<ETRenderEvents>::connect(getEntityId());
     } else {

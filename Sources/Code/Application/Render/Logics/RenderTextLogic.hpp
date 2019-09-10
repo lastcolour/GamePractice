@@ -29,15 +29,15 @@ public:
     void ET_setColor(const ColorB& col) override;
     void ET_setText(const char* str) override;
     void ET_setFontSize(int fontSize) override;
-    virtual const AABB2D& ET_getTextAABB() const override;
+    virtual AABB2D ET_getTextAABB() const override;
 
 private:
 
-    void calcTextAABB();
+    void calcTextSize();
 
 private:
 
-    AABB2D aabb;
+    Vec2 textSize;
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
     std::shared_ptr<RenderGeometry> geom;

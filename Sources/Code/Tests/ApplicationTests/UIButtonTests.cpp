@@ -1,4 +1,5 @@
 #include "UIButtonTests.hpp"
+#include "TestUtils/UITestUtils.hpp"
 
 #include <ETApplicationInterfaces.hpp>
 #include <UI/Logics/UIButton.hpp>
@@ -61,6 +62,8 @@ TEST_F(UIButtonTests, CheckTouchInside) {
     ASSERT_TRUE(isHovered);
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
+
+    WaitButtonReleaseEvent();
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
     ASSERT_STREQ(buttonListener->eventQueue[0].c_str(), "testEvent");
@@ -136,4 +139,9 @@ TEST_F(UIButtonTests, CheckButtonConnections) {
     ASSERT_TRUE(ET_IsExistNode<ETUIButton>(button->getEntityId()));
     ASSERT_TRUE(ET_IsExistNode<ETUIInteractionBox>(button->getEntityId()));
     ASSERT_TRUE(ET_IsExistNode<ETUIBox>(button->getEntityId()));
+    ASSERT_TRUE(ET_IsExistNode<ETUIButtonPressAnimationEvents>(button->getEntityId()));
+}
+
+TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
+    ASSERT_TRUE(false);
 }

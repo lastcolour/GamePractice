@@ -1,0 +1,13 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIButtonPressAnimation",
+            "data":{
+                "inDuration":0.1,
+                "outDuration":0.1,
+                "minScale":0.85
+            }
+        }
+    ]
+}

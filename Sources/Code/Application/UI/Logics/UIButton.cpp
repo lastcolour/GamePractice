@@ -2,6 +2,12 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
+namespace {
+
+const char* BUTTON_PRESS_ANIMATION = "UI/Default/ButtonPressAnimation.json";
+
+} // namespace
+
 UIButton::UIButton() :
     isHovered(false) {
 }
@@ -10,14 +16,10 @@ UIButton::~UIButton() {
 }
 
 void UIButton::ET_onPress() {
-    ColorB col;
-    col.r = rand() % 256;
-    col.g = rand() % 256;
-    col.b = rand() % 256;
-    UIStyle newStyle = ET_getStyle();
-    newStyle.color = col;
-    ET_setStyle(newStyle);
+    ET_SendEvent(animEntityId, &ETUIButtonPressAnimation::ET_startPressAnimation);
+}
 
+void UIButton::ET_onPressAnimationEnd() {
     ET_SendEvent(&ETUIEventManager::ET_onEvent, eventName.c_str());
 }
 
@@ -35,9 +37,17 @@ void UIButton::ET_setEventName(const char* newEventName) {
 }
 
 bool UIButton::init() {
+    ET_SendEventReturn(animEntityId, &ETEntityManager::ET_createEntity, BUTTON_PRESS_ANIMATION);
+    if(animEntityId.isValid()) {
+        ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, animEntityId);
+    } else {
+        LogError("[UIButton::init] Can't create press animation logic: %s", BUTTON_PRESS_ANIMATION);
+        return false;
+    }
     UIBox::init();
     ETNode<ETUIButton>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
+    ETNode<ETUIButtonPressAnimationEvents>::connect(getEntityId());
     return true;
 }
 
@@ -51,4 +61,10 @@ bool UIButton::ET_isHovered() const {
 
 AABB2Di UIButton::ET_getHitBox() const {
     return ET_getAabb2di();
+}
+
+float UIButton::ET_getPressDuration() const {
+    float pressDuration = 0.f;
+    ET_SendEventReturn(pressDuration, animEntityId, &ETUIButtonPressAnimation::ET_getAnimationDuration);
+    return pressDuration;
 }

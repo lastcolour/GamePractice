@@ -37,6 +37,7 @@ struct ETUIInteractionBox {
 struct ETUIButton {
     virtual ~ETUIButton() = default;
     virtual void ET_setEventName(const char* newEventName) = 0;
+    virtual float ET_getPressDuration() const = 0;
 };
 
 struct ETUILabel {
@@ -94,6 +95,17 @@ struct ETUIConfigManager {
     virtual ~ETUIConfigManager() = default;
     virtual const char* ET_getDefaultGeomRenderer() = 0;
     virtual const char* ET_getDefaultTextRenderer() = 0;
+};
+
+struct ETUIButtonPressAnimationEvents {
+    virtual ~ETUIButtonPressAnimationEvents() = default;
+    virtual void ET_onPressAnimationEnd() = 0;
+};
+
+struct ETUIButtonPressAnimation {
+    virtual ~ETUIButtonPressAnimation() = default;
+    virtual void ET_startPressAnimation() = 0;
+    virtual float ET_getAnimationDuration() const = 0;
 };
 
 #endif /* __UI_ET_INTERFACES_HPP__ */

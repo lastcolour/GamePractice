@@ -48,7 +48,7 @@ void GameBoardElemDestroyLogic::ET_onGameTick(float dt) {
 
     if(destroyedCount > 0) {
         ET_SendEvent(getEntityId(), &ETGameBoard::ET_updateBoard);
-        ET_SendEvent(getEntityId(), &ETGameScore::ET_onElemsDestroyed, destroyedCount);
+        ET_SendEvent(getEntityId(), &ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, destroyedCount);
     }
 }
 
