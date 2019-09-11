@@ -55,6 +55,73 @@ void UIBaseBox::ET_onTransformChanged(const Transform& newTm) {
     }
 }
 
+const Margin& UIBaseBox::ET_getMaring() const {
+    return margin;
+}
+
+Margin UIBaseBox::calculateMargin(const AABB2Di& parentBox) const {
+    Margin resMargin;
+    switch (style.sizeInv)
+    {
+        case SizeInvariant::Absolute:
+        {
+            Vec2i renderPort(0);
+            ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+            resMargin.left = static_cast<int>(renderPort.x * style.margin.left);
+            resMargin.right = static_cast<int>(renderPort.x * style.margin.right);
+            resMargin.bot = static_cast<int>(renderPort.y * style.margin.bot);
+            resMargin.top = static_cast<int>(renderPort.y * style.margin.top);
+            break;
+        }
+        case SizeInvariant::AbsoluteBiggestSquare:
+        {
+            Vec2i renderPort(0);
+            ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+            int minSide = std::min(renderPort.x, renderPort.y);
+
+            resMargin.left = static_cast<int>(minSide * style.margin.left);
+            resMargin.right = static_cast<int>(minSide * style.margin.right);
+            resMargin.bot = static_cast<int>(minSide * style.margin.bot);
+            resMargin.top = static_cast<int>(minSide * style.margin.top);
+            break;
+        }
+        case SizeInvariant::Relative:
+        {
+            Vec2i parentSize = parentBox.getSize();
+
+            resMargin.left = static_cast<int>(parentSize.x * style.margin.left);
+            resMargin.right = static_cast<int>(parentSize.x * style.margin.right);
+            resMargin.bot = static_cast<int>(parentSize.y * style.margin.bot);
+            resMargin.top = static_cast<int>(parentSize.y * style.margin.top);
+            break;
+        }
+        case SizeInvariant::RelativeBiggestSquare:
+        {
+            Vec2i parentSize = parentBox.getSize();
+            int minSide = std::min(parentSize.x, parentSize.y);
+
+            resMargin.left = static_cast<int>(minSide * style.margin.left);
+            resMargin.right = static_cast<int>(minSide * style.margin.right);
+            resMargin.bot = static_cast<int>(minSide * style.margin.bot);
+            resMargin.top = static_cast<int>(minSide * style.margin.top);
+            break;
+        }
+        case SizeInvariant::Pixel:
+        {
+            resMargin.left = static_cast<int>(style.margin.left);
+            resMargin.right = static_cast<int>(style.margin.right);
+            resMargin.bot = static_cast<int>(style.margin.bot);
+            resMargin.top = static_cast<int>(style.margin.top);
+            break;
+        }
+        default:
+            assert(false && "Invalid style size invariant type");
+            break;
+    }
+    return resMargin;
+}
+
 Vec2i UIBaseBox::calculateBoxSize(const AABB2Di& parentBox) const {
     Vec2i resSize(0);
     switch (style.sizeInv)
@@ -144,6 +211,7 @@ Vec2i UIBaseBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) co
 
 void UIBaseBox::setBox(const AABB2Di& newBox) {
     box = newBox;
+    margin = calculateMargin(getParentAabb2di());
     syncTransform();
 }
 

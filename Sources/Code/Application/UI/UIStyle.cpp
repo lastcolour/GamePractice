@@ -66,7 +66,7 @@ ColorB parseColor(const JSONNode& node) {
 
 } // namespace
 
-Margin::Margin() :
+BoxMargin::BoxMargin() :
     left(0.f),
     right(0.f),
     bot(0.f),

@@ -20,7 +20,9 @@
                         "w": 0.8,
                         "inv": "relBS"
                     },
-                    "margin": {}
+                    "margin": {
+                        "top":0.02
+                    }
                 },
                 "label": {
                     "text": "Restart",

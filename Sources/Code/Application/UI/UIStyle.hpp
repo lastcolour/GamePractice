@@ -28,13 +28,13 @@ enum class SizeInvariant {
     Pixel
 };
 
-struct Margin {
+struct BoxMargin {
     float left;
     float right;
     float bot;
     float top;
 
-    Margin();
+    BoxMargin();
 };
 
 struct UIStyle {
@@ -45,7 +45,7 @@ public:
     SizeInvariant sizeInv;
     XAlignType xAlignType;
     YAlignType yAlignType;
-    Margin margin;
+    BoxMargin margin;
     std::string renderer;
     float fontSize;
     ColorB fontColor;

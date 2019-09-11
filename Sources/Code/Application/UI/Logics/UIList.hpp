@@ -3,6 +3,8 @@
 
 #include "UI/Logics/UIBaseBox.hpp"
 
+struct OffsetData;
+
 class UIList : public UIBaseBox,
     public ETNode<ETUIList> {
 public:
@@ -24,7 +26,8 @@ private:
 
     void calcList();
     AABB2Di getAligntBox(const AABB2Di& elemBox) const;
-    Vec2i caclCenterUpdateOffset(Vec2i& offset, const AABB2Di& elemBox);
+    void initOffset(OffsetData& offsetData) const;
+    Vec2i caclCenterUpdateOffset(OffsetData& offsetData, const AABB2Di& elemBox, const Margin& margin) const;
 
 private:
 

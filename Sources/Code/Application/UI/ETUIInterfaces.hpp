@@ -6,6 +6,16 @@
 
 struct UIStyle;
 
+struct Margin {
+    int top;
+    int bot;
+    int left;
+    int right;
+
+    Margin() : 
+        top(0), bot(0), left(0), right(0) {}
+};
+
 enum class UIListType {
     Vertical = 0,
     Horizontal
@@ -24,6 +34,7 @@ struct ETUIBox {
     virtual void ET_boxResize() = 0;
     virtual const UIStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIStyle& newStyle) = 0;
+    virtual const Margin& ET_getMaring() const = 0;
 };
 
 struct ETUIInteractionBox {

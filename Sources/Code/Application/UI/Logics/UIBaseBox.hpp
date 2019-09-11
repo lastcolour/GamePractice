@@ -27,6 +27,7 @@ public:
     const AABB2Di& ET_getAabb2di() const override;
     void ET_alignInBox(const AABB2Di& alingBox) override;
     void ET_boxResize() override;
+    const Margin& ET_getMaring() const override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
@@ -53,10 +54,12 @@ private:
     EntityId getRootUIList() const;
     void syncTransform() const;
     bool isNeedResize();
+    Margin calculateMargin(const AABB2Di& parentBox) const;
 
 private:
 
     UIStyle style;
+    Margin margin;
     AABB2Di box;
     AABB2Di lastResizeBox;
 };

@@ -7,6 +7,11 @@
 #include <algorithm>
 #include <limits>
 
+struct OffsetData {
+    int offset;
+    int margin;
+};
+
 UIList::UIList() :
     listType(UIListType::Vertical) {
 }
@@ -61,15 +66,28 @@ AABB2Di UIList::getAligntBox(const AABB2Di& elemBox) const {
     return resBox;
 }
 
-Vec2i UIList::caclCenterUpdateOffset(Vec2i& offset, const AABB2Di& elemBox) {
+void UIList::initOffset(OffsetData& offsetData) const {
+    offsetData.margin = 0;
+    if(listType == UIListType::Vertical) {
+        offsetData.offset = ET_getAabb2di().top.y;
+    } else {
+        offsetData.offset = ET_getAabb2di().bot.x;
+    }
+}
+
+Vec2i UIList::caclCenterUpdateOffset(OffsetData& offsetData, const AABB2Di& elemBox, const Margin& margin) const {
     auto boxSize = elemBox.getSize();
     auto center = elemBox.getCenter();
     if(listType == UIListType::Vertical) {
-        center.y = offset.y - boxSize.y / 2;
-        offset.y -= boxSize.y;
+        int marginShift = std::max(offsetData.margin, margin.top);
+        center.y = offsetData.offset - boxSize.y / 2 - marginShift;
+        offsetData.offset -= boxSize.y + marginShift;
+        offsetData.margin = margin.bot;
     } else {
-        center.x = offset.x + boxSize.x / 2;
-        offset.x += boxSize.x;
+        int marginShift = std::max(offsetData.margin, margin.left);
+        center.x = offsetData.offset + boxSize.x / 2 + marginShift;
+        offsetData.offset += boxSize.x + marginShift;
+        offsetData.margin = margin.right;
     }
     return center;
 }
@@ -77,14 +95,10 @@ Vec2i UIList::caclCenterUpdateOffset(Vec2i& offset, const AABB2Di& elemBox) {
 void UIList::calcList() {
     setBox(calcBox(getParentAabb2di()));
 
+    OffsetData offsetData;
+    initOffset(offsetData);
+    
     AABB2Di listBox = ET_getAabb2di();
-    Vec2i offset(0);
-    if(listType == UIListType::Vertical) {
-        offset.y = listBox.top.y;
-    } else {
-        offset.x = listBox.bot.x;
-    }
-
     if(!children.empty()) {
 
         listBox.top = Vec2i(std::numeric_limits<int>::min());
@@ -96,10 +110,12 @@ void UIList::calcList() {
             ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
 
             ET_SendEvent(entId, &ETUIBox::ET_alignInBox, getAligntBox(elemBox));
-            Vec2i elemBoxSize = elemBox.getSize();
 
             ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
-            auto newCenter = caclCenterUpdateOffset(offset, elemBox);
+            Margin margin;
+            ET_SendEventReturn(margin, entId, &ETUIBox::ET_getMaring);
+            auto newCenter = caclCenterUpdateOffset(offsetData, elemBox, margin);
+
             ET_SendEvent(entId, &ETUIBox::ET_setCenter, newCenter);
 
             ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);

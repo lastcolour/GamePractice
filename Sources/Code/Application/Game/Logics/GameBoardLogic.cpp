@@ -406,6 +406,12 @@ void GameBoardLogic::updateAfterRemoves() {
 
 void GameBoardLogic::updateBoard() {
     for(auto& elem : elements) {
+        removeVerticalLine(elem.boardPt, 5);
+        removeHorizontalLine(elem.boardPt, 5);
+
+        removeVerticalLine(elem.boardPt, 4);
+        removeHorizontalLine(elem.boardPt, 4);
+
         removeVerticalLine(elem.boardPt, 3);
         removeHorizontalLine(elem.boardPt, 3);
     }
