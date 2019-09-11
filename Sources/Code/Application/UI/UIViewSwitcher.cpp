@@ -14,6 +14,7 @@ UIViewSwitcher::~UIViewSwitcher() {
 bool UIViewSwitcher::init() {
     ETNode<ETTimerEvents>::connect(getEntityId());
     ETNode<ETUIViewSwitcher>::connect(getEntityId());
+    ETNode<ETRenderEvents>::connect(getEntityId());
     return true;
 }
 
@@ -33,13 +34,21 @@ void UIViewSwitcher::ET_onTick(float dt) {
     float prog = std::min(activeTask->duration / swtichDuration, 1.0f);
     float shift = Math::Lerp(0.f, static_cast<float>(renderPort.x), prog);
 
+    float shiftForNewView = renderPort.x - shift;
+    float shiftForOldView = -shift;
+
+    if(activeTask->reverse) {
+        shiftForNewView = -shiftForNewView;
+        shiftForOldView = -shiftForOldView;
+    }
+
     Transform tm;
     ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
-    tm.pt.x = activeTask->startTm.pt.x + renderPort.x - shift;
+    tm.pt.x = activeTask->startTm.pt.x + shiftForNewView;
     ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
 
     ET_SendEventReturn(tm, activeTask->oldViewId, &ETEntity::ET_getTransform);
-    tm.pt.x = activeTask->startTm.pt.x - shift;
+    tm.pt.x = activeTask->startTm.pt.x + shiftForOldView;
     ET_SendEvent(activeTask->oldViewId, &ETEntity::ET_setTransform, tm);
 
     if(activeTask->duration >= swtichDuration) {
@@ -53,9 +62,9 @@ float UIViewSwitcher::ET_getSwitchDuration() const {
     return swtichDuration;
 }
 
-void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
+void UIViewSwitcher::setupTask(EntityId newViewId, EntityId oldViewId, bool reverse) {
     if(activeTask) {
-        LogError("[UIViewSwitcher::ET_swtichView] Try switch view while alreay exist active task");
+        LogError("[UIViewSwitcher::setupTask] Try switch view while alreay exist active task");
         return;
     }
 
@@ -63,6 +72,7 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
     activeTask->duration = 0.f;
     activeTask->newViewId = newViewId;
     activeTask->oldViewId = oldViewId;
+    activeTask->reverse = reverse;
     ET_SendEventReturn(activeTask->startTm, activeTask->oldViewId,
         &ETEntity::ET_getTransform);
 
@@ -71,21 +81,42 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
 
     Transform tm;
     ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
-    tm.pt.x += static_cast<float>(renderPort.x);
+
+    if(reverse) {
+        tm.pt.x -= static_cast<float>(renderPort.x);
+    } else {
+        tm.pt.x += static_cast<float>(renderPort.x);
+    }
     ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
 }
 
-void UIViewSwitcher::ET_reverseSwitching() {
+void UIViewSwitcher::ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId) {
+    setupTask(newViewId, oldViewId, true);
+}
+
+void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
+    setupTask(newViewId, oldViewId, false);
+}
+
+void UIViewSwitcher::ET_reverse() {
     if(!activeTask) {
-        LogError("[UIViewSwitcher::ET_reverseSwitching] Can't reverse task without task");
+        LogError("[UIViewSwitcher::ET_reverse] Can't reverse task without task");
         return;
     }
     activeTask->duration = swtichDuration - activeTask->duration;
+    activeTask->reverse = !activeTask->reverse;
     std::swap(activeTask->newViewId, activeTask->oldViewId);
 }
 
 void UIViewSwitcher::ET_forceSwtichStop() {
     if(activeTask) {
         activeTask.reset();
+    }
+}
+
+void UIViewSwitcher::ET_onRenderPortResized() {
+    if(activeTask) {
+        activeTask->duration = swtichDuration;
+        ET_onTick(0.f);
     }
 }

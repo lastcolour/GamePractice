@@ -76,9 +76,10 @@ struct ETUIViewStackEvents {
 struct ETUIViewSwitcher {
     virtual ~ETUIViewSwitcher() = default;
     virtual float ET_getSwitchDuration() const = 0;
+    virtual void ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId) = 0;
     virtual void ET_swtichView(EntityId newViewId, EntityId oldViewId) = 0;
     virtual void ET_forceSwtichStop() = 0;
-    virtual void ET_reverseSwitching() = 0;
+    virtual void ET_reverse() = 0;
 };
 
 struct ETUIViewSwitcherEvents {

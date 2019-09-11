@@ -49,7 +49,7 @@ void UIViewStack::ET_pushView(const char* viewName) {
         EntityId viewId = ET_getActiveViewId();
         ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPush, viewId);
 
-        ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitching);
+        ET_SendEvent(&ETUIViewSwitcher::ET_reverse);
     } else {
         StackTask task;
         task.viewName = viewName;
@@ -92,7 +92,7 @@ void UIViewStack::ET_popView() {
         EntityId viewId = ET_getActiveViewId();
         ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPop, viewId);
 
-        ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitching);
+        ET_SendEvent(&ETUIViewSwitcher::ET_reverse);
     } else {
         StackTask task;
         task.state = ETaskState::WaitPop;
@@ -161,7 +161,7 @@ void UIViewStack::notifyNormalPop() {
 
     ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPop, activeViewId);
 
-    ET_SendEvent(&ETUIViewSwitcher::ET_swtichView, prevViewId, activeViewId);
+    ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitchView, prevViewId, activeViewId);
 }
 
 void UIViewStack::startNextTask() {
