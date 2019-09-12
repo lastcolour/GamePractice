@@ -217,7 +217,7 @@ void JSONNode::read(const char* key, std::string& value) const {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->val) {
+    if(!nodeImpl->val || !nodeImpl->val->IsObject()) {
         return;
     }
     auto memIt = nodeImpl->val->FindMember(key);
@@ -232,7 +232,7 @@ void JSONNode::read(const char* key, float& value) const {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->val) {
+    if(!nodeImpl->val || !nodeImpl->val->IsObject()) {
         return;
     }
     auto memIt = nodeImpl->val->FindMember(key);
@@ -249,7 +249,7 @@ void JSONNode::read(const char* key, int& value) const {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->val) {
+    if(!nodeImpl->val || !nodeImpl->val->IsObject()) {
         return;
     }
     auto memIt = nodeImpl->val->FindMember(key);
@@ -264,7 +264,7 @@ void JSONNode::read(const char* key, bool& value) const {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->val) {
+    if(!nodeImpl->val || !nodeImpl->val->IsObject()) {
         return;
     }
     auto memIt = nodeImpl->val->FindMember(key);

@@ -3,8 +3,7 @@
 
 namespace {
 
-const char* END_EVENT_NORMAL = "Game_OnGameNormalEnd";
-const char* END_EVENT_NEW_HIGH_SCORE = "Game_OnGameHighScoreEnd";
+const char* GAME_END_EVENT = "Game_OnGameEnd";
 
 }; // namespace
 
@@ -42,19 +41,7 @@ void GameState::ET_resumeGame() {
 
 void GameState::ET_endGame() {
     gameState = EGameState::None;
-
-    int prevHighScore = 0;
-    ET_SendEventReturn(prevHighScore, &ETGameConfig::ET_getHighScore);
-
-    int currScore = 0;
-    ET_SendEventReturn(currScore, &ETGameScore::ET_getGameScore);
-
-    if(currScore > prevHighScore) {
-        ET_SendEvent(&ETGameConfig::ET_setHighScore, currScore);
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NEW_HIGH_SCORE);
-    } else {
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, END_EVENT_NORMAL);
-    }
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, GAME_END_EVENT);
 }
 
 void GameState::ET_interruptGame() {

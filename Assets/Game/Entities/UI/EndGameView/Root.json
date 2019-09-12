@@ -7,7 +7,7 @@
                 "type":"vert",
                 "children":[
                     {
-                        "object":"UI/EndGameView/ResultInfo.json"
+                        "object":"UI/EndGameView/ResultBox.json"
                     },
                     {
                         "object":"UI/EndGameView/PlayAgainButton.json"

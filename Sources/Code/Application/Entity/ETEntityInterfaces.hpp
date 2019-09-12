@@ -27,6 +27,7 @@ struct ETEntity {
 struct ETEntityManager {
     virtual ~ETEntityManager() = default;
     virtual EntityId ET_createEntity(const char* entityName) = 0;
+    virtual bool ET_extendEntity(EntityId entId, const char* entityName) = 0;
     virtual void ET_destroyEntity(EntityId entId) = 0;
 };
 

@@ -133,3 +133,7 @@ TEST_F(EntityTests, CheckChildInheritParentScale) {
     EXPECT_FLOAT_EQ(tm.scale.y, 0.5f);
     EXPECT_FLOAT_EQ(tm.scale.z, 0.5f);
 }
+
+TEST_F(EntityTests, CheckExtendEntity) {
+    ASSERT_TRUE(false);
+}

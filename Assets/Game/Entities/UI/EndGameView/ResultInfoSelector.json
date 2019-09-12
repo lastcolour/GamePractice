@@ -1,0 +1,12 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIResultInfoSelector",
+            "data":{
+                "newHighScore":"UI/EndGameView/NewHighScore/ResultInfo.json",
+                "normalScore":"UI/EndGameView/NormalScore/ResultInfo.json"
+            }
+        }
+    ]
+}

@@ -29,6 +29,7 @@ public:
 
     // ETEntityManager
     EntityId ET_createEntity(const char* entityName) override;
+    bool ET_extendEntity(EntityId entId, const char* entityName) override;
     void ET_destroyEntity(EntityId entId) override;
 
 private:

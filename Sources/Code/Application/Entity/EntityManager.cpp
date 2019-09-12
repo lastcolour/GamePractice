@@ -24,6 +24,8 @@
 #include "UI/Logics/UIPartition.hpp"
 #include "UI/Logics/UIImage.hpp"
 #include "UI/Logics/UIButtonPressAnimation.hpp"
+#include "UI/Logics/UILabelSetter.hpp"
+#include "UI/Logics/UIResultInfoSelector.hpp"
 
 #include <algorithm>
 
@@ -64,6 +66,8 @@ bool EntityManager::init() {
     registerLogic<UIPartition>("UIPartition");
     registerLogic<UIImage>("UIImage");
     registerLogic<UIButtonPressAnimation>("UIButtonPressAnimation");
+    registerLogic<UILabelSetter>("UILabelSetter");
+    registerLogic<UIResultInfoSelector>("UIResultInfoSelector");
 
     ETNode<ETEntityManager>::connect(getEntityId());
     return true;
@@ -81,6 +85,10 @@ EntityId EntityManager::ET_createEntity(const char* entityName) {
     auto objId = obj->getEntityId();
     entities.emplace_back(std::move(obj));
     return objId;
+}
+
+bool EntityManager::ET_extendEntity(EntityId entId, const char* entityName) {
+    return false;
 }
 
 void EntityManager::ET_destroyEntity(EntityId entId) {

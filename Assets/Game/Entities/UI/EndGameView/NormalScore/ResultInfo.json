@@ -1,0 +1,37 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIPartion",
+            "data":{
+                "type":"vert",
+                "children":[
+                    {
+                        "type":"vert",
+                        "style":{"size":{"w":1, "h":0.7}},
+                        "children":[
+                            {
+                                "object":"UI/EndGameView/NormalScore/ScoreTextLabel.json"
+                            },
+                            {
+                                "object":"UI/EndGameView/NormalScore/ScoreValueLabel.json"
+                            }
+                        ]
+                    },
+                    {
+                        "type":"vert", 
+                        "style":{"size":{"w":1, "h":0.3}},
+                        "children":[
+                            {
+                                "object":"UI/EndGameView/NormalScore/HighScoreTextLabel.json"
+                            },
+                            {
+                                "object":"UI/EndGameView/NormalScore/HighScoreValueLabel.json"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

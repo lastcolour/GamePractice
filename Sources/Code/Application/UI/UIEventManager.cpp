@@ -32,10 +32,7 @@ void UIEventManager::setupCallbacks() {
     eventMap["Main_OnOptionsButton"] = [this](){
         pushView(EViewType::Options);
     };
-    eventMap["Game_OnGameNormalEnd"] = [this](){
-        pushView(EViewType::EndGame);
-    };
-    eventMap["Game_OnGameHighScoreEnd"] = [this](){
+    eventMap["Game_OnGameEnd"] = [this](){
         pushView(EViewType::EndGame);
     };
     eventMap["EndGame_OnExitToMainButton"] = [this](){
