@@ -78,23 +78,50 @@ void EntityManager::deinit() {
 }
 
 EntityId EntityManager::ET_createEntity(const char* entityName) {
-    auto obj = createEntity(nullptr, entityName);
-    if(!obj) {
-        return InvalidEntityId;
+    auto entity = createEntity(nullptr, entityName);
+    if(entity) {
+        return entity->getEntityId();
     }
-    auto objId = obj->getEntityId();
-    entities.emplace_back(std::move(obj));
-    return objId;
+    return InvalidEntityId;
 }
 
-bool EntityManager::ET_extendEntity(EntityId entId, const char* entityName) {
-    return false;
+bool EntityManager::ET_extendEntity(EntityId entityId, const char* extendEntityName) {
+    auto it = std::find_if(entities.begin(), entities.end(), [entityId](const EntityPtrT& entPtr){
+        return entPtr && entPtr->getEntityId() == entityId;
+    });
+    if(it == entities.end()) {
+        LogError("[EntityManager::ET_extendEntity] Can't find entity to extend with id: %d", entityId.getRawId());
+        return false;
+    }
+    Entity* baseEntity = it->get();
+    if(!extendEntityName || !extendEntityName[0]) {
+        LogError("[EntityManager::ET_extendEntity] Can't extend entity %s by invalid entity");
+        return false;
+    }
+    std::string baseEntityName = baseEntity->ET_getName();
+    if(baseEntityName == extendEntityName) {
+        LogError("[EntityManager::ET_extendEntity] Can't extend entity %s by itself");
+        return false;
+    }
+
+    auto node = loadEntityRootNode(extendEntityName);
+    if(!node) {
+        return nullptr;
+    }
+    if(!setupEntityLogics(baseEntity, node, extendEntityName)) {
+        return nullptr;
+    }
+    if(!setupEntityChildren(baseEntity, node, extendEntityName)) {
+        return nullptr;
+    }
+    LogDebug("[EntityManager::ET_extendEntity] Extend entity: %s by %s", baseEntity->ET_getName(), extendEntityName);
+    return true;
 }
 
-void EntityManager::ET_destroyEntity(EntityId entId) {
+void EntityManager::ET_destroyEntity(EntityId entityId) {
     EntityPtrT entToRemove;
     for(auto it = entities.begin(), end = entities.end(); it != end; ++it) {
-        if(*it && (*it)->getEntityId() == entId) {
+        if(*it && (*it)->getEntityId() == entityId) {
             entToRemove = std::move(*it);
             break;
         }
@@ -120,7 +147,7 @@ void EntityManager::registerCreateLogic(const char* logicName, LogicCreateFunc c
     }
 }
 
-EntityManager::LogicPtrT EntityManager::createLogic(const char* logicName) {
+EntityManager::LogicPtrT EntityManager::createLogic(const char* logicName) const {
     std::string reqLogicName = logicName;
     std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
@@ -130,64 +157,86 @@ EntityManager::LogicPtrT EntityManager::createLogic(const char* logicName) {
     return nullptr;
 }
 
-EntityManager::EntityPtrT EntityManager::createEntity(Entity* rootEnt, const char* entityName) {
-    if(!entityName || !entityName[0]) {
-        LogWarning("[EntityManager::createEntity] Can't create entity with empty name");
-        return nullptr;
-    }
-    std::string entityFilePath = StringFormat("%s/%s", GAME_ENTITIES, entityName);
-    JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, entityFilePath.c_str());
-    if(!rootNode) {
-        LogWarning("[EntityManager::createEntity] Can't load entity from: %s", entityFilePath);
-        return nullptr;
-    }
-    EntityPtrT entPtr(new Entity(entityName, GetETSystem()->createNewEntityId()));
-    auto logicsNodes = rootNode.object("logics");
+bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
+    auto logicsNodes = node.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
-        LogWarning("[EntityManager::createEntity] Skip entity '%s' while it doesn't have any logic", entityName);
-        return nullptr;
+        LogWarning("[EntityManager::setupEntityLogics] Skip entity '%s' while it doesn't have any logic", entityName);
+        return false;
     }
     for(const auto& logicNode : logicsNodes) {
         std::string logicType;
         logicNode.read("type", logicType);
         auto logicPtr = createLogic(logicType.c_str());
         if(!logicPtr) {
-            LogWarning("[EntityManager::createEntity] Can't find logic type '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't find logic type '%s' for entity '%s'", logicType, entityName);
             continue;
         }
         auto logicData = logicNode.object("data");
         if(!logicData) {
-            LogWarning("[EntityManager::createEntity] Can't find logic data for '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't find logic data for '%s' for entity '%s'", logicType, entityName);
             continue;
         }
-        logicPtr->setEntity(entPtr.get());
+        logicPtr->setEntity(entity);
         if(!logicPtr->serialize(logicData)) {
-            LogWarning("[EntityManager::createEntity] Can't serialize logic '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't serialize logic '%s' for entity '%s'", logicType, entityName);
             continue;
         }
         if(!logicPtr->init()) {
-            LogWarning("[EntityManager::createEntity] Can't init logic '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entityName);
             continue;
         }
-        entPtr->addLogic(std::move(logicPtr));
+        entity->addLogic(std::move(logicPtr));
     }
-    auto childrenNode = rootNode.object("children");
+    return true;
+}
+
+bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, const char* entityName) {
+    auto childrenNode = node.object("children");
     if (!childrenNode) {
-        LogWarning("[EntityManager::createEntity] Can't find require children node in enitity file '%s'", entityName);
-        return nullptr;
+        LogWarning("[EntityManager::setupEntityChildren] Can't find require children node in enitity file '%s'", entityName);
+        return false;
     }
     for(const auto& childNode : childrenNode) {
         std::string childEntName;
         childNode.read(childEntName);
-        auto childEntObj = createEntity(entPtr.get(), childEntName.c_str());
-        if(childEntObj) {
-            entities.push_back(std::move(childEntObj));
-        }
+        createEntity(entity, childEntName.c_str());
     }
-    if(rootEnt) {
-        rootEnt->ET_addChild(entPtr->getEntityId());
+    return true;
+}
+
+JSONNode EntityManager::loadEntityRootNode(const char* entityName) const {
+    if(!entityName || !entityName[0]) {
+        LogWarning("[EntityManager::loadEntityRootNode] Can't load entity with empty name");
+        return JSONNode();
+    }
+    std::string entityFilePath = StringFormat("%s/%s", GAME_ENTITIES, entityName);
+    JSONNode rootNode;
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, entityFilePath.c_str());
+    if(!rootNode) {
+        LogWarning("[EntityManager::loadEntityRootNode] Can't load entity from: %s", entityFilePath);
+        return JSONNode();
+    }
+    return rootNode;
+}
+
+Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) {
+    auto rootNode = loadEntityRootNode(entityName);
+    if(!rootNode) {
+        return nullptr;
+    }
+    entities.emplace_back(new Entity(entityName, GetETSystem()->createNewEntityId()));
+    Entity* entity = entities.back().get();
+    if(!setupEntityLogics(entity, rootNode, entityName)) {
+        entities.pop_back();
+        return nullptr;
+    }
+    if(!setupEntityChildren(entity, rootNode, entityName)) {
+        entities.pop_back();
+        return nullptr;
+    }
+    if(rootEntity) {
+        rootEntity->ET_addChild(entity->getEntityId());
     }
     LogDebug("[EntityManager::createEntity] Create entity: '%s'", entityName);
-    return std::move(entPtr);
+    return entity;
 }

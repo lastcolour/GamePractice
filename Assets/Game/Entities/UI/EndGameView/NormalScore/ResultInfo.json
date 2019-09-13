@@ -2,7 +2,7 @@
     "children":[],
     "logics":[
         {
-            "type":"UIPartion",
+            "type":"UIPartition",
             "data":{
                 "type":"vert",
                 "children":[

@@ -4,9 +4,9 @@
         {
             "type": "UILabel",
             "data": {
-                "text":"High Score",
+                "text":"New High Score",
                 "style": {
-                    "fontSize":0.3,
+                    "fontSize":0.1,
                     "fontColor":{
                         "r":255,
                         "g":255,

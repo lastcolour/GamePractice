@@ -2,15 +2,15 @@
     "children":[],
     "logics":[
         {
-            "type":"UIPartion",
+            "type":"UIPartition",
             "data":{
                 "type":"vert",
                 "children":[
                     {
-                        "object":"UI/EndGameView/NewHighScore/ScoreTextLabel.json"
+                        "object":"UI/EndGameView/NewHighScore/HighScoreTextLabel.json"
                     },
                     {
-                        "object":"UI/EndGameView/NewHighScore/ScoreValueLabel.json"
+                        "object":"UI/EndGameView/NewHighScore/HighScoreValueLabel.json"
                     }
                 ]
             }
