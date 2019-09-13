@@ -95,12 +95,12 @@ bool EntityManager::ET_extendEntity(EntityId entityId, const char* extendEntityN
     }
     Entity* baseEntity = it->get();
     if(!extendEntityName || !extendEntityName[0]) {
-        LogError("[EntityManager::ET_extendEntity] Can't extend entity %s by invalid entity");
+        LogError("[EntityManager::ET_extendEntity] Can't extend entity '%s' by invalid entity");
         return false;
     }
     std::string baseEntityName = baseEntity->ET_getName();
     if(baseEntityName == extendEntityName) {
-        LogError("[EntityManager::ET_extendEntity] Can't extend entity %s by itself");
+        LogError("[EntityManager::ET_extendEntity] Can't extend entity '%s' by itself");
         return false;
     }
 
@@ -114,7 +114,7 @@ bool EntityManager::ET_extendEntity(EntityId entityId, const char* extendEntityN
     if(!setupEntityChildren(baseEntity, node, extendEntityName)) {
         return nullptr;
     }
-    LogDebug("[EntityManager::ET_extendEntity] Extend entity: %s by %s", baseEntity->ET_getName(), extendEntityName);
+    LogDebug("[EntityManager::ET_extendEntity] Extend entity: '%s' by '%s'", baseEntity->ET_getName(), extendEntityName);
     return true;
 }
 
@@ -127,7 +127,7 @@ void EntityManager::ET_destroyEntity(EntityId entityId) {
         }
     }
     if(entToRemove) {
-        LogDebug("[EntityManager::ET_destroyEntity] Detroy entity: %s", entToRemove->ET_getName());
+        LogDebug("[EntityManager::ET_destroyEntity] Detroy entity: '%s'", entToRemove->ET_getName());
         entToRemove.reset();
         entities.erase(std::remove_if(entities.begin(), entities.end(), [](const EntityPtrT& obj){
             return obj == nullptr;
@@ -213,7 +213,7 @@ JSONNode EntityManager::loadEntityRootNode(const char* entityName) const {
     JSONNode rootNode;
     ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, entityFilePath.c_str());
     if(!rootNode) {
-        LogWarning("[EntityManager::loadEntityRootNode] Can't load entity from: %s", entityFilePath);
+        LogWarning("[EntityManager::loadEntityRootNode] Can't load entity from: '%s'", entityFilePath);
         return JSONNode();
     }
     return rootNode;
