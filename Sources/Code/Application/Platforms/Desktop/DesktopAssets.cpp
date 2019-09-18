@@ -18,7 +18,7 @@
 #elif defined APP_BUILD_PLATFORM_LINUX
   #include <unistd.h>
   #define PLATFORM_GET_CWD getcwd
-  #define PLATFORM_CREATE_DIR(DIR_NAME) !mkdir(DIR_NAME)
+  #define PLATFORM_CREATE_DIR(DIR_NAME) !mkdir(DIR_NAME, S_IRWXU|S_IRWXG|S_IRWXO)
   const char* CWD_PREFIX = "/";
 #else
   #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
@@ -123,13 +123,13 @@ std::string getAssetDirPath() {
 std::string getLoacalFilesDirPath() {
     std::string cwdPath = getCWD();
     if(cwdPath.empty()) {
-        return false;
+        return "";
     }
     fixSlashes(cwdPath);
     std::string dirPath = StringFormat("%s%c%s", cwdPath, VALID_SLASH, LOCAL_DIR_PATH);
     if(!isDirExist(dirPath)) {
         if(!createDir(dirPath)) {
-            return false;
+            return "";
         }
     }
     return dirPath;
@@ -176,7 +176,6 @@ void DesktopAssets::deinit() {
 JSONNode DesktopAssets::ET_loadJSONAsset(const char* assetName) {
     auto buffer = ET_loadAsset(assetName);
     if(!buffer) {
-        LogError("[DesktopAssets::loadJSONAsset] Can't load asset from: %s", assetName);
         return JSONNode();
     }
     auto rootNode = JSONNode::ParseBuffer(buffer);
@@ -215,18 +214,17 @@ Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
 }
 
 Buffer DesktopAssets::ET_loadLocalFile(const char* fileName) {
-    Buffer buff;
     if(!fileName || !fileName[0]) {
-        return buff;
+        LogError("[DesktopAssets::ET_loadLocalFile] Can't local file with empty name");
+        return Buffer();
     }
-    buff = loadFileFromDir(localRootPath, fileName);
+    Buffer buff = loadFileFromDir(localRootPath, fileName);
     return buff;
 }
 
 JSONNode DesktopAssets::ET_loadLocalJSONFile(const char* fileName) {
     auto buffer = ET_loadLocalFile(fileName);
     if(!buffer) {
-        LogError("[DesktopAssets::ET_loadLocalJSONFile] Can't load local file from: %s", fileName);
         return JSONNode();
     }
     auto rootNode = JSONNode::ParseBuffer(buffer);
@@ -243,17 +241,17 @@ bool DesktopAssets::ET_saveLocalFile(const char* fileName, const Buffer& buff) {
         LogError("[DesktopAssets::ET_saveLocalFile] Can't save a file by invalid name: '%s'", fileName);
         return false;
     }
-    if(isDirExist(filePath.c_str())) {
+    if(isDirExist(filePath)) {
         LogError("[DesktopAssets::ET_saveLocalFile] Can't write data to a dir object: '%s'", filePath);
         return false;
     }
     std::ofstream fout(filePath, std::ios::out | std::ios::binary);
     if(!fout.good() || !fout.is_open()) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't create/open a file: '%s'", filePath);
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't create/open a file: '%s'; Error: %s", filePath, strerror(errno));
         return false;
     }
     if(!fout.write(static_cast<const char*>(buff.getReadData()), buff.getSize())) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't write to the file: '%s'", filePath);
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't write to the file: '%s'; Error: %s", filePath, strerror(errno));
         return false;
     }
     return true;
@@ -265,12 +263,12 @@ bool DesktopAssets::ET_removeLocalFile(const char* fileName) {
         LogError("[DesktopAssets::ET_removeLocalFile] Can't remove a file by invalid name: '%s'", fileName);
         return false;
     }
-    if(isDirExist(filePath.c_str())) {
+    if(isDirExist(filePath)) {
         LogError("[DesktopAssets::ET_removeLocalFile] Can't remove a dir object: '%s'", filePath);
         return false;
     }
     if(remove(filePath.c_str())) {
-        LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s'", filePath);
+        LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s'; Error: %s", filePath, strerror(errno));
         return false;
     }
     return true;
@@ -282,13 +280,13 @@ Buffer DesktopAssets::loadFileFromDir(const std::string& dirPath, const std::str
         LogError("[DesktopAssets::loadFileFromDir] Can't load file by invalid name: '%s'", fileName);
         return Buffer();
     }
-    if(isDirExist(filePath.c_str())) {
+    if(isDirExist(filePath)) {
         LogError("[DesktopAssets::loadFileFromDirImpl] Can't opend dir as file: '%s'", filePath);
         return Buffer();
     }
     std::ifstream fin(filePath, std::ios::binary | std::ios::ate);
     if(!fin.good() || !fin.is_open()) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'", filePath);
+        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'. Error: %s", filePath, strerror(errno));
         return Buffer();
     }
     std::streamoff fileSize = fin.tellg();

@@ -75,19 +75,19 @@ void UIList::initOffset(OffsetData& offsetData) const {
     }
 }
 
-Vec2i UIList::caclCenterUpdateOffset(OffsetData& offsetData, const AABB2Di& elemBox, const Margin& margin) const {
+Vec2i UIList::caclCenterUpdateOffset(OffsetData& offsetData, const AABB2Di& elemBox, const Margin& elemMargin) const {
     auto boxSize = elemBox.getSize();
     auto center = elemBox.getCenter();
     if(listType == UIListType::Vertical) {
-        int marginShift = std::max(offsetData.margin, margin.top);
+        int marginShift = std::max(offsetData.margin, elemMargin.top);
         center.y = offsetData.offset - boxSize.y / 2 - marginShift;
         offsetData.offset -= boxSize.y + marginShift;
-        offsetData.margin = margin.bot;
+        offsetData.margin = elemMargin.bot;
     } else {
-        int marginShift = std::max(offsetData.margin, margin.left);
+        int marginShift = std::max(offsetData.margin, elemMargin.left);
         center.x = offsetData.offset + boxSize.x / 2 + marginShift;
         offsetData.offset += boxSize.x + marginShift;
-        offsetData.margin = margin.right;
+        offsetData.margin = elemMargin.right;
     }
     return center;
 }
@@ -112,9 +112,9 @@ void UIList::calcList() {
             ET_SendEvent(entId, &ETUIBox::ET_alignInBox, getAligntBox(elemBox));
 
             ET_SendEventReturn(elemBox, entId, &ETUIBox::ET_getAabb2di);
-            Margin margin;
-            ET_SendEventReturn(margin, entId, &ETUIBox::ET_getMaring);
-            auto newCenter = caclCenterUpdateOffset(offsetData, elemBox, margin);
+            Margin elemMargin;
+            ET_SendEventReturn(elemMargin, entId, &ETUIBox::ET_getMaring);
+            auto newCenter = caclCenterUpdateOffset(offsetData, elemBox, elemMargin);
 
             ET_SendEvent(entId, &ETUIBox::ET_setCenter, newCenter);
 

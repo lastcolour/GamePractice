@@ -3,6 +3,7 @@
 #include "Platforms/Android/AndroidEventManager.hpp"
 #include "Platforms/Android/AndroidLogger.hpp"
 #include "Platforms/Android/AndroidAssets.hpp"
+#include "Platforms/Android/AndroidFullscreenSetup.hpp"
 
 AndroidModule::AndroidModule() :
     SystemModule("AndroidModule") {
@@ -17,7 +18,8 @@ AndroidModule::LogicsContainerPtrT AndroidModule::getSystemLogics() const {
             AndroidLogger,
             AndroidAssets,
             AndroidEventManager,
-            AndroidSurface>()
+            AndroidSurface,
+            AndroidFullscreenSetup>()
         );
     return container;
 }

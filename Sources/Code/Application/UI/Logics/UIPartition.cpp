@@ -46,11 +46,11 @@ EntityId UIPartition::serializeNode(const JSONNode& node) {
     return InvalidEntityId;
 }
 
-void UIPartition::serializeChildren(EntityId rootEntId, const JSONNode& node) {
+void UIPartition::serializeChildren(EntityId parentId, const JSONNode& node) {
     for(auto& childNode : node.object("children")) {
         auto childId = serializeNode(childNode);
         if(childId.isValid()) {
-            ET_SendEvent(rootEntId, &ETEntity::ET_addChild, childId);
+            ET_SendEvent(parentId, &ETEntity::ET_addChild, childId);
         }
     }
 }
@@ -87,9 +87,9 @@ EntityId UIPartition::serializeAsBox(const JSONNode& node) {
     }
 
     if(auto styleNode = node.object("style")) {
-        UIStyle style;
-        style.serialize(styleNode);
-        ET_SendEvent(boxId, &ETUIBox::ET_setStyle, style);
+        UIStyle newStyle;
+        newStyle.serialize(styleNode);
+        ET_SendEvent(boxId, &ETUIBox::ET_setStyle, newStyle);
     }
 
     serializeChildren(boxId, node);
@@ -115,9 +115,9 @@ EntityId UIPartition::serializeAsList(UIListType listType, const JSONNode& node)
     ET_SendEvent(listId, &ETUIList::ET_setType, listType);
 
     if(auto styleNode = node.object("style")) {
-        UIStyle style;
-        style.serialize(styleNode);
-        ET_SendEvent(listId, &ETUIBox::ET_setStyle, style);
+        UIStyle styleOverride;
+        styleOverride.serialize(styleNode);
+        ET_SendEvent(listId, &ETUIBox::ET_setStyle, styleOverride);
     }
 
     serializeChildren(listId, node);

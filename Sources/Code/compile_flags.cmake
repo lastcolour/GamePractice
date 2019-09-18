@@ -31,11 +31,12 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 -Wpointer-arith
 -Wcast-align
 -Wwrite-strings
--Wcast-qual
--Wswitch-default
 -Wunreachable-code
+-Wno-type-limits
 -Werror CACHE INTERNAL "Compile flags for app")
 
+# -Wcast-qual
+# -Wswitch-default
 # -Wswitch-enum
 # -Wstrict-overflow=5
 # -Wconversion

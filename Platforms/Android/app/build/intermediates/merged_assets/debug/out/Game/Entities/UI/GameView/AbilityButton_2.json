@@ -1,0 +1,39 @@
+{
+    "children":[],
+    "logics": [
+        {
+            "type": "UIButton",
+            "data": {
+                "event": "Game_OnAbiltyButton_2",
+                "style": {
+                    "color": {
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "relBS"
+                    },
+                    "margin": {}
+                },
+                "label": {
+                    "text": "Ability 2",
+                    "style": {
+                        "fontSize": 0.2,
+                        "fontColor": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

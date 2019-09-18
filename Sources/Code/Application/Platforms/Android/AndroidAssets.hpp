@@ -18,6 +18,10 @@ public:
     // ETAssets
     Buffer ET_loadAsset(const char* assetName) override;
     JSONNode ET_loadJSONAsset(const char* assetName) override;
+    Buffer ET_loadLocalFile(const char* fileName) override;
+    JSONNode ET_loadLocalJSONFile(const char* fileName) override;
+    bool ET_saveLocalFile(const char* fileName, const Buffer& buff) override;
+    bool ET_removeLocalFile(const char* fileName) override;
 
 private:
 

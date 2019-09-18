@@ -20,7 +20,7 @@ private:
     EntityId serializeAsBox(const JSONNode& node);
     EntityId serializeAsObject(const JSONNode& node);
     EntityId serializeAsSimplified(const JSONNode& node);
-    void serializeChildren(EntityId rootEntId, const JSONNode& node);
+    void serializeChildren(EntityId parentId, const JSONNode& node);
 
 private:
 

@@ -1,0 +1,25 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIPartition",
+            "data":{
+                "type":"vert",
+                "children":[
+                    {
+                        "object":"UI/PauseView/ResumeButton.json"
+                    },
+                    {
+                        "object":"UI/PauseView/RestartButton.json"
+                    },
+                    {
+                        "object":"UI/PauseView/OptionsButton.json"
+                    },
+                    {
+                        "object":"UI/PauseView/ExitToMainButton.json"
+                    }
+                ]
+            }
+        }
+    ]
+}

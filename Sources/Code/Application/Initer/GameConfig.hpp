@@ -2,7 +2,7 @@
 #define __GAME_CONFIG_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "GAme/ETGameInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 class JSONNode;
 

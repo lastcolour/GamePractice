@@ -153,6 +153,23 @@ ANativeWindow* AndroindPlatformHandler::getWindow() {
     return nativeWindow;
 }
 
+const char* AndroindPlatformHandler::getInternalPath() const {
+    return nativeActivity->internalDataPath;
+}
+
+JNI::JVObject AndroindPlatformHandler::getActivityJavaObject() {
+    return JNI::JVObject(nativeActivity->clazz);
+}
+
+void AndroindPlatformHandler::attachToJavaVMThread(JNIEnv*& jv_env) {
+    jint res = nativeActivity->vm->AttachCurrentThread(&jv_env, nullptr);
+    assert(res == JNI_OK && "Can't attach to JavaVM thread");
+}
+
+void AndroindPlatformHandler::detachFromJavaVMTrehad() {
+    nativeActivity->vm->DetachCurrentThread();
+}
+
 void AndroindPlatformHandler::pollEvents() {
     int tFdesc;
     int tEvents;

@@ -5,10 +5,34 @@
 #include <fstream>
 
 #include <android/asset_manager.h>
+#include <sys/stat.h>
 
 namespace {
 
 const off_t READ_CHUNK_SIZE = 1024 * 1024;
+
+bool isDirExist(const std::string& dirName) {
+    if(dirName.empty()) {
+        return false;
+    }
+    struct stat info;
+    if(stat(dirName.c_str(), &info) != 0) {
+        return false;
+    } else if(info.st_mode & S_IFDIR) {
+        return true;
+    }
+    return false;
+}
+
+bool createDir(const std::string& dirName) {
+    if(dirName.empty()) {
+        return false;
+    }
+    if(!mkdir(dirName.c_str(), S_IRWXU|S_IRWXG)) {
+        return false;
+    }
+    return true;
+}
 
 } // namespace
 
@@ -30,7 +54,6 @@ void AndroidAssets::deinit() {
 JSONNode AndroidAssets::ET_loadJSONAsset(const char* assetName) {
     auto buffer = ET_loadAsset(assetName);
     if(!buffer) {
-        LogError("[AndroidAssets::loadJSONAsset] Can't load asset from: %s", assetName);
         return JSONNode();
     }
     auto rootNode = JSONNode::ParseBuffer(buffer);
@@ -110,4 +133,94 @@ Buffer AndroidAssets::loadAssetImpl(const std::string& assetName) {
     }
     AAsset_close(androidAsset);
     return buff;
+}
+
+Buffer AndroidAssets::ET_loadLocalFile(const char* fileName) {
+    std::string filePath = fileName;
+    if(filePath.empty()) {
+        LogError("[AndroidAssets::ET_loadLocalFile] Can't load a file with empty name");
+        return Buffer();
+    }
+    if(isDirExist(filePath)) {
+        LogError("[AndroidAssets::ET_loadLocalFile] Can't opend dir as file: %s", filePath);
+        return Buffer();
+    }
+    std::ifstream fin(filePath, std::ios::binary | std::ios::ate);
+    if(!fin.good() || !fin.is_open()) {
+        LogError("[AndroidAssets::ET_loadLocalFile] Can't load file: '%s'. Error: %s", filePath, strerror(errno));
+        return Buffer();
+    }
+    std::streamoff fileSize = fin.tellg();
+    if(fileSize == -1) {
+        LogError("[AndroidAssets::ET_loadLocalFile] Can't get file size: '%s'", filePath);
+        return Buffer();
+    }
+    fin.seekg(0u, std::ios::beg);
+    Buffer buffer(fileSize);
+    if(!buffer) {
+        LogError("[AndroidAssets::ET_loadLocalFile] Can't allocate buffer of size %d to load file: '%s'", fileSize, filePath);
+        return Buffer();
+    }
+    if(!fin.read(static_cast<char*>(buffer.getWriteData()), fileSize)) {
+        LogError("[AndroidAssets::ET_loadLocalFile] Can't read file: '%s'; Error: %s", filePath, strerror(errno));
+        return Buffer();
+    }
+    return buffer;
+}
+
+JSONNode AndroidAssets::ET_loadLocalJSONFile(const char* fileName) {
+    auto buffer = ET_loadLocalFile(fileName);
+    if(!buffer) {
+        return JSONNode();
+    }
+    auto rootNode = JSONNode::ParseBuffer(buffer);
+    if(!rootNode) {
+        LogError("[AndroidAssets::ET_loadLocalJSONFile] Can't parse file: %s", fileName);
+        return JSONNode();
+    }
+    return rootNode;
+}
+
+bool AndroidAssets::ET_saveLocalFile(const char* fileName, const Buffer& buff) {
+    if(!fileName || !fileName[0]) {
+        LogError("[AndroidAssets::ET_saveLocalFile] Can't save file with empty name");
+        return false;
+    }
+    std::string dataDirPath = GetAndroindPlatformHandler()->getInternalPath();
+    if(!isDirExist(dataDirPath)) {
+        LogDebug("[AndroidAssets::ET_saveLocalFile] Internal data dir doesn't exist: %s", dataDirPath);
+        if(!createDir(dataDirPath)) {
+            LogError("[AndroidAssets::ET_saveLocalFile] Can't create internal data %s dir to save file: %s; Error",
+                dataDirPath, fileName, strerror(errno));
+            return false;
+        }
+    }
+    std::string filePath = dataDirPath + "/" + fileName;
+    std::ofstream fout(filePath, std::ios::out | std::ios::binary);
+    if(!fout.good() || !fout.is_open()) {
+        LogError("[AndroidAssets::ET_saveLocalFile] Can't create/open a file: '%s'; Error: %s", filePath, strerror(errno));
+        return false;
+    }
+    if(!fout.write(static_cast<const char*>(buff.getReadData()), buff.getSize())) {
+        LogError("[AndroidAssets::ET_saveLocalFile] Can't write to the file: '%s'; Error: %s", filePath, strerror(errno));
+        return false;
+    }
+    return true;
+}
+
+bool AndroidAssets::ET_removeLocalFile(const char* fileName) {
+    auto filePath = StringFormat("%s/%s", GetAndroindPlatformHandler()->getInternalPath(), fileName);
+    if(filePath.empty()) {
+        LogError("[AndroidAssets::ET_removeLocalFile] Can't remove a file by invalid name: '%s'", fileName);
+        return false;
+    }
+    if(isDirExist(filePath)) {
+        LogError("[AndroidAssets::ET_removeLocalFile] Can't remove a dir object: '%s'", filePath);
+        return false;
+    }
+    if(remove(filePath.c_str())) {
+        LogError("[AndroidAssets::ET_removeLocalFile] Unable to remove file '%s'; Error: %s", filePath, strerror(errno));
+        return false;
+    }
+    return true;
 }

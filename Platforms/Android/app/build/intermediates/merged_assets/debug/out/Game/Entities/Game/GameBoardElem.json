@@ -1,0 +1,18 @@
+{
+    "children":[],
+    "logics": [
+        {
+            "type": "RenderSimple",
+            "data": {
+                "mat": "geom_solid_color",
+                "geom": "square"
+            }
+        },
+        {
+            "type": "GameBoardElem",
+            "data": {
+                "scale":0.9
+            }
+        }
+    ]
+}

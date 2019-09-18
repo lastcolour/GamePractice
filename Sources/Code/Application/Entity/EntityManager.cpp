@@ -106,13 +106,13 @@ bool EntityManager::ET_extendEntity(EntityId entityId, const char* extendEntityN
 
     auto node = loadEntityRootNode(extendEntityName);
     if(!node) {
-        return nullptr;
+        return false;
     }
     if(!setupEntityLogics(baseEntity, node, extendEntityName)) {
-        return nullptr;
+        return false;
     }
     if(!setupEntityChildren(baseEntity, node, extendEntityName)) {
-        return nullptr;
+        return false;
     }
     LogDebug("[EntityManager::ET_extendEntity] Extend entity: '%s' by '%s'", baseEntity->ET_getName(), extendEntityName);
     return true;

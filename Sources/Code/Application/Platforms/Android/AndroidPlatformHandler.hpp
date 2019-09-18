@@ -2,6 +2,7 @@
 #define __ANDROID_PLATFORM_HANDLER_HPP__
 
 #include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Platforms/Android/JNIHelpers.hpp"
 
 #include <memory>
 #include <mutex>
@@ -32,6 +33,11 @@ public:
     void pollEvents();
     AAssetManager* getAssetsManager();
     ANativeWindow* getWindow();
+    const char* getInternalPath() const;
+
+    JNI::JVObject getActivityJavaObject();
+    void attachToJavaVMThread(JNIEnv*& jv_env);
+    void detachFromJavaVMTrehad();
 
 private:
 

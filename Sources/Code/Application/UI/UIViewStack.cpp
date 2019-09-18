@@ -101,6 +101,8 @@ void UIViewStack::ET_popView() {
 }
 
 void UIViewStack::ET_onViewSwitchFinished(EntityId viewId) {
+    (void)viewId;
+
     if(taskQueue.empty()) {
         LogWarning("[UIViewStack::ET_onViewSwitchFinished] Can't finish view switch with empty task queue");
         return;

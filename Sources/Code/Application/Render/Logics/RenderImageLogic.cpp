@@ -7,8 +7,8 @@
 #include "Math/MatrixTransform.hpp"
 
 RenderImageLogic::RenderImageLogic() :
-    texScale(0.f),
-    imageScale(1.f) {
+    imageScale(1.f),
+    texScale(0.f) {
 }
 
 RenderImageLogic::~RenderImageLogic() {

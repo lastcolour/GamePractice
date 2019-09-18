@@ -1,0 +1,23 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIList",
+            "data":{
+                "type":"horz",
+                "style": {
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                }
+            }
+        }
+    ]
+}

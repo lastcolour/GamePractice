@@ -1,0 +1,23 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UILabel",
+            "data":{
+                "text": "0",
+                "style": {
+                    "fontSize":0.3,
+                    "fontColor": {
+                        "r": 50,
+                        "g": 50,
+                        "b": 50
+                    }
+                }
+            }
+        },
+        {
+            "type":"GameEndTimerUpdater",
+            "data":{}
+        }
+    ]
+}

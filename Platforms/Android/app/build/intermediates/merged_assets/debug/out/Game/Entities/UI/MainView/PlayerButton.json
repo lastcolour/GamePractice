@@ -1,0 +1,33 @@
+{
+    "children":[],
+    "logics": [
+        {
+            "type": "UIButton",
+            "data": {
+                "event": "Main_OnPlayerButton",
+                "style": {
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "relBS"
+                    },
+                    "margin": {}
+                },
+                "label": {
+                    "image": "Images/profile.png",
+                    "style": {
+                        "size":{
+                            "h":0.5,
+                            "w":0.5,
+                            "inv":"relBS"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

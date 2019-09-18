@@ -1,0 +1,4 @@
+#Wed Sep 18 16:04:17 EDT 2019
+base.0=/home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/build/intermediates/dex/debug/mergeDexDebug/out
+path.0=classes.dex
+renamed.0=classes.dex

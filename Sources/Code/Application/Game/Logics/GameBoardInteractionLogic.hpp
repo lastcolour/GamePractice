@@ -17,7 +17,7 @@ public:
 
     // ETInputEvents
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
-    void ET_onButton(EActionType actionType, EButtonId buttonId) override {}
+    void ET_onButton(EActionType actionType, EButtonId buttonId) override { (void)actionType; (void)buttonId; }
 
 private:
 

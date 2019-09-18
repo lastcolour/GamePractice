@@ -1,0 +1,23 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIImage",
+            "data":{
+                "image":"Images/options.png",
+                "style": {
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 0.8,
+                        "w": 0.8,
+                        "inv": "relBS"
+                    },
+                    "margin": {}
+                }
+            }
+        }
+    ]
+}
