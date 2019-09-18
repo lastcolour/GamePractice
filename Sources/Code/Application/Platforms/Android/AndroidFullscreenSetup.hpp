@@ -6,7 +6,7 @@
 #include "Platforms/Android/ETAndroidInterfaces.hpp"
 
 class AndroidFullscreenSetup : public SystemLogic,
-    public ETNode<ETAndroidActivityEvents> {
+    public ETNode<ETAndroidMainThreadActivityEvents> {
 public:
 
     AndroidFullscreenSetup();
@@ -16,8 +16,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETAndroidActivityEvents
-    void ET_onActivityEvent(ActivityEventType eventType) override;
+    // ETAndroidMainThreadActivityEvents
+    void ET_onMainThreadActivityEvent(ActivityEventType eventType) override;
 
 private:
 

@@ -9,15 +9,15 @@ AndroidFullscreenSetup::~AndroidFullscreenSetup() {
 }
 
 bool AndroidFullscreenSetup::init() {
-    ETNode<ETAndroidActivityEvents>::connect(getEntityId());
+    ETNode<ETAndroidMainThreadActivityEvents>::connect(getEntityId());
     return true;
 }
 
 void AndroidFullscreenSetup::deinit() {
-    ETNode<ETAndroidActivityEvents>::disconnect();
+    ETNode<ETAndroidMainThreadActivityEvents>::disconnect();
 }
 
-void AndroidFullscreenSetup::ET_onActivityEvent(ActivityEventType eventType) {
+void AndroidFullscreenSetup::ET_onMainThreadActivityEvent(ActivityEventType eventType) {
     if(eventType == ActivityEventType::OnWindowFocusGet) {
         makeAppFullScreen();
     }

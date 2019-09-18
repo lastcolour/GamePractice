@@ -3,31 +3,46 @@
 
 namespace JNI {
 
-JNIEnv* JNIAttacher::JV_ENV = nullptr;
+JNIAttacher::JavaEnvData JNIAttacher::ENV_DATA;
 
 JNIAttacher::JNIAttacher() {
-    if(JV_ENV) {
+    if(ENV_DATA.env) {
         assert(false && "Double try to attach to JavaVM thread");
         return;
     }
-    GetAndroindPlatformHandler()->attachToJavaVMThread(JV_ENV);
+
+    JavaVM* javaVM = GetAndroindPlatformHandler()->getJavaVM();
+    jint res = javaVM->GetEnv(reinterpret_cast<void**>(&ENV_DATA.env), JNI_VERSION_1_6);
+    if(res == JNI_EDETACHED) {
+        res = javaVM->AttachCurrentThread(&ENV_DATA.env, nullptr);
+        if(res == JNI_OK) {
+            ENV_DATA.inMain = false;
+        }
+        assert(res == JNI_OK && "Can't attach to JavaVM thread");
+    } else {
+        ENV_DATA.inMain = true;
+    }
 }
 
 JNIAttacher::~JNIAttacher() {
-    if(!JV_ENV) {
+    if(!ENV_DATA.env) {
         assert(false && "No JNIEnv to attach from JavaVM thread");
         return;
     }
-    GetAndroindPlatformHandler()->detachFromJavaVMTrehad();
-    JV_ENV = nullptr;
+    if(!ENV_DATA.inMain) {
+        JavaVM* javaVM = GetAndroindPlatformHandler()->getJavaVM();
+        javaVM->DetachCurrentThread();
+    }
+    ENV_DATA.env = nullptr;
+    ENV_DATA.inMain = false;
 }
 
 JNIEnv* JNIAttacher::GetJNIEnv() {
-    if(!JV_ENV) {
+    if(!ENV_DATA.env) {
         assert(false && "No JNIEnv thread");
         return nullptr;
     }
-    return JV_ENV;
+    return ENV_DATA.env;
 }
 
 bool CheckJavaException() {

@@ -124,13 +124,29 @@ bool AndroidEventManager::hadleMotionEvent(AInputEvent* inputEvent) {
     }
 }
 
+bool AndroidEventManager::handleKeyEvent(AInputEvent* inputEvent) {
+    int32_t keyCode = AKeyEvent_getKeyCode(inputEvent);
+    if(keyCode != AKEYCODE_BACK) {
+        return false;
+    }
+    int32_t eventAction = AKeyEvent_getAction(inputEvent);
+    if (eventAction == AKEY_EVENT_ACTION_DOWN) {
+        ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+        return true;
+    } else if(eventAction == AKEY_EVENT_ACTION_UP) {
+        ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Release, EButtonId::Back);
+        return true;
+    }
+    return false;
+}
+
 bool AndroidEventManager::ET_onInputEvent(AInputEvent* inputEvent) {
     switch (AInputEvent_getType(inputEvent)) {
         case AINPUT_EVENT_TYPE_MOTION: {
             return hadleMotionEvent(inputEvent);
         }
         case AINPUT_EVENT_TYPE_KEY: {
-            return false;
+            return handleKeyEvent(inputEvent);
         }
         default: {
             return false;

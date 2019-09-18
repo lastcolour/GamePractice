@@ -161,13 +161,8 @@ JNI::JVObject AndroindPlatformHandler::getActivityJavaObject() {
     return JNI::JVObject(nativeActivity->clazz);
 }
 
-void AndroindPlatformHandler::attachToJavaVMThread(JNIEnv*& jv_env) {
-    jint res = nativeActivity->vm->AttachCurrentThread(&jv_env, nullptr);
-    assert(res == JNI_OK && "Can't attach to JavaVM thread");
-}
-
-void AndroindPlatformHandler::detachFromJavaVMTrehad() {
-    nativeActivity->vm->DetachCurrentThread();
+JavaVM* AndroindPlatformHandler::getJavaVM() {
+    return nativeActivity->vm;
 }
 
 void AndroindPlatformHandler::pollEvents() {
@@ -230,6 +225,7 @@ void AndroindPlatformHandler::pollActivityEvents() {
 }
 
 void AndroindPlatformHandler::onActivityEvent(ActivityEventType eventType) {
+    ET_SendEvent(&ETAndroidMainThreadActivityEvents::ET_onMainThreadActivityEvent, eventType);
     if(write(eventsWritePipe, &eventType, sizeof(ActivityEventType)) != sizeof(ActivityEventType)) {
         LogAndroidError("[AndroindPlatformHandler::onActivityEvent] Can't write android event to pipe: %s", strerror(errno));
         return;

@@ -36,8 +36,7 @@ public:
     const char* getInternalPath() const;
 
     JNI::JVObject getActivityJavaObject();
-    void attachToJavaVMThread(JNIEnv*& jv_env);
-    void detachFromJavaVMTrehad();
+    JavaVM* getJavaVM();
 
 private:
 

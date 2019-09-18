@@ -27,7 +27,18 @@ public:
 
 private:
 
-    static JNIEnv* JV_ENV;
+    struct JavaEnvData {
+        JNIEnv* env;
+        bool inMain;
+
+        JavaEnvData() :
+            env(nullptr),
+            inMain(false) {}
+    };
+
+private:
+
+    static JavaEnvData ENV_DATA;
 };
 
 class JVClass {

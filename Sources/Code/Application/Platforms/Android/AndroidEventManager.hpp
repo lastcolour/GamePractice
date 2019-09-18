@@ -30,6 +30,7 @@ public:
 private:
 
     bool hadleMotionEvent(AInputEvent* inputEvent);
+    bool handleKeyEvent(AInputEvent* inputEvent);
 };
 
 #endif /* __ANDROIND_EVENT_MANGER_HPP__ */

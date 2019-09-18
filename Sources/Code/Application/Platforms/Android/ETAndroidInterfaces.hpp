@@ -23,6 +23,11 @@ struct ETAndroidActivityEvents {
     virtual void ET_onActivityEvent(ActivityEventType eventType) = 0;
 };
 
+struct ETAndroidMainThreadActivityEvents {
+    virtual ~ETAndroidMainThreadActivityEvents() = default;
+    virtual void ET_onMainThreadActivityEvent(ActivityEventType eventType) = 0;
+};
+
 struct ETAndroidInputEvents {
     virtual ~ETAndroidInputEvents() = default;
     virtual bool ET_onInputEvent(AInputEvent* inputEvent) = 0;
