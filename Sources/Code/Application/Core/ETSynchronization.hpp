@@ -24,14 +24,13 @@ public:
     void pushRoute(TypeId reqRouteId);
     void popRoute();
     bool tryBlockRoute(TypeId reqRouteId);
-    void unlockRoute();
+    void unlockRoute(TypeId reqRouteId);
 
 private:
 
     bool isRouteSafeForCurrentThread(TypeId reqRouteId) const;
     void addRouteForCurrentThread(TypeId reqRouteId); 
     void popRouteForCurrentThread();
-    bool isRouteBlocked(TypeId reqRouteId) const;
 
 private:
 

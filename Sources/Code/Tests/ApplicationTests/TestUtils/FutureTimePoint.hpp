@@ -16,7 +16,7 @@ public:
     ~FutureTimePoint() = default;
 
     void resetDelay(unsigned int msDelay) {
-        timePoint = ClockT::now() + std::chrono::seconds(msDelay);
+        timePoint = ClockT::now() + std::chrono::milliseconds(msDelay);
     }
 
     void addDelay(unsigned int msDelay) {

@@ -1,6 +1,7 @@
 #include "Core/ETSynchronization.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 ETSyncRoute::ETSyncRoute() {
 }
@@ -42,37 +43,43 @@ void ETSyncRoute::popRoute() {
     cond.notify_all();
 }
 
-bool ETSyncRoute::isRouteBlocked(TypeId reqRouteId) const {
-    (void)reqRouteId;
-    return false;
-}
-
 bool ETSyncRoute::isRouteSafeForCurrentThread(TypeId reqRouteId) const {
-    if(isRouteBlocked(reqRouteId)) {
+    auto blockedIt = std::find(blockedRoutes.begin(), blockedRoutes.end(), reqRouteId);
+    if(blockedIt != blockedRoutes.end()) {
         return false;
     }
     auto threadId = std::this_thread::get_id();
     for(const auto& routeNode : routesMap) {
         if(routeNode.first != threadId) {
-            for(auto routeId : routeNode.second) {
-                if(routeId == reqRouteId) {
-                    return false;
-                }
+            auto it = std::find(routeNode.second.begin(), routeNode.second.end(), reqRouteId);
+            if(it != routeNode.second.end()) {
+                return false;
             }
         }
-        
     }
     return true;
 }
 
 bool ETSyncRoute::tryBlockRoute(TypeId reqRouteId) {
-    if(isRouteSafeForCurrentThread(reqRouteId)) {
-
+    std::lock_guard<std::mutex> lock(routeMutex);
+    for(const auto& routeNode : routesMap) {
+        auto it = std::find(routeNode.second.begin(), routeNode.second.end(), reqRouteId);
+        if(it != routeNode.second.end()) {
+            return false;
+        }
     }
-    (void)reqRouteId;
+    auto it = std::find(blockedRoutes.begin(), blockedRoutes.end(), reqRouteId);
+    if(it != blockedRoutes.end()) {
+        return false;
+    }
+    blockedRoutes.push_back(reqRouteId);
     return true;
 }
 
-void ETSyncRoute::unlockRoute() {
-    return;
+void ETSyncRoute::unlockRoute(TypeId reqRouteId) {
+    std::lock_guard<std::mutex> lock(routeMutex);
+    auto it = std::find(blockedRoutes.begin(), blockedRoutes.end(), reqRouteId);
+    assert(it != blockedRoutes.end() && "Invalid route id");
+    blockedRoutes.erase(it);
+    cond.notify_all();
 }

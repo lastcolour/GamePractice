@@ -60,7 +60,7 @@ void ETSystem::handleConnectionRequest(const ETSystem::ETConnectionRequest& conn
     }
     if(syncRoute.tryBlockRoute(connReq.etId)) {
         registerConnection(connReq);
-        syncRoute.unlockRoute();
+        syncRoute.unlockRoute(connReq.etId);
     } else {
         pendingConnection.push_back(connReq);
     }
@@ -94,7 +94,7 @@ void ETSystem::updatePendingConnections() {
     while(it != pendingConnection.end()) {
         if(syncRoute.tryBlockRoute(it->etId)) {
             registerConnection(*it);
-            syncRoute.unlockRoute();
+            syncRoute.unlockRoute(it->etId);
             it = pendingConnection.erase(it);
         } else {
             ++it;
