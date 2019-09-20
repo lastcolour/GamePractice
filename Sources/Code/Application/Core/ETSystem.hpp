@@ -3,12 +3,9 @@
 
 #include "Core/TypeId.hpp"
 #include "Core/Core.hpp"
+#include "Core/ETSynchronization.hpp"
 
-#include <unordered_map>
 #include <type_traits>
-#include <vector>
-#include <mutex>
-#include <thread>
 
 class ETNodeBase;
 
@@ -31,9 +28,6 @@ private:
 
 private:
 
-    using MutexTypeT = std::recursive_mutex;
-    using LockTypeT = std::lock_guard<MutexTypeT>;
-
     using ConnectionArrayT = std::vector<ETConnection>;
     using TypeConnectionMapT = std::unordered_map<TypeId, ConnectionArrayT>;
 
@@ -45,8 +39,7 @@ public:
     EntityId createNewEntityId() {
         EntityId resId;
         {
-            LockTypeT lock(mutex);
-
+            std::lock_guard<std::mutex> lock(idGenMutex);
             auto endId = entityIdGen.getRawId();
             entityIdGen.setRawId(++endId);
             resId = entityIdGen;
@@ -58,8 +51,6 @@ public:
     std::vector<EntityId> getAll() const {
         std::vector<EntityId> resNodes;
         {
-            LockTypeT lock(mutex);
-
             auto etId = GetTypeId<ETType>();
             auto it = activeConnection.find(etId);
             if(it != activeConnection.end()) {
@@ -74,12 +65,10 @@ public:
     template<typename ETType>
     bool isExistNode(EntityId addressId) const {
         bool res = false;
-        if (addressId == InvalidEntityId) {
+        if (!addressId.isValid()) {
             return res;
         }
         {
-            LockTypeT lock(mutex);
-
             auto etId = GetTypeId<ETType>();
             auto it = activeConnection.find(etId);
             if(it != activeConnection.end()) {
@@ -97,56 +86,25 @@ public:
 
     template<template<class> class ETNode, class ETType>
     void connectNode(ETNode<ETType>& node, EntityId addressId) {
-        if (addressId == InvalidEntityId) {
+        if(!addressId.isValid()) {
             return;
         }
-        LockTypeT lock(mutex);
-
         ETConnectionRequest connReq;
         connReq.etId = GetTypeId<ETType>();
         connReq.isDisconnect = false;
         connReq.conn.node = &node;
         connReq.conn.addressId = addressId;
-
-        if(isConnectRequestedDisconnect(node)) {
-            pendingConnection.push_back(connReq);
-        } else if (isDoubleConnect(connReq.etId, node)) {
-            return;
-        } else {
-            if(isRouteSafe(connReq.etId)) {
-                registerConnection(connReq);
-            } else {
-                pendingConnection.push_back(connReq);
-            }
-        }
+        handleConnectionRequest(connReq);
     }
 
     template<template<class> class ETNode, class ETType>
     void disconnectNode(ETNode<ETType>& node) {
-        LockTypeT lock(mutex);
-
-        auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it != activeConnection.end()) {
-            auto& connections = it->second;
-            for(auto& currConn: connections) {
-                if(currConn.node == &node) {
-                    currConn.addressId = InvalidEntityId;
-                }
-            }
-        }
-
         ETConnectionRequest connReq;
-        connReq.etId = etId;
+        connReq.etId = GetTypeId<ETType>();
         connReq.isDisconnect = true;
         connReq.conn.node = &node;
         connReq.conn.addressId = InvalidEntityId;
-
-        if(isRouteSafe(connReq.etId)) {
-            registerConnection(connReq);
-        } else {
-            pendingConnection.push_back(connReq);
-        }
+        handleConnectionRequest(connReq);
     }
 
     // ==--------------- Const ETs ---------------==
@@ -157,21 +115,20 @@ public:
             return;
         }
 
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId == addressId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                (obj->*func)(std::forward<ParamType>(params)...);
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId == addressId) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    (obj->*func)(std::forward<ParamType>(params)...);
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute(etId);
         updatePendingConnections();
     }
 
@@ -181,63 +138,60 @@ public:
             return;
         }
 
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId == addressId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                retVal = (obj->*func)(std::forward<ParamType>(params)...);
-                break;
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId == addressId) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    retVal = (obj->*func)(std::forward<ParamType>(params)...);
+                    break;
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId != InvalidEntityId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                (obj->*func)(std::forward<ParamType>(params)...);
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId != InvalidEntityId) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    (obj->*func)(std::forward<ParamType>(params)...);
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId != InvalidEntityId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                retVal = (obj->*func)(std::forward<ParamType>(params)...);
-                break;
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId.isValid()) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    retVal = (obj->*func)(std::forward<ParamType>(params)...);
+                    break;
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
@@ -249,21 +203,20 @@ public:
             return;
         }
 
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId == addressId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                (obj->*func)(std::forward<ParamType>(params)...);
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if (currConn.addressId == addressId) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    (obj->*func)(std::forward<ParamType>(params)...);
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
@@ -273,63 +226,60 @@ public:
             return;
         }
 
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId == addressId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                retVal = (obj->*func)(std::forward<ParamType>(params)...);
-                break;
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId == addressId) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    retVal = (obj->*func)(std::forward<ParamType>(params)...);
+                    break;
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        LockTypeT lock(mutex);
-
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if (currConn.addressId != InvalidEntityId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                (obj->*func)(std::forward<ParamType>(params)...);
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId.isValid()) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    (obj->*func)(std::forward<ParamType>(params)...);
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        LockTypeT lock(mutex);
-    
         auto etId = GetTypeId<ETType>();
-        auto it = activeConnection.find(etId);
-        if(it == activeConnection.end()) {
-            return;
-        }
-        activeRoute.push_back(etId);
-        for(auto& currConn : it->second) {
-            if(currConn.addressId != InvalidEntityId) {
-                auto obj = static_cast<ETNode<ETType>*>(currConn.node);
-                retVal = (obj->*func)(std::forward<ParamType>(params)...);
-                break;
+        ConnectionArrayT* connArr = nullptr;
+        syncRoute.pushRoute(etId);
+
+        if(isActiveConnectionExist(etId, connArr)) {
+            for(auto& currConn : *connArr) {
+                if(currConn.addressId.isValid()) {
+                    auto obj = static_cast<ETNode<ETType>*>(currConn.node);
+                    retVal = (obj->*func)(std::forward<ParamType>(params)...);
+                    break;
+                }
             }
         }
-        activeRoute.pop_back();
+
+        syncRoute.popRoute();
         updatePendingConnections();
     }
 
@@ -341,18 +291,20 @@ private:
 private:
 
     void registerConnection(const ETConnectionRequest& connReq);
+    void handleConnectionRequest(const ETConnectionRequest& connReq);
     void updatePendingConnections();
-    bool isRouteSafe(TypeId etId) const;
     bool isConnectRequestedDisconnect(const ETNodeBase& node) const;
     bool isDoubleConnect(TypeId etId, const ETNodeBase& node) const;
+    bool isActiveConnectionExist(TypeId etId, ConnectionArrayT*& connectionArray);
 
 private:
 
     TypeConnectionMapT activeConnection;
-    mutable MutexTypeT mutex;
-    EntityId entityIdGen;
     std::vector<ETConnectionRequest> pendingConnection;
-    std::vector<TypeId> activeRoute;
+    ETSyncRoute syncRoute;
+    std::mutex idGenMutex;
+    std::recursive_mutex pendingConnMutex;
+    EntityId entityIdGen;
 };
 
 ETSystem* GetETSystem();

@@ -23,13 +23,47 @@ ETSystem* GetETSystem() {
     return ET_SYSTEM;
 }
 
-bool ETSystem::isRouteSafe(TypeId etId) const {
-    for(auto elem : activeRoute) {
-        if (elem == etId) {
-            return false;
-        }
+bool ETSystem::isActiveConnectionExist(TypeId etId, ConnectionArrayT*& connectionArray) {
+    auto it = activeConnection.find(etId);
+    if(it != activeConnection.end()) {
+        connectionArray = &(it->second);
+        return true;
     }
-    return true;
+    return false;
+}
+
+void ETSystem::handleConnectionRequest(const ETSystem::ETConnectionRequest& connReq) {
+    std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
+    if(!connReq.isDisconnect) {
+        if(isConnectRequestedDisconnect(*connReq.conn.node)) {
+            pendingConnection.push_back(connReq);
+        } else {
+            syncRoute.pushRoute(connReq.etId); 
+            bool res = isDoubleConnect(connReq.etId, *connReq.conn.node);
+            syncRoute.popRoute();
+            if(res) {
+                return;
+            }
+        }
+    } else {
+        syncRoute.pushRoute(connReq.etId);
+        auto it = activeConnection.find(connReq.etId);
+        if(it != activeConnection.end()) {
+            auto& connections = it->second;
+            for(auto& currConn: connections) {
+                if(currConn.node == connReq.conn.node) {
+                    currConn.addressId = InvalidEntityId;
+                }
+            }
+        }
+        syncRoute.popRoute();
+    }
+    if(syncRoute.tryBlockRoute(connReq.etId)) {
+        registerConnection(connReq);
+        syncRoute.unlockRoute();
+    } else {
+        pendingConnection.push_back(connReq);
+    }
 }
 
 void ETSystem::registerConnection(const ETConnectionRequest& connReq) {
@@ -55,10 +89,12 @@ void ETSystem::registerConnection(const ETConnectionRequest& connReq) {
 }
 
 void ETSystem::updatePendingConnections() {
+    std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
     auto it = pendingConnection.begin();
     while(it != pendingConnection.end()) {
-        if(isRouteSafe(it->etId)) {
+        if(syncRoute.tryBlockRoute(it->etId)) {
             registerConnection(*it);
+            syncRoute.unlockRoute();
             it = pendingConnection.erase(it);
         } else {
             ++it;
