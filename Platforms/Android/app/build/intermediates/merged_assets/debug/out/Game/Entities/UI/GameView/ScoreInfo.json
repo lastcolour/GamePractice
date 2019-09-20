@@ -1,0 +1,31 @@
+{
+    "children":[
+        "UI/GameView/ScoreInfoList.json"
+    ],
+    "logics": [
+        {
+            "type": "UIButton",
+            "data": {
+                "event": "Game_OnScoreButton",
+                "style": {
+                    "color": {
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                },
+                "label": null
+            }
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIPartition",
+            "data":{
+                "type":"vert",
+                "children":[
+                    {
+                        "object":"UI/EndGameView/NewHighScore/HighScoreTextLabel.json"
+                    },
+                    {
+                        "object":"UI/EndGameView/NewHighScore/HighScoreValueLabel.json"
+                    }
+                ]
+            }
+        }
+    ]
+}

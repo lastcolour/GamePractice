@@ -1,0 +1,22 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIBaseBox",
+            "data":{
+                "style": {
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                }
+            }
+        }
+    ]
+}

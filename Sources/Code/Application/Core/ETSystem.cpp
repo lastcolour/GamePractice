@@ -37,6 +37,7 @@ void ETSystem::handleConnectionRequest(const ETSystem::ETConnectionRequest& conn
     if(!connReq.isDisconnect) {
         if(isConnectRequestedDisconnect(*connReq.conn.node)) {
             pendingConnection.push_back(connReq);
+            return;
         } else {
             syncRoute.pushRoute(connReq.etId); 
             bool res = isDoubleConnect(connReq.etId, *connReq.conn.node);
@@ -46,6 +47,7 @@ void ETSystem::handleConnectionRequest(const ETSystem::ETConnectionRequest& conn
             }
         }
     } else {
+        bool needContinue = false;
         syncRoute.pushRoute(connReq.etId);
         auto it = activeConnection.find(connReq.etId);
         if(it != activeConnection.end()) {
@@ -53,11 +55,16 @@ void ETSystem::handleConnectionRequest(const ETSystem::ETConnectionRequest& conn
             for(auto& currConn: connections) {
                 if(currConn.node == connReq.conn.node) {
                     currConn.addressId = InvalidEntityId;
+                    needContinue = true;
                 }
             }
         }
         syncRoute.popRoute();
+        if(!needContinue) {
+            return;
+        }
     }
+
     if(syncRoute.tryBlockRoute(connReq.etId)) {
         registerConnection(connReq);
         syncRoute.unlockRoute(connReq.etId);
@@ -70,6 +77,7 @@ void ETSystem::registerConnection(const ETConnectionRequest& connReq) {
     if(connReq.isDisconnect) {
         auto it = activeConnection.find(connReq.etId);
         if(it == activeConnection.end()) {
+            assert(false && "Can't find node to disconnect");
             return;
         }
         auto& etConnection = it->second;

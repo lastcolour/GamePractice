@@ -1,0 +1,26 @@
+{
+    "children":[
+        "UI/GameView/TimeTextLabel.json",
+        "UI/GameView/TimeAmountLabel.json"
+    ],
+    "logics":[
+        {
+            "type":"UIList",
+            "data":{
+                "type":"horz",
+                "style":{
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size":{
+                        "w":1,
+                        "h":1,
+                        "sizeInv":"rel"
+                    },
+                    "margin":{}
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:1-30:12
+	package
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:3:11-42
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:5:11-36
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:2:11-69
+	android:versionCode
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:4:11-34
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+uses-feature#0x00020000
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:7:3-76
+	android:glEsVersion
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:7:17-49
+	android:required
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:7:50-73
+application
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:9:3-28:17
+	android:label
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:13:7-39
+	android:hasCode
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:14:7-30
+	android:fullBackupContent
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:11:7-40
+	android:icon
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:12:7-41
+	android:allowBackup
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:10:7-34
+	android:isGame
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:15:7-28
+activity#android.app.NativeActivity
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:17:5-27:16
+	android:label
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:18:15-47
+	android:configChanges
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:19:15-65
+	android:name
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:17:15-56
+meta-data#android.app.lib_name
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:21:7-22:43
+	android:value
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:22:18-40
+	android:name
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:21:18-53
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:23:7-26:23
+action#android.intent.action.MAIN
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:24:9-61
+	android:name
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:24:17-58
+category#android.intent.category.LAUNCHER
+ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:25:9-69
+	android:name
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml:25:19-66
+uses-sdk
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		ADDED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/lastcolour/Documents/GIT/GamePractice/Platforms/Android/app/src/main/AndroidManifest.xml

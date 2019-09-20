@@ -1,0 +1,38 @@
+{
+    "children":[],
+    "logics": [
+        {
+            "type": "UIBox",
+            "data": {
+                "style": {
+                    "color": {
+                        "r": 150,
+                        "g": 150,
+                        "b": 150
+                    },
+                    "align": {
+                        "x": "center",
+                        "y": "center"
+                    },
+                    "size": {
+                        "h": 1,
+                        "w": 1,
+                        "inv": "rel"
+                    },
+                    "margin": {}
+                },
+                "label":{
+                    "text":"Version: 1.0.0",
+                    "style": {
+                        "fontSize":0.3,
+                        "fontColor": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

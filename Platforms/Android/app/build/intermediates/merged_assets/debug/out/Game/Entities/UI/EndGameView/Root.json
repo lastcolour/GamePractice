@@ -1,0 +1,22 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"UIPartition",
+            "data":{
+                "type":"vert",
+                "children":[
+                    {
+                        "object":"UI/EndGameView/ResultBox.json"
+                    },
+                    {
+                        "object":"UI/EndGameView/PlayAgainButton.json"
+                    },
+                    {
+                        "object":"UI/EndGameView/ExitToMainButton.json"
+                    }
+                ]
+            }
+        }
+    ]
+}
