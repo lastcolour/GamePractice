@@ -5,7 +5,8 @@
 #include "Game/ETGameInterfaces.hpp"
 
 class GameScoreUpdaterLogic : public EntityLogic,
-    public ETNode<ETGameScoreUpdater> {
+    public ETNode<ETGameScoreUpdater>,
+    public ETNode<ETGameTimerEvents> {
 public:
 
     GameScoreUpdaterLogic();
@@ -17,6 +18,16 @@ public:
 
     // ETGameScoreUpdater
     void ET_setGameScore(int score) override;
+
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
+
+private:
+
+    float currentStepDelay;
+    int increaseSpeed;
+    int currentValue;
+    int targetValue;
 };
 
 #endif /* __GAME_SCORE_UPDATER_LOGIC_HPP__ */
