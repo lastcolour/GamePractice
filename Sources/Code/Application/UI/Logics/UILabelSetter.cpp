@@ -29,10 +29,14 @@ bool UILabelSetter::init() {
     switch (valueType)
     {
     case EValueType::GameScore: {
-        int score = 0;
-        ET_SendEventReturn(score, &ETGameScore::ET_getGameScore);
-        std::string labelText = StringFormat("%d", score);
-        ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, labelText.c_str());
+        const EndGameResult* endResult = nullptr;
+        ET_SendEventReturn(endResult, &ETGameState::ET_getGameEndResult);
+        if(endResult) {
+            std::string labelText = StringFormat("%d", endResult->score);
+            ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, labelText.c_str());
+        } else {
+            LogWarning("[UILabelSetter::init] Can't query game end result");
+        }
         break;
     }
     case EValueType::GameHighScore: {

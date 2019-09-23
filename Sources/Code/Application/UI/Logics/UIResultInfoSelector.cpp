@@ -16,17 +16,12 @@ bool UIResultInfoSelector::serialize(const JSONNode& node) {
 }
 
 bool UIResultInfoSelector::init() {
-    int prevHighScore = 0;
-    ET_SendEventReturn(prevHighScore, &ETGameConfig::ET_getHighScore);
-
-    int currScore = 0;
-    ET_SendEventReturn(currScore, &ETGameScore::ET_getGameScore);
-
+    const EndGameResult* endResult = nullptr;
+    ET_SendEventReturn(endResult, &ETGameState::ET_getGameEndResult);
     const char* extendEntityName = normalExtend.c_str();
-    if(currScore > prevHighScore) {
+    if(endResult && endResult->newHighScore) {
         extendEntityName = newHighScoreExtend.c_str();
     }
-
     bool extendRes = false;
     ET_SendEventReturn(extendRes, &ETEntityManager::ET_extendEntity, getEntityId(), extendEntityName);
     return extendRes;

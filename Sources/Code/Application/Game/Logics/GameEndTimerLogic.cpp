@@ -30,7 +30,7 @@ void GameEndTimerLogic::ET_onGameTick(float dt) {
     remainingTime -= dt;
     ET_SendEvent(&ETGameEndTimerUpdater::ET_setEndTime, std::max(remainingTime, 0.f));
     if(remainingTime < 0.f) {
-        ET_SendEvent(&ETGameState::ET_endGame);
+        ET_SendEvent(&ETGameState::ET_endGame, EEndGameReason::TimeOut);
         ETNode<ETGameTimerEvents>::disconnect();
     }
 }

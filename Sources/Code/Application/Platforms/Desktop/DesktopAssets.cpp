@@ -199,7 +199,7 @@ Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
         return buff;
     }
     ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
-    if (buff) {
+    if(buff) {
         return buff;
     }
 

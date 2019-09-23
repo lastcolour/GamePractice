@@ -19,12 +19,17 @@ public:
     void ET_startGame() override;
     void ET_pauseGame() override;
     void ET_resumeGame() override;
-    void ET_endGame() override;
-    void ET_interruptGame() override;
+    void ET_endGame(EEndGameReason endReason) override;
     EGameState ET_getGameState() const override;
+   const EndGameResult* ET_getGameEndResult() const override;
 
 private:
 
+    void setupEndResult();
+
+private:
+
+    std::unique_ptr<EndGameResult> endResult;
     EGameState gameState;
 };
 

@@ -175,7 +175,7 @@ void UIEventManager::ET_onViewStartPop(EntityId viewId) {
     switch (viewType)
     {
     case EViewType::Game: {
-        ET_SendEvent(&ETGameState::ET_interruptGame);
+        ET_SendEvent(&ETGameState::ET_endGame, EEndGameReason::Interrupt);
         break;
     }
     default:

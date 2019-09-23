@@ -77,16 +77,18 @@ void ETSystem::registerConnection(const ETConnectionRequest& connReq) {
     if(connReq.isDisconnect) {
         auto it = activeConnection.find(connReq.etId);
         if(it == activeConnection.end()) {
-            assert(false && "Can't find node to disconnect");
             return;
         }
         auto& etConnection = it->second;
+        bool wasDelete = false;
         for(auto etIt = etConnection.begin(), etEnd = etConnection.end(); etIt != etEnd; ++etIt) {
             if(etIt->node == connReq.conn.node) {
                 etConnection.erase(etIt);
+                wasDelete = true;
                 break;
             }
         }
+        assert(wasDelete && "Can't find node to delete");
         if(etConnection.empty()) {
             activeConnection.erase(it);
         }

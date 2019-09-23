@@ -94,13 +94,27 @@ enum class EGameState {
     Running
 };
 
+enum class EEndGameReason {
+    TimeOut = 0,
+    Interrupt
+};
+
+struct EndGameResult {
+    int score;
+    bool newHighScore;
+
+    EndGameResult() :
+        score(0), newHighScore(false) {}
+};
+
 struct ETGameState {
     virtual ~ETGameState() = default;
     virtual void ET_startGame() = 0;
     virtual void ET_pauseGame() = 0;
     virtual void ET_resumeGame() = 0;
-    virtual void ET_endGame() = 0;
-    virtual void ET_interruptGame() = 0;
+    virtual void ET_endGame(EEndGameReason endReason) = 0;
+    virtual const EndGameResult* ET_getGameEndResult() const = 0;
+    //virtual void ET_interruptGame() = 0;
     virtual EGameState ET_getGameState() const = 0;
 };
 
