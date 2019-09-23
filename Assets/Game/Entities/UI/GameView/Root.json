@@ -21,7 +21,7 @@
                         ]
                     },
                     {
-                        "style":{"size":{"w":1, "h":0.8}},
+                        "style":{"size":{"w":0.8, "h":0.8}},
                         "object":"Game/GameBoard.json"
                     },
                     {

@@ -32,7 +32,6 @@ bool SystemModule::init() {
         LogError("[SystemModule::init] Empty system logics for module: '%s'", name);
         return false;
     }
-
     if(!logicsContainer->init()) {
         LogError("[SystemModule::init] Init fail of module: '%s'", name);
         return false;

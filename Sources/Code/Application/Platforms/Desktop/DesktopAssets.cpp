@@ -28,6 +28,7 @@ namespace {
 
 const char VALID_SLASH = '/';
 const char* LOCAL_DIR_PATH = "Local";
+const size_t MAX_ERROR_MSG_LEN = 128;
 
 std::string getCWD() {
     std::string cwdPath;
@@ -152,6 +153,12 @@ std::string transformToPath(const std::string& dirPath, const std::string& fileP
     return StringFormat("%s%c%s", dirPath, VALID_SLASH, internalFileName);
 }
 
+std::string GetSafeStrErrno() {
+    char cErrorMsg[MAX_ERROR_MSG_LEN];
+    strerror_s(&(cErrorMsg[0]), MAX_ERROR_MSG_LEN, errno);
+    return &(cErrorMsg[0]);
+}
+
 } // namespace
 
 bool DesktopAssets::init() {
@@ -247,11 +254,11 @@ bool DesktopAssets::ET_saveLocalFile(const char* fileName, const Buffer& buff) {
     }
     std::ofstream fout(filePath, std::ios::out | std::ios::binary);
     if(!fout.good() || !fout.is_open()) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't create/open a file: '%s'; Error: %s", filePath, strerror(errno));
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't create/open a file: '%s'; Error: %s", filePath, GetSafeStrErrno());
         return false;
     }
     if(!fout.write(static_cast<const char*>(buff.getReadData()), buff.getSize())) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't write to the file: '%s'; Error: %s", filePath, strerror(errno));
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't write to the file: '%s'; Error: %s", filePath, GetSafeStrErrno());
         return false;
     }
     return true;
@@ -268,7 +275,7 @@ bool DesktopAssets::ET_removeLocalFile(const char* fileName) {
         return false;
     }
     if(remove(filePath.c_str())) {
-        LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s'; Error: %s", filePath, strerror(errno));
+        LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s'; Error: %s", filePath, GetSafeStrErrno());
         return false;
     }
     return true;
@@ -286,7 +293,7 @@ Buffer DesktopAssets::loadFileFromDir(const std::string& dirPath, const std::str
     }
     std::ifstream fin(filePath, std::ios::binary | std::ios::ate);
     if(!fin.good() || !fin.is_open()) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'. Error: %s", filePath, strerror(errno));
+        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'. Error: %s", filePath, GetSafeStrErrno());
         return Buffer();
     }
     std::streamoff fileSize = fin.tellg();
