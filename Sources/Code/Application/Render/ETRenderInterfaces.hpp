@@ -35,9 +35,15 @@ struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
     virtual void ET_setImage(const char* imageName) = 0;
     virtual void ET_setMaterial(const char* matName) = 0;
-    virtual Vec2i ET_getOrigSize() const = 0;
-    virtual Vec2i ET_getSize() const = 0;
-    virtual void ET_setScale(const Vec2& newSize) = 0; 
+    virtual void ET_setSize(const Vec2i& newSize) = 0;
+    virtual void ET_setScale(const Vec2& newScale) = 0;
+    virtual Vec2i ET_getOriginalSize() const = 0;
+    virtual Vec2i ET_getSize() const = 0; 
+};
+
+struct ETRenderColoredTexture {
+    virtual ~ETRenderColoredTexture() = default;
+    virtual void ET_setTextureColor(const ColorB& newColor) = 0;
 };
 
 struct RenderContext {
@@ -65,9 +71,15 @@ struct ETRenderFontManager {
     virtual std::shared_ptr<RenderFont> ET_createDefaultFont() = 0;
 };
 
+enum ETextureType {
+    SingleColor,
+    NormalColor
+};
+
 struct ETRenderTextureManger {
     virtual ~ETRenderTextureManger() = default;
-    virtual std::shared_ptr<RenderTexture> ET_createTexture(const char* textureName) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createTexture(const char* textureName, ETextureType texType) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createEmptyTexture(const Vec2i& texSize, ETextureType texType) = 0;
 };
 
 struct ETRenderCamera {

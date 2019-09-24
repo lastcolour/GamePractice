@@ -32,6 +32,10 @@ bool RenderImageLogic::init() {
     if(!geom) {
         return false;
     }
+    if(tex) {
+        updateScale();
+        ETNode<ETRenderEvents>::connect(getEntityId());
+    }
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     return true;
@@ -56,7 +60,7 @@ void RenderImageLogic::ET_setImage(const char* imageName) {
     if(!imageName || !imageName[0]) {
         tex.reset();
     } else {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName);
+        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::NormalColor);
     }
     if(!tex) {
         ETNode<ETRenderEvents>::disconnect();
@@ -66,15 +70,21 @@ void RenderImageLogic::ET_setImage(const char* imageName) {
     }
 }
 
-Vec2i RenderImageLogic::ET_getOrigSize() const {
+Vec2i RenderImageLogic::ET_getOriginalSize() const {
     if(tex) {
         return tex->size;
     }
     return Vec2i(0);
 }
 
+void RenderImageLogic::ET_setSize(const Vec2i& newSize) {
+    Vec2i size = ET_getOriginalSize();
+    imageScale.x = newSize.x / static_cast<float>(size.x);
+    imageScale.y = newSize.y / static_cast<float>(size.y);
+}
+
 Vec2i RenderImageLogic::ET_getSize() const {
-    Vec2i size = ET_getOrigSize();
+    Vec2i size = ET_getOriginalSize();
     size.x = static_cast<int>(size.x * imageScale.x);
     size.y = static_cast<int>(size.y * imageScale.x);
     return size;

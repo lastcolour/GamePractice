@@ -71,8 +71,8 @@ std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontNam
     std::string fontName = reqFontName;
     fontName += '_' + std::to_string(fontSize);
     auto it = fonts.find(fontName);
-    if(it != fonts.end() && !it->second.expired()) {
-        return it->second.lock();
+    if(it != fonts.end()) {
+        return it->second;
     }
     auto font = createFontImpl(reqFontName, fontSize);
     if(font) {
@@ -126,6 +126,8 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
         return nullptr;
     }
 
+    glBindTexture(GL_TEXTURE_2D, font->getTexId());
+
     int shift = 0;
     for(auto ch : characterSet) {
         if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
@@ -147,6 +149,9 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
 
         shift += glyph->bitmap.width + padding;
     }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     FT_Done_Face(fontFace);
     FT_Done_FreeType(ftLib);
     return font;

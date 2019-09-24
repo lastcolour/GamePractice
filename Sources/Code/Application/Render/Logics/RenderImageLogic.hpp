@@ -23,16 +23,17 @@ public:
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
     void ET_setMaterial(const char* matName) override;
-    Vec2i ET_getOrigSize() const override;
+    void ET_setScale(const Vec2& newScale) override;
+    void ET_setSize(const Vec2i& newSize) override;
+    Vec2i ET_getOriginalSize() const override;
     Vec2i ET_getSize() const override;
-    void ET_setScale(const Vec2& newScale) override; 
 
-private:
+protected:
 
     Mat4 getModelMat() const;
     void updateScale();
 
-private:
+protected:
 
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderGeometry> geom;

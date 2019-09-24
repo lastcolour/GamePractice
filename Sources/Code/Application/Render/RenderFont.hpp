@@ -4,6 +4,9 @@
 #include "Math/AABB.hpp"
 
 #include <unordered_map>
+#include <memory>
+
+class RenderTexture;
 
 class RenderGlyph {
 public:
@@ -29,8 +32,7 @@ public:
 private:
 
     std::unordered_map<int, RenderGlyph> glyphs;
-    Vec2i texSize;
-    unsigned int textureId;
+    std::shared_ptr<RenderTexture> tex;
     int fontHeight;
 };
 

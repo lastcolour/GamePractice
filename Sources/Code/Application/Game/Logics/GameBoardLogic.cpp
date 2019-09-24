@@ -137,10 +137,7 @@ void GameBoardLogic::ET_onBoxResized() {
         } else {
             setElemBoardPos(elem, elem.boardPt);
         }
-        Vec2 renderSize;
-        renderSize.x = static_cast<float>(objectSize.x);
-        renderSize.y = static_cast<float>(objectSize.y);
-        ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setSize, renderSize);
+        ET_SendEvent(elem.entId, &ETRenderImageLogic::ET_setSize, objectSize);
     }
 }
 
@@ -299,11 +296,8 @@ void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const
     elem.color = getElemType();
     setElemBoardPos(elem, boardPt);
 
-    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setColor, getElemColor(elem.color));
-    Vec2 renderSize;
-    renderSize.x = static_cast<float>(objectSize.x);
-    renderSize.y = static_cast<float>(objectSize.y);
-    ET_SendEvent(elem.entId, &ETRenderSimpleLogic::ET_setSize, renderSize);
+    ET_SendEvent(elem.entId, &ETRenderColoredTexture::ET_setTextureColor, getElemColor(elem.color));
+    ET_SendEvent(elem.entId, &ETRenderImageLogic::ET_setSize, objectSize);
 }
 
 void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {

@@ -11,6 +11,7 @@
 #include "Entity/Entity.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Render/Logics/RenderImageLogic.hpp"
+#include "Render/Logics/RenderColoredTextureLogic.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -406,4 +407,53 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     dumpFramebuffer();
 
     ASSERT_GT(changedPixels, 0);
+}
+
+TEST_F(RenderTests, CheckRenderColoredTexture) {
+    auto gameObj = createVoidObject();
+    RenderColoredTextureLogic* renderColorTex = new RenderColoredTextureLogic;
+    renderColorTex->ET_setMaterial("tex_solid_color");
+    ColorB texColor(255, 255, 0);
+    renderColorTex->ET_setTextureColor(texColor);
+    gameObj->addLogic(std::unique_ptr<EntityLogic>(renderColorTex));
+    ASSERT_TRUE(renderColorTex->init());
+
+    renderColorTex->ET_setImage("Images/block.png");
+    Vec2i imageSize(100);
+    renderColorTex->ET_setSize(imageSize);
+
+    Transform tm;
+    tm.pt = Vec3(imageSize.x / 2.f, imageSize.y / 2.f, 0.f);
+    gameObj->ET_setTransform(tm);
+
+    ET_SendEvent(&ETRender::ET_drawFrame);
+
+    ASSERT_TRUE(textureFramebuffer->read());
+
+    int changedPixels = 0;
+    for(int i = 0; i < imageSize.x; ++i) {
+        for(int j = 0; j < imageSize.y; ++j) {
+            const ColorB& col = textureFramebuffer->getColor(i, j);
+            if(col == texColor) {
+                ++changedPixels;
+            }
+        }
+    }
+
+    EXPECT_GT(changedPixels, imageSize.x * imageSize.y * 3 / 4);
+
+    dumpFramebuffer();
+}
+
+TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
+    Vec2i texSize(100);
+    std::shared_ptr<RenderTexture> tex1;
+    ET_SendEventReturn(tex1, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::SingleColor);
+    EXPECT_TRUE(tex1);
+
+    std::shared_ptr<RenderTexture> tex2;
+    ET_SendEventReturn(tex2, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::SingleColor);
+    EXPECT_TRUE(tex2);
+
+    EXPECT_NE(tex1.get(), tex2.get());
 }

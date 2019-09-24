@@ -2,17 +2,15 @@
     "children":[],
     "logics": [
         {
-            "type": "RenderSimple",
+            "type": "RenderColoredTexture",
             "data": {
-                "mat": "geom_solid_color",
-                "geom": "square"
+                "mat":"tex_solid_color",
+                "texture": "Images/block.png"
             }
         },
         {
             "type": "GameBoardElem",
-            "data": {
-                "scale":0.9
-            }
+            "data": {}
         }
     ]
 }

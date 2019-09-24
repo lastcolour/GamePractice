@@ -41,7 +41,7 @@ Vec2i UIImage::calculateBoxSize(const AABB2Di& parentBox) const {
     auto boxSize = UIBaseBox::calculateBoxSize(parentBox);
 
     Vec2i imageSize(0);
-    ET_SendEventReturn(imageSize, imageRendererId, &ETRenderImageLogic::ET_getOrigSize);
+    ET_SendEventReturn(imageSize, imageRendererId, &ETRenderImageLogic::ET_getOriginalSize);
     if(imageSize.x == 0 || imageSize.y == 0) {
         return Vec2i(0);
     }

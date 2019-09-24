@@ -16,6 +16,7 @@
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/Logics/RenderImageLogic.hpp"
+#include "Render/Logics/RenderColoredTextureLogic.hpp"
 
 #include "UI/Logics/UIButton.hpp"
 #include "UI/Logics/UIList.hpp"
@@ -47,6 +48,7 @@ bool EntityManager::init() {
     registerLogic<RenderSimpleLogic>("RenderSimple");
     registerLogic<RenderTextLogic>("RenderText");
     registerLogic<RenderImageLogic>("RenderImage");
+    registerLogic<RenderColoredTextureLogic>("RenderColoredTexture");
 
     registerLogic<GameBoardLogic>("GameBoard");
     registerLogic<GameBoardElemLogic>("GameBoardElem");

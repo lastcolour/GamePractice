@@ -27,7 +27,7 @@ private:
 
 private:
 
-    typedef std::weak_ptr<RenderFont> RenderFontPtrT;
+    typedef std::shared_ptr<RenderFont> RenderFontPtrT;
     std::unordered_map<std::string, RenderFontPtrT> fonts;
 
     std::vector<int> characterSet;
