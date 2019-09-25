@@ -9,7 +9,8 @@
 
 class UIEventManager : public SystemLogic,
     public ETNode<ETUIEventManager>,
-    public ETNode<ETUIViewStackEvents> {
+    public ETNode<ETUIViewStackEvents>,
+    public ETNode<ETUIButtonEventManager> {
 
     enum class EViewType {
         Main = 0,
@@ -43,6 +44,10 @@ public:
     void ET_onViewStartPop(EntityId viewId) override;
     void ET_onViewFinishPop(EntityId viewId) override;
 
+    // ETUIButtonEventManager
+    bool ET_isSomeButtonPressed() const override;
+    void ET_setButtonPressed(bool flag) override;
+
 private:
 
     void setupCallbacks();
@@ -57,6 +62,7 @@ private:
 
     EventMapT eventMap;
     ViewMapT viewMap;
+    bool isButtonPressed;
 };
 
 #endif /* __UI_EVENT_MANAGER_HPP__ */

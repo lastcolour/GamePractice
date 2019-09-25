@@ -1,5 +1,9 @@
 #include "UISwitchControlTests.hpp"
 #include "UI/Logics/UISwitchControl.hpp"
+#include "UI/Logics/UIBox.hpp"
+#include "Core/JSONNode.hpp"
+
+#include <algorithm>
 
 TEST_F(UISwitchControlTests, CheckConnections) {
     auto uiSwitchControl = createObjectAndLogic<UISwitchControl>();
@@ -30,5 +34,44 @@ TEST_F(UISwitchControlTests, CheckSwitchOnOff) {
 }
 
 TEST_F(UISwitchControlTests, CheckSetLabel) {
-    ASSERT_TRUE(false);
+    auto gameObj = createVoidObject();
+
+    UIBox* uiBox = nullptr;
+    {
+        uiBox = new UIBox();
+        gameObj->addLogic(std::unique_ptr<EntityLogic>(uiBox));
+
+        std::string serStr = "{\"label\":{\"text\":\"TestText\"}}";
+        JSONNode node = JSONNode::ParseString(serStr.c_str());
+        ASSERT_TRUE(node);
+        ASSERT_TRUE(uiBox->serialize(node));
+        ASSERT_TRUE(uiBox->init());
+    }
+
+    UISwitchControl* uiSwitchControl = nullptr;
+    {
+        uiSwitchControl = new UISwitchControl();
+        gameObj->addLogic(std::unique_ptr<EntityLogic>(uiSwitchControl));
+        ASSERT_TRUE(uiSwitchControl->init());
+    }
+
+    const char* fistLabelText = "On";
+    const char* secondLabelText = "Off";
+    if(uiSwitchControl->ET_isEnabled()) {
+        std::swap(fistLabelText, secondLabelText);
+    }
+
+    uiSwitchControl->ET_onPress();
+
+    {
+        const char* cLabelStr = uiBox->ET_getLabelText();
+        EXPECT_STREQ(cLabelStr, fistLabelText);
+    }
+
+    uiSwitchControl->ET_onPress();
+
+    {
+        const char* cLabelStr = uiBox->ET_getLabelText();
+        EXPECT_STREQ(cLabelStr,  secondLabelText);
+    }
 }

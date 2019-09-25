@@ -160,6 +160,7 @@ TEST_F(UIEventTests, CheckGameRestart) {
 
     ET_SendEvent(&ETUIEventManager::ET_onEvent, RESTART_GAME_EVENT);
 
+    WaitButtonReleaseEvent();
     WaitViewSwitchEnd();
 
     ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);

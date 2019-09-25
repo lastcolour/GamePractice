@@ -3,7 +3,9 @@
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
-UIEventManager::UIEventManager() {
+UIEventManager::UIEventManager() :
+    isButtonPressed(false) {
+
     viewMap["UI/GameView/Root.json"] = EViewType::Game;
     viewMap["UI/PlayerView/Root.json"] = EViewType::Player;
     viewMap["UI/AboutView/Root.json"] = EViewType::About;
@@ -61,12 +63,21 @@ void UIEventManager::setupCallbacks() {
 bool UIEventManager::init() {
     ETNode<ETUIEventManager>::connect(getEntityId());
     ETNode<ETUIViewStackEvents>::connect(getEntityId());
+    ETNode<ETUIButtonEventManager>::connect(getEntityId());
     return true;
 }
 
 void UIEventManager::deinit() {
     ETNode<ETUIEventManager>::disconnect();
     ETNode<ETUIViewStackEvents>::disconnect();
+    ETNode<ETUIButtonEventManager>::disconnect();
+}
+
+bool UIEventManager::ET_isSomeButtonPressed() const {
+    return isButtonPressed;
+}
+void UIEventManager::ET_setButtonPressed(bool flag) {
+    isButtonPressed = flag;
 }
 
 UIEventManager::EViewType UIEventManager::getActiveViewType() const {

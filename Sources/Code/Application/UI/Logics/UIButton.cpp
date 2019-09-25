@@ -16,10 +16,18 @@ UIButton::~UIButton() {
 }
 
 void UIButton::ET_onPress() {
+    bool isSomeButtonPressed = false;
+    ET_SendEventReturn(isSomeButtonPressed, &ETUIButtonEventManager::ET_isSomeButtonPressed);
+    if(isSomeButtonPressed) {
+        return;
+    }
+
+    ET_SendEvent(&ETUIButtonEventManager::ET_setButtonPressed, true);
     ET_SendEvent(animEntityId, &ETUIButtonPressAnimation::ET_startPressAnimation);
 }
 
 void UIButton::ET_onPressAnimationEnd() {
+    ET_SendEvent(&ETUIButtonEventManager::ET_setButtonPressed, false);
     ET_SendEvent(&ETUIEventManager::ET_onEvent, eventName.c_str());
 }
 

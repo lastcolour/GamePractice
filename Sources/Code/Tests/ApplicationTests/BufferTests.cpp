@@ -88,3 +88,29 @@ TEST_F(BufferTests, CheckConstructWithData) {
     std::string readStr = buff.getString();
     ASSERT_EQ(writeStr, readStr);
 }
+
+TEST_F(BufferTests, CheckCopyBuffer) {
+    char cStr[] = "Test Str";
+    Buffer buff1(cStr, sizeof(cStr));
+    Buffer buff2 = buff1;
+
+    EXPECT_EQ(buff1.getReadData(), buff2.getReadData());
+    EXPECT_EQ(buff1.getSize(), buff2.getSize());
+
+    char cLongStr[] = "Long Test Str";
+    Buffer buff3;
+    buff3.resize(sizeof(cLongStr));
+    buff3 = buff2;
+
+    EXPECT_EQ(buff2.getReadData(), buff3.getReadData());
+    EXPECT_EQ(buff2.getSize(), buff3.getSize());
+
+    char cVeryLognStr[] = "Very Long Test Str";
+    buff3.resize(sizeof(cVeryLognStr));
+    memcpy(&cVeryLognStr, buff3.getWriteData(), sizeof(cVeryLognStr));
+
+    EXPECT_EQ(sizeof(cVeryLognStr), buff3.getSize());
+    std::string veryLongStr = buff3.getString();
+
+    EXPECT_STREQ(veryLongStr.c_str(), cVeryLognStr);
+}

@@ -41,6 +41,7 @@ struct ETUILabeledBox {
     virtual ~ETUILabeledBox() = default;
     virtual EntityId ET_getLabelId() const = 0;
     virtual void ET_setLabelText(const char* text) = 0;
+    virtual const char* ET_getLabelText() const = 0;
 };
 
 struct ETUIInteractionBox {
@@ -88,6 +89,12 @@ struct ETUIViewStackEvents {
     virtual void ET_onViewFinishPush(EntityId viewId) = 0;
     virtual void ET_onViewStartPop(EntityId viewId) = 0;
     virtual void ET_onViewFinishPop(EntityId viewId) = 0;
+};
+
+struct ETUIButtonEventManager {
+    virtual ~ETUIButtonEventManager() = default;
+    virtual bool ET_isSomeButtonPressed() const = 0;
+    virtual void ET_setButtonPressed(bool flag) = 0;
 };
 
 struct ETUIViewSwitcher {

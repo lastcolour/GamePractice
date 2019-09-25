@@ -20,6 +20,7 @@ public:
     // ETUILabeledBox
     EntityId ET_getLabelId() const override;
     void ET_setLabelText(const char* text) override;
+    const char* ET_getLabelText() const override;
 
 protected:
 

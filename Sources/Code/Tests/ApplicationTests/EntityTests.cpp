@@ -1,9 +1,11 @@
 #include "EntityTests.hpp"
 #include "Entity/Entity.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 
 namespace {
 
 const char* TEST_OBJECT_NAME = "Game/Simple.json";
+const char* EXTEND_OBJECT_NAME = "Game/GameBoardElem.json";
 
 } // namespace
 
@@ -135,5 +137,15 @@ TEST_F(EntityTests, CheckChildInheritParentScale) {
 }
 
 TEST_F(EntityTests, CheckExtendEntity) {
-    ASSERT_TRUE(false);
+    EntityId entId = InvalidEntityId;
+    ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    EXPECT_FALSE(ET_IsExistNode<ETRenderImageLogic>(entId));
+
+    bool extRes = false;
+    ET_SendEventReturn(extRes, &ETEntityManager::ET_extendEntity, entId, EXTEND_OBJECT_NAME);
+
+    EXPECT_TRUE(extRes);
+
+    EXPECT_TRUE(ET_IsExistNode<ETRenderImageLogic>(entId));
 }

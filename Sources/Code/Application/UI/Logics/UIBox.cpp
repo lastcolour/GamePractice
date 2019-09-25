@@ -77,6 +77,15 @@ void UIBox::ET_setLabelText(const char* text) {
     ET_SendEvent(labelId, &ETUILabel::ET_setText, text);
 }
 
+const char* UIBox::ET_getLabelText() const {
+    if(!labelId.isValid()) {
+        return nullptr;
+    }
+    const char* cLabelText = nullptr;
+    ET_SendEventReturn(cLabelText, labelId, &ETUILabel::ET_getText);
+    return cLabelText;
+}
+
 void UIBox::ET_setStyle(const UIStyle& newStyle) {
     bool isNewRenderer = false;
     if(ET_getStyle().renderer != newStyle.renderer && !newStyle.renderer.empty()) {

@@ -143,5 +143,40 @@ TEST_F(UIButtonTests, CheckButtonConnections) {
 }
 
 TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
-    ASSERT_TRUE(false);
+    UIStyle style;
+    style.sizeInv = SizeInvariant::Relative;
+    style.size = Vec2(0.5f);
+
+    auto topButton = createUIButton();
+    Vec2i topButtonCenter(0);
+    {
+        style.yAlignType = YAlignType::Top;
+        topButton->ET_setStyle(style);
+        topButton->ET_setEventName("topButton");
+        topButton->init();
+
+        topButtonCenter = topButton->ET_getAabb2di().getCenter();
+    }
+
+    auto botButton = createUIButton();
+    Vec2i botButtonCenter(0);
+    {
+        style.yAlignType = YAlignType::Bot;
+        botButton->ET_setStyle(style);
+        botButton->ET_setEventName("botButton");
+        botButton->init();
+
+        botButtonCenter = botButton->ET_getAabb2di().getCenter();
+    }
+
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, topButtonCenter);
+
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, botButtonCenter);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, botButtonCenter);
+
+    WaitButtonReleaseEvent();
+
+    ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
+    ASSERT_STREQ(buttonListener->eventQueue[0].c_str(), "topButton");
 }
