@@ -12,13 +12,9 @@
 #ifdef APP_BUILD_PLATFORM_WINDOWS
   #include <direct.h>
   #include <windows.h>
-  #define PLATFORM_GET_CWD _getcwd
-  #define PLATFORM_CREATE_DIR(DIR_NAME) CreateDirectory(DIR_NAME, nullptr)
   const char* CWD_PREFIX = "";
 #elif defined APP_BUILD_PLATFORM_LINUX
   #include <unistd.h>
-  #define PLATFORM_GET_CWD getcwd
-  #define PLATFORM_CREATE_DIR(DIR_NAME) !mkdir(DIR_NAME, S_IRWXU|S_IRWXG|S_IRWXO)
   const char* CWD_PREFIX = "/";
 #else
   #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
@@ -30,22 +26,61 @@ const char VALID_SLASH = '/';
 const char* LOCAL_DIR_PATH = "Local";
 const size_t MAX_ERROR_MSG_LEN = 128;
 
+void fixSlashes(std::string& origPath) {
+    std::replace(origPath.begin(), origPath.end(), '\\', VALID_SLASH);
+}
+
 std::string getCWD() {
-    std::string cwdPath;
-    char temp[FILENAME_MAX];
-    if(PLATFORM_GET_CWD(temp, sizeof(temp))) {
-        temp[sizeof(temp) - 1] = '\0';
-        cwdPath = temp;
-        cwdPath = CWD_PREFIX + cwdPath;
+    char cPathStr[FILENAME_MAX] = { 0 };
+#ifdef APP_BUILD_PLATFORM_WINDOWS
+    if(!_getcwd(cPathStr, FILENAME_MAX)) {
+        return "";
     }
+#else
+    if(!getcwd(cPathStr, FILENAME_MAX)) {
+        return "";
+    }
+#endif
+    cPathStr[sizeof(cPathStr) - 1] = '\0';
+    std::string cwdPath = cPathStr;
+    cwdPath = CWD_PREFIX + cwdPath;
     return cwdPath;
 }
 
-bool createDir(const std::string& dirName) {
-    if(!PLATFORM_CREATE_DIR(dirName.c_str())) {
-        return false;
+std::string getBinDir() {
+    char cPathStr[FILENAME_MAX] = { 0 };
+    std::string binFilePath;
+#ifdef APP_BUILD_PLATFORM_WINDOWS
+    GetModuleFileName(nullptr, cPathStr, FILENAME_MAX);
+    binFilePath = cPathStr;
+#else 
+    auto cPathStrLen = readlink("/proc/self/exe", cPathStr, FILENAME_MAX);
+    binFilePath = std::string(cPathStr, (cPathStrLen > 0) ? cPathStrLen : 0);
+#endif
+
+    if(binFilePath.empty()) {
+        return "";
     }
-    return true;
+
+    fixSlashes(binFilePath);
+    auto lastSlashPt = binFilePath.find_last_of(VALID_SLASH);
+
+    if(lastSlashPt == std::string::npos) {
+        return "";
+    }
+
+    std::string binDirPath = binFilePath.substr(0, lastSlashPt);
+    return binDirPath;
+}
+
+bool createDir(const std::string& dirName) {
+    bool res = false;
+#ifdef APP_BUILD_PLATFORM_WINDOWS
+    res = CreateDirectory(dirName.c_str(), nullptr);
+#else
+    res = !mkdir(dirName.c_str(), S_IRWXU|S_IRWXG|S_IRWXO);
+#endif
+    return res;
 }
 
 bool isDirExist(const std::string& dirName) {
@@ -59,10 +94,6 @@ bool isDirExist(const std::string& dirName) {
         return true;
     }
     return false;
-}
-
-void fixSlashes(std::string& origPath) {
-    std::replace(origPath.begin(), origPath.end(), '\\', VALID_SLASH);
 }
 
 void normalizePath(std::string& origPath) {
@@ -100,8 +131,8 @@ void normalizePath(std::string& origPath) {
 }
 
 std::string getAssetDirPath() {
-    std::string cwdPath = getCWD();
-    if(cwdPath.empty()) {
+    std::string binDirPath = getBinDir();
+    if(binDirPath.empty()) {
         return "";
     }
     std::vector<std::string> possiblePaths = {
@@ -111,7 +142,7 @@ std::string getAssetDirPath() {
         "/../../../Assets",
     };
     for(const auto& path : possiblePaths) {
-        auto dirPath = cwdPath + path;
+        auto dirPath = binDirPath + path;
         fixSlashes(dirPath);
         normalizePath(dirPath);
         if (isDirExist(dirPath)) {
@@ -122,12 +153,12 @@ std::string getAssetDirPath() {
 }
 
 std::string getLoacalFilesDirPath() {
-    std::string cwdPath = getCWD();
-    if(cwdPath.empty()) {
+    std::string binDirPath = getBinDir();
+    if(binDirPath.empty()) {
         return "";
     }
-    fixSlashes(cwdPath);
-    std::string dirPath = StringFormat("%s%c%s", cwdPath, VALID_SLASH, LOCAL_DIR_PATH);
+    fixSlashes(binDirPath);
+    std::string dirPath = StringFormat("%s%c%s", binDirPath, VALID_SLASH, LOCAL_DIR_PATH);
     if(!isDirExist(dirPath)) {
         if(!createDir(dirPath)) {
             return "";

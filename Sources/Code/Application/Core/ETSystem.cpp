@@ -77,7 +77,7 @@ void ETSystem::registerConnection(const ETConnectionRequest& connReq) {
     if(connReq.isDisconnect) {
         auto it = activeConnection.find(connReq.etId);
         if(it == activeConnection.end()) {
-            assert(false && "Can't find to disconnect");
+            assert(false && "Can't find node to disconnect");
             return;
         }
         auto& etConnection = it->second;
