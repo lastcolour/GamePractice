@@ -61,7 +61,20 @@ bool UIBox::init() {
     if(labelId.isValid()) {
         ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, labelId);
     }
+    ETNode<ETUILabeledBox>::connect(getEntityId());
     return true;
+}
+
+EntityId UIBox::ET_getLabelId() const {
+    return labelId;
+}
+
+void UIBox::ET_setLabelText(const char* text) {
+    if(!labelId.isValid()) {
+        LogWarning("[UIBox::ET_setLabelText] Can't set label text without label");
+        return;
+    }
+    ET_SendEvent(labelId, &ETUILabel::ET_setText, text);
 }
 
 void UIBox::ET_setStyle(const UIStyle& newStyle) {

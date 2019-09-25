@@ -4,8 +4,10 @@
 #include "Math/MatrixTransform.hpp"
 
 namespace {
-    const float DEF_Z_NEAR = -1.f;
-    const float DEF_Z_FAR = 1.f;
+
+const float DEF_Z_NEAR = -1.f;
+const float DEF_Z_FAR = 1.f;
+
 } // namespace
 
 RenderCamera::RenderCamera() :

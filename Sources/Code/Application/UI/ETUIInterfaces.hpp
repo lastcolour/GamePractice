@@ -12,7 +12,7 @@ struct Margin {
     int left;
     int right;
 
-    Margin() : 
+    Margin() :
         top(0), bot(0), left(0), right(0) {}
 };
 
@@ -35,6 +35,12 @@ struct ETUIBox {
     virtual const UIStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIStyle& newStyle) = 0;
     virtual const Margin& ET_getMaring() const = 0;
+};
+
+struct ETUILabeledBox {
+    virtual ~ETUILabeledBox() = default;
+    virtual EntityId ET_getLabelId() const = 0;
+    virtual void ET_setLabelText(const char* text) = 0;
 };
 
 struct ETUIInteractionBox {
@@ -118,6 +124,11 @@ struct ETUIButtonPressAnimation {
     virtual ~ETUIButtonPressAnimation() = default;
     virtual void ET_startPressAnimation() = 0;
     virtual float ET_getAnimationDuration() const = 0;
+};
+
+struct ETUISwitchControl {
+    virtual ~ETUISwitchControl() = default;
+    virtual bool ET_isEnabled() const = 0;
 };
 
 #endif /* __UI_ET_INTERFACES_HPP__ */

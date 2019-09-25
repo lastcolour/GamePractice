@@ -28,32 +28,16 @@ public:
 protected:
 
     void connect(EntityId adId) {
-        if(addressId == adId) {
-            return;
-        } else if(addressId != adId && addressId != InvalidEntityId) {
-            disconnect();
-        }
-        if(adId != InvalidEntityId) {
-            GetETSystem()->connectNode(*this, adId);
-        }
-        addressId = adId;
+        GetETSystem()->connectNode(*this, adId);
     }
     void disconnect() {
-        if(addressId == InvalidEntityId) {
-            return;
-        }
         GetETSystem()->disconnectNode(*this);
-        addressId.setInvalidId();
     }
 
 private:
 
     ETNode(const ETNode&) = delete;
     ETNode& operator=(const ETNode&) = delete;
-
-private:
-
-    EntityId addressId;
 };
 
 // ==--------------- Const ETs ---------------==

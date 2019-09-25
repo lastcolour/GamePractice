@@ -28,13 +28,16 @@ void RenderTextureManager::deinit() {
 
 std::string RenderTextureManager::createNewTexSizeName(const Vec2i& texSize) const {
     std::string texNamePreffix = StringFormat("[%dx%d]_", texSize.x, texSize.y);
-    int tex_number = 1;
+    int tex_number = 0;
     for(auto& texNode : textures) {
         const auto& texName = texNode.first;
         auto findPt = texName.find(texNamePreffix);
         if(findPt != std::string::npos) {
             std::string texNumStr = texName.substr(findPt + texNamePreffix.length());
-            tex_number = std::max(std::stoi(texNumStr), tex_number) + 1;
+            int usedTexNum = std::stoi(texNumStr);
+            if(usedTexNum > tex_number) {
+                tex_number = usedTexNum + 1;
+            }
         }
     }
     return StringFormat("%s%d", texNamePreffix, tex_number);

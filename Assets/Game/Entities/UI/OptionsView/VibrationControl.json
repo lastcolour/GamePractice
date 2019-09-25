@@ -2,9 +2,8 @@
     "children":[],
     "logics": [
         {
-            "type": "UIButton",
+            "type": "UIBox",
             "data": {
-                "event":"Options_OnVibrationSwitcher",
                 "style": {
                     "color": {
                         "r": 75,
@@ -32,6 +31,14 @@
                         }
                     }
                 }
+            }
+        },
+        {
+            "type":"UISwitchControl",
+            "data":{
+                "onLabel":"On",
+                "offLabel":"Off",
+                "controlType":"vibration"
             }
         }
     ]

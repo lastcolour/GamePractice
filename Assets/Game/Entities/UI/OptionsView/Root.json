@@ -42,7 +42,7 @@
                                                 "object":"UI/OptionsView/SoundLabel.json"
                                             },
                                             {
-                                                "object":"UI/OptionsView/SoundSwitcherButton.json"
+                                                "object":"UI/OptionsView/SoundControl.json"
                                             }
                                         ]
                                     },
@@ -54,7 +54,7 @@
                                                 "object":"UI/OptionsView/VibrationLabel.json"
                                             },
                                             {
-                                                "object":"UI/OptionsView/VibrationSwitcherButton.json"
+                                                "object":"UI/OptionsView/VibrationControl.json"
                                             }
                                         ]
                                     }

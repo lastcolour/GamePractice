@@ -27,6 +27,7 @@
 #include "UI/Logics/UIButtonPressAnimation.hpp"
 #include "UI/Logics/UILabelSetter.hpp"
 #include "UI/Logics/UIResultInfoSelector.hpp"
+#include "UI/Logics/UISwitchControl.hpp"
 
 #include <algorithm>
 
@@ -70,6 +71,7 @@ bool EntityManager::init() {
     registerLogic<UIButtonPressAnimation>("UIButtonPressAnimation");
     registerLogic<UILabelSetter>("UILabelSetter");
     registerLogic<UIResultInfoSelector>("UIResultInfoSelector");
+    registerLogic<UISwitchControl>("UISwitchControl");
 
     ETNode<ETEntityManager>::connect(getEntityId());
     return true;

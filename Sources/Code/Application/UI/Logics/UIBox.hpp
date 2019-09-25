@@ -3,7 +3,8 @@
 
 #include "UI/Logics/UIBaseBox.hpp"
 
-class UIBox : public UIBaseBox {
+class UIBox : public UIBaseBox,
+    public ETNode<ETUILabeledBox> {
 public:
     UIBox();
     virtual ~UIBox();
@@ -15,6 +16,10 @@ public:
     // ETUIBox
     void ET_setStyle(const UIStyle& newStyle) override;
     void ET_boxResize() override;
+
+    // ETUILabeledBox
+    EntityId ET_getLabelId() const override;
+    void ET_setLabelText(const char* text) override;
 
 protected:
 
