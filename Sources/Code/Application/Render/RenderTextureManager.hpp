@@ -7,7 +7,8 @@
 class Buffer;
 
 class RenderTextureManager : public SystemLogic,
-    public ETNode<ETRenderTextureManger> {
+    public ETNode<ETRenderTextureManger>,
+    public ETNode<ETRenderResourceManager> {
 public:
 
     RenderTextureManager();
@@ -21,6 +22,10 @@ public:
     std::shared_ptr<RenderTexture> ET_createTexture(const char* textureName, ETextureType texType) override;
     std::shared_ptr<RenderTexture> ET_createEmptyTexture(const Vec2i& texSize, ETextureType texType) override;
 
+    // ETRenderResourceManager
+    void ET_forgetResoruces() override;
+    void ET_cleanUnused() override;
+
 private:
 
     std::string createNewTexSizeName(const Vec2i& texSize) const;
@@ -31,7 +36,7 @@ private:
 
 private:
 
-    std::unordered_map<std::string, std::weak_ptr<RenderTexture>> textures;
+    std::unordered_map<std::string, std::shared_ptr<RenderTexture>> textures;
 };
 
 #endif /* __RENDER_TEXTURE_MANAGER_HPP__ */

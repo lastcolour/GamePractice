@@ -18,6 +18,7 @@ class RenderTexture;
 struct ETRenderSimpleLogic {
     virtual ~ETRenderSimpleLogic() = default;
     virtual void ET_setMaterial(const char* matName) = 0;
+    virtual void ET_setGeometry(const char* geomName) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setSize(const Vec2& size) = 0;
 };
@@ -95,11 +96,20 @@ struct ETRender {
     virtual void ET_setClearColor(const ColorB& col) = 0;
     virtual void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) = 0;
     virtual void ET_drawFrame() = 0;
+    virtual bool ET_canRender() const = 0;
 };
 
 struct ETRenderContextEvents {
-    virtual ~ETRenderContextEvents();
-    virtual void ET_onContextLost() = 0;
+    virtual ~ETRenderContextEvents() = default;
+    virtual void ET_onContextSuspended() = 0;
+    virtual void ET_onContextRestored() = 0;
+    virtual void ET_onContextReCreated() = 0;
+};
+
+struct ETRenderResourceManager {
+    virtual ~ETRenderResourceManager() = default;
+    virtual void ET_forgetResoruces() = 0;
+    virtual void ET_cleanUnused() = 0;
 };
 
 #endif /* __ET_RENDER_INTERFACES_HPP__ */

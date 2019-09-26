@@ -22,7 +22,6 @@ const size_t RENDER_WIDTH = 400;
 const size_t RENDER_HEIGHT = 300;
 
 const char* TEST_MATERIAL_1 = "geom_solid_color";
-const char* TEST_MATERIAL_2 = "geom_Solid_color";
 
 const char* TEST_GEOM_1 = "square";
 
@@ -65,7 +64,7 @@ void RenderTests::TearDown() {
     glFlush();
 }
 
-void RenderTests::checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) {
+void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) {
 
     ASSERT_TRUE(textureFramebuffer->read());
 
@@ -75,7 +74,7 @@ void RenderTests::checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t 
         for(int j = 0; j < size.y; ++j) {
             const ColorB& col = textureFramebuffer->getColor(i, j);
             if(i > xStart && i < xEnd && j > yStart && j < yEnd) {
-                if(col != DRAW_COLOR) {
+                if(col != drawColor) {
                     ++failPixCount;
                 }
             } else if(!((i == xStart && j >= yStart && j <= yEnd)
@@ -89,7 +88,7 @@ void RenderTests::checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t 
             }
         }
     }
-    ASSERT_EQ(failPixCount, 0u);
+    EXPECT_EQ(failPixCount, 0u);
 }
 
 void RenderTests::dumpFramebuffer() {
@@ -178,17 +177,6 @@ TEST_F(RenderTests, CheckCreateInvalidMaterial) {
     ASSERT_FALSE(material);
 }
 
-TEST_F(RenderTests, CheckCreateSameMaterial) {
-    std::shared_ptr<RenderMaterial> mat1;
-    ET_SendEventReturn(mat1, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
-
-    std::shared_ptr<RenderMaterial> mat2;
-    ET_SendEventReturn(mat2, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_2);
-
-    ASSERT_TRUE(mat1);
-    ASSERT_EQ(mat1.get(), mat2.get());
-}
-
 TEST_F(RenderTests, CheckCreateSquareGeom) {
     std::shared_ptr<RenderGeometry> geom;
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
@@ -268,7 +256,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     const size_t yStart = static_cast<size_t>(center.y - SCALE_FACTOR * h * 0.5f);
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * h * 0.5f);
 
-    checkSquare(xStart, xEnd, yStart, yEnd);
+    checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
     dumpFramebuffer();
 }
 
@@ -294,7 +282,7 @@ TEST_F(RenderTests, CheckRenderOfSimpleObject) {
     const size_t yStart = static_cast<size_t>(center.y - SCALE_FACTOR * size.y * 0.5f);
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * size.y * 0.5f);
 
-    checkSquare(xStart, xEnd, yStart, yEnd);
+    checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
     dumpFramebuffer();
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId);

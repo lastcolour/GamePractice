@@ -11,7 +11,6 @@ RenderMaterial::RenderMaterial(int progId) :
 }
 
 RenderMaterial::~RenderMaterial() {
-    glDeleteProgram(programId);
 }
 
 void RenderMaterial::bind() {
@@ -64,4 +63,12 @@ void RenderMaterial::setUniform4f(const char* name, const Vec4& vec) {
     if(findUniform(name, uniLoc)) {
         glUniform4fv(uniLoc, 1, vec.getPtr());
     }
+}
+
+int RenderMaterial::getProgramId() const {
+    return programId;
+}
+
+void RenderMaterial::setProgramId(int newProgramId) {
+    programId = newProgramId;
 }

@@ -7,7 +7,8 @@
 class RenderFont;
 
 class RenderFontManager : public SystemLogic,
-    public ETNode<ETRenderFontManager> {
+    public ETNode<ETRenderFontManager>,
+    public ETNode<ETRenderResourceManager> {
 public:
 
     RenderFontManager();
@@ -20,6 +21,10 @@ public:
     // ETRenderFontManager
     std::shared_ptr<RenderFont> ET_createDefaultFont() override;
 
+    // ETRenderResourceManager
+    void ET_forgetResoruces() override;
+    void ET_cleanUnused() override;
+
 private:
 
     std::shared_ptr<RenderFont> createFont(const char* fontName, int fontSize);
@@ -27,9 +32,7 @@ private:
 
 private:
 
-    typedef std::shared_ptr<RenderFont> RenderFontPtrT;
-    std::unordered_map<std::string, RenderFontPtrT> fonts;
-
+    std::unordered_map<std::string, std::shared_ptr<RenderFont>> fonts;
     std::vector<int> characterSet;
     int padding;
 };

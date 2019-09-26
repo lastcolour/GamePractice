@@ -41,7 +41,7 @@ void GameLocalConfig::save(JSONNode& node) {
     {
         JSONNode optionsNode;
         optionsNode.write("sound", soundEnabled);
-        optionsNode.write("vibration", soundEnabled);
+        optionsNode.write("vibration", vibrationEnabled);
         node.write("Options", optionsNode);
     }
 }

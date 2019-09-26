@@ -11,6 +11,7 @@ namespace {
 const int MAX_INFO_BUFF_SIZE = 255u;
 const char* MATERIALS = "Render/Materials.json";
 const char* SHADERS_ROOT_DIR = "Render/";
+const int INVALID_PROGRAM_ID = 0;
 
 } // namespace
 
@@ -22,60 +23,32 @@ RenderMaterialManager::~RenderMaterialManager() {
 
 bool RenderMaterialManager::init() {
     ETNode<ETRenderMaterialManager>::connect(getEntityId());
+    ETNode<ETRenderResourceManager>::connect(getEntityId());
     return true;
 }
 
 void RenderMaterialManager::deinit() {
     ETNode<ETRenderMaterialManager>::disconnect();
+    ETNode<ETRenderResourceManager>::disconnect();
 }
 
 std::shared_ptr<RenderMaterial> RenderMaterialManager::ET_createMaterial(const char* matName) {
     std::string reqMatName = matName;
-    std::transform(reqMatName.begin(), reqMatName.end(), reqMatName.begin(), tolower);
     if(reqMatName.empty()) {
         LogError("[RenderMaterialManager::createMaterial] Can't create material with empty name");
         return nullptr;
     }
     auto it = materials.find(reqMatName);
-    if(it != materials.end() && !it->second.expired()) {
-        return it->second.lock();
+    if(it != materials.end() && it->second) {
+        return it->second;
     }
-    JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, MATERIALS);
-    if(!rootNode) {
-        LogError("[RenderMaterialManager::createMaterial] Can't create materials '%s' from: %s", matName, MATERIALS);
+    auto programId = createMaterialProgram(reqMatName);
+    if(!programId) {
         return nullptr;
-    }
-    for(auto& matNode : rootNode) {
-        if(reqMatName != matNode.key()) {
-            continue;
-        }
-        std::string vertShaderPath;
-        std::string fragShaderPath;
-        matNode.read("vert", vertShaderPath);
-        matNode.read("frag", fragShaderPath);
-        if(vertShaderPath.empty()) {
-            LogError("[RenderMaterialManager::createMaterial] Empty vert shader path in material: %s", reqMatName);
-            continue;
-        }
-        if(fragShaderPath.empty()) {
-            LogError("[RenderMaterialManager::createMaterial] Empty frag shader path in material: %s", reqMatName);
-            continue;
-        }
-        vertShaderPath = SHADERS_ROOT_DIR + vertShaderPath;
-        fragShaderPath = SHADERS_ROOT_DIR + fragShaderPath;
-        auto program = createProgram(vertShaderPath, fragShaderPath);
-        if(!program) {
-            LogError("[RenderMaterialManager::createProgram] Can't create render material '%s' from vert: '%s' and frag: '%s' shaders",
-                reqMatName, vertShaderPath, fragShaderPath);
-            return nullptr;
-        }
-        LogDebug("[RenderMaterialManager::createMaterial] Load material: '%s'", reqMatName);
-        std::shared_ptr<RenderMaterial> material(new RenderMaterial(program));
-        materials[reqMatName] = material;
-        return material;
-    }
-    return nullptr;
+    } 
+    std::shared_ptr<RenderMaterial> material(new RenderMaterial(programId));
+    materials[reqMatName] = material;
+    return material;
 }
 
 int RenderMaterialManager::createProgram(const std::string& vertFile, const std::string& fragFile) {
@@ -157,4 +130,57 @@ int RenderMaterialManager::createProgramImpl(const std::string& vertSrc, const s
     glDeleteShader(vertShaderId);
     glDeleteShader(fragShaderId);
     return programId;
+}
+
+int RenderMaterialManager::createMaterialProgram(const std::string& matName) {
+    JSONNode rootNode;
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, MATERIALS);
+    if(!rootNode) {
+        LogError("[RenderMaterialManager::createMaterialProgram] Can't create materials '%s' from: %s", matName, MATERIALS);
+        return INVALID_PROGRAM_ID;
+    }
+    for(auto& matNode : rootNode) {
+        if(matName != matNode.key()) {
+            continue;
+        }
+        std::string vertShaderPath;
+        std::string fragShaderPath;
+        matNode.read("vert", vertShaderPath);
+        matNode.read("frag", fragShaderPath);
+        if(vertShaderPath.empty()) {
+            LogError("[RenderMaterialManager::createMaterialProgram] Empty vert shader path in material: %s", matName);
+            continue;
+        }
+        if(fragShaderPath.empty()) {
+            LogError("[RenderMaterialManager::createMaterialProgram] Empty frag shader path in material: %s", matName);
+            continue;
+        }
+        vertShaderPath = SHADERS_ROOT_DIR + vertShaderPath;
+        fragShaderPath = SHADERS_ROOT_DIR + fragShaderPath;
+        auto programId = createProgram(vertShaderPath, fragShaderPath);
+        if(!programId) {
+            LogError("[RenderMaterialManager::createMaterialProgram] Can't create render material '%s' from vert: '%s' and frag: '%s' shaders",
+                matName, vertShaderPath, fragShaderPath);
+            return INVALID_PROGRAM_ID;
+        }
+        return programId;
+    }
+    return INVALID_PROGRAM_ID;
+}
+
+void RenderMaterialManager::ET_forgetResoruces() {
+    materials.clear();
+}
+
+void RenderMaterialManager::ET_cleanUnused() {
+    auto it = materials.begin();
+    while(it != materials.end()) {
+        auto& matPtr = it->second;
+        if(matPtr.use_count() == 1) {
+            glDeleteProgram(matPtr->getProgramId());
+            it = materials.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }

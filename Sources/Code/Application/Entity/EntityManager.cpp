@@ -141,7 +141,6 @@ void EntityManager::ET_destroyEntity(EntityId entityId) {
 
 void EntityManager::registerCreateLogic(const char* logicName, LogicCreateFunc createFunc) {
     std::string reqLogicName = logicName;
-    std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
     if(it != logics.end()) {
         LogError("[EntityManager::registerCreateLogic] Register duplicate logic: '%s'", logicName);
@@ -153,7 +152,6 @@ void EntityManager::registerCreateLogic(const char* logicName, LogicCreateFunc c
 
 EntityManager::LogicPtrT EntityManager::createLogic(const char* logicName) const {
     std::string reqLogicName = logicName;
-    std::transform(reqLogicName.begin(), reqLogicName.end(), reqLogicName.begin(), tolower);
     auto it = logics.find(reqLogicName);
     if(it != logics.end()) {
         return it->second();

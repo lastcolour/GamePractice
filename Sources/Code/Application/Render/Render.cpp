@@ -14,6 +14,7 @@ static_assert(std::is_same<unsigned int, GLuint>::value, "unsigned int != GLuint
 Render::Render() :
     renderFb(nullptr),
     clearColor(0, 0, 0),
+    hasContext(false),
     canOffscrenRender(false),
     canScreenRender(false) {
 }
@@ -22,14 +23,20 @@ Render::Render() :
  }
 
 bool Render::init() {
-    ET_SendEventReturn(canOffscrenRender, &ETSurface::ET_isValid);
-    if(canOffscrenRender) {
-        ET_onSurfaceCreated();
+    GLContextType contextType = GLContextType::None;
+    ET_SendEventReturn(contextType, &ETSurface::ET_getGLContextType);
+    if(contextType != GLContextType::None) {
+        hasContext = true;
+        ET_SendEventReturn(canOffscrenRender, &ETSurface::ET_isValid);
+        if(canOffscrenRender) {
+            ET_onSurfaceCreated();
+        }
     }
 
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
     ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETRenderContextEvents>::connect(getEntityId());
 
     return true;
 }
@@ -38,18 +45,30 @@ void Render::deinit() {
     ETNode<ETRender>::disconnect();
     ETNode<ETSurfaceEvents>::disconnect();
     ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETRenderContextEvents>::disconnect();
 }
 
 void Render::ET_onTick(float dt) {
     (void)dt;
     ET_drawFrame();
+    
+}
+
+bool Render::ET_canRender() const {
+    if(!hasContext) {
+        return false;
+    }
+    if(renderFb && !canOffscrenRender) {
+        return false;
+    }
+    if(!renderFb && !canScreenRender) {
+        return false;
+    }
+    return true;
 }
 
 void Render::ET_drawFrame() {
-    if(renderFb && !canOffscrenRender) {
-        return;
-    }
-    if(!renderFb && !canScreenRender) {
+    if(!ET_canRender()) {
         return;
     }
 
@@ -143,4 +162,17 @@ void Render::setViewport(const Vec2i& newViewport) {
     glViewport(0, 0, newViewport.x, newViewport.y);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, newViewport);
     ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
+}
+
+void Render::ET_onContextReCreated() {
+    hasContext = true;
+    ET_SendEvent(&ETRenderResourceManager::ET_forgetResoruces);
+}
+
+void Render::ET_onContextSuspended() {
+    hasContext = false;
+}
+
+void Render::ET_onContextRestored() {
+    hasContext = true;
 }

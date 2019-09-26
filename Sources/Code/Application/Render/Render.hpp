@@ -8,7 +8,8 @@
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
     public ETNode<ETRender>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETTimerEvents>,
+    public ETNode<ETRenderContextEvents> {
 public:
 
     Render();
@@ -23,6 +24,7 @@ public:
     void ET_setClearColor(const ColorB& col) override;
     void ET_drawFrame() override;
     void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
+    bool ET_canRender() const override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;
@@ -36,6 +38,11 @@ public:
     // ETTimerEvents
     void ET_onTick(float dt) override;
 
+    // ETRenderContextEvents
+    void ET_onContextSuspended() override;
+    void ET_onContextRestored() override;
+    void ET_onContextReCreated() override;
+
 private:
 
     void setViewport(const Vec2i& size);
@@ -44,6 +51,7 @@ private:
 
     RenderTextureFramebuffer* renderFb;
     ColorB clearColor;
+    bool hasContext;
     bool canOffscrenRender;
     bool canScreenRender;
 };

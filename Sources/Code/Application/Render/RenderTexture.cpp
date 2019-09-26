@@ -7,11 +7,4 @@ RenderTexture::RenderTexture() :
 }
 
 RenderTexture::~RenderTexture() {
-    glDeleteTextures(1, &texId);
-}
-
-void RenderTexture::bind() {
-}
-
-void RenderTexture::undind() {
 }

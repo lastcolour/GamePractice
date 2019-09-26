@@ -19,11 +19,13 @@ RenderTextureManager::~RenderTextureManager() {
 
 bool RenderTextureManager::init() {
     ETNode<ETRenderTextureManger>::connect(getEntityId());
+    ETNode<ETRenderResourceManager>::connect(getEntityId());
     return true;
 }
 
 void RenderTextureManager::deinit() {
     ETNode<ETRenderTextureManger>::disconnect();
+    ETNode<ETRenderResourceManager>::disconnect();
 }
 
 std::string RenderTextureManager::createNewTexSizeName(const Vec2i& texSize) const {
@@ -64,8 +66,8 @@ std::string RenderTextureManager::getLookupName(const char* textureName, ETextur
 std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(const char* textureName, ETextureType texType) {
     std::string texLookupName = getLookupName(textureName, texType);
     auto it = textures.find(texLookupName);
-    if(it != textures.end() && !it->second.expired()) {
-        return it->second.lock();
+    if(it != textures.end() && !it->second) {
+        return it->second;
     }
 
     Buffer buff;
@@ -199,4 +201,21 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createEmptyTexture(const Ve
     texture->texId = textureId;
     texture->size = texSize;
     return texture;
+}
+
+void RenderTextureManager::ET_forgetResoruces() {
+    textures.clear();
+}
+
+void RenderTextureManager::ET_cleanUnused() {
+    auto it = textures.begin();
+    while(it != textures.end()) {
+        auto& texPtr = it->second;
+        if(texPtr.use_count() == 1) {
+            glDeleteTextures(1, &(texPtr->texId));
+            it = textures.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }

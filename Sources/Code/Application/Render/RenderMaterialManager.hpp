@@ -5,7 +5,8 @@
 #include "Render/ETRenderInterfaces.hpp"
 
 class RenderMaterialManager : public SystemLogic,
-    ETNode<ETRenderMaterialManager> {
+    public ETNode<ETRenderMaterialManager>,
+    public ETNode<ETRenderResourceManager> {
 public:
 
     RenderMaterialManager();
@@ -18,14 +19,19 @@ public:
     // ETRenderMaterialManager
     std::shared_ptr<RenderMaterial> ET_createMaterial(const char* matName) override;
 
+    // ETRenderResourceManager
+    void ET_forgetResoruces() override;
+    void ET_cleanUnused() override;
+
 private:
 
     int createProgram(const std::string& vert, const std::string& frag);
     int createProgramImpl(const std::string& vertSrc, const std::string& fragSrc);
+    int createMaterialProgram(const std::string& matName);
 
 private:
 
-    std::unordered_map<std::string, std::weak_ptr<RenderMaterial>> materials;
+    std::unordered_map<std::string, std::shared_ptr<RenderMaterial>> materials;
 };
 
 #endif /* __RENDER_MATERIAL_MANAGER_HPP__ */

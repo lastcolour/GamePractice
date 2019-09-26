@@ -9,9 +9,6 @@ public:
     RenderTexture();
     ~RenderTexture();
 
-    void bind();
-    void undind();
-
 public:
 
     unsigned int texId;

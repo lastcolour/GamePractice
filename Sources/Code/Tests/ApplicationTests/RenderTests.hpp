@@ -2,6 +2,7 @@
 #define __RENDER_TESTS_HPP__
 
 #include "TestUtils/ConsoleAppTests.hpp"
+#include "Render/Color.hpp"
 
 class RenderTextureFramebuffer;
 
@@ -22,7 +23,7 @@ protected:
 
 protected:
 
-    void checkSquare(size_t xStart, size_t xEnd, size_t yStart, size_t yEnd);
+    void checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd);
     void dumpFramebuffer();
 };
 

@@ -1,7 +1,7 @@
 #include "Game/GameTimer.hpp"
 
 GameTimer::GameTimer() :
-    isPaused(false) {
+    isPaused(true) {
 }
 
 GameTimer::~GameTimer() {

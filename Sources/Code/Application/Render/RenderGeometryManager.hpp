@@ -5,7 +5,8 @@
 #include "Render/ETRenderInterfaces.hpp"
 
 class RenderGeometryManager : public SystemLogic,
-    ETNode<ETRenderGeometryManager> {
+    public ETNode<ETRenderGeometryManager>,
+    public ETNode<ETRenderResourceManager> {
 public:
 
     RenderGeometryManager();
@@ -18,15 +19,20 @@ public:
     // ETRenderGeometryManager
     std::shared_ptr<RenderGeometry> ET_createGeometry(const char* geomName) override;
 
-private:
+    // ETRenderResourceManager
+    void ET_forgetResoruces() override;
+    void ET_cleanUnused() override;
 
+private:
+    
+    std::shared_ptr<RenderGeometry> createGeometryOfType(const std::string& geomName);
     std::shared_ptr<RenderGeometry> createSquare();
     std::shared_ptr<RenderGeometry> createSquareTex();
     std::shared_ptr<RenderGeometry> createTextVertexChunks();
 
 private:
 
-    std::unordered_map<std::string, std::weak_ptr<RenderGeometry>> geometris;
+    std::unordered_map<std::string, std::shared_ptr<RenderGeometry>> geometris;
 };
 
 #endif /* __RENDER_GEOMETRY_MANAGER_HPP__ */

@@ -20,34 +20,39 @@ RenderGeometryManager::~RenderGeometryManager() {
 
 bool RenderGeometryManager::init() {
     ETNode<ETRenderGeometryManager>::connect(getEntityId());
+    ETNode<ETRenderResourceManager>::connect(getEntityId());
     return true;
 }
 
 void RenderGeometryManager::deinit() {
+    ETNode<ETRenderResourceManager>::disconnect();
     ETNode<ETRenderGeometryManager>::disconnect();
+}
+
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(const std::string& geomName) {
+    if(geomName == SQUARE_GEOM_NAME) {
+        return createSquare();
+    } else if(geomName == SQUARE_TEX_GEOM_NAME) {
+        return createSquareTex();
+    } else if(geomName == TEXT_VERTEX_CHUNK) {
+        return createTextVertexChunks();
+    }
+    LogWarning("[Render::createGeometryOfType] Can't create unknown type of geometry: '%s'", geomName);
+    return nullptr;
 }
 
 std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(const char* geomName) {
     std::string reqGeomName = geomName;
     auto it = geometris.find(reqGeomName);
-    if(it != geometris.end() && !it->second.expired()) {
-        return it->second.lock();
+    if(it != geometris.end() && it->second) {
+        return it->second;
     }
-    if(reqGeomName == SQUARE_GEOM_NAME) {
-        auto geom = createSquare();
-        geometris[reqGeomName] = geom;
-        return geom;
-    } else if (reqGeomName == SQUARE_TEX_GEOM_NAME) {
-        auto geom = createSquareTex();
-        geometris[reqGeomName] = geom;
-        return geom;
-    } else if(reqGeomName == TEXT_VERTEX_CHUNK) {
-        auto geom = createTextVertexChunks();
-        geometris[reqGeomName] = geom;
-        return geom;
+    auto geom = createGeometryOfType(reqGeomName);
+    if(!geom) {
+        return nullptr;
     }
-    LogWarning("[Render::createGeometry] Can't create unknown type of geometry: '%s'", reqGeomName);
-    return nullptr;
+    geometris[reqGeomName] = geom;
+    return geom;
 }
 
 std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquareTex() {
@@ -141,4 +146,23 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     geometry->vertType = VertexType::Vector4;
 
     return geometry;
+}
+
+
+void RenderGeometryManager::ET_forgetResoruces() {
+    geometris.clear();
+}
+
+void RenderGeometryManager::ET_cleanUnused() {
+    auto it = geometris.begin();
+    while(it != geometris.end()) {
+        auto& geomPtr = it->second;
+        if(geomPtr.use_count() == 1) {
+            glDeleteBuffers(1, &(geomPtr->vboId));
+            glDeleteVertexArrays(1, &(geomPtr->vaoId));
+            it = geometris.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }

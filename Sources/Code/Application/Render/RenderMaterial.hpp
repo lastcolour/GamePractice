@@ -21,6 +21,9 @@ public:
     void setUniform4f(const char* name, const ColorB& col);
     void setUniformMat4(const char* name, const Mat4& mat);
 
+    int getProgramId() const;
+    void setProgramId(int newProgramId);
+
 private:
 
     bool findUniform(const char* name, int& resUniLoc) const;

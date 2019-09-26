@@ -67,6 +67,10 @@ void RenderSimpleLogic::ET_setMaterial(const char* matName) {
     ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName);
 }
 
+void RenderSimpleLogic::ET_setGeometry(const char* geomName) {
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomName);
+}
+
 void RenderSimpleLogic::ET_setColor(const ColorB& col) {
     color = col;
 }
