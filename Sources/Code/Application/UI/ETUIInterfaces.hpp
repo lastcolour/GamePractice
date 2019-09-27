@@ -77,6 +77,7 @@ struct ETUIList {
 struct ETUIViewStack {
     virtual ~ETUIViewStack() = default;
     virtual void ET_pushView(const char* viewName) = 0;
+    virtual void ET_forcePushView(const char* viewName) = 0;
     virtual void ET_clearAllAndPushNewView(const char* viewName) = 0;
     virtual void ET_popView() = 0;
     virtual void ET_forceReset() = 0;

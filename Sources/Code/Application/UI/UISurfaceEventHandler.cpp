@@ -4,6 +4,8 @@
 namespace {
 
 const char* BACK_BUTTON_EVENT_NAME = "OnBackButton";
+const char* SURFACE_HIDDEN_EVENT_NAME = "OnSurfaceHidden";
+const char* SURFACE_SHOWN_EVENT_NAME = "OnSurfaceShown";
 
 } // namespace
 
@@ -15,11 +17,13 @@ UISurfaceEventHandler::~UISurfaceEventHandler() {
 
 bool UISurfaceEventHandler::init() {
     ETNode<ETInputEvents>::connect(getEntityId());
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
     return true;
 }
 
 void UISurfaceEventHandler::deinit() {
     ETNode<ETInputEvents>::disconnect();
+    ETNode<ETSurfaceEvents>::disconnect();
 }
 
 bool UISurfaceEventHandler::isHover(const Vec2i& pt, EntityId entId) const {
@@ -95,4 +99,12 @@ void UISurfaceEventHandler::ET_onButton(EActionType actionType, EButtonId button
     if(actionType == EActionType::Press && buttonId == EButtonId::Back) {
         ET_SendEvent(&ETUIEventManager::ET_onEvent, BACK_BUTTON_EVENT_NAME);
     }
+}
+
+void UISurfaceEventHandler::ET_onSurfaceHidden() {
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, SURFACE_HIDDEN_EVENT_NAME);
+}
+
+void UISurfaceEventHandler::ET_onSurfaceShown() {
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, SURFACE_SHOWN_EVENT_NAME);
 }

@@ -88,12 +88,6 @@ struct ETGameTimerEvents {
     virtual void ET_onGameTick(float dt) = 0;
 };
 
-enum class EGameState {
-    None,
-    Paused,
-    Running
-};
-
 enum class EEndGameReason {
     TimeOut = 0,
     Interrupt
@@ -112,10 +106,9 @@ struct ETGameState {
     virtual void ET_startGame() = 0;
     virtual void ET_pauseGame() = 0;
     virtual void ET_resumeGame() = 0;
+    virtual bool ET_isGamePaused() const = 0;
     virtual void ET_endGame(EEndGameReason endReason) = 0;
     virtual const EndGameResult* ET_getGameEndResult() const = 0;
-    //virtual void ET_interruptGame() = 0;
-    virtual EGameState ET_getGameState() const = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */

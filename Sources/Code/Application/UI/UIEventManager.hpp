@@ -52,6 +52,7 @@ private:
 
     void setupCallbacks();
     void processBackButtonEvent();
+    void processSurfaceVisible(bool isVisible);
     EViewType getViewTypeFromEntityId(EntityId viewId) const;
     EViewType getActiveViewType() const;
     const char* getViewName(EViewType viewType) const;

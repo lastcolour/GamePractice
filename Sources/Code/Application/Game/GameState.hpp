@@ -6,6 +6,14 @@
 
 class GameState : public SystemLogic,
     public ETNode<ETGameState> {
+private:
+
+    enum class EGameState {
+        None,
+        Paused,
+        Running
+    };
+
 public:
 
     GameState();
@@ -19,8 +27,8 @@ public:
     void ET_startGame() override;
     void ET_pauseGame() override;
     void ET_resumeGame() override;
+    bool ET_isGamePaused() const;
     void ET_endGame(EEndGameReason endReason) override;
-    EGameState ET_getGameState() const override;
    const EndGameResult* ET_getGameEndResult() const override;
 
 private:

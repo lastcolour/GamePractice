@@ -35,6 +35,7 @@ public:
 
 private:
 
+    Entity* createEntityImpl(Entity* rootEntity, const char* entityName);
     Entity* createEntity(Entity* rootEntity, const char* entityName);
 
     template<typename T>

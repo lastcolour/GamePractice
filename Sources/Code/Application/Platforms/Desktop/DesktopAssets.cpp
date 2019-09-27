@@ -30,23 +30,6 @@ void fixSlashes(std::string& origPath) {
     std::replace(origPath.begin(), origPath.end(), '\\', VALID_SLASH);
 }
 
-std::string getCWD() {
-    char cPathStr[FILENAME_MAX] = { 0 };
-#ifdef APP_BUILD_PLATFORM_WINDOWS
-    if(!_getcwd(cPathStr, FILENAME_MAX)) {
-        return "";
-    }
-#else
-    if(!getcwd(cPathStr, FILENAME_MAX)) {
-        return "";
-    }
-#endif
-    cPathStr[sizeof(cPathStr) - 1] = '\0';
-    std::string cwdPath = cPathStr;
-    cwdPath = CWD_PREFIX + cwdPath;
-    return cwdPath;
-}
-
 std::string getBinDir() {
     char cPathStr[FILENAME_MAX] = { 0 };
     std::string binFilePath;
@@ -63,8 +46,8 @@ std::string getBinDir() {
     }
 
     fixSlashes(binFilePath);
-    auto lastSlashPt = binFilePath.find_last_of(VALID_SLASH);
 
+    auto lastSlashPt = binFilePath.find_last_of(VALID_SLASH);
     if(lastSlashPt == std::string::npos) {
         return "";
     }
@@ -97,6 +80,7 @@ bool isDirExist(const std::string& dirName) {
 }
 
 void normalizePath(std::string& origPath) {
+    bool isStartFromSlash = !origPath.empty() && (origPath[0] == VALID_SLASH);
     std::vector<std::string> tokens;
     size_t lastPos = 0u;
     for(size_t i=0u, sz=origPath.size(); i<sz; ++i) {
@@ -122,6 +106,9 @@ void normalizePath(std::string& origPath) {
         }
     }
     origPath.clear();
+    if(isStartFromSlash) {
+        origPath += VALID_SLASH;
+    }
     for(const auto& token : resPath) {
         if(!origPath.empty()) {
             origPath += VALID_SLASH;
@@ -185,9 +172,13 @@ std::string transformToPath(const std::string& dirPath, const std::string& fileP
 }
 
 std::string GetSafeStrErrno() {
+#ifdef __STDC_LIB_EXT1__
     char cErrorMsg[MAX_ERROR_MSG_LEN];
     strerror_s(&(cErrorMsg[0]), MAX_ERROR_MSG_LEN, errno);
-    return &(cErrorMsg[0]);
+    return &(cErrorMsg[0]); 
+#else
+    return strerror(errno);
+#endif
 }
 
 } // namespace

@@ -221,7 +221,7 @@ JSONNode EntityManager::loadEntityRootNode(const char* entityName) const {
     return rootNode;
 }
 
-Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) {
+Entity* EntityManager::createEntityImpl(Entity* rootEntity, const char* entityName) {
     auto rootNode = loadEntityRootNode(entityName);
     if(!rootNode) {
         return nullptr;
@@ -239,6 +239,18 @@ Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) 
     if(rootEntity) {
         rootEntity->ET_addChild(entity->getEntityId());
     }
-    LogDebug("[EntityManager::createEntity] Create entity: '%s'", entityName);
+    return entity;
+}
+
+Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) {
+    auto startTimeP = std::chrono::high_resolution_clock::now();
+
+    auto entity = createEntityImpl(rootEntity, entityName);
+
+    auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::high_resolution_clock::now() - startTimeP).count();
+
+    LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName,  duration);
+
     return entity;
 }

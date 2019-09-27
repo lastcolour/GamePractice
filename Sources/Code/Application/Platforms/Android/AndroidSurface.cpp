@@ -239,12 +239,15 @@ void AndroidSurface::onNativeWindowCreated() {
         if(createEGLSurface()) {
             if(eglMakeCurrent(display, surface, surface, context) == EGL_TRUE) {
                 LogInfo("[AndroidSurface::onNativeWindowCreated] Previous context was restored succssefully");
+                ET_SendEvent(&ETRenderContextEvents::ET_onContextRestored);
+                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
                 return;
             }
             LogWarning("[AndroidSurface::onNativeWindowCreated] Can't restore previous context: %s", getEGLErrorStr());
             if(createEGLContext()) {
                 LogInfo("[AndroidSurface::onNativeWindowCreated] Create new context using previous display & new surface");
-                ET_SendEvent(&ETRenderContextEvents::ET_onContextLost);
+                ET_SendEvent(&ETRenderContextEvents::ET_onContextReCreated);
+                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
                 return;
             }
             LogWarning("[AndroidSurface::onNativeWindowCreated] Can't create new context using previous surface & display");
@@ -265,6 +268,7 @@ void AndroidSurface::onNativeWindowCreated() {
 void AndroidSurface::onNativeWindowDestoryed() {
     LogInfo("[AndroidSurface::onNativeWindowDestoryed] Suspend EGL Context");
     eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    ET_SendEvent(&ETRenderContextEvents::ET_onContextSuspended);
     if(surface != EGL_NO_SURFACE) {
         eglDestroySurface(display, surface);
         surface = EGL_NO_SURFACE;

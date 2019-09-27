@@ -58,6 +58,10 @@ void UIViewStack::ET_pushView(const char* viewName) {
     }
 }
 
+void UIViewStack::ET_forcePushView(const char* viewName) {
+    
+}
+
 EntityId UIViewStack::ET_getActiveViewId() const {
     if(!viewStack.empty()) {
         return viewStack.back();

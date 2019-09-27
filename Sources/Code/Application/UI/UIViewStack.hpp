@@ -18,6 +18,7 @@ public:
 
     // ETUIViewStack
     void ET_pushView(const char* viewName) override;
+    void ET_forcePushView(const char* viewName) override;
     void ET_clearAllAndPushNewView(const char* viewName) override;
     void ET_popView() override;
     void ET_forceReset() override;

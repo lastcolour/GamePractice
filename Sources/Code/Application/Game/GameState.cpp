@@ -76,8 +76,8 @@ void GameState::ET_endGame(EEndGameReason endReason) {
     }
 }
 
-EGameState GameState::ET_getGameState() const {
-    return gameState;
+bool GameState::ET_isGamePaused() const {
+    return gameState == EGameState::Paused;
 }
 
 const EndGameResult* GameState::ET_getGameEndResult() const {

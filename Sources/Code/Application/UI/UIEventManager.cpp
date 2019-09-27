@@ -46,6 +46,12 @@ void UIEventManager::setupCallbacks() {
     eventMap["OnBackButton"] = [this](){
         processBackButtonEvent();
     };
+    eventMap["OnSurfaceHidden"] = [this](){
+        processSurfaceVisible(false);
+    };
+    eventMap["OnSurfaceShown"] = [this](){
+        processSurfaceVisible(true);
+    };
     eventMap["Pause_OnRestartButton"] = [this](){
         pushView(EViewType::Game);
     };
@@ -93,6 +99,26 @@ const char* UIEventManager::getViewName(UIEventManager::EViewType viewType) cons
         }
     }
     return nullptr;
+}
+
+void UIEventManager::processSurfaceVisible(bool isVisible) {
+    if(isVisible) {
+        bool isGamePaused = false;
+        ET_SendEventReturn(isGamePaused, &ETGameState::ET_isGamePaused);
+        if(!isGamePaused) {
+            return;
+        }
+        auto activeViewType = getActiveViewType();
+        if(activeViewType == EViewType::Game) {
+            auto pauseViewName = getViewName(EViewType::Pause);
+            ET_SendEvent(&ETUIViewStack::ET_forcePushView, pauseViewName);
+        }
+    } else {
+        if(getActiveViewType() != EViewType::Game) {
+            return;
+        }
+        ET_SendEvent(&ETGameState::ET_pauseGame);
+    }
 }
 
 void UIEventManager::processBackButtonEvent() {

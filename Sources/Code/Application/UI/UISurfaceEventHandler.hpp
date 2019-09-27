@@ -5,7 +5,8 @@
 #include "ETApplicationInterfaces.hpp"
 
 class UISurfaceEventHandler : public SystemLogic,
-    public ETNode<ETInputEvents> {
+    public ETNode<ETInputEvents>,
+    public ETNode<ETSurfaceEvents> {
 public:
 
     UISurfaceEventHandler();
@@ -18,6 +19,15 @@ public:
     // ETSurfaceEvents
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
     void ET_onButton(EActionType actionType, EButtonId buttonId) override;
+
+    // ETSurfaceEvents
+    void ET_onSurfaceCreated() override {}
+    void ET_onSurfaceDestroyed() override {}
+    void ET_onSurfaceHidden() override;
+    void ET_onSurfaceShown() override;
+    void ET_onSurfaceLostFocus() override {}
+    void ET_onSurfaceGainFocus() override {}
+    void ET_onSurfaceResized(const Vec2i& size) override { (void)size; }
 
 private:
 

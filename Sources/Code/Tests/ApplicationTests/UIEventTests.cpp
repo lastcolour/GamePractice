@@ -167,3 +167,11 @@ TEST_F(UIEventTests, CheckGameRestart) {
 
     ASSERT_FLOAT_EQ(oldPlayTime, newPlayTime);
 }
+
+TEST_F(UIEventTests, CheckGamePauseWhenSurfaceHidden) {
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, START_GAME_EVENT);
+
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
+
+    CheckExpectedView(PAUSE_VIEW);
+}

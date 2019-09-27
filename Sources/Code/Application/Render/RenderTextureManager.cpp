@@ -66,7 +66,7 @@ std::string RenderTextureManager::getLookupName(const char* textureName, ETextur
 std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(const char* textureName, ETextureType texType) {
     std::string texLookupName = getLookupName(textureName, texType);
     auto it = textures.find(texLookupName);
-    if(it != textures.end() && !it->second) {
+    if(it != textures.end() && it->second) {
         return it->second;
     }
 
