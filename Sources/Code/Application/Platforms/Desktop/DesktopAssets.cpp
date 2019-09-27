@@ -172,7 +172,7 @@ std::string transformToPath(const std::string& dirPath, const std::string& fileP
 }
 
 std::string GetSafeStrErrno() {
-#ifdef __STDC_LIB_EXT1__
+#ifdef APP_BUILD_PLATFORM_WINDOWS
     char cErrorMsg[MAX_ERROR_MSG_LEN];
     strerror_s(&(cErrorMsg[0]), MAX_ERROR_MSG_LEN, errno);
     return &(cErrorMsg[0]); 
