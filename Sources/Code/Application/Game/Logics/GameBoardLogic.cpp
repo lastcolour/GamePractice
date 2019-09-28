@@ -456,3 +456,11 @@ void GameBoardLogic::ET_onGameTick(float dt) {
     }
     doUpdate = false;
 }
+
+const Vec2i& GameBoardLogic::ET_getBoardSize() const {
+    return boardSize;
+}
+
+const AABB2Di& GameBoardLogic::ET_getBoardBox() const {
+    return boardBox;
+}

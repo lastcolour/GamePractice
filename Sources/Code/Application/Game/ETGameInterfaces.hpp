@@ -4,6 +4,7 @@
 #include "Render/Color.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Math/Vector.hpp"
+#include "Math/AABB.hpp"
 
 struct ETGameTick {
     virtual ~ETGameTick() = default;
@@ -57,6 +58,8 @@ struct ETGameBoard {
     virtual EntityId ET_getElemByPos(const Vec2i& pt) const = 0;
     virtual EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const = 0;
     virtual Vec2i ET_getElemBoardPos(EntityId elemEntId) const = 0;
+    virtual const Vec2i& ET_getBoardSize() const = 0;
+    virtual const AABB2Di& ET_getBoardBox() const = 0;
     virtual int ET_getCellSize() const = 0;
 };
 
@@ -81,16 +84,12 @@ struct ETGameTimer {
     virtual ~ETGameTimer() = default;
     virtual void ET_pauseTimer() = 0;
     virtual void ET_resumeTimer() = 0;
+    virtual bool ET_isTimerPaused() const = 0;
 };
 
 struct ETGameTimerEvents {
     virtual ~ETGameTimerEvents() = default;
     virtual void ET_onGameTick(float dt) = 0;
-};
-
-enum class EEndGameReason {
-    TimeOut = 0,
-    Interrupt
 };
 
 struct EndGameResult {
@@ -101,14 +100,38 @@ struct EndGameResult {
         score(0), newHighScore(false) {}
 };
 
-struct ETGameState {
-    virtual ~ETGameState() = default;
+enum class EGameState {
+    PreGame = 0,
+    InGame,
+    PostGame,
+    None
+};
+
+struct ETGameStateManager {
+    virtual ~ETGameStateManager() = default;
+    virtual void ET_initGame() = 0;
     virtual void ET_startGame() = 0;
     virtual void ET_pauseGame() = 0;
     virtual void ET_resumeGame() = 0;
     virtual bool ET_isGamePaused() const = 0;
-    virtual void ET_endGame(EEndGameReason endReason) = 0;
+    virtual bool ET_isGameState() const = 0;
+    virtual void ET_interruptGame() = 0;
+    virtual void ET_changeState(EGameState newGameState) = 0;
+};
+
+struct ETGameEndResult {
+    virtual ~ETGameEndResult() = default;
     virtual const EndGameResult* ET_getGameEndResult() const = 0;
+};
+
+struct ETGameBoardAppearAnimation {
+    virtual ~ETGameBoardAppearAnimation() = default;
+    virtual void ET_startBoardAppearing() = 0;
+};
+
+struct ETGameBoardAppearAnimationEvents {
+    virtual ~ETGameBoardAppearAnimationEvents() = default;
+    virtual void ET_onBoardAppeared() = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */

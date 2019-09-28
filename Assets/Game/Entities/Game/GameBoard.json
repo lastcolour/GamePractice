@@ -57,6 +57,10 @@
         {
             "type":"GameScore",
             "data": {}
+        },
+        {
+            "type":"GameBoardAppearAnimation",
+            "data": {}
         }
     ]
 }

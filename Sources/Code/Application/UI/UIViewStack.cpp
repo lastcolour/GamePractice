@@ -59,7 +59,7 @@ void UIViewStack::ET_pushView(const char* viewName) {
 }
 
 void UIViewStack::ET_forcePushView(const char* viewName) {
-    
+    ET_pushView(viewName);
 }
 
 EntityId UIViewStack::ET_getActiveViewId() const {

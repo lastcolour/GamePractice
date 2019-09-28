@@ -12,9 +12,10 @@ file(GLOB APPLICATION_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game/Logics/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game/States/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Game/Logics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render/Logics/*.cpp
@@ -22,11 +23,13 @@ file(GLOB APPLICATION_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Entity/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Initer/*.cpp
     ${APPLCATION_PLATFORM_SOURCES}/*.cpp)
+
 file(GLOB APPLICATION_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/Logics/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game/States/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render/Logics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render/*.hpp

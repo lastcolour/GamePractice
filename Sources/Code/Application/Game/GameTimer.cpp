@@ -32,3 +32,7 @@ void GameTimer::ET_onTick(float dt) {
     }
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
 }
+
+bool GameTimer::ET_isTimerPaused() const {
+    return isPaused;
+}

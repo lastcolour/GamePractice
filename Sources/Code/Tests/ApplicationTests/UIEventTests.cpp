@@ -173,5 +173,12 @@ TEST_F(UIEventTests, CheckGamePauseWhenSurfaceHidden) {
 
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
 
+    bool isGamePaused = false;
+    ET_SendEventReturn(isGamePaused, &ETGameStateManager::ET_isGamePaused);
+
+    EXPECT_TRUE(isGamePaused);
+
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
+
     CheckExpectedView(PAUSE_VIEW);
 }

@@ -12,6 +12,7 @@
 #include "Game/Logics/GameBoardElemDestroyLogic.hpp"
 #include "Game/Logics/GameScoreLogic.hpp"
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
+#include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
 
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
@@ -60,6 +61,7 @@ bool EntityManager::init() {
     registerLogic<GameBoardElemDestroyLogic>("GameBoardElemDestroy");
     registerLogic<GameScoreLogic>("GameScore");
     registerLogic<GameScoreUpdaterLogic>("GameScoreUpdater");
+    registerLogic<GameBoardAppearAnimationLogic>("GameBoardAppearAnimation");
 
     registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");

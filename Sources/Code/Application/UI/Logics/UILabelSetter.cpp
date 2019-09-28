@@ -30,7 +30,7 @@ bool UILabelSetter::init() {
     {
     case EValueType::GameScore: {
         const EndGameResult* endResult = nullptr;
-        ET_SendEventReturn(endResult, &ETGameState::ET_getGameEndResult);
+        ET_SendEventReturn(endResult, &ETGameEndResult::ET_getGameEndResult);
         if(endResult) {
             std::string labelText = StringFormat("%d", endResult->score);
             ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, labelText.c_str());

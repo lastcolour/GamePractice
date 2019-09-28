@@ -104,7 +104,7 @@ const char* UIEventManager::getViewName(UIEventManager::EViewType viewType) cons
 void UIEventManager::processSurfaceVisible(bool isVisible) {
     if(isVisible) {
         bool isGamePaused = false;
-        ET_SendEventReturn(isGamePaused, &ETGameState::ET_isGamePaused);
+        ET_SendEventReturn(isGamePaused, &ETGameStateManager::ET_isGamePaused);
         if(!isGamePaused) {
             return;
         }
@@ -117,7 +117,7 @@ void UIEventManager::processSurfaceVisible(bool isVisible) {
         if(getActiveViewType() != EViewType::Game) {
             return;
         }
-        ET_SendEvent(&ETGameState::ET_pauseGame);
+        ET_SendEvent(&ETGameStateManager::ET_pauseGame);
     }
 }
 
@@ -186,7 +186,15 @@ void UIEventManager::ET_onViewStartPush(EntityId viewId) {
     switch (viewType)
     {
     case EViewType::Pause: {
-        ET_SendEvent(&ETGameState::ET_pauseGame);
+        ET_SendEvent(&ETGameStateManager::ET_pauseGame);
+        break;
+    }
+    case EViewType::Game: {
+        bool res;
+        ET_SendEventReturn(res, &ETGameStateManager::ET_isGameState);
+        if(!res) {
+            ET_SendEvent(&ETGameStateManager::ET_initGame);
+        }
         break;
     }
     default:
@@ -199,7 +207,7 @@ void UIEventManager::ET_onViewFinishPush(EntityId viewId) {
     switch (viewType)
     {
     case EViewType::Game: {
-        ET_SendEvent(&ETGameState::ET_startGame);
+        ET_SendEvent(&ETGameStateManager::ET_startGame);
         break;
     }
     default:
@@ -212,7 +220,7 @@ void UIEventManager::ET_onViewStartPop(EntityId viewId) {
     switch (viewType)
     {
     case EViewType::Game: {
-        ET_SendEvent(&ETGameState::ET_endGame, EEndGameReason::Interrupt);
+        ET_SendEvent(&ETGameStateManager::ET_interruptGame);
         break;
     }
     default:
@@ -225,7 +233,7 @@ void UIEventManager::ET_onViewFinishPop(EntityId viewId) {
     switch (viewType)
     {
     case EViewType::Pause: {
-        ET_SendEvent(&ETGameState::ET_resumeGame);
+        ET_SendEvent(&ETGameStateManager::ET_resumeGame);
         break;
     }
     default:

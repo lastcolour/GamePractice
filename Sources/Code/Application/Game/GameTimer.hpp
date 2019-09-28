@@ -23,6 +23,7 @@ public:
     // ETGameTimer
     void ET_pauseTimer() override;
     void ET_resumeTimer() override;
+    bool ET_isTimerPaused() const override;
 
 private:
 

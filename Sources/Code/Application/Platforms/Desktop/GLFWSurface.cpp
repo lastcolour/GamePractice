@@ -123,6 +123,7 @@ bool GLFWSurface::init() {
     glfwSetMouseButtonCallback(window, SetMouseButtonCallback);
     glfwSetCursorPosCallback(window, SetCursorePosCallback);
     glfwSetKeyCallback(window, SetKeyboardButtonCallback);
+    glfwSetWindowIconifyCallback(window, SetIconfyCallback);
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -270,5 +271,17 @@ void GLFWSurface::SetKeyboardButtonCallback(GLFWwindow* window, int key, int sca
         ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, buttonId);
     } else if (action == GLFW_RELEASE) {
         ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Release, buttonId);
+    }
+}
+
+void GLFWSurface::SetIconfyCallback(GLFWwindow* window, int inconified) {
+    auto surface = GLFW->getActiveSurface(window);
+    if(!surface) {
+        return;
+    }
+    if(inconified) {
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
+    } else {
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
     }
 }

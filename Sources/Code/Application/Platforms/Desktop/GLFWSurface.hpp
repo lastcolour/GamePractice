@@ -43,6 +43,7 @@ private:
     static void SetFramebufferSizeCallback(GLFWwindow* window, int w, int h);
     static void SetMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
     static void SetKeyboardButtonCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void SetIconfyCallback(GLFWwindow* window, int iconified);
 
 private:
 

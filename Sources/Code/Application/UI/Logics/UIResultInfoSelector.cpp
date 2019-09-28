@@ -17,7 +17,7 @@ bool UIResultInfoSelector::serialize(const JSONNode& node) {
 
 bool UIResultInfoSelector::init() {
     const EndGameResult* endResult = nullptr;
-    ET_SendEventReturn(endResult, &ETGameState::ET_getGameEndResult);
+    ET_SendEventReturn(endResult, &ETGameEndResult::ET_getGameEndResult);
     const char* extendEntityName = normalExtend.c_str();
     if(endResult && endResult->newHighScore) {
         extendEntityName = newHighScoreExtend.c_str();

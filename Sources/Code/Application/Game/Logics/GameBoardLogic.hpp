@@ -52,6 +52,8 @@ public:
     EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const override;
     Vec2i ET_getElemBoardPos(EntityId elemEntId) const override;
     int ET_getCellSize() const override;
+    const Vec2i& ET_getBoardSize() const override;
+    const AABB2Di& ET_getBoardBox() const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
