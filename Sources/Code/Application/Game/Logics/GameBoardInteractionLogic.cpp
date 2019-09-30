@@ -8,7 +8,9 @@ const float MIN_MOVE_LEN_FOR_SWITCH = 0.6f;
 
 } // namespace
 
-GameBoardInteractionLogic::GameBoardInteractionLogic() {
+GameBoardInteractionLogic::GameBoardInteractionLogic() :
+    startPt(0),
+    lastPt(0) {
 }
 
 GameBoardInteractionLogic::~GameBoardInteractionLogic() {
@@ -20,7 +22,7 @@ bool GameBoardInteractionLogic::serialize(const JSONNode& node) {
 }
 
 bool GameBoardInteractionLogic::init() {
-    ETNode<ETInputEvents>::connect(getEntityId());
+    ETNode<ETGAmeBoardInteractionLogic>::connect(getEntityId());
     return true;
 }
 
@@ -63,6 +65,7 @@ void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {
 }
 
 void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& pt) {
+    lastPt = pt;
     switch (actionType)
     {
     case EActionType::Press: {
@@ -84,5 +87,17 @@ void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& 
     }
     default:
         break;
+    }
+}
+
+void GameBoardInteractionLogic::ET_allowInteraction(bool flag) {
+    if(flag) {
+        ETNode<ETInputEvents>::connect(getEntityId());
+    } else {
+        ETNode<ETInputEvents>::disconnect();
+        activeElemId = InvalidEntityId;
+        if(activeElemId.isValid()) {
+            ET_onTouch(EActionType::Release, lastPt);
+        }
     }
 }

@@ -27,6 +27,7 @@ public:
 
 private:
 
+    bool skipUpdate;
     bool isPaused;
 };
 

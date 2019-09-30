@@ -1,4 +1,5 @@
 #include "Game/GameStateManager.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <cassert>
 
@@ -26,6 +27,7 @@ void GameStateManager::ET_initGame() {
 }
 
 void GameStateManager::ET_startGame() {
+    assert(gameState == EGameState::PreGame && "Invalid game state");
     ET_SendEvent(&ETGameTimer::ET_resumeTimer);
 }
 
@@ -62,12 +64,14 @@ void GameStateManager::ET_changeState(EGameState newState) {
     switch(newState) {
         case EGameState::PreGame: {
             assert(gameState == EGameState::None && "Invalid new game state");
+            LogInfo("[GameStateManager::ET_changeState] Change state to: PreGame");
             gameState = newState;
             preGame.onEnter();
             break;
         }
         case EGameState::InGame: {
             assert(gameState == EGameState::PreGame && "Invalid new game state");
+            LogInfo("[GameStateManager::ET_changeState] Change state to: InGame");
             gameState = newState;
             preGame.onLeave();
             inGame.onEnter();
@@ -75,6 +79,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
         }
         case EGameState::PostGame: {
             assert(gameState == EGameState::InGame && "Invalid new game state");
+            LogInfo("[GameStateManager::ET_changeState] Change state to: PostGame");
             gameState = newState;
             inGame.onLeave();
             postGame.onEnter();
@@ -82,6 +87,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
         }
         case EGameState::None: {
             assert(gameState == EGameState::PostGame && "Invalid new game state");
+            LogInfo("[GameStateManager::ET_changeState] Change state to: None");
             gameState = newState;
             postGame.onLeave();
             break;

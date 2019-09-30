@@ -2,8 +2,9 @@
 #define __IN_GAME_STATE_HPP__
 
 #include "Core/Core.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
-class InGameState {
+class InGameState : public ETNode<ETGameEndTimerEvents> {
 public:
 
     InGameState();
@@ -13,6 +14,9 @@ public:
     void onLeave();
 
     void connect(EntityId entityId);
+
+    // ETGameEndTimerEvents
+    void ET_onGameTimeOut() override;
 
 private:
 

@@ -1,7 +1,8 @@
 #include "Game/GameTimer.hpp"
 
 GameTimer::GameTimer() :
-    isPaused(true) {
+    isPaused(true),
+    skipUpdate(false) {
 }
 
 GameTimer::~GameTimer() {
@@ -24,11 +25,16 @@ void GameTimer::ET_pauseTimer() {
 
 void GameTimer::ET_resumeTimer() {
     isPaused = false;
+    skipUpdate = true;
 }
 
 void GameTimer::ET_onTick(float dt) {
     if(isPaused) {
         return;
+    }
+    if(skipUpdate) {
+        dt = 0.f;
+        skipUpdate = false;
     }
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
 }

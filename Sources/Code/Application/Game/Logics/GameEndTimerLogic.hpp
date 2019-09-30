@@ -19,6 +19,7 @@ public:
     void ET_onGameTick(float dt) override;
 
     // ETGameEndTimer
+    void ET_startEndTimer() override;
     float ET_getRemainingTime() const override;
     float ET_getInitialEndGameDuration() const override;
 

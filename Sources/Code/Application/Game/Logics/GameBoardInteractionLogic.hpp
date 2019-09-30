@@ -3,9 +3,11 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 class GameBoardInteractionLogic : public EntityLogic,
-    public ETNode<ETInputEvents> {
+    public ETNode<ETInputEvents>,
+    public ETNode<ETGAmeBoardInteractionLogic> {
 public:
 
     GameBoardInteractionLogic();
@@ -19,6 +21,9 @@ public:
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
     void ET_onButton(EActionType actionType, EButtonId buttonId) override { (void)actionType; (void)buttonId; }
 
+    // ETGAmeBoardInteractionLogic
+    void ET_allowInteraction(bool flag) override;
+
 private:
 
     void onStartElemMove();
@@ -28,6 +33,7 @@ private:
 private:
 
     Vec2i startPt;
+    Vec2i lastPt;
     EntityId activeElemId;
 };
 

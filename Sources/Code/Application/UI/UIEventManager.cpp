@@ -154,10 +154,27 @@ void UIEventManager::ET_onEvent(const char* eventName) {
 
 void UIEventManager::pushView(EViewType viewType) {
     auto viewName = getViewName(viewType);
-    if(viewType == EViewType::EndGame || viewType == EViewType::Main || viewType == EViewType::Game) {
-        ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
-    } else {
-        ET_SendEvent(&ETUIViewStack::ET_pushView, viewName);
+    switch(viewType) {
+        case EViewType::EndGame: {
+            ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
+            break;
+        }
+        case EViewType::Main: {
+            ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
+            break;
+        }
+        case EViewType::Game: {
+            bool res;
+            ET_SendEventReturn(res, &ETGameStateManager::ET_isGameState);
+            if(res) {
+                ET_SendEvent(&ETGameStateManager::ET_interruptGame);
+            }
+            ET_SendEvent(&ETUIViewStack::ET_clearAllAndPushNewView, viewName);
+            break;
+        }
+        default: {
+            ET_SendEvent(&ETUIViewStack::ET_pushView, viewName);
+        }
     }
 }
 

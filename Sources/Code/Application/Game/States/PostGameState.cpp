@@ -19,11 +19,11 @@ void PostGameState::connect(EntityId entityId) {
 }
 
 void PostGameState::onEnter() {
+    setupEndResult();
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, GAME_END_EVENT);
 }
 
 void PostGameState::onLeave() {
-    setupEndResult();
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, GAME_END_EVENT);
 }
 
 void PostGameState::setupEndResult() {

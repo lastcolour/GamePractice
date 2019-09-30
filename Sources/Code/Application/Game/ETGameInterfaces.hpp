@@ -76,8 +76,14 @@ struct ETGameConfig {
 
 struct ETGameEndTimer {
     virtual ~ETGameEndTimer() = default;
+    virtual void ET_startEndTimer() = 0;
     virtual float ET_getRemainingTime() const = 0;
     virtual float ET_getInitialEndGameDuration() const = 0;
+};
+
+struct ETGameEndTimerEvents {
+    virtual ~ETGameEndTimerEvents() = default;
+    virtual void ET_onGameTimeOut() = 0;
 };
 
 struct ETGameTimer {
@@ -132,6 +138,11 @@ struct ETGameBoardAppearAnimation {
 struct ETGameBoardAppearAnimationEvents {
     virtual ~ETGameBoardAppearAnimationEvents() = default;
     virtual void ET_onBoardAppeared() = 0;
+};
+
+struct ETGAmeBoardInteractionLogic {
+    virtual ~ETGAmeBoardInteractionLogic() = default;
+    virtual void ET_allowInteraction(bool flag) = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */
