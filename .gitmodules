@@ -19,3 +19,6 @@
 [submodule "Sources/Libs/ZLIB"]
 	path = Sources/Libs/ZLIB
 	url = https://github.com/madler/zlib.git
+[submodule "Sources\\Libs\\OpenAL-Soft"]
+	path = Sources\\Libs\\OpenAL-Soft
+	url = https://github.com/kcat/openal-soft.git
