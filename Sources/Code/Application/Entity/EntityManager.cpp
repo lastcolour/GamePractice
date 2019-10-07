@@ -30,6 +30,8 @@
 #include "UI/Logics/UIResultInfoSelector.hpp"
 #include "UI/Logics/UISwitchControl.hpp"
 
+#include "Audio/Logics/SoundPlayLogic.hpp"
+
 #include <algorithm>
 
 namespace {
@@ -74,6 +76,8 @@ bool EntityManager::init() {
     registerLogic<UILabelSetter>("UILabelSetter");
     registerLogic<UIResultInfoSelector>("UIResultInfoSelector");
     registerLogic<UISwitchControl>("UISwitchControl");
+
+    registerLogic<SoundPlayLogic>("SoundPlayer");
 
     ETNode<ETEntityManager>::connect(getEntityId());
     return true;

@@ -89,6 +89,28 @@
                 }
             },
             {
+                "step-name": "OpenAL-Soft",
+                "tags": ["3dParty"],
+                "supported-platforms": [
+                    "Windows",
+                    "Linux"
+                ],
+                "step-extension": "{default_ext}",
+                "build-type": "Release",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/OpenAL-Soft",
+                    "run-dir": "{root_path}/Sources/Libs/OpenAL-Soft",
+                    "defs" : {
+                        "All":{
+                            "ALSOFT_EXAMPLES":"OFF",
+                            "ALSOFT_TESTS":"OFF",
+                            "ALSOFT_INSTALL":"OFF",
+                            "ALSOFT_UTILS":"OFF"
+                        }
+                    }
+                }
+            },
+            {
                 "step-name": "GTEST",
                 "tags": ["3dParty"],
                 "build-type": "Debug",

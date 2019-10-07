@@ -8,6 +8,12 @@
                 "outDuration":0.05,
                 "minScale":0.9
             }
+        },
+        {
+            "type":"SoundPlayer",
+            "data":{
+                "sound":"UI/click.wav"
+            }
         }
     ]
 }

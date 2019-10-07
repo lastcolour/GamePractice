@@ -30,10 +30,6 @@ protected:
         return logic;
     }
 
-protected:
-
-    static std::unique_ptr<Application> APP;
-
 private:
 
     void addLogicToOject(std::unique_ptr<Entity>& obj, std::unique_ptr<EntityLogic>& logic);

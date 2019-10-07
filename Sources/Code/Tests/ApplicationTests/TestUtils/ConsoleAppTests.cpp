@@ -11,9 +11,9 @@
 #include <ETApplicationInterfaces.hpp>
 #include <Game/GameModule.hpp>
 
-std::unique_ptr<Application> ConsoleAppTests::APP;
-
 namespace {
+
+std::unique_ptr<Application> APP;
 
 const char* TEST_OBJECT_NAME = "TestObject";
 
