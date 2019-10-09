@@ -1,5 +1,7 @@
 #include "Audio/SoundSource.hpp"
 #include "Audio/OggDataStream.hpp"
+#include "Audio/SoundSourceController.hpp"
+#include "Audio/ETAudioInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 
 #include <AL/al.h>
@@ -15,18 +17,18 @@ int16_t* buffData = new int16_t[SAMPLES_PER_READ];
 } // namespace 
 
 SoundSource::SoundSource(unsigned int newSourceId) :
-    dataStream(nullptr),
+    controller(nullptr),
     sourceId(newSourceId),
-    looping(true),
-    ended(false),
-    samplesOffset(0) {
+    state(ESourceState::Ended),
+    looping(false) {
 
     alSourcef(sourceId, AL_GAIN, 1.f);
     alSourcef(sourceId, AL_PITCH, 1.f);
 }
 
 SoundSource::~SoundSource() {
-    stopStreaming();
+    alSourceStop(sourceId);
+    alSourcei(sourceId, AL_BUFFER, AL_NONE);
     alDeleteSources(1, &sourceId);
     alDeleteBuffers(MAX_BUFFERS_PER_STREAM, &alBufferIds[0]);
 }
@@ -43,25 +45,8 @@ bool SoundSource::init() {
     return true;
 }
 
-void SoundSource::reset() {
-    dataStream = nullptr;
-    looping = true;
-    ended = false;
-}
-
-void SoundSource::startStreaming(OggDataStream& newDataStream) {
-    if(dataStream) {
-        assert(false && "Invalind current data stream");
-        return;
-    }
-
-    dataStream = &newDataStream;
-    queueALBuffers(&alBufferIds[0], MAX_BUFFERS_PER_STREAM);
-    startALSource();
-}
-
-void SoundSource::updateStreaming() {
-    if(ended) {
+void SoundSource::update() {
+    if(state == ESourceState::Ended) {
         return;
     }
 
@@ -74,10 +59,34 @@ void SoundSource::updateStreaming() {
         bufferQueue[i] = bufferId;
     }
 
-    if(buffersProcessed > 0) {
+    if(state == ESourceState::WaitEnd && buffersProcessed > 0) {
+        ALint bufferQueued = 0;
+        alGetSourcei(sourceId, AL_BUFFERS_QUEUED, &bufferQueued);
+        if(bufferQueued == 0) {
+            stopStreaming();
+            return;
+        }
+    }
+
+    if (buffersProcessed > 0) {
         queueALBuffers(&bufferQueue[0], buffersProcessed);
         startALSource();
     }
+}
+
+void SoundSource::attachToController(SoundSourceController& newController) {
+    if(controller) {
+        assert(false && "Invalind current stream controller");
+        return;
+    }
+    assert(state == ESourceState::Ended && "Invalid state of source");
+
+    controller = &newController;
+    state = ESourceState::Normal;
+    controller->getDataStream()->setSampleOffset(0);
+
+    queueALBuffers(&alBufferIds[0], MAX_BUFFERS_PER_STREAM);
+    startALSource();
 }
 
 void SoundSource::pauseStreaming() {
@@ -95,7 +104,14 @@ void SoundSource::resumeStreaming() {
 void SoundSource::stopStreaming() {
     alSourceStop(sourceId);
     alSourcei(sourceId, AL_BUFFER, AL_NONE);
-    dataStream = nullptr;
+
+    assert(controller != nullptr && "Invalid controller");
+    controller->detachFromSource();
+    controller = nullptr;
+    looping = false;
+    state = ESourceState::Ended;
+
+    ET_SendEvent(&ETSoundSourceManager::ET_returnSoundSource, this);
 }
 
 bool SoundSource::isStreaming() const {
@@ -116,13 +132,15 @@ void SoundSource::startALSource() {
 }
 
 SoundSource::EBufferFillRes SoundSource::fillALBuffer(unsigned int bufferId) {
+    OggDataStream* dataStream = controller->getDataStream();
+    assert(dataStream != nullptr && "Invalid data stream");
+
     int dataFormat = AL_FORMAT_MONO16;
     if (dataStream->channels == 2) {
         dataFormat = AL_FORMAT_STEREO16;
     }
 
     EBufferFillRes fillRes = EBufferFillRes::Normal;
-
     int readSamplesCount = dataStream->readSamples(buffData, SAMPLES_PER_READ);
     if(readSamplesCount < SAMPLES_PER_READ) {
         if(!looping) {
@@ -146,7 +164,7 @@ void SoundSource::queueALBuffers(unsigned int* bufferIds, int size) {
         ALuint bufferId = bufferIds[i];
         auto fillRes = fillALBuffer(bufferId);
         if(fillRes == EBufferFillRes::EndOfStream) {
-            ended = true;
+            state = ESourceState::WaitEnd;
             break;
         }
     }

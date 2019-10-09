@@ -96,7 +96,7 @@ bool AudioSystem::initSoundSources() {
     return true;
 }
 
-SoundSource* AudioSystem::ET_getFreeSoundSource() {
+SoundSource* AudioSystem::ET_getFreeSource() {
     for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
         if(sourceStateMap[i] == ESourceState::Free) {
             sourceStateMap[i] = ESourceState::Busy;
@@ -113,7 +113,6 @@ void AudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
         if(retSoundSoruce == &source) {
             assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
             sourceStateMap[i] = ESourceState::Free;
-            source.reset();
             return;
         }
     }
@@ -124,7 +123,7 @@ void AudioSystem::ET_onTick(float dt) {
     for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
         if(sourceStateMap[i] == ESourceState::Busy) {
             auto& source = sources[i];
-            source.updateStreaming();
+            source.update();
         }
     }
 }

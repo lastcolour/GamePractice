@@ -25,7 +25,7 @@ public:
     void ET_onTick(float dt) override;
 
     // ETSoundSourceManager
-    SoundSource* ET_getFreeSoundSource() override;
+    SoundSource* ET_getFreeSource() override;
     void ET_returnSoundSource(SoundSource* soundSoruce) override;
 
 private:

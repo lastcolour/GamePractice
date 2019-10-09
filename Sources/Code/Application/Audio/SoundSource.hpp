@@ -3,9 +3,9 @@
 
 #include <vector>
 
-const int MAX_BUFFERS_PER_STREAM = 4;
+struct SoundSourceController;
 
-class OggDataStream;
+const int MAX_BUFFERS_PER_STREAM = 4;
 
 class SoundSource {
 public:
@@ -14,11 +14,11 @@ public:
     virtual ~SoundSource();
 
     bool init();
-    void reset();
+    void update();
 
-    void startStreaming(OggDataStream& newDataStream);
+    void attachToController(SoundSourceController& newController);
+
     void stopStreaming();
-    void updateStreaming();
     void pauseStreaming();
     void resumeStreaming();
     bool isStreaming() const;
@@ -30,6 +30,12 @@ private:
         EndOfStream
     };
 
+    enum class ESourceState {
+        Normal = 0,
+        WaitEnd,
+        Ended
+    };
+
 private:
 
     void queueALBuffers(unsigned int* bufferIds, int size);
@@ -39,11 +45,10 @@ private:
 private:
 
     unsigned int alBufferIds[MAX_BUFFERS_PER_STREAM];
-    OggDataStream* dataStream;
+    SoundSourceController* controller;
     unsigned int sourceId;
-    unsigned int samplesOffset;
+    ESourceState state;
     bool looping;
-    bool ended;
 };
 
 #endif /* __SOUND_SOURCE_HPP__ */

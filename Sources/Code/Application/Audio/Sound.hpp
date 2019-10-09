@@ -1,12 +1,13 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
+#include "Audio/SoundSourceController.hpp"
+
 #include <memory>
 
 class SoundSource;
-class OggDataStream;
 
-class Sound {
+class Sound : public SoundSourceController {
 public:
 
     Sound();
@@ -17,6 +18,10 @@ public:
     void resume();
     void stop();
     bool isPlaying() const;
+
+    // SoundSourceController
+    void detachFromSource() override;
+    OggDataStream* getDataStream() override;
 
 public:
 

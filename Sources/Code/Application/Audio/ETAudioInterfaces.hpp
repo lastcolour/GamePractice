@@ -24,7 +24,7 @@ struct ETSoundManager {
 
 struct ETSoundSourceManager {
     virtual ~ETSoundSourceManager() = default;
-    virtual SoundSource* ET_getFreeSoundSource() = 0;
+    virtual SoundSource* ET_getFreeSource() = 0;
     virtual void ET_returnSoundSource(SoundSource* soundSoruce) = 0;
 };
 

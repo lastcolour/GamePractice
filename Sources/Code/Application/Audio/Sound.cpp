@@ -4,6 +4,8 @@
 #include "Audio/OggDataStream.hpp"
 #include "ETApplicationInterfaces.hpp"
 
+#include <cassert>
+
 Sound::Sound() :
     soundSource(nullptr) {
 }
@@ -16,12 +18,12 @@ void Sound::play() {
     if(soundSource) {
         return;
     }
-    ET_SendEventReturn(soundSource, &ETSoundSourceManager::ET_getFreeSoundSource);
+    ET_SendEventReturn(soundSource, &ETSoundSourceManager::ET_getFreeSource);
     if(!soundSource) {
         LogWarning("[Sound::play] Can't get free sound source to play sound");
         return;
     }
-    soundSource->startStreaming(*dataStream.get());
+    soundSource->attachToController(*this);
 }
 
 void Sound::pause() {
@@ -39,18 +41,25 @@ void Sound::resume() {
     soundSource->resumeStreaming();
 }
 
-void Sound::stop() {
-    if(!soundSource) {
-        return;
-    }
-    soundSource->stopStreaming();
-    ET_SendEvent(&ETSoundSourceManager::ET_returnSoundSource, soundSource);
-    soundSource = nullptr;
-}
-
 bool Sound::isPlaying() const {
     if(!soundSource) {
         return false;
     }
     return soundSource->isStreaming();
+}
+
+void Sound::stop() {
+    if(!soundSource) {
+        return;
+    }
+    soundSource->stopStreaming();
+}
+
+void Sound::detachFromSource() {
+    assert(soundSource != nullptr && "Invalid sound source");
+    soundSource = nullptr;
+}
+
+OggDataStream* Sound::getDataStream() {
+    return dataStream.get();
 }
