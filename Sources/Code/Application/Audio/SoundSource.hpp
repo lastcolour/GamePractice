@@ -10,30 +10,40 @@ class OggDataStream;
 class SoundSource {
 public:
 
-    SoundSource(int newSourceId);
+    SoundSource(unsigned int newSourceId);
     virtual ~SoundSource();
 
-    void startStreaming(OggDataStream* newDataStream);
+    bool init();
+    void reset();
+
+    void startStreaming(OggDataStream& newDataStream);
     void stopStreaming();
     void updateStreaming();
     void pauseStreaming();
     void resumeStreaming();
-    bool isFinishStreaming() const;
     bool isStreaming() const;
 
-    void reset();
+private:
+
+    enum class EBufferFillRes {
+        Normal = 0,
+        EndOfStream
+    };
 
 private:
 
-    void queueBuffers(const std::vector<unsigned int>& bufferQueue);
-    void startPlay();
+    void queueALBuffers(unsigned int* bufferIds, int size);
+    EBufferFillRes fillALBuffer(unsigned int bufferId);
+    void startALSource();
 
 private:
 
-    unsigned int buffers[MAX_BUFFERS_PER_STREAM];
+    unsigned int alBufferIds[MAX_BUFFERS_PER_STREAM];
     OggDataStream* dataStream;
-    int sourceId;
+    unsigned int sourceId;
+    unsigned int samplesOffset;
     bool looping;
+    bool ended;
 };
 
 #endif /* __SOUND_SOURCE_HPP__ */

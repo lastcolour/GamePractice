@@ -1,7 +1,9 @@
 #include "Audio/Logics/SoundPlayLogic.hpp"
 #include "Core/JSONNode.hpp"
+#include "ETApplicationInterfaces.hpp"
 
-SoundPlayLogic::SoundPlayLogic() {
+SoundPlayLogic::SoundPlayLogic() :
+    looped(false) {
 }
 
 SoundPlayLogic::~SoundPlayLogic() {
@@ -9,9 +11,16 @@ SoundPlayLogic::~SoundPlayLogic() {
 
 bool SoundPlayLogic::serialize(const JSONNode& node) {
     std::string soundName;
-    node.read(soundName);
-    if(soundName.empty()) {
+    node.read("sound", soundName);
+    node.read("looped", looped);
+    if(!soundName.empty()) {
         ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, soundName.c_str());
+        if(!sound) {
+            return false;
+        }
+    } else {
+        LogWarning("[SoundPlayLogic::serialize] Empty sound name");
+        return false;
     }
     return true;
 }

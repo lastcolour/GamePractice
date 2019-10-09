@@ -1,7 +1,8 @@
 #include "Audio/Sound.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 #include "Audio/SoundSource.hpp"
+#include "Audio/OggDataStream.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 Sound::Sound() :
     soundSource(nullptr) {
@@ -12,12 +13,15 @@ Sound::~Sound() {
 }
 
 void Sound::play() {
+    if(soundSource) {
+        return;
+    }
     ET_SendEventReturn(soundSource, &ETSoundSourceManager::ET_getFreeSoundSource);
     if(!soundSource) {
         LogWarning("[Sound::play] Can't get free sound source to play sound");
         return;
     }
-    soundSource->startStreaming(dataStream.get());
+    soundSource->startStreaming(*dataStream.get());
 }
 
 void Sound::pause() {

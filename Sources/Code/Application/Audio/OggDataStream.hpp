@@ -12,9 +12,12 @@ public:
     ~OggDataStream();
 
     bool isOpened() const;
+    int readSamples(void* outData, int sampleCount);
+    void setSampleOffset(int sampleOffset);
 
 public:
 
+    Buffer oggBuffer;
     stb_vorbis* oggStream;
     int channels;
     int sampleRate;

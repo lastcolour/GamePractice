@@ -20,7 +20,7 @@ public:
 
 public:
 
-    std::shared_ptr<OggDataStream> dataStream;
+    std::unique_ptr<OggDataStream> dataStream;
     SoundSource* soundSource;
 };
 

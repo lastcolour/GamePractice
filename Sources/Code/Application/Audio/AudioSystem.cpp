@@ -78,9 +78,19 @@ bool AudioSystem::initSoundSources() {
     sources.reserve(MAX_SOUND_SOURCES);
     sourceStateMap.reserve(MAX_SOUND_SOURCES);
 
+    bool initAllSources = true;
     for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
-        sources.emplace_back(SoundSource(sourceIds[i]));
+        sources.emplace_back(sourceIds[i]);
+        auto& source = sources.back();
+        if(!source.init()) {
+            initAllSources = false;
+        }
         sourceStateMap.emplace_back(ESourceState::Free);
+    }
+
+    if(!initAllSources) {
+        LogWarning("[AudioSystem::initSoundSources] Can't init all audio sources");
+        return false;
     }
 
     return true;
@@ -96,12 +106,14 @@ SoundSource* AudioSystem::ET_getFreeSoundSource() {
     return nullptr;
 }
 
-void AudioSystem::ET_returnSoundSource(SoundSource* soundSoruce) {
-    assert(soundSoruce != nullptr && "Invalid sound source");
+void AudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
+    assert(retSoundSoruce != nullptr && "Invalid sound source");
     for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
-        if(soundSoruce == &(sources[i])) {
+        auto& source = sources[i];
+        if(retSoundSoruce == &source) {
             assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
             sourceStateMap[i] = ESourceState::Free;
+            source.reset();
             return;
         }
     }

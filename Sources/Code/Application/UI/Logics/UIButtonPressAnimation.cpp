@@ -1,6 +1,7 @@
 #include "UI/Logics/UIButtonPressAnimation.hpp"
 #include "Core/JSONNode.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
+#include "Audio/ETAudioInterfaces.hpp"
 
 #include <algorithm>
 
@@ -62,6 +63,7 @@ void UIButtonPressAnimation::ET_startPressAnimation() {
     }
     Transform tm;
     ET_SendEventReturn(tm, getParentId(), &ETEntity::ET_getTransform);
+    ET_SendEvent(getEntityId(), &ETSoundPlayer::ET_play);
     startScale = tm.scale;
     progress = 0.f;
 

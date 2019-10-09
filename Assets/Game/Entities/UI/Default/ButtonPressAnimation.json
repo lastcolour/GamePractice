@@ -12,7 +12,7 @@
         {
             "type":"SoundPlayer",
             "data":{
-                "sound":"UI/click.wav"
+                "sound":"UI/click.ogg"
             }
         }
     ]

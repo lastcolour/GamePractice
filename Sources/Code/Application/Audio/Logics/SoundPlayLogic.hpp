@@ -25,7 +25,8 @@ public:
 
 private:
 
-    std::shared_ptr<Sound> sound;
+    std::unique_ptr<Sound> sound;
+    bool looped;
 };
 
 #endif /* __SOUND_PLAY_LOGIC_HPP__ */

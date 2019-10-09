@@ -2,6 +2,7 @@
 #define __SOUND_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
+#include "Core/Buffer.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 
 #include <unordered_map>
@@ -22,11 +23,11 @@ public:
 
 private:
 
-    std::shared_ptr<Sound> loadSound(const char* soundName);
+    Buffer loadSoundBuffer(const char* soundName);
 
 private:
 
-    std::unordered_map<std::string, std::shared_ptr<Sound>> sounds;
+    std::unordered_map<std::string, Buffer> buffers;
 };
 
 #endif /* __SOUND_MANAGER_HPP__ */
