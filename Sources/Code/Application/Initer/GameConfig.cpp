@@ -4,17 +4,10 @@
 
 namespace {
 
-const char* GAME_GENERAL_CONFIG = "Configs/GameGeneral.json";
 const char* GAME_LOCAL_CONFIG = "Configs/GameLocal.json";
 const char* GAME_LOCAL_UNPACKED_CONFIG = "GameLocal.json";
 
 } // namespace
-
-void GameGeneralConfig::read(const JSONNode& node) {
-    if(auto viewNode = node.object("MainView")) {
-        viewNode.read("value", mainView);
-    }
-}
 
 GameLocalConfig::GameLocalConfig() :
     highScore(0),
@@ -53,9 +46,6 @@ GameConfig::~GameConfig() {
 }
 
 bool GameConfig::init() {
-    if(!loadGeneralConfig()) {
-        return false;
-    }
     if(!loadLocalConfig()) {
         return false;
     }
@@ -65,17 +55,6 @@ bool GameConfig::init() {
 
 void GameConfig::deinit() {
     ETNode<ETGameConfig>::disconnect();
-}
-
-bool GameConfig::loadGeneralConfig() {
-    JSONNode node;
-    ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, GAME_GENERAL_CONFIG);
-    if(!node) {
-        LogError("[GameConfig::loadGeneralConfig] Can't load general config from: %s", GAME_GENERAL_CONFIG);
-        return false;
-    }
-    generalConfig.read(node);
-    return true;
 }
 
 JSONNode GameConfig::unpackAndLoadConfig(const char* assetFile, const char* unpackedFile) {
@@ -138,10 +117,6 @@ bool GameConfig::ET_isVibrationEnabled() const {
 void GameConfig::ET_setVibrationEnabled(bool flag) {
     localConfig.vibrationEnabled = flag;
     updateLocalConfig();
-}
-
-const char* GameConfig::ET_getMainViewName() const {
-    return generalConfig.mainView.c_str();
 }
 
 int GameConfig::ET_getHighScore() const {

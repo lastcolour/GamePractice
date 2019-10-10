@@ -10,10 +10,8 @@ public:
     InGameState();
     ~InGameState();
 
-    void onEnter();
+    void onEnter(EntityId gameEntityId);
     void onLeave();
-
-    void connect(EntityId entityId);
 
     // ETGameEndTimerEvents
     void ET_onGameTimeOut() override;

@@ -4,19 +4,21 @@
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
-class PostGameState : public ETNode<ETGameEndResult> {
+class PostGameState : public ETNode<ETGameEndResult>,
+    public ETNode<ETGameTimerEvents> {
 public:
 
     PostGameState();
     ~PostGameState();
 
-    void onEnter();
+    void onEnter(EntityId gameEntityId);
     void onLeave();
-
-    void connect(EntityId entityId);
 
     // ETGameEndResult
     const EndGameResult* ET_getGameEndResult() const override;
+
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
 
 private:
 
@@ -25,6 +27,8 @@ private:
 private:
 
     std::unique_ptr<EndGameResult> endResult;
+    float postGameTime;
+    EntityId gameEntityId;
 };
 
 #endif /* __POST_GAME_STATE_HPP__ */

@@ -12,7 +12,10 @@
         {
             "type":"SoundPlayer",
             "data":{
-                "sound":"UI/click.ogg"
+                "sound":"UI/click.ogg",
+                "autoStart":false,
+                "loop":false,
+                "volume":1
             }
         }
     ]

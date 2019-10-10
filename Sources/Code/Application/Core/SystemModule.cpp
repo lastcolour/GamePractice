@@ -1,8 +1,15 @@
 #include "Core/SystemModule.hpp"
+#include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
 
 #include <cassert>
 #include <chrono>
+
+namespace {
+
+const char* MODULE_CONFIGS_DIR = "Configs/Modules";
+
+} // namespace
 
 SystemModule::SystemModule(const char* moduleName) :
     name(moduleName) {
@@ -18,6 +25,20 @@ SystemModule::~SystemModule() {
 
 bool SystemModule::init() {
     auto initStartT = std::chrono::high_resolution_clock::now();
+
+    configs = getSystemConfigs();
+    if(configs) {
+        JSONNode node;
+        std::string configFile = StringFormat("%s/%s.json", MODULE_CONFIGS_DIR, name);
+        ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, configFile.c_str());
+        if(node) {
+            configs->serialize(node);
+        } else {
+            LogError("[SystemModule::init] Can't load config for module: %s", name);
+            configs.reset();
+            return false;
+        }
+    }
 
     if(logicsContainer) {
         LogError("[SystemModule::init] Double init of module: '%s'", name);

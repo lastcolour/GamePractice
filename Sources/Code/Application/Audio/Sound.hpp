@@ -13,11 +13,13 @@ public:
     Sound();
     ~Sound();
 
-    void play();
+    void play(bool looped);
     void pause();
     void resume();
     void stop();
     bool isPlaying() const;
+
+    void setVolume(float volume);
 
     // SoundSourceController
     void detachFromSource() override;

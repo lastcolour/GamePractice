@@ -10,10 +10,8 @@ public:
     PreGameState();
     ~PreGameState();
 
-    void onEnter();
+    void onEnter(EntityId gameEntityId);
     void onLeave();
-
-    void connect(EntityId entityId);
 
     // ETGameBoardAppearAnimationEvents
     void ET_onBoardAppeared() override;

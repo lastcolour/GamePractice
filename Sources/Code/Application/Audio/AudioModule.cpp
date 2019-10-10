@@ -17,3 +17,7 @@ AudioModule::LogicsContainerPtrT AudioModule::getSystemLogics() const {
         );
     return container;
 }
+
+AudioModule::ConfigsPtrT AudioModule::getSystemConfigs() const {
+    return nullptr;
+}

@@ -22,6 +22,7 @@ const char* START_GAME_EVENT = "Main_OnStartButton";
 } // namespace
 
 void UIEventTests::TearDown() {
+    ET_SendEvent(&ETGameStateManager::ET_interruptGame);
     ET_SendEvent(&ETUIViewStack::ET_forceReset);
     ConsoleAppTests::TearDown();
 }

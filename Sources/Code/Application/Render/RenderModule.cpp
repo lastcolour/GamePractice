@@ -21,3 +21,7 @@ RenderModule::LogicsContainerPtrT RenderModule::getSystemLogics() const {
         );
     return container;
 }
+
+RenderModule::ConfigsPtrT RenderModule::getSystemConfigs() const {
+    return nullptr;
+}

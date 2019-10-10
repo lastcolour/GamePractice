@@ -19,3 +19,7 @@ UIModule::LogicsContainerPtrT UIModule::getSystemLogics() const {
         );
     return container;
 }
+
+UIModule::ConfigsPtrT UIModule::getSystemConfigs() const {
+    return nullptr;
+}

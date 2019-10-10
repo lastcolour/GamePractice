@@ -32,6 +32,6 @@ void WaitPreGameEnd() {
 void WaitInGameEnd() {
     float gameTime = 0.f;
     ET_SendEventReturn(gameTime, &ETGameEndTimer::ET_getRemainingTime);
-    gameTime += 0.00001f;
+    gameTime += 0.0001f;
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, gameTime);
 }

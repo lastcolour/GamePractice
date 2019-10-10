@@ -11,3 +11,7 @@ EntityModule::LogicsContainerPtrT EntityModule::getSystemLogics() const {
         );
     return container;
 }
+
+EntityModule::ConfigsPtrT EntityModule::getSystemConfigs() const {
+    return nullptr;
+}

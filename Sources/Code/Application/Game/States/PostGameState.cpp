@@ -1,29 +1,29 @@
 #include "Game/States/PostGameState.hpp"
-#include "UI/ETUIInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
-namespace {
-
-const char* GAME_END_EVENT = "Game_OnGameEnd";
-
-} // namespace
-
-PostGameState::PostGameState() {
+PostGameState::PostGameState() :
+    postGameTime(1.f) {
 }
 
 PostGameState::~PostGameState() {
 }
 
-void PostGameState::connect(EntityId entityId) {
-    ETNode<ETGameEndResult>::connect(entityId);
-}
-
-void PostGameState::onEnter() {
-    setupEndResult();
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, GAME_END_EVENT);
+void PostGameState::onEnter(EntityId gameEntityId) {
+    ETNode<ETGameEndResult>::connect(gameEntityId);
+    ETNode<ETGameTimerEvents>::connect(gameEntityId);
+    postGameTime = 1.f;
 }
 
 void PostGameState::onLeave() {
+    ETNode<ETGameTimerEvents>::disconnect();
+    setupEndResult();
+}
+
+void PostGameState::ET_onGameTick(float dt) {
+    postGameTime -= dt;
+    if(postGameTime < 0.f) {
+        ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::None);
+    }
 }
 
 void PostGameState::setupEndResult() {

@@ -14,7 +14,7 @@ Sound::~Sound() {
     stop();
 }
 
-void Sound::play() {
+void Sound::play(bool looped) {
     if(soundSource) {
         return;
     }
@@ -24,6 +24,7 @@ void Sound::play() {
         return;
     }
     soundSource->attachToController(*this);
+    soundSource->setLoop(looped);
 }
 
 void Sound::pause() {
@@ -35,7 +36,7 @@ void Sound::pause() {
 
 void Sound::resume() {
     if(!soundSource) {
-        play();
+        play(soundSource->isLooped());
         return;
     }
     soundSource->resumeStreaming();
@@ -62,4 +63,11 @@ void Sound::detachFromSource() {
 
 OggDataStream* Sound::getDataStream() {
     return dataStream.get();
+}
+
+void Sound::setVolume(float volume) {
+    if(!soundSource) {
+        return;
+    }
+    soundSource->setGain(volume);
 }

@@ -1,0 +1,4 @@
+{
+    "mainView":"UI/MainView/Root.json",
+    "background":"UI/Background/Root.json"
+}

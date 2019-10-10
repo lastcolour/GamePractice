@@ -22,8 +22,7 @@ SoundSource::SoundSource(unsigned int newSourceId) :
     state(ESourceState::Ended),
     looping(false) {
 
-    alSourcef(sourceId, AL_GAIN, 1.f);
-    alSourcef(sourceId, AL_PITCH, 1.f);
+    resetALSourceParams();
 }
 
 SoundSource::~SoundSource() {
@@ -74,6 +73,21 @@ void SoundSource::update() {
     }
 }
 
+void SoundSource::setLoop(bool loopFlag) {
+    assert(controller != nullptr && "Change loop property with invalid controller");
+    looping = loopFlag;
+}
+
+bool SoundSource::isLooped() const {
+    return looping;
+}
+
+void SoundSource::setGain(float newGain) {
+    assert(isStreaming() && "Set gain for invalid source");
+
+    alSourcef(sourceId, AL_GAIN, newGain);
+}
+
 void SoundSource::attachToController(SoundSourceController& newController) {
     if(controller) {
         assert(false && "Invalind current stream controller");
@@ -110,6 +124,7 @@ void SoundSource::stopStreaming() {
     controller = nullptr;
     looping = false;
     state = ESourceState::Ended;
+    resetALSourceParams();
 
     ET_SendEvent(&ETSoundSourceManager::ET_returnSoundSource, this);
 }
@@ -179,4 +194,9 @@ void SoundSource::queueALBuffers(unsigned int* bufferIds, int size) {
     if(alError != AL_NO_ERROR) {
         LogWarning("[SoundSource::queueBuffers] Can't queue buffers. Error: %s", alGetString(alError));
     }
+}
+
+void SoundSource::resetALSourceParams() {
+    alSourcef(sourceId, AL_GAIN, 1.f);
+    alSourcef(sourceId, AL_PITCH, 1.f);
 }

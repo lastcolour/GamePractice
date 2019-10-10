@@ -1,6 +1,11 @@
 #include "Initer/GameIniter.hpp"
+#include "Initer/GameIniterConfig.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
+#include "ETApplicationInterfaces.hpp"
+
+#include <cassert>
 
 GameIniter::GameIniter() :
     isViewExist(false) {
@@ -34,17 +39,30 @@ void GameIniter::ET_onSurfaceDestroyed() {
 }
 
 void GameIniter::openMainView() {
-    const char* mainView = nullptr;
-    ET_SendEventReturn(mainView, &ETGameConfig::ET_getMainViewName);
-    if(!mainView || !mainView[0]) {
+    GameIniterConfig* initConfig = ET_getConfig<GameIniterConfig>();
+    if(!initConfig) {
+        assert(false && "Invalid configs");
+        return;
+    }
+
+    if(!initConfig->background.empty()) {
+        EntityId backgroundId;
+        ET_SendEventReturn(backgroundId, &ETEntityManager::ET_createEntity, initConfig->background.c_str());
+        if(!backgroundId.isValid()) {
+            LogError("[GameIniter::openMainView] Can't create background: %s", initConfig->background);
+        }
+    }
+
+    if(initConfig->mainView.empty()) {
         LogError("[GameIniter::openMainView] Can't open empty main view");
         return;
     }
-    ET_SendEvent(&ETUIViewStack::ET_pushView, mainView);
+
+    ET_SendEvent(&ETUIViewStack::ET_pushView, initConfig->mainView.c_str());
     EntityId mainViewId;
     ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
     if (!mainViewId.isValid()) {
-        LogError("[GameIniter::openMainView] Can't cretae main view '%s'", mainView);
+        LogError("[GameIniter::openMainView] Can't cretae main view '%s'", initConfig->mainView);
     }
     bool isVisible = false;
     ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);

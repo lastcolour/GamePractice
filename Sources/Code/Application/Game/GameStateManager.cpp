@@ -1,7 +1,14 @@
 #include "Game/GameStateManager.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "UI/ETUIInterfaces.hpp"
 
 #include <cassert>
+
+namespace {
+
+const char* GAME_END_EVENT = "Game_OnGameEnd";
+
+} // namespace
 
 GameStateManager::GameStateManager() :
     gameState(EGameState::None) {
@@ -12,9 +19,6 @@ GameStateManager::~GameStateManager() {
 
 bool GameStateManager::init() {
     ETNode<ETGameStateManager>::connect(getEntityId());
-    preGame.connect(getEntityId());
-    inGame.connect(getEntityId());
-    postGame.connect(getEntityId());
     return true;
 }
 
@@ -67,11 +71,15 @@ void GameStateManager::ET_interruptGame() {
         postGame.onLeave();
         break;
     }
+    case EGameState::None: {
+        return;
+    }
     default:
         assert(false && "Invalid game state");
         break;
     }
     gameState = EGameState::None;
+    ET_SendEvent(&ETGameTimer::ET_pauseTimer);
 }
 
 void GameStateManager::ET_changeState(EGameState newState) {
@@ -84,7 +92,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             assert(gameState == EGameState::None && "Invalid new game state");
             LogInfo("[GameStateManager::ET_changeState] Change state to: PreGame");
             gameState = newState;
-            preGame.onEnter();
+            preGame.onEnter(getEntityId());
             break;
         }
         case EGameState::InGame: {
@@ -92,7 +100,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: InGame");
             gameState = newState;
             preGame.onLeave();
-            inGame.onEnter();
+            inGame.onEnter(getEntityId());
             break;
         }
         case EGameState::PostGame: {
@@ -100,7 +108,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: PostGame");
             gameState = newState;
             inGame.onLeave();
-            postGame.onEnter();
+            postGame.onEnter(getEntityId());
             break;
         }
         case EGameState::None: {
@@ -108,6 +116,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: None");
             gameState = newState;
             postGame.onLeave();
+            ET_SendEvent(&ETUIEventManager::ET_onEvent, GAME_END_EVENT);
             break;
         }
         default: {

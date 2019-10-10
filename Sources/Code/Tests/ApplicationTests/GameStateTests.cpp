@@ -49,9 +49,11 @@ TEST_F(GameStateTests, CheckPreGameState) {
 }
 
 TEST_F(GameStateTests, CheckPreGame_Resize) {
+    // Finish board appearing
 }
 
 TEST_F(GameStateTests, CheckPreGame_Pause) {
+    // Finish board appearing
 }
 
 TEST_F(GameStateTests, CheckInGameState) {

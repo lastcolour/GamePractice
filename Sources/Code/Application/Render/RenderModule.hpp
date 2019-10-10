@@ -11,6 +11,7 @@ public:
 
 protected:
 
+    ConfigsPtrT getSystemConfigs() const override;
     LogicsContainerPtrT getSystemLogics() const override;
 };
 

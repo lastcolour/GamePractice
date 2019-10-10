@@ -15,3 +15,7 @@ DesktopModule::LogicsContainerPtrT DesktopModule::getSystemLogics() const {
         );
     return container;
 }
+
+DesktopModule::ConfigsPtrT DesktopModule::getSystemConfigs() const {
+    return nullptr;
+}

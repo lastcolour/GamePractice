@@ -23,6 +23,11 @@ public:
     void resumeStreaming();
     bool isStreaming() const;
 
+    void setGain(float newGain);
+    void setLoop(bool loopFlag);
+
+    bool isLooped() const;
+
 private:
 
     enum class EBufferFillRes {
@@ -41,6 +46,7 @@ private:
     void queueALBuffers(unsigned int* bufferIds, int size);
     EBufferFillRes fillALBuffer(unsigned int bufferId);
     void startALSource();
+    void resetALSourceParams();
 
 private:
 

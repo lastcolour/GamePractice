@@ -6,6 +6,7 @@
 #include "Math/Vector.hpp"
 
 class JSONNode;
+class ModuleConfigBase;
 
 enum GLContextType {
     None = 0,
@@ -102,6 +103,13 @@ struct ETAssetsCacheManager {
     virtual float ET_getCacheLifetime() const = 0;
 };
 
+struct ETModuleConfigManager {
+    virtual ~ETModuleConfigManager() = default;
+    virtual void ET_registerConfig(ModuleConfigBase* config, TypeId configId) = 0;
+    virtual void ET_removeConfig(TypeId configId) = 0;
+    virtual void* ET_getConfig(TypeId configId) = 0;
+};
+
 template<typename ... ArgsT>
 void LogDebug(const char* msg, const ArgsT& ... args) {
     ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Debug, StringFormat(msg, args...));
@@ -125,6 +133,14 @@ void LogError(const char* msg, const ArgsT& ... args) {
 template<typename ... ArgsT>
 void LogFatal(const char* msg, const ArgsT& ... args) {
     ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Fatal, StringFormat(msg, args...));
+}
+
+template<typename ConfigT>
+ConfigT* ET_getConfig() {
+    auto configId = GetTypeId<ConfigT>();
+    void* moduleConfig = nullptr;
+    ET_SendEventReturn(moduleConfig, &ETModuleConfigManager::ET_getConfig, configId);
+    return reinterpret_cast<ConfigT*>(moduleConfig);
 }
 
 #endif /* __ET_APPLICATION_INTERFACES_HPP__ */

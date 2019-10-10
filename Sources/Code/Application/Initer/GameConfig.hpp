@@ -6,15 +6,6 @@
 
 class JSONNode;
 
-struct GameGeneralConfig {
-
-    std::string mainView;
-
-public:
-
-    void read(const JSONNode& node);
-};
-
 struct GameLocalConfig {
     int highScore;
     bool soundEnabled;
@@ -44,20 +35,17 @@ public:
     void ET_setSoundEnabled(bool flag) override;
     bool ET_isVibrationEnabled() const override;
     void ET_setVibrationEnabled(bool flag) override;
-    const char* ET_getMainViewName() const override;
     int ET_getHighScore() const override;
     void ET_setHighScore(int newHighScore) override;
 
 private:
 
-    bool loadGeneralConfig();
     bool loadLocalConfig();
     JSONNode unpackAndLoadConfig(const char* fromFile, const char* toFile);
     void updateLocalConfig();
 
 private:
 
-    GameGeneralConfig generalConfig;
     GameLocalConfig localConfig;
 };
 

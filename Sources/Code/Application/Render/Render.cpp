@@ -51,7 +51,6 @@ void Render::deinit() {
 void Render::ET_onTick(float dt) {
     (void)dt;
     ET_drawFrame();
-    
 }
 
 bool Render::ET_canRender() const {

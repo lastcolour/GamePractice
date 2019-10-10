@@ -1,0 +1,14 @@
+{
+    "children":[],
+    "logics":[
+        {
+            "type":"SoundPlayer",
+            "data":{
+                "volume":0.2,
+                "sound":"UI/ambient.ogg",
+                "loop":true,
+                "autoStart":true
+            }
+        }
+    ]
+}

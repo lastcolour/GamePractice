@@ -40,6 +40,10 @@ protected:
         );
         return container;
     }
+
+    ConfigsPtrT getSystemConfigs() const override {
+        return nullptr;
+    }
 };
 
 class TestApplication : public Application {

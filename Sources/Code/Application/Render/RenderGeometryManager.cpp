@@ -148,7 +148,6 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     return geometry;
 }
 
-
 void RenderGeometryManager::ET_forgetResoruces() {
     geometris.clear();
 }

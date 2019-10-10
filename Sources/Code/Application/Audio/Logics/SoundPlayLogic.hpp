@@ -26,7 +26,9 @@ public:
 private:
 
     std::unique_ptr<Sound> sound;
+    float volume;
     bool looped;
+    bool autoStart;
 };
 
 #endif /* __SOUND_PLAY_LOGIC_HPP__ */

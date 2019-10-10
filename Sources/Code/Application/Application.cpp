@@ -28,7 +28,7 @@ Application::~Application() {
 
 void Application::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
-    if (platform) {
+    if(platform) {
         modules.emplace_back(platform->createPlatformModule());
     }
     modules.emplace_back(new RenderModule);
@@ -51,7 +51,7 @@ bool Application::init() {
 
 int Application::run() {
     int retCode = APP_FAILED;
-    if (init()) {
+    if(init()) {
         mainLoop();
         retCode = APP_SUCCESSED;
     }

@@ -10,3 +10,7 @@ GameModule::LogicsContainerPtrT GameModule::getSystemLogics() const {
         );
     return container;
 }
+
+GameModule::ConfigsPtrT GameModule::getSystemConfigs() const {
+    return nullptr;
+}

@@ -7,16 +7,15 @@ InGameState::InGameState() {
 InGameState::~InGameState() {
 }
 
-void InGameState::connect(EntityId entityId) {
-    ETNode<ETGameEndTimerEvents>::connect(entityId);
-}
+void InGameState::onEnter(EntityId gameEntityId) {
+    ETNode<ETGameEndTimerEvents>::connect(gameEntityId);
 
-void InGameState::onEnter() {
     ET_SendEvent(&ETGameEndTimer::ET_startEndTimer);
     ET_SendEvent(&ETGAmeBoardInteractionLogic::ET_allowInteraction, true);
 }
 
 void InGameState::onLeave() {
+    ETNode<ETGameEndTimerEvents>::disconnect();
 }
 
 void InGameState::ET_onGameTimeOut() {

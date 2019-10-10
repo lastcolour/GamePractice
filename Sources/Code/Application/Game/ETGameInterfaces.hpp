@@ -70,7 +70,6 @@ struct ETGameConfig {
     virtual void ET_setSoundEnabled(bool flag) = 0;
     virtual bool ET_isVibrationEnabled() const = 0;
     virtual void ET_setVibrationEnabled(bool flag) = 0;
-    virtual const char* ET_getMainViewName() const = 0;
     virtual int ET_getHighScore() const = 0;
     virtual void ET_setHighScore(int newHighScore) = 0;
 };

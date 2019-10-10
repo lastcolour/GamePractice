@@ -52,12 +52,14 @@ public:
         std::vector<EntityId> resNodes;
         {
             auto etId = GetTypeId<ETType>();
+            syncRoute.pushRoute(etId);
             auto it = activeConnection.find(etId);
             if(it != activeConnection.end()) {
                 for(auto& currConn : it->second) {
                     resNodes.push_back(currConn.addressId);
                 }
             }
+            syncRoute.popRoute();
         }
         return resNodes;
     }
@@ -70,6 +72,7 @@ public:
         }
         {
             auto etId = GetTypeId<ETType>();
+            syncRoute.pushRoute(etId);
             auto it = activeConnection.find(etId);
             if(it != activeConnection.end()) {
                 auto& etConnection = it->second;
@@ -80,6 +83,7 @@ public:
                     }
                 }
             }
+            syncRoute.popRoute();
         }
         return res;
     }
@@ -301,7 +305,7 @@ private:
 
     TypeConnectionMapT activeConnection;
     std::vector<ETConnectionRequest> pendingConnection;
-    ETSyncRoute syncRoute;
+    mutable ETSyncRoute syncRoute;
     std::mutex idGenMutex;
     std::recursive_mutex pendingConnMutex;
     EntityId entityIdGen;
