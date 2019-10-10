@@ -54,6 +54,7 @@ public:
     int ET_getCellSize() const override;
     const Vec2i& ET_getBoardSize() const override;
     const AABB2Di& ET_getBoardBox() const override;
+    Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -70,7 +71,6 @@ protected:
     virtual BoardElemType getElemType() const;
     int getElemId(const Vec2i& boardPt) const;
     Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const;
-    Vec3 getPosFromBoardPos(const Vec2i& boardPt) const;
     const BoardElement* getElem(EntityId entId) const;
     BoardElement* getElem(EntityId entId);
     BoardElement* getElem(const Vec2i& boardPt);

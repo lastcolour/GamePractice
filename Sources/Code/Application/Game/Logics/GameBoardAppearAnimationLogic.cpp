@@ -8,11 +8,11 @@
 
 GameBoardAppearAnimationLogic::GameBoardAppearAnimationLogic() :
     boardSize(0),
-    shift(0.f),
-    currentShift(0.f),
     currDuration(0.f),
     fallSpeed(1.f),
-    collumnDelay(0.2f) {
+    shift(0.f),
+    collumnDelay(0.2f),
+    duration(1.f) {
 }
 
 GameBoardAppearAnimationLogic::~GameBoardAppearAnimationLogic() {
@@ -21,6 +21,7 @@ GameBoardAppearAnimationLogic::~GameBoardAppearAnimationLogic() {
 bool GameBoardAppearAnimationLogic::serialize(const JSONNode& node) {
     node.read("fallSpeed", fallSpeed);
     node.read("collumnDelay", collumnDelay);
+    node.read("duration", duration);
     return true;
 }
 
@@ -37,6 +38,7 @@ void GameBoardAppearAnimationLogic::alignSpeedWithScreenSize() {
 }
 
 void GameBoardAppearAnimationLogic::ET_startBoardAppearing() {
+    currDuration = 0;
     moveAllElemsOnTop();
     ETNode<ETGameTimerEvents>::connect(getEntityId());
 }
@@ -76,15 +78,30 @@ void GameBoardAppearAnimationLogic::moveAllElemsOnTop() {
     shift = ptShift.y;
 }
 
-void GameBoardAppearAnimationLogic::moveCollumnElemDown(int collumnIdx, float collumnShift) {
+void GameBoardAppearAnimationLogic::moveCollumnElemDown(int collumnIdx, float collumnDuration) {
+    float elemDelay = 0.01f;
     for(int i = 0; i < boardSize.y; ++i) {
+        float elemDuration = collumnDuration - i * elemDelay;
+        if(elemDuration < 0.f) {
+            break;
+        }
+
+        Vec2i boardPt(collumnIdx, i);
+
         EntityId elemEntId;
-        ET_SendEventReturn(elemEntId, &ETGameBoard::ET_getElemByBoardPos, Vec2i(collumnIdx, i));
+        ET_SendEventReturn(elemEntId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
 
         Transform elemTm;
         ET_SendEventReturn(elemTm, elemEntId, &ETEntity::ET_getTransform);
 
-        elemTm.pt.y += collumnShift;
+        Vec3 targetPt(0.f);
+        ET_SendEventReturn(targetPt, &ETGameBoard::ET_getPosFromBoardPos, boardPt);
+
+        Vec3 startPt = targetPt;
+        startPt.y += shift;
+
+        float prog = std::min(elemDuration / duration, 1.f);
+        elemTm.pt = Math::Lerp(startPt, targetPt, prog * prog);
 
         ET_SendEvent(elemEntId, &ETEntity::ET_setTransform, elemTm);
     }
@@ -98,16 +115,10 @@ void GameBoardAppearAnimationLogic::ET_onGameTick(float dt) {
         if(collumDuration < 0.f) {
             break;
         }
-        float deltaShift = dt * fallSpeed;
-        float currentShift = collumDuration * fallSpeed;
-        float leftShift = std::max(shift - currentShift, 0.f);
-        if(leftShift < deltaShift) {
-            deltaShift = leftShift;
-            if(i == boardSize.x - 1) {
-                finishLastCollumn = true;
-            }
+        moveCollumnElemDown(i, collumDuration);
+        if(i == boardSize.x - 1 && collumDuration >= 2.f * duration) {
+            finishLastCollumn = true;
         }
-        moveCollumnElemDown(i, -deltaShift);
     }
 
     if(finishLastCollumn) {

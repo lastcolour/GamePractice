@@ -262,7 +262,7 @@ BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) {
     return nullptr;
 }
 
-Vec3 GameBoardLogic::getPosFromBoardPos(const Vec2i& boardPt) const {
+Vec3 GameBoardLogic::ET_getPosFromBoardPos(const Vec2i& boardPt) const {
     Vec2 pt = Vec2(static_cast<float>(boardBox.bot.x), static_cast<float>(boardBox.bot.y));
     pt.x += cellSize * (boardPt.x + 0.5f);
     pt.y += cellSize * (boardPt.y + 0.5f);
@@ -276,7 +276,7 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     elem.boardPt = boardPt;
 
     Transform tm;
-    tm.pt = getPosFromBoardPos(boardPt);
+    tm.pt = ET_getPosFromBoardPos(boardPt);
     tm.scale = Vec3(1.f);
     ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
 }
@@ -415,7 +415,7 @@ void GameBoardLogic::updateBoard() {
 Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const {
     Vec2i resPt;
     resPt.x = boardPt.x;
-    Vec3 pos = pt - getPosFromBoardPos(boardPt);
+    Vec3 pos = pt - ET_getPosFromBoardPos(boardPt);
     float yShift = pos.y;
     yShift = yShift / cellSize;
     int shift = static_cast<int>(yShift);
@@ -430,7 +430,7 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     Transform tm;
     ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getTransform);
     tm.pt.y -= moveSpeed * dt * cellSize;
-    Vec3 desirePt = getPosFromBoardPos(elem.movePt);
+    Vec3 desirePt = ET_getPosFromBoardPos(elem.movePt);
     if(tm.pt.y > desirePt.y) {
         elem.boardPt = getBoardPosFromPos(elem.boardPt, tm.pt);
         ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);

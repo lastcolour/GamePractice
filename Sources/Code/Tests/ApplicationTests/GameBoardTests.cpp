@@ -35,7 +35,7 @@ public:
         return GameBoardLogic::getBoardPosFromPos(boardPt, pt);
     }
     Vec3 getPosFromBoardPos(const Vec2i& pt) const {
-        return GameBoardLogic::getPosFromBoardPos(pt);
+        return GameBoardLogic::ET_getPosFromBoardPos(pt);
     }
     bool removeVerticalLine(const Vec2i& boardPt, int lineLen) {
         return GameBoardLogic::removeVerticalLine(boardPt, lineLen);

@@ -23,6 +23,7 @@ public:
 
     // ETGAmeBoardInteractionLogic
     void ET_allowInteraction(bool flag) override;
+    bool ET_canInteract() const;
 
 private:
 

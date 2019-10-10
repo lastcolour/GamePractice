@@ -68,7 +68,7 @@ void SoundSource::update() {
         }
     }
 
-    if (buffersProcessed > 0) {
+    if(buffersProcessed > 0) {
         queueALBuffers(&bufferQueue[0], buffersProcessed);
         startALSource();
     }
@@ -146,9 +146,15 @@ SoundSource::EBufferFillRes SoundSource::fillALBuffer(unsigned int bufferId) {
         if(!looping) {
             fillRes = EBufferFillRes::EndOfStream;
         } else {
-            while (SAMPLES_PER_READ - readSamplesCount > 0) {
-                dataStream->setSampleOffset(0);
-                readSamplesCount += dataStream->readSamples(static_cast<int16_t*>(buffData) + readSamplesCount, SAMPLES_PER_READ - readSamplesCount);
+            dataStream->setSampleOffset(0);
+            int reqReadCount = SAMPLES_PER_READ - readSamplesCount;
+            while (reqReadCount > 0) {
+                int resReadCount = dataStream->readSamples(static_cast<int16_t*>(buffData) + readSamplesCount, reqReadCount);
+                readSamplesCount += resReadCount;
+                if(resReadCount < reqReadCount) {
+                    dataStream->setSampleOffset(0);
+                }
+                reqReadCount = SAMPLES_PER_READ - readSamplesCount;
             }
         }
     }

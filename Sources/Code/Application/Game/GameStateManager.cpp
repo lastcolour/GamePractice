@@ -53,6 +53,24 @@ bool GameStateManager::ET_isGameState() const {
 }
 
 void GameStateManager::ET_interruptGame() {
+    switch (gameState)
+    {
+    case EGameState::PreGame: {
+        preGame.onLeave();
+        break;
+    }
+    case EGameState::InGame: {
+        inGame.onLeave();
+        break;
+    }
+    case EGameState::PostGame: {
+        postGame.onLeave();
+        break;
+    }
+    default:
+        assert(false && "Invalid game state");
+        break;
+    }
     gameState = EGameState::None;
 }
 

@@ -25,17 +25,17 @@ public:
 private:
 
     void moveAllElemsOnTop();
-    void moveCollumnElemDown(int collumnIdx, float collumnShift);
+    void moveCollumnElemDown(int collumnIdx, float duration);
     void alignSpeedWithScreenSize();
 
 private:
 
     Vec2i boardSize;
-    float shift;
-    float currentShift;
     float currDuration;
     float fallSpeed;
+    float shift;
     float collumnDelay;
+    float duration;
 };
 
 #endif /* __GAME_BOARD_APPEAR_ANIMATION_LOGIC_HPP__ */

@@ -101,3 +101,7 @@ void GameBoardInteractionLogic::ET_allowInteraction(bool flag) {
         }
     }
 }
+
+bool GameBoardInteractionLogic::ET_canInteract() const {
+    return ET_IsExistNode<ETInputEvents>(getEntityId());
+}

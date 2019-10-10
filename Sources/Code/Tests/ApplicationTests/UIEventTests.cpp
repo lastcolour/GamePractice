@@ -5,6 +5,7 @@
 #include <Game/ETGameInterfaces.hpp>
 
 #include "TestUtils/UITestUtils.hpp"
+#include "TestUtils/GameTestUtils.hpp"
 
 namespace {
 
@@ -96,6 +97,7 @@ TEST_F(UIEventTests, CheckTripleBackOnMain) {
 
 TEST_F(UIEventTests, CheckGameTimerStopOnPause) {
     ET_SendEvent(&ETUIViewStack::ET_pushView, GAME_VIEW);
+    WaitPreGameEnd();
 
     float oldRemainingTime = -1.f;
     ET_SendEventReturn(oldRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
@@ -125,6 +127,7 @@ TEST_F(UIEventTests, CheckGameTimerStopOnPause) {
 
 TEST_F(UIEventTests, CheckGameEndTimerResumeAfterBack) {
     ET_SendEvent(&ETUIViewStack::ET_pushView, GAME_VIEW);
+    WaitPreGameEnd();
 
     float oldRemainingTime = -1.f;
     ET_SendEventReturn(oldRemainingTime, &ETGameEndTimer::ET_getRemainingTime);

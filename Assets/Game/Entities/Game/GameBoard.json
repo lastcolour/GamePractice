@@ -62,7 +62,8 @@
             "type":"GameBoardAppearAnimation",
             "data": {
                 "fallSpeed":0.9,
-                "collumnDelay":0.2
+                "collumnDelay":0.2,
+                "duration":0.5
             }
         }
     ]

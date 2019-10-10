@@ -61,6 +61,7 @@ struct ETGameBoard {
     virtual const Vec2i& ET_getBoardSize() const = 0;
     virtual const AABB2Di& ET_getBoardBox() const = 0;
     virtual int ET_getCellSize() const = 0;
+    virtual Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const = 0;
 };
 
 struct ETGameConfig {
@@ -143,6 +144,7 @@ struct ETGameBoardAppearAnimationEvents {
 struct ETGAmeBoardInteractionLogic {
     virtual ~ETGAmeBoardInteractionLogic() = default;
     virtual void ET_allowInteraction(bool flag) = 0;
+    virtual bool ET_canInteract() const = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */

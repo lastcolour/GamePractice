@@ -4,7 +4,7 @@
 
 namespace {
 
-const char* TEST_SOUND_NAME = "test_sound.ogg";
+const char* TEST_SOUND_NAME = "UI/click.ogg";
 const int MAX_PARALLEL_SOUNDS = 16;
 
 } // namespace
