@@ -3,9 +3,6 @@
 #include "Audio/OggDataStream.hpp"
 #include "ETApplicationInterfaces.hpp"
 
-#include <AL/al.h>
-#include <AL/alc.h>
-
 namespace {
 
 const char* SOUNDS_ROOT_DIR = "Sounds";

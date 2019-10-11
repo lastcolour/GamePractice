@@ -77,7 +77,7 @@ else()
 
     set(APP_LIB_DEPENDICIES
         ${FREETYPE2_LIB_STATIC_BIN}
-        GLESv3 EGL log android z
+        GLESv3 EGL log android z 
         CACHE INTERNAL "Application link depedicies")
 
 endif()

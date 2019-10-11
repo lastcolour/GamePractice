@@ -1,21 +1,21 @@
-#ifndef __AUDIO_SYSTEM_HPP__
-#define __AUDIO_SYSTEM_HPP__
+#ifndef __AL_AUDIO_SYSTEM_HPP__
+#define __AL_AUDIO_SYSTEM_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Audio/SoundSource.hpp"
+#include "Audio/Desktop/ALSoundSource.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 
 struct ALCdevice;
 struct ALCcontext;
 
-class AudioSystem : public SystemLogic,
+class ALAudioSystem : public SystemLogic,
     public ETNode<ETTimerEvents>,
     public ETNode<ETSoundSourceManager> {
 public:
 
-    AudioSystem();
-    virtual ~AudioSystem();
+    ALAudioSystem();
+    virtual ~ALAudioSystem();
 
     // SystemLogic
     bool init() override;
@@ -45,8 +45,8 @@ private:
     ALCdevice* alcDevice;
     ALCcontext* alcContext;
 
-    std::vector<SoundSource> sources;
+    std::vector<ALSoundSource> sources;
     std::vector<ESourceState> sourceStateMap;
 };
 
-#endif /* __AUDIO_SYSTEM_HPP__ */
+#endif /* __AL_AUDIO_SYSTEM_HPP__ */

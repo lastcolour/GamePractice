@@ -23,3 +23,7 @@ AndroidModule::LogicsContainerPtrT AndroidModule::getSystemLogics() const {
         );
     return container;
 }
+
+AndroidModule::ConfigsPtrT AndroidModule::getSystemConfigs() const {
+    return nullptr;
+}

@@ -1,11 +1,9 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
-#include "Audio/SoundSourceController.hpp"
+#include "Audio/SoundSource.hpp"
 
 #include <memory>
-
-class SoundSource;
 
 class Sound : public SoundSourceController {
 public:

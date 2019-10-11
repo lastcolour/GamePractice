@@ -1,6 +1,5 @@
-#include "Audio/SoundSource.hpp"
+#include "Audio/Desktop/ALSoundSource.hpp"
 #include "Audio/OggDataStream.hpp"
-#include "Audio/SoundSourceController.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 
@@ -16,7 +15,7 @@ int16_t* buffData = new int16_t[SAMPLES_PER_READ];
 
 } // namespace 
 
-SoundSource::SoundSource(unsigned int newSourceId) :
+ALSoundSource::ALSoundSource(unsigned int newSourceId) :
     controller(nullptr),
     sourceId(newSourceId),
     state(ESourceState::Ended),
@@ -25,26 +24,26 @@ SoundSource::SoundSource(unsigned int newSourceId) :
     resetALSourceParams();
 }
 
-SoundSource::~SoundSource() {
+ALSoundSource::~ALSoundSource() {
     alSourceStop(sourceId);
     alSourcei(sourceId, AL_BUFFER, AL_NONE);
     alDeleteSources(1, &sourceId);
     alDeleteBuffers(MAX_BUFFERS_PER_STREAM, &alBufferIds[0]);
 }
 
-bool SoundSource::init() {
+bool ALSoundSource::init() {
     alGenBuffers(MAX_BUFFERS_PER_STREAM, &alBufferIds[0]);
 
     ALenum alError = alGetError();
     if(alError != AL_NO_ERROR) {
-        LogWarning("[SoundSource::SoundSource] Can't generate buffers. Error: %s", alGetString(alError));
+        LogWarning("[ALSoundSource::init] Can't generate buffers. Error: %s", alGetString(alError));
         return false;
     }
 
     return true;
 }
 
-void SoundSource::update() {
+void ALSoundSource::update() {
     if(state == ESourceState::Ended) {
         return;
     }
@@ -73,22 +72,22 @@ void SoundSource::update() {
     }
 }
 
-void SoundSource::setLoop(bool loopFlag) {
+void ALSoundSource::setLoop(bool loopFlag) {
     assert(controller != nullptr && "Change loop property with invalid controller");
     looping = loopFlag;
 }
 
-bool SoundSource::isLooped() const {
+bool ALSoundSource::isLooped() const {
     return looping;
 }
 
-void SoundSource::setGain(float newGain) {
+void ALSoundSource::setGain(float newGain) {
     assert(isStreaming() && "Set gain for invalid source");
 
     alSourcef(sourceId, AL_GAIN, newGain);
 }
 
-void SoundSource::attachToController(SoundSourceController& newController) {
+void ALSoundSource::attachToController(SoundSourceController& newController) {
     if(controller) {
         assert(false && "Invalind current stream controller");
         return;
@@ -103,19 +102,19 @@ void SoundSource::attachToController(SoundSourceController& newController) {
     startALSource();
 }
 
-void SoundSource::pauseStreaming() {
+void ALSoundSource::pauseStreaming() {
     if(isStreaming()) {
         alSourcePause(sourceId);
     }
 }
 
-void SoundSource::resumeStreaming() {
+void ALSoundSource::resumeStreaming() {
     if(!isStreaming()) {
         alSourcePlay(sourceId);
     }
 }
 
-void SoundSource::stopStreaming() {
+void ALSoundSource::stopStreaming() {
     alSourceStop(sourceId);
     alSourcei(sourceId, AL_BUFFER, AL_NONE);
 
@@ -129,13 +128,13 @@ void SoundSource::stopStreaming() {
     ET_SendEvent(&ETSoundSourceManager::ET_returnSoundSource, this);
 }
 
-bool SoundSource::isStreaming() const {
+bool ALSoundSource::isStreaming() const {
     ALenum sourceState;
     alGetSourcei(sourceId, AL_SOURCE_STATE, &sourceState);
     return sourceState == AL_PLAYING;
 }
 
-void SoundSource::startALSource() {
+void ALSoundSource::startALSource() {
     if(!isStreaming()) {
         alSourcePlay(sourceId);
 
@@ -146,7 +145,7 @@ void SoundSource::startALSource() {
     }
 }
 
-SoundSource::EBufferFillRes SoundSource::fillALBuffer(unsigned int bufferId) {
+ALSoundSource::EBufferFillRes ALSoundSource::fillALBuffer(unsigned int bufferId) {
     OggDataStream* dataStream = controller->getDataStream();
     assert(dataStream != nullptr && "Invalid data stream");
 
@@ -180,7 +179,7 @@ SoundSource::EBufferFillRes SoundSource::fillALBuffer(unsigned int bufferId) {
     return fillRes;
 }
 
-void SoundSource::queueALBuffers(unsigned int* bufferIds, int size) {
+void ALSoundSource::queueALBuffers(unsigned int* bufferIds, int size) {
     for(int i = 0; i < size; ++i) {
         ALuint bufferId = bufferIds[i];
         auto fillRes = fillALBuffer(bufferId);
@@ -192,11 +191,11 @@ void SoundSource::queueALBuffers(unsigned int* bufferIds, int size) {
 
     ALenum alError = alGetError();
     if(alError != AL_NO_ERROR) {
-        LogWarning("[SoundSource::queueBuffers] Can't queue buffers. Error: %s", alGetString(alError));
+        LogWarning("[ALSoundSource::queueBuffers] Can't queue buffers. Error: %s", alGetString(alError));
     }
 }
 
-void SoundSource::resetALSourceParams() {
+void ALSoundSource::resetALSourceParams() {
     alSourcef(sourceId, AL_GAIN, 1.f);
     alSourcef(sourceId, AL_PITCH, 1.f);
 }

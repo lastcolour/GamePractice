@@ -1,60 +1,24 @@
 #ifndef __SOUND_SOURCE_HPP__
 #define __SOUND_SOURCE_HPP__
 
-#include <vector>
+class OggDataStream;
 
-struct SoundSourceController;
+struct SoundSourceController {
+    virtual ~SoundSourceController() = default;
+    virtual void detachFromSource() = 0;
+    virtual OggDataStream* getDataStream() = 0;
+};
 
-const int MAX_BUFFERS_PER_STREAM = 4;
-
-class SoundSource {
-public:
-
-    SoundSource(unsigned int newSourceId);
-    virtual ~SoundSource();
-
-    bool init();
-    void update();
-
-    void attachToController(SoundSourceController& newController);
-
-    void stopStreaming();
-    void pauseStreaming();
-    void resumeStreaming();
-    bool isStreaming() const;
-
-    void setGain(float newGain);
-    void setLoop(bool loopFlag);
-
-    bool isLooped() const;
-
-private:
-
-    enum class EBufferFillRes {
-        Normal = 0,
-        EndOfStream
-    };
-
-    enum class ESourceState {
-        Normal = 0,
-        WaitEnd,
-        Ended
-    };
-
-private:
-
-    void queueALBuffers(unsigned int* bufferIds, int size);
-    EBufferFillRes fillALBuffer(unsigned int bufferId);
-    void startALSource();
-    void resetALSourceParams();
-
-private:
-
-    unsigned int alBufferIds[MAX_BUFFERS_PER_STREAM];
-    SoundSourceController* controller;
-    unsigned int sourceId;
-    ESourceState state;
-    bool looping;
+struct SoundSource {
+    virtual ~SoundSource() = default;
+    virtual void attachToController(SoundSourceController& newController) = 0;
+    virtual void stopStreaming() = 0;
+    virtual void pauseStreaming() = 0;
+    virtual void resumeStreaming() = 0;
+    virtual bool isStreaming() const = 0;
+    virtual void setGain(float newGain) = 0;
+    virtual void setLoop(bool loopFlag) = 0;
+    virtual bool isLooped() const = 0;
 };
 
 #endif /* __SOUND_SOURCE_HPP__ */
