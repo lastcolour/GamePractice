@@ -1,5 +1,5 @@
-#ifndef __GAME_STATE_TRANSITION_HPP__
-#define __GAME_STATE_TRANSITION_MANAGER_HPP__
+#ifndef __GAME_STATE_MANAGER_HPP__
+#define __GAME_STATE_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "Game/States/PreGameState.hpp"
@@ -23,10 +23,10 @@ public:
     void ET_startGame() override;
     void ET_pauseGame() override;
     void ET_resumeGame() override;
-    bool ET_isGamePaused() const;
+    bool ET_isGamePaused() const override;
     bool ET_isGameState() const override;
     void ET_interruptGame() override;
-    void ET_changeState(EGameState newState);
+    void ET_changeState(EGameState newState) override;
 
 private:
 
@@ -36,4 +36,4 @@ private:
     EGameState gameState;
 };
 
-#endif /* __GAME_STATE_TRANSITION_HPP__ */
+#endif /* __GAME_STATE_MANAGER_HPP__ */

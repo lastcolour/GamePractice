@@ -27,12 +27,13 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 -Wextra
 -Wall
 -Wundef
--Wshadow
 -Wpointer-arith
 -Wcast-align
 -Wwrite-strings
 -Wunreachable-code
 -Wno-type-limits
+-Wno-unused-value
+-Wno-unused-parameter
 -Werror CACHE INTERNAL "Compile flags for app")
 
 # -Wcast-qual
@@ -40,6 +41,7 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 # -Wswitch-enum
 # -Wstrict-overflow=5
 # -Wconversion
+# -Wshadow
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 

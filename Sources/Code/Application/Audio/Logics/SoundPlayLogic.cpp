@@ -3,8 +3,8 @@
 #include "ETApplicationInterfaces.hpp"
 
 SoundPlayLogic::SoundPlayLogic() :
-    looped(false),
     volume(1.f),
+    looped(false),
     autoStart(false) {
 }
 

@@ -33,7 +33,7 @@ Buffer SoundManager::loadSoundBuffer(const char* soundName) {
     }
     auto it = buffers.find(soundName);
     if(it != buffers.end()) {
-        it->second;
+        return it->second;
     }
 
     Buffer buff;
