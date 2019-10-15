@@ -4,6 +4,7 @@
 #include "Platforms/Android/AndroidLogger.hpp"
 #include "Platforms/Android/AndroidAssets.hpp"
 #include "Platforms/Android/AndroidFullscreenSetup.hpp"
+#include "Platforms/Android/AndroidAudioDevice.hpp"
 
 AndroidModule::AndroidModule() :
     SystemModule("AndroidModule") {
@@ -19,7 +20,8 @@ AndroidModule::LogicsContainerPtrT AndroidModule::getSystemLogics() const {
             AndroidAssets,
             AndroidEventManager,
             AndroidSurface,
-            AndroidFullscreenSetup>()
+            AndroidFullscreenSetup,
+            AndroidAudioDevice>()
         );
     return container;
 }

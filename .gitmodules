@@ -22,3 +22,6 @@
 [submodule "Sources/Libs/OpenAL-Soft"]
 	path = Sources/Libs/OpenAL-Soft
 	url = https://github.com/kcat/openal-soft.git
+[submodule "Sources/Libs/Oboe"]
+	path = Sources/Libs/Oboe
+	url = https://github.com/google/oboe.git

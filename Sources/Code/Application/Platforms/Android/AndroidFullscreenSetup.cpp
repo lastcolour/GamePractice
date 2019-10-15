@@ -1,5 +1,5 @@
-#include "AndroidFullscreenSetup.hpp"
-#include "JNIHelpers.hpp"
+#include "Platforms/Android/AndroidFullscreenSetup.hpp"
+#include "Platforms/Android/JNIHelpers.hpp"
 #include "Platforms/Android/AndroidPlatformHandler.hpp"
 
 AndroidFullscreenSetup::AndroidFullscreenSetup() {

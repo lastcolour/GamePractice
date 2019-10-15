@@ -1,5 +1,6 @@
 #include "Audio/AudioModule.hpp"
 #include "Audio/SoundManager.hpp"
+#include "Audio/AudioConfig.hpp"
 
 #if defined APP_BUILD_PLATFORM_WINDOWS || defined APP_BUILD_PLATFORM_LINUX
 
@@ -13,12 +14,12 @@
 
 #else
 
-    #error Can't determine which audio system need to use
+    #error Cant determine which audio system need to use
 
 #endif /* DESKTOP_APP_BUILD */
 
 AudioModule::AudioModule() :
-    SystemModule("Sound") {
+    SystemModule("Audio") {
 }
 
 AudioModule::~AudioModule() {
@@ -34,5 +35,6 @@ AudioModule::LogicsContainerPtrT AudioModule::getSystemLogics() const {
 }
 
 AudioModule::ConfigsPtrT AudioModule::getSystemConfigs() const {
-    return nullptr;
+    ConfigsPtrT config(new SystemModuleConfig<AudioConfig>());
+    return config;
 }

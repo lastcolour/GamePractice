@@ -111,6 +111,20 @@
                 }
             },
             {
+                "step-name": "Oboe",
+                "tags": ["3dParty"],
+                "supported-platforms": [
+                    "Android"
+                ],
+                "step-extension": "{default_ext}",
+                "build-type": "Release",
+                "cmake": {
+                    "out-dir": "{cmake_out_path}/Oboe",
+                    "run-dir": "{root_path}/Sources/Libs/Oboe",
+                    "defs" : {}
+                }
+            },
+            {
                 "step-name": "GTEST",
                 "tags": ["3dParty"],
                 "build-type": "Debug",

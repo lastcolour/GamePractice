@@ -33,4 +33,16 @@ struct ETAndroidInputEvents {
     virtual bool ET_onInputEvent(AInputEvent* inputEvent) = 0;
 };
 
+struct AndroidAudioDeviceConfig {
+    int frameRate;
+    int framesPerBurst;
+
+    AndroidAudioDeviceConfig() : frameRate(48000), framesPerBurst(960) {}
+};
+
+struct ETAndroidAudioDevice {
+    virtual ~ETAndroidAudioDevice() = default;
+    virtual const AndroidAudioDeviceConfig* ET_getAudioConfig() const = 0;
+};
+
 #endif /* __ET_ANDROIND_INTERFACES_HPP__ */

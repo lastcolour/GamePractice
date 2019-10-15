@@ -20,6 +20,7 @@ elseif(APP_BUILD_PLATFORM STREQUAL "Android")
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
         ${FREETYPE2_INCLUDE_DIR}
+        ${OBOE_INCLUDE_DIR}
         ${RAPID_JSON_INCLUDE_DIR}
         ${STB_INCLUDE_DIR})
 

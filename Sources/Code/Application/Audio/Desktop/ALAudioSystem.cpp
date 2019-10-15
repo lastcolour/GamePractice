@@ -1,16 +1,11 @@
 #include "Audio/Desktop/ALAudioSystem.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Audio/AudioConfig.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
 
 #include <cassert>
-
-namespace {
-
-const int MAX_SOUND_SOURCES = 16;
-
-} // namespace
 
 ALAudioSystem::ALAudioSystem() :
     alcDevice(nullptr),
@@ -66,20 +61,21 @@ bool ALAudioSystem::initSoundContext() {
 }
 
 bool ALAudioSystem::initSoundSources() {
-    ALuint sourceIds[MAX_SOUND_SOURCES];
-    alGenSources(MAX_SOUND_SOURCES, &sourceIds[0]);
+    const int maxSoundSources = ET_getConfig<AudioConfig>()->maxSoundSources;
+    ALuint sourceIds[maxSoundSources];
+    alGenSources(maxSoundSources, &sourceIds[0]);
     auto alError = alGetError();
 
     if(alError != AL_NO_ERROR) {
-        LogError("[ALAudioSystem::initSoundSources] Can't %d init audio sources. Error: %s", MAX_SOUND_SOURCES, alGetString(alError));
+        LogError("[ALAudioSystem::initSoundSources] Can't %d init audio sources. Error: %s", maxSoundSources, alGetString(alError));
         return false;
     }
 
-    sources.reserve(MAX_SOUND_SOURCES);
-    sourceStateMap.reserve(MAX_SOUND_SOURCES);
+    sources.reserve(maxSoundSources);
+    sourceStateMap.reserve(maxSoundSources);
 
     bool initAllSources = true;
-    for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
+    for(int i = 0; i < maxSoundSources; ++i) {
         sources.emplace_back(sourceIds[i]);
         auto& source = sources.back();
         if(!source.init()) {
@@ -97,7 +93,7 @@ bool ALAudioSystem::initSoundSources() {
 }
 
 SoundSource* ALAudioSystem::ET_getFreeSource() {
-    for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
+    for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Free) {
             sourceStateMap[i] = ESourceState::Busy;
             return &(sources[i]);
@@ -108,7 +104,7 @@ SoundSource* ALAudioSystem::ET_getFreeSource() {
 
 void ALAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
     assert(retSoundSoruce != nullptr && "Invalid sound source");
-    for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
+    for(int i = 0, sz = sources.size(); i < sz; ++i) {
         auto& source = sources[i];
         if(retSoundSoruce == &source) {
             assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
@@ -120,7 +116,7 @@ void ALAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
 }
 
 void ALAudioSystem::ET_onTick(float dt) {
-    for(int i = 0; i < MAX_SOUND_SOURCES; ++i) {
+    for(int i = 0, sz = sources.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Busy) {
             auto& source = sources[i];
             source.update();
