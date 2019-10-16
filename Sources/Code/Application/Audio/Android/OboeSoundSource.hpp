@@ -3,6 +3,10 @@
 
 #include "Audio/SoundSource.hpp"
 
+#include <atomic>
+
+#include <oboe/Oboe.h>
+
 class OboeSoundSource : public SoundSource {
 public:
 
@@ -19,6 +23,23 @@ public:
     void setLoop(bool loopFlag) override;
     bool isLooped() const  override;
 
+    void fillBuffer(float* outBuffer, int numFrames, int channels);
+
+private:
+
+    enum class ESourceState {
+        Normal = 0,
+        WaitEnd,
+        Ended
+    };
+
+private:
+
+    SoundSourceController* controller;
+    float gain;
+    bool looped;
+    ESourceState state;
+    std::atomic<bool> isEnded;
 };
 
 #endif /* __OBOE_SOUND_SOURCE_HPP__ */

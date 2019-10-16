@@ -30,7 +30,7 @@ bool OboeAudioSystem::initOboeStream() {
     }
     res = oboeStream->setBufferSizeInFrames(oboeStream->getFramesPerBurst() * BUFFERS_SIZE_PER_BURST);
     if(res != oboe::Result::OK){
-        LogWarning("[OboeAudioSystem::init] Can't change stream's buffer size. Error: %s", convertToText(res));
+        LogWarning("[OboeAudioSystem::init] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
     }
     return true;
 }
@@ -67,12 +67,15 @@ void OboeAudioSystem::ET_returnSoundSource(SoundSource* soundSoruce) {
 }
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) {
-    mixer.mixSilence();
+    auto outChannels = outStream->getChannelCount();
+    auto outFormat = outStream->getFormat();
+    mixer.startMixing(outChannels, outFormat, audioData, numFrames);
     for(int i = 0, sz = sources.size(); i < sz; ++i) {
         auto& source = sources[i];
         if(sourceStateMap[i] != ESourceState::Free) {
-            mixer.mixSource(source);
-        } 
+            mixer.addSource(source);
+        }
     }
+    mixer.endMixing();
     return oboe::DataCallbackResult::Continue;
 }

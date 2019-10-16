@@ -47,9 +47,12 @@ void OggDataStream::setSampleOffset(int sampleOffset) {
     stb_vorbis_seek_frame(oggStream, sampleOffset);
 }
 
-int OggDataStream::readSamples(void* outData, int reqSamplesCount) {
-    int readSamplesCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels,
-        static_cast<int16_t*>(outData), reqSamplesCount);
-    assert(readSamplesCount >= 0);
-    return readSamplesCount * channels;
+int OggDataStream::readI16(void* outData, int samplesCount, int channels) {
+    int readSamplesCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels, static_cast<int16_t*>(outData), samplesCount);
+    return readSamplesCount;
+}
+
+int OggDataStream::readF32(void* outData, int samplesCount, int channels) {
+    int readSamplesCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels, static_cast<float*>(outData), samplesCount);
+    return readSamplesCount;
 }

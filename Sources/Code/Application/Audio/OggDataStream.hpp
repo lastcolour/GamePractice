@@ -12,7 +12,10 @@ public:
     ~OggDataStream();
 
     bool isOpened() const;
-    int readSamples(void* outData, int sampleCount);
+
+    int readF32(void* outData, int sampelsCount, int channels);
+    int readI16(void* outData, int samplesCount, int channels);
+
     void setSampleOffset(int sampleOffset);
 
 public:
