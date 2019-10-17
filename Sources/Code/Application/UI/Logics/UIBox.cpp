@@ -92,7 +92,7 @@ void UIBox::ET_setStyle(const UIStyle& newStyle) {
         isNewRenderer = true;
     }
     UIBaseBox::ET_setStyle(newStyle);
-    if (isNewRenderer) {
+    if(isNewRenderer) {
         createRenderer();
     }
     updateRenderParams();

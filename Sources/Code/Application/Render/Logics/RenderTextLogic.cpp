@@ -73,7 +73,7 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
     std::vector<Vec4> vertChunk(geom->vertCount);
     unsigned int vertShift = 0;
     for(auto it = text.begin();;) {
-        if (it != text.end()) {
+        if(it != text.end()) {
             auto ch = *it;
             if(ch == '\n') {
                 pt.y -= font->getHeight() * NEXT_LINE_OFFSET * scale.y;
@@ -104,7 +104,7 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
         }
 
         if(vertShift >= geom->vertCount) {
-            if (vertShift == geom->vertCount) {
+            if(vertShift == geom->vertCount) {
                 ++it;
                 geom->drawChunk(&vertChunk[0], vertShift);
             } else {
@@ -128,10 +128,10 @@ void RenderTextLogic::calcTextSize() {
     for(size_t i = 0u, sz = text.size(); i < sz; ++i) {
         auto ch = text[i];
         if(auto glyph = font->getGlyph(ch)) {
-            if (i + 1u < sz) {
+            if(i + 1u < sz) {
                 currentLineX += glyph->advance.x;
             } else {
-                if (ch == ' ') {
+                if(ch == ' ') {
                     currentLineX += glyph->advance.x;
                 } else {
                     currentLineX += glyph->size.x;

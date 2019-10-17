@@ -67,7 +67,7 @@ public:
     template<typename ETType>
     bool isExistNode(EntityId addressId) const {
         bool res = false;
-        if (!addressId.isValid()) {
+        if(!addressId.isValid()) {
             return res;
         }
         {
@@ -213,7 +213,7 @@ public:
 
         if(isActiveConnectionExist(etId, connArr)) {
             for(auto& currConn : *connArr) {
-                if (currConn.addressId == addressId) {
+                if(currConn.addressId == addressId) {
                     auto obj = static_cast<ETNode<ETType>*>(currConn.node);
                     (obj->*func)(std::forward<ParamType>(params)...);
                 }

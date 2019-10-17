@@ -35,7 +35,7 @@ bool UISurfaceEventHandler::isHover(const Vec2i& pt, EntityId entId) const {
 EntityId UISurfaceEventHandler::getHoveredEntity(const Vec2i& pt) const {
     auto interactiveElems = ET_GetAll<ETUIInteractionBox>();
     for(auto elemId : interactiveElems) {
-        if (isHover(pt, elemId)) {
+        if(isHover(pt, elemId)) {
             return elemId;
         }
     }
@@ -52,12 +52,12 @@ void UISurfaceEventHandler::onPress(const Vec2i& pt) {
 
 void UISurfaceEventHandler::onMove(const Vec2i& pt) {
     auto currHoveredId = getHoveredEntity(pt);
-    if (currHoveredId == InvalidEntityId) {
+    if(currHoveredId == InvalidEntityId) {
         if(hoveredElemId.isValid()) {
             ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, false);
             hoveredElemId = InvalidEntityId;
         }
-    } else if (currHoveredId != hoveredElemId) {
+    } else if(currHoveredId != hoveredElemId) {
         if(hoveredElemId.isValid()) {
             ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, false);
         }
@@ -68,7 +68,7 @@ void UISurfaceEventHandler::onMove(const Vec2i& pt) {
 
 void UISurfaceEventHandler::onRelease(const Vec2i& pt) {
     auto releseElemId = getHoveredEntity(pt);
-    if (hoveredElemId.isValid()) {
+    if(hoveredElemId.isValid()) {
         ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, false);
         if(releseElemId == pressElemId) {
             ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onPress);

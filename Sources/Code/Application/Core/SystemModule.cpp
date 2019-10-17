@@ -18,7 +18,7 @@ SystemModule::SystemModule(const char* moduleName) :
 
 SystemModule::~SystemModule() {
     LogDebug("[SystemModule::SystemModule] Deinit module: '%s'", name);
-    if (logicsContainer) {
+    if(logicsContainer) {
         logicsContainer->deinit();
     }
 }
@@ -49,7 +49,7 @@ bool SystemModule::init() {
         LogError("[SystemModule::init] Can't get system logics for module: '%s'", name);
         return false;
     }
-    if (logicsContainer->empty()) {
+    if(logicsContainer->empty()) {
         LogError("[SystemModule::init] Empty system logics for module: '%s'", name);
         return false;
     }

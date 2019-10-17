@@ -240,7 +240,7 @@ void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int act
     if(action == GLFW_PRESS) {
         activeGesture.push_back(pt);
         ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
-    } else if (action == GLFW_RELEASE) {
+    } else if(action == GLFW_RELEASE) {
         activeGesture.clear();
         ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
     }
@@ -269,7 +269,7 @@ void GLFWSurface::SetKeyboardButtonCallback(GLFWwindow* window, int key, int sca
     EButtonId buttonId = EButtonId::Back;
     if(action == GLFW_PRESS) {
         ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, buttonId);
-    } else if (action == GLFW_RELEASE) {
+    } else if(action == GLFW_RELEASE) {
         ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Release, buttonId);
     }
 }

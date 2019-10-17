@@ -150,20 +150,21 @@ ALSoundSource::EBufferFillRes ALSoundSource::fillALBuffer(unsigned int bufferId)
     assert(dataStream != nullptr && "Invalid data stream");
 
     int dataFormat = AL_FORMAT_MONO16;
-    if (dataStream->channels == 2) {
+    if(dataStream->channels == 2) {
         dataFormat = AL_FORMAT_STEREO16;
     }
 
     EBufferFillRes fillRes = EBufferFillRes::Normal;
-    int readSamplesCount = dataStream->readSamples(buffData, SAMPLES_PER_READ);
+    int readSamplesCount = dataStream->readI16(buffData, SAMPLES_PER_READ, dataStream->channels);
     if(readSamplesCount < SAMPLES_PER_READ) {
         if(!looping) {
             fillRes = EBufferFillRes::EndOfStream;
         } else {
             dataStream->setSampleOffset(0);
             int reqReadCount = SAMPLES_PER_READ - readSamplesCount;
-            while (reqReadCount > 0) {
-                int resReadCount = dataStream->readSamples(static_cast<int16_t*>(buffData) + readSamplesCount, reqReadCount);
+            while(reqReadCount > 0) {
+                int resReadCount = dataStream->readI16(static_cast<int16_t*>(buffData) + readSamplesCount, reqReadCount,
+                    dataStream->channels);
                 readSamplesCount += resReadCount;
                 if(resReadCount < reqReadCount) {
                     dataStream->setSampleOffset(0);

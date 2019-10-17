@@ -225,7 +225,7 @@ void UIBaseBox::syncTransform() const {
 
 bool UIBaseBox::isNeedResize() {
     auto currParentBox = getParentAabb2di();
-    if (currParentBox == lastResizeBox) {
+    if(currParentBox == lastResizeBox) {
         return false;
     }
     lastResizeBox = currParentBox;
@@ -305,7 +305,7 @@ EntityId UIBaseBox::getRootUIList() const {
     while(entId != InvalidEntityId) {
         lastValidEntId = entId;
         ET_SendEventReturn(entId, entId, &ETEntity::ET_getParentId);
-        if (!ET_IsExistNode<ETUIList>(entId)) {
+        if(!ET_IsExistNode<ETUIList>(entId)) {
             break;
         }
     }

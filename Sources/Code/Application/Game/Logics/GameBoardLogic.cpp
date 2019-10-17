@@ -107,7 +107,7 @@ EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
 }
 
 EntityId GameBoardLogic::ET_getElemByBoardPos(const Vec2i& boardPt) const {
-    if (auto elem = getElem(boardPt)) {
+    if(auto elem = getElem(boardPt)) {
         return elem->entId;
     }
     return InvalidEntityId;
@@ -132,7 +132,7 @@ void GameBoardLogic::ET_onTransformChanged(const Transform& newTm) {
 void GameBoardLogic::ET_onBoxResized() {
     initBoardBox();
     for(auto& elem : elements) {
-        if (elem.state == EBoardElemState::Moving) {
+        if(elem.state == EBoardElemState::Moving) {
             setElemBoardPos(elem, elem.boardPt);
         } else {
             setElemBoardPos(elem, elem.boardPt);

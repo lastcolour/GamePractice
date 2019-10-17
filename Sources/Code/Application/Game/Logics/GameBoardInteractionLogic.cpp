@@ -53,12 +53,12 @@ void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {
     }
     EntityId nextElemId;
     ET_SendEventReturn(nextElemId, getEntityId(), &ETGameBoard::ET_getElemByBoardPos, nextBoardPt);
-    if (!nextElemId.isValid()) {
+    if(!nextElemId.isValid()) {
         return;
     }
     EBoardElemState state = EBoardElemState::Void;
     ET_SendEventReturn(state, getEntityId(), &ETGameBoard::ET_getElemState, nextElemId);
-    if (state != EBoardElemState::Static) {
+    if(state != EBoardElemState::Static) {
         return;
     }
     ET_SendEvent(getEntityId(), &ETGameBoardElemSwitcher::ET_switchBoardElems, activeElemId, nextElemId);

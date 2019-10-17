@@ -39,7 +39,7 @@ void AssetsCacheManager::ET_onTick(float dt) {
 
 Buffer AssetsCacheManager::ET_getAssetFromCache(const char* assetName) {
     auto it = assetsCacheMap.find(assetName);
-    if (it == assetsCacheMap.end()) {
+    if(it == assetsCacheMap.end()) {
         return Buffer();
     }
     AssetCacheNode& node = it->second;
@@ -61,7 +61,7 @@ void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer&
         LogWarning("[AssetsCacheManager::ET_putAssetToCache] Double try to put asset into cache: %s", assetName);
         return;
     }
-    if (assetsLifetime <= 0.f) {
+    if(assetsLifetime <= 0.f) {
         return;
     }
 
@@ -69,7 +69,7 @@ void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer&
 }
 
 void AssetsCacheManager::ET_setCacheLifetime(float seconds) {
-    if (seconds < 0.f) {
+    if(seconds < 0.f) {
         assetsCacheMap.clear();
     }
     assetsLifetime = seconds;

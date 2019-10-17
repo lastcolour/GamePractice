@@ -16,7 +16,7 @@ bool UILabelSetter::serialize(const JSONNode& node) {
     node.read("value", valueTypeStr);
     if(valueTypeStr == "gameScore") {
         valueType = EValueType::GameScore;
-    } else if (valueTypeStr == "gameHighScore") {
+    } else if(valueTypeStr == "gameHighScore") {
         valueType = EValueType::GameHighScore;
     } else {
         LogWarning("[UILabelSetter::serialize] Unknown value type: %s", valueTypeStr);

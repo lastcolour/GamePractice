@@ -130,7 +130,7 @@ bool AndroidEventManager::handleKeyEvent(AInputEvent* inputEvent) {
         return false;
     }
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
-    if (eventAction == AKEY_EVENT_ACTION_DOWN) {
+    if(eventAction == AKEY_EVENT_ACTION_DOWN) {
         ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
         return true;
     } else if(eventAction == AKEY_EVENT_ACTION_UP) {

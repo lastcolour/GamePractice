@@ -30,7 +30,7 @@ public:
     ~JSONNodeImpl() = default;
 
     JSONNodeImpl& operator=(JSONNodeImpl&& node) {
-        if (this != &node) {
+        if(this != &node) {
             root = std::move(node.root);
             val = node.val;
             node.val = nullptr;
@@ -143,7 +143,7 @@ bool JSONNodeIterator::operator==(const JSONNodeIterator& other) const {
             return false;
         }
     } else {
-        if (other.iterImpl == nullptr) {
+        if(other.iterImpl == nullptr) {
             return false;
         } else {
             return *iterImpl == *(other.iterImpl);

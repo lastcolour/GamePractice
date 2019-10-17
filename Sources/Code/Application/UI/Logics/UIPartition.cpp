@@ -39,7 +39,7 @@ EntityId UIPartition::serializeNode(const JSONNode& node) {
         return serializeAsBox(node);
     } else if(typeVal == "object") {
         return serializeAsObject(node);
-    } else if (typeVal.empty()) {
+    } else if(typeVal.empty()) {
         return serializeAsSimplified(node);
     }
     LogWarning("[UIPartition::serializeNode] Unknown node type: %s", typeVal);

@@ -200,7 +200,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, cons
 
 bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, const char* entityName) {
     auto childrenNode = node.object("children");
-    if (!childrenNode) {
+    if(!childrenNode) {
         LogWarning("[EntityManager::setupEntityChildren] Can't find require children node in enitity file '%s'", entityName);
         return false;
     }

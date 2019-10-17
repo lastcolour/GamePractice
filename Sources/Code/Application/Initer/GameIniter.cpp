@@ -61,7 +61,7 @@ void GameIniter::openMainView() {
     ET_SendEvent(&ETUIViewStack::ET_pushView, initConfig->mainView.c_str());
     EntityId mainViewId;
     ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
-    if (!mainViewId.isValid()) {
+    if(!mainViewId.isValid()) {
         LogError("[GameIniter::openMainView] Can't cretae main view '%s'", initConfig->mainView);
     }
     bool isVisible = false;

@@ -190,12 +190,12 @@ bool AndroidSurface::createEGLSurface() {
 
 bool AndroidSurface::createEGLDisplay() {
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (display == EGL_NO_DISPLAY) {
+    if(display == EGL_NO_DISPLAY) {
         LogError("[AndroidSurface::createEGLDisplay] Can't get default EGL display. Error: %s", getEGLErrorStr());
         return false;
     }
 
-    if (eglInitialize(display, 0, 0) != EGL_TRUE) {
+    if(eglInitialize(display, 0, 0) != EGL_TRUE) {
         LogError("[AndroidSurface::createEGLDisplay] Can't initialize default display. Error: %s", getEGLErrorStr());
         return false;
     }

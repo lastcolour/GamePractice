@@ -205,7 +205,7 @@ void AndroindPlatformHandler::pollInputEvents() {
 
 void AndroindPlatformHandler::pollActivityEvents() {
     ActivityEventType eventType;
-    if (read(eventsReadPipe, &eventType, sizeof(ActivityEventType)) != sizeof(ActivityEventType)) {
+    if(read(eventsReadPipe, &eventType, sizeof(ActivityEventType)) != sizeof(ActivityEventType)) {
         LogAndroidError("[AndroindPlatformHandler::pollActivityEvents] Can't poll activity event from pipe: %s", strerror(errno));
         return;
     }

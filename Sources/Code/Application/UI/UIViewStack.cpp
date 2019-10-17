@@ -41,7 +41,7 @@ void UIViewStack::ET_pushView(const char* viewName) {
         task.viewName = viewName;
         task.state = ETaskState::Pushing;
         taskQueue.push_back(task);
-    } else if (taskQueue.back().state == ETaskState::Popping && taskQueue.front().viewName == viewName) {
+    } else if(taskQueue.back().state == ETaskState::Popping && taskQueue.front().viewName == viewName) {
         auto& lastTask = taskQueue.back();
         lastTask.state = ETaskState::Pushing;
         viewStack.push_back(lastTask.viewId);
@@ -84,7 +84,7 @@ void UIViewStack::ET_popView() {
         task.viewId = activeViewId;
         ET_SendEventReturn(task.viewName, task.viewId, &ETEntity::ET_getName);
         taskQueue.push_back(task);
-    } else if (taskQueue.back().state == ETaskState::WaitPush) {
+    } else if(taskQueue.back().state == ETaskState::WaitPush) {
         taskQueue.pop_back();
         return;
     } else if(taskQueue.back().state == ETaskState::Pushing) {
@@ -184,7 +184,7 @@ void UIViewStack::startNextTask() {
             } else {
                 LogWarning("[UIViewStack::startNextTask] Can't start next pop without enought views on stack");
             }
-        } else if (nextTask.state == ETaskState::WaitPush) {
+        } else if(nextTask.state == ETaskState::WaitPush) {
             if(initPush(nextTask.viewName)) {
                 nextTask.state = ETaskState::Pushing;
                 notifyNormalPush();

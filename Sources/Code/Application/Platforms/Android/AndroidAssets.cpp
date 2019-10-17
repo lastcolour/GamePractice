@@ -70,7 +70,7 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
         return buff;
     }
     ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
-    if (buff) {
+    if(buff) {
         return buff;
     }
 
@@ -99,7 +99,7 @@ Buffer AndroidAssets::loadAssetImpl(const std::string& assetName) {
         if(fileSize != -1) {
             fin.seekg(0u, std::ios::beg);
             Buffer buff(fileSize);
-            if (buff && fin.read(static_cast<char*>(buff.getWriteData()), fileSize)) {
+            if(buff && fin.read(static_cast<char*>(buff.getWriteData()), fileSize)) {
                 LogDebug("[AndroidAssets::loadAssetImpl] Load asset from local file: %s", assetName);
                 return buff;
             }

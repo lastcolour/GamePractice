@@ -88,7 +88,7 @@ const void* Buffer::getReadData() const {
 
 void* Buffer::getWriteData() {
     if(buffImpl != nullptr) {
-        if (buffImpl.use_count() > 1u) {
+        if(buffImpl.use_count() > 1u) {
             auto prevBuffer = buffImpl;
             buffImpl.reset(new BufferImpl(prevBuffer->size));
             memcpy(buffImpl->data.get(), prevBuffer->data.get(), prevBuffer->size);

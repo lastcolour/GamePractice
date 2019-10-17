@@ -132,7 +132,7 @@ std::string getAssetDirPath() {
         auto dirPath = binDirPath + path;
         fixSlashes(dirPath);
         normalizePath(dirPath);
-        if (isDirExist(dirPath)) {
+        if(isDirExist(dirPath)) {
             return dirPath;
         }
     }

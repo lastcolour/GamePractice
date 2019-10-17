@@ -24,7 +24,7 @@ bool OboeAudioSystem::initOboeStream() {
     builder.setCallback(this);
 
     auto res = builder.openStream(&oboeStream);
-    if (res != oboe::Result::OK){
+    if(res != oboe::Result::OK){
         LogError("[OboeAudioSystem::init] Can't open oboe stream. Error: %s", oboe::convertToText(res));
         return false;
     }
