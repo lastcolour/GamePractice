@@ -23,7 +23,7 @@ public:
 
     // ETSoundSourceManager
     SoundSource* ET_getFreeSource() override;
-    void ET_returnSoundSource(SoundSource* soundSoruce) override;
+    void ET_returnSoundSource(SoundSource* retSoundSoruce) override;
 
     // oboe::AudioStreamCallback
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) override;

@@ -17,7 +17,7 @@ public:
     void update();
 
     // SoundSource
-    void attachToController(SoundSourceController& newController) override;
+    void attachToDataStream(OggDataStream& newDataStream) override;
     void stopStreaming() override;
     void pauseStreaming() override;
     void resumeStreaming() override;
@@ -49,7 +49,7 @@ private:
 private:
 
     unsigned int alBufferIds[MAX_BUFFERS_PER_STREAM];
-    SoundSourceController* controller;
+    OggDataStream* dataStream;
     unsigned int sourceId;
     ESourceState state;
     bool looping;

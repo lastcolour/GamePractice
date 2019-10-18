@@ -6,12 +6,11 @@ class OggDataStream;
 struct SoundSourceController {
     virtual ~SoundSourceController() = default;
     virtual void detachFromSource() = 0;
-    virtual OggDataStream* getDataStream() = 0;
 };
 
 struct SoundSource {
     virtual ~SoundSource() = default;
-    virtual void attachToController(SoundSourceController& newController) = 0;
+    virtual void attachToDataStream(OggDataStream& newDataStream) = 0;
     virtual void stopStreaming() = 0;
     virtual void pauseStreaming() = 0;
     virtual void resumeStreaming() = 0;

@@ -4,6 +4,7 @@
 #include "Core/Buffer.hpp"
 
 struct stb_vorbis;
+class Sound;
 
 class OggDataStream {
 public:
@@ -22,6 +23,7 @@ public:
 
     Buffer oggBuffer;
     stb_vorbis* oggStream;
+    Sound* sound;
     int channels;
     int sampleRate;
     int numSamples;

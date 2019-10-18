@@ -1,6 +1,8 @@
 #ifndef __OBOE_MIXER_HPP__
 #define __OBOE_MIXER_HPP__
 
+#include "Audio/Resampler.hpp"
+
 #include <oboe/Oboe.h>
 
 class OboeSoundSource;
@@ -17,13 +19,29 @@ public:
 
 private:
 
-    void mixSilence();
-    void adjustMixBuffer();
+    struct MixBuffer {
+        std::unique_ptr<float[]> data;
+        int size;
+
+        MixBuffer() : data(nullptr), size(0) {}
+        void updateSize(int newSize);
+    };
 
 private:
 
-    std::unique_ptr<float[]> mixBuffer;
-    int mixBufferFrames;
+    void mixSilence(MixBuffer& buffer);
+    void fillSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int readFramesCount);
+    void resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source);
+    void postProcessSourceBuffer(MixBuffer& sourceBuffer,OboeSoundSource& source);
+    void mergeSourceToMixBuffers(MixBuffer& sourceBuffer, MixBuffer& mixBuffer);
+
+private:
+
+private:
+
+    Resampler resampler;
+    MixBuffer sourceBuffer;
+    MixBuffer mixBuffer;
     void* buffer;
     oboe::AudioFormat format;
     int channels;

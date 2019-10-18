@@ -6,11 +6,16 @@
 
 #include <cassert>
 
-Sound::Sound() :
+Sound::Sound(std::unique_ptr<OggDataStream>&& stream) :
+    dataStream(std::move(stream)),
     soundSource(nullptr) {
+
+    assert(dataStream && "Invalid data stream");
+    dataStream->sound = this;
 }
 
 Sound::~Sound() {
+    dataStream->sound = nullptr;
     stop();
 }
 
@@ -23,7 +28,7 @@ void Sound::play(bool looped) {
         LogWarning("[Sound::play] Can't get free sound source to play sound");
         return;
     }
-    soundSource->attachToController(*this);
+    soundSource->attachToDataStream(*dataStream);
     soundSource->setLoop(looped);
 }
 
@@ -59,10 +64,6 @@ void Sound::stop() {
 void Sound::detachFromSource() {
     assert(soundSource != nullptr && "Invalid sound source");
     soundSource = nullptr;
-}
-
-OggDataStream* Sound::getDataStream() {
-    return dataStream.get();
 }
 
 void Sound::setVolume(float volume) {

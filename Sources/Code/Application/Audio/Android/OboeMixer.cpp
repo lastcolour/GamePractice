@@ -2,13 +2,20 @@
 #include "Audio/Android/OboeSoundSource.hpp"
 #include "ETApplicationInterfaces.hpp"
 
+void OboeMixer::MixBuffer::updateSize(int newSize) {
+    if(newSize > size) {
+        size = newSize;
+        data.reset(new float[size]);
+    }
+}
+
 OboeMixer::OboeMixer() :
-    mixBuffer(nullptr),
-    mixBufferFrames(0),
     buffer(nullptr),
     format(oboe::AudioFormat::I16),
     channels(1),
     numFrames(0) {
+
+    resampler.setOutRate(48000);
 }
 
 OboeMixer::~OboeMixer() {
@@ -20,41 +27,58 @@ void OboeMixer::startMixing(int outChannels, oboe::AudioFormat outFormat, void* 
     channels = outChannels;
     numFrames = outNumFrames;
 
-    adjustMixBuffer();
-    mixSilence();
+    mixBuffer.updateSize(numFrames * channels);
+    mixSilence(mixBuffer);
+}
+
+void OboeMixer::mixSilence(MixBuffer& buffer) {
+    auto& data = buffer.data;
+    memset(static_cast<void*>(data.get()), 0, sizeof(float) * buffer.size);
+}
+
+void OboeMixer::fillSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int readFramesCount) {
+    auto& data = sourceBuffer.data;
+    source.fillBuffer(data.get(), readFramesCount, channels);
+}
+
+void OboeMixer::resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source) {
+    ResampleRequest req;
+    req.inData = sourceBuffer.data.get();
+    req.inRate = source.getFrameRate();
+    req.outData = sourceBuffer.data.get();
+    resampler.convertPoint(req);
+}
+
+void OboeMixer::postProcessSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source) {
+    float gain = source.getGain();
+    for(int i = 0; i < numFrames * channels; ++i) {
+        sourceBuffer.data[i] *= gain;
+    }
+}
+
+void OboeMixer::mergeSourceToMixBuffers(MixBuffer& sourceBuffer, MixBuffer& mixBuffer) {
+    for(int i=0; i < numFrames * channels; ++i) {
+        mixBuffer.data[i] += sourceBuffer.data[i];
+    }
 }
 
 void OboeMixer::addSource(OboeSoundSource& soundSource) {
-    soundSource.fillBuffer(mixBuffer.get(), numFrames, channels);
+    int readSamplesCount = resampler.getSamplesForConvert(soundSource.getFrameRate(), numFrames);
+    sourceBuffer.updateSize(readSamplesCount * channels);
+    mixSilence(sourceBuffer);
+    fillSourceBuffer(sourceBuffer, soundSource, readSamplesCount);
+    if(readSamplesCount != numFrames) {
+        resampleSourceBuffer(sourceBuffer, soundSource);
+    }
+    postProcessSourceBuffer(sourceBuffer, soundSource);
+    mergeSourceToMixBuffers(sourceBuffer, mixBuffer);
 }
 
 void OboeMixer::endMixing() {
+    auto& mixData = mixBuffer.data;
     if(format == oboe::AudioFormat::I16) {
-        oboe::convertFloatToPcm16(mixBuffer.get(), static_cast<int16_t*>(buffer), numFrames * channels);
+        oboe::convertFloatToPcm16(mixData.get(), static_cast<int16_t*>(buffer), numFrames * channels);
     } else {
-        memcpy(buffer, mixBuffer.get(), numFrames * sizeof(float) * channels);
+        memcpy(buffer, mixData.get(), numFrames * sizeof(float) * channels);
     }
-}
-
-void OboeMixer::adjustMixBuffer() {
-    if(mixBufferFrames < numFrames) {
-        mixBuffer.reset(new float[numFrames * channels]);
-        if(!mixBuffer) {
-            LogError("[OboeMixer::adjustMixBuffer] Can't resize mix buffer: %d -> %d", mixBufferFrames, numFrames * channels);
-            return;
-            mixBufferFrames = numFrames;
-        }
-    }
-}
-
-void OboeMixer::mixSilence() {
-    memset(static_cast<void*>(mixBuffer.get()), 0, sizeof(float) * mixBufferFrames * 2);
-    int outBufferSize = numFrames * channels;
-    if(format == oboe::AudioFormat::Float) {
-        outBufferSize *= sizeof(float);
-    } else {
-        outBufferSize *= sizeof(int16_t);
-    }
-    memset(buffer, 0, outBufferSize);
-
 }

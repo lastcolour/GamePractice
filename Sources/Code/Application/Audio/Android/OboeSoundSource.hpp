@@ -14,7 +14,7 @@ public:
     virtual ~OboeSoundSource();
 
     // SoundSource
-    void attachToController(SoundSourceController& newController) override;
+    void attachToDataStream(OggDataStream& newDataStream) override;
     void stopStreaming() override;
     void pauseStreaming() override;
     void resumeStreaming() override;
@@ -24,6 +24,8 @@ public:
     bool isLooped() const  override;
 
     void fillBuffer(float* outBuffer, int numFrames, int channels);
+    int getFrameRate() const;
+    float getGain() const;
 
 private:
 
@@ -35,9 +37,9 @@ private:
 
 private:
 
-    SoundSourceController* controller;
+    OggDataStream* dataStream;
     float gain;
-    bool looped;
+    bool looping;
     ESourceState state;
     std::atomic<bool> isEnded;
 };

@@ -60,10 +60,26 @@ void OboeAudioSystem::deinit() {
 }
 
 SoundSource* OboeAudioSystem::ET_getFreeSource() {
+    for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
+        if(sourceStateMap[i] == ESourceState::Free) {
+            sourceStateMap[i] = ESourceState::Busy;
+            return &(sources[i]);
+        }
+    }
     return nullptr;
 }
 
-void OboeAudioSystem::ET_returnSoundSource(SoundSource* soundSoruce) {
+void OboeAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
+    assert(retSoundSoruce != nullptr && "Invalid sound source");
+    for(int i = 0, sz = sources.size(); i < sz; ++i) {
+        auto& source = sources[i];
+        if(retSoundSoruce == &source) {
+            assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
+            sourceStateMap[i] = ESourceState::Free;
+            return;
+        }
+    }
+    assert(false && "Can't find sound source");
 }
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) {

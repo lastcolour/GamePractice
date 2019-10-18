@@ -8,7 +8,7 @@
 class Sound : public SoundSourceController {
 public:
 
-    Sound();
+    Sound(std::unique_ptr<OggDataStream>&& stream);
     ~Sound();
 
     void play(bool looped);
@@ -21,7 +21,6 @@ public:
 
     // SoundSourceController
     void detachFromSource() override;
-    OggDataStream* getDataStream() override;
 
 public:
 

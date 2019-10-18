@@ -9,6 +9,7 @@
 OggDataStream::OggDataStream(const Buffer& buff) :
     oggBuffer(buff),
     oggStream(nullptr),
+    sound(nullptr),
     channels(0),
     sampleRate(0),
     numSamples(0) {
@@ -49,10 +50,10 @@ void OggDataStream::setSampleOffset(int sampleOffset) {
 
 int OggDataStream::readI16(void* outData, int samplesCount, int channels) {
     int readSamplesCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels, static_cast<int16_t*>(outData), samplesCount);
-    return readSamplesCount;
+    return readSamplesCount * channels;
 }
 
 int OggDataStream::readF32(void* outData, int samplesCount, int channels) {
     int readSamplesCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels, static_cast<float*>(outData), samplesCount);
-    return readSamplesCount;
+    return readSamplesCount * channels;
 }

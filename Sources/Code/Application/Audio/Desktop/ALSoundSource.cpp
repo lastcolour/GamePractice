@@ -1,5 +1,6 @@
 #include "Audio/Desktop/ALSoundSource.hpp"
 #include "Audio/OggDataStream.hpp"
+#include "Audio/Sound.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 
@@ -11,12 +12,12 @@
 namespace {
 
 const int SAMPLES_PER_READ = 44100 / 10;
-int16_t* buffData = new int16_t[SAMPLES_PER_READ];
+int16_t* buffData = new int16_t[SAMPLES_PER_READ * 2];
 
 } // namespace 
 
 ALSoundSource::ALSoundSource(unsigned int newSourceId) :
-    controller(nullptr),
+    dataStream(nullptr),
     sourceId(newSourceId),
     state(ESourceState::Ended),
     looping(false) {
@@ -73,7 +74,7 @@ void ALSoundSource::update() {
 }
 
 void ALSoundSource::setLoop(bool loopFlag) {
-    assert(controller != nullptr && "Change loop property with invalid controller");
+    assert(dataStream != nullptr && "Change loop property with invalid data stream");
     looping = loopFlag;
 }
 
@@ -82,21 +83,19 @@ bool ALSoundSource::isLooped() const {
 }
 
 void ALSoundSource::setGain(float newGain) {
-    assert(isStreaming() && "Set gain for invalid source");
-
     alSourcef(sourceId, AL_GAIN, newGain);
 }
 
-void ALSoundSource::attachToController(SoundSourceController& newController) {
-    if(controller) {
-        assert(false && "Invalind current stream controller");
+void ALSoundSource::attachToDataStream(OggDataStream& newDataStream) {
+    if(dataStream) {
+        assert(false && "Invalind current data stream");
         return;
     }
     assert(state == ESourceState::Ended && "Invalid state of source");
 
-    controller = &newController;
     state = ESourceState::Normal;
-    controller->getDataStream()->setSampleOffset(0);
+    dataStream = &newDataStream;
+    dataStream->setSampleOffset(0);
 
     queueALBuffers(&alBufferIds[0], MAX_BUFFERS_PER_STREAM);
     startALSource();
@@ -118,9 +117,11 @@ void ALSoundSource::stopStreaming() {
     alSourceStop(sourceId);
     alSourcei(sourceId, AL_BUFFER, AL_NONE);
 
-    assert(controller != nullptr && "Invalid controller");
-    controller->detachFromSource();
-    controller = nullptr;
+    assert(dataStream != nullptr && "Invalid controller");
+    if(dataStream->sound) {
+        dataStream->sound->detachFromSource();
+    }
+    dataStream = nullptr;
     looping = false;
     state = ESourceState::Ended;
     resetALSourceParams();
@@ -146,35 +147,32 @@ void ALSoundSource::startALSource() {
 }
 
 ALSoundSource::EBufferFillRes ALSoundSource::fillALBuffer(unsigned int bufferId) {
-    OggDataStream* dataStream = controller->getDataStream();
     assert(dataStream != nullptr && "Invalid data stream");
 
+    int channels = dataStream->channels;
+
     int dataFormat = AL_FORMAT_MONO16;
-    if(dataStream->channels == 2) {
+    if(channels == 2) {
         dataFormat = AL_FORMAT_STEREO16;
     }
 
     EBufferFillRes fillRes = EBufferFillRes::Normal;
-    int readSamplesCount = dataStream->readI16(buffData, SAMPLES_PER_READ, dataStream->channels);
-    if(readSamplesCount < SAMPLES_PER_READ) {
-        if(!looping) {
-            fillRes = EBufferFillRes::EndOfStream;
-        } else {
+
+    int readFrames = dataStream->readI16(buffData, SAMPLES_PER_READ, channels);
+    if(looping) {
+        int leftFrames = SAMPLES_PER_READ - readFrames;
+        while(leftFrames > 0) {
             dataStream->setSampleOffset(0);
-            int reqReadCount = SAMPLES_PER_READ - readSamplesCount;
-            while(reqReadCount > 0) {
-                int resReadCount = dataStream->readI16(static_cast<int16_t*>(buffData) + readSamplesCount, reqReadCount,
-                    dataStream->channels);
-                readSamplesCount += resReadCount;
-                if(resReadCount < reqReadCount) {
-                    dataStream->setSampleOffset(0);
-                }
-                reqReadCount = SAMPLES_PER_READ - readSamplesCount;
-            }
+            readFrames += dataStream->readI16(buffData + readFrames, leftFrames, channels);
+            leftFrames = SAMPLES_PER_READ - readFrames;
+        }
+    } else {
+        if(readFrames < SAMPLES_PER_READ) {
+           fillRes = EBufferFillRes::EndOfStream;
         }
     }
 
-    alBufferData(bufferId, dataFormat, &buffData[0], readSamplesCount * sizeof(int16_t), dataStream->sampleRate);
+    alBufferData(bufferId, dataFormat, &buffData[0], readFrames * sizeof(int16_t), dataStream->sampleRate);
     alSourceQueueBuffers(sourceId, 1, &bufferId);
 
     return fillRes;

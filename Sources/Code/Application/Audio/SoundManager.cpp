@@ -59,8 +59,6 @@ std::unique_ptr<Sound> SoundManager::ET_createSound(const char* soundName) {
         LogError("[SoundManager::ET_createSound] Too many channels %d in OGG stream: %s",  dataStream->channels, soundName);
         return nullptr;
     }
-    std::unique_ptr<Sound> sound(new Sound);
-    sound->dataStream = std::move(dataStream);
-    sound->soundSource = nullptr;
+    std::unique_ptr<Sound> sound(new Sound(std::move(dataStream)));
     return sound;
 }

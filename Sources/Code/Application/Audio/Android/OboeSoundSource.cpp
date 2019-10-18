@@ -5,8 +5,8 @@
 
 OboeSoundSource::OboeSoundSource() :
     SoundSource(),
-    controller(nullptr),
-    looped(false),
+    dataStream(nullptr),
+    looping(false),
     gain(1.f),
     state(ESourceState::Normal) {
 }
@@ -14,14 +14,14 @@ OboeSoundSource::OboeSoundSource() :
 OboeSoundSource::~OboeSoundSource() {
 }
 
-void OboeSoundSource::attachToController(SoundSourceController& newController) {
-    if(controller) {
-        assert(false && "Invalind current stream controller");
+void OboeSoundSource::attachToDataStream(OggDataStream& newDataStream) {
+    if(dataStream) {
+        assert(false && "Invalind current data stream");
         return;
     }
-    controller = &newController;
-    controller->getDataStream()->setSampleOffset(0);
-    looped = false;
+    dataStream = &newDataStream;
+    dataStream->setSampleOffset(0);
+    looping = false;
     gain = 1.f;
 }
 
@@ -43,11 +43,11 @@ void OboeSoundSource::setGain(float newGain) {
 }
 
 void OboeSoundSource::setLoop(bool loopFlag) {
-    looped = loopFlag;
+    looping = loopFlag;
 }
 
 bool OboeSoundSource::isLooped() const {
-    return looped;
+    return looping;
 }
 
 void OboeSoundSource::fillBuffer(float* outBuffer, int numFrames, int channels) {
@@ -57,20 +57,26 @@ void OboeSoundSource::fillBuffer(float* outBuffer, int numFrames, int channels) 
         return;
     }
 
-    auto dataStream = controller->getDataStream();
     int readFrames = dataStream->readF32(outBuffer, numFrames, channels);
-    if(looped) {
+    if(looping) {
         int leftFrames = numFrames - readFrames;
         while(leftFrames > 0) {
             dataStream->setSampleOffset(0);
-            int offset = leftFrames * 2;
-            leftFrames -= dataStream->readF32(outBuffer + offset, leftFrames, channels);
+            readFrames += dataStream->readF32(outBuffer + readFrames, leftFrames, channels);
+            leftFrames = numFrames - readFrames;
         }
     } else {
         if(readFrames < numFrames) {
            state = ESourceState::WaitEnd;
         }
     }
+}
 
-    // postprocess
+int OboeSoundSource::getFrameRate() const {
+    assert(dataStream && "Invalid data stream");
+    return dataStream->sampleRate;
+}
+
+float OboeSoundSource::getGain() const {
+    return gain;
 }
