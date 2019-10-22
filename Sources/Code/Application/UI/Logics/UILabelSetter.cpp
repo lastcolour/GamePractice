@@ -26,7 +26,7 @@ bool UILabelSetter::serialize(const JSONNode& node) {
 }
 
 bool UILabelSetter::init() {
-    switch (valueType)
+    switch(valueType)
     {
     case EValueType::GameScore: {
         const EndGameResult* endResult = nullptr;

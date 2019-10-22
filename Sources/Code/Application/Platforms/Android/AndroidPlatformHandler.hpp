@@ -82,8 +82,8 @@ private:
     int eventsWritePipe;
     int eventsReadPipe;
 
-    bool isRunning;
-    bool isDestroyed;
+    std::atomic<bool> isAppCreated;
+    std::atomic<bool> isAppTreadDestroyed;
     std::mutex mutex;
     std::condition_variable cond;
     std::unique_ptr<Application> app;

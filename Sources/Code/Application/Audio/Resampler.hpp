@@ -2,10 +2,16 @@
 #define __RESAMPLER_HPP__
 
 struct ResampleRequest {
+    float* outData;
     float* inData;
     int inRate;
     int inSamples;
-    float* outData;
+
+    ResampleRequest() :
+        outData(nullptr),
+        inData(nullptr),
+        inRate(0),
+        inSamples(0) {}
 };
 
 class Resampler {

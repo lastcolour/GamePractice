@@ -9,6 +9,22 @@ float LinearLerp(float a, float b, float alpha) {
     return a + (b - a) * alpha;
 }
 
+bool isValidRequest(const ResampleRequest& req) {
+    if(req.outData == nullptr) {
+        return false;
+    }
+    if(req.inData == nullptr) {
+        return false;
+    }
+    if(req.inRate <= 0) {
+        return false;
+    }
+    if(req.inSamples <= 0) {
+        return false;
+    }
+    return true;
+}
+
 } // namespace
 
 Resampler::Resampler() :
@@ -34,6 +50,7 @@ int Resampler::getSamplesForConvert(int inRate, int numSamples) const {
 }
 
 void Resampler::setupState(const ResampleRequest& req) {
+    assert(isValidRequest(req) && "Invalid convert request");
     state.outSamples = getSamplesForConvert(req.inRate, req.inSamples);
     state.frac = req.inRate / static_cast<float>(outRate);
     state.fracOffset = 0;

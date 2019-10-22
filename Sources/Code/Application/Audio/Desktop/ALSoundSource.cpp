@@ -150,29 +150,18 @@ ALSoundSource::EBufferFillRes ALSoundSource::fillALBuffer(unsigned int bufferId)
     assert(dataStream != nullptr && "Invalid data stream");
 
     int channels = dataStream->channels;
-
     int dataFormat = AL_FORMAT_MONO16;
     if(channels == 2) {
         dataFormat = AL_FORMAT_STEREO16;
     }
 
     EBufferFillRes fillRes = EBufferFillRes::Normal;
-
-    int readFrames = dataStream->readI16(buffData, SAMPLES_PER_READ, channels);
-    if(looping) {
-        int leftFrames = SAMPLES_PER_READ - readFrames;
-        while(leftFrames > 0) {
-            dataStream->setSampleOffset(0);
-            readFrames += dataStream->readI16(buffData + readFrames, leftFrames, channels);
-            leftFrames = SAMPLES_PER_READ - readFrames;
-        }
-    } else {
-        if(readFrames < SAMPLES_PER_READ) {
-           fillRes = EBufferFillRes::EndOfStream;
-        }
+    int fillCount = dataStream->fillI16(buffData, SAMPLES_PER_READ, channels, looping);
+    if(fillCount < SAMPLES_PER_READ) {
+        fillRes = EBufferFillRes::EndOfStream;
     }
 
-    alBufferData(bufferId, dataFormat, &buffData[0], readFrames * sizeof(int16_t), dataStream->sampleRate);
+    alBufferData(bufferId, dataFormat, &buffData[0], fillCount * sizeof(int16_t) * channels, dataStream->sampleRate);
     alSourceQueueBuffers(sourceId, 1, &bufferId);
 
     return fillRes;

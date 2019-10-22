@@ -279,7 +279,7 @@ void AndroidSurface::onNativeWindowDestoryed() {
 }
 
 void AndroidSurface::ET_onActivityEvent(ActivityEventType eventType) {
-    switch (eventType)
+    switch(eventType)
     {
     case ActivityEventType::OnNativeWindowChanged:
         {

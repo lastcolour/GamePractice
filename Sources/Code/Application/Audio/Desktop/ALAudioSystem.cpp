@@ -1,6 +1,7 @@
 #include "Audio/Desktop/ALAudioSystem.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Audio/Desktop/ALSoundSource.hpp"
 #include "Audio/AudioConfig.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -22,12 +23,13 @@ bool ALAudioSystem::init() {
     if(!initSoundSources()) {
         return false;
     }
-    ETNode<ETTimerEvents>::connect(getEntityId());
-    ETNode<ETSoundSourceManager>::connect(getEntityId());
+    ETNode<ETAudioSystem>::connect(getEntityId());
     return true;
 }
 
 void ALAudioSystem::deinit() {
+    ETNode<ETAudioSystem>::disconnect();
+    alSources.clear();
     if(alcContext) {
         alcMakeContextCurrent(nullptr);
         alcDestroyContext(alcContext);
@@ -37,8 +39,6 @@ void ALAudioSystem::deinit() {
         alcCloseDevice(alcDevice);
         alcDevice = nullptr;
     }
-    ETNode<ETTimerEvents>::disconnect();
-    ETNode<ETSoundSourceManager>::disconnect();
 }
 
 bool ALAudioSystem::initSoundContext() {
@@ -61,65 +61,32 @@ bool ALAudioSystem::initSoundContext() {
 }
 
 bool ALAudioSystem::initSoundSources() {
-    const int maxSoundSources = ET_getConfig<AudioConfig>()->maxSoundSources;
-    ALuint sourceIds[maxSoundSources];
-    alGenSources(maxSoundSources, &sourceIds[0]);
+    auto maxSources = ET_getConfig<AudioConfig>()->maxSoundSources;
+
+    ALuint sourceIds[maxSources];
+    alGenSources(maxSources, &sourceIds[0]);
     auto alError = alGetError();
-
     if(alError != AL_NO_ERROR) {
-        LogError("[ALAudioSystem::initSoundSources] Can't %d init audio sources. Error: %s", maxSoundSources, alGetString(alError));
+        LogError("[ALAudioSystem::initSoundSources] Can't %d init audio sources. Error: %s", maxSources, alGetString(alError));
         return false;
     }
 
-    sources.reserve(maxSoundSources);
-    sourceStateMap.reserve(maxSoundSources);
-
-    bool initAllSources = true;
-    for(int i = 0; i < maxSoundSources; ++i) {
-        sources.emplace_back(new ALSoundSource(sourceIds[i]));
-        auto& source = sources.back();
-        if(!source->init()) {
-            initAllSources = false;
+    for(int i = 0; i < maxSources; ++i) {
+        std::unique_ptr<ALSoundSource> alSoundSource(new ALSoundSource(sourceIds[i]));
+        if(!alSoundSource->init()) {
+            alSources.clear();
+            return false;
         }
-        sourceStateMap.emplace_back(ESourceState::Free);
-    }
-
-    if(!initAllSources) {
-        LogWarning("[ALAudioSystem::initSoundSources] Can't init all audio sources");
-        return false;
+        alSources.emplace_back(std::move(alSoundSource));
     }
 
     return true;
 }
 
-SoundSource* ALAudioSystem::ET_getFreeSource() {
-    for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
-        if(sourceStateMap[i] == ESourceState::Free) {
-            sourceStateMap[i] = ESourceState::Busy;
-            return sources[i].get();
-        }
+std::vector<SoundSource*> ALAudioSystem::ET_getSourcesToManage() {
+    std::vector<SoundSource*> sources;
+    for(int i = 0, sz = alSources.size(); i < sz; ++i) {
+        sources.emplace_back(alSources[i].get());
     }
-    return nullptr;
-}
-
-void ALAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
-    assert(retSoundSoruce != nullptr && "Invalid sound source");
-    for(int i = 0, sz = sources.size(); i < sz; ++i) {
-        auto& source = sources[i];
-        if(retSoundSoruce == source.get()) {
-            assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
-            sourceStateMap[i] = ESourceState::Free;
-            return;
-        }
-    }
-    assert(false && "Can't find sound source");
-}
-
-void ALAudioSystem::ET_onTick(float dt) {
-    for(int i = 0, sz = sources.size(); i < sz; ++i) {
-        if(sourceStateMap[i] == ESourceState::Busy) {
-            auto& source = sources[i];
-            source->update();
-        }
-    }
+    return sources;
 }

@@ -18,6 +18,7 @@ struct SoundSource {
     virtual void setGain(float newGain) = 0;
     virtual void setLoop(bool loopFlag) = 0;
     virtual bool isLooped() const = 0;
+    virtual void update() = 0;
 };
 
 #endif /* __SOUND_SOURCE_HPP__ */

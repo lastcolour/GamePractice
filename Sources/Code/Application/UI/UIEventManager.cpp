@@ -123,7 +123,7 @@ void UIEventManager::processSurfaceVisible(bool isVisible) {
 
 void UIEventManager::processBackButtonEvent() {
     auto activeViewType = getActiveViewType();
-    switch (activeViewType)
+    switch(activeViewType)
     {
     case EViewType::EndGame: {
         pushView(EViewType::Main);
@@ -200,7 +200,7 @@ UIEventManager::EViewType UIEventManager::getViewTypeFromEntityId(EntityId viewI
 
 void UIEventManager::ET_onViewStartPush(EntityId viewId) {
     auto viewType = getViewTypeFromEntityId(viewId);
-    switch (viewType)
+    switch(viewType)
     {
     case EViewType::Pause: {
         ET_SendEvent(&ETGameStateManager::ET_pauseGame);
@@ -221,7 +221,7 @@ void UIEventManager::ET_onViewStartPush(EntityId viewId) {
 
 void UIEventManager::ET_onViewFinishPush(EntityId viewId) {
     auto viewType = getViewTypeFromEntityId(viewId);
-    switch (viewType)
+    switch(viewType)
     {
     case EViewType::Game: {
         ET_SendEvent(&ETGameStateManager::ET_startGame);
@@ -234,7 +234,7 @@ void UIEventManager::ET_onViewFinishPush(EntityId viewId) {
 
 void UIEventManager::ET_onViewStartPop(EntityId viewId) {
     auto viewType = getViewTypeFromEntityId(viewId);
-    switch (viewType)
+    switch(viewType)
     {
     case EViewType::Game: {
         ET_SendEvent(&ETGameStateManager::ET_interruptGame);
@@ -247,7 +247,7 @@ void UIEventManager::ET_onViewStartPop(EntityId viewId) {
 
 void UIEventManager::ET_onViewFinishPop(EntityId viewId) {
     auto viewType = getViewTypeFromEntityId(viewId);
-    switch (viewType)
+    switch(viewType)
     {
     case EViewType::Pause: {
         ET_SendEvent(&ETGameStateManager::ET_resumeGame);

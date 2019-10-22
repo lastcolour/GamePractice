@@ -1,18 +1,15 @@
 #ifndef __OBOE_AUDIO_SYSTEM_HPP__
 #define __OBOE_AUDIO_SYSTEM_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 #include "Audio/Android/OboeMixer.hpp"
-#include "Audio/Android/OboeSoundSource.hpp"
-#include "ETApplicationInterfaces.hpp"
 
 #include <oboe/Oboe.h>
 
 class OboeAudioSystem : public SystemLogic,
-    public ETNode<ETSoundSourceManager>,
-    public oboe::AudioStreamCallback {
+    public oboe::AudioStreamCallback,
+    public ETNode<ETAudioSystem> {
 public:
 
     OboeAudioSystem();
@@ -22,37 +19,23 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETSoundSourceManager
-    SoundSource* ET_getFreeSource() override;
-    void ET_returnSoundSource(SoundSource* retSoundSoruce) override;
-
     // oboe::AudioStreamCallback
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) override;
     void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) override;
 
+    // ETAudioSystem
+    std::vector<SoundSource*> ET_getSourcesToManage() override;
 
 private:
 
     bool initOboeStream();
-    bool initSoundSources();
-
-private:
-
-    enum class ESourceState {
-        Free = 0,
-        Busy
-    };
-
-private:
-
-    using OboeSoundSourcePtrT = std::unique_ptr<OboeSoundSource>;
+    bool initOboeSources();
 
 private:
 
     OboeMixer mixer;
-    std::vector<OboeSoundSourcePtrT> sources;
-    std::vector<ESourceState> sourceStateMap;
     oboe::AudioStream* oboeStream;
+    std::vector<std::unique_ptr<OboeSoundSource>> oboeSources;
 };
 
 #endif /* __OBOE_AUDIO_SYSTEM_HPP__ */

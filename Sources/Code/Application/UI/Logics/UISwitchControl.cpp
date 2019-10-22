@@ -33,7 +33,7 @@ bool UISwitchControl::serialize(const JSONNode& node) {
 }
 
 bool UISwitchControl::init() {
-    switch (controlType)
+    switch(controlType)
     {
     case EControlType::Sound: {
         ET_SendEventReturn(isTurnedOn, &ETGameConfig::ET_isSoundEnabled);
@@ -63,7 +63,7 @@ void UISwitchControl::setLabel() {
 }
 
 void UISwitchControl::updateControl() {
-    switch (controlType)
+    switch(controlType)
     {
     case EControlType::Sound: {
         ET_SendEvent(&ETGameConfig::ET_setSoundEnabled, isTurnedOn);

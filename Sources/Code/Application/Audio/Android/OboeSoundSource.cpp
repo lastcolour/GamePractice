@@ -1,14 +1,14 @@
 #include "Audio/Android/OboeSoundSource.hpp"
 #include "Audio/OggDataStream.hpp"
+#include "Audio/Sound.hpp"
+#include "Audio/ETAudioInterfaces.hpp"
 
 #include <cassert>
 
 OboeSoundSource::OboeSoundSource() :
     SoundSource(),
     dataStream(nullptr),
-    looping(false),
-    gain(1.f),
-    state(ESourceState::Normal) {
+    streamState(EStreamState::Normal) {
 }
 
 OboeSoundSource::~OboeSoundSource() {
@@ -22,62 +22,93 @@ void OboeSoundSource::attachToDataStream(OggDataStream& newDataStream) {
     }
     dataStream = &newDataStream;
     dataStream->setSampleOffset(0);
-    looping = false;
-    gain = 1.f;
+    streamState = EStreamState::Normal;
+
+    syncState.requestGain(1.f);
+    syncState.requestLooping(false);
+    syncState.requestStopped(false);
+    syncState.requestPaused(false);
 }
 
 void OboeSoundSource::stopStreaming() {
+    syncState.requestStopped(true);
+    while(isUseBuffer.load());
+    if(dataStream->sound) {
+        dataStream->sound->detachFromSource();
+    }
+    dataStream = nullptr;
+    ET_SendEvent(&ETSoundSourceManager::ET_returnSoundSource, this);
 }
 
 void OboeSoundSource::pauseStreaming() {
+    syncState.requestPaused(true);
 }
 
 void OboeSoundSource::resumeStreaming() {
+    syncState.requestPaused(false);
+}
+
+void OboeSoundSource::setGain(float newGain) {
+    syncState.requestGain(newGain);
+}
+
+void OboeSoundSource::setLoop(bool loopFlag) {
+    syncState.requestLooping(loopFlag);
 }
 
 bool OboeSoundSource::isStreaming() const {
     return true;
 }
 
-void OboeSoundSource::setGain(float newGain) {
-    gain = newGain;
-}
-
-void OboeSoundSource::setLoop(bool loopFlag) {
-    looping = loopFlag;
-}
-
 bool OboeSoundSource::isLooped() const {
-    return looping;
+    return syncState.getWriteState()->isLooped;
+}
+
+float OboeSoundSource::getGain() const {
+    return syncState.getReadState()->gain;
+}
+
+void OboeSoundSource::update() {
+    if(dataStream == nullptr) {
+        return;
+    }
+    if(isEnded.load()) {
+        stopStreaming();
+    }
 }
 
 void OboeSoundSource::fillBuffer(float* outBuffer, int numFrames, int channels) {
-    if(state == ESourceState::WaitEnd) {
-        state = ESourceState::Ended;
-        isEnded.store(true);
+    syncState.sync();
+    const OboeSourceState* currentState = syncState.getReadState();
+    if(currentState->isPaused || currentState->isStopped) {
         return;
     }
-
-    int readFrames = dataStream->readF32(outBuffer, numFrames, channels);
-    if(looping) {
-        int leftFrames = numFrames - readFrames;
-        while(leftFrames > 0) {
-            dataStream->setSampleOffset(0);
-            readFrames += dataStream->readF32(outBuffer + readFrames, leftFrames, channels);
-            leftFrames = numFrames - readFrames;
+    switch(streamState)
+    {
+    case EStreamState::Normal: {
+        isUseBuffer.store(true);
+        int readCount = dataStream->fillF32(outBuffer, numFrames, channels, currentState->isLooped);
+        isUseBuffer.store(false);
+        if(readCount < numFrames) {
+            streamState = EStreamState::WaitEnd;
         }
-    } else {
-        if(readFrames < numFrames) {
-           state = ESourceState::WaitEnd;
-        }
+        break;
+    }
+    case EStreamState::WaitEnd: {
+        streamState = EStreamState::Ended;
+        isEnded.store(true);
+        break;
+    }
+    case EStreamState::Ended: {
+        // free source && return it to audio system
+        break;
+    }
+    default:
+        break;
     }
 }
 
 int OboeSoundSource::getFrameRate() const {
     assert(dataStream && "Invalid data stream");
     return dataStream->sampleRate;
-}
-
-float OboeSoundSource::getGain() const {
-    return gain;
 }

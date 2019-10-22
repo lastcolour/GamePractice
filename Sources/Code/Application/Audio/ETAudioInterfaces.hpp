@@ -25,7 +25,12 @@ struct ETSoundManager {
 struct ETSoundSourceManager {
     virtual ~ETSoundSourceManager() = default;
     virtual SoundSource* ET_getFreeSource() = 0;
-    virtual void ET_returnSoundSource(SoundSource* soundSoruce) = 0;
+    virtual void ET_returnSoundSource(SoundSource* retSoundSource) = 0;
+};
+
+struct ETAudioSystem {
+    virtual ~ETAudioSystem() = default;
+    virtual std::vector<SoundSource*> ET_getSourcesToManage() = 0;
 };
 
 #endif /* __ET_AUDIO_INTERFACES_HPP__ */

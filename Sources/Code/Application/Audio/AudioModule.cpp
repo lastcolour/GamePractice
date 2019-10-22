@@ -1,5 +1,6 @@
 #include "Audio/AudioModule.hpp"
 #include "Audio/SoundManager.hpp"
+#include "Audio/SoundSourceManager.hpp"
 #include "Audio/AudioConfig.hpp"
 
 #if defined APP_BUILD_PLATFORM_WINDOWS || defined APP_BUILD_PLATFORM_LINUX
@@ -29,6 +30,7 @@ AudioModule::LogicsContainerPtrT AudioModule::getSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             AudioSystem,
+            SoundSourceManager,
             SoundManager>()
         );
     return container;

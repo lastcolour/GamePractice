@@ -2,6 +2,7 @@
 #define __OBOE_SOUND_SOURCE_HPP__
 
 #include "Audio/SoundSource.hpp"
+#include "Audio/Android/OboeSourceSyncState.hpp"
 
 #include <atomic>
 
@@ -21,7 +22,8 @@ public:
     bool isStreaming() const override;
     void setGain(float newGain) override;
     void setLoop(bool loopFlag) override;
-    bool isLooped() const  override;
+    bool isLooped() const override;
+    void update() override;
 
     void fillBuffer(float* outBuffer, int numFrames, int channels);
     int getFrameRate() const;
@@ -29,7 +31,7 @@ public:
 
 private:
 
-    enum class ESourceState {
+    enum class EStreamState {
         Normal = 0,
         WaitEnd,
         Ended
@@ -38,10 +40,10 @@ private:
 private:
 
     OggDataStream* dataStream;
-    float gain;
-    bool looping;
-    ESourceState state;
+    OboeSourceSyncState syncState;
+    std::atomic<bool> isUseBuffer;
     std::atomic<bool> isEnded;
+    EStreamState streamState;
 };
 
 #endif /* __OBOE_SOUND_SOURCE_HPP__ */

@@ -165,7 +165,7 @@ void GameBoardLogic::initBoardBox() {
 
 ColorB GameBoardLogic::getElemColor(BoardElemType elemType) const {
     ColorB retCol(255, 255, 255);
-    switch (elemType) {
+    switch(elemType) {
         case BoardElemType::Red:
             retCol = ColorB(255, 0, 0);
             break;

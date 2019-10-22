@@ -38,8 +38,8 @@ AndroindPlatformHandler::AndroindPlatformHandler(ANativeActivity* activity, void
     looper(nullptr),
     eventsWritePipe(::NullPipe),
     eventsReadPipe(::NullPipe),
-    isRunning(false),
-    isDestroyed(false),
+    isAppCreated(false),
+    isAppTreadDestroyed(false),
     pendingInputQueue(nullptr),
     handledEventMap(static_cast<size_t>(ActivityEventType::EVENT_COUNT), 0) {
 }
@@ -83,11 +83,8 @@ bool AndroindPlatformHandler::initHandler() {
 }
 
 void AndroindPlatformHandler::deinitHandler() {
-    {
-        std::unique_lock<std::mutex> uniqueLock(mutex);
-        cond.wait(uniqueLock, [this](){
-            return isDestroyed;
-        });
+    while(!isAppTreadDestroyed.load()) {
+        std::this_thread::yield();
     }
 
     if(eventsReadPipe != ::NullPipe && eventsWritePipe != ::NullPipe) {
@@ -102,12 +99,6 @@ void AndroindPlatformHandler::initAppThread() {
     looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
     ALooper_addFd(looper, eventsReadPipe, static_cast<int>(LooperQueueId::ActivityEvents),
         ALOOPER_EVENT_INPUT, nullptr, nullptr);
-
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        isRunning = true;
-    }
-    cond.notify_one();
 }
 
 void AndroindPlatformHandler::deinitAppThread() {
@@ -116,11 +107,7 @@ void AndroindPlatformHandler::deinitAppThread() {
     }
     AConfiguration_delete(config);
 
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        isDestroyed = true;
-    }
-    cond.notify_one();
+    isAppTreadDestroyed.store(true);
 }
 
 void AndroindPlatformHandler::start() {
@@ -130,17 +117,17 @@ void AndroindPlatformHandler::start() {
 
     std::thread thread([this](){
         initAppThread();
-        Application app(std::unique_ptr<Platform>(new AndroidPlatform()));
-        app.run();
+        {
+            Application app(std::unique_ptr<Platform>(new AndroidPlatform()));
+            isAppCreated.store(true);
+            app.run();
+        }
         deinitAppThread();
     });
     thread.detach();
 
-    {
-        std::unique_lock<std::mutex> uniqueLock(mutex);
-        cond.wait(uniqueLock, [this](){
-            return isRunning;
-        });
+    while(!isAppCreated.load()) {
+        std::this_thread::yield();
     }
 }
 

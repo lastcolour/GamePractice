@@ -48,12 +48,42 @@ void OggDataStream::setSampleOffset(int sampleOffset) {
     stb_vorbis_seek_frame(oggStream, sampleOffset);
 }
 
+int OggDataStream::fillF32(void* outData, int samplesCount, int channels, bool looped) {
+    int readCount = readF32(outData, samplesCount, channels);
+    if(readCount < samplesCount && looped) {
+        int leftCount = samplesCount - readCount;
+        while(leftCount > 0) {
+            setSampleOffset(0);
+            int offset = readCount * channels;
+            readCount += readF32(static_cast<float*>(outData) + offset, leftCount, channels);
+            leftCount = samplesCount - readCount;
+        }
+    }
+    return readCount;
+}
+
+int OggDataStream::fillI16(void* outData, int samplesCount, int channels, bool looped) {
+    int readCount = readI16(outData, samplesCount, channels);
+    if(readCount < samplesCount && looped) {
+        int leftCount = samplesCount - readCount;
+        while(leftCount > 0) {
+            setSampleOffset(0);
+            int offset = readCount * channels;
+            readCount += readI16(static_cast<int16_t*>(outData) + offset, leftCount, channels);
+            leftCount = samplesCount - readCount;
+        }
+    }
+    return readCount;
+}
+
 int OggDataStream::readI16(void* outData, int samplesCount, int channels) {
-    int readSamplesCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels, static_cast<int16_t*>(outData), samplesCount);
-    return readSamplesCount * channels;
+    int readSamplesCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels,
+        static_cast<int16_t*>(outData), samplesCount * channels);
+    return readSamplesCount;
 }
 
 int OggDataStream::readF32(void* outData, int samplesCount, int channels) {
-    int readSamplesCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels, static_cast<float*>(outData), samplesCount);
-    return readSamplesCount * channels;
+    int readSamplesCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels,
+        static_cast<float*>(outData), samplesCount * channels);
+    return readSamplesCount;
 }

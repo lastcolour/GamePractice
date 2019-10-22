@@ -57,7 +57,7 @@ bool GameStateManager::ET_isGameState() const {
 }
 
 void GameStateManager::ET_interruptGame() {
-    switch (gameState)
+    switch(gameState)
     {
     case EGameState::PreGame: {
         preGame.onLeave();

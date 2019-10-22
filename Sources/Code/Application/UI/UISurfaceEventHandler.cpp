@@ -79,7 +79,7 @@ void UISurfaceEventHandler::onRelease(const Vec2i& pt) {
 }
 
 void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) {
-    switch (actionType)
+    switch(actionType)
     {
     case EActionType::Press:
         onPress(pt);

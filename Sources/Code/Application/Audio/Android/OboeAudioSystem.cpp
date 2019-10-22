@@ -1,7 +1,8 @@
 #include "Audio/Android/OboeAudioSystem.hpp"
 #include "Audio/AudioConfig.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Audio/Android/OboeSoundSource.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Platforms/Android/ETAndroidInterfaces.hpp"
 
 namespace {
 
@@ -14,6 +15,14 @@ OboeAudioSystem::OboeAudioSystem() :
 }
 
 OboeAudioSystem::~OboeAudioSystem() {
+}
+
+bool OboeAudioSystem::initOboeSources() {
+    const int maxSources = ET_getConfig<AudioConfig>()->maxSoundSources;
+    for(int i = 0; i < maxSources; ++i) {
+        oboeSources.emplace_back(new OboeSoundSource);
+    }
+    return true;
 }
 
 bool OboeAudioSystem::initOboeStream() {
@@ -39,51 +48,28 @@ bool OboeAudioSystem::initOboeStream() {
     return true;
 }
 
-bool OboeAudioSystem::initSoundSources() {
-    const int maxSoundSources = ET_getConfig<AudioConfig>()->maxSoundSources;
-    for(int i = 0; i < maxSoundSources; ++i) {
-        sources.emplace_back(new OboeSoundSource);
-        sourceStateMap.emplace_back(ESourceState::Free);
-    }
-    return true;
-}
-
 bool OboeAudioSystem::init() {
+    if(!initOboeSources()) {
+        return false;
+    }
     if(!initOboeStream()) {
         return false;
     }
-    if(!initSoundSources()) {
-        return false;
-    }
-    ETNode<ETSoundSourceManager>::connect(getEntityId());
+    ETNode<ETAudioSystem>::connect(getEntityId());
     return true;
 }
 
 void OboeAudioSystem::deinit() {
+    ETNode<ETAudioSystem>::disconnect();
     return;
 }
 
-SoundSource* OboeAudioSystem::ET_getFreeSource() {
-    for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
-        if(sourceStateMap[i] == ESourceState::Free) {
-            sourceStateMap[i] = ESourceState::Busy;
-            return sources[i].get();
-        }
+std::vector<SoundSource*> OboeAudioSystem::ET_getSourcesToManage() {
+    std::vector<SoundSource*> sources;
+    for(int i = 0, sz = oboeSources.size(); i < sz; ++i) {
+        sources.emplace_back(oboeSources[i].get());
     }
-    return nullptr;
-}
-
-void OboeAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
-    assert(retSoundSoruce != nullptr && "Invalid sound source");
-    for(int i = 0, sz = sources.size(); i < sz; ++i) {
-        auto& source = sources[i];
-        if(retSoundSoruce == source.get()) {
-            assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
-            sourceStateMap[i] = ESourceState::Free;
-            return;
-        }
-    }
-    assert(false && "Can't find sound source");
+    return sources;
 }
 
 void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) {
@@ -94,11 +80,9 @@ oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream *outStr
     auto outChannels = outStream->getChannelCount();
     auto outFormat = outStream->getFormat();
     mixer.startMixing(outChannels, outFormat, audioData, numFrames);
-    for(int i = 0, sz = sources.size(); i < sz; ++i) {
-        auto& source = sources[i];
-        if(sourceStateMap[i] != ESourceState::Free) {
-            mixer.addSource(*source);
-        }
+    for(int i = 0, sz = oboeSources.size(); i < sz; ++i) {
+        auto& source = oboeSources[i];
+        mixer.addSource(*source);
     }
     mixer.endMixing();
     return oboe::DataCallbackResult::Continue;

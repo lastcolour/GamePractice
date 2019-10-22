@@ -14,7 +14,10 @@ public:
 
     bool isOpened() const;
 
-    int readF32(void* outData, int sampelsCount, int channels);
+    int fillF32(void* outData, int samplesCount, int channels, bool looped);
+    int fillI16(void* outDAta, int samplesCount, int channels, bool looped);
+
+    int readF32(void* outData, int samplesCount, int channels);
     int readI16(void* outData, int samplesCount, int channels);
 
     void setSampleOffset(int sampleOffset);

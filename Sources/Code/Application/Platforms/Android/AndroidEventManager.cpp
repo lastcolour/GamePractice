@@ -105,7 +105,7 @@ bool AndroidEventManager::hadleMotionEvent(AInputEvent* inputEvent) {
     touchPt.y = size.y - touchPt.y;
 
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
-    switch (eventAction)
+    switch(eventAction)
     {
     case AMOTION_EVENT_ACTION_DOWN: {
         ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, touchPt);
@@ -141,7 +141,7 @@ bool AndroidEventManager::handleKeyEvent(AInputEvent* inputEvent) {
 }
 
 bool AndroidEventManager::ET_onInputEvent(AInputEvent* inputEvent) {
-    switch (AInputEvent_getType(inputEvent)) {
+    switch(AInputEvent_getType(inputEvent)) {
         case AINPUT_EVENT_TYPE_MOTION: {
             return hadleMotionEvent(inputEvent);
         }

@@ -61,7 +61,7 @@ const Margin& UIBaseBox::ET_getMaring() const {
 
 Margin UIBaseBox::calculateMargin(const AABB2Di& parentBox) const {
     Margin resMargin;
-    switch (style.sizeInv)
+    switch(style.sizeInv)
     {
         case SizeInvariant::Absolute:
         {
@@ -124,7 +124,7 @@ Margin UIBaseBox::calculateMargin(const AABB2Di& parentBox) const {
 
 Vec2i UIBaseBox::calculateBoxSize(const AABB2Di& parentBox) const {
     Vec2i resSize(0);
-    switch (style.sizeInv)
+    switch(style.sizeInv)
     {
         case SizeInvariant::Absolute:
         {
@@ -174,7 +174,7 @@ Vec2i UIBaseBox::calculateBoxSize(const AABB2Di& parentBox) const {
 Vec2i UIBaseBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const {
     Vec2i resCenter = selfBox.getCenter();
     const auto halfSize = selfBox.getSize() / 2;
-    switch (style.xAlignType) {
+    switch(style.xAlignType) {
         case XAlignType::Center: {
             resCenter.x = parentBox.getCenter().x;
             break;
@@ -190,7 +190,7 @@ Vec2i UIBaseBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) co
         default:
             assert(false && "Invalid align type");
     }
-    switch (style.yAlignType) {
+    switch(style.yAlignType) {
         case YAlignType::Center: {
             resCenter.y = parentBox.getCenter().y;
             break;

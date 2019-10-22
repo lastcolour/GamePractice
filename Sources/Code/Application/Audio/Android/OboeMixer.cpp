@@ -43,10 +43,11 @@ void OboeMixer::fillSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& sourc
     source.fillBuffer(data.get(), readFramesCount, channels);
 }
 
-void OboeMixer::resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source) {
+void OboeMixer::resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int inSamplesCount) {
     ResampleRequest req;
     req.inData = sourceBuffer.data.get();
     req.inRate = source.getFrameRate();
+    req.inSamples = inSamplesCount;
     req.outData = sourceBuffer.data.get();
     resampler.convertPoint(req);
 }
@@ -70,7 +71,7 @@ void OboeMixer::addSource(OboeSoundSource& soundSource) {
     mixSilence(sourceBuffer);
     fillSourceBuffer(sourceBuffer, soundSource, readSamplesCount);
     if(readSamplesCount != numFrames) {
-        resampleSourceBuffer(sourceBuffer, soundSource);
+        resampleSourceBuffer(sourceBuffer, soundSource, readSamplesCount);
     }
     postProcessSourceBuffer(sourceBuffer, soundSource);
     mergeSourceToMixBuffers(sourceBuffer, mixBuffer);

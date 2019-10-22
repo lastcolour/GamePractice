@@ -31,7 +31,7 @@ private:
 
     void mixSilence(MixBuffer& buffer);
     void fillSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int readFramesCount);
-    void resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source);
+    void resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int inSamplesCount);
     void postProcessSourceBuffer(MixBuffer& sourceBuffer,OboeSoundSource& source);
     void mergeSourceToMixBuffers(MixBuffer& sourceBuffer, MixBuffer& mixBuffer);
 
