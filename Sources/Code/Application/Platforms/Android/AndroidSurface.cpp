@@ -259,6 +259,9 @@ void AndroidSurface::onNativeWindowCreated() {
 
     if(createEGLDisplay()) {
         if(createEGLContext()) {
+            LogInfo("[AndroidSurface::onNativeWindowCreated] Create new context");
+            ET_SendEvent(&ETRenderContextEvents::ET_onContextReCreated);
+            ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
             return;
         }
     }

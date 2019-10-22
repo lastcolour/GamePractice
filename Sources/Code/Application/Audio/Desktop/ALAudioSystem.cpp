@@ -76,9 +76,9 @@ bool ALAudioSystem::initSoundSources() {
 
     bool initAllSources = true;
     for(int i = 0; i < maxSoundSources; ++i) {
-        sources.emplace_back(sourceIds[i]);
+        sources.emplace_back(new ALSoundSource(sourceIds[i]));
         auto& source = sources.back();
-        if(!source.init()) {
+        if(!source->init()) {
             initAllSources = false;
         }
         sourceStateMap.emplace_back(ESourceState::Free);
@@ -96,7 +96,7 @@ SoundSource* ALAudioSystem::ET_getFreeSource() {
     for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Free) {
             sourceStateMap[i] = ESourceState::Busy;
-            return &(sources[i]);
+            return sources[i].get();
         }
     }
     return nullptr;
@@ -106,7 +106,7 @@ void ALAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
     assert(retSoundSoruce != nullptr && "Invalid sound source");
     for(int i = 0, sz = sources.size(); i < sz; ++i) {
         auto& source = sources[i];
-        if(retSoundSoruce == &source) {
+        if(retSoundSoruce == source.get()) {
             assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
             sourceStateMap[i] = ESourceState::Free;
             return;
@@ -119,7 +119,7 @@ void ALAudioSystem::ET_onTick(float dt) {
     for(int i = 0, sz = sources.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Busy) {
             auto& source = sources[i];
-            source.update();
+            source->update();
         }
     }
 }

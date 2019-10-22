@@ -42,10 +42,14 @@ private:
 
 private:
 
+    using ALSoundSourcePtrT = std::unique_ptr<ALSoundSource>;
+
+private:
+
     ALCdevice* alcDevice;
     ALCcontext* alcContext;
 
-    std::vector<ALSoundSource> sources;
+    std::vector<ALSoundSourcePtrT> sources;
     std::vector<ESourceState> sourceStateMap;
 };
 

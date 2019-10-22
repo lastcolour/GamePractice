@@ -15,6 +15,7 @@ OboeMixer::OboeMixer() :
     channels(1),
     numFrames(0) {
 
+    resampler.setOutChannels(channels);
     resampler.setOutRate(48000);
 }
 
@@ -27,6 +28,7 @@ void OboeMixer::startMixing(int outChannels, oboe::AudioFormat outFormat, void* 
     channels = outChannels;
     numFrames = outNumFrames;
 
+    resampler.setOutChannels(channels);
     mixBuffer.updateSize(numFrames * channels);
     mixSilence(mixBuffer);
 }

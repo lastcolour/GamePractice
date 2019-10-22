@@ -12,6 +12,7 @@ OboeSoundSource::OboeSoundSource() :
 }
 
 OboeSoundSource::~OboeSoundSource() {
+    stopStreaming();
 }
 
 void OboeSoundSource::attachToDataStream(OggDataStream& newDataStream) {

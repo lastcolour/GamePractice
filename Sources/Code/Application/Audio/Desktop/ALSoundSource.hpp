@@ -41,6 +41,9 @@ private:
 
 private:
 
+    ALSoundSource(const ALSoundSource&) = delete;
+    ALSoundSource& operator=(const ALSoundSource&) = delete;
+
     void queueALBuffers(unsigned int* bufferIds, int size);
     EBufferFillRes fillALBuffer(unsigned int bufferId);
     void startALSource();

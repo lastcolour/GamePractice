@@ -32,13 +32,17 @@ bool OboeAudioSystem::initOboeStream() {
     if(res != oboe::Result::OK){
         LogWarning("[OboeAudioSystem::init] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
     }
+    res = oboeStream->start();
+    if(res != oboe::Result::OK) {
+        LogWarning("[OboeAudioSystem::init] Can't start oboe stream. Error: %s", oboe::convertToText(res));
+    }
     return true;
 }
 
 bool OboeAudioSystem::initSoundSources() {
     const int maxSoundSources = ET_getConfig<AudioConfig>()->maxSoundSources;
     for(int i = 0; i < maxSoundSources; ++i) {
-        sources.emplace_back();
+        sources.emplace_back(new OboeSoundSource);
         sourceStateMap.emplace_back(ESourceState::Free);
     }
     return true;
@@ -63,7 +67,7 @@ SoundSource* OboeAudioSystem::ET_getFreeSource() {
     for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Free) {
             sourceStateMap[i] = ESourceState::Busy;
-            return &(sources[i]);
+            return sources[i].get();
         }
     }
     return nullptr;
@@ -73,13 +77,17 @@ void OboeAudioSystem::ET_returnSoundSource(SoundSource* retSoundSoruce) {
     assert(retSoundSoruce != nullptr && "Invalid sound source");
     for(int i = 0, sz = sources.size(); i < sz; ++i) {
         auto& source = sources[i];
-        if(retSoundSoruce == &source) {
+        if(retSoundSoruce == source.get()) {
             assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
             sourceStateMap[i] = ESourceState::Free;
             return;
         }
     }
     assert(false && "Can't find sound source");
+}
+
+void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) {
+    LogError("[OboeAudioSystem::onErrorAfterClose] Oboe stream error: %s", oboe::convertToText(res));
 }
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) {
@@ -89,7 +97,7 @@ oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream *outStr
     for(int i = 0, sz = sources.size(); i < sz; ++i) {
         auto& source = sources[i];
         if(sourceStateMap[i] != ESourceState::Free) {
-            mixer.addSource(source);
+            mixer.addSource(*source);
         }
     }
     mixer.endMixing();

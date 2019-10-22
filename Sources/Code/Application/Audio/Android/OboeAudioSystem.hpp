@@ -6,12 +6,13 @@
 #include "Audio/ETAudioInterfaces.hpp"
 #include "Audio/Android/OboeMixer.hpp"
 #include "Audio/Android/OboeSoundSource.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <oboe/Oboe.h>
 
 class OboeAudioSystem : public SystemLogic,
-     public ETNode<ETSoundSourceManager>,
-     public oboe::AudioStreamCallback {
+    public ETNode<ETSoundSourceManager>,
+    public oboe::AudioStreamCallback {
 public:
 
     OboeAudioSystem();
@@ -27,6 +28,8 @@ public:
 
     // oboe::AudioStreamCallback
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) override;
+    void onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) override;
+
 
 private:
 
@@ -42,8 +45,12 @@ private:
 
 private:
 
+    using OboeSoundSourcePtrT = std::unique_ptr<OboeSoundSource>;
+
+private:
+
     OboeMixer mixer;
-    std::vector<OboeSoundSource> sources;
+    std::vector<OboeSoundSourcePtrT> sources;
     std::vector<ESourceState> sourceStateMap;
     oboe::AudioStream* oboeStream;
 };
