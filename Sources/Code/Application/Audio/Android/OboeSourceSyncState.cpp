@@ -1,60 +1,68 @@
 #include "Audio/Android/OboeSourceSyncState.hpp"
 
-OboeSourceSyncState::OboeSourceSyncState() {
+#include <cassert>
+#include <thread>
+
+OboeSourceSyncState::OboeSourceSyncState() :
+    isUpdated(false),
+    isEnded(true) {
 }
 
 OboeSourceSyncState::~OboeSourceSyncState() {
 }
 
-void OboeSourceSyncState::requestLooping(bool flag) {
-    getWriteData()->isLooped = flag;
+void OboeSourceSyncState::requestGain(float newGain) {
+    waitEndOfLastUpdate();
+    writeState.gain = newGain;
     isUpdated.store(true);
 }
 
-void OboeSourceSyncState::requestGain(float newGain) {
-    getWriteData()->gain = newGain;
+void OboeSourceSyncState::requestLooping(bool flag) {
+    waitEndOfLastUpdate();
+    writeState.isLooped = flag;
     isUpdated.store(true);
 }
 
 void OboeSourceSyncState::requestPaused(bool flag) {
-    getWriteData()->isPaused = flag;
+    waitEndOfLastUpdate();
+    writeState.isPaused = flag;
     isUpdated.store(true);
 }
 
 void OboeSourceSyncState::requestStopped(bool flag) {
-    getWriteData()->isStopped = flag;
+    waitEndOfLastUpdate();
+    writeState.isStopped = flag;
     isUpdated.store(true);
 }
 
-void OboeSourceSyncState::sync() {
-    if(isReadFirst.load()) {
+void OboeSourceSyncState::confirmStart() {
+    assert(isEnded.load() == true && "Dobule start confirmation");
+    isEnded.store(false);
+}
+
+void OboeSourceSyncState::confirmEnd() {
+    assert(isEnded.load() == false && "Dobule end confirmation");
+    isEnded.store(true);
+}
+
+bool OboeSourceSyncState::isEndConfirmed() const {
+    return isEnded.load();
+}
+
+void OboeSourceSyncState::waitEndOfLastUpdate() {
+    while(isUpdated.load() && !isEnded.load()) {
+        std::this_thread::yield();
     }
 }
 
-OboeSourceState* OboeSourceSyncState::getWriteData() {
-    if(isReadFirst.load()) {
-        return &states[1];
+void OboeSourceSyncState::syncRead() {
+    if(!isUpdated.load()) {
+        return;
     }
-    return &states[0];
+    readState = writeState;
+    isUpdated.store(false);
 }
 
-OboeSourceState* OboeSourceSyncState::getReadData() {
-    if(isReadFirst.load()) {
-        return &states[1];
-    }
-    return &states[0];
-}
-
-const OboeSourceState* OboeSourceSyncState::getWriteState() const {
-    if(isReadFirst.load()) {
-        return &states[1];
-    }
-    return &states[0];
-}
-
-const OboeSourceState* OboeSourceSyncState::getReadState() const {
-    if(isReadFirst.load()) {
-        return &states[0];
-    }
-    return &states[1];
+const OboeSourceState& OboeSourceSyncState::getReadState() const {
+    return readState;
 }

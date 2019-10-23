@@ -8,16 +8,9 @@ AndroidAudioDevice::AndroidAudioDevice() {
 AndroidAudioDevice::~AndroidAudioDevice() {
 }
 
-bool AndroidAudioDevice::init() {
-    ETNode<ETAndroidAudioDevice>::connect(getEntityId());
-    return true;
-}
+bool AndroidAudioDevice::readDeviceConfig() {
+    JNI::JNIAttacher attacher;
 
-void AndroidAudioDevice::deinit() {
-    ETNode<ETAndroidAudioDevice>::disconnect();
-}
-
-const AndroidAudioDeviceConfig* AndroidAudioDevice::ET_getAudioConfig() const {
     JNI::JVObject activityObj = GetAndroindPlatformHandler()->getActivityJavaObject();
 
     auto contextClass = JNI::JVClass::FindClass("android/content/Context");
@@ -32,17 +25,31 @@ const AndroidAudioDeviceConfig* AndroidAudioDevice::ET_getAudioConfig() const {
     auto bufferSizeId = audioManagerClass.getStaticObjectField("PROPERTY_OUTPUT_FRAMES_PER_BUFFER", "Ljava/lang/String;");
     auto bufferSize = audioManager.callObjectMethod("getProperty", "(Ljava/lang/String;)Ljava/lang/String;", bufferSizeId);
 
-    std::string sampleRateStr = sampleRate.castToString();
-    std::string bufferSizeStr = bufferSize.castToString();
+    std::string sampleRateStr = sampleRate.copyToString();
+    std::string bufferSizeStr = bufferSize.copyToString();
 
     if(!JNI::CheckJavaException()) {
         LogError("[AndroidAuidoDevice::ET_getAudioConfig] Can't get audio config");
-        return nullptr;
+        return false;
     }
 
-    AndroidAudioDeviceConfig deviceConfig;
     deviceConfig.frameRate = std::stoi(sampleRateStr);
     deviceConfig.framesPerBurst = std::stoi(bufferSizeStr);
+    return true;
+}
 
-    return nullptr;
+bool AndroidAudioDevice::init() {
+    if(!readDeviceConfig()) {
+        return false;
+    }
+    ETNode<ETAndroidAudioDevice>::connect(getEntityId());
+    return true;
+}
+
+void AndroidAudioDevice::deinit() {
+    ETNode<ETAndroidAudioDevice>::disconnect();
+}
+
+const AndroidAudioDeviceConfig* AndroidAudioDevice::ET_getAudioConfig() const {
+    return &deviceConfig;
 }

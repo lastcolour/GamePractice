@@ -19,7 +19,6 @@ public:
     void stopStreaming() override;
     void pauseStreaming() override;
     void resumeStreaming() override;
-    bool isStreaming() const override;
     void setGain(float newGain) override;
     void setLoop(bool loopFlag) override;
     bool isLooped() const override;
@@ -28,21 +27,19 @@ public:
     void fillBuffer(float* outBuffer, int numFrames, int channels);
     int getFrameRate() const;
     float getGain() const;
+    bool queuryIsNeedStream();
 
 private:
 
     enum class EStreamState {
         Normal = 0,
-        WaitEnd,
-        Ended
+        WaitEnd
     };
 
 private:
 
     OggDataStream* dataStream;
     OboeSourceSyncState syncState;
-    std::atomic<bool> isUseBuffer;
-    std::atomic<bool> isEnded;
     EStreamState streamState;
 };
 

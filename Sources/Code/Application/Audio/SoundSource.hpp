@@ -14,7 +14,6 @@ struct SoundSource {
     virtual void stopStreaming() = 0;
     virtual void pauseStreaming() = 0;
     virtual void resumeStreaming() = 0;
-    virtual bool isStreaming() const = 0;
     virtual void setGain(float newGain) = 0;
     virtual void setLoop(bool loopFlag) = 0;
     virtual bool isLooped() const = 0;

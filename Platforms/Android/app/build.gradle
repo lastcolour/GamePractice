@@ -14,7 +14,7 @@ android {
         minSdkVersion 16
 
         // Specifies the API level used to test the app.
-        targetSdkVersion 28
+        targetSdkVersion 29
 
         // Defines the version number of your app.
         versionCode 1
@@ -33,7 +33,6 @@ android {
         release {
             minifyEnabled true // Enables code shrinking for the release build type.
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
     }
 

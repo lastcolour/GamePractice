@@ -47,13 +47,6 @@ void Sound::resume() {
     soundSource->resumeStreaming();
 }
 
-bool Sound::isPlaying() const {
-    if(!soundSource) {
-        return false;
-    }
-    return soundSource->isStreaming();
-}
-
 void Sound::stop() {
     if(!soundSource) {
         return;

@@ -28,6 +28,7 @@ public:
 
 private:
 
+    bool initOboeMixer();
     bool initOboeStream();
     bool initOboeSources();
 

@@ -8,6 +8,12 @@ struct OboeSourceState {
     bool isLooped;
     bool isPaused;
     bool isStopped;
+
+    OboeSourceState() :
+        gain(1.f),
+        isLooped(false),
+        isPaused(false),
+        isStopped(false) {}
 };
 
 class OboeSourceSyncState {
@@ -16,33 +22,33 @@ public:
     OboeSourceSyncState();
     ~OboeSourceSyncState();
 
+    void requestGain(float newGain);
     void requestLooping(bool flag);
     void requestStop(bool flag);
-    void requestGain(float newGain);
     void requestPaused(bool flag);
     void requestStopped(bool flag);
 
-    void sync();
+    void syncRead();
 
-    const OboeSourceState* getReadState() const;
-    const OboeSourceState* getWriteState() const;
+    bool isEndConfirmed() const;
+    void confirmStart();
+    void confirmEnd();
 
-private:
-
-    OboeSourceState* getReadData();
-    OboeSourceState* getWriteData();
-
-private:
-
-    OboeSourceState states[2];
-    std::atomic<bool> isNeedUpdate;
-    std::atomic<bool> isUpdated;
-    std::atomic<bool> isReadFirst;
+    const OboeSourceState& getReadState() const;
 
 private:
 
     OboeSourceSyncState(const OboeSourceSyncState&) = delete;
     OboeSourceSyncState& operator=(const OboeSourceSyncState&) = delete;
+
+    void waitEndOfLastUpdate();
+
+private:
+
+    OboeSourceState readState;
+    OboeSourceState writeState;
+    std::atomic<bool> isUpdated;
+    std::atomic<bool> isEnded;
 };
 
 #endif /* __OBOE_SOURCE_STATE_HPP__ */

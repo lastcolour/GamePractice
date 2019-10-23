@@ -16,10 +16,14 @@ OboeMixer::OboeMixer() :
     numFrames(0) {
 
     resampler.setOutChannels(channels);
-    resampler.setOutRate(48000);
+    resampler.setOutRate(44100);
 }
 
 OboeMixer::~OboeMixer() {
+}
+
+void OboeMixer::setOutRate(int deviceOutRate) {
+    resampler.setOutRate(deviceOutRate);
 }
 
 void OboeMixer::startMixing(int outChannels, oboe::AudioFormat outFormat, void* outBuffer, int outNumFrames) {
@@ -66,6 +70,9 @@ void OboeMixer::mergeSourceToMixBuffers(MixBuffer& sourceBuffer, MixBuffer& mixB
 }
 
 void OboeMixer::addSource(OboeSoundSource& soundSource) {
+    if(!soundSource.queuryIsNeedStream()) {
+        return;
+    }
     int readSamplesCount = resampler.getSamplesForConvert(soundSource.getFrameRate(), numFrames);
     sourceBuffer.updateSize(readSamplesCount * channels);
     mixSilence(sourceBuffer);

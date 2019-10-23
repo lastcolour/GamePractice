@@ -12,7 +12,7 @@ OboeSoundSource::OboeSoundSource() :
 }
 
 OboeSoundSource::~OboeSoundSource() {
-    stopStreaming();
+    assert(!dataStream && "Data streams should be detached at this moment");
 }
 
 void OboeSoundSource::attachToDataStream(OggDataStream& newDataStream) {
@@ -22,17 +22,18 @@ void OboeSoundSource::attachToDataStream(OggDataStream& newDataStream) {
     }
     dataStream = &newDataStream;
     dataStream->setSampleOffset(0);
-    streamState = EStreamState::Normal;
 
+    streamState = EStreamState::Normal;
     syncState.requestGain(1.f);
     syncState.requestLooping(false);
-    syncState.requestStopped(false);
     syncState.requestPaused(false);
+    syncState.requestStopped(false);
+    syncState.confirmStart();
 }
 
 void OboeSoundSource::stopStreaming() {
     syncState.requestStopped(true);
-    while(isUseBuffer.load());
+    while(!syncState.isEndConfirmed());
     if(dataStream->sound) {
         dataStream->sound->detachFromSource();
     }
@@ -56,59 +57,58 @@ void OboeSoundSource::setLoop(bool loopFlag) {
     syncState.requestLooping(loopFlag);
 }
 
-bool OboeSoundSource::isStreaming() const {
-    return true;
-}
-
 bool OboeSoundSource::isLooped() const {
-    return syncState.getWriteState()->isLooped;
+    return syncState.getReadState().isLooped;
 }
 
 float OboeSoundSource::getGain() const {
-    return syncState.getReadState()->gain;
+    return syncState.getReadState().gain;
 }
 
 void OboeSoundSource::update() {
-    if(dataStream == nullptr) {
-        return;
-    }
-    if(isEnded.load()) {
+    if(dataStream && syncState.isEndConfirmed()) {
         stopStreaming();
     }
 }
 
 void OboeSoundSource::fillBuffer(float* outBuffer, int numFrames, int channels) {
-    syncState.sync();
-    const OboeSourceState* currentState = syncState.getReadState();
-    if(currentState->isPaused || currentState->isStopped) {
-        return;
-    }
+    auto& currentState = syncState.getReadState();
     switch(streamState)
     {
     case EStreamState::Normal: {
-        isUseBuffer.store(true);
-        int readCount = dataStream->fillF32(outBuffer, numFrames, channels, currentState->isLooped);
-        isUseBuffer.store(false);
+        int readCount = dataStream->fillF32(outBuffer, numFrames, channels, currentState.isLooped);
         if(readCount < numFrames) {
             streamState = EStreamState::WaitEnd;
         }
         break;
     }
     case EStreamState::WaitEnd: {
-        streamState = EStreamState::Ended;
-        isEnded.store(true);
-        break;
-    }
-    case EStreamState::Ended: {
-        // free source && return it to audio system
+        syncState.confirmEnd();
         break;
     }
     default:
+        assert(false && "Invalid stream state");
         break;
     }
 }
 
+bool OboeSoundSource::queuryIsNeedStream() {
+    if(syncState.isEndConfirmed()) {
+        return false;
+    }
+    syncState.syncRead();
+    auto& currentState = syncState.getReadState();
+    if(currentState.isPaused) {
+        return false;
+    }
+    if(currentState.isStopped) {
+        syncState.confirmEnd();
+        return false;
+    }
+    assert(dataStream && "Invalid data stream when trying to stream");
+    return true;
+}
+
 int OboeSoundSource::getFrameRate() const {
-    assert(dataStream && "Invalid data stream");
     return dataStream->sampleRate;
 }

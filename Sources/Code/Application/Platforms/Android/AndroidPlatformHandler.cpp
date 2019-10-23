@@ -102,6 +102,8 @@ void AndroindPlatformHandler::initAppThread() {
 }
 
 void AndroindPlatformHandler::deinitAppThread() {
+    ANativeActivity_finish(nativeActivity);
+
     if(inputQueue) {
         AInputQueue_detachLooper(inputQueue);
     }
@@ -302,6 +304,9 @@ void AndroindPlatformHandler::markEventHandled(ActivityEventType eventType) {
 }
 
 void AndroindPlatformHandler::waitUntilEventHandler(ActivityEventType eventType) {
+    if(eventType == ActivityEventType::OnDestroy) {
+        return;
+    }
     std::unique_lock<std::mutex> uniqueLock(mutex);
     cond.wait(uniqueLock, [this, eventType](){
         if(handledEventMap[static_cast<size_t>(eventType)]) {

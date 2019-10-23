@@ -17,6 +17,17 @@ OboeAudioSystem::OboeAudioSystem() :
 OboeAudioSystem::~OboeAudioSystem() {
 }
 
+bool OboeAudioSystem::initOboeMixer() {
+    const AndroidAudioDeviceConfig* deviceConfig = nullptr;
+    ET_SendEventReturn(deviceConfig, &ETAndroidAudioDevice::ET_getAudioConfig);
+    if(!deviceConfig) {
+        LogError("[OboeAudioSystem::initOboeMixer] Can't get config of audio device");
+        return false;
+    }
+    mixer.setOutRate(deviceConfig->frameRate);
+    return true;
+}
+
 bool OboeAudioSystem::initOboeSources() {
     const int maxSources = ET_getConfig<AudioConfig>()->maxSoundSources;
     for(int i = 0; i < maxSources; ++i) {
@@ -31,7 +42,6 @@ bool OboeAudioSystem::initOboeStream() {
     builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
     builder.setSharingMode(oboe::SharingMode::Exclusive);
     builder.setCallback(this);
-
     auto res = builder.openStream(&oboeStream);
     if(res != oboe::Result::OK){
         LogError("[OboeAudioSystem::init] Can't open oboe stream. Error: %s", oboe::convertToText(res));
@@ -49,6 +59,9 @@ bool OboeAudioSystem::initOboeStream() {
 }
 
 bool OboeAudioSystem::init() {
+    if(!initOboeMixer()) {
+        return false;
+    }
     if(!initOboeSources()) {
         return false;
     }

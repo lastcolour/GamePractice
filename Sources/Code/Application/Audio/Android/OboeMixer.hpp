@@ -13,6 +13,8 @@ public:
     OboeMixer();
     ~OboeMixer();
 
+    void setOutRate(int deviceOutRate);
+
     void startMixing(int outChannels, oboe::AudioFormat outFormat, void* outBuffer, int outNumFrames);
     void addSource(OboeSoundSource& soundSource);
     void endMixing();

@@ -21,7 +21,11 @@ public:
 
 private:
 
-    AndroidAudioDeviceConfig config;
+    bool readDeviceConfig();
+
+private:
+
+    AndroidAudioDeviceConfig deviceConfig;
 };
 
 #endif /* __ANDROID_AUDIO_DEVICE_HPP__ */

@@ -21,10 +21,13 @@ public:
     void stopStreaming() override;
     void pauseStreaming() override;
     void resumeStreaming() override;
-    bool isStreaming() const override;
     void setGain(float newGain) override;
     void setLoop(bool loopFlag) override;
     bool isLooped() const override;
+
+private:
+
+    bool isStreaming() const;
 
 private:
 

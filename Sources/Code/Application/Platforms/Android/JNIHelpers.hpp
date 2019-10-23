@@ -110,7 +110,7 @@ public:
         value = nullptr;
     }
 
-    std::string castToString() const {
+    std::string copyToString() const {
         assert(value && "Invalid object to cast to string");
         std::string resStr;
         {

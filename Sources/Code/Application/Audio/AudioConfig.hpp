@@ -8,7 +8,6 @@ public:
 
     int maxSoundSources;
 
-
 public:
 
     AudioConfig();
