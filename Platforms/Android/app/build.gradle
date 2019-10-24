@@ -21,6 +21,10 @@ android {
 
         // Defines a user-friendly version name for your app.
         versionName "1.0"
+
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
 
     buildTypes {

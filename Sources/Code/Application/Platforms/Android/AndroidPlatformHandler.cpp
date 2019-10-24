@@ -41,7 +41,8 @@ AndroindPlatformHandler::AndroindPlatformHandler(ANativeActivity* activity, void
     isAppCreated(false),
     isAppTreadDestroyed(false),
     pendingInputQueue(nullptr),
-    handledEventMap(static_cast<size_t>(ActivityEventType::EVENT_COUNT), 0) {
+    handledEventMap(static_cast<size_t>(ActivityEventType::EVENT_COUNT), 0),
+    onDestroyPolled(false) {
 }
 
 AndroindPlatformHandler::~AndroindPlatformHandler() {
@@ -102,14 +103,22 @@ void AndroindPlatformHandler::initAppThread() {
 }
 
 void AndroindPlatformHandler::deinitAppThread() {
-    ANativeActivity_finish(nativeActivity);
-
     if(inputQueue) {
         AInputQueue_detachLooper(inputQueue);
     }
     AConfiguration_delete(config);
 
     isAppTreadDestroyed.store(true);
+}
+
+void AndroindPlatformHandler::waitOnDestroyEvent() {
+    if(onDestroyPolled) {
+        return;
+    }
+    ANativeActivity_finish(nativeActivity);
+    while(!onDestroyPolled) {
+        pollEvents();
+    }
 }
 
 void AndroindPlatformHandler::start() {
@@ -123,6 +132,7 @@ void AndroindPlatformHandler::start() {
             Application app(std::unique_ptr<Platform>(new AndroidPlatform()));
             isAppCreated.store(true);
             app.run();
+            waitOnDestroyEvent();
         }
         deinitAppThread();
     });
@@ -208,6 +218,8 @@ void AndroindPlatformHandler::pollActivityEvents() {
             AInputQueue_attachLooper(pendingInputQueue, looper, static_cast<int>(LooperQueueId::Input), nullptr, nullptr);
             inputQueue = pendingInputQueue;
         }
+    } else if (eventType == ActivityEventType::OnDestroy) {
+        onDestroyPolled = true;
     }
     ET_SendEvent(&ETAndroidActivityEvents::ET_onActivityEvent, eventType);
     markEventHandled(eventType);
@@ -304,9 +316,6 @@ void AndroindPlatformHandler::markEventHandled(ActivityEventType eventType) {
 }
 
 void AndroindPlatformHandler::waitUntilEventHandler(ActivityEventType eventType) {
-    if(eventType == ActivityEventType::OnDestroy) {
-        return;
-    }
     std::unique_lock<std::mutex> uniqueLock(mutex);
     cond.wait(uniqueLock, [this, eventType](){
         if(handledEventMap[static_cast<size_t>(eventType)]) {

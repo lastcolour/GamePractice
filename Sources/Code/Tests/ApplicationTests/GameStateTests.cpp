@@ -50,10 +50,12 @@ TEST_F(GameStateTests, CheckPreGameState) {
 
 TEST_F(GameStateTests, CheckPreGame_Resize) {
     // Finish board appearing
+    ASSERT_FALSE(true);
 }
 
 TEST_F(GameStateTests, CheckPreGame_Pause) {
     // Finish board appearing
+    ASSERT_FALSE(true);
 }
 
 TEST_F(GameStateTests, CheckInGameState) {

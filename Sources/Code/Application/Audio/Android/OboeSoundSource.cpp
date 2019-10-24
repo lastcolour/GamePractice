@@ -61,6 +61,10 @@ bool OboeSoundSource::isLooped() const {
     return syncState.getReadState().isLooped;
 }
 
+bool OboeSoundSource::isPaused() const {
+    return syncState.getReadState().isPaused;
+}
+
 float OboeSoundSource::getGain() const {
     return syncState.getReadState().gain;
 }

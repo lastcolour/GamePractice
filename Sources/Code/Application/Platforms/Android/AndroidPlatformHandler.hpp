@@ -60,6 +60,7 @@ private:
     void deinitHandler(); 
 
     void initAppThread();
+    void waitOnDestroyEvent();
     void deinitAppThread();
     void onActivityEvent(ActivityEventType eventType);
 
@@ -89,6 +90,8 @@ private:
     std::unique_ptr<Application> app;
 
     std::vector<int> handledEventMap;
+
+    bool onDestroyPolled;
 };
 
 AndroindPlatformHandler* GetAndroindPlatformHandler();

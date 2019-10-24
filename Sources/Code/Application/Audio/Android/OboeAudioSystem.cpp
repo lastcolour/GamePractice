@@ -72,7 +72,15 @@ bool OboeAudioSystem::init() {
     return true;
 }
 
+void OboeAudioSystem::stopOboeStream() {
+    if(!oboeStream) {
+        return;
+    }
+    oboeStream->stop();
+}
+
 void OboeAudioSystem::deinit() {
+    stopOboeStream();
     ETNode<ETAudioSystem>::disconnect();
     return;
 }

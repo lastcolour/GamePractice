@@ -32,6 +32,8 @@ private:
     bool initOboeStream();
     bool initOboeSources();
 
+    void stopOboeStream();
+
 private:
 
     OboeMixer mixer;

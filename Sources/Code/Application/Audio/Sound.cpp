@@ -65,3 +65,10 @@ void Sound::setVolume(float volume) {
     }
     soundSource->setGain(volume);
 }
+
+bool Sound::isPlaying() const {
+    if(!soundSource) {
+        return false;
+    }
+    return !soundSource->isPaused();
+}

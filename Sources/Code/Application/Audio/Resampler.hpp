@@ -23,6 +23,7 @@ public:
     void setOutRate(int newOutRate);
     void setOutChannels(int newOutChannels);
     int getSamplesForConvert(int inRate, int numSamples) const;
+    int getOutSamples(int inRate, int numSamples) const;
 
     int convertPoint(ResampleRequest& req);
     int convertLinear(ResampleRequest& req);
@@ -45,10 +46,10 @@ private:
 
     struct ConvertState {
         double frac;
-        float fracOffset;
+        double fracOffset;
         int outSamples;
 
-        ConvertState() : frac(0.0), fracOffset(0.f), outSamples(0) {}
+        ConvertState() : frac(0.0), fracOffset(0.0), outSamples(0) {}
     };
 
 private:

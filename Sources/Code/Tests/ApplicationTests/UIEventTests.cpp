@@ -139,6 +139,7 @@ TEST_F(UIEventTests, CheckGameEndTimerResumeAfterBack) {
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
 
     float tickDuration = 0.5f;
+    ET_SendEvent(&ETTimerEvents::ET_onTick, 0.f);
     ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
 
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);

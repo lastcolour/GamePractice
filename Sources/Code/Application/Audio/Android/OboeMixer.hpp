@@ -43,6 +43,7 @@ private:
 
     Resampler resampler;
     MixBuffer sourceBuffer;
+    MixBuffer resampleBuffer;
     MixBuffer mixBuffer;
     void* buffer;
     oboe::AudioFormat format;

@@ -46,14 +46,18 @@ void Resampler::setOutChannels(int newOutChannels) {
 }
 
 int Resampler::getSamplesForConvert(int inRate, int numSamples) const {
-    return outRate * numSamples / inRate;
+    return numSamples * inRate / outRate;
+}
+
+int Resampler::getOutSamples(int inRate, int numSamples) const {
+    return numSamples * outRate / inRate;
 }
 
 void Resampler::setupState(const ResampleRequest& req) {
     assert(isValidRequest(req) && "Invalid convert request");
-    state.outSamples = getSamplesForConvert(req.inRate, req.inSamples);
+    state.outSamples = getOutSamples(req.inRate, req.inSamples);
     state.frac = req.inRate / static_cast<float>(outRate);
-    state.fracOffset = 0;
+    state.fracOffset = 0.0;
 }
 
 int Resampler::getIndex() const {

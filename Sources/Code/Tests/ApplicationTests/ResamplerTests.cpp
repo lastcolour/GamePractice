@@ -99,7 +99,7 @@ TEST_F(ResamplerTests, CheckSamplesForConvert) {
     {
         Resampler resampler;
         resampler.setOutRate(2);
-        EXPECT_EQ(resampler.getSamplesForConvert(3, 6), 4);
+        EXPECT_EQ(resampler.getSamplesForConvert(3, 6), 9);
     }
     {
         Resampler resampler;
@@ -109,11 +109,11 @@ TEST_F(ResamplerTests, CheckSamplesForConvert) {
     {
         Resampler resampler;
         resampler.setOutRate(48000);
-        EXPECT_EQ(resampler.getSamplesForConvert(44100, 960), 1044);
+        EXPECT_EQ(resampler.getSamplesForConvert(44100, 960), 882);
     }
     {
         Resampler resampler;
         resampler.setOutRate(44100);
-        EXPECT_EQ(resampler.getSamplesForConvert(48000, 960), 882);
+        EXPECT_EQ(resampler.getSamplesForConvert(48000, 960), 1044);
     }
 }

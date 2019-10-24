@@ -82,6 +82,10 @@ bool ALSoundSource::isLooped() const {
     return looping;
 }
 
+bool ALSoundSource::isPaused() const {
+    return !isStreaming();
+}
+
 void ALSoundSource::setGain(float newGain) {
     alSourcef(sourceId, AL_GAIN, newGain);
 }

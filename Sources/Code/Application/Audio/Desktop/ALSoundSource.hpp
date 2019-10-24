@@ -24,6 +24,7 @@ public:
     void setGain(float newGain) override;
     void setLoop(bool loopFlag) override;
     bool isLooped() const override;
+    bool isPaused() const override;
 
 private:
 

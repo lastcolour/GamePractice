@@ -1,5 +1,6 @@
 #include "TestUtils/GameTestUtils.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 namespace {
 
@@ -25,7 +26,7 @@ void WaitPreGameEnd() {
     GameBoardAppearListener listener;
     while (!listener.isBoardAppeard) {
         float dt = 0.01f;
-        ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
+        ET_SendEvent(&ETTimerEvents::ET_onTick, dt);
     }
 }
 

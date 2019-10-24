@@ -39,7 +39,7 @@ void OboeMixer::startMixing(int outChannels, oboe::AudioFormat outFormat, void* 
 
 void OboeMixer::mixSilence(MixBuffer& buffer) {
     auto& data = buffer.data;
-    memset(static_cast<void*>(data.get()), 0, sizeof(float) * buffer.size);
+    std::fill_n(data.get(), buffer.size, 0.f);
 }
 
 void OboeMixer::fillSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int readFramesCount) {
@@ -48,12 +48,17 @@ void OboeMixer::fillSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& sourc
 }
 
 void OboeMixer::resampleSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source, int inSamplesCount) {
+    resampleBuffer.updateSize(sourceBuffer.size);
+
     ResampleRequest req;
     req.inData = sourceBuffer.data.get();
     req.inRate = source.getFrameRate();
     req.inSamples = inSamplesCount;
-    req.outData = sourceBuffer.data.get();
+    req.outData = resampleBuffer.data.get();
     resampler.convertPoint(req);
+
+    sourceBuffer.data.swap(resampleBuffer.data);
+    std::swap(resampleBuffer.size, sourceBuffer.size);
 }
 
 void OboeMixer::postProcessSourceBuffer(MixBuffer& sourceBuffer, OboeSoundSource& source) {
