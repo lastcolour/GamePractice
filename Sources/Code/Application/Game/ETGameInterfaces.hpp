@@ -42,11 +42,20 @@ struct ETGameBoardElemDestoryEvents {
 };
 
 enum class EBoardElemState {
-    Static = 0,
+    Void = 0,
+    Static,
     Moving,
     Removing,
     Switching,
-    Void
+};
+
+enum class EBoardElemType {
+    None = 0,
+    Red,
+    Blue,
+    Green,
+    Purple,
+    Yellow
 };
 
 struct ETGameBoard {
@@ -54,6 +63,7 @@ struct ETGameBoard {
     virtual void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) = 0;
     virtual void ET_setElemState(EntityId elemEntId, EBoardElemState newState) = 0;
     virtual EBoardElemState ET_getElemState(EntityId elemEntId) const = 0;
+    virtual EBoardElemType ET_getElemType(EntityId elemEntId) const = 0;
     virtual void ET_updateBoard() = 0;
     virtual EntityId ET_getElemByPos(const Vec2i& pt) const = 0;
     virtual EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const = 0;
@@ -144,6 +154,11 @@ struct ETGAmeBoardInteractionLogic {
     virtual ~ETGAmeBoardInteractionLogic() = default;
     virtual void ET_allowInteraction(bool flag) = 0;
     virtual bool ET_canInteract() const = 0;
+};
+
+struct ETGameBoardMatcher {
+    virtual ~ETGameBoardMatcher() = default;
+    virtual std::vector<EntityId> ET_getMatchedElements() = 0;
 };
 
 #endif /* __ET_GAME_INTERFACES_HPP__ */

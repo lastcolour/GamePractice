@@ -13,6 +13,7 @@
 #include "Game/Logics/GameScoreLogic.hpp"
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
+#include "Game/Logics/GameBoardMatchLogic.hpp"
 
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
@@ -64,6 +65,7 @@ bool EntityManager::init() {
     registerLogic<GameScoreLogic>("GameScore");
     registerLogic<GameScoreUpdaterLogic>("GameScoreUpdater");
     registerLogic<GameBoardAppearAnimationLogic>("GameBoardAppearAnimation");
+    registerLogic<GameBoardMatchLogic>("GameBoardMatcher");
 
     registerLogic<UIBox>("UIBox");
     registerLogic<UIList>("UIList");

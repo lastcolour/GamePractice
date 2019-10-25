@@ -85,10 +85,19 @@ void GameBoardLogic::ET_setElemState(EntityId elemEntId, EBoardElemState newStat
 EBoardElemState GameBoardLogic::ET_getElemState(EntityId elemEntId) const {
     auto elem = getElem(elemEntId);
     if(!elem) {
-        assert(false && "Try set state to invalid board element");
+        assert(false && "Try get state from invalid board element");
         return EBoardElemState::Void;
     }
     return elem->state;
+}
+
+EBoardElemType GameBoardLogic::ET_getElemType(EntityId elemEntId) const {
+    auto elem = getElem(elemEntId);
+    if(!elem) {
+        assert(false && "Try get type from invalid board element");
+        return EBoardElemType::None;
+    }
+    return elem->type;
 }
 
 void GameBoardLogic::ET_updateBoard() {
@@ -163,32 +172,28 @@ void GameBoardLogic::initBoardBox() {
     boardBox.setCenter(box.getCenter());
 }
 
-ColorB GameBoardLogic::getElemColor(BoardElemType elemType) const {
+ColorB GameBoardLogic::getElemColor(EBoardElemType elemType) const {
     ColorB retCol(255, 255, 255);
     switch(elemType) {
-        case BoardElemType::Red:
+        case EBoardElemType::Red:
             retCol = ColorB(255, 0, 0);
             break;
-        case BoardElemType::Blue:
+        case EBoardElemType::Blue:
             retCol = ColorB(0, 0, 255);
             break;
-        case BoardElemType::Green:
+        case EBoardElemType::Green:
             retCol = ColorB(0, 255, 0);
             break;
-        case BoardElemType::Purple:
+        case EBoardElemType::Purple:
             retCol = ColorB(255, 0, 255);
             break;
-        case BoardElemType::Yellow:
+        case EBoardElemType::Yellow:
             retCol = ColorB(255, 255, 0);
             break;
         default:
             break;
     }
     return retCol;
-}
-
-BoardElemType GameBoardLogic::getElemType() const {
-    return static_cast<BoardElemType>(Math::RandomInt(0, static_cast<int>(BoardElemType::ENUM_COUNT) - 1));
 }
 
 bool GameBoardLogic::init() {
@@ -281,71 +286,14 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
 }
 
-bool GameBoardLogic::isElemMatch(int firstElemId, int secondElemId) const {
-    const BoardElement& firstElem = elements[firstElemId];
-    const BoardElement& secondElem = elements[secondElemId];
-    if(firstElem.state == EBoardElemState::Static && secondElem.state == EBoardElemState::Static) {
-        return firstElem.color == secondElem.color;
-    }
-    return false;
-}
-
 void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const {
     elem.state = EBoardElemState::Static;
     elem.movePt = boardPt;
-    elem.color = getElemType();
+    elem.type = static_cast<EBoardElemType>(Math::RandomInt(1, static_cast<int>(EBoardElemType::Yellow)));
     setElemBoardPos(elem, boardPt);
 
-    ET_SendEvent(elem.entId, &ETRenderColoredTexture::ET_setTextureColor, getElemColor(elem.color));
+    ET_SendEvent(elem.entId, &ETRenderColoredTexture::ET_setTextureColor, getElemColor(elem.type));
     ET_SendEvent(elem.entId, &ETRenderImageLogic::ET_setSize, objectSize);
-}
-
-void GameBoardLogic::markForRemoveElems(const std::vector<int>& elems) {
-    for(auto elemId : elems) {
-        auto& elem = elements[elemId];
-        elem.state = EBoardElemState::Void;
-        ET_SendEvent(getEntityId(), &ETGameBoardElemDestroy::ET_destroyBoardElem, elem.entId);
-    }
-}
-
-bool GameBoardLogic::removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
-    assert(lineLen >= 1 && "Invalid line len");
-    std::vector<int> lineElemIds;
-    lineElemIds.reserve(lineLen);
-    int firstElemId = getElemId(boardPt);
-    lineElemIds.push_back(firstElemId);
-    for(int i = 1; i < lineLen; ++i) {
-        auto elemId = getElemId(Vec2i(boardPt.x + i, boardPt.y));
-        if(elemId == INVALID_BOARD_ELEM_ID) {
-            return false;
-        }
-        if(!isElemMatch(firstElemId, elemId)) {
-            return false;
-        }
-        lineElemIds.push_back(elemId);
-    }
-    markForRemoveElems(lineElemIds);
-    return true;
-}
-
-bool GameBoardLogic::removeVerticalLine(const Vec2i& boardPt, int lineLen) {
-    assert(lineLen >= 1 && "Invalid line len");
-    std::vector<int> lineElemIds;
-    lineElemIds.reserve(lineLen);
-    int firstElemId = getElemId(boardPt);
-    lineElemIds.push_back(firstElemId);
-    for(int i = 1; i < lineLen; ++i) {
-        auto elemId = getElemId(Vec2i(boardPt.x, boardPt.y + i));
-        if(elemId == INVALID_BOARD_ELEM_ID) {
-            return false;
-        }
-        if(!isElemMatch(firstElemId, elemId)) {
-            return false;
-        }
-        lineElemIds.push_back(elemId);
-    }
-    markForRemoveElems(lineElemIds);
-    return true;
 }
 
 const BoardElement* GameBoardLogic::getTopElem(const Vec2i& boardPt) const {
@@ -399,15 +347,13 @@ void GameBoardLogic::updateAfterRemoves() {
 }
 
 void GameBoardLogic::updateBoard() {
-    for(auto& elem : elements) {
-        removeVerticalLine(elem.boardPt, 5);
-        removeHorizontalLine(elem.boardPt, 5);
-
-        removeVerticalLine(elem.boardPt, 4);
-        removeHorizontalLine(elem.boardPt, 4);
-
-        removeVerticalLine(elem.boardPt, 3);
-        removeHorizontalLine(elem.boardPt, 3);
+    std::vector<EntityId> elemToRemove;
+    ET_SendEventReturn(elemToRemove, getEntityId(), &ETGameBoardMatcher::ET_getMatchedElements);
+    for(auto& elemEntId : elemToRemove) {
+        auto boardElem = getElem(elemEntId);
+        assert(boardElem && "Try to remove invalid board elem");
+        boardElem->state = EBoardElemState::Void;
+        ET_SendEvent(getEntityId(), &ETGameBoardElemDestroy::ET_destroyBoardElem, boardElem->entId);
     }
     updateAfterRemoves();
 }

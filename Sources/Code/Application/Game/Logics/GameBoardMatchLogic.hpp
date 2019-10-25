@@ -1,0 +1,37 @@
+#ifndef __GAME_BOARD_MATCH_LOGIC_HPP__
+#define __GAME_BOARD_MATCH_LOGIC_HPP__
+
+#include "Entity/EntityLogic.hpp"
+#include "Game/ETGameInterfaces.hpp"
+
+#include <unordered_set>
+
+class GameBoardMatchLogic : public EntityLogic,
+    public ETNode<ETGameBoardMatcher> {
+
+    using MatchElemCollectionT = std::unordered_set<EntityId>;
+
+public:
+
+    GameBoardMatchLogic();
+    virtual ~GameBoardMatchLogic();
+
+    // EntityLogic
+    bool serialize(const JSONNode& node) override;
+    bool init() override;
+
+    // ETGameBoardMatcher
+    std::vector<EntityId> ET_getMatchedElements() override;
+
+private:
+
+    bool isElementsMatch(EntityId firstId, EntityId secondId) const;
+    bool findMatchLine(const Vec2i& startPt, int lineLen, bool isHorizontal, MatchElemCollectionT& result);
+
+private:
+
+    int minLineLen;
+    int maxLineLen;
+};
+
+#endif /* __GAME_BOARD_MATCH_LOGIC_HPP__ */

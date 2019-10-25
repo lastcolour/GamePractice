@@ -61,7 +61,7 @@ public:
 protected:
 
     bool serialize(const JSONNode& node) override { return true; }
-    BoardElemType getElemType() const override { return BoardElemType::Blue; }
+    EBoardElemType getElemType() const override { return EBoardElemType::Blue; }
 };
 
 void GameBoardTests::SetUp() {

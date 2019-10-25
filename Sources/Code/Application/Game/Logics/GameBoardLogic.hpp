@@ -11,21 +11,12 @@
 #include <vector>
 #include <memory>
 
-enum class BoardElemType {
-    Red = 0,
-    Blue,
-    Green,
-    Purple,
-    Yellow,
-    ENUM_COUNT
-};
-
 struct BoardElement {
     AABB2Di box;
     Vec2i movePt;
     Vec2i boardPt;
     EntityId entId;
-    BoardElemType color;
+    EBoardElemType type;
     EBoardElemState state;
 };
 
@@ -47,6 +38,7 @@ public:
     void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) override;
     void ET_setElemState(EntityId elemEntId, EBoardElemState newState) override;
     EBoardElemState ET_getElemState(EntityId elemEntId) const override;
+    EBoardElemType ET_getElemType(EntityId elemEntId) const override;
     void ET_updateBoard() override;
     EntityId ET_getElemByPos(const Vec2i& pt) const override;
     EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const override;
@@ -68,7 +60,7 @@ public:
 
 protected:
 
-    virtual BoardElemType getElemType() const;
+    //virtual EBoardElemType getElemType() const;
     int getElemId(const Vec2i& boardPt) const;
     Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const;
     const BoardElement* getElem(EntityId entId) const;
@@ -78,17 +70,12 @@ protected:
     int getVoidElemBelow(const Vec2i& boardPt) const;
     const BoardElement* getTopElem(const Vec2i& boardPt) const;
     bool moveElem(BoardElement& elem, float dt);
-    void markForRemoveElems(const std::vector<int>& elems);
-    bool isElemMatch(int firstElemId, int secondElemId) const;
     void initNewElem(BoardElement& elem, const Vec2i& boardPt) const;
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
-    ColorB getElemColor(BoardElemType color) const;
+    ColorB getElemColor(EBoardElemType elemType) const;
     void updateAfterRemoves();
     void updateBoard();
-
-    bool removeVerticalLine(const Vec2i& boardPt, int lineLen);
-    bool removeHorizontalLine(const Vec2i& boardPt, int lineLen);
 
     void initBoardBox();
 
