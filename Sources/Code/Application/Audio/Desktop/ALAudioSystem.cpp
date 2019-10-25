@@ -63,7 +63,7 @@ bool ALAudioSystem::initSoundContext() {
 bool ALAudioSystem::initSoundSources() {
     auto maxSources = ET_getConfig<AudioConfig>()->maxSoundSources;
 
-    ALuint sourceIds[maxSources];
+    std::unique_ptr<ALuint[]> sourceIds(new ALuint[maxSources]);
     alGenSources(maxSources, &sourceIds[0]);
     auto alError = alGetError();
     if(alError != AL_NO_ERROR) {
@@ -85,7 +85,7 @@ bool ALAudioSystem::initSoundSources() {
 
 std::vector<SoundSource*> ALAudioSystem::ET_getSourcesToManage() {
     std::vector<SoundSource*> sources;
-    for(int i = 0, sz = alSources.size(); i < sz; ++i) {
+    for(size_t i = 0, sz = alSources.size(); i < sz; ++i) {
         sources.emplace_back(alSources[i].get());
     }
     return sources;

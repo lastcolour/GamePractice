@@ -27,7 +27,7 @@ void SoundSourceManager::deinit() {
 }
 
 SoundSource* SoundSourceManager::ET_getFreeSource() {
-    for(int i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
+    for(size_t i = 0, sz = sourceStateMap.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Free) {
             sourceStateMap[i] = ESourceState::Busy;
             return sources[i];
@@ -38,7 +38,7 @@ SoundSource* SoundSourceManager::ET_getFreeSource() {
 
 void SoundSourceManager::ET_returnSoundSource(SoundSource* retSoundSource) {
     assert(retSoundSource != nullptr && "Invalid sound source");
-    for(int i = 0, sz = sources.size(); i < sz; ++i) {
+    for(size_t i = 0, sz = sources.size(); i < sz; ++i) {
         if(retSoundSource == sources[i]) {
             assert(sourceStateMap[i] == ESourceState::Busy && "Try return free source");
             sourceStateMap[i] = ESourceState::Free;
@@ -49,7 +49,7 @@ void SoundSourceManager::ET_returnSoundSource(SoundSource* retSoundSource) {
 }
 
 void SoundSourceManager::ET_onTick(float dt) {
-    for(int i = 0, sz = sources.size(); i < sz; ++i) {
+    for(size_t i = 0, sz = sources.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Busy) {
             sources[i]->update();
         }

@@ -6,7 +6,7 @@
 #include <memory>
 
 class Sound;
-class SoundSource;
+struct SoundSource;
 
 struct ETSoundPlayer {
     virtual ~ETSoundPlayer() = default;
