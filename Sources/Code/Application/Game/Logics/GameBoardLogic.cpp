@@ -286,13 +286,17 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
 }
 
+void GameBoardLogic::setElemType(BoardElement& elem) const {
+    elem.type = static_cast<EBoardElemType>(Math::RandomInt(1, static_cast<int>(EBoardElemType::Yellow)));
+    ET_SendEvent(elem.entId, &ETRenderColoredTexture::ET_setTextureColor, getElemColor(elem.type));
+}
+
 void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const {
     elem.state = EBoardElemState::Static;
     elem.movePt = boardPt;
-    elem.type = static_cast<EBoardElemType>(Math::RandomInt(1, static_cast<int>(EBoardElemType::Yellow)));
     setElemBoardPos(elem, boardPt);
+    setElemType(elem);
 
-    ET_SendEvent(elem.entId, &ETRenderColoredTexture::ET_setTextureColor, getElemColor(elem.type));
     ET_SendEvent(elem.entId, &ETRenderImageLogic::ET_setSize, objectSize);
 }
 

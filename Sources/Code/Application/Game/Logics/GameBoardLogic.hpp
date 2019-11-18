@@ -60,7 +60,6 @@ public:
 
 protected:
 
-    //virtual EBoardElemType getElemType() const;
     int getElemId(const Vec2i& boardPt) const;
     Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const;
     const BoardElement* getElem(EntityId entId) const;
@@ -76,8 +75,11 @@ protected:
     ColorB getElemColor(EBoardElemType elemType) const;
     void updateAfterRemoves();
     void updateBoard();
-
     void initBoardBox();
+
+protected:
+
+    virtual void setElemType(BoardElement& elem) const;
 
 protected:
 

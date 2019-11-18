@@ -31,18 +31,35 @@ public:
     std::vector<BoardElement>& getElements() {
         return elements;
     }
+
     Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const {
         return GameBoardLogic::getBoardPosFromPos(boardPt, pt);
     }
+
     Vec3 getPosFromBoardPos(const Vec2i& pt) const {
         return GameBoardLogic::ET_getPosFromBoardPos(pt);
     }
-    bool removeVerticalLine(const Vec2i& boardPt, int lineLen) {
-        return GameBoardLogic::removeVerticalLine(boardPt, lineLen);
+
+    void removeVerticalLine(const Vec2i& boardPt, int lineLen) {
+        Vec2i elemPt = boardPt;
+        for(int i = 0; i < lineLen; ++i) {
+            auto elem = getElem(elemPt);
+            assert(elem && "Try remove invalid elem");
+            elem->state = EBoardElemState::Void;
+            ++elemPt.y;
+        }
     }
-    bool removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
-        return GameBoardLogic::removeHorizontalLine(boardPt, lineLen);
+
+    void removeHorizontalLine(const Vec2i& boardPt, int lineLen) {
+        Vec2i elemPt = boardPt;
+        for(int i = 0; i < lineLen; ++i) {
+            auto elem = getElem(elemPt);
+            assert(elem && "Try remove invalid elem");
+            elem->state = EBoardElemState::Void;
+            ++elemPt.x;
+        }
     }
+
     int getCellSize() const {
         return cellSize;
     }
@@ -61,7 +78,7 @@ public:
 protected:
 
     bool serialize(const JSONNode& node) override { return true; }
-    EBoardElemType getElemType() const override { return EBoardElemType::Blue; }
+    void setElemType(BoardElement& elem) const override { elem.type = EBoardElemType::Blue; }
 };
 
 void GameBoardTests::SetUp() {
@@ -108,7 +125,7 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 3u);
 
-    ASSERT_TRUE(board->removeHorizontalLine(Vec2i(0, 0), 3));
+    board->removeHorizontalLine(Vec2i(0, 0), 3);
 
     board->updateAfterRemoves();
 
@@ -129,7 +146,7 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 3u);
 
-    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 3));
+    board->removeVerticalLine(Vec2i(0, 0), 3);
 
     board->updateAfterRemoves();
 
@@ -186,7 +203,8 @@ TEST_F(GameBoardTests, CheckMoving) {
     params.moveSpeed = 1.f;
     board->setParams(params);
     ASSERT_TRUE(board->init());
-    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 2));
+    
+    board->removeVerticalLine(Vec2i(0, 0), 2);
     board->updateAfterRemoves();
 
     ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
@@ -223,7 +241,7 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     board->setParams(params);
     ASSERT_TRUE(board->init());
 
-    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 1), 1));
+    board->removeVerticalLine(Vec2i(0, 1), 1);
     board->updateAfterRemoves();
 
     ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
@@ -233,7 +251,7 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
 
     board->ET_onGameTick(0.5f);
 
-    ASSERT_TRUE(board->removeVerticalLine(Vec2i(0, 0), 1));
+    board->removeVerticalLine(Vec2i(0, 0), 1);
     board->updateAfterRemoves();
 
     ASSERT_TRUE(board->getElem(Vec2i(0, 4)));
