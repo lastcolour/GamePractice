@@ -167,7 +167,7 @@ void UIViewStack::notifyNormalPop() {
 
     ET_SendEvent(&ETUIViewStackEvents::ET_onViewStartPop, activeViewId);
 
-    ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitchView, prevViewId, activeViewId);
+    ET_SendEvent(&ETUIViewSwitcher::ET_reverseSwitchView, activeViewId, prevViewId);
 }
 
 void UIViewStack::startNextTask() {

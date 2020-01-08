@@ -1,122 +1,172 @@
 #include "UI/UIViewSwitcher.hpp"
-#include "Render/ETRenderInterfaces.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
 
-#include <algorithm>
+#include <cassert>
 
-UIViewSwitcher::UIViewSwitcher() :
-    swtichDuration(0.2f) {
+UIViewSwitcher::UIViewSwitcher() {
 }
 
 UIViewSwitcher::~UIViewSwitcher() {
 }
 
 bool UIViewSwitcher::init() {
-    ETNode<ETTimerEvents>::connect(getEntityId());
     ETNode<ETUIViewSwitcher>::connect(getEntityId());
+    ETNode<ETTimerEvents>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     return true;
 }
 
 void UIViewSwitcher::deinit() {
+    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETUIViewSwitcher>::disconnect();
+    ETNode<ETRenderEvents>::disconnect();
 }
 
 void UIViewSwitcher::ET_onTick(float dt) {
-    if(!activeTask) {
-        return;
+    switch(switchTask.state) {
+        case SwitchState::Finished: {
+            return;
+        }
+        case SwitchState::HideOldView: {
+            bool isAnimEnded = true;
+            ET_SendEventReturn(isAnimEnded, switchTask.oldViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
+            switchTask.duration += dt;
+            if(!isAnimEnded) {
+                break;
+            } else {
+                switchTask.state = SwitchState::ShowNewView;
+                float duration = 0.f;
+                ET_SendEventReturn(duration, switchTask.oldViewId, &ETUIAppearAnimation::ET_getDuration);
+                switchTask.duration -= duration;
+                if(switchTask.duration < 0.01f) {
+                    break;
+                } else {
+                    // Process 'ShowNewView'
+                }
+            }
+        }
+        case SwitchState::ShowNewView: {
+            bool isAnimEnded = true;
+            ET_SendEventReturn(isAnimEnded, switchTask.newViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
+            switchTask.duration += dt;
+            if(isAnimEnded) {
+                ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, switchTask.newViewId);
+                switchTask.state = SwitchState::Finished;
+            }
+            break;
+        }
+        default: {
+            assert(false && "Invalid switch task state");
+        }
     }
-
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-
-    activeTask->duration += dt;
-
-    float prog = std::min(activeTask->duration / swtichDuration, 1.0f);
-    float shift = Math::Lerp(0.f, static_cast<float>(renderPort.x), prog);
-
-    float shiftForNewView = renderPort.x - shift;
-    float shiftForOldView = -shift;
-
-    if(activeTask->reverse) {
-        shiftForNewView = -shiftForNewView;
-        shiftForOldView = -shiftForOldView;
-    }
-
-    Transform tm;
-    ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
-    tm.pt.x = activeTask->startTm.pt.x + shiftForNewView;
-    ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
-
-    ET_SendEventReturn(tm, activeTask->oldViewId, &ETEntity::ET_getTransform);
-    tm.pt.x = activeTask->startTm.pt.x + shiftForOldView;
-    ET_SendEvent(activeTask->oldViewId, &ETEntity::ET_setTransform, tm);
-
-    if(activeTask->duration >= swtichDuration) {
-        EntityId oldViewId = activeTask->oldViewId;
-        activeTask.reset();
-        ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, oldViewId);
-    }
-}
-
-float UIViewSwitcher::ET_getSwitchDuration() const {
-    return swtichDuration;
-}
-
-void UIViewSwitcher::setupTask(EntityId newViewId, EntityId oldViewId, bool reverse) {
-    if(activeTask) {
-        LogError("[UIViewSwitcher::setupTask] Try switch view while alreay exist active task");
-        return;
-    }
-
-    activeTask.reset(new SwtichTask);
-    activeTask->duration = 0.f;
-    activeTask->newViewId = newViewId;
-    activeTask->oldViewId = oldViewId;
-    activeTask->reverse = reverse;
-    ET_SendEventReturn(activeTask->startTm, activeTask->oldViewId,
-        &ETEntity::ET_getTransform);
-
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-
-    Transform tm;
-    ET_SendEventReturn(tm, activeTask->newViewId, &ETEntity::ET_getTransform);
-
-    if(reverse) {
-        tm.pt.x -= static_cast<float>(renderPort.x);
-    } else {
-        tm.pt.x += static_cast<float>(renderPort.x);
-    }
-    ET_SendEvent(activeTask->newViewId, &ETEntity::ET_setTransform, tm);
 }
 
 void UIViewSwitcher::ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId) {
-    setupTask(newViewId, oldViewId, true);
+    ET_swtichView(oldViewId, newViewId);
 }
 
 void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
-    setupTask(newViewId, oldViewId, false);
-}
+    assert(newViewId.isValid() && "Invalid new view");
 
-void UIViewSwitcher::ET_reverse() {
-    if(!activeTask) {
-        LogError("[UIViewSwitcher::ET_reverse] Can't reverse task without task");
-        return;
+    if(oldViewId.isValid()) {
+        bool hideOldView = true;
+        ET_SendEventReturn(hideOldView, newViewId, &ETUIAppearAnimation::ET_isNeedHideOldView);
+        if(hideOldView) {
+            switchTask.state = SwitchState::HideOldView;
+            switchTask.oldViewId = oldViewId;
+            ET_SendEvent(oldViewId, &ETUIAppearAnimation::ET_setAppear, false);
+
+        } else {
+            switchTask.oldViewId = InvalidEntityId;
+            switchTask.state = SwitchState::ShowNewView;
+        }
     }
-    activeTask->duration = swtichDuration - activeTask->duration;
-    activeTask->reverse = !activeTask->reverse;
-    std::swap(activeTask->newViewId, activeTask->oldViewId);
+    ET_SendEvent(newViewId, &ETUIAppearAnimation::ET_setAppear, true);
+    switchTask.newViewId = newViewId;
+    switchTask.duration = 0.f;
 }
 
 void UIViewSwitcher::ET_forceSwtichStop() {
-    if(activeTask) {
-        activeTask.reset();
+    switchTask.oldViewId = InvalidEntityId;
+    switchTask.newViewId = InvalidEntityId;
+    switchTask.state = SwitchState::Finished;
+    switchTask.duration = 0.f;
+}
+
+void UIViewSwitcher::ET_reverse() {
+    switch(switchTask.state) {
+        case SwitchState::HideOldView: {
+            ET_SendEvent(switchTask.oldViewId, &ETUIAppearAnimation::ET_setAppear, true);
+
+            float origDuration = 0.f;
+            ET_SendEventReturn(origDuration, switchTask.oldViewId, &ETUIAppearAnimation::ET_getDuration);
+            switchTask.duration = origDuration - switchTask.duration;
+
+            switchTask.state = SwitchState::ShowNewView;
+            std::swap(switchTask.newViewId, switchTask.oldViewId);
+            break;
+        }
+        case SwitchState::ShowNewView: {
+            ET_SendEvent(switchTask.newViewId, &ETUIAppearAnimation::ET_setAppear, false);
+            ET_SendEvent(switchTask.oldViewId, &ETUIAppearAnimation::ET_setAppear, true);
+
+            float origDuration = 0.f;
+            ET_SendEventReturn(origDuration, switchTask.newViewId, &ETUIAppearAnimation::ET_getDuration);
+            switchTask.duration = origDuration - switchTask.duration;
+
+            switchTask.state = SwitchState::HideOldView;
+            std::swap(switchTask.newViewId, switchTask.oldViewId);
+            break;
+        }
+        case SwitchState::Finished: {
+            LogError("[UIViewSwitcher::ET_reverse] Can't do reverse switch without active one");
+            return;
+        }
+        default: {
+            assert(false && "Invalid switch state");
+        }
     }
 }
 
 void UIViewSwitcher::ET_onRenderPortResized() {
-    if(activeTask) {
-        activeTask->duration = swtichDuration;
-        ET_onTick(0.f);
+    switch(switchTask.state) {
+        case SwitchState::HideOldView: {
+            float duration = 0.f;
+            ET_SendEventReturn(duration, switchTask.oldViewId, &ETUIAppearAnimation::ET_getDuration);
+            duration += 0.1f;
+            ET_SendEvent(switchTask.oldViewId, &ETUIAppearAnimation::ET_animate, duration);
+            switchTask.state = SwitchState::ShowNewView;
+        }
+        case SwitchState::ShowNewView: {
+            float duration = 0.f;
+            ET_SendEventReturn(duration, switchTask.newViewId, &ETUIAppearAnimation::ET_getDuration);
+            duration += 0.1f;
+            ET_SendEvent(switchTask.newViewId, &ETUIAppearAnimation::ET_animate, duration);
+            switchTask.state = SwitchState::Finished;
+        }
+        case SwitchState::Finished: {
+            return;
+        }
+        default: {
+            assert(false && "Invalid switch task state");
+        }
     }
+}
+
+float UIViewSwitcher::ET_getTotalSwitchDuration() const {
+    if(switchTask.state == SwitchState::Finished) {
+        LogWarning("[UIViewSwitcher::ET_getTotalSwitchDuration] Can't get total duration without active switch task");
+        return 0.f;
+    }
+    float totalDuration = 0.f;
+    if(switchTask.oldViewId.isValid()) {
+        float duration = 0.f;
+        ET_SendEventReturn(duration, switchTask.oldViewId, &ETUIAppearAnimation::ET_getDuration);
+        totalDuration += duration;
+    }
+    if(switchTask.newViewId.isValid()) {
+        float duration = 0.f;
+        ET_SendEventReturn(duration, switchTask.newViewId, &ETUIAppearAnimation::ET_getDuration);
+        totalDuration += duration;
+    }
+    return totalDuration;
 }

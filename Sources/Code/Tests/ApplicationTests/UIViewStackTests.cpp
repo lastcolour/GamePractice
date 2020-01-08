@@ -3,6 +3,7 @@
 #include "TestUtils/UITestUtils.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Entity/EntityLogic.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 
 namespace {
 
@@ -254,4 +255,15 @@ TEST_F(UIViewStackTests, CheckInterruptPushEvents) {
     ASSERT_EQ(object->eventsHistory[4].eventType, StackEventType::StartPop);
     ASSERT_EQ(object->eventsHistory[5].eventType, StackEventType::StartPush);
     ASSERT_EQ(object->eventsHistory[6].eventType, StackEventType::FinishPush);
+}
+
+TEST_F(UIViewStackTests, CheckStackStateAfterResize) {
+    auto historyObj = createObjectAndLogic<ViewStackEventHitoryLogic>();
+
+    ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_1);
+    ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_2);
+
+    WaitViewSwitchEnd();
+
+    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
 }

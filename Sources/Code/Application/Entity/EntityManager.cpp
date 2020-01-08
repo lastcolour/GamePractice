@@ -30,6 +30,8 @@
 #include "UI/Logics/UILabelSetter.hpp"
 #include "UI/Logics/UIResultInfoSelector.hpp"
 #include "UI/Logics/UISwitchControl.hpp"
+#include "UI/Logics/UIAppearOnTop.hpp"
+#include "UI/Logics/UIAppearFromSide.hpp"
 
 #include "Audio/Logics/SoundPlayLogic.hpp"
 
@@ -78,6 +80,8 @@ bool EntityManager::init() {
     registerLogic<UILabelSetter>("UILabelSetter");
     registerLogic<UIResultInfoSelector>("UIResultInfoSelector");
     registerLogic<UISwitchControl>("UISwitchControl");
+    registerLogic<UIAppearOnTop>("UIAppearOnTop");
+    registerLogic<UIAppearFromSide>("UIAppearFromSide");
 
     registerLogic<SoundPlayLogic>("SoundPlayer");
 
@@ -258,7 +262,7 @@ Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) 
     auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - startTimeP).count();
 
-    LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName,  duration);
+    LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, duration);
 
     return entity;
 }

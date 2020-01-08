@@ -3,6 +3,7 @@
 #include "Entity/ETEntityInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "UI/Logics/UIBaseBox.hpp"
+#include "Core/ETPrimitives.hpp"
 
 #include <gtest/gtest.h>
 
@@ -18,7 +19,7 @@ void CheckExpectedView(const char* expectedView) {
 
 void WaitViewSwitchEnd() {
     float switchTime = 0.f;
-    ET_SendEventReturn(switchTime, &ETUIViewSwitcher::ET_getSwitchDuration);
+    ET_SendEventReturn(switchTime, &ETUIViewSwitcher::ET_getTotalSwitchDuration);
     ET_SendEvent(&ETTimerEvents::ET_onTick, switchTime + 0.000001f);
 }
 

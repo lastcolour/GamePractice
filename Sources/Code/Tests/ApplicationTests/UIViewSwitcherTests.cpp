@@ -27,10 +27,10 @@ TEST_F(UISwitcherTests, CheckViewSwtich) {
     UIViewSwitcher switcher;
     ASSERT_TRUE(switcher.init());
 
-    float swtichDuration = switcher.ET_getSwitchDuration();
-    ASSERT_GT(swtichDuration, 0.f);
-
     switcher.ET_swtichView(firstView->getEntityId(), secondView->getEntityId());
+
+    float swtichDuration = switcher.ET_getTotalSwitchDuration();
+    ASSERT_GT(swtichDuration, 0.f);
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -93,9 +93,9 @@ TEST_F(UISwitcherTests, CheckSwtichEndDuringResize) {
     UIViewSwitcher switcher;
     ASSERT_TRUE(switcher.init());
 
-    float swtichDuration = switcher.ET_getSwitchDuration();
 
     switcher.ET_swtichView(firstView->getEntityId(), secondView->getEntityId());
+    float swtichDuration = switcher.ET_getTotalSwitchDuration();
 
     ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
 
@@ -128,12 +128,11 @@ TEST_F(UISwitcherTests, CheckNoramlSwitchAndReverse) {
     UIViewSwitcher switcher;
     ASSERT_TRUE(switcher.init());
 
-    float swtichDuration = switcher.ET_getSwitchDuration();
-
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     switcher.ET_swtichView(firstView->getEntityId(), secondView->getEntityId());
+    float swtichDuration = switcher.ET_getTotalSwitchDuration();
 
     switcher.ET_onTick(swtichDuration / 4.f);
 
@@ -170,12 +169,11 @@ TEST_F(UISwitcherTests, CheckReverseSwitch) {
     UIViewSwitcher switcher;
     ASSERT_TRUE(switcher.init());
 
-    float swtichDuration = switcher.ET_getSwitchDuration();
-
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
     switcher.ET_reverseSwitchView(firstView->getEntityId(), secondView->getEntityId());
+    float swtichDuration = switcher.ET_getTotalSwitchDuration();
 
     {
         CheckExpectedCenter(firstView, Vec2i(-renderPort.x / 2, renderPort.y / 2));
@@ -195,4 +193,8 @@ TEST_F(UISwitcherTests, CheckReverseSwitch) {
         CheckExpectedCenter(firstView, Vec2i(renderPort.x / 2, renderPort.y / 2));
         CheckExpectedCenter(secondView, Vec2i(renderPort.x * 3 / 2, renderPort.y / 2));
     }
+}
+
+TEST_F(UISwitcherTests, CheckAppearOnTop) {
+
 }

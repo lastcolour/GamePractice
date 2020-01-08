@@ -100,11 +100,11 @@ struct ETUIButtonEventManager {
 
 struct ETUIViewSwitcher {
     virtual ~ETUIViewSwitcher() = default;
-    virtual float ET_getSwitchDuration() const = 0;
     virtual void ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId) = 0;
     virtual void ET_swtichView(EntityId newViewId, EntityId oldViewId) = 0;
     virtual void ET_forceSwtichStop() = 0;
     virtual void ET_reverse() = 0;
+    virtual float ET_getTotalSwitchDuration() const = 0;
 };
 
 struct ETUIViewSwitcherEvents {
@@ -137,6 +137,23 @@ struct ETUIButtonPressAnimation {
 struct ETUISwitchControl {
     virtual ~ETUISwitchControl() = default;
     virtual bool ET_isEnabled() const = 0;
+};
+
+struct ETUIAppearAnimation {
+    virtual ~ETUIAppearAnimation() = default;
+    virtual bool ET_isAppearing() const = 0;
+    virtual void ET_setAppear(bool flag) = 0;
+    virtual bool ET_animate(float duration) = 0;
+    virtual bool ET_isNeedHideOldView() const = 0;
+    virtual float ET_getDuration() const = 0;
+};
+
+struct ETUIElement {
+    virtual ~ETUIElement() = default;
+    virtual void ET_show() = 0;
+    virtual void ET_hide() = 0;
+    virtual void ET_disableInteraction() = 0;
+    virtual void ET_enableInteraction() = 0;
 };
 
 #endif /* __UI_ET_INTERFACES_HPP__ */
