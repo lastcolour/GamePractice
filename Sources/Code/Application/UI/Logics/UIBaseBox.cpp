@@ -9,7 +9,8 @@
 UIBaseBox::UIBaseBox() :
     style(),
     box(0),
-    lastResizeBox(0) {
+    lastResizeBox(0),
+    isVisible(true) {
 }
 
 UIBaseBox::~UIBaseBox() {
@@ -310,4 +311,42 @@ EntityId UIBaseBox::getRootUIList() const {
         }
     }
     return lastValidEntId;
+}
+
+void UIBaseBox::ET_show() {
+    isVisible = true;
+    std::vector<EntityId> children;
+    ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
+    for(const auto& childEntId : children) {
+        ET_SendEvent(childEntId, &ETUIBox::ET_show);
+    }
+}
+
+void UIBaseBox::ET_hide() {
+    isVisible = false;
+    std::vector<EntityId> children;
+    ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
+    for(const auto& childEntId : children) {
+        ET_SendEvent(childEntId, &ETUIBox::ET_hide);
+    }
+}
+
+bool UIBaseBox::ET_isVisible() const {
+    return isVisible;
+}
+
+void UIBaseBox::ET_disableInteraction() {
+    std::vector<EntityId> children;
+    ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
+    for(const auto& childEntId : children) {
+        ET_SendEvent(childEntId, &ETUIBox::ET_disableInteraction);
+    }
+}
+
+void UIBaseBox::ET_enableInteraction() {
+    std::vector<EntityId> children;
+    ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
+    for(const auto& childEntId : children) {
+        ET_SendEvent(childEntId, &ETUIBox::ET_enableInteraction);
+    }
 }

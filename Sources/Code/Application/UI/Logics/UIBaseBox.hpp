@@ -28,6 +28,11 @@ public:
     void ET_alignInBox(const AABB2Di& alingBox) override;
     void ET_boxResize() override;
     const Margin& ET_getMaring() const override;
+    void ET_show() override;
+    void ET_hide() override;
+    bool ET_isVisible() const override;
+    void ET_disableInteraction() override;
+    void ET_enableInteraction() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
@@ -62,6 +67,7 @@ private:
     Margin margin;
     AABB2Di box;
     AABB2Di lastResizeBox;
+    bool isVisible;
 };
 
 #endif /* __UIBOX_HPP__ */

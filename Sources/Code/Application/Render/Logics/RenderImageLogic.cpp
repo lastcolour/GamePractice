@@ -5,6 +5,7 @@
 #include "Core/JSONNode.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Render/RenderContext.hpp"
 
 RenderImageLogic::RenderImageLogic() :
     imageScale(1.f),
@@ -15,6 +16,7 @@ RenderImageLogic::~RenderImageLogic() {
 }
 
 bool RenderImageLogic::serialize(const JSONNode& node) {
+    RenderNode::serialize(node);
     std::string matName;
     node.read("mat", matName);
     ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName.c_str());
@@ -25,6 +27,7 @@ bool RenderImageLogic::serialize(const JSONNode& node) {
 }
 
 bool RenderImageLogic::init() {
+    RenderNode::init();
     if(!mat) {
         return false;
     }
@@ -34,7 +37,9 @@ bool RenderImageLogic::init() {
     }
     if(tex) {
         updateScale();
-        ETNode<ETRenderEvents>::connect(getEntityId());
+        ET_show();
+    } else {
+        ET_hide();
     }
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
@@ -42,6 +47,8 @@ bool RenderImageLogic::init() {
 }
 
 void RenderImageLogic::ET_onRender(const RenderContext& renderCtx) {
+    renderCtx.setSrcMinusAlphaBlending(true);
+
     Mat4 mvp = getModelMat();
     mvp = renderCtx.proj2dMat * mvp;
 
@@ -63,10 +70,10 @@ void RenderImageLogic::ET_setImage(const char* imageName) {
         ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::NormalColor);
     }
     if(!tex) {
-        ETNode<ETRenderEvents>::disconnect();
+        ET_hide();
     } else {
-        ETNode<ETRenderEvents>::connect(getEntityId());
         updateScale();
+        ET_show();
     }
 }
 

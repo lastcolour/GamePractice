@@ -3,6 +3,7 @@
 #include "Render/RenderGeometry.hpp"
 #include "Render/RenderTexture.hpp"
 #include "Core/JSONNode.hpp"
+#include "Render/RenderContext.hpp"
 
 RenderColoredTextureLogic::RenderColoredTextureLogic() :
     color(255, 255, 255) {
@@ -37,10 +38,10 @@ void RenderColoredTextureLogic::ET_setImage(const char* imageName) {
         ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::SingleColor);
     }
     if(!tex) {
-        ETNode<ETRenderEvents>::disconnect();
+        ET_hide();
     } else {
-        ETNode<ETRenderEvents>::connect(getEntityId());
         updateScale();
+        ET_show();
     }
 }
 
@@ -55,6 +56,8 @@ bool RenderColoredTextureLogic::init() {
 }
 
 void RenderColoredTextureLogic::ET_onRender(const RenderContext& renderCtx) {
+    renderCtx.setSrcMinusAlphaBlending(true);
+
     Mat4 mvp = getModelMat();
     mvp = renderCtx.proj2dMat * mvp;
 

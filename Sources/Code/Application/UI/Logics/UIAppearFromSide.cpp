@@ -83,19 +83,26 @@ void UIAppearFromSide::updateAnimation(float duration) {
 
     Vec2 targetPt(renderSize.x / 2.f, renderSize.y / 2.f);
     Vec2 startPt = targetPt;
+    float startScale = 1.f;
+    float targetScale = startScale;
     if(isAppearing) {
         startPt.x += renderSize.x;
+        startScale = 0.8f;
     } else {
         targetPt.x += renderSize.x;
+        startScale = 0.8f;
+        targetScale = 1.f;
     }
 
     float prog = std::min(duration / animDuration, 1.f);
-    auto res = Math::Lerp(startPt, targetPt, prog);
+    auto resPt = Math::Lerp(startPt, targetPt, prog);
+    auto resScale = Math::Lerp(startScale, targetScale, prog);
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    tm.pt.x = res.x;
-    tm.pt.y = res.y;
+    tm.pt.x = resPt.x;
+    tm.pt.y = resPt.y;
+    tm.scale = Vec3(resScale);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, tm);
 
     if(duration > animDuration) {

@@ -1,11 +1,9 @@
 #ifndef __RENDER_IMAGE_LOGIC_HPP__
 #define __RENDER_IMAGE_LOGIC_HPP__
 
-#include "Entity/EntityLogic.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/Logics/RenderNode.hpp"
 
-class RenderImageLogic : public EntityLogic,
-    public ETNode<ETRenderEvents>,
+class RenderImageLogic : public RenderNode,
     public ETNode<ETRenderImageLogic> {
 public:
 

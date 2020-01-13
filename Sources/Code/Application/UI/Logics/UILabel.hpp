@@ -14,6 +14,8 @@ public:
     bool serialize(const JSONNode& node) override;
     bool init() override;
     void ET_setStyle(const UIStyle& style) override;
+    void ET_show() override;
+    void ET_hide() override;
 
     // ETUILabel
     void ET_setText(const char* newText) override;

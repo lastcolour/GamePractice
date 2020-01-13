@@ -35,6 +35,11 @@ struct ETUIBox {
     virtual const UIStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIStyle& newStyle) = 0;
     virtual const Margin& ET_getMaring() const = 0;
+    virtual void ET_show() = 0;
+    virtual void ET_hide() = 0;
+    virtual bool ET_isVisible() const = 0;
+    virtual void ET_disableInteraction() = 0;
+    virtual void ET_enableInteraction() = 0;
 };
 
 struct ETUILabeledBox {
@@ -117,12 +122,6 @@ struct ETUIEventManager {
     virtual void ET_onEvent(const char* eventName) = 0;
 };
 
-struct ETUIConfigManager {
-    virtual ~ETUIConfigManager() = default;
-    virtual const char* ET_getDefaultGeomRenderer() = 0;
-    virtual const char* ET_getDefaultTextRenderer() = 0;
-};
-
 struct ETUIButtonPressAnimationEvents {
     virtual ~ETUIButtonPressAnimationEvents() = default;
     virtual void ET_onPressAnimationEnd() = 0;
@@ -146,14 +145,6 @@ struct ETUIAppearAnimation {
     virtual bool ET_animate(float duration) = 0;
     virtual bool ET_isNeedHideOldView() const = 0;
     virtual float ET_getDuration() const = 0;
-};
-
-struct ETUIElement {
-    virtual ~ETUIElement() = default;
-    virtual void ET_show() = 0;
-    virtual void ET_hide() = 0;
-    virtual void ET_disableInteraction() = 0;
-    virtual void ET_enableInteraction() = 0;
 };
 
 #endif /* __UI_ET_INTERFACES_HPP__ */

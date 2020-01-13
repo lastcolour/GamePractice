@@ -28,8 +28,8 @@ void UIViewSwitcher::ET_onTick(float dt) {
         }
         case SwitchState::HideOldView: {
             bool isAnimEnded = true;
-            ET_SendEventReturn(isAnimEnded, switchTask.oldViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
             switchTask.duration += dt;
+            ET_SendEventReturn(isAnimEnded, switchTask.oldViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
             if(!isAnimEnded) {
                 break;
             } else {
@@ -46,11 +46,11 @@ void UIViewSwitcher::ET_onTick(float dt) {
         }
         case SwitchState::ShowNewView: {
             bool isAnimEnded = true;
-            ET_SendEventReturn(isAnimEnded, switchTask.newViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
             switchTask.duration += dt;
+            ET_SendEventReturn(isAnimEnded, switchTask.newViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
             if(isAnimEnded) {
-                ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, switchTask.newViewId);
                 switchTask.state = SwitchState::Finished;
+                ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, switchTask.newViewId);
             }
             break;
         }
@@ -67,6 +67,7 @@ void UIViewSwitcher::ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId
 void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
     assert(newViewId.isValid() && "Invalid new view");
 
+    switchTask.state = SwitchState::ShowNewView;
     if(oldViewId.isValid()) {
         bool hideOldView = true;
         ET_SendEventReturn(hideOldView, newViewId, &ETUIAppearAnimation::ET_isNeedHideOldView);
@@ -74,10 +75,6 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
             switchTask.state = SwitchState::HideOldView;
             switchTask.oldViewId = oldViewId;
             ET_SendEvent(oldViewId, &ETUIAppearAnimation::ET_setAppear, false);
-
-        } else {
-            switchTask.oldViewId = InvalidEntityId;
-            switchTask.state = SwitchState::ShowNewView;
         }
     }
     ET_SendEvent(newViewId, &ETUIAppearAnimation::ET_setAppear, true);

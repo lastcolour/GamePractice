@@ -1,16 +1,14 @@
 #ifndef __RENDER_SIMPLE_LOGIC_HPP__
 #define __RENDER_SIMPLE_LOGIC_HPP__
 
-#include "Entity/EntityLogic.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/Logics/RenderNode.hpp"
 
 #include <memory>
 
 class RenderMaterial;
 class RenderGeometry;
 
-class RenderSimpleLogic : public EntityLogic,
-    public ETNode<ETRenderEvents>,
+class RenderSimpleLogic : public RenderNode,
     public ETNode<ETRenderSimpleLogic> {
 public:
 

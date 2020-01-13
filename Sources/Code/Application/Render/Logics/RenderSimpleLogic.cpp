@@ -4,6 +4,7 @@
 #include "Core/JSONNode.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
+#include "Render/RenderContext.hpp"
 
 #include <cassert>
 
@@ -18,6 +19,7 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 }
 
 bool RenderSimpleLogic::serialize(const JSONNode& node) {
+    RenderNode::serialize(node);
     std::string geomName;
     node.read("geom", geomName);
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomName.c_str());
@@ -34,12 +36,14 @@ bool RenderSimpleLogic::serialize(const JSONNode& node) {
 }
 
 bool RenderSimpleLogic::init() {
-    ETNode<ETRenderEvents>::connect(getEntityId());
+    RenderNode::init();
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     return true;
 }
 
 void RenderSimpleLogic::ET_onRender(const RenderContext& renderCtx) {
+    renderCtx.setSrcMinusAlphaBlending(false);
+
     Mat4 mvp = getModelMat();
     mvp = renderCtx.proj2dMat * mvp;
 

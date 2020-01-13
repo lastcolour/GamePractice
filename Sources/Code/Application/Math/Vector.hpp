@@ -39,6 +39,12 @@ public:
         return *this;
     }
 
+    Vector2& operator*=(const T a) {
+        x *= a;
+        y *= a;
+        return *this;
+    }
+
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y; }
     T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
@@ -86,6 +92,13 @@ public:
         x += v.x;
         y += v.y;
         z += v.z;
+        return *this;
+    }
+
+    Vector3& operator*=(const T a) {
+        x *= a;
+        y *= a;
+        z *= a;
         return *this;
     }
 
@@ -140,6 +153,14 @@ public:
         y += v.y;
         z += v.z;
         w += v.w;
+        return *this;
+    }
+
+    Vector4& operator*=(const T a) {
+        x *= a;
+        y *= a;
+        z *= a;
+        w *= a;
         return *this;
     }
 

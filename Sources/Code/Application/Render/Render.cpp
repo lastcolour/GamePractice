@@ -1,10 +1,12 @@
 #include "Render/Render.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
+#include "Render/RenderContext.hpp"
 
 #include "Platforms/OpenGL.hpp"
 
 #include <type_traits>
+#include <algorithm>
 
 static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");
 static_assert(std::is_same<int, GLint>::value, "int != GLint");
@@ -16,7 +18,8 @@ Render::Render() :
     clearColor(0, 0, 0),
     hasContext(false),
     canOffscrenRender(false),
-    canScreenRender(false) {
+    canScreenRender(false),
+    needUpdateRenderQueue(true) {
 }
 
  Render::~Render() {
@@ -66,6 +69,25 @@ bool Render::ET_canRender() const {
     return true;
 }
 
+void Render::ET_updateRenderQueue() {
+    needUpdateRenderQueue = true;
+}
+
+void Render::updateRenderQueue() {
+    if(!needUpdateRenderQueue) {
+        return;
+    }
+    needUpdateRenderQueue = false;
+    renderQueue = ET_GetAll<ETRenderNode>();
+    std::sort(renderQueue.begin(), renderQueue.end(), [](EntityId first, EntityId second){
+        int firstPriority = 0;
+        ET_SendEventReturn(firstPriority, first, &ETRenderNode::ET_getDrawPriority);
+        int secondPriority = 0;
+        ET_SendEventReturn(secondPriority, second, &ETRenderNode::ET_getDrawPriority);
+        return firstPriority < secondPriority;
+    });
+}
+
 void Render::ET_drawFrame() {
     if(!ET_canRender()) {
         return;
@@ -81,22 +103,14 @@ void Render::ET_drawFrame() {
     RenderContext renderCtx;
     ET_SendEventReturn(renderCtx.proj2dMat, &ETRenderCamera::ET_getProj2DMat4);
 
-    for(auto entId : ET_GetAll<ETRenderSimpleLogic>()) {
-        ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
+    updateRenderQueue();
+    for(auto nodeId : renderQueue) {
+        bool isVisible = false;
+        ET_SendEventReturn(isVisible, nodeId, &ETRenderNode::ET_isVisible);
+        if(isVisible) {
+            ET_SendEvent(nodeId, &ETRenderEvents::ET_onRender, renderCtx);
+        }
     }
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    for(auto entId : ET_GetAll<ETRenderImageLogic>()) {
-        ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
-    }
-
-    for(auto entId : ET_GetAll<ETRenderTextLogic>()) {
-        ET_SendEvent(entId, &ETRenderEvents::ET_onRender, renderCtx);
-    }
-
-    glDisable(GL_BLEND);
 
     if(!renderFb) {
         ET_SendEvent(&ETSurface::ET_swapBuffers);

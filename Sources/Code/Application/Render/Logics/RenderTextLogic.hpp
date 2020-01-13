@@ -1,15 +1,13 @@
 #ifndef __RENDER_TEXT_LOGIC_HPP__
 #define __RENDER_TEXT_LOGIC_HPP__
 
-#include "Entity/EntityLogic.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/Logics/RenderNode.hpp"
 #include "Math/AABB.hpp"
 
 class RenderGlyph;
 class RenderGeometry;
 
-class RenderTextLogic : public EntityLogic,
-    public ETNode<ETRenderEvents>,
+class RenderTextLogic : public RenderNode,
     public ETNode<ETRenderTextLogic> {
 public:
 

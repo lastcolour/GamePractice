@@ -43,6 +43,16 @@ void UILabel::ET_setStyle(const UIStyle& newStyle) {
     updateRendererParams();
 }
 
+void UILabel::ET_show() {
+    UIBaseBox::ET_show();
+    ET_SendEvent(renderId, &ETRenderNode::ET_show);
+}
+
+void UILabel::ET_hide() {
+    UIBaseBox::ET_hide();
+    ET_SendEvent(renderId, &ETRenderNode::ET_hide);
+}
+
 void UILabel::ET_setText(const char* newText) {
     text = newText;
     if(renderId.isValid()) {

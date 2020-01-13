@@ -30,6 +30,7 @@ const char* SIMPLE_OBJECT = "Game/Simple.json";
 const float SCALE_FACTOR = 0.8f;
 
 const ColorB DRAW_COLOR(0, 255, 0);
+const ColorB DRAW_COLOR_B(128, 128, 0);
 const ColorB CLEAR_COLOR(0, 0, 0);
 
 } // namespace
@@ -62,6 +63,9 @@ void RenderTests::TearDown() {
     glClearColor(CLEAR_COLOR.r, CLEAR_COLOR.g, CLEAR_COLOR.b, CLEAR_COLOR.a);
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
+
+    auto renderNodes = ET_GetAll<ETRenderNode>();
+    ASSERT_TRUE(renderNodes.empty());
 }
 
 void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) {
@@ -260,7 +264,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     dumpFramebuffer();
 }
 
-TEST_F(RenderTests, CheckRenderOfSimpleObject) {
+TEST_F(RenderTests, CheckRenderSimpleObject) {
     EntityId objId = InvalidEntityId;
     ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
     ASSERT_NE(objId, InvalidEntityId);
@@ -444,4 +448,89 @@ TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
     EXPECT_TRUE(tex2);
 
     EXPECT_NE(tex1.get(), tex2.get());
+}
+
+TEST_F(RenderTests, CheckRenderPriority) {
+    auto size = textureFramebuffer->getSize();
+    const Vec3 center(size.x * 0.5f, size.y * 0.5f, 0.f);
+
+    EntityId firstSquareId = InvalidEntityId;
+    {
+        ET_SendEventReturn(firstSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
+        ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
+        ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
+        Transform tm;
+        tm.pt = center;
+        ET_SendEvent(firstSquareId, &ETEntity::ET_setTransform, tm);
+    }
+
+    EntityId secondSquareId = InvalidEntityId;
+    {
+        ET_SendEventReturn(secondSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
+        ET_SendEvent(secondSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR_B);
+        ET_SendEvent(secondSquareId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
+        Transform tm;
+        tm.pt = center;
+        ET_SendEvent(secondSquareId, &ETEntity::ET_setTransform, tm);
+    }
+
+    const size_t xStart = static_cast<size_t>(center.x - SCALE_FACTOR * size.x * 0.5f);
+    const size_t xEnd = static_cast<size_t>(center.x + SCALE_FACTOR * size.x * 0.5f);
+    const size_t yStart = static_cast<size_t>(center.y - SCALE_FACTOR * size.y * 0.5f);
+    const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * size.y * 0.5f);
+
+    ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 1);
+    ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 0);
+
+    ET_SendEvent(&ETRender::ET_drawFrame);
+
+    checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
+
+    ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 0);
+    ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 1);
+
+    ET_SendEvent(&ETRender::ET_drawFrame);
+
+    checkSquare(DRAW_COLOR_B, xStart, xEnd, yStart, yEnd);
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, firstSquareId);
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, secondSquareId);
+}
+
+TEST_F(RenderTests, CheckHideUnhide) {
+    auto size = textureFramebuffer->getSize();
+    const Vec3 center(size.x * 0.5f, size.y * 0.5f, 0.f);
+
+    EntityId boxId = InvalidEntityId;
+    {
+        ET_SendEventReturn(boxId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
+        ET_SendEvent(boxId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
+        ET_SendEvent(boxId, &ETRenderSimpleLogic::ET_setSize, Vec2(static_cast<float>(size.x), static_cast<float>(size.y)));
+        Transform tm;
+        tm.pt = center;
+        ET_SendEvent(boxId, &ETEntity::ET_setTransform, tm);
+    }
+
+    {
+        ET_SendEvent(&ETRender::ET_drawFrame);
+        checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
+    }
+
+    ET_SendEvent(boxId, &ETRenderNode::ET_hide);
+
+    {
+        ET_SendEvent(&ETRender::ET_drawFrame);
+        checkSquare(CLEAR_COLOR, 0, size.x, 0, size.y);
+    }
+
+    ET_SendEvent(boxId, &ETRenderNode::ET_show);
+
+    {
+        ET_SendEvent(&ETRender::ET_drawFrame);
+        checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
+    }
+
+    dumpFramebuffer();
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, boxId);
 }

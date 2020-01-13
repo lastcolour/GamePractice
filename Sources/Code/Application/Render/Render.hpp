@@ -25,6 +25,7 @@ public:
     void ET_drawFrame() override;
     void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
     bool ET_canRender() const override;
+    void ET_updateRenderQueue() override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;
@@ -45,15 +46,18 @@ public:
 
 private:
 
+    void updateRenderQueue();
     void setViewport(const Vec2i& size);
 
 private:
 
+    std::vector<EntityId> renderQueue;
     RenderTextureFramebuffer* renderFb;
     ColorB clearColor;
     bool hasContext;
     bool canOffscrenRender;
     bool canScreenRender;
+    bool needUpdateRenderQueue;
 };
 
 #endif /* __RENDER_HPP__ */

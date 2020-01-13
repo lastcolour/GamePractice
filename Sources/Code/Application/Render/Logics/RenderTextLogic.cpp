@@ -7,6 +7,7 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
+#include "Render/RenderContext.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -26,6 +27,7 @@ RenderTextLogic::~RenderTextLogic() {
 }
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
+    RenderNode::serialize(node);
     std::string matName;
     node.read("mat", matName);
     ET_setMaterial(matName.c_str());
@@ -33,6 +35,7 @@ bool RenderTextLogic::serialize(const JSONNode& node) {
 }
 
 bool RenderTextLogic::init() {
+    RenderNode::init();
     if(!mat) {
         return false;
     }
@@ -53,6 +56,8 @@ bool RenderTextLogic::init() {
 }
 
 void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
+    renderCtx.setSrcMinusAlphaBlending(true);
+
     mat->bind();
     mat->setTexture2D("tex", font->getTexId());
     mat->setUniformMat4("MVP", renderCtx.proj2dMat);
@@ -180,8 +185,8 @@ void RenderTextLogic::ET_setText(const char* str) {
     text = str;
     calcTextSize();
     if(!text.empty()) {
-        ETNode<ETRenderEvents>::connect(getEntityId());
+        ET_show();
     } else {
-        ETNode<ETRenderEvents>::disconnect();
+        ET_hide();
     }
 }
