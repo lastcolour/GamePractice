@@ -33,6 +33,8 @@ public:
     bool ET_isVisible() const override;
     void ET_disableInteraction() override;
     void ET_enableInteraction() override;
+    int ET_getZIndex() const override;
+    void ET_setZIndex(int newZIndex) override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
@@ -45,6 +47,7 @@ public:
 protected:
 
     virtual Vec2i calculateBoxSize(const AABB2Di& parentBox) const;
+    virtual EntityId getRenderId() const;
 
 protected:
 
@@ -53,6 +56,7 @@ protected:
     AABB2Di getParentAabb2di() const;
     void setBox(const AABB2Di& newBox);
     void forceResizeFromTop();
+    void setUpRenderChild(EntityId renderChildId);
 
 private:
 
@@ -67,6 +71,7 @@ private:
     Margin margin;
     AABB2Di box;
     AABB2Di lastResizeBox;
+    int zIndex;
     bool isVisible;
 };
 

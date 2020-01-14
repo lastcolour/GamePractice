@@ -10,6 +10,7 @@ UIBaseBox::UIBaseBox() :
     style(),
     box(0),
     lastResizeBox(0),
+    zIndex(0),
     isVisible(true) {
 }
 
@@ -315,6 +316,10 @@ EntityId UIBaseBox::getRootUIList() const {
 
 void UIBaseBox::ET_show() {
     isVisible = true;
+    auto renderId = getRenderId();
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderNode::ET_show);
+    }
     std::vector<EntityId> children;
     ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
     for(const auto& childEntId : children) {
@@ -324,6 +329,10 @@ void UIBaseBox::ET_show() {
 
 void UIBaseBox::ET_hide() {
     isVisible = false;
+    auto renderId = getRenderId();
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderNode::ET_hide);
+    }
     std::vector<EntityId> children;
     ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
     for(const auto& childEntId : children) {
@@ -349,4 +358,36 @@ void UIBaseBox::ET_enableInteraction() {
     for(const auto& childEntId : children) {
         ET_SendEvent(childEntId, &ETUIBox::ET_enableInteraction);
     }
+}
+
+int UIBaseBox::ET_getZIndex() const {
+    return zIndex;
+}
+
+void UIBaseBox::ET_setZIndex(int newZIndex) {
+    zIndex = newZIndex;
+    auto renderId = getRenderId();
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
+    }
+    std::vector<EntityId> children;
+    ET_SendEventReturn(children, getEntityId(), &ETEntity::ET_getChildren);
+    for(const auto& childEntId : children) {
+        ET_SendEvent(childEntId, &ETUIBox::ET_setZIndex, zIndex + 1);
+    }
+}
+
+void UIBaseBox::setUpRenderChild(EntityId renderChildId) {
+    ET_SendEvent(renderChildId, &ETEntity::ET_setParent, getEntityId());
+    ET_SendEvent(renderChildId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    if(!ET_isVisible()) {
+        ET_SendEvent(renderChildId, &ETRenderNode::ET_hide);
+    }
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    ET_SendEvent(renderChildId, &ETEntity::ET_setTransform, tm);
+}
+
+EntityId UIBaseBox::getRenderId() const {
+    return InvalidEntityId;
 }

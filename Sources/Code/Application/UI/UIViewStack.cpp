@@ -4,6 +4,12 @@
 
 #include <cassert>
 
+namespace {
+
+const int Z_INDEX_OFFSET_BUFFER = 256;
+
+} // namespace
+
 UIViewStack::UIViewStack() {
 }
 
@@ -147,6 +153,16 @@ bool UIViewStack::initPush(const std::string& viewName) {
         LogWarning("[UIViewStack::initPush] Can't create view: %s", viewName);
         return false;
     }
+
+    int zIndexOffset = 0;
+    if(!viewStack.empty()) {
+        auto topViewId = viewStack.back();
+        ET_SendEventReturn(zIndexOffset, topViewId, &ETEntity::ET_getMaxChildrenDepth);
+        zIndexOffset += Z_INDEX_OFFSET_BUFFER;
+    }
+
+    ET_SendEvent(newViewId, &ETUIBox::ET_setZIndex, zIndexOffset);
+
     viewStack.push_back(newViewId);
     return true;
 }

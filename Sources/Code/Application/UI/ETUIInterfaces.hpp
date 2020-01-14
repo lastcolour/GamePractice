@@ -40,6 +40,8 @@ struct ETUIBox {
     virtual bool ET_isVisible() const = 0;
     virtual void ET_disableInteraction() = 0;
     virtual void ET_enableInteraction() = 0;
+    virtual int ET_getZIndex() const = 0;
+    virtual void ET_setZIndex(int newZIndex) = 0;
 };
 
 struct ETUILabeledBox {

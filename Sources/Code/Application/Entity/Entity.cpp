@@ -103,3 +103,16 @@ void Entity::ET_setTransform(const Transform& transform) {
     }
     ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);
 }
+
+int Entity::ET_getMaxChildrenDepth() const {
+    int maxDepth = 0;
+    for(auto childId : children) {
+        int childMaxDepth = 0;
+        ET_SendEventReturn(childMaxDepth, childId, &ETEntity::ET_getMaxChildrenDepth);
+        childMaxDepth++;
+        if(childMaxDepth > maxDepth) {
+            maxDepth = childMaxDepth;
+        }
+    }
+    return maxDepth;
+}

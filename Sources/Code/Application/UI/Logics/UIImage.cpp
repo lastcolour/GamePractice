@@ -31,8 +31,8 @@ bool UIImage::init() {
 
 void UIImage::ET_setImage(const char* newImage) {
     image = newImage;
-    if(imageRendererId.isValid()) {
-        ET_SendEvent(imageRendererId, &ETRenderImageLogic::ET_setImage, image.c_str());
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderImageLogic::ET_setImage, image.c_str());
         forceResizeFromTop();
     }
 }
@@ -41,7 +41,7 @@ Vec2i UIImage::calculateBoxSize(const AABB2Di& parentBox) const {
     auto boxSize = UIBaseBox::calculateBoxSize(parentBox);
 
     Vec2i imageSize(0);
-    ET_SendEventReturn(imageSize, imageRendererId, &ETRenderImageLogic::ET_getOriginalSize);
+    ET_SendEventReturn(imageSize, renderId, &ETRenderImageLogic::ET_getOriginalSize);
     if(imageSize.x == 0 || imageSize.y == 0) {
         return Vec2i(0);
     }
@@ -49,30 +49,30 @@ Vec2i UIImage::calculateBoxSize(const AABB2Di& parentBox) const {
     Vec2 scale = Vec2(boxSize.x / static_cast<float>(imageSize.x),
         boxSize.y / static_cast<float>(imageSize.y));
 
-    ET_SendEvent(imageRendererId, &ETRenderImageLogic::ET_setScale, scale);
+    ET_SendEvent(renderId, &ETRenderImageLogic::ET_setScale, scale);
 
     return boxSize;
 }
 
 void UIImage::createRenderer() {
-    if(imageRendererId.isValid()) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, imageRendererId);
-        imageRendererId = InvalidEntityId;
+    if(renderId.isValid()) {
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, renderId);
+        renderId = InvalidEntityId;
     }
     const auto& boxStyle = ET_getStyle();
     std::string rendererName = boxStyle.renderer;
     if(rendererName.empty()) {
         rendererName = DEFAULT_IMAGER_RENDERER;
     }
-    ET_SendEventReturn(imageRendererId, &ETEntityManager::ET_createEntity, rendererName.c_str());
-    if(imageRendererId.isValid()) {
-        ET_SendEvent(imageRendererId, &ETEntity::ET_setParent, getEntityId());
-        ET_SendEvent(imageRendererId, &ETRenderImageLogic::ET_setImage, image.c_str());
-
-        Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-        ET_SendEvent(imageRendererId, &ETEntity::ET_setTransform, tm);
+    ET_SendEventReturn(renderId, &ETEntityManager::ET_createEntity, rendererName.c_str());
+    if(renderId.isValid()) {
+        ET_SendEvent(renderId, &ETRenderImageLogic::ET_setImage, image.c_str());
+        setUpRenderChild(renderId);
     } else {
         LogWarning("[UIImage::createRenderers] Can't create renderer: %s", rendererName);
     }
+}
+
+EntityId UIImage::getRenderId() const {
+    return renderId;
 }

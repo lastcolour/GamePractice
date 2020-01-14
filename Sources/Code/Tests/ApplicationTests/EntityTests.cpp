@@ -149,3 +149,36 @@ TEST_F(EntityTests, CheckExtendEntity) {
 
     EXPECT_TRUE(ET_IsExistNode<ETRenderImageLogic>(entId));
 }
+
+TEST_F(EntityTests, CheckChildrenDepth) {
+    EntityId objId1 = InvalidEntityId;
+    ET_SendEventReturn(objId1, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    EntityId objId2 = InvalidEntityId;
+    ET_SendEventReturn(objId2, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    EntityId objId3 = InvalidEntityId;
+    ET_SendEventReturn(objId3, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    {
+        int childDepth = -1;
+        ET_SendEventReturn(childDepth, objId1, &ETEntity::ET_getMaxChildrenDepth);
+        EXPECT_EQ(childDepth, 0);
+    }
+
+    ET_SendEvent(objId2, &ETEntity::ET_setParent, objId1);
+
+    {
+        int childDepth = -1;
+        ET_SendEventReturn(childDepth, objId1, &ETEntity::ET_getMaxChildrenDepth);
+        EXPECT_EQ(childDepth, 1);
+    }
+
+    ET_SendEvent(objId3, &ETEntity::ET_setParent, objId2);
+
+    {
+        int childDepth = -1;
+        ET_SendEventReturn(childDepth, objId1, &ETEntity::ET_getMaxChildrenDepth);
+        EXPECT_EQ(childDepth, 2);
+    }
+}

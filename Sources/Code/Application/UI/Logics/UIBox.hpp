@@ -24,7 +24,7 @@ public:
 
 protected:
 
-    EntityId getRendererId() const;
+    EntityId getRenderId() const override;
 
 private:
 

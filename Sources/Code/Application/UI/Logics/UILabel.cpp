@@ -43,16 +43,6 @@ void UILabel::ET_setStyle(const UIStyle& newStyle) {
     updateRendererParams();
 }
 
-void UILabel::ET_show() {
-    UIBaseBox::ET_show();
-    ET_SendEvent(renderId, &ETRenderNode::ET_show);
-}
-
-void UILabel::ET_hide() {
-    UIBaseBox::ET_hide();
-    ET_SendEvent(renderId, &ETRenderNode::ET_hide);
-}
-
 void UILabel::ET_setText(const char* newText) {
     text = newText;
     if(renderId.isValid()) {
@@ -81,12 +71,8 @@ void UILabel::createRenderer() {
     }
     ET_SendEventReturn(renderId, &ETEntityManager::ET_createEntity, rendererName.c_str());
     if(renderId.isValid()) {
-        ET_SendEvent(renderId, &ETEntity::ET_setParent, getEntityId());
         ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
-
-        Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-        ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
+        setUpRenderChild(renderId);
     } else {
         LogWarning("[UILabel::createRenderers] Can't create renderer: %s", rendererName);
     }
@@ -108,4 +94,8 @@ Vec2i UILabel::calculateBoxSize(const AABB2Di& parentBox) const {
     auto renderBoxSize = renderTextBox.getSize();
     Vec2i size(static_cast<int>(renderBoxSize.x), static_cast<int>(renderBoxSize.y));
     return size;
+}
+
+EntityId UILabel::getRenderId() const {
+    return renderId;
 }

@@ -103,10 +103,6 @@ void UIBox::ET_boxResize() {
     updateRenderSize();
 }
 
-EntityId UIBox::getRendererId() const {
-    return renderId;
-}
-
 void UIBox::createRenderer() {
     if(renderId.isValid()) {
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, renderId);
@@ -121,11 +117,8 @@ void UIBox::createRenderer() {
     }
     ET_SendEventReturn(renderId, &ETEntityManager::ET_createEntity, rendererName.c_str());
     if(renderId.isValid()) {
-        ET_SendEvent(renderId, &ETEntity::ET_setParent, getEntityId());
         ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, boxStyle.color);
-        Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-        ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
+        setUpRenderChild(renderId);
     } else {
         LogWarning("[UIBox::createRenderer] Can't create renderer: %s", rendererName);
     }
@@ -146,4 +139,8 @@ void UIBox::updateRenderParams() {
         return;
     }
     ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, ET_getStyle().color);
+}
+
+EntityId UIBox::getRenderId() const {
+    return renderId;
 }

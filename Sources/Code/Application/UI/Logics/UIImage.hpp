@@ -20,6 +20,7 @@ public:
 protected:
 
     Vec2i calculateBoxSize(const AABB2Di& parentBox) const override;
+    EntityId getRenderId() const override;
 
 private:
 
@@ -27,7 +28,7 @@ private:
 
 private:
 
-    EntityId imageRendererId;
+    EntityId renderId;
     std::string image;
 };
 

@@ -22,6 +22,7 @@ struct ETEntity {
     virtual const char* ET_getName() const = 0;
     virtual const Transform& ET_getTransform() const = 0;
     virtual void ET_setTransform(const Transform& tm) = 0;
+    virtual int ET_getMaxChildrenDepth() const = 0;
 };
 
 struct ETEntityManager {

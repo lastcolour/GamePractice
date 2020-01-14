@@ -267,3 +267,29 @@ TEST_F(UIViewStackTests, CheckStackStateAfterResize) {
 
     ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
 }
+
+TEST_F(UIViewStackTests, CheckDrawPriorities) {
+    ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_1);
+
+    auto firstViewId = InvalidEntityId;
+    ET_SendEventReturn(firstViewId, &ETUIViewStack::ET_getActiveViewId);
+
+    int firstZIindex = 0;
+    ET_SendEventReturn(firstZIindex, firstViewId, &ETUIBox::ET_getZIndex);
+
+    EXPECT_GE(firstZIindex, 0);
+
+    ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_1);
+    WaitViewSwitchEnd();
+
+    auto secondViewId = InvalidEntityId;
+    ET_SendEventReturn(secondViewId, &ETUIViewStack::ET_getActiveViewId);
+
+    int secondZIndex = 0;
+    ET_SendEventReturn(secondZIndex, secondViewId, &ETUIBox::ET_getZIndex);
+
+    int firstViewChildDepth = 0;
+    ET_SendEventReturn(firstViewChildDepth, firstViewId, &ETEntity::ET_getMaxChildrenDepth);
+
+    EXPECT_GT(secondZIndex, firstZIindex + firstViewChildDepth);
+}
