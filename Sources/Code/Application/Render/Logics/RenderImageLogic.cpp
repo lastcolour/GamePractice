@@ -6,6 +6,7 @@
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Render/RenderContext.hpp"
+#include "Render/Logics/RenderAuxFunctions.hpp"
 
 RenderImageLogic::RenderImageLogic() :
     imageScale(1.f),
@@ -16,24 +17,24 @@ RenderImageLogic::~RenderImageLogic() {
 }
 
 bool RenderImageLogic::serialize(const JSONNode& node) {
-    RenderNode::serialize(node);
-    std::string matName;
-    node.read("mat", matName);
-    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName.c_str());
-    if(!mat) {
+    if(!RenderNode::serialize(node)) {
         return false;
     }
     return true;
 }
 
 bool RenderImageLogic::init() {
-    RenderNode::init();
+    if(!RenderNode::init()) {
+        return false;
+    }
     if(!mat) {
         return false;
     }
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, "square_tex");
     if(!geom) {
-        return false;
+        ET_setGeometry("square_tex");
+        if(!geom) {
+            return false;
+        }
     }
     if(tex) {
         updateScale();
@@ -43,13 +44,13 @@ bool RenderImageLogic::init() {
     }
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
+    ETNode<ETRenderRect>::connect(getEntityId());
     return true;
 }
 
 void RenderImageLogic::ET_onRender(const RenderContext& renderCtx) {
-    renderCtx.setSrcMinusAlphaBlending(true);
-
-    Mat4 mvp = getModelMat();
+    Vec3 scale = Vec3(imageScale.x * texScale.x, imageScale.y * texScale.y, 1.f);
+    Mat4 mvp = Render::CalcModelMat(getEntityId(), scale, *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
     mat->bind();
@@ -59,15 +60,15 @@ void RenderImageLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->unbind();
 }
 
-void RenderImageLogic::ET_setMaterial(const char* matName) {
-    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName);
+bool RenderImageLogic::ET_getScrMinusAlphaBlendFlag() const {
+    return true;
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {
     if(!imageName || !imageName[0]) {
         tex.reset();
     } else {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::NormalColor);
+        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::RGBA);
     }
     if(!tex) {
         ET_hide();
@@ -91,10 +92,10 @@ void RenderImageLogic::ET_setSize(const Vec2i& newSize) {
 }
 
 Vec2i RenderImageLogic::ET_getSize() const {
-    Vec2i size = ET_getOriginalSize();
-    size.x = static_cast<int>(size.x * imageScale.x);
-    size.y = static_cast<int>(size.y * imageScale.x);
-    return size;
+    Vec2i origSize = ET_getOriginalSize();
+    Vec2i resSize = Vec2i(static_cast<int>(origSize.x * imageScale.x),
+        static_cast<int>(origSize.y * imageScale.y));
+    return resSize;
 }
 
 void RenderImageLogic::ET_setScale(const Vec2& newScale) {
@@ -105,18 +106,4 @@ void RenderImageLogic::updateScale() {
     auto geomSize = geom->aabb.getSize();
     texScale.x = static_cast<float>(tex->size.x) / geomSize.x;
     texScale.y = static_cast<float>(tex->size.y) / geomSize.y;
-}
-
-Mat4 RenderImageLogic::getModelMat() const {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    Mat4 model(1.f);
-    const Vec3 center = geom->aabb.getCenter();
-    Math::Translate(model, center);
-    Math::Rotate(model, tm.quat);
-    Math::Translate(model, tm.pt);
-    Vec3 scale = Vec3(texScale.x * imageScale.x * tm.scale.x,
-        texScale.y * imageScale.y * tm.scale.y, 1.f);
-    Math::Scale(model, scale);
-    return model;
 }

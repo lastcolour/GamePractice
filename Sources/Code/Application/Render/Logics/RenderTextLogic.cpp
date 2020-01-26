@@ -27,10 +27,9 @@ RenderTextLogic::~RenderTextLogic() {
 }
 
 bool RenderTextLogic::serialize(const JSONNode& node) {
-    RenderNode::serialize(node);
-    std::string matName;
-    node.read("mat", matName);
-    ET_setMaterial(matName.c_str());
+    if(!RenderNode::serialize(node)) {
+        return false;
+    }
     return true;
 }
 
@@ -43,7 +42,7 @@ bool RenderTextLogic::init() {
     if(!font) {
         return false;
     }
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, "text_chunk");
+    ET_setGeometry("text_chunk");
     if(!geom) {
         return false;
     }
@@ -56,8 +55,6 @@ bool RenderTextLogic::init() {
 }
 
 void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
-    renderCtx.setSrcMinusAlphaBlending(true);
-
     mat->bind();
     mat->setTexture2D("tex", font->getTexId());
     mat->setUniformMat4("MVP", renderCtx.proj2dMat);
@@ -173,10 +170,6 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
     return aabb;
 }
 
-void RenderTextLogic::ET_setMaterial(const char* matName) {
-    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName);
-}
-
 void RenderTextLogic::ET_setColor(const ColorB& col) {
     color = col;
 }
@@ -189,4 +182,8 @@ void RenderTextLogic::ET_setText(const char* str) {
     } else {
         ET_hide();
     }
+}
+
+bool RenderTextLogic::ET_getScrMinusAlphaBlendFlag() const {
+    return true;
 }

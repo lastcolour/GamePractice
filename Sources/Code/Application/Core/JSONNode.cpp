@@ -419,6 +419,22 @@ const char* JSONNode::key() const {
     return nodeKey.c_str();
 }
 
+bool JSONNode::hasKey(const char* key) const {
+    if(!key || !key[0]) {
+        return false;
+    }
+    if(!nodeImpl->val) {
+        return false;
+    }
+    if(nodeImpl->val->IsObject()) {
+        auto it = nodeImpl->val->FindMember(key);
+        if(it != nodeImpl->val->MemberEnd() && !it->value.IsNull()) {
+           return true;
+        }
+    }
+    return false;
+}
+
 size_t JSONNode::size() const {
     if(!nodeImpl->val) {
         return 0u;

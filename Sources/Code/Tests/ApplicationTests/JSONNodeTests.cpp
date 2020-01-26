@@ -224,3 +224,11 @@ TEST_F(JSONNodeTests, CheckCreateReadSame) {
     }
     ASSERT_EQ(write_val, read_val);
 }
+
+TEST_F(JSONNodeTests, CheckIfHasKey) {
+    auto node = JSONNode::ParseString("{\"obj\": {}}");
+
+    ASSERT_FALSE(node.hasKey("obj1"));
+
+    ASSERT_TRUE(node.hasKey("obj"));
+}

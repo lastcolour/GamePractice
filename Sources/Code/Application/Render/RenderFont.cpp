@@ -31,7 +31,7 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
         LogError("[RenderFont::createAtlas] Trying re-create font texture atlas");
         return false;
     }
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(width, height), ETextureType::SingleColor);
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(width, height), ETextureType::R8);
     if(!tex) {
         return false;
     }

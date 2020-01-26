@@ -277,7 +277,8 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEvent(objId, &ETEntity::ET_setTransform, tm);
 
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-    ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
+    ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR), 
+        static_cast<int>(size.y * SCALE_FACTOR)));
 
     ET_SendEvent(&ETRender::ET_drawFrame);
 
@@ -440,11 +441,11 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
     Vec2i texSize(100);
     std::shared_ptr<RenderTexture> tex1;
-    ET_SendEventReturn(tex1, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::SingleColor);
+    ET_SendEventReturn(tex1, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::R8);
     EXPECT_TRUE(tex1);
 
     std::shared_ptr<RenderTexture> tex2;
-    ET_SendEventReturn(tex2, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::SingleColor);
+    ET_SendEventReturn(tex2, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::R8);
     EXPECT_TRUE(tex2);
 
     EXPECT_NE(tex1.get(), tex2.get());
@@ -458,7 +459,8 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(firstSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
+        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR), 
+            static_cast<int>(size.y * SCALE_FACTOR)));
         Transform tm;
         tm.pt = center;
         ET_SendEvent(firstSquareId, &ETEntity::ET_setTransform, tm);
@@ -468,7 +470,8 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(secondSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(secondSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR_B);
-        ET_SendEvent(secondSquareId, &ETRenderSimpleLogic::ET_setSize, Vec2(size.x * SCALE_FACTOR, size.y * SCALE_FACTOR));
+        ET_SendEvent(secondSquareId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR),
+            static_cast<int>(size.y * SCALE_FACTOR)));
         Transform tm;
         tm.pt = center;
         ET_SendEvent(secondSquareId, &ETEntity::ET_setTransform, tm);
@@ -499,13 +502,13 @@ TEST_F(RenderTests, CheckRenderPriority) {
 
 TEST_F(RenderTests, CheckHideUnhide) {
     auto size = textureFramebuffer->getSize();
-    const Vec3 center(size.x * 0.5f, size.y * 0.5f, 0.f);
+    const Vec3 center(size.x / 2.f, size.y / 2.f, 0.f);
 
     EntityId boxId = InvalidEntityId;
     {
         ET_SendEventReturn(boxId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(boxId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(boxId, &ETRenderSimpleLogic::ET_setSize, Vec2(static_cast<float>(size.x), static_cast<float>(size.y)));
+        ET_SendEvent(boxId, &ETRenderRect::ET_setSize, size);
         Transform tm;
         tm.pt = center;
         ET_SendEvent(boxId, &ETEntity::ET_setTransform, tm);
@@ -533,4 +536,16 @@ TEST_F(RenderTests, CheckHideUnhide) {
     dumpFramebuffer();
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, boxId);
+}
+
+TEST_F(RenderTests, RenderNodeDontDrawWithInliadMaterial) {
+    ASSERT_TRUE(false);
+}
+
+TEST_F(RenderTests, RenderNodeDontDrawWithInliadGeometry) {
+    ASSERT_TRUE(false);
+}
+
+TEST_F(RenderTests, WriteDataToTexture) {
+    ASSERT_TRUE(false);
 }

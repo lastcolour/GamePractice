@@ -20,9 +20,6 @@ public:
     // ETRenderColoredTexture
     void ET_setTextureColor(const ColorB& newColor) override;
 
-    // ETRenderImageLogic
-    void ET_setImage(const char* imageName) override;
-
 private:
 
     ColorB color;

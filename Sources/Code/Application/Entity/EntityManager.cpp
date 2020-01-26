@@ -19,6 +19,7 @@
 #include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/Logics/RenderImageLogic.hpp"
 #include "Render/Logics/RenderColoredTextureLogic.hpp"
+#include "Render/Logics/RenderLinearGradientRect.hpp"
 
 #include "UI/Logics/UIButton.hpp"
 #include "UI/Logics/UIList.hpp"
@@ -32,6 +33,7 @@
 #include "UI/Logics/UISwitchControl.hpp"
 #include "UI/Logics/UIAppearOnTop.hpp"
 #include "UI/Logics/UIAppearFromSide.hpp"
+#include "UI/Logics/UIBackground.hpp"
 
 #include "Audio/Logics/SoundPlayLogic.hpp"
 
@@ -56,6 +58,7 @@ bool EntityManager::init() {
     registerLogic<RenderTextLogic>("RenderText");
     registerLogic<RenderImageLogic>("RenderImage");
     registerLogic<RenderColoredTextureLogic>("RenderColoredTexture");
+    registerLogic<RenderLinearGradientRect>("RenderLinearGradientRect");
 
     registerLogic<GameBoardLogic>("GameBoard");
     registerLogic<GameBoardElemLogic>("GameBoardElem");
@@ -82,6 +85,7 @@ bool EntityManager::init() {
     registerLogic<UISwitchControl>("UISwitchControl");
     registerLogic<UIAppearOnTop>("UIAppearOnTop");
     registerLogic<UIAppearFromSide>("UIAppearFromSide");
+    registerLogic<UIBackground>("UIBackground");
 
     registerLogic<SoundPlayLogic>("SoundPlayer");
 

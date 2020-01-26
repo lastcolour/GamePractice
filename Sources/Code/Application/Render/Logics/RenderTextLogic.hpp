@@ -20,14 +20,15 @@ public:
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;
-    void ET_onRenderPortResized() override {}
 
     // ETRenderTextLogic
-    void ET_setMaterial(const char* matName) override;
     void ET_setColor(const ColorB& col) override;
     void ET_setText(const char* str) override;
     void ET_setFontSize(int fontSize) override;
     virtual AABB2D ET_getTextAABB() const override;
+
+    // RenderNode
+    bool ET_getScrMinusAlphaBlendFlag() const override;
 
 private:
 
@@ -36,9 +37,7 @@ private:
 private:
 
     Vec2 textSize;
-    std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderFont> font;
-    std::shared_ptr<RenderGeometry> geom;
     std::string text;
     ColorB color;
     float fontScale;

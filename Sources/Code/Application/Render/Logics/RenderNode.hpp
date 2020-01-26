@@ -22,6 +22,17 @@ public:
     void ET_show() override;
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
+    bool ET_getScrMinusAlphaBlendFlag() const override;
+    void ET_setMaterial(const char* matName) override;
+    void ET_setGeometry(const char* geomName) override;
+
+    // ETRenderEvents
+    void ET_onRenderPortResized() override {}
+
+protected:
+
+    std::shared_ptr<RenderMaterial> mat;
+    std::shared_ptr<RenderGeometry> geom;
 
 private:
 

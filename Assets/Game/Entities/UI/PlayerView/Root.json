@@ -32,6 +32,10 @@
                     }
                 ]
             }
+        },
+        {
+            "type":"UIAppearFromSide",
+            "data":{}
         }
     ]
 }

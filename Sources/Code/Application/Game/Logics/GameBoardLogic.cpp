@@ -146,7 +146,7 @@ void GameBoardLogic::ET_onBoxResized() {
         } else {
             setElemBoardPos(elem, elem.boardPt);
         }
-        ET_SendEvent(elem.entId, &ETRenderImageLogic::ET_setSize, objectSize);
+        ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
     }
 }
 
@@ -297,7 +297,7 @@ void GameBoardLogic::initNewElem(BoardElement& elem, const Vec2i& boardPt) const
     setElemBoardPos(elem, boardPt);
     setElemType(elem);
 
-    ET_SendEvent(elem.entId, &ETRenderImageLogic::ET_setSize, objectSize);
+    ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
 }
 
 const BoardElement* GameBoardLogic::getTopElem(const Vec2i& boardPt) const {

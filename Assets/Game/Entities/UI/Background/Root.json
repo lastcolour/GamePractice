@@ -9,6 +9,18 @@
                 "loop":true,
                 "autoStart":true
             }
+        },
+        {
+            "type":"RenderLinearGradientRect",
+            "data":{
+                "startColor":{"r":37, "g":34, "b":88},
+                "endColor":{"r":9, "g":66, "b":121},
+                "vertical":true
+            }
+        },
+        {
+            "type":"UIBackground",
+            "data":{}
         }
     ]
 }

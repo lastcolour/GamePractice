@@ -14,5 +14,9 @@
     "simple_image":{
         "vert":"Shaders/image_base.vert",
         "frag":"Shaders/image_tex.frag"
+    },
+    "tex_vert_color":{
+        "vert":"Shaders/tex_vert_color.vert",
+        "frag":"Shaders/tex_vert_color.frag"
     }
 }

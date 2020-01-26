@@ -4,6 +4,7 @@
 #include "Render/RenderTexture.hpp"
 #include "Core/JSONNode.hpp"
 #include "Render/RenderContext.hpp"
+#include "Render/Logics/RenderAuxFunctions.hpp"
 
 RenderColoredTextureLogic::RenderColoredTextureLogic() :
     color(255, 255, 255) {
@@ -13,36 +14,19 @@ RenderColoredTextureLogic::~RenderColoredTextureLogic() {
 }
 
 bool RenderColoredTextureLogic::serialize(const JSONNode& node) {
-    RenderImageLogic::serialize(node);
-    if(auto colorNode = node.object("color")) {
-        int val = 0;
-        colorNode.read("r", val);
-        color.r = val;
-        colorNode.read("g", val);
-        color.g = val;
-        colorNode.read("b", val);
-        color.b = val;
-        colorNode.read("a", val);
-        color.a = val;
+    if(!RenderImageLogic::serialize(node)) {
+        return false;
     }
-    std::string texName;
-    node.read("texture", texName);
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, texName.c_str(), ETextureType::SingleColor);
+    Render::ReadColor(node.object("color"), color);
+    if(node.hasKey("texture")) {
+        std::string texName;
+        node.read("texture", texName);
+        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, texName.c_str(), ETextureType::R8);
+        if(!tex) {
+            return false;
+        }
+    }
     return true;
-}
-
-void RenderColoredTextureLogic::ET_setImage(const char* imageName) {
-    if(!imageName || !imageName[0]) {
-        tex.reset();
-    } else {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::SingleColor);
-    }
-    if(!tex) {
-        ET_hide();
-    } else {
-        updateScale();
-        ET_show();
-    }
 }
 
 void RenderColoredTextureLogic::ET_setTextureColor(const ColorB& newColor) {
@@ -50,15 +34,16 @@ void RenderColoredTextureLogic::ET_setTextureColor(const ColorB& newColor) {
 }
 
 bool RenderColoredTextureLogic::init() {
-    RenderImageLogic::init();
+    if(!RenderImageLogic::init()) {
+        return false;
+    }
     ETNode<ETRenderColoredTexture>::connect(getEntityId());
     return true;
 }
 
 void RenderColoredTextureLogic::ET_onRender(const RenderContext& renderCtx) {
-    renderCtx.setSrcMinusAlphaBlending(true);
-
-    Mat4 mvp = getModelMat();
+    Vec3 scale = Vec3(imageScale.x * texScale.x, imageScale.y * texScale.y, 1.f);
+    Mat4 mvp = Render::CalcModelMat(getEntityId(), scale, *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
     mat->bind();

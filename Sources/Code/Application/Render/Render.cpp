@@ -107,9 +107,14 @@ void Render::ET_drawFrame() {
     for(auto nodeId : renderQueue) {
         bool isVisible = false;
         ET_SendEventReturn(isVisible, nodeId, &ETRenderNode::ET_isVisible);
-        if(isVisible) {
-            ET_SendEvent(nodeId, &ETRenderEvents::ET_onRender, renderCtx);
+        bool isSrcMinusAlphaBlenRequired = false;
+        if(!isVisible) {
+            continue;
         }
+
+        ET_SendEventReturn(isSrcMinusAlphaBlenRequired, nodeId, &ETRenderNode::ET_getScrMinusAlphaBlendFlag);
+        renderCtx.setSrcMinusAlphaBlending(isSrcMinusAlphaBlenRequired);
+        ET_SendEvent(nodeId, &ETRenderEvents::ET_onRender, renderCtx);
     }
 
     if(!renderFb) {

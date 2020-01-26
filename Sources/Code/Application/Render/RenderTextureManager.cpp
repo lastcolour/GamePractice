@@ -48,12 +48,16 @@ std::string RenderTextureManager::createNewTexSizeName(const Vec2i& texSize) con
 std::string RenderTextureManager::getLookupName(const char* textureName, ETextureType texType) const {
     const char* suffix = "";
     switch(texType) {
-        case ETextureType::SingleColor: {
-            suffix = "_single";
+        case ETextureType::R8: {
+            suffix = "_r8";
             break;
         }
-        case ETextureType::NormalColor: {
-            suffix = "_normal";
+        case ETextureType::RGB: {
+            suffix = "_rgb";
+            break;
+        }
+        case ETextureType::RGBA: {
+            suffix = "_rgba";
             break;
         }
         default: {
@@ -107,11 +111,15 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
 
     int reqLoadChannel = 0;
     switch(texType) {
-        case ETextureType::SingleColor: {
+        case ETextureType::R8: {
             reqLoadChannel = 1;
             break;
         }
-        case ETextureType::NormalColor: {
+        case ETextureType::RGB: {
+            reqLoadChannel = 3;
+            break;
+        }
+        case ETextureType::RGBA: {
             reqLoadChannel = 4;
             break;
         }
@@ -135,12 +143,16 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
     }
 
     switch(texType) {
-        case ETextureType::SingleColor: {
+        case ETextureType::R8: {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texSize.x, texSize.y, 0, GL_RED, GL_UNSIGNED_BYTE, static_cast<const GLvoid*>(data));
             break;
         }
-        case ETextureType::NormalColor: {
+        case ETextureType::RGB: {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texSize.x, texSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, static_cast<const GLvoid*>(data));
+            break;
+        }
+        case ETextureType::RGBA: {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texSize.x, texSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, static_cast<const GLvoid*>(data));
             break;
         }
@@ -168,12 +180,6 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
 }
 
 std::shared_ptr<RenderTexture> RenderTextureManager::createEmptyTexture(const Vec2i& texSize, ETextureType texType) {
-    if(texType != ETextureType::SingleColor) {
-        assert(false && "Unsupported texture format");
-        LogError("[RenderTextureManager::createEmptyTexture] Can't create empty texture of type: %d", texType);
-        return nullptr;
-    }
-
     unsigned int textureId = 0;
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
@@ -182,11 +188,32 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createEmptyTexture(const Ve
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    Buffer buff(texSize.x * texSize.y * 2);
-    memset(buff.getWriteData(), 0, buff.getSize());
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texSize.x, texSize.y, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
+    switch(texType)
+    {
+        case ETextureType::R8: {
+            Buffer buff(texSize.x * texSize.y);
+            memset(buff.getWriteData(), 0, buff.getSize());
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texSize.x, texSize.y, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
+            break;
+        }
+        case ETextureType::RGB: {
+            Buffer buff(texSize.x * texSize.y * 3);
+            memset(buff.getWriteData(), 0, buff.getSize());
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texSize.x, texSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, buff.getReadData());
+            break;
+        }
+        case ETextureType::RGBA: {
+            Buffer buff(texSize.x * texSize.y * 4);
+            memset(buff.getWriteData(), 0, buff.getSize());
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texSize.x, texSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, buff.getReadData());
+            break;
+        }
+        default: {
+            assert(false && "Unsupported texture format");
+            return nullptr;
+        }
+    }
 
     if(!CheckGLError()) {
         LogError("[RenderTextureManager::createEmptyTexture] Can't transfter texture data from app to OpenGL");

@@ -68,6 +68,7 @@ public:
 
     const char* key() const;
     JSONNode object(const char* key) const;
+    bool hasKey(const char* key) const;
 
     size_t size() const;
 

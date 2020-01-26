@@ -2,13 +2,14 @@
 #include "Platforms/OpenGL.hpp"
 
 RenderContext::RenderContext() :
+    dt(0.f),
     isSrcMinusAlphaBlendingEnabled(false) {
 }
 
 RenderContext::~RenderContext() {
 }
 
-void RenderContext::setSrcMinusAlphaBlending(bool flag) const {
+void RenderContext::setSrcMinusAlphaBlending(bool flag) {
     if(flag) {
         if(!isSrcMinusAlphaBlendingEnabled) {
             isSrcMinusAlphaBlendingEnabled = true;

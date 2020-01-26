@@ -9,15 +9,16 @@ public:
     RenderContext();
     ~RenderContext();
 
-    void setSrcMinusAlphaBlending(bool flag) const;
+    void setSrcMinusAlphaBlending(bool flag);
 
 public:
 
     Mat4 proj2dMat;
+    float dt;
 
 private:
 
-    mutable bool isSrcMinusAlphaBlendingEnabled;
+    bool isSrcMinusAlphaBlendingEnabled;
 };
 
 #endif /* __RENDER_CONTEXT_HPP__ */

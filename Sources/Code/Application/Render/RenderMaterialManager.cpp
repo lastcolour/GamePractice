@@ -8,7 +8,7 @@
 
 namespace {
 
-const int MAX_INFO_BUFF_SIZE = 255u;
+const int MAX_INFO_BUFF_SIZE = 512u;
 const char* MATERIALS = "Render/Materials.json";
 const char* SHADERS_ROOT_DIR = "Render/";
 const int INVALID_PROGRAM_ID = 0;

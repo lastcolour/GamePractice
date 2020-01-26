@@ -22,20 +22,25 @@ struct ETRenderNode {
     virtual void ET_hide() = 0;
     virtual void ET_show() = 0;
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
+    virtual void ET_setMaterial(const char* matName) = 0;
+    virtual void ET_setGeometry(const char* geomName) = 0;
     virtual int ET_getDrawPriority() const = 0;
+    virtual bool ET_getScrMinusAlphaBlendFlag() const = 0;
+};
+
+struct ETRenderRect {
+    virtual ~ETRenderRect() = default;
+    virtual void ET_setSize(const Vec2i& newSize) = 0;
+    virtual Vec2i ET_getSize() const = 0;
 };
 
 struct ETRenderSimpleLogic {
     virtual ~ETRenderSimpleLogic() = default;
-    virtual void ET_setMaterial(const char* matName) = 0;
-    virtual void ET_setGeometry(const char* geomName) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
-    virtual void ET_setSize(const Vec2& size) = 0;
 };
 
 struct ETRenderTextLogic {
     virtual ~ETRenderTextLogic() = default;
-    virtual void ET_setMaterial(const char* matName) = 0;
     virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setFontSize(int fontSize) = 0;
@@ -45,11 +50,8 @@ struct ETRenderTextLogic {
 struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
     virtual void ET_setImage(const char* imageName) = 0;
-    virtual void ET_setMaterial(const char* matName) = 0;
-    virtual void ET_setSize(const Vec2i& newSize) = 0;
     virtual void ET_setScale(const Vec2& newScale) = 0;
     virtual Vec2i ET_getOriginalSize() const = 0;
-    virtual Vec2i ET_getSize() const = 0; 
 };
 
 struct ETRenderColoredTexture {
@@ -79,8 +81,9 @@ struct ETRenderFontManager {
 };
 
 enum ETextureType {
-    SingleColor,
-    NormalColor
+    R8,
+    RGB,
+    RGBA
 };
 
 struct ETRenderTextureManger {

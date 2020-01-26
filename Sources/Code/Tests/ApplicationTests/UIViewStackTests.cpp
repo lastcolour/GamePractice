@@ -293,3 +293,24 @@ TEST_F(UIViewStackTests, CheckDrawPriorities) {
 
     EXPECT_GT(secondZIndex, firstZIindex + firstViewChildDepth);
 }
+
+TEST_F(UIViewStackTests, CheckFinishPushAfterResize) {
+    auto object = createObjectAndLogic<ViewStackEventHitoryLogic>();
+    ASSERT_TRUE(object->init());
+
+    ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_1);
+    ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_2);
+
+    EXPECT_EQ(object->eventsHistory.size(), 3);
+    EXPECT_EQ(object->eventsHistory[0].eventType, StackEventType::StartPush);
+    EXPECT_EQ(object->eventsHistory[1].eventType, StackEventType::FinishPush);
+    EXPECT_EQ(object->eventsHistory[2].eventType, StackEventType::StartPush);
+
+    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
+
+    EXPECT_EQ(object->eventsHistory.size(), 4);
+    EXPECT_EQ(object->eventsHistory[3].eventType, StackEventType::FinishPush);
+}
+
+TEST_F(UIViewStackTests, CheckFinishPopAfterResize) {
+}

@@ -130,8 +130,7 @@ void UIBox::updateRenderSize() {
     }
     const auto& uiBox = ET_getAabb2di();
     auto uiBoxSize = uiBox.getSize();
-    ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setSize,
-        Vec2(static_cast<float>(uiBoxSize.x), static_cast<float>(uiBoxSize.y)));
+    ET_SendEvent(renderId, &ETRenderRect::ET_setSize, uiBoxSize);
 }
 
 void UIBox::updateRenderParams() {

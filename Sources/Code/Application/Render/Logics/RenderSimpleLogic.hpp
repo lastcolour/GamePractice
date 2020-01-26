@@ -9,7 +9,8 @@ class RenderMaterial;
 class RenderGeometry;
 
 class RenderSimpleLogic : public RenderNode,
-    public ETNode<ETRenderSimpleLogic> {
+    public ETNode<ETRenderSimpleLogic>,
+    public ETNode<ETRenderRect> {
 public:
 
     RenderSimpleLogic();
@@ -25,20 +26,15 @@ public:
 
     // ETRenderSimpleLogic
     void ET_setColor(const ColorB& col) override;
-    void ET_setSize(const Vec2& size) override;
-    void ET_setMaterial(const char* matName) override;
-    void ET_setGeometry(const char* geomName) override;
 
-private:
-
-    Mat4 getModelMat() const;
+    // ETRenderRect
+    void ET_setSize(const Vec2i& newSize) override;
+    Vec2i ET_getSize() const override;
 
 private:
 
     Vec2 scale;
     ColorB color;
-    std::shared_ptr<RenderMaterial> mat;
-    std::shared_ptr<RenderGeometry> geom;
 };
 
 #endif /* __RENDER_SIMPLE_LOGIC_HPP__ */

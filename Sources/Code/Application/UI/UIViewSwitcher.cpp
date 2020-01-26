@@ -40,11 +40,17 @@ void UIViewSwitcher::ET_onTick(float dt) {
                 if(switchTask.duration < 0.01f) {
                     break;
                 } else {
+                    ET_SendEvent(switchTask.oldViewId, &ETUIBox::ET_hide);
                     // Process 'ShowNewView'
                 }
             }
         }
         case SwitchState::ShowNewView: {
+            bool isVisible = false;
+            ET_SendEventReturn(isVisible, switchTask.newViewId, &ETUIBox::ET_isVisible);
+            if(!isVisible) {
+                ET_SendEvent(switchTask.newViewId, &ETUIBox::ET_show);
+            }
             bool isAnimEnded = true;
             switchTask.duration += dt;
             ET_SendEventReturn(isAnimEnded, switchTask.newViewId, &ETUIAppearAnimation::ET_animate, switchTask.duration);
@@ -67,6 +73,12 @@ void UIViewSwitcher::ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId
 void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
     assert(newViewId.isValid() && "Invalid new view");
 
+    bool isVisible = false;
+    ET_SendEventReturn(isVisible, newViewId, &ETUIBox::ET_isVisible);
+    if(isVisible) {
+        ET_SendEvent(newViewId, &ETUIBox::ET_hide);
+    }
+
     switchTask.state = SwitchState::ShowNewView;
     if(oldViewId.isValid()) {
         bool hideOldView = true;
@@ -77,6 +89,7 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
             ET_SendEvent(oldViewId, &ETUIAppearAnimation::ET_setAppear, false);
         }
     }
+
     ET_SendEvent(newViewId, &ETUIAppearAnimation::ET_setAppear, true);
     switchTask.newViewId = newViewId;
     switchTask.duration = 0.f;
@@ -138,6 +151,7 @@ void UIViewSwitcher::ET_onRenderPortResized() {
             ET_SendEventReturn(duration, switchTask.newViewId, &ETUIAppearAnimation::ET_getDuration);
             duration += 0.1f;
             ET_SendEvent(switchTask.newViewId, &ETUIAppearAnimation::ET_animate, duration);
+            ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, switchTask.newViewId);
             switchTask.state = SwitchState::Finished;
         }
         case SwitchState::Finished: {
