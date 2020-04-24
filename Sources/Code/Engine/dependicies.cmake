@@ -2,13 +2,13 @@ if(NOT MAIN_PROJECT_SOURCE_ROOT)
     message(FATAL_ERROR "Required cmake variable MAIN_PROJECT_SOURCE_ROOT not defined")
 endif()
 
-if(ENGINE_BUILD_PLATFORM STREQUAL "Windows")
+if(BUILD_PLATFORM STREQUAL "Windows")
 
     set(LIB_PREFIX "")
     set(LIB_SHARED_EXTENSION ".dll")
     set(LIB_STATIC_EXTENSION ".lib")
 
-elseif(ENGINE_BUILD_PLATFORM STREQUAL "Linux" OR ENGINE_BUILD_PLATFORM STREQUAL "Android")
+elseif(BUILD_PLATFORM STREQUAL "Linux" OR BUILD_PLATFORM STREQUAL "Android")
 
     set(LIB_PREFIX "lib")
     set(LIB_STATIC_EXTENSION ".a")
@@ -61,7 +61,7 @@ function(CreateSharedLibDependecy LibName LibIncludeDir LibLinkBinary)
     message(STATUS "Create dependecy to shared lib ${LibName} : ${${LibName}_LIB_SHARED_BIN}")
 endfunction()
 
-if(ENGINE_BUILD_PLATFORM STREQUAL "Linux")
+if(BUILD_PLATFORM STREQUAL "Linux")
 
     find_package(ZLIB REQUIRED)
     set(ZLIB_LIB_SHARED_BIN ${ZLIB_LIBRARIES} CACHE PATH "ZLib Library Path")
@@ -86,7 +86,7 @@ if(ENGINE_BUILD_PLATFORM STREQUAL "Linux")
         openal
     )
 
-elseif(ENGINE_BUILD_PLATFORM STREQUAL "Windows")
+elseif(BUILD_PLATFORM STREQUAL "Windows")
 
     CreateStaticLibDependecy("GLAD"
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLAD/include
@@ -113,7 +113,7 @@ elseif(ENGINE_BUILD_PLATFORM STREQUAL "Windows")
         zlib
     )
 
-elseif(ENGINE_BUILD_PLATFORM STREQUAL "Android")
+elseif(BUILD_PLATFORM STREQUAL "Android")
 
     CreateStaticLibDependecy("OBOE"
         ${LIBS_ROOT_DIR}/Oboe/include
@@ -127,7 +127,7 @@ elseif(ENGINE_BUILD_PLATFORM STREQUAL "Android")
 
 endif()
 
-if(ENGINE_BUILD_PLATFORM STREQUAL "Windows")
+if(BUILD_PLATFORM STREQUAL "Windows")
 
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_STATIC_BIN}
@@ -137,7 +137,7 @@ if(ENGINE_BUILD_PLATFORM STREQUAL "Windows")
         ${OPENAL_SOFT_LIB_STATIC_BIN}
         CACHE INTERNAL "Engine link depedicies")
 
-elseif(ENGINE_BUILD_PLATFORM STREQUAL "Linux")
+elseif(BUILD_PLATFORM STREQUAL "Linux")
 
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_SHARED_BIN}

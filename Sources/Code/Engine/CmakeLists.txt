@@ -2,23 +2,9 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Engine CXX)
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(ENGINE_BUILD_PLATFORM "Windows")
-    set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
-    add_definitions(-DENGINE_BUILD_PLATFORM_WINDOWS)
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(ENGINE_BUILD_PLATFORM "Linux")
-    set(BUILD_UNITTESTS TRUE CACHE INTERNAL "Build unittests")
-    add_definitions(-DENGINE_BUILD_PLATFORM_LINUX)
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(ENGINE_BUILD_PLATFORM "Android")
-    add_definitions(-DENGINE_BUILD_PLATFORM_ANDROID)
-    message(STATUS "Skip unittests build (Not supported for such platform)")
-endif()
-
 include(dependicies.cmake)
 
-if(ENGINE_BUILD_PLATFORM STREQUAL "Windows" OR ENGINE_BUILD_PLATFORM STREQUAL "Linux")
+if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
     set(ENGINE_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Desktop)
     set(ENGINE_PLATFORM_AUDIO_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Desktop)
 
@@ -31,7 +17,7 @@ if(ENGINE_BUILD_PLATFORM STREQUAL "Windows" OR ENGINE_BUILD_PLATFORM STREQUAL "L
         ${STB_INCLUDE_DIR}
         ${OPENAL_SOFT_INCLUDE_DIR})
 
-elseif(ENGINE_BUILD_PLATFORM STREQUAL "Android")
+elseif(BUILD_PLATFORM STREQUAL "Android")
     set(ENGINE_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Android)
     set(ENGINE_PLATFORM_AUDIO_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Android)
 

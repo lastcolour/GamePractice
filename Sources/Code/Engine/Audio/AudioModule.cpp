@@ -3,12 +3,12 @@
 #include "Audio/SoundSourceManager.hpp"
 #include "Audio/AudioConfig.hpp"
 
-#if defined ENGINE_BUILD_PLATFORM_WINDOWS || defined ENGINE_BUILD_PLATFORM_LINUX
+#if defined PLATFORM_WINDOWS || defined PLATFORM_LINUX
 
   #include "Audio/Desktop/ALAudioSystem.hpp"
   using AudioSystem = ALAudioSystem;
 
-#elif defined ENGINE_BUILD_PLATFORM_ANDROID
+#elif defined PLATFORM_ANDROID
 
   #include "Audio/Android/OboeAudioSystem.hpp"
   using AudioSystem = OboeAudioSystem;

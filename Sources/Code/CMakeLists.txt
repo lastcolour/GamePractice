@@ -22,13 +22,15 @@ set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Engine)
 add_subdirectory(Engine)
 add_subdirectory(Application)
 
-if(BUILD_UNITTESTS)
-    #add_subdirectory(Tests)
+if(NOT BUILD_PLATFORM STREQUAL "Android")
+    add_subdirectory(Tests)
+else()
+    message(status "Android platform does not support unittests")
 endif()
 
 include_directories(${ENGINE_INCLUDE_DIR})
 
-if(APP_BUILD_PLATFORM STREQUAL "Android")
+if(BUILD_PLATFORM STREQUAL "Android")
     add_library(${PROJECT_NAME} SHARED
         ${CMAKE_CURRENT_SOURCE_DIR}/android_main.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/android_main.cpp)

@@ -9,15 +9,15 @@
 
 #include <sys/stat.h>
 
-#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
   #include <direct.h>
   #include <windows.h>
   const char* CWD_PREFIX = "";
-#elif defined ENGINE_BUILD_PLATFORM_LINUX
+#elif defined PLATFORM_LINUX
   #include <unistd.h>
   const char* CWD_PREFIX = "/";
 #else
-  #error Neither ENGINE_BUILD_PLATFORM_WINDOWS nor ENGINE_BUILD_PLATFORM_LINUX is specified
+  #error Neither PLATFORM_WINDOWS nor PLATFORM_LINUX is specified
 #endif
 
 namespace {
@@ -33,7 +33,7 @@ void fixSlashes(std::string& origPath) {
 std::string getBinDir() {
     char cPathStr[FILENAME_MAX] = { 0 };
     std::string binFilePath;
-#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
     GetModuleFileName(nullptr, cPathStr, FILENAME_MAX);
     binFilePath = cPathStr;
 #else 
@@ -58,7 +58,7 @@ std::string getBinDir() {
 
 bool createDir(const std::string& dirName) {
     bool res = false;
-#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
     res = CreateDirectory(dirName.c_str(), nullptr);
 #else
     res = !mkdir(dirName.c_str(), S_IRWXU|S_IRWXG|S_IRWXO);
@@ -172,7 +172,7 @@ std::string transformToPath(const std::string& dirPath, const std::string& fileP
 }
 
 std::string GetSafeStrErrno() {
-#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
     char cErrorMsg[MAX_ERROR_MSG_LEN];
     strerror_s(&(cErrorMsg[0]), MAX_ERROR_MSG_LEN, errno);
     return &(cErrorMsg[0]); 

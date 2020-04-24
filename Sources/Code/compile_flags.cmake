@@ -56,3 +56,16 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     message(STATUS "Unknown build type: ${CMAKE_BUILD_TYPE}")
 endif()
+
+# Defines for platform
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    set(BUILD_PLATFORM "Windows")
+    add_definitions(-DPLATFORM_WINDOWS)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(BUILD_PLATFORM "Linux")
+    add_definitions(-DPLATFORM_LINUX)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(BUILD_PLATFORM "Android")
+    add_definitions(-DPLATFORM_ANDROID)
+endif()

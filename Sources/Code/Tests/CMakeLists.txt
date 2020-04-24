@@ -8,13 +8,15 @@ include_directories(${GTEST_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
     ${GLAD_INCLUDE_DIR}
     ${APPLICATION_TEST_SOURCES}
-    ${MAIN_PROJECT_SOURCE_ROOT}/Application)
+    ${ENGINE_INCLUDE_DIR}
+    ${APPLICATION_INCLUDE_DIR})
 
 find_package(Threads REQUIRED)
 
 file(GLOB APPLICATION_TESTS_SOURCES
     ${APPLICATION_TEST_SOURCES}/TestUtils/*.cpp
     ${APPLICATION_TEST_SOURCES}/*.cpp)
+
 file(GLOB APPLICATION_TESTS_HEADERS
     ${APPLICATION_TEST_SOURCES}/TestUtils/*.hpp
     ${APPLICATION_TEST_SOURCES}/*.hpp)
@@ -29,4 +31,4 @@ target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIB_STATIC_BIN}
     ${CMAKE_THREAD_LIBS_INIT}
     Application
-    ${APP_LIB_DEPENDICIES})
+    Engine)
