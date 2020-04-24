@@ -6,9 +6,9 @@
 #include "Entity/EntityModule.hpp"
 #include "Core/ETSystem.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Initer/GameInitModule.hpp"
-#include "Game/GameModule.hpp"
 #include "UI/UIModule.hpp"
+#include "Laucher/GameLaucherModule.hpp"
+#include "Game/GameModule.hpp"
 
 namespace {
 
@@ -36,7 +36,7 @@ void Application::buildModules(ModuleListT& modules) {
     modules.emplace_back(new EntityModule);
     modules.emplace_back(new UIModule);
     modules.emplace_back(new GameModule);
-    modules.emplace_back(new GameInitModule);
+    modules.emplace_back(new GameLaucherModule);
 }
 
 bool Application::init() {

@@ -1,16 +1,16 @@
-#ifndef __GAME_INITER_HPP__
-#define __GAME_INITER_HPP__
+#ifndef __GAME_LAUCHER_HPP__
+#define __GAME_LAUCHER_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "UI/ETUIInterfaces.hpp"
 
-class GameIniter : public SystemLogic,
+class GameLaucher : public SystemLogic,
     ETNode<ETSurfaceEvents> {
 public:
 
-    GameIniter();
-    virtual ~GameIniter();
+    GameLaucher();
+    virtual ~GameLaucher();
 
     // SystemLogic
     bool init() override;
@@ -34,4 +34,4 @@ private:
     bool isViewExist;
 };
 
-#endif /* __GAME_INITER_HPP__ */
+#endif /* __GAME_LAUCHER_HPP__ */

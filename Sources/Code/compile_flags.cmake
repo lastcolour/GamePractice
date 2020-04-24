@@ -15,7 +15,7 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
 
-    if(COMPILE_FLAGS_SATINE_MEMORY)
+    if(COMPILE_FLAGS_SANITIZE_MEMORY)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
     endif()
 

@@ -9,15 +9,15 @@
 
 #include <sys/stat.h>
 
-#ifdef APP_BUILD_PLATFORM_WINDOWS
+#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
   #include <direct.h>
   #include <windows.h>
   const char* CWD_PREFIX = "";
-#elif defined APP_BUILD_PLATFORM_LINUX
+#elif defined ENGINE_BUILD_PLATFORM_LINUX
   #include <unistd.h>
   const char* CWD_PREFIX = "/";
 #else
-  #error Neither APP_BUILD_PLATFORM_WINDOWS nor APP_BUILD_PLATFORM_LINUX is specified
+  #error Neither ENGINE_BUILD_PLATFORM_WINDOWS nor ENGINE_BUILD_PLATFORM_LINUX is specified
 #endif
 
 namespace {
@@ -33,7 +33,7 @@ void fixSlashes(std::string& origPath) {
 std::string getBinDir() {
     char cPathStr[FILENAME_MAX] = { 0 };
     std::string binFilePath;
-#ifdef APP_BUILD_PLATFORM_WINDOWS
+#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
     GetModuleFileName(nullptr, cPathStr, FILENAME_MAX);
     binFilePath = cPathStr;
 #else 
@@ -58,7 +58,7 @@ std::string getBinDir() {
 
 bool createDir(const std::string& dirName) {
     bool res = false;
-#ifdef APP_BUILD_PLATFORM_WINDOWS
+#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
     res = CreateDirectory(dirName.c_str(), nullptr);
 #else
     res = !mkdir(dirName.c_str(), S_IRWXU|S_IRWXG|S_IRWXO);
@@ -126,7 +126,7 @@ std::string getAssetDirPath() {
         "/Assets",
         "/../Assets",
         "/../../Assets",
-        "/../../../Assets",
+        "/../../../../Assets",
     };
     for(const auto& path : possiblePaths) {
         auto dirPath = binDirPath + path;
@@ -172,7 +172,7 @@ std::string transformToPath(const std::string& dirPath, const std::string& fileP
 }
 
 std::string GetSafeStrErrno() {
-#ifdef APP_BUILD_PLATFORM_WINDOWS
+#ifdef ENGINE_BUILD_PLATFORM_WINDOWS
     char cErrorMsg[MAX_ERROR_MSG_LEN];
     strerror_s(&(cErrorMsg[0]), MAX_ERROR_MSG_LEN, errno);
     return &(cErrorMsg[0]); 

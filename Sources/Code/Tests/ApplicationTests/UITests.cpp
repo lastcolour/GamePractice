@@ -6,6 +6,8 @@
 #include "Entity/Entity.hpp"
 #include "TestUtils/UITestUtils.hpp"
 
+#include <algorithm>
+
 void UITests::SetUp() {
 }
 

@@ -1,4 +1,4 @@
-#if defined APP_BUILD_PLATFORM_WINDOWS || defined APP_BUILD_PLATFORM_LINUX
+#if defined ENGINE_BUILD_PLATFORM_WINDOWS || defined ENGINE_BUILD_PLATFORM_LINUX
 
   #ifdef _WIN32
     #ifndef APIENTRY
@@ -14,7 +14,7 @@
     #endif
   #endif
 
-#elif defined APP_BUILD_PLATFORM_ANDROID
+#elif defined ENGINE_BUILD_PLATFORM_ANDROID
 
   #include <GLES3/gl3.h>
   #include <GLES3/gl3ext.h>

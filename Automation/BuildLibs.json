@@ -1,0 +1,250 @@
+{
+    "Project":"Build Libs",
+    "InputVariables":{},
+    "Steps":[
+        {
+            "name":"Create Variables",
+            "type":"CreateVariables",
+            "data":{
+                "libsBins":"${binsRoot}/Libs"
+            }
+        },
+        {
+            "name":"Building Windows",
+            "type":"IfVariableEqual",
+            "data":{
+                "varA":"${platform}",
+                "varB":"Windows"
+            }
+        },
+        {
+            "name":"Building Linux",
+            "type":"IfVariableEqual",
+            "data":{
+                "varA":"${platform}",
+                "varB":"Linux"
+            }
+        },
+        {
+            "name":"Building PC",
+            "type":"IfVariableInSet",
+            "data": {
+                "var":"${platform}",
+                "set":["Windows", "Linux"]
+            }
+        },
+        {
+            "name":"Building Android",
+            "type":"IfVariableEqual",
+            "data":{
+                "varA":"${platform}",
+                "varB":"Android"
+            }
+        },
+        {
+            "name":"Build GLFW",
+            "type":"CmakeGenerate",
+            "dependOn":["Building PC"],
+            "data":{
+                "run_dir":"${libSources}/GLFW",
+                "out_dir":"${libsBins}/GLFW",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs":{
+                    "General": {
+                        "BUILD_SHARED_LIBS": "ON",
+                        "GLFW_BUILD_EXAMPLES": "OFF",
+                        "GLFW_BUILD_TESTS": "OFF",
+                        "GLFW_BUILD_DOCS": "OFF"
+                    }
+                }
+            }
+        },
+        {
+            "name":"Copy GLFW Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build GLFW"],
+            "data":{
+                "type":"all",
+                "platform":"${platform}",
+                "name":"glfw3",
+                "from":"${libsBins}/GLFW/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build GLAD",
+            "type":"CmakeGenerate",
+            "dependOn":["Building PC"],
+            "data":{
+                "run_dir":"${libSources}/GLAD",
+                "out_dir":"${libsBins}/GLAD",
+                "build_type":"${buildType}",
+                "verbosity":"silent",
+                "defs":{
+                    "Debug":{
+                        "GLAD_GENERATOR": "c-debug"
+                    }
+                }
+            }
+        },
+        {
+            "name":"Copy GLAD Include",
+            "type":"CopyFile",
+            "dependOn":["Build GLAD"],
+            "data":{
+                "target": "${libsBins}/GLAD/${buildType}/_cmake/include",
+                "to": "${gameBinsRoot}/${buildType}/GLAD"
+            }
+        },
+        {
+            "name":"Copy GLAD Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build GLAD"],
+            "data":{
+                "type":"static",
+                "platform":"${platform}",
+                "name":"glad",
+                "from":"${libsBins}/GLAD/${buildType}",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build FreeType2",
+            "type": "CmakeGenerate",
+            "data": {
+                "run_dir": "${libSources}/FreeType2",
+                "out_dir": "${libsBins}/FreeType2",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs" : {}
+            }
+        },
+        {
+            "name":"Copy Freetype2 Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build FreeType2"],
+            "data":{
+                "type":"static",
+                "platform":"${platform}",
+                "name":"freetype",
+                "from":"${libsBins}/FreeType2/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build ZLib",
+            "dependOn":["Building PC"],
+            "type": "CmakeGenerate",
+            "data": {
+                "run_dir": "${libSources}/ZLIB",
+                "out_dir": "${libsBins}/ZLIB",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs" : {}
+            }
+        },
+        {
+            "name":"Copy ZLib Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build ZLib"],
+            "data":{
+                "type":"static",
+                "platform":"${platform}",
+                "name":"zlib",
+                "from":"${libsBins}/ZLIB/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build OpenAL-Soft",
+            "type": "CmakeGenerate",
+            "dependOn":["Building PC"],
+            "data": {
+                "run_dir": "${libSources}/OpenAL-Soft",
+                "out_dir": "${libsBins}/OpenAL-Soft",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs" : {
+                    "General":{
+                        "ALSOFT_EXAMPLES":"OFF",
+                        "ALSOFT_TESTS":"OFF",
+                        "ALSOFT_INSTALL":"OFF",
+                        "ALSOFT_UTILS":"OFF"
+                    }
+                }
+            }
+        },
+        {
+            "name":"Copy OpenAL-Soft Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build OpenAL-Soft"],
+            "data":{
+                "type":"all",
+                "platform":"${platform}",
+                "name":"openal",
+                "from":"${libsBins}/OpenAL-Soft/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build Oboe",
+            "type": "CmakeGenerate",
+            "dependOn":["Building Android"],
+            "data": {
+                "run_dir": "${libSources}/Oboe",
+                "out_dir": "${libsBins}/Oboe",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs" : {}
+            }
+        },
+        {
+            "name":"Copy Oboe Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build Oboe"],
+            "data":{
+                "type":"static",
+                "platform":"${platform}",
+                "name":"oboe",
+                "from":"${libsBins}/OBOE/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build GTest",
+            "type": "CmakeGenerate",
+            "dependOn":["Building PC"],
+            "data": {
+                "run_dir": "${libSources}/GTEST",
+                "out_dir": "${libsBins}/GTEST",
+                "build_type":"${buildType}",
+                "verbosity":"silent",
+                "defs" : {
+                    "General": {
+                        "gtest_force_shared_crt": "ON"
+                    }
+                }
+            }
+        },
+        {
+            "name":"Copy GTest Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build GTest"],
+            "data":{
+                "type":"static",
+                "platform":"${platform}",
+                "name":"gtest",
+                "from":"${libsBins}/GTEST/${buildType}",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        }
+    ]
+}

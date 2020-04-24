@@ -1,0 +1,49 @@
+{
+    "Project":"Build Game",
+    "InputVariables":{
+        "buildType":"Debug",
+        "platform":"Windows"
+    },
+    "Steps":[
+        {
+            "name":"Create Project Variables",
+            "type":"CreateVariables",
+            "data":{
+                "rootSources":"${currentDir}/../Sources",
+                "gameSources":"${rootSources}/Code",
+                "libSources":"${rootSources}/Libs",
+                "binsRoot":"${currentDir}/../_build/${platform}",
+                "gameBinsRoot":"${binsRoot}/Game"
+            }
+        },
+        {
+            "name":"Build Libs",
+            "type":"ImportProject",
+            "data": {
+                "project_file":"${currentDir}/BuildLibs.json"
+            }
+        },
+        {
+            "name":"Build Game",
+            "type":"CmakeGenerate",
+            "dependOn":["Build Libs"],
+            "data":{
+                "run_dir":"${gameSources}",
+                "out_dir":"${gameBinsRoot}",
+                "build_type":"${buildType}",
+                "defs":{}
+            }
+        },
+        {
+            "name":"Run Game Tests",
+            "type":"RunProcess",
+            "dependOn":["Build Game"],
+            "data":{
+                "process":"${gameBinsRoot}/${buildType}/Game01Tests.exe",
+                "cwd":"${gameBinsRoot}/${buildType}/_tests",
+                "createCwd":true,
+                "args":[]
+            }
+        }
+    ]
+}

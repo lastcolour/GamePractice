@@ -3,6 +3,8 @@
 #include "Core/JSONNode.hpp"
 #include <Platforms/Desktop/DesktopAssets.hpp>
 
+#include <algorithm>
+
 namespace {
 
 const char* TEST_FILE_PATH = "Render/Materials.json";

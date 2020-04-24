@@ -25,3 +25,6 @@
 [submodule "Sources/Libs/Oboe"]
 	path = Sources/Libs/Oboe
 	url = https://github.com/google/oboe.git
+[submodule "Sources\\Libs\\Tacos"]
+	path = Sources\\Libs\\Tacos
+	url = https://github.com/lastcolour/Tacos.git
