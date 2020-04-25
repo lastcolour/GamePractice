@@ -4,6 +4,8 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Core/SystemLogic.hpp"
 
+#include <filesystem>
+
 class DesktopAssets : public SystemLogic,
     public ETNode<ETAssets> {
 public:
@@ -25,12 +27,12 @@ public:
 
 private:
 
-    Buffer loadFileFromDir(const std::string& dirPath, const std::string& fileName);
+    Buffer loadFileFromDir(const std::filesystem::path& dirPath, const std::string& fileName);
 
 private:
 
-    std::string assetRootPath;
-    std::string localRootPath;
+    std::filesystem::path assetRootPath;
+    std::filesystem::path localRootPath;
 };
 
 #endif /* __DESKTOP_ASSETS_HPP__ */
