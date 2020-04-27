@@ -2,7 +2,8 @@
     "Project":"Build Game",
     "InputVariables":{
         "buildType":"Debug",
-        "platform":"Windows"
+        "platform":"Windows",
+        "skipLibs":"False"
     },
     "Steps":[
         {
@@ -17,8 +18,17 @@
             }
         },
         {
+            "name":"Check Build Libs",
+            "type":"IfVariableEqual",
+            "data":{
+                "varA":"${skipLibs}",
+                "varB":"True"
+            }
+        },
+        {
             "name":"Build Libs",
             "type":"ImportProject",
+            "dependOn":["Check Build Libs"],
             "data": {
                 "project_file":"${currentDir}/BuildLibs.json"
             }
@@ -26,7 +36,7 @@
         {
             "name":"Build Game",
             "type":"CmakeGenerate",
-            "dependOn":["Build Libs"],
+            "dependOn":[],
             "data":{
                 "run_dir":"${gameSources}",
                 "out_dir":"${gameBinsRoot}",
@@ -42,7 +52,9 @@
                 "process":"${gameBinsRoot}/${buildType}/Game01Tests.exe",
                 "cwd":"${gameBinsRoot}/${buildType}/_tests",
                 "createCwd":true,
-                "args":[]
+                "args":[
+                    "--gtest_filter=*ReflectTests*"
+                ]
             }
         }
     ]

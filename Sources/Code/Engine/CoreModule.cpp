@@ -3,6 +3,7 @@
 #include "AppRunState.hpp"
 #include "AssetsCacheManager.hpp"
 #include "Core/ModuleConfigManager.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 
 CoreModule::CoreModule() :
     SystemModule("Core") {}
@@ -10,8 +11,9 @@ CoreModule::CoreModule() :
 CoreModule::LogicsContainerPtrT CoreModule::getSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
-            ModuleConfigManager,
             AppRunState,
+            ClassInfoManager,
+            ModuleConfigManager,
             Timer,
             AssetsCacheManager>()
         );
