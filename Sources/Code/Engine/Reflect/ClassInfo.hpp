@@ -22,7 +22,7 @@ public:
     ClassInstanceDeleteFuncT getDeleteFunction() const;
     const char* getName() const;
     TypeId getIntanceTypeId() const;
-
+    void makeReflectModel(JSONNode& node);
 
     template<typename ClassT>
     bool init(const char* name) {

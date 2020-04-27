@@ -42,6 +42,13 @@ public:
 
 public:
 
+    ClassValue();
+    ~ClassValue();
+
+    const char* getTypeName() const;
+
+public:
+
     std::string name;
     ClassValueType type;
     ValuePtrT ptr;

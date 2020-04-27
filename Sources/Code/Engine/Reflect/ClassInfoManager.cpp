@@ -1,6 +1,7 @@
 #include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/ClassInfo.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
 
 #include <cassert>
 
@@ -57,4 +58,25 @@ ClassInfo* ClassInfoManager::ET_findClassInfoByTypeId(TypeId classTypeId) {
         return it->second.get();
     }
     return nullptr;
+}
+
+void ClassInfoManager::ET_reset() {
+    classInfoMap.clear();
+}
+
+int ClassInfoManager::ET_getRegisteredClassCount() {
+    return static_cast<int>(classInfoMap.size());
+}
+
+void ClassInfoManager::ET_makeReflectModel(JSONNode& node) {
+    if(node) {
+        assert(false && "JSONNode should be empty");
+        return;
+    }
+    for(auto& classInfoItem : classInfoMap) {
+        auto& classInfo = classInfoItem.second;
+        JSONNode classNode;
+        classInfo->makeReflectModel(classNode);
+        node.write(classInfo->getName(), classNode);
+    }
 }

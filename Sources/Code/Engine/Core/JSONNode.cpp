@@ -313,6 +313,15 @@ void JSONNode::read(bool& value) const {
     }
 }
 
+void JSONNode::updateDocRoot() {
+    if(nodeImpl->root) {
+        return;
+    }
+    nodeImpl->root.reset(new rapidjson::Document);
+    nodeImpl->root->SetObject();
+    nodeImpl->val = nodeImpl->root.get();
+}
+
 void JSONNode::write(const char* key, const JSONNode& node) {
     if(!key || !key[0]) {
         return;
@@ -320,11 +329,7 @@ void JSONNode::write(const char* key, const JSONNode& node) {
     if(!node.nodeImpl->val) {
         return;
     }
-    if(!nodeImpl->root) {
-        nodeImpl->root.reset(new rapidjson::Document);
-        nodeImpl->root->SetObject();
-        nodeImpl->val = nodeImpl->root.get();
-    }
+    updateDocRoot();
     JSONValueT keyObject;
     keyObject.SetString(key, nodeImpl->root->GetAllocator());
     JSONValueT copyValue(*(node.nodeImpl->val), nodeImpl->root->GetAllocator());
@@ -335,11 +340,7 @@ void JSONNode::write(const char* key, const std::string& value) {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->root) {
-        nodeImpl->root.reset(new rapidjson::Document);
-        nodeImpl->root->SetObject();
-        nodeImpl->val = nodeImpl->root.get();
-    }
+    updateDocRoot();
     JSONValueT keyObject;
     keyObject.SetString(key, nodeImpl->root->GetAllocator());
     JSONValueT valObject;
@@ -347,15 +348,23 @@ void JSONNode::write(const char* key, const std::string& value) {
     nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
 }
 
+void JSONNode::write(const char* key, const char* value) {
+    if(!key || !key[0]) {
+        return;
+    }
+    updateDocRoot();
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT valObject;
+    valObject.SetString(value, nodeImpl->root->GetAllocator());
+    nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
+}
+
 void JSONNode::write(const char* key, float value) {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->root) {
-        nodeImpl->root.reset(new rapidjson::Document);
-        nodeImpl->root->SetObject();
-        nodeImpl->val = nodeImpl->root.get();
-    }
+    updateDocRoot();
     JSONValueT keyObject;
     keyObject.SetString(key, nodeImpl->root->GetAllocator());
     JSONValueT valObject;
@@ -367,11 +376,7 @@ void JSONNode::write(const char* key, int value) {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->root) {
-        nodeImpl->root.reset(new rapidjson::Document);
-        nodeImpl->root->SetObject();
-        nodeImpl->val = nodeImpl->root.get();
-    }
+    updateDocRoot();
     JSONValueT keyObject;
     keyObject.SetString(key, nodeImpl->root->GetAllocator());
     JSONValueT valObject;
@@ -383,11 +388,7 @@ void JSONNode::write(const char* key, bool value) {
     if(!key || !key[0]) {
         return;
     }
-    if(!nodeImpl->root) {
-        nodeImpl->root.reset(new rapidjson::Document);
-        nodeImpl->root->SetObject();
-        nodeImpl->val = nodeImpl->root.get();
-    }
+    updateDocRoot();
     JSONValueT keyObject;
     keyObject.SetString(key, nodeImpl->root->GetAllocator());
     JSONValueT valObject;

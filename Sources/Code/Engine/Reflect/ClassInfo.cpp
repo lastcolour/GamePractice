@@ -130,3 +130,9 @@ bool ClassInfo::reflectEmbebedClass(const std::function<void(ReflectContext& ctx
     ReflectContext ctx;
     return ctx.reflectEmbedded(reflectFunc);
 }
+
+ void ClassInfo::makeReflectModel(JSONNode& node) {
+    for(auto& value : values) {
+        node.write(value.name.c_str(), value.getTypeName());
+    }
+}

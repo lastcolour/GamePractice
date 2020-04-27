@@ -4,6 +4,7 @@
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
+#include "Core/JSONNode.hpp"
 
 #include <unordered_map>
 
@@ -25,6 +26,9 @@ public:
     // ETClassInfoManager
     ClassInfo* ET_findClassInfoByName(const char* className) override;
     ClassInfo* ET_findClassInfoByTypeId(TypeId classTypeId) override;
+    void ET_reset() override;
+    int ET_getRegisteredClassCount() override;
+    void ClassInfoManager::ET_makeReflectModel(JSONNode& node) override;
 
     bool ET_registerClassInfo(ClassInfoPtrT& classInfo) override;
 

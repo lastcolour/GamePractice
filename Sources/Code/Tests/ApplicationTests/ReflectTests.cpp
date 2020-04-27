@@ -3,6 +3,8 @@
 #include <Reflect/ReflectContext.hpp>
 #include <Core/JSONNode.hpp>
 #include <Core/StringFormat.hpp>
+#include <Core/ETPrimitives.hpp>
+#include <Reflect/ETReflectInterfaces.hpp>
 
 namespace {
 
@@ -50,13 +52,16 @@ public:
         }
     }
 
-
 public:
 
     SimpleEntityLogic objectF;
 };
 
 } // namespace
+
+void ReflectTests::TearDown() {
+    ET_SendEvent(&ETClassInfoManager::ET_reset);
+}
 
 TEST_F(ReflectTests, TestSimpleLogic) {
     ReflectContext reflectCtx;
@@ -74,6 +79,10 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     ASSERT_TRUE(object);
 
     ChekcSimpleEntityReflect(object.get());
+
+    int classReflected = 0;
+    ET_SendEventReturn(classReflected, &ETClassInfoManager::ET_getRegisteredClassCount);
+    ASSERT_EQ(classReflected, 1);
 }
 
 TEST_F(ReflectTests, TestObjectWithObject) {
@@ -92,4 +101,60 @@ TEST_F(ReflectTests, TestObjectWithObject) {
     ASSERT_TRUE(object);
 
     ChekcSimpleEntityReflect(&object->objectF);
+
+    int classReflected = 0;
+    ET_SendEventReturn(classReflected, &ETClassInfoManager::ET_getRegisteredClassCount);
+    ASSERT_EQ(classReflected, 2);
+}
+
+TEST_F(ReflectTests, TestReflectModel) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithObjectEntity>());
+
+    JSONNode node;
+    ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+
+    ASSERT_TRUE(node);
+    ASSERT_EQ(node.size(), 2u);
+
+    ASSERT_TRUE(node.hasKey("SimpleEntityLogic"));
+    {
+        auto classNode = node.object("SimpleEntityLogic");
+        ASSERT_TRUE(classNode);
+        {
+            std::string val;
+            ASSERT_TRUE(classNode.hasKey("boolF"));
+            classNode.read("boolF", val);
+            ASSERT_STREQ(val.c_str(), "bool");
+        }
+        {
+            std::string val;
+            ASSERT_TRUE(classNode.hasKey("intF"));
+            classNode.read("intF", val);
+            ASSERT_STREQ(val.c_str(), "int");
+        }
+        {
+            std::string val;
+            ASSERT_TRUE(classNode.hasKey("floatF"));
+            classNode.read("floatF", val);
+            ASSERT_STREQ(val.c_str(), "float");
+        }
+        {
+            std::string val;
+            ASSERT_TRUE(classNode.hasKey("stringF"));
+            classNode.read("stringF", val);
+            ASSERT_STREQ(val.c_str(), "string");
+        }
+    }
+    ASSERT_TRUE(node.hasKey("ObjectWithObjectEntity"));
+    {
+        auto classNode = node.object("ObjectWithObjectEntity");
+        ASSERT_TRUE(classNode);
+        {
+            std::string val;
+            ASSERT_TRUE(classNode.hasKey("objectF"));
+            classNode.read("objectF", val);
+            ASSERT_STREQ(val.c_str(), "SimpleEntityLogic");
+        }
+    }
 }

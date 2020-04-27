@@ -62,6 +62,7 @@ public:
 
     void write(const char* key, const JSONNode& node);
     void write(const char* key, const std::string& value);
+    void write(const char* key, const char* value);
     void write(const char* key, float value);
     void write(const char* key, int value);
     void write(const char* key, bool value);
@@ -77,6 +78,10 @@ public:
 private:
 
     explicit JSONNode(std::unique_ptr<JSONNodeImpl>&& jsonImpl);
+
+private:
+
+    void updateDocRoot();
 
 private:
 
