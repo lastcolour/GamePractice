@@ -17,7 +17,7 @@ public:
         floatF(0.f),
         stringF() {}
 
-    static void reflect(ReflectContext& reflectCtx) {
+    static void Reflect(ReflectContext& reflectCtx) {
         if(auto classInfo = reflectCtx.classInfo<SimpleEntityLogic>("SimpleEntityLogic")) {
             classInfo->addField("boolF", &SimpleEntityLogic::boolF);
             classInfo->addField("intF", &SimpleEntityLogic::intF);
@@ -46,7 +46,7 @@ void ChekcSimpleEntityReflect(SimpleEntityLogic* object) {
 class ObjectWithObjectEntity {
 public:
 
-    static void reflect(ReflectContext& reflectCtx) {
+    static void Reflect(ReflectContext& reflectCtx) {
         if(auto classInfo = reflectCtx.classInfo<ObjectWithObjectEntity>("ObjectWithObjectEntity")) {
             classInfo->addField("objectF", &ObjectWithObjectEntity::objectF);
         }
@@ -55,6 +55,19 @@ public:
 public:
 
     SimpleEntityLogic objectF;
+};
+
+class DerivedObject : public SimpleEntityLogic {
+public:
+
+    static void Reflect(ReflectContext& reflectCtx) {
+        if(auto classInfo = reflectCtx.classInfo<DerivedObject>("DerivedObject")) {
+            classInfo->addBaseClass<SimpleEntityLogic>();
+        }
+    }
+
+public:
+
 };
 
 } // namespace
@@ -157,4 +170,24 @@ TEST_F(ReflectTests, TestReflectModel) {
             ASSERT_STREQ(val.c_str(), "SimpleEntityLogic");
         }
     }
+}
+
+TEST_F(ReflectTests, TestBaseAndDeriveded) {
+    ASSERT_TRUE(false);
+}
+
+TEST_F(ReflectTests, TestResource) {
+    ASSERT_TRUE(false);
+}
+
+TEST_F(ReflectTests, TestEnum) {
+    ASSERT_TRUE(false);
+}
+
+TEST_F(ReflectTests, TestEntityReference) {
+    ASSERT_TRUE(false);
+}
+
+TEST_F(ReflectTests, TestArray) {
+    ASSERT_TRUE(false);
 }

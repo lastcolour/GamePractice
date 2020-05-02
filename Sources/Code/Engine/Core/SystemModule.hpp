@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+class EntityLogicRegister;
+
 class SystemModule {
 public:
 
@@ -25,6 +27,7 @@ protected:
 
     virtual ConfigsPtrT getSystemConfigs() const = 0;
     virtual LogicsContainerPtrT getSystemLogics() const = 0;
+    virtual void registerEntityLogics(EntityLogicRegister& logicRegister) const = 0;
 
 private:
 

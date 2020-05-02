@@ -45,6 +45,20 @@ UIBox::UIBox() {
 UIBox::~UIBox() {
 }
 
+void UIBox::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
+        classInfo->addBaseClass<UIBaseBox>();
+        classInfo->addResourceField("labelId", &UIBox::labelId, [](const char* resourceName){
+            return InvalidEntityId;
+
+        });
+        classInfo->addResourceField("renderId", &UIBox::renderId, [](const char* resourceName){
+            return InvalidEntityId;
+        });
+    }
+}
+
+/*
 bool UIBox::serialize(const JSONNode& node) {
     UIBaseBox::serialize(node);
     if(auto labelNode = node.object("label")) {
@@ -52,6 +66,7 @@ bool UIBox::serialize(const JSONNode& node) {
     }
     return true;
 }
+*/
 
 bool UIBox::init() {
     UIBaseBox::init();
@@ -63,6 +78,9 @@ bool UIBox::init() {
     }
     ETNode<ETUILabeledBox>::connect(getEntityId());
     return true;
+}
+
+void UIBox::deinit() {
 }
 
 EntityId UIBox::ET_getLabelId() const {

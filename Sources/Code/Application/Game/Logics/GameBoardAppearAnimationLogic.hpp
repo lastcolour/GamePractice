@@ -9,12 +9,16 @@ class GameBoardAppearAnimationLogic : public EntityLogic,
     public ETNode<ETGameBoardAppearAnimation> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardAppearAnimationLogic();
     virtual ~GameBoardAppearAnimationLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;

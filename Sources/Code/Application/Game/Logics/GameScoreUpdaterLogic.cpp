@@ -15,15 +15,19 @@ GameScoreUpdaterLogic::GameScoreUpdaterLogic() :
 GameScoreUpdaterLogic::~GameScoreUpdaterLogic() {
 }
 
-bool GameScoreUpdaterLogic::serialize(const JSONNode& node) {
-    node.read("stepIncrease", increaseSpeed);
-    return true;
+void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameScoreUpdaterLogic>("GameScoreUpdater")) {
+        classInfo->addField("stepIncrease", &GameScoreUpdaterLogic::increaseSpeed);
+    }
 }
 
 bool GameScoreUpdaterLogic::init() {
     ETNode<ETGameScoreUpdater>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     return true;
+}
+
+void GameScoreUpdaterLogic::deinit() {
 }
 
 void GameScoreUpdaterLogic::ET_setGameScore(int score) {

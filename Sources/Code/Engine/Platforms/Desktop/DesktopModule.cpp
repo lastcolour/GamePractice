@@ -19,3 +19,6 @@ DesktopModule::LogicsContainerPtrT DesktopModule::getSystemLogics() const {
 DesktopModule::ConfigsPtrT DesktopModule::getSystemConfigs() const {
     return nullptr;
 }
+
+void DesktopModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+}

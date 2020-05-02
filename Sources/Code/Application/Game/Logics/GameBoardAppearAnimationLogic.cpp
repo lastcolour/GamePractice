@@ -18,17 +18,21 @@ GameBoardAppearAnimationLogic::GameBoardAppearAnimationLogic() :
 GameBoardAppearAnimationLogic::~GameBoardAppearAnimationLogic() {
 }
 
-bool GameBoardAppearAnimationLogic::serialize(const JSONNode& node) {
-    node.read("fallSpeed", fallSpeed);
-    node.read("collumnDelay", collumnDelay);
-    node.read("duration", duration);
-    return true;
+void GameBoardAppearAnimationLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameBoardAppearAnimationLogic>("GameBoardAppearAnimation")) {
+        classInfo->addField("fallSpeed", &GameBoardAppearAnimationLogic::fallSpeed);
+        classInfo->addField("collumnDelay", &GameBoardAppearAnimationLogic::collumnDelay);
+        classInfo->addField("duration", &GameBoardAppearAnimationLogic::duration);
+    }
 }
 
 bool GameBoardAppearAnimationLogic::init() {
     ETNode<ETGameBoardAppearAnimation>::connect(getEntityId());
     alignSpeedWithScreenSize();
     return true;
+}
+
+void GameBoardAppearAnimationLogic::deinit() {
 }
 
 void GameBoardAppearAnimationLogic::alignSpeedWithScreenSize() {

@@ -86,6 +86,11 @@ if(BUILD_PLATFORM STREQUAL "Linux")
         openal
     )
 
+    CreateStaticLibDependecy("GTEST"
+        ${LIBS_ROOT_DIR}/GTEST/googletest/include
+        gtestd
+    )
+
 elseif(BUILD_PLATFORM STREQUAL "Windows")
 
     CreateStaticLibDependecy("GLAD"
@@ -111,6 +116,11 @@ elseif(BUILD_PLATFORM STREQUAL "Windows")
     CreateStaticLibDependecy("ZLIB"
         ${LIBS_ROOT_DIR}/ZLIB
         zlib
+    )
+
+    CreateStaticLibDependecy("GTEST"
+        ${LIBS_ROOT_DIR}/GTEST/googletest/include
+        gtestd
     )
 
 elseif(BUILD_PLATFORM STREQUAL "Android")
@@ -154,14 +164,5 @@ else()
         ${OBOE_LIB_STATIC_BIN}
         GLESv3 EGL log android z OpenSLES
         CACHE INTERNAL "Engine link depedicies")
-
-endif()
-
-if(BUILD_UNITTESTS)
-
-    CreateStaticLibDependecy("GTEST"
-        ${LIBS_ROOT_DIR}/GTEST/googletest/include
-        gtestd
-    )
 
 endif()

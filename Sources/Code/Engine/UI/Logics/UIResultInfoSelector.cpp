@@ -9,10 +9,11 @@ UIResultInfoSelector::UIResultInfoSelector() {
 UIResultInfoSelector::~UIResultInfoSelector() {
 }
 
-bool UIResultInfoSelector::serialize(const JSONNode& node) {
-    node.read("normalScore", normalExtend);
-    node.read("newHighScore", newHighScoreExtend);
-    return true;
+void UIResultInfoSelector::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIResultInfoSelector>("UIResultInfoSelector")) {
+        classInfo->addField("normalSocre", &UIResultInfoSelector::normalExtend);
+        classInfo->addField("newHighScore", &UIResultInfoSelector::newHighScoreExtend);
+    }
 }
 
 bool UIResultInfoSelector::init() {
@@ -25,4 +26,7 @@ bool UIResultInfoSelector::init() {
     bool extendRes = false;
     ET_SendEventReturn(extendRes, &ETEntityManager::ET_extendEntity, getEntityId(), extendEntityName);
     return extendRes;
+}
+
+void UIResultInfoSelector::deinit() {
 }

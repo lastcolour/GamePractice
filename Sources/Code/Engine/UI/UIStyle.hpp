@@ -3,6 +3,7 @@
 
 #include "Math/Vector.hpp"
 #include "Render/Color.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 #include <string>
 
@@ -28,16 +29,28 @@ enum class SizeInvariant {
     Pixel
 };
 
-struct BoxMargin {
+class BoxMargin {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    BoxMargin();
+
+public:
+
     float left;
     float right;
     float bot;
     float top;
-
-    BoxMargin();
 };
 
 struct UIStyle {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
 public:
 
     Vec2 size;

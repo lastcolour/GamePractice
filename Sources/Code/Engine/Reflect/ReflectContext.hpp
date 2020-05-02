@@ -1,5 +1,5 @@
 #ifndef __REFLECT_CONTEXT_HPP__
-#define __REFLECT_CONTEXhT_HPP__
+#define __REFLECT_CONTEXT_HPP__
 
 #include "Reflect/ClassInfo.hpp"
 
@@ -13,7 +13,10 @@ public:
 
     template<typename ClassT>
     bool reflect() {
-        ClassT::reflect(*this);
+        static_assert(std::is_function<decltype(ClassT::Reflect)>::value
+            && std::is_same<decltype(&ClassT::Reflect), void(*)(ReflectContext&)>::value,
+            "Type does not provide required T::Reflect(ReflectContext&) declaration");
+        ClassT::Reflect(*this);
         return registerClassInfo();
     }
 
@@ -36,6 +39,7 @@ public:
 
 private:
 
+    bool createClassInfo(const char* className);
     bool registerClassInfo();
 
 private:

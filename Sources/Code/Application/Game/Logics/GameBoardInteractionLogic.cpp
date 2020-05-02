@@ -16,14 +16,16 @@ GameBoardInteractionLogic::GameBoardInteractionLogic() :
 GameBoardInteractionLogic::~GameBoardInteractionLogic() {
 }
 
-bool GameBoardInteractionLogic::serialize(const JSONNode& node) {
-    (void)node;
-    return true;
+void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
+    ctx.classInfo<GameBoardInteractionLogic>("GameBoardInteraction");
 }
 
 bool GameBoardInteractionLogic::init() {
     ETNode<ETGAmeBoardInteractionLogic>::connect(getEntityId());
     return true;
+}
+
+void GameBoardInteractionLogic::deinit() {
 }
 
 void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {

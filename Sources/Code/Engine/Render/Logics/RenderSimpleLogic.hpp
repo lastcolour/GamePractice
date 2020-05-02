@@ -13,12 +13,16 @@ class RenderSimpleLogic : public RenderNode,
     public ETNode<ETRenderRect> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     RenderSimpleLogic();
     virtual ~RenderSimpleLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;

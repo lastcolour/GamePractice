@@ -7,12 +7,16 @@ class UIImage : public UIBaseBox,
     public ETNode<ETUIImage> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIImage();
     virtual ~UIImage();
 
     // UIBaseBox
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // UIImage
     void ET_setImage(const char* image) override;

@@ -13,6 +13,7 @@ protected:
 
     ConfigsPtrT getSystemConfigs() const override;
     LogicsContainerPtrT getSystemLogics() const override;
+    void registerEntityLogics(EntityLogicRegister& logicRegister) const override;
 };
 
 

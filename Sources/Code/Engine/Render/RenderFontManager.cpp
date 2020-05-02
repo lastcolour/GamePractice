@@ -69,6 +69,10 @@ std::shared_ptr<RenderFont> RenderFontManager::ET_createDefaultFont() {
     return createFont(DEF_FONT_NAME, DEF_FONT_SIZE);
 }
 
+std::shared_ptr<RenderFont> RenderFontManager::ET_createFont(const char* fontName) {
+    return createFont(fontName, DEF_FONT_SIZE);
+}
+
 std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontName, int fontSize) {
     std::string fontName = reqFontName;
     fontName += '_' + std::to_string(fontSize);

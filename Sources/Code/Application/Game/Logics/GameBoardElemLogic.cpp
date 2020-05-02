@@ -6,11 +6,13 @@ GameBoardElemLogic::GameBoardElemLogic() {
 GameBoardElemLogic::~GameBoardElemLogic() {
 }
 
-bool GameBoardElemLogic::serialize(const JSONNode& node) {
-    (void)node;
-    return true;
+void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
+    ctx.classInfo<GameBoardElemLogic>("GameBoardElem");
 }
 
 bool GameBoardElemLogic::init() {
     return true;
+}
+
+void GameBoardElemLogic::deinit() {
 }

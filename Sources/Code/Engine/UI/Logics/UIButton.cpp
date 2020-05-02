@@ -15,6 +15,13 @@ UIButton::UIButton() :
 UIButton::~UIButton() {
 }
 
+void UIButton::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
+        classInfo->addField("event", &UIButton::eventName);
+    }
+
+}
+
 void UIButton::ET_onPress() {
     bool isSomeButtonPressed = false;
     ET_SendEventReturn(isSomeButtonPressed, &ETUIButtonEventManager::ET_isSomeButtonPressed);
@@ -29,12 +36,6 @@ void UIButton::ET_onPress() {
 void UIButton::ET_onPressAnimationEnd() {
     ET_SendEvent(&ETUIButtonEventManager::ET_setButtonPressed, false);
     ET_SendEvent(&ETUIEventManager::ET_onEvent, eventName.c_str());
-}
-
-bool UIButton::serialize(const JSONNode& node) {
-    UIBox::serialize(node);
-    node.read("event", eventName);
-    return true;
 }
 
 void UIButton::ET_setEventName(const char* newEventName) {
@@ -57,6 +58,9 @@ bool UIButton::init() {
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIButtonPressAnimationEvents>::connect(getEntityId());
     return true;
+}
+
+void UIButton::deinit() {
 }
 
 void UIButton::ET_onHover(bool flag) {

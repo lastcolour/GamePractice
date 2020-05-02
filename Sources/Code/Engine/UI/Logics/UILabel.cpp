@@ -14,13 +14,11 @@ UILabel::UILabel() {
 UILabel::~UILabel() {
 }
 
-bool UILabel::serialize(const JSONNode& node) {
-    if(!UIBaseBox::serialize(node)) {
-        LogWarning("[UILabel::serialize] Can't serialize UIbox");
-        return false;
+void UILabel::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UILabel>("UILabel")) {
+        classInfo->addBaseClass<UIBaseBox>();
+        classInfo->addField("text", &UILabel::text);
     }
-    node.read("text", text);
-    return true;
 }
 
 bool UILabel::init() {
@@ -33,6 +31,9 @@ bool UILabel::init() {
     updateRendererParams();
     ETNode<ETUILabel>::connect(getEntityId());
     return true;
+}
+
+void UILabel::deinit() {
 }
 
 void UILabel::ET_setStyle(const UIStyle& newStyle) {

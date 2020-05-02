@@ -45,6 +45,8 @@ protected:
             TestSystemLogic>());
         return container;
     }
+
+    void registerEntityLogics(EntityLogicRegister& logicRegister) const {}
 };
 
 } // namespace

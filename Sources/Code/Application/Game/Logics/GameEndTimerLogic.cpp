@@ -12,9 +12,10 @@ GameEndTimerLogic::GameEndTimerLogic() :
 GameEndTimerLogic::~GameEndTimerLogic() {
 }
 
-bool GameEndTimerLogic::serialize(const JSONNode& node) {
-    node.read("time", endTime);
-    return true;
+void GameEndTimerLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameEndTimerLogic>("GameEndTimer")) {
+        classInfo->addField("endTime", &GameEndTimerLogic::endTime);
+    }
 }
 
 bool GameEndTimerLogic::init() {
@@ -23,6 +24,9 @@ bool GameEndTimerLogic::init() {
 
     ET_SendEvent(&ETGameEndTimerUpdater::ET_setEndTime, std::max(remainingTime, 0.f));
     return true;
+}
+
+void GameEndTimerLogic::deinit() {
 }
 
 void GameEndTimerLogic::ET_startEndTimer() {

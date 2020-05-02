@@ -4,7 +4,6 @@
 #include "Render/RenderTexture.hpp"
 #include "Render/RenderContext.hpp"
 #include "Render/Logics/RenderAuxFunctions.hpp"
-#include "Core/JSONNode.hpp"
 
 RenderLinearGradientRect::RenderLinearGradientRect() :
     scale(1.f),
@@ -16,14 +15,13 @@ RenderLinearGradientRect::RenderLinearGradientRect() :
 RenderLinearGradientRect::~RenderLinearGradientRect() {
 }
 
-bool RenderLinearGradientRect::serialize(const JSONNode& node) {
-    if(!RenderNode::serialize(node)) {
-        return false;
+void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderLinearGradientRect>("RenderLinearGradientRect")) {
+        classInfo->addBaseClass<RenderNode>();
+        classInfo->addField("startColor", &RenderLinearGradientRect::startCol);
+        classInfo->addField("endColor", &RenderLinearGradientRect::endCol);
+        classInfo->addField("isVertical", &RenderLinearGradientRect::isVertical);
     }
-    node.read("vertical", isVertical);
-    Render::ReadColor(node.object("startColor"), startCol);
-    Render::ReadColor(node.object("endColor"), endCol);
-    return true;
 }
 
 bool RenderLinearGradientRect::init() {
@@ -51,6 +49,9 @@ bool RenderLinearGradientRect::init() {
     }
     ETNode<ETRenderRect>::connect(getEntityId());
     return true;
+}
+
+void RenderLinearGradientRect::deinit() {
 }
 
 void RenderLinearGradientRect::updateTexData() {

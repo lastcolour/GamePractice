@@ -17,11 +17,12 @@ RenderSimpleLogic::RenderSimpleLogic() :
 RenderSimpleLogic::~RenderSimpleLogic() {
 }
 
-bool RenderSimpleLogic::serialize(const JSONNode& node) {
-    if(!RenderNode::serialize(node)) {
-        return false;
+void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderSimpleLogic>("RenderSimpleLogic")) {
+        classInfo->addBaseClass<RenderNode>();
+        classInfo->addField("scale", &RenderSimpleLogic::scale);
+        classInfo->addField("color", &RenderSimpleLogic::color);
     }
-    return true;
 }
 
 bool RenderSimpleLogic::init() {
@@ -31,6 +32,10 @@ bool RenderSimpleLogic::init() {
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
     return true;
+}
+
+void RenderSimpleLogic::deinit() {
+    return;
 }
 
 void RenderSimpleLogic::ET_onRender(const RenderContext& renderCtx) {

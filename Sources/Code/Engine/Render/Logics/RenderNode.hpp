@@ -9,12 +9,16 @@ class RenderNode : public EntityLogic,
     public ETNode<ETRenderEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     RenderNode();
     virtual ~RenderNode();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETRenderNode
     bool ET_isVisible() const override;

@@ -96,7 +96,7 @@ void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType:
 template<typename ETType>
 bool ET_IsExistNode() {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
-    return GetETSystem()->isExistNode<ETType>(SystemEntityId);
+    return !GetETSystem()->getAll<ETType>().empty();
 }
 
 template<typename ETType>

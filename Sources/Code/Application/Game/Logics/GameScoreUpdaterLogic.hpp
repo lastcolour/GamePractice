@@ -9,12 +9,16 @@ class GameScoreUpdaterLogic : public EntityLogic,
     public ETNode<ETGameTimerEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameScoreUpdaterLogic();
     virtual ~GameScoreUpdaterLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameScoreUpdater
     void ET_setGameScore(int score) override;

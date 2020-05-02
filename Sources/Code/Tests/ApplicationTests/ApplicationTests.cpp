@@ -44,6 +44,9 @@ protected:
     ConfigsPtrT getSystemConfigs() const override {
         return nullptr;
     }
+
+    void registerEntityLogics(EntityLogicRegister& logicRegister) const {}
+
 };
 
 class TestApplication : public Application {

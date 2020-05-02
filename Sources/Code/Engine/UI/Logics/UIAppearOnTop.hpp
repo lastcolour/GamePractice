@@ -8,12 +8,16 @@ class UIAppearOnTop : public EntityLogic,
     public ETNode<ETUIAppearAnimation> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIAppearOnTop();
     virtual ~UIAppearOnTop();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETUIAppearAnimation
     bool ET_isAppearing() const override;

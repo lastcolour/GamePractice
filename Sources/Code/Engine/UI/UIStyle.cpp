@@ -70,7 +70,15 @@ BoxMargin::BoxMargin() :
     left(0.f),
     right(0.f),
     bot(0.f),
-    top(0.f) {
+    top(0.f) {}
+
+void BoxMargin::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<BoxMargin>("BoxMargin")) {
+        classInfo->addField("left", &BoxMargin::left);
+        classInfo->addField("right", &BoxMargin::right);
+        classInfo->addField("bot", &BoxMargin::bot);
+        classInfo->addField("top", &BoxMargin::top);
+    }
 }
 
 UIStyle::UIStyle() :
@@ -86,6 +94,19 @@ UIStyle::UIStyle() :
 }
 
 UIStyle::~UIStyle() {
+}
+
+void UIStyle::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIStyle>("UIStyle")) {
+        classInfo->addField("size", &UIStyle::size);
+        classInfo->addField("color", &UIStyle::color);
+        classInfo->addEnumField("sizeInv", &UIStyle::sizeInv);
+        classInfo->addEnumField("xAlignType", &UIStyle::xAlignType);
+        classInfo->addEnumField("yAlignType", &UIStyle::yAlignType);
+        classInfo->addField("renderer", &UIStyle::renderer);
+        classInfo->addField("fontSize", &UIStyle::fontSize);
+        classInfo->addField("fontColor", &UIStyle::fontColor);
+    }
 }
 
 void UIStyle::serialize(const JSONNode& node) {
@@ -120,11 +141,5 @@ void UIStyle::serialize(const JSONNode& node) {
         fontColor = ColorB(0, 0, 0, 0);
     }
     node.read("fontSize", fontSize);
-    if(auto marginNode = node.object("margin")) {
-        marginNode.read("left", margin.left);
-        marginNode.read("right", margin.right);
-        marginNode.read("top", margin.bot);
-        marginNode.read("bot", margin.top);
-    }
     node.read("renderer", renderer);
 }

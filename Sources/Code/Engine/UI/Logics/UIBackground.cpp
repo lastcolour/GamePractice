@@ -7,14 +7,17 @@ UIBackground::UIBackground() {
 UIBackground::~UIBackground() {
 }
 
-bool UIBackground::serialize(const JSONNode& node) {
-    return true;
+void UIBackground::Reflect(ReflectContext& ctx) {
+    ctx.classInfo<UIBackground>("UIBackground");
 }
 
 bool UIBackground::init() {
     ETNode<ETRenderEvents>::connect(getEntityId());
     ET_onRenderPortResized();
     return true;
+}
+
+void UIBackground::deinit() {
 }
 
 void UIBackground::ET_onRenderPortResized() {

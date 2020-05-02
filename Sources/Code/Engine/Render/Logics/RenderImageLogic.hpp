@@ -8,12 +8,16 @@ class RenderImageLogic : public RenderNode,
     public ETNode<ETRenderRect> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     RenderImageLogic();
     virtual ~RenderImageLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;

@@ -1,42 +1,8 @@
 #include "Entity/EntityManager.hpp"
 #include "Entity/Entity.hpp"
+#include "Entity/EntityLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
-
-#include "Game/Logics/GameBoardElemLogic.hpp"
-#include "Game/Logics/GameBoardLogic.hpp"
-#include "Game/Logics/GameEndTimerLogic.hpp"
-#include "Game/Logics/GameEndTimerUpdaterLogic.hpp"
-#include "Game/Logics/GameBoardElemSwitcherLogic.hpp"
-#include "Game/Logics/GameBoardInteractionLogic.hpp"
-#include "Game/Logics/GameBoardElemDestroyLogic.hpp"
-#include "Game/Logics/GameScoreLogic.hpp"
-#include "Game/Logics/GameScoreUpdaterLogic.hpp"
-#include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
-#include "Game/Logics/GameBoardMatchLogic.hpp"
-
-#include "Render/Logics/RenderSimpleLogic.hpp"
-#include "Render/Logics/RenderTextLogic.hpp"
-#include "Render/Logics/RenderImageLogic.hpp"
-#include "Render/Logics/RenderColoredTextureLogic.hpp"
-#include "Render/Logics/RenderLinearGradientRect.hpp"
-
-#include "UI/Logics/UIButton.hpp"
-#include "UI/Logics/UIList.hpp"
-#include "UI/Logics/UILabel.hpp"
-#include "UI/Logics/UIBaseBox.hpp"
-#include "UI/Logics/UIPartition.hpp"
-#include "UI/Logics/UIImage.hpp"
-#include "UI/Logics/UIButtonPressAnimation.hpp"
-#include "UI/Logics/UILabelSetter.hpp"
-#include "UI/Logics/UIResultInfoSelector.hpp"
-#include "UI/Logics/UISwitchControl.hpp"
-#include "UI/Logics/UIAppearOnTop.hpp"
-#include "UI/Logics/UIAppearFromSide.hpp"
-#include "UI/Logics/UIBackground.hpp"
-
-#include "Audio/Logics/SoundPlayLogic.hpp"
-
 #include <algorithm>
 
 namespace {
@@ -54,41 +20,6 @@ EntityManager::~EntityManager() {
 }
 
 bool EntityManager::init() {
-    registerLogic<RenderSimpleLogic>("RenderSimple");
-    registerLogic<RenderTextLogic>("RenderText");
-    registerLogic<RenderImageLogic>("RenderImage");
-    registerLogic<RenderColoredTextureLogic>("RenderColoredTexture");
-    registerLogic<RenderLinearGradientRect>("RenderLinearGradientRect");
-
-    registerLogic<GameBoardLogic>("GameBoard");
-    registerLogic<GameBoardElemLogic>("GameBoardElem");
-    registerLogic<GameEndTimerLogic>("GameEndTimer");
-    registerLogic<GameEndTimerUpdaterLogic>("GameEndTimerUpdater");
-    registerLogic<GameBoardElemSwitcherLogic>("GameBoardElemSwitcher");
-    registerLogic<GameBoardInteractionLogic>("GameBoardInteraction");
-    registerLogic<GameBoardElemDestroyLogic>("GameBoardElemDestroy");
-    registerLogic<GameScoreLogic>("GameScore");
-    registerLogic<GameScoreUpdaterLogic>("GameScoreUpdater");
-    registerLogic<GameBoardAppearAnimationLogic>("GameBoardAppearAnimation");
-    registerLogic<GameBoardMatchLogic>("GameBoardMatcher");
-
-    registerLogic<UIBox>("UIBox");
-    registerLogic<UIList>("UIList");
-    registerLogic<UIButton>("UIButton");
-    registerLogic<UILabel>("UILabel");
-    registerLogic<UIBaseBox>("UIBaseBox");
-    registerLogic<UIPartition>("UIPartition");
-    registerLogic<UIImage>("UIImage");
-    registerLogic<UIButtonPressAnimation>("UIButtonPressAnimation");
-    registerLogic<UILabelSetter>("UILabelSetter");
-    registerLogic<UIResultInfoSelector>("UIResultInfoSelector");
-    registerLogic<UISwitchControl>("UISwitchControl");
-    registerLogic<UIAppearOnTop>("UIAppearOnTop");
-    registerLogic<UIAppearFromSide>("UIAppearFromSide");
-    registerLogic<UIBackground>("UIBackground");
-
-    registerLogic<SoundPlayLogic>("SoundPlayer");
-
     ETNode<ETEntityManager>::connect(getEntityId());
     return true;
 }
@@ -195,10 +126,12 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, cons
             continue;
         }
         logicPtr->setEntity(entity);
+        /*
         if(!logicPtr->serialize(logicData)) {
             LogWarning("[EntityManager::setupEntityLogics] Can't serialize logic '%s' for entity '%s'", logicType, entityName);
             continue;
         }
+        */
         if(!logicPtr->init()) {
             LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entityName);
             continue;

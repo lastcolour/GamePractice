@@ -19,6 +19,15 @@ UIList::UIList() :
 UIList::~UIList() {
 }
 
+void UIList::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIList>("UIList")) {
+        classInfo->addBaseClass<UIBaseBox>();
+        classInfo->addEnumField("type", &UIList::listType);
+        classInfo->addField("children", &UIList::children);
+    }
+}
+
+/*
 bool UIList::serialize(const JSONNode& node) {
     if(!UIBaseBox::serialize(node)) {
         LogWarning("[UIList::serialize] UIBaseBox searilization failed");
@@ -36,6 +45,7 @@ bool UIList::serialize(const JSONNode& node) {
     }
     return true;
 }
+*/
 
 bool UIList::init() {
     if(!UIBaseBox::init()) {
@@ -45,6 +55,9 @@ bool UIList::init() {
     ETNode<ETUIList>::connect(getEntityId());
     calcList();
     return true;
+}
+
+void UIList::deinit() {
 }
 
 void UIList::ET_onChildAdded(EntityId newElemId) {

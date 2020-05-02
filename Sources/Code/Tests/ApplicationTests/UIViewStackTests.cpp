@@ -26,13 +26,11 @@ public:
     virtual ~ViewStackEventHitoryLogic() = default;
 
     // EntityLogic
-    bool serialize(const JSONNode& node) {
-        return true;
-    }
-
     bool init() {
         ETNode<ETUIViewStackEvents>::connect(getEntityId());
         return true;
+    }
+    void deinit() {
     }
 
     // ETUIViewStackEvents

@@ -26,11 +26,18 @@ RenderTextLogic::RenderTextLogic() :
 RenderTextLogic::~RenderTextLogic() {
 }
 
-bool RenderTextLogic::serialize(const JSONNode& node) {
-    if(!RenderNode::serialize(node)) {
-        return false;
+void RenderTextLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderTextLogic>("RenderText")) {
+        classInfo->addBaseClass<RenderNode>();
+        classInfo->addField("color", &RenderTextLogic::color);
+        classInfo->addField("fontScale", &RenderTextLogic::fontScale);
+        classInfo->addResourceField("font", &RenderTextLogic::font, [](const char* resourceName){
+            std::shared_ptr<RenderFont> font;
+            ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, resourceName);
+            return font;
+        });
     }
-    return true;
+    RenderNode::Reflect(ctx);
 }
 
 bool RenderTextLogic::init() {
@@ -52,6 +59,10 @@ bool RenderTextLogic::init() {
 
     ETNode<ETRenderTextLogic>::connect(getEntityId());
     return true;
+}
+
+void RenderTextLogic::deinit() {
+    return;
 }
 
 void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {

@@ -9,24 +9,19 @@ RenderNode::RenderNode() :
 RenderNode::~RenderNode() {
 }
 
-bool RenderNode::serialize(const JSONNode& node) {
-    if(node.hasKey("geom")) {
-        std::string geomName;
-        node.read("geom", geomName);
-        ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomName.c_str());
-        if(!geom) {
-            return false;
-        }
+void RenderNode::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderNode>("RenderNode")) {
+        classInfo->addResourceField("geometry", &RenderNode::geom, [](const char* resourceName){
+            std::shared_ptr<RenderGeometry> geometry;
+            ET_SendEventReturn(geometry, &ETRenderGeometryManager::ET_createGeometry, resourceName);
+            return geometry;
+        });
+        classInfo->addResourceField("material", &RenderNode::mat, [](const char* resourceName){
+            std::shared_ptr<RenderMaterial> material;
+            ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, resourceName);
+            return material;
+        });
     }
-    if(node.hasKey("mat")) {
-        std::string matName;
-        node.read("mat", matName);
-        ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName.c_str());
-        if(!mat) {
-            return false;
-        }
-    }
-    return true;
 }
 
 bool RenderNode::init() {
@@ -34,6 +29,9 @@ bool RenderNode::init() {
     ETNode<ETRenderNode>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     return true;
+}
+
+void RenderNode::deinit() {
 }
 
 void RenderNode::ET_setMaterial(const char* matName) {

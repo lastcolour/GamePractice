@@ -9,12 +9,16 @@ class SoundPlayLogic : public EntityLogic,
     public ETNode<ETSoundPlayer> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     SoundPlayLogic();
     virtual ~SoundPlayLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETSoundPlayer
     void ET_setSound(const char* newSoundName) override;

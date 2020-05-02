@@ -10,12 +10,16 @@ class UIButtonPressAnimation : public EntityLogic,
     public ETNode<ETUIButtonPressAnimation> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIButtonPressAnimation();
     virtual ~UIButtonPressAnimation();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETTimerEvents
     void ET_onTick(float dt) override;

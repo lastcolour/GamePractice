@@ -29,3 +29,6 @@ AndroidModule::LogicsContainerPtrT AndroidModule::getSystemLogics() const {
 AndroidModule::ConfigsPtrT AndroidModule::getSystemConfigs() const {
     return nullptr;
 }
+
+void AndroidModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+}

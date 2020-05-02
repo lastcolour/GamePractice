@@ -7,13 +7,16 @@ UIAppearOnTop::UIAppearOnTop() :
 UIAppearOnTop::~UIAppearOnTop() {
 }
 
-bool UIAppearOnTop::serialize(const JSONNode& node) {
-    return true;
+void UIAppearOnTop::Reflect(ReflectContext& ctx) {
+    auto classInfo = ctx.classInfo<UIAppearOnTop>("UIAppearOnTop");
 }
 
 bool UIAppearOnTop::init() {
     ETNode<ETUIAppearAnimation>::connect(getEntityId());
     return true;
+}
+
+void UIAppearOnTop::deinit() {
 }
 
 bool UIAppearOnTop::ET_isAppearing() const {

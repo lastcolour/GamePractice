@@ -77,7 +77,6 @@ public:
 
 protected:
 
-    bool serialize(const JSONNode& node) override { return true; }
     void setElemType(BoardElement& elem) const override { elem.type = EBoardElemType::Blue; }
 };
 

@@ -7,12 +7,16 @@
 class GameBoardElemLogic : public EntityLogic {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardElemLogic();
     virtual ~GameBoardElemLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 };
 
 #endif /* __GAME_BOARD_ELEMENT_LOGIC_HPP__ */

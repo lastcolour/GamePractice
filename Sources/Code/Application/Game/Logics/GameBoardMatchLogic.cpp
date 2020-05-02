@@ -8,13 +8,16 @@ GameBoardMatchLogic::GameBoardMatchLogic() :
 GameBoardMatchLogic::~GameBoardMatchLogic() {
 }
 
-bool GameBoardMatchLogic::serialize(const JSONNode& node) {
-    return true;
+void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
+    ctx.classInfo<GameBoardMatchLogic>("GameBoardMatch");
 }
 
 bool GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
     return true;
+}
+
+void GameBoardMatchLogic::deinit() {
 }
 
 bool GameBoardMatchLogic::isElementsMatch(EntityId firstId, EntityId secondId) const {

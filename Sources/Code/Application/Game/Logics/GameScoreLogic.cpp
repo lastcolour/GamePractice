@@ -7,15 +7,17 @@ GameScoreLogic::GameScoreLogic() :
 GameScoreLogic::~GameScoreLogic() {
 }
 
-bool GameScoreLogic::serialize(const JSONNode& node) {
-    (void)node;
-    return true;
+void GameScoreLogic::Reflect(ReflectContext& ctx) {
+    ctx.classInfo<GameScoreLogic>("GameScore");
 }
 
 bool GameScoreLogic::init() {
     ETNode<ETGameScore>::connect(getEntityId());
     ETNode<ETGameBoardElemDestoryEvents>::connect(getEntityId());
     return true;
+}
+
+void GameScoreLogic::deinit() {
 }
 
 void GameScoreLogic::ET_onElemsDestroyed(int count) {

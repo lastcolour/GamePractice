@@ -13,6 +13,11 @@ using ClassInstanceDeleteFuncT = std::function<void(void*)>;
 
 class ClassInfo {
 
+    using CreateFuncT = std::function<void*(void)>;
+    using DeleteFuncT = std::function<void(void*)>;
+    using GetValueFuncT = std::function<void*(void*, ClassValue::ValuePtrT)>;
+    using ReflectFuncT = std::function<void(ReflectContext& ctx)>;
+
 public:
 
     ClassInfo();
@@ -26,74 +31,97 @@ public:
 
     template<typename ClassT>
     bool init(const char* name) {
-        if(!isClassNameValid(name)) {
-            return false;
-        }
-        className = name;
-        instanceTypeId = GetTypeId<ClassT>();
-        deleteFunc = [](void* object){
-            delete static_cast<ClassT*>(object);
-        };
-        createFunc = []() -> void* {
-            return static_cast<void*>(new ClassT);
-        };
         getValueFunc = [](void* object, ClassValue::ValuePtrT ptr) -> void* {
+            auto valuePtr = ClassValue::CastFromPtr<ClassT>(ptr);
             auto instance = static_cast<ClassT*>(object);
-            auto value = reinterpret_cast<void* ClassT::*>(ptr);
-            return &(instance->*value);
+            return &(instance->*valuePtr);
         };
-        return true;
+        if constexpr (!std::is_abstract<ClassT>::value) {
+            createFunc = []() -> void* {
+                return static_cast<void*>(new ClassT);
+            };
+            deleteFunc = [](void* object){
+                delete static_cast<ClassT*>(object);
+            };
+            return initClassInfo(name, GetTypeId<ClassT>(), createFunc, deleteFunc, getValueFunc);
+        } else {
+            return initClassInfo(name, GetTypeId<ClassT>(), nullptr, nullptr, getValueFunc);
+        }
     }
 
     template<typename ClassT, typename ValueT>
-    void addField(const char* name, ValueT ClassT::* value) {
+    void addField(const char* name, ValueT ClassT::* valuePtr) {
+        static_assert(!std::is_enum<ValueT>::value, "Enums should be added via 'addFieldEnum'");
+        constexpr auto type = getClassValueType<ValueT>();
+        static_assert(type != ClassValueType::Invalid, "Can't add field with unknown type");
         if(getIntanceTypeId() != GetTypeId<ClassT>()) {
             return;
         }
-        if(!value) {
-            return;
-        }
-        if(!isFieldNameValid(name)) {
-            return;
-        }
-        constexpr auto valueType = getClassValueType<ValueT>();
-        if constexpr (valueType == ClassValueType::Invalid) {
-            return;
-        } else if constexpr (valueType == ClassValueType::Object) {
+        if constexpr (type == ClassValueType::Object) {
             auto intanceTypeId = GetTypeId<ValueT>();
             if(!findClassInfo(intanceTypeId)) {
-                auto reflectFunc = [](ReflectContext& ctx) { 
-                    ValueT::reflect(ctx);
+                auto reflectFunc = [](ReflectContext& ctx) {
+                    ValueT::Reflect(ctx);
                 };
                 if(!reflectEmbebedClass(reflectFunc)) {
                     return;
                 }
             }
+        } else if constexpr (type == ClassValueType::Array) {
+            return;
         }
-        ClassValue classValue;
-        classValue.name = name;
-        classValue.type = valueType;
-        classValue.ptr = reinterpret_cast<ClassValue::ValuePtrT>(value);
-        classValue.typeId = GetTypeId<ValueT>();
-        values.push_back(classValue);
+        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), GetTypeId<ValueT>(), nullptr);
+    }
+
+    template<typename ClassT, typename ValueT, typename CreateFuncT>
+    void addResourceField(const char* name, ValueT ClassT::* valuePtr, CreateFuncT createResourceFunc) {
+        if(getIntanceTypeId() != GetTypeId<ClassT>()) {
+            return;
+        }
+        auto createFunc = [createResourceFunc, this](void* instance, ClassValue::ValuePtrT ptr, const char* resourceName) {
+            auto valuePtr = getValueFunc(instance, ptr);
+            *(static_cast<ValueT*>(valuePtr)) = createResourceFunc(resourceName);
+        };
+        registerClassValue(name, ClassValueType::Resource, ClassValue::CastToPtr(valuePtr), GetTypeId<ValueT>(), createFunc);
+    }
+
+    template<typename ClassT, typename ValueT>
+    void addEnumField(const char* name, ValueT ClassT::* valuePtr) {
+        static_assert(std::is_enum<ValueT>::value, "Only enums can be added via this method");
+        if(getIntanceTypeId() != GetTypeId<ClassT>()) {
+            return;
+        }
+        registerClassValue(name, ClassValueType::Enum, ClassValue::CastToPtr(valuePtr), GetTypeId<ValueT>(), nullptr);
+    }
+
+    template<typename ClassT>
+    void addBaseClass() {
+        ReflectContext ctx;
+        if(!ctx.reflect<ClassT>()) {
+            return;
+        }
+        registerBaseClass(ctx);
     }
 
 private:
 
-    bool isClassNameValid(const char* name) const;
-    bool isFieldNameValid(const char* name) const;
     bool serializeInstance(void* instance, const JSONNode& node);
-    bool reflectEmbebedClass(const std::function<void(ReflectContext& ctx)>& reflectFunc);
+    bool reflectEmbebedClass(ReflectFuncT reflectFunc);
     ClassInfo* findClassInfo(TypeId instanceTypeId) const;
+    void registerBaseClass(ReflectContext& ctx);
+    bool initClassInfo(const char* name, TypeId objectTypeId, CreateFuncT createF, DeleteFuncT deleteF, GetValueFuncT getValueF);
+    void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
+        ClassValue::CreateFuncT valueCreateFunc);
 
 private:
 
-    std::function<void*(void)> createFunc;
-    std::function<void(void*)> deleteFunc;
-    std::function<void*(void*, ClassValue::ValuePtrT)> getValueFunc;
+    std::vector<TypeId> baseClasses;
+    std::vector<ClassValue> values;
+    CreateFuncT createFunc;
+    DeleteFuncT deleteFunc;
+    GetValueFuncT getValueFunc;
     std::string className;
     TypeId instanceTypeId;
-    std::vector<ClassValue> values;
 };
 
 #endif /* __CLASS_INFO_HPP__ */

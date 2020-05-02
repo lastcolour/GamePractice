@@ -15,6 +15,16 @@ UISwitchControl::UISwitchControl() :
 UISwitchControl::~UISwitchControl() {
 }
 
+void UISwitchControl::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UISwitchControl>("UISwitchControl")) {
+        classInfo->addField("onLabel", &UISwitchControl::onLabel);
+        classInfo->addField("offLabel", &UISwitchControl::offLabel);
+        classInfo->addEnumField("controlType", &UISwitchControl::controlType);
+        classInfo->addField("isTurnedOn", &UISwitchControl::isTurnedOn);
+    }
+}
+
+/*
 bool UISwitchControl::serialize(const JSONNode& node) {
     node.read("onLabel", onLabel);
     node.read("offLabel", offLabel);
@@ -31,6 +41,7 @@ bool UISwitchControl::serialize(const JSONNode& node) {
     }
     return true;
 }
+*/
 
 bool UISwitchControl::init() {
     switch(controlType)
@@ -52,6 +63,9 @@ bool UISwitchControl::init() {
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUISwitchControl>::connect(getEntityId());
     return true;
+}
+
+void UISwitchControl::deinit() {
 }
 
 void UISwitchControl::setLabel() {

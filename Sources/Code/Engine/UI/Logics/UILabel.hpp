@@ -7,12 +7,18 @@ class UILabel : public UIBaseBox,
     public ETNode<ETUILabel> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UILabel();
     virtual ~UILabel();
 
-    // UIBaseBox
-    bool serialize(const JSONNode& node) override;
+    // EntityLogic
     bool init() override;
+    void deinit() override;
+
+    // UIBaseBox
     void ET_setStyle(const UIStyle& style) override;
 
     // ETUILabel

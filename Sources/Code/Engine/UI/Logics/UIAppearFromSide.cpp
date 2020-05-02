@@ -17,14 +17,18 @@ UIAppearFromSide::UIAppearFromSide() :
 UIAppearFromSide::~UIAppearFromSide() {
 }
 
-bool UIAppearFromSide::serialize(const JSONNode& node) {
-    node.read("animDuration", animDuration);
-    return true;
+void UIAppearFromSide::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIAppearFromSide>("UIAppearFromSide")) {
+        classInfo->addField("animDuration", &UIAppearFromSide::animDuration);
+    }
 }
 
 bool UIAppearFromSide::init() {
     ETNode<ETUIAppearAnimation>::connect(getEntityId());
     return true;
+}
+
+void UIAppearFromSide::deinit() {
 }
 
 void UIAppearFromSide::ET_setAppear(bool flag) {

@@ -9,12 +9,16 @@ class RenderLinearGradientRect : public RenderNode,
     public ETNode<ETRenderRect> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     RenderLinearGradientRect();
     virtual ~RenderLinearGradientRect();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // RenderNode
     void ET_onRender(const RenderContext& renderCtx) override;

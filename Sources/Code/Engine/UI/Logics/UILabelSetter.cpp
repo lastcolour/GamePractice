@@ -11,6 +11,13 @@ UILabelSetter::UILabelSetter() :
 UILabelSetter::~UILabelSetter() {
 }
 
+void UILabelSetter::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UILabelSetter>("UILabelSetter")) {
+        classInfo->addEnumField("value", &UILabelSetter::valueType);
+    }
+}
+
+/*
 bool UILabelSetter::serialize(const JSONNode& node) {
     std::string valueTypeStr;
     node.read("value", valueTypeStr);
@@ -24,6 +31,7 @@ bool UILabelSetter::serialize(const JSONNode& node) {
     }
     return true;
 }
+*/
 
 bool UILabelSetter::init() {
     switch(valueType)
@@ -51,4 +59,7 @@ bool UILabelSetter::init() {
         return false;
     }
     return true;
+}
+
+void UILabelSetter::deinit() {
 }

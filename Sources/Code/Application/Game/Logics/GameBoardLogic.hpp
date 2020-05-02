@@ -27,12 +27,16 @@ class GameBoardLogic : public EntityLogic,
     public ETNode<ETGameBoard> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardLogic();
     virtual ~GameBoardLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameBoard
     void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) override;

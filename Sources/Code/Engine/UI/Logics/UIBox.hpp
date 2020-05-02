@@ -6,12 +6,16 @@
 class UIBox : public UIBaseBox,
     public ETNode<ETUILabeledBox> {
 public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
     UIBox();
     virtual ~UIBox();
 
     // UIBaseBox
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETUIBox
     void ET_setStyle(const UIStyle& newStyle) override;

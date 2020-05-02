@@ -10,12 +10,16 @@ class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETGAmeBoardInteractionLogic> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardInteractionLogic();
     virtual ~GameBoardInteractionLogic();
 
     // EntityLogic
     bool init() override;
-    bool serialize(const JSONNode& node) override;
+    void deinit() override;
 
     // ETInputEvents
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;

@@ -19,6 +19,7 @@ public:
     void deinit() override;
 
     // ETRenderFontManager
+    std::shared_ptr<RenderFont> ET_createFont(const char* fontName) override;
     std::shared_ptr<RenderFont> ET_createDefaultFont() override;
 
     // ETRenderResourceManager

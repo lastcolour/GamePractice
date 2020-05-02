@@ -23,3 +23,6 @@ CoreModule::LogicsContainerPtrT CoreModule::getSystemLogics() const {
 CoreModule::ConfigsPtrT CoreModule::getSystemConfigs() const {
     return nullptr;
 }
+
+void CoreModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+}

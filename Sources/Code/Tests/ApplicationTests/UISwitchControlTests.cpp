@@ -44,7 +44,7 @@ TEST_F(UISwitchControlTests, CheckSetLabel) {
         std::string serStr = "{\"label\":{\"text\":\"TestText\"}}";
         JSONNode node = JSONNode::ParseString(serStr.c_str());
         ASSERT_TRUE(node);
-        ASSERT_TRUE(uiBox->serialize(node));
+        //ASSERT_TRUE(uiBox->serialize(node));
         ASSERT_TRUE(uiBox->init());
     }
 

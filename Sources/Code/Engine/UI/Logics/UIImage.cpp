@@ -16,10 +16,11 @@ UIImage::UIImage() {
 UIImage::~UIImage() {
 }
 
-bool UIImage::serialize(const JSONNode& node) {
-    UIBaseBox::serialize(node);
-    node.read("image", image);
-    return true;
+void UIImage::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIImage>("UIImage")) {
+        classInfo->addBaseClass<UIBaseBox>();
+        classInfo->addField("image", &UIImage::image);
+    }
 }
 
 bool UIImage::init() {
@@ -27,6 +28,9 @@ bool UIImage::init() {
     UIBaseBox::init();
     ETNode<ETUIImage>::connect(getEntityId());
     return true;
+}
+
+void UIImage::deinit() {
 }
 
 void UIImage::ET_setImage(const char* newImage) {

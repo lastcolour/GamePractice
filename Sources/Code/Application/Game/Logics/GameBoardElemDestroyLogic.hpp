@@ -9,12 +9,16 @@ class GameBoardElemDestroyLogic : public EntityLogic,
     public ETNode<ETGameBoardElemDestroy> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardElemDestroyLogic();
     virtual ~GameBoardElemDestroyLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;

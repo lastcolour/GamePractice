@@ -1,6 +1,7 @@
 #include "Core/SystemModule.hpp"
 #include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Entity/EntityLogicRegister.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -53,6 +54,10 @@ bool SystemModule::init() {
         LogError("[SystemModule::init] Empty system logics for module: '%s'", name);
         return false;
     }
+
+    EntityLogicRegister logicRegister;
+    registerEntityLogics(logicRegister);
+
     if(!logicsContainer->init()) {
         LogError("[SystemModule::init] Init fail of module: '%s'", name);
         return false;

@@ -6,12 +6,16 @@
 class UILabelSetter : public EntityLogic {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UILabelSetter();
     virtual ~UILabelSetter();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
 private:
 

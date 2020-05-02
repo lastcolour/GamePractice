@@ -16,3 +16,6 @@ GameLaucherModule::ConfigsPtrT GameLaucherModule::getSystemConfigs() const {
     ConfigsPtrT configs(new SystemModuleConfig<GameLaucherConfig>());
     return configs;
 }
+
+void GameLaucherModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+}

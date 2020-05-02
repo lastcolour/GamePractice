@@ -13,6 +13,7 @@ protected:
 
     ConfigsPtrT getSystemConfigs() const override;
     LogicsContainerPtrT getSystemLogics() const override;
+    void registerEntityLogics(EntityLogicRegister& logicRegister) const override;
 };
 
 #endif /* __UI_MODULE_HPP__ */

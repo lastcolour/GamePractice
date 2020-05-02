@@ -13,20 +13,16 @@ RenderColoredTextureLogic::RenderColoredTextureLogic() :
 RenderColoredTextureLogic::~RenderColoredTextureLogic() {
 }
 
-bool RenderColoredTextureLogic::serialize(const JSONNode& node) {
-    if(!RenderImageLogic::serialize(node)) {
-        return false;
+void RenderColoredTextureLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderColoredTextureLogic>("RenderColoredTexture")) {
+        classInfo->addBaseClass<RenderNode>();
+        classInfo->addField("color", &RenderColoredTextureLogic::color);
+        classInfo->addResourceField("texture", &RenderColoredTextureLogic::tex, [](const char* resourceName){
+            std::shared_ptr<RenderTexture> texture;
+            ET_SendEventReturn(texture, &ETRenderTextureManger::ET_createTexture, resourceName, ETextureType::R8);
+            return texture;
+        });
     }
-    Render::ReadColor(node.object("color"), color);
-    if(node.hasKey("texture")) {
-        std::string texName;
-        node.read("texture", texName);
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, texName.c_str(), ETextureType::R8);
-        if(!tex) {
-            return false;
-        }
-    }
-    return true;
 }
 
 void RenderColoredTextureLogic::ET_setTextureColor(const ColorB& newColor) {
@@ -40,6 +36,10 @@ bool RenderColoredTextureLogic::init() {
     ETNode<ETRenderColoredTexture>::connect(getEntityId());
     return true;
 }
+
+void RenderColoredTextureLogic::deinit() {
+}
+
 
 void RenderColoredTextureLogic::ET_onRender(const RenderContext& renderCtx) {
     Vec3 scale = Vec3(imageScale.x * texScale.x, imageScale.y * texScale.y, 1.f);

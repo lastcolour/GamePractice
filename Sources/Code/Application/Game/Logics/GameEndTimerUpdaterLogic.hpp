@@ -7,12 +7,17 @@
 class GameEndTimerUpdaterLogic : public EntityLogic,
     public ETNode<ETGameEndTimerUpdater> {
 public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameEndTimerUpdaterLogic();
     virtual ~GameEndTimerUpdaterLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameEndTimerUpdater
     virtual void ET_setEndTime(float endTime) override;

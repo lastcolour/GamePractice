@@ -25,6 +25,16 @@ GameBoardLogic::GameBoardLogic() :
 GameBoardLogic::~GameBoardLogic() {
 }
 
+void GameBoardLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
+        classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
+        classInfo->addField("size", &GameBoardLogic::boardSize);
+        classInfo->addField("cellObject", &GameBoardLogic::cellObject);
+        classInfo->addField("cellScale", &GameBoardLogic::cellScale);
+    }
+}
+
+/*
 bool GameBoardLogic::serialize(const JSONNode& node) {
     node.read("fallSpeed", moveSpeed);
     if(moveSpeed <= 0.f) {
@@ -59,7 +69,7 @@ bool GameBoardLogic::serialize(const JSONNode& node) {
         return false;
     }
     return true;
-}
+}*/
 
 void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) {
     auto firstElem = getElem(firstId);
@@ -220,6 +230,9 @@ bool GameBoardLogic::init() {
     ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
     return true;
+}
+
+void GameBoardLogic::deinit() {
 }
 
 int GameBoardLogic::getElemId(const Vec2i& boardPt) const {

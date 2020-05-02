@@ -8,12 +8,16 @@
 class UIResultInfoSelector : public EntityLogic {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIResultInfoSelector();
     virtual ~UIResultInfoSelector();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
 private:
 

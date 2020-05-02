@@ -77,6 +77,7 @@ struct ETRenderMaterialManager {
 
 struct ETRenderFontManager {
     virtual ~ETRenderFontManager() = default;
+    virtual std::shared_ptr<RenderFont> ET_createFont(const char* fontName) = 0;
     virtual std::shared_ptr<RenderFont> ET_createDefaultFont() = 0;
 };
 

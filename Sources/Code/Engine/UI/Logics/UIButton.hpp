@@ -10,12 +10,16 @@ class UIButton : public UIBox,
     public ETNode<ETUIButtonPressAnimationEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIButton();
     virtual ~UIButton();
 
     // UIBox
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETUIInteractionBox
     AABB2Di ET_getHitBox() const override;

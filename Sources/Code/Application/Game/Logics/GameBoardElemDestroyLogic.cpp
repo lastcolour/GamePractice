@@ -10,15 +10,19 @@ GameBoardElemDestroyLogic::GameBoardElemDestroyLogic() {
 GameBoardElemDestroyLogic::~GameBoardElemDestroyLogic() {
 }
 
-bool GameBoardElemDestroyLogic::serialize(const JSONNode& node) {
-    node.read("destroyDuration", destroyDuration);
-    return true;
+void GameBoardElemDestroyLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameBoardElemDestroyLogic>("GameBoardElemDestroy")) {
+        classInfo->addField("destroyDuration", &GameBoardElemDestroyLogic::destroyDuration);
+    }
 }
 
 bool GameBoardElemDestroyLogic::init() {
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoardElemDestroy>::connect(getEntityId());
     return true;
+}
+
+void GameBoardElemDestroyLogic::deinit() {
 }
 
 void GameBoardElemDestroyLogic::ET_onGameTick(float dt) {

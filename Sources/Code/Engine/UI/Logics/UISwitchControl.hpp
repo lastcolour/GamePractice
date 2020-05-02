@@ -7,6 +7,10 @@
 class UISwitchControl : public EntityLogic,
     public ETNode<ETUIInteractionBox>,
     public ETNode<ETUISwitchControl> {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
 private:
 
     enum class EControlType {
@@ -20,8 +24,8 @@ public:
     virtual ~UISwitchControl();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETUIInteractionBox
     void ET_onPress() override;

@@ -7,12 +7,16 @@ class RenderColoredTextureLogic : public RenderImageLogic,
     public ETNode<ETRenderColoredTexture> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     RenderColoredTextureLogic();
     virtual ~RenderColoredTextureLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETRenderEvents
     void ET_onRender(const RenderContext& renderCtx) override;

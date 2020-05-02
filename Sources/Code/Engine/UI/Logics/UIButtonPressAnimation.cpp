@@ -16,16 +16,20 @@ UIButtonPressAnimation::UIButtonPressAnimation() :
 UIButtonPressAnimation::~UIButtonPressAnimation() {
 }
 
-bool UIButtonPressAnimation::serialize(const JSONNode& node) {
-    node.read("inDuration", inDuration);
-    node.read("outDuration", outDuration);
-    node.read("minScale", minScale);
-    return true;
+void UIButtonPressAnimation::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIButtonPressAnimation>("UIButtonPressAnimation")) {
+        classInfo->addField("inDuration", &UIButtonPressAnimation::inDuration);
+        classInfo->addField("outDuration", &UIButtonPressAnimation::outDuration);
+        classInfo->addField("minScale", &UIButtonPressAnimation::minScale);
+    }
 }
 
 bool UIButtonPressAnimation::init() {
     ETNode<ETUIButtonPressAnimation>::connect(getEntityId());
     return true;
+}
+
+void UIButtonPressAnimation::deinit() {
 }
 
 void UIButtonPressAnimation::ET_onTick(float dt) {

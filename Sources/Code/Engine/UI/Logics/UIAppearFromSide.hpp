@@ -8,12 +8,16 @@ class UIAppearFromSide : public EntityLogic,
     public ETNode<ETUIAppearAnimation> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIAppearFromSide();
     virtual ~UIAppearFromSide();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETUIAppearAnimation
     void ET_setAppear(bool flag) override;

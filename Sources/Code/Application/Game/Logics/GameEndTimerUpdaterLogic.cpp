@@ -8,14 +8,16 @@ GameEndTimerUpdaterLogic::GameEndTimerUpdaterLogic() {
 GameEndTimerUpdaterLogic::~GameEndTimerUpdaterLogic() {
 }
 
-bool GameEndTimerUpdaterLogic::serialize(const JSONNode& node) {
-    (void)node;
-    return true;
+void GameEndTimerUpdaterLogic::Reflect(ReflectContext& ctx) {
+    ctx.classInfo<GameEndTimerUpdaterLogic>("GameEndTimerUpdater");
 }
 
 bool GameEndTimerUpdaterLogic::init() {
     ETNode<ETGameEndTimerUpdater>::connect(getEntityId());
     return true;
+}
+
+void GameEndTimerUpdaterLogic::deinit() {
 }
 
 void GameEndTimerUpdaterLogic::ET_setEndTime(float endTime) {

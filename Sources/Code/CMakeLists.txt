@@ -23,9 +23,11 @@ add_subdirectory(Engine)
 add_subdirectory(Application)
 
 if(NOT BUILD_PLATFORM STREQUAL "Android")
+    set(BUILD_UNITTESTS ON)
+    message(STATUS "Add unittest to build results")
     add_subdirectory(Tests)
 else()
-    message(status "Android platform does not support unittests")
+    message(STATUS "Android platform does not support unittests")
 endif()
 
 include_directories(${ENGINE_INCLUDE_DIR})

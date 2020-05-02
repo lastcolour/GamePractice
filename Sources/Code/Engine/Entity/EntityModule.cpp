@@ -15,3 +15,6 @@ EntityModule::LogicsContainerPtrT EntityModule::getSystemLogics() const {
 EntityModule::ConfigsPtrT EntityModule::getSystemConfigs() const {
     return nullptr;
 }
+
+void EntityModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+}

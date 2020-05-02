@@ -13,12 +13,16 @@ class GameBoardMatchLogic : public EntityLogic,
 
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardMatchLogic();
     virtual ~GameBoardMatchLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameBoardMatcher
     std::vector<EntityId> ET_getMatchedElements() override;

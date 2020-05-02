@@ -12,15 +12,19 @@ GameBoardElemSwitcherLogic::GameBoardElemSwitcherLogic() :
 GameBoardElemSwitcherLogic::~GameBoardElemSwitcherLogic() {
 }
 
-bool GameBoardElemSwitcherLogic::serialize(const JSONNode& node) {
-    node.read("switchDuration", switchDuration);
-    return true;
+void GameBoardElemSwitcherLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameBoardElemSwitcherLogic>("GameBoardElemSwitcher")) {
+        classInfo->addField("switchDuration", &GameBoardElemSwitcherLogic::switchDuration);
+    }
 }
 
 bool GameBoardElemSwitcherLogic::init() {
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoardElemSwitcher>::connect(getEntityId());
     return true;
+}
+
+void GameBoardElemSwitcherLogic::deinit() {
 }
 
 void GameBoardElemSwitcherLogic::ET_onGameTick(float dt) {

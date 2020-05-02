@@ -16,11 +16,15 @@ RenderImageLogic::RenderImageLogic() :
 RenderImageLogic::~RenderImageLogic() {
 }
 
-bool RenderImageLogic::serialize(const JSONNode& node) {
-    if(!RenderNode::serialize(node)) {
-        return false;
+void RenderImageLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImageLogic")) {
+        classInfo->addBaseClass<RenderNode>();
+        classInfo->addResourceField("image", &RenderImageLogic::tex, [](const char* resourceName){
+            std::shared_ptr<RenderTexture> texture;
+            ET_SendEventReturn(texture, &ETRenderTextureManger::ET_createTexture, resourceName, ETextureType::RGBA);
+            return texture;
+        });
     }
-    return true;
 }
 
 bool RenderImageLogic::init() {
@@ -46,6 +50,9 @@ bool RenderImageLogic::init() {
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
     return true;
+}
+
+void RenderImageLogic::deinit() {
 }
 
 void RenderImageLogic::ET_onRender(const RenderContext& renderCtx) {

@@ -13,12 +13,16 @@ class UIBaseBox : public EntityLogic,
     public ETNode<ETEntityEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIBaseBox();
     virtual ~UIBaseBox();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETUIBox
     const UIStyle& ET_getStyle() const override;

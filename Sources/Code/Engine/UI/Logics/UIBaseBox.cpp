@@ -17,6 +17,12 @@ UIBaseBox::UIBaseBox() :
 UIBaseBox::~UIBaseBox() {
 }
 
+void UIBaseBox::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIBaseBox>("UIBaseBox")) {
+        classInfo->addField("style", &UIBaseBox::style);
+    }
+}
+
 void UIBaseBox::ET_onChildAdded(EntityId childId) {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
@@ -263,16 +269,6 @@ AABB2Di UIBaseBox::calcBox(const AABB2Di& parentBox) const {
     return resAabb;
 }
 
-bool UIBaseBox::serialize(const JSONNode& node) {
-    auto styleNode = node.object("style");
-    if(!styleNode) {
-        LogWarning("[UIBaseBox::init] Can't find require style node");
-        return false;
-    }
-    style.serialize(styleNode);
-    return true;
-}
-
 const UIStyle& UIBaseBox::ET_getStyle() const {
     return style;
 }
@@ -289,6 +285,9 @@ bool UIBaseBox::init() {
     ETNode<ETRenderEvents>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
     return true;
+}
+
+void UIBaseBox::deinit() {
 }
 
 void UIBaseBox::forceResizeFromTop() {

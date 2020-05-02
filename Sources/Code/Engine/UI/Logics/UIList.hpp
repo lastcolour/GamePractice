@@ -9,11 +9,16 @@ class UIList : public UIBaseBox,
     public ETNode<ETUIList> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIList();
     virtual ~UIList();
 
-    bool serialize(const JSONNode& node) override;
+    // EntityLogic
     bool init() override;
+    void deinit() override;
 
     // ETUIList
     void ET_setType(UIListType newListType) override;

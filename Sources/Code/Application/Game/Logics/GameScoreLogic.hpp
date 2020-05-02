@@ -9,12 +9,16 @@ class GameScoreLogic : public EntityLogic,
     public ETNode<ETGameBoardElemDestoryEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameScoreLogic();
     virtual ~GameScoreLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameBoardElemDestoryEvents
     void ET_onElemsDestroyed(int count) override;

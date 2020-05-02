@@ -11,12 +11,16 @@ class GameBoardElemSwitcherLogic : public EntityLogic,
     public ETNode<ETGameTimerEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     GameBoardElemSwitcherLogic();
     virtual ~GameBoardElemSwitcherLogic();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     // ETGameBoardElemSwitcher
     void ET_switchBoardElems(EntityId firstId, EntityId secondId) override;

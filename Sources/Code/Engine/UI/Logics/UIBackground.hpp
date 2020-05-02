@@ -8,12 +8,16 @@ class UIBackground : public EntityLogic,
     public ETNode<ETRenderEvents> {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     UIBackground();
     virtual ~UIBackground();
 
     // EntityLogic
-    bool serialize(const JSONNode& node) override;
     bool init() override;
+    void deinit() override;
 
     void ET_onRender(const RenderContext& renderCtx) override {}
     void ET_onRenderPortResized() override;

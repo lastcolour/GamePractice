@@ -11,22 +11,17 @@ SoundPlayLogic::SoundPlayLogic() :
 SoundPlayLogic::~SoundPlayLogic() {
 }
 
-bool SoundPlayLogic::serialize(const JSONNode& node) {
-    std::string soundName;
-    node.read("sound", soundName);
-    node.read("loop", looped);
-    node.read("volume", volume);
-    node.read("autoStart", autoStart);
-    if(!soundName.empty()) {
-        ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, soundName.c_str());
-        if(!sound) {
-            return false;
-        }
-    } else {
-        LogWarning("[SoundPlayLogic::serialize] Empty sound name");
-        return false;
+void SoundPlayLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<SoundPlayLogic>("SoundPlayLogic")) {
+        classInfo->addResourceField("sound", &SoundPlayLogic::sound, [](const char* resourceName){
+            std::unique_ptr<Sound> sound;
+            ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, resourceName);
+            return sound;
+        });
+        classInfo->addField("looped", &SoundPlayLogic::looped);
+        classInfo->addField("volume", &SoundPlayLogic::volume);
+        classInfo->addField("autoStart", &SoundPlayLogic::autoStart);
     }
-    return true;
 }
 
 bool SoundPlayLogic::init() {
@@ -35,6 +30,9 @@ bool SoundPlayLogic::init() {
         ET_play();
     }
     return true;
+}
+
+void SoundPlayLogic::deinit() {
 }
 
 void SoundPlayLogic::ET_setSound(const char* newSoundName) {

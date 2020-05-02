@@ -2,17 +2,17 @@
 #define __ENTITY_LOGIC_HPP__
 
 #include "Core/Core.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 class Entity;
-class JSONNode;
 
 class EntityLogic {
 public:
 
     virtual ~EntityLogic();
 
-    virtual bool serialize(const JSONNode& node) = 0;
     virtual bool init() = 0;
+    virtual void deinit() = 0;
 
     void setEntity(const Entity* ownEntity);
     EntityId getEntityId() const;
