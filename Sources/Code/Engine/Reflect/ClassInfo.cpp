@@ -5,6 +5,8 @@
 #include "Core/ETPrimitives.hpp"
 #include "ETApplicationInterfaces.hpp"
 
+#include <cassert>
+
 ClassInfo::ClassInfo(const char* name, TypeId typeId) :
     className(name),
     instanceTypeId(typeId) {
@@ -25,6 +27,7 @@ bool ClassInfo::serializeInstance(void* instance, const JSONNode& node) {
     if(!instance) {
         LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: null instance)",
             className);
+        assert(false && "null instance");
         return false;
     }
     if(!node) {
@@ -42,7 +45,7 @@ bool ClassInfo::serializeInstance(void* instance, const JSONNode& node) {
     for(auto& val : values) {
         auto ptr = getValueFunc(instance, val.ptr);
         if(!val.serializeValue(instance, ptr, node)) {
-            LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize value: '%s')",
+            LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize field: '%s')",
                 className, val.name);
             return false;
         }
@@ -65,24 +68,37 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class %s (Error: %s)";
     if(!valueName || !valueName[0]) {
         LogError(errStr, className, valueName, "empty name");
+        assert(false && "can't register class value");
         return;
     }
     if(valueType == ClassValueType::Invalid) {
         LogError(errStr, className, valueName, "unknown field type");
+        assert(false && "can't register class value");
         return;
     }
     if(valueType == ClassValueType::Resource) {
         if(!valueSetFunc) {
             LogError(errStr, className, valueName, "resource without create function");
+            assert(false && "can't register class value");
+            return;
+        }
+    } else if (valueType == ClassValueType::Enum) {
+        EnumInfo* enumInfo = nullptr;
+        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, valueTypeId);
+        if(!enumInfo) {
+            LogError(errStr, className, valueName, "can't find enum info");
+            assert(false && "can't register class value");
             return;
         }
     } else {
         if(!valuePtr) {
             LogError(errStr, className, valueName, "null pointer to value");
+            assert(false && "can't register class value");
             return;
         }
         if(valueTypeId == InvalidTypeId) {
             LogError(errStr, className, valueName, "invalid type of field");
+            assert(false && "can't register class value");
             return;
         }
     }
@@ -92,12 +108,14 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
         if(baseClass->findValueByName(valueName)) {
             LogError(errStr, className, valueName,
                 StringFormat("base class '%s' already registered field with the same name", baseClass->getName()));
+            assert(false && "can't register class value");
             return;
         }
         if(auto baseValue = baseClass->findValueByPtr(valuePtr)) {
             LogError(errStr, className, valueName,
                 StringFormat("base class '%s' already registered field with other name '%s'",
                 baseClass->getName(), baseValue->name.c_str()));
+            assert(false && "can't register class value");
             return;
         }
     }
@@ -137,6 +155,7 @@ void ClassInfo::registerBaseClass(ClassInfo* baseClassInfo) {
     const char* errStr = "[ClassInfo::registerBaseClass] Can't register the base class '%s' for the class '%s' (Error: %s)";
     if(!baseClassInfo) {
         LogError(errStr, "null", className, "invalid base class");
+        assert(false && "can't register base class");
         return;
     }
 
@@ -150,20 +169,23 @@ void ClassInfo::registerBaseClass(ClassInfo* baseClassInfo) {
         for(auto currentClass : currentClasses) {
             if(newClass == currentClass) {
                 LogError(errStr, baseClassInfo->className, className, "class already registered as a base");
+                assert(false && "can't register base class");
                 return;
             }
             if(newClass->className == currentClass->className) {
                 LogError(errStr, baseClassInfo->className, className, "class with the same name already registered");
+                assert(false && "can't register base class");
                 return;
             }
             if(newClass->instanceTypeId == currentClass->instanceTypeId) {
                 LogError(errStr, baseClassInfo->className, className, "change name of the class");
+                assert(false && "can't register base class");
                 return;
             }
             for(auto& val : newClass->values) {
                 if(currentClass->findValueByName(val.name.c_str())) {
-                    LogError(errStr, baseClassInfo->className, className,
-                        StringFormat("field '%s' already registered", val.name));
+                    LogError(errStr, baseClassInfo->className, className, StringFormat("field '%s' already registered", val.name));
+                    assert(false && "can't register base class");
                     return;
                 }
             }

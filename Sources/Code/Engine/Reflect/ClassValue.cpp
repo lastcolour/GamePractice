@@ -2,6 +2,7 @@
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/EnumInfo.hpp"
+#include "Reflect/ArrayInfo.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
@@ -114,6 +115,12 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
         }
         return true;
     }
+    case ClassValueType::Array: {
+        ArrayInfo* arrayInfo = nullptr;
+        for(auto& elemNode : node) {
+        }
+        return true;
+    }
     case ClassValueType::Enum: {
         std::string value;
         node.read(name.c_str(), value);
@@ -137,7 +144,7 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
     }
     default:
         LogError("[ClassValue::serializeValue] Unknown value type '%s'", name);
+        assert(false && "Unknown value type");
         return false;
     }
-    return false;
 }

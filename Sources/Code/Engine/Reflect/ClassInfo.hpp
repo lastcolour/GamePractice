@@ -94,6 +94,7 @@ public:
 
 private:
 
+    
     ClassValue* findValueByName(const char* name);
     ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr);
     bool reflectEmbebedClass(ReflectFuncT reflectFunc);

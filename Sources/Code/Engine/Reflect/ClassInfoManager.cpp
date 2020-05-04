@@ -35,18 +35,18 @@ ClassInfo* ClassInfoManager::ET_findClassInfoByName(const char* className) {
 
 bool ClassInfoManager::ET_registerClassInfo(ClassInfoPtrT& classInfo) {
     if(!classInfo) {
-        assert(false && "Invalid class info");
         LogError("[ClassInfoManager::ET_registerClassInfo] Invalid class info");
+        assert(false && "Invalid class info");
         return false;
     }
     if(ET_findClassInfoByName(classInfo->getName())) {
-        assert(false && "Class name duplicate");
         LogError("[ClassInfoManager::ET_registerClassInfo] Class name duplicate: %s", classInfo->getName());
+        assert(false && "Class name duplicate");
         return false;
     }
     if(ET_findClassInfoByTypeId(classInfo->getIntanceTypeId())) {
-        assert(false && "Class instance typeId duplicate");
         LogError("[ClassInfoManager::ET_registerClassInfo] Class info already registered");
+        assert(false && "Class instance typeId duplicate");
         return false;
     }
     classInfoMap[classInfo->getIntanceTypeId()] = std::move(classInfo);
@@ -105,13 +105,13 @@ EnumInfo* ClassInfoManager::ET_findEnumInfoByName(const char* enumName) {
 
 bool ClassInfoManager::ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) {
     if(!enumInfo) {
-        assert(false && "Invalid enum info");
         LogError("[ClassInfoManager::ET_registerEnumInfo] Invalid enum info");
+        assert(false && "Invalid enum info");
         return false;
     }
     if(ET_findEnumInfoByTypeId(enumInfo->getEnumTypeId())) {
-        assert(false && "Enum typeId duplicate");
         LogError("[ClassInfoManager::ET_registerEnumInfo] Enum info already registered");
+        assert(false && "Enum typeId duplicate");
         return false;
     }
     enumInfoMap[enumInfo->getEnumTypeId()] = std::move(enumInfo);

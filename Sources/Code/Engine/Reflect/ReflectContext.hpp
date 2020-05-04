@@ -42,6 +42,7 @@ private:
     EnumInfo* createEnumInfo(const char* enumName, TypeId enumTypeId);
     ClassInfo* createClassInfo(const char* className, TypeId classTypeId);
     bool registerInfos();
+    bool registerEnums();
 
 private:
 

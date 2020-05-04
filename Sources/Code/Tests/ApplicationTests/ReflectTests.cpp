@@ -130,6 +130,20 @@ public:
     Numbers number;
 };
 
+class ObjectWitArray {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        if(auto classInfo = ctx.classInfo<ObjectWitArray>("ObjectWitArray")) {
+            classInfo->addField("array", &ObjectWitArray::array);
+        }
+    }
+
+public:
+
+    std::vector<ObjectWithEnum> array;
+};
+
 } // namespace
 
 void ReflectTests::TearDown() {
@@ -279,7 +293,7 @@ TEST_F(ReflectTests, TestEnum) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto jsonNode = JSONNode::ParseString("{ \"number\" : \"two\" }");
+    auto jsonNode = JSONNode::ParseString("{ \"number\" : \"Two\" }");
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance(jsonNode);
@@ -289,10 +303,25 @@ TEST_F(ReflectTests, TestEnum) {
     ASSERT_EQ(object->number, ObjectWithEnum::Numbers::Two);
 }
 
-TEST_F(ReflectTests, TestEntityReference) {
-    ASSERT_TRUE(false);
+TEST_F(ReflectTests, TestArray) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWitArray>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto jsonNode = JSONNode::ParseString("[{ \"number\" : \"One\" }, {\"number\" : \"Two\"}]");
+    ASSERT_TRUE(jsonNode);
+
+    auto classInstance = classInfo->createInstance(jsonNode);
+    auto object = classInstance.acquire<ObjectWitArray>();
+    ASSERT_TRUE(object);
+
+    ASSERT_EQ(object->array.size(), 2);
+    ASSERT_EQ(object->array[0].number, ObjectWithEnum::Numbers::One);
+    ASSERT_EQ(object->array[1].number, ObjectWithEnum::Numbers::Two);
 }
 
-TEST_F(ReflectTests, TestArray) {
+TEST_F(ReflectTests, TestEntityReference) {
     ASSERT_TRUE(false);
 }
