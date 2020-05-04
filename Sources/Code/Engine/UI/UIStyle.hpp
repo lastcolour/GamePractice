@@ -3,11 +3,10 @@
 
 #include "Math/Vector.hpp"
 #include "Render/Color.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 #include <string>
 
-class JSONNode;
+class ReflectContext;
 
 enum class XAlignType {
     Center = 0,
@@ -67,7 +66,6 @@ public:
 
     UIStyle();
     ~UIStyle();
-    void serialize(const JSONNode& node);
 };
 
 #endif /* __UI_STYLE_HPP__ */

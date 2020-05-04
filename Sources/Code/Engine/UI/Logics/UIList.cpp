@@ -1,7 +1,6 @@
 #include "UI/Logics/UIList.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Core/JSONNode.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -20,32 +19,18 @@ UIList::~UIList() {
 }
 
 void UIList::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<UIListType>("UIListType")) {
+        enumInfo->addValues<UIListType>({
+            {"Vertical", UIListType::Vertical},
+            {"Horizontal", UIListType::Horizontal}
+        });
+    }
     if(auto classInfo = ctx.classInfo<UIList>("UIList")) {
         classInfo->addBaseClass<UIBaseBox>();
-        classInfo->addEnumField("type", &UIList::listType);
+        classInfo->addField("type", &UIList::listType);
         classInfo->addField("children", &UIList::children);
     }
 }
-
-/*
-bool UIList::serialize(const JSONNode& node) {
-    if(!UIBaseBox::serialize(node)) {
-        LogWarning("[UIList::serialize] UIBaseBox searilization failed");
-        return false;
-    }
-    std::string list("vert");
-    node.read("type", list);
-    if(list == "vert") {
-        listType = UIListType::Vertical;
-    } else if(list == "horz") {
-        listType = UIListType::Horizontal;
-    } else {
-        LogWarning("[UIList::serialize] Invalid list type: %s", list);
-        return false;
-    }
-    return true;
-}
-*/
 
 bool UIList::init() {
     if(!UIBaseBox::init()) {

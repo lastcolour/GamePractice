@@ -1,5 +1,6 @@
 #include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/ClassInfo.hpp"
+#include "Reflect/EnumInfo.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
@@ -45,7 +46,7 @@ bool ClassInfoManager::ET_registerClassInfo(ClassInfoPtrT& classInfo) {
     }
     if(ET_findClassInfoByTypeId(classInfo->getIntanceTypeId())) {
         assert(false && "Class instance typeId duplicate");
-        LogError("[ClassInfoManager::ET_registerClassInfo] Class instance typeId duplicate");
+        LogError("[ClassInfoManager::ET_registerClassInfo] Class info already registered");
         return false;
     }
     classInfoMap[classInfo->getIntanceTypeId()] = std::move(classInfo);
@@ -79,4 +80,40 @@ void ClassInfoManager::ET_makeReflectModel(JSONNode& node) {
         classInfo->makeReflectModel(classNode);
         node.write(classInfo->getName(), classNode);
     }
+}
+
+EnumInfo* ClassInfoManager::ET_findEnumInfoByTypeId(TypeId enumTypeId) {
+    auto it = enumInfoMap.find(enumTypeId);
+    if(it != enumInfoMap.end()) {
+        return it->second.get();
+    }
+    return nullptr;
+}
+
+EnumInfo* ClassInfoManager::ET_findEnumInfoByName(const char* enumName) {
+    std::string name = enumName;
+    if(name.empty()) {
+        return nullptr;
+    }
+    for(auto& enumInfoNode : enumInfoMap) {
+        if(name == enumInfoNode.second->getName()) {
+            return enumInfoNode.second.get();
+        }
+    }
+    return nullptr;
+}
+
+bool ClassInfoManager::ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) {
+    if(!enumInfo) {
+        assert(false && "Invalid enum info");
+        LogError("[ClassInfoManager::ET_registerEnumInfo] Invalid enum info");
+        return false;
+    }
+    if(ET_findEnumInfoByTypeId(enumInfo->getEnumTypeId())) {
+        assert(false && "Enum typeId duplicate");
+        LogError("[ClassInfoManager::ET_registerEnumInfo] Enum info already registered");
+        return false;
+    }
+    enumInfoMap[enumInfo->getEnumTypeId()] = std::move(enumInfo);
+    return true;
 }

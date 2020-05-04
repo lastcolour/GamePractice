@@ -1,7 +1,6 @@
 #include "UI/Logics/UIBaseBox.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Core/JSONNode.hpp"
 
 #include <cassert>
 #include <algorithm>

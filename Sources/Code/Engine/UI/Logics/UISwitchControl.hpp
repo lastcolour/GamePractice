@@ -11,7 +11,7 @@ public:
 
     static void Reflect(ReflectContext& ctx);
 
-private:
+public:
 
     enum class EControlType {
         Sound = 0,

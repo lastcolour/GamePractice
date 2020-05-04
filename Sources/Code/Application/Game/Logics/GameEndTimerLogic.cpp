@@ -1,5 +1,4 @@
 #include "Game/Logics/GameEndTimerLogic.hpp"
-#include "Core/JSONNode.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 #include <algorithm>

@@ -1,6 +1,5 @@
 #include "UI/Logics/UILabel.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Core/JSONNode.hpp"
 
 namespace {
 

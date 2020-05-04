@@ -5,7 +5,6 @@
 #include "Math/MatrixTransform.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "Core/JSONNode.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Render/RenderContext.hpp"
 
@@ -31,13 +30,13 @@ void RenderTextLogic::Reflect(ReflectContext& ctx) {
         classInfo->addBaseClass<RenderNode>();
         classInfo->addField("color", &RenderTextLogic::color);
         classInfo->addField("fontScale", &RenderTextLogic::fontScale);
-        classInfo->addResourceField("font", &RenderTextLogic::font, [](const char* resourceName){
-            std::shared_ptr<RenderFont> font;
-            ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, resourceName);
-            return font;
-        });
+        classInfo->addResourceField("font", &RenderTextLogic::ET_setFont);
     }
     RenderNode::Reflect(ctx);
+}
+
+void RenderTextLogic::ET_setFont(const char* fontName) {
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, fontName);
 }
 
 bool RenderTextLogic::init() {

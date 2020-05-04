@@ -2,7 +2,6 @@
 #include "Render/RenderMaterial.hpp"
 #include "Render/RenderGeometry.hpp"
 #include "Render/RenderTexture.hpp"
-#include "Core/JSONNode.hpp"
 #include "Render/RenderContext.hpp"
 #include "Render/Logics/RenderAuxFunctions.hpp"
 
@@ -15,13 +14,8 @@ RenderColoredTextureLogic::~RenderColoredTextureLogic() {
 
 void RenderColoredTextureLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderColoredTextureLogic>("RenderColoredTexture")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<RenderImageLogic>();
         classInfo->addField("color", &RenderColoredTextureLogic::color);
-        classInfo->addResourceField("texture", &RenderColoredTextureLogic::tex, [](const char* resourceName){
-            std::shared_ptr<RenderTexture> texture;
-            ET_SendEventReturn(texture, &ETRenderTextureManger::ET_createTexture, resourceName, ETextureType::R8);
-            return texture;
-        });
     }
 }
 

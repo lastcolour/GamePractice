@@ -10,20 +10,20 @@ public:
 
 public:
 
+    enum class EValueType {
+        None = 0,
+        GameScore,
+        GameHighScore
+    };
+
+public:
+
     UILabelSetter();
     virtual ~UILabelSetter();
 
     // EntityLogic
     bool init() override;
     void deinit() override;
-
-private:
-
-    enum class EValueType {
-        None = 0,
-        GameScore,
-        GameHighScore
-    };
 
 private:
 

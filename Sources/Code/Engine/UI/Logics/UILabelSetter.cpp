@@ -12,26 +12,16 @@ UILabelSetter::~UILabelSetter() {
 }
 
 void UILabelSetter::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<EValueType>("UILabelSetType")) {
+        enumInfo->addValues<EValueType>({
+            {"Score", EValueType::GameScore},
+            {"HightSocre", EValueType::GameHighScore},
+        });
+    };
     if(auto classInfo = ctx.classInfo<UILabelSetter>("UILabelSetter")) {
-        classInfo->addEnumField("value", &UILabelSetter::valueType);
+        classInfo->addField("value", &UILabelSetter::valueType);
     }
 }
-
-/*
-bool UILabelSetter::serialize(const JSONNode& node) {
-    std::string valueTypeStr;
-    node.read("value", valueTypeStr);
-    if(valueTypeStr == "gameScore") {
-        valueType = EValueType::GameScore;
-    } else if(valueTypeStr == "gameHighScore") {
-        valueType = EValueType::GameHighScore;
-    } else {
-        LogWarning("[UILabelSetter::serialize] Unknown value type: %s", valueTypeStr);
-        return false;
-    }
-    return true;
-}
-*/
 
 bool UILabelSetter::init() {
     switch(valueType)

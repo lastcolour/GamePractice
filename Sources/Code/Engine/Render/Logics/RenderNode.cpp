@@ -11,16 +11,8 @@ RenderNode::~RenderNode() {
 
 void RenderNode::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderNode>("RenderNode")) {
-        classInfo->addResourceField("geometry", &RenderNode::geom, [](const char* resourceName){
-            std::shared_ptr<RenderGeometry> geometry;
-            ET_SendEventReturn(geometry, &ETRenderGeometryManager::ET_createGeometry, resourceName);
-            return geometry;
-        });
-        classInfo->addResourceField("material", &RenderNode::mat, [](const char* resourceName){
-            std::shared_ptr<RenderMaterial> material;
-            ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, resourceName);
-            return material;
-        });
+        classInfo->addResourceField("geometry", &RenderNode::ET_setGeometry);
+        classInfo->addResourceField("material", &RenderNode::ET_setMaterial);
     }
 }
 

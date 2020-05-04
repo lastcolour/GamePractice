@@ -2,7 +2,6 @@
 #include "Render/RenderTexture.hpp"
 #include "Render/RenderMaterial.hpp"
 #include "Render/RenderGeometry.hpp"
-#include "Core/JSONNode.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Render/RenderContext.hpp"
@@ -19,11 +18,7 @@ RenderImageLogic::~RenderImageLogic() {
 void RenderImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImageLogic")) {
         classInfo->addBaseClass<RenderNode>();
-        classInfo->addResourceField("image", &RenderImageLogic::tex, [](const char* resourceName){
-            std::shared_ptr<RenderTexture> texture;
-            ET_SendEventReturn(texture, &ETRenderTextureManger::ET_createTexture, resourceName, ETextureType::RGBA);
-            return texture;
-        });
+        classInfo->addResourceField("image", &RenderImageLogic::ET_setImage);
     }
 }
 

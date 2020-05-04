@@ -31,7 +31,7 @@ EntityId createLabel(const JSONNode& node) {
     if(auto styleNode = node.object("style")) {
         UIStyle style;
         ET_SendEventReturn(style, entId, &ETUIBox::ET_getStyle);
-        style.serialize(styleNode);
+        //style.serialize(styleNode);
         ET_SendEvent(entId, &ETUIBox::ET_setStyle, style);
     }
     return entId;
@@ -48,13 +48,13 @@ UIBox::~UIBox() {
 void UIBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
         classInfo->addBaseClass<UIBaseBox>();
-        classInfo->addResourceField("labelId", &UIBox::labelId, [](const char* resourceName){
+        /*classInfo->addResourceField("labelId", &UIBox::labelId, [](const char* resourceName){
             return InvalidEntityId;
 
         });
         classInfo->addResourceField("renderId", &UIBox::renderId, [](const char* resourceName){
             return InvalidEntityId;
-        });
+        });*/
     }
 }
 

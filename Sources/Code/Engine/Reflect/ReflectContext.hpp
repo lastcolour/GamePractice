@@ -2,6 +2,7 @@
 #define __REFLECT_CONTEXT_HPP__
 
 #include "Reflect/ClassInfo.hpp"
+#include "Reflect/EnumInfo.hpp"
 
 class ReflectContext {
 public:
@@ -17,34 +18,35 @@ public:
             && std::is_same<decltype(&ClassT::Reflect), void(*)(ReflectContext&)>::value,
             "Type does not provide required T::Reflect(ReflectContext&) declaration");
         ClassT::Reflect(*this);
-        return registerClassInfo();
+        return registerInfos();
     }
 
     template<typename ClassT>
     ClassInfo* classInfo(const char* name) {
-        if(clsInfo) {
-            return nullptr;
+        auto cInfo = createClassInfo(name, GetTypeId<ClassT>());
+        if(cInfo) {
+            cInfo->init<ClassT>();
         }
-        clsInfo.reset(new ClassInfo);
-        if(!clsInfo) {
-            return nullptr;
-        }
-        if(!clsInfo->init<ClassT>(name)) {
-            return nullptr;
-        }
-        return clsInfo.get();
+        return cInfo;
+    }
+
+    template<typename EnumT>
+    EnumInfo* enumInfo(const char* name) {
+        return createEnumInfo(name, GetTypeId<EnumT>());
     }
 
     ClassInfo* getRegisteredClassInfo();
 
 private:
 
-    bool createClassInfo(const char* className);
-    bool registerClassInfo();
+    EnumInfo* createEnumInfo(const char* enumName, TypeId enumTypeId);
+    ClassInfo* createClassInfo(const char* className, TypeId classTypeId);
+    bool registerInfos();
 
 private:
 
     std::unique_ptr<ClassInfo> clsInfo;
+    std::vector<std::unique_ptr<EnumInfo>> enumInfos;
     ClassInfo* registeredClsInfo;
 };
 

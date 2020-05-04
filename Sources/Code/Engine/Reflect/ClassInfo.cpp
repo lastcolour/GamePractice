@@ -5,56 +5,12 @@
 #include "Core/ETPrimitives.hpp"
 #include "ETApplicationInterfaces.hpp"
 
-namespace {
-
-template<typename T>
-T& getRef(void* value) {
-    return *(reinterpret_cast<T*>(value));
-}
-
-} // namespace
-
-ClassInfo::ClassInfo() {
+ClassInfo::ClassInfo(const char* name, TypeId typeId) :
+    className(name),
+    instanceTypeId(typeId) {
 }
 
 ClassInfo::~ClassInfo() {
-}
-
-bool ClassInfo::initClassInfo(const char* name, TypeId objectTypeId, CreateFuncT createF, DeleteFuncT deleteF, GetValueFuncT getValueF) {
-    const char* errStr = "[ClassInfo::initClassInfo] Can't init class info for '%s' (Error: %s)";
-    if(!name || !name[0]) {
-        LogError(errStr, name, "empty name");
-        return false;
-    }
-    ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByName, name);
-    if(classInfo) {
-        LogError(errStr, name, "already registered by name");
-        return false;
-    }
-    if(objectTypeId == InvalidTypeId) {
-        LogError(errStr, name, "instances have invalid type id");
-        return false;
-    }
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, objectTypeId);
-    if(classInfo) {
-        LogError(errStr, name, "already registered by typeId");
-        return false;
-    }
-    if(!getValueF) {
-        LogError(errStr, name, "no get value function");
-        return false;
-    }
-    if(className.empty()) {
-        LogError(errStr, name, "dobule initialization");
-        return false;
-    }
-    className = name;
-    instanceTypeId = objectTypeId;
-    createFunc = createF;
-    deleteFunc = deleteF;
-    getValueF = getValueF;
-    return true;
 }
 
 ClassInstanceDeleteFuncT ClassInfo::getDeleteFunction() const {
@@ -65,57 +21,29 @@ TypeId ClassInfo::getIntanceTypeId() const {
     return instanceTypeId;
 }
 
-bool ClassInfo::serializeInstance(void* instance, const JSONNode& classNode) {
-    for(auto& val : values) {
-        if(!classNode.hasKey(val.name.c_str())) {
+bool ClassInfo::serializeInstance(void* instance, const JSONNode& node) {
+    if(!instance) {
+        LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: null instance)",
+            className);
+        return false;
+    }
+    if(!node) {
+        LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: invalid json node)",
+            className);
+        return false;
+    }
+    for(auto baseClass : baseClasses) {
+        if(!baseClass->serializeInstance(instance, node)) {
+            LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize base class '%s')",
+                className, baseClass->className);
             return false;
         }
+    }
+    for(auto& val : values) {
         auto ptr = getValueFunc(instance, val.ptr);
-        switch (val.type)
-        {
-        case ClassValueType::Invalid: {
-            break;
-        }
-        case ClassValueType::Bool: {
-            bool value = false;
-            classNode.read(val.name.c_str(), value);
-            getRef<bool>(ptr) = value;
-            break;
-        }
-        case ClassValueType::Int: {
-            int value = false;
-            classNode.read(val.name.c_str(), value);
-            getRef<int>(ptr) = value;
-            break;
-        }
-        case ClassValueType::Float: {
-            float value = 0.f;
-            classNode.read(val.name.c_str(), value);
-            getRef<float>(ptr) = value;
-            break;
-        }
-        case ClassValueType::String: {
-            std::string value;
-            classNode.read(val.name.c_str(), value);
-            getRef<std::string>(ptr) = value;
-            break;
-        }
-        case ClassValueType::Object: {
-            auto objectNode = classNode.object(val.name.c_str());
-            if(!objectNode) {
-                return false;
-            }
-            ClassInfo* classInfo = nullptr;
-            ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, val.typeId);
-            if(!classInfo) {
-                return false;
-            }
-            if(!classInfo->serializeInstance(ptr, objectNode)) {
-                return false;
-            }
-            break;
-        }
-        default:
+        if(!val.serializeValue(instance, ptr, node)) {
+            LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize value: '%s')",
+                className, val.name);
             return false;
         }
     }
@@ -133,37 +61,43 @@ ClassInfo* ClassInfo::findClassInfo(TypeId instanceTypeId) const {
 }
 
 void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
-    ClassValue::CreateFuncT valueCreateFunc) {
+    ClassValue::SetResourceFuncT valueSetFunc) {
     const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class %s (Error: %s)";
     if(!valueName || !valueName[0]) {
         LogError(errStr, className, valueName, "empty name");
-        return;
-    }
-    if(!valuePtr) {
-        LogError(errStr, className, valueName, "null pointer to value");
         return;
     }
     if(valueType == ClassValueType::Invalid) {
         LogError(errStr, className, valueName, "unknown field type");
         return;
     }
-    if(valueTypeId == InvalidTypeId) {
-        LogError(errStr, className, valueName, "invalid type of field");
-        return;
-    }
     if(valueType == ClassValueType::Resource) {
-        if(!valueCreateFunc) {
+        if(!valueSetFunc) {
             LogError(errStr, className, valueName, "resource without create function");
             return;
         }
-    }
-    for(const auto& val : values) {
-        if(val.name == valueName) {
-            LogError(errStr, className, valueName, "double field registration");
+    } else {
+        if(!valuePtr) {
+            LogError(errStr, className, valueName, "null pointer to value");
             return;
         }
-        if(val.ptr == valuePtr) {
-            LogError(errStr, className, valueName, "change name of field");
+        if(valueTypeId == InvalidTypeId) {
+            LogError(errStr, className, valueName, "invalid type of field");
+            return;
+        }
+    }
+    std::vector<ClassInfo*> allBaseClasses;
+    getAllClasses(allBaseClasses);
+    for(auto baseClass : allBaseClasses) {
+        if(baseClass->findValueByName(valueName)) {
+            LogError(errStr, className, valueName,
+                StringFormat("base class '%s' already registered field with the same name", baseClass->getName()));
+            return;
+        }
+        if(auto baseValue = baseClass->findValueByPtr(valuePtr)) {
+            LogError(errStr, className, valueName,
+                StringFormat("base class '%s' already registered field with other name '%s'",
+                baseClass->getName(), baseValue->name.c_str()));
             return;
         }
     }
@@ -172,7 +106,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     classValue.type = valueType;
     classValue.ptr = valuePtr;
     classValue.typeId = valueTypeId;
-    classValue.createFunc = valueCreateFunc;
+    classValue.setResourceFunc = valueSetFunc;
     values.push_back(classValue);
 }
 
@@ -191,9 +125,72 @@ ClassInstance ClassInfo::createInstance(const JSONNode& node) {
     return ClassInstance(*this, object);
 }
 
-void ClassInfo::registerBaseClass(ReflectContext& ctx) {
-    auto instanceTypeId = ctx.getRegisteredClassInfo()->getIntanceTypeId();
-    baseClasses.push_back(instanceTypeId);
+void ClassInfo::getAllClasses(std::vector<ClassInfo*> classes) {
+    classes.push_back(this);
+    for(auto classInfo : baseClasses) {
+        classes.push_back(classInfo);
+        classInfo->getAllClasses(classes);
+    }
+}
+
+void ClassInfo::registerBaseClass(ClassInfo* baseClassInfo) {
+    const char* errStr = "[ClassInfo::registerBaseClass] Can't register the base class '%s' for the class '%s' (Error: %s)";
+    if(!baseClassInfo) {
+        LogError(errStr, "null", className, "invalid base class");
+        return;
+    }
+
+    std::vector<ClassInfo*> newClasses;
+    baseClassInfo->getAllClasses(newClasses);
+
+    std::vector<ClassInfo*> currentClasses;
+    getAllClasses(currentClasses);
+
+    for(auto newClass : newClasses) {
+        for(auto currentClass : currentClasses) {
+            if(newClass == currentClass) {
+                LogError(errStr, baseClassInfo->className, className, "class already registered as a base");
+                return;
+            }
+            if(newClass->className == currentClass->className) {
+                LogError(errStr, baseClassInfo->className, className, "class with the same name already registered");
+                return;
+            }
+            if(newClass->instanceTypeId == currentClass->instanceTypeId) {
+                LogError(errStr, baseClassInfo->className, className, "change name of the class");
+                return;
+            }
+            for(auto& val : newClass->values) {
+                if(currentClass->findValueByName(val.name.c_str())) {
+                    LogError(errStr, baseClassInfo->className, className,
+                        StringFormat("field '%s' already registered", val.name));
+                    return;
+                }
+            }
+        }
+    }
+    baseClasses.push_back(baseClassInfo);
+}
+
+ClassValue* ClassInfo::findValueByPtr(ClassValue::ValuePtrT ptr) {
+    for(auto& val : values) {
+        if(val.ptr == ptr) {
+            return &val;
+        }
+    }
+    return nullptr;
+}
+
+ClassValue* ClassInfo::findValueByName(const char* name) {
+    if(!name || !name[0]) {
+        return nullptr;
+    }
+    for(auto& val : values) {
+        if(val.name == name) {
+            return &val;
+        }
+    }
+    return nullptr;
 }
 
 bool ClassInfo::reflectEmbebedClass(ReflectFuncT reflectFunc) {

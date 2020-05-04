@@ -9,6 +9,8 @@
 #include <functional>
 #include <type_traits>
 
+class JSONNode;
+
 namespace Reflect {
 
 template<typename>
@@ -59,6 +61,8 @@ constexpr ClassValueType getClassValueType() {
         return ClassValueType::Vec4;
     } else if constexpr (std::is_same<ValueT, ColorB>::value) {
         return ClassValueType::Color;
+    } else if constexpr (std::is_enum<ValueT>::value) {
+        return ClassValueType::Enum;
     } else if constexpr (Reflect::is_std_vector<ValueT>::value) {
         return ClassValueType::Array;
     } else if constexpr (std::is_function<decltype(ValueT::Reflect)>::value) {
@@ -76,7 +80,7 @@ class ClassValue {
 public:
 
     using ValuePtrT = void* ClassValue::*;
-    using CreateFuncT = std::function<void(void*, ValuePtrT, const char*)>;
+    using SetResourceFuncT = std::function<void(void*, const char*)>;
 
 public:
 
@@ -105,6 +109,7 @@ public:
     ~ClassValue();
 
     const char* getTypeName() const;
+    bool serializeValue(void* instance, void* valuePtr, const JSONNode& node);
 
 public:
 
@@ -112,7 +117,7 @@ public:
     ClassValueType type;
     ValuePtrT ptr;
     TypeId typeId;
-    CreateFuncT createFunc;
+    SetResourceFuncT setResourceFunc;
 };
 
 #endif /* __CLASS_VALUE_HPP__ */

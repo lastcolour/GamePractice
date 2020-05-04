@@ -4,7 +4,6 @@
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
-#include "Core/JSONNode.hpp"
 
 #include <unordered_map>
 
@@ -13,6 +12,7 @@ class ClassInfoManager : SystemLogic,
 private:
 
     using ClassInfoPtrT = std::unique_ptr<ClassInfo>;
+    using EnumInfoPtrT = std::unique_ptr<EnumInfo>;
 
 public:
 
@@ -26,15 +26,18 @@ public:
     // ETClassInfoManager
     ClassInfo* ET_findClassInfoByName(const char* className) override;
     ClassInfo* ET_findClassInfoByTypeId(TypeId classTypeId) override;
+    bool ET_registerClassInfo(ClassInfoPtrT& classInfo) override;
+    EnumInfo* ET_findEnumInfoByTypeId(TypeId enumTypeId) override;
+    EnumInfo* ET_findEnumInfoByName(const char* enumName) override;
+    bool ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) override;
     void ET_reset() override;
     int ET_getRegisteredClassCount() override;
     void ClassInfoManager::ET_makeReflectModel(JSONNode& node) override;
 
-    bool ET_registerClassInfo(ClassInfoPtrT& classInfo) override;
-
 private:
 
     std::unordered_map<TypeId, ClassInfoPtrT> classInfoMap;
+    std::unordered_map<TypeId, EnumInfoPtrT> enumInfoMap;
 };
 
 #endif /* __CLASS_INFO_MANAGER_HPP__ */

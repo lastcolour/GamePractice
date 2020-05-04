@@ -1,6 +1,5 @@
 #include "Game/Logics/GameBoardElemSwitcherLogic.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
-#include "Core/JSONNode.hpp"
 
 #include <algorithm>
 #include <cassert>

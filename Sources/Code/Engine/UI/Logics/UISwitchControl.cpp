@@ -1,5 +1,4 @@
 #include "UI/Logics/UISwitchControl.hpp"
-#include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
@@ -16,32 +15,19 @@ UISwitchControl::~UISwitchControl() {
 }
 
 void UISwitchControl::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<EControlType>("UISwtichControlType")) {
+        enumInfo->addValues<EControlType>({
+            {"Sound", EControlType::Sound},
+            {"Vibration", EControlType::Vibration}
+        });
+    }
     if(auto classInfo = ctx.classInfo<UISwitchControl>("UISwitchControl")) {
         classInfo->addField("onLabel", &UISwitchControl::onLabel);
         classInfo->addField("offLabel", &UISwitchControl::offLabel);
-        classInfo->addEnumField("controlType", &UISwitchControl::controlType);
         classInfo->addField("isTurnedOn", &UISwitchControl::isTurnedOn);
+        classInfo->addField("controlType", &UISwitchControl::controlType);
     }
 }
-
-/*
-bool UISwitchControl::serialize(const JSONNode& node) {
-    node.read("onLabel", onLabel);
-    node.read("offLabel", offLabel);
-
-    std::string controlTypeStr;
-    node.read("controlType", controlTypeStr);
-    if(controlTypeStr == "sound") {
-        controlType = EControlType::Sound;
-    } else if(controlTypeStr == "vibration") {
-        controlType = EControlType::Vibration;
-    } else {
-        LogWarning("[UISwitchControl::serialize] Unknown control type: %s", controlTypeStr);
-        return false;
-    }
-    return true;
-}
-*/
 
 bool UISwitchControl::init() {
     switch(controlType)

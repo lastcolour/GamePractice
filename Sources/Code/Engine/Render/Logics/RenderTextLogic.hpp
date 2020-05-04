@@ -26,6 +26,7 @@ public:
     void ET_onRender(const RenderContext& renderCtx) override;
 
     // ETRenderTextLogic
+    void ET_setFont(const char* fontName) override;
     void ET_setColor(const ColorB& col) override;
     void ET_setText(const char* str) override;
     void ET_setFontSize(int fontSize) override;

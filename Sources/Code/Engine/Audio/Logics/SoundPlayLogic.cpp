@@ -1,5 +1,4 @@
 #include "Audio/Logics/SoundPlayLogic.hpp"
-#include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
 
 SoundPlayLogic::SoundPlayLogic() :
@@ -13,11 +12,7 @@ SoundPlayLogic::~SoundPlayLogic() {
 
 void SoundPlayLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<SoundPlayLogic>("SoundPlayLogic")) {
-        classInfo->addResourceField("sound", &SoundPlayLogic::sound, [](const char* resourceName){
-            std::unique_ptr<Sound> sound;
-            ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, resourceName);
-            return sound;
-        });
+        classInfo->addResourceField("sound", &SoundPlayLogic::ET_setSound);
         classInfo->addField("looped", &SoundPlayLogic::looped);
         classInfo->addField("volume", &SoundPlayLogic::volume);
         classInfo->addField("autoStart", &SoundPlayLogic::autoStart);

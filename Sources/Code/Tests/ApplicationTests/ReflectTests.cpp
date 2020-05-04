@@ -65,9 +65,69 @@ public:
             classInfo->addBaseClass<SimpleEntityLogic>();
         }
     }
+};
+
+class ObjectWithResource {
+public:
+
+    static void Reflect(ReflectContext& reflectCtx) {
+        if(auto classInfo = reflectCtx.classInfo<ObjectWithResource>("ObjectWithResource")) {
+            classInfo->addResourceField("resource", &ObjectWithResource::setResource);
+        }
+    }
 
 public:
 
+    void setResource(const char* resName) {
+        resource.reset(new std::string(resName));
+    }
+
+public:
+
+    std::shared_ptr<std::string> resource;
+};
+
+class ObjectWithEnum {
+public:
+
+    enum class Numbers {
+        Zero = 0,
+        One = 1,
+        Two = 2,
+        Three = 3,
+        Four = 4,
+        Five = 5,
+        Six = 6,
+        Seven = 7,
+        Eight = 8,
+        Nine = 9
+    };
+
+public:
+
+    static void Reflect(ReflectContext& reflectCtx) {
+        if(auto enumInfo = reflectCtx.enumInfo<Numbers>("Numbers")) {
+            enumInfo->addValues<Numbers>({
+                {"Zero", Numbers::Zero},
+                {"One", Numbers::One},
+                {"Two", Numbers::Two},
+                {"Three", Numbers::Three},
+                {"Four", Numbers::Four},
+                {"Five", Numbers::Five},
+                {"Six", Numbers::Six},
+                {"Seven", Numbers::Seven},
+                {"Eight", Numbers::Eight},
+                {"Nine", Numbers::Nine}
+            });
+        }
+        if(auto classInfo = reflectCtx.classInfo<ObjectWithEnum>("ObjectWithEnum")) {
+            classInfo->addField("number", &ObjectWithEnum::number);
+        }
+    }
+
+public:
+
+    Numbers number;
 };
 
 } // namespace
@@ -173,15 +233,60 @@ TEST_F(ReflectTests, TestReflectModel) {
 }
 
 TEST_F(ReflectTests, TestBaseAndDeriveded) {
-    ASSERT_TRUE(false);
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<DerivedObject>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto jsonStr = StringFormat("%s", SIMPLE_ENTITY_JSON_DATA);
+    auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
+    ASSERT_TRUE(jsonNode);
+
+    auto classInstance = classInfo->createInstance(jsonNode);
+    auto object = classInstance.acquire<DerivedObject>();
+    ASSERT_TRUE(object);
+
+    ChekcSimpleEntityReflect(object.get());
+
+    int classReflected = 0;
+    ET_SendEventReturn(classReflected, &ETClassInfoManager::ET_getRegisteredClassCount);
+    ASSERT_EQ(classReflected, 2);
 }
 
 TEST_F(ReflectTests, TestResource) {
-    ASSERT_TRUE(false);
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithResource>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto jsonNode = JSONNode::ParseString("{ \"resource\" : \"ObjectWithResource\" }");
+    ASSERT_TRUE(jsonNode);
+
+    auto classInstance = classInfo->createInstance(jsonNode);
+    auto object = classInstance.acquire<ObjectWithResource>();
+    ASSERT_TRUE(object);
+
+    ASSERT_TRUE(object->resource);
+    ASSERT_STREQ(object->resource->c_str(), "ObjectWithResource");
 }
 
 TEST_F(ReflectTests, TestEnum) {
-    ASSERT_TRUE(false);
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithEnum>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto jsonNode = JSONNode::ParseString("{ \"number\" : \"two\" }");
+    ASSERT_TRUE(jsonNode);
+
+    auto classInstance = classInfo->createInstance(jsonNode);
+    auto object = classInstance.acquire<ObjectWithEnum>();
+    ASSERT_TRUE(object);
+
+    ASSERT_EQ(object->number, ObjectWithEnum::Numbers::Two);
 }
 
 TEST_F(ReflectTests, TestEntityReference) {

@@ -1,7 +1,6 @@
 #include "UI/Logics/UIResultInfoSelector.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
-#include "Core/JSONNode.hpp"
 
 UIResultInfoSelector::UIResultInfoSelector() {
 }

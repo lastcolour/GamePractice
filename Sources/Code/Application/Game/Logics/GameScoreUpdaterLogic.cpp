@@ -1,7 +1,6 @@
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "Core/StringFormat.hpp"
-#include "Core/JSONNode.hpp"
 
 #include <algorithm>
 
