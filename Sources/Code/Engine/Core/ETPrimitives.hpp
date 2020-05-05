@@ -45,24 +45,28 @@ private:
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEvent(method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEvent(addressId, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
 }
 
@@ -71,18 +75,21 @@ void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType:
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEvent(method, std::forward<ParamType>(params)...);
 }
 
 template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
 }
 
 template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
 void ET_SendEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEvent(addressId, method, std::forward<ParamType>(params)...);
 }
 
@@ -90,6 +97,7 @@ template<typename ValRetType, typename ETType, typename RetType, typename ... Ar
 void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     static_assert(!std::is_same<RetType, void>::value, "Can't return void type");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
     GetETSystem()->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
 }
 

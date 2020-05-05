@@ -28,15 +28,18 @@ bool ReflectContext::registerInfos() {
 }
 
 bool ReflectContext::registerEnums() {
+    bool res = true;
     for(auto& enumInfo : enumInfos) {
         bool res = false;
         ET_SendEventReturn(res, &ETClassInfoManager::ET_registerEnumInfo, enumInfo);
         if(!res) {
             LogError("[ReflectContext::registerEnums] Can't register enum: %s", enumInfo->getName());
-            return false;
+            res = false;
+            break;
         }
     }
-    return true;
+    enumInfos.clear();
+    return res;
 }
 
 ClassInfo* ReflectContext::createClassInfo(const char* className, TypeId classTypeId) {

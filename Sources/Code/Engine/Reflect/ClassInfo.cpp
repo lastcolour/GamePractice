@@ -57,12 +57,6 @@ const char* ClassInfo::getName() const {
     return className.c_str();
 }
 
-ClassInfo* ClassInfo::findClassInfo(TypeId instanceTypeId) const {
-    ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, instanceTypeId);
-    return classInfo;
-}
-
 void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
     ClassValue::SetResourceFuncT valueSetFunc) {
     const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class %s (Error: %s)";
@@ -151,11 +145,19 @@ void ClassInfo::getAllClasses(std::vector<ClassInfo*> classes) {
     }
 }
 
-void ClassInfo::registerBaseClass(ClassInfo* baseClassInfo) {
+void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
     const char* errStr = "[ClassInfo::registerBaseClass] Can't register the base class '%s' for the class '%s' (Error: %s)";
-    if(!baseClassInfo) {
-        LogError(errStr, "null", className, "invalid base class");
+
+    if(baseClassTypeId == InvalidTypeId) {
+        LogError(errStr, "null", className, "invalid base class type id");
         assert(false && "can't register base class");
+        return;
+    }
+
+    ClassInfo* baseClassInfo = nullptr;
+    ET_SendEventReturn(baseClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, baseClassTypeId);
+    if(!baseClassInfo) {
+        LogError(errStr, "null", className, "can't find class info by type id");
         return;
     }
 
@@ -215,12 +217,7 @@ ClassValue* ClassInfo::findValueByName(const char* name) {
     return nullptr;
 }
 
-bool ClassInfo::reflectEmbebedClass(ReflectFuncT reflectFunc) {
-    ReflectContext ctx;
-    return ctx.reflectEmbedded(reflectFunc);
-}
-
- void ClassInfo::makeReflectModel(JSONNode& node) {
+void ClassInfo::makeReflectModel(JSONNode& node) {
     for(auto& value : values) {
         node.write(value.name.c_str(), value.getTypeName());
     }

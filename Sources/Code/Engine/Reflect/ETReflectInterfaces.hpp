@@ -7,6 +7,7 @@
 
 class ClassInfo;
 class EnumInfo;
+class ArrayInfo;
 class JSONNode;
 
 struct ETClassInfoManager {
@@ -17,6 +18,8 @@ struct ETClassInfoManager {
     virtual EnumInfo* ET_findEnumInfoByTypeId(TypeId enumTypeId) = 0;
     virtual EnumInfo* ET_findEnumInfoByName(const char* enumName) = 0;
     virtual bool ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) = 0;
+    virtual ArrayInfo* ET_findArrayInfoByElemTypeId(TypeId elemTypeId) = 0;
+    virtual bool ET_registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) = 0;
     virtual void ET_reset() = 0;
     virtual int ET_getRegisteredClassCount() = 0;
     virtual void ET_makeReflectModel(JSONNode& node) = 0;

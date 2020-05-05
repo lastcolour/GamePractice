@@ -1,6 +1,7 @@
 #include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/EnumInfo.hpp"
+#include "Reflect/ArrayInfo.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 
@@ -63,6 +64,8 @@ ClassInfo* ClassInfoManager::ET_findClassInfoByTypeId(TypeId classTypeId) {
 
 void ClassInfoManager::ET_reset() {
     classInfoMap.clear();
+    enumInfoMap.clear();
+    arrayInfoMap.clear();
 }
 
 int ClassInfoManager::ET_getRegisteredClassCount() {
@@ -115,5 +118,28 @@ bool ClassInfoManager::ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) 
         return false;
     }
     enumInfoMap[enumInfo->getEnumTypeId()] = std::move(enumInfo);
+    return true;
+}
+
+ArrayInfo* ClassInfoManager::ET_findArrayInfoByElemTypeId(TypeId elemTypeId) {
+    auto it = arrayInfoMap.find(elemTypeId);
+    if(it == arrayInfoMap.end()) {
+        return nullptr;
+    }
+    return it->second.get();
+}
+
+bool ClassInfoManager::ET_registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) {
+    if(!arrayInfo) {
+        LogError("[ClassInfoManager::ET_registerArrayInfo] Invalid array info");
+        assert(false && "Invalid enum info");
+        return false;
+    }
+    if(ET_findArrayInfoByElemTypeId(arrayInfo->getElemTypeId())) {
+        LogError("[ClassInfoManager::ET_registerArrayInfo] Array info already registered");
+        assert(false && "Array elem typeId duplicate");
+        return false;
+    }
+    arrayInfoMap[arrayInfo->getElemTypeId()] = std::move(arrayInfo);
     return true;
 }

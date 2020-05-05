@@ -310,7 +310,7 @@ TEST_F(ReflectTests, TestArray) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto jsonNode = JSONNode::ParseString("[{ \"number\" : \"One\" }, {\"number\" : \"Two\"}]");
+    auto jsonNode = JSONNode::ParseString("{\"array\": [{ \"number\" : \"One\" }, {\"number\" : \"Two\"}] }");
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance(jsonNode);

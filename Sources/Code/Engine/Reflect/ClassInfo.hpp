@@ -3,12 +3,6 @@
 
 #include "Reflect/ClassValue.hpp"
 #include "Reflect/ClassIntance.hpp"
-#include "Reflect/EnumInfo.hpp"
-
-#include <vector>
-
-class JSONNode;
-class ReflectContext;
 
 using ClassInstanceDeleteFuncT = std::function<void(void*)>;
 
@@ -16,7 +10,6 @@ class ClassInfo {
 
     using CreateFuncT = std::function<void*(void)>;
     using GetValueFuncT = std::function<void*(void*, ClassValue::ValuePtrT)>;
-    using ReflectFuncT = std::function<void(ReflectContext& ctx)>;
 
 public:
 
@@ -49,25 +42,22 @@ public:
 
     template<typename ClassT, typename ValueT>
     void addField(const char* name, ValueT ClassT::* valuePtr) {
-        constexpr auto type = getClassValueType<ValueT>();
+        constexpr auto type = GetClassValueType<ValueT>();
         static_assert(type != ClassValueType::Invalid, "Can't add field with unknown type");
         if(getIntanceTypeId() != GetTypeId<ClassT>()) {
             return;
         }
-        if constexpr (type == ClassValueType::Object) {
-            auto intanceTypeId = GetTypeId<ValueT>();
-            if(!findClassInfo(intanceTypeId)) {
-                auto reflectFunc = [](ReflectContext& ctx) {
-                    ValueT::Reflect(ctx);
-                };
-                if(!reflectEmbebedClass(reflectFunc)) {
-                    return;
-                }
-            }
-        } else if constexpr (type == ClassValueType::Array) {
+        if(!CreateTypeInfo<ValueT>()) {
             return;
         }
-        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), GetTypeId<ValueT>(), nullptr);
+        auto valueTypeId = InvalidTypeId;
+        if constexpr (type == ClassValueType::Array) {
+            using ElemT = typename ValueT::value_type;
+            valueTypeId = GetTypeId<ElemT>();
+        } else {
+            valueTypeId = GetTypeId<ValueT>();
+        }
+        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), valueTypeId, nullptr);
     }
 
     template<typename ClassT>
@@ -83,23 +73,19 @@ public:
 
     template<typename ClassT>
     void addBaseClass() {
-        auto classInfo = findClassInfo(GetTypeId<ClassT>());
-        if(!classInfo) {
-            ReflectContext ctx;
-            ctx.reflect<ClassT>();
-            classInfo = ctx.getRegisteredClassInfo();
+        constexpr auto type = GetClassValueType<ClassT>();
+        static_assert(type == ClassValueType::Object, "Base class should have object type");
+        if(!CreateTypeInfo<ClassT>()) {
+            return;
         }
-        registerBaseClass(classInfo);
+        registerBaseClass(GetTypeId<ClassT>());
     }
 
 private:
 
-    
     ClassValue* findValueByName(const char* name);
     ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr);
-    bool reflectEmbebedClass(ReflectFuncT reflectFunc);
-    ClassInfo* findClassInfo(TypeId instanceTypeId) const;
-    void registerBaseClass(ClassInfo* baseClassInfo);
+    void registerBaseClass(TypeId baseClassTypeId);
     void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
         ClassValue::SetResourceFuncT valueSetFunc);
     void getAllClasses(std::vector<ClassInfo*> classes);
