@@ -144,6 +144,21 @@ public:
     std::vector<ObjectWithEnum> array;
 };
 
+class ObjectWithArrayOfVec3 {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        if(auto classInfo = ctx.classInfo<ObjectWithArrayOfVec3>("ObjectWithArrayOfVec3")) {
+            classInfo->addField("array", &ObjectWithArrayOfVec3::array);
+        }
+    }
+
+public:
+
+    std::vector<Vec3> array;
+
+};
+
 } // namespace
 
 void ReflectTests::TearDown() {
@@ -320,6 +335,34 @@ TEST_F(ReflectTests, TestArray) {
     ASSERT_EQ(object->array.size(), 2);
     ASSERT_EQ(object->array[0].number, ObjectWithEnum::Numbers::One);
     ASSERT_EQ(object->array[1].number, ObjectWithEnum::Numbers::Two);
+}
+
+TEST_F(ReflectTests, TestArrayOfVec3) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithArrayOfVec3>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto jsonNode = JSONNode::ParseString("{\"array\": [{ \"x\":1, \"y\":2, \"z\":3 }, { \"x\":4, \"y\":5, \"z\":6 }, { \"x\":7, \"y\":8, \"z\":9 }] }");
+    ASSERT_TRUE(jsonNode);
+
+    auto classInstance = classInfo->createInstance(jsonNode);
+    auto object = classInstance.acquire<ObjectWithArrayOfVec3>();
+    ASSERT_TRUE(object);
+
+    ASSERT_EQ(object->array.size(), 3);
+    ASSERT_FLOAT_EQ(object->array[0].x, 1.f);
+    ASSERT_FLOAT_EQ(object->array[0].y, 2.f);
+    ASSERT_FLOAT_EQ(object->array[0].z, 3.f);
+
+    ASSERT_FLOAT_EQ(object->array[1].x, 4.f);
+    ASSERT_FLOAT_EQ(object->array[1].y, 5.f);
+    ASSERT_FLOAT_EQ(object->array[1].z, 6.f);
+
+    ASSERT_FLOAT_EQ(object->array[2].x, 7.f);
+    ASSERT_FLOAT_EQ(object->array[2].y, 8.f);
+    ASSERT_FLOAT_EQ(object->array[2].z, 9.f);
 }
 
 TEST_F(ReflectTests, TestEntityReference) {

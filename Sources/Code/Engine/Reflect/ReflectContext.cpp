@@ -52,8 +52,10 @@ ClassInfo* ReflectContext::createClassInfo(const char* className, TypeId classTy
     ClassInfo* cInfo = nullptr;
     ET_SendEventReturn(cInfo, &ETClassInfoManager::ET_findClassInfoByName, className);
     if(cInfo) {
-        LogError(errStr, className, "already registered by name");
-        assert(false && "can't create class info");
+        if(classTypeId != cInfo->getIntanceTypeId()) {
+            LogError(errStr, className, "other class was registered by this name");
+            assert(false && "can't create class info");
+        }
         return nullptr;
     }
     if(classTypeId == InvalidTypeId) {
@@ -63,8 +65,11 @@ ClassInfo* ReflectContext::createClassInfo(const char* className, TypeId classTy
     }
     ET_SendEventReturn(cInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, classTypeId);
     if(cInfo) {
-        LogError(errStr, className, "already registered by typeId");
-        assert(false && "can't create class info");
+        std::string name = className;
+        if(name != cInfo->getName()) {
+            LogError(errStr, className, "class already registered by other name");
+            assert(false && "can't create class info");
+        }
         return nullptr;
     }
     if(!registerEnums()) {

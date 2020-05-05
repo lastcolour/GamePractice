@@ -20,9 +20,12 @@ public:
     void eraseElement(size_t pos, void* valuePtr);
     bool serializeElement(void* element, const JSONNode& node);
     TypeId getElemTypeId() const;
+    const char* getName() const;
+    void makeReflectModel(JSONNode& node);
 
 private:
 
+    std::string name;
     ClassValue elemValue;
     CreateElemFuncT createFunc;
     SizeFuncT sizeFunc;

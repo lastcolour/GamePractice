@@ -1,6 +1,6 @@
 #include "Reflect/ArrayInfo.hpp"
-#include <vector>
 #include "Core/JSONNode.hpp"
+#include "Core/StringFormat.hpp"
 
 ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF, SizeFuncT sizeF, EraseElemFuncT eraseF) :
     createFunc(createF),
@@ -10,6 +10,8 @@ ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT
     elemValue.isElement = true;
     elemValue.typeId = elemTypeId;
     elemValue.type = elemType;
+
+    name = StringFormat("Array<%s>", elemValue.getTypeName());
 }
 
 ArrayInfo::~ArrayInfo() {
@@ -33,4 +35,15 @@ bool ArrayInfo::serializeElement(void* element, const JSONNode& node) {
 
 TypeId ArrayInfo::getElemTypeId() const {
     return elemValue.typeId;
+}
+
+const char* ArrayInfo::getName() const {
+    return name.c_str();
+}
+
+void ArrayInfo::makeReflectModel(JSONNode& node) {
+    node.write("type", "array");
+    JSONNode elemNode;
+    elemNode.write("type", elemValue.getTypeName());
+    node.write("data", elemNode);
 }

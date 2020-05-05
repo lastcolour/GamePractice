@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <string>
 
+class JSONNode;
+
 class EnumInfo {
 public:
 
@@ -16,6 +18,7 @@ public:
     const char* getName() const;
     TypeId getEnumTypeId() const;
     bool serializeValue(void* valuePtr, const std::string& valueStr) const;
+    void makeReflectModel(JSONNode& node);
 
     template<typename EnumT>
     void addValues(const std::initializer_list<std::pair<std::string, EnumT>>& values) {

@@ -218,7 +218,10 @@ ClassValue* ClassInfo::findValueByName(const char* name) {
 }
 
 void ClassInfo::makeReflectModel(JSONNode& node) {
+    node.write("type", "class");
+    JSONNode fieldsNode;
     for(auto& value : values) {
-        node.write(value.name.c_str(), value.getTypeName());
+        fieldsNode.write(value.name.c_str(), value.getTypeName());
     }
+    node.write("data", fieldsNode);
 }

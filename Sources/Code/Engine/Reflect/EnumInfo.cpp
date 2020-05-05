@@ -1,5 +1,6 @@
 #include "Reflect/EnumInfo.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
 
 #include <cassert>
 
@@ -51,4 +52,13 @@ bool EnumInfo::serializeValue(void* valuePtr, const std::string& valueStr) const
     }
     *(static_cast<int*>(valuePtr)) = it->second;
     return true;
+}
+
+void EnumInfo::makeReflectModel(JSONNode& node) {
+    node.write("type", "enum");
+    JSONNode enumValsNode;
+    for(auto& enumPair : nameToVal) {
+        enumValsNode.write(enumPair.first.c_str(), static_cast<int>(enumPair.second));
+    }
+    node.write("data", enumValsNode);
 }
