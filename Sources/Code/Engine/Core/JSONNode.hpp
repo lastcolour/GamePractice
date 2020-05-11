@@ -67,10 +67,17 @@ public:
     void write(const char* key, int value);
     void write(const char* key, bool value);
 
+    void write(float value);
+    void write(int value);
+    void write(bool value);
+    void write(const char* value);
+    void write(const std::string& value);
+
     const char* key() const;
     JSONNode object(const char* key) const;
     bool hasKey(const char* key) const;
 
+    bool isArray() const;
     size_t size() const;
 
     Buffer flushToBuffer() const;
@@ -81,6 +88,7 @@ private:
 
 private:
 
+    bool mutateToArray();
     void updateDocRoot();
 
 private:

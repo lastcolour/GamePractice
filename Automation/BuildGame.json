@@ -53,7 +53,7 @@
                 "cwd":"${gameBinsRoot}/${buildType}/_tests",
                 "createCwd":true,
                 "args":[
-                    "--gtest_filter=*ReflectTests*"
+                    "--gtest_filter=*"
                 ]
             }
         }

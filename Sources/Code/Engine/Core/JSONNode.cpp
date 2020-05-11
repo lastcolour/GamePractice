@@ -322,6 +322,16 @@ void JSONNode::updateDocRoot() {
     nodeImpl->val = nodeImpl->root.get();
 }
 
+bool JSONNode::mutateToArray() {
+    if(!nodeImpl->val->IsArray()) {
+        if(nodeImpl->val->MemberCount()) {
+            return false;
+        }
+        nodeImpl->val->SetArray();
+    }
+    return true;
+}
+
 void JSONNode::write(const char* key, const JSONNode& node) {
     if(!key || !key[0]) {
         return;
@@ -396,6 +406,50 @@ void JSONNode::write(const char* key, bool value) {
     nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
 }
 
+void JSONNode::write(float value) {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    nodeImpl->val->PushBack(value, nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(int value) {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    nodeImpl->val->PushBack(value, nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(bool value) {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    nodeImpl->val->PushBack(value, nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(const char* value) {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    JSONValueT valObject;
+    valObject.SetString(value, nodeImpl->root->GetAllocator());
+    nodeImpl->val->PushBack(valObject, nodeImpl->root->GetAllocator());
+}
+
+void JSONNode::write(const std::string& value) {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    JSONValueT valObject;
+    valObject.SetString(value.c_str(), nodeImpl->root->GetAllocator());
+    nodeImpl->val->PushBack(valObject, nodeImpl->root->GetAllocator());
+}
+
 JSONNode JSONNode::object(const char* key) const {
     JSONNode node;
     if(!key || !key[0]) {
@@ -432,6 +486,16 @@ bool JSONNode::hasKey(const char* key) const {
         if(it != nodeImpl->val->MemberEnd() && !it->value.IsNull()) {
            return true;
         }
+    }
+    return false;
+}
+
+bool JSONNode::isArray() const {
+    if(!nodeImpl->val) {
+        return false;
+    }
+    if(nodeImpl->val->IsArray()) {
+        return true;
     }
     return false;
 }

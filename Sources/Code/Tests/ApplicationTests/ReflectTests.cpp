@@ -223,28 +223,35 @@ TEST_F(ReflectTests, TestReflectModel) {
     {
         auto classNode = node.object("SimpleEntityLogic");
         ASSERT_TRUE(classNode);
+
+        std::string typeVal;
+        classNode.read("type", typeVal);
+        ASSERT_STREQ(typeVal.c_str(), "class");
+
+        auto dataNode = classNode.object("data");
+        ASSERT_TRUE(dataNode);
         {
             std::string val;
-            ASSERT_TRUE(classNode.hasKey("boolF"));
-            classNode.read("boolF", val);
+            ASSERT_TRUE(dataNode.hasKey("boolF"));
+            dataNode.read("boolF", val);
             ASSERT_STREQ(val.c_str(), "bool");
         }
         {
             std::string val;
-            ASSERT_TRUE(classNode.hasKey("intF"));
-            classNode.read("intF", val);
+            ASSERT_TRUE(dataNode.hasKey("intF"));
+            dataNode.read("intF", val);
             ASSERT_STREQ(val.c_str(), "int");
         }
         {
             std::string val;
-            ASSERT_TRUE(classNode.hasKey("floatF"));
-            classNode.read("floatF", val);
+            ASSERT_TRUE(dataNode.hasKey("floatF"));
+            dataNode.read("floatF", val);
             ASSERT_STREQ(val.c_str(), "float");
         }
         {
             std::string val;
-            ASSERT_TRUE(classNode.hasKey("stringF"));
-            classNode.read("stringF", val);
+            ASSERT_TRUE(dataNode.hasKey("stringF"));
+            dataNode.read("stringF", val);
             ASSERT_STREQ(val.c_str(), "string");
         }
     }
@@ -253,9 +260,11 @@ TEST_F(ReflectTests, TestReflectModel) {
         auto classNode = node.object("ObjectWithObjectEntity");
         ASSERT_TRUE(classNode);
         {
+            auto dataNode = classNode.object("data");
+            ASSERT_TRUE(dataNode);
+            ASSERT_TRUE(dataNode.hasKey("objectF"));
             std::string val;
-            ASSERT_TRUE(classNode.hasKey("objectF"));
-            classNode.read("objectF", val);
+            dataNode.read("objectF", val);
             ASSERT_STREQ(val.c_str(), "SimpleEntityLogic");
         }
     }
@@ -363,6 +372,25 @@ TEST_F(ReflectTests, TestArrayOfVec3) {
     ASSERT_FLOAT_EQ(object->array[2].x, 7.f);
     ASSERT_FLOAT_EQ(object->array[2].y, 8.f);
     ASSERT_FLOAT_EQ(object->array[2].z, 9.f);
+}
+
+TEST_F(ReflectTests, TestDerivedReflection) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<DerivedObject>());
+
+    JSONNode node;
+    ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+
+    ASSERT_TRUE(node);
+    ASSERT_EQ(node.size(), 2u);
+
+    ASSERT_TRUE(node.hasKey("DerivedObject"));
+    ASSERT_TRUE(node.hasKey("SimpleEntityLogic"));
+
+    auto classNode = node.object("DerivedObject");
+    ASSERT_TRUE(classNode);
+
+    ASSERT_TRUE(classNode.hasKey("base"));
 }
 
 TEST_F(ReflectTests, TestEntityReference) {

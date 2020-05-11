@@ -232,3 +232,31 @@ TEST_F(JSONNodeTests, CheckIfHasKey) {
 
     ASSERT_TRUE(node.hasKey("obj"));
 }
+
+TEST_F(JSONNodeTests, CheckWriteArray) {
+    JSONNode arrayNode;
+    arrayNode.write(1);
+    arrayNode.write(2);
+    arrayNode.write(3);
+
+    JSONNode node;
+    node.write("array", arrayNode);
+
+    auto buffer = node.flushToBuffer();
+    ASSERT_TRUE(buffer);
+
+    auto resNode = JSONNode::ParseBuffer(buffer);
+    ASSERT_TRUE(resNode);
+
+    auto resArrayNode = resNode.object("array");
+    ASSERT_TRUE(resArrayNode);
+    ASSERT_EQ(resArrayNode.size(), 3u);
+
+    int i = 1;
+    for(auto& elemNode : resArrayNode) {
+        int val;
+        elemNode.read(val);
+        ASSERT_EQ(i, val);
+        ++i;
+    }
+}
