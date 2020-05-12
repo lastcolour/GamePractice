@@ -8,7 +8,7 @@
 CoreModule::CoreModule() :
     SystemModule("Core") {}
 
-CoreModule::LogicsContainerPtrT CoreModule::getSystemLogics() const {
+CoreModule::LogicsContainerPtrT CoreModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             AppRunState,
@@ -20,8 +20,7 @@ CoreModule::LogicsContainerPtrT CoreModule::getSystemLogics() const {
     return container;
 }
 
-CoreModule::ConfigsPtrT CoreModule::getSystemConfigs() const {
-    return nullptr;
+void CoreModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void CoreModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

@@ -20,7 +20,7 @@
 UIModule::UIModule() :
     SystemModule("UI") {}
 
-UIModule::LogicsContainerPtrT UIModule::getSystemLogics() const {
+UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             UISurfaceEventHandler,
@@ -29,6 +29,9 @@ UIModule::LogicsContainerPtrT UIModule::getSystemLogics() const {
             UIViewSwitcher>()
         );
     return container;
+}
+
+void UIModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void UIModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
@@ -45,8 +48,4 @@ void UIModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
     logicRegister.registerLogic<UIAppearOnTop>("UIAppearOnTop");
     logicRegister.registerLogic<UIAppearFromSide>("UIAppearFromSide");
     logicRegister.registerLogic<UIBackground>("UIBackground");
-}
-
-UIModule::ConfigsPtrT UIModule::getSystemConfigs() const {
-    return nullptr;
 }

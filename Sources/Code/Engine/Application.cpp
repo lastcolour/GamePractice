@@ -26,6 +26,10 @@ Application::~Application() {
     deinit();
 }
 
+Platform* Application::getPlatform() {
+    return platform.get();
+}
+
 void Application::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
     if(platform) {

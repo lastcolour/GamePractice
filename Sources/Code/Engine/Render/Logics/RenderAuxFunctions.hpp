@@ -10,8 +10,6 @@ class JSONNode;
 
 namespace Render {
 
-void ReadColor(const JSONNode& node, ColorB& color);
-
 Mat4 CalcModelMat(EntityId entityId, const Vec3& scale, const RenderGeometry& geom);
 
 Vec2 CalcGeomScaleForSize(const Vec2i& size, const RenderGeometry& geom);

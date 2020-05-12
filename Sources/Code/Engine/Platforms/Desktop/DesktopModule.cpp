@@ -6,7 +6,7 @@
 DesktopModule::DesktopModule() :
     SystemModule("DesktopModule") {}
 
-DesktopModule::LogicsContainerPtrT DesktopModule::getSystemLogics() const {
+DesktopModule::LogicsContainerPtrT DesktopModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             DesktopLogger,
@@ -16,8 +16,7 @@ DesktopModule::LogicsContainerPtrT DesktopModule::getSystemLogics() const {
     return container;
 }
 
-DesktopModule::ConfigsPtrT DesktopModule::getSystemConfigs() const {
-    return nullptr;
+void DesktopModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void DesktopModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

@@ -2,6 +2,7 @@ import unittest
 import ctypes
 import pathlib
 import os
+import json
 
 def _getEditorLibPath():
     if os.name == "nt":
@@ -38,6 +39,13 @@ class EditorAppTests(unittest.TestCase):
         self.assertIsNotNone(EditorAppTests.EDITOR_LIB.Initiliaze)
         self.assertIsNotNone(EditorAppTests.EDITOR_LIB.GetReflectModel)
         self.assertIsNotNone(EditorAppTests.EDITOR_LIB.DeInitialize)
+
+    def testGetReflectModel(self):
+        retCode = EditorAppTests.EDITOR_LIB.Initiliaze()
+        self.assertEqual(retCode, 0)
+        reflectModel = EditorAppTests.EDITOR_LIB.GetReflectModel()
+        self.assertIsNotNone(reflectModel)
+        EditorAppTests.EDITOR_LIB.DeInitialize()
 
 if __name__ == "__main__":
     unittest.main()

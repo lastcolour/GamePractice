@@ -11,8 +11,8 @@ public:
 
 protected:
 
-    ConfigsPtrT getSystemConfigs() const override;
-    LogicsContainerPtrT getSystemLogics() const override;
+    LogicsContainerPtrT createSystemLogics() const override;
+    void reflectSystemConfigs(ReflectContext& ctx) const override;
     void registerEntityLogics(EntityLogicRegister& logicRegister) const override;
 
 };

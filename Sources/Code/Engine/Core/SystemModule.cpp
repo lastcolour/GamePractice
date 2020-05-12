@@ -45,7 +45,7 @@ bool SystemModule::init() {
         LogError("[SystemModule::init] Double init of module: '%s'", name);
         return false;
     }
-    logicsContainer = std::move(getSystemLogics());
+    logicsContainer = std::move(createSystemLogics());
     if(!logicsContainer) {
         LogError("[SystemModule::init] Can't get system logics for module: '%s'", name);
         return false;

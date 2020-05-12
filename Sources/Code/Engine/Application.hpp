@@ -34,6 +34,7 @@ protected:
 protected:
 
     virtual void buildModules(ModuleListT& modules);
+    Platform* getPlatform();
 
 private:
 

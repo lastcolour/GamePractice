@@ -13,7 +13,7 @@ AndroidModule::AndroidModule() :
 AndroidModule::~AndroidModule() {
 }
 
-AndroidModule::LogicsContainerPtrT AndroidModule::getSystemLogics() const {
+AndroidModule::LogicsContainerPtrT AndroidModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             AndroidLogger,
@@ -26,8 +26,7 @@ AndroidModule::LogicsContainerPtrT AndroidModule::getSystemLogics() const {
     return container;
 }
 
-AndroidModule::ConfigsPtrT AndroidModule::getSystemConfigs() const {
-    return nullptr;
+void AndroidModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void AndroidModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

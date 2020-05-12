@@ -4,6 +4,7 @@
 #include "Audio/AudioConfig.hpp"
 #include "Audio/Logics/SoundPlayLogic.hpp"
 #include "Entity/EntityLogicRegister.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 #if defined PLATFORM_WINDOWS || defined PLATFORM_LINUX
 
@@ -28,7 +29,7 @@ AudioModule::AudioModule() :
 AudioModule::~AudioModule() {
 }
 
-AudioModule::LogicsContainerPtrT AudioModule::getSystemLogics() const {
+AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             AudioSystem,
@@ -38,9 +39,10 @@ AudioModule::LogicsContainerPtrT AudioModule::getSystemLogics() const {
     return container;
 }
 
-AudioModule::ConfigsPtrT AudioModule::getSystemConfigs() const {
-    ConfigsPtrT config(new SystemModuleConfig<AudioConfig>());
-    return config;
+void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
+    if(auto classInfo = ctx.classInfo<AudioModule>("AudioModule")) {
+        classInfo->addBaseClass<AudioConfig>();
+    }
 }
 
 void AudioModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

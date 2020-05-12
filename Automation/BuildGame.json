@@ -3,7 +3,8 @@
     "InputVariables":{
         "buildType":"Debug",
         "platform":"Windows",
-        "skipLibs":"False"
+        "skipLibsBuild":"True",
+        "skipUnittests":"True"
     },
     "Steps":[
         {
@@ -21,8 +22,8 @@
             "name":"Check Build Libs",
             "type":"IfVariableEqual",
             "data":{
-                "varA":"${skipLibs}",
-                "varB":"True"
+                "varA":"${skipLibsBuild}",
+                "varB":"False"
             }
         },
         {
@@ -45,9 +46,18 @@
             }
         },
         {
+            "name":"Check Run Game Tests",
+            "type":"IfVariableEqual",
+            "dependOn":["Build Game"],
+            "data":{
+                "varA":"${skipUnittests}",
+                "varB":"False"
+            }
+        },
+        {
             "name":"Run Game Tests",
             "type":"RunProcess",
-            "dependOn":["Build Game"],
+            "dependOn":["Check Run Game Tests"],
             "data":{
                 "process":"${gameBinsRoot}/${buildType}/Game01Tests.exe",
                 "cwd":"${gameBinsRoot}/${buildType}/_tests",

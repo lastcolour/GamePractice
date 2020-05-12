@@ -9,11 +9,11 @@
 
 extern "C" {
 
-int LIB_EXPORT Initiliaze();
+LIB_EXPORT int Initiliaze();
 
-const char* LIB_EXPORT GetReflectModel();
+LIB_EXPORT const char* GetReflectModel();
 
-void LIB_EXPORT DeInitialize();
+LIB_EXPORT void DeInitialize();
 
 } // extern "C"
 

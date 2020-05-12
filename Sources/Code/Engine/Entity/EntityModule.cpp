@@ -4,7 +4,7 @@
 EntityModule::EntityModule() :
     SystemModule("Entity") {}
 
-EntityModule::LogicsContainerPtrT EntityModule::getSystemLogics() const {
+EntityModule::LogicsContainerPtrT EntityModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             EntityManager>()
@@ -12,8 +12,7 @@ EntityModule::LogicsContainerPtrT EntityModule::getSystemLogics() const {
     return container;
 }
 
-EntityModule::ConfigsPtrT EntityModule::getSystemConfigs() const {
-    return nullptr;
+void EntityModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void EntityModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

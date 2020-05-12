@@ -89,6 +89,8 @@ std::filesystem::path getAssetDirPath() {
             return possibleAssetDir;
         }
     }
+    LogError("[DesktopAssets::getAssetDirPath] Can't find assets root dir from: '%s'",
+        binDirPath.c_str());
     return std::filesystem::path();
 }
 
@@ -110,7 +112,9 @@ std::wstring getLoacalFilesDirPath() {
     path.append(LOCAL_DIR_PATH);
     if(!isDirExist(path)) {
         if(!createDir(path)) {
-           return std::filesystem::path();
+            LogError("[DesktopAssets::getLoacalFilesDirPath] Can't create dir for local data: '%s'",
+                path.c_str());
+            return std::filesystem::path();
         }
     }
     return path;
@@ -139,12 +143,10 @@ std::filesystem::path transformToPath(const std::filesystem::path& dirPath, cons
 bool DesktopAssets::init() {
     assetRootPath = getAssetDirPath();
     if(assetRootPath.empty()) {
-        LogError("[DesktopAssets::onInit] Can't get assets root dir");
         return false;
     }
     localRootPath = getLoacalFilesDirPath();
     if(localRootPath.empty()) {
-        LogError("[DesktopAssets::onInit] Can't get local root dir");
         return false;
     }
     ETNode<ETAssets>::connect(getEntityId());

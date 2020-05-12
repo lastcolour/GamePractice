@@ -15,7 +15,7 @@
 RenderModule::RenderModule() :
     SystemModule("Render") {}
 
-RenderModule::LogicsContainerPtrT RenderModule::getSystemLogics() const {
+RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             Render,
@@ -28,8 +28,7 @@ RenderModule::LogicsContainerPtrT RenderModule::getSystemLogics() const {
     return container;
 }
 
-RenderModule::ConfigsPtrT RenderModule::getSystemConfigs() const {
-    return nullptr;
+void RenderModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void RenderModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

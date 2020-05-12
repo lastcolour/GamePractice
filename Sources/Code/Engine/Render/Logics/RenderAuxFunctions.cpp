@@ -6,24 +6,6 @@
 
 namespace Render {
 
-void ReadColor(const JSONNode& node, ColorB& color) {
-    if(!node) {
-        return;
-    }
-    int val = 0;
-    node.read("r", val);
-    color.r = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-    val = 0;
-    node.read("g", val);
-    color.g = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-    val = 0;
-    node.read("b", val);
-    color.b = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-    val = 255;
-    node.read("a", val);
-    color.a = static_cast<uint8_t>(Math::Clamp(val, 0, 255));
-}
-
 Mat4 CalcModelMat(EntityId entityId, const Vec3& scale, const RenderGeometry& geom) {
     Transform tm;
     ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);

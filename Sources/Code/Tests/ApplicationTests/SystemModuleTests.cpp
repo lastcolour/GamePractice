@@ -36,11 +36,9 @@ public:
 
 protected:
 
-    ConfigsPtrT getSystemConfigs() const override {
-        return nullptr;
-    }
+    void reflectSystemConfigs(ReflectContext& ctx) const override {}
 
-    LogicsContainerPtrT getSystemLogics() const override {
+    LogicsContainerPtrT createSystemLogics() const override {
         std::unique_ptr<SystemLogicContainerBase> container(new SystemLogicContainer<
             TestSystemLogic>());
         return container;

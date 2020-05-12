@@ -9,6 +9,7 @@
 #include <string>
 
 class EntityLogicRegister;
+class ReflectContext;
 
 class SystemModule {
 public:
@@ -25,8 +26,8 @@ public:
 
 protected:
 
-    virtual ConfigsPtrT getSystemConfigs() const = 0;
-    virtual LogicsContainerPtrT getSystemLogics() const = 0;
+    virtual LogicsContainerPtrT createSystemLogics() const = 0;
+    virtual void reflectSystemConfigs(ReflectContext& ctx) const = 0;
     virtual void registerEntityLogics(EntityLogicRegister& logicRegister) const = 0;
 
 private:

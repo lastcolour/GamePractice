@@ -32,7 +32,7 @@ public:
 
 protected:
 
-    LogicsContainerPtrT getSystemLogics() const override {
+    LogicsContainerPtrT createSystemLogics() const override {
         LogicsContainerPtrT container(
             new SystemLogicContainer<
                 TestSystemLogic
@@ -41,12 +41,8 @@ protected:
         return container;
     }
 
-    ConfigsPtrT getSystemConfigs() const override {
-        return nullptr;
-    }
-
-    void registerEntityLogics(EntityLogicRegister& logicRegister) const {}
-
+    void reflectSystemConfigs(ReflectContext& ctx) const override {}
+    void registerEntityLogics(EntityLogicRegister& logicRegister) const override {}
 };
 
 class TestApplication : public Application {

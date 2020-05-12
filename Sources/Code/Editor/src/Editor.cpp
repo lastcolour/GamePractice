@@ -1,3 +1,4 @@
+#include "Editor.hpp"
 #include "EditorApp.hpp"
 
 EditorApp* EDITOR_APP = nullptr;

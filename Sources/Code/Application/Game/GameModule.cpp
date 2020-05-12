@@ -14,7 +14,7 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
 #include "Entity/EntityLogicRegister.hpp"
 
-GameModule::LogicsContainerPtrT GameModule::getSystemLogics() const {
+GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             GameTimer,
@@ -23,8 +23,7 @@ GameModule::LogicsContainerPtrT GameModule::getSystemLogics() const {
     return container;
 }
 
-GameModule::ConfigsPtrT GameModule::getSystemConfigs() const {
-    return nullptr;
+void GameModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void GameModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

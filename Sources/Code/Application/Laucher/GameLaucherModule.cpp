@@ -2,8 +2,9 @@
 #include "Laucher/GameLaucherConfig.hpp"
 #include "Laucher/GameConfig.hpp"
 #include "Laucher/GameLaucher.hpp"
+#include "Reflect/ReflectContext.hpp"
 
-GameLaucherModule::LogicsContainerPtrT GameLaucherModule::getSystemLogics() const {
+GameLaucherModule::LogicsContainerPtrT GameLaucherModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             GameConfig,
@@ -12,9 +13,10 @@ GameLaucherModule::LogicsContainerPtrT GameLaucherModule::getSystemLogics() cons
     return container;
 }
 
-GameLaucherModule::ConfigsPtrT GameLaucherModule::getSystemConfigs() const {
-    ConfigsPtrT configs(new SystemModuleConfig<GameLaucherConfig>());
-    return configs;
+void GameLaucherModule::reflectSystemConfigs(ReflectContext& ctx) const {
+    if(auto classInfo = ctx.classInfo<GameLaucherModule>("GameLaucherModule")) {
+        classInfo->addBaseClass<GameLaucherConfig>();
+    }
 }
 
 void GameLaucherModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
