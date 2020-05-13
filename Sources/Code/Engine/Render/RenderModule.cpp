@@ -32,9 +32,9 @@ void RenderModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void RenderModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<RenderSimpleLogic>("RenderSimple");
-    logicRegister.registerLogic<RenderTextLogic>("RenderText");
-    logicRegister.registerLogic<RenderImageLogic>("RenderImage");
-    logicRegister.registerLogic<RenderColoredTextureLogic>("RenderColoredTexture");
-    logicRegister.registerLogic<RenderLinearGradientRect>("RenderLinearGradientRect");
+    logicRegister.registerLogic<RenderSimpleLogic>();
+    logicRegister.registerLogic<RenderTextLogic>();
+    logicRegister.registerLogic<RenderImageLogic>();
+    logicRegister.registerLogic<RenderColoredTextureLogic>();
+    logicRegister.registerLogic<RenderLinearGradientRect>();
 }

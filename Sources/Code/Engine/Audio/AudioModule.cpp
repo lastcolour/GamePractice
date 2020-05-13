@@ -44,5 +44,5 @@ void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void AudioModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<SoundPlayLogic>("SoundPlayer");
+    logicRegister.registerLogic<SoundPlayLogic>();
 }

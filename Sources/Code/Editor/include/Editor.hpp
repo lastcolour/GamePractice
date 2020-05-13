@@ -7,6 +7,8 @@
   #define LIB_EXPORT
 #endif
 
+#include <cstdint>
+
 extern "C" {
 
 LIB_EXPORT int Initiliaze();
@@ -14,6 +16,10 @@ LIB_EXPORT int Initiliaze();
 LIB_EXPORT const char* GetReflectModel();
 
 LIB_EXPORT void DeInitialize();
+
+LIB_EXPORT int32_t LoadEntity(const char* entityName);
+
+LIB_EXPORT void UnloadEntity(int32_t entityId);
 
 } // extern "C"
 

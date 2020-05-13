@@ -11,6 +11,8 @@
 #include "Core/Buffer.hpp"
 #include "Platforms/PlatformModule.hpp"
 #include "EditorModule.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 EditorApp::EditorApp() :
     Application() {
@@ -49,4 +51,30 @@ void EditorApp::buildModules(ModuleListT& modules) {
     modules.emplace_back(new RenderModule);
     modules.emplace_back(new UIModule);
     modules.emplace_back(new GameModule);
+}
+
+EntityId EditorApp::loadEntity(const char* entityName) {
+    EntityId entId;
+    ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, entityName);
+    if(!entId.isValid()) {
+        return entId;
+    }
+    if(centralEntityId.isValid()) {
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, centralEntityId);
+    }
+    centralEntityId = entId;
+    return centralEntityId;
+}
+
+void EditorApp::unloadEntity(EntityId entityId) {
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::unloadEntity] Can't unload entity with invalid id");
+        return;
+    }
+    if(entityId != centralEntityId) {
+        LogError("[EditorApp::unloadEntity] Can't unload non-central entity");
+        return;
+    }
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, centralEntityId);
+    centralEntityId = InvalidEntityId;
 }

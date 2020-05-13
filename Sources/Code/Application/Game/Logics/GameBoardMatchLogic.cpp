@@ -9,7 +9,7 @@ GameBoardMatchLogic::~GameBoardMatchLogic() {
 }
 
 void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
-    ctx.classInfo<GameBoardMatchLogic>("GameBoardMatch");
+    ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher");
 }
 
 bool GameBoardMatchLogic::init() {

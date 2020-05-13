@@ -72,7 +72,7 @@ protected:
 protected:
 
     JSONNode loadModuleConfigs() override {
-        return JSONNode::ParseString("{ \"configVal\" : 1}");
+        return JSONNode::ParseString("{ \"TestSystemConfigs\": { \"configVal\" : 1 } }");
     }
 };
 

@@ -3,6 +3,7 @@
 
 #include "Application.hpp"
 #include "Core/Buffer.hpp"
+#include "Core/Core.hpp"
 
 class EditorApp : public Application {
 public:
@@ -13,6 +14,8 @@ public:
     bool initialize();
     void deinitiazlie();
     const char* getReflectModel();
+    EntityId loadEntity(const char* entityName);
+    void unloadEntity(EntityId entityId);
 
 protected:
 
@@ -21,6 +24,7 @@ protected:
 private:
 
     Buffer reflectModelBuffer;
+    EntityId centralEntityId;
 };
 
 #endif /* __EDITOR_APP__ */

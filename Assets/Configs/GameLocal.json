@@ -1,9 +1,0 @@
-{
-    "Options": {
-        "sound": true,
-        "vibration": true
-    },
-    "Game": {
-        "highScore": 0
-    }
-}

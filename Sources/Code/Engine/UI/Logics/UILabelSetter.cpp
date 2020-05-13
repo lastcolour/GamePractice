@@ -12,7 +12,7 @@ UILabelSetter::~UILabelSetter() {
 }
 
 void UILabelSetter::Reflect(ReflectContext& ctx) {
-    if(auto enumInfo = ctx.enumInfo<EValueType>("UILabelSetType")) {
+    if(auto enumInfo = ctx.enumInfo<EValueType>("UILabelSetter")) {
         enumInfo->addValues<EValueType>({
             {"Score", EValueType::GameScore},
             {"HightSocre", EValueType::GameHighScore},

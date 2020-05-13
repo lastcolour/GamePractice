@@ -6,6 +6,8 @@
 
 #include <vector>
 
+class EntityLogicRegister;
+
 struct ETEntityEvents {
     virtual ~ETEntityEvents() = default;
     virtual void ET_onTransformChanged(const Transform& newTm) = 0;
@@ -28,8 +30,8 @@ struct ETEntity {
 struct ETEntityManager {
     virtual ~ETEntityManager() = default;
     virtual EntityId ET_createEntity(const char* entityName) = 0;
-    virtual bool ET_extendEntity(EntityId entId, const char* entityName) = 0;
     virtual void ET_destroyEntity(EntityId entId) = 0;
+    virtual bool ET_registerLogics(EntityLogicRegister& logicRegister) = 0;
 };
 
 #endif /* __ENTITY_INTERFACES_HPP__ */

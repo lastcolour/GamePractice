@@ -1,11 +1,28 @@
 #include "EntityTests.hpp"
 #include "Entity/Entity.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Entity/EntityLogicRegister.hpp"
 
 namespace {
 
 const char* TEST_OBJECT_NAME = "Game/Simple.json";
 const char* EXTEND_OBJECT_NAME = "Game/GameBoardElem.json";
+
+class TestLogic : public EntityLogic {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        auto classInfo = ctx.classInfo<TestLogic>("TestLogic");
+    }
+
+public:
+
+    TestLogic() {}
+    virtual ~TestLogic() {}
+
+    bool init() override { return true; }
+    void deinit() { }
+};
 
 } // namespace
 
@@ -136,20 +153,6 @@ TEST_F(EntityTests, CheckChildInheritParentScale) {
     EXPECT_FLOAT_EQ(tm.scale.z, 0.5f);
 }
 
-TEST_F(EntityTests, CheckExtendEntity) {
-    EntityId entId = InvalidEntityId;
-    ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
-
-    EXPECT_FALSE(ET_IsExistNode<ETRenderImageLogic>(entId));
-
-    bool extRes = false;
-    ET_SendEventReturn(extRes, &ETEntityManager::ET_extendEntity, entId, EXTEND_OBJECT_NAME);
-
-    EXPECT_TRUE(extRes);
-
-    EXPECT_TRUE(ET_IsExistNode<ETRenderImageLogic>(entId));
-}
-
 TEST_F(EntityTests, CheckChildrenDepth) {
     EntityId objId1 = InvalidEntityId;
     ET_SendEventReturn(objId1, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
@@ -181,4 +184,12 @@ TEST_F(EntityTests, CheckChildrenDepth) {
         ET_SendEventReturn(childDepth, objId1, &ETEntity::ET_getMaxChildrenDepth);
         EXPECT_EQ(childDepth, 2);
     }
+}
+
+TEST_F(EntityTests, CheckRegisterEntityLogics) {
+    EntityLogicRegister logicRegister;
+    logicRegister.registerLogic<TestLogic>();
+    bool res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_registerLogics, logicRegister);
+    ASSERT_TRUE(res);
 }

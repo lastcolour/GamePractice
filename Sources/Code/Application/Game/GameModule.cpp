@@ -27,15 +27,15 @@ void GameModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void GameModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<GameBoardLogic>("GameBoard");
-    logicRegister.registerLogic<GameBoardElemLogic>("GameBoardElem");
-    logicRegister.registerLogic<GameEndTimerLogic>("GameEndTimer");
-    logicRegister.registerLogic<GameEndTimerUpdaterLogic>("GameEndTimerUpdater");
-    logicRegister.registerLogic<GameBoardElemSwitcherLogic>("GameBoardElemSwitcher");
-    logicRegister.registerLogic<GameBoardInteractionLogic>("GameBoardInteraction");
-    logicRegister.registerLogic<GameBoardElemDestroyLogic>("GameBoardElemDestroy");
-    logicRegister.registerLogic<GameScoreLogic>("GameScore");
-    logicRegister.registerLogic<GameScoreUpdaterLogic>("GameScoreUpdater");
-    logicRegister.registerLogic<GameBoardAppearAnimationLogic>("GameBoardAppearAnimation");
-    logicRegister.registerLogic<GameBoardMatchLogic>("GameBoardMatcher");
+    logicRegister.registerLogic<GameBoardLogic>();
+    logicRegister.registerLogic<GameBoardElemLogic>();
+    logicRegister.registerLogic<GameEndTimerLogic>();
+    logicRegister.registerLogic<GameEndTimerUpdaterLogic>();
+    logicRegister.registerLogic<GameBoardElemSwitcherLogic>();
+    logicRegister.registerLogic<GameBoardInteractionLogic>();
+    logicRegister.registerLogic<GameBoardElemDestroyLogic>();
+    logicRegister.registerLogic<GameScoreLogic>();
+    logicRegister.registerLogic<GameScoreUpdaterLogic>();
+    logicRegister.registerLogic<GameBoardAppearAnimationLogic>();
+    logicRegister.registerLogic<GameBoardMatchLogic>();
 }

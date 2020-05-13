@@ -23,7 +23,6 @@ bool UIResultInfoSelector::init() {
         extendEntityName = newHighScoreExtend.c_str();
     }
     bool extendRes = false;
-    ET_SendEventReturn(extendRes, &ETEntityManager::ET_extendEntity, getEntityId(), extendEntityName);
     return extendRes;
 }
 

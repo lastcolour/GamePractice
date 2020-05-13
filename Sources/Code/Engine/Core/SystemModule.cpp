@@ -9,7 +9,7 @@
 
 namespace {
 
-const char* MODULE_CONFIGS_DIR = "Entities/Modules";
+const char* MODULE_CONFIGS_DIR = "Modules";
 
 } // namespace
 

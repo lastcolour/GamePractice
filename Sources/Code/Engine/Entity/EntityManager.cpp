@@ -1,13 +1,16 @@
 #include "Entity/EntityManager.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/EntityLogic.hpp"
+#include "Entity/EntityLogicRegister.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+
 #include <algorithm>
+#include <cassert>
 
 namespace {
 
-const char* GAME_ENTITIES = "Game/Entities";
+const char* GAME_ENTITIES = "Entities";
 
 } // namespace
 
@@ -36,39 +39,6 @@ EntityId EntityManager::ET_createEntity(const char* entityName) {
     return InvalidEntityId;
 }
 
-bool EntityManager::ET_extendEntity(EntityId entityId, const char* extendEntityName) {
-    auto it = std::find_if(entities.begin(), entities.end(), [entityId](const EntityPtrT& entPtr){
-        return entPtr && entPtr->getEntityId() == entityId;
-    });
-    if(it == entities.end()) {
-        LogError("[EntityManager::ET_extendEntity] Can't find entity to extend with id: %d", entityId.getRawId());
-        return false;
-    }
-    Entity* baseEntity = it->get();
-    if(!extendEntityName || !extendEntityName[0]) {
-        LogError("[EntityManager::ET_extendEntity] Can't extend entity '%s' by invalid entity");
-        return false;
-    }
-    std::string baseEntityName = baseEntity->ET_getName();
-    if(baseEntityName == extendEntityName) {
-        LogError("[EntityManager::ET_extendEntity] Can't extend entity '%s' by itself");
-        return false;
-    }
-
-    auto node = loadEntityRootNode(extendEntityName);
-    if(!node) {
-        return false;
-    }
-    if(!setupEntityLogics(baseEntity, node, extendEntityName)) {
-        return false;
-    }
-    if(!setupEntityChildren(baseEntity, node, extendEntityName)) {
-        return false;
-    }
-    LogDebug("[EntityManager::ET_extendEntity] Extend entity: '%s' by '%s'", baseEntity->ET_getName(), extendEntityName);
-    return true;
-}
-
 void EntityManager::ET_destroyEntity(EntityId entityId) {
     EntityPtrT entToRemove;
     for(auto it = entities.begin(), end = entities.end(); it != end; ++it) {
@@ -86,24 +56,17 @@ void EntityManager::ET_destroyEntity(EntityId entityId) {
     }
 }
 
-void EntityManager::registerCreateLogic(const char* logicName, LogicCreateFunc createFunc) {
-    std::string reqLogicName = logicName;
-    auto it = logics.find(reqLogicName);
-    if(it != logics.end()) {
-        LogError("[EntityManager::registerCreateLogic] Register duplicate logic: '%s'", logicName);
-        return;
-    } else {
-        logics[reqLogicName] = createFunc;
+bool EntityManager::ET_registerLogics(EntityLogicRegister& logicRegister) {
+    for(auto classInfo : logicRegister.getLogicClasses()) {
+        assert(classInfo && "Invalid logic class info");
+        auto it = registeredLogics.find(classInfo->getName());
+        if(it != registeredLogics.end()) {
+            LogError("[EntityManager::ET_registerLogics] Logic already registered with such name: '%s'", classInfo->getName());
+            return false;
+        }
+        registeredLogics[classInfo->getName()] = classInfo;
     }
-}
-
-EntityManager::LogicPtrT EntityManager::createLogic(const char* logicName) const {
-    std::string reqLogicName = logicName;
-    auto it = logics.find(reqLogicName);
-    if(it != logics.end()) {
-        return it->second();
-    }
-    return nullptr;
+    return true;
 }
 
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
@@ -115,23 +78,28 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, cons
     for(const auto& logicNode : logicsNodes) {
         std::string logicType;
         logicNode.read("type", logicType);
-        auto logicPtr = createLogic(logicType.c_str());
-        if(!logicPtr) {
+        auto it = registeredLogics.find(logicType);
+        if(it == registeredLogics.end()) {
             LogWarning("[EntityManager::setupEntityLogics] Can't find logic type '%s' for entity '%s'", logicType, entityName);
             continue;
         }
+        auto& logicClassInfo = *(it->second);
         auto logicData = logicNode.object("data");
         if(!logicData) {
             LogWarning("[EntityManager::setupEntityLogics] Can't find logic data for '%s' for entity '%s'", logicType, entityName);
-            continue;
+            return false;
+        }
+        auto logicInstance = logicClassInfo.createInstance(logicData);
+        if(!logicInstance.get()) {
+            LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entityName);
+            return false;
+        }
+        auto logicPtr = logicInstance.acquire<EntityLogic>();
+        if(!logicPtr) {
+            LogWarning("[EntityManager::setupEntityLogics] Can't acquire logic of type '%s' for entity '%s'", logicType, entityName);
+            return false;
         }
         logicPtr->setEntity(entity);
-        /*
-        if(!logicPtr->serialize(logicData)) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't serialize logic '%s' for entity '%s'", logicType, entityName);
-            continue;
-        }
-        */
         if(!logicPtr->init()) {
             LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entityName);
             continue;

@@ -98,7 +98,7 @@ std::filesystem::path getAssetDirPath() {
         possibleAssetDir.append(possiblePath);
         std::error_code errCode;
         if(std::filesystem::exists(possibleAssetDir, errCode)) {
-            auto resPath = std::filesystem::weakly_canonical(possiblePath);
+            auto resPath = std::filesystem::weakly_canonical(possibleAssetDir);
             return resPath;
         }
     }
@@ -147,7 +147,8 @@ std::filesystem::path transformToPath(const std::filesystem::path& dirPath, cons
         return std::filesystem::path();
     }
     std::filesystem::path resPath = dirPath;
-    resPath.append(filePath);
+    resPath.append(internalFileName);
+    resPath = resPath.make_preferred();
     return resPath;
 }
 
@@ -286,9 +287,9 @@ Buffer DesktopAssets::loadFileFromDir(const std::filesystem::path& dirPath, cons
         LogError("[DesktopAssets::loadFileFromDir] Can't opend dir as file: '%s'", filePath.string());
         return Buffer();
     }
-    std::ifstream fin(filePath.c_str(), std::ios::binary | std::ios::ate);
+    std::ifstream fin(filePath, std::ios::binary | std::ios::ate);
     if(!fin.good() || !fin.is_open()) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'. Error: %s", filePath.string(), GetSafeStrErrno());
+        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s' (Error: %s)", filePath.string(), GetSafeStrErrno());
         return Buffer();
     }
     std::streamoff fileSize = fin.tellg();

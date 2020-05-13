@@ -35,17 +35,17 @@ void UIModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
 void UIModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<UIBox>("UIBox");
-    logicRegister.registerLogic<UIList>("UIList");
-    logicRegister.registerLogic<UIButton>("UIButton");
-    logicRegister.registerLogic<UILabel>("UILabel");
-    logicRegister.registerLogic<UIBaseBox>("UIBaseBox");
-    logicRegister.registerLogic<UIImage>("UIImage");
-    logicRegister.registerLogic<UIButtonPressAnimation>("UIButtonPressAnimation");
-    logicRegister.registerLogic<UILabelSetter>("UILabelSetter");
-    logicRegister.registerLogic<UIResultInfoSelector>("UIResultInfoSelector");
-    logicRegister.registerLogic<UISwitchControl>("UISwitchControl");
-    logicRegister.registerLogic<UIAppearOnTop>("UIAppearOnTop");
-    logicRegister.registerLogic<UIAppearFromSide>("UIAppearFromSide");
-    logicRegister.registerLogic<UIBackground>("UIBackground");
+    logicRegister.registerLogic<UIBox>();
+    logicRegister.registerLogic<UIList>();
+    logicRegister.registerLogic<UIButton>();
+    logicRegister.registerLogic<UILabel>();
+    logicRegister.registerLogic<UIBaseBox>();
+    logicRegister.registerLogic<UIImage>();
+    logicRegister.registerLogic<UIButtonPressAnimation>();
+    logicRegister.registerLogic<UILabelSetter>();
+    logicRegister.registerLogic<UIResultInfoSelector>();
+    logicRegister.registerLogic<UISwitchControl>();
+    logicRegister.registerLogic<UIAppearOnTop>();
+    logicRegister.registerLogic<UIAppearFromSide>();
+    logicRegister.registerLogic<UIBackground>();
 }

@@ -35,14 +35,21 @@ class EditorAppTests(unittest.TestCase):
             print("Can't load library: {0}".format(cls.EDITOR_LIB_PATH))
             raise
 
+    def setUp(self):
+        retCode = EditorAppTests.EDITOR_LIB.Initiliaze()
+        self.assertEqual(retCode, 0)
+
+    def tearDown(self):
+        EditorAppTests.EDITOR_LIB.DeInitialize()
+
     def testExportMethods(self):
         self.assertIsNotNone(EditorAppTests.EDITOR_LIB.Initiliaze)
         self.assertIsNotNone(EditorAppTests.EDITOR_LIB.GetReflectModel)
         self.assertIsNotNone(EditorAppTests.EDITOR_LIB.DeInitialize)
+        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.LoadEntity)
+        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.UnloadEntity)
 
     def testGetReflectModel(self):
-        retCode = EditorAppTests.EDITOR_LIB.Initiliaze()
-        self.assertEqual(retCode, 0)
         GetReflectModelFunc = EditorAppTests.EDITOR_LIB.GetReflectModel
         GetReflectModelFunc.restype = ctypes.c_char_p
 
@@ -52,7 +59,18 @@ class EditorAppTests(unittest.TestCase):
         self.assertGreater(len(model), 0)
 
         self.assertIsNotNone(reflectModel)
-        EditorAppTests.EDITOR_LIB.DeInitialize()
+
+    def testLoadUnloadEntity(self):
+        LoadEntityFunc = EditorAppTests.EDITOR_LIB.LoadEntity
+        LoadEntityFunc.argstype = [ctypes.c_char_p]
+        LoadEntityFunc.restye = ctypes.c_int32
+        entityName = ctypes.c_char_p("Game/Simple.json".encode('ascii'))
+        entityId = LoadEntityFunc(entityName)
+        self.assertNotEqual(entityId, 0)
+
+        UnloadEntityFunc = EditorAppTests.EDITOR_LIB.UnloadEntity
+        UnloadEntityFunc.argstype = [ctypes.c_int32]
+        UnloadEntityFunc(entityId)
 
 if __name__ == "__main__":
     unittest.main()

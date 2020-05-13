@@ -13,16 +13,22 @@ public:
     ~EntityLogicRegister();
 
     template<typename LogicT>
-    void registerLogic(const char* logicName) {
+    void registerLogic() {
         static_assert(std::is_base_of<EntityLogic, LogicT>::value,
             "Can't register entity logic if it isn't derived from 'EntityLogic'");
         ReflectContext ctx;
-        if(!ctx.reflect<LogicT>()) {
-
-        } else {
-
-        }
+        ctx.reflect<LogicT>();
     }
+
+    std::vector<ClassInfo*>& getLogicClasses();
+
+private:
+
+    void registerFromReflectCtx(ReflectContext& ctx);
+
+private:
+
+    std::vector<ClassInfo*> logics;
 };
 
 #endif /* __ENTITY_LOGIC_REGISTER_HPP__ */

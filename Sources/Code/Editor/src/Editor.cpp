@@ -1,5 +1,6 @@
 #include "Editor.hpp"
 #include "EditorApp.hpp"
+#include "Core/Core.hpp"
 
 EditorApp* EDITOR_APP = nullptr;
 
@@ -32,4 +33,21 @@ void DeInitialize() {
     }
     delete EDITOR_APP;
     EDITOR_APP = nullptr;
+}
+
+int32_t LoadEntity(const char* entityName) {
+    if(!EDITOR_APP) {
+        return InvalidEntityId.getRawId();
+    }
+    auto entityId = EDITOR_APP->loadEntity(entityName);
+    return entityId.getRawId();
+}
+
+void UnloadEntity(int32_t entityId) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    EDITOR_APP->unloadEntity(entId);
 }

@@ -92,7 +92,7 @@ std::string_view Buffer::getString() const {
 
 const char* Buffer::getCString() const {
     if(buffImpl == nullptr || buffImpl->size == 0u) {
-        return nullptr;
+        return "";
     }
     buffImpl->data[buffImpl->size - 1] = 0;
     return reinterpret_cast<const char*>(buffImpl->data.get());

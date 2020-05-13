@@ -299,7 +299,7 @@ TEST_F(UIViewStackTests, CheckFinishPushAfterResize) {
     ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_1);
     ET_SendEvent(&ETUIViewStack::ET_pushView, TEST_VIEW_2);
 
-    EXPECT_EQ(object->eventsHistory.size(), 3);
+    ASSERT_EQ(object->eventsHistory.size(), 3);
     EXPECT_EQ(object->eventsHistory[0].eventType, StackEventType::StartPush);
     EXPECT_EQ(object->eventsHistory[1].eventType, StackEventType::FinishPush);
     EXPECT_EQ(object->eventsHistory[2].eventType, StackEventType::StartPush);
