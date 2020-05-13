@@ -109,6 +109,11 @@ struct ETModuleConfigManager {
     virtual void* ET_getConfig(TypeId configId) = 0;
 };
 
+struct ETAssetsSetup {
+    virtual ~ETAssetsSetup() = default;
+    virtual void ET_getAssetsSearchPath(std::string& searchPath) = 0;
+};
+
 template<typename ... ArgsT>
 void LogDebug(const char* msg, const ArgsT& ... args) {
     ET_SendEvent(&ETLogger::ET_logMessage, LogLevel::Debug, StringFormat(msg, args...));

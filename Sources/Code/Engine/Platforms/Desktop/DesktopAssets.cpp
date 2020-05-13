@@ -43,14 +43,14 @@ bool isDirExist(const std::filesystem::path& path) {
     std::error_code errCode;
     if(!std::filesystem::exists(path, errCode)) {
         if(errCode) {
-            LogError("Can't query dir status: %s (Error: %s)", path.c_str(), errCode.message());
+            LogError("Can't query dir status: %s (Error: %s)", path.string(), errCode.message());
         }
         return false;
     }
     errCode.clear();
     if(!std::filesystem::is_directory(path, errCode)) {
         if(errCode) {
-            LogError("Can't query file info: %s (Error: %s)", path.c_str(), errCode.message());
+            LogError("Can't query file info: %s (Error: %s)", path.string(), errCode.message());
         }
         return false;
     }
@@ -61,9 +61,9 @@ bool createDir(const std::filesystem::path& path) {
     std::error_code errCode;
     if(!std::filesystem::create_directory(path, errCode)) {
         if(errCode) {
-            LogError("Can't create directory: %s (Error: %s)", path.c_str(), errCode.message());
+            LogError("Can't create directory: %s (Error: %s)", path.string(), errCode.message());
         } else {
-            LogError("Can't create directory: %s (Error: Unknown)", path.c_str());
+            LogError("Can't create directory: %s (Error: Unknown)", path.string());
         }
         return false;
     }
@@ -71,9 +71,21 @@ bool createDir(const std::filesystem::path& path) {
 }
 
 std::filesystem::path getAssetDirPath() {
-    auto binDirPath = getBinDir();
-    if(binDirPath.empty()) {
-        return std::filesystem::path();
+    std::filesystem::path searchPath;
+    if(!ET_IsExistNode<ETAssetsSetup>()) {
+        searchPath = getBinDir();
+        if(searchPath.empty()) {
+            LogError("[DesktopAssets::getAssetDirPath] Can't get current binary directory path");
+            return std::filesystem::path();
+        }
+    } else {
+        std::string strSearchPath;
+        ET_SendEvent(&ETAssetsSetup::ET_getAssetsSearchPath, strSearchPath);
+        searchPath = strSearchPath;
+        if(searchPath.empty()) {
+            LogError("[DesktopAssets::getAssetDirPath] Empty assets dir search path");
+            return std::filesystem::path();
+        }
     }
     std::vector<std::string> possiblePaths = {
         "Assets",
@@ -82,15 +94,16 @@ std::filesystem::path getAssetDirPath() {
         "../../../../Assets"
     };
     for(auto& possiblePath : possiblePaths) {
-        auto possibleAssetDir = binDirPath;
+        auto possibleAssetDir = searchPath;
         possibleAssetDir.append(possiblePath);
         std::error_code errCode;
         if(std::filesystem::exists(possibleAssetDir, errCode)) {
-            return possibleAssetDir;
+            auto resPath = std::filesystem::weakly_canonical(possiblePath);
+            return resPath;
         }
     }
     LogError("[DesktopAssets::getAssetDirPath] Can't find assets root dir from: '%s'",
-        binDirPath.c_str());
+        searchPath.string());
     return std::filesystem::path();
 }
 
@@ -113,7 +126,7 @@ std::wstring getLoacalFilesDirPath() {
     if(!isDirExist(path)) {
         if(!createDir(path)) {
             LogError("[DesktopAssets::getLoacalFilesDirPath] Can't create dir for local data: '%s'",
-                path.c_str());
+                path.string());
             return std::filesystem::path();
         }
     }
@@ -226,16 +239,16 @@ bool DesktopAssets::ET_saveLocalFile(const char* fileName, const Buffer& buff) {
         return false;
     }
     if(isDirExist(filePath)) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't write data to a dir object: '%s'", filePath.c_str());
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't write data to a dir object: '%s'", filePath.string());
         return false;
     }
     std::ofstream fout(filePath, std::ios::out | std::ios::binary);
     if(!fout.good() || !fout.is_open()) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't create/open a file: '%s'; Error: %s", filePath.c_str(), GetSafeStrErrno());
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't create/open a file: '%s' (Error: %s)", filePath.string(), GetSafeStrErrno());
         return false;
     }
     if(!fout.write(static_cast<const char*>(buff.getReadData()), buff.getSize())) {
-        LogError("[DesktopAssets::ET_saveLocalFile] Can't write to the file: '%s'; Error: %s", filePath.c_str(), GetSafeStrErrno());
+        LogError("[DesktopAssets::ET_saveLocalFile] Can't write to the file: '%s' (Error: %s)", filePath.string(), GetSafeStrErrno());
         return false;
     }
     return true;
@@ -248,15 +261,15 @@ bool DesktopAssets::ET_removeLocalFile(const char* fileName) {
         return false;
     }
     if(isDirExist(filePath)) {
-        LogError("[DesktopAssets::ET_removeLocalFile] Can't remove a dir object: '%s'", filePath.c_str());
+        LogError("[DesktopAssets::ET_removeLocalFile] Can't remove a dir object: '%s'", filePath.string());
         return false;
     }
     std::error_code errCode;
     if(!std::filesystem::remove(filePath, errCode)) {
         if(errCode) {
-            LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s'; (Error: %s)", filePath.c_str(), errCode.message());
+            LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s' (Error: %s)", filePath.string(), errCode.message());
         } else {
-            LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s'; (Error: Unknown)", filePath.c_str());
+            LogError("[DesktopAssets::ET_removeLocalFile] Unable to remove file '%s' (Error: Unknown)", filePath.string());
         }
         return false;
     }
@@ -270,27 +283,27 @@ Buffer DesktopAssets::loadFileFromDir(const std::filesystem::path& dirPath, cons
         return Buffer();
     }
     if(isDirExist(filePath)) {
-        LogError("[DesktopAssets::loadFileFromDirImpl] Can't opend dir as file: '%s'", filePath.c_str());
+        LogError("[DesktopAssets::loadFileFromDir] Can't opend dir as file: '%s'", filePath.string());
         return Buffer();
     }
     std::ifstream fin(filePath.c_str(), std::ios::binary | std::ios::ate);
     if(!fin.good() || !fin.is_open()) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'. Error: %s", filePath.c_str(), GetSafeStrErrno());
+        LogError("[DesktopAssets::loadFileFromDir] Can't load file: '%s'. Error: %s", filePath.string(), GetSafeStrErrno());
         return Buffer();
     }
     std::streamoff fileSize = fin.tellg();
     if(fileSize == -1) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't get file size: '%s'", filePath.c_str());
+        LogError("[DesktopAssets::loadFileFromDir] Can't get file size: '%s'", filePath.string());
         return Buffer();
     }
     fin.seekg(0u, std::ios::beg);
     Buffer buffer(fileSize);
     if(!buffer) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't allocate buffer of size %d to load file: '%s'", fileSize, filePath.c_str());
+        LogError("[DesktopAssets::loadFileFromDir] Can't allocate buffer of size %d to load file: '%s'", fileSize, filePath.string());
         return Buffer();
     }
     if(!fin.read(static_cast<char*>(buffer.getWriteData()), fileSize)) {
-        LogError("[DesktopAssets::loadFileFromDir] Can't read file: '%s'", filePath.c_str());
+        LogError("[DesktopAssets::loadFileFromDir] Can't read file: '%s'", filePath.string());
         return Buffer();
     }
     return buffer;

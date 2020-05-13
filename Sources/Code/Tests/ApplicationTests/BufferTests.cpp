@@ -85,7 +85,7 @@ TEST_F(BufferTests, CheckConstructWithData) {
     std::string writeStr = "Test";
     Buffer buff(static_cast<const void*>(writeStr.c_str()), writeStr.length());
     ASSERT_EQ(buff.getSize(), writeStr.length());
-    std::string readStr = buff.getString();
+    std::string readStr = buff.acquireString();
     ASSERT_EQ(writeStr, readStr);
 }
 
@@ -110,7 +110,19 @@ TEST_F(BufferTests, CheckCopyBuffer) {
     memcpy(&cVeryLognStr, buff3.getWriteData(), sizeof(cVeryLognStr));
 
     EXPECT_EQ(sizeof(cVeryLognStr), buff3.getSize());
-    std::string veryLongStr = buff3.getString();
+    std::string veryLongStr = buff3.acquireString();
 
     EXPECT_STREQ(veryLongStr.c_str(), cVeryLognStr);
+}
+
+TEST_F(BufferTests, CheckStringAcquire) {
+    std::string str = "Test";
+    Buffer buff(static_cast<const void*>(str.c_str()), str.length());
+
+    std::string resStr = buff.acquireString();
+    ASSERT_STREQ(str.c_str(), resStr.c_str());
+
+    ASSERT_FALSE(buff);
+    ASSERT_EQ(buff.getSize(), 0u);
+    ASSERT_STREQ(buff.getCString(), "");
 }

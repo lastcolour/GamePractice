@@ -1,5 +1,5 @@
 {
-    "AudioConfigs":{
+    "AudioConfig":{
         "max_sound_sources":16
     }
 }

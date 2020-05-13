@@ -43,7 +43,14 @@ class EditorAppTests(unittest.TestCase):
     def testGetReflectModel(self):
         retCode = EditorAppTests.EDITOR_LIB.Initiliaze()
         self.assertEqual(retCode, 0)
-        reflectModel = EditorAppTests.EDITOR_LIB.GetReflectModel()
+        GetReflectModelFunc = EditorAppTests.EDITOR_LIB.GetReflectModel
+        GetReflectModelFunc.restype = ctypes.c_char_p
+
+        reflectModel = GetReflectModelFunc()
+        model = json.loads(reflectModel)
+
+        self.assertGreater(len(model), 0)
+
         self.assertIsNotNone(reflectModel)
         EditorAppTests.EDITOR_LIB.DeInitialize()
 

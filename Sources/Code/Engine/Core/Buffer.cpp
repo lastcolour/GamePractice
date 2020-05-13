@@ -21,6 +21,11 @@ struct BufferImpl {
     BufferImpl(BufferImpl&& buff) : size(buff.size), data(std::move(buff.data)) {
         buff.size = 0u;
     }
+
+    void reset() {
+        size = 0u;
+        data.reset();
+    }
 };
 
 Buffer::Buffer() :
@@ -63,13 +68,34 @@ Buffer::operator bool() const {
     return buffImpl != nullptr && buffImpl->size > 0u;
 }
 
-std::string Buffer::getString() const {
+std::string Buffer::acquireString() {
     if(buffImpl == nullptr || buffImpl->size == 0u) {
         return "";
     }
+    buffImpl->data[buffImpl->size - 1] = 0;
     auto cStr = reinterpret_cast<const char*>(buffImpl->data.get());
     auto cStrLength = strlen(cStr);
-    return std::string(cStr, cStrLength);
+    std::string resStr(cStr, cStrLength);
+    buffImpl->reset();
+    return resStr;
+}
+
+std::string_view Buffer::getString() const {
+    if(buffImpl == nullptr || buffImpl->size == 0u) {
+        return "";
+    }
+    buffImpl->data[buffImpl->size - 1] = 0;
+    auto cStr = reinterpret_cast<const char*>(buffImpl->data.get());
+    auto cStrLength = strlen(cStr);
+    return std::string_view(cStr, cStrLength);
+}
+
+const char* Buffer::getCString() const {
+    if(buffImpl == nullptr || buffImpl->size == 0u) {
+        return nullptr;
+    }
+    buffImpl->data[buffImpl->size - 1] = 0;
+    return reinterpret_cast<const char*>(buffImpl->data.get());
 }
 
 size_t Buffer::getSize() const {

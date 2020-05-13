@@ -516,8 +516,7 @@ JSONNode::operator bool() const {
 }
 
 JSONNode JSONNode::ParseBuffer(const Buffer& buff) {
-    auto str = buff.getString();
-    return ParseString(str.c_str());
+    return ParseString(buff.getCString());
 }
 
 JSONNode JSONNode::ParseString(const char* str) {

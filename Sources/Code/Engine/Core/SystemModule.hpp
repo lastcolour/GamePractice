@@ -28,6 +28,7 @@ protected:
 
 protected:
 
+    virtual bool serializeConfigs();
     virtual JSONNode loadModuleConfigs();
 
 private:

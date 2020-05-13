@@ -41,27 +41,45 @@ JSONNode SystemModule::loadModuleConfigs() {
     return node;
 }
 
+bool SystemModule::serializeConfigs() {
+    ReflectContext ctx;
+    reflectSystemConfigs(ctx);
+    auto configClass = ctx.getRegisteredClassInfo();
+    if(!configClass) {
+        return true;
+    }
+    auto node = loadModuleConfigs();
+    if(!node) {
+        LogError("[SystemModule::serializeConfigs] Can't init module without configs: %s", name);
+        return false;
+    }
+
+    if(!node.hasKey(configClass->getName())) {
+        LogError("[SystemModule::serializeConfigs] Can't get required field from config file: '%s'", configClass->getName());
+        return false;
+    }
+    auto classNode = node.object(configClass->getName());
+    if(!classNode) {
+        LogError("[SystemModule::serializeConfigs] Config field has non-object type: '%s'", configClass->getName());
+        return false;
+    }
+    auto configInstance = configClass->createInstance(classNode);
+    if(!configInstance.get()) {
+        LogError("[SystemModule::serializeConfigs] Can't create instance of module configs '%s' for module: '%s'",
+            configClass->getName(), name);
+        return false;
+    }
+    ET_SendEvent(&ETModuleConfigManager::ET_registerConfig, configInstance);
+    return true;
+}
+
 bool SystemModule::init() {
     assert(!isInitialized && "Dobule module initializetion");
 
     auto initStartT = std::chrono::high_resolution_clock::now();
 
-    ReflectContext ctx;
-    reflectSystemConfigs(ctx);
-    auto configClass = ctx.getRegisteredClassInfo();
-    if(configClass) {
-        auto node = loadModuleConfigs();
-        if(!node) {
-            LogError("[SystemModule::init] Can't init module without configs: %s", name);
-            return false;
-        }
-        auto configInstance = configClass->createInstance(node);
-        if(!configInstance.get()) {
-            LogError("[SystemModule::init] Can't create instance of module configs '%s' for module: '%s'",
-                configClass->getName(), name);
-            return false;
-        }
-        ET_SendEvent(&ETModuleConfigManager::ET_registerConfig, configInstance);
+    if(!serializeConfigs()) {
+        return false;
     }
 
     if(logicsContainer) {

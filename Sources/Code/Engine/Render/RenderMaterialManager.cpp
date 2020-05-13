@@ -58,7 +58,7 @@ int RenderMaterialManager::createProgram(const std::string& vertFile, const std:
         LogError("[RenderMaterialManager::createProgram] Can't load vert shader file: %s", vertFile.c_str());
         return 0;
     }
-    std::string vertSrc = buffer.getString();
+    std::string vertSrc = buffer.acquireString();
     if(vertSrc.empty()) {
         LogError("[RenderMaterialManager::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
         return 0;
@@ -68,7 +68,7 @@ int RenderMaterialManager::createProgram(const std::string& vertFile, const std:
         LogError("[RenderMaterialManager::createProgram] Can't load frag shader file: %s", fragFile.c_str());
         return 0;
     }
-    std::string fragSrc = buffer.getString();
+    std::string fragSrc = buffer.acquireString();
     if(fragSrc.empty()) {
         LogError("[RenderMaterialManager::createProgram] Loaded empty fragFile shader source from %s", vertFile.c_str());
         return 0;

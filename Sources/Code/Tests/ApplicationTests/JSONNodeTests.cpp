@@ -217,7 +217,7 @@ TEST_F(JSONNodeTests, CheckCreateReadSame) {
     }
     int read_val = 0;
     {
-        std::string str = buff.getString();
+        std::string str = buff.acquireString();
         auto node = JSONNode::ParseString(str.c_str());
         ASSERT_TRUE(node);
         node.read("val", read_val);

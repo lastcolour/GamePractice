@@ -10,6 +10,7 @@
 #include "Core/JSONNode.hpp"
 #include "Core/Buffer.hpp"
 #include "Platforms/PlatformModule.hpp"
+#include "EditorModule.hpp"
 
 EditorApp::EditorApp() :
     Application() {
@@ -36,11 +37,12 @@ const char* EditorApp::getReflectModel() {
         auto buffer = node.flushToBuffer();
         reflectModelBuffer = std::move(buffer);
     }
-    return reflectModelBuffer.getString().c_str();
+    return reflectModelBuffer.getCString();
 }
 
 void EditorApp::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
+    modules.emplace_back(new EditorModule);
     modules.emplace_back(new PlatformModule);
     modules.emplace_back(new EntityModule);
     modules.emplace_back(new AudioModule);

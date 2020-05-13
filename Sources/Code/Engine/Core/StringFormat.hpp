@@ -48,7 +48,7 @@ std::string StringFormat(const std::string& format, const ArgsT& ... args) {
             ++i;
         }
     }
-    return buff.getString();
+    return buff.acquireString();
 }
 
 #endif /* __STRING_FORAMT_HPP__ */

@@ -21,7 +21,9 @@ public:
     Buffer& operator=(const Buffer& buff);
     explicit operator bool() const;
 
-    std::string getString() const;
+    std::string acquireString();
+    std::string_view getString() const;
+    const char* getCString() const;
 
     size_t getSize() const;
     void* getWriteData();
