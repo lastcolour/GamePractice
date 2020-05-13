@@ -1,5 +1,4 @@
 #include "Platforms/Desktop/DesktopModule.hpp"
-#include "Platforms/Desktop/DesktopLogger.hpp"
 #include "Platforms/Desktop/DesktopAssets.hpp"
 #include "Platforms/Desktop/GLFWSurface.hpp"
 
@@ -9,7 +8,6 @@ DesktopModule::DesktopModule() :
 DesktopModule::LogicsContainerPtrT DesktopModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
-            DesktopLogger,
             DesktopAssets,
             GLFWSurface>()
         );

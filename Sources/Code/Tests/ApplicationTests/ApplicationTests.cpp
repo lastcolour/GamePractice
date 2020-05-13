@@ -1,10 +1,10 @@
 #include "ApplicationTests.hpp"
 #include "TestUtils/FutureTimePoint.hpp"
 
-#include <Platforms/Desktop/DesktopPlatform.hpp>
 #include <Application.hpp>
 #include <ETApplicationInterfaces.hpp>
 #include <Core/SystemLogic.hpp>
+#include <Core/SystemModule.hpp>
 
 #include <thread>
 #include <atomic>
@@ -48,7 +48,7 @@ protected:
 class TestApplication : public Application {
 public:
 
-    TestApplication() : Application(nullptr) {}
+    TestApplication() : Application() {}
     virtual ~TestApplication() = default;
 
 protected:
@@ -67,7 +67,7 @@ TEST_F(ApplicationTests, CheckRunWithInvalidModule) {
 }
 
 TEST_F(ApplicationTests, CheckNormalFlow) {
-    Application app(std::unique_ptr<Platform>(new DesktopPlatform(0, nullptr)));
+    Application app;
     ASSERT_TRUE(GetETSystem());
 
     std::atomic<bool> isAppFinished(false);

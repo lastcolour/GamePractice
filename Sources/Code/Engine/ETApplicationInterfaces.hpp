@@ -5,8 +5,8 @@
 #include "Core/ETPrimitives.hpp"
 #include "Math/Vector.hpp"
 
+class ClassInstance;
 class JSONNode;
-class ModuleConfigBase;
 
 enum GLContextType {
     None = 0,
@@ -105,8 +105,7 @@ struct ETAssetsCacheManager {
 
 struct ETModuleConfigManager {
     virtual ~ETModuleConfigManager() = default;
-    virtual void ET_registerConfig(ModuleConfigBase* config, TypeId configId) = 0;
-    virtual void ET_removeConfig(TypeId configId) = 0;
+    virtual void ET_registerConfig(ClassInstance& configInstance) = 0;
     virtual void* ET_getConfig(TypeId configId) = 0;
 };
 

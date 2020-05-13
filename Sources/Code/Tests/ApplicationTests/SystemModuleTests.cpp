@@ -2,6 +2,9 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/SystemModule.hpp"
 #include "Core/Utils.hpp"
+#include "Reflect/ReflectContext.hpp"
+#include "Core/JSONNode.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <memory>
 #include <tuple>
@@ -13,6 +16,7 @@ class TestSystemLogic : public SystemLogic {
 public:
 
     static bool INIT_RES;
+    static bool DEINIT_CALLED;
 
 public:
 
@@ -23,10 +27,27 @@ public:
     bool init() override {
         return INIT_RES;
     }
-    void deinit() override {}
+    void deinit() override {
+        DEINIT_CALLED = true;
+    }
+};
+
+class TestSystemConfigs {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        if(auto classInfo = ctx.classInfo<TestSystemConfigs>("TestSystemConfigs")) {
+            classInfo->addField("configVal", &TestSystemConfigs::configVal);
+        }
+    }
+
+public:
+
+    int configVal;
 };
 
 bool TestSystemLogic::INIT_RES = true;
+bool TestSystemLogic::DEINIT_CALLED = false;
 
 class TestSystemModule : public SystemModule {
 public:
@@ -36,7 +57,9 @@ public:
 
 protected:
 
-    void reflectSystemConfigs(ReflectContext& ctx) const override {}
+    void reflectSystemConfigs(ReflectContext& ctx) const override {
+        ctx.reflect<TestSystemConfigs>();
+    }
 
     LogicsContainerPtrT createSystemLogics() const override {
         std::unique_ptr<SystemLogicContainerBase> container(new SystemLogicContainer<
@@ -45,12 +68,19 @@ protected:
     }
 
     void registerEntityLogics(EntityLogicRegister& logicRegister) const {}
+
+protected:
+
+    JSONNode loadModuleConfigs() override {
+        return JSONNode::ParseString("{ \"configVal\" : 1}");
+    }
 };
 
 } // namespace
 
 void SystemModuleTests::SetUp() {
     TestSystemLogic::INIT_RES = true;
+    TestSystemLogic::DEINIT_CALLED = false;
 }
 
 void SystemModuleTests::TearDown() {
@@ -59,10 +89,22 @@ void SystemModuleTests::TearDown() {
 TEST_F(SystemModuleTests, TestSystemModuleInitSuccess) {
     TestSystemModule module;
     ASSERT_TRUE(module.init());
+
+    auto config = ET_getConfig<TestSystemConfigs>();
+    ASSERT_TRUE(config);
+    ASSERT_EQ(config->configVal, 1);
 }
 
 TEST_F(SystemModuleTests, TestSystemModuleInitFail) {
     TestSystemLogic::INIT_RES = false;
-    TestSystemModule module;
-    ASSERT_FALSE(module.init());
+    std::unique_ptr<TestSystemModule> module(new TestSystemModule);
+    ASSERT_FALSE(module->init());
+    module.reset();
+    ASSERT_TRUE(TestSystemLogic::DEINIT_CALLED);
+}
+
+TEST_F(SystemModuleTests, CheckDeinitNotCalled) {
+    std::unique_ptr<TestSystemModule> module(new TestSystemModule);
+    module.reset();
+    ASSERT_FALSE(TestSystemLogic::DEINIT_CALLED);
 }

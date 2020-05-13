@@ -14,9 +14,7 @@ GameLaucherModule::LogicsContainerPtrT GameLaucherModule::createSystemLogics() c
 }
 
 void GameLaucherModule::reflectSystemConfigs(ReflectContext& ctx) const {
-    if(auto classInfo = ctx.classInfo<GameLaucherModule>("GameLaucherModule")) {
-        classInfo->addBaseClass<GameLaucherConfig>();
-    }
+    ctx.reflect<GameLaucherConfig>();
 }
 
 void GameLaucherModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

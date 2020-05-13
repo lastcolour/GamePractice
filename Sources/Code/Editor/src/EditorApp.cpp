@@ -1,14 +1,18 @@
 #include "EditorApp.hpp"
-#include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
 #include "Game/GameModule.hpp"
 #include "UI/UIModule.hpp"
 #include "CoreModule.hpp"
 #include "Entity/EntityModule.hpp"
+#include "Reflect/ETReflectInterfaces.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Core/JSONNode.hpp"
+#include "Core/Buffer.hpp"
+#include "Platforms/PlatformModule.hpp"
 
 EditorApp::EditorApp() :
-    Application(Application::PlatformPtrT(new DesktopPlatform(0, nullptr))) {
+    Application() {
 }
 
 EditorApp::~EditorApp() {
@@ -19,19 +23,27 @@ bool EditorApp::initialize() {
 }
 
 void EditorApp::deinitiazlie() {
+    deinit();
 }
 
-const char* EditorApp::getReflectModel() const {
-    return nullptr;
+const char* EditorApp::getReflectModel() {
+    if(!reflectModelBuffer) {
+        JSONNode node;
+        ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+        if(!node) {
+            return nullptr;
+        }
+        auto buffer = node.flushToBuffer();
+        reflectModelBuffer = std::move(buffer);
+    }
+    return reflectModelBuffer.getString().c_str();
 }
 
 void EditorApp::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
-    if(auto platform = getPlatform()) {
-        modules.push_back(platform->createPlatformModule());
-    }
-    modules.emplace_back(new AudioModule);
+    modules.emplace_back(new PlatformModule);
     modules.emplace_back(new EntityModule);
+    modules.emplace_back(new AudioModule);
     modules.emplace_back(new RenderModule);
     modules.emplace_back(new UIModule);
     modules.emplace_back(new GameModule);

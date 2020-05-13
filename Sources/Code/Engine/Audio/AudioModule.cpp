@@ -40,9 +40,7 @@ AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
 }
 
 void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
-    if(auto classInfo = ctx.classInfo<AudioModule>("AudioModule")) {
-        classInfo->addBaseClass<AudioConfig>();
-    }
+    ctx.reflect<AudioConfig>();
 }
 
 void AudioModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {

@@ -2,6 +2,7 @@
 
 #include <Core/TypeId.hpp>
 #include <Core/StringFormat.hpp>
+#include <Core/Utils.hpp>
 
 TEST_F(MiscTests, CheckSameTypeID) {
     auto intTypeId1 = GetTypeId<int>();
@@ -32,4 +33,30 @@ TEST_F(MiscTests, CheckVoidFormats) {
     const std::string testStr = "test_str";
     std::string resStr = StringFormat(testStr);
     ASSERT_EQ(resStr, testStr);
+}
+
+TEST_F(MiscTests, CheckApplyTuple) {
+    std::tuple<int, int, int> t = {1, 2, 3};
+
+    std::vector<int> order;
+
+    ApplyTuple(t, [&order](int num){
+        order.push_back(num);
+    });
+
+    ASSERT_EQ(order.size(), 3u);
+    ASSERT_EQ(order[0], 1u);
+    ASSERT_EQ(order[1], 2u);
+    ASSERT_EQ(order[2], 3u);
+
+    order.clear();
+
+    ApplyTupleReverse(t, [&order](int num){
+        order.push_back(num);
+    });
+
+    ASSERT_EQ(order.size(), 3u);
+    ASSERT_EQ(order[0], 3u);
+    ASSERT_EQ(order[1], 2u);
+    ASSERT_EQ(order[2], 1u);
 }

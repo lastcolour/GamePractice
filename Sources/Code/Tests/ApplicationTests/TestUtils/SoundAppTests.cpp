@@ -3,8 +3,8 @@
 #include "Entity/EntityModule.hpp"
 #include "CoreModule.hpp"
 #include "Audio/AudioModule.hpp"
-#include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Platforms/PlatformModule.hpp"
 
 namespace {
 
@@ -15,7 +15,7 @@ const char* TEST_OBJECT_NAME = "TestObject";
 class SoundAppTest : public Application {
 public:
 
-    SoundAppTest() : Application(nullptr) {}
+    SoundAppTest() : Application() {}
     virtual ~SoundAppTest() = default;
 
     bool init() { return Application::init(); }
@@ -24,8 +24,7 @@ protected:
 
     void buildModules(ModuleListT& modules) override {
         modules.emplace_back(new CoreModule);
-        DesktopPlatform platform(0, nullptr);
-        modules.emplace_back(platform.createPlatformModule());
+        modules.emplace_back(new PlatformModule);
         modules.emplace_back(new EntityModule);
         modules.emplace_back(new AudioModule);
     }

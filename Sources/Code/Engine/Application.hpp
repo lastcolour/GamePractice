@@ -20,7 +20,7 @@ public:
 
 public:
 
-    explicit Application(PlatformPtrT&& runPlatform);
+    Application();
     virtual ~Application();
 
     int run();
@@ -34,18 +34,15 @@ protected:
 protected:
 
     virtual void buildModules(ModuleListT& modules);
-    Platform* getPlatform();
 
 private:
 
-    Application() = delete;
     Application(const Application& app) = delete;
     Application& operator=(const Application& app) = delete;
 
 private:
 
     ETSystemPtrT etSystem;
-    PlatformPtrT platform;
     ModuleListT systemModules;
 };
 

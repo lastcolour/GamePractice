@@ -2,11 +2,8 @@
 #define __SYSTEM_MODULE_HPP__
 
 #include "Core/Core.hpp"
-#include "Core/ModuleConfig.hpp"
 #include "Core/SystemLogicContainer.hpp"
-
-#include <memory>
-#include <string>
+#include "Core/JSONNode.hpp"
 
 class EntityLogicRegister;
 class ReflectContext;
@@ -15,7 +12,6 @@ class SystemModule {
 public:
 
     using LogicsContainerPtrT = std::unique_ptr<SystemLogicContainerBase>;
-    using ConfigsPtrT = std::unique_ptr<ModuleConfigBase>;
 
 public:
 
@@ -30,6 +26,10 @@ protected:
     virtual void reflectSystemConfigs(ReflectContext& ctx) const = 0;
     virtual void registerEntityLogics(EntityLogicRegister& logicRegister) const = 0;
 
+protected:
+
+    virtual JSONNode loadModuleConfigs();
+
 private:
 
     SystemModule() = delete;
@@ -40,7 +40,7 @@ private:
 
     std::string name;
     LogicsContainerPtrT logicsContainer;
-    ConfigsPtrT configs;
+    bool isInitialized;
 };
 
 #endif /* __SYSTEM_MODULE_HPP__ */

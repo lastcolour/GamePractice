@@ -12,6 +12,8 @@ public:
 
     ClassInstance();
     ClassInstance(const ClassInfo& clsInfo, void* clsInstance);
+    ClassInstance(ClassInstance&& other);
+    ClassInstance& operator=(ClassInstance&& other);
     ~ClassInstance();
 
     template<typename T>
@@ -25,12 +27,22 @@ public:
         }
         auto resPtr = std::unique_ptr<T>(static_cast<T*>(instance));
         instance = nullptr;
+        classInfo = nullptr;
         return resPtr;
     }
+
+    void* get();
+
+    TypeId getInstanceTypeId() const;
 
 private:
 
     bool isInstanceOfType(TypeId typeId) const;
+
+private:
+
+    ClassInstance(const ClassInstance&) = delete;
+    ClassInstance& operator=(const ClassInstance&) = delete;
 
 private:
 

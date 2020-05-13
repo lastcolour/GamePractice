@@ -2,7 +2,6 @@
 
 #include <Application.hpp>
 #include <CoreModule.hpp>
-#include <Platforms/Desktop/DesktopPlatform.hpp>
 #include <Render/RenderModule.hpp>
 #include <Entity/Entity.hpp>
 #include <Core/ETPrimitives.hpp>
@@ -10,6 +9,7 @@
 #include <UI/UIModule.hpp>
 #include <ETApplicationInterfaces.hpp>
 #include <Game/GameModule.hpp>
+#include <Platforms/PlatformModule.hpp>
 
 namespace {
 
@@ -20,7 +20,7 @@ const char* TEST_OBJECT_NAME = "TestObject";
 class ConsoleAppTest : public Application {
 public:
 
-    ConsoleAppTest() : Application(nullptr) {}
+    ConsoleAppTest() : Application() {}
     virtual ~ConsoleAppTest() = default;
 
     bool init() { return Application::init(); }
@@ -29,8 +29,7 @@ protected:
 
     void buildModules(ModuleListT& modules) override {
         modules.emplace_back(new CoreModule);
-        DesktopPlatform platform(0, nullptr);
-        modules.emplace_back(platform.createPlatformModule());
+        modules.emplace_back(new PlatformModule);
         modules.emplace_back(new RenderModule);
         modules.emplace_back(new EntityModule);
         modules.emplace_back(new UIModule);

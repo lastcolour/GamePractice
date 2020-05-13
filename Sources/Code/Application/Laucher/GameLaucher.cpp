@@ -45,14 +45,6 @@ void GameLaucher::openMainView() {
         return;
     }
 
-    if(!laucherConfig->background.empty()) {
-        EntityId backgroundId;
-        ET_SendEventReturn(backgroundId, &ETEntityManager::ET_createEntity, laucherConfig->background.c_str());
-        if(!backgroundId.isValid()) {
-            LogError("[GameIniter::openMainView] Can't create background: %s", laucherConfig->background);
-        }
-    }
-
     if(laucherConfig->mainView.empty()) {
         LogError("[GameIniter::openMainView] Can't open empty main view");
         return;

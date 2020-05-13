@@ -3,7 +3,6 @@
 #include "Render/RenderMaterial.hpp"
 #include "Render/RenderGeometry.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
-#include "Platforms/Desktop/DesktopPlatform.hpp"
 #include "Render/Logics/RenderSimpleLogic.hpp"
 #include "Render/Logics/RenderTextLogic.hpp"
 #include "Render/RenderFont.hpp"

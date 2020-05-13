@@ -9,32 +9,19 @@
 #include "UI/UIModule.hpp"
 #include "Laucher/GameLaucherModule.hpp"
 #include "Game/GameModule.hpp"
+#include "Platforms/PlatformModule.hpp"
 
-namespace {
-
-const int APP_SUCCESSED = 0;
-const int APP_FAILED = 1;
-
-} // namespace
-
-Application::Application(Application::PlatformPtrT&& runPlatform) :
-    etSystem(new ETSystem()),
-    platform(std::move(runPlatform)) {
+Application::Application() :
+    etSystem(new ETSystem()) {
 }
 
 Application::~Application() {
     deinit();
 }
 
-Platform* Application::getPlatform() {
-    return platform.get();
-}
-
 void Application::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
-    if(platform) {
-        modules.emplace_back(platform->createPlatformModule());
-    }
+    modules.emplace_back(new PlatformModule);
     modules.emplace_back(new RenderModule);
     modules.emplace_back(new AudioModule);
     modules.emplace_back(new EntityModule);
@@ -47,6 +34,7 @@ bool Application::init() {
     buildModules(systemModules);
     for(const auto& module : systemModules) {
         if(!module || !module->init()) {
+            deinit();
             return false;
         }
     }
@@ -54,10 +42,10 @@ bool Application::init() {
 }
 
 int Application::run() {
-    int retCode = APP_FAILED;
+    int retCode = 1;
     if(init()) {
         mainLoop();
-        retCode = APP_SUCCESSED;
+        retCode = 0;
     }
     deinit();
     return retCode;

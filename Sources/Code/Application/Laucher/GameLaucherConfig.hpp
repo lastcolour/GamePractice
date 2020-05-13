@@ -3,20 +3,21 @@
 
 #include <string>
 
-class JSONNode;
+class ReflectContext;
 
 struct GameLaucherConfig {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
 public:
 
     GameLaucherConfig();
     virtual ~GameLaucherConfig();
 
-    void serialize(const JSONNode& node);
-
 public:
 
     std::string mainView;
-    std::string background;
 };
 
 #endif /* __GAME_LAUCHER_CONFIG_HPP__ */

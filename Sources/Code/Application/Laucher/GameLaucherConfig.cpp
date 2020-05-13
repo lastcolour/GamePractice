@@ -1,5 +1,5 @@
 #include "Laucher/GameLaucherConfig.hpp"
-#include "Core/JSONNode.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 GameLaucherConfig::GameLaucherConfig() {
 }
@@ -7,7 +7,8 @@ GameLaucherConfig::GameLaucherConfig() {
 GameLaucherConfig::~GameLaucherConfig() {
 }
 
-void GameLaucherConfig::serialize(const JSONNode& node) {
-    node.read("mainView", mainView);
-    node.read("background", background);
+void GameLaucherConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameLaucherConfig>("GameLaucherConfig")) {
+        classInfo->addField("mainView", &GameLaucherConfig::mainView);
+    }
 }

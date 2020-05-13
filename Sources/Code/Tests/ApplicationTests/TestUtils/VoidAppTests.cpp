@@ -11,7 +11,7 @@ namespace {
 class VoidTestApp : public Application {
 public:
 
-    VoidTestApp() : Application(nullptr) {}
+    VoidTestApp() : Application() {}
     virtual ~VoidTestApp() = default;
 
     bool init() { return Application::init(); }

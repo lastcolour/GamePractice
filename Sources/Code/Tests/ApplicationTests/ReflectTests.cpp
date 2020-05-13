@@ -177,8 +177,13 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     ASSERT_TRUE(jsonNode);
 
     auto classIntance = classInfo->createInstance(jsonNode);
+    ASSERT_EQ(classIntance.getInstanceTypeId(), classInfo->getIntanceTypeId());
+
     auto object = classIntance.acquire<SimpleEntityLogic>();
     ASSERT_TRUE(object);
+
+    ASSERT_EQ(classIntance.getInstanceTypeId(), InvalidTypeId);
+    ASSERT_FALSE(classIntance.get());
 
     ChekcSimpleEntityReflect(object.get());
 

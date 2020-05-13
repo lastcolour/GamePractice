@@ -1,19 +1,21 @@
 #ifndef __AUDIO_CONFIG_HPP__
 #define __AUDIO_CONFIG_HPP__
 
-class JSONNode;
+class ReflectContext;
 
 class AudioConfig {
 public:
 
-    int maxSoundSources;
+    static void Reflect(ReflectContext& ctx);
 
 public:
 
     AudioConfig();
     ~AudioConfig();
 
-    void serialize(const JSONNode& node);
+public:
+
+    int maxSoundSources;
 };
 
 #endif /* __AUDIO_CONFIG_HPP__ */

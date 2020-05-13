@@ -5,7 +5,7 @@
 
 class EntityId {
 
-    static const int INVALID_ID = 0;
+    static const uint32_t INVALID_ID = 0u;
 
 public:
 
@@ -23,14 +23,14 @@ public:
 
 private:
 
-    int id;
+    uint32_t id;
 };
 
 namespace std {
     template <>
     struct hash<EntityId> {
         size_t operator()(const EntityId& entId) const {
-            return std::hash<int>()(entId.getRawId());
+            return std::hash<uint32_t>()(entId.getRawId());
         }
     };
 }
