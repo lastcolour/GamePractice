@@ -15,7 +15,7 @@ ClassInfo::ClassInfo(const char* name, TypeId typeId) :
 ClassInfo::~ClassInfo() {
 }
 
-ClassInstanceDeleteFuncT ClassInfo::getDeleteFunction() const {
+ClassInfo::DeleteFuncT ClassInfo::getDeleteFunction() const {
     return deleteFunc;
 }
 

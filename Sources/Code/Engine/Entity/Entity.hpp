@@ -2,6 +2,7 @@
 #define __ENTITY_HPP__
 
 #include "Entity/ETEntityInterfaces.hpp"
+#include "Reflect/ClassInstance.hpp"
 
 #include <string>
 #include <memory>
@@ -10,14 +11,13 @@ class EntityLogic;
 
 class Entity : public ETNode<ETEntity> {
 
-    using EntityLogicPtrT = std::unique_ptr<EntityLogic>;
-
 public:
 
     Entity(const char* entityName, EntityId entId);
     ~Entity();
 
-    void addLogic(EntityLogicPtrT&& logic);
+    void addLogic(ClassInstance&& logicInstance);
+    void addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr);
 
     EntityId getEntityId() const { return entityId; }
 
@@ -35,7 +35,7 @@ public:
 private:
 
     Transform tm;
-    std::vector<EntityLogicPtrT> logics;
+    std::vector<ClassInstance> logics;
     std::vector<EntityId> children;
     std::string name;
     EntityId parentId;

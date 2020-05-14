@@ -3,6 +3,7 @@
 #include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Entity/EntityLogicRegister.hpp"
+#include "Entity/ETEntityInterfaces.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -98,6 +99,19 @@ bool SystemModule::init() {
 
     EntityLogicRegister logicRegister;
     registerEntityLogics(logicRegister);
+
+    if(!logicRegister.getLogicClasses().empty()) {
+        if(!ET_IsExistNode<ETEntityManager>()) {
+            LogError("[SystemModule::init] Module tries to regiser entity logics before EntityManager created: '%s'", name);
+            return false;
+        }
+        bool logicRegisterRes = false;
+        ET_SendEventReturn(logicRegisterRes, &ETEntityManager::ET_registerLogics, logicRegister);
+        if(!logicRegisterRes) {
+            LogError("[SystemModule::init] Can't register entity logics for module: '%s'", name);
+            return false;
+        }
+    }
 
     isInitialized = true;
     if(!logicsContainer->init()) {

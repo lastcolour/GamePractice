@@ -15,7 +15,7 @@ UILabel* UILabelTests::createUILabel() {
     auto object = createVoidObject();
     std::unique_ptr<UILabel> uiLabelPtr(new UILabel);
     UILabel* uiLabel = uiLabelPtr.get();
-    object->addLogic(std::move(uiLabelPtr));
+    object->addCustomLogic(std::move(uiLabelPtr));
     tempObject.push_back(std::move(object));
     return uiLabel;
 }
@@ -24,7 +24,7 @@ UIList* UILabelTests::createUIList() {
     auto object = createVoidObject();
     std::unique_ptr<UIList> uiListPtr(new UIList);
     UIList* uiLabel = uiListPtr.get();
-    object->addLogic(std::move(uiListPtr));
+    object->addCustomLogic(std::move(uiListPtr));
     tempObject.push_back(std::move(object));
     return uiLabel;
 }

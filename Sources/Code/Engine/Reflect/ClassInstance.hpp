@@ -1,13 +1,29 @@
 #ifndef __CLASS_INSTANCE_HPP__
 #define __CLASS_INSTANCE_HPP__
 
+#include "Core/TypeId.hpp"
+
 #include <functional>
 #include <memory>
-#include "Core/TypeId.hpp"
 
 class ClassInfo;
 
 class ClassInstance {
+
+    using DeleteFuncT = void(*)(void*);
+
+public:
+
+    template<typename T>
+    static ClassInstance CreateWithoutClassInfo(T* ptr) {
+        auto deleteFunc = [](void* objectPtr){
+            delete static_cast<T*>(objectPtr);
+        };
+        ClassInstance instance;
+        instance.setDeleteFuncAndPtr(static_cast<DeleteFuncT>(deleteFunc), ptr);
+        return instance;
+    }
+
 public:
 
     ClassInstance();
@@ -37,6 +53,7 @@ public:
 
 private:
 
+    void setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr);
     bool isInstanceOfType(TypeId typeId) const;
 
 private:
@@ -48,5 +65,6 @@ private:
 
     const ClassInfo* classInfo;
     void* instance;
+    DeleteFuncT deleteFunc;
 };
 #endif /* __CLASS_INSTANCE_HPP__ */

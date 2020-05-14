@@ -36,7 +36,7 @@ UIButton* UIButtonTests::createUIButton() {
     auto object = createVoidObject();
     std::unique_ptr<UIButton> uiButtonPtr(new UIButton);
     UIButton* uiButton = uiButtonPtr.get();
-    object->addLogic(std::move(uiButtonPtr));
+    object->addCustomLogic(std::move(uiButtonPtr));
     tempObject.push_back(std::move(object));
     return uiButton;
 }

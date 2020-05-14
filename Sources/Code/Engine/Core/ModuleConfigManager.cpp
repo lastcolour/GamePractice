@@ -1,5 +1,5 @@
 #include "Core/ModuleConfigManager.hpp"
-#include "Reflect/ClassIntance.hpp"
+#include "Reflect/ClassInstance.hpp"
 
 #include <cassert>
 

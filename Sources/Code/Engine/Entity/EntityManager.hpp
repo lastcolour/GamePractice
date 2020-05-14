@@ -32,10 +32,11 @@ public:
     EntityId ET_createEntity(const char* entityName) override;
     void ET_destroyEntity(EntityId entityId) override;
     bool ET_registerLogics(EntityLogicRegister& logicRegister) override;
+    EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
 
 private:
 
-    Entity* createEntityImpl(Entity* rootEntity, const char* entityName);
+    Entity* createEntityImpl(Entity* rootEntity, const JSONNode& entityNode, const char* entityName);
     Entity* createEntity(Entity* rootEntity, const char* entityName);
     JSONNode loadEntityRootNode(const char* entityName) const;
     bool setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const;

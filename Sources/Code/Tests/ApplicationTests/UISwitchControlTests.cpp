@@ -39,7 +39,7 @@ TEST_F(UISwitchControlTests, CheckSetLabel) {
     UIBox* uiBox = nullptr;
     {
         uiBox = new UIBox();
-        gameObj->addLogic(std::unique_ptr<EntityLogic>(uiBox));
+        gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(uiBox));
 
         std::string serStr = "{\"label\":{\"text\":\"TestText\"}}";
         JSONNode node = JSONNode::ParseString(serStr.c_str());
@@ -51,7 +51,7 @@ TEST_F(UISwitchControlTests, CheckSetLabel) {
     UISwitchControl* uiSwitchControl = nullptr;
     {
         uiSwitchControl = new UISwitchControl();
-        gameObj->addLogic(std::unique_ptr<EntityLogic>(uiSwitchControl));
+        gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(uiSwitchControl));
         ASSERT_TRUE(uiSwitchControl->init());
     }
 

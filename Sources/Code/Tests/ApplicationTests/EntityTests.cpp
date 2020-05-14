@@ -2,6 +2,7 @@
 #include "Entity/Entity.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Entity/EntityLogicRegister.hpp"
+#include "Core/JSONNode.hpp"
 
 namespace {
 
@@ -192,4 +193,10 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     bool res = false;
     ET_SendEventReturn(res, &ETEntityManager::ET_registerLogics, logicRegister);
     ASSERT_TRUE(res);
+
+    JSONNode node = JSONNode::ParseString("{  \"children\" : [], \"logics\" : [ { \"type\": \"TestLogic\", \"data\" : {} } ] }");
+
+    EntityId entId;
+    ET_SendEventReturn(entId, &ETEntityManager::ET_createEntityFromJSON, node, "TestEnity");
+    ASSERT_TRUE(entId.isValid());
 }

@@ -313,7 +313,7 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     auto gameObj = createVoidObject();
     RenderTextLogic* renderText = new RenderTextLogic;
     renderText->ET_setMaterial("text_solid_color");
-    gameObj->addLogic(std::unique_ptr<EntityLogic>(renderText));
+    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
     ASSERT_TRUE(renderText->init());
 
     Vec2i renderPort(0);
@@ -366,7 +366,7 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     auto gameObj = createVoidObject();
     RenderImageLogic* renderImage = new RenderImageLogic;
     renderImage->ET_setMaterial("simple_image");
-    gameObj->addLogic(std::unique_ptr<EntityLogic>(renderImage));
+    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderImage));
     ASSERT_TRUE(renderImage->init());
 
     Vec2i renderPort(0);
@@ -407,7 +407,7 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
     renderColorTex->ET_setMaterial("tex_solid_color");
     ColorB texColor(255, 255, 0);
     renderColorTex->ET_setTextureColor(texColor);
-    gameObj->addLogic(std::unique_ptr<EntityLogic>(renderColorTex));
+    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderColorTex));
     ASSERT_TRUE(renderColorTex->init());
 
     renderColorTex->ET_setImage("Images/block.png");

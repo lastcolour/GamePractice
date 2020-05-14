@@ -18,10 +18,16 @@ Entity::~Entity() {
     }
 }
 
-void Entity::addLogic(Entity::EntityLogicPtrT&& logic) {
-    assert(logic && "Add invalid game logic");
-    logic->setEntity(this);
-    logics.emplace_back(std::move(logic));
+void Entity::addLogic(ClassInstance&& logicInstance) {
+    assert(logicInstance.get() && "Can't add null game logic");
+    logics.emplace_back(std::move(logicInstance));
+}
+
+void Entity::addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr) {
+    assert(logicPtr && "Can't add null custom game logic");
+    logicPtr->setEntity(this);
+    ClassInstance logicInstance = ClassInstance::CreateWithoutClassInfo(logicPtr.release());
+    logics.emplace_back(std::move(logicInstance));
 }
 
 const char* Entity::ET_getName() const {

@@ -176,14 +176,14 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
     ASSERT_TRUE(jsonNode);
 
-    auto classIntance = classInfo->createInstance(jsonNode);
-    ASSERT_EQ(classIntance.getInstanceTypeId(), classInfo->getIntanceTypeId());
+    auto classInstance = classInfo->createInstance(jsonNode);
+    ASSERT_EQ(classInstance.getInstanceTypeId(), classInfo->getIntanceTypeId());
 
-    auto object = classIntance.acquire<SimpleEntityLogic>();
+    auto object = classInstance.acquire<SimpleEntityLogic>();
     ASSERT_TRUE(object);
 
-    ASSERT_EQ(classIntance.getInstanceTypeId(), InvalidTypeId);
-    ASSERT_FALSE(classIntance.get());
+    ASSERT_EQ(classInstance.getInstanceTypeId(), InvalidTypeId);
+    ASSERT_FALSE(classInstance.get());
 
     ChekcSimpleEntityReflect(object.get());
 

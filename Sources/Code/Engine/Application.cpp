@@ -22,9 +22,9 @@ Application::~Application() {
 void Application::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
     modules.emplace_back(new PlatformModule);
+    modules.emplace_back(new EntityModule);
     modules.emplace_back(new RenderModule);
     modules.emplace_back(new AudioModule);
-    modules.emplace_back(new EntityModule);
     modules.emplace_back(new UIModule);
     modules.emplace_back(new GameModule);
     modules.emplace_back(new GameLaucherModule);

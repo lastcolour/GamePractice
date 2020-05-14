@@ -7,6 +7,7 @@
 #include <vector>
 
 class EntityLogicRegister;
+class JSONNode;
 
 struct ETEntityEvents {
     virtual ~ETEntityEvents() = default;
@@ -32,6 +33,7 @@ struct ETEntityManager {
     virtual EntityId ET_createEntity(const char* entityName) = 0;
     virtual void ET_destroyEntity(EntityId entId) = 0;
     virtual bool ET_registerLogics(EntityLogicRegister& logicRegister) = 0;
+    virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;
 };
 
 #endif /* __ENTITY_INTERFACES_HPP__ */

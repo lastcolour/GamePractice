@@ -1,17 +1,20 @@
-#include "Reflect/ClassIntance.hpp"
+#include "Reflect/ClassInstance.hpp"
 #include "Reflect/ClassInfo.hpp"
 
 ClassInstance::ClassInstance() :
     classInfo(nullptr),
-    instance(nullptr) {
+    instance(nullptr),
+    deleteFunc(nullptr) {
 }
 
 ClassInstance::ClassInstance(ClassInstance&& other) :
     classInfo(other.classInfo),
-    instance(other.instance) {
+    instance(other.instance),
+    deleteFunc(other.deleteFunc) {
 
     other.instance = nullptr;
     other.classInfo = nullptr;
+    other.deleteFunc = nullptr;
 }
 
 ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
@@ -19,26 +22,28 @@ ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
         return *this;
     }
     if(instance) {
-        auto deleteFunc = classInfo->getDeleteFunction();
         deleteFunc(instance);
     }
     instance = other.instance;
     classInfo = other.classInfo;
+    deleteFunc = other.deleteFunc;
     other.instance = nullptr;
     other.classInfo = nullptr;
+    other.deleteFunc = nullptr;
     return *this;
 }
 
 ClassInstance::ClassInstance(const ClassInfo& clsInfo, void* clsInstance) :
     classInfo(&clsInfo),
-    instance(clsInstance) {
+    instance(clsInstance),
+    deleteFunc(clsInfo.getDeleteFunction()) {
 }
 
 ClassInstance::~ClassInstance() {
     if(instance) {
-        auto deleteFunc = classInfo->getDeleteFunction();
         deleteFunc(instance);
     }
+    instance = nullptr;
 }
 
 bool ClassInstance::isInstanceOfType(TypeId typeId) const {
@@ -57,4 +62,9 @@ TypeId ClassInstance::getInstanceTypeId() const {
 
 void* ClassInstance::get() {
     return instance;
+}
+
+void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
+    instance = ptr;
+    deleteFunc = deleteF;
 }

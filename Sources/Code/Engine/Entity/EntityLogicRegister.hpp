@@ -18,6 +18,7 @@ public:
             "Can't register entity logic if it isn't derived from 'EntityLogic'");
         ReflectContext ctx;
         ctx.reflect<LogicT>();
+        registerFromReflectCtx(ctx);
     }
 
     std::vector<ClassInfo*>& getLogicClasses();

@@ -69,6 +69,31 @@ bool EntityManager::ET_registerLogics(EntityLogicRegister& logicRegister) {
     return true;
 }
 
+EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char* entityName) {
+    if(!entityName || !entityName[0]) {
+        LogWarning("[EntityManager::ET_createEntityFromJSON] Can't create entity with empty name");
+        return InvalidEntityId;
+    }
+    if(!node) {
+        LogWarning("[EntityManager::ET_createEntityFromJSON] Invalid JSON node to create entity '%s' from, entityName");
+        return InvalidEntityId;
+    }
+
+    auto startTimeP = std::chrono::high_resolution_clock::now();
+
+    auto entity = createEntityImpl(nullptr, node, entityName);
+    if(!entity) {
+        return InvalidEntityId;
+    }
+
+    auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::high_resolution_clock::now() - startTimeP).count();
+
+    LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, duration);
+
+    return entity->getEntityId();
+}
+
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
     auto logicsNodes = node.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
@@ -94,17 +119,13 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, cons
             LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entityName);
             return false;
         }
-        auto logicPtr = logicInstance.acquire<EntityLogic>();
-        if(!logicPtr) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't acquire logic of type '%s' for entity '%s'", logicType, entityName);
-            return false;
-        }
+        auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
         logicPtr->setEntity(entity);
         if(!logicPtr->init()) {
             LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entityName);
             continue;
         }
-        entity->addLogic(std::move(logicPtr));
+        entity->addLogic(std::move(logicInstance));
     }
     return true;
 }
@@ -138,18 +159,17 @@ JSONNode EntityManager::loadEntityRootNode(const char* entityName) const {
     return rootNode;
 }
 
-Entity* EntityManager::createEntityImpl(Entity* rootEntity, const char* entityName) {
-    auto rootNode = loadEntityRootNode(entityName);
-    if(!rootNode) {
+Entity* EntityManager::createEntityImpl(Entity* rootEntity, const JSONNode& entityNode, const char* entityName) {
+    if(!entityNode) {
         return nullptr;
     }
     entities.emplace_back(new Entity(entityName, GetETSystem()->createNewEntityId()));
     Entity* entity = entities.back().get();
-    if(!setupEntityLogics(entity, rootNode, entityName)) {
+    if(!setupEntityLogics(entity, entityNode, entityName)) {
         entities.pop_back();
         return nullptr;
     }
-    if(!setupEntityChildren(entity, rootNode, entityName)) {
+    if(!setupEntityChildren(entity, entityNode, entityName)) {
         entities.pop_back();
         return nullptr;
     }
@@ -162,7 +182,8 @@ Entity* EntityManager::createEntityImpl(Entity* rootEntity, const char* entityNa
 Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) {
     auto startTimeP = std::chrono::high_resolution_clock::now();
 
-    auto entity = createEntityImpl(rootEntity, entityName);
+    auto entityNode = loadEntityRootNode(entityName);
+    auto entity = createEntityImpl(rootEntity, entityNode, entityName);
 
     auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - startTimeP).count();

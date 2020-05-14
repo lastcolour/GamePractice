@@ -4,6 +4,10 @@
 
 ETSystem* ET_SYSTEM = nullptr;
 
+ETSystem* GetETSystem() {
+    return ET_SYSTEM;
+}
+
 ETSystem::ETSystem() :
     entityIdGen() {
     if(!ET_SYSTEM) {
@@ -17,10 +21,6 @@ ETSystem::~ETSystem() {
     if(this == ET_SYSTEM) {
         ET_SYSTEM = nullptr;
     }
-}
-
-ETSystem* GetETSystem() {
-    return ET_SYSTEM;
 }
 
 bool ETSystem::isActiveConnectionExist(TypeId etId, ConnectionArrayT*& connectionArray) {

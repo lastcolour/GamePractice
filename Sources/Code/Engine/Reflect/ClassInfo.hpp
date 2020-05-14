@@ -2,14 +2,13 @@
 #define __CLASS_INFO_HPP__
 
 #include "Reflect/ClassValue.hpp"
-#include "Reflect/ClassIntance.hpp"
-
-using ClassInstanceDeleteFuncT = std::function<void(void*)>;
+#include "Reflect/ClassInstance.hpp"
 
 class ClassInfo {
 
-    using CreateFuncT = std::function<void*(void)>;
-    using GetValueFuncT = std::function<void*(void*, ClassValue::ValuePtrT)>;
+    using DeleteFuncT = void(*)(void*);
+    using CreateFuncT = void*(*)(void);
+    using GetValueFuncT = void*(*)(void*,ClassValue::ValuePtrT);
 
 public:
 
@@ -18,7 +17,7 @@ public:
 
     ClassInstance createInstance(const JSONNode& node);
     bool serializeInstance(void* instance, const JSONNode& node);
-    ClassInstanceDeleteFuncT getDeleteFunction() const;
+    DeleteFuncT getDeleteFunction() const;
     const char* getName() const;
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
@@ -95,7 +94,7 @@ private:
     std::vector<ClassInfo*> baseClasses;
     std::vector<ClassValue> values;
     CreateFuncT createFunc;
-    ClassInstanceDeleteFuncT deleteFunc;
+    DeleteFuncT deleteFunc;
     GetValueFuncT getValueFunc;
     std::string className;
     TypeId instanceTypeId;

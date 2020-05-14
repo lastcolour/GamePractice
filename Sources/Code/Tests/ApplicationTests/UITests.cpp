@@ -19,7 +19,7 @@ UIList* UITests::createUIList() {
     auto object = createVoidObject();
     std::unique_ptr<UIList> uiListPtr(new UIList);
     UIList* uiList = uiListPtr.get();
-    object->addLogic(std::move(uiListPtr));
+    object->addCustomLogic(std::move(uiListPtr));
     tempObject.push_back(std::move(object));
     return uiList;
 }
@@ -28,7 +28,7 @@ UIBox* UITests::createUIBox() {
     auto object = createVoidObject();
     std::unique_ptr<UIBox> uiBoxPtr(new UIBox);
     UIBox* uiBox = uiBoxPtr.get();
-    object->addLogic(std::move(uiBoxPtr));
+    object->addCustomLogic(std::move(uiBoxPtr));
     tempObject.push_back(std::move(object));
     return uiBox;
 }

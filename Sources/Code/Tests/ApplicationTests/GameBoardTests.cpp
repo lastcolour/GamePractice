@@ -84,7 +84,7 @@ void GameBoardTests::SetUp() {
     entity = createVoidObject();
     std::unique_ptr<TestGameBoardLogic> boardPtr(new TestGameBoardLogic);
     board = boardPtr.get();
-    entity->addLogic(std::move(boardPtr));
+    entity->addCustomLogic(std::move(boardPtr));
 }
 
 void GameBoardTests::TearDown() {
@@ -291,7 +291,7 @@ TEST_F(GameBoardTests, CheckGameBoardConnections) {
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     std::unique_ptr<UIBox> uiBoxLogicPtr(new UIBox);
     auto uiBoxPtr = uiBoxLogicPtr.get();
-    entity->addLogic(std::move(uiBoxLogicPtr));
+    entity->addCustomLogic(std::move(uiBoxLogicPtr));
     UIStyle style;
     style.size = Vec2(0.5f);
     style.sizeInv = SizeInvariant::RelativeBiggestSquare;

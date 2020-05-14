@@ -29,9 +29,9 @@ protected:
 
     void buildModules(ModuleListT& modules) override {
         modules.emplace_back(new CoreModule);
+        modules.emplace_back(new EntityModule);
         modules.emplace_back(new PlatformModule);
         modules.emplace_back(new RenderModule);
-        modules.emplace_back(new EntityModule);
         modules.emplace_back(new UIModule);
         modules.emplace_back(new GameModule);
     }
@@ -58,7 +58,7 @@ void ConsoleAppTests::TearDown() {
 }
 
 void ConsoleAppTests::addLogicToOject(std::unique_ptr<Entity>& obj, std::unique_ptr<EntityLogic>& logic) {
-    obj->addLogic(std::move(logic));
+    obj->addCustomLogic(std::move(logic));
 }
 
 std::unique_ptr<Entity> ConsoleAppTests::createVoidObject() {
