@@ -3,8 +3,8 @@
     "InputVariables":{
         "buildType":"Debug",
         "platform":"Windows",
-        "skipLibsBuild":"True",
-        "skipUnittests":"False"
+        "skipLibsBuild":"False ",
+        "skipUnittests":"True"
     },
     "Steps":[
         {

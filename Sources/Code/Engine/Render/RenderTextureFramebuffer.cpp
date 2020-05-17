@@ -6,18 +6,33 @@
 
 #include <cassert>
 
-RenderTextureFramebuffer::RenderTextureFramebuffer(int w, int h) :
-    size(w, h),
+RenderTextureFramebuffer::RenderTextureFramebuffer() :
+    allocatedSize(0),
+    size(0),
     framebufferId(0),
     textureId(0),
     textureBuffer() {
 }
 
 RenderTextureFramebuffer::~RenderTextureFramebuffer() {
-    glDeleteTextures(1, &textureId);
-    glDeleteFramebuffers(1, &framebufferId);
+    reset();
+}
 
-    ET_SendEvent(&ETRender::ET_setRenderToFramebuffer, nullptr);
+void RenderTextureFramebuffer::reset() {
+    if(textureId) {
+        glDeleteTextures(1, &textureId);
+        textureId = 0;
+    }
+    if(framebufferId) {
+        glDeleteFramebuffers(1, &framebufferId);
+        framebufferId = 0;
+    }
+    size = Vec2i(0);
+    allocatedSize = Vec2i(0);
+}
+
+bool RenderTextureFramebuffer::isValid() const {
+    return framebufferId != 0 && textureId != 0;
 }
 
 bool RenderTextureFramebuffer::init() {
@@ -73,10 +88,24 @@ bool RenderTextureFramebuffer::init() {
 
 bool RenderTextureFramebuffer::bind() {
     if(!isBinded()) {
-        ET_SendEvent(&ETRender::ET_setRenderToFramebuffer, this);
         glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
     }
     return true;
+}
+
+void RenderTextureFramebuffer::setSize(const Vec2i& newSize) {
+    if(allocatedSize >= newSize) {
+        size = newSize;
+        return;
+    }
+    allocatedSize = newSize;
+    size = newSize;
+    if(isValid()) {
+        reset();
+    }
+    if(!init()) {
+        reset();
+    }
 }
 
 Vec2i RenderTextureFramebuffer::getSize() const {
@@ -98,14 +127,19 @@ bool RenderTextureFramebuffer::isBinded() const {
 
 bool RenderTextureFramebuffer::read() {
     if(!isBinded()) {
+        LogError("[RenderTextureFramebuffer::read] Can't read from an unbound framebuffer");
         return false;
     }
+
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     GLvoid* texturePtr = static_cast<GLvoid*>(&textureBuffer[0]);
     glReadPixels(0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, texturePtr);
 
-    auto errCode = glGetError();
-    return errCode == GL_NO_ERROR;
+    if(!CheckGLError()) {
+        LogError("[RenderTextureFramebuffer::read] Can't read from framebuffer due to GL error");
+        return false;
+    }
+    return true;
 }
 
 void RenderTextureFramebuffer::clear() {
@@ -119,7 +153,6 @@ void RenderTextureFramebuffer::clear() {
 
 void RenderTextureFramebuffer::unbind() {
     if(isBinded()) {
-        ET_SendEvent(&ETRender::ET_setRenderToFramebuffer, nullptr);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 }

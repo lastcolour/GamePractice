@@ -105,9 +105,8 @@ struct ETRender {
     virtual ~ETRender() = default;
     virtual const ColorB& ET_getClearColor() const = 0;
     virtual void ET_setClearColor(const ColorB& col) = 0;
-    virtual void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) = 0;
     virtual void ET_drawFrame() = 0;
-    virtual bool ET_canRender() const = 0;
+    virtual void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) = 0;
     virtual void ET_updateRenderQueue() = 0;
 };
 

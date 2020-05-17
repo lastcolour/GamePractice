@@ -1,3 +1,5 @@
+from EditorNative import EditorNative
+
 import unittest
 import ctypes
 import pathlib
@@ -24,53 +26,39 @@ class EditorAppTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.EDITOR_LIB_PATH = _getEditorLibPath()
-        if not os.path.exists(cls.EDITOR_LIB_PATH):
-            print("Can't find editor library: {0}".format(cls.EDITOR_LIB_PATH))
-            raise RuntimeError("Invalid library path")
-        try:
-            os.chdir(pathlib.Path(cls.EDITOR_LIB_PATH).parent.__str__())
-            cls.EDITOR_LIB = ctypes.CDLL(cls.EDITOR_LIB_PATH)
-        except:
-            print("Can't load library: {0}".format(cls.EDITOR_LIB_PATH))
-            raise
+        cls.NATIVE_EDITOR = EditorNative(_getEditorLibPath())
+        res = cls.NATIVE_EDITOR.initialize()
+        if res != 0:
+            raise RuntimeError("Can't initialize native editor")
 
-    def setUp(self):
-        retCode = EditorAppTests.EDITOR_LIB.Initiliaze()
-        self.assertEqual(retCode, 0)
-
-    def tearDown(self):
-        EditorAppTests.EDITOR_LIB.DeInitialize()
-
-    def testExportMethods(self):
-        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.Initiliaze)
-        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.GetReflectModel)
-        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.DeInitialize)
-        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.LoadEntity)
-        self.assertIsNotNone(EditorAppTests.EDITOR_LIB.UnloadEntity)
+    @classmethod
+    def tearDownClass(cls):
+        cls.NATIVE_EDITOR.deinitialize()
 
     def testGetReflectModel(self):
-        GetReflectModelFunc = EditorAppTests.EDITOR_LIB.GetReflectModel
-        GetReflectModelFunc.restype = ctypes.c_char_p
-
-        reflectModel = GetReflectModelFunc()
+        reflectModel = EditorAppTests.NATIVE_EDITOR.getReflectModel()
         model = json.loads(reflectModel)
-
         self.assertGreater(len(model), 0)
 
-        self.assertIsNotNone(reflectModel)
-
     def testLoadUnloadEntity(self):
-        LoadEntityFunc = EditorAppTests.EDITOR_LIB.LoadEntity
-        LoadEntityFunc.argstype = [ctypes.c_char_p]
-        LoadEntityFunc.restye = ctypes.c_int32
-        entityName = ctypes.c_char_p("Game/Simple.json".encode('ascii'))
-        entityId = LoadEntityFunc(entityName)
+        entityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
         self.assertNotEqual(entityId, 0)
 
-        UnloadEntityFunc = EditorAppTests.EDITOR_LIB.UnloadEntity
-        UnloadEntityFunc.argstype = [ctypes.c_int32]
-        UnloadEntityFunc(entityId)
+        entityName = EditorAppTests.NATIVE_EDITOR.getEntityName(entityId)
+        self.assertEqual(entityName, "Game/Simple.json")
+
+        children = EditorAppTests.NATIVE_EDITOR.getEntityChildren(entityId)
+        self.assertEqual(len(children), 0)
+
+        EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
+
+    def testDrawFrame(self):
+        entityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
+        self.assertNotEqual(entityId, 0)
+
+        EditorAppTests.NATIVE_EDITOR.drawFrame(10, 10)
+
+        EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
 
 if __name__ == "__main__":
     unittest.main()

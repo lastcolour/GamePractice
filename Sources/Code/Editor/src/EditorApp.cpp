@@ -13,6 +13,7 @@
 #include "EditorModule.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 
 EditorApp::EditorApp() :
     Application() {
@@ -22,7 +23,12 @@ EditorApp::~EditorApp() {
 }
 
 bool EditorApp::initialize() {
-    return init();
+    bool res = init();
+    if(!res) {
+        return res;
+    }
+
+    return res;
 }
 
 void EditorApp::deinitiazlie() {
@@ -77,4 +83,43 @@ void EditorApp::unloadEntity(EntityId entityId) {
     }
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, centralEntityId);
     centralEntityId = InvalidEntityId;
+}
+
+std::vector<EntityId> EditorApp::getEntityChildren(EntityId entityId) {
+    std::vector<EntityId> children;
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::getEntityChildren] Can't get children of invalid entity");
+        return children;
+    }
+    ET_SendEventReturn(children, entityId, &ETEntity::ET_getChildren);
+    return children;
+}
+
+const char* EditorApp::getEntityName(EntityId entityId) {
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::getEntityName] Can't get name of invalid entity");
+        return nullptr;
+    }
+    const char* entityName = nullptr;
+    ET_SendEventReturn(entityName, entityId, &ETEntity::ET_getName);
+    return entityName;
+}
+
+void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
+    Vec2i renderSize = Vec2i(width, height);
+    frameBuffer.setSize(renderSize);
+    frameBuffer.clear();
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, frameBuffer);
+    memcpy(out, frameBuffer.getPtr(), renderSize.x * renderSize.y * 4);
+}
+
+uint32_t EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::addLogicToEntity] Can't add logic '%s' to invalid entity", logicName);
+        return 0;
+    }
+    return 0;
+}
+
+void EditorApp::removeLogicFromEntity(EntityId entityId, uint32_t logicId) {
 }

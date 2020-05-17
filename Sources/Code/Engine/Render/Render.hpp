@@ -23,8 +23,7 @@ public:
     const ColorB& ET_getClearColor() const override;
     void ET_setClearColor(const ColorB& col) override;
     void ET_drawFrame() override;
-    void ET_setRenderToFramebuffer(RenderTextureFramebuffer* renderFb) override;
-    bool ET_canRender() const override;
+    void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) override;
     void ET_updateRenderQueue() override;
 
     // ETSurfaceEvents
@@ -46,13 +45,15 @@ public:
 
 private:
 
+    bool canRenderToScreen() const;
+    bool canRenderToFramebuffer() const;
     void updateRenderQueue();
-    void setViewport(const Vec2i& size);
+    void updateRenderPort(const Vec2i& size);
+    void drawRoutine();
 
 private:
 
     std::vector<EntityId> renderQueue;
-    RenderTextureFramebuffer* renderFb;
     ColorB clearColor;
     bool hasContext;
     bool canOffscrenRender;

@@ -17,8 +17,8 @@ public:
     bool operator!=(const EntityId& entId) const { return id != entId.id; }
     bool isValid() const { return id != INVALID_ID; }
 
-    void setRawId(int entId) { id = entId; }
-    int getRawId() const { return id; }
+    void setRawId(uint32_t entId) { id = entId; }
+    uint32_t getRawId() const { return id; }
     void setInvalidId() { id = INVALID_ID; }
 
 private:

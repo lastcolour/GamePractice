@@ -39,9 +39,9 @@ std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;
 void RenderTests::SetUpTestCase() {
     ConsoleAppTests::SetUpTestCase();
 
-    textureFramebuffer.reset(new RenderTextureFramebuffer(RENDER_WIDTH, RENDER_HEIGHT));
-    ASSERT_TRUE(textureFramebuffer->init());
-    ASSERT_TRUE(textureFramebuffer->bind());
+    textureFramebuffer.reset(new RenderTextureFramebuffer());
+    textureFramebuffer->setSize(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
+    ASSERT_TRUE(textureFramebuffer->isValid());
 }
 
 void RenderTests::TearDownTestCase() {
@@ -68,9 +68,6 @@ void RenderTests::TearDown() {
 }
 
 void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) {
-
-    ASSERT_TRUE(textureFramebuffer->read());
-
     size_t failPixCount = 0;
     const Vec2i size = textureFramebuffer->getSize();
     for(int i = 0; i < size.x; ++i) {
@@ -106,34 +103,15 @@ void RenderTests::dumpFramebuffer() {
     ASSERT_NE(res, 0);
 }
 
-TEST_F(RenderTests, RestoreViewPortAfterRenderToFramebuffer) {
-    textureFramebuffer->unbind();
-
-    Vec2i origRenderPort(0);
-    ET_SendEventReturn(origRenderPort, &ETRenderCamera::ET_getRenderPort);
-
-    textureFramebuffer->bind();
-
-    Vec2i fbRenderPort(0);
-    ET_SendEventReturn(fbRenderPort, &ETRenderCamera::ET_getRenderPort);
-
-    ASSERT_EQ(fbRenderPort, textureFramebuffer->getSize());
-
-    textureFramebuffer->unbind();
-
-    Vec2i resRenderPort(0);
-    ET_SendEventReturn(resRenderPort, &ETRenderCamera::ET_getRenderPort);
-
-    ASSERT_EQ(origRenderPort, resRenderPort);
-}
-
 TEST_F(RenderTests, CheckClear) {
+    textureFramebuffer->bind();
     ColorF clearColor(1.f, 0.3f, 0.5f);
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
 
     ASSERT_TRUE(textureFramebuffer->read());
+    textureFramebuffer->unbind();
 
     size_t failPixCount = 0;
     const Vec2i size = textureFramebuffer->getSize();
@@ -154,9 +132,7 @@ TEST_F(RenderTests, CheckEmptyRender) {
     ET_SendEventReturn(clearCol, &ETRender::ET_getClearColor);
     ASSERT_EQ(DRAW_COLOR, clearCol);
 
-    ET_SendEvent(&ETRender::ET_drawFrame);
-
-    ASSERT_TRUE(textureFramebuffer->read());
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     size_t failPixCount = 0;
     const Vec2i size = textureFramebuffer->getSize();
@@ -248,11 +224,14 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
     ASSERT_TRUE(material);
 
+    textureFramebuffer->bind();
     material->bind();
     material->setUniformMat4("MVP", tm);
     material->setUniform4f("color", DRAW_COLOR);
     geom->draw();
     material->unbind();
+    textureFramebuffer->read();
+    textureFramebuffer->unbind();
 
     const size_t xStart = static_cast<size_t>(center.x - SCALE_FACTOR * w * 0.5f);
     const size_t xEnd = static_cast<size_t>(center.x + SCALE_FACTOR * w * 0.5f);
@@ -279,7 +258,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR), 
         static_cast<int>(size.y * SCALE_FACTOR)));
 
-    ET_SendEvent(&ETRender::ET_drawFrame);
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     const size_t xStart = static_cast<size_t>(center.x - SCALE_FACTOR * size.x * 0.5f);
     const size_t xEnd = static_cast<size_t>(center.x + SCALE_FACTOR * size.x * 0.5f);
@@ -343,9 +322,7 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     }
 
     renderText->ET_setText("Hello World!");
-    ET_SendEvent(&ETRender::ET_drawFrame);
-
-    ASSERT_TRUE(textureFramebuffer->read());
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     int changedPixels = 0;
     const Vec2i size = textureFramebuffer->getSize();
@@ -382,9 +359,7 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     ASSERT_GT(imageSize.x, 0);
     ASSERT_GT(imageSize.y, 0);
 
-    ET_SendEvent(&ETRender::ET_drawFrame);
-
-    ASSERT_TRUE(textureFramebuffer->read());
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     int changedPixels = 0;
     const Vec2i size = textureFramebuffer->getSize();
@@ -418,9 +393,7 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
     tm.pt = Vec3(imageSize.x / 2.f, imageSize.y / 2.f, 0.f);
     gameObj->ET_setTransform(tm);
 
-    ET_SendEvent(&ETRender::ET_drawFrame);
-
-    ASSERT_TRUE(textureFramebuffer->read());
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     int changedPixels = 0;
     for(int i = 0; i < imageSize.x; ++i) {
@@ -484,14 +457,14 @@ TEST_F(RenderTests, CheckRenderPriority) {
     ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 1);
     ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 0);
 
-    ET_SendEvent(&ETRender::ET_drawFrame);
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
 
     ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 0);
     ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 1);
 
-    ET_SendEvent(&ETRender::ET_drawFrame);
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
 
     checkSquare(DRAW_COLOR_B, xStart, xEnd, yStart, yEnd);
 
@@ -514,21 +487,21 @@ TEST_F(RenderTests, CheckHideUnhide) {
     }
 
     {
-        ET_SendEvent(&ETRender::ET_drawFrame);
+        ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
         checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
     }
 
     ET_SendEvent(boxId, &ETRenderNode::ET_hide);
 
     {
-        ET_SendEvent(&ETRender::ET_drawFrame);
+        ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
         checkSquare(CLEAR_COLOR, 0, size.x, 0, size.y);
     }
 
     ET_SendEvent(boxId, &ETRenderNode::ET_show);
 
     {
-        ET_SendEvent(&ETRender::ET_drawFrame);
+        ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
         checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
     }
 
