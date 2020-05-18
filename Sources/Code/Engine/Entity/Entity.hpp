@@ -14,10 +14,12 @@ class Entity : public ETNode<ETEntity> {
 public:
 
     Entity(const char* entityName, EntityId entId);
-    ~Entity();
+    virtual ~Entity();
 
-    void addLogic(ClassInstance&& logicInstance);
-    void addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr);
+    EntityLogicId addLogic(ClassInstance&& logicInstance);
+    EntityLogicId addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr);
+    bool removeLogic(EntityLogicId logicId);
+    void dumpLogicData(EntityLogicId logicId);
 
     EntityId getEntityId() const { return entityId; }
 
@@ -34,8 +36,25 @@ public:
 
 private:
 
+    Entity& operator=(const Entity&) = delete;
+    Entity(const Entity&) = delete;
+
+private:
+
+    EntityLogicId createLogicId() const;
+    ClassInstance* findLogic(EntityLogicId logicId);
+
+private:
+
+    struct EntityLogicNode {
+        ClassInstance logic;
+        int logicId;
+    };
+
+private:
+
     Transform tm;
-    std::vector<ClassInstance> logics;
+    std::vector<EntityLogicNode> logics;
     std::vector<EntityId> children;
     std::string name;
     EntityId parentId;

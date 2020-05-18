@@ -3,13 +3,13 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/Entity.hpp"
 
 #include <memory>
 #include <string>
 #include <unordered_map>
 
 class Entity;
-class EntityLogic;
 class JSONNode;
 class ClassInfo;
 
@@ -17,7 +17,6 @@ class EntityManager : public SystemLogic,
     public ETNode<ETEntityManager> {
 
     using EntityPtrT = std::unique_ptr<Entity>;
-    using LogicPtrT = std::unique_ptr<EntityLogic>;
 
 public:
 
@@ -33,6 +32,9 @@ public:
     void ET_destroyEntity(EntityId entityId) override;
     bool ET_registerLogics(EntityLogicRegister& logicRegister) override;
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
+    EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
+    void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) override;
+    void ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId) override;
 
 private:
 
@@ -45,7 +47,7 @@ private:
 private:
 
     std::unordered_map<std::string, ClassInfo*> registeredLogics;
-    std::vector<EntityPtrT> entities;
+    std::unordered_map<EntityId, EntityPtrT> entities;
 };
 
 #endif /* __ENTITY_MANAGER_HPP__ */

@@ -4,6 +4,7 @@
 #include "Core/JSONNode.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Core/MemoryStream.hpp"
 
 #include <cassert>
 
@@ -96,7 +97,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
             return;
         }
     }
-    std::vector<ClassInfo*> allBaseClasses;
+    std::vector<const ClassInfo*> allBaseClasses;
     getAllClasses(allBaseClasses);
     for(auto baseClass : allBaseClasses) {
         if(baseClass->findValueByName(valueName)) {
@@ -137,7 +138,18 @@ ClassInstance ClassInfo::createInstance(const JSONNode& node) {
     return ClassInstance(*this, object);
 }
 
-void ClassInfo::getAllClasses(std::vector<ClassInfo*> classes) {
+ClassInstance ClassInfo::createDefaultInstance() {
+    if(!createFunc) {
+        return ClassInstance();
+    }
+    auto object = createFunc();
+    if(!object) {
+        return ClassInstance();
+    }
+    return ClassInstance(*this, object);
+}
+
+void ClassInfo::getAllClasses(std::vector<const ClassInfo*>& classes) const {
     classes.push_back(this);
     for(auto classInfo : baseClasses) {
         classes.push_back(classInfo);
@@ -161,10 +173,10 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
         return;
     }
 
-    std::vector<ClassInfo*> newClasses;
+    std::vector<const ClassInfo*> newClasses;
     baseClassInfo->getAllClasses(newClasses);
 
-    std::vector<ClassInfo*> currentClasses;
+    std::vector<const ClassInfo*> currentClasses;
     getAllClasses(currentClasses);
 
     for(auto newClass : newClasses) {
@@ -196,7 +208,7 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
     baseClasses.push_back(baseClassInfo);
 }
 
-ClassValue* ClassInfo::findValueByPtr(ClassValue::ValuePtrT ptr) {
+const ClassValue* ClassInfo::findValueByPtr(ClassValue::ValuePtrT ptr) const {
     for(auto& val : values) {
         if(val.ptr == ptr) {
             return &val;
@@ -205,7 +217,7 @@ ClassValue* ClassInfo::findValueByPtr(ClassValue::ValuePtrT ptr) {
     return nullptr;
 }
 
-ClassValue* ClassInfo::findValueByName(const char* name) {
+const ClassValue* ClassInfo::findValueByName(const char* name) const {
     if(!name || !name[0]) {
         return nullptr;
     }
@@ -231,4 +243,20 @@ void ClassInfo::makeReflectModel(JSONNode& node) {
         fieldsNode.write(value.name.c_str(), value.getTypeName());
     }
     node.write("data", fieldsNode);
+}
+
+bool ClassInfo::dumpValues(void* instance, MemoryStream& stream) const {
+    std::vector<const ClassInfo*> allClasses;
+    getAllClasses(allClasses);
+
+    for(auto classInfo : allClasses) {
+        for(auto& value : classInfo->values) {
+            auto ptr = getValueFunc(instance, value.ptr);
+            if(!value.dumpValue(instance, ptr, stream)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }

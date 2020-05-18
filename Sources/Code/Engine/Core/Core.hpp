@@ -40,4 +40,10 @@ const EntityId InvalidEntityId;
 typedef int TypeId;
 const TypeId InvalidTypeId = 0;
 
+typedef int EntityLogicId;
+const EntityLogicId InvalidEntityLogicId = -1;
+
+typedef int PropertyId;
+const PropertyId InvalidPropertyId = -1;
+
 #endif /* __CORE_HPP__ */

@@ -200,3 +200,22 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntityFromJSON, node, "TestEnity");
     ASSERT_TRUE(entId.isValid());
 }
+
+TEST_F(EntityTests, CheckAddRemoveLogic) {
+    EntityId objId = InvalidEntityId;
+    ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+    ASSERT_NE(objId, InvalidEntityId);
+
+    EntityLogicId firstLogicId = InvalidEntityLogicId;
+    ET_SendEventReturn(firstLogicId, &ETEntityManager::ET_addLogicToEntity, objId, "RenderSimple");
+    ASSERT_NE(firstLogicId, InvalidEntityLogicId);
+
+    EntityLogicId secondLogicId = InvalidEntityLogicId;
+    ET_SendEventReturn(secondLogicId, &ETEntityManager::ET_addLogicToEntity, objId, "RenderSimple");
+    ASSERT_NE(secondLogicId, InvalidEntityLogicId);
+
+    ASSERT_NE(firstLogicId, secondLogicId);
+
+    ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, firstLogicId);
+    ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, secondLogicId);
+}

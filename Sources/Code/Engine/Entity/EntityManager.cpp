@@ -40,20 +40,13 @@ EntityId EntityManager::ET_createEntity(const char* entityName) {
 }
 
 void EntityManager::ET_destroyEntity(EntityId entityId) {
-    EntityPtrT entToRemove;
-    for(auto it = entities.begin(), end = entities.end(); it != end; ++it) {
-        if(*it && (*it)->getEntityId() == entityId) {
-            entToRemove = std::move(*it);
-            break;
-        }
+    auto it = entities.find(entityId);
+    if(it == entities.end()) {
+        LogWarning("[EntityManager::ET_destroyEntity] Can't find entity to destroy");
+        return;
     }
-    if(entToRemove) {
-        LogDebug("[EntityManager::ET_destroyEntity] Detroy entity: '%s'", entToRemove->ET_getName());
-        entToRemove.reset();
-        entities.erase(std::remove_if(entities.begin(), entities.end(), [](const EntityPtrT& obj){
-            return obj == nullptr;
-        }), entities.end());
-    }
+    LogDebug("[EntityManager::ET_destroyEntity] Destroy entity: '%s'", it->second->ET_getName());
+    entities.erase(it);
 }
 
 bool EntityManager::ET_registerLogics(EntityLogicRegister& logicRegister) {
@@ -94,6 +87,80 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
     return entity->getEntityId();
 }
 
+EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* logicName) {
+    if(!entityId.isValid()) {
+        LogError("[EntityManager::ET_addLogicToEntity] Invalid entity id to add logic");
+        return InvalidEntityLogicId;
+    }
+    auto entIt = entities.find(entityId);
+    if(entIt == entities.end()) {
+        LogWarning("[EntityManager::ET_addLogicToEntity] Can't find entity to add a logic '%s'", logicName);
+        return InvalidEntityLogicId;
+    }
+    if(!logicName || !logicName[0]) {
+        LogWarning("[EntityManager::ET_addLogicToEntity] Can't add logic with empty name");
+        return InvalidEntityLogicId;
+    }
+    Entity* entity = entIt->second.get();
+    auto logicIt = registeredLogics.find(logicName);
+    if(logicIt == registeredLogics.end()) {
+        LogWarning("[EntityManager::ET_addLogicToEntity] Can't find logic '%s' to add to an entity '%s'",
+            logicName, entIt->second->ET_getName());
+        return InvalidEntityLogicId;
+    }
+    auto logicInstance = logicIt->second->createDefaultInstance();
+    if(!logicInstance.get()) {
+        LogWarning("[EntityManager::ET_addLogicToEntity] Can't create instance of logic '%s' to add to an entity '%s'",
+            logicName, entIt->second->ET_getName());
+        return InvalidEntityLogicId;
+    }
+    auto logicId = entity->addLogic(std::move(logicInstance));
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicName, entity->ET_getName());
+    }
+    LogDebug("[EntityManager::ET_addLogicToEntity] Add logic '%s' to entity '%s'", logicName, entity->ET_getName());
+    return logicId;
+}
+
+void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
+    if(!entityId.isValid()) {
+        LogError("[EntityManager::ET_removeLogicFromEntity] Invalid entity id to remove logic");
+        return;
+    }
+    auto entId = entities.find(entityId);
+    if(entId == entities.end()) {
+        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find entity to remove logic");
+        return;
+    }
+    Entity* entity = entId->second.get();
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't remove logic with invalid id from entity '%s'", entity->ET_getName());
+        return;
+    }
+    if(!entity->removeLogic(logicId)) {
+        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find logic to remove for entity '%s'", entity->ET_getName());
+        return;
+    }
+}
+
+void EntityManager::ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId) {
+    if(!entityId.isValid()) {
+        LogError("[EntityManager::ET_dumpEntityLogicData] Invalid entity id to dump logic data");
+        return;
+    }
+    auto entId = entities.find(entityId);
+    if(entId == entities.end()) {
+        LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't find entity to dump logic data");
+        return;
+    }
+    Entity* entity = entId->second.get();
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't dump logic data with invalid id from entity '%s'", entity->ET_getName());
+        return;
+    }
+    entity->dumpLogicData(logicId);
+}
+
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
     auto logicsNodes = node.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
@@ -119,13 +186,11 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, cons
             LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entityName);
             return false;
         }
-        auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
-        logicPtr->setEntity(entity);
-        if(!logicPtr->init()) {
+        auto logicId = entity->addLogic(std::move(logicInstance));
+        if(logicId == InvalidEntityLogicId) {
             LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entityName);
             continue;
         }
-        entity->addLogic(std::move(logicInstance));
     }
     return true;
 }
@@ -163,20 +228,19 @@ Entity* EntityManager::createEntityImpl(Entity* rootEntity, const JSONNode& enti
     if(!entityNode) {
         return nullptr;
     }
-    entities.emplace_back(new Entity(entityName, GetETSystem()->createNewEntityId()));
-    Entity* entity = entities.back().get();
-    if(!setupEntityLogics(entity, entityNode, entityName)) {
-        entities.pop_back();
+    EntityPtrT entity(new Entity(entityName, GetETSystem()->createNewEntityId()));
+    if(!setupEntityLogics(entity.get(), entityNode, entityName)) {
         return nullptr;
     }
-    if(!setupEntityChildren(entity, entityNode, entityName)) {
-        entities.pop_back();
+    if(!setupEntityChildren(entity.get(), entityNode, entityName)) {
         return nullptr;
     }
+    auto resEntPtr = entity.get();
+    entities[resEntPtr->getEntityId()] = std::move(entity);
     if(rootEntity) {
         rootEntity->ET_addChild(entity->getEntityId());
     }
-    return entity;
+    return resEntPtr;
 }
 
 Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) {

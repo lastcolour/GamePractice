@@ -60,5 +60,16 @@ class EditorAppTests(unittest.TestCase):
 
         EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
 
+    def testAddRemoveLogic(self):
+        entityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
+
+        logicId = EditorAppTests.NATIVE_EDITOR.addLogicToEntity(entityId, "RenderSimple")
+
+        self.assertNotEqual(logicId, -1)
+
+        EditorAppTests.NATIVE_EDITOR.removeLogicFromEntity(entityId, logicId)
+
+        EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
+
 if __name__ == "__main__":
     unittest.main()

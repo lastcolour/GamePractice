@@ -16,18 +16,68 @@ Entity::~Entity() {
     for(auto it = children.rbegin(), end = children.rend(); it != end; ++it) {
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, *it);
     }
+    for(auto it = logics.rbegin(), end = logics.rend(); it != end; ++it) {
+        static_cast<EntityLogic*>(it->logic.get())->deinit();
+    }
 }
 
-void Entity::addLogic(ClassInstance&& logicInstance) {
+EntityLogicId Entity::createLogicId() const {
+    if(logics.empty()) {
+        return 0;
+    }
+    return logics.back().logicId + 1;
+}
+
+EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
     assert(logicInstance.get() && "Can't add null game logic");
-    logics.emplace_back(std::move(logicInstance));
+    auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
+    logicPtr->setEntity(this);
+    if(!logicPtr->init()) {
+        return InvalidEntityLogicId;
+    }
+    auto logicId = createLogicId();
+    logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
+    return logicId;
 }
 
-void Entity::addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr) {
-    assert(logicPtr && "Can't add null custom game logic");
-    logicPtr->setEntity(this);
-    ClassInstance logicInstance = ClassInstance::CreateWithoutClassInfo(logicPtr.release());
-    logics.emplace_back(std::move(logicInstance));
+EntityLogicId Entity::addCustomLogic(std::unique_ptr<EntityLogic>&& logic) {
+    assert(logic && "Can't add null custom game logic");
+    ClassInstance logicInstance = ClassInstance::CreateWithoutClassInfo(logic.release());
+    return addLogic(std::move(logicInstance));
+}
+
+bool Entity::removeLogic(EntityLogicId logicId) {
+    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
+    auto it = logics.begin();
+    while(it != logics.end()) {
+        if(it->logicId == logicId) {
+            break;
+        }
+        ++it;
+    }
+    if(it == logics.end()) {
+        return false;
+    }
+    logics.erase(it);
+    return true;
+}
+
+ClassInstance* Entity::findLogic(EntityLogicId logicId) {
+    for(auto& logicNode : logics) {
+        if(logicNode.logicId == logicId) {
+            return &logicNode.logic;
+        }
+    }
+    return nullptr;
+}
+
+void Entity::dumpLogicData(EntityLogicId logicId) {
+    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
+    auto logicInstance = findLogic(logicId);
+    if(!logicInstance) {
+        return;
+    }
+    logicInstance->dumpValues();
 }
 
 const char* Entity::ET_getName() const {

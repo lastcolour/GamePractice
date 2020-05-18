@@ -45,8 +45,10 @@ bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc);
 using ArrayCreateElemFuncT = std::function<void*(void*)>;
 using ArraySizeFuncT = std::function<size_t(void*)>;
 using ArrayEraseElemFuncT = std::function<void(size_t, void*)>;
+using ArrayGetElemFuncT = std::function<void*(size_t, void*)>;
 
-bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc, ArraySizeFuncT sizeFunc, ArrayEraseElemFuncT eraseFunc);
+bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc, ArraySizeFuncT sizeFunc,
+    ArrayEraseElemFuncT eraseFunc, ArrayGetElemFuncT getElemFunc);
 
 } // namespace ReflectUtils
 
@@ -118,12 +120,17 @@ bool CreateTypeInfo() {
             auto arrayPtr = static_cast<ClassT*>(value);
             arrayPtr->erase(arrayPtr->begin() + pos);
         };
+        auto getElemFunc = [](size_t pos, void* value) {
+            auto arrayPtr = static_cast<ClassT*>(value);
+            return &((*arrayPtr)[pos]);
+        };
         return ReflectUtils::RegisterArrayInfo(
             GetTypeId<ElemT>(),
             GetClassValueType<ElemT>(),
             static_cast<ReflectUtils::ArrayCreateElemFuncT>(createElemFunc),
             static_cast<ReflectUtils::ArraySizeFuncT>(sizeFunc),
-            static_cast<ReflectUtils::ArrayEraseElemFuncT>(eraseFunc)
+            static_cast<ReflectUtils::ArrayEraseElemFuncT>(eraseFunc),
+            static_cast<ReflectUtils::ArrayGetElemFuncT>(getElemFunc)
         );
     }
     return true;

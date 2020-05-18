@@ -24,13 +24,14 @@ bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc) {
     return true;
 }
 
-bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc, ArraySizeFuncT sizeFunc, ArrayEraseElemFuncT eraseFunc) {
+bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc,
+    ArraySizeFuncT sizeFunc, ArrayEraseElemFuncT eraseFunc, ArrayGetElemFuncT getElemFunc) {
     ArrayInfo* arrayInfo = nullptr;
     ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, InvalidTypeId);
     if(arrayInfo) {
         return true;
     }
-    std::unique_ptr<ArrayInfo> arrayInfoPtr(new ArrayInfo(elemTypeId, elemType, createFunc, sizeFunc, eraseFunc));
+    std::unique_ptr<ArrayInfo> arrayInfoPtr(new ArrayInfo(elemTypeId, elemType, createFunc, sizeFunc, eraseFunc, getElemFunc));
     bool res = false;
     ET_SendEventReturn(res, &ETClassInfoManager::ET_registerArrayInfo, arrayInfoPtr);
     if(!res) {

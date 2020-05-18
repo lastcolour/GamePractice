@@ -1,11 +1,14 @@
 #include "Reflect/ArrayInfo.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/StringFormat.hpp"
+#include "Core/MemoryStream.hpp"
 
-ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF, SizeFuncT sizeF, EraseElemFuncT eraseF) :
+ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF,
+    SizeFuncT sizeF, EraseElemFuncT eraseF, GetElemFuncT getElemF) :
     createFunc(createF),
     sizeFunc(sizeF),
-    eraseFunc(eraseF) {
+    eraseFunc(eraseF),
+    getElemFunc(getElemF) {
 
     elemValue.isElement = true;
     elemValue.typeId = elemTypeId;
@@ -46,4 +49,16 @@ void ArrayInfo::makeReflectModel(JSONNode& node) {
     JSONNode elemNode;
     elemNode.write("type", elemValue.getTypeName());
     node.write("data", elemNode);
+}
+
+bool ArrayInfo::dumpValues(void* valuePtr, MemoryStream& stream) {
+    int sz = static_cast<int>(size(valuePtr));
+    stream.write(sz);
+    for(int i = 0; i < sz; ++i) {
+        auto elem = getElemFunc(i, valuePtr);
+        if(!elemValue.dumpValue(elem, elem, stream)) {
+            return false;
+        }
+    }
+    return true;
 }

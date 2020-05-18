@@ -59,7 +59,18 @@ class EditorNative:
         self._getEntityNameFunc = self._editorLib.GetEntityName
         self._getEntityNameFunc.argstype = [ctypes.c_uint32,]
         self._getEntityNameFunc.restype = ctypes.c_char_p
-    
+
+        self._addLogicToEntityFunc = self._editorLib.AddLogicToEntity
+        self._addLogicToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
+        self._addLogicToEntityFunc.restype = ctypes.c_int32
+
+        self._removeLogicFromEntity = self._editorLib.RemoveLogicFromEntity
+        self._removeLogicFromEntity.argstype = [ctypes.c_uint32, ctypes.c_int32]
+        self._removeLogicFromEntity.restype = None
+
+        #uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void* out);
+        #void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size);
+
         self._drawFrameFunc = self._editorLib.DrawFrame
         self._drawFrameFunc.argstype = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_uint32]
         self._drawFrameFunc.restype = None
@@ -95,6 +106,16 @@ class EditorNative:
         cEntId = ctypes.c_uint32(entityId)
         res = self._getEntityNameFunc(cEntId)
         return res.decode('ascii')
+
+    def addLogicToEntity(self, entityId, logicName):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicName = ctypes.c_char_p(logicName.encode('ascii'))
+        return self._addLogicToEntityFunc(cEntId, cLogicName)
+
+    def removeLogicFromEntity(self, entityId, logicId):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        self._removeLogicFromEntity(cEntId, cLogicId)
 
     def drawFrame(self, width, height):
         self._drawBuffer.setSize(width, height)

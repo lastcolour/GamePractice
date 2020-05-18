@@ -34,6 +34,9 @@ struct ETEntityManager {
     virtual void ET_destroyEntity(EntityId entId) = 0;
     virtual bool ET_registerLogics(EntityLogicRegister& logicRegister) = 0;
     virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;
+    virtual EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) = 0;
+    virtual void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) = 0;
+    virtual void ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId) = 0;
 };
 
 #endif /* __ENTITY_INTERFACES_HPP__ */

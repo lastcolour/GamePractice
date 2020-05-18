@@ -19,9 +19,10 @@ public:
     void unloadEntity(EntityId entityId);
     std::vector<EntityId> getEntityChildren(EntityId entityId);
     const char* getEntityName(EntityId entityId);
+    EntityLogicId addLogicToEntity(EntityId entityId, const char* logicName);
+    void removeLogicFromEntity(EntityId entityId, EntityLogicId logicId);
+    void getEntityLogicData(EntityId entityId, EntityLogicId logicId);
     void drawFrame(void* out, int32_t width, int32_t height);
-    uint32_t addLogicToEntity(EntityId entityId, const char* logicName);
-    void removeLogicFromEntity(EntityId entityId, uint32_t logicId);
 
 protected:
 

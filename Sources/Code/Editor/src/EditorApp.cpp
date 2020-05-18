@@ -113,13 +113,27 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
     memcpy(out, frameBuffer.getPtr(), renderSize.x * renderSize.y * 4);
 }
 
-uint32_t EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {
+EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {
     if(!entityId.isValid()) {
         LogError("[EditorApp::addLogicToEntity] Can't add logic '%s' to invalid entity", logicName);
         return 0;
     }
-    return 0;
+    EntityLogicId logicId = InvalidEntityLogicId;
+    ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, entityId, logicName);
+    return static_cast<int32_t>(logicId);
 }
 
-void EditorApp::removeLogicFromEntity(EntityId entityId, uint32_t logicId) {
+void EditorApp::removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::removeLogicFromEntity] Can't remove logic from invalid entity");
+        return;
+    }
+    ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, entityId, logicId);
+}
+
+void EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId logicId) {
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::getEntityLogicData] Can't get logic data from invalid entity");
+        return;
+    }
 }

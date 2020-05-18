@@ -6,6 +6,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/MemoryStream.hpp"
 
 #include <cassert>
 
@@ -17,13 +18,18 @@ T& getRef(void* value) {
 }
 
 template<typename T>
+const T& getRef(const void* value) {
+    return *(reinterpret_cast<const T*>(value));
+}
+
+template<typename T>
 void readValue(bool isElement, const std::string& name, T& value, const JSONNode& node) {
     if(isElement) {
         node.read(value);
     } else {
         node.read(name.c_str(), value);
     }
-}
+} 
 
 bool readVec2i(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("x")) {
@@ -252,7 +258,7 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
             return false;
         }
     }
-    switch (type)
+    switch(type)
     {
     case ClassValueType::Invalid: {
         LogError("[ClassValue::serializeValue] Field '%s' has invalid type", name);
@@ -427,4 +433,93 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
         assert(false && "Unknown value type");
         return false;
     }
+}
+
+bool ClassValue::dumpValue(void* instance, void* valuePtr, MemoryStream& stream) const {
+    switch(type) {
+    case ClassValueType::Bool: {
+        stream.write(getRef<bool>(valuePtr));
+        break;
+    }
+    case ClassValueType::Int: {
+        stream.write(getRef<int>(valuePtr));
+        break;
+    }
+    case ClassValueType::Float: {
+        stream.write(getRef<float>(valuePtr));
+        break;
+    }
+    case ClassValueType::String: {
+        stream.write(getRef<std::string>(valuePtr).c_str());
+        break;
+    }
+    case ClassValueType::Vec2i: {
+        const auto& val = getRef<Vec2i>(valuePtr);
+        stream.write(val.x);
+        stream.write(val.y);
+        break;
+    }
+    case ClassValueType::Vec2: {
+        const auto& val = getRef<Vec2>(valuePtr);
+        stream.write(val.x);
+        stream.write(val.y);
+        break;
+    }
+    case ClassValueType::Vec3: {
+        const auto& val = getRef<Vec3>(valuePtr);
+        stream.write(val.x);
+        stream.write(val.y);
+        stream.write(val.z);
+        break;
+    }
+    case ClassValueType::Vec4: {
+        const auto& val = getRef<Vec4>(valuePtr);
+        stream.write(val.x);
+        stream.write(val.y);
+        stream.write(val.z);
+        stream.write(val.w);
+        break;
+    }
+    case ClassValueType::Color: {
+        const auto& val = getRef<ColorB>(valuePtr);
+        stream.write(val.r);
+        stream.write(val.g);
+        stream.write(val.b);
+        stream.write(val.a);
+        break;
+    }
+    case ClassValueType::Object: {
+        ClassInfo* classInfo = nullptr;
+        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        if(!classInfo) {
+            LogError("[ClassValue::dumpValue] Can't find class info for a field '%s'", name);
+            return false;
+        }
+        return classInfo->dumpValues(valuePtr, stream);
+    }
+    case ClassValueType::Resource: {
+        break;
+    }
+    case ClassValueType::Enum: {
+        stream.write(getRef<int>(valuePtr));
+        break;
+    }
+    case ClassValueType::Array: {
+        ArrayInfo* arrayInfo = nullptr;
+        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        if(!arrayInfo) {
+            LogError("[ClassValue::dumpValue] Can't find array info for a field '%s'", name);
+            return false;
+        }
+        return arrayInfo->dumpValues(valuePtr, stream);
+    }
+    case ClassValueType::Entity: {
+        break;
+    }
+    case ClassValueType::Invalid:
+    default:
+        assert(false && "Invalid value type");
+        return false;
+    }
+    return true;
 }

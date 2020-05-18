@@ -4,6 +4,7 @@
 #include "Reflect/ReflectUtils.hpp"
 
 class JSONNode;
+class MemoryStream;
 
 class ClassValue {
 public:
@@ -39,6 +40,7 @@ public:
 
     const char* getTypeName() const;
     bool serializeValue(void* instance, void* valuePtr, const JSONNode& node);
+    bool dumpValue(void* instance, void* valuePtr, MemoryStream& stream) const;
 
 public:
 

@@ -71,7 +71,7 @@ uint32_t GetEntityChildren(uint32_t entityId, uint32_t* out) {
         ptr[i] = children[i].getRawId();
     }
     out = ptr;
-    return children.size();
+    return static_cast<uint32_t>(children.size());
 }
 
 const char* GetEntityName(uint32_t entityId) {
@@ -90,31 +90,35 @@ void DrawFrame(void* out, uint32_t w, uint32_t h) {
     EDITOR_APP->drawFrame(out, w, h);
 }
 
-uint32_t AddLogicToEntity(uint32_t entityId, const char* logicName) {
+int32_t AddLogicToEntity(uint32_t entityId, const char* logicName) {
     if(!EDITOR_APP) {
         return 0u;
     }
     EntityId entId;
     entId.setRawId(entityId);
-    return EDITOR_APP->addLogicToEntity(entId, logicName);
+    return static_cast<int32_t>(EDITOR_APP->addLogicToEntity(entId, logicName));
 }
 
-void RemoveLogicFromEntity(uint32_t entityId, uint32_t logicId) {
+void RemoveLogicFromEntity(uint32_t entityId, int32_t logicId) {
     if(!EDITOR_APP) {
         return;
     }
     EntityId entId;
     entId.setRawId(entityId);
-    EDITOR_APP->removeLogicFromEntity(entId, logicId);
+    EDITOR_APP->removeLogicFromEntity(entId, static_cast<EntityLogicId>(logicId));
 }
 
-uint32_t GetEntityLogicData(uint32_t entityId, uint32_t logicId, void* out) {
+uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void* out) {
     if(!EDITOR_APP) {
         return 0u;
     }
+    EntityId entId;
+    entId.setRawId(entityId);
+    EDITOR_APP->getEntityLogicData(entId, static_cast<EntityLogicId>(logicId));
+    return 0u;
 }
 
-void SetEntityLogicFieldData(uint32_t entityId, uint32_t logicId, uint32_t fieldId, void* data, uint32_t size) {
+void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size) {
     if(!EDITOR_APP) {
         return;
     }

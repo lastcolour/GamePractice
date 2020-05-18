@@ -16,11 +16,13 @@ public:
     ~ClassInfo();
 
     ClassInstance createInstance(const JSONNode& node);
+    ClassInstance createDefaultInstance();
     bool serializeInstance(void* instance, const JSONNode& node);
     DeleteFuncT getDeleteFunction() const;
     const char* getName() const;
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
+    bool dumpValues(void* instance, MemoryStream& stream) const;
 
     template<typename ClassT>
     void init() {
@@ -82,12 +84,12 @@ public:
 
 private:
 
-    ClassValue* findValueByName(const char* name);
-    ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr);
+    const ClassValue* findValueByName(const char* name) const;
+    const ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr) const;
     void registerBaseClass(TypeId baseClassTypeId);
     void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
         ClassValue::SetResourceFuncT valueSetFunc);
-    void getAllClasses(std::vector<ClassInfo*> classes);
+    void getAllClasses(std::vector<const ClassInfo*>& classes) const;
 
 private:
 

@@ -1,5 +1,6 @@
 #include "Reflect/ClassInstance.hpp"
 #include "Reflect/ClassInfo.hpp"
+#include "Core/MemoryStream.hpp"
 
 ClassInstance::ClassInstance() :
     classInfo(nullptr),
@@ -67,4 +68,19 @@ void* ClassInstance::get() {
 void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     instance = ptr;
     deleteFunc = deleteF;
+}
+
+Buffer ClassInstance::dumpValues() {
+    if(!instance) {
+        return Buffer();
+    }
+    if(!classInfo) {
+        return Buffer();
+    }
+    MemoryStream stream;
+    stream.openForWrite();
+    if(!classInfo->dumpValues(instance, stream)) {
+        return Buffer();
+    }
+    return stream.flushToBuffer();
 }

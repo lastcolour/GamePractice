@@ -4,6 +4,7 @@
 #include <Core/JSONNode.hpp>
 #include <Core/StringFormat.hpp>
 #include <Core/ETPrimitives.hpp>
+#include <Core/MemoryStream.hpp>
 #include <Reflect/ETReflectInterfaces.hpp>
 
 namespace {
@@ -396,6 +397,46 @@ TEST_F(ReflectTests, TestDerivedReflection) {
     ASSERT_TRUE(classNode);
 
     ASSERT_TRUE(classNode.hasKey("base"));
+}
+
+TEST_F(ReflectTests, TestDumpValuesSimpleObject) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<SimpleEntityLogic>());
+
+    auto jsonStr = StringFormat("%s", SIMPLE_ENTITY_JSON_DATA);
+    auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
+    ASSERT_TRUE(jsonNode);
+
+    auto classInfo =  reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createInstance(jsonNode);
+
+    auto buffer = instance.dumpValues();
+    ASSERT_TRUE(buffer);
+
+    MemoryStream stream;
+    stream.openForRead(buffer);
+    {
+        bool val = false;
+        stream.read(val);
+        ASSERT_EQ(val, true);
+    }
+    {
+        int val = 0;
+        stream.read(val);
+        ASSERT_EQ(val, 1);
+    }
+    {
+        float val = 1.0f;
+        stream.read(val);
+        ASSERT_FLOAT_EQ(val, 1.0f);
+    }
+    {
+        std::string val;
+        stream.read(val);
+        ASSERT_STREQ(val.c_str(), "1");
+    }
 }
 
 TEST_F(ReflectTests, TestEntityReference) {
