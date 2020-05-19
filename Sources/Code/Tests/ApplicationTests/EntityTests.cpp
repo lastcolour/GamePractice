@@ -3,6 +3,7 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "Entity/EntityLogicRegister.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/MemoryStream.hpp"
 
 namespace {
 
@@ -218,4 +219,52 @@ TEST_F(EntityTests, CheckAddRemoveLogic) {
 
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, firstLogicId);
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, secondLogicId);
+}
+
+TEST_F(EntityTests, TestReflectSimpleEntity) {
+    EntityId entityId;
+    ET_SendEventReturn(entityId, &ETEntityManager::ET_createEntity, "Game/Simple.json");
+    ASSERT_TRUE(entityId.isValid());
+
+    EntityLogicId logicId = 0;
+    MemoryStream stream;
+    stream.openForWrite();
+    bool res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_dumpEntityLogicData, entityId, logicId, stream);
+    ASSERT_TRUE(res);
+
+    auto buffer = stream.flushToBuffer();
+    stream.close();
+    ASSERT_TRUE(buffer);
+    stream.openForRead(buffer);
+
+    {
+        std::string geomName;
+        stream.read(geomName);
+        EXPECT_STREQ(geomName.c_str(), "");
+    }
+    {
+        std::string matName;
+        stream.read(matName);
+        EXPECT_STREQ(matName.c_str(), "");
+    }
+    {
+        Vec2 scale(0.f);
+        stream.read(scale.x);
+        stream.read(scale.y);
+        EXPECT_FLOAT_EQ(scale.x, 1.f);
+        EXPECT_FLOAT_EQ(scale.y, 1.f);
+    }
+    {
+        ColorB col(0, 0, 0, 0);
+        stream.read(col.r);
+        stream.read(col.g);
+        stream.read(col.b);
+        stream.read(col.a);
+
+        EXPECT_EQ(col.r, 255);
+        EXPECT_EQ(col.g, 255);
+        EXPECT_EQ(col.b, 255);
+        EXPECT_EQ(col.a, 255);
+    }
 }

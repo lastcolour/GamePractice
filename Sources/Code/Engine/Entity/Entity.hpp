@@ -19,7 +19,7 @@ public:
     EntityLogicId addLogic(ClassInstance&& logicInstance);
     EntityLogicId addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr);
     bool removeLogic(EntityLogicId logicId);
-    void dumpLogicData(EntityLogicId logicId);
+    bool dumpLogicData(EntityLogicId logicId, MemoryStream& stream);
 
     EntityId getEntityId() const { return entityId; }
 

@@ -5,6 +5,7 @@ import ctypes
 import pathlib
 import os
 import json
+import struct
 
 def _getEditorLibPath():
     if os.name == "nt":
@@ -22,6 +23,9 @@ def _getEditorLibPath():
         __file__, buildDir, buildPlatform, buildType, editorLibName, libExt)).resolve().__str__()
     return cPath.replace("\\", "/")
 
+def _getPyStr(cString):
+    return cString.decode('ascii').rstrip('\x00')
+
 class EditorAppTests(unittest.TestCase):
 
     @classmethod
@@ -35,41 +39,53 @@ class EditorAppTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.NATIVE_EDITOR.deinitialize()
 
+    def setUp(self):
+        self._centralEntityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
+        self.assertNotEqual(self._centralEntityId, 0)
+
+    def tearDown(self):
+        EditorAppTests.NATIVE_EDITOR.unloadEntity(self._centralEntityId)
+
     def testGetReflectModel(self):
         reflectModel = EditorAppTests.NATIVE_EDITOR.getReflectModel()
         model = json.loads(reflectModel)
         self.assertGreater(len(model), 0)
 
-    def testLoadUnloadEntity(self):
-        entityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
-        self.assertNotEqual(entityId, 0)
-
-        entityName = EditorAppTests.NATIVE_EDITOR.getEntityName(entityId)
+    def testEntityAndChildrenName(self):
+        entityName = EditorAppTests.NATIVE_EDITOR.getEntityName(self._centralEntityId)
         self.assertEqual(entityName, "Game/Simple.json")
 
-        children = EditorAppTests.NATIVE_EDITOR.getEntityChildren(entityId)
+        children = EditorAppTests.NATIVE_EDITOR.getEntityChildren(self._centralEntityId)
         self.assertEqual(len(children), 0)
 
-        EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
-
     def testDrawFrame(self):
-        entityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
-        self.assertNotEqual(entityId, 0)
-
         EditorAppTests.NATIVE_EDITOR.drawFrame(10, 10)
 
-        EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
-
     def testAddRemoveLogic(self):
-        entityId = EditorAppTests.NATIVE_EDITOR.loadEntity("Game/Simple.json")
-
-        logicId = EditorAppTests.NATIVE_EDITOR.addLogicToEntity(entityId, "RenderSimple")
+        logicId = EditorAppTests.NATIVE_EDITOR.addLogicToEntity(self._centralEntityId, "RenderSimple")
 
         self.assertNotEqual(logicId, -1)
 
-        EditorAppTests.NATIVE_EDITOR.removeLogicFromEntity(entityId, logicId)
+        EditorAppTests.NATIVE_EDITOR.removeLogicFromEntity(self._centralEntityId, logicId)
 
-        EditorAppTests.NATIVE_EDITOR.unloadEntity(entityId)
+    def testSetGetLogicData(self):
+        logicId = 0
+        res = EditorAppTests.NATIVE_EDITOR.getEntityLogicData(self._centralEntityId, logicId)
+        matName, geomName, scaleX, scaleY, r, g, b, a = struct.unpack_from("@ssffBBBB", res)
+
+        matName = _getPyStr(matName)
+        geomName = _getPyStr(geomName)
+
+        self.assertEqual(matName, "")
+        self.assertEqual(geomName, "")
+
+        self.assertEqual(scaleX, 1.0)
+        self.assertEqual(scaleY, 1.0)
+
+        self.assertEqual(r, 255)
+        self.assertEqual(g, 255)
+        self.assertEqual(b, 255)
+        self.assertEqual(a, 255)
 
 if __name__ == "__main__":
     unittest.main()

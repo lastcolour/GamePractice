@@ -34,7 +34,7 @@ public:
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
     EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
     void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) override;
-    void ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId) override;
+    bool ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) override;
 
 private:
 

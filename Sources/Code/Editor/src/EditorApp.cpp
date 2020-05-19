@@ -14,6 +14,7 @@
 #include "Entity/ETEntityInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Core/MemoryStream.hpp"
 
 EditorApp::EditorApp() :
     Application() {
@@ -131,9 +132,18 @@ void EditorApp::removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) 
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, entityId, logicId);
 }
 
-void EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId logicId) {
+Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId logicId) {
     if(!entityId.isValid()) {
         LogError("[EditorApp::getEntityLogicData] Can't get logic data from invalid entity");
-        return;
+        return Buffer();
     }
+    MemoryStream stream;
+    stream.openForWrite();
+    bool dumpRes = false;
+    ET_SendEventReturn(dumpRes, &ETEntityManager::ET_dumpEntityLogicData, entityId, logicId, stream);
+    if(!dumpRes) {
+        LogError("[EditorApp::getEntityLogicData] Can't dump logic data from entity");
+        return Buffer();
+    }
+    return stream.flushToBuffer();
 }

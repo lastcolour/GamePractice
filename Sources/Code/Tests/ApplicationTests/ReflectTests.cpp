@@ -412,10 +412,16 @@ TEST_F(ReflectTests, TestDumpValuesSimpleObject) {
 
     auto instance = classInfo->createInstance(jsonNode);
 
-    auto buffer = instance.dumpValues();
+    MemoryStream stream;
+    stream.openForWrite();
+
+    ASSERT_TRUE(instance.dumpValues(stream));
+
+    auto buffer = stream.flushToBuffer();
     ASSERT_TRUE(buffer);
 
-    MemoryStream stream;
+    stream.close();
+
     stream.openForRead(buffer);
     {
         bool val = false;

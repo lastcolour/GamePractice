@@ -8,6 +8,7 @@
 #include <memory>
 
 class ClassInfo;
+class MemoryStream;
 
 class ClassInstance {
 
@@ -51,7 +52,7 @@ public:
     void* get();
 
     TypeId getInstanceTypeId() const;
-    Buffer dumpValues();
+    bool dumpValues(MemoryStream& stream);
 
 private:
 

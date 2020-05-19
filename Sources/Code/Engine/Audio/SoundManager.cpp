@@ -51,12 +51,12 @@ std::unique_ptr<Sound> SoundManager::ET_createSound(const char* soundName) {
     }
     std::unique_ptr<OggDataStream> dataStream(new OggDataStream(buff));
     if(!dataStream->isOpened()) {
-        LogError("[SoundManager::ET_createSound] Can't make OGG stream from: %s", soundName);
+        LogError("[SoundManager::ET_createSound] Can't make OGG stream from: '%s'", soundName);
         return nullptr;
     }
 
     if(dataStream->channels > 2) {
-        LogError("[SoundManager::ET_createSound] Too many channels %d in OGG stream: %s",  dataStream->channels, soundName);
+        LogError("[SoundManager::ET_createSound] Too many channels %d in OGG stream: '%s'",  dataStream->channels, soundName);
         return nullptr;
     }
     std::unique_ptr<Sound> sound(new Sound(std::move(dataStream)));

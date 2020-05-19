@@ -12,6 +12,10 @@ public:
     void openForRead(Buffer& buffer);
     void openForWrite();
 
+    bool isOpenedForRead() const;
+    bool isOpenedForWrite() const;
+    bool isClosed() const;
+
     Buffer flushToBuffer();
     void close();
     size_t size() const;
@@ -19,12 +23,14 @@ public:
 
     void write(bool val);
     void write(char val);
+    void write(unsigned char val);
     void write(float val);
     void write(int val);
     void write(const char* val);
 
     void read(bool& val);
     void read(char& val);
+    void read(unsigned char& val);
     void read(float& val);
     void read(int& val);
     void read(std::string& val);

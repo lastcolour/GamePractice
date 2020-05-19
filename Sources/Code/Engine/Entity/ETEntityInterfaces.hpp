@@ -8,6 +8,7 @@
 
 class EntityLogicRegister;
 class JSONNode;
+class MemoryStream;
 
 struct ETEntityEvents {
     virtual ~ETEntityEvents() = default;
@@ -36,7 +37,7 @@ struct ETEntityManager {
     virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;
     virtual EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) = 0;
     virtual void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) = 0;
-    virtual void ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId) = 0;
+    virtual bool ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) = 0;
 };
 
 #endif /* __ENTITY_INTERFACES_HPP__ */

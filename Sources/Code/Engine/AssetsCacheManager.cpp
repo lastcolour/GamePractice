@@ -58,7 +58,7 @@ void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer&
     }
     auto it = assetsCacheMap.find(assetName);
     if(it != assetsCacheMap.end()) {
-        LogWarning("[AssetsCacheManager::ET_putAssetToCache] Double try to put asset into cache: %s", assetName);
+        LogWarning("[AssetsCacheManager::ET_putAssetToCache] Double try to put asset into cache: '%s'", assetName);
         return;
     }
     if(assetsLifetime <= 0.f) {

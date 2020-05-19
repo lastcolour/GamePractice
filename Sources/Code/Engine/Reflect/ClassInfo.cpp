@@ -60,20 +60,20 @@ const char* ClassInfo::getName() const {
 
 void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
     ClassValue::SetResourceFuncT valueSetFunc) {
-    const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class %s (Error: %s)";
+    const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class '%s' (Error: %s)";
     if(!valueName || !valueName[0]) {
-        LogError(errStr, className, valueName, "empty name");
+        LogError(errStr, valueName, className, "empty name");
         assert(false && "can't register class value");
         return;
     }
     if(valueType == ClassValueType::Invalid) {
-        LogError(errStr, className, valueName, "unknown field type");
+        LogError(errStr, valueName, className, "unknown field type");
         assert(false && "can't register class value");
         return;
     }
     if(valueType == ClassValueType::Resource) {
         if(!valueSetFunc) {
-            LogError(errStr, className, valueName, "resource without create function");
+            LogError(errStr, valueName, className, "resource without create function");
             assert(false && "can't register class value");
             return;
         }
@@ -81,18 +81,18 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
         EnumInfo* enumInfo = nullptr;
         ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, valueTypeId);
         if(!enumInfo) {
-            LogError(errStr, className, valueName, "can't find enum info");
+            LogError(errStr, valueName, className, "can't find enum info");
             assert(false && "can't register class value");
             return;
         }
     } else {
         if(!valuePtr) {
-            LogError(errStr, className, valueName, "null pointer to value");
+            LogError(errStr, valueName, className, "null pointer to value");
             assert(false && "can't register class value");
             return;
         }
         if(valueTypeId == InvalidTypeId) {
-            LogError(errStr, className, valueName, "invalid type of field");
+            LogError(errStr, valueName, className, "invalid type of field");
             assert(false && "can't register class value");
             return;
         }
@@ -101,17 +101,19 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     getAllClasses(allBaseClasses);
     for(auto baseClass : allBaseClasses) {
         if(baseClass->findValueByName(valueName)) {
-            LogError(errStr, className, valueName,
+            LogError(errStr, valueName, className,
                 StringFormat("base class '%s' already registered field with the same name", baseClass->getName()));
             assert(false && "can't register class value");
             return;
         }
-        if(auto baseValue = baseClass->findValueByPtr(valuePtr)) {
-            LogError(errStr, className, valueName,
-                StringFormat("base class '%s' already registered field with other name '%s'",
-                baseClass->getName(), baseValue->name.c_str()));
-            assert(false && "can't register class value");
-            return;
+        if(valueType != ClassValueType::Resource) {
+            if(auto baseValue = baseClass->findValueByPtr(valuePtr)) {
+                LogError(errStr, valueName, className,
+                    StringFormat("base class '%s' already registered field with other name '%s'",
+                    baseClass->getName(), baseValue->name.c_str()));
+                assert(false && "can't register class value");
+                return;
+            }
         }
     }
     ClassValue classValue;
@@ -150,11 +152,10 @@ ClassInstance ClassInfo::createDefaultInstance() {
 }
 
 void ClassInfo::getAllClasses(std::vector<const ClassInfo*>& classes) const {
-    classes.push_back(this);
     for(auto classInfo : baseClasses) {
-        classes.push_back(classInfo);
         classInfo->getAllClasses(classes);
     }
+    classes.push_back(this);
 }
 
 void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {

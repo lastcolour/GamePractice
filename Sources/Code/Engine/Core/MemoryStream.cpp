@@ -27,6 +27,18 @@ MemoryStream::MemoryStream() :
 MemoryStream::~MemoryStream() {
 }
 
+bool MemoryStream::isOpenedForRead() const {
+    return state == StreamState::Read;
+}
+
+bool MemoryStream::isOpenedForWrite() const {
+    return state == StreamState::Write;
+}
+
+bool MemoryStream::isClosed() const {
+    return state == StreamState::Closed;
+}
+
 void MemoryStream::openForRead(Buffer& buff) {
     if(state != StreamState::Closed) {
         assert(false && "Can't open stream that isn't closed");
@@ -112,6 +124,17 @@ void MemoryStream::write(char val) {
     pos += 1;
 }
 
+void MemoryStream::write(unsigned char val) {
+    if(state != StreamState::Write) {
+        assert(false && "Can't write to non-write stream");
+        return;
+    }
+    grow(1);
+    auto ptr = getWritePtr();
+    getRef<unsigned char>(ptr) = val;
+    pos += 1;
+}
+
 void MemoryStream::write(float val) {
     if(state != StreamState::Write) {
         assert(false && "Can't write to non-write stream");
@@ -164,6 +187,16 @@ void MemoryStream::read(char& val) {
     }
     auto ptr = getReadPtr();
     val = getRef<char>(ptr);
+    pos += 1;
+}
+
+void MemoryStream::read(unsigned char& val) {
+    if(state != StreamState::Read) {
+        assert(false && "Can't read from non-read stream");
+        return;
+    }
+    auto ptr = getReadPtr();
+    val = getRef<unsigned char>(ptr);
     pos += 1;
 }
 

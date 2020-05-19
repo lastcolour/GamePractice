@@ -4,6 +4,7 @@
 #include "Entity/EntityLogicRegister.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/MemoryStream.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -143,22 +144,26 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
     }
 }
 
-void EntityManager::ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId) {
+bool EntityManager::ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {
     if(!entityId.isValid()) {
         LogError("[EntityManager::ET_dumpEntityLogicData] Invalid entity id to dump logic data");
-        return;
+        return false;
     }
     auto entId = entities.find(entityId);
     if(entId == entities.end()) {
         LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't find entity to dump logic data");
-        return;
+        return false;
     }
     Entity* entity = entId->second.get();
     if(logicId == InvalidEntityLogicId) {
         LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't dump logic data with invalid id from entity '%s'", entity->ET_getName());
-        return;
+        return false;
     }
-    entity->dumpLogicData(logicId);
+    if(!stream.isOpenedForWrite()) {
+        LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't dump logic of entity '%s' data to invalid stream", entity->ET_getName());
+        return false;
+    }
+    return entity->dumpLogicData(logicId, stream);
 }
 
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {

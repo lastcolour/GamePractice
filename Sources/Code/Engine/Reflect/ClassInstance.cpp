@@ -1,6 +1,8 @@
 #include "Reflect/ClassInstance.hpp"
 #include "Reflect/ClassInfo.hpp"
-#include "Core/MemoryStream.hpp"
+#include "ETApplicationInterfaces.hpp"
+
+#include <cassert>
 
 ClassInstance::ClassInstance() :
     classInfo(nullptr),
@@ -70,17 +72,14 @@ void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     deleteFunc = deleteF;
 }
 
-Buffer ClassInstance::dumpValues() {
+bool ClassInstance::dumpValues(MemoryStream& stream) {
     if(!instance) {
-        return Buffer();
+        assert(false && "Invalid instance");
+        return false;
     }
     if(!classInfo) {
-        return Buffer();
+        LogError("[ClassInstance::dumpValues] Can't dump values of instance without class info");
+        return false;
     }
-    MemoryStream stream;
-    stream.openForWrite();
-    if(!classInfo->dumpValues(instance, stream)) {
-        return Buffer();
-    }
-    return stream.flushToBuffer();
+    return classInfo->dumpValues(instance, stream);
 }

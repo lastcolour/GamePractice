@@ -21,7 +21,7 @@ public:
     const char* getEntityName(EntityId entityId);
     EntityLogicId addLogicToEntity(EntityId entityId, const char* logicName);
     void removeLogicFromEntity(EntityId entityId, EntityLogicId logicId);
-    void getEntityLogicData(EntityId entityId, EntityLogicId logicId);
+    Buffer getEntityLogicData(EntityId entityId, EntityLogicId logicId);
     void drawFrame(void* out, int32_t width, int32_t height);
 
 protected:

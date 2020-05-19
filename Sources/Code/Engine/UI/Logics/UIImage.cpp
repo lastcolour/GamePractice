@@ -73,7 +73,7 @@ void UIImage::createRenderer() {
         ET_SendEvent(renderId, &ETRenderImageLogic::ET_setImage, image.c_str());
         setUpRenderChild(renderId);
     } else {
-        LogWarning("[UIImage::createRenderers] Can't create renderer: %s", rendererName);
+        LogWarning("[UIImage::createRenderers] Can't create renderer: '%s'", rendererName);
     }
 }
 

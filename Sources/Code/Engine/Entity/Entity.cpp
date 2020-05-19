@@ -1,5 +1,6 @@
 #include "Entity/Entity.hpp"
 #include "Entity/EntityLogic.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 #include <cassert>
 
@@ -71,13 +72,14 @@ ClassInstance* Entity::findLogic(EntityLogicId logicId) {
     return nullptr;
 }
 
-void Entity::dumpLogicData(EntityLogicId logicId) {
+bool Entity::dumpLogicData(EntityLogicId logicId, MemoryStream& stream) {
     assert(logicId != InvalidEntityLogicId && "Invalid logic id");
     auto logicInstance = findLogic(logicId);
     if(!logicInstance) {
-        return;
+        LogWarning("[Entity::dumpLogicData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+        return false;
     }
-    logicInstance->dumpValues();
+    return logicInstance->dumpValues(stream);
 }
 
 const char* Entity::ET_getName() const {

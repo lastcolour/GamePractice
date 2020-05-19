@@ -53,7 +53,7 @@ class EditorNative:
         self._unloadEntityFunc.restype = None
 
         self._getEntityChildrenFunc = self._editorLib.GetEntityChildren
-        self._getEntityChildrenFunc.argstype = [ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
+        self._getEntityChildrenFunc.argstype = [ctypes.c_uint32, ctypes.POINTER(ctypes.c_void_p)]
         self._getEntityChildrenFunc.restype = ctypes.c_uint32
 
         self._getEntityNameFunc = self._editorLib.GetEntityName
@@ -64,11 +64,14 @@ class EditorNative:
         self._addLogicToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
         self._addLogicToEntityFunc.restype = ctypes.c_int32
 
-        self._removeLogicFromEntity = self._editorLib.RemoveLogicFromEntity
-        self._removeLogicFromEntity.argstype = [ctypes.c_uint32, ctypes.c_int32]
-        self._removeLogicFromEntity.restype = None
+        self._removeLogicFromEntityFunc = self._editorLib.RemoveLogicFromEntity
+        self._removeLogicFromEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_int32]
+        self._removeLogicFromEntityFunc.restype = None
 
-        #uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void* out);
+        self._getEntityLogicDataFunc = self._editorLib.GetEntityLogicData
+        self._getEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.POINTER(ctypes.c_void_p)]
+        self._getEntityLogicDataFunc.restype = ctypes.c_uint32
+
         #void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size);
 
         self._drawFrameFunc = self._editorLib.DrawFrame
@@ -95,11 +98,14 @@ class EditorNative:
 
     def getEntityChildren(self, entityId):
         cEntId = ctypes.c_uint32(entityId)
-        outPtr = ctypes.POINTER(ctypes.c_uint32)()
-        childCount = self._getEntityChildrenFunc(cEntId, outPtr)
+        outPtr = ctypes.POINTER(ctypes.c_char)()
+        childCount = self._getEntityChildrenFunc(cEntId, ctypes.byref(outPtr))
+        if childCount == 0:
+            return []
+        bufferPtr = ctypes.POINTER(ctypes.c_uint32 * childCount)(outPtr.contents)
         res = []
         for i in range(childCount):
-            res.append(outPtr.contents[i])
+            res.append(bufferPtr.contents[i])
         return res
 
     def getEntityName(self, entityId):
@@ -115,7 +121,17 @@ class EditorNative:
     def removeLogicFromEntity(self, entityId, logicId):
         cEntId = ctypes.c_uint32(entityId)
         cLogicId = ctypes.c_int32(logicId)
-        self._removeLogicFromEntity(cEntId, cLogicId)
+        self._removeLogicFromEntityFunc(cEntId, cLogicId)
+
+    def getEntityLogicData(self, entityId, logicId):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        outPtr = ctypes.POINTER(ctypes.c_char)()
+        outSize = self._getEntityLogicDataFunc(cEntId, cLogicId, ctypes.byref(outPtr))
+        if outSize == 0:
+            return bytearray()
+        bufferPtr = ctypes.POINTER(ctypes.c_char * outSize)(outPtr.contents)
+        return bytearray(bufferPtr.contents)
 
     def drawFrame(self, width, height):
         self._drawBuffer.setSize(width, height)

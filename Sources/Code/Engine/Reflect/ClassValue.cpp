@@ -498,6 +498,7 @@ bool ClassValue::dumpValue(void* instance, void* valuePtr, MemoryStream& stream)
         return classInfo->dumpValues(valuePtr, stream);
     }
     case ClassValueType::Resource: {
+        stream.write("");
         break;
     }
     case ClassValueType::Enum: {

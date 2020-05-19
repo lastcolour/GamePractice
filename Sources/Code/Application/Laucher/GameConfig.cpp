@@ -63,7 +63,7 @@ JSONNode GameConfig::unpackAndLoadConfig(const char* assetFile, const char* unpa
     if(!node) {
         ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, assetFile);
         if(!node) {
-            LogError("[GameConfig::unpackAndLoadConfig] Can't load config from asset %s", assetFile);
+            LogError("[GameConfig::unpackAndLoadConfig] Can't load config from asset '%s'", assetFile);
             return JSONNode();
         }
         Buffer buff;
@@ -71,9 +71,9 @@ JSONNode GameConfig::unpackAndLoadConfig(const char* assetFile, const char* unpa
         bool isSaved = false;
         ET_SendEventReturn(isSaved, &ETAssets::ET_saveLocalFile, unpackedFile, buff);
         if(!isSaved) {
-            LogWarning("[GameConfig::unpackAndLoadConfig] Can't unpack local config from %s to %s", assetFile, unpackedFile);
+            LogWarning("[GameConfig::unpackAndLoadConfig] Can't unpack local config from '%s' to '%s'", assetFile, unpackedFile);
         } else {
-            LogDebug("[GameConfig::unpackAndLoadConfig] Unpack local config from %s to %s", assetFile, unpackedFile);
+            LogDebug("[GameConfig::unpackAndLoadConfig] Unpack local config from '%s' to '%s'", assetFile, unpackedFile);
         }
     }
     return node;
@@ -95,9 +95,9 @@ void GameConfig::updateLocalConfig() {
     bool saveRes = false;
     ET_SendEventReturn(saveRes, &ETAssets::ET_saveLocalFile, GAME_LOCAL_UNPACKED_CONFIG, buff);
     if(!saveRes) {
-        LogWarning("[GameConfig::updateLocalConfig] Can't update local config: %s", GAME_LOCAL_UNPACKED_CONFIG);
+        LogWarning("[GameConfig::updateLocalConfig] Can't update local config: '%s'", GAME_LOCAL_UNPACKED_CONFIG);
     } else {
-        LogDebug("[GameConfig::updateLocalConfig] Update local config: %s", GAME_LOCAL_UNPACKED_CONFIG);
+        LogDebug("[GameConfig::updateLocalConfig] Update local config: '%s'", GAME_LOCAL_UNPACKED_CONFIG);
     }
 }
 

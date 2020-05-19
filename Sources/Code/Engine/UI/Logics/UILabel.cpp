@@ -74,7 +74,7 @@ void UILabel::createRenderer() {
         ET_SendEvent(renderId, &ETRenderTextLogic::ET_setText, text.c_str());
         setUpRenderChild(renderId);
     } else {
-        LogWarning("[UILabel::createRenderers] Can't create renderer: %s", rendererName);
+        LogWarning("[UILabel::createRenderers] Can't create renderer: '%s'", rendererName);
     }
 }
 
