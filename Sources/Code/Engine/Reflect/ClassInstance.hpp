@@ -29,7 +29,7 @@ public:
 public:
 
     ClassInstance();
-    ClassInstance(const ClassInfo& clsInfo, void* clsInstance);
+    ClassInstance(ClassInfo& clsInfo, void* clsInstance);
     ClassInstance(ClassInstance&& other);
     ClassInstance& operator=(ClassInstance&& other);
     ~ClassInstance();
@@ -52,7 +52,10 @@ public:
     void* get();
 
     TypeId getInstanceTypeId() const;
-    bool dumpValues(MemoryStream& stream);
+    bool readValues(MemoryStream& stream);
+    bool readValue(EntityLogicValueId valueId, MemoryStream& stream);
+    bool writeValues(MemoryStream& stream);
+    bool writeValue(EntityLogicValueId valueId, MemoryStream& stream);
 
 private:
 
@@ -66,8 +69,9 @@ private:
 
 private:
 
-    const ClassInfo* classInfo;
+    ClassInfo* classInfo;
     void* instance;
     DeleteFuncT deleteFunc;
 };
+
 #endif /* __CLASS_INSTANCE_HPP__ */

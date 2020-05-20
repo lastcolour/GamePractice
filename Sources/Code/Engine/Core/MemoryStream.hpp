@@ -16,6 +16,9 @@ public:
     bool isOpenedForWrite() const;
     bool isClosed() const;
 
+    void reopenForRead();
+    void reopenForWrite();
+
     Buffer flushToBuffer();
     void close();
     size_t size() const;

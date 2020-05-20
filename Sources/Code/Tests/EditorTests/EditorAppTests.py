@@ -51,9 +51,24 @@ class EditorAppTests(unittest.TestCase):
         model = json.loads(reflectModel)
         self.assertGreater(len(model), 0)
 
+    def testGetRegisteredEntityLogics(self):
+        registeredLogics = EditorAppTests.NATIVE_EDITOR.getRegisteredEntityLogics()
+        self.assertGreater(len(registeredLogics), 0)
+
     def testEntityAndChildrenName(self):
         entityName = EditorAppTests.NATIVE_EDITOR.getEntityName(self._centralEntityId)
         self.assertEqual(entityName, "Game/Simple.json")
+
+        children = EditorAppTests.NATIVE_EDITOR.getEntityChildren(self._centralEntityId)
+        self.assertEqual(len(children), 0)
+
+        childEntityId = EditorAppTests.NATIVE_EDITOR.addChildEntityToEntity(self._centralEntityId, "Game/Simple.json")
+
+        children = EditorAppTests.NATIVE_EDITOR.getEntityChildren(self._centralEntityId)
+        self.assertEqual(len(children), 1)
+        self.assertEqual(children[0], childEntityId)
+
+        EditorAppTests.NATIVE_EDITOR.removeChildEntityFromEntity(self._centralEntityId, childEntityId)
 
         children = EditorAppTests.NATIVE_EDITOR.getEntityChildren(self._centralEntityId)
         self.assertEqual(len(children), 0)
@@ -71,7 +86,9 @@ class EditorAppTests(unittest.TestCase):
     def testSetGetLogicData(self):
         logicId = 0
         res = EditorAppTests.NATIVE_EDITOR.getEntityLogicData(self._centralEntityId, logicId)
-        matName, geomName, scaleX, scaleY, r, g, b, a = struct.unpack_from("@ssffBBBB", res)
+        self.assertIsNotNone(res)
+        self.assertTrue(len(res) > 0)
+        matName, geomName, scaleX, scaleY, r, g, b, a = struct.unpack_from("<ssffBBBB", res)
 
         matName = _getPyStr(matName)
         geomName = _getPyStr(geomName)

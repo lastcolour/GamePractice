@@ -23,7 +23,7 @@ const T& getRef(const void* value) {
 }
 
 template<typename T>
-void readValue(bool isElement, const std::string& name, T& value, const JSONNode& node) {
+void readJSONValue(bool isElement, const std::string& name, T& value, const JSONNode& node) {
     if(isElement) {
         node.read(value);
     } else {
@@ -31,13 +31,13 @@ void readValue(bool isElement, const std::string& name, T& value, const JSONNode
     }
 } 
 
-bool readVec2i(void* valuePtr, const JSONNode& node) {
+bool readJSONVec2i(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("x")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'x' to read 'vec2i'");
+        LogError("[ClassValue::readValue] Can't find required node 'x' to read 'vec2i'");
         return false;
     }
     if(!node.hasKey("y")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'y' to read 'vec2i'");
+        LogError("[ClassValue::readValue] Can't find required node 'y' to read 'vec2i'");
         return false;
     }
     int xVal = 0;
@@ -48,32 +48,34 @@ bool readVec2i(void* valuePtr, const JSONNode& node) {
     return true;
 }
 
-bool readVec2(void* valuePtr, const JSONNode& node) {
+bool readJSONVec2(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("x")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'x' to read 'vec2'");
+        LogError("[ClassValue::readValue] Can't find required node 'x' to read 'vec2'");
         return false;
     }
     if(!node.hasKey("y")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'y' to read 'vec2'");
+        LogError("[ClassValue::readValue] Can't find required node 'y' to read 'vec2'");
         return false;
     }
     float xVal = 0.f;
     float yVal = 0.f;
+    node.read("x", xVal);
+    node.read("y", yVal);
     getRef<Vec2>(valuePtr) = Vec2(xVal, yVal);
     return true;
 }
 
-bool readVec3(void* valuePtr, const JSONNode& node) {
+bool readJSONVec3(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("x")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'x' to read 'vec3'");
+        LogError("[ClassValue::readValue] Can't find required node 'x' to read 'vec3'");
         return false;
     }
     if(!node.hasKey("y")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'y' to read 'vec3'");
+        LogError("[ClassValue::readValue] Can't find required node 'y' to read 'vec3'");
         return false;
     }
     if(!node.hasKey("z")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'z' to read 'vec3'");
+        LogError("[ClassValue::readValue] Can't find required node 'z' to read 'vec3'");
         return false;
     }
     float xVal = 0.f;
@@ -86,21 +88,21 @@ bool readVec3(void* valuePtr, const JSONNode& node) {
     return true;
 }
 
-bool readVec4(void* valuePtr, const JSONNode& node) {
+bool readJSONVec4(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("x")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'x' to read 'vec4'");
+        LogError("[ClassValue::readValue] Can't find required node 'x' to read 'vec4'");
         return false;
     }
     if(!node.hasKey("y")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'y' to read 'vec4'");
+        LogError("[ClassValue::readValue] Can't find required node 'y' to read 'vec4'");
         return false;
     }
     if(!node.hasKey("z")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'z' to read 'vec4'");
+        LogError("[ClassValue::readValue] Can't find required node 'z' to read 'vec4'");
         return false;
     }
     if(!node.hasKey("w")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'w' to read 'vec4'");
+        LogError("[ClassValue::readValue] Can't find required node 'w' to read 'vec4'");
         return false;
     }
     float xVal = 0.f;
@@ -115,21 +117,21 @@ bool readVec4(void* valuePtr, const JSONNode& node) {
     return true;
 }
 
-bool readColor(void* valuePtr, const JSONNode& node) {
+bool readJSONColor(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("r")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'r' to read 'color'");
+        LogError("[ClassValue::readValue] Can't find required node 'r' to read 'color'");
         return false;
     }
     if(!node.hasKey("g")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'g' to read 'color'");
+        LogError("[ClassValue::readValue] Can't find required node 'g' to read 'color'");
         return false;
     }
     if(!node.hasKey("b")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'b' to read 'color'");
+        LogError("[ClassValue::readValue] Can't find required node 'b' to read 'color'");
         return false;
     }
     if(!node.hasKey("a")) {
-        LogError("[ClassValue::serializeValue] Can't find required node 'a' to read 'color'");
+        LogError("[ClassValue::readValue] Can't find required node 'a' to read 'color'");
         return false;
     }
     int rVal = 0;
@@ -141,19 +143,19 @@ bool readColor(void* valuePtr, const JSONNode& node) {
     node.read("b", bVal);
     node.read("a", aVal);
     if(rVal < 0 || rVal > 255) {
-        LogError("[ClassValue::serializeValue] Read value 'r' of 'color' type is out of limits - [0, 255]");
+        LogError("[ClassValue::readValue] Read value 'r' of 'color' type is out of limits - [0, 255]");
         return false;
     }
     if(gVal < 0 || gVal > 255) {
-        LogError("[ClassValue::serializeValue] Read value 'g' of 'color' type is out of limits - [0, 255]");
+        LogError("[ClassValue::readValue] Read value 'g' of 'color' type is out of limits - [0, 255]");
         return false;
     }
     if(bVal < 0 || bVal > 255) {
-        LogError("[ClassValue::serializeValue] Read value 'b' of 'color' type is out of limits - [0, 255]");
+        LogError("[ClassValue::readValue] Read value 'b' of 'color' type is out of limits - [0, 255]");
         return false;
     }
     if(aVal < 0 || aVal > 255) {
-        LogError("[ClassValue::serializeValue] Read value 'a' of 'color' type is out of limits - [0, 255]");
+        LogError("[ClassValue::readValue] Read value 'a' of 'color' type is out of limits - [0, 255]");
         return false;
     }
     getRef<ColorB>(valuePtr) = ColorB(
@@ -172,6 +174,7 @@ ClassValue::ClassValue() :
     type(ClassValueType::Invalid),
     ptr(),
     typeId(InvalidTypeId),
+    primitiveValueCount(0),
     isElement(false) {
 }
 
@@ -251,40 +254,40 @@ const char* ClassValue::getTypeName() const {
     }
 }
 
-bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& node) {
+bool ClassValue::readValue(void* instance, void* valuePtr, const JSONNode& node) {
     if(!isElement) {
         if(!node.hasKey(name.c_str())) {
-            LogError("[ClassValue::serializeValue] Can't find required field '%s'", name);
+            LogError("[ClassValue::readValue] Can't find required field '%s'", name);
             return false;
         }
     }
     switch(type)
     {
     case ClassValueType::Invalid: {
-        LogError("[ClassValue::serializeValue] Field '%s' has invalid type", name);
+        LogError("[ClassValue::readValue] Field '%s' has invalid type", name);
         return false;
     }
     case ClassValueType::Bool: {
         bool value = false;
-        readValue(isElement, name, value, node);
+        readJSONValue(isElement, name, value, node);
         getRef<bool>(valuePtr) = value;
         return true;
     }
     case ClassValueType::Int: {
         int value = 0;
-        readValue(isElement, name, value, node);
+        readJSONValue(isElement, name, value, node);
         getRef<int>(valuePtr) = value;
         return true;
     }
     case ClassValueType::Float: {
         float value = 0.f;
-        readValue(isElement, name, value, node);
+        readJSONValue(isElement, name, value, node);
         getRef<float>(valuePtr) = value;
         return true;
     }
     case ClassValueType::String: {
         std::string value;
-        readValue(isElement, name, value, node);
+        readJSONValue(isElement, name, value, node);
         getRef<std::string>(valuePtr) = value;
         return true;
     }
@@ -292,22 +295,22 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
         ClassInfo* classInfo = nullptr;
         ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
         if(!classInfo) {
-            LogError("[ClassValue::serializeValue] Can't find class info for a field '%s'", name);
+            LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
             return false;
         }
         if(!isElement) {
             auto objectNode = node.object(name.c_str());
             if(!objectNode) {
-                LogError("[ClassValue::serializeValue] Can't get object from data for a field '%s'", name);
+                LogError("[ClassValue::readValue] Can't get object from data for a field '%s'", name);
                 return false;
             }
             if(!classInfo->serializeInstance(valuePtr, objectNode)) {
-                LogError("[ClassValue::serializeValue] Can't serialize object field '%s'", name);
+                LogError("[ClassValue::readValue] Can't serialize object field '%s'", name);
                 return false;
             }
         } else {
             if(!classInfo->serializeInstance(valuePtr, node)) {
-                LogError("[ClassValue::serializeValue] Can't serialize object of array");
+                LogError("[ClassValue::readValue] Can't serialize object of array");
                 return false;
             }
         }
@@ -316,12 +319,12 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
     case ClassValueType::Vec2i: {
         bool res = false;
         if(isElement) {
-            res = readVec2i(valuePtr, node);
+            res = readJSONVec2i(valuePtr, node);
         } else {
-            res = readVec2i(valuePtr, node.object(name.c_str()));
+            res = readJSONVec2i(valuePtr, node.object(name.c_str()));
         }
         if(!res) {
-            LogError("[ClassValue::serializeValue] Can't serialize 'vec2i' field: %s", name);
+            LogError("[ClassValue::readValue] Can't serialize 'vec2i' field: %s", name);
             return false;
         }
         return true;
@@ -329,12 +332,12 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
     case ClassValueType::Vec2: {
         bool res = false;
         if(isElement) {
-            res = readVec2(valuePtr, node);
+            res = readJSONVec2(valuePtr, node);
         } else {
-            res = readVec2(valuePtr, node.object(name.c_str()));
+            res = readJSONVec2(valuePtr, node.object(name.c_str()));
         }
         if(!res) {
-            LogError("[ClassValue::serializeValue] Can't serialize 'vec2' field: %s", name);
+            LogError("[ClassValue::readValue] Can't serialize 'vec2' field: %s", name);
             return false;
         }
         return true;
@@ -342,12 +345,12 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
     case ClassValueType::Vec3: {
         bool res = false;
         if(isElement) {
-            res = readVec3(valuePtr, node);
+            res = readJSONVec3(valuePtr, node);
         } else {
-            res = readVec3(valuePtr, node.object(name.c_str()));
+            res = readJSONVec3(valuePtr, node.object(name.c_str()));
         }
         if(!res) {
-            LogError("[ClassValue::serializeValue] Can't serialize 'vec3' field: %s", name);
+            LogError("[ClassValue::readValue] Can't serialize 'vec3' field: %s", name);
             return false;
         }
         return true;
@@ -355,12 +358,12 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
     case ClassValueType::Vec4: {
         bool res = false;
         if(isElement) {
-            res = readVec4(valuePtr, node);
+            res = readJSONVec4(valuePtr, node);
         } else {
-            res = readVec4(valuePtr, node.object(name.c_str()));
+            res = readJSONVec4(valuePtr, node.object(name.c_str()));
         }
         if(!res) {
-            LogError("[ClassValue::serializeValue] Can't serialize 'vec4' field: %s", name);
+            LogError("[ClassValue::readValue] Can't serialize 'vec4' field: %s", name);
             return false;
         }
         return true;
@@ -368,40 +371,40 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
     case ClassValueType::Color: {
         bool res = false;
         if(isElement) {
-            res = readColor(valuePtr, node);
+            res = readJSONColor(valuePtr, node);
         } else {
-            res = readColor(valuePtr, node.object(name.c_str()));
+            res = readJSONColor(valuePtr, node.object(name.c_str()));
         }
         if(!res) {
-            LogError("[ClassValue::serializeValue] Can't serialize 'color' field: %s", name);
+            LogError("[ClassValue::readValue] Can't serialize 'color' field: %s", name);
             return false;
         }
         return true;
     }
     case ClassValueType::Array: {
         if(isElement) {
-            LogError("[ClassValue::serializeValue] Array of arrays is not supported: '%s'", name);
+            LogError("[ClassValue::readValue] Array of arrays is not supported: '%s'", name);
             return false;
         }
         ArrayInfo* arrayInfo = nullptr;
         ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
         if(!arrayInfo) {
-            LogError("[ClassValue::serializeValue] Can't find array info for a field '%s'", name);
+            LogError("[ClassValue::readValue] Can't find array info for a field '%s'", name);
             return false;
         }
         auto arrayNode = node.object(name.c_str());
         if(!arrayNode) {
-            LogError("[ClassValue::serializeValue] Can't get array object from data for a field '%s'", name);
+            LogError("[ClassValue::readValue] Can't get array object from data for a field '%s'", name);
             return false;
         }
         for(auto& elemNode : arrayNode) {
             auto elem = arrayInfo->createElement(valuePtr);
             if(!elem) {
-                LogError("[ClassValue::serializeValue] Can't create new array element for a field '%s'", name);
+                LogError("[ClassValue::readValue] Can't create new array element for a field '%s'", name);
                 return false;
             }
             if(!arrayInfo->serializeElement(elem, elemNode)) {
-                LogError("[ClassValue::serializeValue] Can't create array element for a field '%s'", name);
+                LogError("[ClassValue::readValue] Can't create array element for a field '%s'", name);
                 return false;
             }
         }
@@ -411,31 +414,31 @@ bool ClassValue::serializeValue(void* instance, void* valuePtr, const JSONNode& 
         EnumInfo* enumInfo = nullptr;
         ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
         if(!enumInfo) {
-            LogError("[ClassValue::serializeValue] Can't find enum info for a field '%s'", name);
+            LogError("[ClassValue::readValue] Can't find enum info for a field '%s'", name);
             return false;
         }
         std::string value;
-        readValue(isElement, name, value, node);
-        if(!enumInfo->serializeValue(valuePtr, value)) {
-            LogError("[ClassValue::serializeValue] Can't serialize enum value for a field '%s'", name);
+        readJSONValue(isElement, name, value, node);
+        if(!enumInfo->readValue(valuePtr, value)) {
+            LogError("[ClassValue::readValue] Can't serialize enum value for a field '%s'", name);
             return false;
         }
         return true;
     }
     case ClassValueType::Resource: {
         std::string value;
-        readValue(isElement, name, value, node);
+        readJSONValue(isElement, name, value, node);
         setResourceFunc(instance, value.c_str());
         return true;
     }
     default:
-        LogError("[ClassValue::serializeValue] Unknown value type '%s'", name);
+        LogError("[ClassValue::readValue] Unknown value type '%s'", name);
         assert(false && "Unknown value type");
         return false;
     }
 }
 
-bool ClassValue::dumpValue(void* instance, void* valuePtr, MemoryStream& stream) const {
+bool ClassValue::readValue(void* instance, void* valuePtr, MemoryStream& stream) const {
     switch(type) {
     case ClassValueType::Bool: {
         stream.write(getRef<bool>(valuePtr));
@@ -492,10 +495,10 @@ bool ClassValue::dumpValue(void* instance, void* valuePtr, MemoryStream& stream)
         ClassInfo* classInfo = nullptr;
         ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
         if(!classInfo) {
-            LogError("[ClassValue::dumpValue] Can't find class info for a field '%s'", name);
+            LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->dumpValues(valuePtr, stream);
+        return classInfo->readValues(valuePtr, stream);
     }
     case ClassValueType::Resource: {
         stream.write("");
@@ -509,10 +512,129 @@ bool ClassValue::dumpValue(void* instance, void* valuePtr, MemoryStream& stream)
         ArrayInfo* arrayInfo = nullptr;
         ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
         if(!arrayInfo) {
-            LogError("[ClassValue::dumpValue] Can't find array info for a field '%s'", name);
+            LogError("[ClassValue::readValue] Can't find array info for a field '%s'", name);
             return false;
         }
-        return arrayInfo->dumpValues(valuePtr, stream);
+        return arrayInfo->writeValues(valuePtr, stream);
+    }
+    case ClassValueType::Entity: {
+        break;
+    }
+    case ClassValueType::Invalid:
+    default:
+        assert(false && "Invalid value type");
+        return false;
+    }
+    return true;
+}
+
+bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream) {
+    switch(type) {
+    case ClassValueType::Bool: {
+        bool val = false;
+        stream.read(val);
+        getRef<bool>(valuePtr) = val;
+        break;
+    }
+    case ClassValueType::Int: {
+        int val = 0;
+        stream.read(val);
+        getRef<int>(valuePtr) = val;
+        break;
+    }
+    case ClassValueType::Float: {
+        float val = 0.f;
+        stream.read(val);
+        getRef<float>(valuePtr) = val;
+        break;
+    }
+    case ClassValueType::String: {
+        std::string val;
+        stream.read(val);
+        getRef<std::string>(valuePtr) = val;
+        break;
+    }
+    case ClassValueType::Vec2i: {
+        int xVal = 0;
+        int yVal = 0;
+        stream.read(xVal);
+        stream.read(yVal);
+        getRef<Vec2i>(valuePtr) = Vec2i(xVal, yVal);
+        break;
+    }
+    case ClassValueType::Vec2: {
+        float xVal = 0.f;
+        float yVal = 0.f;
+        stream.read(xVal);
+        stream.read(yVal);
+        getRef<Vec2>(valuePtr) = Vec2(xVal, yVal);
+        break;
+    }
+    case ClassValueType::Vec3: {
+        float xVal = 0.f;
+        float yVal = 0.f;
+        float zVal = 0.f;
+        stream.read(xVal);
+        stream.read(yVal);
+        stream.read(zVal);
+        getRef<Vec3>(valuePtr) = Vec3(xVal, yVal, zVal);
+        break;
+    }
+    case ClassValueType::Vec4: {
+        float xVal = 0.f;
+        float yVal = 0.f;
+        float zVal = 0.f;
+        float wVal = 0.f;
+        stream.read(xVal);
+        stream.read(yVal);
+        stream.read(zVal);
+        stream.read(wVal);
+        getRef<Vec4>(valuePtr) = Vec4(xVal, yVal, zVal, wVal);
+        break;
+    }
+    case ClassValueType::Color: {
+        uint8_t rVal = 0u;
+        uint8_t gVal = 0u;
+        uint8_t bVal = 0u;
+        uint8_t aVal = 0u;
+        stream.read(rVal);
+        stream.read(gVal);
+        stream.read(bVal);
+        stream.read(aVal);
+        getRef<ColorB>(valuePtr) = ColorB(rVal, gVal, bVal, aVal);
+        break;
+    }
+    case ClassValueType::Object: {
+        ClassInfo* classInfo = nullptr;
+        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        if(!classInfo) {
+            LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
+            return false;
+        }
+        uint8_t valueId = 0;
+        stream.read(valueId);
+        return classInfo->readValue(valuePtr, valueId, stream);
+    }
+    case ClassValueType::Resource: {
+        std::string val;
+        stream.read(val);
+        setResourceFunc(instance, val.c_str());
+        break;
+    }
+    case ClassValueType::Enum: {
+        int val = 0;
+        stream.read(val);
+        getRef<int>(valuePtr) = val;
+        break;
+    }
+    case ClassValueType::Array: {
+        ArrayInfo* arrayInfo = nullptr;
+        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        if(!arrayInfo) {
+            LogError("[ClassValue::readValue] Can't find array info for a field '%s'", name);
+            return false;
+        }
+        return arrayInfo->readValues(valuePtr, stream);
     }
     case ClassValueType::Entity: {
         break;

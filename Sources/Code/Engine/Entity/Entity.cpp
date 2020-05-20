@@ -72,14 +72,46 @@ ClassInstance* Entity::findLogic(EntityLogicId logicId) {
     return nullptr;
 }
 
-bool Entity::dumpLogicData(EntityLogicId logicId, MemoryStream& stream) {
+bool Entity::readLogicData(EntityLogicId logicId, MemoryStream& stream) {
     assert(logicId != InvalidEntityLogicId && "Invalid logic id");
     auto logicInstance = findLogic(logicId);
     if(!logicInstance) {
-        LogWarning("[Entity::dumpLogicData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+        LogWarning("[Entity::readLogicData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
         return false;
     }
-    return logicInstance->dumpValues(stream);
+    return logicInstance->readValues(stream);
+}
+
+bool Entity::readLogicValueData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
+    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
+    assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
+    auto logicInstance = findLogic(logicId);
+    if(!logicInstance) {
+        LogWarning("[Entity::readLogicValueData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+        return false;
+    }
+    return logicInstance->readValue(valueId, stream);
+}
+
+bool Entity::writeLogicData(EntityLogicId logicId, MemoryStream& stream) {
+    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
+    auto logicInstance = findLogic(logicId);
+    if(!logicInstance) {
+        LogWarning("[Entity::writeLogicData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+        return false;
+    }
+    return logicInstance->writeValues(stream);
+}
+
+bool Entity::writeLogicValueData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
+    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
+    assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
+    auto logicInstance = findLogic(logicId);
+    if(!logicInstance) {
+        LogWarning("[Entity::writeLogicValueData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+        return false;
+    }
+    return logicInstance->writeValue(valueId, stream);
 }
 
 const char* Entity::ET_getName() const {
@@ -129,12 +161,12 @@ void Entity::ET_removeChild(EntityId entId) {
         }
     }
     if(it != children.end()) {
+        children.erase(it);
         EntityId entParentId;
         ET_SendEventReturn(entParentId, entId, &ETEntity::ET_getParentId);
         if(entParentId == entityId) {
             ET_SendEvent(entId, &ETEntity::ET_setParent, InvalidEntityId);
         }
-        children.erase(it);
     }
 }
 

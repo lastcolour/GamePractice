@@ -37,7 +37,13 @@ struct ETEntityManager {
     virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;
     virtual EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) = 0;
     virtual void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) = 0;
-    virtual bool ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) = 0;
+    virtual void ET_getRegisteredLogics(std::vector<const char*>& logicNames) = 0;
+    virtual bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) = 0;
+    virtual bool ET_readEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId, MemoryStream& stream) = 0;
+    virtual bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) = 0;
+    virtual bool ET_writeEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId, MemoryStream& stream) = 0;
 };
 
 #endif /* __ENTITY_INTERFACES_HPP__ */

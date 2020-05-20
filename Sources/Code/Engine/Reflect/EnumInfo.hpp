@@ -17,7 +17,7 @@ public:
 
     const char* getName() const;
     TypeId getEnumTypeId() const;
-    bool serializeValue(void* valuePtr, const std::string& valueStr) const;
+    bool readValue(void* valuePtr, const std::string& valueStr) const;
     void makeReflectModel(JSONNode& node);
 
     template<typename EnumT>

@@ -36,7 +36,7 @@ ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
     return *this;
 }
 
-ClassInstance::ClassInstance(const ClassInfo& clsInfo, void* clsInstance) :
+ClassInstance::ClassInstance(ClassInfo& clsInfo, void* clsInstance) :
     classInfo(&clsInfo),
     instance(clsInstance),
     deleteFunc(clsInfo.getDeleteFunction()) {
@@ -72,14 +72,50 @@ void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     deleteFunc = deleteF;
 }
 
-bool ClassInstance::dumpValues(MemoryStream& stream) {
+bool ClassInstance::readValues(MemoryStream& stream) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::dumpValues] Can't dump values of instance without class info");
+        LogError("[ClassInstance::readValues] Can't read values of instance without class info");
         return false;
     }
-    return classInfo->dumpValues(instance, stream);
+    return classInfo->readValues(instance, stream);
+}
+
+bool ClassInstance::readValue(EntityLogicValueId valueId, MemoryStream& stream) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::readValue] Can't read value of instance without class info");
+        return false;
+    }
+    return classInfo->readValue(instance, valueId, stream);
+}
+
+bool ClassInstance::writeValues(MemoryStream& stream) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::writeValues] Can't write value of instance without class info");
+        return false;
+    }
+    return classInfo->writeValues(instance, stream);
+}
+
+bool ClassInstance::writeValue(EntityLogicValueId valueId, MemoryStream& stream) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::writeValue] Can't write value of instance without class info");
+        return false;
+    }
+    return classInfo->writeValue(instance, valueId, stream);
 }

@@ -10,7 +10,6 @@
 #include <unordered_map>
 
 class Entity;
-class JSONNode;
 class ClassInfo;
 
 class EntityManager : public SystemLogic,
@@ -34,7 +33,13 @@ public:
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
     EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
     void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) override;
-    bool ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) override;
+    void ET_getRegisteredLogics(std::vector<const char*>& logicNames) override;
+    bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) override;
+    bool ET_readEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId, MemoryStream& stream) override;
+    bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) override;
+    bool ET_writeEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId, MemoryStream& stream) override;
 
 private:
 

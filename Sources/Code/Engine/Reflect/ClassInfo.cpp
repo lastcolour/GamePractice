@@ -8,9 +8,16 @@
 
 #include <cassert>
 
+namespace {
+
+const int MAX_PRIMITIVE_PROPERTIES = 255;
+
+} // namespace
+
 ClassInfo::ClassInfo(const char* name, TypeId typeId) :
     className(name),
-    instanceTypeId(typeId) {
+    instanceTypeId(typeId),
+    primitiveValueCount(0) {
 }
 
 ClassInfo::~ClassInfo() {
@@ -45,7 +52,7 @@ bool ClassInfo::serializeInstance(void* instance, const JSONNode& node) {
     }
     for(auto& val : values) {
         auto ptr = getValueFunc(instance, val.ptr);
-        if(!val.serializeValue(instance, ptr, node)) {
+        if(!val.readValue(instance, ptr, node)) {
             LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize field: '%s')",
                 className, val.name);
             return false;
@@ -97,7 +104,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
             return;
         }
     }
-    std::vector<const ClassInfo*> allBaseClasses;
+    std::vector<ClassInfo*> allBaseClasses;
     getAllClasses(allBaseClasses);
     for(auto baseClass : allBaseClasses) {
         if(baseClass->findValueByName(valueName)) {
@@ -116,12 +123,22 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
             }
         }
     }
+
     ClassValue classValue;
     classValue.name = valueName;
     classValue.type = valueType;
     classValue.ptr = valuePtr;
     classValue.typeId = valueTypeId;
     classValue.setResourceFunc = valueSetFunc;
+    classValue.primitiveValueCount = 1;
+
+    primitiveValueCount += classValue.primitiveValueCount;
+    if(primitiveValueCount >= MAX_PRIMITIVE_PROPERTIES) {
+        LogError(errStr, valueName, className, "reach properties limit");
+        assert(false && "Too many properties");
+        return;
+    }
+
     values.push_back(classValue);
 }
 
@@ -151,7 +168,7 @@ ClassInstance ClassInfo::createDefaultInstance() {
     return ClassInstance(*this, object);
 }
 
-void ClassInfo::getAllClasses(std::vector<const ClassInfo*>& classes) const {
+void ClassInfo::getAllClasses(std::vector<ClassInfo*>& classes) {
     for(auto classInfo : baseClasses) {
         classInfo->getAllClasses(classes);
     }
@@ -167,6 +184,12 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
         return;
     }
 
+    if(!values.empty()) {
+        LogError(errStr, "null", className, "Add base class after value was added");
+        assert(false && "Base should be registered first");
+        return;
+    }
+
     ClassInfo* baseClassInfo = nullptr;
     ET_SendEventReturn(baseClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, baseClassTypeId);
     if(!baseClassInfo) {
@@ -174,13 +197,16 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
         return;
     }
 
-    std::vector<const ClassInfo*> newClasses;
+    int newPrimitiveValueCount = 0;
+    std::vector<ClassInfo*> newClasses;
     baseClassInfo->getAllClasses(newClasses);
 
-    std::vector<const ClassInfo*> currentClasses;
+    int currentPrimitiveValueCount = 0;
+    std::vector<ClassInfo*> currentClasses;
     getAllClasses(currentClasses);
 
     for(auto newClass : newClasses) {
+        newPrimitiveValueCount += newClass->primitiveValueCount;
         for(auto currentClass : currentClasses) {
             if(newClass == currentClass) {
                 LogError(errStr, baseClassInfo->className, className, "class already registered as a base");
@@ -206,6 +232,14 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
             }
         }
     }
+
+    primitiveValueCount += newPrimitiveValueCount;
+    if(primitiveValueCount >= MAX_PRIMITIVE_PROPERTIES) {
+        LogError(errStr, baseClassInfo->className, className, "reach limit of primitive values");
+        assert(false && "Too many primitive values");
+        return;
+    }
+
     baseClasses.push_back(baseClassInfo);
 }
 
@@ -230,6 +264,40 @@ const ClassValue* ClassInfo::findValueByName(const char* name) const {
     return nullptr;
 }
 
+ClassValue* ClassInfo::findValueById(int valueId) {
+    if(valueId >= primitiveValueCount) {
+        return nullptr;
+    }
+    std::vector<ClassInfo*> allClasses;
+    getAllClasses(allClasses);
+
+    for(auto classInfo : allClasses) {
+        if(valueId >= classInfo->primitiveValueCount) {
+            valueId -= classInfo->primitiveValueCount;
+            continue;
+        }
+        if(classInfo->primitiveValueCount == static_cast<int>(classInfo->values.size())) {
+            return &classInfo->values[valueId];
+        }
+        for(auto& value : classInfo->values) {
+            if(valueId >= value.primitiveValueCount) {
+                valueId -= value.primitiveValueCount;
+                continue;
+            }
+            if(value.type == ClassValueType::Object) {
+                ClassInfo* valueClassInfo = nullptr;
+                ET_SendEventReturn(valueClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, value.typeId);
+                if(!valueClassInfo) {
+                    return nullptr;
+                }
+                return valueClassInfo->findValueById(valueId);
+            }
+            return &value;
+        }
+    }
+    return nullptr;
+}
+
 void ClassInfo::makeReflectModel(JSONNode& node) {
     node.write("type", "class");
 
@@ -246,18 +314,71 @@ void ClassInfo::makeReflectModel(JSONNode& node) {
     node.write("data", fieldsNode);
 }
 
-bool ClassInfo::dumpValues(void* instance, MemoryStream& stream) const {
-    std::vector<const ClassInfo*> allClasses;
+bool ClassInfo::readValues(void* instance, MemoryStream& stream) {
+    std::vector<ClassInfo*> allClasses;
     getAllClasses(allClasses);
 
     for(auto classInfo : allClasses) {
         for(auto& value : classInfo->values) {
             auto ptr = getValueFunc(instance, value.ptr);
-            if(!value.dumpValue(instance, ptr, stream)) {
+            if(!value.readValue(instance, ptr, stream)) {
+                LogError("[ClassInfo::readValues] Can't read value of '%s' from class '%s'",
+                    value.name, className);
                 return false;
             }
         }
     }
 
+    return true;
+}
+
+bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+    auto value = findValueById(valueId);
+    if(!value) {
+        return false;
+    }
+    auto ptr = getValueFunc(instance, value->ptr);
+    if(!value->readValue(instance, ptr, stream)) {
+        LogError("[ClassInfo::readValue] Can't read value of '%s' from class '%s'",
+            value->name, className);
+        return false;
+    }
+    return true;
+}
+
+bool ClassInfo::writeValues(void* instance, MemoryStream& stream) {
+    std::vector<ClassInfo*> allClasses;
+    getAllClasses(allClasses);
+
+    for(auto classInfo : allClasses) {
+        for(auto& value : classInfo->values) {
+            auto ptr = getValueFunc(instance, value.ptr);
+            if(!value.writeValue(instance, ptr, stream)) {
+                LogError("[ClassInfo::writeValues] Can't write value of '%s' from class '%s'",
+                    value.name, className);
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+    if(valueId == InvalidEntityLogicValueId) {
+        return false;
+    }
+    int primitiveValueId = static_cast<int>(valueId);
+    primitiveValueId--;
+    auto value = findValueById(primitiveValueId);
+    if(!value) {
+        return false;
+    }
+    auto ptr = getValueFunc(instance, value->ptr);
+    if(!value->writeValue(instance, ptr, stream)) {
+        LogError("[ClassInfo::writeValue] Can't write value of '%s' from class '%s'",
+            value->name, className);
+        return false;
+    }
     return true;
 }

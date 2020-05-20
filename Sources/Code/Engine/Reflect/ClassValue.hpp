@@ -39,8 +39,9 @@ public:
     ~ClassValue();
 
     const char* getTypeName() const;
-    bool serializeValue(void* instance, void* valuePtr, const JSONNode& node);
-    bool dumpValue(void* instance, void* valuePtr, MemoryStream& stream) const;
+    bool readValue(void* instance, void* valuePtr, const JSONNode& node);
+    bool readValue(void* instance, void* valuePtr, MemoryStream& stream) const;
+    bool writeValue(void* instance, void* valuePtr, MemoryStream& stream);
 
 public:
 
@@ -49,6 +50,7 @@ public:
     ValuePtrT ptr;
     TypeId typeId;
     SetResourceFuncT setResourceFunc;
+    int primitiveValueCount;
     bool isElement;
 };
 

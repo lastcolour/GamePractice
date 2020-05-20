@@ -399,7 +399,7 @@ TEST_F(ReflectTests, TestDerivedReflection) {
     ASSERT_TRUE(classNode.hasKey("base"));
 }
 
-TEST_F(ReflectTests, TestDumpValuesSimpleObject) {
+TEST_F(ReflectTests, TestReadValuesSimpleObject) {
     ReflectContext reflectCtx;
     ASSERT_TRUE(reflectCtx.reflect<SimpleEntityLogic>());
 
@@ -415,7 +415,7 @@ TEST_F(ReflectTests, TestDumpValuesSimpleObject) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.dumpValues(stream));
+    ASSERT_TRUE(instance.readValues(stream));
 
     auto buffer = stream.flushToBuffer();
     ASSERT_TRUE(buffer);
@@ -443,6 +443,47 @@ TEST_F(ReflectTests, TestDumpValuesSimpleObject) {
         stream.read(val);
         ASSERT_STREQ(val.c_str(), "1");
     }
+}
+
+TEST_F(ReflectTests, TestModifyClassValueOfSimpleEntity) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<SimpleEntityLogic>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createDefaultInstance();
+    ASSERT_TRUE(instance.get());
+
+    auto logicPtr = static_cast<SimpleEntityLogic*>(instance.get());
+
+    bool boolVal = true;
+    int intVal = 1;
+    float floatVal = 1.f;
+    std::string strVal = "1";
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    stream.write(boolVal);
+    stream.write(intVal);
+    stream.write(floatVal);
+    stream.write(strVal.c_str());
+
+    stream.reopenForRead();
+
+    ASSERT_TRUE(instance.writeValue(1, stream));
+    ASSERT_TRUE(instance.writeValue(2, stream));
+    ASSERT_TRUE(instance.writeValue(3, stream));
+    ASSERT_TRUE(instance.writeValue(4, stream));
+
+    ASSERT_EQ(logicPtr->boolF, boolVal);
+    ASSERT_EQ(logicPtr->intF, intVal);
+    ASSERT_FLOAT_EQ(logicPtr->boolF, floatVal);
+    ASSERT_STREQ(logicPtr->stringF.c_str(), strVal.c_str());
+}
+
+TEST_F(ReflectTests, TestModifyClassValueOfObjectWithObjectEntity) {
 }
 
 TEST_F(ReflectTests, TestEntityReference) {

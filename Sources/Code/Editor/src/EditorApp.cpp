@@ -49,6 +49,12 @@ const char* EditorApp::getReflectModel() {
     return reflectModelBuffer.getCString();
 }
 
+std::vector<const char*> EditorApp::getRegisteredEntityLogics() {
+    std::vector<const char*> res;
+    ET_SendEvent(&ETEntityManager::ET_getRegisteredLogics, res);
+    return res;
+}
+
 void EditorApp::buildModules(ModuleListT& modules) {
     modules.emplace_back(new CoreModule);
     modules.emplace_back(new EditorModule);
@@ -140,10 +146,57 @@ Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId logicId) {
     MemoryStream stream;
     stream.openForWrite();
     bool dumpRes = false;
-    ET_SendEventReturn(dumpRes, &ETEntityManager::ET_dumpEntityLogicData, entityId, logicId, stream);
+    ET_SendEventReturn(dumpRes, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, stream);
     if(!dumpRes) {
-        LogError("[EditorApp::getEntityLogicData] Can't dump logic data from entity");
+        LogError("[EditorApp::getEntityLogicData] Can't read logic data from entity");
         return Buffer();
     }
     return stream.flushToBuffer();
+}
+
+EntityId EditorApp::addChilEntityToEntity(EntityId entityId, const char* childName) {
+    if(!entityId.isValid()) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add entity to invalid entity");
+        return InvalidEntityId;
+    }
+    if(!ET_IsExistNode<ETEntity>(entityId)) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add child entity to entity that does not exist");
+        return InvalidEntityId;
+    }
+    if(!childName || !childName[0]) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add entity with invalid name");
+        return InvalidEntityId;
+    }
+    EntityId childId;
+    ET_SendEventReturn(childId, &ETEntityManager::ET_createEntity, childName);
+    if(!childId.isValid()) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't create entity to add");
+        return InvalidEntityId;
+    }
+    ET_SendEvent(entityId, &ETEntity::ET_addChild, childId);
+    return childId;
+}
+
+void EditorApp::removeChildEntityFromEntity(EntityId parentId, EntityId childId) {
+    if(!parentId.isValid()) {
+        LogError("[EditorApp::removeChildEntityFromEntity] Can't remove entity from invalid parent entity");
+        return;
+    }
+    if(!ET_IsExistNode<ETEntity>(parentId)) {
+        LogError("[EditorApp::removeChildEntityFromEntity] Can't remove entity from non-exist parent entity");
+        return;
+    }
+    if(!childId.isValid()) {
+        LogError("[EditorApp::removeChildEntityFromEntity] Can't remove invalid child entity");
+        return;
+    }
+    if(!ET_IsExistNode<ETEntity>(childId)) {
+        LogError("[EditorApp::removeChildEntityFromEntity] Can't remove child that does not exist");
+        return;
+    }
+    ET_SendEvent(parentId, &ETEntity::ET_removeChild, childId);
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, childId);
+}
+
+void EditorApp::setEntityLogicFieldData(EntityId entityId, EntityLogicId logicId, int fieldId, Buffer& buffer) {
 }

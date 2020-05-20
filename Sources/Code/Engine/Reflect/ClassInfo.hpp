@@ -22,7 +22,12 @@ public:
     const char* getName() const;
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
-    bool dumpValues(void* instance, MemoryStream& stream) const;
+
+    bool readValues(void* instance, MemoryStream& stream);
+    bool readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
+
+    bool writeValues(void* instance, MemoryStream& stream);
+    bool writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
 
     template<typename ClassT>
     void init() {
@@ -86,10 +91,11 @@ private:
 
     const ClassValue* findValueByName(const char* name) const;
     const ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr) const;
+    ClassValue* findValueById(int valueId);
     void registerBaseClass(TypeId baseClassTypeId);
     void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
         ClassValue::SetResourceFuncT valueSetFunc);
-    void getAllClasses(std::vector<const ClassInfo*>& classes) const;
+    void getAllClasses(std::vector<ClassInfo*>& classes);
 
 private:
 
@@ -100,6 +106,7 @@ private:
     GetValueFuncT getValueFunc;
     std::string className;
     TypeId instanceTypeId;
+    int primitiveValueCount;
 };
 
 #endif /* __CLASS_INFO_HPP__ */

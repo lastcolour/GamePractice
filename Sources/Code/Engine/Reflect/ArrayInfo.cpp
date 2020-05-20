@@ -33,7 +33,7 @@ void ArrayInfo::eraseElement(size_t pos, void* valuePtr) {
 }
 
 bool ArrayInfo::serializeElement(void* element, const JSONNode& node) {
-    return elemValue.serializeValue(element, element, node);
+    return elemValue.readValue(element, element, node);
 }
 
 TypeId ArrayInfo::getElemTypeId() const {
@@ -51,14 +51,18 @@ void ArrayInfo::makeReflectModel(JSONNode& node) {
     node.write("data", elemNode);
 }
 
-bool ArrayInfo::dumpValues(void* valuePtr, MemoryStream& stream) {
+bool ArrayInfo::readValues(void* valuePtr, MemoryStream& stream) {
     int sz = static_cast<int>(size(valuePtr));
     stream.write(sz);
     for(int i = 0; i < sz; ++i) {
         auto elem = getElemFunc(i, valuePtr);
-        if(!elemValue.dumpValue(elem, elem, stream)) {
+        if(!elemValue.readValue(elem, elem, stream)) {
             return false;
         }
     }
     return true;
+}
+
+bool ArrayInfo::writeValues(void* valuePtr, MemoryStream& stream) {
+    return false;
 }

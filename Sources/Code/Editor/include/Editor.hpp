@@ -15,6 +15,8 @@ LIB_EXPORT uint32_t Initiliaze();
 
 LIB_EXPORT const char* GetReflectModel();
 
+LIB_EXPORT uint32_t GetRegisteredEntityLogics(void** out);
+
 LIB_EXPORT void DeInitialize();
 
 LIB_EXPORT uint32_t LoadEntity(const char* entityName);
@@ -32,6 +34,10 @@ LIB_EXPORT void RemoveLogicFromEntity(uint32_t entityId, int32_t logicId);
 LIB_EXPORT uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void** out);
 
 LIB_EXPORT void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size);
+
+LIB_EXPORT uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName);
+
+LIB_EXPORT void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId);
 
 LIB_EXPORT void DrawFrame(void* out, uint32_t w, uint32_t h);
 

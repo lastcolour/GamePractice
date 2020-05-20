@@ -5,6 +5,8 @@
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
 
+#include <set>
+
 namespace {
 
 const char* TEST_OBJECT_NAME = "Game/Simple.json";
@@ -221,6 +223,20 @@ TEST_F(EntityTests, CheckAddRemoveLogic) {
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, secondLogicId);
 }
 
+TEST_F(EntityTests, CheckRegisteredLogics) {
+    std::vector<const char*> registeredLogics;
+    ET_SendEvent(&ETEntityManager::ET_getRegisteredLogics, registeredLogics);
+    ASSERT_TRUE(registeredLogics.size() > 0);
+
+    std::set<const char*> logics;
+    for(auto name : registeredLogics) {
+        ASSERT_TRUE(name && name[0]);
+        logics.insert(name);
+    }
+
+    ASSERT_EQ(logics.size(), registeredLogics.size());
+}
+
 TEST_F(EntityTests, TestReflectSimpleEntity) {
     EntityId entityId;
     ET_SendEventReturn(entityId, &ETEntityManager::ET_createEntity, "Game/Simple.json");
@@ -230,7 +246,7 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
     MemoryStream stream;
     stream.openForWrite();
     bool res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_dumpEntityLogicData, entityId, logicId, stream);
+    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, stream);
     ASSERT_TRUE(res);
 
     auto buffer = stream.flushToBuffer();

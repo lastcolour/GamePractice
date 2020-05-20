@@ -144,26 +144,112 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
     }
 }
 
-bool EntityManager::ET_dumpEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {
-    if(!entityId.isValid()) {
-        LogError("[EntityManager::ET_dumpEntityLogicData] Invalid entity id to dump logic data");
+bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {
+    if(entityId == InvalidEntityId) {
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read entity logic data from entity with invalid id");
         return false;
     }
-    auto entId = entities.find(entityId);
-    if(entId == entities.end()) {
-        LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't find entity to dump logic data");
+    auto it = entities.find(entityId);
+    if(it != entities.end()) {
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't find entity to read logic data");
         return false;
     }
-    Entity* entity = entId->second.get();
+    auto entity = it->second.get();
     if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't dump logic data with invalid id from entity '%s'", entity->ET_getName());
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic data with invalid logic id from entity: '%s'",
+            entity->ET_getName());
         return false;
     }
-    if(!stream.isOpenedForWrite()) {
-        LogWarning("[EntityManager::ET_dumpEntityLogicData] Can't dump logic of entity '%s' data to invalid stream", entity->ET_getName());
+    if(!entity->readLogicData(logicId, stream)) {
+        LogWarning("[EntityManager::ET_readEntityLogicData] Error to read logic data from entity: '%s'",
+            entity->ET_getName());
         return false;
     }
-    return entity->dumpLogicData(logicId, stream);
+    return true;
+}
+
+bool EntityManager::ET_readEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+    EntityLogicValueId valueId, MemoryStream& stream) {
+    if(entityId == InvalidEntityId) {
+        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read entity logic value data from entity with invalid id");
+        return false;
+    }
+    auto it = entities.find(entityId);
+    if(it != entities.end()) {
+        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't find entity to read logic value data");
+        return false;
+    }
+    auto entity = it->second.get();
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read logic value data with invalid logic id from entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(valueId == InvalidEntityLogicValueId) {
+        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read logic value data with invalid value id from entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(!entity->readLogicValueData(logicId, valueId, stream)) {
+        LogWarning("[EntityManager::ET_readEntityLogicValueData] Error to read logic value data from entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    return true;
+}
+
+bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {
+    if(entityId == InvalidEntityId) {
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write entity logic data from entity with invalid id");
+        return false;
+    }
+    auto it = entities.find(entityId);
+    if(it != entities.end()) {
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't find entity to write logic data");
+        return false;
+    }
+    auto entity = it->second.get();
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic data with invalid logic id from entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(!entity->writeLogicData(logicId, stream)) {
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Error to write logic data to entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    return true;
+}
+
+bool EntityManager::ET_writeEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+    EntityLogicValueId valueId, MemoryStream& stream) {
+    if(entityId == InvalidEntityId) {
+        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write entity logic value data from entity with invalid id");
+        return false;
+    }
+    auto it = entities.find(entityId);
+    if(it != entities.end()) {
+        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write entity to read logic value data");
+        return false;
+    }
+    auto entity = it->second.get();
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write logic value data with invalid logic id from entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(valueId == InvalidEntityLogicValueId) {
+        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write logic value data with invalid value id from entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(!entity->writeLogicValueData(logicId, valueId, stream)) {
+        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Error to write logic value data to entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    return true;
 }
 
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
@@ -260,4 +346,11 @@ Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) 
     LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, duration);
 
     return entity;
+}
+
+void EntityManager::ET_getRegisteredLogics(std::vector<const char*>& logicNames) {
+    logicNames.reserve(registeredLogics.size());
+    for(const auto& logicClassInfo : registeredLogics) {
+        logicNames.push_back(logicClassInfo.second->getName());
+    }
 }

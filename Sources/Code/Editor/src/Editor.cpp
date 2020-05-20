@@ -30,6 +30,23 @@ const char* GetReflectModel() {
     return EDITOR_APP->getReflectModel();
 }
 
+uint32_t GetRegisteredEntityLogics(void** out) {
+    if(!EDITOR_APP) {
+        return 0u;
+    }
+    auto logicNames = EDITOR_APP->getRegisteredEntityLogics();
+    if(logicNames.empty()) {
+        return 0u;
+    }
+    INTERNAL_BUFFER.resize(sizeof(const char*) * logicNames.size());
+    auto ptr = static_cast<const void**>(INTERNAL_BUFFER.getWriteData());
+    for(size_t i = 0, sz = logicNames.size(); i < sz; ++i) {
+        ptr[i] = static_cast<const void*>(logicNames[i]);
+    }
+    *out = INTERNAL_BUFFER.getWriteData();
+    return static_cast<uint32_t>(logicNames.size());
+}
+
 void DeInitialize() {
     if(!EDITOR_APP) {
         return;
@@ -124,4 +141,29 @@ void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId
     if(!EDITOR_APP) {
         return;
     }
+    EntityId entId;
+    entId.setRawId(entityId);
+    Buffer buffer(data, size);
+    EDITOR_APP->setEntityLogicFieldData(entId, logicId, fieldId, buffer);
+}
+
+uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName) {
+    if(!EDITOR_APP) {
+        return 0u;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    auto childId = EDITOR_APP->addChilEntityToEntity(entId, entityName);
+    return childId.getRawId();
+}
+
+void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EntityId parentEntId;
+    parentEntId.setRawId(parentEntityId);
+    EntityId childEntId;
+    childEntId.setRawId(childEntityId);
+    EDITOR_APP->removeChildEntityFromEntity(parentEntId, childEntId);
 }

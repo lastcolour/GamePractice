@@ -43,6 +43,10 @@ class EditorNative:
         self._getReflectModelFunc = self._editorLib.GetReflectModel
         self._getReflectModelFunc.argstype = None
         self._getReflectModelFunc.restype = ctypes.c_char_p
+
+        self._getRegisteredEntityLogicsFunc = self._editorLib.GetRegisteredEntityLogics
+        self._getRegisteredEntityLogicsFunc.argstype = [ctypes.POINTER(ctypes.c_void_p),]
+        self._getRegisteredEntityLogicsFunc.restype = ctypes.c_uint32
     
         self._loadEntityFunc = self._editorLib.LoadEntity
         self._loadEntityFunc.argstype = [ctypes.c_char_p,]
@@ -73,6 +77,14 @@ class EditorNative:
         self._getEntityLogicDataFunc.restype = ctypes.c_uint32
 
         #void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size);
+
+        self._addChildEntityToEntityFunc = self._editorLib.AddChildEntityToEntity
+        self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
+        self._addChildEntityToEntityFunc.restype = ctypes.c_uint32
+
+        self._removeChildEntityFromEntityFunc = self._editorLib.RemoveChildEntityFromEntity
+        self._removeChildEntityFromEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32]
+        self._removeChildEntityFromEntityFunc.restype = None
 
         self._drawFrameFunc = self._editorLib.DrawFrame
         self._drawFrameFunc.argstype = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_uint32]
@@ -136,3 +148,24 @@ class EditorNative:
     def drawFrame(self, width, height):
         self._drawBuffer.setSize(width, height)
         self._drawFrameFunc(self._drawBuffer.getCPtr(), ctypes.c_uint32(width), ctypes.c_uint32(height))
+
+    def getRegisteredEntityLogics(self):
+        outPtr = ctypes.POINTER(ctypes.c_char_p)()
+        outSize = self._getRegisteredEntityLogicsFunc(ctypes.byref(outPtr))
+        res = []
+        if outSize == 0:
+            return res
+        outPtr = ctypes.POINTER(ctypes.c_char_p * outSize)(outPtr.contents)
+        for i in range(outSize):
+            res.append(outPtr.contents[i].decode('ascii'))
+        return res
+
+    def addChildEntityToEntity(self, entityId, entityName):
+        cEntityName = ctypes.c_char_p(entityName.encode('ascii'))
+        cEntId = ctypes.c_uint32(entityId)
+        return self._addChildEntityToEntityFunc(cEntId, cEntityName)
+
+    def removeChildEntityFromEntity(self, parentId, childId):
+        cParentId = ctypes.c_uint32(parentId)
+        cChildId = ctypes.c_uint32(childId)
+        self._removeChildEntityFromEntityFunc(cParentId, cChildId)

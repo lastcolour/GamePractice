@@ -24,7 +24,8 @@ public:
     TypeId getElemTypeId() const;
     const char* getName() const;
     void makeReflectModel(JSONNode& node);
-    bool dumpValues(void* valuePtr, MemoryStream& stream);
+    bool readValues(void* valuePtr, MemoryStream& stream);
+    bool writeValues(void* valuePtr, MemoryStream& stream);
 
 private:
 

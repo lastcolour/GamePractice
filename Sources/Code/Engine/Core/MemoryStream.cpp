@@ -56,6 +56,25 @@ void MemoryStream::openForWrite() {
     state = StreamState::Write;
 }
 
+void MemoryStream::reopenForRead() {
+    if(state != StreamState::Write) {
+        assert(false && "Can't reopen for read stream that is not opened for write");
+        return;
+    }
+    state = StreamState::Read;
+    pos = 0;
+}
+
+void MemoryStream::reopenForWrite() {
+    if(state != StreamState::Read) {
+        assert(false && "Can't reopen for write stream that is not opened for read");
+        return;
+    }
+    state = StreamState::Write;
+    pos = 0;
+    buffer.resize(0);
+}
+
 Buffer MemoryStream::flushToBuffer() {
     if(state != StreamState::Write) {
         assert(false && "Can't flush non-write buffer");

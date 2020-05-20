@@ -38,15 +38,15 @@ TypeId EnumInfo::getEnumTypeId() const {
     return enumTypeId;
 }
 
-bool EnumInfo::serializeValue(void* valuePtr, const std::string& valueStr) const {
+bool EnumInfo::readValue(void* valuePtr, const std::string& valueStr) const {
     if(valueStr.empty()) {
-        LogError("[EnumInfo::serializeValue] Can't serialize value of enum '%s' (Error: %s)",
+        LogError("[EnumInfo::readValue] Can't serialize value of enum '%s' (Error: %s)",
             enumName, "value empty");
         return false;
     }
     auto it = nameToVal.find(valueStr);
     if(it == nameToVal.end()) {
-        LogError("[EnumInfo::serializeValue] Can't serialize value of enum '%s' (Error: %s)",
+        LogError("[EnumInfo::readValue] Can't serialize value of enum '%s' (Error: %s)",
             enumName, "can't find value");
         return false;
     }
