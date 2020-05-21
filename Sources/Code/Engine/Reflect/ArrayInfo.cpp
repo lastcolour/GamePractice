@@ -4,11 +4,11 @@
 #include "Core/MemoryStream.hpp"
 
 ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF,
-    SizeFuncT sizeF, EraseElemFuncT eraseF, GetElemFuncT getElemF) :
+    SizeFuncT sizeF, GetElemFuncT getElemF, ResetFuncT resetF) :
     createFunc(createF),
     sizeFunc(sizeF),
-    eraseFunc(eraseF),
-    getElemFunc(getElemF) {
+    getElemFunc(getElemF),
+    resetFunc(resetF) {
 
     elemValue.isElement = true;
     elemValue.typeId = elemTypeId;
@@ -18,22 +18,6 @@ ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT
 }
 
 ArrayInfo::~ArrayInfo() {
-}
-
-void* ArrayInfo::createElement(void* valuePtr) {
-    return createFunc(valuePtr);
-}
-
-size_t ArrayInfo::size(void* valuePtr) const {
-    return sizeFunc(valuePtr);
-}
-
-void ArrayInfo::eraseElement(size_t pos, void* valuePtr) {
-    eraseFunc(pos, valuePtr);
-}
-
-bool ArrayInfo::serializeElement(void* element, const JSONNode& node) {
-    return elemValue.readValue(element, element, node);
 }
 
 TypeId ArrayInfo::getElemTypeId() const {
@@ -51,8 +35,19 @@ void ArrayInfo::makeReflectModel(JSONNode& node) {
     node.write("data", elemNode);
 }
 
+bool ArrayInfo::readValues(void* valuePtr, const JSONNode& node) {
+    resetFunc(valuePtr);
+    for(auto& elemNode : node) {
+        auto elem = createFunc(valuePtr);
+        if(!elemValue.readValue(elem, elem, elemNode)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool ArrayInfo::readValues(void* valuePtr, MemoryStream& stream) {
-    int sz = static_cast<int>(size(valuePtr));
+    int sz = static_cast<int>(sizeFunc(valuePtr));
     stream.write(sz);
     for(int i = 0; i < sz; ++i) {
         auto elem = getElemFunc(i, valuePtr);
@@ -64,5 +59,14 @@ bool ArrayInfo::readValues(void* valuePtr, MemoryStream& stream) {
 }
 
 bool ArrayInfo::writeValues(void* valuePtr, MemoryStream& stream) {
-    return false;
+    resetFunc(valuePtr);
+    int sz = 0;
+    stream.read(sz);
+    for(int i = 0; i < sz; ++i) {
+        auto elem = createFunc(valuePtr);
+        if(!elemValue.writeValue(elem, elem, stream)) {
+            return false;
+        }
+    }
+    return true;
 }

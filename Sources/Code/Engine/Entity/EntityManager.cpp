@@ -150,7 +150,7 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
         return false;
     }
     auto it = entities.find(entityId);
-    if(it != entities.end()) {
+    if(it == entities.end()) {
         LogWarning("[EntityManager::ET_readEntityLogicData] Can't find entity to read logic data");
         return false;
     }
@@ -175,7 +175,7 @@ bool EntityManager::ET_readEntityLogicValueData(EntityId entityId, EntityLogicId
         return false;
     }
     auto it = entities.find(entityId);
-    if(it != entities.end()) {
+    if(it == entities.end()) {
         LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't find entity to read logic value data");
         return false;
     }
@@ -204,7 +204,7 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
         return false;
     }
     auto it = entities.find(entityId);
-    if(it != entities.end()) {
+    if(it == entities.end()) {
         LogWarning("[EntityManager::ET_writeEntityLogicData] Can't find entity to write logic data");
         return false;
     }
@@ -229,7 +229,7 @@ bool EntityManager::ET_writeEntityLogicValueData(EntityId entityId, EntityLogicI
         return false;
     }
     auto it = entities.find(entityId);
-    if(it != entities.end()) {
+    if(it == entities.end()) {
         LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write entity to read logic value data");
         return false;
     }

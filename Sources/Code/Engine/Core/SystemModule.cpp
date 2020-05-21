@@ -24,7 +24,7 @@ SystemModule::~SystemModule() {
     if(!isInitialized) {
         return;
     }
-    LogDebug("[SystemModule::SystemModule] Deinit module: '%s'", name);
+    LogDebug("[SystemModule::~SystemModule] Deinit module: '%s'", name);
     if(logicsContainer) {
         logicsContainer->deinit();
     }

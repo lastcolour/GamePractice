@@ -132,6 +132,16 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     classValue.setResourceFunc = valueSetFunc;
     classValue.primitiveValueCount = 1;
 
+    if(valueType == ClassValueType::Object) {
+        ClassInfo* valueClassInfo = nullptr;
+        ET_SendEventReturn(valueClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, valueTypeId);
+        if(!valueClassInfo) {
+            assert(false && "Can't find value class info");
+            return;
+        }
+        classValue.primitiveValueCount = valueClassInfo->primitiveValueCount;
+    }
+
     primitiveValueCount += classValue.primitiveValueCount;
     if(primitiveValueCount >= MAX_PRIMITIVE_PROPERTIES) {
         LogError(errStr, valueName, className, "reach properties limit");
@@ -315,6 +325,14 @@ void ClassInfo::makeReflectModel(JSONNode& node) {
 }
 
 bool ClassInfo::readValues(void* instance, MemoryStream& stream) {
+    assert(instance && "Invalid instance");
+
+    if(!stream.isOpenedForWrite()) {
+        LogError("[ClassInfo::readValues] Can't output class values of class '%s' to non-write stream",
+            className);
+        return false;
+    }
+
     std::vector<ClassInfo*> allClasses;
     getAllClasses(allClasses);
 
@@ -333,8 +351,21 @@ bool ClassInfo::readValues(void* instance, MemoryStream& stream) {
 }
 
 bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
-    auto value = findValueById(valueId);
+    assert(instance && "Invalid instance");
+    if(!stream.isOpenedForWrite()) {
+        LogError("[ClassInfo::readValue] Can't output class value with id '%d' of class '%s' to non-write stream",
+            valueId, className);
+        return false;
+    }
+    if(valueId == InvalidEntityLogicValueId) {
+        LogError("ClassInfo::readValue] Can't read value with invalid id");
+        return false;
+    }
+    int primitiveValueId = static_cast<int>(valueId);
+    primitiveValueId--;
+    auto value = findValueById(primitiveValueId);
     if(!value) {
+        LogError("ClassInfo::readValue] Can't find value with id '%d' in class '%s'", valueId, className);
         return false;
     }
     auto ptr = getValueFunc(instance, value->ptr);
@@ -347,6 +378,14 @@ bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStre
 }
 
 bool ClassInfo::writeValues(void* instance, MemoryStream& stream) {
+    assert(instance && "Invalid instance");
+
+    if(!stream.isOpenedForRead()) {
+        LogError("[ClassInfo::writeValues] Can't set class values of class '%s' from non-read stream",
+            className);
+        return false;
+    }
+
     std::vector<ClassInfo*> allClasses;
     getAllClasses(allClasses);
 
@@ -365,13 +404,21 @@ bool ClassInfo::writeValues(void* instance, MemoryStream& stream) {
 }
 
 bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+    assert(instance && "Invalid instance");
+    if(!stream.isOpenedForRead()) {
+        LogError("[ClassInfo::writeValue] Can't set class value with id '%d' of class '%s' from non-read stream",
+            valueId, className);
+        return false;
+    }
     if(valueId == InvalidEntityLogicValueId) {
+        LogError("ClassInfo::writeValue] Can't write value with invalid id");
         return false;
     }
     int primitiveValueId = static_cast<int>(valueId);
     primitiveValueId--;
     auto value = findValueById(primitiveValueId);
     if(!value) {
+        LogError("ClassInfo::writeValue] Can't find value with id '%d' in class '%s'", valueId, className);
         return false;
     }
     auto ptr = getValueFunc(instance, value->ptr);

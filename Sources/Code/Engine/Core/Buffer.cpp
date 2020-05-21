@@ -130,7 +130,7 @@ void Buffer::resize(size_t newSize) {
         return;
     }
     size_t actualNewSize = newSize + 1;
-    if(buffImpl != nullptr && buffImpl->size > actualNewSize) {
+    if(buffImpl != nullptr && buffImpl->size >= actualNewSize) {
         return;
     }
     auto prevBuffer = buffImpl;

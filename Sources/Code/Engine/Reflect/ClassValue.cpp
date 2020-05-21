@@ -397,16 +397,9 @@ bool ClassValue::readValue(void* instance, void* valuePtr, const JSONNode& node)
             LogError("[ClassValue::readValue] Can't get array object from data for a field '%s'", name);
             return false;
         }
-        for(auto& elemNode : arrayNode) {
-            auto elem = arrayInfo->createElement(valuePtr);
-            if(!elem) {
-                LogError("[ClassValue::readValue] Can't create new array element for a field '%s'", name);
-                return false;
-            }
-            if(!arrayInfo->serializeElement(elem, elemNode)) {
-                LogError("[ClassValue::readValue] Can't create array element for a field '%s'", name);
-                return false;
-            }
+        if(!arrayInfo->readValues(valuePtr, arrayNode)) {
+            LogError("[ClassValue::readValue] Can't read array values from data for a field '%s'", name);
+            return false;
         }
         return true;
     }
@@ -515,7 +508,7 @@ bool ClassValue::readValue(void* instance, void* valuePtr, MemoryStream& stream)
             LogError("[ClassValue::readValue] Can't find array info for a field '%s'", name);
             return false;
         }
-        return arrayInfo->writeValues(valuePtr, stream);
+        return arrayInfo->readValues(valuePtr, stream);
     }
     case ClassValueType::Entity: {
         break;
@@ -611,9 +604,7 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
             LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
             return false;
         }
-        uint8_t valueId = 0;
-        stream.read(valueId);
-        return classInfo->readValue(valuePtr, valueId, stream);
+        return classInfo->writeValues(valuePtr, stream);
     }
     case ClassValueType::Resource: {
         std::string val;
@@ -634,7 +625,7 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
             LogError("[ClassValue::readValue] Can't find array info for a field '%s'", name);
             return false;
         }
-        return arrayInfo->readValues(valuePtr, stream);
+        return arrayInfo->writeValues(valuePtr, stream);
     }
     case ClassValueType::Entity: {
         break;

@@ -445,7 +445,7 @@ TEST_F(ReflectTests, TestReadValuesSimpleObject) {
     }
 }
 
-TEST_F(ReflectTests, TestModifyClassValueOfSimpleEntity) {
+TEST_F(ReflectTests, TestWriteClassValueOfSimpleEntity) {
     ReflectContext reflectCtx;
     ASSERT_TRUE(reflectCtx.reflect<SimpleEntityLogic>());
 
@@ -479,11 +479,151 @@ TEST_F(ReflectTests, TestModifyClassValueOfSimpleEntity) {
 
     ASSERT_EQ(logicPtr->boolF, boolVal);
     ASSERT_EQ(logicPtr->intF, intVal);
-    ASSERT_FLOAT_EQ(logicPtr->boolF, floatVal);
+    ASSERT_FLOAT_EQ(logicPtr->floatF, floatVal);
     ASSERT_STREQ(logicPtr->stringF.c_str(), strVal.c_str());
 }
 
-TEST_F(ReflectTests, TestModifyClassValueOfObjectWithObjectEntity) {
+TEST_F(ReflectTests, TestReadClassValueOfSimpleEntity) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<SimpleEntityLogic>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createDefaultInstance();
+    ASSERT_TRUE(instance.get());
+
+    auto logicPtr = static_cast<SimpleEntityLogic*>(instance.get());
+    logicPtr->boolF = true;
+    logicPtr->intF = 1;
+    logicPtr->floatF = 1.f;
+    logicPtr->stringF = "1";
+
+    MemoryStream stream;
+
+    stream.openForWrite();
+
+    ASSERT_TRUE(instance.readValue(1, stream));
+    ASSERT_TRUE(instance.readValue(2, stream));
+    ASSERT_TRUE(instance.readValue(3, stream));
+    ASSERT_TRUE(instance.readValue(4, stream));
+
+    stream.reopenForRead();
+
+    {
+        bool boolVal = false;
+        stream.read(boolVal);
+        ASSERT_EQ(boolVal, logicPtr->boolF);
+    }
+    {
+        int intVal = 0;
+        stream.read(intVal);
+        ASSERT_EQ(intVal, logicPtr->intF);
+    }
+    {
+        float floatVal = 0.f;
+        stream.read(floatVal);
+        ASSERT_FLOAT_EQ(floatVal, logicPtr->floatF);
+    }
+    {
+        std::string stringVal;
+        stream.read(stringVal);
+        ASSERT_STREQ(stringVal.c_str(), logicPtr->stringF.c_str());
+    }
+}
+
+TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithObjectEntity>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createDefaultInstance();
+    ASSERT_TRUE(instance.get());
+
+    auto objectPtr = static_cast<ObjectWithObjectEntity*>(instance.get());
+
+    objectPtr->objectF.floatF = 1.f;
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    ASSERT_TRUE(instance.readValue(3, stream));
+
+    stream.reopenForRead();
+
+    float val = 0.f;
+    stream.read(val);
+
+    ASSERT_FLOAT_EQ(objectPtr->objectF.floatF, val);
+
+    stream.reopenForWrite();
+    stream.write(2.f);
+
+    stream.reopenForRead();
+
+    instance.writeValue(3, stream);
+
+    ASSERT_FLOAT_EQ(objectPtr->objectF.floatF, 2.f);
+}
+
+TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWitArray>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createDefaultInstance();
+    auto objectPtr = static_cast<ObjectWitArray*>(instance.get());
+    ASSERT_TRUE(objectPtr);
+
+    ASSERT_TRUE(objectPtr->array.empty());
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    stream.write(3);
+    stream.write(static_cast<int>(ObjectWithEnum::Numbers::One));
+    stream.write(static_cast<int>(ObjectWithEnum::Numbers::Two));
+    stream.write(static_cast<int>(ObjectWithEnum::Numbers::Three));
+
+    stream.reopenForRead();
+
+    ASSERT_TRUE(instance.writeValue(1, stream));
+
+    ASSERT_EQ(objectPtr->array.size(), 3);
+
+    ASSERT_EQ(objectPtr->array[0].number, ObjectWithEnum::Numbers::One);
+    ASSERT_EQ(objectPtr->array[1].number, ObjectWithEnum::Numbers::Two);
+    ASSERT_EQ(objectPtr->array[2].number, ObjectWithEnum::Numbers::Three);
+
+    objectPtr->array.clear();
+    objectPtr->array.emplace_back();
+    objectPtr->array.back().number = ObjectWithEnum::Numbers::Four;
+    objectPtr->array.emplace_back();
+    objectPtr->array.back().number = ObjectWithEnum::Numbers::Five;
+
+    stream.reopenForWrite();
+
+    instance.readValue(1, stream);
+
+    stream.reopenForRead();
+
+    int size = 0;
+    stream.read(size);
+    ASSERT_EQ(size, 2);
+    {
+        int firstVal = 0;
+        stream.read(firstVal);
+        ASSERT_EQ(firstVal, static_cast<int>(ObjectWithEnum::Numbers::Four));
+    }
+    {
+        int secondVal = 0;
+        stream.read(secondVal);
+        ASSERT_EQ(secondVal, static_cast<int>(ObjectWithEnum::Numbers::Five));
+    }
 }
 
 TEST_F(ReflectTests, TestEntityReference) {

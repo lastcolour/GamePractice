@@ -8,22 +8,19 @@ public:
 
     using CreateElemFuncT = ReflectUtils::ArrayCreateElemFuncT;
     using SizeFuncT = ReflectUtils::ArraySizeFuncT;
-    using EraseElemFuncT = ReflectUtils::ArrayEraseElemFuncT;
     using GetElemFuncT = ReflectUtils::ArrayGetElemFuncT;
+    using ResetFuncT = ReflectUtils::ArrayResetFuncT;
 
 public:
 
     ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF, SizeFuncT sizeF,
-        EraseElemFuncT eraseF, GetElemFuncT getElemF);
+        GetElemFuncT getElemF, ResetFuncT resetF);
     ~ArrayInfo();
 
-    void* createElement(void* valuePtr);
-    size_t size(void* valuePtr) const;
-    void eraseElement(size_t pos, void* valuePtr);
-    bool serializeElement(void* element, const JSONNode& node);
     TypeId getElemTypeId() const;
     const char* getName() const;
     void makeReflectModel(JSONNode& node);
+    bool readValues(void* valuePtr, const JSONNode& node);
     bool readValues(void* valuePtr, MemoryStream& stream);
     bool writeValues(void* valuePtr, MemoryStream& stream);
 
@@ -33,8 +30,8 @@ private:
     ClassValue elemValue;
     CreateElemFuncT createFunc;
     SizeFuncT sizeFunc;
-    EraseElemFuncT eraseFunc;
     GetElemFuncT getElemFunc;
+    ResetFuncT resetFunc;
 };
 
 #endif /* __ARRAY_INFO_HPP__ */
