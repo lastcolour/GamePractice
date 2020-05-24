@@ -17,30 +17,23 @@ RenderImageLogic::~RenderImageLogic() {
 
 void RenderImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImage")) {
-        classInfo->addBaseClass<RenderNode>();
         classInfo->addResourceField("image", &RenderImageLogic::ET_setImage);
     }
 }
 
 bool RenderImageLogic::init() {
-    if(!RenderNode::init()) {
+    ET_setGeometry("square_tex");
+    if(!geom) {
         return false;
     }
+    ET_setMaterial("simple_image");
     if(!mat) {
         return false;
     }
-    if(!geom) {
-        ET_setGeometry("square_tex");
-        if(!geom) {
-            return false;
-        }
-    }
-    if(tex) {
-        updateScale();
-        ET_show();
-    } else {
-        ET_hide();
-    }
+
+    updateScale();
+
+    RenderNode::init();
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
@@ -72,12 +65,7 @@ void RenderImageLogic::ET_setImage(const char* imageName) {
     } else {
         ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::RGBA);
     }
-    if(!tex) {
-        ET_hide();
-    } else {
-        updateScale();
-        ET_show();
-    }
+    updateScale();
 }
 
 Vec2i RenderImageLogic::ET_getOriginalSize() const {
@@ -105,7 +93,17 @@ void RenderImageLogic::ET_setScale(const Vec2& newScale) {
 }
 
 void RenderImageLogic::updateScale() {
+    if(!tex) {
+        return;
+    }
     auto geomSize = geom->aabb.getSize();
     texScale.x = static_cast<float>(tex->size.x) / geomSize.x;
     texScale.y = static_cast<float>(tex->size.y) / geomSize.y;
+}
+
+bool RenderImageLogic::ET_isVisible() const {
+    if(!tex) {
+        return false;
+    }
+    return RenderNode::ET_isVisible();
 }

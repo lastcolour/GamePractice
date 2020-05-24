@@ -27,12 +27,9 @@ RenderTextLogic::~RenderTextLogic() {
 
 void RenderTextLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderTextLogic>("RenderText")) {
-        classInfo->addBaseClass<RenderNode>();
         classInfo->addField("color", &RenderTextLogic::color);
         classInfo->addField("fontScale", &RenderTextLogic::fontScale);
-        classInfo->addResourceField("font", &RenderTextLogic::ET_setFont);
     }
-    RenderNode::Reflect(ctx);
 }
 
 void RenderTextLogic::ET_setFont(const char* fontName) {
@@ -40,12 +37,8 @@ void RenderTextLogic::ET_setFont(const char* fontName) {
 }
 
 bool RenderTextLogic::init() {
-    RenderNode::init();
+    ET_setMaterial("text_solid_color");
     if(!mat) {
-        return false;
-    }
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
-    if(!font) {
         return false;
     }
     ET_setGeometry("text_chunk");
@@ -55,6 +48,13 @@ bool RenderTextLogic::init() {
 
     assert(geom->vertCount >= 6 && "Invalid chunk vertext count");
     assert(geom->vertType == VertexType::Vector4 && "Invalid vertext type");
+
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
+    if(!font) {
+        return false;
+    }
+
+    RenderNode::init();
 
     ETNode<ETRenderTextLogic>::connect(getEntityId());
     return true;

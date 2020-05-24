@@ -22,15 +22,13 @@ class DrawBuffer:
     def getCPtr(self):
         return ctypes.cast(self._data(), ctypes.POINTER(ctypes.c_void_p))
 
-class EditorNative:
-    def __init__(self, nativeLibPath):
-        if not os.path.exists(nativeLibPath):
-            raise RuntimeError("Can't find editor native library")
-
+class LibraryNative:
+    def __init__(self):
         self._drawBuffer = DrawBuffer()
 
-        os.chdir(pathlib.Path(nativeLibPath).parent.__str__())
-        self._editorLib = ctypes.CDLL(nativeLibPath)
+    def initialize(self, libPath):
+        os.chdir(pathlib.Path(libPath).parent.__str__())
+        self._editorLib = ctypes.CDLL(libPath)
 
         self._initializeFunc = self._editorLib.Initiliaze
         self._initializeFunc.argstype = None
@@ -76,7 +74,17 @@ class EditorNative:
         self._getEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.POINTER(ctypes.c_void_p)]
         self._getEntityLogicDataFunc.restype = ctypes.c_uint32
 
-        #void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size);
+        self._getEntityLogicValueDataFunc = self._editorLib.GetEntityLogicValueData
+        self._getEntityLogicValueDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_void_p)]
+        self._getEntityLogicValueDataFunc.restype = ctypes.c_uint32
+
+        self._setEntityLogicDataFunc = self._editorLib.SetEntityLogicData
+        self._setEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_void_p, ctypes.c_uint32]
+        self._setEntityLogicDataFunc.restype = None
+
+        self._setEntityLogicValueDataFunc = self._editorLib.SetEntityLogicValueData
+        self._setEntityLogicValueDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.c_void_p, ctypes.c_uint32]
+        self._setEntityLogicValueDataFunc.restype = None
 
         self._addChildEntityToEntityFunc = self._editorLib.AddChildEntityToEntity
         self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
@@ -90,7 +98,6 @@ class EditorNative:
         self._drawFrameFunc.argstype = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_uint32]
         self._drawFrameFunc.restype = None
 
-    def initialize(self):
         return self._initializeFunc()
 
     def deinitialize(self):
@@ -144,6 +151,30 @@ class EditorNative:
             return bytearray()
         bufferPtr = ctypes.POINTER(ctypes.c_char * outSize)(outPtr.contents)
         return bytearray(bufferPtr.contents)
+
+    def getEntityLogicValueData(self, entityId, logicId, valueId):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        cValueId = ctypes.c_int32(valueId)
+        outPtr = ctypes.POINTER(ctypes.c_char)()
+        outSize = self._getEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, ctypes.byref(outPtr))
+        if outSize == 0:
+            return bytearray()
+        bufferPtr = ctypes.POINTER(ctypes.c_char * outSize)(outPtr.contents)
+        return bytearray(bufferPtr.contents)
+
+    def setEntityLogicData(self, entityId, logicId, data):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        dataPtr = ctypes.c_char * len(data)
+        self._setEntityLogicDataFunc(cEntId, cLogicId, dataPtr.from_buffer(data), len(data))
+
+    def setEntiyLogicValueData(self, entityId, logicId, valueId, data):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        cValueId = ctypes.c_int32(valueId)
+        dataPtr = ctypes.c_char * len(data)
+        self._setEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, dataPtr.from_buffer(data), len(data))
 
     def drawFrame(self, width, height):
         self._drawBuffer.setSize(width, height)

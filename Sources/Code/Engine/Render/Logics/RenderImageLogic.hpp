@@ -33,6 +33,7 @@ public:
 
     // RenderNode
     bool ET_getScrMinusAlphaBlendFlag() const override;
+    bool ET_isVisible() const override;
 
 protected:
 

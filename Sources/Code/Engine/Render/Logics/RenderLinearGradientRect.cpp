@@ -17,7 +17,6 @@ RenderLinearGradientRect::~RenderLinearGradientRect() {
 
 void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderLinearGradientRect>("RenderLinearGradientRect")) {
-        classInfo->addBaseClass<RenderNode>();
         classInfo->addField("startColor", &RenderLinearGradientRect::startCol);
         classInfo->addField("endColor", &RenderLinearGradientRect::endCol);
         classInfo->addField("isVertical", &RenderLinearGradientRect::isVertical);
@@ -25,7 +24,12 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
 }
 
 bool RenderLinearGradientRect::init() {
-    if(!RenderNode::init()) {
+    ET_setGeometry("square_tex");
+    if(!geom) {
+        return false;
+    }
+    ET_setMaterial("tex_vert_color");
+    if(!mat) {
         return false;
     }
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(2), ETextureType::RGBA);
@@ -34,19 +38,11 @@ bool RenderLinearGradientRect::init() {
     }
     tex->setTexLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
     tex->setWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+
     updateTexData();
-    if(!geom) {
-        ET_setGeometry("square_tex");
-        if(!geom) {
-            return false;
-        }
-    }
-    if(!mat) {
-        ET_setMaterial("tex_vert_color");
-        if(!mat) {
-            return false;
-        }
-    }
+
+    RenderNode::init();
+
     ETNode<ETRenderRect>::connect(getEntityId());
     return true;
 }

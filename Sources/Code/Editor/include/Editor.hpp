@@ -33,7 +33,11 @@ LIB_EXPORT void RemoveLogicFromEntity(uint32_t entityId, int32_t logicId);
 
 LIB_EXPORT uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void** out);
 
-LIB_EXPORT void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size);
+LIB_EXPORT uint32_t GetEntityLogicValueData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out);
+
+LIB_EXPORT void SetEntityLogicData(uint32_t entityId, int32_t logicId, const void* data, uint32_t size);
+
+LIB_EXPORT void SetEntityLogicValueData(uint32_t entityId, int32_t logicId, int32_t valueId, const void* data, uint32_t size);
 
 LIB_EXPORT uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName);
 

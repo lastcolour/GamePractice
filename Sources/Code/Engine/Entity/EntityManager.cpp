@@ -118,6 +118,7 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
     auto logicId = entity->addLogic(std::move(logicInstance));
     if(logicId == InvalidEntityLogicId) {
         LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicName, entity->ET_getName());
+        return InvalidEntityLogicId;
     }
     LogDebug("[EntityManager::ET_addLogicToEntity] Add logic '%s' to entity '%s'", logicName, entity->ET_getName());
     return logicId;
@@ -130,7 +131,8 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
     }
     auto entId = entities.find(entityId);
     if(entId == entities.end()) {
-        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find entity to remove logic");
+        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find entity to remove logic with id '%d'",
+            logicId);
         return;
     }
     Entity* entity = entId->second.get();
@@ -139,9 +141,12 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
         return;
     }
     if(!entity->removeLogic(logicId)) {
-        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find logic to remove for entity '%s'", entity->ET_getName());
+        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find logic with id '%d' to remove for entity '%s'",
+            logicId, entity->ET_getName());
         return;
     }
+    LogDebug("[EntityManager::ET_removeLogicFromEntity] Remove logic with id '%d' from entity '%s'",
+        logicId, entity->ET_getName());
 }
 
 bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {

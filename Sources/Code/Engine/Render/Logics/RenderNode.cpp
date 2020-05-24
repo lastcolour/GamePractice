@@ -17,7 +17,9 @@ void RenderNode::Reflect(ReflectContext& ctx) {
 }
 
 bool RenderNode::init() {
-    ET_SendEvent(&ETRender::ET_updateRenderQueue);
+    if(mat && geom) {
+        ET_SendEvent(&ETRender::ET_updateRenderQueue);
+    }
     ETNode<ETRenderNode>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     return true;

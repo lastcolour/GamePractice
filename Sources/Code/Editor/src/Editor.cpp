@@ -125,28 +125,6 @@ void RemoveLogicFromEntity(uint32_t entityId, int32_t logicId) {
     EDITOR_APP->removeLogicFromEntity(entId, static_cast<EntityLogicId>(logicId));
 }
 
-uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void** out) {
-    if(!EDITOR_APP) {
-        return 0u;
-    }
-    EntityId entId;
-    entId.setRawId(entityId);
-    auto buffer = EDITOR_APP->getEntityLogicData(entId, static_cast<EntityLogicId>(logicId));
-    INTERNAL_BUFFER = std::move(buffer);
-    *out = INTERNAL_BUFFER.getWriteData();
-    return static_cast<uint32_t>(INTERNAL_BUFFER.getSize());
-}
-
-void SetEntityLogicFieldData(uint32_t entityId, int32_t logicId, int32_t fieldId, void* data, uint32_t size) {
-    if(!EDITOR_APP) {
-        return;
-    }
-    EntityId entId;
-    entId.setRawId(entityId);
-    Buffer buffer(data, size);
-    EDITOR_APP->setEntityLogicFieldData(entId, logicId, fieldId, buffer);
-}
-
 uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName) {
     if(!EDITOR_APP) {
         return 0u;
@@ -166,4 +144,50 @@ void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId
     EntityId childEntId;
     childEntId.setRawId(childEntityId);
     EDITOR_APP->removeChildEntityFromEntity(parentEntId, childEntId);
+}
+
+uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void** out) {
+    if(!EDITOR_APP) {
+        return 0u;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    auto buffer = EDITOR_APP->getEntityLogicData(entId, static_cast<EntityLogicId>(logicId));
+    INTERNAL_BUFFER = std::move(buffer);
+    *out = INTERNAL_BUFFER.getWriteData();
+    return static_cast<uint32_t>(INTERNAL_BUFFER.getSize());
+}
+
+uint32_t GetEntityLogicValueData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out) {
+    if(!EDITOR_APP) {
+        return 0u;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    auto buffer = EDITOR_APP->getEntityLogicValueData(entId, static_cast<EntityLogicId>(logicId),
+        static_cast<EntityLogicValueId>(valueId));
+    INTERNAL_BUFFER = std::move(buffer);
+    *out = INTERNAL_BUFFER.getWriteData();
+    return static_cast<uint32_t>(INTERNAL_BUFFER.getSize());
+}
+
+void SetEntityLogicData(uint32_t entityId, int32_t logicId, const void* data, uint32_t size) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    Buffer buffer(data, size);
+    EDITOR_APP->setEntityLogicData(entId, static_cast<EntityLogicId>(logicId), buffer);
+}
+
+void SetEntityLogicValueData(uint32_t entityId, int32_t logicId, int32_t valueId, const void* data, uint32_t size) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    Buffer buffer(data, size);
+    EDITOR_APP->setEntityLogicValueData(entId, static_cast<EntityLogicId>(logicId),
+        static_cast<EntityLogicValueId>(valueId), buffer);
 }
