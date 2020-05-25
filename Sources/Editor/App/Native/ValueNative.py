@@ -45,6 +45,8 @@ class ValueNative(NativeObject):
         return self._logic.getEntity().getNativeId()
 
     def _isLoadedToNative(self):
+        if self._logic is None:
+            return False
         return self._logic.getEntity().isLoadedToNative()
 
     def _writeToNative(self):

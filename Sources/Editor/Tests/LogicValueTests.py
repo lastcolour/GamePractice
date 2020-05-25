@@ -2,8 +2,8 @@ import EditorTest
 
 import unittest
 
-from Native.ValueNative import *
-from Native.MemoryStream import MemoryStream
+from native.ValueNative import *
+from native.MemoryStream import MemoryStream
 
 class LogicValueTests(unittest.TestCase):
     def testEntityElemBoolValue(self):

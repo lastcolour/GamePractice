@@ -1,9 +1,9 @@
 import EditorTest
 
-from Native.EditorNative import EditorNative
-from Native.EntityNativeLoader import EntityNativeLoader
-from Native.ValueNative import *
-from Native.EntityNative import EntityNative
+from native.EditorNative import EditorNative
+from native.EntityNativeLoader import EntityNativeLoader
+from native.ValueNative import *
+from native.EntityNative import EntityNative
 
 import unittest
 

@@ -1,13 +1,10 @@
 import EditorTest
 
-from Native.LibraryNative import LibraryNative
-from Native.EditorNative import _getNativeLibPath
+from native.LibraryNative import LibraryNative
+from native.EditorNative import _getNativeLibPath
 
 import unittest
 import json
-
-def _getPyStr(cString):
-    return cString.decode('ascii').rstrip('\x00')
 
 class EditorAppTests(unittest.TestCase):
 
