@@ -1,3 +1,5 @@
+from .MemoryStream import MemoryStream
+
 import ctypes
 import os
 import pathlib
@@ -147,10 +149,12 @@ class LibraryNative:
         cLogicId = ctypes.c_int32(logicId)
         outPtr = ctypes.POINTER(ctypes.c_char)()
         outSize = self._getEntityLogicDataFunc(cEntId, cLogicId, ctypes.byref(outPtr))
+        stream = MemoryStream()
         if outSize == 0:
-            return bytearray()
+            return stream
         bufferPtr = ctypes.POINTER(ctypes.c_char * outSize)(outPtr.contents)
-        return bytearray(bufferPtr.contents)
+        stream.setData(bytearray(bufferPtr.contents))
+        return stream
 
     def getEntityLogicValueData(self, entityId, logicId, valueId):
         cEntId = ctypes.c_uint32(entityId)
@@ -158,23 +162,25 @@ class LibraryNative:
         cValueId = ctypes.c_int32(valueId)
         outPtr = ctypes.POINTER(ctypes.c_char)()
         outSize = self._getEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, ctypes.byref(outPtr))
+        stream = MemoryStream()
         if outSize == 0:
-            return bytearray()
+            return stream
         bufferPtr = ctypes.POINTER(ctypes.c_char * outSize)(outPtr.contents)
-        return bytearray(bufferPtr.contents)
+        stream.setData(bytearray(bufferPtr.contents))
+        return stream
 
-    def setEntityLogicData(self, entityId, logicId, data):
+    def setEntityLogicData(self, entityId, logicId, stream):
         cEntId = ctypes.c_uint32(entityId)
         cLogicId = ctypes.c_int32(logicId)
-        dataPtr = ctypes.c_char * len(data)
-        self._setEntityLogicDataFunc(cEntId, cLogicId, dataPtr.from_buffer(data), len(data))
+        dataPtr = ctypes.c_char * stream.getSize()
+        self._setEntityLogicDataFunc(cEntId, cLogicId, dataPtr.from_buffer(stream.getData()), stream.getSize())
 
-    def setEntiyLogicValueData(self, entityId, logicId, valueId, data):
+    def setEntityLogicValueData(self, entityId, logicId, valueId, stream):
         cEntId = ctypes.c_uint32(entityId)
         cLogicId = ctypes.c_int32(logicId)
         cValueId = ctypes.c_int32(valueId)
-        dataPtr = ctypes.c_char * len(data)
-        self._setEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, dataPtr.from_buffer(data), len(data))
+        dataPtr = ctypes.c_char * stream.tellg()
+        self._setEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, dataPtr.from_buffer(stream.getData()), stream.getSize())
 
     def drawFrame(self, width, height):
         self._drawBuffer.setSize(width, height)

@@ -126,3 +126,16 @@ TEST_F(BufferTests, CheckStringAcquire) {
     ASSERT_EQ(buff.getSize(), 0u);
     ASSERT_STREQ(buff.getCString(), "");
 }
+
+TEST_F(BufferTests, CheckResizeToSameSize) {
+    std::string str = "Test";
+    Buffer buff(static_cast<const void*>(str.c_str()), str.length());
+
+    const void* oldPtr = buff.getReadData();
+
+    buff.resize(buff.getSize());
+
+    const void* newPtr = buff.getReadData();
+
+    ASSERT_EQ(oldPtr, newPtr);
+}

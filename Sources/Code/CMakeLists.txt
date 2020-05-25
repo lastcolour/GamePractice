@@ -21,7 +21,7 @@ set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Engine)
 
 add_subdirectory(Engine)
 add_subdirectory(Application)
-add_subdirectory(Editor/Library)
+add_subdirectory(Editor)
 
 if(NOT BUILD_PLATFORM STREQUAL "Android")
     set(BUILD_UNITTESTS ON)

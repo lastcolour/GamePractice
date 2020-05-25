@@ -30,35 +30,19 @@ class EntityNativeLoader(NativeObject):
             entity._children.append(childEntity)
         return True
 
-    def _loadLogic(self, data):
-        if "type" not in data:
-            print("[EntityNativeLoader:_loadLogic] Can't find reuqired 'type' node in logic data")
-            return None
-        if "data" not in data:
-            print("[EntityNativeLoader:_loadLogic] Can't find reuqired 'data' node in logic data")
-            return None
-        logicType = data["type"]
-        logic = CreateLogic(logicType)
-        if logic is None:
-            return None
-        logicData = data["data"]
-        logic._rootValue.readFromDict(logicData)
-        return logic
-
     def _loadLogics(self, entity, data):
         if "logics" not in data:
             print("[EntityNativeLoader:_loadLogics] Can't find require 'logics' node in entity: '{0}'".format(entity._name))
             return False
         logicData = data["logics"]
-        logicId = 0
         for item in logicData:
-            logic = self._loadLogic(item)
-            if logic is not None:
-                logic._logicId = logicId
-                entity._logics.append(logic)
-            else:
-                print("[EntityNativeLoader:_loadLogics] Can't load logic from entity: '{0}'".format(entity._name))
-            logicId += 1
+            if "type" not in item:
+                print("[EntityNativeLoader:_loadLogics] Can't find reuqired 'type' node in logic data")
+                return None
+            if "data" not in item:
+                print("[EntityNativeLoader:_loadLogics] Can't find reuqired 'data' node in logic data")
+                return None
+            entity.addLogicWithData(item["type"], item["data"])
         return True
 
     def loadEntity(self, filePath):

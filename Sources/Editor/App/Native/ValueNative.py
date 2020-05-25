@@ -29,12 +29,6 @@ class ValueNative(NativeObject):
         self._valueId = None
         self._type = valueType
 
-    def _getLogicId(self):
-        return self._logic.getNativeId()
-
-    def _getEntityId(self):
-        self._logic.getEntity().getNativeId()
-
     def getName(self):
         return self._name
 
@@ -43,6 +37,24 @@ class ValueNative(NativeObject):
 
     def getPrimitiveValueCount(self):
         return 1
+
+    def _getLogicId(self):
+        return self._logic.getNativeId()
+
+    def _getEntityId(self):
+        return self._logic.getEntity().getNativeId()
+
+    def _isLoadedToNative(self):
+        return self._logic.getEntity().isLoadedToNative()
+
+    def _writeToNative(self):
+        if self.getPrimitiveValueCount() != 1:
+            raise RuntimeError("Can't write to native non-primitive values")
+        if not self._isLoadedToNative():
+            return
+        stream = MemoryStream()
+        self.writeToStream(stream)
+        self._getAPI().getLibrary().setEntityLogicValueData(self._getEntityId(), self._getLogicId(), self._valueId, stream)
 
 class BoolValue(ValueNative):
     def __init__(self):
@@ -69,6 +81,7 @@ class BoolValue(ValueNative):
 
     def setVal(self, flag):
         self._val = bool(flag)
+        self._writeToNative()
 
     def getVal(self):
         return self._val
@@ -98,6 +111,7 @@ class IntValue(ValueNative):
 
     def setVal(self, val):
         self._val = int(val)
+        self._writeToNative()
 
     def getVal(self):
         return self._val
@@ -127,6 +141,7 @@ class FloatValue(ValueNative):
 
     def setVal(self, val):
         self._val = float(val)
+        self._writeToNative()
 
     def getVal(self):
         return self._val
@@ -152,10 +167,11 @@ class StringValue(ValueNative):
         self._val = stream.readString()
 
     def writeToStream(self, stream):
-        stream.wrirteString(self._val)
+        stream.writeString(self._val)
 
     def setVal(self, val):
         self._val = str(val)
+        self._writeToNative()
 
     def getVal(self):
         return self._val
@@ -191,6 +207,7 @@ class Vec2iValue(ValueNative):
     def setVal(self, xVal, yVal):
         self._xVal = int(xVal)
         self._yVal = int(yVal)
+        self._writeToNative()
 
     def getVal(self):
         return self._xVal, self._yVal
@@ -226,6 +243,7 @@ class Vec2Value(ValueNative):
     def setVal(self, xVal, yVal):
         self._xVal = float(xVal)
         self._yVal = float(yVal)
+        self._writeToNative()
 
     def getVal(self):
         return self._xVal, self._yVal
@@ -267,6 +285,7 @@ class Vec3Value(ValueNative):
         self._xVal = float(xVal)
         self._yVal = float(yVal)
         self._zVal = float(zVal)
+        self._writeToNative()
 
     def getVal(self):
         return self._xVal, self._yVal, self._zVal
@@ -314,6 +333,8 @@ class Vec4Value(ValueNative):
         self._yVal = float(yVal)
         self._zVal = float(zVal)
         self._wVal = float(wVal)
+        self._writeToNative()
+
 
     def getVal(self):
         return self._xVal, self._yVal, self._zVal, self._wVal
@@ -361,6 +382,8 @@ class ColorValue(ValueNative):
         self._gVal = int(gVal)
         self._bVal = int(bVal)
         self._aVal = int(aVal)
+        self._writeToNative()
+
 
     def getVal(self):
         return self._rVal, self._gVal, self._bVal, self._aVal
@@ -432,6 +455,7 @@ class EnumValue(ValueNative):
 
     def setVal(self, val):
         self._val = int(self._table[str(val)])
+        self._writeToNative()
 
     def getVal(self):
         for item in self._table:
@@ -462,11 +486,11 @@ class ObjectValue(ValueNative):
 
     def readFromStream(self, stream):
         for item in self._vals:
-            self._vals[item].readFromStream(stream)
+            item.readFromStream(stream)
 
-    def writeFromStream(self, stream):
+    def writeToStream(self, stream):
         for item in self._vals:
-            self._vals[item].writeToStream()
+            item.writeToStream(stream)
 
     def getPrimitiveValueCount(self):
         total = 0
@@ -495,10 +519,11 @@ class ResourceValue(ValueNative):
         self._val = stream.readString()
 
     def writeToStream(self, stream):
-        stream.wrirteString(self._val)
+        stream.writeString(self._val)
 
     def setVal(self, val):
         self._val = str(val)
+        self._writeToNative()
 
     def getVal(self):
         return self._val
@@ -599,6 +624,13 @@ def _assignValueIds(rootValue, startIdx):
         else:
             currentIdx = _assignValueIds(val, currentIdx)
     return currentIdx
+
+def AssignValueLogic(rootValue, logic):
+    for val in rootValue._vals:
+        if val._type != ValueType.Object:
+            val._logic = logic
+        else:
+            AssignValueLogic(val, logic)
 
 def AssignValueIdx(rootValue):
     _assignValueIds(rootValue, 1)

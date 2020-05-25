@@ -1,6 +1,7 @@
 #include "Core/MemoryStream.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 namespace {
 
@@ -99,7 +100,7 @@ void MemoryStream::grow(size_t amount) {
     if(buffer.getSize() == 0) {
         buffer.resize(BUFFER_START_SIZE);
     } else if(buffSize < pos + amount) {
-        buffer.resize(buffSize * 2);
+        buffer.resize(std::max(buffSize * 2, buffSize + amount + BUFFER_START_SIZE));
     }
 }
 

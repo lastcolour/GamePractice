@@ -25,7 +25,7 @@ class ReflectModel(NativeObject):
             return None
         return self._model[arrayType]["data"]["type"]
 
-    def getAllRegisteredLogic(self):
+    def getAllRegisteredLogics(self):
         return self._logics
 
     def _buildClassData(self, classModel, classResData):

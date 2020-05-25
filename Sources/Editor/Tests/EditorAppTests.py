@@ -4,11 +4,7 @@ from Native.LibraryNative import LibraryNative
 from Native.EditorNative import _getNativeLibPath
 
 import unittest
-import ctypes
-import pathlib
-import os
 import json
-import struct
 
 def _getPyStr(cString):
     return cString.decode('ascii').rstrip('\x00')
@@ -73,32 +69,45 @@ class EditorAppTests(unittest.TestCase):
     def testSetGetLogicData(self):
         logicId = 0
         valueId = 4
-        res = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId)
-        self.assertIsNotNone(res)
-        self.assertTrue(len(res) > 0)
-        matName, geomName, scaleX, scaleY, r, g, b, a = struct.unpack_from("<ssffBBBB", res)
+        stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId)
+        self.assertIsNotNone(stream)
+        self.assertTrue(stream.getSize() > 0)
 
-        matName = _getPyStr(matName)
-        geomName = _getPyStr(geomName)
+        matName = stream.readString()
+        geomName = stream.readString()
 
         self.assertEqual(matName, "")
         self.assertEqual(geomName, "")
 
+        scaleX = stream.readFloat()
+        scaleY = stream.readFloat()
+
         self.assertEqual(scaleX, 1.0)
         self.assertEqual(scaleY, 1.0)
+
+        r = stream.readUChar()
+        g = stream.readUChar()
+        b = stream.readUChar()
+        a = stream.readUChar()
 
         self.assertEqual(r, 255)
         self.assertEqual(g, 255)
         self.assertEqual(b, 255)
         self.assertEqual(a, 255)
 
-        data = bytearray(4)
-        struct.pack_into("<BBBB", data, 0, 1, 2, 3, 4)
+        stream.resetPos()
+        stream.writeUChar(1)
+        stream.writeUChar(2)
+        stream.writeUChar(3)
+        stream.writeUChar(4)
 
-        EditorAppTests.NATIVE_LIB.setEntiyLogicValueData(self._centralEntityId, logicId, valueId, data)
-        data = EditorAppTests.NATIVE_LIB.getEntityLogicValueData(self._centralEntityId, logicId, valueId)
+        EditorAppTests.NATIVE_LIB.setEntityLogicValueData(self._centralEntityId, logicId, valueId, stream)
+        stream = EditorAppTests.NATIVE_LIB.getEntityLogicValueData(self._centralEntityId, logicId, valueId)
 
-        r, g, b, a = struct.unpack_from("<BBBB", data)
+        r = stream.readUChar()
+        g = stream.readUChar()
+        b = stream.readUChar()
+        a = stream.readUChar()
 
         self.assertEqual(r, 1)
         self.assertEqual(g, 2)

@@ -1,5 +1,6 @@
 from .Native import NativeObject
-from .ValueNative import ObjectValue, AssignValueIdx, CreateObjectValue
+from .ValueNative import ObjectValue, AssignValueIdx, AssignValueLogic, CreateObjectValue
+from .MemoryStream import MemoryStream
 
 class LogicNative(NativeObject):
     def __init__(self):
@@ -20,6 +21,13 @@ class LogicNative(NativeObject):
     def getNativeId(self):
         return self._logicId
 
+    def writeToStream(self, stream):
+        self._rootValue.writeToStream(stream)
+
+    def readFromNative(self):
+        stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self.getNativeId())
+        self._rootValue.readFromStream(stream)
+
 def CreateLogic(logicType):
     logic = LogicNative()
     logic._name = logicType
@@ -27,4 +35,5 @@ def CreateLogic(logicType):
         print("[CreateLogic] Can't create logic values for logic: '{0}'".format(logic._name))
         return None
     AssignValueIdx(logic._rootValue)
+    AssignValueLogic(logic._rootValue, logic)
     return logic

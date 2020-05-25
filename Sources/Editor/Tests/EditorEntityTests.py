@@ -65,13 +65,38 @@ class EditorEntityTest(unittest.TestCase):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
         self.assertTrue(entity.loadToNative())
         self.assertTrue(entity.isLoadedToNative())
-        logics = self._getEditor().getReflectModel().getAllRegisteredLogic()
+        logics = self._getEditor().getReflectModel().getAllRegisteredLogics()
         for logicName in logics:
             if logicName.startswith("UI"):
                 continue
             logic = entity.addLogic(logicName)
             self.assertIsNotNone(logic)
+            native = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), logic.getNativeId())
+            self.assertIsNotNone(native)
+            current = MemoryStream()
+            logic.writeToStream(current)
+            self.assertEqual(current.tellg(), native.getSize())
+            self.assertEqual(current._data[:native.getSize()], native._data)
             entity.removeLogic(logic.getNativeId())
+
+    def testModifyLogicValue(self):
+        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        self.assertTrue(entity.loadToNative())
+        self.assertTrue(entity.isLoadedToNative())
+        renderLogic = entity.getLogics()[0]
+        colorVal = renderLogic.getValues()[3]
+        colorVal.setVal(123, 124, 125, 126)
+
+        stream = self._getEditor().getLibrary().getEntityLogicValueData(entity.getNativeId(), renderLogic.getNativeId(), 4)
+        r = stream.readUChar()
+        g = stream.readUChar()
+        b = stream.readUChar()
+        a = stream.readUChar()
+
+        self.assertEqual(r, 123)
+        self.assertEqual(g, 124)
+        self.assertEqual(b, 125)
+        self.assertEqual(a, 126)
 
 if __name__ == "__main__":
     unittest.main()
