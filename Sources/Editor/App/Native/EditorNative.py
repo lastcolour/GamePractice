@@ -7,42 +7,19 @@ from .EntityNativeLoader import EntityNativeLoader
 from .Native import NativeObject
 from .ReflectModel import ReflectModel
 
-def _getRootDir():
-    cPath = pathlib.Path("{0}/../../../../../..".format(__file__)).parent
-    return cPath.resolve().__str__()
-
-def _getNativeLibPath(buildType):
-    if os.name == "nt":
-        libExt = ".dll"
-        buildPlatform = "Windows"
-    elif os.name == "linux":
-        libExt = ""
-        buildPlatform = "Linux"
-    else:
-        raise RuntimeError("Unsuported platform")
-    buildDir = "{0}/_build".format(_getRootDir())
-    editorLibName = "Editor"
-    cPath =  pathlib.Path("{0}/{1}/Game/{2}/{3}{4}".format(
-        buildDir, buildPlatform, buildType, editorLibName, libExt)).__str__()
-    return cPath.replace("\\", "/")
-
 class EditorNative:
-    def __init__(self):
-        self._libBuildType = "Debug"
+    def __init__(self, appConfig):
+        self._appConfig = appConfig
         self._nativeLib = None
         self._reflectModel = None
         self._entityLoader = EntityNativeLoader()
 
     def init(self):
-        libPath = _getNativeLibPath(self._libBuildType)
-        if not os.path.exists(libPath):
-            print("[EditorNative:init] Can't find require native library: '{0}'".format(libPath))
-            return False
         self._nativeLib = LibraryNative()
-        libInitRes = self._nativeLib.initialize(libPath)
+        libInitRes = self._nativeLib.initialize(self._appConfig.getNativeLibPath())
         if libInitRes != 0:
             print("[EditorNative:init] Can't initialize native library: '{0}' (Error: code={1})".format(
-                libPath, libInitRes))
+                self._appConfig.getNativeLibPath(), libInitRes))
             return False
         NativeObject._NATIVE_API = self
         self._reflectModel = ReflectModel()
@@ -63,8 +40,8 @@ class EditorNative:
     def getLibrary(self):
         return self._nativeLib
 
-    def getAssetsRootDir(self):
-        return "{0}/Assets".format(_getRootDir())
+    def getAssetsRootPath(self):
+        return self._appConfig.getAssetsRootPath()
 
     def getEntityLoader(self):
         return self._entityLoader

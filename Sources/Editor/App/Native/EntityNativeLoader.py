@@ -14,7 +14,7 @@ class EntityNativeLoader(NativeObject):
         return True
 
     def _getFullPath(self, filePath):
-        return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootDir(), filePath)
+        return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
 
     def _loadChildren(self, entity, data):
         if "children" not in data:

@@ -3,10 +3,20 @@ from .LogicNative import CreateLogic
 
 class EntityNative(NativeObject):
     def __init__(self):
+        self._isModified = False
         self._name = None
         self._entityId = None
         self._children = []
         self._logics = []
+
+    def isModified(self):
+        for child in self._children:
+            if child.isModified():
+                return True
+        for logic in self._logics:
+            if logic.isModified():
+                return True
+        return self._isModified
 
     def isLoadedToNative(self):
         return self._entityId is not None

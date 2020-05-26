@@ -5,6 +5,8 @@ from native.EntityNativeLoader import EntityNativeLoader
 from native.ValueNative import *
 from native.EntityNative import EntityNative
 
+from utils.AppConfig import AppConfig
+
 import unittest
 
 class EditorEntityTest(unittest.TestCase):
@@ -13,7 +15,7 @@ class EditorEntityTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.EDITOR = EditorNative()
+        cls.EDITOR = EditorNative(AppConfig())
         if not cls.EDITOR.init():
             cls.EDITOR = None
             raise RuntimeError("Can't init editor native")
@@ -97,6 +99,10 @@ class EditorEntityTest(unittest.TestCase):
         self.assertEqual(g, 124)
         self.assertEqual(b, 125)
         self.assertEqual(a, 126)
+
+    def testIfModifiedAfterUpdate(self):
+        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        self.assertFalse(entity.isModified())
 
 if __name__ == "__main__":
     unittest.main()

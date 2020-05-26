@@ -1,7 +1,7 @@
 import EditorTest
 
 from native.LibraryNative import LibraryNative
-from native.EditorNative import _getNativeLibPath
+from utils.AppConfig import AppConfig
 
 import unittest
 import json
@@ -10,8 +10,9 @@ class EditorAppTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        appConfig = AppConfig()
         cls.NATIVE_LIB = LibraryNative()
-        res = cls.NATIVE_LIB.initialize(_getNativeLibPath("Debug"))
+        res = cls.NATIVE_LIB.initialize(appConfig.getNativeLibPath())
         if res != 0:
             raise RuntimeError("Can't initialize native editor")
 
