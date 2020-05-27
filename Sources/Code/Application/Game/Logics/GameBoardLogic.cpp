@@ -17,7 +17,6 @@ const int INVALID_BOARD_ELEM_ID = -1;
 GameBoardLogic::GameBoardLogic() :
     boardSize(0),
     cellScale(1.f),
-    activeTouchedElemId(INVALID_BOARD_ELEM_ID),
     doUpdate(false) {
 }
 
@@ -32,43 +31,6 @@ void GameBoardLogic::Reflect(ReflectContext& ctx) {
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
     }
 }
-
-/*
-bool GameBoardLogic::serialize(const JSONNode& node) {
-    node.read("fallSpeed", moveSpeed);
-    if(moveSpeed <= 0.f) {
-        LogWarning("[GameBoard::serialize] Invalid move speed: %f", moveSpeed);
-        return false;
-    }
-    if(auto sizeNode = node.object("size")) {
-        sizeNode.read("w", boardSize.x);
-        if(boardSize.x <= 0) {
-            LogWarning("[GameBoard::serialize] Invalid width: %d", boardSize.x);
-                return false;
-        }
-        sizeNode.read("h", boardSize.y);
-        if(boardSize.y <= 0) {
-            LogWarning("[GameBoard::serialize] Invalid width: %d", boardSize.y);
-            return false;
-        }
-    }
-    if(auto cellNode = node.object("cell")) {
-        cellNode.read("scale", cellScale);
-        if(cellScale <= 0.f || cellScale > 1.f) {
-            LogWarning("[GameBoard::serialize] Invalid cell scale: %f", cellScale);
-            return false;
-        }
-        cellNode.read("object", cellObject);
-        if(cellObject.empty()) {
-            LogWarning("[GameBoard::serialize] Empty cell object name");
-            return false;
-        }
-    } else {
-        LogWarning("[GameBoard::serialize] Can't find required child node: %f", "cell");
-        return false;
-    }
-    return true;
-}*/
 
 void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) {
     auto firstElem = getElem(firstId);

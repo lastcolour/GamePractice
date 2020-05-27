@@ -16,6 +16,14 @@ class FileNode:
     def getBaseName(self):
         return self._name
 
+    def getRelativePath(self):
+        resPath = self._name
+        currParent = self._parent
+        while currParent._parent is not None:
+            resPath = "{0}/{1}".format(self._parent._name, resPath)
+            currParent = currParent._parent
+        return resPath
+
     def getFullPath(self):
         resPath = self._name
         currParent = self._parent

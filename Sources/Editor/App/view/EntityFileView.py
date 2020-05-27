@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QTreeWidget, QLineEdit, QVBoxLayout, QTreeW
 from PyQt5 import QtCore
 
 from menu.FileTreeMenu import FileTreeMenu 
+from utils.EventManager import GetEventManager
 
 class EntityFileView(QWidget):
     def __init__(self):
@@ -19,6 +20,7 @@ class EntityFileView(QWidget):
         self._tree.setColumnCount(1)
         self._tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._signal_tree_contextMenuRequested)
+        self._tree.itemDoubleClicked.connect(self._tree_itemDoublecClicked)
         self._rootLayout.addWidget(self._tree)
 
         self._fileTreeMenu = FileTreeMenu(self._tree)
@@ -49,3 +51,8 @@ class EntityFileView(QWidget):
         self._fileTreeModel = fileTreeModel
         if self._fileTreeModel is not None:
             self._buildTree(self._tree.invisibleRootItem(), self._fileTreeModel.getEntitiesTree())
+
+    def _tree_itemDoublecClicked(self, item):
+        if item._node.isDir():
+            return
+        GetEventManager().onEntityDoubleClickFromFileTree(item._node.getRelativePath())

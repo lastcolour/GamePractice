@@ -4,29 +4,9 @@ import ctypes
 import os
 import pathlib
 
-class DrawBuffer:
-    def __init__(self):
-        self._allocSize = (0, 0)
-        self._size = (0, 0)
-        self._data = None
-
-    def setSize(self, w, h):
-        if self._allocSize[0] >= w and self._allocSize[1] >= h:
-            self._size = (w, h)
-            return
-        self._allocSize = (w, h)
-        self._size = self._allocSize
-        self._data = ctypes.c_ubyte * self.getDataSize()
-
-    def getDataSize(self):
-        return self._size[0] * self._size[1] * 4
-
-    def getCPtr(self):
-        return ctypes.cast(self._data(), ctypes.POINTER(ctypes.c_void_p))
-
 class LibraryNative:
     def __init__(self):
-        self._drawBuffer = DrawBuffer()
+        pass
 
     def initialize(self, libPath):
         os.chdir(pathlib.Path(libPath).parent.__str__())
@@ -182,9 +162,9 @@ class LibraryNative:
         dataPtr = ctypes.c_char * stream.tellg()
         self._setEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, dataPtr.from_buffer(stream.getData()), stream.getSize())
 
-    def drawFrame(self, width, height):
-        self._drawBuffer.setSize(width, height)
-        self._drawFrameFunc(self._drawBuffer.getCPtr(), ctypes.c_uint32(width), ctypes.c_uint32(height))
+    def drawFrame(self, ptr, width, height):
+        ptr = ctypes.c_void_p(ptr)
+        self._drawFrameFunc(ptr, ctypes.c_uint32(width), ctypes.c_uint32(height))
 
     def getRegisteredEntityLogics(self):
         outPtr = ctypes.POINTER(ctypes.c_char_p)()

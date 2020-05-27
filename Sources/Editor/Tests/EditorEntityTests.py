@@ -36,6 +36,7 @@ class EditorEntityTest(unittest.TestCase):
         loader = self._getEntityLoader()
         entity = loader.loadEntity("Game/Simple.json")
         self.assertIsNotNone(entity)
+        self.assertEqual(entity.getName(), "Game/Simple.json")
 
         logics = entity.getLogics()
         self.assertGreater(len(logics), 0)

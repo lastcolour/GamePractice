@@ -5,6 +5,7 @@ from .ValueNative import *
 from .LogicNative import CreateLogic
 
 import json
+import os
 
 class EntityNativeLoader(NativeObject):
     def __init__(self):
@@ -47,6 +48,9 @@ class EntityNativeLoader(NativeObject):
 
     def loadEntity(self, filePath):
         fullFilePath = self._getFullPath(filePath)
+        if not os.path.exists(fullFilePath):
+            print("[EntityNativeLoader:loadEntity] Can't load entity '{0}' from missed file".format(fullFilePath))
+            return None
         with open(fullFilePath) as tFile:
             data = json.load(tFile)
         entity = EntityNative()

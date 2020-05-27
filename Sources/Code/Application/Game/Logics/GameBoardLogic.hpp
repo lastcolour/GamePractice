@@ -95,7 +95,6 @@ protected:
     float cellScale;
     float moveSpeed;
     int cellSize;
-    int activeTouchedElemId;
     bool doUpdate;
 };
 

@@ -55,7 +55,8 @@ class EditorAppTests(unittest.TestCase):
         self.assertEqual(len(children), 0)
 
     def testDrawFrame(self):
-        EditorAppTests.NATIVE_LIB.drawFrame(10, 10)
+        buffer = bytearray(10 * 10 * 4)
+        EditorAppTests.NATIVE_LIB.drawFrame(buffer, 10, 10)
 
     def testAddRemoveLogic(self):
         logicId = EditorAppTests.NATIVE_LIB.addLogicToEntity(self._centralEntityId, "RenderSimple")

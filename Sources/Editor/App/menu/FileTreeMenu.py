@@ -36,4 +36,8 @@ class FileTreeMenu(QMenu):
             self._cutAct.setEnabled(True)
             self._removeAct.setEnabled(True)
             self._renameAct.setEnabled(True)
+        if self._copyItem is None and self._cutItem is None:
+            self._pasteAct.setEnabled(False)
+        else:
+            self._pasteAct.setEnabled(True)
         self.exec(pt)

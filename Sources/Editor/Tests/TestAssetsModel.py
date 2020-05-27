@@ -21,8 +21,9 @@ class TestAssetsModel(unittest.TestCase):
         self.assertIsNotNone(fileTree)
         self.assertTrue(fileTree.isDir())
         self.assertTrue(len(fileTree.getChildren()) > 0)
-        for item in fileTree:
-            print(item.getFullPath())
+        item = fileTree.getChildren()[0]
+        self.assertGreater(len(item.getFullPath()), len(item.getRelativePath()))
+        self.assertGreaterEqual(len(item.getRelativePath()), len(item.getBaseName()))
 
 if __name__ == "__main__":
     unittest.main()

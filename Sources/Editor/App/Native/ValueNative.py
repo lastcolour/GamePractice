@@ -386,7 +386,6 @@ class ColorValue(ValueNative):
         self._aVal = int(aVal)
         self._writeToNative()
 
-
     def getVal(self):
         return self._rVal, self._gVal, self._bVal, self._aVal
 

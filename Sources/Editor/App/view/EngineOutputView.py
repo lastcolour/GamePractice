@@ -1,10 +1,14 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
+
+from .EngineOutputFrameView import EngineOutputFrameView
 
 class EngineOutputView(QWidget):
     def __init__(self):
         super().__init__()
-        palette = self.palette()
-        palette.setColor(self.backgroundRole(), Qt.black)
-        self.setPalette(palette)
-        self.setAutoFillBackground(True)
+        
+        self._rootLayout = QVBoxLayout()
+
+        self._engineOutFrame = EngineOutputFrameView()
+        self._rootLayout.addWidget(self._engineOutFrame)
+
+        self.setLayout(self._rootLayout)

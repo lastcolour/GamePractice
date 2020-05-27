@@ -3,6 +3,7 @@ from PyQt5 import QtCore
 
 from utils.Log import Log
 from utils.AppConfig import AppConfig
+from utils.EventManager import CreateEventManager
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
@@ -47,8 +48,13 @@ class EditorView(QMainWindow):
 
         self.setCentralWidget(self._engineOutputView)
 
+        CreateEventManager(self)
+
         if not self._init():
             sys.exit(1)
+
+    def __del__(self):
+        self._deinit()
 
     def _init(self):
         self._appConfig = AppConfig()
@@ -62,6 +68,10 @@ class EditorView(QMainWindow):
             return False
         self._entityFileView.widget().setFileTreeModel(self._assetsModel)
         return True
+
+    def _deinit(self):
+        if self._editorNative is not None:
+            self._editorNative.deinit()
 
 def main():
     app = QApplication([])

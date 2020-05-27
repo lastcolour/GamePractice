@@ -98,11 +98,12 @@ void RenderTextureFramebuffer::setSize(const Vec2i& newSize) {
         size = newSize;
         return;
     }
-    allocatedSize = newSize;
-    size = newSize;
+    assert(newSize.x > 0 && newSize.y > 0 && "Invalid size of framebuffer");
     if(isValid()) {
         reset();
     }
+    allocatedSize = newSize;
+    size = newSize;
     if(!init()) {
         reset();
     }

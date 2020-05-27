@@ -10,6 +10,9 @@ class EntityNative(NativeObject):
         self._logics = []
         self._parent = None
 
+    def getName(self):
+        return self._name
+
     def isModified(self):
         for child in self._children:
             if child.isModified():
