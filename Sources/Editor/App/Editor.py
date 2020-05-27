@@ -43,12 +43,8 @@ class EditorView(QMainWindow):
         self._entityLogicsView.setWidget(EntityLogicsView())
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self._entityLogicsView)
 
-        self._rootLayout = QHBoxLayout()
-
         self._engineOutputView = EngineOutputView()
-        self._rootLayout.addWidget(self._engineOutputView)
 
-        self.setLayout(self._rootLayout)
         self.setCentralWidget(self._engineOutputView)
 
         if not self._init():
@@ -56,14 +52,15 @@ class EditorView(QMainWindow):
 
     def _init(self):
         self._appConfig = AppConfig()
-        self._editorNative = EditorNative()
+        self._editorNative = EditorNative(self._appConfig)
         if not self._editorNative.init():
             Log.error("[EditorView:_init] Can't init native editor")
             return False
-        self._assetsModel = AssetsModel()
+        self._assetsModel = AssetsModel(self._appConfig)
         if not self._assetsModel.init():
             Log.error("[EditorView:_init] Can't init assets model")
             return False
+        self._entityFileView.widget().setFileTreeModel(self._assetsModel)
         return True
 
 def main():

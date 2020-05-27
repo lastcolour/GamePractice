@@ -100,9 +100,25 @@ class EditorEntityTest(unittest.TestCase):
         self.assertEqual(b, 125)
         self.assertEqual(a, 126)
 
-    def testIfModifiedAfterUpdate(self):
+    def testIfModifiedAfterAddRemoveLogic(self):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        self.assertTrue(entity.loadToNative())
         self.assertFalse(entity.isModified())
+        logic = entity.addLogic("RenderSimple")
+        self.assertTrue(entity.isModified())
+        entity.removeLogic(logic.getNativeId())
+        self.assertTrue(entity.isModified())
+
+    def testIfModifiedAfterAddRemoveChild(self):
+        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        self.assertTrue(entity.loadToNative())
+        childEntity = entity.addChildEntity("Game/Void.json")
+        self.assertTrue(entity.isModified())
+        entity.removeChildEntity(childEntity.getNativeId())
+        self.assertTrue(entity.isModified())
+
+    def testSaveEntity(self):
+        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
 
 if __name__ == "__main__":
     unittest.main()

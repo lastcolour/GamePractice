@@ -34,10 +34,11 @@ void EntityManager::deinit() {
 
 EntityId EntityManager::ET_createEntity(const char* entityName) {
     auto entity = createEntity(nullptr, entityName);
-    if(entity) {
-        return entity->getEntityId();
+    if(!entity) {
+        LogWarning("[EntityManager::ET_createEntity] Can't create entity from: '%s'", entityName);
+        return InvalidEntityId;
     }
-    return InvalidEntityId;
+    return entity->getEntityId();
 }
 
 void EntityManager::ET_destroyEntity(EntityId entityId) {
@@ -69,7 +70,7 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
         return InvalidEntityId;
     }
     if(!node) {
-        LogWarning("[EntityManager::ET_createEntityFromJSON] Invalid JSON node to create entity '%s' from, entityName");
+        LogWarning("[EntityManager::ET_createEntityFromJSON] Invalid JSON node to create entity '%s'", entityName);
         return InvalidEntityId;
     }
 
@@ -77,13 +78,14 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
 
     auto entity = createEntityImpl(nullptr, node, entityName);
     if(!entity) {
+        LogWarning("[EntityManager::ET_createEntityFromJSON] Can't create entity from JSON node with name: '%s'", entityName);
         return InvalidEntityId;
     }
 
     auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - startTimeP).count();
 
-    LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, duration);
+    LogDebug("[EntityManager::ET_createEntityFromJSON] Create entity: '%s' (%d ms)", entityName, duration);
 
     return entity->getEntityId();
 }
@@ -260,8 +262,7 @@ bool EntityManager::ET_writeEntityLogicValueData(EntityId entityId, EntityLogicI
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
     auto logicsNodes = node.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
-        LogWarning("[EntityManager::setupEntityLogics] Skip entity '%s' while it doesn't have any logic", entityName);
-        return false;
+        return true;
     }
     for(const auto& logicNode : logicsNodes) {
         std::string logicType;
@@ -344,6 +345,9 @@ Entity* EntityManager::createEntity(Entity* rootEntity, const char* entityName) 
 
     auto entityNode = loadEntityRootNode(entityName);
     auto entity = createEntityImpl(rootEntity, entityNode, entityName);
+    if(!entity) {
+        return nullptr;
+    }
 
     auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - startTimeP).count();

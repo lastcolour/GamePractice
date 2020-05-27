@@ -7,7 +7,11 @@ class LogicNative(NativeObject):
         self._entity = None
         self._logicId = None
         self._name = None
+        self._isModified = False
         self._rootValue = ObjectValue()
+
+    def isModified(self):
+        return self._isModified
 
     def getValues(self):
         return self._rootValue._vals

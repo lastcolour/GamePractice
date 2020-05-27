@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 class FileNodeType:
     Entity = 0
@@ -11,6 +12,9 @@ class FileNode:
 
     def isDir(self):
         return False
+
+    def getBaseName(self):
+        return self._name
 
     def getFullPath(self):
         resPath = self._name

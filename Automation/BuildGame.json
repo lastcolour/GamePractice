@@ -3,8 +3,9 @@
     "InputVariables":{
         "buildType":"Debug",
         "platform":"Windows",
-        "skipLibsBuild":"False ",
-        "skipUnittests":"True"
+        "skipLibsBuild":"False",
+        "skipGameTests":"False",
+        "skipEditorTests":"False"
     },
     "Steps":[
         {
@@ -15,7 +16,8 @@
                 "gameSources":"${rootSources}/Code",
                 "libSources":"${rootSources}/Libs",
                 "binsRoot":"${currentDir}/../_build/${platform}",
-                "gameBinsRoot":"${binsRoot}/Game"
+                "gameBinsRoot":"${binsRoot}/Game",
+                "editorSources":"${rootSources}/Editor"
             }
         },
         {
@@ -50,7 +52,7 @@
             "type":"IfVariableEqual",
             "dependOn":["Build Game"],
             "data":{
-                "varA":"${skipUnittests}",
+                "varA":"${skipGameTests}",
                 "varB":"False"
             }
         },
@@ -65,6 +67,24 @@
                 "args":[
                     "--gtest_filter=*"
                 ]
+            }
+        },
+        {
+            "name":"Check Run Editor Tests",
+            "type":"IfVariableEqual",
+            "dependOn":["Build Game"],
+            "data":{
+                "varA":"${skipEditorTests}",
+                "varB":"False"
+            }
+        },
+        {
+            "name":"Run Editor Tests",
+            "type":"PyTests",
+            "dependOn":["Check Run Editor Tests"],
+            "data":{
+                "path":"${editorSources}/Tests",
+                "pattern":"*.py"
             }
         }
     ]
