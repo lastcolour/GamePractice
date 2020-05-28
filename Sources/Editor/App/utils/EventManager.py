@@ -18,12 +18,14 @@ class _EventManager:
                 pass
         loader = self._app._editorNative.getEntityLoader()
         newEntity = loader.loadEntity(entityName)
-        if newEntity is not None:
-            if not newEntity.loadToNative():
-                Log.error("[_EventManager:onEntityDoubleClickFromFileTree] Can't load entity '{0}' to native".format(
-                    entityName))
-                return
-            self._currentEntity = newEntity
+        if newEntity is None:
+            return
+        if not newEntity.loadToNative():
+            Log.error("[_EventManager:onEntityDoubleClickFromFileTree] Can't load entity '{0}' to native".format(
+                entityName))
+            return
+        self._currentEntity = newEntity
+        self._app._entityLogicsView.widget().setEditEntity(self._currentEntity)
 
     def drawNativeFrameTo(self, ptr, width, height):
         self._app._editorNative.getLibrary().drawFrame(ptr, width, height)

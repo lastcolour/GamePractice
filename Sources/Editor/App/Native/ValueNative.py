@@ -392,38 +392,41 @@ class ColorValue(ValueNative):
 class ArrayValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Array)
-        self._val = None
+        self._vals = None
         self._elemCls = None
 
     def readFromDict(self, node):
         if self._name is None:
             raise RuntimeError("Array of arrays is not supported")
-        self._val = []
+        self._vals = []
         for elemNode in node[self._name]:
             elem = self._elemCls()
             elem.readFromDict(elemNode)
-            self._val.append(elem)
+            self._vals.append(elem)
 
     def writeToDict(self, node):
         if self._name is None:
             raise RuntimeError("Array of arrays is not supported")
         resList = []
-        for item in self._val:
+        for item in self._vals:
             item.writeToDict(resList)
         node[self._name] = resList
 
     def readFromStream(self, stream):
-        self._val = []
+        self._vals = []
         size = stream.readInt()
         for i in range(size):
             elem = self._elemCls()
             elem.readFromStream(stream)
-            self._val.append(elem)
+            self._vals.append(elem)
 
     def writeToStream(self, stream):
-        stream.writeInt(len(self._val))
-        for elem in self._val:
+        stream.writeInt(len(self._vals))
+        for elem in self._vals:
             elem.writeToStream(stream)
+
+    def getValues(self):
+        return self._vals
 
 class EnumValue(ValueNative):
     def __init__(self):
@@ -464,10 +467,16 @@ class EnumValue(ValueNative):
                 return item
         raise RuntimeError("Can't find enum value in table")
 
+    def getTable(self):
+        return self._table
+
 class ObjectValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Object)
         self._vals = []
+
+    def getValues(self):
+        return self._vals
 
     def readFromDict(self, node):
         objectNode = node
