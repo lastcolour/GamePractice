@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QStyle, QFrame
 from PyQt5.Qt import QSizePolicy
+from PyQt5.QtCore import Qt
 
 from native.ValueNative import ValueType
 from utils.ViewUtils import GetMinimunWidgetTreeHeight
@@ -20,30 +21,35 @@ class LogicViewTopBar(QWidget):
         super().__init__()
 
         self._frame = QFrame()
-        self._frame.setFrameStyle(QFrame.WinPanel)
-        self._frame.setFrameShadow(QFrame.Raised)
-        self._frame.setLineWidth(2)
-        self._frame.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        self._frame.setFrameStyle(QFrame.StyledPanel)
+        self._frame.setFrameShadow(QFrame.Plain)
 
         self._frameLayout = QHBoxLayout()
+        self._frameLayout.setSpacing(1)
+        self._frameLayout.setContentsMargins(0, 0, 0, 0)
 
         self._expandLogicBt = QPushButton()
         self._expandLogicBt.setIcon(self.style().standardIcon(QStyle.SP_TitleBarShadeButton))
         self._expandLogicBt.setFlat(True)
-        self._expandLogicBt.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self._frameLayout.addWidget(self._expandLogicBt)
 
         self._logicNameLabel = QLabel(entityLogic.getName())
         self._frameLayout.addWidget(self._logicNameLabel)
 
+        self._frameLayout.addStretch()
+
         self._removeLogicBt = QPushButton()
         self._removeLogicBt.setIcon(self.style().standardIcon(QStyle.SP_TitleBarCloseButton))
         self._removeLogicBt.setFlat(True)
-        self._removeLogicBt.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self._frameLayout.addWidget(self._removeLogicBt)
 
+        self._frame.setLayout(self._frameLayout)
+
         self._rootLayout = QVBoxLayout()
-        self._rootLayout.addLayout(self._frameLayout)
+        self._rootLayout.setSpacing(0)
+        self._rootLayout.setContentsMargins(0, 0, 0, 0)
+
+        self._rootLayout.addWidget(self._frame)
 
         self.setLayout(self._rootLayout)
 
@@ -56,30 +62,39 @@ class LogicView(QWidget):
         self._frame = QFrame()
         self._frame.setFrameStyle(QFrame.WinPanel)
         self._frame.setFrameShadow(QFrame.Raised)
-        self._frame.setLineWidth(2)
-        self._frame.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        self._frame.setLineWidth(3)
 
         self._frameLayout = QVBoxLayout()
+        self._frameLayout.setContentsMargins(0, 0, 0, 0)
+        self._frameLayout.setSpacing(0)
 
-        self._frameLayout.addWidget(LogicViewTopBar(entityLogic))
+        self._logicTopBar = LogicViewTopBar(entityLogic)
+        self._frameLayout.addWidget(self._logicTopBar)
 
         self._tree = QTreeWidget()
         self._tree.setColumnCount(2)
         self._tree.setHeaderHidden(True)
         self._tree.setSelectionMode(QTreeWidget.NoSelection)
+        self._tree.verticalScrollBar().setEnabled(False)
+        self._tree.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._tree.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._buildTree(self._tree, self._tree.invisibleRootItem(), self._entityLogic.getValues())
         minTreeHeight = GetMinimunWidgetTreeHeight(self._tree)
         self._tree.setMaximumHeight(minTreeHeight)
         self._tree.setMinimumHeight(minTreeHeight)
         self._frameLayout.addWidget(self._tree)
 
-        self._frameLayout.setContentsMargins(1, 1, 1, 1)
         self._frame.setLayout(self._frameLayout)
 
         self._rootLayout = QVBoxLayout()
+        self._rootLayout.setContentsMargins(0, 0, 0, 0)
+        self._rootLayout.setSpacing(0)
         self._rootLayout.addWidget(self._frame)
         self.setLayout(self._rootLayout)
-        self._rootLayout.setContentsMargins(1, 1, 1, 1)
+        minHeight = minTreeHeight + self._logicTopBar.minimumSizeHint().height() + 4
+        self.setMinimumHeight(minHeight)
+        self.setMaximumHeight(minHeight)
+        self.setMinimumWidth(self._tree.sizeHint().width())
 
     def _buildTree(self, widgetTree, rootItem, values):
         for value in values:
@@ -117,7 +132,7 @@ class LogicView(QWidget):
         elif valType == ValueType.Vec4:
             return EditVec4Value(value)
         elif valType == ValueType.Color:
-            return EditIntValue(value)
+            return EditColorValue(value)
         elif valType == ValueType.Resource:
             return EditStringValue(value)
         elif valType == ValueType.Entity:
@@ -130,4 +145,3 @@ class LogicView(QWidget):
             raise RuntimeError("Object does not have edit widget")
         else:
             raise RuntimeError("Unknown Value Type '{0}'".format(valType))
-

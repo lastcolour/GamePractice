@@ -12,7 +12,6 @@ class EditColorValue(QWidget):
         self._rootLayout = QHBoxLayout()
 
         self._colorLineEdit = QLineEdit()
-        self._colorLineEdit.setMask("#FFFFF")
         self._rootLayout.addWidget(self._colorLineEdit)
 
         self._colorSelectBt = QPushButton()

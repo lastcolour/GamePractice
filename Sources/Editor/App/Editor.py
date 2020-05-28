@@ -11,7 +11,9 @@ from view.EntityTreeView import EntityTreeView
 from view.EngineOutputView import EngineOutputView
 
 from native.EditorNative import EditorNative
+
 from model.AssetsModel import AssetsModel
+from model.LogicsModel import LogicsModel
 
 import sys
 
@@ -48,10 +50,10 @@ class EditorView(QMainWindow):
 
         self.setCentralWidget(self._engineOutputView)
 
-        CreateEventManager(self)
-
         if not self._init():
             sys.exit(1)
+
+        CreateEventManager(self)
 
     def __del__(self):
         self._deinit()
@@ -66,7 +68,10 @@ class EditorView(QMainWindow):
         if not self._assetsModel.init():
             Log.error("[EditorView:_init] Can't init assets model")
             return False
-        self._entityFileView.widget().setFileTreeModel(self._assetsModel)
+        self._logicsModel = LogicsModel(self._editorNative)
+        if not self._logicsModel.init():
+            Log.error("[EditorView:_init] Can't init logics model")
+            return False
         return True
 
     def _deinit(self):
