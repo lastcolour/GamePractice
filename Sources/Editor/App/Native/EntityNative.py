@@ -6,7 +6,7 @@ class EntityNative(NativeObject):
         self._isModified = False
         self._name = None
         self._entityId = None
-        self._transformLogic = None
+        self._tmLogic = None
         self._children = []
         self._logics = []
         self._parent = None
@@ -15,20 +15,24 @@ class EntityNative(NativeObject):
         return self._name
 
     def isModified(self):
-        for child in self._children:
-            if child.isModified():
-                return True
+        if self._isModified:
+            return True
+        if self._tmLogic.isModified():
+            return True
         for logic in self._logics:
             if logic.isModified():
                 return True
-        return self._isModified
+        for child in self._children:
+            if child.isModified():
+                return True
+        return False
 
     def isLoadedToNative(self):
         return self._entityId is not None
 
     def _createEntityLogicId(self):
         if len(self._logics) == 0:
-            return 0
+            return 1
         else:
             return self._logics[-1]._logicId + 1
 
@@ -81,6 +85,16 @@ class EntityNative(NativeObject):
         logic._rootValue.readFromDict(logicData)
         self._logics.append(logic)
         return logic
+
+    def initTransformLogic(self, logicData):
+        if self.isLoadedToNative():
+            raise RuntimeError("Can't add transform to entity that is loaded to editor: '{9}'".format(self._name))
+        if self._tmLogic is not None:
+            raise RuntimeError("Transform logic already exists for an entity: {0}".format(self._name))
+        self._tmLogic = CreateLogic("Transform")
+        self._tmLogic._logicId = 0
+        self._tmLogic._entity = self
+        self._tmLogic._rootValue.readFromDict(logicData)
 
     def removeLogic(self, logicId):
         if not self.isLoadedToNative():
@@ -146,7 +160,9 @@ class EntityNative(NativeObject):
 
     def dumpToDict(self):
         res = {"transform":{}, "children":[], "logics":[]}
-        self._transformLogic.writeToDict(res["transform"])
+        tmRes = {}
+        self._tmLogic.writeToDict(tmRes)
+        res["transform"] = tmRes["data"]
         for child in self._children:
             res["children"].append(child.getName())
         for logic in self._logics:
@@ -154,6 +170,9 @@ class EntityNative(NativeObject):
             logic.writeToDict(logicRes)
             res["logics"].append(logicRes)
         return res
+
+    def getTransformLogic(self):
+        return self._tmLogic
 
     def save(self):
         self._getAPI().getEntityLoader().saveEntity(self)

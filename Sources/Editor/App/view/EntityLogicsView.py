@@ -12,7 +12,7 @@ class EntityLogicsView(QWidget):
 
         self._rootLayout = QVBoxLayout()
 
-        self._transformView = EditTransformValue(self._editEntity)
+        self._transformView = EditTransformValue()
         self._rootLayout.addWidget(self._transformView)
 
         self._addLogicBt = QPushButton("Add Logic")
@@ -48,6 +48,7 @@ class EntityLogicsView(QWidget):
             self._addLogicBt.setEnabled(True)
         else:
             self._addLogicBt.setEnabled(False)
+        self._transformView.setEditEntity(entity)
         self._buildLogicsList()
 
     def addLogicView(self, entityLogic):

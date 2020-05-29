@@ -10,9 +10,21 @@ class EditStringValue(QWidget):
         self._rootLayout = QHBoxLayout()
 
         self._strLineEdit = QLineEdit()
+        self._strLineEdit.textEdited.connect(self._signal_lineEdit_textEdited)
         self._strLineEdit.setAlignment(Qt.AlignRight)
-        self._strLineEdit.setText(self._val.getVal())
         self._rootLayout.addWidget(self._strLineEdit)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
+
+        self._pull()
+
+    def _signal_lineEdit_textEdited(self, text):
+        self._push(text)
+        self._pull()
+
+    def _push(self, data):
+        self._val.setVal(data)
+
+    def _pull(self):
+        self._strLineEdit.setText(self._val.getVal())

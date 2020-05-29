@@ -15,12 +15,13 @@ class ValueType:
     Vec2 = 5
     Vec3 = 6
     Vec4 = 7
-    Color = 8
-    Enum = 9
-    Resource = 10
-    Entity = 11
-    Object = 12
-    Array = 13
+    Quat = 9
+    Color = 10
+    Enum = 11
+    Resource = 12
+    Entity = 13
+    Object = 14
+    Array = 15
 
 class ValueNative(NativeObject):
     def __init__(self, valueType):
@@ -345,6 +346,54 @@ class Vec4Value(ValueNative):
     def getVal(self):
         return self._xVal, self._yVal, self._zVal, self._wVal
 
+class QuatValue(ValueNative):
+    def __init__(self):
+        super().__init__(ValueType.Vec4)
+        self._xVal = None
+        self._yVal = None
+        self._zVal = None
+        self._wVal = None
+
+    def readFromDict(self, node):
+        if self._name is not None:
+            self._xVal = float(node[self._name]["x"])
+            self._yVal = float(node[self._name]["y"])
+            self._zVal = float(node[self._name]["z"])
+            self._wVal = float(node[self._name]["w"])
+        else:
+            self._xVal = float(node["x"])
+            self._yVal = float(node["y"])
+            self._zVal = float(node["z"])
+            self._wVal = float(node["w"])
+
+    def writeToDict(self, node):
+        if self._name is not None:
+            node[self._name] = {"x": self._xVal, "y": self._yVal, "z": self._zVal, "w": self._wVal}
+        else:
+            node.append({"x": self._xVal, "y": self._yVal, "z": self._zVal, "w": self._wVal})
+
+    def readFromStream(self, stream):
+        self._xVal = stream.readFloat()
+        self._yVal = stream.readFloat()
+        self._zVal = stream.readFloat()
+        self._wVal = stream.readFloat()
+
+    def writeToStream(self, stream):
+        stream.writeFloat(self._xVal)
+        stream.writeFloat(self._yVal)
+        stream.writeFloat(self._zVal)
+        stream.writeFloat(self._wVal)
+
+    def setVal(self, xVal, yVal, zVal, wVal):
+        self._xVal = float(xVal)
+        self._yVal = float(yVal)
+        self._zVal = float(zVal)
+        self._wVal = float(wVal)
+        self._onValueChanged()
+
+    def getVal(self):
+        return self._xVal, self._yVal, self._zVal, self._wVal
+
 class ColorValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Color)
@@ -589,12 +638,16 @@ def _createValue(valueName, valueType):
         val = Vec3Value()
     elif valueType == "vec4":
         val = Vec4Value()
+    elif valueType == "quat":
+        val = QuatValue()
     elif valueType == "color":
         val = ColorValue()
     elif valueType == "resource":
         val = ResourceValue()
     else:
         valueModel = _getReflectModel().getTypeModel(valueType)
+        if valueModel is None:
+            raise RuntimeError("Can't find type mode for a type '{0}'".format(valueType))
         valueType = valueModel["type"]
         if valueType == "class":
             val = ObjectValue()

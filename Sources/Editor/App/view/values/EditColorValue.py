@@ -7,11 +7,11 @@ class EditColorValue(QWidget):
         super().__init__()
 
         self._val = value
-        r, g, b, a = self._val.getVal()
 
         self._rootLayout = QHBoxLayout()
 
         self._colorLineEdit = QLineEdit()
+        self._colorLineEdit.setAlignment(Qt.AlignRight)
         self._colorLineEdit.setReadOnly(True)
         self._rootLayout.addWidget(self._colorLineEdit)
 
@@ -24,7 +24,7 @@ class EditColorValue(QWidget):
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
 
-        self._updateWith(QColor(r, g, b, a))
+        self._pull()
 
     def _updateWith(self, col):
         palette = self._colorSelectBt.palette()
@@ -39,9 +39,12 @@ class EditColorValue(QWidget):
         resColor = QColorDialog.getColor(QColor(r, g, b, a), self, "Select Color")
         if not resColor.isValid():
             return
-        r = resColor.red()
-        g = resColor.green()
-        b = resColor.blue()
-        a = resColor.alpha()
-        self._val.setVal(r, g, b, a)
-        self._updateWith(resColor)
+        self._push(resColor)
+        self._pull()
+
+    def _push(self, col):
+        self._val.setVal(col.red(), col.green(), col.blue(), col.alpha())
+
+    def _pull(self):
+        r, g, b, a = self._val.getVal()
+        self._updateWith(QColor(r, g, b, a))

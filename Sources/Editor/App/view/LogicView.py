@@ -14,14 +14,15 @@ from .values.EditVec2iValue import EditVec2iValue
 from .values.EditVec2Value import EditVec2Value
 from .values.EditVec3Value import EditVec3Value
 from .values.EditVec4Value import EditVec4Value
+from .values.EditQuatValue import EditQuatValue
 from .values.EditColorValue import EditColorValue
 from .values.EditEnumValue import EditEnumValue
 
 class LogicViewTopBar(QWidget):
-    def __init__(self, entityLogic):
+    def __init__(self):
         super().__init__()
 
-        self._entityLogic = entityLogic
+        self._entityLogic = None
 
         self._frame = QFrame()
         self._frame.setFrameStyle(QFrame.StyledPanel)
@@ -36,7 +37,7 @@ class LogicViewTopBar(QWidget):
         self._expandLogicBt.setFlat(True)
         self._frameLayout.addWidget(self._expandLogicBt)
 
-        self._logicNameLabel = QLabel(entityLogic.getName())
+        self._logicNameLabel = QLabel()
         self._frameLayout.addWidget(self._logicNameLabel)
 
         self._frameLayout.addStretch()
@@ -57,6 +58,10 @@ class LogicViewTopBar(QWidget):
 
         self.setLayout(self._rootLayout)
 
+    def _setupLogic(self, entityLogic):
+        self._entityLogic = entityLogic
+        self._logicNameLabel.setText(self._entityLogic.getName())
+
     def _signal_removeBt_clicked(self):
         GetEventManager().onRemoveEntityLogicBtClicked(self._entityLogic)
 
@@ -75,7 +80,7 @@ class LogicView(QWidget):
         self._frameLayout.setContentsMargins(0, 0, 0, 0)
         self._frameLayout.setSpacing(0)
 
-        self._logicTopBar = LogicViewTopBar(entityLogic)
+        self._logicTopBar = LogicViewTopBar()
         self._frameLayout.addWidget(self._logicTopBar)
 
         self._tree = QTreeWidget()
@@ -85,10 +90,6 @@ class LogicView(QWidget):
         self._tree.verticalScrollBar().setEnabled(False)
         self._tree.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._tree.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._buildTree(self._tree, self._tree.invisibleRootItem(), self._entityLogic.getValues())
-        minTreeHeight = GetMinimunWidgetTreeHeight(self._tree)
-        self._tree.setMaximumHeight(minTreeHeight)
-        self._tree.setMinimumHeight(minTreeHeight)
         self._frameLayout.addWidget(self._tree)
 
         self._frame.setLayout(self._frameLayout)
@@ -98,12 +99,24 @@ class LogicView(QWidget):
         self._rootLayout.setSpacing(0)
         self._rootLayout.addWidget(self._frame)
         self.setLayout(self._rootLayout)
+
+        self._setupLogic(self._entityLogic)
+
+    def _setupLogic(self, logic):
+        self._entityLogic = logic
+        self._logicTopBar._setupLogic(self._entityLogic)
+        self._buildTree(self._tree, self._tree.invisibleRootItem(), self._entityLogic.getValues())
+        minTreeHeight = GetMinimunWidgetTreeHeight(self._tree)
+        self._tree.setMaximumHeight(minTreeHeight)
+        self._tree.setMinimumHeight(minTreeHeight)
+
         minHeight = minTreeHeight + self._logicTopBar.minimumSizeHint().height() + 4
         self.setMinimumHeight(minHeight)
         self.setMaximumHeight(minHeight)
         self.setMinimumWidth(self._tree.sizeHint().width())
 
     def _buildTree(self, widgetTree, rootItem, values):
+        self._tree.clear()
         for value in values:
             if value.getType() == ValueType.Object:
                 item = QTreeWidgetItem(rootItem)
@@ -138,6 +151,8 @@ class LogicView(QWidget):
             return EditVec3Value(value)
         elif valType == ValueType.Vec4:
             return EditVec4Value(value)
+        elif valType == ValueType.Quat:
+            return EditQuatValue(value)
         elif valType == ValueType.Color:
             return EditColorValue(value)
         elif valType == ValueType.Resource:

@@ -44,7 +44,7 @@ class EditorEntityTest(unittest.TestCase):
 
         logic = logics[0]
         self.assertEqual(logic.getName(), "RenderSimple")
-        self.assertEqual(logic._logicId, 0)
+        self.assertEqual(logic._logicId, 1)
 
         values = logic.getValues()
         self.assertEqual(len(values), 4)

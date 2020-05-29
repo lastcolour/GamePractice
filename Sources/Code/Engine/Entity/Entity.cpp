@@ -24,7 +24,7 @@ Entity::~Entity() {
 
 EntityLogicId Entity::createLogicId() const {
     if(logics.empty()) {
-        return 0;
+        return 1;
     }
     return logics.back().logicId + 1;
 }

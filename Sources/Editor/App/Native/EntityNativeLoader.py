@@ -17,6 +17,13 @@ class EntityNativeLoader(NativeObject):
     def getEntityFullPath(self, filePath):
         return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
 
+    def _loadTransform(self, entity, data):
+        if "transform" not in data:
+            print("[EntityNativeLoader:_loadTransform] Can't find require 'transform' node in entity: '{0}'".format(entity._name))
+            return False
+        entity.initTransformLogic(data["transform"])
+        return True
+
     def _loadChildren(self, entity, data):
         if "children" not in data:
             print("[EntityNativeLoader:_loadChildren] Can't find require 'children' node in entity: '{0}'".format(entity._name))
@@ -55,6 +62,9 @@ class EntityNativeLoader(NativeObject):
             data = json.load(tFile)
         entity = EntityNative()
         entity._name = entityName
+        if not self._loadTransform(entity, data):
+            print("[EntityNativeLoader:loadEntity] Can't load transfrom from entity: '{0}'".format(entityName))
+            return None
         if not self._loadChildren(entity, data):
             print("[EntityNativeLoader:loadEntity] Can't load children from entity: '{0}'".format(entityName))
             return None

@@ -12,6 +12,7 @@
 namespace {
 
 const char* GAME_ENTITIES = "Entities";
+const EntityLogicId TransformLogicId = 0;
 
 } // namespace
 
@@ -176,10 +177,18 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
             entity->ET_getName());
         return false;
     }
-    if(!entity->readLogicData(logicId, stream)) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Error to read logic data from entity: '%s'",
-            entity->ET_getName());
-        return false;
+    if(logicId == TransformLogicId) {
+        if(!tmClassInfo->readValues(entity->getTransform(), stream)) {
+            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read transform data from entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
+    } else {
+        if(!entity->readLogicData(logicId, stream)) {
+            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic data from entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
     }
     return true;
 }
@@ -206,10 +215,18 @@ bool EntityManager::ET_readEntityLogicValueData(EntityId entityId, EntityLogicId
             entity->ET_getName());
         return false;
     }
-    if(!entity->readLogicValueData(logicId, valueId, stream)) {
-        LogWarning("[EntityManager::ET_readEntityLogicValueData] Error to read logic value data from entity: '%s'",
-            entity->ET_getName());
-        return false;
+    if(logicId == TransformLogicId) {
+        if(!tmClassInfo->readValue(entity->getTransform(), valueId, stream)) {
+            LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read transform value data from entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
+    } else {
+        if(!entity->readLogicValueData(logicId, valueId, stream)) {
+            LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read logic value data from entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
     }
     return true;
 }
@@ -230,10 +247,18 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
             entity->ET_getName());
         return false;
     }
-    if(!entity->writeLogicData(logicId, stream)) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Error to write logic data to entity: '%s'",
-            entity->ET_getName());
-        return false;
+    if(logicId == TransformLogicId) {
+        if(!tmClassInfo->writeValues(entity->getTransform(), stream)) {
+            LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write transform data to entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
+    } else {
+        if(!entity->writeLogicData(logicId, stream)) {
+            LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic data to entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
     }
     return true;
 }
@@ -260,10 +285,18 @@ bool EntityManager::ET_writeEntityLogicValueData(EntityId entityId, EntityLogicI
             entity->ET_getName());
         return false;
     }
-    if(!entity->writeLogicValueData(logicId, valueId, stream)) {
-        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Error to write logic value data to entity: '%s'",
-            entity->ET_getName());
-        return false;
+    if(logicId == TransformLogicId) {
+        if(!tmClassInfo->writeValue(entity->getTransform(), valueId, stream)) {
+            LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write transform value data to entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
+    } else {
+        if(!entity->writeLogicValueData(logicId, valueId, stream)) {
+            LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can;'t write logic value data to entity: '%s'",
+                entity->ET_getName());
+            return false;
+        }
     }
     return true;
 }

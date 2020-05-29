@@ -66,7 +66,7 @@ class EditorAppTests(unittest.TestCase):
         EditorAppTests.NATIVE_LIB.removeLogicFromEntity(self._centralEntityId, logicId)
 
     def testSetGetLogicData(self):
-        logicId = 0
+        logicId = 1
         valueId = 4
         stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId)
         self.assertIsNotNone(stream)

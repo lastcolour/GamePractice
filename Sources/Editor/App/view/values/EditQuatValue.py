@@ -4,7 +4,7 @@ from PyQt5.Qt import QDoubleValidator
 
 from .Utils import TextToFloat, SetFloatToLineEdit
 
-class EditVec4Value(QWidget):
+class EditQuatValue(QWidget):
     def __init__(self, value):
         super().__init__()
 

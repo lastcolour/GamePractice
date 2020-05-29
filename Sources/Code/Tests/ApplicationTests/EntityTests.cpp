@@ -223,6 +223,52 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     ASSERT_FLOAT_EQ(tm.quat.y, 0.f);
     ASSERT_FLOAT_EQ(tm.quat.z, 0.f);
     ASSERT_FLOAT_EQ(tm.quat.w, 1.f);
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    res = false;
+    EntityLogicId logicId = 0;
+    EntityLogicValueId valueId = 1;
+    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicValueData, entId, logicId, valueId, stream);
+
+    ASSERT_TRUE(res);
+
+    stream.reopenForRead();
+
+    {
+        float xVal = 0.f;
+        stream.read(xVal);
+        ASSERT_FLOAT_EQ(xVal, 0.1f);
+    }
+    {
+        float yVal = 0.f;
+        stream.read(yVal);
+        ASSERT_FLOAT_EQ(yVal, 0.2f);
+    }
+    {
+        float zVal = 0.f;
+        stream.read(zVal);
+        ASSERT_FLOAT_EQ(zVal, 0.3f);
+    }
+
+    stream.reopenForWrite();
+    stream.write(0.3f);
+    stream.write(0.2f);
+    stream.write(0.1f);
+
+    stream.reopenForRead();
+
+    res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicValueData, entId, logicId, valueId, stream);
+
+    ASSERT_TRUE(res);
+
+    ET_SendEventReturn(tm, entId, &ETEntity::ET_getTransform);
+
+    ASSERT_FLOAT_EQ(tm.pt.x, 0.3f);
+    ASSERT_FLOAT_EQ(tm.pt.y, 0.2f);
+    ASSERT_FLOAT_EQ(tm.pt.z, 0.1f);
 }
 
 TEST_F(EntityTests, CheckAddRemoveLogic) {
@@ -263,7 +309,7 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
     ET_SendEventReturn(entityId, &ETEntityManager::ET_createEntity, "Game/Simple.json");
     ASSERT_TRUE(entityId.isValid());
 
-    EntityLogicId logicId = 0;
+    EntityLogicId logicId = 1;
     MemoryStream stream;
     stream.openForWrite();
     bool res = false;
