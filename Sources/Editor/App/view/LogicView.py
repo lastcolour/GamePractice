@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 
 from native.ValueNative import ValueType
 from utils.ViewUtils import GetMinimunWidgetTreeHeight
+from utils.EventManager import GetEventManager
 
 from .values.EditIntValue import EditIntValue
 from .values.EditFloatValue import EditFloatValue
@@ -19,6 +20,8 @@ from .values.EditEnumValue import EditEnumValue
 class LogicViewTopBar(QWidget):
     def __init__(self, entityLogic):
         super().__init__()
+
+        self._entityLogic = entityLogic
 
         self._frame = QFrame()
         self._frame.setFrameStyle(QFrame.StyledPanel)
@@ -41,6 +44,7 @@ class LogicViewTopBar(QWidget):
         self._removeLogicBt = QPushButton()
         self._removeLogicBt.setIcon(self.style().standardIcon(QStyle.SP_TitleBarCloseButton))
         self._removeLogicBt.setFlat(True)
+        self._removeLogicBt.clicked.connect(self._signal_removeBt_clicked)
         self._frameLayout.addWidget(self._removeLogicBt)
 
         self._frame.setLayout(self._frameLayout)
@@ -52,6 +56,9 @@ class LogicViewTopBar(QWidget):
         self._rootLayout.addWidget(self._frame)
 
         self.setLayout(self._rootLayout)
+
+    def _signal_removeBt_clicked(self):
+        GetEventManager().onRemoveEntityLogicBtClicked(self._entityLogic)
 
 class LogicView(QWidget):
     def __init__(self, entityLogic):

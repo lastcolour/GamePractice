@@ -14,7 +14,7 @@ class EntityNativeLoader(NativeObject):
     def init(self):
         return True
 
-    def _getFullPath(self, filePath):
+    def getEntityFullPath(self, filePath):
         return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
 
     def _loadChildren(self, entity, data):
@@ -46,19 +46,26 @@ class EntityNativeLoader(NativeObject):
             entity.addLogicWithData(item["type"], item["data"])
         return True
 
-    def loadEntity(self, filePath):
-        fullFilePath = self._getFullPath(filePath)
+    def loadEntity(self, entityName):
+        fullFilePath = self.getEntityFullPath(entityName)
         if not os.path.exists(fullFilePath):
             print("[EntityNativeLoader:loadEntity] Can't load entity '{0}' from missed file".format(fullFilePath))
             return None
         with open(fullFilePath) as tFile:
             data = json.load(tFile)
         entity = EntityNative()
-        entity._name = filePath
+        entity._name = entityName
         if not self._loadChildren(entity, data):
-            print("[EntityNativeLoader:loadEntity] Can't load children from entity: '{0}'".format(filePath))
+            print("[EntityNativeLoader:loadEntity] Can't load children from entity: '{0}'".format(entityName))
             return None
         if not self._loadLogics(entity, data):
-            print("[EntityNativeLoader:loadEntity] Can't load logics from entity: '{0}'".format(filePath))
+            print("[EntityNativeLoader:loadEntity] Can't load logics from entity: '{0}'".format(entityName))
             return None
         return entity
+
+    def saveEntity(self, entity):
+        fullFilePath = self.getEntityFullPath(entity.getName())
+        data = entity.dumpToDict()
+        with open(fullFilePath, 'w') as tFile:
+            json.dump(data, tFile, indent=2)
+        print("[EntityNativeLoader:saveEntity] Save entity changes: '{0}'".format(entity.getName()))

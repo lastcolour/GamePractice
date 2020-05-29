@@ -27,6 +27,7 @@ class ValueNative(NativeObject):
         self._name = None
         self._logic = None
         self._valueId = None
+        self._isModified = False
         self._type = valueType
 
     def getName(self):
@@ -37,6 +38,9 @@ class ValueNative(NativeObject):
 
     def getPrimitiveValueCount(self):
         return 1
+
+    def isModified(self):
+        return self._isModified
 
     def _getLogicId(self):
         return self._logic.getNativeId()
@@ -49,7 +53,7 @@ class ValueNative(NativeObject):
             return False
         return self._logic.getEntity().isLoadedToNative()
 
-    def _writeToNative(self):
+    def _onValueChanged(self):
         if self.getPrimitiveValueCount() != 1:
             raise RuntimeError("Can't write to native non-primitive values")
         if not self._isLoadedToNative():
@@ -57,6 +61,7 @@ class ValueNative(NativeObject):
         stream = MemoryStream()
         self.writeToStream(stream)
         self._getAPI().getLibrary().setEntityLogicValueData(self._getEntityId(), self._getLogicId(), self._valueId, stream)
+        self._isModified = True
 
 class BoolValue(ValueNative):
     def __init__(self):
@@ -83,7 +88,7 @@ class BoolValue(ValueNative):
 
     def setVal(self, flag):
         self._val = bool(flag)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._val
@@ -113,7 +118,7 @@ class IntValue(ValueNative):
 
     def setVal(self, val):
         self._val = int(val)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._val
@@ -143,7 +148,7 @@ class FloatValue(ValueNative):
 
     def setVal(self, val):
         self._val = float(val)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._val
@@ -173,7 +178,7 @@ class StringValue(ValueNative):
 
     def setVal(self, val):
         self._val = str(val)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._val
@@ -209,7 +214,7 @@ class Vec2iValue(ValueNative):
     def setVal(self, xVal, yVal):
         self._xVal = int(xVal)
         self._yVal = int(yVal)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._xVal, self._yVal
@@ -245,7 +250,7 @@ class Vec2Value(ValueNative):
     def setVal(self, xVal, yVal):
         self._xVal = float(xVal)
         self._yVal = float(yVal)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._xVal, self._yVal
@@ -287,7 +292,7 @@ class Vec3Value(ValueNative):
         self._xVal = float(xVal)
         self._yVal = float(yVal)
         self._zVal = float(zVal)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._xVal, self._yVal, self._zVal
@@ -335,8 +340,7 @@ class Vec4Value(ValueNative):
         self._yVal = float(yVal)
         self._zVal = float(zVal)
         self._wVal = float(wVal)
-        self._writeToNative()
-
+        self._onValueChanged()
 
     def getVal(self):
         return self._xVal, self._yVal, self._zVal, self._wVal
@@ -384,7 +388,7 @@ class ColorValue(ValueNative):
         self._gVal = int(gVal)
         self._bVal = int(bVal)
         self._aVal = int(aVal)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._rVal, self._gVal, self._bVal, self._aVal
@@ -459,7 +463,7 @@ class EnumValue(ValueNative):
 
     def setVal(self, val):
         self._val = int(self._table[str(val)])
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         for item in self._table:
@@ -533,7 +537,7 @@ class ResourceValue(ValueNative):
 
     def setVal(self, val):
         self._val = str(val)
-        self._writeToNative()
+        self._onValueChanged()
 
     def getVal(self):
         return self._val

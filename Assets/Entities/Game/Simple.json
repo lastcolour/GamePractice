@@ -1,14 +1,14 @@
 {
-    "children":[],
-    "logics": [
-        {
-            "type": "RenderSimple",
-            "data": {
-                "material": "geom_solid_color",
-                "geometry": "square",
-                "scale": { "x": 1, "y": 1 },
-                "color": { "r": 255, "g": 255, "b": 255, "a": 255}
-            }
-        }
-    ]
+  "children":[],
+  "logics": [
+      {
+          "type": "RenderSimple",
+          "data": {
+              "material": "geom_solid_color",
+              "geometry": "square",
+              "scale": { "x": 1, "y": 1 },
+              "color": { "r": 255, "g": 255, "b": 255, "a": 255}
+          }
+      }
+  ]
 }

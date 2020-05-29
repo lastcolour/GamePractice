@@ -16,11 +16,11 @@ class EntityLogicsView(QWidget):
         self._addLogicBt.clicked.connect(self._signal_addLogicBt_clicked)
         self._rootLayout.addWidget(self._addLogicBt)
 
-        self._logicsLayot = QVBoxLayout()
+        self._logicsLayout = QVBoxLayout()
 
         self._frame = QFrame()
         self._frameLayout = QVBoxLayout()
-        self._frameLayout.addLayout(self._logicsLayot)
+        self._frameLayout.addLayout(self._logicsLayout)
         self._frameLayout.addStretch()
         self._frame.setLayout(self._frameLayout)
 
@@ -33,10 +33,10 @@ class EntityLogicsView(QWidget):
         self.setLayout(self._rootLayout)
 
     def _buildLogicsList(self):
-        ClearLayout(self._logicsLayot)
+        ClearLayout(self._logicsLayout)
         for logic in self._editEntity.getLogics():
             logicView = LogicView(logic)
-            self._logicsLayot.addWidget(logicView)
+            self._logicsLayout.addWidget(logicView)
 
     def setEditEntity(self, entity):
         self._editEntity = entity
@@ -48,7 +48,17 @@ class EntityLogicsView(QWidget):
 
     def addLogicView(self, entityLogic):
         logicView = LogicView(entityLogic)
-        self._logicsLayot.addWidget(logicView)
+        self._logicsLayout.addWidget(logicView)
+
+    def removeLogicView(self, entityLogicId):
+        for i in range(self._logicsLayout.count()):
+            item = self._logicsLayout.itemAt(i)
+            widget = item.widget()
+            if widget is not None:
+                if widget._entityLogic.getNativeId() == entityLogicId:
+                    self._logicsLayout.removeWidget(widget)
+                    widget.close()
+                    return
 
     def _signal_addLogicBt_clicked(self):
         GetEventManager().onAddLogicBtClicked(self._editEntity)

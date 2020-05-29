@@ -8,6 +8,7 @@ from native.EntityNative import EntityNative
 from utils.AppConfig import AppConfig
 
 import unittest
+import json
 
 class EditorEntityTest(unittest.TestCase):
 
@@ -120,6 +121,41 @@ class EditorEntityTest(unittest.TestCase):
 
     def testSaveEntity(self):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        res = entity.dumpToDict()
+        self.assertIsNotNone(res)
+        self.assertIn("children", res)
+        self.assertIn("logics", res)
+
+        fileData = None
+        with open(entity.getFullFilePath(), 'r') as tFile:
+            fileData = json.load(tFile)
+
+        self.assertEqual(res, fileData)
+
+        self.assertTrue(entity.loadToNative())
+        logic = entity.addLogic("RenderSimple")
+
+        self.assertTrue(entity.isModified())
+        entity.save()
+        self.assertFalse(entity.isModified())
+
+        fileData = None
+        with open(entity.getFullFilePath(), 'r') as tFile:
+            fileData = json.load(tFile)
+
+        self.assertNotEqual(res, fileData)
+
+        entity.removeLogic(logic.getNativeId())
+
+        self.assertTrue(entity.isModified())
+        entity.save()
+        self.assertFalse(entity.isModified())
+
+        fileData = None
+        with open(entity.getFullFilePath(), 'r') as tFile:
+            fileData = json.load(tFile)
+
+        self.assertEqual(res, fileData)
 
 if __name__ == "__main__":
     unittest.main()

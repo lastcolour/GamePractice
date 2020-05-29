@@ -139,3 +139,22 @@ class EntityNative(NativeObject):
         self._getAPI().getLibrary().removeChildEntityFromEntity(self._entityId, childEntityId)
         self._children.remove(childToRemove)
         self._isModified = True
+
+    def getFullFilePath(self):
+        return self._getAPI().getEntityLoader().getEntityFullPath(self._name)
+
+    def dumpToDict(self):
+        res = {}
+        res["children"] = []
+        for child in self._children:
+            res["children"].append(child.getName())
+        res["logics"] = []
+        for logic in self._logics:
+            logicRes = {}
+            logic.writeToDict(logicRes)
+            res["logics"].append(logicRes)
+        return res
+
+    def save(self):
+        self._getAPI().getEntityLoader().saveEntity(self)
+        self._isModified = False

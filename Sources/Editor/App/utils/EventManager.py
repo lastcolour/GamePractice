@@ -1,5 +1,9 @@
 from utils.Log import Log
 from dialog.LogicSelecDialog import LogicSelectDialog
+from dialog.SaveEntityChanges import SaveEntityChanges
+from dialog.RemoveEntityLogic import RemoveEntityLogic
+
+from PyQt5.QtWidgets import QMessageBox
 
 class _EventManager:
 
@@ -17,7 +21,13 @@ class _EventManager:
             if self._currentEntity.getName() == entityName:
                 return
             if self._currentEntity.isModified():
-                pass
+                retCode = SaveEntityChanges(self._currentEntity).exec_()
+                if retCode == QMessageBox.Ok:
+                    self._currentEntity.save()
+                elif retCode == QMessageBox.Cancel:
+                    return
+                elif retCode == QMessageBox.No:
+                    pass
         loader = self._app._editorNative.getEntityLoader()
         newEntity = loader.loadEntity(entityName)
         if newEntity is None:
@@ -44,6 +54,16 @@ class _EventManager:
         if entityLogic is None:
             raise RuntimeError("Can't add logic '{0}' to  entity '{1}'".format(logic.getName(), editEntity.getName()))
         self._app._entityLogicsView.widget().addLogicView(entityLogic)
+
+    def onRemoveEntityLogicBtClicked(self, editLogic):
+        retCode = RemoveEntityLogic(editLogic).exec_()
+        if retCode == QMessageBox.Ok:
+            editLogic.getEntity().removeLogic(editLogic.getNativeId())
+            self._app._entityLogicsView.widget().removeLogicView(editLogic.getNativeId())
+        elif retCode == QMessageBox.Cancel:
+            pass
+        elif retCode == QMessageBox.No:
+            pass
 
     def drawNativeFrameTo(self, ptr, width, height):
         self._app._editorNative.getLibrary().drawFrame(ptr, width, height)

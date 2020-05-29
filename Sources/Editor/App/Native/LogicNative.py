@@ -25,6 +25,12 @@ class LogicNative(NativeObject):
     def getNativeId(self):
         return self._logicId
 
+    def writeToDict(self, data):
+        data["type"] = self._name
+        rootData = []
+        self._rootValue.writeToDict(rootData)
+        data["data"] = rootData[0]
+
     def writeToStream(self, stream):
         self._rootValue.writeToStream(stream)
 
