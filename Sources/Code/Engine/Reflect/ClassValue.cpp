@@ -117,6 +117,35 @@ bool readJSONVec4(void* valuePtr, const JSONNode& node) {
     return true;
 }
 
+bool readJSONQuat(void* valuePtr, const JSONNode& node) {
+    if(!node.hasKey("x")) {
+        LogError("[ClassValue::readValue] Can't find required node 'x' to read 'quat'");
+        return false;
+    }
+    if(!node.hasKey("y")) {
+        LogError("[ClassValue::readValue] Can't find required node 'y' to read 'quat'");
+        return false;
+    }
+    if(!node.hasKey("z")) {
+        LogError("[ClassValue::readValue] Can't find required node 'z' to read 'quat'");
+        return false;
+    }
+    if(!node.hasKey("w")) {
+        LogError("[ClassValue::readValue] Can't find required node 'w' to read 'quat'");
+        return false;
+    }
+    float xVal = 0.f;
+    float yVal = 0.f;
+    float zVal = 0.f;
+    float wVal = 0.f;
+    node.read("x", xVal);
+    node.read("y", yVal);
+    node.read("z", zVal);
+    node.read("w", wVal);
+    getRef<Quat>(valuePtr) = Quat(xVal, yVal, zVal, wVal);
+    return true;
+}
+
 bool readJSONColor(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("r")) {
         LogError("[ClassValue::readValue] Can't find required node 'r' to read 'color'");
@@ -206,6 +235,9 @@ const char* ClassValue::getTypeName() const {
         }
         case ClassValueType::Vec4: {
             return "vec4";
+        }
+        case ClassValueType::Quat: {
+            return "quat";
         }
         case ClassValueType::Color: {
             return "color";
@@ -368,6 +400,19 @@ bool ClassValue::readValue(void* instance, void* valuePtr, const JSONNode& node)
         }
         return true;
     }
+    case ClassValueType::Quat: {
+        bool res = false;
+        if(isElement) {
+            res = readJSONQuat(valuePtr, node);
+        } else {
+            res = readJSONQuat(valuePtr, node.object(name.c_str()));
+        }
+        if(!res) {
+            LogError("[ClassValue::readValue] Can't serialize 'quat' field: %s", name);
+            return false;
+        }
+        return true;
+    }
     case ClassValueType::Color: {
         bool res = false;
         if(isElement) {
@@ -470,6 +515,14 @@ bool ClassValue::readValue(void* instance, void* valuePtr, MemoryStream& stream)
     }
     case ClassValueType::Vec4: {
         const auto& val = getRef<Vec4>(valuePtr);
+        stream.write(val.x);
+        stream.write(val.y);
+        stream.write(val.z);
+        stream.write(val.w);
+        break;
+    }
+    case ClassValueType::Quat: {
+        const auto& val = getRef<Quat>(valuePtr);
         stream.write(val.x);
         stream.write(val.y);
         stream.write(val.z);
@@ -583,6 +636,18 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
         stream.read(zVal);
         stream.read(wVal);
         getRef<Vec4>(valuePtr) = Vec4(xVal, yVal, zVal, wVal);
+        break;
+    }
+    case ClassValueType::Quat: {
+        float xVal = 0.f;
+        float yVal = 0.f;
+        float zVal = 0.f;
+        float wVal = 0.f;
+        stream.read(xVal);
+        stream.read(yVal);
+        stream.read(zVal);
+        stream.read(wVal);
+        getRef<Quat>(valuePtr) = Quat(xVal, yVal, zVal, wVal);
         break;
     }
     case ClassValueType::Color: {

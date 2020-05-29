@@ -46,13 +46,15 @@ private:
     Entity* createEntityImpl(Entity* rootEntity, const JSONNode& entityNode, const char* entityName);
     Entity* createEntity(Entity* rootEntity, const char* entityName);
     JSONNode loadEntityRootNode(const char* entityName) const;
-    bool setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const;
-    bool setupEntityChildren(Entity* entity, const JSONNode& node, const char* entityName);
+    bool setupEntityTranform(Entity* entity, const JSONNode& node);
+    bool setupEntityLogics(Entity* entity, const JSONNode& node) const;
+    bool setupEntityChildren(Entity* entity, const JSONNode& node);
 
 private:
 
     std::unordered_map<std::string, ClassInfo*> registeredLogics;
     std::unordered_map<EntityId, EntityPtrT> entities;
+    ClassInfo* tmClassInfo;
 };
 
 #endif /* __ENTITY_MANAGER_HPP__ */

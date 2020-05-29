@@ -15,7 +15,8 @@ const char* GAME_ENTITIES = "Entities";
 
 } // namespace
 
-EntityManager::EntityManager() {
+EntityManager::EntityManager() :
+    tmClassInfo(nullptr) {
 }
 
 EntityManager::~EntityManager() {
@@ -25,6 +26,14 @@ EntityManager::~EntityManager() {
 
 bool EntityManager::init() {
     ETNode<ETEntityManager>::connect(getEntityId());
+    ReflectContext ctx;
+    if(!ctx.reflect<Transform>()) {
+        return false;
+    }
+    tmClassInfo = ctx.getRegisteredClassInfo();
+    if(!tmClassInfo) {
+        return false;
+    }
     return true;
 }
 
@@ -119,7 +128,7 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
     }
     auto logicId = entity->addLogic(std::move(logicInstance));
     if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicName, entity->ET_getName());
+        LogWarning("[EntityManager::ET_addLogicToEntity] Can't init logic '%s' for entity '%s'", logicName, entity->ET_getName());
         return InvalidEntityLogicId;
     }
     LogDebug("[EntityManager::ET_addLogicToEntity] Add logic '%s' to entity '%s'", logicName, entity->ET_getName());
@@ -259,7 +268,7 @@ bool EntityManager::ET_writeEntityLogicValueData(EntityId entityId, EntityLogicI
     return true;
 }
 
-bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, const char* entityName) const {
+bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) const {
     auto logicsNodes = node.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {
         return true;
@@ -269,33 +278,46 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node, cons
         logicNode.read("type", logicType);
         auto it = registeredLogics.find(logicType);
         if(it == registeredLogics.end()) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't find logic type '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't find logic type '%s' for entity '%s'", logicType, entity->ET_getName());
             continue;
         }
         auto& logicClassInfo = *(it->second);
         auto logicData = logicNode.object("data");
         if(!logicData) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't find logic data for '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't find logic data for '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
         auto logicInstance = logicClassInfo.createInstance(logicData);
         if(!logicInstance.get()) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
         auto logicId = entity->addLogic(std::move(logicInstance));
         if(logicId == InvalidEntityLogicId) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entityName);
+            LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entity->ET_getName());
             continue;
         }
     }
     return true;
 }
 
-bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, const char* entityName) {
+bool EntityManager::setupEntityTranform(Entity* entity, const JSONNode& node) {
+    auto tmNode = node.object("transform");
+    if(!tmNode) {
+        LogWarning("[EntityManager::setupEntityChildren] Can't find require 'transform' node in entity file '%s'", entity->ET_getName());
+        return false;
+    }
+    if(!tmClassInfo->serializeInstance(entity->getTransform(), tmNode)) {
+        LogWarning("[EntityManager::setupEntityChildren] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
+        return false;
+    }
+    return true;
+}
+
+bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
     auto childrenNode = node.object("children");
     if(!childrenNode) {
-        LogWarning("[EntityManager::setupEntityChildren] Can't find require children node in enitity file '%s'", entityName);
+        LogWarning("[EntityManager::setupEntityChildren] Can't find require 'children' node in entity file '%s'", entity->ET_getName());
         return false;
     }
     for(const auto& childNode : childrenNode) {
@@ -326,10 +348,13 @@ Entity* EntityManager::createEntityImpl(Entity* rootEntity, const JSONNode& enti
         return nullptr;
     }
     EntityPtrT entity(new Entity(entityName, GetETSystem()->createNewEntityId()));
-    if(!setupEntityLogics(entity.get(), entityNode, entityName)) {
+    if(!setupEntityTranform(entity.get(), entityNode)) {
         return nullptr;
     }
-    if(!setupEntityChildren(entity.get(), entityNode, entityName)) {
+    if(!setupEntityLogics(entity.get(), entityNode)) {
+        return nullptr;
+    }
+    if(!setupEntityChildren(entity.get(), entityNode)) {
         return nullptr;
     }
     auto resEntPtr = entity.get();

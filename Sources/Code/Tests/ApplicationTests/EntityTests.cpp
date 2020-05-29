@@ -4,6 +4,7 @@
 #include "Entity/EntityLogicRegister.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
+#include "Core/StringFormat.hpp"
 
 #include <set>
 
@@ -197,11 +198,31 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     ET_SendEventReturn(res, &ETEntityManager::ET_registerLogics, logicRegister);
     ASSERT_TRUE(res);
 
-    JSONNode node = JSONNode::ParseString("{  \"children\" : [], \"logics\" : [ { \"type\": \"TestLogic\", \"data\" : {} } ] }");
+    const char* transformDataStr = "{ \"pos\": {\"x\": 0.1, \"y\": 0.2, \"z\": 0.3}, \"scale\": {\"x\": 0.4, \"y\" :0.5, \"z\": 0.6}, \"rot\": {\"x\": 0, \"y\": 0, \"z\": 0, \"w\": 1} }";
+    const char* childDataStr = "";
+    const char* logicsDataStr = "{ \"type\": \"TestLogic\", \"data\" : {} }";
+    std::string resStr = StringFormat("{ \"transform\": %s,  \"children\" : [ %s ], \"logics\" : [ %s ] }", transformDataStr, childDataStr, logicsDataStr);
+    JSONNode node = JSONNode::ParseString(resStr.c_str());
 
     EntityId entId;
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntityFromJSON, node, "TestEnity");
     ASSERT_TRUE(entId.isValid());
+
+    Transform tm;
+    ET_SendEventReturn(tm, entId, &ETEntity::ET_getTransform);
+
+    ASSERT_FLOAT_EQ(tm.pt.x, 0.1f);
+    ASSERT_FLOAT_EQ(tm.pt.y, 0.2f);
+    ASSERT_FLOAT_EQ(tm.pt.z, 0.3f);
+
+    ASSERT_FLOAT_EQ(tm.scale.x, 0.4f);
+    ASSERT_FLOAT_EQ(tm.scale.y, 0.5f);
+    ASSERT_FLOAT_EQ(tm.scale.z, 0.6f);
+
+    ASSERT_FLOAT_EQ(tm.quat.x, 0.f);
+    ASSERT_FLOAT_EQ(tm.quat.y, 0.f);
+    ASSERT_FLOAT_EQ(tm.quat.z, 0.f);
+    ASSERT_FLOAT_EQ(tm.quat.w, 1.f);
 }
 
 TEST_F(EntityTests, CheckAddRemoveLogic) {

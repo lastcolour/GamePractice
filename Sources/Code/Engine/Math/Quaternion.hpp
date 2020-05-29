@@ -9,13 +9,17 @@ class Quaternion {
 public:
 
     Quaternion();
+    Quaternion(float valX, float valY, float valZ, float valW);
     Quaternion(const Quaternion& quat);
     Quaternion& operator=(const Quaternion& quat);
     ~Quaternion();
 
-private:
+public:
 
-    Vec4 data;
+    float x;
+    float y;
+    float z;
+    float w;
 };
 
 } // namespace Math

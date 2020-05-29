@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QFrame, QScrollAr
 from .LogicView import LogicView
 from utils.ViewUtils import ClearLayout
 from utils.EventManager import GetEventManager
+from .values.EditTransformValue import EditTransformValue
 
 class EntityLogicsView(QWidget):
     def __init__(self):
@@ -10,6 +11,9 @@ class EntityLogicsView(QWidget):
         self._editEntity = None
 
         self._rootLayout = QVBoxLayout()
+
+        self._transformView = EditTransformValue(self._editEntity)
+        self._rootLayout.addWidget(self._transformView)
 
         self._addLogicBt = QPushButton("Add Logic")
         self._addLogicBt.setEnabled(False)

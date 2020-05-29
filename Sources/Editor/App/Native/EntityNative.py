@@ -6,6 +6,7 @@ class EntityNative(NativeObject):
         self._isModified = False
         self._name = None
         self._entityId = None
+        self._transformLogic = None
         self._children = []
         self._logics = []
         self._parent = None
@@ -42,7 +43,7 @@ class EntityNative(NativeObject):
     def loadToNative(self):
         self._entityId = self._getAPI().getLibrary().loadEntity(self._name)
         if self._entityId == 0:
-            print("[EntityNative:loadToNative] Can't load entity '{0}' to editor", self._name)
+            print("[EntityNative:loadToNative] Can't load entity '{0}' to editor".format(self._name))
             return False
         self._syncWithNative()
         return True
@@ -144,11 +145,10 @@ class EntityNative(NativeObject):
         return self._getAPI().getEntityLoader().getEntityFullPath(self._name)
 
     def dumpToDict(self):
-        res = {}
-        res["children"] = []
+        res = {"transform":{}, "children":[], "logics":[]}
+        self._transformLogic.writeToDict(res["transform"])
         for child in self._children:
             res["children"].append(child.getName())
-        res["logics"] = []
         for logic in self._logics:
             logicRes = {}
             logic.writeToDict(logicRes)

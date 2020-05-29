@@ -114,6 +114,10 @@ bool Entity::writeLogicValueData(EntityLogicId logicId, EntityLogicValueId value
     return logicInstance->writeValue(valueId, stream);
 }
 
+Transform* Entity::getTransform() {
+    return &tm;
+}
+
 const char* Entity::ET_getName() const {
     return name.c_str();
 }

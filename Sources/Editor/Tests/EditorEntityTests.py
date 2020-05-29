@@ -157,5 +157,8 @@ class EditorEntityTest(unittest.TestCase):
 
         self.assertEqual(res, fileData)
 
+    def testEntityTransform(self):
+        pass
+
 if __name__ == "__main__":
     unittest.main()

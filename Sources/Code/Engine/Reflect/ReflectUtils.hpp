@@ -4,6 +4,7 @@
 #include "Core/Core.hpp"
 #include "Core/TypeId.hpp"
 #include "Math/Vector.hpp"
+#include "Math/Quaternion.hpp"
 #include "Render/Color.hpp"
 
 #include <vector>
@@ -22,6 +23,7 @@ enum class ClassValueType {
     Vec2,
     Vec3,
     Vec4,
+    Quat,
     Color,
     Object,
     Resource,
@@ -70,6 +72,8 @@ constexpr ClassValueType GetClassValueType() {
         return ClassValueType::Vec3;
     } else if constexpr (std::is_same<ValueT, Vec4>::value) {
         return ClassValueType::Vec4;
+    } else if constexpr (std::is_same<ValueT, Quat>::value) {
+        return ClassValueType::Quat;
     } else if constexpr (std::is_same<ValueT, ColorB>::value) {
         return ClassValueType::Color;
     } else if constexpr (std::is_enum<ValueT>::value) {

@@ -23,6 +23,7 @@ public:
     bool readLogicValueData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool writeLogicData(EntityLogicId logicId, MemoryStream& stream);
     bool writeLogicValueData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
+    Transform* getTransform();
 
     EntityId getEntityId() const { return entityId; }
 
