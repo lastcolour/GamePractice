@@ -42,6 +42,8 @@ public:
     bool readValue(void* instance, void* valuePtr, const JSONNode& node);
     bool readValue(void* instance, void* valuePtr, MemoryStream& stream) const;
     bool writeValue(void* instance, void* valuePtr, MemoryStream& stream);
+    bool addArrayElement(void* valuePtr);
+    void setDefaultValue(void* valuePtr);
 
 public:
 

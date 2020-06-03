@@ -21,6 +21,7 @@ public:
     bool removeLogic(EntityLogicId logicId);
     bool readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
+    bool addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId);
     Transform* getTransform();
 
     EntityId getEntityId() const { return entityId; }

@@ -25,6 +25,7 @@ public:
 
     bool readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
     bool writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
+    bool addNewValueArrayElement(void* instance, EntityLogicValueId valueId);
 
     template<typename ClassT>
     void init() {
@@ -89,6 +90,7 @@ private:
     const ClassValue* findValueByName(const char* name) const;
     const ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr) const;
     ClassValue* findValueById(int valueId);
+    ClassValue* findValueByPrimitiveValueId(int valueId);
     void registerBaseClass(TypeId baseClassTypeId);
     void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
         ClassValue::SetResourceFuncT valueSetFunc);

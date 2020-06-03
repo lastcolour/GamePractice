@@ -23,6 +23,8 @@ public:
     bool readValues(void* valuePtr, const JSONNode& node);
     bool readValues(void* valuePtr, MemoryStream& stream);
     bool writeValues(void* valuePtr, MemoryStream& stream);
+    void setDefaultValue(void* valuePtr);
+    bool addElement(void* valuePtr);
 
 private:
 

@@ -70,3 +70,15 @@ bool ArrayInfo::writeValues(void* valuePtr, MemoryStream& stream) {
     }
     return true;
 }
+
+bool ArrayInfo::addElement(void* valuePtr) {
+    auto elem = createFunc(valuePtr);
+    if(!elem) {
+        elemValue.setDefaultValue(elem);
+    }
+    return elem != nullptr;
+}
+
+void ArrayInfo::setDefaultValue(void* valuePtr) {
+    resetFunc(valuePtr);
+}

@@ -14,6 +14,41 @@ namespace {
 const char* GAME_ENTITIES = "Entities";
 const EntityLogicId TransformLogicId = 0;
 
+bool CheckEntity(const char* errStr, EntityId entityId, Entity* entity) {
+    if(entityId == InvalidEntityId) {
+        LogWarning(errStr, "Invalid entity id");
+        return false;
+    }
+    if(!entity) {
+        LogWarning(errStr, StringFormat("Can't find entity with id: '%d'", entityId.getRawId()));
+        return false;
+    }
+    return true;
+}
+
+bool CheckEntityLogic(const char* errStr, EntityId entityId, Entity* entity, EntityLogicId logicId) {
+    if(!CheckEntity(errStr, entityId, entity)) {
+        return false;
+    }
+    if(logicId == InvalidEntityLogicId) {
+        LogWarning(errStr, StringFormat("Invalid logic id for entity: '%s'", entity->ET_getName()));
+        return false;
+    }
+    return true;
+}
+
+bool CheckEntityLogicValue(const char* errStr, EntityId entityId, Entity* entity, EntityLogicId logicId, EntityLogicValueId valueId) {
+    if(!CheckEntityLogic(errStr, entityId, entity, logicId)) {
+        return false;
+    }
+    if(valueId == InvalidEntityLogicValueId) {
+        LogWarning(errStr, StringFormat("Invalid value id: '%d' of logic with id '%d' for entity: '%s'",
+            valueId, logicId, entity->ET_getName()));
+        return false;
+    }
+    return true;
+}
+
 } // namespace
 
 EntityManager::EntityManager() :
@@ -101,35 +136,28 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
 }
 
 EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* logicName) {
-    if(!entityId.isValid()) {
-        LogError("[EntityManager::ET_addLogicToEntity] Invalid entity id to add logic");
-        return InvalidEntityLogicId;
-    }
-    auto entIt = entities.find(entityId);
-    if(entIt == entities.end()) {
-        LogWarning("[EntityManager::ET_addLogicToEntity] Can't find entity to add a logic '%s'", logicName);
+    const char* errStr = "[EntityManager::ET_addLogicToEntity] Can't add logic (Error: %s)";
+    auto entity = findEntity(entityId);
+    if(!CheckEntity(errStr, entityId, entity)) {
         return InvalidEntityLogicId;
     }
     if(!logicName || !logicName[0]) {
-        LogWarning("[EntityManager::ET_addLogicToEntity] Can't add logic with empty name");
+        LogWarning(errStr, StringFormat("Can't add logic with empty name for entity: '%s'", entity->ET_getName()));
         return InvalidEntityLogicId;
     }
-    Entity* entity = entIt->second.get();
     auto logicIt = registeredLogics.find(logicName);
     if(logicIt == registeredLogics.end()) {
-        LogWarning("[EntityManager::ET_addLogicToEntity] Can't find logic '%s' to add to an entity '%s'",
-            logicName, entIt->second->ET_getName());
+        LogWarning(errStr, StringFormat("Can't find logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
     }
     auto logicInstance = logicIt->second->createDefaultInstance();
     if(!logicInstance.get()) {
-        LogWarning("[EntityManager::ET_addLogicToEntity] Can't create instance of logic '%s' to add to an entity '%s'",
-            logicName, entIt->second->ET_getName());
+        LogWarning(errStr, StringFormat("Can't create instance of logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
     }
     auto logicId = entity->addLogic(std::move(logicInstance));
     if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_addLogicToEntity] Can't init logic '%s' for entity '%s'", logicName, entity->ET_getName());
+        LogWarning(errStr, StringFormat("Can't init instance of logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
     }
     LogDebug("[EntityManager::ET_addLogicToEntity] Add logic '%s' to entity '%s'", logicName, entity->ET_getName());
@@ -137,24 +165,13 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
 }
 
 void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
-    if(!entityId.isValid()) {
-        LogError("[EntityManager::ET_removeLogicFromEntity] Invalid entity id to remove logic");
-        return;
-    }
-    auto entId = entities.find(entityId);
-    if(entId == entities.end()) {
-        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find entity to remove logic with id '%d'",
-            logicId);
-        return;
-    }
-    Entity* entity = entId->second.get();
-    if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't remove logic with invalid id from entity '%s'", entity->ET_getName());
+    const char* errStr = "[EntityManager::ET_removeLogicFromEntity] Can't remove logic (Error: %s)";
+    auto entity = findEntity(entityId);
+    if(!CheckEntityLogic(errStr, entityId, entity, logicId)) {
         return;
     }
     if(!entity->removeLogic(logicId)) {
-        LogWarning("[EntityManager::ET_removeLogicFromEntity] Can't find logic with id '%d' to remove for entity '%s'",
-            logicId, entity->ET_getName());
+        LogWarning(errStr, StringFormat("Can't find logic with id: '%d' for entity: '%s'", logicId, entity->ET_getName()));
         return;
     }
     LogDebug("[EntityManager::ET_removeLogicFromEntity] Remove logic with id '%d' from entity '%s'",
@@ -163,76 +180,52 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
 
 bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
-    if(entityId == InvalidEntityId) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read entity logic value data from entity with invalid id");
-        return false;
-    }
-    auto it = entities.find(entityId);
-    if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't find entity to read logic value data");
-        return false;
-    }
-    auto entity = it->second.get();
-    if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic value data with invalid logic id from entity: '%s'",
-            entity->ET_getName());
-        return false;
-    }
-    if(valueId == InvalidEntityLogicValueId) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic value data with invalid value id from entity: '%s'",
-            entity->ET_getName());
+    const char* errStr = "[EntityManager::ET_readEntityLogicData] Can't read logic data (Error: %s)";
+    auto entity = findEntity(entityId);
+    if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
     if(logicId == TransformLogicId) {
         if(!tmClassInfo->readValue(entity->getTransform(), valueId, stream)) {
-            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read transform value data from entity: '%s'",
-                entity->ET_getName());
+            LogWarning(errStr, StringFormat("Can't read transform data from entity: '%s'", entity->ET_getName()));
             return false;
         }
-    } else {
-        if(!entity->readLogicData(logicId, valueId, stream)) {
-            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic value data from entity: '%s'",
-                entity->ET_getName());
-            return false;
-        }
+        return true;
     }
-    return true;
+    return entity->readLogicData(logicId, valueId, stream);
 }
 
 bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
-    if(entityId == InvalidEntityId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write entity logic value data from entity with invalid id");
-        return false;
-    }
-    auto it = entities.find(entityId);
-    if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write entity to read logic value data");
-        return false;
-    }
-    auto entity = it->second.get();
-    if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic value data with invalid logic id from entity: '%s'",
-            entity->ET_getName());
-        return false;
-    }
-    if(valueId == InvalidEntityLogicValueId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic value data with invalid value id from entity: '%s'",
-            entity->ET_getName());
+    const char* errStr = "[EntityManager::ET_writeEntityLogicData] Can't write logic data (Error: %s)";
+    auto entity = findEntity(entityId);
+    if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
     if(logicId == TransformLogicId) {
         if(!tmClassInfo->writeValue(entity->getTransform(), valueId, stream)) {
-            LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write transform value data to entity: '%s'",
-                entity->ET_getName());
+            LogWarning(errStr, StringFormat("Can't write transform data to entity: '%s'", entity->ET_getName()));
             return false;
         }
-    } else {
-        if(!entity->writeLogicData(logicId, valueId, stream)) {
-            LogWarning("[EntityManager::ET_writeEntityLogicData] Can;'t write logic value data to entity: '%s'",
-                entity->ET_getName());
-            return false;
-        }
+        return true;
+    }
+    return entity->writeLogicData(logicId, valueId, stream);
+}
+
+bool EntityManager::ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
+    EntityLogicValueId valueId) {
+    const char* errStr = "[EntityManager::ET_addEntityLogicArrayElement] Can't add entity logic array element (Error: %s)";
+    auto entity = findEntity(entityId);
+    if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
+        return false;
+    }
+    if(logicId == TransformLogicId) {
+        LogWarning("[EntityManager::ET_addEntityLogicArrayElement] Can't add array element to transform logic to entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(!entity->addLogicValueArrayElemet(logicId, valueId)) {
+        return false;
     }
     return true;
 }
@@ -356,4 +349,15 @@ void EntityManager::ET_getRegisteredLogics(std::vector<const char*>& logicNames)
     for(const auto& logicClassInfo : registeredLogics) {
         logicNames.push_back(logicClassInfo.second->getName());
     }
+}
+
+Entity* EntityManager::findEntity(EntityId entityId) {
+    if(entityId == InvalidEntityId) {
+        return nullptr;
+    }
+    auto it = entities.find(entityId);
+    if(it == entities.end()) {
+        return nullptr;
+    }
+    return it->second.get();
 }

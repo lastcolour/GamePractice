@@ -60,6 +60,10 @@ class LibraryNative:
         self._setEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.c_void_p, ctypes.c_uint32]
         self._setEntityLogicDataFunc.restype = None
 
+        self._addEntityLogicArrayElementFunc = self._editorLib.AddEntityLogicArrayElement
+        self._addEntityLogicArrayElementFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32]
+        self._addEntityLogicArrayElementFunc.restype = None
+
         self._addChildEntityToEntityFunc = self._editorLib.AddChildEntityToEntity
         self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
         self._addChildEntityToEntityFunc.restype = ctypes.c_uint32
@@ -160,3 +164,9 @@ class LibraryNative:
         cParentId = ctypes.c_uint32(parentId)
         cChildId = ctypes.c_uint32(childId)
         self._removeChildEntityFromEntityFunc(cParentId, cChildId)
+
+    def addEntityLogicArrayElement(self, entityId, logicId, valueId):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        cValueId = ctypes.c_int32(valueId)
+        self._addEntityLogicArrayElementFunc(cEntId, cLogicId, cValueId)

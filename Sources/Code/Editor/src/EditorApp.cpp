@@ -36,17 +36,14 @@ void EditorApp::deinitiazlie() {
     deinit();
 }
 
-const char* EditorApp::getReflectModel() {
-    if(!reflectModelBuffer) {
-        JSONNode node;
-        ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
-        if(!node) {
-            return nullptr;
-        }
-        auto buffer = node.flushToBuffer();
-        reflectModelBuffer = std::move(buffer);
+Buffer EditorApp::getReflectModel() {
+    JSONNode node;
+    ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+    if(!node) {
+        return Buffer();
     }
-    return reflectModelBuffer.getCString();
+    auto buffer = node.flushToBuffer();
+    return buffer;
 }
 
 std::vector<const char*> EditorApp::getRegisteredEntityLogics() {
@@ -121,20 +118,12 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
 }
 
 EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {
-    if(!entityId.isValid()) {
-        LogError("[EditorApp::addLogicToEntity] Can't add logic '%s' to invalid entity", logicName);
-        return 0;
-    }
     EntityLogicId logicId = InvalidEntityLogicId;
     ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, entityId, logicName);
     return static_cast<int32_t>(logicId);
 }
 
 void EditorApp::removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
-    if(!entityId.isValid()) {
-        LogError("[EditorApp::removeLogicFromEntity] Can't remove logic from invalid entity");
-        return;
-    }
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, entityId, logicId);
 }
 
@@ -183,31 +172,22 @@ void EditorApp::removeChildEntityFromEntity(EntityId parentId, EntityId childId)
 }
 
 Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId) {
-    if(!entityId.isValid()) {
-        LogError("[EditorApp::getEntityLogicData] Can't get logic data from invalid entity");
-        return Buffer();
-    }
     MemoryStream stream;
     stream.openForWrite();
     bool res = false;
     ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, valueId, stream);
     if(!res) {
-        LogError("[EditorApp::getEntityLogicData] Can't read logic value data from entity");
         return Buffer();
     }
     return stream.flushToBuffer();
 }
 
 void EditorApp::setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer) {
-    if(!entityId.isValid()) {
-        LogError("[EditorApp::setEntityLogicData] Can't set logic value data to invalid entity");
-        return;
-    }
     MemoryStream stream;
     stream.openForRead(buffer);
-    bool res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, entityId, logicId, valueId, stream);
-    if(!res) {
-        LogError("[EditorApp::setEntityLogicData] Can't write logic value data to entity");
-    }
+    ET_SendEvent(&ETEntityManager::ET_writeEntityLogicData, entityId, logicId, valueId, stream);
+}
+
+void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId) {
+    ET_SendEvent(&ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
 }

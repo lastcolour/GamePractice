@@ -62,6 +62,8 @@ class ValueNative(NativeObject):
         stream = MemoryStream()
         self.writeToStream(stream)
         self._getAPI().getLibrary().setEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId, stream)
+        stream = self._getAPI().getLibrary().getEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId)
+        self.readFromStream(stream)
         self._isModified = True
 
 class BoolValue(ValueNative):
@@ -470,6 +472,7 @@ class ArrayValue(ValueNative):
         size = stream.readInt()
         for i in range(size):
             elem = self._elemCls()
+            elem._name = "[{0}]".format(i)
             elem.readFromStream(stream)
             self._vals.append(elem)
 
@@ -478,11 +481,18 @@ class ArrayValue(ValueNative):
         for elem in self._vals:
             elem.writeToStream(stream)
 
-    def addNewVal(self):
-        pass
+    def addNewElement(self):
+        currSize = len(self._vals)
+        self._getAPI().getLibrary().addEntityLogicArrayElement(self._getEntityId(), self._getLogicId(), self._valueId)
+        stream = self._getAPI().getLibrary().getEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId)
+        self.readFromStream(stream)
+        if len(self._vals) != currSize + 1:
+            raise RuntimeError("Native error when adding ne element")
+        return self._vals[-1]
 
-    def removeVal(self, valId):
-        pass
+    def removeElement(self, elementId):
+        del self._vals[elementId]
+        self._onValueChanged()
 
     def getValues(self):
         return self._vals
@@ -651,7 +661,7 @@ def _createValue(valueName, valueType):
     elif valueType == "resource":
         val = ResourceValue()
     elif valueType == "entity":
-        val = StringValue()
+        val = EntityValue()
     else:
         valueModel = _getReflectModel().getTypeModel(valueType)
         if valueModel is None:

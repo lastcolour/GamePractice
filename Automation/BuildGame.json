@@ -65,7 +65,7 @@
                 "cwd":"${gameBinsRoot}/${buildType}/_tests",
                 "createCwd":true,
                 "args":[
-                    "--gtest_filter=*"
+                    "--gtest_filter=*EntityTests*"
                 ]
             }
         },

@@ -8,6 +8,7 @@
 #include <string>
 
 class JSONNode;
+class MemoryStream;
 
 class EnumInfo {
 public:
@@ -18,6 +19,7 @@ public:
     const char* getName() const;
     TypeId getEnumTypeId() const;
     bool readValue(void* valuePtr, const std::string& valueStr) const;
+    int getDefaultValue();
     void makeReflectModel(JSONNode& node);
 
     template<typename EnumT>

@@ -65,7 +65,6 @@ class EditorAppTests(unittest.TestCase):
         logicId = 1
         valueId = 4
         stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId, 0)
-        print(stream._data)
         self.assertIsNotNone(stream)
         self.assertTrue(stream.getSize() > 0)
 

@@ -54,6 +54,7 @@ public:
     TypeId getInstanceTypeId() const;
     bool readValue(EntityLogicValueId valueId, MemoryStream& stream);
     bool writeValue(EntityLogicValueId valueId, MemoryStream& stream);
+    bool addValueArrayElement(EntityLogicValueId valueId);
 
 private:
 

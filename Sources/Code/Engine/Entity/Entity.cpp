@@ -4,6 +4,21 @@
 
 #include <cassert>
 
+namespace {
+
+bool CheckLogicValue(const char* errStr, Entity* entity, EntityLogicId logicId, ClassInstance* logicInstance, EntityLogicValueId valueId) {
+    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
+    assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
+    if(!logicInstance) {
+        LogWarning(errStr, StringFormat("Can't find logic with id '%d' in entity: '%s'",
+             logicId, entity->ET_getName()));
+        return false;
+    }
+    return true;
+}
+
+} // namespace
+
 Entity::Entity(const char* entityName, EntityId entId) :
     name(entityName),
     entityId(entId) {
@@ -73,25 +88,40 @@ ClassInstance* Entity::findLogic(EntityLogicId logicId) {
 }
 
 bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
-    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
-    assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
+    const char* errStr = "[Entity::readLogicData] Can't read logic data (Error: '%s')";
     auto logicInstance = findLogic(logicId);
-    if(!logicInstance) {
-        LogWarning("[Entity::readLogicValueData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+    if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    return logicInstance->readValue(valueId, stream);
+    if(!logicInstance->readValue(valueId, stream)) {
+        LogWarning(errStr, StringFormat("Error during read from logic with id '%d' in entity: '%s'",
+             logicId, ET_getName()));
+        return false;
+    }
+    return true;
 }
 
 bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
-    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
-    assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
+    const char* errStr = "[Entity::writeLogicData] Can't write logic data (Error: '%s')";
     auto logicInstance = findLogic(logicId);
-    if(!logicInstance) {
-        LogWarning("[Entity::writeLogicValueData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
+    if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    return logicInstance->writeValue(valueId, stream);
+    if(!logicInstance->writeValue(valueId, stream)) {
+        LogWarning(errStr, StringFormat("Error during write to logic with id '%d' in entity: '%s'",
+             logicId, ET_getName()));
+        return false;
+    }
+    return true;
+}
+
+bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId) {
+    const char* errStr = "[Entity::addLogicValueArrayElemet] Can't add logic array element (Error: '%s')";
+    auto logicInstance = findLogic(logicId);
+    if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
+        return false;
+    }
+    return logicInstance->addValueArrayElement(valueId);
 }
 
 Transform* Entity::getTransform() {

@@ -27,7 +27,8 @@ const char* GetReflectModel() {
     if(!EDITOR_APP) {
         return nullptr;
     }
-    return EDITOR_APP->getReflectModel();
+    INTERNAL_BUFFER = EDITOR_APP->getReflectModel();
+    return INTERNAL_BUFFER.getCString();
 }
 
 uint32_t GetRegisteredEntityLogics(void** out) {
@@ -150,12 +151,10 @@ void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valu
     if(!EDITOR_APP) {
         return;
     }
-}
-
-void RemoveEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId, int32_t elementId) {
-    if(!EDITOR_APP) {
-        return;
-    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    EDITOR_APP->addEntityLogicArrayElement(entId, static_cast<EntityLogicId>(logicId),
+        static_cast<EntityLogicValueId>(valueId));
 }
 
 uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out) {

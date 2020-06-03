@@ -351,3 +351,36 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
         EXPECT_EQ(col.a, 255);
     }
 }
+
+TEST_F(EntityTests, TestAddElementToUILayout) {
+    EntityId entityId;
+    ET_SendEventReturn(entityId, &ETEntityManager::ET_createEntity, "Game/Simple.json");
+    ASSERT_TRUE(entityId.isValid());
+
+    EntityLogicId logicId = InvalidEntityLogicId;
+    ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, entityId, "UILayout");
+    ASSERT_NE(logicId, InvalidEntityLogicId);
+
+    EntityLogicValueId valueId = 4;
+    bool res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
+    ASSERT_TRUE(res);
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, valueId, stream);
+    ASSERT_TRUE(res);
+
+    stream.reopenForRead();
+    {
+        int size = 0;
+        stream.read(size);
+        ASSERT_EQ(size, 1);
+    }
+    {
+        std::string val;
+        stream.read(val);
+        ASSERT_STREQ(val.c_str(), "");
+    }
+}

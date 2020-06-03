@@ -38,11 +38,14 @@ public:
         EntityLogicValueId valueId, MemoryStream& stream) override;
     bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) override;
+    bool ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId) override;
 
 private:
 
     Entity* createEntityImpl(Entity* rootEntity, const JSONNode& entityNode, const char* entityName);
     Entity* createEntity(Entity* rootEntity, const char* entityName);
+    Entity* findEntity(EntityId entityId);
     JSONNode loadEntityRootNode(const char* entityName) const;
     bool setupEntityTranform(Entity* entity, const JSONNode& node);
     bool setupEntityLogics(Entity* entity, const JSONNode& node) const;

@@ -1,6 +1,7 @@
 #include "Reflect/EnumInfo.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/MemoryStream.hpp"
 
 #include <cassert>
 
@@ -52,6 +53,13 @@ bool EnumInfo::readValue(void* valuePtr, const std::string& valueStr) const {
     }
     *(static_cast<int*>(valuePtr)) = it->second;
     return true;
+}
+
+int EnumInfo::getDefaultValue() {
+    if(nameToVal.empty()) {
+        return 0;
+    }
+    return nameToVal.begin()->second;
 }
 
 void EnumInfo::makeReflectModel(JSONNode& node) {

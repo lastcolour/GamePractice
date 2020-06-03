@@ -42,6 +42,8 @@ struct ETEntityManager {
         EntityLogicValueId valueId, MemoryStream& stream) = 0;
     virtual bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) = 0;
+    virtual bool ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId) = 0;
 };
 
 #endif /* __ENTITY_INTERFACES_HPP__ */

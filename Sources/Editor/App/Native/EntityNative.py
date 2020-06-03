@@ -58,7 +58,7 @@ class EntityNative(NativeObject):
                 logicName, self._name))
         logicId = self._getAPI().getLibrary().addLogicToEntity(self._entityId, logicName)
         if logicId == -1:
-            print("[EntityNative:addLogic] Can't create native part of logic '{0}' for entity {1}".format(
+            print("[EntityNative:addLogic] Can't create native part of logic '{0}' for entity '{1}'".format(
                 logicName, self._name))
             return None
         logic = CreateLogic(logicName)

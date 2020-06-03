@@ -95,3 +95,15 @@ bool ClassInstance::writeValue(EntityLogicValueId valueId, MemoryStream& stream)
     }
     return classInfo->writeValue(instance, valueId, stream);
 }
+
+bool ClassInstance::addValueArrayElement(EntityLogicValueId valueId) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::addValueArrayElement] Can't add array element value to instance without class info");
+        return false;
+    }
+    return classInfo->addNewValueArrayElement(instance, valueId);
+}

@@ -37,8 +37,6 @@ LIB_EXPORT void SetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t v
 
 LIB_EXPORT void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId);
 
-LIB_EXPORT void RemoveEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId, int32_t elementId);
-
 LIB_EXPORT uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName);
 
 LIB_EXPORT void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId);

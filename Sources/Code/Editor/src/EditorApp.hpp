@@ -14,7 +14,7 @@ public:
 
     bool initialize();
     void deinitiazlie();
-    const char* getReflectModel();
+    Buffer getReflectModel();
     std::vector<const char*> getRegisteredEntityLogics();
     EntityId loadEntity(const char* entityName);
     void unloadEntity(EntityId entityId);
@@ -25,6 +25,7 @@ public:
     void drawFrame(void* out, int32_t width, int32_t height);
     EntityId addChilEntityToEntity(EntityId entityId, const char* childName);
     void removeChildEntityFromEntity(EntityId parentId, EntityId childId);
+    void addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
     Buffer getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
     void setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
 
@@ -34,7 +35,6 @@ protected:
 
 private:
 
-    Buffer reflectModelBuffer;
     EntityId centralEntityId;
     RenderTextureFramebuffer frameBuffer;
 };

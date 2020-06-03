@@ -274,7 +274,14 @@ const ClassValue* ClassInfo::findValueByName(const char* name) const {
     return nullptr;
 }
 
+
 ClassValue* ClassInfo::findValueById(int valueId) {
+    int primitiveValueId = valueId - 1;
+    return findValueByPrimitiveValueId(primitiveValueId);
+}
+
+ClassValue* ClassInfo::findValueByPrimitiveValueId(int valueId) {
+    assert(valueId >= 0 && "Invalid value id");
     if(valueId >= primitiveValueCount) {
         return nullptr;
     }
@@ -298,9 +305,11 @@ ClassValue* ClassInfo::findValueById(int valueId) {
                 ClassInfo* valueClassInfo = nullptr;
                 ET_SendEventReturn(valueClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, value.typeId);
                 if(!valueClassInfo) {
+                    LogError("[ClassInfo::findValueByPrimitiveValueId] Can't find class info for a value '%s' in class '%s'",
+                        value.name, className);
                     return nullptr;
                 }
-                return valueClassInfo->findValueById(valueId);
+                return valueClassInfo->findValueByPrimitiveValueId(valueId);
             }
             return &value;
         }
@@ -350,9 +359,7 @@ bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStre
             }
         }
     } else {
-        int primitiveValueId = static_cast<int>(valueId);
-        primitiveValueId--;
-        auto value = findValueById(primitiveValueId);
+        auto value = findValueById(valueId);
         if(!value) {
             LogError("ClassInfo::readValue] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
@@ -394,9 +401,7 @@ bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStr
             }
         }
     } else {
-        int primitiveValueId = static_cast<int>(valueId);
-        primitiveValueId--;
-        auto value = findValueById(primitiveValueId);
+        auto value = findValueById(valueId);
         if(!value) {
             LogError("ClassInfo::writeValue] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
@@ -409,5 +414,35 @@ bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStr
         }
     }
 
+    return true;
+}
+
+bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId valueId) {
+    assert(instance && "Invalid instance");
+    if(valueId == InvalidEntityLogicValueId) {
+        LogError("ClassInfo::addNewValueArrayElement] Can't add array element to value with invalid id");
+        return false;
+    }
+    if(valueId == AllEntityLogicValueId) {
+        LogError("ClassInfo::addNewValueArrayElement] Can't add array element to value with 'AllValuesId'");
+        return false;
+    }
+    auto value = findValueById(valueId);
+    if(!value) {
+        LogError("[ClassInfo::addNewValueArrayElement] Can't find value with id '%d' in class: '%s'",
+            valueId, className);
+        return false;
+    }
+    if(value->type != ClassValueType::Array) {
+        LogError("[ClassInfo::addNewValueArrayElement] Can't add array element to non-array value '%s' of type: '%s' in class: '%s'",
+            value->name, value->getTypeName(), className);
+        return false;
+    }
+    auto ptr = getValueFunc(instance, value->ptr);
+    if(!value->addArrayElement(ptr)) {
+        LogError("[ClassInfo::addNewValueArrayElement] Can't create new array element for value '%s' in class: '%s'",
+            value->name, className);
+        return false;
+    }
     return true;
 }

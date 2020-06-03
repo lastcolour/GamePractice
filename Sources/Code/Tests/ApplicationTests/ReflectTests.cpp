@@ -145,6 +145,20 @@ public:
     std::vector<ObjectWithEnum> array;
 };
 
+class ObjectWithStringArray {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        if(auto classInfo = ctx.classInfo<ObjectWithStringArray>("ObjectWithStringArray")) {
+            classInfo->addField("array", &ObjectWithStringArray::array);
+        }
+    }
+
+public:
+
+    std::vector<std::string> array;
+};
+
 class ObjectWithArrayOfVec3 {
 public:
 
@@ -157,7 +171,6 @@ public:
 public:
 
     std::vector<Vec3> array;
-
 };
 
 } // namespace
@@ -350,6 +363,54 @@ TEST_F(ReflectTests, TestArray) {
     ASSERT_EQ(object->array.size(), 2);
     ASSERT_EQ(object->array[0].number, ObjectWithEnum::Numbers::One);
     ASSERT_EQ(object->array[1].number, ObjectWithEnum::Numbers::Two);
+}
+
+TEST_F(ReflectTests, TestObjectWithStringArray) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithStringArray>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto jsonNode = JSONNode::ParseString("{\"array\": [\"one\", \"two\"] }");
+    ASSERT_TRUE(jsonNode);
+
+    auto classInstance = classInfo->createInstance(jsonNode);
+    auto object = static_cast<ObjectWithStringArray*>(classInstance.get());
+    ASSERT_TRUE(object);
+
+    ASSERT_EQ(object->array.size(), 2);
+    ASSERT_STREQ(object->array[0].c_str(), "one");
+    ASSERT_STREQ(object->array[1].c_str(), "two");
+
+    EntityLogicValueId valueId = 1;
+    ASSERT_TRUE(classInstance.addValueArrayElement(valueId));
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    ASSERT_TRUE(classInstance.readValue(AllEntityLogicValueId, stream));
+
+    stream.reopenForRead();
+
+    int size = 0;
+    stream.read(size);
+    ASSERT_EQ(size, 3);
+    {
+        std::string first;
+        stream.read(first);
+        ASSERT_STREQ(first.c_str(), "one");
+    }
+    {
+        std::string second;
+        stream.read(second);
+        ASSERT_STREQ(second.c_str(), "two");
+    }
+    {
+        std::string third;
+        stream.read(third);
+        ASSERT_STREQ(third.c_str(), "");
+    }
 }
 
 TEST_F(ReflectTests, TestArrayOfVec3) {
@@ -624,6 +685,36 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
         stream.read(secondVal);
         ASSERT_EQ(secondVal, static_cast<int>(ObjectWithEnum::Numbers::Five));
     }
+}
+
+TEST_F(ReflectTests, CheckAddArrayElemet) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWitArray>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createDefaultInstance();
+    auto objectPtr = static_cast<ObjectWitArray*>(instance.get());
+    ASSERT_TRUE(objectPtr);
+
+    ASSERT_TRUE(objectPtr->array.empty());
+
+    EntityLogicValueId valueId = 1;
+    ASSERT_TRUE(instance.addValueArrayElement(valueId));
+    ASSERT_FALSE(objectPtr->array.empty());
+
+    MemoryStream stream;
+    stream.openForWrite();
+
+    ASSERT_TRUE(instance.readValue(1, stream));
+
+    stream.reopenForRead();
+
+    int size = 0;
+    stream.read(size);
+
+    ASSERT_EQ(size, 1);
 }
 
 TEST_F(ReflectTests, TestEntityReference) {

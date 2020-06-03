@@ -166,8 +166,13 @@ class EditorEntityTest(unittest.TestCase):
         self.assertEqual(arrayVal.getType(), ValueType.Array)
         elemCount = arrayVal.getValues()
         self.assertEqual(len(elemCount), 0)
-        newElemVal = arrayVal.addNewVal()
+        newElemVal = arrayVal.addNewElement()
         self.assertIsNotNone(newElemVal)
+        self.assertEqual(newElemVal.getType(), ValueType.Entity)
+        self.assertEqual(newElemVal.getName(), "[0]")
+        arrayVal.removeElement(0)
+        elemCount = arrayVal.getValues()
+        self.assertEqual(len(elemCount), 0)
 
     def testEntityTransform(self):
         pass

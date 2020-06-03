@@ -564,6 +564,7 @@ bool ClassValue::readValue(void* instance, void* valuePtr, MemoryStream& stream)
         return arrayInfo->readValues(valuePtr, stream);
     }
     case ClassValueType::Entity: {
+        stream.write("");
         break;
     }
     case ClassValueType::Invalid:
@@ -666,7 +667,7 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
         ClassInfo* classInfo = nullptr;
         ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
         if(!classInfo) {
-            LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
+            LogError("[ClassValue::writeValueFrom] Can't find class info for a field '%s'", name);
             return false;
         }
         return classInfo->writeValue(valuePtr, AllEntityLogicValueId, stream);
@@ -693,6 +694,8 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
         return arrayInfo->writeValues(valuePtr, stream);
     }
     case ClassValueType::Entity: {
+        std::string val;
+        stream.read(val);
         break;
     }
     case ClassValueType::Invalid:
@@ -701,4 +704,85 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
         return false;
     }
     return true;
+}
+
+bool ClassValue::addArrayElement(void* valuePtr) {
+    assert(type == ClassValueType::Array && "Invalid value type");
+    ArrayInfo* arrayInfo = nullptr;
+    ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+    if(!arrayInfo) {
+        LogError("[ClassValue::addArrayElement] Can't find array info for a field: '%s'", name);
+        return false;
+    }
+    return arrayInfo->addElement(valuePtr);
+}
+
+void ClassValue::setDefaultValue(void* valuePtr) {
+    switch(type) {
+    case ClassValueType::Bool: {
+        getRef<bool>(valuePtr) = false;
+        break;
+    }
+    case ClassValueType::Int: {
+        getRef<int>(valuePtr) = 0;
+        break;
+    }
+    case ClassValueType::Float: {
+        getRef<float>(valuePtr) = 0.f;
+        break;
+    }
+    case ClassValueType::String: {
+        break;
+    }
+    case ClassValueType::Vec2i: {
+        getRef<Vec2i>(valuePtr) = Vec2i(0);
+        break;
+    }
+    case ClassValueType::Vec2: {
+        getRef<Vec2>(valuePtr) = Vec2(0.f);
+        break;
+    }
+    case ClassValueType::Vec3: {
+        getRef<Vec3>(valuePtr) = Vec3(0.f);
+        break;
+    }
+    case ClassValueType::Vec4: {
+        getRef<Vec4>(valuePtr) = Vec4(0.f);
+        break;
+    }
+    case ClassValueType::Quat: {
+        getRef<Quat>(valuePtr) = Quat(0.f, 0.f, 0.f, 1.f);
+        break;
+    }
+    case ClassValueType::Color: {
+        getRef<ColorB>(valuePtr) = ColorB(255, 255, 255, 255);
+        break;
+    }
+    case ClassValueType::Object: {
+        break;
+    }
+    case ClassValueType::Resource: {
+        break;
+    }
+    case ClassValueType::Enum: {
+        EnumInfo* enumInfo = nullptr;
+        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
+        if(!enumInfo) {
+            LogError("[ClassValue::setDefaultValue] Can't find enum info for a field '%s'", name);
+            return;
+        }
+        getRef<int>(valuePtr) = enumInfo->getDefaultValue();
+        break;
+    }
+    case ClassValueType::Array: {
+        assert(false && "Array of arrays not supported");
+        break;
+    }
+    case ClassValueType::Entity: {
+        break;
+    }
+    case ClassValueType::Invalid:
+    default:
+        assert(false && "Invalid value type");
+    }
 }
