@@ -41,6 +41,7 @@ protected:
 private:
 
     std::string text;
+    UILabelStyle labelStyle;
     EntityId renderId;
 };
 

@@ -25,8 +25,8 @@ public:
     void deinit() override;
 
     // ETUIBox
-    const UIStyle& ET_getStyle() const override;
-    void ET_setStyle(const UIStyle& newStyle) override;
+    const UIBoxStyle& ET_getBoxStyle() const override;
+    void ET_setBoxStyle(const UIBoxStyle& newStyle) override;
     void ET_setCenter(const Vec2i& center) override;
     const AABB2Di& ET_getAabb2di() const override;
     void ET_alignInBox(const AABB2Di& alingBox) override;
@@ -71,7 +71,7 @@ private:
 
 private:
 
-    UIStyle style;
+    UIBoxStyle boxStyle;
     Margin margin;
     AABB2Di box;
     AABB2Di lastResizeBox;

@@ -14,7 +14,6 @@ protected:
     void SetUp();
     void TearDown();
 
-    UIBox* createUIBox();
     UIList* createUIList();
 
 protected:

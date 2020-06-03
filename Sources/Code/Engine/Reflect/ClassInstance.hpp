@@ -52,9 +52,7 @@ public:
     void* get();
 
     TypeId getInstanceTypeId() const;
-    bool readValues(MemoryStream& stream);
     bool readValue(EntityLogicValueId valueId, MemoryStream& stream);
-    bool writeValues(MemoryStream& stream);
     bool writeValue(EntityLogicValueId valueId, MemoryStream& stream);
 
 private:

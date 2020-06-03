@@ -34,11 +34,9 @@ public:
     EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
     void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) override;
     void ET_getRegisteredLogics(std::vector<const char*>& logicNames) override;
-    bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) override;
-    bool ET_readEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+    bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) override;
-    bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) override;
-    bool ET_writeEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+    bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) override;
 
 private:

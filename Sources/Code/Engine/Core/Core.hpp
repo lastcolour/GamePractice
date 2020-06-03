@@ -43,10 +43,8 @@ const TypeId InvalidTypeId = 0;
 typedef int EntityLogicId;
 const EntityLogicId InvalidEntityLogicId = -1;
 
-typedef uint8_t EntityLogicValueId;
-const EntityLogicValueId InvalidEntityLogicValueId = 0;
-
-typedef int PropertyId;
-const PropertyId InvalidPropertyId = -1;
+typedef int EntityLogicValueId;
+const EntityLogicValueId InvalidEntityLogicValueId = -1;
+const EntityLogicValueId AllEntityLogicValueId = 0;
 
 #endif /* __CORE_HPP__ */

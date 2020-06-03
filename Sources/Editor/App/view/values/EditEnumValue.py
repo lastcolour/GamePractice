@@ -27,7 +27,7 @@ class EditEnumValue(QWidget):
         pass
 
     def _pull(self):
-        idx = self._comboBox.findData(self._val.getVal())
+        idx = self._comboBox.findText(self._val.getVal())
         if idx == -1:
-            raise RuntimeError("Can't find value '{0}' in table".format(self._val.getVal()))
+            raise RuntimeError("Can't find value '{0}' in combo box".format(self._val.getVal()))
         self._comboBox.setCurrentIndex(idx)

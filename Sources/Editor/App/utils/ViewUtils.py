@@ -8,19 +8,16 @@ def ClearLayout(layout):
             del widget
 
 def _getWidgetTreeItemHeight(treeWidget, item):
-    height = treeWidget.visualItemRect(item).height()
+    height = treeWidget.visualItemRect(item).height() + 1
     for i in range(item.childCount()):
         childItem = item.child(i)
         childHeight = _getWidgetTreeItemHeight(treeWidget, childItem)
-        height += childHeight
+        height += childHeight + 1
     return height
 
 def GetMinimunWidgetTreeHeight(treeWidget):
     height = 0
     for i in range(treeWidget.topLevelItemCount()):
-        height += 2
         item = treeWidget.topLevelItem(i)
         height += _getWidgetTreeItemHeight(treeWidget, item)
-    if height > 0:
-        height -= 1
     return height

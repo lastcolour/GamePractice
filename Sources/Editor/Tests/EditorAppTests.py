@@ -54,10 +54,6 @@ class EditorAppTests(unittest.TestCase):
         children = EditorAppTests.NATIVE_LIB.getEntityChildren(self._centralEntityId)
         self.assertEqual(len(children), 0)
 
-    def testDrawFrame(self):
-        buffer = bytearray(10 * 10 * 4)
-        EditorAppTests.NATIVE_LIB.drawFrame(buffer, 10, 10)
-
     def testAddRemoveLogic(self):
         logicId = EditorAppTests.NATIVE_LIB.addLogicToEntity(self._centralEntityId, "RenderSimple")
 
@@ -68,7 +64,8 @@ class EditorAppTests(unittest.TestCase):
     def testSetGetLogicData(self):
         logicId = 1
         valueId = 4
-        stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId)
+        stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId, 0)
+        print(stream._data)
         self.assertIsNotNone(stream)
         self.assertTrue(stream.getSize() > 0)
 
@@ -100,8 +97,8 @@ class EditorAppTests(unittest.TestCase):
         stream.writeUChar(3)
         stream.writeUChar(4)
 
-        EditorAppTests.NATIVE_LIB.setEntityLogicValueData(self._centralEntityId, logicId, valueId, stream)
-        stream = EditorAppTests.NATIVE_LIB.getEntityLogicValueData(self._centralEntityId, logicId, valueId)
+        EditorAppTests.NATIVE_LIB.setEntityLogicData(self._centralEntityId, logicId, valueId, stream)
+        stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId, valueId)
 
         r = stream.readUChar()
         g = stream.readUChar()

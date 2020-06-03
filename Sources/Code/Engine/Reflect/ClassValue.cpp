@@ -544,7 +544,7 @@ bool ClassValue::readValue(void* instance, void* valuePtr, MemoryStream& stream)
             LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->readValues(valuePtr, stream);
+        return classInfo->readValue(valuePtr, AllEntityLogicValueId, stream);
     }
     case ClassValueType::Resource: {
         stream.write("");
@@ -669,7 +669,7 @@ bool ClassValue::writeValue(void* instance, void* valuePtr, MemoryStream& stream
             LogError("[ClassValue::readValue] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->writeValues(valuePtr, stream);
+        return classInfo->writeValue(valuePtr, AllEntityLogicValueId, stream);
     }
     case ClassValueType::Resource: {
         std::string val;

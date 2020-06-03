@@ -72,17 +72,7 @@ ClassInstance* Entity::findLogic(EntityLogicId logicId) {
     return nullptr;
 }
 
-bool Entity::readLogicData(EntityLogicId logicId, MemoryStream& stream) {
-    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
-    auto logicInstance = findLogic(logicId);
-    if(!logicInstance) {
-        LogWarning("[Entity::readLogicData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
-        return false;
-    }
-    return logicInstance->readValues(stream);
-}
-
-bool Entity::readLogicValueData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
+bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
     assert(logicId != InvalidEntityLogicId && "Invalid logic id");
     assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
     auto logicInstance = findLogic(logicId);
@@ -93,17 +83,7 @@ bool Entity::readLogicValueData(EntityLogicId logicId, EntityLogicValueId valueI
     return logicInstance->readValue(valueId, stream);
 }
 
-bool Entity::writeLogicData(EntityLogicId logicId, MemoryStream& stream) {
-    assert(logicId != InvalidEntityLogicId && "Invalid logic id");
-    auto logicInstance = findLogic(logicId);
-    if(!logicInstance) {
-        LogWarning("[Entity::writeLogicData] Can't find logic with id %d in entity '%s'", logicId, ET_getName());
-        return false;
-    }
-    return logicInstance->writeValues(stream);
-}
-
-bool Entity::writeLogicValueData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
+bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
     assert(logicId != InvalidEntityLogicId && "Invalid logic id");
     assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
     auto logicInstance = findLogic(logicId);

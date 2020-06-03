@@ -4,22 +4,9 @@
 #include "Math/AABB.hpp"
 #include "Core/ETPrimitives.hpp"
 
-struct UIStyle;
-
-struct Margin {
-    int top;
-    int bot;
-    int left;
-    int right;
-
-    Margin() :
-        top(0), bot(0), left(0), right(0) {}
-};
-
-enum class UIListType {
-    Vertical = 0,
-    Horizontal
-};
+class UIBoxStyle;
+class UIBoxMargin;
+class UILayoutStyle;
 
 struct ETUIBoxEvents {
     virtual ~ETUIBoxEvents() = default;
@@ -28,27 +15,29 @@ struct ETUIBoxEvents {
 
 struct ETUIBox {
     virtual ~ETUIBox() = default;
-    virtual const AABB2Di& ET_getAabb2di() const = 0;
-    virtual void ET_setCenter(const Vec2i& pos) = 0;
-    virtual void ET_alignInBox(const AABB2Di& alignBox) = 0;
-    virtual void ET_boxResize() = 0;
-    virtual const UIStyle& ET_getStyle() const = 0;
-    virtual void ET_setStyle(const UIStyle& newStyle) = 0;
-    virtual const Margin& ET_getMaring() const = 0;
+    virtual const AABB2Di& ET_getBox() const = 0;
+    virtual const UIBoxStyle& ET_getStyle() const = 0;
+    virtual void ET_setStyle(const UIBoxStyle& newStyle) = 0;
+    virtual const UIBoxMargin& ET_getMargin() const = 0;
+    virtual void ET_setLayout(EntityId newLayoutId) = 0;
+    virtual EntityId ET_getLayout() = 0;
+};
+
+struct ETUILayout {
+    virtual ~ETUILayout() = default;
+    virtual const UILayoutStyle& ET_getStyle() const = 0;
+    virtual void ET_setStyle(const UILayoutStyle& newStyle) = 0;
+    virtual void ET_addItem(EntityId entityId) = 0;
+    virtual void ET_update() = 0;
+};
+
+struct ETUIVisibleElement {
+    virtual ~ETUIVisibleElement() = default;
     virtual void ET_show() = 0;
     virtual void ET_hide() = 0;
     virtual bool ET_isVisible() const = 0;
-    virtual void ET_disableInteraction() = 0;
-    virtual void ET_enableInteraction() = 0;
     virtual int ET_getZIndex() const = 0;
     virtual void ET_setZIndex(int newZIndex) = 0;
-};
-
-struct ETUILabeledBox {
-    virtual ~ETUILabeledBox() = default;
-    virtual EntityId ET_getLabelId() const = 0;
-    virtual void ET_setLabelText(const char* text) = 0;
-    virtual const char* ET_getLabelText() const = 0;
 };
 
 struct ETUIInteractionBox {
@@ -74,11 +63,6 @@ struct ETUILabel {
 struct ETUIImage {
     virtual ~ETUIImage() = default;
     virtual void ET_setImage(const char* image) = 0; 
-};
-
-struct ETUIList {
-    virtual ~ETUIList() = default;
-    virtual void ET_setType(UIListType listType) = 0;
 };
 
 struct ETUIViewStack {

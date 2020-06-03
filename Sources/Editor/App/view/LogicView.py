@@ -17,6 +17,7 @@ from .values.EditVec4Value import EditVec4Value
 from .values.EditQuatValue import EditQuatValue
 from .values.EditColorValue import EditColorValue
 from .values.EditEnumValue import EditEnumValue
+from .values.EditArrayValue import EditArrayValue
 
 class LogicViewTopBar(QWidget):
     def __init__(self):
@@ -90,6 +91,8 @@ class LogicView(QWidget):
         self._tree.verticalScrollBar().setEnabled(False)
         self._tree.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._tree.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._tree.itemCollapsed.connect(self._signal_tree_itemCollapseExpanded)
+        self._tree.itemExpanded.connect(self._signal_tree_itemCollapseExpanded)
         self._frameLayout.addWidget(self._tree)
 
         self._frame.setLayout(self._frameLayout)
@@ -102,10 +105,7 @@ class LogicView(QWidget):
 
         self._setupLogic(self._entityLogic)
 
-    def _setupLogic(self, logic):
-        self._entityLogic = logic
-        self._logicTopBar._setupLogic(self._entityLogic)
-        self._buildTree(self._tree, self._tree.invisibleRootItem(), self._entityLogic.getValues())
+    def _updateTreeSize(self):
         minTreeHeight = GetMinimunWidgetTreeHeight(self._tree)
         self._tree.setMaximumHeight(minTreeHeight)
         self._tree.setMinimumHeight(minTreeHeight)
@@ -115,23 +115,52 @@ class LogicView(QWidget):
         self.setMaximumHeight(minHeight)
         self.setMinimumWidth(self._tree.sizeHint().width())
 
-    def _buildTree(self, widgetTree, rootItem, values):
+    def _setupLogic(self, logic):
+        self._entityLogic = logic
+        self._logicTopBar._setupLogic(self._entityLogic)
         self._tree.clear()
+        self._buildTree(self._tree, self._tree.invisibleRootItem(), self._entityLogic.getValues())
+        self._updateTreeSize()
+
+    def _buildArrayTree(self, widgetTree, rootItem, arrayEdit, values):
         for value in values:
             if value.getType() == ValueType.Object:
                 item = QTreeWidgetItem(rootItem)
-                widgetTree.setItemWidget(item, 0, QLabel("<>{0}</>".format(value.getName())))
+                widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
+                widgetTree.setItemWidget(item, 1, arrayEdit.createObjecTitle(value))
+                self._buildTree(widgetTree, item, value.getValues())
+                item.setExpanded(True)
+            elif value.getType() == ValueType.Array:
+                raise RuntimeError("Array of arrys not supported")
+            else:
+                item = QTreeWidgetItem(rootItem)
+                item.setText(0, value.getName())
+                editWidget = self._createEditWidget(value)
+                widgetTree.setItemWidget(item, 1, arrayEdit.createSimpleWrap(editWidget))
+
+    def _buildTree(self, widgetTree, rootItem, values):
+        for value in values:
+            if value.getType() == ValueType.Object:
+                item = QTreeWidgetItem(rootItem)
+                widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
                 self._buildTree(widgetTree, item, value.getValues())
                 item.setExpanded(True)
             elif value.getType() == ValueType.Array:
                 item = QTreeWidgetItem(rootItem)
-                widgetTree.setItemWidget(item, 0, QLabel("<>{0}</>".format(value.getName())))
-                self._buildTree(widgetTree, item, value.getValues())
+                widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
+                arrayEdit = self._createEditWidget(value)
+                arrayEdit._rootArrayItem = item
+                arrayEdit._logicView = self
+                widgetTree.setItemWidget(item, 1, arrayEdit.createTitle())
+                self._buildArrayTree(widgetTree, item, arrayEdit, value.getValues())
                 item.setExpanded(True)
             else:
                 item = QTreeWidgetItem(rootItem)
                 item.setText(0, value.getName())
                 widgetTree.setItemWidget(item, 1, self._createEditWidget(value))
+
+    def _signal_tree_itemCollapseExpanded(self, item):
+        self._updateTreeSize()
 
     def _createEditWidget(self, value):
         valType = value.getType()
@@ -160,7 +189,7 @@ class LogicView(QWidget):
         elif valType == ValueType.Entity:
             return EditStringValue(value)
         elif valType == ValueType.Array:
-            return EditIntValue(value)
+            return EditArrayValue(value)
         elif valType == ValueType.Enum:
             return EditEnumValue(value)
         elif valType == ValueType.Object:

@@ -18,7 +18,6 @@ void UIButton::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
         classInfo->addField("event", &UIButton::eventName);
     }
-
 }
 
 void UIButton::ET_onPress() {

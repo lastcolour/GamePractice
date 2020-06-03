@@ -38,11 +38,9 @@ struct ETEntityManager {
     virtual EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) = 0;
     virtual void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) = 0;
     virtual void ET_getRegisteredLogics(std::vector<const char*>& logicNames) = 0;
-    virtual bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) = 0;
-    virtual bool ET_readEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+    virtual bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) = 0;
-    virtual bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) = 0;
-    virtual bool ET_writeEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+    virtual bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) = 0;
 };
 

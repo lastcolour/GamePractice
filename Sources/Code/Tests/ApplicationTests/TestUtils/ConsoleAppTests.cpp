@@ -57,11 +57,9 @@ void ConsoleAppTests::TearDown() {
     tempObject.clear();
 }
 
-void ConsoleAppTests::addLogicToOject(std::unique_ptr<Entity>& obj, std::unique_ptr<EntityLogic>& logic) {
-    obj->addCustomLogic(std::move(logic));
-}
-
-std::unique_ptr<Entity> ConsoleAppTests::createVoidObject() {
+Entity* ConsoleAppTests::createVoidObject() {
     std::unique_ptr<Entity> objectPtr(new Entity(TEST_OBJECT_NAME, GetETSystem()->createNewEntityId()));
-    return objectPtr;
+    auto ptr = objectPtr.get();
+    tempObject.push_back(std::move(objectPtr));
+    return ptr;
 }

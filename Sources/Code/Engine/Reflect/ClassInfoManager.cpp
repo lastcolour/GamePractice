@@ -41,12 +41,12 @@ bool ClassInfoManager::ET_registerClassInfo(ClassInfoPtrT& classInfo) {
         return false;
     }
     if(ET_findClassInfoByName(classInfo->getName())) {
-        LogError("[ClassInfoManager::ET_registerClassInfo] Class name duplicate: %s", classInfo->getName());
+        LogError("[ClassInfoManager::ET_registerClassInfo] Class name duplicate: '%s'", classInfo->getName());
         assert(false && "Class name duplicate");
         return false;
     }
     if(ET_findClassInfoByTypeId(classInfo->getIntanceTypeId())) {
-        LogError("[ClassInfoManager::ET_registerClassInfo] Class info already registered");
+        LogError("[ClassInfoManager::ET_registerClassInfo] Class info already registered: '%s'", classInfo->getName());
         assert(false && "Class instance typeId duplicate");
         return false;
     }

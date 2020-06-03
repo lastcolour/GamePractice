@@ -17,7 +17,7 @@ bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc) {
     }
     ReflectContext ctx;
     if(!ctx.reflectEmbedded(reflectFunc)) {
-        LogError("[ReflectUtils::ReflectClassByCall] Can't rreflect embedded class info");
+        LogError("[ReflectUtils::ReflectClassByCall] Can't reflect embedded class info");
         assert(false && "false reflect result");
         return false;
     }

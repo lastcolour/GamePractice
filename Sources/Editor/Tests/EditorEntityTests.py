@@ -71,11 +71,9 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(entity.isLoadedToNative())
         logics = self._getEditor().getReflectModel().getAllRegisteredLogics()
         for logicName in logics:
-            if logicName.startswith("UI"):
-                continue
             logic = entity.addLogic(logicName)
             self.assertIsNotNone(logic)
-            native = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), logic.getNativeId())
+            native = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), logic.getNativeId(), 0)
             self.assertIsNotNone(native)
             current = MemoryStream()
             logic.writeToStream(current)
@@ -91,7 +89,7 @@ class EditorEntityTest(unittest.TestCase):
         colorVal = renderLogic.getValues()[3]
         colorVal.setVal(123, 124, 125, 126)
 
-        stream = self._getEditor().getLibrary().getEntityLogicValueData(entity.getNativeId(), renderLogic.getNativeId(), 4)
+        stream = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), renderLogic.getNativeId(), 4)
         r = stream.readUChar()
         g = stream.readUChar()
         b = stream.readUChar()
@@ -156,6 +154,20 @@ class EditorEntityTest(unittest.TestCase):
             fileData = json.load(tFile)
 
         self.assertEqual(res, fileData)
+
+    def testLogicWithArray(self):
+        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        self.assertTrue(entity.loadToNative())
+        logic = entity.addLogic("UILayout")
+        self.assertIsNotNone(logic)
+        values = logic.getValues()
+        self.assertTrue(len(values) > 1)
+        arrayVal = values[1]
+        self.assertEqual(arrayVal.getType(), ValueType.Array)
+        elemCount = arrayVal.getValues()
+        self.assertEqual(len(elemCount), 0)
+        newElemVal = arrayVal.addNewVal()
+        self.assertIsNotNone(newElemVal)
 
     def testEntityTransform(self):
         pass

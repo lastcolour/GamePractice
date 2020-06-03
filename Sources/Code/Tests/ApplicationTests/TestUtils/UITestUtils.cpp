@@ -2,7 +2,7 @@
 #include "UI/ETUIInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
-#include "UI/Logics/UIBaseBox.hpp"
+#include "UI/Logics/UIBox.hpp"
 #include "Core/ETPrimitives.hpp"
 
 #include <gtest/gtest.h>
@@ -29,10 +29,10 @@ void WaitButtonReleaseEvent() {
     ET_SendEvent(&ETTimerEvents::ET_onTick, pressDuration + 0.000001f);
 }
 
-void CheckUIBoxSizeAndCenter(const UIBaseBox* uiBox, const Vec2i& expectedSize, const Vec2i& expectedCenter) {
+void CheckUIBoxSizeAndCenter(const UIBox* uiBox, const Vec2i& expectedSize, const Vec2i& expectedCenter) {
     ASSERT_TRUE(uiBox);
 
-    auto& box = uiBox->ET_getAabb2di();
+    auto& box = uiBox->ET_getBox();
 
     auto size = box.getSize();
     EXPECT_EQ(size.x, expectedSize.x);

@@ -415,7 +415,7 @@ TEST_F(ReflectTests, TestReadValuesSimpleObject) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.readValues(stream));
+    ASSERT_TRUE(instance.readValue(AllEntityLogicValueId, stream));
 
     auto buffer = stream.flushToBuffer();
     ASSERT_TRUE(buffer);

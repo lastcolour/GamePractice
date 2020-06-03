@@ -20,14 +20,6 @@ enum class YAlignType {
     Bot
 };
 
-enum class SizeInvariant {
-    Relative = 0,
-    RelativeBiggestSquare,
-    Absolute,
-    AbsoluteBiggestSquare,
-    Pixel
-};
-
 class BoxMargin {
 public:
 
@@ -45,7 +37,7 @@ public:
     float top;
 };
 
-struct UIStyle {
+struct UIBoxStyle {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -53,19 +45,30 @@ public:
 public:
 
     Vec2 size;
-    ColorB color;
-    SizeInvariant sizeInv;
     XAlignType xAlignType;
     YAlignType yAlignType;
     BoxMargin margin;
-    std::string renderer;
-    float fontSize;
-    ColorB fontColor;
 
 public:
 
-    UIStyle();
-    ~UIStyle();
+    UIBoxStyle();
+    ~UIBoxStyle();
+};
+
+struct UILabelStyle {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    UILabelStyle();
+    ~UILabelStyle();
+
+public:
+
+    ColorB color;
+    float fontSize;
 };
 
 #endif /* __UI_STYLE_HPP__ */

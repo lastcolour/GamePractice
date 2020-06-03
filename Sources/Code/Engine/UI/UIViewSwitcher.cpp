@@ -40,16 +40,16 @@ void UIViewSwitcher::ET_onTick(float dt) {
                 if(switchTask.duration < 0.01f) {
                     break;
                 } else {
-                    ET_SendEvent(switchTask.oldViewId, &ETUIBox::ET_hide);
+                    ET_SendEvent(switchTask.oldViewId, &ETUIVisibleElement::ET_hide);
                     // Process 'ShowNewView'
                 }
             }
         }
         case SwitchState::ShowNewView: {
             bool isVisible = false;
-            ET_SendEventReturn(isVisible, switchTask.newViewId, &ETUIBox::ET_isVisible);
+            ET_SendEventReturn(isVisible, switchTask.newViewId, &ETUIVisibleElement::ET_isVisible);
             if(!isVisible) {
-                ET_SendEvent(switchTask.newViewId, &ETUIBox::ET_show);
+                ET_SendEvent(switchTask.newViewId, &ETUIVisibleElement::ET_show);
             }
             bool isAnimEnded = true;
             switchTask.duration += dt;
@@ -74,9 +74,9 @@ void UIViewSwitcher::ET_swtichView(EntityId newViewId, EntityId oldViewId) {
     assert(newViewId.isValid() && "Invalid new view");
 
     bool isVisible = false;
-    ET_SendEventReturn(isVisible, newViewId, &ETUIBox::ET_isVisible);
+    ET_SendEventReturn(isVisible, newViewId, &ETUIVisibleElement::ET_isVisible);
     if(isVisible) {
-        ET_SendEvent(newViewId, &ETUIBox::ET_hide);
+        ET_SendEvent(newViewId, &ETUIVisibleElement::ET_hide);
     }
 
     switchTask.state = SwitchState::ShowNewView;

@@ -23,10 +23,7 @@ public:
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
 
-    bool readValues(void* instance, MemoryStream& stream);
     bool readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
-
-    bool writeValues(void* instance, MemoryStream& stream);
     bool writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
 
     template<typename ClassT>

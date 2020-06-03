@@ -1,43 +1,41 @@
 #include "UI/Logics/UIBox.hpp"
-#include "Core/JSONNode.hpp"
+#include "UI/UIConfig.hpp"
 #include "ETApplicationInterfaces.hpp"
+
+#include <cassert>
 
 namespace {
 
-const char* DEFAULT_LABEL = "UI/Default/Label.json";
-const char* DEFAULT_IMAGE = "UI/Default/Image.json";
-const char* DEFAULT_GEOM_RENDERER = "Render/RenderGeomSimple.json";
+bool isMarginChanged(const UIBoxMargin& prevMargin, const UIBoxMargin& newMargin) {
+    if(prevMargin.bot != newMargin.bot) {
+        return true;
+    }
+    if(prevMargin.top != newMargin.top) {
+        return true;
+    }
+    if(prevMargin.left != newMargin.left) {
+        return true;
+    }
+    if(prevMargin.right != newMargin.right) {
+        return true;
+    }
+    return false;
+}
 
-EntityId createLabel(const JSONNode& node) {
-    EntityId entId;
-    std::string content;
-    node.read("text", content);
-    if(!content.empty()) {
-        ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, DEFAULT_LABEL);
-        if(!entId.isValid()) {
-            return entId;
-        }
-        ET_SendEvent(entId, &ETUILabel::ET_setText, content.c_str());
-    } else {
-        node.read("image", content);
-        if(!content.empty()) {
-            ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, DEFAULT_IMAGE);
-            if(!entId.isValid()) {
-                return entId;
-            }
-            ET_SendEvent(entId, &ETUIImage::ET_setImage, content.c_str());
-        }
-    }
-    if(auto styleNode = node.object("style")) {
-        UIStyle style;
-        ET_SendEventReturn(style, entId, &ETUIBox::ET_getStyle);
-        //style.serialize(styleNode);
-        ET_SendEvent(entId, &ETUIBox::ET_setStyle, style);
-    }
-    return entId;
+int GetSizeOnGrid(float value) {
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+    float pixelsPerValue = renderPort.y / static_cast<float>(ET_getConfig<UIConfig>()->horizontalGrid);
+    return static_cast<int>(pixelsPerValue * value);
 }
 
 } // namespace
+
+void UIBox::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
+        classInfo->addField("style", &UIBox::style);
+    }
+}
 
 UIBox::UIBox() {
 }
@@ -45,102 +43,122 @@ UIBox::UIBox() {
 UIBox::~UIBox() {
 }
 
-void UIBox::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
-        classInfo->addBaseClass<UIBaseBox>();
-    }
-}
-
 bool UIBox::init() {
-    UIBaseBox::init();
-    createRenderer();
-    updateRenderParams();
-    updateRenderSize();
-    if(labelId.isValid()) {
-        ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, labelId);
-    }
-    ETNode<ETUILabeledBox>::connect(getEntityId());
+    calculateBox();
+    ETNode<ETUIBox>::connect(getEntityId());
+    ETNode<ETRenderEvents>::connect(getEntityId());
+    ETNode<ETEntityEvents>::connect(getEntityId());
     return true;
 }
 
 void UIBox::deinit() {
 }
 
-EntityId UIBox::ET_getLabelId() const {
-    return labelId;
+const AABB2Di& UIBox::ET_getBox() const {
+    return aabb;
 }
 
-void UIBox::ET_setLabelText(const char* text) {
-    if(!labelId.isValid()) {
-        LogWarning("[UIBox::ET_setLabelText] Can't set label text without label");
-        return;
-    }
-    ET_SendEvent(labelId, &ETUILabel::ET_setText, text);
-}
+void UIBox::calculateBox() {
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
-const char* UIBox::ET_getLabelText() const {
-    if(!labelId.isValid()) {
-        return nullptr;
-    }
-    const char* cLabelText = nullptr;
-    ET_SendEventReturn(cLabelText, labelId, &ETUILabel::ET_getText);
-    return cLabelText;
-}
+    bool notifyLayout = false;
 
-void UIBox::ET_setStyle(const UIStyle& newStyle) {
-    bool isNewRenderer = false;
-    if(ET_getStyle().renderer != newStyle.renderer && !newStyle.renderer.empty()) {
-        isNewRenderer = true;
+    auto newMargin = calculateMargin(tm.scale);
+    if(isMarginChanged(margin, newMargin)) {
+        margin = newMargin;
+        notifyLayout = true;
     }
-    UIBaseBox::ET_setStyle(newStyle);
-    if(isNewRenderer) {
-        createRenderer();
-    }
-    updateRenderParams();
-}
 
-void UIBox::ET_boxResize() {
-    UIBaseBox::ET_boxResize();
-    updateRenderSize();
-}
+    auto newBoxSize = calculateBoxSize(tm.scale);
+    if(aabb.getSize() != newBoxSize) {
+        aabb.bot = Vec2i(0);
+        aabb.top = newBoxSize;
+        notifyLayout = true;
+    }
 
-void UIBox::createRenderer() {
-    if(renderId.isValid()) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, renderId);
-        renderId = InvalidEntityId;
-    }
-    const auto& boxStyle = ET_getStyle();
-    std::string rendererName = boxStyle.renderer;
-    if(rendererName.empty() && boxStyle.color != ColorB(0, 0, 0, 0)) {
-       rendererName = DEFAULT_GEOM_RENDERER;
-    } else {
-        return;
-    }
-    ET_SendEventReturn(renderId, &ETEntityManager::ET_createEntity, rendererName.c_str());
-    if(renderId.isValid()) {
-        ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, boxStyle.color);
-        setUpRenderChild(renderId);
-    } else {
-        LogWarning("[UIBox::createRenderer] Can't create renderer: %s", rendererName);
+    Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
+        static_cast<int>(tm.pt.y));
+    aabb.setCenter(center);
+
+    ET_SendEvent(getEntityId(), &ETUIBoxEvents::ET_onBoxResized);
+    if(layoutId.isValid() && notifyLayout) {
+        ET_SendEvent(layoutId, &ETUILayout::ET_update);
     }
 }
 
-void UIBox::updateRenderSize() {
-    if(!renderId.isValid()) {
-        return;
-    }
-    const auto& uiBox = ET_getAabb2di();
-    auto uiBoxSize = uiBox.getSize();
-    ET_SendEvent(renderId, &ETRenderRect::ET_setSize, uiBoxSize);
+const UIBoxStyle& UIBox::ET_getStyle() const {
+    return style;
 }
 
-void UIBox::updateRenderParams() {
-    if(!renderId.isValid()) {
-        return;
-    }
-    ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, ET_getStyle().color);
+void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
+    style = newStyle;
+    calculateBox();
 }
 
-EntityId UIBox::getRenderId() const {
-    return renderId;
+const UIBoxMargin& UIBox::ET_getMargin() const {
+    return margin;
+}
+
+void UIBox::ET_setLayout(EntityId newLayoutId) {
+    layoutId = newLayoutId;
+}
+
+EntityId UIBox::ET_getLayout() {
+    return layoutId;
+}
+
+Vec2i UIBox::calculateBoxSize(const Vec3& scale) {
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+    Vec2i resSize(0);
+    switch (style.widthInv)
+    {
+    case UIBoxSizeInvariant::Grid:
+        resSize.x = GetSizeOnGrid(style.width);
+        break;
+    case UIBoxSizeInvariant::Relative:
+        resSize.x = static_cast<int>(renderPort.x * style.width);
+        break;
+    default:
+        assert(false && "Invalid size invariant");
+    }
+    switch (style.heightInv)
+    {
+    case UIBoxSizeInvariant::Grid:
+        resSize.y = GetSizeOnGrid(style.height);
+        break;
+    case UIBoxSizeInvariant::Relative:
+        resSize.y = static_cast<int>(renderPort.y * style.height);
+        break;
+    default:
+        assert(false && "Invalid size invariant");
+    }
+    resSize.x = static_cast<int>(resSize.x * scale.x);
+    resSize.y = static_cast<int>(resSize.y * scale.y);
+    return resSize;
+}
+
+UIBoxMargin UIBox::calculateMargin(const Vec3& scale) {
+    UIBoxMargin resMargin;
+
+    resMargin.left = GetSizeOnGrid(style.margin.left);
+    resMargin.right = GetSizeOnGrid(style.margin.right);
+    resMargin.bot = GetSizeOnGrid(style.margin.bot);
+    resMargin.top = GetSizeOnGrid(style.margin.top);
+
+    resMargin.bot = static_cast<int>(resMargin.bot * scale.y);
+    resMargin.top = static_cast<int>(resMargin.top * scale.y);
+    resMargin.left = static_cast<int>(resMargin.left * scale.x);
+    resMargin.right = static_cast<int>(resMargin.right * scale.x);
+
+    return resMargin;
+}
+
+void UIBox::ET_onTransformChanged(const Transform& newTm) {
+    calculateBox();
+}
+
+void UIBox::ET_onRenderPortResized() {
+    calculateBox();
 }

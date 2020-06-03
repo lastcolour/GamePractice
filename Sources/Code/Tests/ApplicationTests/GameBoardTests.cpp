@@ -87,11 +87,6 @@ void GameBoardTests::SetUp() {
     entity->addCustomLogic(std::move(boardPtr));
 }
 
-void GameBoardTests::TearDown() {
-    entity.reset();
-    board = nullptr;
-}
-
 TEST_F(GameBoardTests, CheckInit) {
     TestBoardParams params;
     params.boardSize = Vec2i(1);
@@ -292,12 +287,12 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     std::unique_ptr<UIBox> uiBoxLogicPtr(new UIBox);
     auto uiBoxPtr = uiBoxLogicPtr.get();
     entity->addCustomLogic(std::move(uiBoxLogicPtr));
-    UIStyle style;
-    style.size = Vec2(0.5f);
-    style.sizeInv = SizeInvariant::RelativeBiggestSquare;
-    style.yAlignType = YAlignType::Top;
+    UIBoxStyle style;
+    style.width = 0.5f;
+    style.widthInv = UIBoxSizeInvariant::Relative;
+    style.height = 0.5f;
+    style.widthInv = UIBoxSizeInvariant::Relative;
     uiBoxPtr->ET_setStyle(style);
-    ASSERT_TRUE(uiBoxPtr->init());
 
     TestBoardParams params;
     params.boardSize = Vec2i(1, 1);
@@ -305,7 +300,7 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     board->setParams(params);
     ASSERT_TRUE(board->init());
 
-    const auto& uiBox = uiBoxPtr->ET_getAabb2di();
+    const auto& uiBox = uiBoxPtr->ET_getBox();
     auto cellSize = board->getCellSize();
 
     auto uiBoxSize = uiBox.getSize();

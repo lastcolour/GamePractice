@@ -16,6 +16,7 @@ UILabel::~UILabel() {
 void UILabel::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILabel>("UILabel")) {
         classInfo->addBaseClass<UIBaseBox>();
+        classInfo->addField("style", &UILabel::style);
         classInfo->addField("text", &UILabel::text);
     }
 }

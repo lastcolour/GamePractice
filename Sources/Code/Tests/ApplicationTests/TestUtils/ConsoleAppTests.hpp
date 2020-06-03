@@ -14,25 +14,20 @@ protected:
     static void SetUpTestCase();
     static void TearDownTestCase();
 
-    virtual void TearDown() override;
+    void TearDown() override;
 
 protected:
 
-    static std::unique_ptr<Entity> createVoidObject();
+    Entity* createVoidObject();
 
     template<typename LogicType>
     LogicType* createObjectAndLogic() {
         LogicType* logic = new LogicType;
         std::unique_ptr<EntityLogic> logicPtr(logic);
         auto object = createVoidObject();
-        addLogicToOject(object, logicPtr);
-        tempObject.push_back(std::move(object));
+        object->addCustomLogic(std::unique_ptr<LogicType>(new LogicType));
         return logic;
     }
-
-private:
-
-    void addLogicToOject(std::unique_ptr<Entity>& obj, std::unique_ptr<EntityLogic>& logic);
 
 private:
 

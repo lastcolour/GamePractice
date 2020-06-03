@@ -146,48 +146,38 @@ void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId
     EDITOR_APP->removeChildEntityFromEntity(parentEntId, childEntId);
 }
 
-uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, void** out) {
+void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId) {
     if(!EDITOR_APP) {
-        return 0u;
+        return;
     }
-    EntityId entId;
-    entId.setRawId(entityId);
-    auto buffer = EDITOR_APP->getEntityLogicData(entId, static_cast<EntityLogicId>(logicId));
-    INTERNAL_BUFFER = std::move(buffer);
-    *out = INTERNAL_BUFFER.getWriteData();
-    return static_cast<uint32_t>(INTERNAL_BUFFER.getSize());
 }
 
-uint32_t GetEntityLogicValueData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out) {
+void RemoveEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId, int32_t elementId) {
+    if(!EDITOR_APP) {
+        return;
+    }
+}
+
+uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out) {
     if(!EDITOR_APP) {
         return 0u;
     }
     EntityId entId;
     entId.setRawId(entityId);
-    auto buffer = EDITOR_APP->getEntityLogicValueData(entId, static_cast<EntityLogicId>(logicId),
+    auto buffer = EDITOR_APP->getEntityLogicData(entId, static_cast<EntityLogicId>(logicId),
         static_cast<EntityLogicValueId>(valueId));
     INTERNAL_BUFFER = std::move(buffer);
     *out = INTERNAL_BUFFER.getWriteData();
     return static_cast<uint32_t>(INTERNAL_BUFFER.getSize());
 }
 
-void SetEntityLogicData(uint32_t entityId, int32_t logicId, const void* data, uint32_t size) {
+void SetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, const void* data, uint32_t size) {
     if(!EDITOR_APP) {
         return;
     }
     EntityId entId;
     entId.setRawId(entityId);
     Buffer buffer(data, size);
-    EDITOR_APP->setEntityLogicData(entId, static_cast<EntityLogicId>(logicId), buffer);
-}
-
-void SetEntityLogicValueData(uint32_t entityId, int32_t logicId, int32_t valueId, const void* data, uint32_t size) {
-    if(!EDITOR_APP) {
-        return;
-    }
-    EntityId entId;
-    entId.setRawId(entityId);
-    Buffer buffer(data, size);
-    EDITOR_APP->setEntityLogicValueData(entId, static_cast<EntityLogicId>(logicId),
+    EDITOR_APP->setEntityLogicData(entId, static_cast<EntityLogicId>(logicId),
         static_cast<EntityLogicValueId>(valueId), buffer);
 }

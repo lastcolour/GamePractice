@@ -10,11 +10,10 @@ class GameBoardTests : public ConsoleAppTests {
 protected:
 
     void SetUp();
-    void TearDown();
 
 protected:
 
-    std::unique_ptr<Entity> entity;
+    Entity* entity;
     TestGameBoardLogic* board;
 };
 

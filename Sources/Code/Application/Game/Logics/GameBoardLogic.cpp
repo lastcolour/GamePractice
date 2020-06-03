@@ -3,7 +3,6 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "UI/ETUIInterfaces.hpp"
-#include "UI/UIStyle.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -129,7 +128,7 @@ void GameBoardLogic::initBoardBox() {
     box.bot = Vec2i(0);
     box.top = viewport;
 
-    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getAabb2di);
+    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
     Vec2i uiBoxSize = box.getSize();
 
     float cellSizeX = uiBoxSize.x / static_cast<float>(boardSize.x);

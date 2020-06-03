@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton, QColorDialog
+from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton, QColorDialog, QFrame
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QPalette, QColor
 
@@ -15,12 +15,22 @@ class EditColorValue(QWidget):
         self._colorLineEdit.setReadOnly(True)
         self._rootLayout.addWidget(self._colorLineEdit)
 
+        self._frame = QFrame()
+        self._frame.setFrameStyle(QFrame.StyledPanel)
+        self._frame.setFrameShadow(QFrame.Plain)
+        self._frameLayout = QHBoxLayout()
+
         self._colorSelectBt = QPushButton()
         self._colorSelectBt.setFlat(True)
-
         self._colorSelectBt.clicked.connect(self._signal_colorSelectBt_clicked)
-        self._rootLayout.addWidget(self._colorSelectBt)
 
+        self._frameLayout.setContentsMargins(0, 0, 0, 0)
+        self._frameLayout.setSpacing(0)
+        self._frameLayout.addWidget(self._colorSelectBt)
+        self._frame.setMaximumHeight(self._colorSelectBt.minimumSizeHint().height() - 2)
+        self._frame.setLayout(self._frameLayout)
+
+        self._rootLayout.addWidget(self._frame)
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
 

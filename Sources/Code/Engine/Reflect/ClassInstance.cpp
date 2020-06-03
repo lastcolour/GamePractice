@@ -72,18 +72,6 @@ void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     deleteFunc = deleteF;
 }
 
-bool ClassInstance::readValues(MemoryStream& stream) {
-    if(!instance) {
-        assert(false && "Invalid instance");
-        return false;
-    }
-    if(!classInfo) {
-        LogError("[ClassInstance::readValues] Can't read values of instance without class info");
-        return false;
-    }
-    return classInfo->readValues(instance, stream);
-}
-
 bool ClassInstance::readValue(EntityLogicValueId valueId, MemoryStream& stream) {
     if(!instance) {
         assert(false && "Invalid instance");
@@ -94,18 +82,6 @@ bool ClassInstance::readValue(EntityLogicValueId valueId, MemoryStream& stream) 
         return false;
     }
     return classInfo->readValue(instance, valueId, stream);
-}
-
-bool ClassInstance::writeValues(MemoryStream& stream) {
-    if(!instance) {
-        assert(false && "Invalid instance");
-        return false;
-    }
-    if(!classInfo) {
-        LogError("[ClassInstance::writeValues] Can't write value of instance without class info");
-        return false;
-    }
-    return classInfo->writeValues(instance, stream);
 }
 
 bool ClassInstance::writeValue(EntityLogicValueId valueId, MemoryStream& stream) {

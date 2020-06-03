@@ -273,7 +273,7 @@ TEST_F(UIViewStackTests, CheckDrawPriorities) {
     ET_SendEventReturn(firstViewId, &ETUIViewStack::ET_getActiveViewId);
 
     int firstZIindex = 0;
-    ET_SendEventReturn(firstZIindex, firstViewId, &ETUIBox::ET_getZIndex);
+    ET_SendEventReturn(firstZIindex, firstViewId, &ETUIVisibleElement::ET_getZIndex);
 
     EXPECT_GE(firstZIindex, 0);
 
@@ -284,7 +284,7 @@ TEST_F(UIViewStackTests, CheckDrawPriorities) {
     ET_SendEventReturn(secondViewId, &ETUIViewStack::ET_getActiveViewId);
 
     int secondZIndex = 0;
-    ET_SendEventReturn(secondZIndex, secondViewId, &ETUIBox::ET_getZIndex);
+    ET_SendEventReturn(secondZIndex, secondViewId, &ETUIVisibleElement::ET_getZIndex);
 
     int firstViewChildDepth = 0;
     ET_SendEventReturn(firstViewChildDepth, firstViewId, &ETEntity::ET_getMaxChildrenDepth);

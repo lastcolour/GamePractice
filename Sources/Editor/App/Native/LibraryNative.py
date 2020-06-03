@@ -53,20 +53,12 @@ class LibraryNative:
         self._removeLogicFromEntityFunc.restype = None
 
         self._getEntityLogicDataFunc = self._editorLib.GetEntityLogicData
-        self._getEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.POINTER(ctypes.c_void_p)]
+        self._getEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_void_p)]
         self._getEntityLogicDataFunc.restype = ctypes.c_uint32
 
-        self._getEntityLogicValueDataFunc = self._editorLib.GetEntityLogicValueData
-        self._getEntityLogicValueDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_void_p)]
-        self._getEntityLogicValueDataFunc.restype = ctypes.c_uint32
-
         self._setEntityLogicDataFunc = self._editorLib.SetEntityLogicData
-        self._setEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_void_p, ctypes.c_uint32]
+        self._setEntityLogicDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.c_void_p, ctypes.c_uint32]
         self._setEntityLogicDataFunc.restype = None
-
-        self._setEntityLogicValueDataFunc = self._editorLib.SetEntityLogicValueData
-        self._setEntityLogicValueDataFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.c_void_p, ctypes.c_uint32]
-        self._setEntityLogicValueDataFunc.restype = None
 
         self._addChildEntityToEntityFunc = self._editorLib.AddChildEntityToEntity
         self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
@@ -90,7 +82,7 @@ class LibraryNative:
         return model.decode('ascii')
 
     def loadEntity(self, entityName):
-        cEntityName = ctypes.c_char_p(entityName.encode('ascii'))
+        cEntityName = ctypes.c_char_p(entityName.encode('ascii') + b'\x00')
         return self._loadEntityFunc(cEntityName)
 
     def unloadEntity(self, entityId):
@@ -116,7 +108,7 @@ class LibraryNative:
 
     def addLogicToEntity(self, entityId, logicName):
         cEntId = ctypes.c_uint32(entityId)
-        cLogicName = ctypes.c_char_p(logicName.encode('ascii'))
+        cLogicName = ctypes.c_char_p(logicName.encode('ascii') + b'\x00')
         return self._addLogicToEntityFunc(cEntId, cLogicName)
 
     def removeLogicFromEntity(self, entityId, logicId):
@@ -124,24 +116,12 @@ class LibraryNative:
         cLogicId = ctypes.c_int32(logicId)
         self._removeLogicFromEntityFunc(cEntId, cLogicId)
 
-    def getEntityLogicData(self, entityId, logicId):
-        cEntId = ctypes.c_uint32(entityId)
-        cLogicId = ctypes.c_int32(logicId)
-        outPtr = ctypes.POINTER(ctypes.c_char)()
-        outSize = self._getEntityLogicDataFunc(cEntId, cLogicId, ctypes.byref(outPtr))
-        stream = MemoryStream()
-        if outSize == 0:
-            return stream
-        bufferPtr = ctypes.POINTER(ctypes.c_char * outSize)(outPtr.contents)
-        stream.setData(bytearray(bufferPtr.contents))
-        return stream
-
-    def getEntityLogicValueData(self, entityId, logicId, valueId):
+    def getEntityLogicData(self, entityId, logicId, valueId):
         cEntId = ctypes.c_uint32(entityId)
         cLogicId = ctypes.c_int32(logicId)
         cValueId = ctypes.c_int32(valueId)
         outPtr = ctypes.POINTER(ctypes.c_char)()
-        outSize = self._getEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, ctypes.byref(outPtr))
+        outSize = self._getEntityLogicDataFunc(cEntId, cLogicId, cValueId, ctypes.byref(outPtr))
         stream = MemoryStream()
         if outSize == 0:
             return stream
@@ -149,18 +129,12 @@ class LibraryNative:
         stream.setData(bytearray(bufferPtr.contents))
         return stream
 
-    def setEntityLogicData(self, entityId, logicId, stream):
-        cEntId = ctypes.c_uint32(entityId)
-        cLogicId = ctypes.c_int32(logicId)
-        dataPtr = ctypes.c_char * stream.getSize()
-        self._setEntityLogicDataFunc(cEntId, cLogicId, dataPtr.from_buffer(stream.getData()), stream.getSize())
-
-    def setEntityLogicValueData(self, entityId, logicId, valueId, stream):
+    def setEntityLogicData(self, entityId, logicId, valueId, stream):
         cEntId = ctypes.c_uint32(entityId)
         cLogicId = ctypes.c_int32(logicId)
         cValueId = ctypes.c_int32(valueId)
         dataPtr = ctypes.c_char * stream.tellg()
-        self._setEntityLogicValueDataFunc(cEntId, cLogicId, cValueId, dataPtr.from_buffer(stream.getData()), stream.getSize())
+        self._setEntityLogicDataFunc(cEntId, cLogicId, cValueId, dataPtr.from_buffer(stream.getData()), stream.getSize())
 
     def drawFrame(self, ptr, width, height):
         ptr = ctypes.c_void_p(ptr)
@@ -178,7 +152,7 @@ class LibraryNative:
         return res
 
     def addChildEntityToEntity(self, entityId, entityName):
-        cEntityName = ctypes.c_char_p(entityName.encode('ascii'))
+        cEntityName = ctypes.c_char_p(entityName.encode('ascii') + b'\x00')
         cEntId = ctypes.c_uint32(entityId)
         return self._addChildEntityToEntityFunc(cEntId, cEntityName)
 

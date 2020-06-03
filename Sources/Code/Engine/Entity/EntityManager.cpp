@@ -161,69 +161,37 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
         logicId, entity->ET_getName());
 }
 
-bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {
-    if(entityId == InvalidEntityId) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read entity logic data from entity with invalid id");
-        return false;
-    }
-    auto it = entities.find(entityId);
-    if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't find entity to read logic data");
-        return false;
-    }
-    auto entity = it->second.get();
-    if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic data with invalid logic id from entity: '%s'",
-            entity->ET_getName());
-        return false;
-    }
-    if(logicId == TransformLogicId) {
-        if(!tmClassInfo->readValues(entity->getTransform(), stream)) {
-            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read transform data from entity: '%s'",
-                entity->ET_getName());
-            return false;
-        }
-    } else {
-        if(!entity->readLogicData(logicId, stream)) {
-            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic data from entity: '%s'",
-                entity->ET_getName());
-            return false;
-        }
-    }
-    return true;
-}
-
-bool EntityManager::ET_readEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
     if(entityId == InvalidEntityId) {
-        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read entity logic value data from entity with invalid id");
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read entity logic value data from entity with invalid id");
         return false;
     }
     auto it = entities.find(entityId);
     if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't find entity to read logic value data");
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't find entity to read logic value data");
         return false;
     }
     auto entity = it->second.get();
     if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read logic value data with invalid logic id from entity: '%s'",
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic value data with invalid logic id from entity: '%s'",
             entity->ET_getName());
         return false;
     }
     if(valueId == InvalidEntityLogicValueId) {
-        LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read logic value data with invalid value id from entity: '%s'",
+        LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic value data with invalid value id from entity: '%s'",
             entity->ET_getName());
         return false;
     }
     if(logicId == TransformLogicId) {
         if(!tmClassInfo->readValue(entity->getTransform(), valueId, stream)) {
-            LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read transform value data from entity: '%s'",
+            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read transform value data from entity: '%s'",
                 entity->ET_getName());
             return false;
         }
     } else {
-        if(!entity->readLogicValueData(logicId, valueId, stream)) {
-            LogWarning("[EntityManager::ET_readEntityLogicValueData] Can't read logic value data from entity: '%s'",
+        if(!entity->readLogicData(logicId, valueId, stream)) {
+            LogWarning("[EntityManager::ET_readEntityLogicData] Can't read logic value data from entity: '%s'",
                 entity->ET_getName());
             return false;
         }
@@ -231,69 +199,37 @@ bool EntityManager::ET_readEntityLogicValueData(EntityId entityId, EntityLogicId
     return true;
 }
 
-bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId, MemoryStream& stream) {
-    if(entityId == InvalidEntityId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write entity logic data from entity with invalid id");
-        return false;
-    }
-    auto it = entities.find(entityId);
-    if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't find entity to write logic data");
-        return false;
-    }
-    auto entity = it->second.get();
-    if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic data with invalid logic id from entity: '%s'",
-            entity->ET_getName());
-        return false;
-    }
-    if(logicId == TransformLogicId) {
-        if(!tmClassInfo->writeValues(entity->getTransform(), stream)) {
-            LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write transform data to entity: '%s'",
-                entity->ET_getName());
-            return false;
-        }
-    } else {
-        if(!entity->writeLogicData(logicId, stream)) {
-            LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic data to entity: '%s'",
-                entity->ET_getName());
-            return false;
-        }
-    }
-    return true;
-}
-
-bool EntityManager::ET_writeEntityLogicValueData(EntityId entityId, EntityLogicId logicId,
+bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
     if(entityId == InvalidEntityId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write entity logic value data from entity with invalid id");
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write entity logic value data from entity with invalid id");
         return false;
     }
     auto it = entities.find(entityId);
     if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write entity to read logic value data");
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write entity to read logic value data");
         return false;
     }
     auto entity = it->second.get();
     if(logicId == InvalidEntityLogicId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write logic value data with invalid logic id from entity: '%s'",
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic value data with invalid logic id from entity: '%s'",
             entity->ET_getName());
         return false;
     }
     if(valueId == InvalidEntityLogicValueId) {
-        LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write logic value data with invalid value id from entity: '%s'",
+        LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write logic value data with invalid value id from entity: '%s'",
             entity->ET_getName());
         return false;
     }
     if(logicId == TransformLogicId) {
         if(!tmClassInfo->writeValue(entity->getTransform(), valueId, stream)) {
-            LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can't write transform value data to entity: '%s'",
+            LogWarning("[EntityManager::ET_writeEntityLogicData] Can't write transform value data to entity: '%s'",
                 entity->ET_getName());
             return false;
         }
     } else {
-        if(!entity->writeLogicValueData(logicId, valueId, stream)) {
-            LogWarning("[EntityManager::ET_writeEntityLogicValueData] Can;'t write logic value data to entity: '%s'",
+        if(!entity->writeLogicData(logicId, valueId, stream)) {
+            LogWarning("[EntityManager::ET_writeEntityLogicData] Can;'t write logic value data to entity: '%s'",
                 entity->ET_getName());
             return false;
         }

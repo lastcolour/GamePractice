@@ -230,7 +230,7 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     res = false;
     EntityLogicId logicId = 0;
     EntityLogicValueId valueId = 1;
-    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicValueData, entId, logicId, valueId, stream);
+    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entId, logicId, valueId, stream);
 
     ASSERT_TRUE(res);
 
@@ -260,7 +260,7 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     stream.reopenForRead();
 
     res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicValueData, entId, logicId, valueId, stream);
+    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, entId, logicId, valueId, stream);
 
     ASSERT_TRUE(res);
 
@@ -313,7 +313,7 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
     MemoryStream stream;
     stream.openForWrite();
     bool res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, stream);
+    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, AllEntityLogicValueId, stream);
     ASSERT_TRUE(res);
 
     auto buffer = stream.flushToBuffer();

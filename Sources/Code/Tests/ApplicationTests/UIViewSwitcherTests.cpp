@@ -2,15 +2,15 @@
 #include "TestUtils/UITestUtils.hpp"
 
 #include <UI/UIViewSwitcher.hpp>
-#include <UI/Logics/UIBaseBox.hpp>
+#include <UI/Logics/UIBox.hpp>
 #include <Entity/Entity.hpp>
 
 TEST_F(UISwitcherTests, CheckViewSwitch) {
 
-    UIBaseBox* firstView = createObjectAndLogic<UIBaseBox>();
+    UIBox* firstView = createObjectAndLogic<UIBox>();
     ASSERT_TRUE(firstView->init());
 
-    UIBaseBox* secondView = createObjectAndLogic<UIBaseBox>();
+    UIBox* secondView = createObjectAndLogic<UIBox>();
     ASSERT_TRUE(secondView->init());
 
     UIViewSwitcher switcher;
@@ -20,7 +20,7 @@ TEST_F(UISwitcherTests, CheckViewSwitch) {
 
     {
         bool isVisible = true;
-        ET_SendEventReturn(isVisible, firstView->getEntityId(), &ETUIBox::ET_isVisible);
+        ET_SendEventReturn(isVisible, firstView->getEntityId(), &ETUIVisibleElement::ET_isVisible);
         EXPECT_FALSE(isVisible);
     }
 
@@ -30,7 +30,7 @@ TEST_F(UISwitcherTests, CheckViewSwitch) {
 
     {
         bool isVisible = true;
-        ET_SendEventReturn(isVisible, secondView->getEntityId(), &ETUIBox::ET_isVisible);
+        ET_SendEventReturn(isVisible, secondView->getEntityId(), &ETUIVisibleElement::ET_isVisible);
         EXPECT_FALSE(isVisible);
     }
 }

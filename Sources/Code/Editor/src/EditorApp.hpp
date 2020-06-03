@@ -25,10 +25,8 @@ public:
     void drawFrame(void* out, int32_t width, int32_t height);
     EntityId addChilEntityToEntity(EntityId entityId, const char* childName);
     void removeChildEntityFromEntity(EntityId parentId, EntityId childId);
-    Buffer getEntityLogicData(EntityId entityId, EntityLogicId logicId);
-    Buffer getEntityLogicValueData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
-    void setEntityLogicData(EntityId entityId, EntityLogicId logicId, Buffer& buffer);
-    void setEntityLogicValueData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
+    Buffer getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
+    void setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
 
 protected:
 

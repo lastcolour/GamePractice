@@ -18,7 +18,7 @@ UIBaseBox::~UIBaseBox() {
 
 void UIBaseBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBaseBox>("UIBaseBox")) {
-        classInfo->addField("style", &UIBaseBox::style);
+        classInfo->addField("boxStyle", &UIBaseBox::boxStyle);
     }
 }
 
@@ -68,58 +68,25 @@ const Margin& UIBaseBox::ET_getMaring() const {
 
 Margin UIBaseBox::calculateMargin(const AABB2Di& parentBox) const {
     Margin resMargin;
-    switch(style.sizeInv)
+    switch(boxStyle.sizeInv)
     {
         case SizeInvariant::Absolute:
         {
             Vec2i renderPort(0);
             ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
-            resMargin.left = static_cast<int>(renderPort.x * style.margin.left);
-            resMargin.right = static_cast<int>(renderPort.x * style.margin.right);
-            resMargin.bot = static_cast<int>(renderPort.y * style.margin.bot);
-            resMargin.top = static_cast<int>(renderPort.y * style.margin.top);
-            break;
-        }
-        case SizeInvariant::AbsoluteBiggestSquare:
-        {
-            Vec2i renderPort(0);
-            ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-            int minSide = std::min(renderPort.x, renderPort.y);
-
-            resMargin.left = static_cast<int>(minSide * style.margin.left);
-            resMargin.right = static_cast<int>(minSide * style.margin.right);
-            resMargin.bot = static_cast<int>(minSide * style.margin.bot);
-            resMargin.top = static_cast<int>(minSide * style.margin.top);
-            break;
-        }
-        case SizeInvariant::Relative:
-        {
-            Vec2i parentSize = parentBox.getSize();
-
-            resMargin.left = static_cast<int>(parentSize.x * style.margin.left);
-            resMargin.right = static_cast<int>(parentSize.x * style.margin.right);
-            resMargin.bot = static_cast<int>(parentSize.y * style.margin.bot);
-            resMargin.top = static_cast<int>(parentSize.y * style.margin.top);
-            break;
-        }
-        case SizeInvariant::RelativeBiggestSquare:
-        {
-            Vec2i parentSize = parentBox.getSize();
-            int minSide = std::min(parentSize.x, parentSize.y);
-
-            resMargin.left = static_cast<int>(minSide * style.margin.left);
-            resMargin.right = static_cast<int>(minSide * style.margin.right);
-            resMargin.bot = static_cast<int>(minSide * style.margin.bot);
-            resMargin.top = static_cast<int>(minSide * style.margin.top);
+            resMargin.left = static_cast<int>(renderPort.x * boxStyle.margin.left);
+            resMargin.right = static_cast<int>(renderPort.x * boxStyle.margin.right);
+            resMargin.bot = static_cast<int>(renderPort.y * boxStyle.margin.bot);
+            resMargin.top = static_cast<int>(renderPort.y * boxStyle.margin.top);
             break;
         }
         case SizeInvariant::Pixel:
         {
-            resMargin.left = static_cast<int>(style.margin.left);
-            resMargin.right = static_cast<int>(style.margin.right);
-            resMargin.bot = static_cast<int>(style.margin.bot);
-            resMargin.top = static_cast<int>(style.margin.top);
+            resMargin.left = static_cast<int>(boxStyle.margin.left);
+            resMargin.right = static_cast<int>(boxStyle.margin.right);
+            resMargin.bot = static_cast<int>(boxStyle.margin.bot);
+            resMargin.top = static_cast<int>(boxStyle.margin.top);
             break;
         }
         default:
@@ -131,44 +98,20 @@ Margin UIBaseBox::calculateMargin(const AABB2Di& parentBox) const {
 
 Vec2i UIBaseBox::calculateBoxSize(const AABB2Di& parentBox) const {
     Vec2i resSize(0);
-    switch(style.sizeInv)
+    switch(boxStyle.sizeInv)
     {
         case SizeInvariant::Absolute:
         {
             Vec2i renderPort(0);
             ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-            resSize.x = static_cast<int>(renderPort.x * style.size.x);
-            resSize.y = static_cast<int>(renderPort.y * style.size.y);
-            break;
-        }
-        case SizeInvariant::AbsoluteBiggestSquare:
-        {
-            Vec2i renderPort(0);
-            ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-            int minSide = std::min(renderPort.x, renderPort.y);
-            resSize.x = static_cast<int>(minSide * style.size.x);
-            resSize.y = static_cast<int>(minSide * style.size.y);
-            break;
-        }
-        case SizeInvariant::Relative:
-        {
-            Vec2i parentSize = parentBox.getSize();
-            resSize.x = static_cast<int>(parentSize.x * style.size.x);
-            resSize.y = static_cast<int>(parentSize.y * style.size.y);
-            break;
-        }
-        case SizeInvariant::RelativeBiggestSquare:
-        {
-            Vec2i parentSize = parentBox.getSize();
-            int minSide = std::min(parentSize.x, parentSize.y);
-            resSize.x = static_cast<int>(minSide * style.size.x);
-            resSize.y = static_cast<int>(minSide * style.size.y);
+            resSize.x = static_cast<int>(renderPort.x * boxStyle.size.x);
+            resSize.y = static_cast<int>(renderPort.y * boxStyle.size.y);
             break;
         }
         case SizeInvariant::Pixel:
         {
-            resSize.x = static_cast<int>(style.size.x);
-            resSize.y = static_cast<int>(style.size.y);
+            resSize.x = static_cast<int>(boxStyle.size.x);
+            resSize.y = static_cast<int>(boxStyle.size.y);
             break;
         }
         default:
@@ -181,7 +124,7 @@ Vec2i UIBaseBox::calculateBoxSize(const AABB2Di& parentBox) const {
 Vec2i UIBaseBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) const {
     Vec2i resCenter = selfBox.getCenter();
     const auto halfSize = selfBox.getSize() / 2;
-    switch(style.xAlignType) {
+    switch(boxStyle.xAlignType) {
         case XAlignType::Center: {
             resCenter.x = parentBox.getCenter().x;
             break;
@@ -197,7 +140,7 @@ Vec2i UIBaseBox::calcCenter(const AABB2Di& selfBox, const AABB2Di& parentBox) co
         default:
             assert(false && "Invalid align type");
     }
-    switch(style.yAlignType) {
+    switch(boxStyle.yAlignType) {
         case YAlignType::Center: {
             resCenter.y = parentBox.getCenter().y;
             break;
@@ -268,12 +211,12 @@ AABB2Di UIBaseBox::calcBox(const AABB2Di& parentBox) const {
     return resAabb;
 }
 
-const UIStyle& UIBaseBox::ET_getStyle() const {
-    return style;
+const UIBoxStyle& UIBaseBox::ET_getBoxStyle() const {
+    return boxStyle;
 }
 
-void UIBaseBox::ET_setStyle(const UIStyle& newStyle) {
-    style = newStyle;
+void UIBaseBox::ET_setBoxStyle(const UIBoxStyle& newStyle) {
+    boxStyle = newStyle;
     forceResizeFromTop();
 }
 

@@ -161,7 +161,7 @@ bool UIViewStack::initPush(const std::string& viewName) {
         zIndexOffset += Z_INDEX_OFFSET_BUFFER;
     }
 
-    ET_SendEvent(newViewId, &ETUIBox::ET_setZIndex, zIndexOffset);
+    ET_SendEvent(newViewId, &ETUIVisibleElement::ET_setZIndex, zIndexOffset);
 
     viewStack.push_back(newViewId);
     return true;

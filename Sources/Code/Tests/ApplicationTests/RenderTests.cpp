@@ -50,10 +50,12 @@ void RenderTests::TearDownTestCase() {
 }
 
 void RenderTests::SetUp() {
+    ConsoleAppTests::SetUp();
     textureFramebuffer->bind();
 }
 
 void RenderTests::TearDown() {
+    ConsoleAppTests::TearDown();
     auto errCode = glGetError();
     ASSERT_EQ(errCode, GL_NO_ERROR);
 

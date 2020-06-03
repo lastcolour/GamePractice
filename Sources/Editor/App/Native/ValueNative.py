@@ -61,7 +61,7 @@ class ValueNative(NativeObject):
             return
         stream = MemoryStream()
         self.writeToStream(stream)
-        self._getAPI().getLibrary().setEntityLogicValueData(self._getEntityId(), self._getLogicId(), self._valueId, stream)
+        self._getAPI().getLibrary().setEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId, stream)
         self._isModified = True
 
 class BoolValue(ValueNative):
@@ -478,6 +478,12 @@ class ArrayValue(ValueNative):
         for elem in self._vals:
             elem.writeToStream(stream)
 
+    def addNewVal(self):
+        pass
+
+    def removeVal(self, valId):
+        pass
+
     def getValues(self):
         return self._vals
 
@@ -508,7 +514,7 @@ class EnumValue(ValueNative):
         self._val = stream.readInt()
 
     def writeToStream(self, stream):
-        stream.writeInt(self, stream)
+        stream.writeInt(self._val)
 
     def setVal(self, val):
         self._val = int(self._table[str(val)])
@@ -644,21 +650,30 @@ def _createValue(valueName, valueType):
         val = ColorValue()
     elif valueType == "resource":
         val = ResourceValue()
+    elif valueType == "entity":
+        val = StringValue()
     else:
         valueModel = _getReflectModel().getTypeModel(valueType)
         if valueModel is None:
-            raise RuntimeError("Can't find type mode for a type '{0}'".format(valueType))
-        valueType = valueModel["type"]
-        if valueType == "class":
+            raise RuntimeError("Can't find type model for a type '{0}'".format(valueType))
+        valModelType = valueModel["type"]
+        if valModelType == "class":
             val = ObjectValue()
-            CreateObjectValue(val, valueModel["data"])
-        elif valueType == "array":
+            for itemName in valueModel["data"]:
+                itemType = valueModel["data"][itemName]
+                itemVal = _createValue(itemName, itemType)
+                val._vals.append(itemVal)
+        elif valModelType == "array":
             val = ArrayValue()
-            elemType =  _getReflectModel().getArrayElemType(valueType)
+            elemType = _getReflectModel().getArrayElemType(valueType)
+            if elemType is None:
+                raise RuntimeError("Can't find element type of array: '{0}'".format(valueType))
             val._elemCls = _createValue(None, elemType).__class__
-        elif valueType == "enum":
+        elif valModelType == "enum":
             val = EnumValue()
             val._table = _getReflectModel().getEnumTable(valueType)
+            if val._table is None:
+                raise RuntimeError("Can't find enum table for enum: '{0}'".format(valueType))
         else:
             raise RuntimeError("Unknown value type: '{0}'".format(valueType))
     val._name = valueName
