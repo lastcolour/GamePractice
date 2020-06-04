@@ -1,0 +1,40 @@
+{
+  "transform": {
+    "pos": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "scale": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "rot": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.0
+    }
+  },
+  "children": [],
+  "logics": [
+    {
+      "type": "UIBox",
+      "data": {
+        "style": {
+          "width": 30.0,
+          "widthInv": "Grid",
+          "height": 30.0,
+          "heightInv": "Grid",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        }
+      }
+    }
+  ]
+}

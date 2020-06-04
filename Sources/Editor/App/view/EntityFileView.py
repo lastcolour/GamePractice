@@ -23,7 +23,7 @@ class EntityFileView(QWidget):
         self._tree.itemDoubleClicked.connect(self._tree_itemDoublecClicked)
         self._rootLayout.addWidget(self._tree)
 
-        self._fileTreeMenu = FileTreeMenu(self._tree)
+        self._fileTreeMenu = FileTreeMenu(self)
 
         self.setLayout(self._rootLayout)
 
@@ -56,3 +56,60 @@ class EntityFileView(QWidget):
         if item._node.isDir():
             return
         GetEventManager().onEntityDoubleClickFromFileTree(item._node.getRelativePath())
+
+    def _getRootItemForEditItem(self, treeItem):
+        if treeItem is None:
+            treeItem = self._tree.invisibleRootItem()
+        elif not treeItem._node.isDir():
+            treeItem = treeItem.parent()
+            if treeItem is None:
+                treeItem = self._tree.invisibleRootItem()
+        return treeItem
+
+    def _getRootFileNode(self, treeItem):
+        if hasattr(treeItem.parent(), "_node"):
+            return treeItem.parent()._node
+        return self._fileTreeModel.getRootNode()
+
+    def _createNewDir(self, treeItem, fileName):
+        newNode = self._fileTreeModel.createNewDir(self._getRootFileNode(treeItem), fileName)
+        if newNode is None:
+            return False
+        treeItem._node = newNode
+        treeItem.setText(0, fileName)
+        self._tree.setItemWidget(treeItem, 0, None)
+        return True
+
+    def _renameItem(self, treeItem, newFileName):
+        if not self._fileTreeModel.renameNode(treeItem._node, newFileName):
+            return False
+        treeItem.setText(0, newFileName)
+        self._tree.setItemWidget(treeItem, 0, None)
+        return True
+
+    def _createNewEntity(self, treeItem, fileName):
+        newNode = self._fileTreeModel.createNewEntity(self._getRootFileNode(treeItem), fileName)
+        if newNode is None:
+            return False
+        treeItem._node = newNode
+        treeItem.setText(0, fileName)
+        self._tree.setItemWidget(treeItem, 0, None)
+        return True
+
+    def _removeItem(self, treeItem):
+        if not self._fileTreeModel.removeNode(treeItem._node):
+            return
+        parentItem = treeItem.parent()
+        if parentItem is None:
+            parentItem = self._tree.invisibleRootItem()
+        parentItem.removeChild(treeItem)
+
+    def _createEditDirItem(self, treeItem):
+        newItem = QTreeWidgetItem(self._getRootItemForEditItem(treeItem))
+        newItem.setIcon(0, self.style().standardIcon(QStyle.SP_DirIcon))
+        return newItem
+
+    def _createEditFileItem(self, treeItem):
+        newItem = QTreeWidgetItem(self._getRootItemForEditItem(treeItem))
+        newItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+        return newItem

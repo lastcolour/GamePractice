@@ -79,3 +79,17 @@ class EntityNativeLoader(NativeObject):
         with open(fullFilePath, 'w') as tFile:
             json.dump(data, tFile, indent=2)
         print("[EntityNativeLoader:saveEntity] Save entity changes: '{0}'".format(entity.getName()))
+
+def CreateVoidEntity(filePath):
+    data = {
+        "transform":{
+            "pos":{"x":0, "y":0, "z":0},
+            "scale":{"x":0, "y":0, "z":0},
+            "rot":{"x":0, "y":0, "z":0, "w":0},
+        },
+        "children":[],
+        "logics":[]
+    }
+    with open(filePath, 'w+') as tFile:
+        json.dump(data, tFile, indent=2)
+    return True

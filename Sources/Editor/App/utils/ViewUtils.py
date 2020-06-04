@@ -1,3 +1,6 @@
+import subprocess
+import platform
+
 def ClearLayout(layout):
     while layout.count() >= 1:
         item = layout.itemAt(layout.count() - 1)
@@ -21,3 +24,12 @@ def GetMinimunWidgetTreeHeight(treeWidget):
         item = treeWidget.topLevelItem(i)
         height += _getWidgetTreeItemHeight(treeWidget, item)
     return height
+
+def OpenPlatformFileExplorer(filePath):
+    if platform.system() == "Windows":
+        filePath = filePath.replace("/", "\\")
+        subprocess.Popen("explorer /select,\"{0}\"".format(filePath))
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", filePath])
+    else:
+        subprocess.Popen(["xdg-open", filePath])
