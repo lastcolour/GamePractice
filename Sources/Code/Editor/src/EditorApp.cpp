@@ -64,6 +64,7 @@ void EditorApp::buildModules(ModuleListT& modules) {
 }
 
 EntityId EditorApp::loadEntity(const char* entityName) {
+    ET_SendEvent(&ETAssetsCacheManager::ET_clear);
     EntityId entId;
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, entityName);
     if(!entId.isValid()) {

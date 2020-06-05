@@ -320,9 +320,10 @@ Entity* EntityManager::createEntityImpl(Entity* rootEntity, const JSONNode& enti
         return nullptr;
     }
     auto resEntPtr = entity.get();
+    auto resEntId = entity->getEntityId();
     entities[resEntPtr->getEntityId()] = std::move(entity);
     if(rootEntity) {
-        rootEntity->ET_addChild(entity->getEntityId());
+        rootEntity->ET_addChild(resEntId);
     }
     return resEntPtr;
 }

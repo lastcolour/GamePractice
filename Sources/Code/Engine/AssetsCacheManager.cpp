@@ -78,3 +78,7 @@ void AssetsCacheManager::ET_setCacheLifetime(float seconds) {
 float AssetsCacheManager::ET_getCacheLifetime() const {
     return assetsLifetime;
 }
+
+void AssetsCacheManager::ET_clear() {
+    assetsCacheMap.clear();
+}

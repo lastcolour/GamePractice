@@ -113,7 +113,7 @@ class EntityNative(NativeObject):
 
     def getLogics(self):
         return self._logics
-    
+
     def getChildren(self):
         return self._children
 
@@ -138,20 +138,20 @@ class EntityNative(NativeObject):
         self._isModified = True
         return childEntity
 
-    def removeChildEntity(self, childEntityId):
+    def removeChildEntity(self, childEntity):
         if not self.isLoadedToNative():
             raise RuntimeError("Can't remove child entity with id '{0}' from entity '{1}' that isn't loaded to edit".format(
-                childEntityId, self._name))
+                childEntity._name, self._name))
         childToRemove = None
         for child in self._children:
-            if child.getNativeId() == childEntityId:
+            if child.getNativeId() == childEntity.getNativeId():
                 childToRemove = child
                 break
         if childToRemove is None:
-            print("[EntityNative:removeChildEntity] Can't find child with id '{0}' to remove from entity {1}".format(
-                childEntityId, self._name))
+            print("[EntityNative:removeChildEntity] Can't find child '{0}' with id '{1}' to remove from entity {2}".format(
+                childEntity._name, childEntity.getNativeId(), self._name))
             return
-        self._getAPI().getLibrary().removeChildEntityFromEntity(self._entityId, childEntityId)
+        self._getAPI().getLibrary().removeChildEntityFromEntity(self._entityId, childEntity.getNativeId())
         self._children.remove(childToRemove)
         self._isModified = True
 
@@ -177,3 +177,10 @@ class EntityNative(NativeObject):
     def save(self):
         self._getAPI().getEntityLoader().saveEntity(self)
         self._isModified = False
+
+    def canAddChild(self, entityName):
+        if self._name == entityName:
+            return False
+        if self._parent is not None:
+            return self._parent.canAddChild(entityName)
+        return True

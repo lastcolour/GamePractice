@@ -9,7 +9,7 @@ import os
 
 class EntityNativeLoader(NativeObject):
     def __init__(self):
-        pass
+        self._entitiesStack = []
 
     def init(self):
         return True
@@ -54,6 +54,16 @@ class EntityNativeLoader(NativeObject):
         return True
 
     def loadEntity(self, entityName):
+        if entityName in self._entitiesStack:
+            print("[EntityNativeLoader:loadEntity] Found cyclic dependecy: [{0}]".format(", ".join(self._entitiesStack)))
+            self._entitiesStack.clear()
+            raise RuntimeError("Can't load entity: {0}".format(entityName))
+        self._entitiesStack.append(entityName)
+        resEntity = self._loadEntityImpl(entityName)
+        self._entitiesStack.pop()
+        return resEntity
+
+    def _loadEntityImpl(self, entityName):
         fullFilePath = self.getEntityFullPath(entityName)
         if not os.path.exists(fullFilePath):
             print("[EntityNativeLoader:loadEntity] Can't load entity '{0}' from missed file".format(fullFilePath))
@@ -65,11 +75,11 @@ class EntityNativeLoader(NativeObject):
         if not self._loadTransform(entity, data):
             print("[EntityNativeLoader:loadEntity] Can't load transfrom from entity: '{0}'".format(entityName))
             return None
-        if not self._loadChildren(entity, data):
-            print("[EntityNativeLoader:loadEntity] Can't load children from entity: '{0}'".format(entityName))
-            return None
         if not self._loadLogics(entity, data):
             print("[EntityNativeLoader:loadEntity] Can't load logics from entity: '{0}'".format(entityName))
+            return None
+        if not self._loadChildren(entity, data):
+            print("[EntityNativeLoader:loadEntity] Can't load children from entity: '{0}'".format(entityName))
             return None
         return entity
 

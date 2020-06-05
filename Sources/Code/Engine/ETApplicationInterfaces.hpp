@@ -101,6 +101,7 @@ struct ETAssetsCacheManager {
     virtual void ET_putAssetToCache(const char* assetName, const Buffer& buff) = 0;
     virtual void ET_setCacheLifetime(float seconds) = 0;
     virtual float ET_getCacheLifetime() const = 0;
+    virtual void ET_clear() = 0;
 };
 
 struct ETModuleConfigManager {

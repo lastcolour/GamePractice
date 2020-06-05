@@ -15,6 +15,8 @@ from native.EditorNative import EditorNative
 from model.AssetsModel import AssetsModel
 from model.LogicsModel import LogicsModel
 
+from menu.MainFileMenu import MainFileMenu
+
 import sys
 
 class EditorView(QMainWindow):
@@ -24,6 +26,9 @@ class EditorView(QMainWindow):
         self.setWindowTitle("Editor")
         self.setMinimumSize(640, 480)
         self.setContentsMargins(1, 1, 1, 1)
+
+        self._fileMenu = MainFileMenu(self)
+        self.menuBar().addMenu(self._fileMenu)
 
         self._entityTreeView = QDockWidget()
         self._entityTreeView.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)

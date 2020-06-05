@@ -33,12 +33,13 @@ public:
     void ET_putAssetToCache(const char* assetName, const Buffer& buff) override;
     void ET_setCacheLifetime(float seconds) override;
     float ET_getCacheLifetime() const override;
+    void ET_clear() override;
 
     // ETTimerEvent
     void ET_onTick(float dt) override;
 
 private:
-    
+
     AssetsCacheMapT assetsCacheMap;
     float assetsLifetime;
 };

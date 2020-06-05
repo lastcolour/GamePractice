@@ -114,7 +114,7 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(entity.loadToNative())
         childEntity = entity.addChildEntity("Game/Void.json")
         self.assertTrue(entity.isModified())
-        entity.removeChildEntity(childEntity.getNativeId())
+        entity.removeChildEntity(childEntity)
         self.assertTrue(entity.isModified())
 
     def testSaveEntity(self):

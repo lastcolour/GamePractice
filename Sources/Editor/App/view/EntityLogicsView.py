@@ -38,6 +38,8 @@ class EntityLogicsView(QWidget):
 
     def _buildLogicsList(self):
         ClearLayout(self._logicsLayout)
+        if self._editEntity is None:
+            return
         for logic in self._editEntity.getLogics():
             logicView = LogicView(logic)
             self._logicsLayout.addWidget(logicView)

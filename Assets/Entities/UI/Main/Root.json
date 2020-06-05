@@ -17,7 +17,9 @@
       "w": 0.0
     }
   },
-  "children": [],
+  "children": [
+    "UI/Main/TopBar.json"
+  ],
   "logics": [
     {
       "type": "UIBox",

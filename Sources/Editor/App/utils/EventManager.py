@@ -29,7 +29,10 @@ class _EventManager:
                 elif retCode == QMessageBox.No:
                     pass
         loader = self._app._editorNative.getEntityLoader()
-        newEntity = loader.loadEntity(entityName)
+        try:
+            newEntity = loader.loadEntity(entityName)
+        except:
+            return
         if newEntity is None:
             return
         if not newEntity.loadToNative():
@@ -38,6 +41,10 @@ class _EventManager:
             return
         self._currentEntity = newEntity
         self._app._entityLogicsView.widget().setEditEntity(self._currentEntity)
+        self._app._entityTreeView.widget().setEditEntity(self._currentEntity)
+
+    def onEntityClickedFromEntityTree(self, entity):
+        self._app._entityLogicsView.widget().setEditEntity(entity)
 
     def onAddLogicBtClicked(self, editEntity):
         if editEntity is None:
@@ -67,6 +74,9 @@ class _EventManager:
 
     def drawNativeFrameTo(self, ptr, width, height):
         self._app._editorNative.getLibrary().drawFrame(ptr, width, height)
+
+    def getAssetsModel(self):
+        return self._app._assetsModel
 
 def GetEventManager():
     return _EventManager._INSTANCE
