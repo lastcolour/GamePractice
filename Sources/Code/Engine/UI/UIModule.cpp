@@ -6,6 +6,8 @@
 #include "UI/UIConfig.hpp"
 #include "UI/Logics/UIBox.hpp"
 #include "UI/Logics/UILayout.hpp"
+#include "UI/Logics/UIView.hpp"
+#include "UI/Logics/UIBoxVisual.hpp"
 #include "Entity/EntityLogicRegister.hpp"
 
 UIModule::UIModule() :
@@ -29,4 +31,6 @@ void UIModule::reflectSystemConfigs(ReflectContext& ctx) const {
 void UIModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
     logicRegister.registerLogic<UIBox>();
     logicRegister.registerLogic<UILayout>();
+    logicRegister.registerLogic<UIView>();
+    logicRegister.registerLogic<UIBoxVisual>();
 }

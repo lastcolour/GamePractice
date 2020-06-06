@@ -30,6 +30,7 @@ class LogicNative(NativeObject):
 
     def writeToDict(self, data):
         data["type"] = self._name
+        data["id"] = self._logicId
         rootData = []
         self._rootValue.writeToDict(rootData)
         data["data"] = rootData[0]

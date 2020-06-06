@@ -18,6 +18,7 @@ from .values.EditQuatValue import EditQuatValue
 from .values.EditColorValue import EditColorValue
 from .values.EditEnumValue import EditEnumValue
 from .values.EditArrayValue import EditArrayValue
+from .values.EditEntityValue import EditEntityValue
 
 class LogicViewTopBar(QWidget):
     def __init__(self):
@@ -187,7 +188,7 @@ class LogicView(QWidget):
         elif valType == ValueType.Resource:
             return EditStringValue(value)
         elif valType == ValueType.Entity:
-            return EditStringValue(value)
+            return EditEntityValue(value)
         elif valType == ValueType.Array:
             return EditArrayValue(value)
         elif valType == ValueType.Enum:

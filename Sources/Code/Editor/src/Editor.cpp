@@ -73,23 +73,14 @@ void UnloadEntity(uint32_t entityId) {
     EDITOR_APP->unloadEntity(entId);
 }
 
-uint32_t GetEntityChildren(uint32_t entityId, void** out) {
+uint32_t GetEntityChildEntityId(uint32_t entityId, int32_t childId) {
     if(!EDITOR_APP) {
         return 0u;
     }
     EntityId entId;
     entId.setRawId(entityId);
-    auto children = EDITOR_APP->getEntityChildren(entId);
-    if(children.empty()) {
-        return 0u;
-    }
-    INTERNAL_BUFFER.resize(children.size() * sizeof(uint32_t));
-    auto ptr = static_cast<uint32_t*>(INTERNAL_BUFFER.getWriteData());
-    for(uint32_t i = 0u; i < children.size(); ++i) {
-        ptr[i] = children[i].getRawId();
-    }
-    *out = static_cast<void*>(ptr);
-    return static_cast<uint32_t>(children.size());
+    auto childEntId = EDITOR_APP->getEntityChildEntityId(entId, static_cast<EntityChildId>(childId));
+    return childEntId.getRawId();
 }
 
 const char* GetEntityName(uint32_t entityId) {
@@ -126,14 +117,15 @@ void RemoveLogicFromEntity(uint32_t entityId, int32_t logicId) {
     EDITOR_APP->removeLogicFromEntity(entId, static_cast<EntityLogicId>(logicId));
 }
 
-uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName) {
+int32_t AddChildEntityToEntity(uint32_t parentId, uint32_t childId) {
     if(!EDITOR_APP) {
         return 0u;
     }
-    EntityId entId;
-    entId.setRawId(entityId);
-    auto childId = EDITOR_APP->addChilEntityToEntity(entId, entityName);
-    return childId.getRawId();
+    EntityId parentEntId;
+    parentEntId.setRawId(parentId);
+    EntityId childEntId;
+    childEntId.setRawId(childId);
+    return  EDITOR_APP->addChilEntityToEntity(parentEntId, childEntId);
 }
 
 void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId) {
@@ -179,4 +171,11 @@ void SetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, con
     Buffer buffer(data, size);
     EDITOR_APP->setEntityLogicData(entId, static_cast<EntityLogicId>(logicId),
         static_cast<EntityLogicValueId>(valueId), buffer);
+}
+
+void UnloadAll() {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EDITOR_APP->unloadAll();
 }

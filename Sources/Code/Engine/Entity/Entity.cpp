@@ -17,6 +17,30 @@ bool CheckLogicValue(const char* errStr, Entity* entity, EntityLogicId logicId, 
     return true;
 }
 
+bool IsValidChildId(EntityChildId childId, const std::vector<Entity::EntityChildNode>& children) {
+    if(childId == InvalidEntityChildId) {
+        return false;
+    }
+    for(auto& childNode : children) {
+        if(childId == childNode.childId) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IsValidLogicId(EntityLogicId logicId, const std::vector<Entity::EntityLogicNode>& logics) {
+    if(logicId == InvalidEntityLogicId) {
+        return false;
+    }
+    for(auto& logicNode : logics) {
+        if(logicId == logicNode.logicId) {
+            return false;
+        }
+    }
+    return true;
+}
+
 } // namespace
 
 Entity::Entity(const char* entityName, EntityId entId) :
@@ -30,18 +54,17 @@ Entity::Entity(const char* entityName, EntityId entId) :
 
 Entity::~Entity() {
     for(auto it = children.rbegin(), end = children.rend(); it != end; ++it) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, *it);
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, it->childEntId);
     }
     for(auto it = logics.rbegin(), end = logics.rend(); it != end; ++it) {
         static_cast<EntityLogic*>(it->logic.get())->deinit();
     }
 }
 
-EntityLogicId Entity::createLogicId() const {
-    if(logics.empty()) {
-        return 1;
-    }
-    return logics.back().logicId + 1;
+void Entity::addChildEntityWithId(EntityChildId childId, Entity& entity) {
+    assert(IsValidChildId(childId, children) && "Invalid children id");
+    entity.parentId = entityId;
+    children.emplace_back(EntityChildNode{entity.entityId, childId});
 }
 
 EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
@@ -51,9 +74,21 @@ EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
     if(!logicPtr->init()) {
         return InvalidEntityLogicId;
     }
-    auto logicId = createLogicId();
+    auto logicId = createNewLogicId();
     logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
     return logicId;
+}
+
+bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance) {
+    assert(logicInstance.get() && "Can't add null game logic");
+    assert(IsValidLogicId(logicId, logics) && "Invalid entity logic id");
+    auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
+    logicPtr->setEntity(this);
+    if(!logicPtr->init()) {
+        return false;
+    }
+    logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
+    return true;
 }
 
 EntityLogicId Entity::addCustomLogic(std::unique_ptr<EntityLogic>&& logic) {
@@ -132,10 +167,6 @@ const char* Entity::ET_getName() const {
     return name.c_str();
 }
 
-const std::vector<EntityId>& Entity::ET_getChildren() const {
-    return children;
-}
-
 void Entity::ET_setParent(EntityId entId) {
     assert(entId != entityId && "Can't set self as a parent");
     if(parentId == entId) {
@@ -150,27 +181,29 @@ void Entity::ET_setParent(EntityId entId) {
     }
 }
 
-void Entity::ET_addChild(EntityId entId) {
+EntityChildId Entity::ET_addChild(EntityId entId) {
     assert(entId != entityId && "Can't add self as a child");
     assert(entId != InvalidEntityId && "Invalid entity id");
-    for(auto childId : children) {
-        if(childId == entId) {
-            return;
+    for(auto childNode : children) {
+        if(childNode.childEntId == entId) {
+            return InvalidEntityChildId;
         }
     }
-    children.push_back(entId);
+    auto childId = createNewChildId();
+    children.emplace_back(EntityChildNode{entId, childId});
     EntityId entParentId;
     ET_SendEventReturn(entParentId, entId, &ETEntity::ET_getParentId);
     if(entParentId != entityId) {
         ET_SendEvent(entId, &ETEntity::ET_setParent, entityId);
     }
     ET_SendEvent(entityId, &ETEntityEvents::ET_onChildAdded, entId);
+    return childId;
 }
 
 void Entity::ET_removeChild(EntityId entId) {
     auto it = children.begin();
     for(auto end = children.end(); it != end; ++it) {
-        if(*it == entId) {
+        if(it->childEntId == entId) {
             break;
         }
     }
@@ -196,27 +229,56 @@ void Entity::ET_setTransform(const Transform& transform) {
     Vec3 ptOffset = transform.pt - tm.pt;
     Vec3 scaleFactor = transform.scale / tm.scale;
     tm = transform;
-    for(auto childId : children) {
+    for(auto childNode : children) {
         Transform childTm;
-        ET_SendEventReturn(childTm, childId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(childTm, childNode.childEntId, &ETEntity::ET_getTransform);
         childTm.pt += ptOffset;
         childTm.scale = Vec3(childTm.scale.x * scaleFactor.x,
             childTm.scale.y * scaleFactor.y,
             childTm.scale.z * scaleFactor.z);
-        ET_SendEvent(childId, &ETEntity::ET_setTransform, childTm);
+        ET_SendEvent(childNode.childEntId, &ETEntity::ET_setTransform, childTm);
     }
     ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);
 }
 
 int Entity::ET_getMaxChildrenDepth() const {
     int maxDepth = 0;
-    for(auto childId : children) {
+    for(auto childNode : children) {
         int childMaxDepth = 0;
-        ET_SendEventReturn(childMaxDepth, childId, &ETEntity::ET_getMaxChildrenDepth);
+        ET_SendEventReturn(childMaxDepth, childNode.childEntId, &ETEntity::ET_getMaxChildrenDepth);
         childMaxDepth++;
         if(childMaxDepth > maxDepth) {
             maxDepth = childMaxDepth;
         }
     }
     return maxDepth;
+}
+
+EntityLogicId Entity::createNewLogicId() const {
+    EntityLogicId logicId = 1;
+    for(auto& logicNode : logics) {
+        if(logicNode.logicId >= logicId) {
+            logicId = logicNode.logicId + 1;
+        }
+    }
+    return logicId;
+}
+
+EntityChildId Entity::createNewChildId() const {
+    EntityChildId childId = 1;
+    for(auto& chilNode : children) {
+        if(chilNode.childId >= childId) {
+            childId = chilNode.childId + 1;
+        }
+    }
+    return childId;
+}
+
+EntityId Entity::ET_getChildEntityId(EntityChildId childId) const {
+    for(auto& chilNode : children) {
+        if(chilNode.childId == childId) {
+            return chilNode.childEntId;
+        }
+    }
+    return InvalidEntityId;
 }

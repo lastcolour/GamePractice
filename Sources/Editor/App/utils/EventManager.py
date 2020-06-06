@@ -16,18 +16,22 @@ class _EventManager:
         self._currentEntity = None
         self._app._entityFileView.widget().setFileTreeModel(self._app._assetsModel)
 
+    def _askToSaveEntity(self):
+        if not self._currentEntity.isModified():
+            return True
+        retCode = SaveEntityChanges(self._currentEntity).exec_()
+        if retCode == QMessageBox.Ok:
+            self._currentEntity.save()
+        elif retCode == QMessageBox.Cancel:
+            return False
+        return True
+
     def onEntityDoubleClickFromFileTree(self, entityName):
         if self._currentEntity is not None:
             if self._currentEntity.getName() == entityName:
                 return
-            if self._currentEntity.isModified():
-                retCode = SaveEntityChanges(self._currentEntity).exec_()
-                if retCode == QMessageBox.Ok:
-                    self._currentEntity.save()
-                elif retCode == QMessageBox.Cancel:
-                    return
-                elif retCode == QMessageBox.No:
-                    pass
+            if not self._askToSaveEntity():
+                return
         loader = self._app._editorNative.getEntityLoader()
         try:
             newEntity = loader.loadEntity(entityName)
@@ -39,6 +43,8 @@ class _EventManager:
             Log.error("[_EventManager:onEntityDoubleClickFromFileTree] Can't load entity '{0}' to native".format(
                 entityName))
             return
+        if self._currentEntity is not None:
+            self._currentEntity.unloadFromNative()
         self._currentEntity = newEntity
         self._app._entityLogicsView.widget().setEditEntity(self._currentEntity)
         self._app._entityTreeView.widget().setEditEntity(self._currentEntity)
@@ -77,6 +83,21 @@ class _EventManager:
 
     def getAssetsModel(self):
         return self._app._assetsModel
+
+    def hasEditEntity(self):
+        return self._currentEntity is not None
+
+    def closeEditEntity(self):
+        if self._currentEntity is not None:
+            if not self._askToSaveEntity():
+                return
+            self._currentEntity.unloadFromNative()
+        self._currentEntity = None
+        self._app._entityLogicsView.widget().setEditEntity(None)
+        self._app._entityTreeView.widget().setEditEntity(None)
+
+    def saveEditEntity(self):
+        self._currentEntity.save()
 
 def GetEventManager():
     return _EventManager._INSTANCE

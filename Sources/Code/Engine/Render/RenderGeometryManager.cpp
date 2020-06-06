@@ -37,7 +37,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(cons
     } else if(geomName == TEXT_VERTEX_CHUNK) {
         return createTextVertexChunks();
     }
-    LogWarning("[Render::createGeometryOfType] Can't create unknown type of geometry: '%s'", geomName);
+    LogWarning("[RenderGeometryManager::createGeometryOfType] Can't create unknown type of geometry: '%s'", geomName);
     return nullptr;
 }
 

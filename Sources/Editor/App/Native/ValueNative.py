@@ -26,13 +26,16 @@ class ValueType:
 class ValueNative(NativeObject):
     def __init__(self, valueType):
         self._name = None
+        self._arrayName = None
         self._logic = None
         self._valueId = None
         self._isModified = False
         self._type = valueType
 
     def getName(self):
-        return self._name
+        if self._name is not None:
+            return self._name
+        return self._arrayName
 
     def getType(self):
         return self._type
@@ -350,7 +353,7 @@ class Vec4Value(ValueNative):
 
 class QuatValue(ValueNative):
     def __init__(self):
-        super().__init__(ValueType.Vec4)
+        super().__init__(ValueType.Quat)
         self._xVal = None
         self._yVal = None
         self._zVal = None
@@ -472,7 +475,7 @@ class ArrayValue(ValueNative):
         size = stream.readInt()
         for i in range(size):
             elem = self._elemCls()
-            elem._name = "[{0}]".format(i)
+            elem._arrayName = "[{0}]".format(i)
             elem.readFromStream(stream)
             self._vals.append(elem)
 

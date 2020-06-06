@@ -18,23 +18,5 @@
     }
   },
   "children": [],
-  "logics": [
-    {
-      "type": "UIBox",
-      "data": {
-        "style": {
-          "width": 1.0,
-          "widthInv": "Grid",
-          "height": 1.0,
-          "heightInv": "Grid",
-          "margin": {
-            "top": 0.0,
-            "bot": 0.0,
-            "left": 0.0,
-            "right": 0.0
-          }
-        }
-      }
-    }
-  ]
+  "logics": []
 }

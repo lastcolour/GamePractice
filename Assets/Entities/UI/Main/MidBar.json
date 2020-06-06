@@ -36,6 +36,19 @@
           }
         }
       }
+    },
+    {
+      "type": "UIBoxVisual",
+      "id": 2,
+      "data": {
+        "render": "",
+        "background": {
+          "r": 205,
+          "g": 205,
+          "b": 205,
+          "a": 205
+        }
+      }
     }
   ]
 }

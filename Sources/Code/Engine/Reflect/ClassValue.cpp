@@ -469,6 +469,11 @@ bool ClassValue::readValue(void* instance, void* valuePtr, const JSONNode& node)
         setResourceFunc(instance, value.c_str());
         return true;
     }
+    case ClassValueType::Entity: {
+        std::string value;
+        readJSONValue(isElement, name, value, node);
+        return true;
+    }
     default:
         LogError("[ClassValue::readValue] Unknown value type '%s'", name);
         assert(false && "Unknown value type");

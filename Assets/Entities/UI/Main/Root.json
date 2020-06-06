@@ -18,24 +18,39 @@
     }
   },
   "children": [
-    "UI/Main/TopBar.json"
+    {
+      "name": "UI/Main/TopBar.json",
+      "id": 1
+    },
+    {
+      "name": "UI/Main/MidBar.json",
+      "id": 2
+    },
+    {
+      "name": "UI/Main/BotBar.json",
+      "id": 3
+    }
   ],
   "logics": [
     {
-      "type": "UIBox",
+      "type": "UIView",
+      "id": 1,
+      "data": {}
+    },
+    {
+      "type": "UILayout",
+      "id": 2,
       "data": {
         "style": {
-          "width": 30.0,
-          "widthInv": "Grid",
-          "height": 30.0,
-          "heightInv": "Grid",
-          "margin": {
-            "top": 0.0,
-            "bot": 0.0,
-            "left": 0.0,
-            "right": 0.0
-          }
-        }
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          "",
+          "",
+          ""
+        ]
       }
     }
   ]

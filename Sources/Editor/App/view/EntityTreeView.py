@@ -42,7 +42,8 @@ class EntityTreeView(QWidget):
 
     def _buildTree(self):
         self._tree.clear()
-        self._createTreeItem(self._tree.invisibleRootItem(), self._editEntity)
+        if self._editEntity is not None:
+            self._createTreeItem(self._tree.invisibleRootItem(), self._editEntity)
 
     def _onAddNewChild(self, treeItem, entityName):
         entity = treeItem._entity
@@ -59,9 +60,7 @@ class EntityTreeView(QWidget):
         parentItem.removeChild(treeItem)
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
-        if currItem is None or not hasattr(currItem, "_entity"):
-            GetEventManager().onEntityClickedFromEntityTree(None)
-        else:
+        if currItem is not None and hasattr(currItem, "_entity"):
             GetEventManager().onEntityClickedFromEntityTree(currItem._entity)
 
     def _signal_tree_contextMenuRequested(self, pt):

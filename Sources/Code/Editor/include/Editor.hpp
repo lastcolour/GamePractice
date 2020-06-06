@@ -23,7 +23,7 @@ LIB_EXPORT uint32_t LoadEntity(const char* entityName);
 
 LIB_EXPORT void UnloadEntity(uint32_t entityId);
 
-LIB_EXPORT uint32_t GetEntityChildren(uint32_t entityId, void** out);
+LIB_EXPORT uint32_t GetEntityChildEntityId(uint32_t entityId, int32_t childId);
 
 LIB_EXPORT const char* GetEntityName(uint32_t entityId);
 
@@ -37,11 +37,13 @@ LIB_EXPORT void SetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t v
 
 LIB_EXPORT void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId);
 
-LIB_EXPORT uint32_t AddChildEntityToEntity(uint32_t entityId, const char* entityName);
+LIB_EXPORT int32_t AddChildEntityToEntity(uint32_t parentId, uint32_t childId);
 
 LIB_EXPORT void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId);
 
 LIB_EXPORT void DrawFrame(void* out, uint32_t w, uint32_t h);
+
+LIB_EXPORT void UnloadAll();
 
 } // extern "C"
 

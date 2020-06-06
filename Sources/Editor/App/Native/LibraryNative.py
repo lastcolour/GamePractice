@@ -36,9 +36,9 @@ class LibraryNative:
         self._unloadEntityFunc.argstype = [ctypes.c_uint32,]
         self._unloadEntityFunc.restype = None
 
-        self._getEntityChildrenFunc = self._editorLib.GetEntityChildren
-        self._getEntityChildrenFunc.argstype = [ctypes.c_uint32, ctypes.POINTER(ctypes.c_void_p)]
-        self._getEntityChildrenFunc.restype = ctypes.c_uint32
+        self._getEntityChildEntityIdFunc = self._editorLib.GetEntityChildEntityId
+        self._getEntityChildEntityIdFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32]
+        self._getEntityChildEntityIdFunc.restype = ctypes.c_int32
 
         self._getEntityNameFunc = self._editorLib.GetEntityName
         self._getEntityNameFunc.argstype = [ctypes.c_uint32,]
@@ -65,12 +65,16 @@ class LibraryNative:
         self._addEntityLogicArrayElementFunc.restype = None
 
         self._addChildEntityToEntityFunc = self._editorLib.AddChildEntityToEntity
-        self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
-        self._addChildEntityToEntityFunc.restype = ctypes.c_uint32
+        self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32]
+        self._addChildEntityToEntityFunc.restype = ctypes.c_int32
 
         self._removeChildEntityFromEntityFunc = self._editorLib.RemoveChildEntityFromEntity
         self._removeChildEntityFromEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32]
         self._removeChildEntityFromEntityFunc.restype = None
+
+        self._unloadAllFunc = self._editorLib.UnloadAll
+        self._unloadAllFunc.argstype = None
+        self._unloadAllFunc.restype = None
 
         self._drawFrameFunc = self._editorLib.DrawFrame
         self._drawFrameFunc.argstype = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_uint32]
@@ -93,17 +97,10 @@ class LibraryNative:
         cEntId = ctypes.c_uint32(entityId)
         self._unloadEntityFunc(cEntId)
 
-    def getEntityChildren(self, entityId):
-        cEntId = ctypes.c_uint32(entityId)
-        outPtr = ctypes.POINTER(ctypes.c_char)()
-        childCount = self._getEntityChildrenFunc(cEntId, ctypes.byref(outPtr))
-        if childCount == 0:
-            return []
-        bufferPtr = ctypes.POINTER(ctypes.c_uint32 * childCount)(outPtr.contents)
-        res = []
-        for i in range(childCount):
-            res.append(bufferPtr.contents[i])
-        return res
+    def getEntityChildEntityId(self, parentId, childId):
+        cParentId = ctypes.c_uint32(parentId)
+        cChildId = ctypes.c_uint32(childId)
+        return self._getEntityChildEntityIdFunc(cParentId, cChildId)
 
     def getEntityName(self, entityId):
         cEntId = ctypes.c_uint32(entityId)
@@ -155,10 +152,10 @@ class LibraryNative:
             res.append(outPtr.contents[i].decode('ascii'))
         return res
 
-    def addChildEntityToEntity(self, entityId, entityName):
-        cEntityName = ctypes.c_char_p(entityName.encode('ascii') + b'\x00')
-        cEntId = ctypes.c_uint32(entityId)
-        return self._addChildEntityToEntityFunc(cEntId, cEntityName)
+    def addChildEntityToEntity(self, parentId, childId):
+        cParentId = ctypes.c_uint32(parentId)
+        cChildId = ctypes.c_uint32(childId)
+        return self._addChildEntityToEntityFunc(cParentId, cChildId)
 
     def removeChildEntityFromEntity(self, parentId, childId):
         cParentId = ctypes.c_uint32(parentId)
@@ -170,3 +167,6 @@ class LibraryNative:
         cLogicId = ctypes.c_int32(logicId)
         cValueId = ctypes.c_int32(valueId)
         self._addEntityLogicArrayElementFunc(cEntId, cLogicId, cValueId)
+
+    def unloadAll(self):
+        self._unloadAllFunc()

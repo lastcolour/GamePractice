@@ -10,6 +10,7 @@ class EntityNative(NativeObject):
         self._children = []
         self._logics = []
         self._parent = None
+        self._childId = None
 
     def getName(self):
         return self._name
@@ -30,19 +31,17 @@ class EntityNative(NativeObject):
     def isLoadedToNative(self):
         return self._entityId is not None
 
-    def _createEntityLogicId(self):
-        if len(self._logics) == 0:
-            return 1
-        else:
-            return self._logics[-1]._logicId + 1
-
     def _syncWithNative(self):
-        childIds = self._getAPI().getLibrary().getEntityChildren(self._entityId)
-        if len(self._children) != len(childIds):
-            raise RuntimeError("Invalid number of children")
-        for i in range(len(self._children)):
-            self._children[i]._entityId = childIds[i]
-            self._children[i]._syncWithNative()
+        for childEnt in self._children:
+            childEnt._entityId = self._getAPI().getLibrary().getEntityChildEntityId(self._entityId, childEnt._childId)
+            childEnt._syncWithNative()
+        for logic in self._logics:
+            logic.readFromNative()
+
+    def _desyncWithNative(self):
+        self._entityId = None
+        for childEnt in self._children:
+            childEnt._desyncWithNative()
 
     def loadToNative(self):
         self._entityId = self._getAPI().getLibrary().loadEntity(self._name)
@@ -51,6 +50,10 @@ class EntityNative(NativeObject):
             return False
         self._syncWithNative()
         return True
+
+    def unloadFromNative(self):
+        self._getAPI().getLibrary().unloadEntity(self._entityId)
+        self._entityId = None
 
     def addLogic(self, logicName):
         if not self.isLoadedToNative():
@@ -72,7 +75,7 @@ class EntityNative(NativeObject):
         self._isModified = True
         return logic
 
-    def addLogicWithData(self, logicName, logicData):
+    def addLogicWithData(self, logicName, logicId, logicData):
         if self.isLoadedToNative():
             raise RuntimeError("Can't add logic '{0}' with data to entity that is loaded to editor: '{1}'".format(
                 logicName, self._name))
@@ -80,7 +83,7 @@ class EntityNative(NativeObject):
         if logic is None:
             print("[EntityNative:addLogicWithData] Can't add '{0}' logic to entity '{1}'".format(logicName, self._name))
             return None
-        logic._logicId = self._createEntityLogicId()
+        logic._logicId = logicId
         logic._entity = self
         logic._rootValue.readFromDict(logicData)
         self._logics.append(logic)
@@ -124,16 +127,19 @@ class EntityNative(NativeObject):
         if not self.isLoadedToNative():
             raise RuntimeError("Can't add child '{0}' entity to entity '{1}' that is not loaded to edit".format(
                 entityName, self._name))
-        childEntityId = self._getAPI().getLibrary().addChildEntityToEntity(self._entityId, entityName)
-        if childEntityId == 0:
-            print("[EntityNative:addChildEntity] Can't add child entity '{0}' to '{1}'".format(entityName, self._name))
-            return None
         childEntity = self._getAPI().getEntityLoader().loadEntity(entityName)
         if childEntity is None:
-            print("[EntityNative:addChildEntity] Can't load an entity '{0}' to as a child to to '{1}'".format(entityName, self._name))
+            print("[EntityNative:addChildEntity] Can't load entity form file '{0}' to add as a child to '{1}'".format(entityName, self._name))
+            return None
+        if not childEntity.loadToNative():
+            print("[EntityNative:addChildEntity] Can't load entity '{0}' to native to add as a child to '{1}'".format(entityName, self._name))
+            return None
+        childEntity._childId = self._getAPI().getLibrary().addChildEntityToEntity(self._entityId, childEntity._entityId)
+        if childEntity._childId == -1:
+            childEntity.unloadFromNative()
+            print("[EntityNative:addChildEntity] Can't add child entity '{0}' to entity: '{1}'".format(entityName, self._name))
             return None
         childEntity._parent = self
-        childEntity._entityId = childEntityId
         self._children.append(childEntity)
         self._isModified = True
         return childEntity
@@ -152,6 +158,7 @@ class EntityNative(NativeObject):
                 childEntity._name, childEntity.getNativeId(), self._name))
             return
         self._getAPI().getLibrary().removeChildEntityFromEntity(self._entityId, childEntity.getNativeId())
+        childToRemove.unloadFromNative()
         self._children.remove(childToRemove)
         self._isModified = True
 
@@ -164,7 +171,10 @@ class EntityNative(NativeObject):
         self._tmLogic.writeToDict(tmRes)
         res["transform"] = tmRes["data"]
         for child in self._children:
-            res["children"].append(child.getName())
+            res["children"].append({
+                "name": child.getName(),
+                "id": child._childId
+            })
         for logic in self._logics:
             logicRes = {}
             logic.writeToDict(logicRes)
@@ -176,6 +186,8 @@ class EntityNative(NativeObject):
 
     def save(self):
         self._getAPI().getEntityLoader().saveEntity(self)
+        for child in self._children:
+            child.save()
         self._isModified = False
 
     def canAddChild(self, entityName):

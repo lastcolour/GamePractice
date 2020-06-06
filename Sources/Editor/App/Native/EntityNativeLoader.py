@@ -29,12 +29,21 @@ class EntityNativeLoader(NativeObject):
             print("[EntityNativeLoader:_loadChildren] Can't find require 'children' node in entity: '{0}'".format(entity._name))
             return False
         childData = data["children"]
-        for childName in childData:
+        for childNode in childData:
+            if "name" not in childNode:
+                print("[EntityNativeLoader:_loadChildren] Can't find require 'name' field in children section in entity: '{0}'".format(entity._name))
+                return False
+            if "id" not in childNode:
+                print("[EntityNativeLoader:_loadChildren] Can't find require 'id' field in children section in entity: '{0}'".format(entity._name))
+                return False
+            childName = childNode["name"]
+            childId = childNode["id"]
             childEntity = self.loadEntity(childName)
             if childEntity is None:
                 print("[EntityNativeLoader:_loadChildren] Can't load children: '{0}' for entity: '{1}'".format(
                     childName, entity._name))
                 return False
+            childEntity._childId = childId
             entity._children.append(childEntity)
         return True
 
@@ -50,7 +59,10 @@ class EntityNativeLoader(NativeObject):
             if "data" not in item:
                 print("[EntityNativeLoader:_loadLogics] Can't find reuqired 'data' node in logic data")
                 return None
-            entity.addLogicWithData(item["type"], item["data"])
+            if "id" not in item:
+                print("[EntityNativeLoader:_loadLogics] Can't find reuqired 'id' node in logic data")
+                return None
+            entity.addLogicWithData(item["type"], item["id"], item["data"])
         return True
 
     def loadEntity(self, entityName):

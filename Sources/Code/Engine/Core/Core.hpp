@@ -43,6 +43,9 @@ const TypeId InvalidTypeId = 0;
 typedef int EntityLogicId;
 const EntityLogicId InvalidEntityLogicId = -1;
 
+typedef int EntityChildId;
+const EntityChildId InvalidEntityChildId = -1;
+
 typedef int EntityLogicValueId;
 const EntityLogicValueId InvalidEntityLogicValueId = -1;
 const EntityLogicValueId AllEntityLogicValueId = 0;

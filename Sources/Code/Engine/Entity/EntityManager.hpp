@@ -29,6 +29,7 @@ public:
     // ETEntityManager
     EntityId ET_createEntity(const char* entityName) override;
     void ET_destroyEntity(EntityId entityId) override;
+    void ET_destroyAllEntities() override;
     bool ET_registerLogics(EntityLogicRegister& logicRegister) override;
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
     EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
@@ -43,8 +44,8 @@ public:
 
 private:
 
-    Entity* createEntityImpl(Entity* rootEntity, const JSONNode& entityNode, const char* entityName);
-    Entity* createEntity(Entity* rootEntity, const char* entityName);
+    Entity* createEntityImpl(const JSONNode& entityNode, const char* entityName);
+    Entity* createEntity(const char* entityName);
     Entity* findEntity(EntityId entityId);
     JSONNode loadEntityRootNode(const char* entityName) const;
     bool setupEntityTranform(Entity* entity, const JSONNode& node);

@@ -25,7 +25,7 @@ class EditorAppTests(unittest.TestCase):
         self.assertNotEqual(self._centralEntityId, 0)
 
     def tearDown(self):
-        EditorAppTests.NATIVE_LIB.unloadEntity(self._centralEntityId)
+        EditorAppTests.NATIVE_LIB.unloadAll()
 
     def testGetReflectModel(self):
         reflectModel = EditorAppTests.NATIVE_LIB.getReflectModel()
@@ -40,24 +40,22 @@ class EditorAppTests(unittest.TestCase):
         entityName = EditorAppTests.NATIVE_LIB.getEntityName(self._centralEntityId)
         self.assertEqual(entityName, "Game/Simple.json")
 
-        children = EditorAppTests.NATIVE_LIB.getEntityChildren(self._centralEntityId)
-        self.assertEqual(len(children), 0)
+        voidEntId = EditorAppTests.NATIVE_LIB.loadEntity("Game/Void.json")
+        self.assertNotEqual(voidEntId, 0)
 
-        childEntityId = EditorAppTests.NATIVE_LIB.addChildEntityToEntity(self._centralEntityId, "Game/Simple.json")
+        childId = EditorAppTests.NATIVE_LIB.addChildEntityToEntity(self._centralEntityId, voidEntId)
+        self.assertNotEqual(childId, -1)
 
-        children = EditorAppTests.NATIVE_LIB.getEntityChildren(self._centralEntityId)
-        self.assertEqual(len(children), 1)
-        self.assertEqual(children[0], childEntityId)
+        copyVoidId = EditorAppTests.NATIVE_LIB.getEntityChildEntityId(self._centralEntityId, childId)
+        self.assertEqual(copyVoidId, voidEntId)
 
-        EditorAppTests.NATIVE_LIB.removeChildEntityFromEntity(self._centralEntityId, childEntityId)
-
-        children = EditorAppTests.NATIVE_LIB.getEntityChildren(self._centralEntityId)
-        self.assertEqual(len(children), 0)
+        EditorAppTests.NATIVE_LIB.removeChildEntityFromEntity(self._centralEntityId, voidEntId)
 
     def testAddRemoveLogic(self):
         logicId = EditorAppTests.NATIVE_LIB.addLogicToEntity(self._centralEntityId, "RenderSimple")
 
         self.assertNotEqual(logicId, -1)
+        self.assertNotEqual(logicId, 0)
 
         EditorAppTests.NATIVE_LIB.removeLogicFromEntity(self._centralEntityId, logicId)
 

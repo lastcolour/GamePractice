@@ -68,13 +68,9 @@ EntityId EditorApp::loadEntity(const char* entityName) {
     EntityId entId;
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, entityName);
     if(!entId.isValid()) {
-        return entId;
+        return InvalidEntityId;
     }
-    if(centralEntityId.isValid()) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, centralEntityId);
-    }
-    centralEntityId = entId;
-    return centralEntityId;
+    return entId;
 }
 
 void EditorApp::unloadEntity(EntityId entityId) {
@@ -82,22 +78,18 @@ void EditorApp::unloadEntity(EntityId entityId) {
         LogError("[EditorApp::unloadEntity] Can't unload entity with invalid id");
         return;
     }
-    if(entityId != centralEntityId) {
-        LogError("[EditorApp::unloadEntity] Can't unload non-central entity");
-        return;
-    }
-    ET_SendEvent(&ETEntityManager::ET_destroyEntity, centralEntityId);
-    centralEntityId = InvalidEntityId;
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, entityId);
+    ET_SendEvent(&ETAssetsCacheManager::ET_clear);
 }
 
-std::vector<EntityId> EditorApp::getEntityChildren(EntityId entityId) {
-    std::vector<EntityId> children;
+EntityId EditorApp::getEntityChildEntityId(EntityId entityId, EntityChildId childId) {
     if(!entityId.isValid()) {
         LogError("[EditorApp::getEntityChildren] Can't get children of invalid entity");
-        return children;
+        return InvalidEntityId;
     }
-    ET_SendEventReturn(children, entityId, &ETEntity::ET_getChildren);
-    return children;
+    EntityId childEntityId;
+    ET_SendEventReturn(childEntityId, entityId, &ETEntity::ET_getChildEntityId, childId);
+    return childEntityId;
 }
 
 const char* EditorApp::getEntityName(EntityId entityId) {
@@ -128,26 +120,25 @@ void EditorApp::removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) 
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, entityId, logicId);
 }
 
-EntityId EditorApp::addChilEntityToEntity(EntityId entityId, const char* childName) {
-    if(!entityId.isValid()) {
-        LogError("[EditorApp::addChilEntityToEntity] Can't add entity to invalid entity");
-        return InvalidEntityId;
+EntityChildId EditorApp::addChilEntityToEntity(EntityId parentEntId, EntityId childEntId) {
+    if(!parentEntId.isValid()) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add child entity to parent entity with invalid id");
+        return InvalidEntityChildId;
     }
-    if(!ET_IsExistNode<ETEntity>(entityId)) {
-        LogError("[EditorApp::addChilEntityToEntity] Can't add child entity to entity that does not exist");
-        return InvalidEntityId;
+    if(!ET_IsExistNode<ETEntity>(parentEntId)) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add child entity to parent entity that does not exist");
+        return InvalidEntityChildId;
     }
-    if(!childName || !childName[0]) {
-        LogError("[EditorApp::addChilEntityToEntity] Can't add entity with invalid name");
-        return InvalidEntityId;
+    if(!childEntId.isValid()) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add child entity with invalid id");
+        return InvalidEntityChildId;
     }
-    EntityId childId;
-    ET_SendEventReturn(childId, &ETEntityManager::ET_createEntity, childName);
-    if(!childId.isValid()) {
-        LogError("[EditorApp::addChilEntityToEntity] Can't create entity to add");
-        return InvalidEntityId;
+    if(!ET_IsExistNode<ETEntity>(childEntId)) {
+        LogError("[EditorApp::addChilEntityToEntity] Can't add child entity that does not exist");
+        return InvalidEntityChildId;
     }
-    ET_SendEvent(entityId, &ETEntity::ET_addChild, childId);
+    EntityChildId childId = InvalidEntityChildId;
+    ET_SendEventReturn(childId, parentEntId, &ETEntity::ET_addChild, childEntId);
     return childId;
 }
 
@@ -191,4 +182,9 @@ void EditorApp::setEntityLogicData(EntityId entityId, EntityLogicId logicId, Ent
 
 void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId) {
     ET_SendEvent(&ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
+}
+
+void EditorApp::unloadAll() {
+    ET_SendEvent(&ETEntityManager::ET_destroyAllEntities);
+    ET_SendEvent(&ETAssetsCacheManager::ET_clear);
 }

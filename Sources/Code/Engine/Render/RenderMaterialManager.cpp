@@ -35,7 +35,7 @@ void RenderMaterialManager::deinit() {
 std::shared_ptr<RenderMaterial> RenderMaterialManager::ET_createMaterial(const char* matName) {
     std::string reqMatName = matName;
     if(reqMatName.empty()) {
-        LogError("[RenderMaterialManager::createMaterial] Can't create material with empty name");
+        LogWarning("[RenderMaterialManager::createMaterial] Can't create material with empty name");
         return nullptr;
     }
     auto it = materials.find(reqMatName);
@@ -55,22 +55,22 @@ int RenderMaterialManager::createProgram(const std::string& vertFile, const std:
     Buffer buffer;
     ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, vertFile.c_str());
     if(!buffer) {
-        LogError("[RenderMaterialManager::createProgram] Can't load vert shader file: %s", vertFile.c_str());
+        LogWarning("[RenderMaterialManager::createProgram] Can't load vert shader file: %s", vertFile.c_str());
         return 0;
     }
     std::string vertSrc = buffer.acquireString();
     if(vertSrc.empty()) {
-        LogError("[RenderMaterialManager::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
+        LogWarning("[RenderMaterialManager::createProgram] Loaded empty vert shader source from %s", vertFile.c_str());
         return 0;
     }
     ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, fragFile.c_str());
     if(!buffer) {
-        LogError("[RenderMaterialManager::createProgram] Can't load frag shader file: %s", fragFile.c_str());
+        LogWarning("[RenderMaterialManager::createProgram] Can't load frag shader file: %s", fragFile.c_str());
         return 0;
     }
     std::string fragSrc = buffer.acquireString();
     if(fragSrc.empty()) {
-        LogError("[RenderMaterialManager::createProgram] Loaded empty fragFile shader source from %s", vertFile.c_str());
+        LogWarning("[RenderMaterialManager::createProgram] Loaded empty fragFile shader source from %s", vertFile.c_str());
         return 0;
     }
     return createProgramImpl(vertSrc, fragSrc);

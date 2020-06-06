@@ -10,12 +10,25 @@
 class EntityLogic;
 
 class Entity : public ETNode<ETEntity> {
+public:
+
+    struct EntityLogicNode {
+        ClassInstance logic;
+        EntityLogicId logicId;
+    };
+
+    struct EntityChildNode {
+        EntityId childEntId;
+        EntityChildId childId;
+    };
 
 public:
 
     Entity(const char* entityName, EntityId entId);
     virtual ~Entity();
 
+    void addChildEntityWithId(EntityChildId childId, Entity& entity);
+    bool addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance);
     EntityLogicId addLogic(ClassInstance&& logicInstance);
     EntityLogicId addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr);
     bool removeLogic(EntityLogicId logicId);
@@ -28,13 +41,13 @@ public:
 
     // ETEntity
     const char* ET_getName() const override;
+    EntityId ET_getChildEntityId(EntityChildId childId) const override;
     void ET_setParent(EntityId entId) override;
-    void ET_addChild(EntityId entId) override;
+    EntityChildId ET_addChild(EntityId entId) override;
     void ET_removeChild(EntityId entId) override;
     EntityId ET_getParentId() const override;
     const Transform& ET_getTransform() const override;
     void ET_setTransform(const Transform& transform) override;
-    const std::vector<EntityId>& ET_getChildren() const override;
     int ET_getMaxChildrenDepth() const override;
 
 private:
@@ -44,21 +57,15 @@ private:
 
 private:
 
-    EntityLogicId createLogicId() const;
     ClassInstance* findLogic(EntityLogicId logicId);
-
-private:
-
-    struct EntityLogicNode {
-        ClassInstance logic;
-        int logicId;
-    };
+    EntityLogicId createNewLogicId() const;
+    EntityChildId createNewChildId() const;
 
 private:
 
     Transform tm;
     std::vector<EntityLogicNode> logics;
-    std::vector<EntityId> children;
+    std::vector<EntityChildNode> children;
     std::string name;
     EntityId parentId;
     EntityId entityId;
