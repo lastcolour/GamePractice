@@ -17,7 +17,6 @@ file(GLOB EDITOR_HEADERS
 
 add_library(${PROJECT_NAME} SHARED ${EDITOR_SOURCES} ${EDITOR_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
-target_compile_options(${PROJECT_NAME} PRIVATE ${CXX_APP_CHECK_FLAGS})
 
 target_link_libraries(${PROJECT_NAME}
     Application

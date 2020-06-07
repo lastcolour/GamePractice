@@ -18,6 +18,12 @@ public:
     explicit AABB(const F& val) :
         bot(val), top(val) {}
 
+    AABB& operator=(const AABB& other) {
+        bot = other.bot;
+        top = other.top;
+        return *this;
+    }
+
     T getSize() const {
         return top - bot;
     }

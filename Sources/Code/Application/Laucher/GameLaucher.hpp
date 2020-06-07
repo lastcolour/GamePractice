@@ -6,7 +6,7 @@
 #include "UI/ETUIInterfaces.hpp"
 
 class GameLaucher : public SystemLogic,
-    ETNode<ETSurfaceEvents> {
+    public ETNode<ETSurfaceEvents> {
 public:
 
     GameLaucher();

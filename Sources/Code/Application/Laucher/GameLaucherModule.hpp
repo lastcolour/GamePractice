@@ -6,15 +6,14 @@
 class GameLaucherModule : public SystemModule {
 public:
 
-    GameLaucherModule() : SystemModule("GameLaucher") {}
-    virtual ~GameLaucherModule() = default;
+    GameLaucherModule();
+    virtual ~GameLaucherModule();
 
 protected:
 
     LogicsContainerPtrT createSystemLogics() const override;
     void reflectSystemConfigs(ReflectContext& ctx) const override;
     void registerEntityLogics(EntityLogicRegister& logicRegister) const override;
-
 };
 
 #endif /* __GAME_LAUCHER_MODULE_HPP__ */

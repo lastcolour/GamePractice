@@ -30,5 +30,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIB_STATIC_BIN}
     ${CMAKE_THREAD_LIBS_INIT}
-    Application
-    Engine)
+    Engine
+    Application)

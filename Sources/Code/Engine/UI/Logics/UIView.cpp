@@ -4,7 +4,7 @@
 #include "Entity/ETEntityInterfaces.hpp"
 
 void UIView::Reflect(ReflectContext& ctx) {
-    auto classInfo = ctx.classInfo<UIView>("UIView");
+    ctx.classInfo<UIView>("UIView");
 }
 
 UIView::UIView() {

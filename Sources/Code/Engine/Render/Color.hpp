@@ -10,12 +10,14 @@ namespace Color {
 
     struct Color_RGBA_Float {
 
-        Color_RGBA_Float(float val) :
+        explicit Color_RGBA_Float(float val) :
             r(val), g(val), b(val), a(1.f) {}
         Color_RGBA_Float(float red, float green, float blue) :
             r(red), g(green), b(blue), a(1.f) {}
         Color_RGBA_Float(float red, float green, float blue, float alpha) :
             r(red), g(green), b(blue), a(alpha) {}
+        Color_RGBA_Float(const Color_RGBA_Float& other) :
+            r(other.r), g(other.g), b(other.b), a(other.a) {}
         Color_RGBA_Float() = default;
 
         Color_RGBA_Float& operator=(const Color_RGBA_Float& col) {
@@ -48,12 +50,14 @@ namespace Color {
 
     struct Color_RGBA_Byte {
 
-        Color_RGBA_Byte(uint8_t val) :
+        explicit Color_RGBA_Byte(uint8_t val) :
             r(val), g(val), b(val), a(255) {}
         Color_RGBA_Byte(uint8_t red, uint8_t green, uint8_t blue) :
             r(red), g(green), b(blue), a(255) {}
         Color_RGBA_Byte(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
             r(red), g(green), b(blue), a(alpha) {}
+        Color_RGBA_Byte(const Color_RGBA_Byte& other) :
+            r(other.r), g(other.g), b(other.b), a(other.a) {}
         Color_RGBA_Byte() = default;
 
         Color_RGBA_Byte& operator=(const Color_RGBA_Byte& col) {

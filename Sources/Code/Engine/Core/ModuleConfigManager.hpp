@@ -3,6 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "ETApplicationInterfaces.hpp"
+#include "Reflect/ClassInstance.hpp"
 
 #include <unordered_map>
 

@@ -23,9 +23,9 @@ public:
 
     template<typename ClassT>
     ClassInfo* classInfo(const char* name) {
-        auto cInfo = createClassInfo(name, GetTypeId<ClassT>());
+        auto cInfo = createClassInfo(name, GetTypeId<ClassT>()  );
         if(cInfo) {
-            cInfo->init<ClassT>();
+            cInfo->template init<ClassT>();
         }
         return cInfo;
     }

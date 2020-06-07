@@ -2,8 +2,8 @@
     "Project":"Build Game",
     "InputVariables":{
         "buildType":"Debug",
-        "platform":"Windows",
-        "skipLibsBuild":"True",
+        "platform":"${currentPlatform}",
+        "skipLibsBuild":"False",
         "skipGameTests":"False",
         "skipEditorTests":"False"
     },
@@ -12,6 +12,7 @@
             "name":"Create Project Variables",
             "type":"CreateVariables",
             "data":{
+                "buildPlatform":"${platform}",
                 "rootSources":"${currentDir}/../Sources",
                 "gameSources":"${rootSources}/Code",
                 "libSources":"${rootSources}/Libs",
@@ -58,14 +59,14 @@
         },
         {
             "name":"Run Game Tests",
-            "type":"RunProcess",
+            "type":"RunExecutable",
             "dependOn":["Check Run Game Tests"],
             "data":{
-                "process":"${gameBinsRoot}/${buildType}/Game01Tests.exe",
+                "process":"${gameBinsRoot}/${buildType}/Game01Tests",
                 "cwd":"${gameBinsRoot}/${buildType}/_tests",
                 "createCwd":true,
                 "args":[
-                    "--gtest_filter=*EntityTests*"
+                    "--gtest_filter=*"
                 ]
             }
         },

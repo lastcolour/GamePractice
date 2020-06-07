@@ -41,7 +41,7 @@ void UIViewSwitcher::ET_onTick(float dt) {
                     break;
                 } else {
                     ET_SendEvent(switchTask.oldViewId, &ETUIVisibleElement::ET_hide);
-                    // Process 'ShowNewView'
+                    [[fallthrough]];
                 }
             }
         }
@@ -145,6 +145,7 @@ void UIViewSwitcher::ET_onRenderPortResized() {
             duration += 0.1f;
             ET_SendEvent(switchTask.oldViewId, &ETUIAppearAnimation::ET_animate, duration);
             switchTask.state = SwitchState::ShowNewView;
+            [[fallthrough]];
         }
         case SwitchState::ShowNewView: {
             float duration = 0.f;
@@ -153,6 +154,7 @@ void UIViewSwitcher::ET_onRenderPortResized() {
             ET_SendEvent(switchTask.newViewId, &ETUIAppearAnimation::ET_animate, duration);
             ET_SendEvent(&ETUIViewSwitcherEvents::ET_onViewSwitchFinished, switchTask.newViewId);
             switchTask.state = SwitchState::Finished;
+            [[fallthrough]];
         }
         case SwitchState::Finished: {
             return;

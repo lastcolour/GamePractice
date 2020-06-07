@@ -120,17 +120,17 @@ std::string GetSafeStrErrno() {
 std::wstring getLoacalFilesDirPath() {
     auto path = getBinDir();
     if(path.empty()) {
-        return std::filesystem::path();
+        return std::filesystem::path().wstring();
     }
     path.append(LOCAL_DIR_PATH);
     if(!isDirExist(path)) {
         if(!createDir(path)) {
             LogError("[DesktopAssets::getLoacalFilesDirPath] Can't create dir for local data: '%s'",
                 path.string());
-            return std::filesystem::path();
+            return std::filesystem::path().wstring();
         }
     }
-    return path;
+    return path.wstring();
 }
 
 std::filesystem::path transformToPath(const std::filesystem::path& dirPath, const std::string& filePath) {

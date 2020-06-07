@@ -211,7 +211,6 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
     std::vector<ClassInfo*> newClasses;
     baseClassInfo->getAllClasses(newClasses);
 
-    int currentPrimitiveValueCount = 0;
     std::vector<ClassInfo*> currentClasses;
     getAllClasses(currentClasses);
 

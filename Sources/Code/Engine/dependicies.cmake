@@ -66,19 +66,19 @@ if(BUILD_PLATFORM STREQUAL "Linux")
     find_package(ZLIB REQUIRED)
     set(ZLIB_LIB_SHARED_BIN ${ZLIB_LIBRARIES} CACHE PATH "ZLib Library Path")
 
-    CreateStaticLibDependecy("GLAD"
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/GLAD/include
+    CreateSharedLibDependecy("GLAD"
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLAD/include
         glad
     )
 
-    CreateStaticLibDependecy("FREETYPE2"
+    CreateSharedLibDependecy("FREETYPE2"
         ${LIBS_ROOT_DIR}/FreeType2/include
         freetype
     )
 
     CreateSharedLibDependecy("GLFW"
         ${LIBS_ROOT_DIR}/GLFW/include
-        glfw3
+        glfw
     )
 
     CreateSharedLibDependecy("OPENAL_SOFT"
@@ -152,9 +152,9 @@ elseif(BUILD_PLATFORM STREQUAL "Linux")
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_SHARED_BIN}
         ${GLAD_LIB_SHARED_BIN}
-        ${FREETYPE2_LIB_STATIC_BIN}
-        ${ZLIB_LIB_STATIC_BIN}
-        ${OPENAL_SOFT_LIB_STATIC_BIN}
+        ${FREETYPE2_LIB_SHARED_BIN}
+        ${ZLIB_LIB_SHARED_BIN}
+        ${OPENAL_SOFT_LIB_SHARED_BIN}
         dl png
         CACHE INTERNAL "Engine link dependecies")
 else()

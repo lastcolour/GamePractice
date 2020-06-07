@@ -2,8 +2,8 @@
 #include "Core/JSONNode.hpp"
 
 RenderNode::RenderNode() :
-    isVisible(true),
-    drawPriority(0) {
+    drawPriority(0),
+    isVisible(true) {
 }
 
 RenderNode::~RenderNode() {

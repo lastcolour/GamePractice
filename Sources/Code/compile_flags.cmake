@@ -13,7 +13,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fPIC -Wall -pedantic -Wextra")
 
     if(COMPILE_FLAGS_SANITIZE_MEMORY)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -22,26 +22,6 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     if(COMPILE_FLAGS_PROFILE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
     endif()
-
-    set(CXX_APP_CHECK_FLAGS
--Wextra
--Wall
--Wundef
--Wpointer-arith
--Wcast-align
--Wwrite-strings
--Wunreachable-code
--Wno-type-limits
--Wno-unused-value
--Wno-unused-parameter
--Werror CACHE INTERNAL "Compile flags for app")
-
-# -Wcast-qual
-# -Wswitch-default
-# -Wswitch-enum
-# -Wstrict-overflow=5
-# -Wconversion
-# -Wshadow
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 

@@ -67,7 +67,7 @@
             "data":{
                 "type":"all",
                 "platform":"${platform}",
-                "name":"glfw3",
+                "name":"glfw",
                 "from":"${libsBins}/GLFW/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true
@@ -84,7 +84,13 @@
                 "verbosity":"silent",
                 "defs":{
                     "Debug":{
-                        "GLAD_GENERATOR": "c-debug"
+                        "GLAD_GENERATOR":"c-debug"
+                    },
+                    "Release":{
+                        "GLAD_GENERATOR":"c"
+                    },
+                    "Linux":{
+                        "BUILD_SHARED_LIBS":"ON"
                     }
                 }
             }
@@ -103,7 +109,7 @@
             "type":"CopyCompiledBinaries",
             "dependOn":["Build GLAD"],
             "data":{
-                "type":"static",
+                "type":"all",
                 "platform":"${platform}",
                 "name":"glad",
                 "from":"${libsBins}/GLAD/${buildType}",
@@ -119,7 +125,11 @@
                 "out_dir": "${libsBins}/FreeType2",
                 "build_type":"Release",
                 "verbosity":"silent",
-                "defs" : {}
+                "defs" : {
+                    "Linux":{
+                        "BUILD_SHARED_LIBS":"ON"
+                    }
+                }
             }
         },
         {
@@ -127,7 +137,7 @@
             "type":"CopyCompiledBinaries",
             "dependOn":["Build FreeType2"],
             "data":{
-                "type":"static",
+                "type":"all",
                 "platform":"${platform}",
                 "name":"freetype",
                 "from":"${libsBins}/FreeType2/Release",
@@ -137,7 +147,7 @@
         },
         {
             "name":"Build ZLib",
-            "dependOn":["Building PC"],
+            "dependOn":["Building Windows"],
             "type": "CmakeGenerate",
             "data": {
                 "run_dir": "${libSources}/ZLIB",
@@ -240,7 +250,7 @@
             "data":{
                 "type":"static",
                 "platform":"${platform}",
-                "name":"gtest",
+                "name":"gtestd",
                 "from":"${libsBins}/GTEST/${buildType}",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true

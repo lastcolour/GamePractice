@@ -35,7 +35,7 @@ public:
     bool ET_registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) override;
     void ET_reset() override;
     int ET_getRegisteredClassCount() override;
-    void ClassInfoManager::ET_makeReflectModel(JSONNode& node) override;
+    void ET_makeReflectModel(JSONNode& node) override;
 
 private:
 

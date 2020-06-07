@@ -41,9 +41,9 @@ private:
 
 private:
 
-    TypeId enumTypeId;
-    std::string enumName;
     std::unordered_map<std::string, int> nameToVal;
+    std::string enumName;
+    TypeId enumTypeId;
 };
 
 #endif /* __ENUM_INFO_HPP__ */
