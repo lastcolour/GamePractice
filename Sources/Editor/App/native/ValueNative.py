@@ -6,6 +6,13 @@ import collections
 def _getReflectModel():
     return NativeObject._NATIVE_API.getReflectModel()
 
+def _syncValueWithNative(val):
+    stream = MemoryStream()
+    val.writeToStream(stream)
+    NativeObject._NATIVE_API.getLibrary().setEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId, stream)
+    stream = NativeObject._NATIVE_API.getLibrary().getEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId)
+    val.readFromStream(stream)
+
 class ValueType:
     Bool = 0
     Int = 1
@@ -26,7 +33,8 @@ class ValueType:
 class ValueNative(NativeObject):
     def __init__(self, valueType):
         self._name = None
-        self._arrayName = None
+        self._arrayId = None
+        self._arrayVal = None
         self._logic = None
         self._valueId = None
         self._isModified = False
@@ -35,7 +43,7 @@ class ValueNative(NativeObject):
     def getName(self):
         if self._name is not None:
             return self._name
-        return self._arrayName
+        return "[{0}]".format(self._arrayId)
 
     def getType(self):
         return self._type
@@ -46,27 +54,35 @@ class ValueNative(NativeObject):
     def isModified(self):
         return self._isModified
 
-    def _getLogicId(self):
-        return self._logic.getNativeId()
+    def getEntity(self):
+        if self._name is not None:
+            return self._logic.getEntity()
+        return self._arrayVal.getEntity()
 
-    def _getEntityId(self):
-        return self._logic.getEntity().getNativeId()
+    def getLogicId(self):
+        if self._name is not None:
+            return self._logic.getNativeId()
+        return self._arrayVal.getNativeId()
+
+    def getEntityId(self):
+        return self.getEntity().getNativeId()
 
     def _isLoadedToNative(self):
-        if self._logic is None:
-            return False
-        return self._logic.getEntity().isLoadedToNative()
+        if self._logic is not None:
+            return self._logic.getEntity().isLoadedToNative()
+        if self._arrayVal is not None:
+            return self._arrayVal.getEntity().isLoadedToNative()
+        return False
 
     def _onValueChanged(self):
         if self.getPrimitiveValueCount() != 1:
             raise RuntimeError("Can't write to native non-primitive values")
         if not self._isLoadedToNative():
             return
-        stream = MemoryStream()
-        self.writeToStream(stream)
-        self._getAPI().getLibrary().setEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId, stream)
-        stream = self._getAPI().getLibrary().getEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId)
-        self.readFromStream(stream)
+        if self._name is not None:
+            _syncValueWithNative(self)
+        else:
+            _syncValueWithNative(self._arrayVal)
         self._isModified = True
 
 class BoolValue(ValueNative):
@@ -457,8 +473,12 @@ class ArrayValue(ValueNative):
         if self._name is None:
             raise RuntimeError("Array of arrays is not supported")
         self._vals = []
+        idx = 0
         for elemNode in node[self._name]:
             elem = self._elemCls()
+            elem._arrayId = idx
+            elem._arrayVal = self
+            idx += 1
             elem.readFromDict(elemNode)
             self._vals.append(elem)
 
@@ -475,7 +495,8 @@ class ArrayValue(ValueNative):
         size = stream.readInt()
         for i in range(size):
             elem = self._elemCls()
-            elem._arrayName = "[{0}]".format(i)
+            elem._arrayId = i
+            elem._arrayVal = self
             elem.readFromStream(stream)
             self._vals.append(elem)
 
@@ -486,8 +507,8 @@ class ArrayValue(ValueNative):
 
     def addNewElement(self):
         currSize = len(self._vals)
-        self._getAPI().getLibrary().addEntityLogicArrayElement(self._getEntityId(), self._getLogicId(), self._valueId)
-        stream = self._getAPI().getLibrary().getEntityLogicData(self._getEntityId(), self._getLogicId(), self._valueId)
+        self._getAPI().getLibrary().addEntityLogicArrayElement(self.getEntityId(), self.getLogicId(), self._valueId)
+        stream = self._getAPI().getLibrary().getEntityLogicData(self.getEntityId(), self.getLogicId(), self._valueId)
         self.readFromStream(stream)
         if len(self._vals) != currSize + 1:
             raise RuntimeError("Native error when adding ne element")
@@ -628,16 +649,20 @@ class EntityValue(ValueNative):
             node.append(self._val)
 
     def readFromStream(self, stream):
-        self._val = stream.readString()
+        self._val = stream.readInt()
 
     def writeToStream(self, stream):
-        stream.wrirteString(self._val)
+        stream.writeInt(self._val)
 
-    def setVal(self, val):
-        self._val = str(val)
+    def setEntityValue(self, entity):
+        if entity is None:
+            self._val = 0
+        else:
+            self._val = entity._childId
+        self._onValueChanged()
 
-    def getVal(self):
-        return self._val
+    def getEntityValue(self):
+        return self.getEntity().getChildWithId(self._val)
 
 def _createValue(valueName, valueType):
     val = None

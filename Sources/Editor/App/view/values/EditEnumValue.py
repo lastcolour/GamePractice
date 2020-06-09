@@ -21,10 +21,11 @@ class EditEnumValue(QWidget):
         self._pull()
 
     def _signal_comboBox_textChanged(self, text):
-        pass
+        self._push(text)
+        self._pull()
 
-    def _push(self):
-        pass
+    def _push(self, text):
+        self._val.setVal(text)
 
     def _pull(self):
         idx = self._comboBox.findText(self._val.getVal())

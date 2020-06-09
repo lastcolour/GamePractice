@@ -6,6 +6,8 @@
 #include <Core/ETPrimitives.hpp>
 #include <Core/MemoryStream.hpp>
 #include <Reflect/ETReflectInterfaces.hpp>
+#include <Entity/Entity.hpp>
+#include <Entity/EntityLogic.hpp>
 
 namespace {
 
@@ -173,6 +175,26 @@ public:
     std::vector<Vec3> array;
 };
 
+class ObjectWithEntity : public EntityLogic {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        if(auto classInfo = ctx.classInfo<ObjectWithEntity>("ObjectWithEntity")) {
+            classInfo->addField("entity", &ObjectWithEntity::entityId);
+        }
+    }
+
+public:
+
+    // EntityLogic
+    bool init() override { return true; }
+    void deinit() override {}
+
+public:
+
+    EntityId entityId;
+};
+
 } // namespace
 
 void ReflectTests::TearDown() {
@@ -190,7 +212,8 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     ASSERT_EQ(classInstance.getInstanceTypeId(), classInfo->getIntanceTypeId());
 
     auto object = classInstance.acquire<SimpleEntityLogic>();
@@ -217,7 +240,8 @@ TEST_F(ReflectTests, TestObjectWithObject) {
     auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = classInstance.acquire<ObjectWithObjectEntity>();
     ASSERT_TRUE(object);
 
@@ -300,7 +324,8 @@ TEST_F(ReflectTests, TestBaseAndDeriveded) {
     auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = classInstance.acquire<DerivedObject>();
     ASSERT_TRUE(object);
 
@@ -321,7 +346,8 @@ TEST_F(ReflectTests, TestResource) {
     auto jsonNode = JSONNode::ParseString("{ \"resource\" : \"ObjectWithResource\" }");
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = classInstance.acquire<ObjectWithResource>();
     ASSERT_TRUE(object);
 
@@ -339,7 +365,8 @@ TEST_F(ReflectTests, TestEnum) {
     auto jsonNode = JSONNode::ParseString("{ \"number\" : \"Two\" }");
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = classInstance.acquire<ObjectWithEnum>();
     ASSERT_TRUE(object);
 
@@ -356,7 +383,8 @@ TEST_F(ReflectTests, TestArray) {
     auto jsonNode = JSONNode::ParseString("{\"array\": [{ \"number\" : \"One\" }, {\"number\" : \"Two\"}] }");
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = classInstance.acquire<ObjectWitArray>();
     ASSERT_TRUE(object);
 
@@ -375,7 +403,8 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     auto jsonNode = JSONNode::ParseString("{\"array\": [\"one\", \"two\"] }");
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = static_cast<ObjectWithStringArray*>(classInstance.get());
     ASSERT_TRUE(object);
 
@@ -389,7 +418,7 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(classInstance.readValue(AllEntityLogicValueId, stream));
+    ASSERT_TRUE(classInstance.writeValueTo(AllEntityLogicValueId, stream));
 
     stream.reopenForRead();
 
@@ -423,7 +452,8 @@ TEST_F(ReflectTests, TestArrayOfVec3) {
     auto jsonNode = JSONNode::ParseString("{\"array\": [{ \"x\":1, \"y\":2, \"z\":3 }, { \"x\":4, \"y\":5, \"z\":6 }, { \"x\":7, \"y\":8, \"z\":9 }] }");
     ASSERT_TRUE(jsonNode);
 
-    auto classInstance = classInfo->createInstance(jsonNode);
+    auto classInstance = classInfo->createInstance();
+    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
     auto object = classInstance.acquire<ObjectWithArrayOfVec3>();
     ASSERT_TRUE(object);
 
@@ -471,12 +501,13 @@ TEST_F(ReflectTests, TestReadValuesSimpleObject) {
     auto classInfo =  reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto instance = classInfo->createInstance(jsonNode);
+    auto instance = classInfo->createInstance();
+    ASSERT_TRUE(instance.readAllValuesFrom(jsonNode));
 
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.readValue(AllEntityLogicValueId, stream));
+    ASSERT_TRUE(instance.writeAllValuesTo(stream));
 
     auto buffer = stream.flushToBuffer();
     ASSERT_TRUE(buffer);
@@ -513,7 +544,7 @@ TEST_F(ReflectTests, TestWriteClassValueOfSimpleEntity) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto instance = classInfo->createDefaultInstance();
+    auto instance = classInfo->createInstance();
     ASSERT_TRUE(instance.get());
 
     auto logicPtr = static_cast<SimpleEntityLogic*>(instance.get());
@@ -533,10 +564,10 @@ TEST_F(ReflectTests, TestWriteClassValueOfSimpleEntity) {
 
     stream.reopenForRead();
 
-    ASSERT_TRUE(instance.writeValue(1, stream));
-    ASSERT_TRUE(instance.writeValue(2, stream));
-    ASSERT_TRUE(instance.writeValue(3, stream));
-    ASSERT_TRUE(instance.writeValue(4, stream));
+    ASSERT_TRUE(instance.readValueFrom(1, stream));
+    ASSERT_TRUE(instance.readValueFrom(2, stream));
+    ASSERT_TRUE(instance.readValueFrom(3, stream));
+    ASSERT_TRUE(instance.readValueFrom(4, stream));
 
     ASSERT_EQ(logicPtr->boolF, boolVal);
     ASSERT_EQ(logicPtr->intF, intVal);
@@ -551,7 +582,7 @@ TEST_F(ReflectTests, TestReadClassValueOfSimpleEntity) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto instance = classInfo->createDefaultInstance();
+    auto instance = classInfo->createInstance();
     ASSERT_TRUE(instance.get());
 
     auto logicPtr = static_cast<SimpleEntityLogic*>(instance.get());
@@ -564,10 +595,10 @@ TEST_F(ReflectTests, TestReadClassValueOfSimpleEntity) {
 
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.readValue(1, stream));
-    ASSERT_TRUE(instance.readValue(2, stream));
-    ASSERT_TRUE(instance.readValue(3, stream));
-    ASSERT_TRUE(instance.readValue(4, stream));
+    ASSERT_TRUE(instance.writeValueTo(1, stream));
+    ASSERT_TRUE(instance.writeValueTo(2, stream));
+    ASSERT_TRUE(instance.writeValueTo(3, stream));
+    ASSERT_TRUE(instance.writeValueTo(4, stream));
 
     stream.reopenForRead();
 
@@ -600,7 +631,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto instance = classInfo->createDefaultInstance();
+    auto instance = classInfo->createInstance();
     ASSERT_TRUE(instance.get());
 
     auto objectPtr = static_cast<ObjectWithObjectEntity*>(instance.get());
@@ -610,7 +641,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.readValue(3, stream));
+    ASSERT_TRUE(instance.writeValueTo(3, stream));
 
     stream.reopenForRead();
 
@@ -624,7 +655,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
 
     stream.reopenForRead();
 
-    instance.writeValue(3, stream);
+    instance.readValueFrom(3, stream);
 
     ASSERT_FLOAT_EQ(objectPtr->objectF.floatF, 2.f);
 }
@@ -636,7 +667,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto instance = classInfo->createDefaultInstance();
+    auto instance = classInfo->createInstance();
     auto objectPtr = static_cast<ObjectWitArray*>(instance.get());
     ASSERT_TRUE(objectPtr);
 
@@ -652,7 +683,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
 
     stream.reopenForRead();
 
-    ASSERT_TRUE(instance.writeValue(1, stream));
+    ASSERT_TRUE(instance.readValueFrom(1, stream));
 
     ASSERT_EQ(objectPtr->array.size(), 3);
 
@@ -668,7 +699,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
 
     stream.reopenForWrite();
 
-    instance.readValue(1, stream);
+    instance.writeValueTo(1, stream);
 
     stream.reopenForRead();
 
@@ -694,7 +725,7 @@ TEST_F(ReflectTests, CheckAddArrayElemet) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto instance = classInfo->createDefaultInstance();
+    auto instance = classInfo->createInstance();
     auto objectPtr = static_cast<ObjectWitArray*>(instance.get());
     ASSERT_TRUE(objectPtr);
 
@@ -707,7 +738,7 @@ TEST_F(ReflectTests, CheckAddArrayElemet) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.readValue(1, stream));
+    ASSERT_TRUE(instance.writeValueTo(1, stream));
 
     stream.reopenForRead();
 
@@ -718,5 +749,33 @@ TEST_F(ReflectTests, CheckAddArrayElemet) {
 }
 
 TEST_F(ReflectTests, TestEntityReference) {
-    ASSERT_TRUE(false);
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithEntity>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    ObjectWithEntity* logicPtr = nullptr;
+    EntityLogicId logicId = InvalidEntityLogicId;
+
+    std::unique_ptr<Entity> parentEntity(new Entity("Parent", GetETSystem()->createNewEntityId()));
+    auto logicInstance = classInfo->createInstance();
+    logicPtr = static_cast<ObjectWithEntity*>(logicInstance.get());
+    logicId = parentEntity->addLogic(std::move(logicInstance));
+    ASSERT_NE(logicId, InvalidEntityLogicId);
+
+    EntityChildId childId = 1;
+    std::unique_ptr<Entity> childEntity(new Entity("Child", GetETSystem()->createNewEntityId()));
+    parentEntity->addChildEntityWithId(childId, *childEntity);
+
+    MemoryStream stream;
+    stream.openForWrite();
+    stream.write(childId);
+
+    stream.reopenForRead();
+
+    ET_SendEvent(&ETClassInfoManager::ET_setActiveEntity, parentEntity->getEntityId());
+    parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
+
+    ASSERT_EQ(logicPtr->entityId, childEntity->getEntityId());
 }

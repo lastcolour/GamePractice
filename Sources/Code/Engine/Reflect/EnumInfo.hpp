@@ -18,7 +18,7 @@ public:
 
     const char* getName() const;
     TypeId getEnumTypeId() const;
-    bool readValue(void* valuePtr, const std::string& valueStr) const;
+    bool readValueFrom(void* valuePtr, const std::string& valueStr) const;
     int getDefaultValue();
     void makeReflectModel(JSONNode& node);
 

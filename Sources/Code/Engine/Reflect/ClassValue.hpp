@@ -39,9 +39,9 @@ public:
     ~ClassValue();
 
     const char* getTypeName() const;
-    bool readValue(void* instance, void* valuePtr, const JSONNode& node);
-    bool readValue(void* instance, void* valuePtr, MemoryStream& stream) const;
-    bool writeValue(void* instance, void* valuePtr, MemoryStream& stream);
+    bool writeValueTo(void* instance, void* valuePtr, MemoryStream& stream);
+    bool readValueFrom(void* instance, void* valuePtr, MemoryStream& stream);
+    bool readValueFrom(void* instance, void* valuePtr, const JSONNode& node);
     bool addArrayElement(void* valuePtr);
     void setDefaultValue(void* valuePtr);
 

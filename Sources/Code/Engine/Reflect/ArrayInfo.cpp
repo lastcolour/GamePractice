@@ -35,36 +35,36 @@ void ArrayInfo::makeReflectModel(JSONNode& node) {
     node.write("data", elemNode);
 }
 
-bool ArrayInfo::readValues(void* valuePtr, const JSONNode& node) {
+bool ArrayInfo::readValuesFrom(void* valuePtr, const JSONNode& node) {
     resetFunc(valuePtr);
     for(auto& elemNode : node) {
         auto elem = createFunc(valuePtr);
-        if(!elemValue.readValue(elem, elem, elemNode)) {
+        if(!elemValue.readValueFrom(elem, elem, elemNode)) {
             return false;
         }
     }
     return true;
 }
 
-bool ArrayInfo::readValues(void* valuePtr, MemoryStream& stream) {
-    int sz = static_cast<int>(sizeFunc(valuePtr));
-    stream.write(sz);
-    for(int i = 0; i < sz; ++i) {
-        auto elem = getElemFunc(i, valuePtr);
-        if(!elemValue.readValue(elem, elem, stream)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool ArrayInfo::writeValues(void* valuePtr, MemoryStream& stream) {
+bool ArrayInfo::readValuesFrom(void* valuePtr, MemoryStream& stream) {
     resetFunc(valuePtr);
     int sz = 0;
     stream.read(sz);
     for(int i = 0; i < sz; ++i) {
         auto elem = createFunc(valuePtr);
-        if(!elemValue.writeValue(elem, elem, stream)) {
+        if(!elemValue.readValueFrom(elem, elem, stream)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ArrayInfo::writeValuesTo(void* valuePtr, MemoryStream& stream) {
+    int sz = static_cast<int>(sizeFunc(valuePtr));
+    stream.write(sz);
+    for(int i = 0; i < sz; ++i) {
+        auto elem = getElemFunc(i, valuePtr);
+        if(!elemValue.writeValueTo(elem, elem, stream)) {
             return false;
         }
     }

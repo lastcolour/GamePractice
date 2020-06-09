@@ -66,6 +66,7 @@ void ClassInfoManager::ET_reset() {
     classInfoMap.clear();
     enumInfoMap.clear();
     arrayInfoMap.clear();
+    activeEntityId = InvalidEntityId;
 }
 
 int ClassInfoManager::ET_getRegisteredClassCount() {
@@ -154,4 +155,14 @@ bool ClassInfoManager::ET_registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInf
     }
     arrayInfoMap[arrayInfo->getElemTypeId()] = std::move(arrayInfo);
     return true;
+}
+
+EntityId ClassInfoManager::ET_setActiveEntity(EntityId entityId) {
+    EntityId prevEntId = activeEntityId;
+    activeEntityId = entityId;
+    return prevEntId;
+}
+
+EntityId ClassInfoManager::ET_getActiveEntity() {
+    return activeEntityId;
 }

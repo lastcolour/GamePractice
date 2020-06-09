@@ -43,6 +43,7 @@ class LogicSelectDialog(QDialog):
             item._node = logic
 
     def _signal_cancelBt_clicked(self):
+        self._resultLogic = None
         self.done(0)
 
     def _signal_addBt_clicked(self):
@@ -56,4 +57,5 @@ class LogicSelectDialog(QDialog):
             self._resultLogic = currItem._node
             self._addBt.setEnabled(True)
         else:
+            self._resultLogic = None
             self._addBt.setEnabled(False)

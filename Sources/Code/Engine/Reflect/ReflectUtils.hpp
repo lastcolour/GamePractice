@@ -77,6 +77,7 @@ constexpr ClassValueType GetClassValueType() {
     } else if constexpr (std::is_same<ValueT, ColorB>::value) {
         return ClassValueType::Color;
     } else if constexpr (std::is_enum<ValueT>::value) {
+        static_assert(sizeof(ValueT) == sizeof(int), "Invalid enum size");
         return ClassValueType::Enum;
     } else if constexpr (ReflectUtils::is_std_vector<ValueT>::value) {
         return ClassValueType::Array;

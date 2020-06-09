@@ -46,11 +46,13 @@ class SelectChildEntity(QDialog):
         self._rootLayout.addLayout(self._buttotLayout)
 
         self.setLayout(self._rootLayout)
+        self.setWindowTitle("Add Child Entity")
 
     def getResultEntity(self):
         return self._resultEntityFileNode
 
     def _signal_cancelBt_clicked(self):
+        self._resultEntityFileNode = None
         self.done(0)
 
     def _signal_addBt_clicked(self):
@@ -62,4 +64,5 @@ class SelectChildEntity(QDialog):
                 self._resultEntityFileNode = currItem._node
                 self._addBt.setEnabled(True)
                 return
+        self._resultEntityFileNode = None
         self._addBt.setEnabled(False)

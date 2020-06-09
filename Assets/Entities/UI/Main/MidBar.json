@@ -1,14 +1,14 @@
 {
   "transform": {
     "pos": {
-      "x": 0.0,
-      "y": 0.0,
+      "x": 200.0,
+      "y": 194.0,
       "z": 0.0
     },
     "scale": {
-      "x": 0.0,
-      "y": 0.0,
-      "z": 0.0
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
     },
     "rot": {
       "x": 0.0,
@@ -17,7 +17,12 @@
       "w": 0.0
     }
   },
-  "children": [],
+  "children": [
+    {
+      "name": "UI/Common/BoxRender.json",
+      "id": 1
+    }
+  ],
   "logics": [
     {
       "type": "UIBox",
@@ -41,12 +46,12 @@
       "type": "UIBoxVisual",
       "id": 2,
       "data": {
-        "render": "",
+        "render": 1,
         "background": {
           "r": 205,
-          "g": 205,
-          "b": 205,
-          "a": 205
+          "g": 28,
+          "b": 99,
+          "a": 255
         }
       }
     }

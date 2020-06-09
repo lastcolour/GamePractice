@@ -29,7 +29,7 @@ bool IsValidChildId(EntityChildId childId, const std::vector<Entity::EntityChild
     return true;
 }
 
-bool IsValidLogicId(EntityLogicId logicId, const std::vector<Entity::EntityLogicNode>& logics) {
+bool IsValidLogicId(EntityLogicId logicId, const std::vector<EntityLogicNode>& logics) {
     if(logicId == InvalidEntityLogicId) {
         return false;
     }
@@ -57,7 +57,8 @@ Entity::~Entity() {
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, it->childEntId);
     }
     for(auto it = logics.rbegin(), end = logics.rend(); it != end; ++it) {
-        static_cast<EntityLogic*>(it->logic.get())->deinit();
+        auto logicPtr = static_cast<EntityLogic*>(it->logic.get());
+        logicPtr->deinit();
     }
 }
 
@@ -75,7 +76,7 @@ EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
         return InvalidEntityLogicId;
     }
     auto logicId = createNewLogicId();
-    logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
+    logics.emplace_back(std::move(logicInstance), logicId);
     return logicId;
 }
 
@@ -87,7 +88,8 @@ bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance
     if(!logicPtr->init()) {
         return false;
     }
-    logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
+    LogDebug("[tmpLog(Entity::addLogicWithId)] Logic ptr: %p", logicInstance.get());
+    logics.emplace_back(std::move(logicInstance), logicId);
     return true;
 }
 
@@ -128,7 +130,7 @@ bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, Me
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    if(!logicInstance->readValue(valueId, stream)) {
+    if(!logicInstance->writeValueTo(valueId, stream)) {
         LogWarning(errStr, StringFormat("Error during read from logic with id '%d' in entity: '%s'",
              logicId, ET_getName()));
         return false;
@@ -142,7 +144,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    if(!logicInstance->writeValue(valueId, stream)) {
+    if(!logicInstance->readValueFrom(valueId, stream)) {
         LogWarning(errStr, StringFormat("Error during write to logic with id '%d' in entity: '%s'",
              logicId, ET_getName()));
         return false;
@@ -274,7 +276,16 @@ EntityChildId Entity::createNewChildId() const {
     return childId;
 }
 
-EntityId Entity::ET_getChildEntityId(EntityChildId childId) const {
+EntityChildId Entity::ET_getChildIdFromEntityId(EntityId childEntId) const {
+    for(auto& chilNode : children) {
+        if(chilNode.childEntId == childEntId) {
+            return chilNode.childId;
+        }
+    }
+    return InvalidEntityChildId;
+}
+
+EntityId Entity::ET_getEntityIdFromChildId(EntityChildId childId) const {
     for(auto& chilNode : children) {
         if(chilNode.childId == childId) {
             return chilNode.childEntId;

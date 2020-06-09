@@ -24,48 +24,39 @@ class ArrayTitle(QWidget):
 
     def _signal_insertBt_clicked(self):
         self._arrayEdit._insertNewItem()
-        self._updateElemCountText()
-
-class ArrayObjectTitle(QWidget):
-    def __init__(self):
-        super().__init__()
-
-        self._rootLayout = QHBoxLayout()
-
-        self._clearBt = QPushButton("x")
-        self._rootLayout.addWidget(self._clearBt)
-
-        self.setLayout(self._rootLayout)
-
-class ArrayElement:
-    def __init__(self):
-        pass
-
-    def setVal(self):
-        pass
-
-    def getVal(self):
-        pass
 
 class EditArrayValue(QWidget):
     def __init__(self, value):
         self._val = value
         self._rootArrayItem = None
         self._logicView = None
+        self._title = None
 
     def createTitle(self):
-        title = ArrayTitle(self)
-        return title
+        self._title = ArrayTitle(self)
+        return self._title
 
-    def createObjecTitle(self, value):
-        return ArrayObjectTitle()
+    def createObjecValueWrap(self, value):
+        raise RuntimeError("Not implemented")
 
     def createSimpleWrap(self, editWidget):
         removeBt = QPushButton("x")
+        removeBt.clicked.connect(lambda: self._signal_removeBt_clicked(removeBt))
+        removeBt._editWidget = editWidget
         editWidget._rootLayout.addWidget(removeBt)
         return editWidget
 
     def _insertNewItem(self):
-        self._logicView._buildArrayTree(self._logicView._tree, self._rootArrayItem, self, [self._val.addNewElement(), ])
-        self._rootArrayItem.setExpanded(True)
+        self._val.addNewElement()
+        self._rebuildArrayView()
+
+    def _signal_removeBt_clicked(self, button):
+        editWidget = button._editWidget
+        elemId = editWidget._val._arrayId
+        self._val.removeElement(elemId)
+        self._rebuildArrayView()
+
+    def _rebuildArrayView(self):
+        self._title._updateElemCountText()
+        self._logicView._buildArrayTree(self._logicView._tree, self._rootArrayItem, self, self._val.getValues())
         self._logicView._updateTreeSize()

@@ -15,16 +15,15 @@ public:
     ClassInfo(const char* name, TypeId typeId);
     ~ClassInfo();
 
-    ClassInstance createInstance(const JSONNode& node);
-    ClassInstance createDefaultInstance();
-    bool serializeInstance(void* instance, const JSONNode& node);
+    ClassInstance createInstance();
     DeleteFuncT getDeleteFunction() const;
     const char* getName() const;
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
 
-    bool readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
-    bool writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
+    bool writeValueTo(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
+    bool readValueFrom(void* instance, EntityLogicValueId valueId, const JSONNode& node);
+    bool readValueFrom(void* instance, EntityLogicValueId valueId, MemoryStream& stream);
     bool addNewValueArrayElement(void* instance, EntityLogicValueId valueId);
 
     template<typename ClassT>

@@ -31,36 +31,6 @@ TypeId ClassInfo::getIntanceTypeId() const {
     return instanceTypeId;
 }
 
-bool ClassInfo::serializeInstance(void* instance, const JSONNode& node) {
-    if(!instance) {
-        LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: null instance)",
-            className);
-        assert(false && "null instance");
-        return false;
-    }
-    if(!node) {
-        LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: invalid json node)",
-            className);
-        return false;
-    }
-    for(auto baseClass : baseClasses) {
-        if(!baseClass->serializeInstance(instance, node)) {
-            LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize base class '%s')",
-                className, baseClass->className);
-            return false;
-        }
-    }
-    for(auto& val : values) {
-        auto ptr = getValueFunc(instance, val.ptr);
-        if(!val.readValue(instance, ptr, node)) {
-            LogError("[ClassInfo::serializeInstance] Can't serialize instance of class '%s' (Error: can't serialize field: '%s')",
-                className, val.name);
-            return false;
-        }
-    }
-    return true;
-}
-
 const char* ClassInfo::getName() const {
     return className.c_str();
 }
@@ -152,22 +122,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     values.push_back(classValue);
 }
 
-ClassInstance ClassInfo::createInstance(const JSONNode& node) {
-    if(!createFunc) {
-        return ClassInstance();
-    }
-    auto object = createFunc();
-    if(!object) {
-        return ClassInstance();
-    }
-    if(!serializeInstance(object, node)) {
-        deleteFunc(object);
-        return ClassInstance();
-    }
-    return ClassInstance(*this, object);
-}
-
-ClassInstance ClassInfo::createDefaultInstance() {
+ClassInstance ClassInfo::createInstance() {
     if(!createFunc) {
         return ClassInstance();
     }
@@ -332,15 +287,15 @@ void ClassInfo::makeReflectModel(JSONNode& node) {
     node.write("data", fieldsNode);
 }
 
-bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, const JSONNode& node) {
     assert(instance && "Invalid instance");
-    if(!stream.isOpenedForWrite()) {
-        LogError("[ClassInfo::readValue] Can't output class value with id '%d' of class '%s' to non-write stream",
+    if(!node) {
+        LogError("[ClassInfo::readValueFrom] Can't read class value with id '%d' of class '%s' from invalid JSON node",
             valueId, className);
         return false;
     }
     if(valueId == InvalidEntityLogicValueId) {
-        LogError("ClassInfo::readValue] Can't read value with invalid id");
+        LogError("ClassInfo::readValueFrom] Can't read value with invalid id");
         return false;
     }
     if(valueId == AllEntityLogicValueId) {
@@ -350,8 +305,8 @@ bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStre
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.readValue(instance, ptr, stream)) {
-                    LogError("[ClassInfo::readValues] Can't read value of '%s' from class '%s'",
+                if(!value.readValueFrom(instance, ptr, node)) {
+                    LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
                         value.name, className);
                     return false;
                 }
@@ -360,12 +315,12 @@ bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStre
     } else {
         auto value = findValueById(valueId);
         if(!value) {
-            LogError("ClassInfo::readValue] Can't find value with id '%d' in class '%s'", valueId, className);
+            LogError("ClassInfo::readValueFrom] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->readValue(instance, ptr, stream)) {
-            LogError("[ClassInfo::readValue] Can't read value of '%s' from class '%s'",
+        if(!value->readValueFrom(instance, ptr, node)) {
+            LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                 value->name, className);
             return false;
         }
@@ -374,15 +329,15 @@ bool ClassInfo::readValue(void* instance, EntityLogicValueId valueId, MemoryStre
     return true;
 }
 
-bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
     assert(instance && "Invalid instance");
     if(!stream.isOpenedForRead()) {
-        LogError("[ClassInfo::writeValue] Can't set class value with id '%d' of class '%s' from non-read stream",
+        LogError("[ClassInfo::readValueFrom] Can't read class value with id '%d' of class '%s' from non-read stream",
             valueId, className);
         return false;
     }
     if(valueId == InvalidEntityLogicValueId) {
-        LogError("ClassInfo::writeValue] Can't write value with invalid id");
+        LogError("ClassInfo::readValueFrom] Can't read value with invalid id");
         return false;
     }
     if(valueId == AllEntityLogicValueId) {
@@ -392,8 +347,8 @@ bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStr
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.writeValue(instance, ptr, stream)) {
-                    LogError("[ClassInfo::writeValue] Can't write value of '%s' from class '%s'",
+                if(!value.readValueFrom(instance, ptr, stream)) {
+                    LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
                         value.name, className);
                     return false;
                 }
@@ -402,12 +357,54 @@ bool ClassInfo::writeValue(void* instance, EntityLogicValueId valueId, MemoryStr
     } else {
         auto value = findValueById(valueId);
         if(!value) {
-            LogError("ClassInfo::writeValue] Can't find value with id '%d' in class '%s'", valueId, className);
+            LogError("ClassInfo::readValueFrom] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->writeValue(instance, ptr, stream)) {
-            LogError("[ClassInfo::writeValue] Can't write value of '%s' from class '%s'",
+        if(!value->readValueFrom(instance, ptr, stream)) {
+            LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
+                value->name, className);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool ClassInfo::writeValueTo(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+    assert(instance && "Invalid instance");
+    if(!stream.isOpenedForWrite()) {
+        LogError("[ClassInfo::writeValueTo] Can't write class value with id '%d' of class '%s' to non-write stream",
+            valueId, className);
+        return false;
+    }
+    if(valueId == InvalidEntityLogicValueId) {
+        LogError("ClassInfo::writeValueTo] Can't write value with invalid id");
+        return false;
+    }
+    if(valueId == AllEntityLogicValueId) {
+        std::vector<ClassInfo*> allClasses;
+        getAllClasses(allClasses);
+
+        for(auto classInfo : allClasses) {
+            for(auto& value : classInfo->values) {
+                auto ptr = getValueFunc(instance, value.ptr);
+                if(!value.writeValueTo(instance, ptr, stream)) {
+                    LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
+                        value.name, className);
+                    return false;
+                }
+            }
+        }
+    } else {
+        auto value = findValueById(valueId);
+        if(!value) {
+            LogError("ClassInfo::writeValueTo] Can't find value with id '%d' in class '%s'", valueId, className);
+            return false;
+        }
+        auto ptr = getValueFunc(instance, value->ptr);
+        if(!value->writeValueTo(instance, ptr, stream)) {
+            LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
                 value->name, className);
             return false;
         }

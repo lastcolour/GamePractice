@@ -9,6 +9,7 @@
 
 class ClassInfo;
 class MemoryStream;
+class JSONNode;
 
 class ClassInstance {
 
@@ -52,8 +53,12 @@ public:
     void* get();
 
     TypeId getInstanceTypeId() const;
-    bool readValue(EntityLogicValueId valueId, MemoryStream& stream);
-    bool writeValue(EntityLogicValueId valueId, MemoryStream& stream);
+    bool readAllValuesFrom(const JSONNode& node);
+    bool readAllValuesFrom(MemoryStream& stream);
+    bool writeAllValuesTo(MemoryStream& stream);
+    bool readValueFrom(EntityLogicValueId valueId, const JSONNode& node);
+    bool readValueFrom(EntityLogicValueId valueId, MemoryStream& stream);
+    bool writeValueTo(EntityLogicValueId valueId, MemoryStream& stream);
     bool addValueArrayElement(EntityLogicValueId valueId);
 
 private:

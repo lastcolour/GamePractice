@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton
 from PyQt5.QtCore import Qt
 
+from dialog.SelectFromEntityChild import SelectFromEntityChild
+
 class EditEntityValue(QWidget):
     def __init__(self, value):
         super().__init__()
@@ -11,7 +13,7 @@ class EditEntityValue(QWidget):
 
         self._lineEdit = QLineEdit()
         self._lineEdit.setAlignment(Qt.AlignRight)
-        self._lineEdit.setDisabled(True)
+        self._lineEdit.setReadOnly(True)
         self._rootLayout.addWidget(self._lineEdit)
 
         self._selectBt = QPushButton("Select")
@@ -24,10 +26,20 @@ class EditEntityValue(QWidget):
         self._pull()
 
     def _signal_selectBt_clicked(self):
-        pass
+        dialog = SelectFromEntityChild(self._val.getEntity())
+        dialog.exec()
+        res = dialog.getSelectedEntity()
+        if res is None:
+            return
+        self._push(res)
+        self._pull()
 
-    def _push(self, data):
-        pass
+    def _push(self, entity):
+        self._val.setEntityValue(entity)
 
     def _pull(self):
-        pass
+        entity = self._val.getEntityValue()
+        if entity is None:
+            self._lineEdit.setText("")
+        else:
+            self._lineEdit.setText(entity.getName())

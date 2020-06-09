@@ -35,6 +35,7 @@ class EntityNative(NativeObject):
         for childEnt in self._children:
             childEnt._entityId = self._getAPI().getLibrary().getEntityChildEntityId(self._entityId, childEnt._childId)
             childEnt._syncWithNative()
+        self._tmLogic.readFromNative()
         for logic in self._logics:
             logic.readFromNative()
 
@@ -196,3 +197,9 @@ class EntityNative(NativeObject):
         if self._parent is not None:
             return self._parent.canAddChild(entityName)
         return True
+
+    def getChildWithId(self, childId):
+        for child in self._children:
+            if child._childId == childId:
+                return child
+        return None

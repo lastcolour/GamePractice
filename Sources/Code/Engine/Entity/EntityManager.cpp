@@ -5,6 +5,7 @@
 #include "ETApplicationInterfaces.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
+#include "Reflect/ETReflectInterfaces.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -48,6 +49,27 @@ bool CheckEntityLogicValue(const char* errStr, EntityId entityId, Entity* entity
     }
     return true;
 }
+
+class ActiveEntityScope {
+public:
+
+    ActiveEntityScope(EntityId entityId) {
+        ET_SendEventReturn(prevActiveId, &ETClassInfoManager::ET_setActiveEntity, entityId);
+    }
+
+    ~ActiveEntityScope() {
+        ET_SendEvent(&ETClassInfoManager::ET_setActiveEntity, prevActiveId);
+    }
+
+private:
+
+    ActiveEntityScope(const ActiveEntityScope&) = delete;
+    ActiveEntityScope& operator=(const ActiveEntityScope&) = delete;
+
+private:
+
+    EntityId prevActiveId;
+};
 
 } // namespace
 
@@ -154,7 +176,7 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
         LogWarning(errStr, StringFormat("Can't find logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
     }
-    auto logicInstance = logicIt->second->createDefaultInstance();
+    auto logicInstance = logicIt->second->createInstance();
     if(!logicInstance.get()) {
         LogWarning(errStr, StringFormat("Can't create instance of logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
@@ -189,8 +211,9 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
+    ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
-        if(!tmClassInfo->readValue(entity->getTransform(), valueId, stream)) {
+        if(!tmClassInfo->writeValueTo(entity->getTransform(), valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data from entity: '%s'", entity->ET_getName()));
             return false;
         }
@@ -206,8 +229,9 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
+    ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
-        if(!tmClassInfo->writeValue(entity->getTransform(), valueId, stream)) {
+        if(!tmClassInfo->writeValueTo(entity->getTransform(), valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't write transform data to entity: '%s'", entity->ET_getName()));
             return false;
         }
@@ -228,6 +252,7 @@ bool EntityManager::ET_addEntityLogicArrayElement(EntityId entityId, EntityLogic
             entity->ET_getName());
         return false;
     }
+    ActiveEntityScope entityScope(entity->getEntityId());
     if(!entity->addLogicValueArrayElemet(logicId, valueId)) {
         return false;
     }
@@ -273,9 +298,13 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
             LogWarning("[EntityManager::setupEntityLogics] Can't find logic data object for '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
-        auto logicInstance = logicClassInfo.createInstance(logicData);
+        auto logicInstance = logicClassInfo.createInstance();
         if(!logicInstance.get()) {
             LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entity->ET_getName());
+            return false;
+        }
+        if(!logicInstance.readAllValuesFrom(logicData)) {
+            LogWarning("[EntityManager::setupEntityLogics] Can't read logic data of type '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
         if(!entity->addLogicWithId(logicId, std::move(logicInstance))) {
@@ -292,7 +321,7 @@ bool EntityManager::setupEntityTranform(Entity* entity, const JSONNode& node) {
         LogWarning("[EntityManager::setupEntityChildren] Can't find require 'transform' node in entity file '%s'", entity->ET_getName());
         return false;
     }
-    if(!tmClassInfo->serializeInstance(entity->getTransform(), tmNode)) {
+    if(!tmClassInfo->readValueFrom(entity->getTransform(), AllEntityLogicValueId, tmNode)) {
         LogWarning("[EntityManager::setupEntityChildren] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
         return false;
     }
@@ -353,6 +382,7 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
         return nullptr;
     }
     EntityPtrT entity(new Entity(entityName, GetETSystem()->createNewEntityId()));
+    ActiveEntityScope entityScope(entity->getEntityId());
     if(!setupEntityChildren(entity.get(), entityNode)) {
         return nullptr;
     }

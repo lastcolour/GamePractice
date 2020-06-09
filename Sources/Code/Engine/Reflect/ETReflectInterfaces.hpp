@@ -23,6 +23,8 @@ struct ETClassInfoManager {
     virtual void ET_reset() = 0;
     virtual int ET_getRegisteredClassCount() = 0;
     virtual void ET_makeReflectModel(JSONNode& node) = 0;
+    virtual EntityId ET_setActiveEntity(EntityId entityId) = 0;
+    virtual EntityId ET_getActiveEntity() = 0;
 };
 
 #endif /* __ET_REFLECT_INTERFACES_HPP__ */

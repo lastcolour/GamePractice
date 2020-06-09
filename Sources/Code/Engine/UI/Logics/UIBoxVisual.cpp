@@ -17,15 +17,7 @@ UIBoxVisual::~UIBoxVisual() {
 }
 
 bool UIBoxVisual::init() {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
-
-    AABB2Di box;
-    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
-    ET_SendEvent(renderId, &ETRenderRect::ET_setSize, box.getSize());
-    ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, background);
-
+    ET_onBoxResized();
     ETNode<ETUIBoxEvents>::connect(getEntityId());
     ETNode<ETUIVisibleElement>::connect(getEntityId());
     return true;
@@ -52,4 +44,16 @@ void UIBoxVisual::ET_setZIndex(int newZIndex) {
 }
 
 void UIBoxVisual::ET_onBoxResized() {
+    if(!renderId.isValid()) {
+        return;
+    }
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
+
+    AABB2Di box;
+    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
+    ET_SendEvent(renderId, &ETRenderRect::ET_setSize, box.getSize());
+    ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, background);
 }

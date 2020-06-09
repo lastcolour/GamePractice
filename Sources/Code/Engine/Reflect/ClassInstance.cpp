@@ -72,28 +72,52 @@ void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     deleteFunc = deleteF;
 }
 
-bool ClassInstance::readValue(EntityLogicValueId valueId, MemoryStream& stream) {
-    if(!instance) {
-        assert(false && "Invalid instance");
-        return false;
-    }
-    if(!classInfo) {
-        LogError("[ClassInstance::readValue] Can't read value of instance without class info");
-        return false;
-    }
-    return classInfo->readValue(instance, valueId, stream);
+bool ClassInstance::readAllValuesFrom(const JSONNode& node) {
+    return readValueFrom(AllEntityLogicValueId, node);
 }
 
-bool ClassInstance::writeValue(EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInstance::readAllValuesFrom(MemoryStream& stream) {
+    return readValueFrom(AllEntityLogicValueId, stream);
+}
+
+bool ClassInstance::writeAllValuesTo(MemoryStream& stream) {
+    return writeValueTo(AllEntityLogicValueId, stream);
+}
+
+bool ClassInstance::readValueFrom(EntityLogicValueId valueId, const JSONNode& node) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::writeValue] Can't write value of instance without class info");
+        LogError("[ClassInstance::readValueFrom] Can't read value of instance without class info");
         return false;
     }
-    return classInfo->writeValue(instance, valueId, stream);
+    return classInfo->readValueFrom(instance, valueId, node);
+}
+
+bool ClassInstance::readValueFrom(EntityLogicValueId valueId, MemoryStream& stream) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::readValueFrom] Can't read value of instance without class info");
+        return false;
+    }
+    return classInfo->readValueFrom(instance, valueId, stream);
+}
+
+bool ClassInstance::writeValueTo(EntityLogicValueId valueId, MemoryStream& stream) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::writeValueTo] Can't write value of instance without class info");
+        return false;
+    }
+    return classInfo->writeValueTo(instance, valueId, stream);
 }
 
 bool ClassInstance::addValueArrayElement(EntityLogicValueId valueId) {

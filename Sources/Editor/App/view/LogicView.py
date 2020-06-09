@@ -20,6 +20,10 @@ from .values.EditEnumValue import EditEnumValue
 from .values.EditArrayValue import EditArrayValue
 from .values.EditEntityValue import EditEntityValue
 
+def _removeAllItemChildren(item):
+    for i in reversed(range(item.childCount())):
+        item.removeChild(item.child(i))
+
 class LogicViewTopBar(QWidget):
     def __init__(self):
         super().__init__()
@@ -123,21 +127,23 @@ class LogicView(QWidget):
         self._buildTree(self._tree, self._tree.invisibleRootItem(), self._entityLogic.getValues())
         self._updateTreeSize()
 
-    def _buildArrayTree(self, widgetTree, rootItem, arrayEdit, values):
+    def _buildArrayTree(self, widgetTree, parentItem, arrayEdit, values):
+        _removeAllItemChildren(parentItem)
         for value in values:
             if value.getType() == ValueType.Object:
-                item = QTreeWidgetItem(rootItem)
+                item = QTreeWidgetItem(parentItem)
                 widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
-                widgetTree.setItemWidget(item, 1, arrayEdit.createObjecTitle(value))
+                widgetTree.setItemWidget(item, 1, arrayEdit.createObjecValueWrap(value))
                 self._buildTree(widgetTree, item, value.getValues())
                 item.setExpanded(True)
             elif value.getType() == ValueType.Array:
                 raise RuntimeError("Array of arrys not supported")
             else:
-                item = QTreeWidgetItem(rootItem)
+                item = QTreeWidgetItem(parentItem)
                 item.setText(0, value.getName())
                 editWidget = self._createEditWidget(value)
                 widgetTree.setItemWidget(item, 1, arrayEdit.createSimpleWrap(editWidget))
+        parentItem.setExpanded(True)
 
     def _buildTree(self, widgetTree, rootItem, values):
         for value in values:

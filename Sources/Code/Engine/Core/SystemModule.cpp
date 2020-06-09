@@ -64,9 +64,14 @@ bool SystemModule::serializeConfigs() {
         LogError("[SystemModule::serializeConfigs] Config field has non-object type: '%s'", configClass->getName());
         return false;
     }
-    auto configInstance = configClass->createInstance(classNode);
+    auto configInstance = configClass->createInstance();
     if(!configInstance.get()) {
         LogError("[SystemModule::serializeConfigs] Can't create instance of module configs '%s' for module: '%s'",
+            configClass->getName(), name);
+        return false;
+    }
+    if(!configInstance.readAllValuesFrom(classNode)) {
+        LogError("[SystemModule::serializeConfigs] Can't read values of instance of module configs '%s' for module: '%s'",
             configClass->getName(), name);
         return false;
     }
