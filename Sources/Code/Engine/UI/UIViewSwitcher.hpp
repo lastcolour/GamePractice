@@ -30,7 +30,7 @@ public:
     float ET_getTotalSwitchDuration() const override;
 
     // ETRenderEvents
-    void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
+    void ET_onRender(RenderContext& renderCtx) override { (void)renderCtx; }
     void ET_onRenderPortResized() override;
 
 private:

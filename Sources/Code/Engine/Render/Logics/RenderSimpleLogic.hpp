@@ -22,11 +22,6 @@ public:
 
     // EntityLogic
     bool init() override;
-    void deinit() override;
-
-    // ETRenderEvents
-    void ET_onRender(const RenderContext& renderCtx) override;
-    void ET_onRenderPortResized() override { }
 
     // ETRenderSimpleLogic
     void ET_setColor(const ColorB& col) override;
@@ -35,9 +30,14 @@ public:
     void ET_setSize(const Vec2i& newSize) override;
     Vec2i ET_getSize() const override;
 
+protected:
+
+    // RenderNode
+    void onRender(RenderContext& renderCtx) override;
+
 private:
 
-    Vec2 scale;
+    Vec2i size;
     ColorB color;
 };
 

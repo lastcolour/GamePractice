@@ -33,7 +33,7 @@ public:
     EntityId ET_getLayout() override;
 
     // ETRenderEvents
-    void ET_onRender(const RenderContext& renderCtx) override { (void)renderCtx; }
+    void ET_onRender(RenderContext& renderCtx) override { (void)renderCtx; }
     void ET_onRenderPortResized() override;
 
     // ETEntityEvents

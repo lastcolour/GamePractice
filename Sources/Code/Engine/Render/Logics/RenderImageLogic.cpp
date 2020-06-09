@@ -22,7 +22,7 @@ void RenderImageLogic::Reflect(ReflectContext& ctx) {
 }
 
 bool RenderImageLogic::init() {
-    ET_setGeometry("square_tex");
+    ET_setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     if(!geom) {
         return false;
     }
@@ -40,10 +40,7 @@ bool RenderImageLogic::init() {
     return true;
 }
 
-void RenderImageLogic::deinit() {
-}
-
-void RenderImageLogic::ET_onRender(const RenderContext& renderCtx) {
+void RenderImageLogic::onRender(RenderContext& renderCtx) {
     Vec3 scale = Vec3(imageScale.x * texScale.x, imageScale.y * texScale.y, 1.f);
     Mat4 mvp = Render::CalcModelMat(getEntityId(), scale, *geom);
     mvp = renderCtx.proj2dMat * mvp;
@@ -53,10 +50,6 @@ void RenderImageLogic::ET_onRender(const RenderContext& renderCtx) {
     mat->setTexture2D("tex", tex->texId);
     geom->draw();
     mat->unbind();
-}
-
-bool RenderImageLogic::ET_getScrMinusAlphaBlendFlag() const {
-    return true;
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {

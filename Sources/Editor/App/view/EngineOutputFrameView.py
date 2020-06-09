@@ -52,8 +52,10 @@ class EngineOutputFrameView(QWidget):
         return QPoint(int(x), int(y))
 
     def paintEvent(self, event):
+        GetEventManager().drawNativeFrameTo(self._image.bits().__int__(), self._image.width(), self._image.height())
+        self._image = self._image.mirrored(vertical=True)
+
         painter = QPainter()
         painter.begin(self)
-        GetEventManager().drawNativeFrameTo(self._image.bits().__int__(), self._image.width(), self._image.height())
         painter.drawImage(self._getDrawPoint(), self._image)
         painter.end()

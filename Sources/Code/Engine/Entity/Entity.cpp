@@ -62,10 +62,18 @@ Entity::~Entity() {
     }
 }
 
-void Entity::addChildEntityWithId(EntityChildId childId, Entity& entity) {
+void Entity::addChildEntityWithId(EntityChildId childId, Entity& childEntity) {
     assert(IsValidChildId(childId, children) && "Invalid children id");
-    entity.parentId = entityId;
-    children.emplace_back(EntityChildNode{entity.entityId, childId});
+    childEntity.parentId = entityId;
+
+    Transform childTm = childEntity.tm;
+    childTm.pt += tm.pt;
+    childTm.scale.x *= tm.scale.x;
+    childTm.scale.y *= tm.scale.y;
+    childTm.scale.z *= tm.scale.z;
+    childEntity.ET_setTransform(childTm);
+
+    children.emplace_back(EntityChildNode{childEntity.entityId, childId});
 }
 
 EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
@@ -143,12 +151,18 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
+    bool res = true;
+    auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
+    logicPtr->deinit();
     if(!logicInstance->readValueFrom(valueId, stream)) {
-        LogWarning(errStr, StringFormat("Error during write to logic with id '%d' in entity: '%s'",
+        LogError(errStr, StringFormat("Error during write to logic with id '%d' in entity: '%s'",
              logicId, ET_getName()));
-        return false;
+        res = false;
     }
-    return true;
+    if(!logicPtr->init()) {
+        LogWarning("[Entity::writeLogicData] Can't re-init logic after write");
+    }
+    return res;
 }
 
 bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId) {
@@ -157,7 +171,16 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    return logicInstance->addValueArrayElement(valueId);
+    bool res = true;
+    auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
+    logicPtr->deinit();
+    if(!logicInstance->addValueArrayElement(valueId)) {
+        res = false;
+    }
+    if(!logicPtr->init()) {
+        LogWarning("[Entity::addLogicValueArrayElemet] Can't re-init logic after element add");
+    }
+    return res;
 }
 
 Transform* Entity::getTransform() {

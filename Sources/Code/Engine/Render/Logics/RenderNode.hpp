@@ -9,10 +9,6 @@ class RenderNode : public EntityLogic,
     public ETNode<ETRenderEvents> {
 public:
 
-    static void Reflect(ReflectContext& ctx);
-
-public:
-
     RenderNode();
     virtual ~RenderNode();
 
@@ -26,12 +22,16 @@ public:
     void ET_show() override;
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
-    bool ET_getScrMinusAlphaBlendFlag() const override;
     void ET_setMaterial(const char* matName) override;
-    void ET_setGeometry(const char* geomName) override;
+    void ET_setGeometry(PrimitiveGeometryType geomType) override;
 
     // ETRenderEvents
     void ET_onRenderPortResized() override {}
+    void ET_onRender(RenderContext& renderCtx) override;
+
+protected:
+
+    virtual void onRender(RenderContext& ctx) = 0;
 
 protected:
 

@@ -70,6 +70,16 @@ EntityId EditorApp::loadEntity(const char* entityName) {
     if(!entId.isValid()) {
         return InvalidEntityId;
     }
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Transform tm;
+    ET_SendEventReturn(tm, entId, &ETEntity::ET_getTransform);
+    tm.pt.x = renderPort.x / 2.f;
+    tm.pt.y = renderPort.y / 2.f;
+
+    ET_SendEvent(entId, &ETEntity::ET_setTransform, tm);
     return entId;
 }
 

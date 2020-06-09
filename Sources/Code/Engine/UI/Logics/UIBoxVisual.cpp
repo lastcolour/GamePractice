@@ -6,7 +6,6 @@
 void UIBoxVisual::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBoxVisual>("UIBoxVisual")) {
         classInfo->addField("render", &UIBoxVisual::renderId);
-        classInfo->addField("background", &UIBoxVisual::background);
     }
 }
 
@@ -20,6 +19,7 @@ bool UIBoxVisual::init() {
     ET_onBoxResized();
     ETNode<ETUIBoxEvents>::connect(getEntityId());
     ETNode<ETUIVisibleElement>::connect(getEntityId());
+    ETNode<ETEntityEvents>::connect(getEntityId());
     return true;
 }
 
@@ -55,5 +55,8 @@ void UIBoxVisual::ET_onBoxResized() {
     AABB2Di box;
     ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
     ET_SendEvent(renderId, &ETRenderRect::ET_setSize, box.getSize());
-    ET_SendEvent(renderId, &ETRenderSimpleLogic::ET_setColor, background);
+}
+
+void UIBoxVisual::ET_onTransformChanged(const Transform& newTm) {
+    ET_onBoxResized();
 }

@@ -2,7 +2,7 @@
 
 namespace Math {
 
-Quaternion::Quaternion() {
+Quaternion::Quaternion() : x(0.f), y(0.f), z(0.f), w(1.f) {
 }
 
 Quaternion::Quaternion(float valX, float valY, float valZ, float valW) :

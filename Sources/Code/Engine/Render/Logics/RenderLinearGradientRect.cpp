@@ -6,7 +6,7 @@
 #include "Render/Logics/RenderAuxFunctions.hpp"
 
 RenderLinearGradientRect::RenderLinearGradientRect() :
-    scale(1.f),
+    size(20),
     startCol(0),
     endCol(0),
     isVertical(true) {
@@ -17,6 +17,7 @@ RenderLinearGradientRect::~RenderLinearGradientRect() {
 
 void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderLinearGradientRect>("RenderLinearGradientRect")) {
+        classInfo->addField("size", &RenderLinearGradientRect::size);
         classInfo->addField("startColor", &RenderLinearGradientRect::startCol);
         classInfo->addField("endColor", &RenderLinearGradientRect::endCol);
         classInfo->addField("isVertical", &RenderLinearGradientRect::isVertical);
@@ -24,7 +25,7 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
 }
 
 bool RenderLinearGradientRect::init() {
-    ET_setGeometry("square_tex");
+    ET_setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     if(!geom) {
         return false;
     }
@@ -45,9 +46,6 @@ bool RenderLinearGradientRect::init() {
 
     ETNode<ETRenderRect>::connect(getEntityId());
     return true;
-}
-
-void RenderLinearGradientRect::deinit() {
 }
 
 void RenderLinearGradientRect::updateTexData() {
@@ -71,14 +69,15 @@ void RenderLinearGradientRect::updateTexData() {
 }
 
 void RenderLinearGradientRect::ET_setSize(const Vec2i& newSize) {
-    scale = Render::CalcGeomScaleForSize(newSize, *geom);
+    size = newSize;
 }
 
 Vec2i RenderLinearGradientRect::ET_getSize() const {
-    return Render::CaclScaledGeomSize(scale, *geom);
+    return size;
 }
 
-void RenderLinearGradientRect::ET_onRender(const RenderContext& renderCtx) {
+void RenderLinearGradientRect::onRender(RenderContext& renderCtx) {
+    auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
     mvp = renderCtx.proj2dMat * mvp;
 

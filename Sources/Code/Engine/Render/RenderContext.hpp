@@ -3,13 +3,18 @@
 
 #include "Math/Matrix.hpp"
 
+enum class RenderBlendingType {
+    NONE = 0,
+    SRC_MINUS_ALPHA
+};
+
 class RenderContext {
 public:
 
     RenderContext();
     ~RenderContext();
 
-    void setSrcMinusAlphaBlending(bool flag);
+    void setBlending(RenderBlendingType newBlendingType);
 
 public:
 
@@ -18,7 +23,7 @@ public:
 
 private:
 
-    bool isSrcMinusAlphaBlendingEnabled;
+    RenderBlendingType blendingType;
 };
 
 #endif /* __RENDER_CONTEXT_HPP__ */

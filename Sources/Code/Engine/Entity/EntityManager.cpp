@@ -315,33 +315,25 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
     return true;
 }
 
-bool EntityManager::setupEntityTranform(Entity* entity, const JSONNode& node) {
-    auto tmNode = node.object("transform");
-    if(!tmNode) {
-        LogWarning("[EntityManager::setupEntityChildren] Can't find require 'transform' node in entity file '%s'", entity->ET_getName());
-        return false;
-    }
-    if(!tmClassInfo->readValueFrom(entity->getTransform(), AllEntityLogicValueId, tmNode)) {
-        LogWarning("[EntityManager::setupEntityChildren] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
-        return false;
-    }
-    return true;
-}
-
 bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
     auto childrenNode = node.object("children");
     if(!childrenNode) {
-        LogWarning("[EntityManager::setupEntityChildren] Can't find require 'children' node in entity file '%s'", entity->ET_getName());
+        LogWarning("[EntityManager::setupEntityChildren] Can't find required 'children' node in entity file '%s'", entity->ET_getName());
         return false;
     }
     for(const auto& childNode : childrenNode) {
         EntityChildId childId = InvalidEntityChildId;
         if(!childNode.hasKey("id")) {
-            LogWarning("[EntityManager::setupEntityChildren] Can't find require 'id' value in entity file '%s'", entity->ET_getName());
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'id' value in entity file '%s'", entity->ET_getName());
             return false;
         }
         if(!childNode.hasKey("name")) {
-            LogWarning("[EntityManager::setupEntityChildren] Can't find require 'name' value in entity file '%s'", entity->ET_getName());
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'name' value in entity file '%s'", entity->ET_getName());
+            return false;
+        }
+        auto tmNode = childNode.object("transform");
+        if(!tmNode) {
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'transform' node in entity file '%s'", entity->ET_getName());
             return false;
         }
         childNode.read("id", childId);
@@ -351,6 +343,10 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
         if(!childEntity) {
             LogWarning("[EntityManager::setupEntityChildren] Can't create child entity '%s' for an entity: '%s'",
                 childEntName, entity->ET_getName());
+            return false;
+        }
+        if(!tmClassInfo->readValueFrom(childEntity->getTransform(), AllEntityLogicValueId, tmNode)) {
+            LogWarning("[EntityManager::setupEntityTranform] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
             return false;
         }
         if(childId == InvalidEntityChildId) {
@@ -387,9 +383,6 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
         return nullptr;
     }
     if(!setupEntityLogics(entity.get(), entityNode)) {
-        return nullptr;
-    }
-    if(!setupEntityTranform(entity.get(), entityNode)) {
         return nullptr;
     }
     auto resEntPtr = entity.get();

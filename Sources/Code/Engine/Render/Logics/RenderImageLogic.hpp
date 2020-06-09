@@ -17,10 +17,6 @@ public:
 
     // EntityLogic
     bool init() override;
-    void deinit() override;
-
-    // ETRenderEvents
-    void ET_onRender(const RenderContext& renderCtx) override;
 
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
@@ -32,8 +28,12 @@ public:
     Vec2i ET_getSize() const override;
 
     // RenderNode
-    bool ET_getScrMinusAlphaBlendFlag() const override;
     bool ET_isVisible() const override;
+
+protected:
+
+    // RenderNode
+    void onRender(RenderContext& renderCtx) override;
 
 protected:
 

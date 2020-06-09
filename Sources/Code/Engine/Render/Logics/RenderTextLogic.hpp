@@ -20,10 +20,6 @@ public:
 
     // EntityLogic
     bool init() override;
-    void deinit() override;
-
-    // ETRenderEvents
-    void ET_onRender(const RenderContext& renderCtx) override;
 
     // ETRenderTextLogic
     void ET_setFont(const char* fontName) override;
@@ -32,8 +28,10 @@ public:
     void ET_setFontSize(int fontSize) override;
     virtual AABB2D ET_getTextAABB() const override;
 
+protected:
+
     // RenderNode
-    bool ET_getScrMinusAlphaBlendFlag() const override;
+    void onRender(RenderContext& renderCtx) override;
 
 private:
 

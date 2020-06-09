@@ -1,7 +1,7 @@
 {
   "children": [
     {
-      "name": "UI/Main/Logo.json",
+      "name": "UI/Common/BoxRender.json",
       "id": 1,
       "transform": {
         "pos": {
@@ -29,10 +29,10 @@
       "id": 1,
       "data": {
         "style": {
-          "width": 1.0,
-          "widthInv": "Relative",
-          "height": 0.4000000059604645,
-          "heightInv": "Relative",
+          "width": 50.0,
+          "widthInv": "Grid",
+          "height": 50.0,
+          "heightInv": "Grid",
           "margin": {
             "top": 0.0,
             "bot": 0.0,

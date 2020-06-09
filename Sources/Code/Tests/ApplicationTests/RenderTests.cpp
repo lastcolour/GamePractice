@@ -160,7 +160,7 @@ TEST_F(RenderTests, CheckCreateInvalidMaterial) {
 
 TEST_F(RenderTests, CheckCreateSquareGeom) {
     std::shared_ptr<RenderGeometry> geom;
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, PrimitiveGeometryType::Square);
 
     const Vec3 size = geom->aabb.getSize();
     ASSERT_EQ(size, Vec3(2.f, 2.f, 0.f));
@@ -173,7 +173,7 @@ TEST_F(RenderTests, CheckCreateSquareGeom) {
 
 TEST_F(RenderTests, CheckRenderSquare) {
     std::shared_ptr<RenderGeometry> geom;
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, PrimitiveGeometryType::Square);
     ASSERT_TRUE(geom);
 
     std::shared_ptr<RenderMaterial> material;
@@ -209,7 +209,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     const Vec3 center(w * 0.5f, h * 0.5f, 0.f);
 
     std::shared_ptr<RenderGeometry> geom;
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, TEST_GEOM_1);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, PrimitiveGeometryType::Square);
     ASSERT_TRUE(geom);
 
     const Vec3 size = geom->aabb.getSize();

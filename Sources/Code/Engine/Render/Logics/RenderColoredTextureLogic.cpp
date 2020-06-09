@@ -31,10 +31,7 @@ bool RenderColoredTextureLogic::init() {
     return true;
 }
 
-void RenderColoredTextureLogic::deinit() {
-}
-
-void RenderColoredTextureLogic::ET_onRender(const RenderContext& renderCtx) {
+void RenderColoredTextureLogic::onRender(RenderContext& renderCtx) {
     Vec3 scale = Vec3(imageScale.x * texScale.x, imageScale.y * texScale.y, 1.f);
     Mat4 mvp = Render::CalcModelMat(getEntityId(), scale, *geom);
     mvp = renderCtx.proj2dMat * mvp;

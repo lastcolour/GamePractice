@@ -3,23 +3,27 @@
 
 RenderContext::RenderContext() :
     dt(0.f),
-    isSrcMinusAlphaBlendingEnabled(false) {
+    blendingType(RenderBlendingType::NONE) {
 }
 
 RenderContext::~RenderContext() {
 }
 
-void RenderContext::setSrcMinusAlphaBlending(bool flag) {
-    if(flag) {
-        if(!isSrcMinusAlphaBlendingEnabled) {
-            isSrcMinusAlphaBlendingEnabled = true;
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        }
-    } else {
-        if(isSrcMinusAlphaBlendingEnabled) {
-            isSrcMinusAlphaBlendingEnabled = false;
-            glDisable(GL_BLEND);
-        }
+void RenderContext::setBlending(RenderBlendingType newBlendingType) {
+    if(newBlendingType == blendingType) {
+        return;
+    }
+    blendingType = newBlendingType;
+    switch(blendingType)
+    {
+    case RenderBlendingType::NONE:
+        glDisable(GL_BLEND);
+        break;
+    case RenderBlendingType::SRC_MINUS_ALPHA:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        break;
+    default:
+        break;
     }
 }

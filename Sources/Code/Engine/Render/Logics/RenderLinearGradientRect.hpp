@@ -18,14 +18,15 @@ public:
 
     // EntityLogic
     bool init() override;
-    void deinit() override;
-
-    // RenderNode
-    void ET_onRender(const RenderContext& renderCtx) override;
 
     // ETRenderRect
     void ET_setSize(const Vec2i& newSize) override;
     Vec2i ET_getSize() const override;
+
+protected:
+
+    // RenderNode
+    void onRender(RenderContext& renderCtx) override;
 
 private:
 
@@ -34,7 +35,7 @@ private:
 private:
 
     std::shared_ptr<RenderTexture> tex;
-    Vec2 scale;
+    Vec2i size;
     ColorB startCol;
     ColorB endCol;
     bool isVertical;

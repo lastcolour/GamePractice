@@ -16,6 +16,12 @@ class RenderFont;
 class RenderTexture;
 class RenderContext;
 
+enum class PrimitiveGeometryType {
+    Square = 0,
+    Sqaure_Tex,
+    Text_Vert_Chunk
+};
+
 struct ETRenderNode {
     virtual ~ETRenderNode() = default;
     virtual bool ET_isVisible() const = 0;
@@ -23,9 +29,8 @@ struct ETRenderNode {
     virtual void ET_show() = 0;
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
     virtual void ET_setMaterial(const char* matName) = 0;
-    virtual void ET_setGeometry(const char* geomName) = 0;
+    virtual void ET_setGeometry(PrimitiveGeometryType geomType) = 0;
     virtual int ET_getDrawPriority() const = 0;
-    virtual bool ET_getScrMinusAlphaBlendFlag() const = 0;
 };
 
 struct ETRenderRect {
@@ -62,13 +67,13 @@ struct ETRenderColoredTexture {
 
 struct ETRenderEvents {
     virtual ~ETRenderEvents() = default;
-    virtual void ET_onRender(const RenderContext& renderCtx) = 0;
+    virtual void ET_onRender(RenderContext& renderCtx) = 0;
     virtual void ET_onRenderPortResized() = 0;
 };
 
 struct ETRenderGeometryManager {
     virtual ~ETRenderGeometryManager() = default;
-    virtual std::shared_ptr<RenderGeometry> ET_createGeometry(const char* geomName) = 0;
+    virtual std::shared_ptr<RenderGeometry> ET_createGeometry(PrimitiveGeometryType geomType) = 0;
 };
 
 struct ETRenderMaterialManager {

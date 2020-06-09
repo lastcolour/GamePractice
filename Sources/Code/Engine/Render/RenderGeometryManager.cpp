@@ -29,29 +29,32 @@ void RenderGeometryManager::deinit() {
     ETNode<ETRenderGeometryManager>::disconnect();
 }
 
-std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(const std::string& geomName) {
-    if(geomName == SQUARE_GEOM_NAME) {
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(PrimitiveGeometryType geomType) {
+    switch(geomType) {
+    case PrimitiveGeometryType::Square:
         return createSquare();
-    } else if(geomName == SQUARE_TEX_GEOM_NAME) {
+    case PrimitiveGeometryType::Sqaure_Tex:
         return createSquareTex();
-    } else if(geomName == TEXT_VERTEX_CHUNK) {
+    case PrimitiveGeometryType::Text_Vert_Chunk:
         return createTextVertexChunks();
+    default:
+        break;
     }
-    LogWarning("[RenderGeometryManager::createGeometryOfType] Can't create unknown type of geometry: '%s'", geomName);
+    LogError("[RenderGeometryManager::createGeometryOfType] Can't create unknown type of geometry: '%d'", geomType);
     return nullptr;
 }
 
-std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(const char* geomName) {
-    std::string reqGeomName = geomName;
-    auto it = geometris.find(reqGeomName);
+std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(PrimitiveGeometryType geomType) {
+    auto reqGeomType = geomType;
+    auto it = geometris.find(reqGeomType);
     if(it != geometris.end() && it->second) {
         return it->second;
     }
-    auto geom = createGeometryOfType(reqGeomName);
+    auto geom = createGeometryOfType(reqGeomType);
     if(!geom) {
         return nullptr;
     }
-    geometris[reqGeomName] = geom;
+    geometris[reqGeomType] = geom;
     return geom;
 }
 

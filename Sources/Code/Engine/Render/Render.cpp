@@ -107,16 +107,8 @@ void Render::drawRoutine() {
 
     updateRenderQueue();
     for(auto nodeId : renderQueue) {
-        bool isVisible = false;
-        ET_SendEventReturn(isVisible, nodeId, &ETRenderNode::ET_isVisible);
-        bool isSrcMinusAlphaBlenRequired = false;
-        if(!isVisible) {
-            continue;
-        }
-
-        ET_SendEventReturn(isSrcMinusAlphaBlenRequired, nodeId, &ETRenderNode::ET_getScrMinusAlphaBlendFlag);
-        renderCtx.setSrcMinusAlphaBlending(isSrcMinusAlphaBlenRequired);
         ET_SendEvent(nodeId, &ETRenderEvents::ET_onRender, renderCtx);
+        renderCtx.setBlending(RenderBlendingType::NONE);
     }
 }
 

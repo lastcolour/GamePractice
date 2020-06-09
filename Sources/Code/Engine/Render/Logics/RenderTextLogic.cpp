@@ -29,6 +29,7 @@ void RenderTextLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderTextLogic>("RenderText")) {
         classInfo->addField("color", &RenderTextLogic::color);
         classInfo->addField("fontScale", &RenderTextLogic::fontScale);
+        classInfo->addField("text", &RenderTextLogic::text);
     }
 }
 
@@ -37,17 +38,14 @@ void RenderTextLogic::ET_setFont(const char* fontName) {
 }
 
 bool RenderTextLogic::init() {
+    ET_setGeometry(PrimitiveGeometryType::Text_Vert_Chunk);
+    if(!geom) {
+        return false;
+    }
     ET_setMaterial("text_solid_color");
     if(!mat) {
         return false;
     }
-    ET_setGeometry("text_chunk");
-    if(!geom) {
-        return false;
-    }
-
-    assert(geom->vertCount >= 6 && "Invalid chunk vertext count");
-    assert(geom->vertType == VertexType::Vector4 && "Invalid vertext type");
 
     ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
     if(!font) {
@@ -60,11 +58,8 @@ bool RenderTextLogic::init() {
     return true;
 }
 
-void RenderTextLogic::deinit() {
-    return;
-}
-
-void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
+void RenderTextLogic::onRender(RenderContext& renderCtx) {
+    renderCtx.setBlending(RenderBlendingType::SRC_MINUS_ALPHA);
     mat->bind();
     mat->setTexture2D("tex", font->getTexId());
     mat->setUniformMat4("MVP", renderCtx.proj2dMat);
@@ -131,6 +126,7 @@ void RenderTextLogic::ET_onRender(const RenderContext& renderCtx) {
         }
     }
     mat->unbind();
+    renderCtx.setBlending(RenderBlendingType::NONE);
 }
 
 void RenderTextLogic::calcTextSize() {
@@ -192,8 +188,4 @@ void RenderTextLogic::ET_setText(const char* str) {
     } else {
         ET_hide();
     }
-}
-
-bool RenderTextLogic::ET_getScrMinusAlphaBlendFlag() const {
-    return true;
 }

@@ -9,7 +9,7 @@
 #include <cassert>
 
 RenderSimpleLogic::RenderSimpleLogic() :
-    scale(1.f),
+    size(20),
     color(255, 255, 255) {
 }
 
@@ -18,13 +18,14 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 
 void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderSimpleLogic>("RenderSimple")) {
-        classInfo->addBaseClass<RenderNode>();
-        classInfo->addField("scale", &RenderSimpleLogic::scale);
+        classInfo->addField("size", &RenderSimpleLogic::size);
         classInfo->addField("color", &RenderSimpleLogic::color);
     }
 }
 
 bool RenderSimpleLogic::init() {
+    ET_setGeometry(PrimitiveGeometryType::Square);
+    ET_setMaterial("geom_solid_color");
     if(!RenderNode::init()) {
         return false;
     }
@@ -33,11 +34,8 @@ bool RenderSimpleLogic::init() {
     return true;
 }
 
-void RenderSimpleLogic::deinit() {
-    return;
-}
-
-void RenderSimpleLogic::ET_onRender(const RenderContext& renderCtx) {
+void RenderSimpleLogic::onRender(RenderContext& renderCtx) {
+    auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
@@ -53,9 +51,9 @@ void RenderSimpleLogic::ET_setColor(const ColorB& col) {
 }
 
 void RenderSimpleLogic::ET_setSize(const Vec2i& newSize) {
-    scale = Render::CalcGeomScaleForSize(newSize, *geom);
+    size = newSize;
 }
 
 Vec2i RenderSimpleLogic::ET_getSize() const {
-    return Render::CaclScaledGeomSize(scale, *geom);
+    return size;
 }

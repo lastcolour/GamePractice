@@ -7,6 +7,11 @@ from .LogicNative import CreateLogic
 import json
 import os
 
+_DEFAULT_TRANSFORM = {
+    "pos":{"x":0, "y":0, "z":0},
+    "rot":{"x":0, "y":0, "z":0, "w":1},
+    "scale":{"x":1, "y":1, "z":1}
+}
 class EntityNativeLoader(NativeObject):
     def __init__(self):
         self._entitiesStack = []
@@ -17,28 +22,28 @@ class EntityNativeLoader(NativeObject):
     def getEntityFullPath(self, filePath):
         return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
 
-    def _loadTransform(self, entity, data):
-        if "transform" not in data:
-            print("[EntityNativeLoader:_loadTransform] Can't find require 'transform' node in entity: '{0}'".format(entity._name))
-            return False
-        entity.initTransformLogic(data["transform"])
-        return True
-
     def _loadChildren(self, entity, data):
         if "children" not in data:
-            print("[EntityNativeLoader:_loadChildren] Can't find require 'children' node in entity: '{0}'".format(entity._name))
+            print("[EntityNativeLoader:_loadChildren] Can't find required 'children' node in entity: '{0}'".format(entity._name))
             return False
         childData = data["children"]
         for childNode in childData:
             if "name" not in childNode:
-                print("[EntityNativeLoader:_loadChildren] Can't find require 'name' field in children section in entity: '{0}'".format(entity._name))
+                print("[EntityNativeLoader:_loadChildren] Can't find required 'name' field in children section in entity: '{0}'".format(entity._name))
                 return False
             if "id" not in childNode:
-                print("[EntityNativeLoader:_loadChildren] Can't find require 'id' field in children section in entity: '{0}'".format(entity._name))
+                print("[EntityNativeLoader:_loadChildren] Can't find required 'id' field in children section in entity: '{0}'".format(entity._name))
+                return False
+            if "transform" not in childNode:
+                print("[EntityNativeLoader:_loadChildren] Can't find required 'transform' field in children section in entity: '{0}'".format(entity._name))
                 return False
             childName = childNode["name"]
             childId = childNode["id"]
+            childTm = childNode["transform"]
             childEntity = self.loadEntity(childName)
+            if not childEntity.initTransformLogic(childTm):
+                print("[EntityNativeLoader:_loadChildren] Can't load transfrom for child entity: '{0}'".format(childName))
+                return False
             if childEntity is None:
                 print("[EntityNativeLoader:_loadChildren] Can't load children: '{0}' for entity: '{1}'".format(
                     childName, entity._name))
@@ -73,6 +78,7 @@ class EntityNativeLoader(NativeObject):
         self._entitiesStack.append(entityName)
         try:
             resEntity = self._loadEntityImpl(entityName)
+            resEntity.initTransformLogic(_DEFAULT_TRANSFORM)
         except:
             self._entitiesStack.pop()
             raise
@@ -88,9 +94,6 @@ class EntityNativeLoader(NativeObject):
             data = json.load(tFile)
         entity = EntityNative()
         entity._name = entityName
-        if not self._loadTransform(entity, data):
-            print("[EntityNativeLoader:loadEntity] Can't load transfrom from entity: '{0}'".format(entityName))
-            return None
         if not self._loadLogics(entity, data):
             print("[EntityNativeLoader:loadEntity] Can't load logics from entity: '{0}'".format(entityName))
             return None
@@ -108,11 +111,6 @@ class EntityNativeLoader(NativeObject):
 
 def CreateVoidEntity(filePath):
     data = {
-        "transform":{
-            "pos":{"x":0, "y":0, "z":0},
-            "scale":{"x":1, "y":1, "z":1},
-            "rot":{"x":0, "y":0, "z":0, "w":0},
-        },
         "children":[],
         "logics":[]
     }
