@@ -88,8 +88,8 @@ private:
 
     const ClassValue* findValueByName(const char* name) const;
     const ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr) const;
-    ClassValue* findValueById(int valueId);
-    ClassValue* findValueByPrimitiveValueId(int valueId);
+    ClassValue* findValueById(void*& instance, int valueId);
+    ClassValue* findValueByPrimitiveValueId(void*& instance, int valueId);
     void registerBaseClass(TypeId baseClassTypeId);
     void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
         ClassValue::SetResourceFuncT valueSetFunc);

@@ -35,7 +35,9 @@ class _EventManager:
         loader = self._app._editorNative.getEntityLoader()
         try:
             newEntity = loader.loadEntity(entityName)
-        except:
+        except Exception as e:
+            Log.error("[_EventManager:onEntityDoubleClickFromFileTree] Can't load entity '{0}' (Exception: {1})".format(
+                entityName, e))
             return
         if newEntity is None:
             return

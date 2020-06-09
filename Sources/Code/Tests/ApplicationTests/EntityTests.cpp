@@ -200,7 +200,7 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
 
     const char* transformDataStr = "{ \"pos\": {\"x\": 0.1, \"y\": 0.2, \"z\": 0.3}, \"scale\": {\"x\": 0.4, \"y\" :0.5, \"z\": 0.6}, \"rot\": {\"x\": 0, \"y\": 0, \"z\": 0, \"w\": 1} }";
     const char* childDataStr = "";
-    const char* logicsDataStr = "{ \"type\": \"TestLogic\", \"data\" : {} }";
+    const char* logicsDataStr = "{ \"type\": \"TestLogic\", \"id\": 1, \"data\" : {} }";
     std::string resStr = StringFormat("{ \"transform\": %s,  \"children\" : [ %s ], \"logics\" : [ %s ] }", transformDataStr, childDataStr, logicsDataStr);
     JSONNode node = JSONNode::ParseString(resStr.c_str());
 
@@ -369,6 +369,7 @@ TEST_F(EntityTests, TestAddElementToUILayout) {
     MemoryStream stream;
     stream.openForWrite();
 
+    res = false;
     ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, valueId, stream);
     ASSERT_TRUE(res);
 
@@ -379,8 +380,22 @@ TEST_F(EntityTests, TestAddElementToUILayout) {
         ASSERT_EQ(size, 1);
     }
     {
-        std::string val;
-        stream.read(val);
-        ASSERT_STREQ(val.c_str(), "");
+        EntityChildId childId = InvalidEntityChildId;
+        stream.read(childId);
+        ASSERT_EQ(childId, InvalidEntityChildId);
     }
+
+    stream.reopenForWrite();
+
+    res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, AllEntityLogicValueId, stream);
+    ASSERT_TRUE(res);
+
+    stream.reopenForRead();
+
+    res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, entityId, logicId, AllEntityLogicValueId, stream);
+    ASSERT_TRUE(res);
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, entityId);
 }

@@ -229,12 +229,12 @@ const ClassValue* ClassInfo::findValueByName(const char* name) const {
 }
 
 
-ClassValue* ClassInfo::findValueById(int valueId) {
+ClassValue* ClassInfo::findValueById(void*& instance, int valueId) {
     int primitiveValueId = valueId - 1;
-    return findValueByPrimitiveValueId(primitiveValueId);
+    return findValueByPrimitiveValueId(instance, primitiveValueId);
 }
 
-ClassValue* ClassInfo::findValueByPrimitiveValueId(int valueId) {
+ClassValue* ClassInfo::findValueByPrimitiveValueId(void*& instance, int valueId) {
     assert(valueId >= 0 && "Invalid value id");
     if(valueId >= primitiveValueCount) {
         return nullptr;
@@ -263,7 +263,8 @@ ClassValue* ClassInfo::findValueByPrimitiveValueId(int valueId) {
                         value.name, className);
                     return nullptr;
                 }
-                return valueClassInfo->findValueByPrimitiveValueId(valueId);
+                instance = valueClassInfo->getValueFunc(instance, value.ptr);
+                return valueClassInfo->findValueByPrimitiveValueId(instance, valueId);
             }
             return &value;
         }
@@ -313,7 +314,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, const 
             }
         }
     } else {
-        auto value = findValueById(valueId);
+        auto value = findValueById(instance, valueId);
         if(!value) {
             LogError("ClassInfo::readValueFrom] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
@@ -355,7 +356,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, Memory
             }
         }
     } else {
-        auto value = findValueById(valueId);
+        auto value = findValueById(instance, valueId);
         if(!value) {
             LogError("ClassInfo::readValueFrom] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
@@ -397,7 +398,7 @@ bool ClassInfo::writeValueTo(void* instance, EntityLogicValueId valueId, MemoryS
             }
         }
     } else {
-        auto value = findValueById(valueId);
+        auto value = findValueById(instance, valueId);
         if(!value) {
             LogError("ClassInfo::writeValueTo] Can't find value with id '%d' in class '%s'", valueId, className);
             return false;
@@ -423,7 +424,7 @@ bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId value
         LogError("ClassInfo::addNewValueArrayElement] Can't add array element to value with 'AllValuesId'");
         return false;
     }
-    auto value = findValueById(valueId);
+    auto value = findValueById(instance, valueId);
     if(!value) {
         LogError("[ClassInfo::addNewValueArrayElement] Can't find value with id '%d' in class: '%s'",
             valueId, className);

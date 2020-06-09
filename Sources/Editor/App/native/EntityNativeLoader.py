@@ -71,7 +71,11 @@ class EntityNativeLoader(NativeObject):
             self._entitiesStack.clear()
             raise RuntimeError("Can't load entity: {0}".format(entityName))
         self._entitiesStack.append(entityName)
-        resEntity = self._loadEntityImpl(entityName)
+        try:
+            resEntity = self._loadEntityImpl(entityName)
+        except:
+            self._entitiesStack.pop()
+            raise
         self._entitiesStack.pop()
         return resEntity
 

@@ -656,7 +656,7 @@ class EntityValue(ValueNative):
 
     def setEntityValue(self, entity):
         if entity is None:
-            self._val = 0
+            self._val = -1
         else:
             self._val = entity._childId
         self._onValueChanged()

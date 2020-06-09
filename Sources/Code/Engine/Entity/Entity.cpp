@@ -88,7 +88,6 @@ bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance
     if(!logicPtr->init()) {
         return false;
     }
-    LogDebug("[tmpLog(Entity::addLogicWithId)] Logic ptr: %p", logicInstance.get());
     logics.emplace_back(std::move(logicInstance), logicId);
     return true;
 }

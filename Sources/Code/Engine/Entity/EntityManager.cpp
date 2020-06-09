@@ -231,8 +231,8 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
     }
     ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
-        if(!tmClassInfo->writeValueTo(entity->getTransform(), valueId, stream)) {
-            LogWarning(errStr, StringFormat("Can't write transform data to entity: '%s'", entity->ET_getName()));
+        if(!tmClassInfo->readValueFrom(entity->getTransform(), valueId, stream)) {
+            LogWarning(errStr, StringFormat("Can't read transform data for entity: '%s'", entity->ET_getName()));
             return false;
         }
         return true;
@@ -273,7 +273,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
         std::string logicType;
         logicNode.read("type", logicType);
         if(!logicNode.hasKey("id")) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't find required logic 'id' of logic '%s' data for an entity '%s'",
+            LogWarning("[EntityManager::setupEntityLogics] Can't find required logic 'id' in logics data '%s for an entity '%s'",
                 logicType, entity->ET_getName());
             continue;
         }
