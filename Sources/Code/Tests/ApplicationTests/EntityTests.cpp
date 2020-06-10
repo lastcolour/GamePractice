@@ -158,6 +158,63 @@ TEST_F(EntityTests, CheckChildInheritParentScale) {
     EXPECT_FLOAT_EQ(tm.scale.z, 0.5f);
 }
 
+TEST_F(EntityTests, CheckLocalTransform) {
+    auto parent = createVoidObject();
+    auto child = createVoidObject();
+
+    Transform tm;
+    tm.pt = Vec3(1.f, 2.f, 3.f);
+
+    parent->ET_setTransform(tm);
+    parent->ET_addChild(child->getEntityId());
+
+    {
+        auto localTm = child->ET_getLocalTransform();
+        EXPECT_FLOAT_EQ(localTm.pt.x, -1.f);
+        EXPECT_FLOAT_EQ(localTm.pt.y, -2.f);
+        EXPECT_FLOAT_EQ(localTm.pt.z, -3.f);
+    }
+
+    tm.pt += Vec3(1.f);
+    tm.scale = Vec3(0.5f, 0.5f, 0.5f);
+    parent->ET_setTransform(tm);
+
+    {
+        auto localTm = child->ET_getLocalTransform();
+        EXPECT_FLOAT_EQ(localTm.pt.x, -1.f);
+        EXPECT_FLOAT_EQ(localTm.pt.y, -2.f);
+        EXPECT_FLOAT_EQ(localTm.pt.z, -3.f);
+
+        EXPECT_FLOAT_EQ(localTm.scale.x, 1.f);
+        EXPECT_FLOAT_EQ(localTm.scale.y, 1.f);
+        EXPECT_FLOAT_EQ(localTm.scale.z, 1.f);
+    }
+
+    tm.pt = Vec3(0.f);
+    tm.scale = Vec3(0.5f);
+    child->ET_setLocalTransform(tm);
+
+    {
+        auto localTm = child->ET_getLocalTransform();
+        EXPECT_FLOAT_EQ(localTm.pt.x, 0.f);
+        EXPECT_FLOAT_EQ(localTm.pt.y, 0.f);
+        EXPECT_FLOAT_EQ(localTm.pt.z, 0.f);
+
+        EXPECT_FLOAT_EQ(localTm.scale.x, 0.5f);
+        EXPECT_FLOAT_EQ(localTm.scale.y, 0.5f);
+        EXPECT_FLOAT_EQ(localTm.scale.z, 0.5f);
+
+        auto currTm = child->ET_getTransform();
+        EXPECT_FLOAT_EQ(currTm.pt.x, 2.f);
+        EXPECT_FLOAT_EQ(currTm.pt.y, 3.f);
+        EXPECT_FLOAT_EQ(currTm.pt.z, 4.f);
+
+        EXPECT_FLOAT_EQ(currTm.scale.x, 0.25f);
+        EXPECT_FLOAT_EQ(currTm.scale.y, 0.25f);
+        EXPECT_FLOAT_EQ(currTm.scale.z, 0.25f);
+    }
+}
+
 TEST_F(EntityTests, CheckChildrenDepth) {
     EntityId objId1 = InvalidEntityId;
     ET_SendEventReturn(objId1, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
@@ -198,10 +255,9 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     ET_SendEventReturn(res, &ETEntityManager::ET_registerLogics, logicRegister);
     ASSERT_TRUE(res);
 
-    const char* transformDataStr = "{ \"pos\": {\"x\": 0.1, \"y\": 0.2, \"z\": 0.3}, \"scale\": {\"x\": 0.4, \"y\" :0.5, \"z\": 0.6}, \"rot\": {\"x\": 0, \"y\": 0, \"z\": 0, \"w\": 1} }";
     const char* childDataStr = "";
     const char* logicsDataStr = "{ \"type\": \"TestLogic\", \"id\": 1, \"data\" : {} }";
-    std::string resStr = StringFormat("{ \"transform\": %s,  \"children\" : [ %s ], \"logics\" : [ %s ] }", transformDataStr, childDataStr, logicsDataStr);
+    std::string resStr = StringFormat("{ \"children\" : [ %s ], \"logics\" : [ %s ] }", childDataStr, logicsDataStr);
     JSONNode node = JSONNode::ParseString(resStr.c_str());
 
     EntityId entId;
@@ -211,13 +267,13 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     Transform tm;
     ET_SendEventReturn(tm, entId, &ETEntity::ET_getTransform);
 
-    ASSERT_FLOAT_EQ(tm.pt.x, 0.1f);
-    ASSERT_FLOAT_EQ(tm.pt.y, 0.2f);
-    ASSERT_FLOAT_EQ(tm.pt.z, 0.3f);
+    ASSERT_FLOAT_EQ(tm.pt.x, 0.0f);
+    ASSERT_FLOAT_EQ(tm.pt.y, 0.0f);
+    ASSERT_FLOAT_EQ(tm.pt.z, 0.0f);
 
-    ASSERT_FLOAT_EQ(tm.scale.x, 0.4f);
-    ASSERT_FLOAT_EQ(tm.scale.y, 0.5f);
-    ASSERT_FLOAT_EQ(tm.scale.z, 0.6f);
+    ASSERT_FLOAT_EQ(tm.scale.x, 1.f);
+    ASSERT_FLOAT_EQ(tm.scale.y, 1.f);
+    ASSERT_FLOAT_EQ(tm.scale.z, 1.f);
 
     ASSERT_FLOAT_EQ(tm.quat.x, 0.f);
     ASSERT_FLOAT_EQ(tm.quat.y, 0.f);
@@ -239,36 +295,18 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     {
         float xVal = 0.f;
         stream.read(xVal);
-        ASSERT_FLOAT_EQ(xVal, 0.1f);
+        ASSERT_FLOAT_EQ(xVal, 0.f);
     }
     {
         float yVal = 0.f;
         stream.read(yVal);
-        ASSERT_FLOAT_EQ(yVal, 0.2f);
+        ASSERT_FLOAT_EQ(yVal, 0.f);
     }
     {
         float zVal = 0.f;
         stream.read(zVal);
-        ASSERT_FLOAT_EQ(zVal, 0.3f);
+        ASSERT_FLOAT_EQ(zVal, 0.f);
     }
-
-    stream.reopenForWrite();
-    stream.write(0.3f);
-    stream.write(0.2f);
-    stream.write(0.1f);
-
-    stream.reopenForRead();
-
-    res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, entId, logicId, valueId, stream);
-
-    ASSERT_TRUE(res);
-
-    ET_SendEventReturn(tm, entId, &ETEntity::ET_getTransform);
-
-    ASSERT_FLOAT_EQ(tm.pt.x, 0.3f);
-    ASSERT_FLOAT_EQ(tm.pt.y, 0.2f);
-    ASSERT_FLOAT_EQ(tm.pt.z, 0.1f);
 }
 
 TEST_F(EntityTests, CheckAddRemoveLogic) {
@@ -320,23 +358,12 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
     stream.close();
     ASSERT_TRUE(buffer);
     stream.openForRead(buffer);
-
     {
-        std::string geomName;
-        stream.read(geomName);
-        EXPECT_STREQ(geomName.c_str(), "");
-    }
-    {
-        std::string matName;
-        stream.read(matName);
-        EXPECT_STREQ(matName.c_str(), "");
-    }
-    {
-        Vec2 scale(0.f);
-        stream.read(scale.x);
-        stream.read(scale.y);
-        EXPECT_FLOAT_EQ(scale.x, 1.f);
-        EXPECT_FLOAT_EQ(scale.y, 1.f);
+        Vec2i size(0);
+        stream.read(size.x);
+        stream.read(size.y);
+        EXPECT_GE(size.x, 1);
+        EXPECT_GE(size.y, 1);
     }
     {
         ColorB col(0, 0, 0, 0);

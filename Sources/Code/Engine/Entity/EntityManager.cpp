@@ -107,6 +107,34 @@ EntityId EntityManager::ET_createEntity(const char* entityName) {
     return entity->getEntityId();
 }
 
+EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char* entityName) {
+    const char* errStr = "[EntityManager::ET_createChildEntity] Can't create child entity (Error: %s)";
+    auto parentEntity = findEntity(parentId);
+    if(!CheckEntity(errStr, parentId, parentEntity)) {
+        return InvalidEntityChildId;
+    }
+    if(!entityName || !entityName[0]) {
+        LogWarning(errStr, "Empty child name");
+        return InvalidEntityChildId;
+    }
+
+    EntityId childEntityId;
+    {
+        EntityPtrT childEntity(new Entity(entityName, GetETSystem()->createNewEntityId()));
+        auto tm = parentEntity->ET_getTransform();
+        childEntity->ET_setTransform(tm);
+        childEntityId = childEntity->getEntityId();
+        entities[childEntityId] = std::move(childEntity);
+    }
+
+    auto childId = parentEntity->ET_addChild(childEntityId);
+    if(childId == InvalidEntityChildId) {
+        LogWarning(errStr, "Can't add child");
+        return InvalidEntityChildId;
+    }
+    return childId;
+}
+
 void EntityManager::ET_destroyEntity(EntityId entityId) {
     auto it = entities.find(entityId);
     if(it == entities.end()) {
@@ -213,7 +241,8 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
     }
     ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
-        if(!tmClassInfo->writeValueTo(entity->getTransform(), valueId, stream)) {
+        auto localTm = entity->ET_getLocalTransform();
+        if(!tmClassInfo->writeValueTo(&localTm, valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data from entity: '%s'", entity->ET_getName()));
             return false;
         }
@@ -231,10 +260,12 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
     }
     ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
-        if(!tmClassInfo->readValueFrom(entity->getTransform(), valueId, stream)) {
+        Transform localTm;
+        if(!tmClassInfo->readValueFrom(&localTm, valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data for entity: '%s'", entity->ET_getName()));
             return false;
         }
+        entity->ET_setLocalTransform(localTm);
         return true;
     }
     return entity->writeLogicData(logicId, valueId, stream);
@@ -318,42 +349,64 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
 bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
     auto childrenNode = node.object("children");
     if(!childrenNode) {
-        LogWarning("[EntityManager::setupEntityChildren] Can't find required 'children' node in entity file '%s'", entity->ET_getName());
+        LogWarning("[EntityManager::setupEntityChildren] Can't find required 'children' node in entity '%s'", entity->ET_getName());
         return false;
     }
     for(const auto& childNode : childrenNode) {
-        EntityChildId childId = InvalidEntityChildId;
         if(!childNode.hasKey("id")) {
-            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'id' value in entity file '%s'", entity->ET_getName());
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'id' value in entity '%s'", entity->ET_getName());
             return false;
         }
         if(!childNode.hasKey("name")) {
-            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'name' value in entity file '%s'", entity->ET_getName());
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'name' value in entity '%s'", entity->ET_getName());
             return false;
         }
         auto tmNode = childNode.object("transform");
         if(!tmNode) {
-            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'transform' node in entity file '%s'", entity->ET_getName());
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'transform' node in entity '%s'", entity->ET_getName());
             return false;
         }
-        childNode.read("id", childId);
+        if(!childNode.hasKey("internal")) {
+            LogWarning("[EntityManager::setupEntityChildren] Can't find required 'internal' node in entity '%s'", entity->ET_getName());
+            return false;
+        }
         std::string childEntName;
         childNode.read("name", childEntName);
-        auto childEntity = createEntity(childEntName.c_str());
+
+        bool isInternal = false;
+        childNode.read("internal", isInternal);
+
+        EntityChildId childId = InvalidEntityChildId;
+        childNode.read("id", childId);
+        if(childId == InvalidEntityChildId) {
+            LogWarning("[EntityManager::setupEntityChildren] Invalid child id of child '%s' for an entity '%s'", childEntName, entity->ET_getName());
+            return false;
+        }
+
+        Entity* childEntity = nullptr;
+        if(isInternal) {
+            JSONNode childData = childNode.object("data");
+            if(!childData) {
+                LogWarning("[EntityManager::setupEntityChildren] Can't find required 'data' node for internal entity in entity '%s'",
+                    entity->ET_getName());
+                return false;
+            }
+            childEntity = createEntityImpl(childData, childEntName.c_str());
+        } else {
+            childEntity = createEntity(childEntName.c_str());
+        }
         if(!childEntity) {
             LogWarning("[EntityManager::setupEntityChildren] Can't create child entity '%s' for an entity: '%s'",
                 childEntName, entity->ET_getName());
             return false;
         }
-        if(!tmClassInfo->readValueFrom(childEntity->getTransform(), AllEntityLogicValueId, tmNode)) {
+        Transform localTm;
+        if(!tmClassInfo->readValueFrom(&localTm, AllEntityLogicValueId, tmNode)) {
             LogWarning("[EntityManager::setupEntityTranform] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
             return false;
         }
-        if(childId == InvalidEntityChildId) {
-            LogWarning("[EntityManager::setupEntityChildren] Invalid child id of child '%s' for an entity '%s'", childEntName, entity->ET_getName());
-            return false;
-        }
         entity->addChildEntityWithId(childId, *childEntity);
+        childEntity->ET_setLocalTransform(localTm);
     }
     return true;
 }

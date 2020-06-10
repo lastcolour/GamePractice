@@ -25,6 +25,8 @@ LIB_EXPORT void UnloadEntity(uint32_t entityId);
 
 LIB_EXPORT uint32_t GetEntityChildEntityId(uint32_t entityId, int32_t childId);
 
+LIB_EXPORT int32_t CreateChildEntity(uint32_t entityId, const char* childName);
+
 LIB_EXPORT const char* GetEntityName(uint32_t entityId);
 
 LIB_EXPORT int32_t AddLogicToEntity(uint32_t entityId, const char* logicName);

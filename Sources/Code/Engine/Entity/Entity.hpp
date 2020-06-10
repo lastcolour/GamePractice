@@ -57,8 +57,6 @@ public:
     bool readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId);
-    Transform* getTransform();
-
     EntityId getEntityId() const { return entityId; }
 
     // ETEntity
@@ -72,6 +70,8 @@ public:
     int ET_getMaxChildrenDepth() const override;
     EntityChildId ET_getChildIdFromEntityId(EntityId childEntId) const override;
     EntityId ET_getEntityIdFromChildId(EntityChildId childId) const override;
+    Transform ET_getLocalTransform() const override;
+    void ET_setLocalTransform(const Transform& localTm) override;
 
 private:
 

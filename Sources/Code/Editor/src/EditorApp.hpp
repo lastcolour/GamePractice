@@ -28,6 +28,7 @@ public:
     void addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
     Buffer getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
     void setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
+    EntityChildId createChildEntity(EntityId entityId, const char* childName);
     void unloadAll();
 
 protected:

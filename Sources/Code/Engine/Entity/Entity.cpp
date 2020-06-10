@@ -183,10 +183,6 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     return res;
 }
 
-Transform* Entity::getTransform() {
-    return &tm;
-}
-
 const char* Entity::ET_getName() const {
     return name.c_str();
 }
@@ -263,6 +259,42 @@ void Entity::ET_setTransform(const Transform& transform) {
         ET_SendEvent(childNode.childEntId, &ETEntity::ET_setTransform, childTm);
     }
     ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);
+}
+
+Transform Entity::ET_getLocalTransform() const {
+    if(!parentId.isValid()) {
+        return tm;
+    }
+
+    Transform parentTm;
+    ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+
+    Transform localTm;
+    localTm.pt = tm.pt - parentTm.pt;
+    localTm.scale.x = tm.scale.x / parentTm.scale.x;
+    localTm.scale.y = tm.scale.y / parentTm.scale.y;
+    localTm.scale.z = tm.scale.z / parentTm.scale.z;
+    localTm.quat = Quat();
+    return localTm;
+}
+
+void Entity::ET_setLocalTransform(const Transform& localTm) {
+    if(!parentId.isValid()) {
+        LogWarning("[Entity::ET_setLocalTransform] Can't set local transform to entity '%s' without parent",
+            name);
+        return;
+    }
+
+    Transform parentTm;
+    ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+
+    Transform newTm;
+    newTm.pt = parentTm.pt + localTm.pt;
+    newTm.scale.x = parentTm.scale.x * localTm.scale.x;
+    newTm.scale.y = parentTm.scale.y * localTm.scale.y;
+    newTm.scale.z = parentTm.scale.z * localTm.scale.z;
+    newTm.quat = Quat();
+    ET_setTransform(newTm);
 }
 
 int Entity::ET_getMaxChildrenDepth() const {

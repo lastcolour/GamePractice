@@ -179,3 +179,12 @@ void UnloadAll() {
     }
     EDITOR_APP->unloadAll();
 }
+
+int32_t CreateChildEntity(uint32_t entityId, const char* childName) {
+    if(!EDITOR_APP) {
+        return InvalidEntityChildId;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    return EDITOR_APP->createChildEntity(entId, childName);
+}

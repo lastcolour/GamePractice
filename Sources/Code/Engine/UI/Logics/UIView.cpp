@@ -25,7 +25,7 @@ bool UIView::init() {
     viewStyle.margin.left = 0.f;
     viewStyle.margin.right = 0.f;
 
-    ET_setStyle(viewStyle);
+    UIBox::ET_setStyle(viewStyle);
     ET_onRenderPortResized();
     return UIBox::init();
 }

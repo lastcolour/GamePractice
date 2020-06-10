@@ -48,10 +48,13 @@ class _EventManager:
         if self._currentEntity is not None:
             self._currentEntity.unloadFromNative()
         self._currentEntity = newEntity
+        self._currentEntity._syncWithNative()
         self._app._entityLogicsView.widget().setEditEntity(self._currentEntity)
         self._app._entityTreeView.widget().setEditEntity(self._currentEntity)
 
     def onEntityClickedFromEntityTree(self, entity):
+        if entity is not None:
+            entity._syncWithNative()
         self._app._entityLogicsView.widget().setEditEntity(entity)
 
     def onAddLogicBtClicked(self, editEntity):

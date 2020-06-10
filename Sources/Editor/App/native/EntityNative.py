@@ -6,11 +6,12 @@ class EntityNative(NativeObject):
         self._isModified = False
         self._name = None
         self._entityId = None
-        self._tmLogic = None
+        self._tmLogic = self._createTransformLogic()
         self._children = []
         self._logics = []
         self._parent = None
         self._childId = None
+        self._isInternal = False
 
     def getName(self):
         return self._name
@@ -35,7 +36,6 @@ class EntityNative(NativeObject):
         for childEnt in self._children:
             childEnt._entityId = self._getAPI().getLibrary().getEntityChildEntityId(self._entityId, childEnt._childId)
             childEnt._syncWithNative()
-        self._tmLogic.readFromNative()
         for logic in self._logics:
             logic.readFromNative()
 
@@ -45,6 +45,8 @@ class EntityNative(NativeObject):
             childEnt._desyncWithNative()
 
     def loadToNative(self):
+        if self._isInternal:
+            raise RuntimeError("Can't load internal entity '{0}' to native".format(self._name))
         self._entityId = self._getAPI().getLibrary().loadEntity(self._name)
         if self._entityId == 0:
             print("[EntityNative:loadToNative] Can't load entity '{0}' to editor".format(self._name))
@@ -93,10 +95,6 @@ class EntityNative(NativeObject):
     def initTransformLogic(self, logicData):
         if self.isLoadedToNative():
             raise RuntimeError("Can't add transform to entity that is loaded to editor: '{9}'".format(self._name))
-        if self._tmLogic is None:
-            self._tmLogic = CreateLogic("Transform")
-            self._tmLogic._logicId = 0
-            self._tmLogic._entity = self
         self._tmLogic._rootValue.readFromDict(logicData)
         return True
 
@@ -166,16 +164,23 @@ class EntityNative(NativeObject):
     def getFullFilePath(self):
         return self._getAPI().getEntityLoader().getEntityFullPath(self._name)
 
+    def _dumpChildToDict(self, child):
+        tmRes = {}
+        child._tmLogic.writeToDict(tmRes)
+        data = {
+            "transform": tmRes["data"],
+            "name": child.getName(),
+            "id": child._childId,
+            "internal":child.isInternal()
+        }
+        if child.isInternal():
+            data["data"] = child.dumpToDict()
+        return data
+
     def dumpToDict(self):
         res = {"children":[], "logics":[]}
         for child in self._children:
-            tmRes = {}
-            child._tmLogic.writeToDict(tmRes)
-            res["children"].append({
-                "name": child.getName(),
-                "id": child._childId,
-                "transform":tmRes["data"]
-            })
+            res["children"].append(self._dumpChildToDict(child))
         for logic in self._logics:
             logicRes = {}
             logic.writeToDict(logicRes)
@@ -186,10 +191,12 @@ class EntityNative(NativeObject):
         return self._tmLogic
 
     def save(self):
+        self._isModified = False
+        if self._isInternal:
+            return
         self._getAPI().getEntityLoader().saveEntity(self)
         for child in self._children:
             child.save()
-        self._isModified = False
 
     def canAddChild(self, entityName):
         if self._name == entityName:
@@ -203,3 +210,43 @@ class EntityNative(NativeObject):
             if child._childId == childId:
                 return child
         return None
+
+    def isInternal(self):
+        return self._isInternal
+
+    def _createTransformLogic(self):
+        tmLogic = CreateLogic("Transform")
+        tmLogic._logicId = 0
+        tmLogic._entity = self
+        return tmLogic
+
+    def createNewInternalChild(self, childName):
+        if not self.isLoadedToNative():
+            raise RuntimeError("Can't create internal child entity '{0}' for entity '{1}' that isn't loaded to edit".format(
+                childName, self._name))
+        for item in self._children:
+            if item.getName() == childName:
+                print("[EntityNative:createNewInternalChild] Child with the name '{0}' already exists in entity '{1}'".format(
+                    childName, self._name))
+                return None
+        childId = self._getAPI().getLibrary().createChildEntity(self._entityId, childName)
+        if childId == -1:
+            print("[EntityNative:createNewInternalChild] Can't add child '{0}' to entity '{1}'".format(
+                childName, self._name))
+            return None
+        childEntId = self._getAPI().getLibrary().getEntityChildEntityId(self._entityId, childId)
+        if childEntId == 0:
+            raise RuntimeError("[EntityNative:createNewInternalChild] Can't query entity id of child '{0}' of entity '{1}'".format(
+                childName, self._name))
+        childEntity = EntityNative()
+        childEntity._name = childName
+        childEntity._entityId = childEntId
+        childEntity._parent = self
+        childEntity._childId = childId
+        childEntity._isInternal = True
+        childEntity._isModified = True
+        childEntity._tmLogic.readFromNative()
+        childEntity._syncWithNative()
+        self._children.append(childEntity)
+        self._isModified = True
+        return childEntity

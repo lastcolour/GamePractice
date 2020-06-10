@@ -194,6 +194,12 @@ void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId
     ET_SendEvent(&ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
 }
 
+EntityChildId EditorApp::createChildEntity(EntityId entityId, const char* childName) {
+    EntityChildId childId = InvalidEntityChildId;
+    ET_SendEventReturn(childId, &ETEntityManager::ET_createChildEntity, entityId, childName);
+    return childId;
+}
+
 void EditorApp::unloadAll() {
     ET_SendEvent(&ETEntityManager::ET_destroyAllEntities);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);

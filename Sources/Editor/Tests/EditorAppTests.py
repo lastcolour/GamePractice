@@ -61,22 +61,16 @@ class EditorAppTests(unittest.TestCase):
 
     def testSetGetLogicData(self):
         logicId = 1
-        valueId = 4
+        valueId = 2
         stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId, 0)
         self.assertIsNotNone(stream)
         self.assertTrue(stream.getSize() > 0)
 
-        matName = stream.readString()
-        geomName = stream.readString()
+        sizeX = stream.readInt()
+        sizeY = stream.readInt()
 
-        self.assertEqual(matName, "")
-        self.assertEqual(geomName, "")
-
-        scaleX = stream.readFloat()
-        scaleY = stream.readFloat()
-
-        self.assertEqual(scaleX, 1.0)
-        self.assertEqual(scaleY, 1.0)
+        self.assertGreater(sizeX, 1.0)
+        self.assertGreater(sizeY, 1.0)
 
         r = stream.readUChar()
         g = stream.readUChar()
@@ -106,6 +100,12 @@ class EditorAppTests(unittest.TestCase):
         self.assertEqual(g, 2)
         self.assertEqual(b, 3)
         self.assertEqual(a, 4)
+
+    def testAddChildEntity(self):
+        childId = EditorAppTests.NATIVE_LIB.createChildEntity(self._centralEntityId, "TestEntity")
+        self.assertNotEqual(childId, -1)
+        childEntId = EditorAppTests.NATIVE_LIB.getEntityChildEntityId(self._centralEntityId, childId)
+        self.assertNotEqual(childEntId, 0)
 
 if __name__ == "__main__":
     unittest.main()

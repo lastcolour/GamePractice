@@ -25,7 +25,7 @@ protected:
         LogicType* logic = new LogicType;
         std::unique_ptr<EntityLogic> logicPtr(logic);
         auto object = createVoidObject();
-        object->addCustomLogic(std::unique_ptr<LogicType>(new LogicType));
+        object->addCustomLogic(std::move(logicPtr));
         return logic;
     }
 

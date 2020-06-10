@@ -67,3 +67,18 @@ class EntityTreeView(QWidget):
         item = self._tree.itemAt(pt)
         globalPt = self._tree.viewport().mapToGlobal(pt)
         self._entityTreeMenu.onMenuRequestedOnItem(item, globalPt)
+
+    def _createEditItem(self, treeItem):
+        newItem = QTreeWidgetItem(treeItem)
+        newItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+        return newItem
+
+    def _createNewChildEntity(self, treeItem, childName):
+        parentItem = treeItem.parent()
+        newEntity = parentItem._entity.createNewInternalChild(childName)
+        if newEntity is None:
+            return False
+        treeItem._entity = newEntity
+        treeItem.setText(0, newEntity.getName())
+        self._tree.setItemWidget(treeItem, 0, None)
+        return True

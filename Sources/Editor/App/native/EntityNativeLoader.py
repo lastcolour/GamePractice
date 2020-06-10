@@ -37,10 +37,23 @@ class EntityNativeLoader(NativeObject):
             if "transform" not in childNode:
                 print("[EntityNativeLoader:_loadChildren] Can't find required 'transform' field in children section in entity: '{0}'".format(entity._name))
                 return False
+            if "internal" not in childNode:
+                print("[EntityNativeLoader:_loadChildren] Can't find required 'internal' field in children section in entity: '{0}'".format(entity._name))
+                return False
+            if childNode["internal"] == True:
+                if "data" not in childNode:
+                    print("[EntityNativeLoader:_loadChildren] Can't find required 'data' field in children section in entity: '{0}'".format(entity._name))
+                    return False
             childName = childNode["name"]
             childId = childNode["id"]
             childTm = childNode["transform"]
-            childEntity = self.loadEntity(childName)
+            childInternal = childNode["internal"]
+            if not childInternal:
+                childEntity = self.loadEntity(childName)
+            else:
+                childData = childNode["data"]
+                childEntity = self._loadEntityFromData(childName, childData)
+                childEntity._isInternal = True
             if not childEntity.initTransformLogic(childTm):
                 print("[EntityNativeLoader:_loadChildren] Can't load transfrom for child entity: '{0}'".format(childName))
                 return False
@@ -85,22 +98,25 @@ class EntityNativeLoader(NativeObject):
         self._entitiesStack.pop()
         return resEntity
 
-    def _loadEntityImpl(self, entityName):
-        fullFilePath = self.getEntityFullPath(entityName)
-        if not os.path.exists(fullFilePath):
-            print("[EntityNativeLoader:loadEntity] Can't load entity '{0}' from missed file".format(fullFilePath))
-            return None
-        with open(fullFilePath) as tFile:
-            data = json.load(tFile)
+    def _loadEntityFromData(self, entityName, data):
         entity = EntityNative()
         entity._name = entityName
         if not self._loadLogics(entity, data):
-            print("[EntityNativeLoader:loadEntity] Can't load logics from entity: '{0}'".format(entityName))
+            print("[EntityNativeLoader:_loadEntityFromData] Can't load logics from entity: '{0}'".format(entityName))
             return None
         if not self._loadChildren(entity, data):
-            print("[EntityNativeLoader:loadEntity] Can't load children from entity: '{0}'".format(entityName))
+            print("[EntityNativeLoader:_loadEntityFromData] Can't load children from entity: '{0}'".format(entityName))
             return None
         return entity
+
+    def _loadEntityImpl(self, entityName):
+        fullFilePath = self.getEntityFullPath(entityName)
+        if not os.path.exists(fullFilePath):
+            print("[EntityNativeLoader:loadEntity] Can't find entity file '{0}' to load".format(fullFilePath))
+            return None
+        with open(fullFilePath) as tFile:
+            data = json.load(tFile)
+        return self._loadEntityFromData(entityName, data)
 
     def saveEntity(self, entity):
         fullFilePath = self.getEntityFullPath(entity.getName())

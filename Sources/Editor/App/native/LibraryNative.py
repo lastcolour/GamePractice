@@ -72,6 +72,10 @@ class LibraryNative:
         self._removeChildEntityFromEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32]
         self._removeChildEntityFromEntityFunc.restype = None
 
+        self._createChildEntityFunc = self._editorLib.CreateChildEntity
+        self._createChildEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
+        self._createChildEntityFunc.restype = ctypes.c_int32
+
         self._unloadAllFunc = self._editorLib.UnloadAll
         self._unloadAllFunc.argstype = None
         self._unloadAllFunc.restype = None
@@ -167,6 +171,11 @@ class LibraryNative:
         cLogicId = ctypes.c_int32(logicId)
         cValueId = ctypes.c_int32(valueId)
         self._addEntityLogicArrayElementFunc(cEntId, cLogicId, cValueId)
+
+    def createChildEntity(self, entityId, childName):
+        cEntId = ctypes.c_uint32(entityId)
+        cChildName = ctypes.c_char_p(childName.encode('ascii') + b'\x00')
+        return self._createChildEntityFunc(cEntId, cChildName)
 
     def unloadAll(self):
         self._unloadAllFunc()

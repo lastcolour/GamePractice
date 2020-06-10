@@ -47,23 +47,15 @@ class EditorEntityTest(unittest.TestCase):
         self.assertEqual(logic._logicId, 1)
 
         values = logic.getValues()
-        self.assertEqual(len(values), 4)
+        self.assertEqual(len(values), 2)
 
-        self.assertEqual(values[0].getName(), "geometry")
-        self.assertEqual(values[0].getType(), ValueType.Resource)
+        self.assertEqual(values[0].getName(), "size")
+        self.assertEqual(values[0].getType(), ValueType.Vec2i)
         self.assertEqual(values[0]._valueId, 1)
 
-        self.assertEqual(values[1].getName(), "material")
-        self.assertEqual(values[1].getType(), ValueType.Resource)
+        self.assertEqual(values[1].getName(), "color")
+        self.assertEqual(values[1].getType(), ValueType.Color)
         self.assertEqual(values[1]._valueId, 2)
-
-        self.assertEqual(values[2].getName(), "scale")
-        self.assertEqual(values[2].getType(), ValueType.Vec2)
-        self.assertEqual(values[2]._valueId, 3)
-
-        self.assertEqual(values[3].getName(), "color")
-        self.assertEqual(values[3].getType(), ValueType.Color)
-        self.assertEqual(values[3]._valueId, 4)
 
     def testAllLogicMemoryLayout(self):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
@@ -86,10 +78,10 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(entity.loadToNative())
         self.assertTrue(entity.isLoadedToNative())
         renderLogic = entity.getLogics()[0]
-        colorVal = renderLogic.getValues()[3]
+        colorVal = renderLogic.getValues()[1]
         colorVal.setVal(123, 124, 125, 126)
 
-        stream = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), renderLogic.getNativeId(), 4)
+        stream = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), renderLogic.getNativeId(), 2)
         r = stream.readUChar()
         g = stream.readUChar()
         b = stream.readUChar()
@@ -174,8 +166,12 @@ class EditorEntityTest(unittest.TestCase):
         elemCount = arrayVal.getValues()
         self.assertEqual(len(elemCount), 0)
 
-    def testEntityTransform(self):
-        pass
+    def testCreateInternalChild(self):
+        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        self.assertTrue(entity.loadToNative())
+        childEntity = entity.createNewInternalChild("Test")
+        self.assertIsNotNone(childEntity)
+        self.assertTrue(childEntity.isInternal())
 
 if __name__ == "__main__":
     unittest.main()

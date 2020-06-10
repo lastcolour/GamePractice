@@ -28,6 +28,7 @@ public:
 
     // ETEntityManager
     EntityId ET_createEntity(const char* entityName) override;
+    EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) override;
     void ET_destroyEntity(EntityId entityId) override;
     void ET_destroyAllEntities() override;
     bool ET_registerLogics(EntityLogicRegister& logicRegister) override;
