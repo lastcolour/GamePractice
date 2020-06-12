@@ -51,6 +51,7 @@ class EntityTreeView(QWidget):
         if childEntity is None:
             return
         self._createTreeItem(treeItem, childEntity)
+        GetEventManager().onEntityClickedFromEntityTree(childEntity)
 
     def _onRemoveChild(self, treeItem):
         parentItem = treeItem.parent()
@@ -58,6 +59,7 @@ class EntityTreeView(QWidget):
         childEntity = treeItem._entity
         parentEntity.removeChildEntity(childEntity)
         parentItem.removeChild(treeItem)
+        GetEventManager().onEntityClickedFromEntityTree(parentEntity)
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None and hasattr(currItem, "_entity"):
@@ -81,4 +83,5 @@ class EntityTreeView(QWidget):
         treeItem._entity = newEntity
         treeItem.setText(0, newEntity.getName())
         self._tree.setItemWidget(treeItem, 0, None)
+        GetEventManager().onEntityClickedFromEntityTree(treeItem._entity)
         return True

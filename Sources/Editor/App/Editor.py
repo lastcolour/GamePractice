@@ -4,6 +4,7 @@ from PyQt5 import QtCore
 from utils.Log import Log
 from utils.AppConfig import AppConfig
 from utils.EventManager import CreateEventManager
+from utils.EngineViewManager import CreateEngineViewManager
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
@@ -16,6 +17,9 @@ from model.AssetsModel import AssetsModel
 from model.LogicsModel import LogicsModel
 
 from menu.MainFileMenu import MainFileMenu
+from menu.MainToolBar import MainToolBar
+
+from view.main.StatusBar import StatusBar
 
 import sys
 
@@ -29,6 +33,8 @@ class EditorView(QMainWindow):
 
         self._fileMenu = MainFileMenu(self)
         self.menuBar().addMenu(self._fileMenu)
+        self.addToolBar(MainToolBar())
+        self.setStatusBar(StatusBar())
 
         self._entityTreeView = QDockWidget()
         self._entityTreeView.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
@@ -59,6 +65,7 @@ class EditorView(QMainWindow):
             sys.exit(1)
 
         CreateEventManager(self)
+        CreateEngineViewManager(self)
 
     def __del__(self):
         self._deinit()

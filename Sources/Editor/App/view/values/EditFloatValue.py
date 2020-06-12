@@ -1,8 +1,7 @@
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QHBoxLayout
 from PyQt5.QtCore import Qt
-from PyQt5.Qt import QDoubleValidator
 
-from .Utils import TextToFloat, SetFloatToLineEdit
+from .FloatLineEdit import FloatLineEdit
 
 class EditFloatValue(QWidget):
     def __init__(self, value):
@@ -12,10 +11,8 @@ class EditFloatValue(QWidget):
 
         self._rootLayout = QHBoxLayout()
 
-        self._floatLineEdit = QLineEdit()
-        self._floatLineEdit.setAlignment(Qt.AlignRight)
+        self._floatLineEdit = FloatLineEdit()
         self._floatLineEdit.textEdited.connect(self._signal_lineEdit_textEdited)
-        self._floatLineEdit.setValidator(QDoubleValidator())
         self._rootLayout.addWidget(self._floatLineEdit)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
@@ -24,7 +21,7 @@ class EditFloatValue(QWidget):
         self._pull()
 
     def _signal_lineEdit_textEdited(self, text):
-        self._push(TextToFloat(text))
+        self._push(self._floatLineEdit._getFloat())
         self._pull()
 
     def _push(self, data):
@@ -32,4 +29,4 @@ class EditFloatValue(QWidget):
 
     def _pull(self):
         data = self._val.getVal()
-        SetFloatToLineEdit(self._floatLineEdit, data)
+        self._floatLineEdit._setFloat(data)

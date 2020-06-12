@@ -83,9 +83,6 @@ class _EventManager:
         elif retCode == QMessageBox.No:
             pass
 
-    def drawNativeFrameTo(self, ptr, width, height):
-        self._app._editorNative.getLibrary().drawFrame(ptr, width, height)
-
     def getAssetsModel(self):
         return self._app._assetsModel
 

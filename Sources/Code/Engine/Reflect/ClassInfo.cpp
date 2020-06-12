@@ -228,7 +228,6 @@ const ClassValue* ClassInfo::findValueByName(const char* name) const {
     return nullptr;
 }
 
-
 ClassValue* ClassInfo::findValueById(void*& instance, int valueId) {
     int primitiveValueId = valueId - 1;
     return findValueByPrimitiveValueId(instance, primitiveValueId);

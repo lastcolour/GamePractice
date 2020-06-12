@@ -42,7 +42,8 @@ class EditColorValue(QWidget):
         self._colorSelectBt.setAutoFillBackground(True)
         self._colorSelectBt.setPalette(palette)
         self._colorSelectBt.update()
-        self._colorLineEdit.setText("{}".format(col.name()))
+        self._colorLineEdit.setText("<{0}, {1}, {2}, {3}>".format(
+            col.red(), col.green(), col.blue(), col.alpha()))
 
     def _signal_colorSelectBt_clicked(self):
         r, g, b, a = self._val.getVal()
