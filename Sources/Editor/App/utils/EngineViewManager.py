@@ -1,3 +1,8 @@
+class MouseEventType:
+    Press = 0
+    Move = 1
+    Release = 2
+
 class _EngineViewManager:
 
     _INSTANACE = None
@@ -22,6 +27,9 @@ class _EngineViewManager:
 
     def onAspectRatioChanged(self, aspectRation):
         self._app._engineOutputView._engineOutFrame.setAspectRatio(aspectRation)
+
+    def onMouseInputEvent(self, eventType, x, y):
+        self._app._editorNative.getLibrary().mouseInputEvent(eventType, x, y)
 
 def GetEngineViewManager():
     return _EngineViewManager._INSTANCE

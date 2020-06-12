@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, QSize, QPoint, QTimer
 from PyQt5.QtGui import QPainter, QImage, QResizeEvent
 
 from utils.EventManager import GetEventManager
-from utils.EngineViewManager import GetEngineViewManager
+from utils.EngineViewManager import GetEngineViewManager, MouseEventType
 
 class AspecRatio:
     Ratio_4x3 = 0
@@ -20,6 +20,8 @@ class EngineOutputFrameView(QWidget):
         super().__init__()
         self._ratio = AspecRatio.Ratio_16x9
         self._isHorizontal = False
+        self._isMousePressed = False
+        self._lastMousePt = (0, 0)
 
         self._tickTimer = QTimer()
         self._tickTimer.timeout.connect(self._onTick)
@@ -28,6 +30,7 @@ class EngineOutputFrameView(QWidget):
         self._image = QImage(QSize(_MIN_WIDTH, self._getHeightFromWidth(_MIN_WIDTH)), QImage.Format_RGBA8888)
         self._image.fill(Qt.black)
         self.setMinimumSize(QSize(_MIN_WIDTH, _MIN_WIDTH))
+        self.setMouseTracking(True)
 
     def _getHeightFromWidth(self, width):
         x = None
@@ -93,3 +96,55 @@ class EngineOutputFrameView(QWidget):
     def setOrientation(self, isHorizontal):
         self._isHorizontal = isHorizontal
         self.setAspectRatio(self._ratio)
+
+    def _getPosInside(self, event):
+        pt = event.pos()
+        x, y = pt.x(), pt.y()
+        y = self.size().height() - y
+        drawPt = self._getDrawPoint()
+        minX = drawPt.x()
+        minY = drawPt.y()
+        maxX = minX + self._image.width()
+        maxY = minY + self._image.height()
+        if x < minX or x >= maxX:
+            return None, None
+        if y < minY or y >= maxY:
+            return None, None
+        x = x - minX
+        y = y - minY
+        return x, y
+
+    def mousePressEvent(self, event):
+        x, y = self._getPosInside(event)
+        if x is None or y is None:
+            return
+        if event.button() != Qt.LeftButton:
+            return
+        self._lastMousePt = (x, y)
+        self._isMousePressed = True
+        GetEngineViewManager().onMouseInputEvent(MouseEventType.Press, x, y)
+
+    def mouseReleaseEvent(self, event):
+        x, y = self._getPosInside(event)
+        if x is None or y is None:
+            return
+        if event.button() != Qt.LeftButton:
+            return
+        if self._isMousePressed == False:
+            return
+        self._isMousePressed = False
+        GetEngineViewManager().onMouseInputEvent(MouseEventType.Release, x, y)
+        self._lastMousePt = (0, 0)
+
+    def mouseMoveEvent(self, event):
+        if not self._isMousePressed:
+            return
+        x, y = self._getPosInside(event)
+        if x is None or y is None:
+            GetEngineViewManager().onMouseInputEvent(MouseEventType.Release,
+                self._lastMousePt[0], self._lastMousePt[1])
+            self._lastMousePt = (0, 0)
+            self._isMousePressed = False
+        else:
+            self._lastMousePt = (x, y)
+            GetEngineViewManager().onMouseInputEvent(MouseEventType.Move, x, y)

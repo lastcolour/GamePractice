@@ -76,6 +76,10 @@ class LibraryNative:
         self._createChildEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
         self._createChildEntityFunc.restype = ctypes.c_int32
 
+        self._mouseInputEventFunc = self._editorLib.MouseInputEvent
+        self._mouseInputEventFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32]
+        self._mouseInputEventFunc.restype = None
+
         self._unloadAllFunc = self._editorLib.UnloadAll
         self._unloadAllFunc.argstype = None
         self._unloadAllFunc.restype = None
@@ -176,6 +180,12 @@ class LibraryNative:
         cEntId = ctypes.c_uint32(entityId)
         cChildName = ctypes.c_char_p(childName.encode('ascii') + b'\x00')
         return self._createChildEntityFunc(cEntId, cChildName)
+
+    def mouseInputEvent(self, actionType, xPos, yPos):
+        cType = ctypes.c_uint32(actionType)
+        cXPos = ctypes.c_uint32(xPos)
+        cYPos = ctypes.c_uint32(yPos)
+        self._mouseInputEventFunc(cType, cXPos, cYPos)
 
     def unloadAll(self):
         self._unloadAllFunc()

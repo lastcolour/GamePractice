@@ -200,6 +200,10 @@ EntityChildId EditorApp::createChildEntity(EntityId entityId, const char* childN
     return childId;
 }
 
+void EditorApp::mouseInputEvent(EActionType actionType, const Vec2i& pos) {
+    ET_SendEvent(&ETInputEvents::ET_onTouch, actionType, pos);
+}
+
 void EditorApp::unloadAll() {
     ET_SendEvent(&ETEntityManager::ET_destroyAllEntities);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);

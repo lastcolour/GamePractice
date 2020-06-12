@@ -3,6 +3,7 @@
 #include "Core/Core.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Core/Buffer.hpp"
+#include "ETApplicationInterfaces.hpp"
 
 EditorApp* EDITOR_APP = nullptr;
 Buffer INTERNAL_BUFFER;
@@ -187,4 +188,13 @@ int32_t CreateChildEntity(uint32_t entityId, const char* childName) {
     EntityId entId;
     entId.setRawId(entityId);
     return EDITOR_APP->createChildEntity(entId, childName);
+}
+
+void MouseInputEvent(uint32_t actionType, uint32_t xPos, uint32_t yPos) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    Vec2i pos(xPos, yPos);
+    EActionType type = static_cast<EActionType>(actionType);
+    EDITOR_APP->mouseInputEvent(type, pos);
 }
