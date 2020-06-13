@@ -1,7 +1,6 @@
 #include "UIViewStackTests.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "TestUtils/UITestUtils.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 

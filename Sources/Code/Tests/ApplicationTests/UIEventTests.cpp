@@ -3,6 +3,7 @@
 #include <UI/ETUIInterfaces.hpp>
 #include <UI/UISurfaceEventHandler.hpp>
 #include <Game/ETGameInterfaces.hpp>
+#include "Core/ETTimer.hpp"
 
 #include "TestUtils/UITestUtils.hpp"
 #include "TestUtils/GameTestUtils.hpp"

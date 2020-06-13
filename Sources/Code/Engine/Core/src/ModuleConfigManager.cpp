@@ -1,4 +1,4 @@
-#include "Core/ModuleConfigManager.hpp"
+#include "ModuleConfigManager.hpp"
 #include "Reflect/ClassInstance.hpp"
 
 #include <cassert>

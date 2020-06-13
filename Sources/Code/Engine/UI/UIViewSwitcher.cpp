@@ -1,4 +1,5 @@
 #include "UI/UIViewSwitcher.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

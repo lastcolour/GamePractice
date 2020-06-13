@@ -2,7 +2,8 @@
 #include "Render/RenderTexture.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Core/Buffer.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETAssets.hpp"
 #include "Render/RenderUtils.hpp"
 
 #include <algorithm>

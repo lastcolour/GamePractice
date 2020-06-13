@@ -3,18 +3,16 @@
 #include "Audio/AudioModule.hpp"
 #include "Game/GameModule.hpp"
 #include "UI/UIModule.hpp"
-#include "CoreModule.hpp"
 #include "Entity/EntityModule.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Core/JSONNode.hpp"
-#include "Core/Buffer.hpp"
 #include "Platforms/PlatformModule.hpp"
 #include "EditorModule.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/MemoryStream.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETLogger.hpp"
 
 EditorApp::EditorApp() :
     Application() {
@@ -53,7 +51,6 @@ std::vector<const char*> EditorApp::getRegisteredEntityLogics() {
 }
 
 void EditorApp::buildModules(ModuleListT& modules) {
-    modules.emplace_back(new CoreModule);
     modules.emplace_back(new EditorModule);
     modules.emplace_back(new PlatformModule);
     modules.emplace_back(new EntityModule);
@@ -207,4 +204,10 @@ void EditorApp::mouseInputEvent(EActionType actionType, const Vec2i& pos) {
 void EditorApp::unloadAll() {
     ET_SendEvent(&ETEntityManager::ET_destroyAllEntities);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);
+}
+
+void EditorApp::setTimeScale(float timeScale) {
+}
+
+void EditorApp::enableGameUpdate(bool flag) {
 }

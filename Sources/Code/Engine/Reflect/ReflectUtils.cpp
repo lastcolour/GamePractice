@@ -2,7 +2,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Reflect/ArrayInfo.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <memory>
 #include <cassert>

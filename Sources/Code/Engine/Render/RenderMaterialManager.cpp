@@ -1,6 +1,6 @@
 #include "Render/RenderMaterialManager.hpp"
-#include "ETApplicationInterfaces.hpp"
-#include "Core/JSONNode.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETAssets.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Render/RenderMaterial.hpp"
 

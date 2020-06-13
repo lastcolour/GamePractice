@@ -2,7 +2,7 @@
 #include "UI/Logics/UIBox.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "UI/UIConfig.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETApplication.hpp"
 
 void UIBoxTests::SetUp() {
     ConsoleAppTests::SetUp();

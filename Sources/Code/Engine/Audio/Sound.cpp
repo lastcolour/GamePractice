@@ -2,7 +2,7 @@
 #include "Audio/ETAudioInterfaces.hpp"
 #include "Audio/SoundSource.hpp"
 #include "Audio/OggDataStream.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

@@ -1,6 +1,6 @@
 #include "TestUtils/GameTestUtils.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETTimer.hpp"
 
 namespace {
 

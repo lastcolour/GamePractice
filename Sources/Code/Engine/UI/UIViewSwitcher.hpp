@@ -3,7 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "UI/ETUIInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETTimer.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
 class UIViewSwitcher : public SystemLogic,

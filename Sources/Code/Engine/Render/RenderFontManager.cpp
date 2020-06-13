@@ -1,6 +1,7 @@
 #include "Render/RenderFontManager.hpp"
 #include "Render/RenderFont.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETAssets.hpp"
 #include "Platforms/OpenGL.hpp"
 
 #include <algorithm>

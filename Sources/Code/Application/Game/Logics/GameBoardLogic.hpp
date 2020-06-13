@@ -1,9 +1,9 @@
 #ifndef __GAME_BOARD_LOGIC_HPP__
 #define __GAME_BOARD_LOGIC_HPP__
 
+#include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"

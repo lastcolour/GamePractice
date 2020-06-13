@@ -1,6 +1,6 @@
 #include "UI/Logics/UIBox.hpp"
 #include "UI/UIConfig.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETApplication.hpp"
 
 #include <cassert>
 

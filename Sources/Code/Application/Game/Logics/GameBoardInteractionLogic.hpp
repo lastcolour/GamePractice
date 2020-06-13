@@ -1,8 +1,9 @@
 #ifndef __GAME_BOARD_INTERACTION_LOGIC_HPP__
 #define __GAME_BOARD_INTERACTION_LOGIC_HPP__
 
+#include "Core/ETPrimitives.hpp"
+#include "Core/ETSurface.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 class GameBoardInteractionLogic : public EntityLogic,

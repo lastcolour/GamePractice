@@ -2,7 +2,7 @@
 #include "Timer.hpp"
 #include "AppRunState.hpp"
 #include "AssetsCacheManager.hpp"
-#include "Core/ModuleConfigManager.hpp"
+#include "ModuleConfigManager.hpp"
 #include "Reflect/ClassInfoManager.hpp"
 
 #ifdef PLATFORM_ANDROID

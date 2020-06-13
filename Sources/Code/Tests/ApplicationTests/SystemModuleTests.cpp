@@ -4,7 +4,7 @@
 #include "Core/Utils.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Core/JSONNode.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETApplication.hpp"
 
 #include <memory>
 #include <tuple>

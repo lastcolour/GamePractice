@@ -3,7 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETTimer.hpp"
 
 class SoundSourceManager : public SystemLogic,
     public ETNode<ETSoundSourceManager>,

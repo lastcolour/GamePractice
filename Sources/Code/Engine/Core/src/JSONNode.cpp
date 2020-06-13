@@ -1,5 +1,5 @@
-#include "JSONNode.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/JSONNode.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>

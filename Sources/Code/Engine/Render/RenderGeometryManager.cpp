@@ -1,13 +1,10 @@
 #include "Render/RenderGeometryManager.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Render/RenderGeometry.hpp"
 
 namespace {
 
-const char* SQUARE_GEOM_NAME = "square";
-const char* SQUARE_TEX_GEOM_NAME = "square_tex";
-const char* TEXT_VERTEX_CHUNK = "text_chunk";
 const int TEXT_CHUNK_VERTEX_COUNT = 6 * 32;
 
 } // namespace

@@ -2,7 +2,7 @@
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "Reflect/ArrayInfo.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>

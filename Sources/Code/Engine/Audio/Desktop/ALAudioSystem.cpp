@@ -1,7 +1,8 @@
 #include "Audio/Desktop/ALAudioSystem.hpp"
 #include "Audio/Desktop/ALSoundSource.hpp"
 #include "Audio/AudioConfig.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETApplication.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>

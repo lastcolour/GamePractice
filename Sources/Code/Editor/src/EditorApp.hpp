@@ -1,11 +1,11 @@
 #ifndef __EDITOR_APP__
 #define __EDITOR_APP__
 
-#include "Application.hpp"
+#include "Core/Application.hpp"
 #include "Core/Buffer.hpp"
 #include "Core/Core.hpp"
+#include "Core/ETSurface.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
-#include "ETApplicationInterfaces.hpp"
 
 class EditorApp : public Application {
 public:
@@ -31,6 +31,8 @@ public:
     void setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
     EntityChildId createChildEntity(EntityId entityId, const char* childName);
     void mouseInputEvent(EActionType actionType, const Vec2i& pos);
+    void setTimeScale(float timeScale);
+    void enableGameUpdate(bool flag);
     void unloadAll();
 
 protected:

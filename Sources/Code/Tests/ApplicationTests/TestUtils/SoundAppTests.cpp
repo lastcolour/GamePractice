@@ -1,9 +1,8 @@
 #include "TestUtils/SoundAppTests.hpp"
-#include "Application.hpp"
+#include "Core/Application.hpp"
 #include "Entity/EntityModule.hpp"
-#include "CoreModule.hpp"
 #include "Audio/AudioModule.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Platforms/PlatformModule.hpp"
 
 namespace {
@@ -23,7 +22,6 @@ public:
 protected:
 
     void buildModules(ModuleListT& modules) override {
-        modules.emplace_back(new CoreModule);
         modules.emplace_back(new PlatformModule);
         modules.emplace_back(new EntityModule);
         modules.emplace_back(new AudioModule);

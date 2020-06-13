@@ -3,7 +3,6 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Render/Logics/RenderNode.hpp"
-#include "ETApplicationInterfaces.hpp"
 
 class RenderLinearGradientRect : public RenderNode,
     public ETNode<ETRenderRect> {

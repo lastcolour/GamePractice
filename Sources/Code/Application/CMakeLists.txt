@@ -4,7 +4,8 @@ project(Application CXX)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${ENGINE_INCLUDE_DIR})
+    ${ENGINE_INCLUDE_DIR}
+    ${CORE_INCLUDE_DIR})
 
 file(GLOB APPLICATION_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/*.cpp

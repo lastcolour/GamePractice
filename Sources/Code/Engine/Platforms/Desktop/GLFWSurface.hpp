@@ -1,7 +1,9 @@
 #ifndef __GLFWS_SURFACE_HPP__
 #define __GLFWS_SURFACE_HPP__
 
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Core/ETTimer.hpp"
+#include "Core/ETSurface.hpp"
 #include "Core/SystemLogic.hpp"
 
 #include <memory>
@@ -32,7 +34,7 @@ public:
     bool ET_isVisible() const override;
     bool ET_isValid() const override;
 
-    // ETTimerEvenets
+    // ETTimerEvents
     void ET_onTick(float dt) override;
 
     const GLFWwindow* getWindow() const;

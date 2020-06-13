@@ -1,15 +1,14 @@
 #include "TestUtils/ConsoleAppTests.hpp"
 
-#include <Application.hpp>
-#include <CoreModule.hpp>
+#include <Core/Application.hpp>
 #include <Render/RenderModule.hpp>
 #include <Entity/Entity.hpp>
 #include <Core/ETPrimitives.hpp>
 #include <Entity/EntityModule.hpp>
 #include <UI/UIModule.hpp>
-#include <ETApplicationInterfaces.hpp>
 #include <Game/GameModule.hpp>
 #include <Platforms/PlatformModule.hpp>
+#include <Core/ETLogger.hpp>
 
 namespace {
 
@@ -28,7 +27,6 @@ public:
 protected:
 
     void buildModules(ModuleListT& modules) override {
-        modules.emplace_back(new CoreModule);
         modules.emplace_back(new EntityModule);
         modules.emplace_back(new PlatformModule);
         modules.emplace_back(new RenderModule);

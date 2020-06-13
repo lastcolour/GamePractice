@@ -2,7 +2,7 @@
 #define __APP_RUN_STATE_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETApplication.hpp"
 
 class AppRunState : public SystemLogic,
     public ETNode<ETAppRunStateEvents> {

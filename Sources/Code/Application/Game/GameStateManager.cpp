@@ -1,5 +1,5 @@
 #include "Game/GameStateManager.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "UI/ETUIInterfaces.hpp"
 
 #include <cassert>

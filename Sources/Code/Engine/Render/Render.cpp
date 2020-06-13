@@ -1,9 +1,9 @@
- #include "Render/Render.hpp"
+#include "Render/Render.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
 #include "Render/RenderContext.hpp"
-
 #include "Platforms/OpenGL.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <type_traits>
 #include <algorithm>

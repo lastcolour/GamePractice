@@ -1,12 +1,12 @@
 
 #include "Core/SystemModule.hpp"
-#include "Core/JSONNode.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETApplication.hpp"
 #include "Entity/EntityLogicRegister.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 
 #include <cassert>
-#include <chrono>
 
 namespace {
 

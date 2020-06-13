@@ -2,7 +2,8 @@
 #define __EDITOR_ASSETS_SETUP_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETPrimitives.hpp"
 
 class EditorAssetsSetup : public SystemLogic,
     public ETNode<ETAssetsSetup> {

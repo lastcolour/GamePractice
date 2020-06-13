@@ -1,5 +1,5 @@
 #include "Platforms/Desktop/DesktopAssets.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <chrono>

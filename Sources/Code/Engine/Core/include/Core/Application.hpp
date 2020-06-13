@@ -5,17 +5,12 @@
 #include <vector>
 
 class SystemModule;
-class Platform;
 class ETSystem;
 
 class Application {
-
-    friend class Environment;
-
 public:
 
     using ETSystemPtrT = std::unique_ptr<ETSystem>;
-    using PlatformPtrT = std::unique_ptr<Platform>;
     using ModuleListT = std::vector<std::unique_ptr<SystemModule>>;
 
 public:

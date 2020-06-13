@@ -1,6 +1,6 @@
 #include "Laucher/GameConfig.hpp"
-#include "ETApplicationInterfaces.hpp"
-#include "Core/JSONNode.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETLogger.hpp"
 
 namespace {
 

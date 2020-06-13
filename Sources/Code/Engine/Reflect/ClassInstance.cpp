@@ -1,6 +1,6 @@
 #include "Reflect/ClassInstance.hpp"
 #include "Reflect/ClassInfo.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

@@ -47,6 +47,10 @@ LIB_EXPORT void DrawFrame(void* out, uint32_t w, uint32_t h);
 
 LIB_EXPORT void MouseInputEvent(uint32_t eventType, uint32_t xPos, uint32_t yPos);
 
+LIB_EXPORT void SetGameTimeScale(float timeScale);
+
+LIB_EXPORT void EnableGameUpdate(bool flag);
+
 LIB_EXPORT void UnloadAll();
 
 } // extern "C"

@@ -2,8 +2,9 @@
 #define __RENDER_HPP__
 
 #include "Core/SystemLogic.hpp"
+#include "Core/ETTimer.hpp"
+#include "Core/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
 
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,

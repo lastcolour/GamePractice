@@ -1,6 +1,6 @@
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "UI/ETUIInterfaces.hpp"
 

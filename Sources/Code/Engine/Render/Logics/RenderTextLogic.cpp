@@ -4,7 +4,6 @@
 #include "Render/RenderGeometry.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Platforms/OpenGL.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Render/RenderContext.hpp"
 

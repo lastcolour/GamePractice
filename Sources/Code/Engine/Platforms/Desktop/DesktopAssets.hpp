@@ -1,7 +1,8 @@
 #ifndef __DESKTOP_ASSETS_HPP__
 #define __DESKTOP_ASSETS_HPP__
 
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 
 #include <filesystem>

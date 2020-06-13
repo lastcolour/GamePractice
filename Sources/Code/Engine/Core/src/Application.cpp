@@ -1,11 +1,10 @@
-#include "Application.hpp"
-#include "Platform.hpp"
+#include "Core/Application.hpp"
+#include "Core/ETApplication.hpp"
+#include "Core/ETTimer.hpp"
 #include "CoreModule.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
 #include "Entity/EntityModule.hpp"
-#include "Core/ETSystem.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "UI/UIModule.hpp"
 #include "Laucher/GameLaucherModule.hpp"
 #include "Game/GameModule.hpp"
@@ -20,7 +19,6 @@ Application::~Application() {
 }
 
 void Application::buildModules(ModuleListT& modules) {
-    modules.emplace_back(new CoreModule);
     modules.emplace_back(new PlatformModule);
     modules.emplace_back(new EntityModule);
     modules.emplace_back(new RenderModule);
@@ -31,6 +29,7 @@ void Application::buildModules(ModuleListT& modules) {
 }
 
 bool Application::init() {
+    systemModules.emplace_back(new CoreModule);
     buildModules(systemModules);
     for(const auto& module : systemModules) {
         if(!module || !module->init()) {

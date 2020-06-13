@@ -1,7 +1,7 @@
 #ifndef __DESKTOP_LOGGER_HPP__
 #define __DESKTOP_LOGGER_HPP__
 
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Core/SystemLogic.hpp"
 
 class DesktopLogger: public SystemLogic,

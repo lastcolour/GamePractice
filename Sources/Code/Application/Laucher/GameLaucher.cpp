@@ -3,7 +3,8 @@
 #include "UI/ETUIInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETApplication.hpp"
 
 #include <cassert>
 

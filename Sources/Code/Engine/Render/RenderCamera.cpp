@@ -1,5 +1,6 @@
 #include "Render/RenderCamera.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Core/ETSurface.hpp"
 
 #include "Math/MatrixTransform.hpp"
 

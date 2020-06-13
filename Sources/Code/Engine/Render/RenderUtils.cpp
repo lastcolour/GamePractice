@@ -1,7 +1,7 @@
 #include "Render/RenderUtils.hpp"
 
 #include "Platforms/OpenGL.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 bool CheckGLError(const char* label) {
     GLenum errCode = glGetError();

@@ -1,9 +1,9 @@
 #ifndef __GAME_BOARD_SWITCH_LOGIC_HPP__
 #define __GAME_BOARD_SWITCH_LOGIC_HPP__
 
+#include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "Math/Transform.hpp"
 
 class GameBoardElemSwitcherLogic : public EntityLogic,

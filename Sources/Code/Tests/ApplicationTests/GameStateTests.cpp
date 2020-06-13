@@ -1,8 +1,8 @@
 #include "GameStateTests.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "TestUtils/GameTestUtils.hpp"
-#include "ETApplicationInterfaces.hpp"
 #include "UI/ETUIInterfaces.hpp"
+#include "Core/ETTimer.hpp"
 
 namespace {
 

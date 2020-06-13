@@ -2,7 +2,7 @@
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

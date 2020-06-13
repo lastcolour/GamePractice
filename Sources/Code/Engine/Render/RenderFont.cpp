@@ -1,6 +1,6 @@
 #include "Render/RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Render/RenderTexture.hpp"
 #include "Render/RenderUtils.hpp"

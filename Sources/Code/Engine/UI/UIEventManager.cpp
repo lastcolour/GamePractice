@@ -1,5 +1,6 @@
 #include "UI/UIEventManager.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETApplication.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"
 

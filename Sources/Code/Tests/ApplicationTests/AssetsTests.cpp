@@ -1,6 +1,7 @@
 #include "AssetsTests.hpp"
 #include "Platforms/Desktop/DesktopAssets.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/ETTimer.hpp"
 #include <Platforms/Desktop/DesktopAssets.hpp>
 
 #include <algorithm>

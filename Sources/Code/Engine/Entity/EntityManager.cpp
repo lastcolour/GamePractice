@@ -2,8 +2,8 @@
 #include "Entity/Entity.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Entity/EntityLogicRegister.hpp"
-#include "ETApplicationInterfaces.hpp"
-#include "Core/JSONNode.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETAssets.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 

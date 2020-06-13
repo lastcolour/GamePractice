@@ -2,7 +2,8 @@
 #define __UI_SURFACE_EVENT_HANDLER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETSurface.hpp"
+#include "Core/ETPrimitives.hpp"
 
 class UISurfaceEventHandler : public SystemLogic,
     public ETNode<ETInputEvents>,
@@ -16,7 +17,7 @@ public:
     bool init() override;
     virtual void deinit() override;
 
-    // ETSurfaceEvents
+    // ETInputEvents
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
     void ET_onButton(EActionType actionType, EButtonId buttonId) override;
 

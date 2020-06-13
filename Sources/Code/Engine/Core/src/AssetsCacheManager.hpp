@@ -2,7 +2,9 @@
 #define __APP_CACHE_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Core/ETTimer.hpp"
 
 class AssetsCacheManager : SystemLogic,
     public ETNode<ETAssetsCacheManager>,

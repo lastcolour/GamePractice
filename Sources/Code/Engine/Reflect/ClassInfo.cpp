@@ -1,9 +1,7 @@
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Core/MemoryStream.hpp"
 
 #include <cassert>

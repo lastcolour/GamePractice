@@ -31,7 +31,7 @@ else()
     message(STATUS "Android platform does not support unittests")
 endif()
 
-include_directories(${ENGINE_INCLUDE_DIR})
+include_directories(${ENGINE_INCLUDE_DIR} ${CORE_INCLUDE_DIR})
 
 if(BUILD_PLATFORM STREQUAL "Android")
     add_library(${PROJECT_NAME} SHARED

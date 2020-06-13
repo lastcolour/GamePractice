@@ -1,5 +1,6 @@
 #include "Render/RenderTextureFramebuffer.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETSurface.hpp"
 #include "ETRenderInterfaces.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Render/RenderUtils.hpp"

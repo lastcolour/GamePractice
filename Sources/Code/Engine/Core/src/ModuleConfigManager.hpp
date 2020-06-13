@@ -2,7 +2,7 @@
 #define __MODULE_CONFIG_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETApplication.hpp"
 #include "Reflect/ClassInstance.hpp"
 
 #include <unordered_map>

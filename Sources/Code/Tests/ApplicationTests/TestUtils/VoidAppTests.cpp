@@ -1,8 +1,6 @@
 #include "TestUtils/VoidAppTests.hpp"
 
-#include <Application.hpp>
-#include <CoreModule.hpp>
-#include <Platform.hpp>
+#include <Core/Application.hpp>
 
 std::unique_ptr<Application> VoidAppTests::APP;
 
@@ -18,9 +16,7 @@ public:
 
 protected:
 
-    void buildModules(ModuleListT& modules) override {
-        modules.emplace_back(new CoreModule);
-    }
+    void buildModules(ModuleListT& modules) override {}
 };
 
 } // namespace

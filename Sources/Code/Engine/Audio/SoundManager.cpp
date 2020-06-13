@@ -1,7 +1,8 @@
 #include "Audio/SoundManager.hpp"
 #include "Audio/Sound.hpp"
 #include "Audio/OggDataStream.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETAssets.hpp"
 
 namespace {
 

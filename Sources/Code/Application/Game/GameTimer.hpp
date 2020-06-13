@@ -2,7 +2,7 @@
 #define __GAME_TIMER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETTimer.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 class GameTimer : public SystemLogic,

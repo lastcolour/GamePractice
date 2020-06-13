@@ -2,7 +2,7 @@
 #define __GAME_LAUCHER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETSurface.hpp"
 #include "UI/ETUIInterfaces.hpp"
 
 class GameLaucher : public SystemLogic,

@@ -1,6 +1,6 @@
 #include "Entity/Entity.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

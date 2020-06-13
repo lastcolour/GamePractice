@@ -1,5 +1,4 @@
 #include "Audio/Logics/SoundPlayLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
 
 SoundPlayLogic::SoundPlayLogic() :
     volume(1.f),

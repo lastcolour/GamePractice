@@ -1,5 +1,5 @@
 #include "UI/UIViewStack.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 
 #include <cassert>

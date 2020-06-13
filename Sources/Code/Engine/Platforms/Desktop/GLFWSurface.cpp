@@ -1,5 +1,6 @@
 #include "Platforms/Desktop/GLFWSurface.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
+#include "Core/ETApplication.hpp"
 #include "Platforms/OpenGL.hpp"
 
 #include <GLFW/glfw3.h>
