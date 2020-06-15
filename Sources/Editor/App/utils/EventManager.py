@@ -2,8 +2,11 @@ from utils.Log import Log
 from dialog.LogicSelecDialog import LogicSelectDialog
 from dialog.SaveEntityChanges import SaveEntityChanges
 from dialog.RemoveEntityLogic import RemoveEntityLogic
+from dialog.OverrideFile import OverrideFile
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
+
+import os
 
 class _EventManager:
 
@@ -82,6 +85,26 @@ class _EventManager:
             pass
         elif retCode == QMessageBox.No:
             pass
+
+    def onChildEntityExtractToFile(self, childEntity):
+        name = childEntity.getFullFilePath()
+        if name[-5:] != '.json':
+            name += ".json"
+        resFile = QFileDialog.getSaveFileName(self._app, "", "{0}".format(name), "Entity (*.json)")
+        resFile = resFile[0]
+        if resFile is None:
+            return False
+        if os.path.exists(resFile):
+            if os.path.isdir(resFile):
+                return False
+            retCode = OverrideFile(resFile).exec_()
+            if retCode != QMessageBox.Ok:
+                return False
+        if not childEntity.extractToFile(resFile):
+            return False
+        self._app._assetsModel.reload()
+        self._app._entityFileView.widget()._refresh()
+        return True
 
     def getAssetsModel(self):
         return self._app._assetsModel

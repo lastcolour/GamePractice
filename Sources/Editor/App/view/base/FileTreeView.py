@@ -6,6 +6,7 @@ class FileTreeView(QTreeWidget):
         self._fileTreeModel = None
 
         self.setHeaderHidden(True)
+        self.setSortingEnabled(False)
         self.setColumnCount(1)
 
     def _setFileTreeModel(self, model):

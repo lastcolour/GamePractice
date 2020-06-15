@@ -2,13 +2,12 @@ import subprocess
 import platform
 
 def ClearLayout(layout):
-    while layout.count() >= 1:
-        item = layout.itemAt(layout.count() - 1)
-        widget = item.widget()
+    for i in reversed(range(layout.count())):
+        widget = layout.itemAt(i).widget()
         if widget is not None:
             layout.removeWidget(widget)
+            widget.setParent(None)
             widget.close()
-            del widget
 
 def _getWidgetTreeItemHeight(treeWidget, item):
     height = treeWidget.visualItemRect(item).height() + 1

@@ -17,10 +17,10 @@ class _EngineViewManager:
         self._app.statusBar().onOutputFrameSizeChanged(width, height)
 
     def onEnableGameUpdate(self, flag):
-        pass
+        self._app._editorNative.getLibrary().enableGameUpdate(flag)
 
     def onTimeScaleChanged(self, timeScale):
-        pass
+        self._app._editorNative.getLibrary().setGameTimeScale(timeScale)
 
     def onOrientationChanged(self, isHorizontal):
         self._app._engineOutputView._engineOutFrame.setOrientation(isHorizontal)

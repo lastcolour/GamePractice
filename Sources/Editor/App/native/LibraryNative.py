@@ -84,6 +84,14 @@ class LibraryNative:
         self._mouseInputEventFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32]
         self._mouseInputEventFunc.restype = None
 
+        self._setGameTimeScaleFunc = self._editorLib.SetGameTimeScale
+        self._setGameTimeScaleFunc.argstype = [ctypes.c_float]
+        self._setGameTimeScaleFunc.restype = None
+
+        self._enableGameUpdateFunc = self._editorLib.EnableGameUpdate
+        self._enableGameUpdateFunc.argstype = [ctypes.c_bool]
+        self._enableGameUpdateFunc.restype = None
+
         self._unloadAllFunc = self._editorLib.UnloadAll
         self._unloadAllFunc.argstype = None
         self._unloadAllFunc.restype = None
@@ -193,6 +201,14 @@ class LibraryNative:
 
     def unloadAll(self):
         self._unloadAllFunc()
+
+    def setGameTimeScale(self, scale):
+        cScale = ctypes.c_float(scale)
+        self._setGameTimeScaleFunc(cScale)
+
+    def enableGameUpdate(self, flag):
+        cFlag = ctypes.c_bool(flag)
+        self._enableGameUpdateFunc(cFlag)
 
     def renameEntity(self, entityId, newName):
         cEntId = ctypes.c_uint32(entityId)

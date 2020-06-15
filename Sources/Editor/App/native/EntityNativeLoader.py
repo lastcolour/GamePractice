@@ -6,6 +6,7 @@ from .LogicNative import CreateLogic
 
 import json
 import os
+import pathlib
 
 _DEFAULT_TRANSFORM = {
     "pos":{"x":0, "y":0, "z":0},
@@ -21,6 +22,22 @@ class EntityNativeLoader(NativeObject):
 
     def getEntityFullPath(self, filePath):
         return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
+
+    def extractEntity(self, entity, filePath):
+        entitiesRoot = "{0}/Entities".format(self._getAPI().getAssetsRootPath())
+        if len(filePath) + 1 < len(entitiesRoot) or filePath[:len(entitiesRoot)] != entitiesRoot:
+            print("[EntityNativeLoader:extractEntity] Can't extract entity '{0}' to file out of assets root dir '{1}'".format(
+                entity.getName(), filePath))
+            return False
+        newName = filePath[len(entitiesRoot) + 1:]
+        if os.path.exists(filePath):
+            if os.path.isdir(filePath):
+                return False
+        if not entity.rename(newName):
+            return False
+        entity._isInternal = False
+        entity.save()
+        return True
 
     def _loadChildren(self, entity, data):
         if "children" not in data:

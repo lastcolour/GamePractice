@@ -157,7 +157,6 @@ class EntityNative(NativeObject):
                 childEntity._name, childEntity.getNativeId(), self._name))
             return
         self._getAPI().getLibrary().removeChildEntityFromEntity(self._entityId, childEntity.getNativeId())
-        childToRemove.unloadFromNative()
         self._children.remove(childToRemove)
         self._isModified = True
 
@@ -235,6 +234,9 @@ class EntityNative(NativeObject):
             return False
         self._name = newName
         return True
+
+    def extractToFile(self, resFile):
+        return self._getAPI().getEntityLoader().extractEntity(self, resFile)
 
     def createNewInternalChild(self, childName):
         if not self.isLoadedToNative():

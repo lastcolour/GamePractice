@@ -82,11 +82,34 @@
                             "y": 66
                           },
                           "color": {
-                            "r": 39,
-                            "g": 255,
-                            "b": 64,
+                            "r": 178,
+                            "g": 89,
+                            "b": 255,
                             "a": 255
                           }
+                        }
+                      },
+                      {
+                        "type": "RenderLinearGradientRect",
+                        "id": 2,
+                        "data": {
+                          "size": {
+                            "x": 66,
+                            "y": 66
+                          },
+                          "startColor": {
+                            "r": 209,
+                            "g": 97,
+                            "b": 5,
+                            "a": 255
+                          },
+                          "endColor": {
+                            "r": 226,
+                            "g": 7,
+                            "b": 10,
+                            "a": 255
+                          },
+                          "isVertical": false
                         }
                       }
                     ]
@@ -219,19 +242,26 @@
                     "children": [],
                     "logics": [
                       {
-                        "type": "RenderSimple",
+                        "type": "RenderLinearGradientRect",
                         "id": 1,
                         "data": {
                           "size": {
                             "x": 106,
                             "y": 33
                           },
-                          "color": {
-                            "r": 255,
-                            "g": 93,
-                            "b": 190,
+                          "startColor": {
+                            "r": 154,
+                            "g": 23,
+                            "b": 130,
                             "a": 255
-                          }
+                          },
+                          "endColor": {
+                            "r": 231,
+                            "g": 194,
+                            "b": 235,
+                            "a": 255
+                          },
+                          "isVertical": true
                         }
                       }
                     ]
@@ -372,8 +402,8 @@
                             "y": 39
                           },
                           "color": {
-                            "r": 147,
-                            "g": 84,
+                            "r": 252,
+                            "g": 203,
                             "b": 255,
                             "a": 255
                           }
@@ -397,7 +427,7 @@
                         "top": 0.0,
                         "bot": 0.0,
                         "left": 0.0,
-                        "right": 0.0
+                        "right": 10.0
                       }
                     }
                   }
@@ -569,6 +599,13 @@
           2,
           3
         ]
+      }
+    },
+    {
+      "type": "UIBoxVisual",
+      "id": 3,
+      "data": {
+        "render": -1
       }
     }
   ]

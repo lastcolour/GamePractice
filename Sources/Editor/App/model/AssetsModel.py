@@ -87,6 +87,8 @@ class AssetsModel:
                 node._name = item
                 node._parent = dirNode
                 dirNode._children.append(node)
+        dirNode._children.sort(key=lambda node: node._name)
+        dirNode._children.sort(key=lambda node: not node.isDir())
 
     def getRootNode(self):
         return self._entitiesRootDir
@@ -175,6 +177,10 @@ class AssetsModel:
         self._entitiesRootDir._name = "{0}/Entities".format(assetsRootDir)
         self._scanDir(self._entitiesRootDir)
         return True
+
+    def reload(self):
+        if not self.init():
+            raise RuntimeError("Can't reload assets model")
 
     def getEntitiesTree(self):
         return self._entitiesRootDir

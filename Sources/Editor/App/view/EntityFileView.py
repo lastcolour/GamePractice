@@ -96,3 +96,6 @@ class EntityFileView(QWidget):
         newItem = QTreeWidgetItem(self._getRootItemForEditItem(treeItem))
         newItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
         return newItem
+
+    def _refresh(self):
+        self._tree._setFileTreeModel(self._fileTreeModel)

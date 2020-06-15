@@ -78,7 +78,7 @@ class EntityTreeMenu(QMenu):
         self._entityNameEdit.setFocus(True)
 
     def _onExtractToEntity(self):
-        pass
+        self._entityTreeView._extractEntityToFile(self._currentItem)
 
     def _signal_onCreate_lineEdit_focusLost(self):
         parentItem = self._editItem.parent()
