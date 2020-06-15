@@ -62,6 +62,7 @@ class EntityNativeLoader(NativeObject):
                     childName, entity._name))
                 return False
             childEntity._childId = childId
+            childEntity._parent = entity
             entity._children.append(childEntity)
         return True
 

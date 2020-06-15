@@ -135,6 +135,20 @@ EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char*
     return childId;
 }
 
+bool EntityManager::ET_renameEntity(EntityId entId, const char* newName) {
+    const char* errStr = "[EntityManager::ET_renameEntity] Can't rename entity (Error: %s)";
+    auto entity = findEntity(entId);
+    if(!CheckEntity(errStr, entId, entity)) {
+        return false;
+    }
+    if(!newName || !newName[0]) {
+        LogWarning(errStr, StringFormat("Can't rename entity '%s' to '%s'", entity->ET_getName()));
+        return false;
+    }
+    entity->setName(newName);
+    return true;
+}
+
 void EntityManager::ET_destroyEntity(EntityId entityId) {
     auto it = entities.find(entityId);
     if(it == entities.end()) {

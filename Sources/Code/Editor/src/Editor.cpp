@@ -211,3 +211,16 @@ void EnableGameUpdate(bool flag) {
     }
     EDITOR_APP->enableGameUpdate(flag);
 }
+
+int32_t RenameEntity(uint32_t entityId, const char* newName) {
+    if(!EDITOR_APP) {
+        return -1;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    auto res = EDITOR_APP->renameEntity(entId, newName);
+    if(res) {
+        return 0;
+    }
+    return -1;
+}

@@ -51,6 +51,8 @@ LIB_EXPORT void SetGameTimeScale(float timeScale);
 
 LIB_EXPORT void EnableGameUpdate(bool flag);
 
+LIB_EXPORT int32_t RenameEntity(uint32_t entityId, const char* newName);
+
 LIB_EXPORT void UnloadAll();
 
 } // extern "C"

@@ -220,6 +220,22 @@ class EntityNative(NativeObject):
         tmLogic._entity = self
         return tmLogic
 
+    def rename(self, newName):
+        if not self._isInternal:
+            raise RuntimeError("Can't rename non-internal child")
+        if not self.isLoadedToNative():
+            raise RuntimeError("Entity is't loaded to native")
+        if self._name == newName:
+            return True
+        for child in self._parent._children:
+            if child._name == newName:
+                return False
+        if not self._getAPI().getLibrary().renameEntity(self._entityId, newName):
+            print("[EntityNative:rename] Can't rename {0} to {1}".format(self._name, newName))
+            return False
+        self._name = newName
+        return True
+
     def createNewInternalChild(self, childName):
         if not self.isLoadedToNative():
             raise RuntimeError("Can't create internal child entity '{0}' for entity '{1}' that isn't loaded to edit".format(

@@ -37,6 +37,7 @@ struct ETEntityManager {
     virtual EntityId ET_createEntity(const char* entityName) = 0;
     virtual EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) = 0;
     virtual void ET_destroyEntity(EntityId entId) = 0;
+    virtual bool ET_renameEntity(EntityId entId, const char* newName) = 0;
     virtual void ET_destroyAllEntities() = 0;
     virtual bool ET_registerLogics(EntityLogicRegister& logicRegister) = 0;
     virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;

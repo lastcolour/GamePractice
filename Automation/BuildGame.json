@@ -4,8 +4,8 @@
         "buildType":"Debug",
         "platform":"${currentPlatform}",
         "skipLibsBuild":"True",
-        "skipGameTests":"True",
-        "skipEditorTests":"True"
+        "skipGameTests":"False",
+        "skipEditorTests":"False"
     },
     "Steps":[
         {

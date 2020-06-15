@@ -85,3 +85,10 @@ class EntityTreeView(QWidget):
         self._tree.setItemWidget(treeItem, 0, None)
         GetEventManager().onEntityClickedFromEntityTree(treeItem._entity)
         return True
+
+    def _renameChildEntity(self, treeItem, childName):
+        if not treeItem._entity.rename(childName):
+            return False
+        treeItem.setText(0, treeItem._entity.getName())
+        self._tree.setItemWidget(treeItem, 0, None)
+        return True

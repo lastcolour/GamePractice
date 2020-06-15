@@ -76,6 +76,10 @@ class LibraryNative:
         self._createChildEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
         self._createChildEntityFunc.restype = ctypes.c_int32
 
+        self._renameEntityFunc = self._editorLib.RenameEntity
+        self._renameEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_char_p]
+        self._renameEntityFunc.restype = ctypes.c_int32
+
         self._mouseInputEventFunc = self._editorLib.MouseInputEvent
         self._mouseInputEventFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32]
         self._mouseInputEventFunc.restype = None
@@ -189,3 +193,9 @@ class LibraryNative:
 
     def unloadAll(self):
         self._unloadAllFunc()
+
+    def renameEntity(self, entityId, newName):
+        cEntId = ctypes.c_uint32(entityId)
+        cName = ctypes.c_char_p(newName.encode('ascii') + b'\x00')
+        res = self._renameEntityFunc(cEntId, cName)
+        return res == 0

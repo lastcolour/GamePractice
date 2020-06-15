@@ -34,6 +34,7 @@ public:
     void setTimeScale(float timeScale);
     void enableGameUpdate(bool flag);
     void unloadAll();
+    bool renameEntity(EntityId entityId, const char* newName);
 
 protected:
 

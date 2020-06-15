@@ -60,11 +60,11 @@ class EntityTreeMenu(QMenu):
         self._entityNameEdit.returnPressed.connect(self._signal_onRename_lineEdit_enterEvent)
         self._entityNameEdit._focusLostEvent = self._signal_onRename_lineEdit_focusLost
 
-        self._editItem = self._entityTreeView._createEditItem(self._currentItem)
+        self._editItem = self._currentItem
+        self._editItem.setText(0, "")
         self._entityTreeView._tree.setItemWidget(self._editItem, 0, self._entityNameEdit)
         self._entityTreeView._tree.setCurrentItem(self._editItem)
         self._entityNameEdit.setFocus(True)
-        self._currentItem.setText(0, "")
         self._entityNameEdit.setText(self._currentItem._entity.getName())
 
     def _onCreateNewChild(self):
@@ -101,7 +101,10 @@ class EntityTreeMenu(QMenu):
             self._currentItem = None
 
     def _signal_onRename_lineEdit_enterEvent(self):
-        pass
+        childName = self._entityNameEdit.text()
+        if self._entityTreeView._renameChildEntity(self._editItem, childName):
+            self._editItem = None
+            self._currentItem = None
 
     def onMenuRequestedOnItem(self, item, pt):
         self._currentItem = item

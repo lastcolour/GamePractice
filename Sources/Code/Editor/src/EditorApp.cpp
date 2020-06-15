@@ -218,3 +218,9 @@ void EditorApp::setTimeScale(float timeScale) {
 void EditorApp::enableGameUpdate(bool flag) {
     updateGame = flag;
 }
+
+bool EditorApp::renameEntity(EntityId entityId, const char* newName) {
+    bool res = false;
+    ET_SendEventReturn(res, &ETEntityManager::ET_renameEntity, entityId, newName);
+    return res;
+}

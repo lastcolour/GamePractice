@@ -131,6 +131,11 @@ ClassInstance* Entity::findLogic(EntityLogicId logicId) {
     return nullptr;
 }
 
+void Entity::setName(const char* newName) {
+    assert(newName && newName[0]);
+    name = newName;
+}
+
 bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
     const char* errStr = "[Entity::readLogicData] Can't read logic data (Error: '%s')";
     auto logicInstance = findLogic(logicId);

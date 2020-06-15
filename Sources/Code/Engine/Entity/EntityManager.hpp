@@ -30,6 +30,7 @@ public:
     EntityId ET_createEntity(const char* entityName) override;
     EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) override;
     void ET_destroyEntity(EntityId entityId) override;
+    bool ET_renameEntity(EntityId entId, const char* newName) override;
     void ET_destroyAllEntities() override;
     bool ET_registerLogics(EntityLogicRegister& logicRegister) override;
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;

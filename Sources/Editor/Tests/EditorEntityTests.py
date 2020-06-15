@@ -172,6 +172,8 @@ class EditorEntityTest(unittest.TestCase):
         childEntity = entity.createNewInternalChild("Test")
         self.assertIsNotNone(childEntity)
         self.assertTrue(childEntity.isInternal())
+        self.assertTrue(childEntity.rename("NewTest"))
+        self.assertEqual(childEntity.getName(), "NewTest")
 
 if __name__ == "__main__":
     unittest.main()
