@@ -14,7 +14,7 @@ struct GLFWwindow;
 
 class GLFWSurface : public SystemLogic,
     public ETNode<ETSurface>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETSystemTimerEvents> {
 public:
 
     GLFWSurface();
@@ -34,8 +34,8 @@ public:
     bool ET_isVisible() const override;
     bool ET_isValid() const override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETSystemTimerEvents
+    void ET_onSystemTick(float dt) override;
 
     const GLFWwindow* getWindow() const;
 

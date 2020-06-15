@@ -17,13 +17,13 @@ bool SoundSourceManager::init() {
         return false;
     }
     sourceStateMap.resize(sources.size(), ESourceState::Free);
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETSystemTimerEvents>::connect(getEntityId());
     ETNode<ETSoundSourceManager>::connect(getEntityId());
     return true;
 }
 
 void SoundSourceManager::deinit() {
-    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETSystemTimerEvents>::disconnect();
     ETNode<ETSoundSourceManager>::disconnect();
 }
 
@@ -49,7 +49,7 @@ void SoundSourceManager::ET_returnSoundSource(SoundSource* retSoundSource) {
     assert(false && "Can't find sound source");
 }
 
-void SoundSourceManager::ET_onTick(float dt) {
+void SoundSourceManager::ET_onSystemTick(float dt) {
     for(size_t i = 0, sz = sources.size(); i < sz; ++i) {
         if(sourceStateMap[i] == ESourceState::Busy) {
             sources[i]->update();

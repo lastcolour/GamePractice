@@ -3,10 +3,10 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUIInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETTimer.hpp"
 
 class UIButtonPressAnimation : public EntityLogic,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETAppTimerEvents>,
     public ETNode<ETUIButtonPressAnimation> {
 public:
 
@@ -21,8 +21,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETAppTimerEvents
+    void ET_onAppTick(float dt) override;
 
     // ETUIButtonPressAnimation
     void ET_startPressAnimation() override;

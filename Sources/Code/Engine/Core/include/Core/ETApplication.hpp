@@ -13,7 +13,6 @@ struct ETAppRunStateEvents {
     virtual bool ET_isNeedRun() const = 0;
 };
 
-
 struct ETModuleConfigManager {
     virtual ~ETModuleConfigManager() = default;
     virtual void ET_registerConfig(ClassInstance& configInstance) = 0;

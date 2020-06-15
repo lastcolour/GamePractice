@@ -7,7 +7,7 @@
 
 class SoundSourceManager : public SystemLogic,
     public ETNode<ETSoundSourceManager>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETSystemTimerEvents> {
 public:
 
     SoundSourceManager();
@@ -17,8 +17,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETSystemTimerEvents
+    void ET_onSystemTick(float dt) override;
 
     // ETSoundSourceManager
     SoundSource* ET_getFreeSource() override;

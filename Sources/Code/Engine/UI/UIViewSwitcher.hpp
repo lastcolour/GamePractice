@@ -8,7 +8,7 @@
 
 class UIViewSwitcher : public SystemLogic,
     public ETNode<ETUIViewSwitcher>,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETAppTimerEvents>,
     public ETNode<ETRenderEvents> {
 public:
 
@@ -19,8 +19,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETAppTimerEvents
+    void ET_onAppTick(float dt) override;
 
     // ETUIViewSwitcher
     void ET_reverseSwitchView(EntityId newViewId, EntityId oldViewId) override;

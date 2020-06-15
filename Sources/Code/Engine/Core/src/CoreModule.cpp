@@ -1,5 +1,5 @@
 #include "CoreModule.hpp"
-#include "Timer.hpp"
+#include "MainTimer.hpp"
 #include "AppRunState.hpp"
 #include "AssetsCacheManager.hpp"
 #include "ModuleConfigManager.hpp"
@@ -23,7 +23,7 @@ CoreModule::LogicsContainerPtrT CoreModule::createSystemLogics() const {
             ClassInfoManager,
             ModuleConfigManager,
             PlatformLogger,
-            Timer,
+            MainTimer,
             AssetsCacheManager>()
         );
     return container;

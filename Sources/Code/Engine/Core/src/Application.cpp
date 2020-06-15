@@ -60,7 +60,7 @@ void Application::deinit() {
 void Application::mainLoop() {
     bool needRun = true;
     while(needRun) {
-        ET_SendEvent(&ETTimer::ET_onFrameStart);
+        ET_SendEvent(&ETMainThreadTimer::ET_onMainTreadStep);
 
         needRun = false;
         ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);

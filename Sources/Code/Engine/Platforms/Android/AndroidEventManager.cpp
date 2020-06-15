@@ -77,16 +77,16 @@ bool AndroidEventManager::init() {
     }
     ETNode<ETAndroidInputEvents>::connect(getEntityId());
     ETNode<ETAndroidActivityEvents>::connect(getEntityId());
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETSystemTimerEvents>::connect(getEntityId());
     return true;
 }
 
 void AndroidEventManager::deinit() {
     ETNode<ETAndroidActivityEvents>::disconnect();
-    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETSystemTimerEvents>::disconnect();
 }
 
-void AndroidEventManager::ET_onTick(float dt) {
+void AndroidEventManager::ET_onSytemTick(float dt) {
     GetAndroindPlatformHandler()->pollEvents();
 }
 

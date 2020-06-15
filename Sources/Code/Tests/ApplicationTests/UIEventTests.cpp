@@ -107,7 +107,7 @@ TEST_F(UIEventTests, CheckGameTimerStopOnPause) {
 
     {
         float tickDuration = 0.5f;
-        ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+        ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
         float newRemainingTime = -1.f;
         ET_SendEventReturn(newRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
@@ -119,7 +119,7 @@ TEST_F(UIEventTests, CheckGameTimerStopOnPause) {
 
     {
         float tickDuration = 0.5f;
-        ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+        ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
         float newRemainingTime = -1.f;
         ET_SendEventReturn(newRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
@@ -140,12 +140,12 @@ TEST_F(UIEventTests, CheckGameEndTimerResumeAfterBack) {
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
 
     float tickDuration = 0.5f;
-    ET_SendEvent(&ETTimerEvents::ET_onTick, 0.f);
-    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, 0.f);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
 
-    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
     float newRemainingTime = -1.f;
     ET_SendEventReturn(newRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
@@ -157,7 +157,7 @@ TEST_F(UIEventTests, CheckGameRestart) {
     ET_SendEvent(&ETUIEventManager::ET_onEvent, START_GAME_EVENT);
 
     float tickDuration = 1.f;
-    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
     float oldPlayTime = -1.f;
     ET_SendEventReturn(oldPlayTime, &ETGameEndTimer::ET_getRemainingTime);
@@ -166,7 +166,7 @@ TEST_F(UIEventTests, CheckGameRestart) {
 
     ET_SendEvent(&ETUIEventManager::ET_onEvent, RESTART_GAME_EVENT);
 
-    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
     float newPlayTime = -1.f;
     ET_SendEventReturn(newPlayTime, &ETGameEndTimer::ET_getRemainingTime);

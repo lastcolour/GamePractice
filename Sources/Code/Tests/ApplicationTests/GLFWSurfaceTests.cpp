@@ -22,7 +22,7 @@ TEST_F(GLFWSurfaceTest, CheckNormalFlow) {
     isVisible = surface.ET_isVisible();
     EXPECT_TRUE(isVisible);
 
-    surface.ET_onTick(0.f);
+    surface.ET_onSystemTick(0.f);
 
     surface.ET_hide();
     isVisible = surface.ET_isVisible();

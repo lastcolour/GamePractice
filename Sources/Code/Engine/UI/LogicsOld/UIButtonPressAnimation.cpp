@@ -31,7 +31,7 @@ bool UIButtonPressAnimation::init() {
 void UIButtonPressAnimation::deinit() {
 }
 
-void UIButtonPressAnimation::ET_onTick(float dt) {
+void UIButtonPressAnimation::ET_onAppTick(float dt) {
     progress += dt;
 
     Transform tm;
@@ -50,7 +50,7 @@ void UIButtonPressAnimation::ET_onTick(float dt) {
             tm.scale = resScale * startScale;
             ET_SendEvent(getParentId(), &ETEntity::ET_setTransform, tm);
         } else {
-            ETNode<ETTimerEvents>::disconnect();
+            ETNode<ETAppTimerEvents>::disconnect();
             progress = -1.f;
             tm.scale = startScale;
             ET_SendEvent(getParentId(), &ETEntity::ET_setTransform, tm);
@@ -70,7 +70,7 @@ void UIButtonPressAnimation::ET_startPressAnimation() {
     startScale = tm.scale;
     progress = 0.f;
 
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETAppTimerEvents>::connect(getEntityId());
 }
 
 float UIButtonPressAnimation::ET_getAnimationDuration() const {

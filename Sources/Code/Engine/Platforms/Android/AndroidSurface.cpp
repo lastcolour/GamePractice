@@ -160,14 +160,14 @@ AndroidSurface::~AndroidSurface() {
 }
 
 bool AndroidSurface::init() {
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETSystemTimerEvents>::connect(getEntityId());
     ETNode<ETAndroidActivityEvents>::connect(getEntityId());
     ETNode<ETSurface>::connect(getEntityId());
     return true;
 }
 
 void AndroidSurface::deinit() {
-    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETSystemTimerEvents>::disconnect();
     ETNode<ETAndroidActivityEvents>::disconnect();
     ETNode<ETSurface>::disconnect();
 }
@@ -306,14 +306,14 @@ void AndroidSurface::ET_onActivityEvent(ActivityEventType eventType) {
     }
 }
 
-void AndroidSurface::ET_onTick(float dt) {
+void AndroidSurface::ET_onSystemTick(float dt) {
     if(!ET_isValid()) {
         return;
     }
     Vec2i currSize(0);
     if(EGL_TRUE != eglQuerySurface(display, surface, EGL_HEIGHT, &currSize.y) ||
         EGL_TRUE != eglQuerySurface(display, surface, EGL_WIDTH, &currSize.x)) {
-        LogWarning("[AndroidSurface::ET_onTick] Can't query surface size. Error: %s", getEGLErrorStr());
+        LogWarning("[AndroidSurface::ET_onSystemTick] Can't query surface size. Error: %s", getEGLErrorStr());
         return;
     }
     if(currSize != size) {

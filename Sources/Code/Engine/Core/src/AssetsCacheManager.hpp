@@ -8,7 +8,7 @@
 
 class AssetsCacheManager : SystemLogic,
     public ETNode<ETAssetsCacheManager>,
-    public ETNode<ETTimerEvents>
+    public ETNode<ETSystemTimerEvents>
 {
 private:
 
@@ -37,8 +37,8 @@ public:
     float ET_getCacheLifetime() const override;
     void ET_clear() override;
 
-    // ETTimerEvent
-    void ET_onTick(float dt) override;
+    // ETSystemTimerEvents
+    void ET_onSystemTick(float dt) override;
 
 private:
 

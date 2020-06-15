@@ -27,7 +27,7 @@ void WaitPreGameEnd() {
     float elapsedT = 0.f;
     while (!listener.isBoardAppeard) {
         float dt = 0.01f;
-        ET_SendEvent(&ETTimerEvents::ET_onTick, dt);
+        ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, dt);
         elapsedT += dt;
         if(elapsedT > 360.f) {
             break;

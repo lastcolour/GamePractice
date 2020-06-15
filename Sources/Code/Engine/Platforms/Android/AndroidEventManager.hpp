@@ -6,7 +6,7 @@
 #include "Platforms/Android/ETAndroidInterfaces.hpp"
 
 class AndroidEventManager : public SystemLogic,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETSystemTimer>,
     public ETNode<ETAndroidActivityEvents>,
     public ETNode<ETAndroidInputEvents> {
 public:
@@ -18,8 +18,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETSystemTimer
+    void ET_onSytemTick(float dt) override;
 
     // ETAndroidActivityEvents
     void ET_onActivityEvent(ActivityEventType eventType) override;

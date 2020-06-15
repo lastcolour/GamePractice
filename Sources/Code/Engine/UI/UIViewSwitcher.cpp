@@ -11,18 +11,18 @@ UIViewSwitcher::~UIViewSwitcher() {
 
 bool UIViewSwitcher::init() {
     ETNode<ETUIViewSwitcher>::connect(getEntityId());
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETAppTimerEvents>::connect(getEntityId());
     ETNode<ETRenderEvents>::connect(getEntityId());
     return true;
 }
 
 void UIViewSwitcher::deinit() {
-    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETAppTimerEvents>::disconnect();
     ETNode<ETUIViewSwitcher>::disconnect();
     ETNode<ETRenderEvents>::disconnect();
 }
 
-void UIViewSwitcher::ET_onTick(float dt) {
+void UIViewSwitcher::ET_onAppTick(float dt) {
     switch(switchTask.state) {
         case SwitchState::Finished: {
             return;

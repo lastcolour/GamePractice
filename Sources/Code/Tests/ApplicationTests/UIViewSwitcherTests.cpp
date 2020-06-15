@@ -26,7 +26,7 @@ TEST_F(UISwitcherTests, CheckViewSwitch) {
 
     float switchDuration = switcher.ET_getTotalSwitchDuration();
     switchDuration = 0.1f;
-    switcher.ET_onTick(switchDuration);
+    switcher.ET_onAppTick(switchDuration);
 
     {
         bool isVisible = true;

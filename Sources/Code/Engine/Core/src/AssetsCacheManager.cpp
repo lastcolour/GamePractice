@@ -16,16 +16,16 @@ AssetsCacheManager::~AssetsCacheManager() {
 
 bool AssetsCacheManager::init() {
     ETNode<ETAssetsCacheManager>::connect(getEntityId());
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETSystemTimerEvents>::connect(getEntityId());
     return true;
 }
 
 void AssetsCacheManager::deinit() {
     ETNode<ETAssetsCacheManager>::disconnect();
-    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETSystemTimerEvents>::disconnect();
 }
 
-void AssetsCacheManager::ET_onTick(float dt) {
+void AssetsCacheManager::ET_onSystemTick(float dt) {
     auto it = assetsCacheMap.begin();
     while(it != assetsCacheMap.end()) {
         AssetCacheNode& node = it->second;

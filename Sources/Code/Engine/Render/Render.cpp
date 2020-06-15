@@ -37,7 +37,7 @@ bool Render::init() {
 
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETSystemTimerEvents>::connect(getEntityId());
     ETNode<ETRenderContextEvents>::connect(getEntityId());
 
     return true;
@@ -46,11 +46,11 @@ bool Render::init() {
 void Render::deinit() {
     ETNode<ETRender>::disconnect();
     ETNode<ETSurfaceEvents>::disconnect();
-    ETNode<ETTimerEvents>::disconnect();
+    ETNode<ETSystemTimerEvents>::disconnect();
     ETNode<ETRenderContextEvents>::disconnect();
 }
 
-void Render::ET_onTick(float dt) {
+void Render::ET_onSystemTick(float dt) {
     (void)dt;
     ET_drawFrame();
 }

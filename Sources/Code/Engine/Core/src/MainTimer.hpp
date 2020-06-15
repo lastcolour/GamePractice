@@ -1,5 +1,5 @@
-#ifndef __TIMER_HPP__
-#define __TIMER_HPP__
+#ifndef __MAIN_TIMER_HPP__
+#define __MAIN_TIMER_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTimer.hpp"
@@ -7,28 +7,29 @@
 
 #include <chrono>
 
-class Timer : public SystemLogic,
-    public ETNode<ETTimer> {
+class MainTimer : public SystemLogic,
+    public ETNode<ETMainThreadTimer> {
 
     using ClockT = std::chrono::high_resolution_clock;
     using TimePointT = std::chrono::time_point<ClockT>;
 
 public:
 
-    Timer();
-    virtual ~Timer();
+    MainTimer();
+    virtual ~MainTimer();
 
     // SystemLogic
     bool init() override;
     void deinit() override;
 
-    // ETTimer
-    void ET_onFrameStart() override;
+    // ETMainThreadTimer
+    void ET_onMainThreadStep() override;
+    void ET_setAppTimeScale(float newScale) override;
 
 private:
 
     TimePointT lastTickT;
-    float tickDuration;
+    float appTimeScale;
 };
 
-#endif /* __TIMER_HPP__ */
+#endif /* __MAIN_TIMER_HPP__ */

@@ -13,9 +13,11 @@
 #include "Core/MemoryStream.hpp"
 #include "Core/ETAssets.hpp"
 #include "Core/ETLogger.hpp"
+#include "Core/ETTimer.hpp"
 
 EditorApp::EditorApp() :
-    Application() {
+    Application(),
+    updateGame(false) {
 }
 
 EditorApp::~EditorApp() {
@@ -110,6 +112,9 @@ const char* EditorApp::getEntityName(EntityId entityId) {
 }
 
 void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
+    if(updateGame) {
+        ET_SendEvent(&ETMainThreadTimer::ET_onMainThreadStep);
+    }
     Vec2i renderSize = Vec2i(width, height);
     frameBuffer.setSize(renderSize);
     frameBuffer.clear();
@@ -207,7 +212,9 @@ void EditorApp::unloadAll() {
 }
 
 void EditorApp::setTimeScale(float timeScale) {
+    ET_SendEvent(&ETMainThreadTimer::ET_setAppTimeScale, timeScale);
 }
 
 void EditorApp::enableGameUpdate(bool flag) {
+    updateGame = flag;
 }

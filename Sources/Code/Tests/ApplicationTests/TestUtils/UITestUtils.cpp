@@ -20,13 +20,13 @@ void CheckExpectedView(const char* expectedView) {
 void WaitViewSwitchEnd() {
     float switchTime = 0.f;
     ET_SendEventReturn(switchTime, &ETUIViewSwitcher::ET_getTotalSwitchDuration);
-    ET_SendEvent(&ETTimerEvents::ET_onTick, switchTime + 0.000001f);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, switchTime + 0.000001f);
 }
 
 void WaitButtonReleaseEvent() {
     float pressDuration = 0.f;
     ET_SendEventReturn(pressDuration, &ETUIButton::ET_getPressDuration);
-    ET_SendEvent(&ETTimerEvents::ET_onTick, pressDuration + 0.000001f);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, pressDuration + 0.000001f);
 }
 
 void CheckUIBoxSizeAndCenter(const UIBox* uiBox, const Vec2i& expectedSize, const Vec2i& expectedCenter) {

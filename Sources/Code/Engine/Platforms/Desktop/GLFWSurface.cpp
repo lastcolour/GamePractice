@@ -133,7 +133,7 @@ bool GLFWSurface::init() {
     // ET_show();
 
     ETNode<ETSurface>::connect(getEntityId());
-    ETNode<ETTimerEvents>::connect(getEntityId());
+    ETNode<ETSystemTimerEvents>::connect(getEntityId());
 
     return true;
 }
@@ -142,7 +142,7 @@ void GLFWSurface::deinit() {
     ETNode<ETSurface>::disconnect();
 }
 
-void GLFWSurface::ET_onTick(float dt) {
+void GLFWSurface::ET_onSystemTick(float dt) {
     (void)dt;
     glfwPollEvents();
     if(window != nullptr && glfwWindowShouldClose(window)) {

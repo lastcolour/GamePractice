@@ -29,7 +29,7 @@ bool GameStateTests::isEndTimerTicking() const {
     ET_SendEventReturn(startRemainingTime, &ETGameEndTimer::ET_getRemainingTime);
 
     float tickDuration = 0.5f;
-    ET_SendEvent(&ETTimerEvents::ET_onTick, tickDuration);
+    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, tickDuration);
 
     float endRemainingTime = 0.f;
     ET_SendEventReturn(endRemainingTime, &ETGameEndTimer::ET_getRemainingTime);

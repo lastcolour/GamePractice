@@ -10,7 +10,7 @@
 class AndroidSurface : public SystemLogic,
     public ETNode<ETSurface>,
     public ETNode<ETAndroidActivityEvents>,
-    public ETNode<ETTimerEvents> {
+    public ETNode<ETSystemTimerEvents> {
 public:
     AndroidSurface();
     virtual ~AndroidSurface();
@@ -32,8 +32,8 @@ public:
     // ETAndroidActivityEvents
     void ET_onActivityEvent(ActivityEventType eventType) override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETSystemTimerEvents
+    void ET_onSystemTick(float dt) override;
 
 private:
 

@@ -42,6 +42,7 @@ protected:
 private:
 
     RenderTextureFramebuffer frameBuffer;
+    bool updateGame;
 };
 
 #endif /* __EDITOR_APP__ */

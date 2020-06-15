@@ -9,7 +9,7 @@
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
     public ETNode<ETRender>,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETSystemTimerEvents>,
     public ETNode<ETRenderContextEvents> {
 public:
 
@@ -36,8 +36,8 @@ public:
     void ET_onSurfaceGainFocus() override {}
     void ET_onSurfaceResized(const Vec2i& size) override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETSystemTimerEvents
+    void ET_onSystemTick(float dt) override;
 
     // ETRenderContextEvents
     void ET_onContextSuspended() override;

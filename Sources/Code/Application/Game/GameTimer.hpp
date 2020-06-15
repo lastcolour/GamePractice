@@ -6,7 +6,7 @@
 #include "Game/ETGameInterfaces.hpp"
 
 class GameTimer : public SystemLogic,
-    public ETNode<ETTimerEvents>,
+    public ETNode<ETAppTimerEvents>,
     public ETNode<ETGameTimer> {
 public:
 
@@ -17,8 +17,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETTimerEvents
-    void ET_onTick(float dt) override;
+    // ETAppTimerEvents
+    void ET_onAppTick(float dt) override;
 
     // ETGameTimer
     void ET_pauseTimer() override;
