@@ -203,7 +203,7 @@ class LogicValueTests(unittest.TestCase):
         self.assertEqual(x, 3.5)
         self.assertEqual(y, 4.5)
 
-    def testReadWriteVe2FromStream(self):
+    def testReadWriteVec2FromStream(self):
         stream = MemoryStream()
         stream.writeFloat(1.5)
         stream.writeFloat(2.5)

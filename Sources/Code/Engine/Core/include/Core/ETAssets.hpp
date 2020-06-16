@@ -26,6 +26,7 @@ struct ETAssetsCacheManager {
 struct ETAssetsSetup {
     virtual ~ETAssetsSetup() = default;
     virtual void ET_getAssetsSearchPath(std::string& searchPath) = 0;
+    virtual void ET_getLocalDataRootPath(std::string& localDataRooPath) = 0;
 };
 
 #endif /* __ET_ASSETS_HPP__ */

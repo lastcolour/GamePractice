@@ -1,8 +1,8 @@
 #include "ApplicationTests.hpp"
 #include "TestUtils/FutureTimePoint.hpp"
 
-#include <Application.hpp>
-#include <ETApplicationInterfaces.hpp>
+#include <Core/Application.hpp>
+#include <Core/ETApplication.hpp>
 #include <Core/SystemLogic.hpp>
 #include <Core/SystemModule.hpp>
 

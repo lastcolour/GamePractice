@@ -1,5 +1,5 @@
 #include "Render/RenderMaterial.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Platforms/OpenGL.hpp"
 
 #include <cassert>

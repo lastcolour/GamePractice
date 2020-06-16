@@ -75,7 +75,7 @@ std::filesystem::path getAssetDirPath() {
     if(!ET_IsExistNode<ETAssetsSetup>()) {
         searchPath = getBinDir();
         if(searchPath.empty()) {
-            LogError("[DesktopAssets::getAssetDirPath] Can't get current binary directory path");
+            LogError("[DesktopAssets::getAssetDirPath] Can't get current binary dir path");
             return std::filesystem::path();
         }
     } else {
@@ -117,39 +117,55 @@ std::string GetSafeStrErrno() {
 #endif
 }
 
-std::wstring getLoacalFilesDirPath() {
-    auto path = getBinDir();
-    if(path.empty()) {
-        return std::filesystem::path().wstring();
+std::filesystem::path getLoacalFilesDirPath() {
+    std::filesystem::path path;
+    if(!ET_IsExistNode<ETAssetsSetup>()) {
+        path = getBinDir();
+        if(path.empty()) {
+            LogError("[DesktopAssets::getLoacalFilesDirPath] Can't get current binary dir path");
+            return std::filesystem::path();
+        }
+    } else {
+        std::string localDataRootPath;
+        ET_SendEvent(&ETAssetsSetup::ET_getLocalDataRootPath, localDataRootPath);
+        path = localDataRootPath;
+        if(path.empty()) {
+            LogError("[DesktopAssets::getLoacalFilesDirPath] Empty local data root path");
+            return std::filesystem::path();
+        }
     }
     path.append(LOCAL_DIR_PATH);
     if(!isDirExist(path)) {
         if(!createDir(path)) {
             LogError("[DesktopAssets::getLoacalFilesDirPath] Can't create dir for local data: '%s'",
                 path.string());
-            return std::filesystem::path().wstring();
+            return std::filesystem::path();
         }
     }
-    return path.wstring();
+    return path;
 }
 
 std::filesystem::path transformToPath(const std::filesystem::path& dirPath, const std::string& filePath) {
-    if(filePath.empty()) {
-        return std::filesystem::path();
-    }
-    std::string internalFileName;
-    if(filePath[0] == '\\' || filePath[0] == '/') {
-        internalFileName.assign(filePath.substr(1, filePath.size()-1));
-    } else {
-        internalFileName = filePath;
-    }
-    if(internalFileName.empty()) {
-        return std::filesystem::path();
-    }
     std::filesystem::path resPath = dirPath;
-    resPath.append(internalFileName);
+    resPath.append(filePath);
     resPath = resPath.make_preferred();
     return resPath;
+}
+
+std::string normilizeAssetName(const char* assetPath) {
+    if(!assetPath || !assetPath[0]) {
+        return std::string();
+    }
+    std::string path = assetPath;
+    for(auto& ch : path) {
+        if(ch == '\\') {
+            ch = '/';
+        }
+    }
+    if(path[0] == '/') {
+        path.assign(path.substr(1, path.size()-1));
+    }
+    return path;
 }
 
 } // namespace
@@ -185,25 +201,26 @@ JSONNode DesktopAssets::ET_loadJSONAsset(const char* assetName) {
 }
 
 Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
+    auto normalAssetName = normilizeAssetName(assetName);
     Buffer buff;
-    if(!assetName || !assetName[0]) {
+    if(normalAssetName.empty()) {
         return buff;
     }
-    ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, assetName);
+    ET_SendEventReturn(buff, &ETAssetsCacheManager::ET_getAssetFromCache, normalAssetName.c_str());
     if(buff) {
         return buff;
     }
 
     auto loadStartT = std::chrono::high_resolution_clock::now();
 
-    buff = loadFileFromDir(assetRootPath, assetName);
+    buff = loadFileFromDir(assetRootPath, normalAssetName);
 
     if(buff) {
-        ET_SendEvent(&ETAssetsCacheManager::ET_putAssetToCache, assetName, buff);
+        ET_SendEvent(&ETAssetsCacheManager::ET_putAssetToCache, normalAssetName.c_str(), buff);
     }
 
     if(buff) {
-        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %d ms", assetName,
+        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %d ms", normalAssetName,
             std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - loadStartT).count());
     }

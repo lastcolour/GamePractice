@@ -21,3 +21,8 @@ void EditorAssetsSetup::ET_getAssetsSearchPath(std::string& searchPath) {
     auto cwd = std::filesystem::current_path();
     searchPath = cwd.string();
 }
+
+void EditorAssetsSetup::ET_getLocalDataRootPath(std::string& localDataRootPath) {
+    auto cwd = std::filesystem::current_path();
+    localDataRootPath = cwd.string();
+}

@@ -18,6 +18,7 @@ public:
 
     // ETAssetsSetup
     void ET_getAssetsSearchPath(std::string& searchPath) override;
+    void ET_getLocalDataRootPath(std::string& localDataRooPath) override;
 };
 
 #endif /* __EDITOR_ASSETS_SETUP_HPP__ */
