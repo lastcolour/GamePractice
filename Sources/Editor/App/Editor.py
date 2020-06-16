@@ -18,6 +18,7 @@ from model.LogicsModel import LogicsModel
 
 from menu.MainFileMenu import MainFileMenu
 from menu.MainToolBar import MainToolBar
+from menu.MainViewMenu import MainViewMenu
 
 from view.main.StatusBar import StatusBar
 from view.base.MainDockWidget import WrapMainDockWidget
@@ -33,7 +34,11 @@ class EditorView(QMainWindow):
         self.setContentsMargins(1, 1, 1, 1)
 
         self._fileMenu = MainFileMenu(self)
+        self._viewMenu = MainViewMenu(self)
+    
         self.menuBar().addMenu(self._fileMenu)
+        self.menuBar().addMenu(self._viewMenu)
+    
         self.addToolBar(MainToolBar())
         self.setStatusBar(StatusBar())
 

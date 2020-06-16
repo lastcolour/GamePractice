@@ -43,6 +43,11 @@ class EntityNative(NativeObject):
         for logic in self._logics:
             logic.readFromNative()
 
+    def _desyncWithNative(self):
+        self._entityId = None
+        for child in self._children:
+            child._desyncWithNative()
+
     def loadToNative(self):
         if self._isInternal:
             raise RuntimeError("Can't load internal entity '{0}' to native".format(self._name))
@@ -55,7 +60,7 @@ class EntityNative(NativeObject):
 
     def unloadFromNative(self):
         self._getAPI().getLibrary().unloadEntity(self._entityId)
-        self._entityId = None
+        self._desyncWithNative()
 
     def addLogic(self, logicName):
         if not self.isLoadedToNative():

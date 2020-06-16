@@ -14,6 +14,7 @@
 #include "Core/ETAssets.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETTimer.hpp"
+#include "ETEditorInterfaces.hpp"
 
 EditorApp::EditorApp() :
     Application(),
@@ -69,16 +70,7 @@ EntityId EditorApp::loadEntity(const char* entityName) {
     if(!entId.isValid()) {
         return InvalidEntityId;
     }
-
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-
-    Transform tm;
-    ET_SendEventReturn(tm, entId, &ETEntity::ET_getTransform);
-    tm.pt.x = renderPort.x / 2.f;
-    tm.pt.y = renderPort.y / 2.f;
-
-    ET_SendEvent(entId, &ETEntity::ET_setTransform, tm);
+    ET_SendEvent(&ETEditEntityTracker::ET_startTrackingEntity, entId);
     return entId;
 }
 
@@ -87,6 +79,7 @@ void EditorApp::unloadEntity(EntityId entityId) {
         LogError("[EditorApp::unloadEntity] Can't unload entity with invalid id");
         return;
     }
+    ET_SendEvent(&ETEditEntityTracker::ET_stopTrackingEntity, entityId);
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, entityId);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);
 }
