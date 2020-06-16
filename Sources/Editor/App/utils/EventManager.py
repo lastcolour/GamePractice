@@ -17,7 +17,7 @@ class _EventManager:
             raise RuntimeError("One instance of event manager already exists")
         self._app = app
         self._currentEntity = None
-        self._app._entityFileView.widget().setFileTreeModel(self._app._assetsModel)
+        self._app._entityFileView.setFileTreeModel(self._app._assetsModel)
 
     def _askToSaveEntity(self):
         if not self._currentEntity.isModified():
@@ -52,13 +52,13 @@ class _EventManager:
             self._currentEntity.unloadFromNative()
         self._currentEntity = newEntity
         self._currentEntity._syncWithNative()
-        self._app._entityLogicsView.widget().setEditEntity(self._currentEntity)
-        self._app._entityTreeView.widget().setEditEntity(self._currentEntity)
+        self._app._entityLogicsView.setEditEntity(self._currentEntity)
+        self._app._entityTreeView.setEditEntity(self._currentEntity)
 
     def onEntityClickedFromEntityTree(self, entity):
         if entity is not None:
             entity._syncWithNative()
-        self._app._entityLogicsView.widget().setEditEntity(entity)
+        self._app._entityLogicsView.setEditEntity(entity)
 
     def onAddLogicBtClicked(self, editEntity):
         if editEntity is None:
@@ -74,13 +74,13 @@ class _EventManager:
         entityLogic = editEntity.addLogic(logic.getName())
         if entityLogic is None:
             raise RuntimeError("Can't add logic '{0}' to  entity '{1}'".format(logic.getName(), editEntity.getName()))
-        self._app._entityLogicsView.widget().addLogicView(entityLogic)
+        self._app._entityLogicsView.addLogicView(entityLogic)
 
     def onRemoveEntityLogicBtClicked(self, editLogic):
         retCode = RemoveEntityLogic(editLogic).exec_()
         if retCode == QMessageBox.Ok:
             editLogic.getEntity().removeLogic(editLogic.getNativeId())
-            self._app._entityLogicsView.widget().removeLogicView(editLogic.getNativeId())
+            self._app._entityLogicsView.removeLogicView(editLogic.getNativeId())
         elif retCode == QMessageBox.Cancel:
             pass
         elif retCode == QMessageBox.No:
@@ -103,7 +103,7 @@ class _EventManager:
         if not childEntity.extractToFile(resFile):
             return False
         self._app._assetsModel.reload()
-        self._app._entityFileView.widget()._refresh()
+        self._app._entityFileView._refresh()
         return True
 
     def getAssetsModel(self):
@@ -118,8 +118,8 @@ class _EventManager:
                 return
             self._currentEntity.unloadFromNative()
         self._currentEntity = None
-        self._app._entityLogicsView.widget().setEditEntity(None)
-        self._app._entityTreeView.widget().setEditEntity(None)
+        self._app._entityLogicsView.setEditEntity(None)
+        self._app._entityTreeView.setEditEntity(None)
 
     def saveEditEntity(self):
         self._currentEntity.save()

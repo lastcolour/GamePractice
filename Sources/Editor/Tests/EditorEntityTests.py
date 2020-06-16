@@ -4,6 +4,7 @@ from native.EditorNative import EditorNative
 from native.EntityNativeLoader import EntityNativeLoader
 from native.ValueNative import *
 from native.EntityNative import EntityNative
+from native.EntityNativeLoader import _DEFAULT_TRANSFORM
 
 from utils.AppConfig import AppConfig
 
@@ -170,6 +171,10 @@ class EditorEntityTest(unittest.TestCase):
         entity = self._getEntityLoader().loadEntity("Game/Void.json")
         self.assertTrue(entity.loadToNative())
         childEntity = entity.createNewInternalChild("Test")
+        tmLogic = childEntity.getTransformLogic()
+        res = {}
+        tmLogic.writeToDict(res)
+        self.assertEqual(res["data"], _DEFAULT_TRANSFORM)
         self.assertIsNotNone(childEntity)
         self.assertTrue(childEntity.isInternal())
         self.assertTrue(childEntity.rename("NewTest"))

@@ -57,4 +57,7 @@ class EditTransformValue(LogicView):
             self._tree.setEnabled(False)
         else:
             self._setupLogic(entity.getTransformLogic())
-            self._tree.setEnabled(False)
+            if entity.getParent() is None:
+                self._tree.setEnabled(False)
+            else:
+                self._tree.setEnabled(True)

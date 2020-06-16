@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QDockWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout
 from PyQt5 import QtCore
 
 from utils.Log import Log
@@ -20,6 +20,7 @@ from menu.MainFileMenu import MainFileMenu
 from menu.MainToolBar import MainToolBar
 
 from view.main.StatusBar import StatusBar
+from view.base.MainDockWidget import WrapMainDockWidget
 
 import sys
 
@@ -36,26 +37,14 @@ class EditorView(QMainWindow):
         self.addToolBar(MainToolBar())
         self.setStatusBar(StatusBar())
 
-        self._entityTreeView = QDockWidget()
-        self._entityTreeView.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
-        self._entityTreeView.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        self._entityTreeView.setWindowTitle("Entity Tree")
-        self._entityTreeView.setWidget(EntityTreeView())
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self._entityTreeView)
+        self._entityTreeView = EntityTreeView()
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityTreeView, "Entity Tree"))
 
-        self._entityFileView = QDockWidget()
-        self._entityFileView.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
-        self._entityFileView.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        self._entityFileView.setWindowTitle("Assets Explorer")
-        self._entityFileView.setWidget(EntityFileView())
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self._entityFileView)
+        self._entityFileView = EntityFileView()
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityFileView, "Assets Explorer"))
 
-        self._entityLogicsView = QDockWidget()
-        self._entityLogicsView.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
-        self._entityLogicsView.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        self._entityLogicsView.setWindowTitle("Entity Logics")
-        self._entityLogicsView.setWidget(EntityLogicsView())
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self._entityLogicsView)
+        self._entityLogicsView = EntityLogicsView()
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, WrapMainDockWidget(self._entityLogicsView, "Entity Logics"))
 
         self._engineOutputView = EngineOutputView()
 

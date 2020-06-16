@@ -1,5 +1,5 @@
 from .Native import NativeObject
-from .ValueNative import ObjectValue, AssignValueIdx, AssignValueLogic, CreateObjectValue
+from .ValueNative import ObjectValue, AssignValueIdx, AssignValueLogic, CreateObjectValue, _syncValueWithNative
 from .MemoryStream import MemoryStream
 
 class LogicNative(NativeObject):
@@ -35,10 +35,15 @@ class LogicNative(NativeObject):
         self._rootValue.writeToDict(rootData)
         data["data"] = rootData[0]
 
+    def setWriteOnly(self, flag):
+        self._rootValue.setWriteOnly(flag)
+
     def writeToStream(self, stream):
         self._rootValue.writeToStream(stream)
 
     def readFromNative(self):
+        if self._rootValue._isWriteOnly:
+            return
         stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self.getNativeId(), LogicNative.ALL_VALUE_ID)
         self._rootValue.readFromStream(stream)
 

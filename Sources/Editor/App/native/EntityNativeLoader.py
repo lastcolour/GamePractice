@@ -71,13 +71,11 @@ class EntityNativeLoader(NativeObject):
                 childData = childNode["data"]
                 childEntity = self._loadEntityFromData(childName, childData)
                 childEntity._isInternal = True
-            if not childEntity.initTransformLogic(childTm):
-                print("[EntityNativeLoader:_loadChildren] Can't load transfrom for child entity: '{0}'".format(childName))
-                return False
             if childEntity is None:
                 print("[EntityNativeLoader:_loadChildren] Can't load children: '{0}' for entity: '{1}'".format(
                     childName, entity._name))
                 return False
+            self._setupTransform(childEntity, childTm)
             childEntity._childId = childId
             childEntity._parent = entity
             entity._children.append(childEntity)
@@ -109,7 +107,7 @@ class EntityNativeLoader(NativeObject):
         self._entitiesStack.append(entityName)
         try:
             resEntity = self._loadEntityImpl(entityName)
-            resEntity.initTransformLogic(_DEFAULT_TRANSFORM)
+            self.setupDefaultTransform(resEntity)
         except:
             self._entitiesStack.pop()
             raise
@@ -135,6 +133,12 @@ class EntityNativeLoader(NativeObject):
         with open(fullFilePath) as tFile:
             data = json.load(tFile)
         return self._loadEntityFromData(entityName, data)
+
+    def setupDefaultTransform(self, entity):
+        self._setupTransform(entity, _DEFAULT_TRANSFORM)
+
+    def _setupTransform(self, entity, data):
+        entity._tmLogic._rootValue.readFromDict(data)
 
     def saveEntity(self, entity):
         fullFilePath = self.getEntityFullPath(entity.getName())

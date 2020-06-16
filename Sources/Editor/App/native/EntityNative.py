@@ -16,6 +16,9 @@ class EntityNative(NativeObject):
     def getName(self):
         return self._name
 
+    def getParent(self):
+        return self._parent
+
     def isModified(self):
         if self._isModified:
             return True
@@ -36,13 +39,9 @@ class EntityNative(NativeObject):
         for childEnt in self._children:
             childEnt._entityId = self._getAPI().getLibrary().getEntityChildEntityId(self._entityId, childEnt._childId)
             childEnt._syncWithNative()
+        self._tmLogic.readFromNative()
         for logic in self._logics:
             logic.readFromNative()
-
-    def _desyncWithNative(self):
-        self._entityId = None
-        for childEnt in self._children:
-            childEnt._desyncWithNative()
 
     def loadToNative(self):
         if self._isInternal:
@@ -91,12 +90,6 @@ class EntityNative(NativeObject):
         logic._rootValue.readFromDict(logicData)
         self._logics.append(logic)
         return logic
-
-    def initTransformLogic(self, logicData):
-        if self.isLoadedToNative():
-            raise RuntimeError("Can't add transform to entity that is loaded to editor: '{9}'".format(self._name))
-        self._tmLogic._rootValue.readFromDict(logicData)
-        return True
 
     def removeLogic(self, logicId):
         if not self.isLoadedToNative():
@@ -217,6 +210,7 @@ class EntityNative(NativeObject):
         tmLogic = CreateLogic("Transform")
         tmLogic._logicId = 0
         tmLogic._entity = self
+        tmLogic.setWriteOnly(True)
         return tmLogic
 
     def rename(self, newName):
@@ -263,7 +257,7 @@ class EntityNative(NativeObject):
         childEntity._childId = childId
         childEntity._isInternal = True
         childEntity._isModified = True
-        childEntity._tmLogic.readFromNative()
+        self._getAPI().getEntityLoader().setupDefaultTransform(childEntity)
         childEntity._syncWithNative()
         self._children.append(childEntity)
         self._isModified = True

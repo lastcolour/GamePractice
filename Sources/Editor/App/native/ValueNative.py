@@ -10,8 +10,9 @@ def _syncValueWithNative(val):
     stream = MemoryStream()
     val.writeToStream(stream)
     NativeObject._NATIVE_API.getLibrary().setEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId, stream)
-    stream = NativeObject._NATIVE_API.getLibrary().getEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId)
-    val.readFromStream(stream)
+    if not val._isWriteOnly:
+        stream = NativeObject._NATIVE_API.getLibrary().getEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId)
+        val.readFromStream(stream)
 
 class ValueType:
     Bool = 0
@@ -38,6 +39,7 @@ class ValueNative(NativeObject):
         self._logic = None
         self._valueId = None
         self._isModified = False
+        self._isWriteOnly = False
         self._type = valueType
 
     def getName(self):
@@ -66,6 +68,9 @@ class ValueNative(NativeObject):
 
     def getEntityId(self):
         return self.getEntity().getNativeId()
+
+    def setWriteOnly(self, flag):
+        self._isWriteOnly = flag
 
     def _isLoadedToNative(self):
         if self._logic is not None:
@@ -600,6 +605,11 @@ class ObjectValue(ValueNative):
         for item in self._vals:
             total += self._vals[item].getPrimitiveValueCount()
         return total
+
+    def setWriteOnly(self, flag):
+        self._isWriteOnly = flag
+        for item in self._vals:
+            item.setWriteOnly(flag)
 
 class ResourceValue(ValueNative):
     def __init__(self):
