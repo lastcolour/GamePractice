@@ -32,5 +32,5 @@ CoreModule::LogicsContainerPtrT CoreModule::createSystemLogics() const {
 void CoreModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
-void CoreModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+void CoreModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
 }

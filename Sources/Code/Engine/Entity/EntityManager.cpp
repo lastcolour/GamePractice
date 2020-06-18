@@ -1,7 +1,7 @@
 #include "Entity/EntityManager.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "Entity/EntityLogicRegister.hpp"
+#include "Entity/EntityLogicsRegister.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Core/MemoryStream.hpp"
@@ -164,15 +164,15 @@ void EntityManager::ET_destroyAllEntities() {
     entitiesToRemove.clear();
 }
 
-bool EntityManager::ET_registerLogics(EntityLogicRegister& logicRegister) {
-    for(auto classInfo : logicRegister.getLogicClasses()) {
+bool EntityManager::ET_registerLogics(EntityLogicsRegister& logicsRegister) {
+    for(auto classInfo : logicsRegister.getLogicClasses()) {
         assert(classInfo && "Invalid logic class info");
         auto it = registeredLogics.find(classInfo->getName());
         if(it != registeredLogics.end()) {
             LogError("[EntityManager::ET_registerLogics] Logic already registered with such name: '%s'", classInfo->getName());
             return false;
         }
-        registeredLogics[classInfo->getName()] = classInfo;
+        registeredLogics[classInfo->getName()] = { logicsRegister.getModuleName(), classInfo };
     }
     return true;
 }
@@ -218,7 +218,7 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
         LogWarning(errStr, StringFormat("Can't find logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
     }
-    auto logicInstance = logicIt->second->createInstance();
+    auto logicInstance = logicIt->second.classInfo->createInstance();
     if(!logicInstance.get()) {
         LogWarning(errStr, StringFormat("Can't create instance of logic: '%s' for entity: '%s'", logicName, entity->ET_getName()));
         return InvalidEntityLogicId;
@@ -337,7 +337,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
                 logicType, entity->ET_getName());
             continue;
         }
-        auto& logicClassInfo = *(it->second);
+        auto& logicClassInfo = *(it->second.classInfo);
         auto logicData = logicNode.object("data");
         if(!logicData) {
             LogWarning("[EntityManager::setupEntityLogics] Can't find logic data object for '%s' for entity '%s'", logicType, entity->ET_getName());
@@ -475,11 +475,20 @@ Entity* EntityManager::createEntity(const char* entityName) {
     return entity;
 }
 
-void EntityManager::ET_getRegisteredLogics(std::vector<const char*>& logicNames) {
-    logicNames.reserve(registeredLogics.size());
-    for(const auto& logicClassInfo : registeredLogics) {
-        logicNames.push_back(logicClassInfo.second->getName());
+JSONNode EntityManager::ET_getRegisteredLogics() const {
+    JSONNode node;
+    for(auto& logicNode : registeredLogics) {
+        auto moduleName = logicNode.second.moduleName;
+        if(!node.hasKey(moduleName)) {
+            JSONNode moduleNode;
+            moduleNode.write(logicNode.first.c_str());
+            node.write(moduleName, moduleNode);
+        } else {
+            auto moduleNode = node.object(moduleName);
+            moduleNode.write(logicNode.first.c_str());
+        }
     }
+    return node;
 }
 
 Entity* EntityManager::findEntity(EntityId entityId) {

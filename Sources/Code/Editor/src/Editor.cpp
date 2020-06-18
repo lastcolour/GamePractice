@@ -31,21 +31,12 @@ const char* GetReflectModel() {
     return INTERNAL_BUFFER.getCString();
 }
 
-uint32_t GetRegisteredEntityLogics(void** out) {
+const char* GetRegisteredEntityLogics() {
     if(!EDITOR_APP) {
         return 0u;
     }
-    auto logicNames = EDITOR_APP->getRegisteredEntityLogics();
-    if(logicNames.empty()) {
-        return 0u;
-    }
-    INTERNAL_BUFFER.resize(sizeof(const char*) * logicNames.size());
-    auto ptr = static_cast<const void**>(INTERNAL_BUFFER.getWriteData());
-    for(size_t i = 0, sz = logicNames.size(); i < sz; ++i) {
-        ptr[i] = static_cast<const void*>(logicNames[i]);
-    }
-    *out = INTERNAL_BUFFER.getWriteData();
-    return static_cast<uint32_t>(logicNames.size());
+    INTERNAL_BUFFER = EDITOR_APP->getRegisteredEntityLogics();
+    return INTERNAL_BUFFER.getCString();
 }
 
 void DeInitialize() {

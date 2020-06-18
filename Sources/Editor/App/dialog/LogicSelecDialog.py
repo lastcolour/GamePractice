@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QStyle
 
 class LogicSelectDialog(QDialog):
     def __init__(self, logicsModel):
@@ -16,9 +16,9 @@ class LogicSelectDialog(QDialog):
         self._tree = QTreeWidget()
         self._tree.setHeaderHidden(True)
         self._tree.setColumnCount(1)
+        self._tree.setSortingEnabled(False)
         self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
         self._buildTree(self._tree.invisibleRootItem(), logicsModel.getLogics())
-        self._tree.setSortingEnabled(True)
         self._rootLayout.addWidget(self._tree)
 
         self._buttotLayout = QHBoxLayout()
@@ -37,11 +37,15 @@ class LogicSelectDialog(QDialog):
         self.setLayout(self._rootLayout)
         self.setWindowTitle("Select Entity Logic")
 
-    def _buildTree(self, rootItem, logics):
-        for logic in logics:
-            item = QTreeWidgetItem(rootItem)
-            item.setText(0, logic.getName())
-            item._node = logic
+    def _buildTree(self, rootItem, moduleLogics):
+        for module in moduleLogics:
+            moduleItem = QTreeWidgetItem(rootItem)
+            moduleItem.setText(0, module.getName())
+            moduleItem.setIcon(0, self.style().standardIcon(QStyle.SP_DirIcon))
+            for logic in module.getLogics():
+                item = QTreeWidgetItem(moduleItem)
+                item.setText(0, logic.getName())
+                item._node = logic
 
     def _signal_cancelBt_clicked(self):
         self._resultLogic = None
@@ -56,8 +60,9 @@ class LogicSelectDialog(QDialog):
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None:
-            self._currentSelection = currItem._node
-            self._addBt.setEnabled(True)
-        else:
-            self._currentSelection = None
-            self._addBt.setEnabled(False)
+            if hasattr(currItem, "_node"):
+                self._currentSelection = currItem._node
+                self._addBt.setEnabled(True)
+                return
+        self._currentSelection = None
+        self._addBt.setEnabled(False)

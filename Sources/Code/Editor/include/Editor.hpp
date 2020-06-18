@@ -15,7 +15,7 @@ LIB_EXPORT uint32_t Initiliaze();
 
 LIB_EXPORT const char* GetReflectModel();
 
-LIB_EXPORT uint32_t GetRegisteredEntityLogics(void** out);
+LIB_EXPORT const char* GetRegisteredEntityLogics();
 
 LIB_EXPORT void DeInitialize();
 

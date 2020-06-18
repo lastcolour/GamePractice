@@ -16,7 +16,7 @@ public:
     bool initialize();
     void deinitiazlie();
     Buffer getReflectModel();
-    std::vector<const char*> getRegisteredEntityLogics();
+    Buffer getRegisteredEntityLogics();
     EntityId loadEntity(const char* entityName);
     void unloadEntity(EntityId entityId);
     EntityId getEntityChildEntityId(EntityId entityId, EntityChildId childId);

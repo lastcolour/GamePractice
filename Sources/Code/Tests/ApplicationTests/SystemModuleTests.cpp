@@ -67,7 +67,7 @@ protected:
         return container;
     }
 
-    void registerEntityLogics(EntityLogicRegister& logicRegister) const {}
+    void registerEntityLogics(EntityLogicsRegister& logicsRegister) const {}
 
 protected:
 

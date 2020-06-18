@@ -8,7 +8,7 @@
 #include "UI/Logics/UILayout.hpp"
 #include "UI/Logics/UIView.hpp"
 #include "UI/Logics/UIBoxVisual.hpp"
-#include "Entity/EntityLogicRegister.hpp"
+#include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
     SystemModule("UI") {}
@@ -28,9 +28,9 @@ void UIModule::reflectSystemConfigs(ReflectContext& ctx) const {
     ctx.reflect<UIConfig>();
 }
 
-void UIModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<UIBox>();
-    logicRegister.registerLogic<UILayout>();
-    logicRegister.registerLogic<UIView>();
-    logicRegister.registerLogic<UIBoxVisual>();
+void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
+    logicsRegister.registerLogic<UIBox>();
+    logicsRegister.registerLogic<UILayout>();
+    logicsRegister.registerLogic<UIView>();
+    logicsRegister.registerLogic<UIBoxVisual>();
 }

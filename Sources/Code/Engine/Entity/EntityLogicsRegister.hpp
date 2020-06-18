@@ -1,16 +1,16 @@
-#ifndef __ENTITY_LOGIC_REGISTER_HPP__
-#define __ENTITY_LOGIC_REGISTER_HPP__
+#ifndef __ENTITY_LOGICS_REGISTER_HPP__
+#define __ENTITY_LOGICS_REGISTER_HPP__
 
 #include "Reflect/ReflectContext.hpp"
 #include "EntityLogic.hpp"
 
 #include <type_traits>
 
-class EntityLogicRegister {
+class EntityLogicsRegister {
 public:
 
-    EntityLogicRegister();
-    ~EntityLogicRegister();
+    EntityLogicsRegister(const char* module);
+    ~EntityLogicsRegister();
 
     template<typename LogicT>
     void registerLogic() {
@@ -22,6 +22,7 @@ public:
     }
 
     std::vector<ClassInfo*>& getLogicClasses();
+    const char* getModuleName() const;
 
 private:
 
@@ -29,7 +30,8 @@ private:
 
 private:
 
+    const char* moduleName;
     std::vector<ClassInfo*> logics;
 };
 
-#endif /* __ENTITY_LOGIC_REGISTER_HPP__ */
+#endif /* __ENTITY_LOGICS_REGISTER_HPP__ */

@@ -3,7 +3,7 @@
 #include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Core/ETApplication.hpp"
-#include "Entity/EntityLogicRegister.hpp"
+#include "Entity/EntityLogicsRegister.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 
 #include <cassert>
@@ -102,17 +102,17 @@ bool SystemModule::init() {
         return false;
     }
 
-    EntityLogicRegister logicRegister;
-    registerEntityLogics(logicRegister);
+    EntityLogicsRegister logicsRegister(name.c_str());
+    registerEntityLogics(logicsRegister);
 
-    if(!logicRegister.getLogicClasses().empty()) {
+    if(!logicsRegister.getLogicClasses().empty()) {
         if(!ET_IsExistNode<ETEntityManager>()) {
             LogError("[SystemModule::init] Module tries to regiser entity logics before EntityManager created: '%s'", name);
             return false;
         }
-        bool logicRegisterRes = false;
-        ET_SendEventReturn(logicRegisterRes, &ETEntityManager::ET_registerLogics, logicRegister);
-        if(!logicRegisterRes) {
+        bool logicsRegisterRes = false;
+        ET_SendEventReturn(logicsRegisterRes, &ETEntityManager::ET_registerLogics, logicsRegister);
+        if(!logicsRegisterRes) {
             LogError("[SystemModule::init] Can't register entity logics for module: '%s'", name);
             return false;
         }

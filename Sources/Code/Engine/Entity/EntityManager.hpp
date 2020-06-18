@@ -32,11 +32,11 @@ public:
     void ET_destroyEntity(EntityId entityId) override;
     bool ET_renameEntity(EntityId entId, const char* newName) override;
     void ET_destroyAllEntities() override;
-    bool ET_registerLogics(EntityLogicRegister& logicRegister) override;
+    bool ET_registerLogics(EntityLogicsRegister& logicsRegister) override;
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
     EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
     void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) override;
-    void ET_getRegisteredLogics(std::vector<const char*>& logicNames) override;
+    JSONNode ET_getRegisteredLogics() const override;
     bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) override;
     bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
@@ -56,7 +56,14 @@ private:
 
 private:
 
-    std::unordered_map<std::string, ClassInfo*> registeredLogics;
+    struct LogicNode {
+        const char* moduleName;
+        ClassInfo* classInfo;
+    };
+
+private:
+
+    std::unordered_map<std::string, LogicNode> registeredLogics;
     std::unordered_map<EntityId, EntityPtrT> entities;
     ClassInfo* tmClassInfo;
 };

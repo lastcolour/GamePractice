@@ -42,7 +42,7 @@ protected:
     }
 
     void reflectSystemConfigs(ReflectContext& ctx) const override {}
-    void registerEntityLogics(EntityLogicRegister& logicRegister) const override {}
+    void registerEntityLogics(EntityLogicsRegister& logicsRegister) const override {}
 };
 
 class TestApplication : public Application {

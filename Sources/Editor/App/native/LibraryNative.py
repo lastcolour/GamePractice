@@ -25,8 +25,8 @@ class LibraryNative:
         self._getReflectModelFunc.restype = ctypes.c_char_p
 
         self._getRegisteredEntityLogicsFunc = self._editorLib.GetRegisteredEntityLogics
-        self._getRegisteredEntityLogicsFunc.argstype = [ctypes.POINTER(ctypes.c_void_p),]
-        self._getRegisteredEntityLogicsFunc.restype = ctypes.c_uint32
+        self._getRegisteredEntityLogicsFunc.argstype = None
+        self._getRegisteredEntityLogicsFunc.restype = ctypes.c_char_p
     
         self._loadEntityFunc = self._editorLib.LoadEntity
         self._loadEntityFunc.argstype = [ctypes.c_char_p,]
@@ -162,15 +162,8 @@ class LibraryNative:
         self._drawFrameFunc(ptr, ctypes.c_uint32(width), ctypes.c_uint32(height))
 
     def getRegisteredEntityLogics(self):
-        outPtr = ctypes.POINTER(ctypes.c_char_p)()
-        outSize = self._getRegisteredEntityLogicsFunc(ctypes.byref(outPtr))
-        res = []
-        if outSize == 0:
-            return res
-        outPtr = ctypes.POINTER(ctypes.c_char_p * outSize)(outPtr.contents)
-        for i in range(outSize):
-            res.append(outPtr.contents[i].decode('ascii'))
-        return res
+        res = self._getRegisteredEntityLogicsFunc()
+        return res.decode('ascii')
 
     def addChildEntityToEntity(self, parentId, childId):
         cParentId = ctypes.c_uint32(parentId)

@@ -3,7 +3,7 @@
 #include "Audio/SoundSourceManager.hpp"
 #include "Audio/AudioConfig.hpp"
 #include "Audio/Logics/SoundPlayLogic.hpp"
-#include "Entity/EntityLogicRegister.hpp"
+#include "Entity/EntityLogicsRegister.hpp"
 
 #if defined PLATFORM_WINDOWS || defined PLATFORM_LINUX
 
@@ -42,6 +42,6 @@ void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
     ctx.reflect<AudioConfig>();
 }
 
-void AudioModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<SoundPlayLogic>();
+void AudioModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
+    logicsRegister.registerLogic<SoundPlayLogic>();
 }

@@ -27,5 +27,5 @@ AndroidModule::LogicsContainerPtrT AndroidModule::createSystemLogics() const {
 void AndroidModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
-void AndroidModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+void AndroidModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
 }

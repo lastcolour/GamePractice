@@ -62,7 +62,10 @@ class EditorEntityTest(unittest.TestCase):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
         self.assertTrue(entity.loadToNative())
         self.assertTrue(entity.isLoadedToNative())
-        logics = self._getEditor().getReflectModel().getAllRegisteredLogics()
+        moduleLogics = self._getEditor().getReflectModel().getAllRegisteredLogics()
+        logics = []
+        for item in moduleLogics:
+            logics.extend(moduleLogics[item])
         for logicName in logics:
             logic = entity.addLogic(logicName)
             self.assertIsNotNone(logic)

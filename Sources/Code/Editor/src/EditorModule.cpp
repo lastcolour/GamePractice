@@ -21,5 +21,5 @@ EditorModule::LogicsContainerPtrT EditorModule::createSystemLogics() const {
 void EditorModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
-void EditorModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+void EditorModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
 }

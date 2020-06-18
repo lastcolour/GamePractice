@@ -17,5 +17,5 @@ DesktopModule::LogicsContainerPtrT DesktopModule::createSystemLogics() const {
 void DesktopModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
-void DesktopModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+void DesktopModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
 }

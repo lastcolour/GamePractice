@@ -10,7 +10,7 @@
 #include "Render/Logics/RenderImageLogic.hpp"
 #include "Render/Logics/RenderColoredTextureLogic.hpp"
 #include "Render/Logics/RenderLinearGradientRect.hpp"
-#include "Entity/EntityLogicRegister.hpp"
+#include "Entity/EntityLogicsRegister.hpp"
 
 RenderModule::RenderModule() :
     SystemModule("Render") {}
@@ -31,10 +31,10 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
 void RenderModule::reflectSystemConfigs(ReflectContext& ctx) const {
 }
 
-void RenderModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
-    logicRegister.registerLogic<RenderSimpleLogic>();
-    logicRegister.registerLogic<RenderTextLogic>();
-    logicRegister.registerLogic<RenderImageLogic>();
-    logicRegister.registerLogic<RenderColoredTextureLogic>();
-    logicRegister.registerLogic<RenderLinearGradientRect>();
+void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
+    logicsRegister.registerLogic<RenderSimpleLogic>();
+    logicsRegister.registerLogic<RenderTextLogic>();
+    logicsRegister.registerLogic<RenderImageLogic>();
+    logicsRegister.registerLogic<RenderColoredTextureLogic>();
+    logicsRegister.registerLogic<RenderLinearGradientRect>();
 }

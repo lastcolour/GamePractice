@@ -23,5 +23,5 @@ void GameLaucherModule::reflectSystemConfigs(ReflectContext& ctx) const {
     ctx.reflect<GameLaucherConfig>();
 }
 
-void GameLaucherModule::registerEntityLogics(EntityLogicRegister& logicRegister) const {
+void GameLaucherModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
 }

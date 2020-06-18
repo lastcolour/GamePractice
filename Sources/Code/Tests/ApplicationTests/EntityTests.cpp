@@ -1,7 +1,7 @@
 #include "EntityTests.hpp"
 #include "Entity/Entity.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Entity/EntityLogicRegister.hpp"
+#include "Entity/EntityLogicsRegister.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Core/StringFormat.hpp"
@@ -249,10 +249,10 @@ TEST_F(EntityTests, CheckChildrenDepth) {
 }
 
 TEST_F(EntityTests, CheckRegisterEntityLogics) {
-    EntityLogicRegister logicRegister;
-    logicRegister.registerLogic<TestLogic>();
+    EntityLogicsRegister logicsRegister("Test");
+    logicsRegister.registerLogic<TestLogic>();
     bool res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_registerLogics, logicRegister);
+    ET_SendEventReturn(res, &ETEntityManager::ET_registerLogics, logicsRegister);
     ASSERT_TRUE(res);
 
     const char* childDataStr = "";
@@ -328,18 +328,25 @@ TEST_F(EntityTests, CheckAddRemoveLogic) {
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, secondLogicId);
 }
 
-TEST_F(EntityTests, CheckRegisteredLogics) {
-    std::vector<const char*> registeredLogics;
-    ET_SendEvent(&ETEntityManager::ET_getRegisteredLogics, registeredLogics);
-    ASSERT_TRUE(registeredLogics.size() > 0);
+TEST_F(EntityTests, CheckOnlyUniqueLogicsRegistered) {
+    JSONNode node;
+    ET_SendEventReturn(node, &ETEntityManager::ET_getRegisteredLogics);
+    ASSERT_TRUE(node);
 
-    std::set<const char*> logics;
-    for(auto name : registeredLogics) {
-        ASSERT_TRUE(name && name[0]);
-        logics.insert(name);
+    size_t allLogics = 0;
+    std::set<std::string> uniqueLogics;
+
+    for(auto& moduleNode : node) {
+        for(auto& logicNode : moduleNode) {
+            std::string logicName;
+            logicNode.read(logicName);
+            uniqueLogics.insert(logicName);
+            ++allLogics;
+        }
     }
 
-    ASSERT_EQ(logics.size(), registeredLogics.size());
+    ASSERT_GE(allLogics, 0);
+    ASSERT_EQ(allLogics, uniqueLogics.size());
 }
 
 TEST_F(EntityTests, TestReflectSimpleEntity) {

@@ -6,13 +6,15 @@ import collections
 class ReflectModel(NativeObject):
     def __init__(self):
         self._model = {}
-        self._logics = []
+        self._logics = {}
 
     def init(self):
         nativeLib = self._getAPI().getLibrary()
         cModel = nativeLib.getReflectModel()
         self._model = json.loads(cModel, object_pairs_hook=collections.OrderedDict)
-        self._logics = nativeLib.getRegisteredEntityLogics()
+
+        logics = nativeLib.getRegisteredEntityLogics()
+        self._logics = json.loads(logics)
         return True
 
     def getEnumTable(self, enumType):
@@ -43,7 +45,11 @@ class ReflectModel(NativeObject):
                 classResData[item] = classData[item]
 
     def getLogicModel(self, logicType):
-        if logicType not in self._logics:
+        logicExists = None
+        for module in self._logics:
+            if logicType in self._logics[module]:
+                logicExists = True
+        if not logicExists:
             print("[ReflectModel:getLogicModel] Can't find logic type '{0}' in registered logics".format(
                 logicType))
             return None

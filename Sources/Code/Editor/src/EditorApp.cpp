@@ -43,14 +43,16 @@ Buffer EditorApp::getReflectModel() {
     if(!node) {
         return Buffer();
     }
-    auto buffer = node.flushToBuffer();
-    return buffer;
+    return node.flushToBuffer();
 }
 
-std::vector<const char*> EditorApp::getRegisteredEntityLogics() {
-    std::vector<const char*> res;
-    ET_SendEvent(&ETEntityManager::ET_getRegisteredLogics, res);
-    return res;
+Buffer EditorApp::getRegisteredEntityLogics() {
+    JSONNode node;
+    ET_SendEventReturn(node, &ETEntityManager::ET_getRegisteredLogics);
+    if(!node) {
+        return Buffer();
+    }
+    return node.flushToBuffer();
 }
 
 void EditorApp::buildModules(ModuleListT& modules) {

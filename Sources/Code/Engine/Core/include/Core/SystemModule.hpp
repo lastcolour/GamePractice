@@ -5,7 +5,7 @@
 #include "Core/SystemLogicContainer.hpp"
 #include "Core/JSONNode.hpp"
 
-class EntityLogicRegister;
+class EntityLogicsRegister;
 class ReflectContext;
 
 class SystemModule {
@@ -24,7 +24,7 @@ protected:
 
     virtual LogicsContainerPtrT createSystemLogics() const = 0;
     virtual void reflectSystemConfigs(ReflectContext& ctx) const = 0;
-    virtual void registerEntityLogics(EntityLogicRegister& logicRegister) const = 0;
+    virtual void registerEntityLogics(EntityLogicsRegister& logicsRegister) const = 0;
 
 protected:
 
