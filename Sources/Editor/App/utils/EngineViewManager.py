@@ -5,7 +5,7 @@ class MouseEventType:
 
 class _EngineViewManager:
 
-    _INSTANACE = None
+    _INSTANCE = None
 
     def __init__(self, app):
         self._app = app

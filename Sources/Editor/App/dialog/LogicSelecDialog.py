@@ -5,6 +5,7 @@ class LogicSelectDialog(QDialog):
         super().__init__()
 
         self._resultLogic = None
+        self._currentSelection = None
 
         self._rootLayout = QVBoxLayout()
 
@@ -47,6 +48,7 @@ class LogicSelectDialog(QDialog):
         self.done(0)
 
     def _signal_addBt_clicked(self):
+        self._resultLogic = self._currentSelection
         self.done(0)
 
     def getResultLogic(self):
@@ -54,8 +56,8 @@ class LogicSelectDialog(QDialog):
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None:
-            self._resultLogic = currItem._node
+            self._currentSelection = currItem._node
             self._addBt.setEnabled(True)
         else:
-            self._resultLogic = None
+            self._currentSelection = None
             self._addBt.setEnabled(False)

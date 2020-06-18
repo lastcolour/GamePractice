@@ -1,4 +1,6 @@
 from utils.Log import Log
+from utils.MainViewManager import GetMainViewManager
+
 from dialog.LogicSelecDialog import LogicSelectDialog
 from dialog.SaveEntityChanges import SaveEntityChanges
 from dialog.RemoveEntityLogic import RemoveEntityLogic
@@ -17,7 +19,6 @@ class _EventManager:
             raise RuntimeError("One instance of event manager already exists")
         self._app = app
         self._currentEntity = None
-        self._app._entityFileView.setFileTreeModel(self._app._assetsModel)
 
     def _askToSaveEntity(self):
         if not self._currentEntity.isModified():
@@ -52,13 +53,12 @@ class _EventManager:
             self._currentEntity.unloadFromNative()
         self._currentEntity = newEntity
         self._currentEntity._syncWithNative()
-        self._app._entityLogicsView.setEditEntity(self._currentEntity)
-        self._app._entityTreeView.setEditEntity(self._currentEntity)
+        GetMainViewManager().onEntityDoubleClickFromFileTree(self._currentEntity)
 
     def onEntityClickedFromEntityTree(self, entity):
         if entity is not None:
             entity._syncWithNative()
-        self._app._entityLogicsView.setEditEntity(entity)
+        GetMainViewManager().onEntityClickedFromEntityTree(entity)
 
     def onAddLogicBtClicked(self, editEntity):
         if editEntity is None:
@@ -103,7 +103,7 @@ class _EventManager:
         if not childEntity.extractToFile(resFile):
             return False
         self._app._assetsModel.reload()
-        self._app._entityFileView._refresh()
+        GetMainViewManager().refreshEntityFileView()
         return True
 
     def getAssetsModel(self):
@@ -118,8 +118,7 @@ class _EventManager:
                 return
             self._currentEntity.unloadFromNative()
         self._currentEntity = None
-        self._app._entityLogicsView.setEditEntity(None)
-        self._app._entityTreeView.setEditEntity(None)
+        GetMainViewManager().closeEditEntity()
 
     def saveEditEntity(self):
         self._currentEntity.save()

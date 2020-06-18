@@ -5,10 +5,12 @@ from utils.Log import Log
 from utils.AppConfig import AppConfig
 from utils.EventManager import CreateEventManager
 from utils.EngineViewManager import CreateEngineViewManager
+from utils.MainViewManager import CreateMainViewManager, GetMainViewManager
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
 from view.EntityTreeView import EntityTreeView
+from view.base.MainDockWidget import WrapMainDockWidget
 from view.EngineOutputView import EngineOutputView
 
 from native.EditorNative import EditorNative
@@ -21,7 +23,6 @@ from menu.MainToolBar import MainToolBar
 from menu.MainViewMenu import MainViewMenu
 
 from view.main.StatusBar import StatusBar
-from view.base.MainDockWidget import WrapMainDockWidget
 
 import sys
 
@@ -42,24 +43,32 @@ class EditorView(QMainWindow):
         self.addToolBar(MainToolBar())
         self.setStatusBar(StatusBar())
 
-        self._entityTreeView = EntityTreeView()
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityTreeView, "Entity Tree"))
-
-        self._entityFileView = EntityFileView()
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityFileView, "Assets Explorer"))
-
-        self._entityLogicsView = EntityLogicsView()
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, WrapMainDockWidget(self._entityLogicsView, "Entity Logics"))
-
         self._engineOutputView = EngineOutputView()
-
         self.setCentralWidget(self._engineOutputView)
 
         if not self._init():
             sys.exit(1)
 
-        CreateEventManager(self)
+        self._openEntityTreeView()
+        self._openFileTreeView()
+        self._openEntityLogicsView()
+
+        CreateMainViewManager(self)
         CreateEngineViewManager(self)
+        CreateEventManager(self)
+
+    def _openEntityTreeView(self):
+        self._entityTreeView = EntityTreeView()
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityTreeView, "Entity Tree"))
+
+    def _openFileTreeView(self):
+        self._entityFileView = EntityFileView()
+        self._entityFileView.setFileTreeModel(self._assetsModel)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityFileView, "Assets Explorer"))
+
+    def _openEntityLogicsView(self):
+        self._entityLogicsView = EntityLogicsView()
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, WrapMainDockWidget(self._entityLogicsView, "Entity Logics"))
 
     def __del__(self):
         self._deinit()
