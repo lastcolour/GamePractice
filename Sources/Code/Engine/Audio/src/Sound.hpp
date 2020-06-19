@@ -1,7 +1,7 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
-#include "Audio/SoundSource.hpp"
+#include "SoundSource.hpp"
 
 #include <memory>
 

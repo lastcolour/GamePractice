@@ -1,7 +1,7 @@
 #ifndef __AL_SOUND_SOURCE_HPP__
 #define __AL_SOUND_SOURCE_HPP__
 
-#include "Audio/SoundSource.hpp"
+#include "SoundSource.hpp"
 
 #include <vector>
 

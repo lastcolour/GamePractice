@@ -1,4 +1,4 @@
-#include "Audio/AudioConfig.hpp"
+#include "AudioConfig.hpp"
 #include "Reflect/ReflectContext.hpp"
 
 AudioConfig::AudioConfig() :

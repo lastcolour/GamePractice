@@ -1,5 +1,5 @@
 #include "ResamplerTests.hpp"
-#include "Audio/Resampler.hpp"
+#include "Resampler.hpp"
 
 TEST_F(ResamplerTests, CheckConvertPointTheSame) {
     float inArr[] = {0.f, 1.f, 2.f, 3.f};

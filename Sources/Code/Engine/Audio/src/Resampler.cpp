@@ -1,4 +1,4 @@
-#include "Audio/Resampler.hpp"
+#include "Resampler.hpp"
 
 #include <cmath>
 #include <cassert>

@@ -1,18 +1,18 @@
 #include "Audio/AudioModule.hpp"
-#include "Audio/SoundManager.hpp"
-#include "Audio/SoundSourceManager.hpp"
-#include "Audio/AudioConfig.hpp"
-#include "Audio/Logics/SoundPlayLogic.hpp"
+#include "SoundManager.hpp"
+#include "SoundSourceManager.hpp"
+#include "AudioConfig.hpp"
+#include "Logics/SoundPlayLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 #if defined PLATFORM_WINDOWS || defined PLATFORM_LINUX
 
-  #include "Audio/Desktop/ALAudioSystem.hpp"
+  #include "Desktop/ALAudioSystem.hpp"
   using AudioSystem = ALAudioSystem;
 
 #elif defined PLATFORM_ANDROID
 
-  #include "Audio/Android/OboeAudioSystem.hpp"
+  #include "Android/OboeAudioSystem.hpp"
   using AudioSystem = OboeAudioSystem;
 
 #else

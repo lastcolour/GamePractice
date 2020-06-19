@@ -1,5 +1,5 @@
-#include "Audio/SoundSourceManager.hpp"
-#include "Audio/SoundSource.hpp"
+#include "SoundSourceManager.hpp"
+#include "SoundSource.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <cassert>

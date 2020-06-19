@@ -3,7 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
-#include "Audio/Sound.hpp"
+#include "Sound.hpp"
 
 class SoundPlayLogic : public EntityLogic,
     public ETNode<ETSoundPlayer> {

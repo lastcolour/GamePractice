@@ -1,7 +1,7 @@
-#include "Audio/Sound.hpp"
+#include "Sound.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
-#include "Audio/SoundSource.hpp"
-#include "Audio/OggDataStream.hpp"
+#include "SoundSource.hpp"
+#include "OggDataStream.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <cassert>

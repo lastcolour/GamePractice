@@ -1,4 +1,4 @@
-#include "Audio/OggDataStream.hpp"
+#include "OggDataStream.hpp"
 #include "Core/Buffer.hpp"
 
 #include <stb_vorbis.c>

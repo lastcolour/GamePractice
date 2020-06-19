@@ -6,57 +6,43 @@ include(dependicies.cmake)
 
 if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
     set(ENGINE_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Desktop)
-    set(ENGINE_PLATFORM_AUDIO_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Desktop)
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
         ${APPLICATION_INCLUDE_DIR}
         ${GLFW_INCLUDE_DIR}
-        ${STB_INCLUDE_DIR}
-        ${GLAD_INCLUDE_DIR}
-        ${OPENAL_SOFT_INCLUDE_DIR})
+        ${GLAD_INCLUDE_DIR})
 
 elseif(BUILD_PLATFORM STREQUAL "Android")
     set(ENGINE_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Android)
-    set(ENGINE_PLATFORM_AUDIO_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Android)
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
         ${APPLICATION_INCLUDE_DIR}
-        ${OBOE_INCLUDE_DIR}
-        ${GLAD_INCLUDE_DIR}
-        ${STB_INCLUDE_DIR})
+        ${GLAD_INCLUDE_DIR})
 
 endif()
 
 add_subdirectory(Core)
 add_subdirectory(Render)
+add_subdirectory(Audio)
 
 include_directories(${CMAKE_INCLUDE_DIRECTORIES}
     ${CORE_INCLUDE_DIR}
-    ${RENDER_INCLUDE_DIR})
+    ${RENDER_INCLUDE_DIR}
+    ${AUDIO_INCLUDE_DIR})
 
 file(GLOB ENGINE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Entity/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Audio/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Logics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Reflect/*.cpp
-    ${ENGINE_PLATFORM_AUDIO_SOURCES}/*.cpp
     ${ENGINE_PLATFORM_SOURCES}/*.cpp)
 
 file(GLOB ENGINE_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Entity/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Audio/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Logics/*.hpp
-    ${ENGINE_PLATFORM_AUDIO_SOURCES}/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Reflect/*.hpp
     ${ENGINE_PLATFORM_SOURCES}/*.hpp)
 
@@ -65,4 +51,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 target_link_libraries(${PROJECT_NAME}
     ${ENGINE_LIB_DEPENDICIES}
     Core
-    Render)
+    Render
+    Audio)

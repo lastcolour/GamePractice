@@ -1,6 +1,6 @@
 #include "SoundTests.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
-#include "Audio/Sound.hpp"
+#include "Sound.hpp"
 
 namespace {
 

@@ -142,7 +142,6 @@ if(BUILD_PLATFORM STREQUAL "Windows")
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_STATIC_BIN}
         ${GLAD_LIB_STATIC_BIN}
-        ${OPENAL_SOFT_LIB_STATIC_BIN}
         CACHE INTERNAL "Engine link dependecies")
 
 elseif(BUILD_PLATFORM STREQUAL "Linux")
@@ -150,14 +149,12 @@ elseif(BUILD_PLATFORM STREQUAL "Linux")
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_SHARED_BIN}
         ${GLAD_LIB_SHARED_BIN}
-        ${OPENAL_SOFT_LIB_SHARED_BIN}
         dl
         CACHE INTERNAL "Engine link dependecies")
 else()
 
     set(ENGINE_LIB_DEPENDICIES
-        ${OBOE_LIB_STATIC_BIN}
-        log android z OpenSLES
+        log android z
         CACHE INTERNAL "Engine link dependecies")
 
 endif()

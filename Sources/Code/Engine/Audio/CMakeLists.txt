@@ -1,0 +1,56 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(Audio CXX)
+
+set(AUDIO_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Audio include dir")
+
+if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
+
+    set(AUDIO_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Desktop)
+    set(AUDIO_PLATFORM_INCLUDE_DIR ${OPENAL_SOFT_INCLUDE_DIR})
+
+    if(BUILD_PLATFORM STREQUAL "Windows")
+        set(AUDIO_LIB_DEPENDICIES
+            ${OPENAL_SOFT_LIB_STATIC_BIN}
+            CACHE INTERNAL "Audio link dependecies")
+    else()
+        set(AUDIO_LIB_DEPENDICIES
+            ${OPENAL_SOFT_LIB_SHARED_BIN}
+            CACHE INTERNAL "Audio link dependecies")
+    endif()
+
+elseif(BUILD_PLATFORM STREQUAL "Android")
+
+    set(AUDIO_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Android)
+    set(AUDIO_PLATFORM_INCLUDE_DIR ${OBOE_INCLUDE_DIR})
+    set(AUDIO_LIB_DEPENDICIES
+        ${OBOE_LIB_STATIC_BIN}
+        OpenSLES
+        CACHE INTERNAL "Audo link dependecies")
+
+endif()
+
+include_directories(
+    ${CORE_INCLUDE_DIR}
+    ${RENDER_INCLUDE_DIR}
+    ${AUDIO_INCLUDE_DIR}
+    ${STB_INCLUDE_DIR}
+    ${AUDIO_PLATFORM_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+file(GLOB AUDIO_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+    ${AUDIO_PLATFORM_SOURCES}/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp)
+
+file(GLOB AUDIO_HEADERS
+    ${AUDIO_INCLUDE_DIR}/Audio/*.hpp
+    ${AUDIO_PLATFORM_SOURCES}/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)
+
+add_library(${PROJECT_NAME} STATIC ${AUDIO_SOURCES} ${AUDIO_HEADERS})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
+
+target_link_libraries(${PROJECT_NAME}
+    ${AUDIO_LIB_DEPENDICIES}
+    Core)

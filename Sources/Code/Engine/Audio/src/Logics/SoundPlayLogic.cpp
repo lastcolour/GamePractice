@@ -1,4 +1,4 @@
-#include "Audio/Logics/SoundPlayLogic.hpp"
+#include "Logics/SoundPlayLogic.hpp"
 
 SoundPlayLogic::SoundPlayLogic() :
     volume(1.f),

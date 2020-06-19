@@ -1,6 +1,6 @@
-#include "Audio/Desktop/ALSoundSource.hpp"
-#include "Audio/OggDataStream.hpp"
-#include "Audio/Sound.hpp"
+#include "Desktop/ALSoundSource.hpp"
+#include "OggDataStream.hpp"
+#include "Sound.hpp"
 #include "Audio/ETAudioInterfaces.hpp"
 #include "Core/ETLogger.hpp"
 
