@@ -72,7 +72,7 @@ TEST_F(UIBoxTests, CheckRenderPortResized) {
     renderPort.y *= 2;
 
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, renderPort);
-    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
+    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
 
     {
         auto aabb = uiBox->ET_getBox();

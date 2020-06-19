@@ -1,5 +1,4 @@
 #include "UI/Logics/UILabelSetter.hpp"
-#include "Core/JSONNode.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "ETApplicationInterfaces.hpp"
 #include "Game/ETGameInterfaces.hpp"

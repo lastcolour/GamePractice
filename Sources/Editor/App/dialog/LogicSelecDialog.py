@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QStyle
 
+from utils.ViewUtils import FilterTreeBySearchText
+
 class LogicSelectDialog(QDialog):
     def __init__(self, logicsModel):
         super().__init__()
@@ -11,6 +13,8 @@ class LogicSelectDialog(QDialog):
 
         self._searchLine = QLineEdit()
         self._searchLine.setPlaceholderText("Search...")
+        self._searchLine.setClearButtonEnabled(True)
+        self._searchLine.textChanged.connect(self._signal_searchLine_textChanged)
         self._rootLayout.addWidget(self._searchLine)
 
         self._tree = QTreeWidget()
@@ -54,6 +58,9 @@ class LogicSelectDialog(QDialog):
     def _signal_addBt_clicked(self):
         self._resultLogic = self._currentSelection
         self.done(0)
+
+    def _signal_searchLine_textChanged(self, text):
+        FilterTreeBySearchText(self._tree, text)
 
     def getResultLogic(self):
         return self._resultLogic

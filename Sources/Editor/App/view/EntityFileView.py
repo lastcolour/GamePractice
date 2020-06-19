@@ -3,6 +3,7 @@ from PyQt5 import QtCore
 
 from menu.FileTreeMenu import FileTreeMenu
 from utils.EventManager import GetEventManager
+from utils.ViewUtils import FilterTreeBySearchText
 from view.base.FileTreeView import FileTreeView
 
 class EntityFileView(QWidget):
@@ -14,6 +15,8 @@ class EntityFileView(QWidget):
 
         self._search = QLineEdit()
         self._search.setPlaceholderText("Search...")
+        self._search.setClearButtonEnabled(True)
+        self._search.textChanged.connect(self._signal_search_textChanged)
         self._rootLayout.addWidget(self._search)
 
         self._tree = FileTreeView()
@@ -25,6 +28,9 @@ class EntityFileView(QWidget):
         self._fileTreeMenu = FileTreeMenu(self)
 
         self.setLayout(self._rootLayout)
+
+    def _signal_search_textChanged(self, text):
+        FilterTreeBySearchText(self._tree, text)
 
     def _signal_tree_contextMenuRequested(self, pt):
         item = self._tree.itemAt(pt)

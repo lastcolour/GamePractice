@@ -46,7 +46,7 @@ UIBox::~UIBox() {
 bool UIBox::init() {
     calculateBox();
     ETNode<ETUIBox>::connect(getEntityId());
-    ETNode<ETRenderEvents>::connect(getEntityId());
+    ETNode<ETRenderCameraEvents>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
     return true;
 }

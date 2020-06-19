@@ -8,15 +8,12 @@ EditEntityTracker::~EditEntityTracker() {
 }
 
 bool EditEntityTracker::init() {
-    ETNode<ETRenderEvents>::connect(getEntityId());
+    ETNode<ETRenderCameraEvents>::connect(getEntityId());
     ETNode<ETEditEntityTracker>::connect(getEntityId());
     return true;
 }
 
 void EditEntityTracker::deinit() {
-}
-
-void EditEntityTracker::ET_onRender(RenderContext& renderCtx) {
 }
 
 void EditEntityTracker::ET_onRenderPortResized() {

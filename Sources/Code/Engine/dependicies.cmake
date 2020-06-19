@@ -142,8 +142,6 @@ if(BUILD_PLATFORM STREQUAL "Windows")
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_STATIC_BIN}
         ${GLAD_LIB_STATIC_BIN}
-        ${FREETYPE2_LIB_STATIC_BIN}
-        ${ZLIB_LIB_STATIC_BIN}
         ${OPENAL_SOFT_LIB_STATIC_BIN}
         CACHE INTERNAL "Engine link dependecies")
 
@@ -152,17 +150,14 @@ elseif(BUILD_PLATFORM STREQUAL "Linux")
     set(ENGINE_LIB_DEPENDICIES
         ${GLFW_LIB_SHARED_BIN}
         ${GLAD_LIB_SHARED_BIN}
-        ${FREETYPE2_LIB_SHARED_BIN}
-        ${ZLIB_LIB_SHARED_BIN}
         ${OPENAL_SOFT_LIB_SHARED_BIN}
-        dl png
+        dl
         CACHE INTERNAL "Engine link dependecies")
 else()
 
     set(ENGINE_LIB_DEPENDICIES
-        ${FREETYPE2_LIB_STATIC_BIN}
         ${OBOE_LIB_STATIC_BIN}
-        GLESv3 EGL log android z OpenSLES
+        log android z OpenSLES
         CACHE INTERNAL "Engine link dependecies")
 
 endif()

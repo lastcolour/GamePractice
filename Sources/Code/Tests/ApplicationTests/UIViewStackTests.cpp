@@ -2,7 +2,7 @@
 #include "UI/ETUIInterfaces.hpp"
 #include "TestUtils/UITestUtils.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 namespace {
 
@@ -262,7 +262,7 @@ TEST_F(UIViewStackTests, CheckStackStateAfterResize) {
 
     WaitViewSwitchEnd();
 
-    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
+    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
 }
 
 TEST_F(UIViewStackTests, CheckDrawPriorities) {
@@ -303,7 +303,7 @@ TEST_F(UIViewStackTests, CheckFinishPushAfterResize) {
     EXPECT_EQ(object->eventsHistory[1].eventType, StackEventType::FinishPush);
     EXPECT_EQ(object->eventsHistory[2].eventType, StackEventType::StartPush);
 
-    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
+    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
 
     EXPECT_EQ(object->eventsHistory.size(), 4);
     EXPECT_EQ(object->eventsHistory[3].eventType, StackEventType::FinishPush);

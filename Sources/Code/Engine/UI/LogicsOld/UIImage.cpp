@@ -1,5 +1,4 @@
 #include "UI/Logics/UIImage.hpp"
-#include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
 
 #include <algorithm>

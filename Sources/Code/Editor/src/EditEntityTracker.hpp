@@ -2,13 +2,14 @@
 #define __EDIT_ENTITY_TRACKER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Render/ETRenderCamera.hpp"
 #include "ETEditorInterfaces.hpp"
 
 #include <unordered_set>
 
 class EditEntityTracker : public SystemLogic,
-    public ETNode<ETRenderEvents>,
+    public ETNode<ETRenderCameraEvents>,
     public ETNode<ETEditEntityTracker> {
 public:
 
@@ -23,8 +24,7 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETRenderEvents
-    void ET_onRender(RenderContext& renderCtx) override;
+    // ETRenderCameraEvents
     void ET_onRenderPortResized() override;
 
     // ETEditEntityTracker

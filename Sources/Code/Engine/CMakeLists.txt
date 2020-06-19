@@ -10,11 +10,9 @@ if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
         ${APPLICATION_INCLUDE_DIR}
-        ${FREETYPE2_INCLUDE_DIR}
         ${GLFW_INCLUDE_DIR}
-        ${GLAD_INCLUDE_DIR}
-        ${RAPID_JSON_INCLUDE_DIR}
         ${STB_INCLUDE_DIR}
+        ${GLAD_INCLUDE_DIR}
         ${OPENAL_SOFT_INCLUDE_DIR})
 
 elseif(BUILD_PLATFORM STREQUAL "Android")
@@ -23,17 +21,18 @@ elseif(BUILD_PLATFORM STREQUAL "Android")
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
         ${APPLICATION_INCLUDE_DIR}
-        ${FREETYPE2_INCLUDE_DIR}
         ${OBOE_INCLUDE_DIR}
-        ${RAPID_JSON_INCLUDE_DIR}
+        ${GLAD_INCLUDE_DIR}
         ${STB_INCLUDE_DIR})
 
 endif()
 
 add_subdirectory(Core)
+add_subdirectory(Render)
 
 include_directories(${CMAKE_INCLUDE_DIRECTORIES}
-    ${CORE_INCLUDE_DIR})
+    ${CORE_INCLUDE_DIR}
+    ${RENDER_INCLUDE_DIR})
 
 file(GLOB ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
@@ -41,8 +40,6 @@ file(GLOB ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Render/Logics/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Render/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Entity/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Audio/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Audio/Logics/*.cpp
@@ -54,8 +51,6 @@ file(GLOB ENGINE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Applcation/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Render/Logics/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Render/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI/Logics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Entity/*.hpp
@@ -69,4 +64,5 @@ add_library(${PROJECT_NAME} STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
     ${ENGINE_LIB_DEPENDICIES}
-    Core)
+    Core
+    Render)

@@ -3,13 +3,13 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUIInterfaces.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderCamera.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "UI/Logics/UIBoxStyle.hpp"
 
 class UIBox : public EntityLogic,
     public ETNode<ETUIBox>,
-    public ETNode<ETRenderEvents>,
+    public ETNode<ETRenderCameraEvents>,
     public ETNode<ETEntityEvents> {
 public:
 
@@ -32,8 +32,7 @@ public:
     void ET_setLayout(EntityId newLayoutId) override;
     EntityId ET_getLayout() override;
 
-    // ETRenderEvents
-    void ET_onRender(RenderContext& renderCtx) override { (void)renderCtx; }
+    // ETRenderCameraEvents
     void ET_onRenderPortResized() override;
 
     // ETEntityEvents

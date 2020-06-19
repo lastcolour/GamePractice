@@ -6,6 +6,8 @@ set(CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Core includ
 
 include_directories(
     ${CORE_INCLUDE_DIR}
+    ${RENDER_INCLUDE_DIR}
+    ${RAPID_JSON_INCLUDE_DIR}
     ${APPLICATION_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
@@ -18,6 +20,6 @@ file(GLOB CORE_HEADERS
 
 add_library(${PROJECT_NAME} STATIC ${CORE_SOURCES} ${CORE_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
     Engine
     Application)

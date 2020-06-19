@@ -1,7 +1,7 @@
 #include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 #include "UI/ETUIInterfaces.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 #include <algorithm>
 

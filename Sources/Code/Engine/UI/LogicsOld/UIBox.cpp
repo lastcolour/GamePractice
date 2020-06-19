@@ -1,5 +1,4 @@
 #include "UI/Logics/UIBox.hpp"
-#include "Core/JSONNode.hpp"
 #include "ETApplicationInterfaces.hpp"
 
 UIBox::UIBox() {

@@ -3,6 +3,7 @@ from PyQt5 import QtCore
 
 from menu.EntityTreeMenu import EntityTreeMenu
 from utils.EventManager import GetEventManager
+from utils.ViewUtils import FilterTreeBySearchText
 
 class EntityTreeView(QWidget):
     def __init__(self):
@@ -14,6 +15,8 @@ class EntityTreeView(QWidget):
 
         self._searchLine = QLineEdit()
         self._searchLine.setPlaceholderText("Search...")
+        self._searchLine.setClearButtonEnabled(True)
+        self._searchLine.textChanged.connect(self._signal_searchLine_textChanged)
         self._rootLayout.addWidget(self._searchLine)
 
         self._tree = QTreeWidget()
@@ -59,6 +62,9 @@ class EntityTreeView(QWidget):
         childEntity = treeItem._entity
         parentEntity.removeChildEntity(childEntity)
         parentItem.removeChild(treeItem)
+
+    def _signal_searchLine_textChanged(self, text):
+        FilterTreeBySearchText(self._tree, text)
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None and hasattr(currItem, "_entity"):

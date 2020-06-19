@@ -1,6 +1,6 @@
 #include "UIViewTests.hpp"
 #include "UI/Logics/UIView.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 TEST_F(UIViewTests, CheckViewSize) {
     auto view = createObjectAndLogic<UIView>();
@@ -23,7 +23,7 @@ TEST_F(UIViewTests, CheckViewSize) {
 
     renderPort = renderPort / 2;
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, renderPort);
-    ET_SendEvent(&ETRenderEvents::ET_onRenderPortResized);
+    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
 
     {
         auto box = view->ET_getBox();

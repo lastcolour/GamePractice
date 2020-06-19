@@ -12,14 +12,14 @@ UIViewSwitcher::~UIViewSwitcher() {
 bool UIViewSwitcher::init() {
     ETNode<ETUIViewSwitcher>::connect(getEntityId());
     ETNode<ETAppTimerEvents>::connect(getEntityId());
-    ETNode<ETRenderEvents>::connect(getEntityId());
+    ETNode<ETRenderCameraEvents>::connect(getEntityId());
     return true;
 }
 
 void UIViewSwitcher::deinit() {
     ETNode<ETAppTimerEvents>::disconnect();
     ETNode<ETUIViewSwitcher>::disconnect();
-    ETNode<ETRenderEvents>::disconnect();
+    ETNode<ETRenderCameraEvents>::disconnect();
 }
 
 void UIViewSwitcher::ET_onAppTick(float dt) {

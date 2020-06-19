@@ -1,7 +1,8 @@
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Core/ETLogger.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderNode.hpp"
+#include "Render/ETRenderCamera.hpp"
 #include "UI/ETUIInterfaces.hpp"
 
 #include <algorithm>

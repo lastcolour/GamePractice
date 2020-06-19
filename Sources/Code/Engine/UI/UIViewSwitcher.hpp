@@ -4,12 +4,12 @@
 #include "Core/SystemLogic.hpp"
 #include "UI/ETUIInterfaces.hpp"
 #include "Core/ETTimer.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 class UIViewSwitcher : public SystemLogic,
     public ETNode<ETUIViewSwitcher>,
     public ETNode<ETAppTimerEvents>,
-    public ETNode<ETRenderEvents> {
+    public ETNode<ETRenderCameraEvents> {
 public:
 
     UIViewSwitcher();
@@ -29,8 +29,7 @@ public:
     void ET_reverse() override;
     float ET_getTotalSwitchDuration() const override;
 
-    // ETRenderEvents
-    void ET_onRender(RenderContext& renderCtx) override { (void)renderCtx; }
+    // ETRenderCameraEvents
     void ET_onRenderPortResized() override;
 
 private:

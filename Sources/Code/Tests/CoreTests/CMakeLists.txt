@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(CoreTests CXX)
+
+include_directories(${GTEST_INCLUDE_DIR}
+    ${TEST_UTILS_INCLUDE_DIR}
+    ${ENGINE_INCLUDE_DIR}
+    ${APPLICATION_INCLUDE_DIR}
+    ${CORE_INCLUDE_DIR}
+    ${RENDER_INCLUDE_DIR})
+
+find_package(Threads REQUIRED)
+
+file(GLOB CORE_TESTS_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+
+file(GLOB CORE_TESTS_HEADERS
+    ${APPLICATION_TEST_SOURCES}/*.hpp)
+
+add_library(${PROJECT_NAME} STATIC
+    ${CORE_TESTS_SOURCES}
+    ${CORE_TESTS_HEADERS})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})

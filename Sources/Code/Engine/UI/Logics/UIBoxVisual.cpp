@@ -1,6 +1,7 @@
 #include "UI/Logics/UIBoxVisual.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/ETRenderCamera.hpp"
+#include "Render/ETRenderNode.hpp"
 #include "Entity/ETEntityInterfaces.hpp"
 
 void UIBoxVisual::Reflect(ReflectContext& ctx) {

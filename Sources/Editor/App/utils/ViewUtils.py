@@ -1,3 +1,5 @@
+from PyQt5.QtWidgets import QTreeWidgetItemIterator
+
 import subprocess
 import platform
 
@@ -32,3 +34,26 @@ def OpenPlatformFileExplorer(filePath):
         subprocess.Popen(["open", filePath])
     else:
         subprocess.Popen(["xdg-open", filePath])
+
+def _isSearchTextMatch(item, searchText):
+    if searchText == "":
+        return True
+    else:
+        itemText = item.text(0).lower()
+        return searchText in itemText
+
+def FilterTreeBySearchText(tree, text):
+    searchText = text.lower()
+    it = QTreeWidgetItemIterator(tree)
+    while it.value():
+        item = it.value()
+        it += 1
+        if not _isSearchTextMatch(item, searchText):
+            item.setHidden(True)
+        else:
+            item.setHidden(False)
+            parent = item.parent()
+            while parent is not None:
+                parent.setExpanded(True)
+                parent.setHidden(False)
+                parent = parent.parent()

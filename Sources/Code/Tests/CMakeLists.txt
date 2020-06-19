@@ -2,34 +2,22 @@ cmake_minimum_required(VERSION 3.15)
 
 project(${MAIN_PROJECT_NAME}Tests CXX)
 
-set(APPLICATION_TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests)
-
-include_directories(${GTEST_INCLUDE_DIR}
-    ${STB_INCLUDE_DIR}
-    ${GLAD_INCLUDE_DIR}
-    ${APPLICATION_TEST_SOURCES}
-    ${ENGINE_INCLUDE_DIR}
-    ${APPLICATION_INCLUDE_DIR}
-    ${CORE_INCLUDE_DIR})
-
 find_package(Threads REQUIRED)
 
-file(GLOB APPLICATION_TESTS_SOURCES
-    ${APPLICATION_TEST_SOURCES}/TestUtils/*.cpp
-    ${APPLICATION_TEST_SOURCES}/*.cpp)
+add_subdirectory(TestUtils)
+add_subdirectory(CoreTests)
 
-file(GLOB APPLICATION_TESTS_HEADERS
-    ${APPLICATION_TEST_SOURCES}/TestUtils/*.hpp
-    ${APPLICATION_TEST_SOURCES}/*.hpp)
+include_directories(${GTEST_INCLUDE_DIR}
+    ${TEST_UTILS_INCLUDE_DIR})
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/tests_main.cpp
-    ${APPLICATION_TESTS_HEADERS}
-    ${APPLICATION_TESTS_SOURCES})
+add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/tests_main.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIB_STATIC_BIN}
     ${CMAKE_THREAD_LIBS_INIT}
+    TestUtils
+    CoreTests
     Engine
     Application)
