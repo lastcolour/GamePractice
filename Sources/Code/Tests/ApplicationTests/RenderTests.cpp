@@ -1,16 +1,18 @@
 #include "RenderTests.hpp"
-#include "Render/Render.hpp"
-#include "Render/RenderMaterial.hpp"
-#include "Render/RenderGeometry.hpp"
+#include "Render.hpp"
+#include "RenderMaterial.hpp"
+#include "RenderGeometry.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
-#include "Render/Logics/RenderSimpleLogic.hpp"
-#include "Render/Logics/RenderTextLogic.hpp"
-#include "Render/RenderFont.hpp"
+#include "Logics/RenderSimpleLogic.hpp"
+#include "Logics/RenderTextLogic.hpp"
+#include "RenderFont.hpp"
 #include "Platforms/OpenGL.hpp"
 #include "Entity/Entity.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Render/Logics/RenderImageLogic.hpp"
-#include "Render/Logics/RenderColoredTextureLogic.hpp"
+#include "Logics/RenderImageLogic.hpp"
+#include "Logics/RenderColoredTextureLogic.hpp"
+#include "Render/ETRenderManager.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -21,8 +23,6 @@ const size_t RENDER_WIDTH = 400;
 const size_t RENDER_HEIGHT = 300;
 
 const char* TEST_MATERIAL_1 = "geom_solid_color";
-
-const char* TEST_GEOM_1 = "square";
 
 const char* SIMPLE_OBJECT = "Game/Simple.json";
 
