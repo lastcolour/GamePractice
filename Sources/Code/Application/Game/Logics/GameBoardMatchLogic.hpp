@@ -6,6 +6,8 @@
 
 #include <unordered_set>
 
+class ReflectContext;
+
 class GameBoardMatchLogic : public EntityLogic,
     public ETNode<ETGameBoardMatcher> {
 

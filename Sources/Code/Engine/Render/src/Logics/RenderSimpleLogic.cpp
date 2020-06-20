@@ -3,6 +3,7 @@
 #include "RenderGeometry.hpp"
 #include "RenderMaterial.hpp"
 #include "RenderContext.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 #include <cassert>
 

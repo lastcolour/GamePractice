@@ -4,7 +4,7 @@
 #include "Core/ETAssets.hpp"
 #include "Core/ETApplication.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntityManger.hpp"
 
 #include <cassert>
 

@@ -4,6 +4,7 @@
 #include "Logics/RenderNode.hpp"
 
 class RenderTexture;
+class ReflectContext;
 
 class RenderLinearGradientRect : public RenderNode,
     public ETNode<ETRenderRect> {

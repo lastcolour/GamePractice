@@ -6,6 +6,7 @@
 #include "RenderContext.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderManager.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 RenderImageLogic::RenderImageLogic() :
     imageScale(1.f),

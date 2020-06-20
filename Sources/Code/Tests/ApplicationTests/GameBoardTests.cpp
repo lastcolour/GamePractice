@@ -1,8 +1,8 @@
 #include "GameBoardTests.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Core/JSONNode.hpp"
-#include "Entity/Entity.hpp"
-#include "UI/Logics/UIBox.hpp"
+#include "Entity.hpp"
+#include "Logics/UIBox.hpp"
 
 namespace {
 

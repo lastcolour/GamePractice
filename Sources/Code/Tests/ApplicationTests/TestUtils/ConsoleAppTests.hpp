@@ -1,7 +1,7 @@
 #ifndef __CONSOLE_APP_TESTS_HPP__
 #define __CONSOLE_APP_TESTS_HPP__
 
-#include <Entity/Entity.hpp>
+#include <Entity.hpp>
 
 #include <gtest/gtest.h>
 #include <memory>

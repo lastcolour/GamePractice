@@ -6,7 +6,7 @@
 #include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntity.hpp"
 
 #include <cassert>
 

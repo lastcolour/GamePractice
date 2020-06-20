@@ -1,4 +1,5 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 GameBoardMatchLogic::GameBoardMatchLogic() :
     minLineLen(3),

@@ -1,7 +1,8 @@
 #include "Logics/RenderAuxFunctions.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntity.hpp"
+#include "Core/ETPrimitives.hpp"
 
 namespace Render {
 

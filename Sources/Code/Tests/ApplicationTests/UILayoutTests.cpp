@@ -1,6 +1,6 @@
 #include "UILayoutTests.hpp"
-#include "UI/Logics/UILayout.hpp"
-#include "UI/Logics/UIBox.hpp"
+#include "Logics/UILayout.hpp"
+#include "Logics/UIBox.hpp"
 
 Entity* UILayoutTests::createUIBox(float width, float height) {
     auto entity = createVoidObject();

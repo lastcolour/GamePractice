@@ -6,6 +6,8 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
+class ReflectContext;
+
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
     public ETNode<ETGAmeBoardInteractionLogic> {

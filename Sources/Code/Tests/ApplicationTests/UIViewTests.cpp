@@ -1,5 +1,5 @@
 #include "UIViewTests.hpp"
-#include "UI/Logics/UIView.hpp"
+#include "Logics/UIView.hpp"
 #include "Render/ETRenderCamera.hpp"
 
 TEST_F(UIViewTests, CheckViewSize) {

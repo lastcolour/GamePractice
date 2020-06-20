@@ -5,6 +5,7 @@
 #include "RenderContext.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Render/ETRenderManager.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 RenderLinearGradientRect::RenderLinearGradientRect() :
     size(20),

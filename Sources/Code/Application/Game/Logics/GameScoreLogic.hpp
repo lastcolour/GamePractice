@@ -4,6 +4,8 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
+class ReflectContext;
+
 class GameScoreLogic : public EntityLogic,
     public ETNode<ETGameScore>,
     public ETNode<ETGameBoardElemDestoryEvents> {

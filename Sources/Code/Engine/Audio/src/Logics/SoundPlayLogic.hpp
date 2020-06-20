@@ -5,6 +5,8 @@
 #include "Audio/ETAudioInterfaces.hpp"
 #include "Sound.hpp"
 
+class ReflectContext;
+
 class SoundPlayLogic : public EntityLogic,
     public ETNode<ETSoundPlayer> {
 public:

@@ -5,8 +5,8 @@
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "UI/ETUIInterfaces.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "UI/ETUIBox.hpp"
+#include "Entity/ETEntity.hpp"
 
 #include <vector>
 #include <memory>

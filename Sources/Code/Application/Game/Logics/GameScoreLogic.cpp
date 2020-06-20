@@ -1,4 +1,5 @@
 #include "Game/Logics/GameScoreLogic.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 GameScoreLogic::GameScoreLogic() :
     score(0) {

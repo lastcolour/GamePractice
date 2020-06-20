@@ -3,6 +3,8 @@
 
 #include "Logics/RenderImageLogic.hpp"
 
+class ReflectContext;
+
 class RenderColoredTextureLogic : public RenderImageLogic,
     public ETNode<ETRenderColoredTexture> {
 public:

@@ -3,10 +3,7 @@
 
 #include "Logics/RenderNode.hpp"
 
-#include <memory>
-
-class RenderMaterial;
-class RenderGeometry;
+class ReflectContext;
 
 class RenderSimpleLogic : public RenderNode,
     public ETNode<ETRenderSimpleLogic>,

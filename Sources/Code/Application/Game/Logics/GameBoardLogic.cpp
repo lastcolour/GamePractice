@@ -3,7 +3,8 @@
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Render/ETRenderCamera.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "Reflect/ReflectContext.hpp"
+#include "Entity/ETEntityManger.hpp"
 
 #include <algorithm>
 #include <cassert>

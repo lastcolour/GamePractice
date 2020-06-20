@@ -1,6 +1,7 @@
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntity.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 namespace {
 

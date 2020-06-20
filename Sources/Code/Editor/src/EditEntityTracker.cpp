@@ -1,5 +1,5 @@
 #include "EditEntityTracker.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntity.hpp"
 
 EditEntityTracker::EditEntityTracker() {
 }

@@ -6,7 +6,7 @@
 #include <Core/ETPrimitives.hpp>
 #include <Core/MemoryStream.hpp>
 #include <Reflect/ETReflectInterfaces.hpp>
-#include <Entity/Entity.hpp>
+#include <Entity.hpp>
 #include <Entity/EntityLogic.hpp>
 
 namespace {

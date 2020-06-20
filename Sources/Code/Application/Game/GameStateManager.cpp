@@ -1,6 +1,6 @@
 #include "Game/GameStateManager.hpp"
 #include "Core/ETLogger.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "UI/ETUIView.hpp"
 
 #include <cassert>
 

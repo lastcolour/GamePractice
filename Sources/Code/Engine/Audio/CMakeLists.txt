@@ -11,12 +11,10 @@ if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
 
     if(BUILD_PLATFORM STREQUAL "Windows")
         set(AUDIO_LIB_DEPENDICIES
-            ${OPENAL_SOFT_LIB_STATIC_BIN}
-            CACHE INTERNAL "Audio link dependecies")
+            ${OPENAL_SOFT_LIB_STATIC_BIN})
     else()
         set(AUDIO_LIB_DEPENDICIES
-            ${OPENAL_SOFT_LIB_SHARED_BIN}
-            CACHE INTERNAL "Audio link dependecies")
+            ${OPENAL_SOFT_LIB_SHARED_BIN})
     endif()
 
 elseif(BUILD_PLATFORM STREQUAL "Android")
@@ -25,8 +23,7 @@ elseif(BUILD_PLATFORM STREQUAL "Android")
     set(AUDIO_PLATFORM_INCLUDE_DIR ${OBOE_INCLUDE_DIR})
     set(AUDIO_LIB_DEPENDICIES
         ${OBOE_LIB_STATIC_BIN}
-        OpenSLES
-        CACHE INTERNAL "Audo link dependecies")
+        OpenSLES)
 
 endif()
 
@@ -36,6 +33,8 @@ include_directories(
     ${AUDIO_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
     ${AUDIO_PLATFORM_INCLUDE_DIR}
+    ${ENGINE_INCLUDE_DIR}
+    ${ENTITY_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 file(GLOB AUDIO_SOURCES

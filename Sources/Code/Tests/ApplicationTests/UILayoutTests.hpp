@@ -2,7 +2,7 @@
 #define __UI_LAYOUT_TESTS_HPP__
 
 #include "TestUtils/ConsoleAppTests.hpp"
-#include "UI/Logics/UILayout.hpp"
+#include "Logics/UILayout.hpp"
 
 class UILayoutTests : public ConsoleAppTests {
 protected:

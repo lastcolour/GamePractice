@@ -2,7 +2,7 @@
 
 #include <Core/Application.hpp>
 #include <Render/RenderModule.hpp>
-#include <Entity/Entity.hpp>
+#include <Entity.hpp>
 #include <Core/ETPrimitives.hpp>
 #include <Entity/EntityModule.hpp>
 #include <UI/UIModule.hpp>

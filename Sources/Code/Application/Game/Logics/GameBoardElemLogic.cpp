@@ -1,4 +1,5 @@
 #include "Game/Logics/GameBoardElemLogic.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 GameBoardElemLogic::GameBoardElemLogic() {
 }

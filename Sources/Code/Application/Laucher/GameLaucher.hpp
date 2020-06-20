@@ -3,7 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETSurface.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "Core/ETPrimitives.hpp"
 
 class GameLaucher : public SystemLogic,
     public ETNode<ETSurfaceEvents> {

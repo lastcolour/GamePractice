@@ -4,6 +4,7 @@
 #include "RenderTexture.hpp"
 #include "RenderContext.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 RenderColoredTextureLogic::RenderColoredTextureLogic() :
     color(255, 255, 255) {

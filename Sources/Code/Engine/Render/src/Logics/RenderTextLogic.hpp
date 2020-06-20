@@ -4,6 +4,7 @@
 #include "Logics/RenderNode.hpp"
 
 class RenderFont;
+class ReflectContext;
 
 class RenderTextLogic : public RenderNode,
     public ETNode<ETRenderTextLogic> {

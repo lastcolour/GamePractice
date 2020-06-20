@@ -6,7 +6,8 @@
 #include "RenderGeometry.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Platforms/OpenGL.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntity.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 #include <algorithm>
 #include <cassert>

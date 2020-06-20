@@ -1,5 +1,6 @@
 #include "Game/Logics/GameBoardElemSwitcherLogic.hpp"
-#include "Entity/ETEntityInterfaces.hpp"
+#include "Entity/ETEntity.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 #include <algorithm>
 #include <cassert>

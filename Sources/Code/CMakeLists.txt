@@ -24,7 +24,6 @@ add_subdirectory(Application)
 add_subdirectory(Editor)
 
 if(NOT BUILD_PLATFORM STREQUAL "Android")
-    set(BUILD_UNITTESTS ON)
     message(STATUS "Add unittest to build results")
     add_subdirectory(Tests)
 else()

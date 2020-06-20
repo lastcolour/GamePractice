@@ -1,5 +1,6 @@
 #include "UIViewStackTests.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "UI/ETUIView.hpp"
+#include "UI/ETUIBox.hpp"
 #include "TestUtils/UITestUtils.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderCamera.hpp"

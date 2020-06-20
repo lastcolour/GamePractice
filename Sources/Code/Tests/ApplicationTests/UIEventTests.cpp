@@ -1,7 +1,8 @@
 #include "UIEventTests.hpp"
 
-#include <UI/ETUIInterfaces.hpp>
-#include <UI/UISurfaceEventHandler.hpp>
+#include <UI/ETUIView.hpp>
+#include <UI/ETUIButton.hpp>
+#include <Core/ETSurface.hpp>
 #include <Game/ETGameInterfaces.hpp>
 #include "Core/ETTimer.hpp"
 

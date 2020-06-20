@@ -1,9 +1,9 @@
 #include "UIViewSwitcherTests.hpp"
 #include "TestUtils/UITestUtils.hpp"
 
-#include <UI/UIViewSwitcher.hpp>
-#include <UI/Logics/UIBox.hpp>
-#include <Entity/Entity.hpp>
+#include <UIViewSwitcher.hpp>
+#include <Logics/UIBox.hpp>
+#include <Entity.hpp>
 
 TEST_F(UISwitcherTests, CheckViewSwitch) {
 

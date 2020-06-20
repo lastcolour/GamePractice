@@ -1,4 +1,5 @@
 #include "Logics/SoundPlayLogic.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 SoundPlayLogic::SoundPlayLogic() :
     volume(1.f),

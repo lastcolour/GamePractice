@@ -4,6 +4,7 @@
 #include "Logics/RenderNode.hpp"
 
 class RenderTexture;
+class ReflectContext;
 
 class RenderImageLogic : public RenderNode,
     public ETNode<ETRenderImageLogic>,
