@@ -1,7 +1,7 @@
 #include "RenderTextureManager.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "Core/Buffer.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"

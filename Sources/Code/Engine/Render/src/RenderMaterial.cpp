@@ -1,6 +1,6 @@
 #include "RenderMaterial.hpp"
 #include "Core/ETLogger.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 
 #include <cassert>
 

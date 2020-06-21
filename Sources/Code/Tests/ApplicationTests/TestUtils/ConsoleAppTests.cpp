@@ -1,13 +1,13 @@
 #include "TestUtils/ConsoleAppTests.hpp"
 
-#include <Core/Application.hpp>
+#include <Application.hpp>
 #include <Render/RenderModule.hpp>
 #include <Entity.hpp>
 #include <Core/ETPrimitives.hpp>
 #include <Entity/EntityModule.hpp>
 #include <UI/UIModule.hpp>
 #include <Game/GameModule.hpp>
-#include <Platforms/PlatformModule.hpp>
+#include <Platform/PlatformModule.hpp>
 #include <Core/ETLogger.hpp>
 
 namespace {

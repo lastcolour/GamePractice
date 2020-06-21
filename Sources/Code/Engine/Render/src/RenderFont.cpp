@@ -1,5 +1,5 @@
 #include "RenderFont.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "Core/ETLogger.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"

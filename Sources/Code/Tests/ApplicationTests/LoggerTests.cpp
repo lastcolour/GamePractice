@@ -1,5 +1,5 @@
 #include "LoggerTests.hpp"
-#include "Platforms/Desktop/DesktopLogger.hpp"
+#include "Platform/PlatformLogger.hpp"
 
 namespace {
 
@@ -7,7 +7,7 @@ const char* TEST_LOG_MSG = "TestMessage";
 
 } // namespace
 
-class TestLogger : public DesktopLogger {
+class TestLogger : public PlatformLogger {
 public:
     virtual ~TestLogger() = default;
 

@@ -3,8 +3,8 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTimer.hpp"
-#include "Core/ETSurface.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Platform/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
 class Render : public SystemLogic,

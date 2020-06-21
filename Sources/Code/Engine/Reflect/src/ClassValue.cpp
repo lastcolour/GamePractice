@@ -2,7 +2,7 @@
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/EnumInfo.hpp"
-#include "Reflect/ArrayInfo.hpp"
+#include "ArrayInfo.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"

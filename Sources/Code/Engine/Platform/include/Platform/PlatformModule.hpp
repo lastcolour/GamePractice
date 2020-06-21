@@ -1,13 +1,13 @@
-#ifndef __ANDROIND_MODULE_HPP__
-#define __ANDROIND_MODULE_HPP__
+#ifndef __PLATFORM_MODULE_HPP__
+#define __PLATFORM_MODULE_HPP__
 
 #include "Core/SystemModule.hpp"
 
-class AndroidModule : public SystemModule {
+class PlatformModule : public SystemModule {
 public:
 
-    AndroidModule();
-    virtual ~AndroidModule();
+    PlatformModule();
+    virtual ~PlatformModule() = default;
 
 protected:
 
@@ -16,4 +16,4 @@ protected:
     void registerEntityLogics(EntityLogicsRegister& logicsRegister) const override;
 };
 
-#endif /* __ANDROIND_MODULE_HPP__ */
+#endif /* __PLATFORM_MODULE_HPP__ */

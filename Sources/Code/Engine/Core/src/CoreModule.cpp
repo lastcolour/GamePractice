@@ -1,17 +1,10 @@
-#include "CoreModule.hpp"
+#include "Core/CoreModule.hpp"
 #include "MainTimer.hpp"
 #include "AppRunState.hpp"
 #include "AssetsCacheManager.hpp"
 #include "ModuleConfigManager.hpp"
 #include "Reflect/ClassInfoManager.hpp"
-
-#ifdef PLATFORM_ANDROID
-  #include "Platforms/Android/AndroidLogger.hpp"
-  using PlatformLogger = AndroidLogger;
-#else
-  #include "Platforms/Desktop/DesktopLogger.hpp"
-  using PlatformLogger = DesktopLogger;
-#endif
+#include "Platform/PlatformLogger.hpp"
 
 CoreModule::CoreModule() :
     SystemModule("Core") {}

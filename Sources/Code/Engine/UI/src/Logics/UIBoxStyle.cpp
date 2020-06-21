@@ -1,5 +1,6 @@
 #include "UI/UIBoxStyle.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Reflect/EnumInfo.hpp"
 
 void UIBoxStyle::Margin::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBoxStyle::Margin>("Margin")) {

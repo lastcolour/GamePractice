@@ -1,5 +1,5 @@
 #include "RenderGeometry.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 
 namespace {
 

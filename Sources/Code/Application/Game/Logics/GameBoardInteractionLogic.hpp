@@ -2,7 +2,7 @@
 #define __GAME_BOARD_INTERACTION_LOGIC_HPP__
 
 #include "Core/ETPrimitives.hpp"
-#include "Core/ETSurface.hpp"
+#include "Platform/ETSurface.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 

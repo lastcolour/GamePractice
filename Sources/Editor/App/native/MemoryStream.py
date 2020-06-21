@@ -73,7 +73,5 @@ class MemoryStream:
 
     def writeString(self, val):
         self._grow(len(val) + 1)
-        struct.pack_into("<s", self._data, self._pos, val.encode('ascii'))
-        self._pos += len(val)
-        self._data[self._pos] = 0
-        self._pos += 1
+        struct.pack_into("<s", self._data, self._pos, val.encode('ascii') + b"\x00")
+        self._pos += len(val) + 1

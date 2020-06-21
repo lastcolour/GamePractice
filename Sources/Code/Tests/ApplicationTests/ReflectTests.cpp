@@ -1,6 +1,7 @@
 #include "ReflectTests.hpp"
 #include <Reflect/ClassInfo.hpp>
 #include <Reflect/ReflectContext.hpp>
+#include <Reflect/EnumInfo.hpp>
 #include <Core/JSONNode.hpp>
 #include <Core/StringFormat.hpp>
 #include <Core/ETPrimitives.hpp>

@@ -1,5 +1,5 @@
 #include "GLFWSurfaceTests.hpp"
-#include "Platforms/Desktop/GLFWSurface.hpp"
+#include "Desktop/GLFWSurface.hpp"
 
 TEST_F(GLFWSurfaceTest, CheckNormalFlow) {
     GLFWSurface surface;

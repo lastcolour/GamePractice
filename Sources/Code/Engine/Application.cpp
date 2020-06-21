@@ -1,14 +1,14 @@
-#include "Core/Application.hpp"
+#include "Application.hpp"
 #include "Core/ETApplication.hpp"
 #include "Core/ETTimer.hpp"
-#include "CoreModule.hpp"
+#include "Core/CoreModule.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
 #include "Entity/EntityModule.hpp"
 #include "UI/UIModule.hpp"
 #include "Laucher/GameLaucherModule.hpp"
 #include "Game/GameModule.hpp"
-#include "Platforms/PlatformModule.hpp"
+#include "Platform/PlatformModule.hpp"
 
 Application::Application() :
     etSystem(new ETSystem()) {

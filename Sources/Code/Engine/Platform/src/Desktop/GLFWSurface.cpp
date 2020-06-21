@@ -1,7 +1,7 @@
-#include "Platforms/Desktop/GLFWSurface.hpp"
+#include "Desktop/GLFWSurface.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETApplication.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 
 #include <GLFW/glfw3.h>
 

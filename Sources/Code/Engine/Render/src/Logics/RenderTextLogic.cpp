@@ -5,7 +5,7 @@
 #include "RenderFont.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Reflect/ReflectContext.hpp"
 

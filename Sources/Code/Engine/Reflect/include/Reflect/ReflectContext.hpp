@@ -2,7 +2,8 @@
 #define __REFLECT_CONTEXT_HPP__
 
 #include "Reflect/ClassInfo.hpp"
-#include "Reflect/EnumInfo.hpp"
+
+class EnumInfo;
 
 class ReflectContext {
 public:

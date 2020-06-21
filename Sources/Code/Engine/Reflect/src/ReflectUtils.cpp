@@ -1,7 +1,7 @@
 #include "Reflect/ReflectUtils.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
-#include "Reflect/ArrayInfo.hpp"
+#include "ArrayInfo.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <memory>

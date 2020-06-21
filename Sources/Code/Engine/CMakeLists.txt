@@ -4,49 +4,41 @@ project(Engine CXX)
 
 include(dependicies.cmake)
 
-if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
-    set(ENGINE_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Desktop)
-
-    include_directories(
-        ${GLFW_INCLUDE_DIR}
-        ${GLAD_INCLUDE_DIR})
-
-elseif(BUILD_PLATFORM STREQUAL "Android")
-    set(ENGINE_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Android)
-
-endif()
-
 add_subdirectory(Core)
+add_subdirectory(Platform)
+add_subdirectory(Math)
+add_subdirectory(Reflect)
 add_subdirectory(Entity)
 add_subdirectory(Render)
 add_subdirectory(Audio)
 add_subdirectory(UI)
 
-include_directories(${CMAKE_INCLUDE_DIRECTORIES}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${APPLICATION_INCLUDE_DIR}
+set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Engine include dir")
+
+include_directories(
     ${CORE_INCLUDE_DIR}
-    ${ENTITY_INCLUDE_DIR}
     ${RENDER_INCLUDE_DIR}
+    ${AUDIO_INCLUDE_DIR}
     ${APPLICATION_INCLUDE_DIR}
-    ${AUDIO_INCLUDE_DIR})
+    ${ENTITY_INCLUDE_DIR}
+    ${UI_INCLUDE_DIR}
+    ${MATH_INCLUDE_DIR}
+    ${REFLECT_INCLUDE_DIR}
+    ${PLATFORM_INCLUDE_DIR}
+    ${ENGINE_INCLUDE_DIR})
 
-file(GLOB ENGINE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Reflect/*.cpp
-    ${ENGINE_PLATFORM_SOURCES}/*.cpp)
+add_library(${PROJECT_NAME} STATIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application.hpp)
 
-file(GLOB ENGINE_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Math/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Reflect/*.hpp
-    ${ENGINE_PLATFORM_SOURCES}/*.hpp)
-
-add_library(${PROJECT_NAME} STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
-    ${ENGINE_LIB_DEPENDICIES}
     Core
+    Math
+    Reflect
+    Platform
     Render
     Audio
     Entity
-    UI)
+    UI
+    Application)

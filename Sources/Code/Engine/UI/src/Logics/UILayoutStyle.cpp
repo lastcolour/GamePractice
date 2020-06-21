@@ -1,5 +1,6 @@
 #include "UI/UILayoutStyle.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Reflect/EnumInfo.hpp"
 
 void UILayoutStyle::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<UILayoutType>("UILayoutType")) {

@@ -1,6 +1,6 @@
 #include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
 #include "Entity/ETEntity.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "UI/ETUIBox.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Reflect/ReflectContext.hpp"
 

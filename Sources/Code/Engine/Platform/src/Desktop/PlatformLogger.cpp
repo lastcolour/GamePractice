@@ -1,26 +1,26 @@
-#include "Platforms/Desktop/DesktopLogger.hpp"
+#include "Platform/PlatformLogger.hpp"
 
 #include <iostream>
 #include <cassert>
 
-DesktopLogger::DesktopLogger() :
+PlatformLogger::PlatformLogger() :
     logLevel(LogLevel::Debug) {
 }
 
-DesktopLogger::~DesktopLogger() {
+PlatformLogger::~PlatformLogger() {
     ETNode<ETLogger>::disconnect();
 }
 
-bool DesktopLogger::init() {
+bool PlatformLogger::init() {
     ETNode<ETLogger>::connect(getEntityId());
     return true;
 }
 
-void DesktopLogger::deinit() {
+void PlatformLogger::deinit() {
     ETNode<ETLogger>::disconnect();
 }
 
-void DesktopLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
+void PlatformLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
     if(logLevel > lvl) {
         return;
     }
@@ -34,11 +34,11 @@ void DesktopLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
     printMessasge(lvl, logMsg);
 }
 
-void DesktopLogger::ET_setLogLevel(LogLevel lvl) {
+void PlatformLogger::ET_setLogLevel(LogLevel lvl) {
     logLevel = lvl;
 }
 
-std::string DesktopLogger::formatMessage(LogLevel lvl, const std::string& msg) {
+std::string PlatformLogger::formatMessage(LogLevel lvl, const std::string& msg) {
     const char* prefix = nullptr;
     switch(lvl) {
         case LogLevel::Debug:
@@ -65,7 +65,7 @@ std::string DesktopLogger::formatMessage(LogLevel lvl, const std::string& msg) {
     return logMsg;
 }
 
-void DesktopLogger::printMessasge(LogLevel lvl, const std::string& msg) {
+void PlatformLogger::printMessasge(LogLevel lvl, const std::string& msg) {
     (void)lvl;
     std::cout << msg << std::endl;
 }

@@ -1,5 +1,5 @@
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "UI/ETUIBox.hpp"
 #include "Core/StringFormat.hpp"
 #include "Reflect/ReflectContext.hpp"
 

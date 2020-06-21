@@ -6,7 +6,7 @@
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
 #include "RenderFont.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "Entity.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Math/MatrixTransform.hpp"

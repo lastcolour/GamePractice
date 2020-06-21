@@ -1,7 +1,7 @@
 #include "Render.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
 #include "RenderContext.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"

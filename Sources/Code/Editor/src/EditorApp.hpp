@@ -1,10 +1,10 @@
 #ifndef __EDITOR_APP__
 #define __EDITOR_APP__
 
-#include "Core/Application.hpp"
+#include "Application.hpp"
 #include "Core/Buffer.hpp"
 #include "Core/Core.hpp"
-#include "Core/ETSurface.hpp"
+#include "Platform/ETSurface.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
 
 class EditorApp : public Application {

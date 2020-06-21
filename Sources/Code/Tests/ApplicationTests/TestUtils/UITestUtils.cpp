@@ -1,7 +1,8 @@
 #include "TestUtils/UITestUtils.hpp"
-#include "UI/ETUIInterfaces.hpp"
+#include "UI/ETUIView.hpp"
 #include "Entity/ETEntity.hpp"
-#include "UI/Logics/UIBox.hpp"
+#include "UI/ETUIButton.hpp"
+#include "Logics/UIBox.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/ETTimer.hpp"
 

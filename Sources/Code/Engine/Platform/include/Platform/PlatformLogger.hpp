@@ -1,15 +1,15 @@
-#ifndef __ANDROID_LOGGER_HPP__
-#define __ANDROID_LOGGER_HPP__
+#ifndef __PLATFORM_LOGGER_HPP__
+#define __PLATFORM_LOGGER_HPP__
 
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 #include "Core/SystemLogic.hpp"
 
-class AndroidLogger: public SystemLogic,
+class PlatformLogger: public SystemLogic,
     public ETNode<ETLogger> {
 public:
 
-    AndroidLogger();
-    virtual ~AndroidLogger();
+    PlatformLogger();
+    virtual ~PlatformLogger();
 
     // SystemLogic
     bool init() override;
@@ -29,4 +29,4 @@ private:
     LogLevel logLevel;
 };
 
-#endif /* __ANDROID_LOGGER_HPP__ */
+#endif /* __PLATFORM_LOGGER_HPP__ */

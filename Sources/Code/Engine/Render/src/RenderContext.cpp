@@ -1,5 +1,5 @@
 #include "RenderContext.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 
 RenderContext::RenderContext() :
     dt(0.f),

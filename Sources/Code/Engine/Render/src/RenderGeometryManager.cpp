@@ -1,6 +1,6 @@
 #include "RenderGeometryManager.hpp"
 #include "Core/ETLogger.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "RenderGeometry.hpp"
 
 namespace {

@@ -1,6 +1,6 @@
-#include "Platforms/Desktop/DesktopModule.hpp"
-#include "Platforms/Desktop/DesktopAssets.hpp"
-#include "Platforms/Desktop/GLFWSurface.hpp"
+#include "Desktop/DesktopModule.hpp"
+#include "Desktop/DesktopAssets.hpp"
+#include "Desktop/GLFWSurface.hpp"
 
 DesktopModule::DesktopModule() :
     SystemModule("DesktopModule") {}

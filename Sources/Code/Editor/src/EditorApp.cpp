@@ -6,7 +6,7 @@
 #include "Entity/EntityModule.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Platforms/PlatformModule.hpp"
+#include "Platform/PlatformModule.hpp"
 #include "EditorModule.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Entity/ETEntity.hpp"

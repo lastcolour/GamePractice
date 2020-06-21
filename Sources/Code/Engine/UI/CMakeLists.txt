@@ -9,8 +9,10 @@ include_directories(
     ${UI_INCLUDE_DIR}
     ${CORE_INCLUDE_DIR}
     ${RENDER_INCLUDE_DIR}
-    ${ENGINE_INCLUDE_DIR}
+    ${MATH_INCLUDE_DIR}
     ${APPLICATION_INCLUDE_DIR}
+    ${REFLECT_INCLUDE_DIR}
+    ${PLATFORM_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 file(GLOB UI_SOURCES
@@ -18,7 +20,7 @@ file(GLOB UI_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp)
 
 file(GLOB UI_HEADERS
-    ${ENTITY_INCLUDE_DIR}/UI/*.hpp
+    ${UI_INCLUDE_DIR}/UI/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.hpp)
 

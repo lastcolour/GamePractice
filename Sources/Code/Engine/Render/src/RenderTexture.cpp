@@ -1,5 +1,5 @@
 #include "RenderTexture.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 
 #include <cassert>
 

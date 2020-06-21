@@ -3,7 +3,7 @@
 
 #include "Core/ETPrimitives.hpp"
 #include "Core/ETTimer.hpp"
-#include "Core/ETSurface.hpp"
+#include "Platform/ETSurface.hpp"
 #include "Core/SystemLogic.hpp"
 
 #include <memory>

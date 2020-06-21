@@ -7,11 +7,13 @@ set(RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Render in
 include_directories(
     ${CORE_INCLUDE_DIR}
     ${RENDER_INCLUDE_DIR}
-    ${ENGINE_INCLUDE_DIR}
     ${GLAD_INCLUDE_DIR}
     ${FREETYPE2_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
     ${ENTITY_INCLUDE_DIR}
+    ${MATH_INCLUDE_DIR}
+    ${REFLECT_INCLUDE_DIR}
+    ${PLATFORM_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 file(GLOB RENDER_SOURCES
@@ -39,6 +41,7 @@ elseif(BUILD_PLATFORM STREQUAL "Linux")
         ${ZLIB_LIB_SHARED_BIN}
         png
         CACHE INTERNAL "Render link dependecies")
+
 else()
 
     set(RENDER_LIB_DEPENDICIES

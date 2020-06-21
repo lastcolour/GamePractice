@@ -1,6 +1,6 @@
 #include "RenderUtils.hpp"
 
-#include "Platforms/OpenGL.hpp"
+#include "Platform/OpenGL.hpp"
 #include "Core/ETLogger.hpp"
 
 bool CheckGLError(const char* label) {

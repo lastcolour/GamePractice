@@ -1,6 +1,6 @@
 #include "RenderCamera.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Core/ETSurface.hpp"
+#include "Platform/ETSurface.hpp"
 
 #include "Math/MatrixTransform.hpp"
 

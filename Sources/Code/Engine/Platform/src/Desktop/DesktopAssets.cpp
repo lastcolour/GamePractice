@@ -1,4 +1,4 @@
-#include "Platforms/Desktop/DesktopAssets.hpp"
+#include "Desktop/DesktopAssets.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
 

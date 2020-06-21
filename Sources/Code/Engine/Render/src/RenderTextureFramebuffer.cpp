@@ -1,7 +1,7 @@
 #include "Render/RenderTextureFramebuffer.hpp"
 #include "Core/ETLogger.hpp"
-#include "Core/ETSurface.hpp"
-#include "Platforms/OpenGL.hpp"
+#include "Platform/ETSurface.hpp"
+#include "Platform/OpenGL.hpp"
 #include "RenderUtils.hpp"
 
 #include <cassert>

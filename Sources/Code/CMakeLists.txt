@@ -17,7 +17,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/compile_flags.cmake)
 
 # Build target project
 set(APPLICATION_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Application)
-set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Engine)
 
 add_subdirectory(Engine)
 add_subdirectory(Application)
@@ -30,7 +29,7 @@ else()
     message(STATUS "Android platform does not support unittests")
 endif()
 
-include_directories(${ENGINE_INCLUDE_DIR} ${CORE_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if(BUILD_PLATFORM STREQUAL "Android")
     add_library(${PROJECT_NAME} SHARED

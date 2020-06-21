@@ -2,8 +2,8 @@
 #define __UI_SURFACE_EVENT_HANDLER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETSurface.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Platform/ETSurface.hpp"
 
 class UISurfaceEventHandler : public SystemLogic,
     public ETNode<ETInputEvents>,

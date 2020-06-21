@@ -1,30 +1,32 @@
-#include "Platforms/Android/AndroidLogger.hpp"
+#include "Platform/PlatformLogger.hpp"
 
 #include <cassert>
 
 #include <android/log.h>
 
 namespace {
-const char* LOG_TAG = "App";
-}
 
-AndroidLogger::AndroidLogger() :
+const char* LOG_TAG = "App";
+
+} // namespace
+
+PlatformLogger::PlatformLogger() :
     logLevel(LogLevel::Debug) {
 }
 
-AndroidLogger::~AndroidLogger() {
+PlatformLogger::~PlatformLogger() {
 }
 
-bool AndroidLogger::init() {
+bool PlatformLogger::init() {
     ETNode<ETLogger>::connect(getEntityId());
     return true;
 }
 
-void AndroidLogger::deinit() {
+void PlatformLogger::deinit() {
     ETNode<ETLogger>::disconnect();
 }
 
-void AndroidLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
+void PlatformLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
     if(logLevel > lvl) {
         return;
     }
@@ -38,11 +40,11 @@ void AndroidLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
     printMessasge(lvl, logMsg);
 }
 
-void AndroidLogger::ET_setLogLevel(LogLevel lvl) {
+void PlatformLogger::ET_setLogLevel(LogLevel lvl) {
     logLevel = lvl;
 }
 
-std::string AndroidLogger::formatMessage(LogLevel lvl, const std::string& msg) {
+std::string PlatformLogger::formatMessage(LogLevel lvl, const std::string& msg) {
     const char* prefix = nullptr;
     switch(lvl) {
         case LogLevel::Debug:
@@ -69,7 +71,7 @@ std::string AndroidLogger::formatMessage(LogLevel lvl, const std::string& msg) {
     return logMsg;
 }
 
-void AndroidLogger::printMessasge(LogLevel lvl, const std::string& msg) {
+void PlatformLogger::printMessasge(LogLevel lvl, const std::string& msg) {
     android_LogPriority logPriority = ANDROID_LOG_DEFAULT;
     switch(lvl) {
         case LogLevel::Debug: {

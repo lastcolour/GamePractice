@@ -1,9 +1,9 @@
 #include "TestUtils/SoundAppTests.hpp"
-#include "Core/Application.hpp"
+#include "Application.hpp"
 #include "Entity/EntityModule.hpp"
 #include "Audio/AudioModule.hpp"
 #include "Core/ETLogger.hpp"
-#include "Platforms/PlatformModule.hpp"
+#include "Platform/PlatformModule.hpp"
 
 namespace {
 
