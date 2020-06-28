@@ -29,7 +29,7 @@ bool OboeAudioSystem::initOboeMixer() {
 }
 
 bool OboeAudioSystem::initOboeSources() {
-    const int maxSources = ET_getConfig<AudioConfig>()->maxSoundSources;
+    const int maxSources = ET_getShared<AudioConfig>()->maxSoundSources;
     for(int i = 0; i < maxSources; ++i) {
         oboeSources.emplace_back(new OboeSoundSource);
     }

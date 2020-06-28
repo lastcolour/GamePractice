@@ -4,12 +4,6 @@
 
 #include <cassert>
 
-namespace {
-
-const char* GAME_END_EVENT = "Game_OnGameEnd";
-
-} // namespace
-
 GameStateManager::GameStateManager() :
     gameState(EGameState::None) {
 }
@@ -116,7 +110,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: None");
             gameState = newState;
             postGame.onLeave();
-            ET_SendEvent(&ETUIEventManager::ET_onEvent, GAME_END_EVENT);
+            ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnGameEnd);
             break;
         }
         default: {

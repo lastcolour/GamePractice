@@ -2,7 +2,7 @@
 #include "MainTimer.hpp"
 #include "AppRunState.hpp"
 #include "AssetsCacheManager.hpp"
-#include "ModuleConfigManager.hpp"
+#include "ModuleSharedManager.hpp"
 #include "Reflect/ClassInfoManager.hpp"
 #include "Platform/PlatformLogger.hpp"
 
@@ -14,7 +14,7 @@ CoreModule::LogicsContainerPtrT CoreModule::createSystemLogics() const {
         new SystemLogicContainer<
             AppRunState,
             ClassInfoManager,
-            ModuleConfigManager,
+            ModuleSharedManager,
             PlatformLogger,
             MainTimer,
             AssetsCacheManager>()

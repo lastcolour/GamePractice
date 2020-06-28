@@ -40,7 +40,7 @@ void GameLaucher::ET_onSurfaceDestroyed() {
 }
 
 void GameLaucher::openMainView() {
-    GameLaucherConfig* laucherConfig = ET_getConfig<GameLaucherConfig>();
+    auto laucherConfig = ET_getShared<GameLaucherConfig>();
     if(!laucherConfig) {
         assert(false && "Invalid configs");
         return;
@@ -51,16 +51,16 @@ void GameLaucher::openMainView() {
         return;
     }
 
-    ET_SendEvent(&ETUIViewStack::ET_pushView, laucherConfig->mainView.c_str());
-    EntityId mainViewId;
-    ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
-    if(!mainViewId.isValid()) {
-        LogError("[GameIniter::openMainView] Can't cretae main view '%s'", laucherConfig->mainView);
-    }
-    bool isVisible = false;
-    ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);
-    if(!isVisible) {
-        ET_SendEvent(&ETSurface::ET_show);
-    }
-    isViewExist = true;
+    // ET_SendEvent(&ETUIViewManager::ET_openView, laucherConfig->mainView.c_str());
+    // EntityId mainViewId;
+    // ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
+    // if(!mainViewId.isValid()) {
+    //     LogError("[GameIniter::openMainView] Can't cretae main view '%s'", laucherConfig->mainView);
+    // }
+    // bool isVisible = false;
+    // ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);
+    // if(!isVisible) {
+    //     ET_SendEvent(&ETSurface::ET_show);
+    // }
+    // isViewExist = true;
 }

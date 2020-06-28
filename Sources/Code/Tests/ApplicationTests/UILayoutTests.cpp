@@ -1,6 +1,27 @@
 #include "UILayoutTests.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIBox.hpp"
+#include "UIConfig.hpp"
+#include "Core/ETApplication.hpp"
+
+namespace {
+
+void CheckUIBox(EntityId entityId, Vec2i expCenter, Vec2i expSize) {
+    AABB2Di box;
+    ET_SendEventReturn(box, entityId, &ETUIBox::ET_getBox);
+
+    auto center = box.getCenter();
+
+    EXPECT_EQ(center.x, expCenter.x);
+    EXPECT_EQ(center.y, expCenter.y);
+
+    auto size = box.getSize();
+
+    EXPECT_EQ(size.x, expSize.x);
+    EXPECT_EQ(size.y, expSize.y);
+}
+
+} // namespace
 
 Entity* UILayoutTests::createUIBox(float width, float height) {
     auto entity = createVoidObject();
@@ -251,5 +272,75 @@ TEST_F(UILayoutTests, CheckAlign) {
 
         EXPECT_EQ(center.x, expCenter.x);
         EXPECT_EQ(center.y, expCenter.y);
+    }
+}
+
+TEST_F(UILayoutTests, CheckMargin) {
+    auto rootEntity = createUIBox(1.f, 1.f);
+    auto rootLayout = addUILayout(rootEntity, UILayoutType::Horizontal, UIXAlign::Center, UIYAlign::Center);
+
+    auto first = createUIBox(0.25f, 0.25f);
+    auto second = createUIBox(0.25, 0.25f);
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    const auto boxSize = renderPort / 4;
+    const auto center = renderPort / 2;
+    const float margin = 10.f;
+    auto halfShift = ET_getShared<UIConfig>()->getSizeOnGrind(10.f) / 2;
+
+    rootLayout->ET_addItem(first->getEntityId());
+    rootLayout->ET_addItem(second->getEntityId());
+
+    UIBoxStyle boxStyle;
+    ET_SendEventReturn(boxStyle, first->getEntityId(), &ETUIBox::ET_getStyle);
+
+    {
+        boxStyle.margin.right = margin;
+        ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        CheckUIBox(first->getEntityId(), Vec2i(center.x - halfShift - boxSize.x / 2, center.y), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2i(center.x + halfShift + boxSize.x / 2, center.y), boxSize);
+    }
+
+    {
+        boxStyle.margin.right = 0.f;
+        ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        boxStyle.margin.left = margin;
+        ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        CheckUIBox(first->getEntityId(), Vec2i(center.x - halfShift - boxSize.x / 2, center.y), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2i(center.x + halfShift + boxSize.x / 2, center.y), boxSize);
+    }
+
+    {
+        UILayoutStyle layoutStyle;
+        ET_SendEventReturn(layoutStyle, rootEntity->getEntityId(), &ETUILayout::ET_getStyle);
+        layoutStyle.type = UILayoutType::Vertical;
+        ET_SendEvent(rootEntity->getEntityId(), &ETUILayout::ET_setStyle, layoutStyle);
+    }
+
+    {
+        boxStyle.margin.bot = margin;
+        ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        boxStyle.margin.left = 0.f;
+        ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        CheckUIBox(first->getEntityId(), Vec2i(center.x, center.y + halfShift + boxSize.y / 2), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2i(center.x, center.y - halfShift - boxSize.y / 2), boxSize);
+    }
+
+    { 
+        boxStyle.margin.bot = 0.f;
+        ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        boxStyle.margin.top = margin;
+        ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        CheckUIBox(first->getEntityId(), Vec2i(center.x, center.y + halfShift + boxSize.y / 2), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2i(center.x, center.y - halfShift - boxSize.y / 2), boxSize);
     }
 }

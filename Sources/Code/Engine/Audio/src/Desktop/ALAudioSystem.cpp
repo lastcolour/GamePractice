@@ -62,7 +62,7 @@ bool ALAudioSystem::initSoundContext() {
 }
 
 bool ALAudioSystem::initSoundSources() {
-    auto maxSources = ET_getConfig<AudioConfig>()->maxSoundSources;
+    auto maxSources = ET_getShared<AudioConfig>()->maxSoundSources;
 
     std::unique_ptr<ALuint[]> sourceIds(new ALuint[maxSources]);
     alGenSources(maxSources, &sourceIds[0]);

@@ -23,5 +23,5 @@ void GameEndTimerUpdaterLogic::deinit() {
 
 void GameEndTimerUpdaterLogic::ET_setEndTime(float endTime) {
     std::string text = StringFormat("%.1f", endTime);
-    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
+    // ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
 }

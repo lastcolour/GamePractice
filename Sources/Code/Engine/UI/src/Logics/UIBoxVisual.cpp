@@ -37,10 +37,6 @@ bool UIBoxVisual::ET_isVisible() const {
     return true;
 }
 
-int UIBoxVisual::ET_getZIndex() const {
-    return 0;
-}
-
 void UIBoxVisual::ET_setZIndex(int newZIndex) {
 }
 

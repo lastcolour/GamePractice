@@ -23,13 +23,6 @@ bool isMarginChanged(const UIBoxMargin& prevMargin, const UIBoxMargin& newMargin
     return false;
 }
 
-int GetSizeOnGrid(float value) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    float pixelsPerValue = renderPort.y / static_cast<float>(ET_getConfig<UIConfig>()->horizontalGrid);
-    return static_cast<int>(pixelsPerValue * value);
-}
-
 } // namespace
 
 void UIBox::Reflect(ReflectContext& ctx) {
@@ -113,10 +106,12 @@ Vec2i UIBox::calculateBoxSize(const Vec3& scale) {
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     Vec2i resSize(0);
+
+    auto uiConfig = ET_getShared<UIConfig>();
     switch (style.widthInv)
     {
     case UIBoxSizeInvariant::Grid:
-        resSize.x = GetSizeOnGrid(style.width);
+        resSize.x = uiConfig->getSizeOnGrind(style.width);
         break;
     case UIBoxSizeInvariant::Relative:
         resSize.x = static_cast<int>(renderPort.x * style.width);
@@ -127,7 +122,7 @@ Vec2i UIBox::calculateBoxSize(const Vec3& scale) {
     switch (style.heightInv)
     {
     case UIBoxSizeInvariant::Grid:
-        resSize.y = GetSizeOnGrid(style.height);
+        resSize.y = uiConfig->getSizeOnGrind(style.height);
         break;
     case UIBoxSizeInvariant::Relative:
         resSize.y = static_cast<int>(renderPort.y * style.height);
@@ -143,10 +138,11 @@ Vec2i UIBox::calculateBoxSize(const Vec3& scale) {
 UIBoxMargin UIBox::calculateMargin(const Vec3& scale) {
     UIBoxMargin resMargin;
 
-    resMargin.left = GetSizeOnGrid(style.margin.left);
-    resMargin.right = GetSizeOnGrid(style.margin.right);
-    resMargin.bot = GetSizeOnGrid(style.margin.bot);
-    resMargin.top = GetSizeOnGrid(style.margin.top);
+    auto uiConfig = ET_getShared<UIConfig>();
+    resMargin.left = uiConfig->getSizeOnGrind(style.margin.left);
+    resMargin.right = uiConfig->getSizeOnGrind(style.margin.right);
+    resMargin.bot = uiConfig->getSizeOnGrind(style.margin.bot);
+    resMargin.top = uiConfig->getSizeOnGrind(style.margin.top);
 
     resMargin.bot = static_cast<int>(resMargin.bot * scale.y);
     resMargin.top = static_cast<int>(resMargin.top * scale.y);

@@ -75,7 +75,7 @@ bool SystemModule::serializeConfigs() {
             configClass->getName(), name);
         return false;
     }
-    ET_SendEvent(&ETModuleConfigManager::ET_registerConfig, configInstance);
+    ET_SendEvent(&ETModuleSharedManager::ET_registerShared, configInstance);
     return true;
 }
 

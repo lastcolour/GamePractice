@@ -2,14 +2,6 @@
 #include "UI/ETUIView.hpp"
 #include "UI/ETUIButton.hpp"
 
-namespace {
-
-const char* BACK_BUTTON_EVENT_NAME = "OnBackButton";
-const char* SURFACE_HIDDEN_EVENT_NAME = "OnSurfaceHidden";
-const char* SURFACE_SHOWN_EVENT_NAME = "OnSurfaceShown";
-
-} // namespace
-
 UISurfaceEventHandler::UISurfaceEventHandler() {
 }
 
@@ -98,14 +90,14 @@ void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) 
 
 void UISurfaceEventHandler::ET_onButton(EActionType actionType, EButtonId buttonId) {
     if(actionType == EActionType::Press && buttonId == EButtonId::Back) {
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, BACK_BUTTON_EVENT_NAME);
+        ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnBackButton);
     }
 }
 
 void UISurfaceEventHandler::ET_onSurfaceHidden() {
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, SURFACE_HIDDEN_EVENT_NAME);
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnSurfaceHidden);
 }
 
 void UISurfaceEventHandler::ET_onSurfaceShown() {
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, SURFACE_SHOWN_EVENT_NAME);
+    ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnSurfaceShown);
 }

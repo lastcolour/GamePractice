@@ -12,13 +12,13 @@ protected:
     void SetUp();
     void TearDown();
 
-    UIButton* createUIButton();
+protected:
+
+    Entity* createUIButton(const Vec2i& pos, const Vec2i& size);
 
 protected:
 
     std::unique_ptr<TestButtonEventListener> buttonListener;
-    std::vector<std::unique_ptr<Entity>> tempObject;
 };
-
 
 #endif /* __UI_BUTTON_TESTS_HPP__ */

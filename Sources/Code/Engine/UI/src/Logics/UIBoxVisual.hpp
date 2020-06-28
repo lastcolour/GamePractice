@@ -28,7 +28,6 @@ public:
     void ET_show() override;
     void ET_hide() override;
     bool ET_isVisible() const override;
-    int ET_getZIndex() const override;
     void ET_setZIndex(int newZIndex) override;
 
     // ETUIBoxEvents
@@ -38,11 +37,7 @@ public:
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onChildAdded(EntityId childId) override { (void)childId; }
 
-private:
-
-    void setRenderEntity(const char* renderName);
-
-private:
+protected:
 
     EntityId renderId;
 };

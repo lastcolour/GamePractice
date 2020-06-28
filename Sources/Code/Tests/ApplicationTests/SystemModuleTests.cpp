@@ -90,7 +90,7 @@ TEST_F(SystemModuleTests, TestSystemModuleInitSuccess) {
     TestSystemModule module;
     ASSERT_TRUE(module.init());
 
-    auto config = ET_getConfig<TestSystemConfigs>();
+    auto config = ET_getShared<TestSystemConfigs>();
     ASSERT_TRUE(config);
     ASSERT_EQ(config->configVal, 1);
 }

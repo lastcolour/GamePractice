@@ -1,13 +1,13 @@
 #include "UI/UIModule.hpp"
 #include "UISurfaceEventHandler.hpp"
+#include "UIViewManager.hpp"
 #include "UIEventManager.hpp"
-#include "UIViewStack.hpp"
-#include "UIViewSwitcher.hpp"
 #include "UIConfig.hpp"
 #include "Logics/UIBox.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIView.hpp"
 #include "Logics/UIBoxVisual.hpp"
+#include "Logics/UIButton.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -17,9 +17,8 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             UISurfaceEventHandler,
-            UIEventManager,
-            UIViewStack,
-            UIViewSwitcher>()
+            UIViewManager,
+            UIEventManager>()
         );
     return container;
 }
@@ -33,4 +32,5 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UILayout>();
     logicsRegister.registerLogic<UIView>();
     logicsRegister.registerLogic<UIBoxVisual>();
+    logicsRegister.registerLogic<UIButton>();
 }

@@ -15,6 +15,9 @@ public:
     UIConfig();
     ~UIConfig();
 
+
+    int getSizeOnGrind(float value) const;
+
 public:
 
     int horizontalGrid;

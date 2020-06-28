@@ -49,5 +49,5 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
     currentValue = std::min(currentValue + increaseStep, targetValue);
 
     std::string text = StringFormat("%d", currentValue);
-    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
+    // ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
 }

@@ -35,25 +35,7 @@ struct ETUIVisibleElement {
     virtual void ET_show() = 0;
     virtual void ET_hide() = 0;
     virtual bool ET_isVisible() const = 0;
-    virtual int ET_getZIndex() const = 0;
     virtual void ET_setZIndex(int newZIndex) = 0;
 };
-
-struct ETUILabel {
-    virtual ~ETUILabel() = default;
-    virtual void ET_setText(const char* text) = 0;
-    virtual const char* ET_getText() const = 0;
-};
-
-struct ETUIImage {
-    virtual ~ETUIImage() = default;
-    virtual void ET_setImage(const char* image) = 0; 
-};
-
-struct ETUISwitchControl {
-    virtual ~ETUISwitchControl() = default;
-    virtual bool ET_isEnabled() const = 0;
-};
-
 
 #endif /* __ET_UI_BOX_HPP__ */
