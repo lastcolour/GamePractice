@@ -47,7 +47,7 @@ public:
     void addField(const char* name, ValueT ClassT::* valuePtr) {
         constexpr auto type = GetClassValueType<ValueT>();
         static_assert(type != ClassValueType::Invalid, "Can't add field with unknown type");
-        if(getIntanceTypeId() != GetTypeId<ClassT>()) {
+        if(!checkIfSameType(GetTypeId<ClassT>())) {
             return;
         }
         if(!CreateTypeInfo<ValueT>()) {
@@ -65,7 +65,7 @@ public:
 
     template<typename ClassT>
     void addResourceField(const char* name, void (ClassT::*setFunc)(const char*)) {
-        if(getIntanceTypeId() != GetTypeId<ClassT>()) {
+        if(!checkIfSameType(GetTypeId<ClassT>())) {
             return;
         }
         ClassValue::SetResourceFuncT valueSetFunc = [setFunc](void* instance, const char* resourceName){
@@ -86,6 +86,7 @@ public:
 
 private:
 
+    bool checkIfSameType(TypeId typeId) const;
     const ClassValue* findValueByName(const char* name) const;
     const ClassValue* findValueByPtr(ClassValue::ValuePtrT ptr) const;
     ClassValue* findValueById(void*& instance, int valueId);

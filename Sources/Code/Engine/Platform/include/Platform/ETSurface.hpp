@@ -19,6 +19,7 @@ struct ETSurface {
     virtual GLContextType ET_getGLContextType() const = 0;
     virtual bool ET_isVisible() const = 0;
     virtual bool ET_isValid() const = 0;
+    virtual void ET_setEditorMode(bool flag) = 0;
 };
 
 enum class EActionType {

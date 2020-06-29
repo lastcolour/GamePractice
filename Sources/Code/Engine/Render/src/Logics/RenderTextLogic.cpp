@@ -29,7 +29,7 @@ RenderTextLogic::~RenderTextLogic() {
 void RenderTextLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderTextLogic>("RenderText")) {
         classInfo->addField("color", &RenderTextLogic::color);
-        classInfo->addField("fontScale", &RenderTextLogic::fontScale);
+        classInfo->addField("fontSize", &RenderTextLogic::fontScale);
         classInfo->addField("text", &RenderTextLogic::text);
     }
 }

@@ -39,7 +39,7 @@ public:
 
 protected:
 
-    EntityId renderId;
+    EntityId boxRenderId;
 };
 
 #endif /* __UI_BOX_VISUAL_HPP__ */

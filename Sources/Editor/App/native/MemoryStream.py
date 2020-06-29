@@ -47,9 +47,17 @@ class MemoryStream:
         return res[0]
 
     def readString(self):
-        res = struct.unpack_from("<s", self._data, self._pos)
-        self._pos += len(res)
-        return res[0].decode('ascii')[:-1]
+        res = ""
+        pt = self._pos
+        while True:
+            c = struct.unpack_from("<s", self._data, pt)[0].decode('ascii')
+            if c == "\x00":
+                break
+            else:
+                pt += 1
+                res += c
+        self._pos = len(res) + 1
+        return res
 
     def writeBool(self, val):
         self._grow(1)
@@ -72,6 +80,8 @@ class MemoryStream:
         self._pos += 1
 
     def writeString(self, val):
-        self._grow(len(val) + 1)
-        struct.pack_into("<s", self._data, self._pos, val.encode('ascii') + b"\x00")
-        self._pos += len(val) + 1
+        s = val.encode('ascii') + b'\x00'
+        l = len(s)
+        self._grow(l)
+        struct.pack_into("<{0}s".format(l), self._data, self._pos, s)
+        self._pos += l

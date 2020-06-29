@@ -13,9 +13,9 @@ void UIButton::Reflect(ReflectContext& ctx) {
         });
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
-        classInfo->addField("event", &UIButton::eventType);
+        classInfo->addBaseClass<UIBoxVisual>();
         classInfo->addField("label", &UIButton::labelId);
-        classInfo->addField("box", &UIButton::renderId);
+        classInfo->addField("event", &UIButton::eventType);
     }
 }
 
@@ -40,14 +40,11 @@ void UIButton::deinit() {
 }
 
 void UIButton::ET_onPress() {
-    if(eventType == UIEventType::None) {
-        return;
-    }
     if(!ET_IsExistNode<ETUIAnimation>(getEntityId())) {
         ET_SendEvent(&ETUIEventManager::ET_onEvent, eventType);
     } else {
         ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, getEntityId());
-        ET_SendEvent(&ETUIAnimation::ET_start);
+        ET_SendEvent(getEntityId(), &ETUIAnimation::ET_start);
     }
 }
 

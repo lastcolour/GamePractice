@@ -92,7 +92,11 @@ class EntityNative(NativeObject):
             return None
         logic._logicId = logicId
         logic._entity = self
-        logic._rootValue.readFromDict(logicData)
+        try:
+            logic._rootValue.readFromDict(logicData)
+        except Exception as e:
+            print("[EntityNative:addLogicWithData] Can't read data of logic '{0}' of entity entity '{1}' (Error: {2})".format(
+                logicName, self._name, e))
         self._logics.append(logic)
         return logic
 

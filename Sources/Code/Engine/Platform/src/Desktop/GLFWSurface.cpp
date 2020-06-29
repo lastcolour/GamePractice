@@ -78,7 +78,8 @@ std::unique_ptr<GlfwLibInitData> GLFWSurface::GLFW = nullptr;
 
 GLFWSurface::GLFWSurface() :
     window(nullptr),
-    size(0) {
+    size(0),
+    editorMode(false) {
 }
 
 GLFWSurface::~GLFWSurface() {
@@ -158,6 +159,7 @@ bool GLFWSurface::ET_isVisible() const {
 }
 
 bool GLFWSurface::ET_show() {
+    assert(!editorMode && "Can't show surface in editor mode");
     if(window) {
         glfwShowWindow(window);
         glfwFocusWindow(window);
@@ -168,6 +170,7 @@ bool GLFWSurface::ET_show() {
 }
 
 bool GLFWSurface::ET_hide() {
+    assert(!editorMode && "Can't hide surface in editor mode");
     if(window && ET_isVisible()) {
         glfwHideWindow(window);
         ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
@@ -177,12 +180,14 @@ bool GLFWSurface::ET_hide() {
 }
 
 void GLFWSurface::ET_close() {
+    assert(!editorMode && "Can't close surface in editor mode");
     if(window) {
         glfwSetWindowShouldClose(window, true);
     }
 }
 
 void GLFWSurface::ET_swapBuffers() {
+    assert(!editorMode && "Can't swaps buffers in editor mode");
     if(window) {
         glfwSwapBuffers(window);
     }
@@ -204,6 +209,15 @@ GLContextType GLFWSurface::ET_getGLContextType() const {
         return GLContextType::ES30;
     }
     return GLContextType::None;
+}
+
+void GLFWSurface::ET_setEditorMode(bool flag) {
+    editorMode = flag;
+    if(editorMode) {
+        ETNode<ETSystemTimerEvents>::disconnect();
+    } else {
+        ETNode<ETSystemTimerEvents>::connect(getEntityId());
+    }
 }
 
 void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) {

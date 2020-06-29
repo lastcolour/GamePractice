@@ -36,7 +36,6 @@ public:
 private:
 
     EntityId labelId;
-    EntityId renderId;
     UIEventType eventType;
     bool isHovered;
 };

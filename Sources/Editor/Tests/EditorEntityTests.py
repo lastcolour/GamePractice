@@ -183,5 +183,16 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(childEntity.rename("NewTest"))
         self.assertEqual(childEntity.getName(), "NewTest")
 
+    def testReadWriteSringVal(self):
+        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        self.assertTrue(entity.loadToNative())
+        logic = entity.addLogic("RenderText")
+        self.assertIsNotNone(logic)
+
+        textVal = logic.getValues()[2]
+        textVal.setVal("Test")
+        res = textVal.getVal()
+        self.assertEqual(res, "Test")
+
 if __name__ == "__main__":
     unittest.main()

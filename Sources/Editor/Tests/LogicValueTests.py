@@ -380,5 +380,15 @@ class LogicValueTests(unittest.TestCase):
         self.assertEqual(stream.readUChar(), 253)
         self.assertEqual(stream.readUChar(), 254)
 
+    def testMemoryStream(self):
+        stream = MemoryStream()
+        stream.writeString("aA")
+        stream.writeString("bB")
+        stream.resetPos()
+        s1 = stream.readString()
+        self.assertEqual(s1, "aA")
+        s2 = stream.readString()
+        self.assertEqual(s2, "bB")
+
 if __name__ == "__main__":
     unittest.main()

@@ -388,6 +388,57 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
     }
 }
 
+TEST_F(EntityTests, TestReflectVoidEntityWithRenderTest) {
+    EntityId objId = InvalidEntityId;
+    ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, "Game/Void.json");
+    ASSERT_NE(objId, InvalidEntityId);
+
+    EntityLogicId logicId = InvalidEntityLogicId;
+    ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, objId, "RenderText");
+    ASSERT_NE(logicId, InvalidEntityLogicId);
+
+    MemoryStream stream;
+
+    {
+        stream.openForWrite();
+        bool res = false;
+        ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, objId, logicId, 3, stream);
+        ASSERT_TRUE(res);
+    }
+
+    stream.reopenForRead();
+
+    {
+        std::string textStr;
+        stream.read(textStr);
+        ASSERT_TRUE(textStr.empty());
+    }
+
+    {
+        stream.reopenForWrite();
+        stream.write("Test");
+        stream.reopenForRead();
+        bool res = false;
+        ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, objId, logicId, 3, stream);
+        ASSERT_TRUE(res);
+    }
+
+    {
+        stream.reopenForWrite();
+        bool res = false;
+        ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, objId, logicId, 3, stream);
+        ASSERT_TRUE(res);
+    }
+
+    stream.reopenForRead();
+
+    {
+        std::string textStr;
+        stream.read(textStr);
+        ASSERT_EQ(textStr.c_str(), "Test");
+    }
+} 
+
 TEST_F(EntityTests, TestAddElementToUILayout) {
     EntityId entityId;
     ET_SendEventReturn(entityId, &ETEntityManager::ET_createEntity, "Game/Simple.json");

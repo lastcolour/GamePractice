@@ -33,6 +33,7 @@ public:
     GLContextType ET_getGLContextType() const override;
     bool ET_isVisible() const override;
     bool ET_isValid() const override;
+    void ET_setEditorMode(bool flag) override;
 
     // ETSystemTimerEvents
     void ET_onSystemTick(float dt) override;
@@ -56,6 +57,7 @@ private:
     GLFWwindow* window;
     Vec2i size;
     std::vector<Vec2i> activeGesture;
+    bool editorMode;
 };
 
 #endif /* __GLFWS_SURFACE_HPP__ */

@@ -5,6 +5,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/ETTimer.hpp"
+#include "Math/Transform.hpp"
 
 class ReflectContext;
 
@@ -38,6 +39,7 @@ public:
 
 private:
 
+    Transform startTm;
     float inDuration;
     float outDuration;
     float minScale;

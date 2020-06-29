@@ -78,8 +78,8 @@
                         "id": 2,
                         "data": {
                           "size": {
-                            "x": 163,
-                            "y": 163
+                            "x": 472,
+                            "y": 472
                           },
                           "startColor": {
                             "r": 209,
@@ -123,7 +123,7 @@
                   "type": "UIBoxVisual",
                   "id": 2,
                   "data": {
-                    "render": 1
+                    "box": 1
                   }
                 }
               ]
@@ -230,8 +230,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 261,
-                            "y": 81
+                            "x": 756,
+                            "y": 236
                           },
                           "startColor": {
                             "r": 154,
@@ -246,6 +246,48 @@
                             "a": 255
                           },
                           "isVertical": true
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Label",
+                  "id": 2,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "RenderText",
+                        "id": 1,
+                        "data": {
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 10.0,
+                          "text": "Hello"
                         }
                       }
                     ]
@@ -272,10 +314,21 @@
                   }
                 },
                 {
-                  "type": "UIBoxVisual",
-                  "id": 2,
+                  "type": "UIButton",
+                  "id": 3,
                   "data": {
-                    "render": 1
+                    "box": 1,
+                    "label": 2,
+                    "event": "OnStartGame"
+                  }
+                },
+                {
+                  "type": "UIPressAnimation",
+                  "id": 4,
+                  "data": {
+                    "inDuration": 0.10000000149011612,
+                    "outDuration": 0.10000000149011612,
+                    "minScale": 0.9750000238418579
                   }
                 }
               ]
@@ -382,8 +435,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 97,
-                            "y": 97
+                            "x": 167,
+                            "y": 167
                           },
                           "color": {
                             "r": 252,
@@ -420,7 +473,7 @@
                   "type": "UIBoxVisual",
                   "id": 2,
                   "data": {
-                    "render": 1
+                    "box": 1
                   }
                 }
               ]
@@ -480,8 +533,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 97,
-                            "y": 97
+                            "x": 167,
+                            "y": 167
                           },
                           "color": {
                             "r": 117,
@@ -515,10 +568,21 @@
                   }
                 },
                 {
-                  "type": "UIBoxVisual",
-                  "id": 2,
+                  "type": "UIButton",
+                  "id": 3,
                   "data": {
-                    "render": 1
+                    "box": 1,
+                    "label": 1,
+                    "event": "None"
+                  }
+                },
+                {
+                  "type": "UIPressAnimation",
+                  "id": 4,
+                  "data": {
+                    "inDuration": 0.07500000298023224,
+                    "outDuration": 0.07500000298023224,
+                    "minScale": 0.9750000238418579
                   }
                 }
               ]

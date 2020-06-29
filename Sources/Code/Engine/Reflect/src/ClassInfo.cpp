@@ -440,3 +440,11 @@ bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId value
     }
     return true;
 }
+
+bool ClassInfo::checkIfSameType(TypeId typeId) const {
+    if(getIntanceTypeId() != typeId) {
+        assert(false && "Invalid type");
+        return false;
+    }
+    return true;
+}

@@ -30,7 +30,7 @@ bool EditorApp::initialize() {
     if(!res) {
         return res;
     }
-
+    ET_SendEvent(&ETSurface::ET_setEditorMode, true);
     return res;
 }
 

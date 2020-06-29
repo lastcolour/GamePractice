@@ -14,7 +14,7 @@ protected:
 
 protected:
 
-    Entity* createUIButton(const Vec2i& pos, const Vec2i& size);
+    Entity* createUIButton(const Vec2i& pos, const Vec2& size);
 
 protected:
 

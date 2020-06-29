@@ -6,7 +6,7 @@
 
 void UIBoxVisual::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBoxVisual>("UIBoxVisual")) {
-        classInfo->addField("render", &UIBoxVisual::renderId);
+        classInfo->addField("box", &UIBoxVisual::boxRenderId);
     }
 }
 
@@ -41,17 +41,17 @@ void UIBoxVisual::ET_setZIndex(int newZIndex) {
 }
 
 void UIBoxVisual::ET_onBoxResized() {
-    if(!renderId.isValid()) {
+    if(!boxRenderId.isValid()) {
         return;
     }
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    ET_SendEvent(renderId, &ETEntity::ET_setTransform, tm);
+    ET_SendEvent(boxRenderId, &ETEntity::ET_setTransform, tm);
 
     AABB2Di box;
     ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
-    ET_SendEvent(renderId, &ETRenderRect::ET_setSize, box.getSize());
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, box.getSize());
 }
 
 void UIBoxVisual::ET_onTransformChanged(const Transform& newTm) {
