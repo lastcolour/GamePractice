@@ -107,10 +107,12 @@ int GameBoardLogic::ET_getCellSize() const {
 
 void GameBoardLogic::ET_onTransformChanged(const Transform& newTm) {
     (void)newTm;
-    ET_onBoxResized();
+    AABB2Di box;
+    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
+    ET_onBoxResized(box);
 }
 
-void GameBoardLogic::ET_onBoxResized() {
+void GameBoardLogic::ET_onBoxResized(const AABB2Di& newAabb) {
     initBoardBox();
     for(auto& elem : elements) {
         if(elem.state == EBoardElemState::Moving) {
@@ -130,7 +132,7 @@ void GameBoardLogic::initBoardBox() {
     box.bot = Vec2i(0);
     box.top = viewport;
 
-    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
+    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
     Vec2i uiBoxSize = box.getSize();
 
     float cellSizeX = uiBoxSize.x / static_cast<float>(boardSize.x);

@@ -28,6 +28,10 @@ bool RenderColoredTextureLogic::init() {
     if(!RenderImageLogic::init()) {
         return false;
     }
+    ET_setMaterial("tex_solid_color");
+    if(!mat) {
+        return false;
+    }
     ETNode<ETRenderColoredTexture>::connect(getEntityId());
     return true;
 }

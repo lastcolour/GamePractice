@@ -5,7 +5,7 @@
 
 enum class RenderBlendingType {
     NONE = 0,
-    SRC_MINUS_ALPHA
+    ONE_MINUS_SRC_MINUS_ALPHA
 };
 
 class RenderContext {

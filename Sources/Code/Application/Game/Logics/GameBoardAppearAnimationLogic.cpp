@@ -56,7 +56,7 @@ void GameBoardAppearAnimationLogic::moveAllElemsOnTop() {
 
     {
         AABB2Di uiBox(0);
-        ET_SendEventReturn(uiBox, getEntityId(), &ETUIBox::ET_getBox);
+        ET_SendEventReturn(uiBox, getEntityId(), &ETUIElement::ET_getBox);
         newPt.y = static_cast<float>(uiBox.top.y);
     }
     {

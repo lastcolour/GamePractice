@@ -47,11 +47,11 @@ bool RenderTextLogic::init() {
     if(!mat) {
         return false;
     }
-
     ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
     if(!font) {
         return false;
     }
+    calcTextSize();
 
     RenderNode::init();
 
@@ -60,7 +60,7 @@ bool RenderTextLogic::init() {
 }
 
 void RenderTextLogic::onRender(RenderContext& renderCtx) {
-    renderCtx.setBlending(RenderBlendingType::SRC_MINUS_ALPHA);
+    renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     mat->bind();
     mat->setTexture2D("tex", font->getTexId());
     mat->setUniformMat4("MVP", renderCtx.proj2dMat);
@@ -159,9 +159,9 @@ void RenderTextLogic::calcTextSize() {
     textSize = pt * fontScale;
 }
 
-void RenderTextLogic::ET_setFontSize(int fontSize) {
+void RenderTextLogic::ET_setFontHeight(int fontHeight) {
     auto heigth = font->getHeight();
-    fontScale = fontSize / static_cast<float>(heigth);
+    fontScale = fontHeight / static_cast<float>(heigth);
     calcTextSize();
 }
 

@@ -12,7 +12,7 @@
 namespace {
 
 const char* DEF_FONT_NAME = "Render/Fonts/Shanti-Regular.ttf";
-const int DEF_FONT_SIZE = 38;
+const int DEF_FONT_SIZE = 48;
 
 } // namespace
 

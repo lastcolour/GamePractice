@@ -19,7 +19,7 @@ void RenderContext::setBlending(RenderBlendingType newBlendingType) {
     case RenderBlendingType::NONE:
         glDisable(GL_BLEND);
         break;
-    case RenderBlendingType::SRC_MINUS_ALPHA:
+    case RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         break;

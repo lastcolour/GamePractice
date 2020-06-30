@@ -78,8 +78,8 @@
                         "id": 2,
                         "data": {
                           "size": {
-                            "x": 472,
-                            "y": 472
+                            "x": 232,
+                            "y": 232
                           },
                           "startColor": {
                             "r": 209,
@@ -230,18 +230,18 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 756,
-                            "y": 236
+                            "x": 372,
+                            "y": 116
                           },
                           "startColor": {
-                            "r": 154,
-                            "g": 23,
-                            "b": 130,
+                            "r": 30,
+                            "g": 0,
+                            "b": 154,
                             "a": 255
                           },
                           "endColor": {
-                            "r": 231,
-                            "g": 194,
+                            "r": 141,
+                            "g": 128,
                             "b": 235,
                             "a": 255
                           },
@@ -274,20 +274,58 @@
                   "id": 2,
                   "internal": true,
                   "data": {
-                    "children": [],
+                    "children": [
+                      {
+                        "transform": {
+                          "pos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                          },
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "Render",
+                        "id": 1,
+                        "internal": true,
+                        "data": {
+                          "children": [],
+                          "logics": [
+                            {
+                              "type": "RenderText",
+                              "id": 1,
+                              "data": {
+                                "color": {
+                                  "r": 255,
+                                  "g": 255,
+                                  "b": 255,
+                                  "a": 255
+                                },
+                                "fontSize": 1.52173912525177,
+                                "text": "Start"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
                     "logics": [
                       {
-                        "type": "RenderText",
-                        "id": 1,
+                        "type": "UILabel",
+                        "id": 2,
                         "data": {
-                          "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
-                          },
-                          "fontSize": 10.0,
-                          "text": "Hello"
+                          "fondSize": 15.0,
+                          "text": "Start",
+                          "render": 1
                         }
                       }
                     ]
@@ -326,9 +364,9 @@
                   "type": "UIPressAnimation",
                   "id": 4,
                   "data": {
-                    "inDuration": 0.10000000149011612,
-                    "outDuration": 0.10000000149011612,
-                    "minScale": 0.9750000238418579
+                    "inDuration": 0.07000000029802322,
+                    "outDuration": 0.07000000029802322,
+                    "minScale": 0.9750999808311462
                   }
                 }
               ]
@@ -435,8 +473,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 167,
-                            "y": 167
+                            "x": 140,
+                            "y": 140
                           },
                           "color": {
                             "r": 252,
@@ -533,8 +571,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 167,
-                            "y": 167
+                            "x": 140,
+                            "y": 140
                           },
                           "color": {
                             "r": 117,
@@ -572,7 +610,7 @@
                   "id": 3,
                   "data": {
                     "box": 1,
-                    "label": 1,
+                    "label": -1,
                     "event": "None"
                   }
                 },
@@ -625,6 +663,57 @@
           }
         ]
       }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Background",
+      "id": 4,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderLinearGradientRect",
+            "id": 1,
+            "data": {
+              "size": {
+                "x": 522,
+                "y": 928
+              },
+              "startColor": {
+                "r": 57,
+                "g": 252,
+                "b": 255,
+                "a": 255
+              },
+              "endColor": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              },
+              "isVertical": true
+            }
+          }
+        ]
+      }
     }
   ],
   "logics": [
@@ -647,6 +736,13 @@
           2,
           3
         ]
+      }
+    },
+    {
+      "type": "UIBoxVisual",
+      "id": 3,
+      "data": {
+        "box": 4
       }
     }
   ]

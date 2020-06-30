@@ -294,7 +294,6 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
 TEST_F(RenderTests, CheckRenderSimpleText) {
     auto gameObj = createVoidObject();
     RenderTextLogic* renderText = new RenderTextLogic;
-    renderText->ET_setMaterial("text_solid_color");
     gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
     ASSERT_TRUE(renderText->init());
 

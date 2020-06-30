@@ -303,19 +303,6 @@ void Entity::ET_setLocalTransform(const Transform& localTm) {
     ET_setTransform(newTm);
 }
 
-int Entity::ET_getMaxChildrenDepth() const {
-    int maxDepth = 0;
-    for(auto childNode : children) {
-        int childMaxDepth = 0;
-        ET_SendEventReturn(childMaxDepth, childNode.childEntId, &ETEntity::ET_getMaxChildrenDepth);
-        childMaxDepth++;
-        if(childMaxDepth > maxDepth) {
-            maxDepth = childMaxDepth;
-        }
-    }
-    return maxDepth;
-}
-
 EntityLogicId Entity::createNewLogicId() const {
     EntityLogicId logicId = 1;
     for(auto& logicNode : logics) {
@@ -352,4 +339,13 @@ EntityId Entity::ET_getEntityIdFromChildId(EntityChildId childId) const {
         }
     }
     return InvalidEntityId;
+}
+
+std::vector<EntityId> Entity::ET_getChildren() const {
+    std::vector<EntityId> res;
+    res.reserve(children.size());
+    for(auto& childNode : children) {
+        res.push_back(childNode.childEntId);
+    }
+    return res;
 }

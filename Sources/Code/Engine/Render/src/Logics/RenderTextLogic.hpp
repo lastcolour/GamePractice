@@ -24,7 +24,7 @@ public:
     void ET_setFont(const char* fontName) override;
     void ET_setColor(const ColorB& col) override;
     void ET_setText(const char* str) override;
-    void ET_setFontSize(int fontSize) override;
+    void ET_setFontHeight(int fontHeight) override;
     virtual AABB2D ET_getTextAABB() const override;
 
 protected:

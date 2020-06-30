@@ -2,6 +2,8 @@
 #include "UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Core/ETLogger.hpp"
+#include "Render/ETRenderNode.hpp"
 
 #include <cassert>
 
@@ -28,6 +30,7 @@ bool isMarginChanged(const UIBoxMargin& prevMargin, const UIBoxMargin& newMargin
 void UIBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
         classInfo->addField("style", &UIBox::style);
+        classInfo->addField("render", &UIBox::boxRenderId);
     }
 }
 
@@ -38,17 +41,22 @@ UIBox::~UIBox() {
 }
 
 bool UIBox::init() {
-    calculateBox();
+    UIElement::init();
+
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderCameraEvents>::connect(getEntityId());
-    ETNode<ETEntityEvents>::connect(getEntityId());
+    ETNode<ETUIVisibleElement>::connect(getEntityId());
+
+    calculateBox();
+    initBoxRender();
+
     return true;
 }
 
 void UIBox::deinit() {
 }
 
-const AABB2Di& UIBox::ET_getBox() const {
+AABB2Di UIBox::ET_getBox() const {
     return aabb;
 }
 
@@ -56,28 +64,32 @@ void UIBox::calculateBox() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
-    bool notifyLayout = false;
+    bool marginChanged = false;
+    bool sizeChanged = false;
 
     auto newMargin = calculateMargin(tm.scale);
     if(isMarginChanged(margin, newMargin)) {
         margin = newMargin;
-        notifyLayout = true;
+        marginChanged = true;
     }
 
     auto newBoxSize = calculateBoxSize(tm.scale);
     if(aabb.getSize() != newBoxSize) {
         aabb.bot = Vec2i(0);
         aabb.top = newBoxSize;
-        notifyLayout = true;
+        sizeChanged = true;
     }
 
     Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
         static_cast<int>(tm.pt.y));
     aabb.setCenter(center);
 
-    ET_SendEvent(getEntityId(), &ETUIBoxEvents::ET_onBoxResized);
-    if(layoutId.isValid() && notifyLayout) {
-        ET_SendEvent(layoutId, &ETUILayout::ET_update);
+    if(marginChanged || sizeChanged) {
+        updateLayout();
+    }
+    if(sizeChanged) {
+        ET_SendEvent(getEntityId(), &ETUIBoxEvents::ET_onBoxResized, aabb);
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
     }
 }
 
@@ -90,16 +102,8 @@ void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
     calculateBox();
 }
 
-const UIBoxMargin& UIBox::ET_getMargin() const {
+UIBoxMargin UIBox::ET_getMargin() const {
     return margin;
-}
-
-void UIBox::ET_setLayout(EntityId newLayoutId) {
-    layoutId = newLayoutId;
-}
-
-EntityId UIBox::ET_getLayout() {
-    return layoutId;
 }
 
 Vec2i UIBox::calculateBoxSize(const Vec3& scale) {
@@ -158,4 +162,32 @@ void UIBox::ET_onTransformChanged(const Transform& newTm) {
 
 void UIBox::ET_onRenderPortResized() {
     calculateBox();
+}
+
+void UIBox::ET_show() {
+}
+
+void UIBox::ET_hide() {
+}
+
+bool UIBox::ET_isVisible() const {
+    return true;
+}
+
+void UIBox::initBoxRender() {
+    if(!boxRenderId.isValid()) {
+        return;
+    }
+
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    ET_SendEvent(boxRenderId, &ETEntity::ET_setTransform, tm);
+
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+}
+
+void UIBox::onZIndexChanged(int newZIndex) {
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex + 1);
 }

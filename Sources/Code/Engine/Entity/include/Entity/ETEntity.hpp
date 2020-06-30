@@ -21,9 +21,9 @@ struct ETEntity {
     virtual void ET_setTransform(const Transform& tm) = 0;
     virtual Transform ET_getLocalTransform() const = 0;
     virtual void ET_setLocalTransform(const Transform& localTm) = 0;
-    virtual int ET_getMaxChildrenDepth() const = 0;
     virtual EntityChildId ET_getChildIdFromEntityId(EntityId childEntId) const = 0;
     virtual EntityId ET_getEntityIdFromChildId(EntityChildId childId) const = 0;
+    virtual std::vector<EntityId> ET_getChildren() const = 0;
 };
 
 #endif /* __ET_ENTITY_HPP__ */

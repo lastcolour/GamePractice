@@ -40,11 +40,11 @@ void UILayout::ET_setStyle(const UILayoutStyle& newStyle) {
 
 void UILayout::ET_addItem(EntityId entityId) {
     children.push_back(entityId);
-    ET_SendEvent(entityId, &ETUIBox::ET_setLayout, getEntityId());
+    ET_SendEvent(entityId, &ETUIElement::ET_setLayout, getEntityId());
     calculateLayout();
 }
 
-void UILayout::ET_onBoxResized() {
+void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {
     calculateLayout();
 }
 
@@ -123,7 +123,7 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     }
 
     AABB2Di box;
-    ET_SendEventReturn(box, getEntityId(), &ETUIBox::ET_getBox);
+    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
     auto center = calcAligmentCenter(box, layoutBox);
 
     Vec2i centerShift = center - layoutBox.getCenter();
@@ -134,9 +134,9 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
 
 AABB2Di UILayout::calculateItem(Vec2i& offset, Vec2i& prevMargin, EntityId itemId) {
     AABB2Di itemBox;
-    ET_SendEventReturn(itemBox, itemId, &ETUIBox::ET_getBox);
+    ET_SendEventReturn(itemBox, itemId, &ETUIElement::ET_getBox);
     UIBoxMargin itemMargin;
-    ET_SendEventReturn(itemMargin, itemId, &ETUIBox::ET_getMargin);
+    ET_SendEventReturn(itemMargin, itemId, &ETUIElement::ET_getMargin);
 
     Vec2i center(0);
 

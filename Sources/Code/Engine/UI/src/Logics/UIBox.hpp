@@ -1,17 +1,15 @@
 #ifndef __UI_BOX_HPP__
 #define __UI_BOX_HPP__
 
-#include "Entity/EntityLogic.hpp"
-#include "UI/ETUIBox.hpp"
+#include "Logics/UIElement.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Entity/ETEntity.hpp"
 #include "UI/UIBoxStyle.hpp"
-#include "Core/ETPrimitives.hpp"
 
-class UIBox : public EntityLogic,
+class UIBox : public UIElement,
     public ETNode<ETUIBox>,
     public ETNode<ETRenderCameraEvents>,
-    public ETNode<ETEntityEvents> {
+    public ETNode<ETUIVisibleElement> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -25,33 +23,42 @@ public:
     bool init() override;
     void deinit() override;
 
+    // ETUIElement
+    AABB2Di ET_getBox() const override;
+    UIBoxMargin ET_getMargin() const override;
+
     // ETUIBox
     const UIBoxStyle& ET_getStyle() const override;
     void ET_setStyle(const UIBoxStyle& newBoxStyle) override;
-    const AABB2Di& ET_getBox() const override;
-    const UIBoxMargin& ET_getMargin() const override;
-    void ET_setLayout(EntityId newLayoutId) override;
-    EntityId ET_getLayout() override;
 
     // ETRenderCameraEvents
     void ET_onRenderPortResized() override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
-    void ET_onChildAdded(EntityId childId) override { (void)childId; }
+
+    // ETUIVisibleElement
+    void ET_show() override;
+    void ET_hide() override;
+    bool ET_isVisible() const override;
+
+protected:
+
+    void onZIndexChanged(int newZIndex) override;
 
 private:
 
     void calculateBox();
     Vec2i calculateBoxSize(const Vec3& scale);
     UIBoxMargin calculateMargin(const Vec3& scale);
+    void initBoxRender();
 
 private:
 
     AABB2Di aabb;
     UIBoxStyle style;
     UIBoxMargin margin;
-    EntityId layoutId;
+    EntityId boxRenderId;
 };
 
 #endif /* __UI_BOX_HPP__ */

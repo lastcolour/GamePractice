@@ -35,6 +35,7 @@ bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
     if(!tex) {
         return false;
     }
+
     return true;
 }
 

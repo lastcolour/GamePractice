@@ -29,7 +29,7 @@ public:
     void ET_update() override;
 
     // ETUIBoxEvents
-    void ET_onBoxResized() override;
+    void ET_onBoxResized(const AABB2Di& newAAbb) override;
 
 private:
 

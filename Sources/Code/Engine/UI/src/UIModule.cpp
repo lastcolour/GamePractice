@@ -6,9 +6,9 @@
 #include "Logics/UIBox.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIView.hpp"
-#include "Logics/UIBoxVisual.hpp"
 #include "Logics/UIButton.hpp"
 #include "Logics/UIPressAnimation.hpp"
+#include "Logics/UILabel.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -32,7 +32,7 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIBox>();
     logicsRegister.registerLogic<UILayout>();
     logicsRegister.registerLogic<UIView>();
-    logicsRegister.registerLogic<UIBoxVisual>();
     logicsRegister.registerLogic<UIButton>();
     logicsRegister.registerLogic<UIPressAnimation>();
+    logicsRegister.registerLogic<UILabel>();
 }

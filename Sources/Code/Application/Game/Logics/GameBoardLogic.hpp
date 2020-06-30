@@ -56,7 +56,7 @@ public:
     void ET_onGameTick(float dt) override;
 
     // ETUIBoxEvents
-    void ET_onBoxResized() override;
+    void ET_onBoxResized(const AABB2Di& newAabb) override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;

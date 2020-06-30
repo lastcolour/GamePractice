@@ -25,6 +25,7 @@ from menu.MainViewMenu import MainViewMenu
 from view.main.StatusBar import StatusBar
 
 import sys
+import os
 
 class EditorView(QMainWindow):
     def __init__(self):
@@ -94,7 +95,11 @@ class EditorView(QMainWindow):
             self._editorNative.deinit()
 
 def main():
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+
     app = QApplication([])
+
     editor = EditorView()
     editor.show()
     sys.exit(app.exec_())

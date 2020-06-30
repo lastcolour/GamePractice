@@ -33,7 +33,7 @@ struct ETRenderTextLogic {
     virtual void ET_setFont(const char* fontName) = 0;
     virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
-    virtual void ET_setFontSize(int fontSize) = 0;
+    virtual void ET_setFontHeight(int fontHeight) = 0;
     virtual AABB2D ET_getTextAABB() const = 0;
 };
 

@@ -16,6 +16,10 @@ class EditEntityValue(QWidget):
         self._lineEdit.setReadOnly(True)
         self._rootLayout.addWidget(self._lineEdit)
 
+        self._clearBt = QPushButton("x")
+        self._clearBt.clicked.connect(self._signal_clearBt_clicked)
+        self._rootLayout.addWidget(self._clearBt)
+
         self._selectBt = QPushButton("Select")
         self._selectBt.clicked.connect(self._signal_selectBt_clicked)
         self._rootLayout.addWidget(self._selectBt)
@@ -23,6 +27,10 @@ class EditEntityValue(QWidget):
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
 
+        self._pull()
+
+    def _signal_clearBt_clicked(self):
+        self._push(None)
         self._pull()
 
     def _signal_selectBt_clicked(self):
