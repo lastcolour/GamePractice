@@ -56,7 +56,7 @@ class MemoryStream:
             else:
                 pt += 1
                 res += c
-        self._pos = len(res) + 1
+        self._pos += len(res) + 1
         return res
 
     def writeBool(self, val):

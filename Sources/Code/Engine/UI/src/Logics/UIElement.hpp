@@ -26,8 +26,9 @@ public:
     int ET_getZIndexDepth() const override;
 
     // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) {}
-    void ET_onChildAdded(EntityId childId) override;
+    void ET_onTransformChanged(const Transform& newTm) override {}
+    void ET_onAllLogicsCreated() override {}
+    void ET_onChildAdded(EntityId childId) override {}
 
 protected:
 

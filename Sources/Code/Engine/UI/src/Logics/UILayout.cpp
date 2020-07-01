@@ -22,7 +22,6 @@ UILayout::~UILayout() {
 bool UILayout::init() {
     calculateLayout();
     ETNode<ETUILayout>::connect(getEntityId());
-    ETNode<ETUIBoxEvents>::connect(getEntityId());
     return true;
 }
 
@@ -41,10 +40,6 @@ void UILayout::ET_setStyle(const UILayoutStyle& newStyle) {
 void UILayout::ET_addItem(EntityId entityId) {
     children.push_back(entityId);
     ET_SendEvent(entityId, &ETUIElement::ET_setLayout, getEntityId());
-    calculateLayout();
-}
-
-void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {
     calculateLayout();
 }
 
@@ -143,15 +138,19 @@ AABB2Di UILayout::calculateItem(Vec2i& offset, Vec2i& prevMargin, EntityId itemI
     switch(style.type)
     {
     case UILayoutType::Horizontal: {
-        center.x = offset.x + itemBox.getSize().x / 2 + std::max(prevMargin.x, itemMargin.left);
+        auto marginOffset = std::max(prevMargin.x, itemMargin.left);
+        auto xBoxSize = itemBox.getSize().x;
+        center.x = offset.x + xBoxSize / 2 + marginOffset;
         prevMargin.x = itemMargin.right;
-        offset.x += itemBox.getSize().x;
+        offset.x += xBoxSize + marginOffset;
         break;
     }
     case UILayoutType::Vertical: {
-        center.y = offset.y - itemBox.getSize().y / 2 - std::max(prevMargin.y, itemMargin.top);
+        auto marginOffset = std::max(prevMargin.y, itemMargin.top);
+        auto yBoxSize = itemBox.getSize().y;
+        center.y = offset.y - yBoxSize / 2 - marginOffset;
         prevMargin.y = itemMargin.bot;
-        offset.y -= itemBox.getSize().y;
+        offset.y -= yBoxSize + marginOffset;
         break;
     }
     default:
@@ -181,6 +180,12 @@ void UILayout::calculateLayout() {
 
     calculateAligment(childBoxes);
 
+    int zIndex = 0;
+    int zIndexDepth = 0;
+    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
+    int childZIndex = zIndex + zIndexDepth + 1;
+
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
         auto childBox = childBoxes[i];
@@ -193,5 +198,7 @@ void UILayout::calculateLayout() {
         tm.pt.y = static_cast<float>(center.y);
 
         ET_SendEvent(childId, &ETEntity::ET_setTransform, tm);
+
+        ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }
 }

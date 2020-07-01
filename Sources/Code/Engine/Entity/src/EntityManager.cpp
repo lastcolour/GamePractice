@@ -452,6 +452,7 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
     if(!setupEntityLogics(entity.get(), entityNode)) {
         return nullptr;
     }
+    ET_SendEvent(entity->getEntityId(), &ETEntityEvents::ET_onAllLogicsCreated);
     auto resEntPtr = entity.get();
     auto resEntId = entity->getEntityId();
     entities[resEntPtr->getEntityId()] = std::move(entity);

@@ -4,6 +4,7 @@
 #include "UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "UI/UIBoxStyle.hpp"
+#include "Core/ETLogger.hpp"
 
 void UILabel::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILabel>("UILabel")) {
@@ -24,11 +25,15 @@ bool UILabel::init() {
     UIElement::init();
     ETNode<ETUILabel>::connect(getEntityId());
     ETNode<ETUIVisibleElement>::connect(getEntityId());
-    ET_setTextRender(labelRenderId);
+    ETNode<ETRenderCameraEvents>::connect(getEntityId());
+    if(ET_IsExistNode<ETRenderTextLogic>(labelRenderId)) {
+        ET_setTextRender(labelRenderId);
+    }
     return true;
 }
 
 void UILabel::deinit() {
+    UIElement::deinit();
 }
 
 void UILabel::ET_setText(const char* newText) {
@@ -69,6 +74,13 @@ UIBoxMargin UILabel::ET_getMargin() const {
 
 void UILabel::ET_setTextRender(EntityId newRenderId) {
     labelRenderId = newRenderId;
+    if(!labelRenderId.isValid()) {
+        return;
+    }
+    if(!ET_IsExistNode<ETRenderTextLogic>(labelRenderId)) {
+        LogWarning("[UILabel::ET_setTextRender] Can't find text renderer in entity: %d", labelRenderId.getRawId());
+        return;
+    }
     ET_setText(text.c_str());
     ET_setFontSize(fontSize);
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
@@ -76,6 +88,10 @@ void UILabel::ET_setTextRender(EntityId newRenderId) {
 
 void UILabel::onZIndexChanged(int newZIndex) {
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
+}
+
+void UILabel::ET_onRenderPortResized() {
+    ET_setFontSize(fontSize);
 }
 
 void UILabel::ET_show() {
@@ -86,4 +102,11 @@ void UILabel::ET_hide() {
 
 bool UILabel::ET_isVisible() const {
     return true;
+}
+
+void UILabel::ET_onAllLogicsCreated() {
+    if(labelRenderId != getEntityId()) {
+        return;
+    }
+    ET_setTextRender(labelRenderId);
 }

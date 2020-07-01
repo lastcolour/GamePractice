@@ -7,8 +7,7 @@
 #include "Core/ETPrimitives.hpp"
 
 class UILayout : public EntityLogic,
-    public ETNode<ETUILayout>,
-    public ETNode<ETUIBoxEvents> {
+    public ETNode<ETUILayout> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -27,9 +26,6 @@ public:
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
     void ET_update() override;
-
-    // ETUIBoxEvents
-    void ET_onBoxResized(const AABB2Di& newAAbb) override;
 
 private:
 

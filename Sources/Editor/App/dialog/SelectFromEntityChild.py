@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem
+from PyQt5.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QTreeWidget, QTreeWidgetItem
 
 class SelectFromEntityChild(QDialog):
     def __init__(self, entity):
@@ -8,10 +8,13 @@ class SelectFromEntityChild(QDialog):
         self._selectedEntity = None
 
         self._rootLayout = QVBoxLayout()
-        self._listView = QListWidget()
-        self._listView.currentItemChanged.connect(self._signal_listView_currentItemChanged)
-        self._buildListView()
-        self._rootLayout.addWidget(self._listView)
+        self._tree = QTreeWidget()
+        self._tree.setHeaderHidden(True)
+        self._tree.setColumnCount(1)
+        self._tree.setSortingEnabled(False)
+        self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
+        self._buildTree()
+        self._rootLayout.addWidget(self._tree)
 
         self._buttotLayout = QHBoxLayout()
 
@@ -36,13 +39,18 @@ class SelectFromEntityChild(QDialog):
     def _signal_selectBt_clicked(self):
         self.done(0)
 
-    def _buildListView(self):
+    def _buildTree(self):
+        rootItem = self._tree.invisibleRootItem()
+        item = QTreeWidgetItem(rootItem)
+        item.setText(0, self._entity.getName())
+        item._entity = self._entity
         for childEnt in self._entity.getChildren():
-            item = QListWidgetItem(childEnt.getName())
-            item._entity = childEnt
-            self._listView.addItem(item)
+            childItem = QTreeWidgetItem(item)
+            childItem.setText(0, childEnt.getName())
+            childItem._entity = childEnt
+        item.setExpanded(True)
 
-    def _signal_listView_currentItemChanged(self, currItem, prevItem):
+    def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None:
             self._selectedEntity = currItem._entity
             self._selectBt.setEnabled(True)

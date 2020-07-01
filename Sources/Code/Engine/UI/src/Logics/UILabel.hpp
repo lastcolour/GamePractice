@@ -2,12 +2,14 @@
 #define __UI_LABEL_HPP__
 
 #include "Logics/UIElement.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 class ReflectContext;
 
 class UILabel : public UIElement,
     public ETNode<ETUILabel>,
-    public ETNode<ETUIVisibleElement> {
+    public ETNode<ETUIVisibleElement>,
+    public ETNode<ETRenderCameraEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -36,6 +38,12 @@ public:
     void ET_show() override;
     void ET_hide() override;
     bool ET_isVisible() const override;
+
+    // ETRenderCameraEvents
+    void ET_onRenderPortResized() override;
+
+    // ETEntityEvents
+    void ET_onAllLogicsCreated() override;
 
 protected:
 

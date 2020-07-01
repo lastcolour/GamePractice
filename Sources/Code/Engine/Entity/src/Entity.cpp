@@ -22,6 +22,9 @@ bool IsValidChildId(EntityChildId childId, const std::vector<Entity::EntityChild
     if(childId == InvalidEntityChildId) {
         return false;
     }
+    if(childId == 0) {
+        return false;
+    }
     for(auto& childNode : children) {
         if(childId == childNode.childId) {
             return false;
@@ -324,6 +327,9 @@ EntityChildId Entity::createNewChildId() const {
 }
 
 EntityChildId Entity::ET_getChildIdFromEntityId(EntityId childEntId) const {
+    if(childEntId == entityId) {
+        return 0;
+    }
     for(auto& chilNode : children) {
         if(chilNode.childEntId == childEntId) {
             return chilNode.childId;
@@ -333,6 +339,9 @@ EntityChildId Entity::ET_getChildIdFromEntityId(EntityId childEntId) const {
 }
 
 EntityId Entity::ET_getEntityIdFromChildId(EntityChildId childId) const {
+    if(childId == 0) {
+        return entityId;
+    }
     for(auto& chilNode : children) {
         if(chilNode.childId == childId) {
             return chilNode.childEntId;

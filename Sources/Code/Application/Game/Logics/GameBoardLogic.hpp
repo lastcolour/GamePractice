@@ -61,6 +61,7 @@ public:
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onChildAdded(EntityId childId) override { (void)childId; }
+    void ET_onAllLogicsCreated() override {}
 
 protected:
 

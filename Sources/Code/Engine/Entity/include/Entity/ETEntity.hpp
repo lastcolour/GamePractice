@@ -8,6 +8,7 @@ struct ETEntityEvents {
     virtual ~ETEntityEvents() = default;
     virtual void ET_onTransformChanged(const Transform& newTm) = 0;
     virtual void ET_onChildAdded(EntityId childId) = 0;
+    virtual void ET_onAllLogicsCreated() = 0;
 };
 
 struct ETEntity {

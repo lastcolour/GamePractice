@@ -36,6 +36,7 @@ public:
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onAllLogicsCreated() override;
 
     // ETUIVisibleElement
     void ET_show() override;
@@ -49,9 +50,8 @@ protected:
 private:
 
     void calculateBox();
-    Vec2i calculateBoxSize(const Vec3& scale);
-    UIBoxMargin calculateMargin(const Vec3& scale);
-    void initBoxRender();
+    Vec2i calculateBoxSize();
+    UIBoxMargin calculateMargin();
 
 private:
 

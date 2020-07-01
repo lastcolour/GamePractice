@@ -8,6 +8,7 @@
 #include "Platform/OpenGL.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <algorithm>
 #include <cassert>

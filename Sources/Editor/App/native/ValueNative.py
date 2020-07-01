@@ -668,7 +668,10 @@ class EntityValue(ValueNative):
         if entity is None:
             self._val = -1
         else:
-            self._val = entity._childId
+            if self.getEntityId() == entity.getNativeId():
+                self._val = 0
+            else:
+                self._val = entity._childId
         self._onValueChanged()
 
     def getEntityValue(self):

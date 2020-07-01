@@ -41,17 +41,16 @@ public:
     // ETUIAnimationEvents
     void ET_onAnimationEnd() override;
 
+    // ETEntityEvents
+    void ET_onAllLogicsCreated() override;
+
 protected:
 
     void onZIndexChanged(int newZIndex) override;
 
 private:
 
-    void initLabelRender();
-
-private:
-
-    EntityId labelRenderId;
+    EntityId labelId;
     UIEventType eventType;
     bool isHovered;
 };

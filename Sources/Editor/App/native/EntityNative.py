@@ -207,9 +207,15 @@ class EntityNative(NativeObject):
         return True
 
     def getChildWithId(self, childId):
+        if childId == -1:
+            return None
+        if childId == 0:
+            return self
         for child in self._children:
             if child._childId == childId:
                 return child
+        print("[EntityNative:getChildWithId] Can't find child with id '{0}' in entity: '{1}'".format(
+            childId, self._name))
         return None
 
     def isInternal(self):

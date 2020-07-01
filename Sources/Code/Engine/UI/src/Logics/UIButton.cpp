@@ -17,7 +17,7 @@ void UIButton::Reflect(ReflectContext& ctx) {
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
         classInfo->addBaseClass<UIBox>();
-        classInfo->addField("label", &UIButton::labelRenderId);
+        classInfo->addField("label", &UIButton::labelId);
         classInfo->addField("event", &UIButton::eventType);
     }
 }
@@ -32,7 +32,6 @@ UIButton::~UIButton() {
 
 bool UIButton::init() {
     UIBox::init();
-    initLabelRender();
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIAnimationEvents>::connect(getEntityId());
     return true;
@@ -81,20 +80,11 @@ void UIButton::ET_onAnimationEnd() {
 
 void UIButton::onZIndexChanged(int newZIndex) {
     UIBox::onZIndexChanged(newZIndex);
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex + 1);
+    ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, newZIndex + 1);
 }
 
 int UIButton::ET_getZIndexDepth() const {
     return 2;
-}
-
-void UIButton::initLabelRender() {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    ET_SendEvent(labelRenderId, &ETEntity::ET_setTransform, tm);
-
-    int zIndex = ET_getZIndex();
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, zIndex + 1);
 }
 
 void UIButton::ET_show() {
@@ -107,4 +97,11 @@ void UIButton::ET_hide() {
 
 bool UIButton::ET_isVisible() const {
     return UIBox::ET_isVisible();
+}
+
+void UIButton::ET_onAllLogicsCreated() {
+    UIBox::ET_onAllLogicsCreated();
+    if(labelId == getEntityId()) {
+        ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, ET_getZIndex() + 1);
+    }
 }
