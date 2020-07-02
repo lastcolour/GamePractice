@@ -10,6 +10,7 @@ class FileNodeType:
     Entity = 0
     Image = 1
     Dir = 2
+    Sound = 3
 
 class FileNode:
     def __init__(self):
@@ -39,6 +40,8 @@ class FileNode:
             resPath = resPath[len('Entities/'):]
         elif self._type == FileNodeType.Image:
             pass
+        elif self._type == FileNodeType.Sound:
+            resPath = resPath[len('Sounds/'):]
         else:
             raise Exception("Unknown entity type")
         return resPath
@@ -198,6 +201,7 @@ class AssetsModel:
         self._scanDir(self._resourceRootDir)
         self._setTypeRecursive(self._resourceRootDir.findChild("Entities"), FileNodeType.Entity)
         self._setTypeRecursive(self._resourceRootDir.findChild("Images"), FileNodeType.Image)
+        self._setTypeRecursive(self._resourceRootDir.findChild("Sounds"), FileNodeType.Sound)
         return True
 
     def reload(self):

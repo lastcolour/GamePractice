@@ -11,6 +11,7 @@
 #include "Logics/RenderColoredTextureLogic.hpp"
 #include "Logics/RenderLinearGradientRect.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
+#include "RenderConfig.hpp"
 
 RenderModule::RenderModule() :
     SystemModule("Render") {}
@@ -29,6 +30,7 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
 }
 
 void RenderModule::reflectSystemConfigs(ReflectContext& ctx) const {
+    ctx.reflect<RenderConfig>();
 }
 
 void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

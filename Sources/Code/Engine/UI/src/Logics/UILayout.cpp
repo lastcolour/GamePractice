@@ -2,6 +2,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "UI/UIBoxStyle.hpp"
 #include "Entity/ETEntity.hpp"
+#include "Render/ETRenderNode.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -200,5 +201,6 @@ void UILayout::calculateLayout() {
         ET_SendEvent(childId, &ETEntity::ET_setTransform, tm);
 
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
+        ET_SendEvent(childId, &ETRenderNode::ET_setDrawPriority, childZIndex);
     }
 }

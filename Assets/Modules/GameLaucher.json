@@ -1,5 +1,5 @@
 {
     "GameLaucherConfig":{
-        "mainView":"UI/MainView/Root.json"
+        "mainView":"UI/MainView/MainView.json"
     }
 }

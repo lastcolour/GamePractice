@@ -79,8 +79,10 @@ void UIButton::ET_onAnimationEnd() {
 }
 
 void UIButton::onZIndexChanged(int newZIndex) {
-    UIBox::onZIndexChanged(newZIndex);
-    ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, newZIndex + 1);
+    UIBox::onZIndexChanged(newZIndex); 
+    auto labelZIndex = newZIndex + 1;
+    ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, labelZIndex);
+    ET_SendEvent(labelId, &ETRenderNode::ET_setDrawPriority, labelZIndex);
 }
 
 int UIButton::ET_getZIndexDepth() const {
@@ -102,6 +104,8 @@ bool UIButton::ET_isVisible() const {
 void UIButton::ET_onAllLogicsCreated() {
     UIBox::ET_onAllLogicsCreated();
     if(labelId == getEntityId()) {
-        ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, ET_getZIndex() + 1);
+        auto labelZIndex = ET_getZIndex() + 1;
+        ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, labelZIndex);
+        ET_SendEvent(labelId, &ETRenderNode::ET_setDrawPriority, labelZIndex);
     }
 }

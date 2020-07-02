@@ -36,7 +36,7 @@ void GameLaucher::ET_onSurfaceCreated() {
 }
 
 void GameLaucher::ET_onSurfaceDestroyed() {
-    isViewExist = true;
+    isViewExist = false;
 }
 
 void GameLaucher::openMainView() {
@@ -47,20 +47,21 @@ void GameLaucher::openMainView() {
     }
 
     if(laucherConfig->mainView.empty()) {
-        LogError("[GameIniter::openMainView] Can't open empty main view");
+        LogError("[GameIniter::openMainView] Main view is empty");
         return;
     }
 
-    // ET_SendEvent(&ETUIViewManager::ET_openView, laucherConfig->mainView.c_str());
-    // EntityId mainViewId;
-    // ET_SendEventReturn(mainViewId, &ETUIViewStack::ET_getActiveViewId);
-    // if(!mainViewId.isValid()) {
-    //     LogError("[GameIniter::openMainView] Can't cretae main view '%s'", laucherConfig->mainView);
-    // }
-    // bool isVisible = false;
-    // ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);
-    // if(!isVisible) {
-    //     ET_SendEvent(&ETSurface::ET_show);
-    // }
-    // isViewExist = true;
+    EntityId mainViewId;
+    ET_SendEventReturn(mainViewId, &ETEntityManager::ET_createEntity, laucherConfig->mainView.c_str());
+    if(!mainViewId.isValid()) {
+        LogError("[GameLaucher::openMainView] Can't open main view: '%s'", laucherConfig->mainView);
+        return;
+    }
+
+    isViewExist = true;
+    bool isVisible = false;
+    ET_SendEventReturn(isVisible, &ETSurface::ET_isVisible);
+    if(!isVisible) {
+        ET_SendEvent(&ETSurface::ET_show);
+    }
 }

@@ -3,18 +3,13 @@
 #include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Platform/OpenGL.hpp"
+#include "Core/ETApplication.hpp"
+#include "RenderConfig.hpp"
 
 #include <algorithm>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
-namespace {
-
-const char* DEF_FONT_NAME = "Render/Fonts/Shanti-Regular.ttf";
-const int DEF_FONT_SIZE = 48;
-
-} // namespace
 
 RenderFontManager::RenderFontManager() :
     padding(2) {
@@ -67,11 +62,13 @@ void RenderFontManager::deinit() {
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_createDefaultFont() {
-    return createFont(DEF_FONT_NAME, DEF_FONT_SIZE);
+    auto renderConfig = ET_getShared<RenderConfig>();
+    return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_createFont(const char* fontName) {
-    return createFont(fontName, DEF_FONT_SIZE);
+    auto renderConfig = ET_getShared<RenderConfig>();
+    return createFont(fontName, renderConfig->defaultFontSize);
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontName, int fontSize) {

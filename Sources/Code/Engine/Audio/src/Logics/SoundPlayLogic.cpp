@@ -28,25 +28,42 @@ bool SoundPlayLogic::init() {
 }
 
 void SoundPlayLogic::deinit() {
+    ET_stop();
 }
 
 void SoundPlayLogic::ET_setSound(const char* newSoundName) {
-    ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, newSoundName);
+    if(!newSoundName || !newSoundName[0]) {
+        sound.reset();
+    } else {
+        ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, newSoundName);
+    }
 }
 
 void SoundPlayLogic::ET_play() {
+    if(!sound) {
+        return;
+    }
     sound->play(looped);
     sound->setVolume(volume);
 }
 
 void SoundPlayLogic::ET_pause() {
+    if(!sound) {
+        return;
+    }
     sound->pause();
 }
 
 void SoundPlayLogic::ET_resume() {
+    if(!sound) {
+        return;
+    }
     sound->resume();
 }
 
 void SoundPlayLogic::ET_stop() {
+    if(!sound) {
+        return;
+    }
     sound->stop();
 }

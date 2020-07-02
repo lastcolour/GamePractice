@@ -25,10 +25,6 @@ void SoundManager::deinit() {
 }
 
 Buffer SoundManager::loadSoundBuffer(const char* soundName) {
-    if(!soundName || !soundName[0]) {
-        LogError("[SoundManager::loadSoundBuffer] Can't load empty sound");
-        return Buffer();
-    }
     auto it = buffers.find(soundName);
     if(it != buffers.end()) {
         return it->second;
@@ -46,6 +42,10 @@ Buffer SoundManager::loadSoundBuffer(const char* soundName) {
 }
 
 std::unique_ptr<Sound> SoundManager::ET_createSound(const char* soundName) {
+    if(!soundName || !soundName[0]) {
+        LogError("[SoundManager::ET_createSound] Can't create empty sound");
+        return nullptr;
+    }
     auto buff = loadSoundBuffer(soundName);
     if(!buff) {
         return nullptr;

@@ -16,8 +16,7 @@ public:
     // EntityLogic
     bool init() override;
 
-    // UIBox
-    void ET_setStyle(const UIBoxStyle& newBoxStyle) override { (void)newBoxStyle; }
+    // ETRenderCameraEvents
     void ET_onRenderPortResized() override;
 };
 

@@ -1,10 +1,11 @@
 #include "Logics/UIView.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderCamera.hpp"
-#include "Entity/ETEntity.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 void UIView::Reflect(ReflectContext& ctx) {
-    ctx.classInfo<UIView>("UIView");
+    if(auto classInfo = ctx.classInfo<UIView>("UIView")) {
+        classInfo->addBaseClass<UIBox>();
+    }
 }
 
 UIView::UIView() {
@@ -14,23 +15,14 @@ UIView::~UIView() {
 }
 
 bool UIView::init() {
-    UIBoxStyle viewStyle;
-    viewStyle.width = 1.f;
-    viewStyle.widthInv = UIBoxSizeInvariant::Relative;
-    viewStyle.height = 1.f;
-    viewStyle.heightInv = UIBoxSizeInvariant::Relative;
-
-    viewStyle.margin.bot = 0.f;
-    viewStyle.margin.top = 0.f;
-    viewStyle.margin.left = 0.f;
-    viewStyle.margin.right = 0.f;
-
-    UIBox::ET_setStyle(viewStyle);
+    UIBox::init();
     ET_onRenderPortResized();
-    return UIBox::init();
+    return true;
 }
 
 void UIView::ET_onRenderPortResized() {
+    UIBox::ET_onRenderPortResized();
+
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
 
