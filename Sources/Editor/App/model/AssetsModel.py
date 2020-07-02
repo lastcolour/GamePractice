@@ -1,18 +1,21 @@
 import os
 import pathlib
 import shutil
+import copy
 
 from utils.Log import Log
 from native.EntityNativeLoader import CreateVoidEntity
 
 class FileNodeType:
     Entity = 0
-    Dir = 0
+    Image = 1
+    Dir = 2
 
 class FileNode:
     def __init__(self):
         self._parent = None
         self._name = None
+        self._type = None
 
     def isDir(self):
         return False
@@ -32,6 +35,12 @@ class FileNode:
         while currParent._parent is not None:
             resPath = "{0}/{1}".format(currParent._name, resPath)
             currParent = currParent._parent
+        if self._type == FileNodeType.Entity:
+            resPath = resPath[len('Entities/'):]
+        elif self._type == FileNodeType.Image:
+            pass
+        else:
+            raise Exception("Unknown entity type")
         return resPath
 
     def getFullPath(self):
@@ -65,9 +74,16 @@ class DirNode(FileNode):
         for child in self._children:
             yield child
 
+    def findChild(self, name):
+        for child in self._children:
+            if child._name == name:
+                return child
+        return None
+
 class AssetsModel:
     def __init__(self, appConfig):
         self._appConfig = appConfig
+        self._resourceRootDir = DirNode()
         self._entitiesRootDir = DirNode()
 
     def _scanDir(self, dirNode):
@@ -89,9 +105,6 @@ class AssetsModel:
                 dirNode._children.append(node)
         dirNode._children.sort(key=lambda node: node._name)
         dirNode._children.sort(key=lambda node: not node.isDir())
-
-    def getRootNode(self):
-        return self._entitiesRootDir
 
     def createNewDir(self, parentNode, fileName):
         if len(fileName) == 0:
@@ -168,14 +181,23 @@ class AssetsModel:
         node._name = newName
         return True
 
+    def _setTypeRecursive(self, item, fileType):
+        for child in item._children:
+            if child.isDir():
+                self._setTypeRecursive(child, fileType)
+            else:
+                child._type = fileType
+
     def init(self):
         assetsRootDir = self._appConfig.getAssetsRootPath()
         if not os.path.exists(assetsRootDir):
             Log.error("[AssetsModel:init] Can't find assets root dir: '{0}'".format(assetsRootDir))
             return False
-        self._entitiesRootDir = DirNode()
-        self._entitiesRootDir._name = "{0}/Entities".format(assetsRootDir)
-        self._scanDir(self._entitiesRootDir)
+        self._resourceRootDir = DirNode()
+        self._resourceRootDir._name = assetsRootDir
+        self._scanDir(self._resourceRootDir)
+        self._setTypeRecursive(self._resourceRootDir.findChild("Entities"), FileNodeType.Entity)
+        self._setTypeRecursive(self._resourceRootDir.findChild("Images"), FileNodeType.Image)
         return True
 
     def reload(self):
@@ -183,4 +205,8 @@ class AssetsModel:
             raise RuntimeError("Can't reload assets model")
 
     def getEntitiesTree(self):
-        return self._entitiesRootDir
+        entRoot = self._resourceRootDir.findChild("Entities")
+        return entRoot
+
+    def getResourcesTree(self):
+        return self._resourceRootDir

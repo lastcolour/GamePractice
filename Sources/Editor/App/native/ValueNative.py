@@ -629,7 +629,9 @@ class ResourceValue(ValueNative):
             node.append(self._val)
 
     def readFromStream(self, stream):
-        self._val = stream.readString()
+        stream.readString()
+        if self._val is None:
+            self._val = ""
 
     def writeToStream(self, stream):
         stream.writeString(self._val)

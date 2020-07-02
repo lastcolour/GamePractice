@@ -27,7 +27,7 @@ class SelectChildEntity(QDialog):
         self._rootLayout.addWidget(self._searchLine)
 
         self._tree = FileTreeView()
-        self._tree._setFileTreeModel(GetEventManager().getAssetsModel())
+        self._tree._setFileTreeModel(GetEventManager().getAssetsModel().getEntitiesTree())
         _disableItemIfCantBeChild(self._entity, self._tree.invisibleRootItem())
         self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
         self._rootLayout.addWidget(self._tree)

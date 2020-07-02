@@ -69,16 +69,17 @@
                   }
                 },
                 {
-                  "type": "RenderSimple",
-                  "id": 2,
+                  "type": "RenderColoredTexture",
+                  "id": 3,
                   "data": {
                     "size": {
-                      "x": 67,
-                      "y": 67
+                      "x": 232,
+                      "y": 232
                     },
+                    "image": "Images/about.png",
                     "color": {
-                      "r": 65,
-                      "g": 179,
+                      "r": 106,
+                      "g": 173,
                       "b": 255,
                       "a": 255
                     }
@@ -109,22 +110,6 @@
             }
           },
           {
-            "type": "RenderSimple",
-            "id": 2,
-            "data": {
-              "size": {
-                "x": 150,
-                "y": 106
-              },
-              "color": {
-                "r": 144,
-                "g": 255,
-                "b": 84,
-                "a": 255
-              }
-            }
-          },
-          {
             "type": "UILayout",
             "id": 3,
             "data": {
@@ -136,6 +121,22 @@
               "children": [
                 1
               ]
+            }
+          },
+          {
+            "type": "RenderSimple",
+            "id": 4,
+            "data": {
+              "size": {
+                "x": 580,
+                "y": 371
+              },
+              "color": {
+                "r": 157,
+                "g": 255,
+                "b": 252,
+                "a": 255
+              }
             }
           }
         ]
@@ -233,7 +234,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 0.30434781312942505,
+                          "fontSize": 1.02173912525177,
                           "text": "Start"
                         }
                       }
@@ -268,8 +269,8 @@
                   "id": 2,
                   "data": {
                     "size": {
-                      "x": 107,
-                      "y": 40
+                      "x": 372,
+                      "y": 140
                     },
                     "color": {
                       "r": 255,
@@ -317,8 +318,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 150,
-                "y": 79
+                "x": 580,
+                "y": 278
               },
               "color": {
                 "r": 244,
@@ -395,22 +396,6 @@
               "children": [],
               "logics": [
                 {
-                  "type": "RenderSimple",
-                  "id": 2,
-                  "data": {
-                    "size": {
-                      "x": 34,
-                      "y": 34
-                    },
-                    "color": {
-                      "r": 211,
-                      "g": 79,
-                      "b": 255,
-                      "a": 255
-                    }
-                  }
-                },
-                {
                   "type": "UIPressAnimation",
                   "id": 3,
                   "data": {
@@ -438,6 +423,23 @@
                     "render": 0,
                     "label": -1,
                     "event": "None"
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 5,
+                  "data": {
+                    "size": {
+                      "x": 116,
+                      "y": 116
+                    },
+                    "image": "Images/options.png",
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
                   }
                 }
               ]
@@ -469,22 +471,6 @@
               "children": [],
               "logics": [
                 {
-                  "type": "RenderSimple",
-                  "id": 2,
-                  "data": {
-                    "size": {
-                      "x": 34,
-                      "y": 34
-                    },
-                    "color": {
-                      "r": 255,
-                      "g": 175,
-                      "b": 83,
-                      "a": 255
-                    }
-                  }
-                },
-                {
                   "type": "UIButton",
                   "id": 3,
                   "data": {
@@ -512,6 +498,23 @@
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
                     "minScale": 0.949999988079071
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 5,
+                  "data": {
+                    "size": {
+                      "x": 116,
+                      "y": 116
+                    },
+                    "image": "Images/about.png",
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
                   }
                 }
               ]
@@ -543,22 +546,6 @@
               "children": [],
               "logics": [
                 {
-                  "type": "RenderSimple",
-                  "id": 2,
-                  "data": {
-                    "size": {
-                      "x": 34,
-                      "y": 34
-                    },
-                    "color": {
-                      "r": 115,
-                      "g": 232,
-                      "b": 255,
-                      "a": 255
-                    }
-                  }
-                },
-                {
                   "type": "UIButton",
                   "id": 3,
                   "data": {
@@ -586,6 +573,23 @@
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
                     "minScale": 0.949999988079071
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 5,
+                  "data": {
+                    "size": {
+                      "x": 116,
+                      "y": 116
+                    },
+                    "image": "Images/profile.png",
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
                   }
                 }
               ]
@@ -617,8 +621,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 150,
-                "y": 79
+                "x": 580,
+                "y": 278
               },
               "color": {
                 "r": 116,

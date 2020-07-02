@@ -40,8 +40,7 @@ struct ETRenderTextLogic {
 struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
     virtual void ET_setImage(const char* imageName) = 0;
-    virtual void ET_setScale(const Vec2& newScale) = 0;
-    virtual Vec2i ET_getOriginalSize() const = 0;
+    virtual Vec2i ET_getImageSize() const = 0;
 };
 
 struct ETRenderColoredTexture {

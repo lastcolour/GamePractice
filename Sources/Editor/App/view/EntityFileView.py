@@ -58,7 +58,7 @@ class EntityFileView(QWidget):
     def _getRootFileNode(self, treeItem):
         if hasattr(treeItem.parent(), "_node"):
             return treeItem.parent()._node
-        return self._fileTreeModel.getRootNode()
+        return self._fileTreeModel.getEntitiesTree()
 
     def _createNewDir(self, treeItem, fileName):
         newNode = self._fileTreeModel.createNewDir(self._getRootFileNode(treeItem), fileName)

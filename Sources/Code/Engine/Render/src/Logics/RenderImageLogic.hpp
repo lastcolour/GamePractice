@@ -23,8 +23,7 @@ public:
 
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
-    void ET_setScale(const Vec2& newScale) override;
-    Vec2i ET_getOriginalSize() const override;
+    Vec2i ET_getImageSize() const override;
 
     // ETRenderRect
     void ET_setSize(const Vec2i& newSize) override;
@@ -40,13 +39,8 @@ protected:
 
 protected:
 
-    void updateScale();
-
-protected:
-
     std::shared_ptr<RenderTexture> tex;
-    Vec2 imageScale;
-    Vec2 texScale;
+    Vec2i size;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */

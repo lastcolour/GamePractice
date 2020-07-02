@@ -64,7 +64,7 @@ class EditorView(QMainWindow):
 
     def _openFileTreeView(self):
         self._entityFileView = EntityFileView()
-        self._entityFileView.setFileTreeModel(self._assetsModel)
+        self._entityFileView.setFileTreeModel(self._assetsModel.getEntitiesTree())
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityFileView, "Assets Explorer"))
 
     def _openEntityLogicsView(self):

@@ -19,6 +19,7 @@ from .values.EditColorValue import EditColorValue
 from .values.EditEnumValue import EditEnumValue
 from .values.EditArrayValue import EditArrayValue
 from .values.EditEntityValue import EditEntityValue
+from .values.EditResourceValue import EditResourceValue
 
 def _removeAllItemChildren(item):
     for i in reversed(range(item.childCount())):
@@ -192,7 +193,7 @@ class LogicView(QWidget):
         elif valType == ValueType.Color:
             return EditColorValue(value)
         elif valType == ValueType.Resource:
-            return EditStringValue(value)
+            return EditResourceValue(value)
         elif valType == ValueType.Entity:
             return EditEntityValue(value)
         elif valType == ValueType.Array:

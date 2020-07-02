@@ -9,9 +9,6 @@ class FileTreeView(QTreeWidget):
         self.setSortingEnabled(False)
         self.setColumnCount(1)
 
-    def _setFileTreeModel(self, model):
-        self._fileTreeModel = model
-
     def _buildTree(self, parentItem, rootNode):
         for node in rootNode:
             if node.isDir():
@@ -30,4 +27,4 @@ class FileTreeView(QTreeWidget):
         self.clear()
         self._fileTreeModel = fileTreeModel
         if self._fileTreeModel is not None:
-            self._buildTree(self.invisibleRootItem(), self._fileTreeModel.getEntitiesTree())
+            self._buildTree(self.invisibleRootItem(), self._fileTreeModel)
