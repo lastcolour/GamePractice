@@ -40,7 +40,7 @@ void UIPressAnimation::ET_start() {
     isReversed = false;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
     ETNode<ETAppTimerEvents>::connect(getEntityId());
-    if(!sound) {
+    if(sound) {
         if(sound->isPlaying()) {
             sound->stop();
         }

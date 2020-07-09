@@ -54,7 +54,7 @@ void SoundStream::play() {
 }
 
 void SoundStream::stop() {
-    if(state == SoundStreamState::Stop || state == SoundStreamState::MixLast) {
+    if(state == SoundStreamState::Stop) {
         return;
     }
     state = SoundStreamState::Stop;

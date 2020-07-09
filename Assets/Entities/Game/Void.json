@@ -2,13 +2,56 @@
   "children": [],
   "logics": [
     {
-      "type": "SoundPlayLogic",
+      "type": "GameBoard",
       "id": 1,
       "data": {
-        "looped": true,
-        "volume": 1.0,
-        "sound": "UI/ambient.ogg",
-        "autoStart": true
+        "fallSpeed": 1.0,
+        "size": {
+          "x": 3,
+          "y": 3
+        },
+        "cellObject": "",
+        "cellScale": 0.8999999761581421
+      }
+    },
+    {
+      "type": "GameBoardElemDestroy",
+      "id": 2,
+      "data": {
+        "destroyDuration": 0.10000000149011612
+      }
+    },
+    {
+      "type": "GameBoardAppearAnimation",
+      "id": 3,
+      "data": {
+        "fallSpeed": 647454064640.0,
+        "collumnDelay": 0.20000000298023224,
+        "duration": 1.0
+      }
+    },
+    {
+      "type": "GameBoardElemSwitcher",
+      "id": 4,
+      "data": {
+        "switchDuration": 1.0
+      }
+    },
+    {
+      "type": "GameBoardMatcher",
+      "id": 5,
+      "data": {}
+    },
+    {
+      "type": "GameBoardInteraction",
+      "id": 6,
+      "data": {}
+    },
+    {
+      "type": "GameEndTimer",
+      "id": 7,
+      "data": {
+        "endTime": 120.0
       }
     }
   ]

@@ -81,6 +81,7 @@ protected:
     void updateAfterRemoves();
     void updateBoard();
     void initBoardBox();
+    void setCellObject(const char* cellObjectName);
 
 protected:
 

@@ -42,8 +42,10 @@ class FileNode:
             pass
         elif self._type == FileNodeType.Sound:
             resPath = resPath[len('Sounds/'):]
+        elif self._type == FileNodeType.Dir:
+            pass
         else:
-            raise Exception("Unknown entity type")
+            raise Exception("Unknown file type")
         return resPath
 
     def getFullPath(self):
@@ -65,6 +67,7 @@ class FileNode:
 class DirNode(FileNode):
     def __init__(self):
         super().__init__()
+        self._type = FileNodeType.Dir
         self._children = []
 
     def isDir(self):
@@ -146,6 +149,7 @@ class AssetsModel:
         node = FileNode()
         node._name = fileName
         node._parent = parentNode
+        node._type = FileNodeType.Entity
         parentNode._children.append(node)
         return node
 

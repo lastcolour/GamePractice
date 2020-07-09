@@ -54,7 +54,7 @@ class TestAssetsModel(unittest.TestCase):
         self.assertTrue(fileTree.isDir())
         self.assertTrue(len(fileTree.getChildren()) > 0)
         item = fileTree.getChildren()[0]
-        self.assertTrue(item.isRoot())
+        self.assertFalse(item.isRoot())
         self.assertGreater(len(item.getFullPath()), len(item.getRelativePath()))
         self.assertGreaterEqual(len(item.getRelativePath()), len(item.getBaseName()))
 

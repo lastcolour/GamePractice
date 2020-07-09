@@ -1,0 +1,776 @@
+{
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Background",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderLinearGradientRect",
+            "id": 1,
+            "data": {
+              "size": {
+                "x": 360,
+                "y": 640
+              },
+              "startColor": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 255
+              },
+              "endColor": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 255
+              },
+              "isVertical": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "TopBar",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "TimeInfo",
+            "id": 1,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "TimeIcon",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "width": 7.0,
+                            "widthInv": "Grid",
+                            "height": 7.0,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 1.0,
+                              "right": 1.0
+                            }
+                          },
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderColoredTexture",
+                        "id": 2,
+                        "data": {
+                          "size": {
+                            "x": 23,
+                            "y": 23
+                          },
+                          "image": "Images/block.png",
+                          "color": {
+                            "r": 252,
+                            "g": 255,
+                            "b": 51,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "TimeLabel",
+                  "id": 2,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "fondSize": 5.0,
+                          "text": "Time: 999",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "color": {
+                            "r": 255,
+                            "g": 235,
+                            "b": 11,
+                            "a": 255
+                          },
+                          "fontSize": 0.3478260934352875,
+                          "text": "Time: 999"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "style": {
+                      "width": 0.5,
+                      "widthInv": "Relative",
+                      "height": 10.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0
+                  }
+                },
+                {
+                  "type": "RenderSimple",
+                  "id": 2,
+                  "data": {
+                    "size": {
+                      "x": 180,
+                      "y": 32
+                    },
+                    "color": {
+                      "r": 255,
+                      "g": 73,
+                      "b": 60,
+                      "a": 255
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 3,
+                  "data": {
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Left",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      1,
+                      2
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "ScoreInfo",
+            "id": 2,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "ScoreLabel",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "fondSize": 5.0,
+                          "text": "Score: 999",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "color": {
+                            "r": 171,
+                            "g": 71,
+                            "b": 171,
+                            "a": 255
+                          },
+                          "fontSize": 0.3478260934352875,
+                          "text": "Score: 999"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "ScoreIcon",
+                  "id": 2,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "width": 7.0,
+                            "widthInv": "Grid",
+                            "height": 7.0,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 1.0,
+                              "right": 1.0
+                            }
+                          },
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderColoredTexture",
+                        "id": 2,
+                        "data": {
+                          "size": {
+                            "x": 23,
+                            "y": 23
+                          },
+                          "image": "Images/block.png",
+                          "color": {
+                            "r": 238,
+                            "g": 107,
+                            "b": 255,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "style": {
+                      "width": 0.5,
+                      "widthInv": "Relative",
+                      "height": 10.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0
+                  }
+                },
+                {
+                  "type": "RenderSimple",
+                  "id": 2,
+                  "data": {
+                    "size": {
+                      "x": 180,
+                      "y": 32
+                    },
+                    "color": {
+                      "r": 168,
+                      "g": 255,
+                      "b": 97,
+                      "a": 255
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 3,
+                  "data": {
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Right",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      1,
+                      2
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "style": {
+                "width": 1.0,
+                "widthInv": "Relative",
+                "height": 0.07500000298023224,
+                "heightInv": "Relative",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": 0
+            }
+          },
+          {
+            "type": "RenderSimple",
+            "id": 2,
+            "data": {
+              "size": {
+                "x": 360,
+                "y": 48
+              },
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 3,
+            "data": {
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                1,
+                2
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "MidBar",
+      "id": 3,
+      "internal": true,
+      "data": {
+        "children": [
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "GameBoard",
+            "id": 1,
+            "internal": true,
+            "data": {
+              "children": [],
+              "logics": [
+                {
+                  "type": "GameBoard",
+                  "id": 1,
+                  "data": {
+                    "fallSpeed": 1.0,
+                    "size": {
+                      "x": 3,
+                      "y": 3
+                    },
+                    "cellObject": "",
+                    "cellScale": 1.0
+                  }
+                },
+                {
+                  "type": "UIBox",
+                  "id": 2,
+                  "data": {
+                    "style": {
+                      "width": 100.0,
+                      "widthInv": "Grid",
+                      "height": 100.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0
+                  }
+                },
+                {
+                  "type": "RenderSimple",
+                  "id": 3,
+                  "data": {
+                    "size": {
+                      "x": 320,
+                      "y": 320
+                    },
+                    "color": {
+                      "r": 82,
+                      "g": 255,
+                      "b": 227,
+                      "a": 255
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "style": {
+                "width": 1.0,
+                "widthInv": "Relative",
+                "height": 0.8500000238418579,
+                "heightInv": "Relative",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": 0
+            }
+          },
+          {
+            "type": "RenderSimple",
+            "id": 2,
+            "data": {
+              "size": {
+                "x": 360,
+                "y": 544
+              },
+              "color": {
+                "r": 96,
+                "g": 255,
+                "b": 133,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 3,
+            "data": {
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                1
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "BotBar",
+      "id": 4,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "style": {
+                "width": 1.0,
+                "widthInv": "Relative",
+                "height": 0.07500000298023224,
+                "heightInv": "Relative",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": 0
+            }
+          },
+          {
+            "type": "RenderSimple",
+            "id": 2,
+            "data": {
+              "size": {
+                "x": 360,
+                "y": 48
+              },
+              "color": {
+                "r": 80,
+                "g": 106,
+                "b": 255,
+                "a": 255
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "UIView",
+      "id": 1,
+      "data": {
+        "style": {
+          "width": 1.0,
+          "widthInv": "Relative",
+          "height": 1.0,
+          "heightInv": "Relative",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        },
+        "render": 1
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 2,
+      "data": {
+        "style": {
+          "type": "Vertical",
+          "xAlign": "Center",
+          "yAlign": "Top"
+        },
+        "children": [
+          2,
+          3,
+          4
+        ]
+      }
+    }
+  ]
+}

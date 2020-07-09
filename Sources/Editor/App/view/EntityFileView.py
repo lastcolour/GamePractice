@@ -61,7 +61,8 @@ class EntityFileView(QWidget):
         return self._fileTreeModel.getEntitiesTree()
 
     def _createNewDir(self, treeItem, fileName):
-        newNode = self._fileTreeModel.createNewDir(self._getRootFileNode(treeItem), fileName)
+        assetModel = GetEventManager().getAssetsModel()
+        newNode = assetModel.createNewDir(self._getRootFileNode(treeItem), fileName)
         if newNode is None:
             return False
         treeItem._node = newNode
@@ -70,14 +71,16 @@ class EntityFileView(QWidget):
         return True
 
     def _renameItem(self, treeItem, newFileName):
-        if not self._fileTreeModel.renameNode(treeItem._node, newFileName):
+        assetModel = GetEventManager().getAssetsModel()
+        if not assetModel.renameNode(treeItem._node, newFileName):
             return False
         treeItem.setText(0, newFileName)
         self._tree.setItemWidget(treeItem, 0, None)
         return True
 
     def _createNewEntity(self, treeItem, fileName):
-        newNode = self._fileTreeModel.createNewEntity(self._getRootFileNode(treeItem), fileName)
+        assetModel = GetEventManager().getAssetsModel()
+        newNode = assetModel.createNewEntity(self._getRootFileNode(treeItem), fileName)
         if newNode is None:
             return False
         treeItem._node = newNode
@@ -86,7 +89,8 @@ class EntityFileView(QWidget):
         return True
 
     def _removeItem(self, treeItem):
-        if not self._fileTreeModel.removeNode(treeItem._node):
+        assetModel = GetEventManager().getAssetsModel()
+        if not assetModel.removeNode(treeItem._node):
             return
         parentItem = treeItem.parent()
         if parentItem is None:

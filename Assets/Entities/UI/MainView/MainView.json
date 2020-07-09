@@ -297,7 +297,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.30434781312942505,
+                          "fontSize": 0.6521739363670349,
                           "text": "Start"
                         }
                       }
@@ -333,7 +333,8 @@
                   "data": {
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
-                    "minScale": 0.949999988079071
+                    "minScale": 0.949999988079071,
+                    "sound": "UI/click.ogg"
                   }
                 },
                 {
@@ -341,8 +342,8 @@
                   "id": 4,
                   "data": {
                     "size": {
-                      "x": 107,
-                      "y": 27
+                      "x": 236,
+                      "y": 59
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -472,8 +473,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 45,
+                            "y": 45
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -514,7 +515,8 @@
                   "data": {
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
-                    "minScale": 0.949999988079071
+                    "minScale": 0.949999988079071,
+                    "sound": "UI/click.ogg"
                   }
                 },
                 {
@@ -543,8 +545,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 59,
+                      "y": 59
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -612,8 +614,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 45,
+                            "y": 45
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -675,7 +677,8 @@
                   "data": {
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
-                    "minScale": 0.949999988079071
+                    "minScale": 0.949999988079071,
+                    "sound": "UI/click.ogg"
                   }
                 },
                 {
@@ -683,8 +686,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 59,
+                      "y": 59
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -752,8 +755,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 45,
+                            "y": 45
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -815,7 +818,8 @@
                   "data": {
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
-                    "minScale": 0.949999988079071
+                    "minScale": 0.949999988079071,
+                    "sound": "UI/click.ogg"
                   }
                 },
                 {
@@ -823,8 +827,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 59,
+                      "y": 59
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -908,8 +912,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 150,
-                "y": 266
+                "x": 331,
+                "y": 588
               },
               "startColor": {
                 "r": 212,
@@ -930,9 +934,9 @@
             "type": "SoundPlayer",
             "id": 3,
             "data": {
-              "sound": "UI/ambient.ogg",
               "looped": true,
-              "volume": 1.0,
+              "volume": 0.5,
+              "sound": "UI/ambient.ogg",
               "autoStart": true
             }
           }

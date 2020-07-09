@@ -124,7 +124,7 @@ bool ALAudioSystem::initAlSource() {
         return false;
     }
 
-    memset(static_cast<void*>(mixBuffer.get()), SAMPLES_PER_BUFFER * sizeof(int16_t) * DEVICE_CHANNELS, 0);
+    std::fill_n(reinterpret_cast<int16_t*>(mixBuffer.get()), SAMPLES_PER_BUFFER * DEVICE_CHANNELS, 0);
 
     for(auto i = 0; i < AL_BUFFERS; ++i) {
         auto bufferId = (alBufferIds.get())[i];

@@ -12,7 +12,7 @@ SourceNode::SourceNode() :
 }
 
 SourceNode::~SourceNode() {
-    if(!soundStream) {
+    if(soundStream) {
         soundStream->setMixNode(nullptr);
         soundStream = nullptr;
     }
@@ -44,6 +44,9 @@ void SourceNode::additiveMixTo(float* out, int channels, int samples) {
 
     getResampler().exclusiveResampleTo(inData, channels, samples, *soundStream);
 
+    if(!soundStream) {
+        return;
+    }
     auto volume = soundStream->getVolume();
     for(int i = 0; i < channels * samples; ++i) {
         out[i] += inData[i] * volume;

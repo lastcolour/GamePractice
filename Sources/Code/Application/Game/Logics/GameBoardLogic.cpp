@@ -12,12 +12,14 @@
 namespace {
 
 const int INVALID_BOARD_ELEM_ID = -1;
+const char* DUMMY_CELL_OBJECT= "Game/Simple.json";
 
 } // namespace
 
 GameBoardLogic::GameBoardLogic() :
     boardSize(0),
-    cellScale(1.f),
+    moveSpeed(1.f),
+    cellScale(0.9f),
     doUpdate(false) {
 }
 
@@ -28,9 +30,13 @@ void GameBoardLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
         classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
         classInfo->addField("size", &GameBoardLogic::boardSize);
-        classInfo->addField("cellObject", &GameBoardLogic::cellObject);
+        classInfo->addResourceField("cellObject", &GameBoardLogic::setCellObject);
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
     }
+}
+
+void GameBoardLogic::setCellObject(const char* cellObjectName) {
+    cellObject = cellObjectName;
 }
 
 void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) {
@@ -173,12 +179,16 @@ ColorB GameBoardLogic::getElemColor(EBoardElemType elemType) const {
 bool GameBoardLogic::init() {
     initBoardBox();
 
+    if(cellObject.empty()) {
+        LogWarning("[GameBoardLogic::init] Cell object name is empty; Use dummy: '%s'", DUMMY_CELL_OBJECT);
+        cellObject = DUMMY_CELL_OBJECT;
+    }
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             EntityId cellObjId = InvalidEntityId;
             ET_SendEventReturn(cellObjId, &ETEntityManager::ET_createEntity, cellObject.c_str());
             if(cellObjId == InvalidEntityId) {
-                LogWarning("[GameBoardLogic::init] Can't spawn element");
+                LogWarning("[GameBoardLogic::init] Can't create board cell entity");
                 return false;
             }
             ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, cellObjId);
@@ -197,6 +207,10 @@ bool GameBoardLogic::init() {
 }
 
 void GameBoardLogic::deinit() {
+    for(auto& elem : elements) {
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, elem.entId);
+    }
+    elements.clear();
 }
 
 int GameBoardLogic::getElemId(const Vec2i& boardPt) const {
