@@ -2,8 +2,8 @@
 #define __SOUND_PLAY_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Audio/ETAudioInterfaces.hpp"
-#include "Sound.hpp"
+#include "Audio/ETSound.hpp"
+#include "Core/ETPrimitives.hpp"
 
 class ReflectContext;
 
@@ -23,11 +23,12 @@ public:
     void deinit() override;
 
     // ETSoundPlayer
-    void ET_setSound(const char* newSoundName) override;
     void ET_play() override;
-    void ET_pause() override;
-    void ET_resume() override;
     void ET_stop() override;
+
+private:
+
+    void setSound(const char* soundName);
 
 private:
 

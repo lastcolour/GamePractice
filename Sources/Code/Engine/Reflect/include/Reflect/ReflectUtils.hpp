@@ -84,11 +84,9 @@ constexpr ClassValueType GetClassValueType() {
     } else if constexpr (std::is_same<ValueT, EntityId>::value) {
         return ClassValueType::Entity;
     } else if constexpr (std::is_function<decltype(ValueT::Reflect)>::value) {
-        if constexpr (std::is_same<decltype(&ValueT::Reflect), void(*)(ReflectContext&)>::value) {
-            return ClassValueType::Object;
-        } else {
-            return ClassValueType::Invalid;
-        }
+        static_assert(std::is_same<decltype(&ValueT::Reflect), void(*)(ReflectContext&)>::value,
+            "Invalid object type");
+        return ClassValueType::Object;
     } else {
         return ClassValueType::Invalid;
     }

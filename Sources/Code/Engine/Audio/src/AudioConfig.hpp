@@ -16,6 +16,7 @@ public:
 public:
 
     int maxSoundSources;
+    float bufferTime;
 };
 
 #endif /* __AUDIO_CONFIG_HPP__ */

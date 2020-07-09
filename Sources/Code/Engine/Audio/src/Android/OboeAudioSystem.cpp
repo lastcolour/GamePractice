@@ -24,15 +24,6 @@ bool OboeAudioSystem::initOboeMixer() {
         LogError("[OboeAudioSystem::initOboeMixer] Can't get config of audio device");
         return false;
     }
-    mixer.setOutRate(deviceConfig->frameRate);
-    return true;
-}
-
-bool OboeAudioSystem::initOboeSources() {
-    const int maxSources = ET_getShared<AudioConfig>()->maxSoundSources;
-    for(int i = 0; i < maxSources; ++i) {
-        oboeSources.emplace_back(new OboeSoundSource);
-    }
     return true;
 }
 
@@ -68,7 +59,6 @@ bool OboeAudioSystem::init() {
     if(!initOboeStream()) {
         return false;
     }
-    ETNode<ETAudioSystem>::connect(getEntityId());
     return true;
 }
 
@@ -81,30 +71,13 @@ void OboeAudioSystem::stopOboeStream() {
 
 void OboeAudioSystem::deinit() {
     stopOboeStream();
-    ETNode<ETAudioSystem>::disconnect();
     return;
-}
-
-std::vector<SoundSource*> OboeAudioSystem::ET_getSourcesToManage() {
-    std::vector<SoundSource*> sources;
-    for(int i = 0, sz = oboeSources.size(); i < sz; ++i) {
-        sources.emplace_back(oboeSources[i].get());
-    }
-    return sources;
 }
 
 void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) {
     LogError("[OboeAudioSystem::onErrorAfterClose] Oboe stream error: %s", oboe::convertToText(res));
 }
 
-oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream *outStream, void *audioData, int32_t numFrames) {
-    auto outChannels = outStream->getChannelCount();
-    auto outFormat = outStream->getFormat();
-    mixer.startMixing(outChannels, outFormat, audioData, numFrames);
-    for(int i = 0, sz = oboeSources.size(); i < sz; ++i) {
-        auto& source = oboeSources[i];
-        mixer.addSource(*source);
-    }
-    mixer.endMixing();
+oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) {
     return oboe::DataCallbackResult::Continue;
 }

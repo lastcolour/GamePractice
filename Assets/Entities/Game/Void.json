@@ -1,4 +1,15 @@
 {
   "children": [],
-  "logics": []
+  "logics": [
+    {
+      "type": "SoundPlayLogic",
+      "id": 1,
+      "data": {
+        "looped": true,
+        "volume": 1.0,
+        "sound": "UI/ambient.ogg",
+        "autoStart": true
+      }
+    }
+  ]
 }

@@ -2,8 +2,9 @@
 #define __SOUND_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
+#include "Audio/ETSound.hpp"
+#include "Core/ETPrimitives.hpp"
 #include "Core/Buffer.hpp"
-#include "Audio/ETAudioInterfaces.hpp"
 
 #include <unordered_map>
 

@@ -1,6 +1,5 @@
 #include "Audio/AudioModule.hpp"
 #include "SoundManager.hpp"
-#include "SoundSourceManager.hpp"
 #include "AudioConfig.hpp"
 #include "Logics/SoundPlayLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
@@ -32,7 +31,6 @@ AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             AudioSystem,
-            SoundSourceManager,
             SoundManager>()
         );
     return container;

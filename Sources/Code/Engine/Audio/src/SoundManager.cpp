@@ -1,8 +1,8 @@
 #include "SoundManager.hpp"
-#include "Sound.hpp"
-#include "OggDataStream.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
+#include "OggDataStream.hpp"
+#include "SoundStream.hpp"
 
 namespace {
 
@@ -43,23 +43,22 @@ Buffer SoundManager::loadSoundBuffer(const char* soundName) {
 
 std::unique_ptr<Sound> SoundManager::ET_createSound(const char* soundName) {
     if(!soundName || !soundName[0]) {
-        LogError("[SoundManager::ET_createSound] Can't create empty sound");
         return nullptr;
     }
     auto buff = loadSoundBuffer(soundName);
     if(!buff) {
         return nullptr;
     }
-    std::unique_ptr<OggDataStream> dataStream(new OggDataStream(buff));
-    if(!dataStream->isOpened()) {
-        LogError("[SoundManager::ET_createSound] Can't make OGG stream from: '%s'", soundName);
-        return nullptr;
-    }
 
-    if(dataStream->channels > 2) {
-        LogError("[SoundManager::ET_createSound] Too many channels %d in OGG stream: '%s'",  dataStream->channels, soundName);
+    std::unique_ptr<OggDataStream> oggData(new OggDataStream);
+    if(!oggData->open(buff)) {
+        LogError("[SoundManager::ET_createSound] Can't open OGG stream from: '%s'", soundName);
         return nullptr;
     }
-    std::unique_ptr<Sound> sound(new Sound(std::move(dataStream)));
+    if(oggData->getChannels() > 2) {
+        LogError("[SoundManager::ET_createSound] Too many channels %d in OGG stream: '%s'", oggData->getChannels(), soundName);
+        return nullptr;
+    }
+    std::unique_ptr<Sound> sound(new SoundStream(std::move(oggData)));
     return sound;
 }

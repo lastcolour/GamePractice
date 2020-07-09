@@ -2,14 +2,18 @@
 #define __AL_AUDIO_SYSTEM_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Audio/ETAudioInterfaces.hpp"
+#include "Core/ETTimer.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "MixGraph/MixGraph.hpp"
+#include "Audio/ETSoundPlayManager.hpp"
 
 struct ALCdevice;
 struct ALCcontext;
 class ALSoundSource;
 
 class ALAudioSystem : public SystemLogic,
-    public ETNode<ETAudioSystem> {
+    public ETNode<ETSystemTimerEvents>,
+    public ETNode<ETSoundPlayManager> {
 public:
 
     ALAudioSystem();
@@ -19,19 +23,26 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETAudioSystem
-    std::vector<SoundSource*> ET_getSourcesToManage() override;
+    // ETSystemTimerEvents
+    void ET_onSystemTick(float dt) override;
+
+    // ETSoundPlayManager
+    bool ET_play(SoundStream* soundStream) override;
 
 private:
 
     bool initSoundContext();
-    bool initSoundSources();
+    bool initAlSource();
 
 private:
 
     ALCdevice* alcDevice;
     ALCcontext* alcContext;
-    std::vector<std::unique_ptr<ALSoundSource>> alSources;
+    MixGraph mixGrap;
+    std::unique_ptr<float> mixBuffer;
+    std::unique_ptr<unsigned int> alBufferIds;
+    unsigned int alSourceId;
+    bool alSourcePlaying;
 };
 
 #endif /* __AL_AUDIO_SYSTEM_HPP__ */

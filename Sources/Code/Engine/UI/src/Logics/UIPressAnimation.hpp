@@ -7,6 +7,7 @@
 #include "Core/ETTimer.hpp"
 #include "Math/Transform.hpp"
 
+struct Sound;
 class ReflectContext;
 
 class UIPressAnimation : public EntityLogic,
@@ -39,7 +40,12 @@ public:
 
 private:
 
+    void setSound(const char* soundName);
+
+private:
+
     Transform startTm;
+    std::unique_ptr<Sound> sound;
     float inDuration;
     float outDuration;
     float minScale;

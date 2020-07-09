@@ -5,26 +5,12 @@
 
 #include <cassert>
 
-OggDataStream::OggDataStream(const Buffer& buff) :
-    oggBuffer(buff),
+OggDataStream::OggDataStream() :
+    oggBuffer(),
     oggStream(nullptr),
-    sound(nullptr),
-    channels(0),
-    sampleRate(0),
-    numSamples(0) {
-
-    oggStream = stb_vorbis_open_memory(
-        static_cast<const unsigned char*>(oggBuffer.getReadData()), 
-            static_cast<int>(oggBuffer.getSize()), nullptr, nullptr);
-
-    if(!oggStream) {
-        return;
-    }
-
-    stb_vorbis_info orbisInfo = stb_vorbis_get_info(oggStream);
-    channels = orbisInfo.channels;
-    sampleRate = orbisInfo.sample_rate;
-    numSamples = stb_vorbis_stream_length_in_samples(oggStream) * orbisInfo.channels;
+    oggChannels(0),
+    oggSampleRate(0),
+    oggSampleCount(0) {
 }
 
 OggDataStream::~OggDataStream() {
@@ -34,10 +20,20 @@ OggDataStream::~OggDataStream() {
     }
 }
 
-bool OggDataStream::isOpened() const {
+bool OggDataStream::open(Buffer& buffer) {
+    oggBuffer = std::move(buffer);
+    oggStream = stb_vorbis_open_memory(
+        static_cast<const unsigned char*>(oggBuffer.getReadData()),
+            static_cast<int>(oggBuffer.getSize()), nullptr, nullptr);
+
     if(!oggStream) {
         return false;
     }
+
+    stb_vorbis_info orbisInfo = stb_vorbis_get_info(oggStream);
+    oggChannels = orbisInfo.channels;
+    oggSampleRate = orbisInfo.sample_rate;
+    oggSampleCount = stb_vorbis_stream_length_in_samples(oggStream) * orbisInfo.channels;
     return true;
 }
 
@@ -47,42 +43,44 @@ void OggDataStream::setSampleOffset(int sampleOffset) {
     stb_vorbis_seek_frame(oggStream, sampleOffset);
 }
 
-int OggDataStream::fillF32(void* outData, int samplesCount, int channels, bool looped) {
-    int readCount = readF32(outData, samplesCount, channels);
-    if(readCount < samplesCount && looped) {
-        int leftCount = samplesCount - readCount;
+int OggDataStream::getChannels() const {
+    return oggChannels;
+}
+
+int OggDataStream::getSampleRate() const {
+    return oggSampleRate;
+}
+
+int OggDataStream::readF32(void* out, int channels, int samples, bool looped) {
+    assert(oggStream != nullptr && "Invalid OGG stream");
+    int readCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels,
+        static_cast<float*>(out), samples * channels);
+    if(readCount < samples && looped) {
+        int leftCount = samples - readCount;
         while(leftCount > 0) {
             setSampleOffset(0);
             int offset = readCount * channels;
-            readCount += readF32(static_cast<float*>(outData) + offset, leftCount, channels);
-            leftCount = samplesCount - readCount;
+            readCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels,
+                static_cast<float*>(out) + offset, leftCount * channels);
+            leftCount = samples - readCount;
         }
     }
     return readCount;
 }
 
-int OggDataStream::fillI16(void* outData, int samplesCount, int channels, bool looped) {
-    int readCount = readI16(outData, samplesCount, channels);
-    if(readCount < samplesCount && looped) {
-        int leftCount = samplesCount - readCount;
+int OggDataStream::readI16(void* out, int channels, int samples, bool looped) {
+    assert(oggStream != nullptr && "Invalid OGG stream");
+    int readCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels,
+        static_cast<int16_t*>(out), samples * channels);
+    if(readCount < samples && looped) {
+        int leftCount = samples - readCount;
         while(leftCount > 0) {
             setSampleOffset(0);
             int offset = readCount * channels;
-            readCount += readI16(static_cast<int16_t*>(outData) + offset, leftCount, channels);
-            leftCount = samplesCount - readCount;
+            readCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels,
+                static_cast<int16_t*>(out) + offset, leftCount * channels);
+            leftCount = samples - readCount;
         }
     }
     return readCount;
-}
-
-int OggDataStream::readI16(void* outData, int samplesCount, int channels) {
-    int readSamplesCount = stb_vorbis_get_samples_short_interleaved(oggStream, channels,
-        static_cast<int16_t*>(outData), samplesCount * channels);
-    return readSamplesCount;
-}
-
-int OggDataStream::readF32(void* outData, int samplesCount, int channels) {
-    int readSamplesCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels,
-        static_cast<float*>(outData), samplesCount * channels);
-    return readSamplesCount;
 }

@@ -41,12 +41,14 @@ include_directories(
 file(GLOB AUDIO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
     ${AUDIO_PLATFORM_SOURCES}/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MixGraph/*.cpp)
 
 file(GLOB AUDIO_HEADERS
     ${AUDIO_INCLUDE_DIR}/Audio/*.hpp
     ${AUDIO_PLATFORM_SOURCES}/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MixGraph/*.hpp)
 
 add_library(${PROJECT_NAME} STATIC ${AUDIO_SOURCES} ${AUDIO_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})

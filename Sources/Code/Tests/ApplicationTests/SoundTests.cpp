@@ -1,6 +1,5 @@
 #include "SoundTests.hpp"
-#include "Audio/ETAudioInterfaces.hpp"
-#include "Sound.hpp"
+#include "Audio/ETSound.hpp"
 
 namespace {
 
@@ -16,7 +15,7 @@ TEST_F(SoundTests, CheckCreateSound) {
 
     ASSERT_FALSE(sound->isPlaying());
 
-    sound->play(false);
+    sound->play();
 
     ASSERT_TRUE(sound->isPlaying());
 
@@ -47,7 +46,7 @@ TEST_F(SoundTests, CheckCreateManySound) {
 
     for(size_t i = 0, sz = sounds.size(); i < sz; ++i) {
         auto& sound = sounds[i];
-        sound->play(false);
+        sound->play();
         EXPECT_TRUE(sound->isPlaying());
     }
 }

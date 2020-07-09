@@ -1,12 +1,14 @@
 #include "Logics/UIPressAnimation.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntity.hpp"
+#include "Audio/ETSound.hpp"
 
 void UIPressAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIPressAnimation>("UIPressAnimation")) {
         classInfo->addField("inDuration", &UIPressAnimation::inDuration);
         classInfo->addField("outDuration", &UIPressAnimation::outDuration);
         classInfo->addField("minScale", &UIPressAnimation::minScale);
+        classInfo->addResourceField("sound", &UIPressAnimation::setSound);
     }
 }
 
@@ -29,11 +31,21 @@ bool UIPressAnimation::init() {
 void UIPressAnimation::deinit() {
 }
 
+void UIPressAnimation::setSound(const char* soundName) {
+    ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, soundName);
+}
+
 void UIPressAnimation::ET_start() {
     currDuration = 0.f;
     isReversed = false;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
     ETNode<ETAppTimerEvents>::connect(getEntityId());
+    if(!sound) {
+        if(sound->isPlaying()) {
+            sound->stop();
+        }
+        sound->play();
+    }
 }
 
 void UIPressAnimation::ET_startReverse() {
