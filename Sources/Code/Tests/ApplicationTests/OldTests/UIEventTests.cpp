@@ -43,7 +43,7 @@ TEST_F(UIEventTests, CheckBackButtonOnMainView) {
 
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
     CheckExpectedView(EXIT_VIEW);
-    
+
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
     CheckExpectedView(MAIN_VIEW);
 }
@@ -53,7 +53,7 @@ TEST_F(UIEventTests, CheckBackButtonOnGameView) {
 
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
     CheckExpectedView(PAUSE_VIEW);
-    
+
     ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
     CheckExpectedView(GAME_VIEW);
 }

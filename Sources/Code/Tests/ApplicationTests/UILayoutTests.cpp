@@ -333,7 +333,7 @@ TEST_F(UILayoutTests, CheckMargin) {
         CheckUIBox(second->getEntityId(), Vec2i(center.x, center.y - halfShift - boxSize.y / 2), boxSize);
     }
 
-    { 
+    {
         boxStyle.margin.bot = 0.f;
         ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
@@ -342,5 +342,67 @@ TEST_F(UILayoutTests, CheckMargin) {
 
         CheckUIBox(first->getEntityId(), Vec2i(center.x, center.y + halfShift + boxSize.y / 2), boxSize);
         CheckUIBox(second->getEntityId(), Vec2i(center.x, center.y - halfShift - boxSize.y / 2), boxSize);
+    }
+}
+
+TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
+    auto rootEntity = createUIBox(1.f, 1.f);
+    auto childEntity = createUIBox(0.5f, 0.5f);
+
+    auto rootLayout = addUILayout(rootEntity, UILayoutType::Horizontal, UIXAlign::Center, UIYAlign::Center);
+    rootLayout->ET_addItem(childEntity->getEntityId());
+
+    {
+        UIBoxStyle boxStyle;
+        ET_SendEventReturn(boxStyle, childEntity->getEntityId(), &ETUIBox::ET_getStyle);
+
+        boxStyle.margin.bot = 2.f;
+        boxStyle.margin.top = 2.f;
+        boxStyle.margin.left = 2.f;
+        boxStyle.margin.right = 2.f;
+        ET_SendEvent(childEntity->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+    }
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto shift = ET_getShared<UIConfig>()->getSizeOnGrind(2.f);
+    const auto center = renderPort / 2;
+    const auto boxSize = center;
+
+    {
+        UILayoutStyle style = rootLayout->ET_getStyle();
+        style.xAlign = UIXAlign::Left;
+        style.yAlign = UIYAlign::Center;
+        rootLayout->ET_setStyle(style);
+
+        CheckUIBox(childEntity->getEntityId(), Vec2i(shift + boxSize.x / 2, center.y), boxSize);
+    }
+
+    {
+        UILayoutStyle style = rootLayout->ET_getStyle();
+        style.xAlign = UIXAlign::Right;
+        style.yAlign = UIYAlign::Center;
+        rootLayout->ET_setStyle(style);
+
+        CheckUIBox(childEntity->getEntityId(), Vec2i(renderPort.x - boxSize.x / 2 - shift, center.y), boxSize);
+    }
+
+    {
+        UILayoutStyle style = rootLayout->ET_getStyle();
+        style.xAlign = UIXAlign::Center;
+        style.yAlign = UIYAlign::Top;
+        rootLayout->ET_setStyle(style);
+
+        CheckUIBox(childEntity->getEntityId(), Vec2i(center.x, renderPort.y - boxSize.y / 2 - shift), boxSize);
+    }
+
+    {
+        UILayoutStyle style = rootLayout->ET_getStyle();
+        style.xAlign = UIXAlign::Center;
+        style.yAlign = UIYAlign::Bot;
+        rootLayout->ET_setStyle(style);
+
+        CheckUIBox(childEntity->getEntityId(), Vec2i(center.x, shift + boxSize.y / 2), boxSize);
     }
 }

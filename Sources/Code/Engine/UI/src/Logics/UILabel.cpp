@@ -5,17 +5,17 @@
 #include "Core/ETApplication.hpp"
 #include "UI/UIBoxStyle.hpp"
 #include "Core/ETLogger.hpp"
+#include "UIUtils.hpp"
 
 void UILabel::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILabel>("UILabel")) {
-        classInfo->addField("fondSize", &UILabel::fontSize);
+        classInfo->addField("style", &UILabel::style);
         classInfo->addField("text", &UILabel::text);
         classInfo->addField("render", &UILabel::labelRenderId);
     }
 }
 
-UILabel::UILabel() :
-    fontSize(15.f) {
+UILabel::UILabel() {
 }
 
 UILabel::~UILabel() {
@@ -47,12 +47,12 @@ const char* UILabel::ET_getText() const {
 }
 
 float UILabel::ET_getFontSize() const {
-    return fontSize;
+    return style.fontSize;
 }
 
 void UILabel::ET_setFontSize(float newFontSize) {
-    fontSize = newFontSize;
-    auto fontHeight = ET_getShared<UIConfig>()->getSizeOnGrind(fontSize);
+    style.fontSize = newFontSize;
+    auto fontHeight = ET_getShared<UIConfig>()->getSizeOnGrind(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setFontHeight, fontHeight);
     updateLayout();
 }
@@ -63,13 +63,14 @@ AABB2Di UILabel::ET_getBox() const {
 
     AABB2Di textBox;
     textBox.bot = Vec2i(static_cast<int>(box.bot.x), static_cast<int>(box.bot.y));
-    textBox.top = Vec2i(static_cast<int>(box.top.x), static_cast<int>(box.top.y));
+    textBox.top = Vec2i(static_cast<int>(box.top.x + 0.5f), static_cast<int>(box.top.y + 0.5f));
     return textBox;
 }
 
 UIBoxMargin UILabel::ET_getMargin() const {
-    UIBoxMargin margin;
-    return margin;
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    return UI::CalculateMargin(style.margin, tm);
 }
 
 void UILabel::ET_setTextRender(EntityId newRenderId) {
@@ -82,7 +83,7 @@ void UILabel::ET_setTextRender(EntityId newRenderId) {
         return;
     }
     ET_setText(text.c_str());
-    ET_setFontSize(fontSize);
+    ET_setFontSize(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
 }
 
@@ -91,7 +92,7 @@ void UILabel::onZIndexChanged(int newZIndex) {
 }
 
 void UILabel::ET_onRenderPortResized() {
-    ET_setFontSize(fontSize);
+    ET_setFontSize(style.fontSize);
 }
 
 void UILabel::ET_show() {

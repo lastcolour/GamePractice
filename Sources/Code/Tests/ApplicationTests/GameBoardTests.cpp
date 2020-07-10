@@ -197,7 +197,7 @@ TEST_F(GameBoardTests, CheckMoving) {
     params.moveSpeed = 1.f;
     board->setParams(params);
     ASSERT_TRUE(board->init());
-    
+
     board->removeVerticalLine(Vec2i(0, 0), 2);
     board->updateAfterRemoves();
 

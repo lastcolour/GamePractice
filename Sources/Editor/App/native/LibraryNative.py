@@ -27,7 +27,7 @@ class LibraryNative:
         self._getRegisteredEntityLogicsFunc = self._editorLib.GetRegisteredEntityLogics
         self._getRegisteredEntityLogicsFunc.argstype = None
         self._getRegisteredEntityLogicsFunc.restype = ctypes.c_char_p
-    
+
         self._loadEntityFunc = self._editorLib.LoadEntity
         self._loadEntityFunc.argstype = [ctypes.c_char_p,]
         self._loadEntityFunc.restype = ctypes.c_uint32

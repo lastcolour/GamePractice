@@ -3,6 +3,7 @@
 
 #include "Logics/UIElement.hpp"
 #include "Render/ETRenderCamera.hpp"
+#include "Logics/UILabelStyle.hpp"
 
 class ReflectContext;
 
@@ -51,7 +52,7 @@ protected:
 
 private:
 
-    float fontSize;
+    UILabelStyle style;
     std::string text;
     EntityId labelRenderId;
 };

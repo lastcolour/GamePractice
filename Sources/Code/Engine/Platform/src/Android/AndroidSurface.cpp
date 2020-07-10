@@ -212,7 +212,7 @@ bool AndroidSurface::createEGLDisplay() {
     }
 
     ANativeWindow_setBuffersGeometry(nativeWindow, 0, 0, nativeVisualId);
-    
+
     if(!createEGLSurface()) {
         return false;
     }

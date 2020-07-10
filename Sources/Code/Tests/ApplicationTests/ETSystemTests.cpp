@@ -119,7 +119,7 @@ TEST_F(ETSystemTests, CheckCretaeEntityId) {
 
 TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
     std::unique_ptr<ETSystem> etSystem(new ETSystem);
-    
+
     TestETNode node;
     etSystem->connectNode(node, InvalidEntityId);
 
@@ -129,7 +129,7 @@ TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
 
 TEST_F(ETSystemTests, CheckDobuleConnect) {
     std::unique_ptr<ETSystem> etSystem(new ETSystem);
-    
+
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
     etSystem->connectNode(node, entId);
@@ -141,7 +141,7 @@ TEST_F(ETSystemTests, CheckDobuleConnect) {
 
 TEST_F(ETSystemTests, CheckDoubleDisconnect) {
     std::unique_ptr<ETSystem> etSystem(new ETSystem);
-    
+
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
     etSystem->connectNode(node, entId);
@@ -156,7 +156,7 @@ TEST_F(ETSystemTests, CheckDoubleDisconnect) {
 
 TEST_F(ETSystemTests, CheckGetAll) {
     std::unique_ptr<ETSystem> etSystem(new ETSystem);
-    
+
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
     etSystem->connectNode(node_1, entId_1);

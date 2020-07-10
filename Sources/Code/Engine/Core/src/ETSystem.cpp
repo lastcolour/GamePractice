@@ -39,7 +39,7 @@ void ETSystem::handleConnectionRequest(const ETSystem::ETConnectionRequest& conn
             pendingConnection.push_back(connReq);
             return;
         } else {
-            syncRoute.pushRoute(connReq.etId); 
+            syncRoute.pushRoute(connReq.etId);
             bool res = isDoubleConnect(connReq.etId, *connReq.conn.node);
             syncRoute.popRoute();
             if(res) {

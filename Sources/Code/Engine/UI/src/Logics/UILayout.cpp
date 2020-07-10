@@ -128,7 +128,7 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     }
 }
 
-AABB2Di UILayout::calculateItem(Vec2i& offset, Vec2i& prevMargin, EntityId itemId) {
+AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
     AABB2Di itemBox;
     ET_SendEventReturn(itemBox, itemId, &ETUIElement::ET_getBox);
     UIBoxMargin itemMargin;
@@ -139,19 +139,19 @@ AABB2Di UILayout::calculateItem(Vec2i& offset, Vec2i& prevMargin, EntityId itemI
     switch(style.type)
     {
     case UILayoutType::Horizontal: {
-        auto marginOffset = std::max(prevMargin.x, itemMargin.left);
+        auto marginOffset = std::max(prevMargin, itemMargin.left);
         auto xBoxSize = itemBox.getSize().x;
-        center.x = offset.x + xBoxSize / 2 + marginOffset;
-        prevMargin.x = itemMargin.right;
-        offset.x += xBoxSize + marginOffset;
+        center.x = offset + xBoxSize / 2 + marginOffset;
+        prevMargin = itemMargin.right;
+        offset += xBoxSize + marginOffset;
         break;
     }
     case UILayoutType::Vertical: {
-        auto marginOffset = std::max(prevMargin.y, itemMargin.top);
+        auto marginOffset = std::max(prevMargin, itemMargin.top);
         auto yBoxSize = itemBox.getSize().y;
-        center.y = offset.y - yBoxSize / 2 - marginOffset;
-        prevMargin.y = itemMargin.bot;
-        offset.y -= yBoxSize + marginOffset;
+        center.y = offset - yBoxSize / 2 - marginOffset;
+        prevMargin = itemMargin.bot;
+        offset -= yBoxSize + marginOffset;
         break;
     }
     default:
@@ -159,6 +159,22 @@ AABB2Di UILayout::calculateItem(Vec2i& offset, Vec2i& prevMargin, EntityId itemI
     }
 
     itemBox.setCenter(center);
+
+    if(style.xAlign == UIXAlign::Right) {
+        itemBox.top.x += itemMargin.right;
+        itemBox.bot.x -= itemMargin.right;
+    } else if(style.xAlign == UIXAlign::Left) {
+        itemBox.top.x += itemMargin.left;
+        itemBox.bot.x -= itemMargin.left;
+    }
+    if(style.yAlign == UIYAlign::Top) {
+        itemBox.top.y += itemMargin.top;
+        itemBox.bot.y -= itemMargin.top;
+    } else if(style.yAlign == UIYAlign::Bot) {
+        itemBox.top.y += itemMargin.bot;
+        itemBox.bot.y -= itemMargin.bot;
+    }
+
     return itemBox;
 }
 
@@ -172,8 +188,8 @@ void UILayout::calculateLayout() {
     }
     std::vector<AABB2Di> childBoxes;
     childBoxes.reserve(children.size());
-    Vec2i offset(0);
-    Vec2i prevMargin(0);
+    int offset = 0;
+    int prevMargin = 0;
     for(auto childId : children) {
         auto resBox = calculateItem(offset, prevMargin, childId);
         childBoxes.push_back(resBox);

@@ -22,7 +22,7 @@ public:
     bool init() override {
         return false;
     }
-    void deinit() {} 
+    void deinit() {}
 };
 
 class TestSystemModule : public SystemModule {

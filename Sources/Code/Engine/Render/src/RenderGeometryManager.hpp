@@ -25,7 +25,7 @@ public:
     void ET_cleanUnused() override;
 
 private:
-    
+
     std::shared_ptr<RenderGeometry> createGeometryOfType(PrimitiveGeometryType geomType);
     std::shared_ptr<RenderGeometry> createSquare();
     std::shared_ptr<RenderGeometry> createSquareTex();

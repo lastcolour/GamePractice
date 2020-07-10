@@ -16,7 +16,7 @@ const unsigned int DEVICE_CHANNELS = 2;
 const unsigned int DEVICE_FORMAT = AL_FORMAT_STEREO16;
 const unsigned int AL_BUFFERS = 4;
 const float BUFFER_TIME = 0.1f;
-const unsigned int SAMPLES_PER_BUFFER = 
+const unsigned int SAMPLES_PER_BUFFER =
     static_cast<unsigned int>((DEVICE_FRAMERATE * BUFFER_TIME) / AL_BUFFERS);
 
 void covertFloatToInt16(int16_t* out, float* source, int samples) {

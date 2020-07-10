@@ -171,7 +171,6 @@ public:
             return JVObject(0);
         }
         return JVObject(jv_env->GetStaticObjectField(value, jv_fieldId));
-   
     }
 
 public:
@@ -179,6 +178,6 @@ public:
     jclass value;
 };
 
-} // namespace JNI 
+} // namespace JNI
 
 #endif /* __JNI_HELPERS_HPP__ */

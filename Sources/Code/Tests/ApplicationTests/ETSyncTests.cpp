@@ -182,7 +182,6 @@ TEST_F(ETSyncTests, CheckBlockRoute) {
                     t2_run.store(false);
                 }
             }
-            
         });
         t2.detach();
     }

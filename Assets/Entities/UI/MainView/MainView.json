@@ -282,7 +282,15 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
-                          "fondSize": 10.0,
+                          "style": {
+                            "fontSize": 10.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
                           "text": "Start",
                           "render": 0
                         }
@@ -297,7 +305,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.6521739363670349,
+                          "fontSize": 0.30434781312942505,
                           "text": "Start"
                         }
                       }
@@ -342,8 +350,8 @@
                   "id": 4,
                   "data": {
                     "size": {
-                      "x": 236,
-                      "y": 59
+                      "x": 107,
+                      "y": 27
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -473,8 +481,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 45,
-                            "y": 45
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -545,8 +553,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 59,
-                      "y": 59
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -614,8 +622,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 45,
-                            "y": 45
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -686,8 +694,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 59,
-                      "y": 59
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -755,8 +763,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 45,
-                            "y": 45
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -827,8 +835,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 59,
-                      "y": 59
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -912,8 +920,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 331,
-                "y": 588
+                "x": 150,
+                "y": 266
               },
               "startColor": {
                 "r": 212,

@@ -258,7 +258,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEvent(objId, &ETEntity::ET_setTransform, tm);
 
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-    ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR), 
+    ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR),
         static_cast<int>(size.y * SCALE_FACTOR)));
 
     ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, *textureFramebuffer);
@@ -315,7 +315,7 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
 
     for(int ch = 32; ch < 127; ++ch)
     {
-        std::string text(1, ch); 
+        std::string text(1, ch);
         renderText->ET_setText(text.c_str());
         box = renderText->ET_getTextAABB();
         if (ch != '\n') {
@@ -433,7 +433,7 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(firstSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR), 
+        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR),
             static_cast<int>(size.y * SCALE_FACTOR)));
         Transform tm;
         tm.pt = center;

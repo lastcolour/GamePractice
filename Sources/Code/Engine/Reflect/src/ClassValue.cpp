@@ -69,7 +69,7 @@ void readJSONValue(bool isElement, const std::string& name, T& value, const JSON
     } else {
         node.read(name.c_str(), value);
     }
-} 
+}
 
 bool readJSONVec2i(void* valuePtr, const JSONNode& node) {
     if(!node.hasKey("x")) {

@@ -79,7 +79,7 @@ void UIButton::ET_onAnimationEnd() {
 }
 
 void UIButton::onZIndexChanged(int newZIndex) {
-    UIBox::onZIndexChanged(newZIndex); 
+    UIBox::onZIndexChanged(newZIndex);
     auto labelZIndex = newZIndex + 1;
     ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, labelZIndex);
     ET_SendEvent(labelId, &ETRenderNode::ET_setDrawPriority, labelZIndex);

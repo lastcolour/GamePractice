@@ -57,7 +57,7 @@ private:
 private:
 
     bool initHandler();
-    void deinitHandler(); 
+    void deinitHandler();
 
     void initAppThread();
     void waitOnDestroyEvent();

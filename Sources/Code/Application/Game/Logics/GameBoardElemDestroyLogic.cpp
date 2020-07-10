@@ -29,7 +29,7 @@ void GameBoardElemDestroyLogic::ET_onGameTick(float dt) {
     for(auto& task : destroyTasks) {
         task.duration += dt;
         float prog = std::min(task.duration / destroyDuration, 1.f);
-        
+
         Transform tm;
         ET_SendEventReturn(tm, task.entId, &ETEntity::ET_getTransform);
         tm.scale = Math::Lerp(task.startScale, Vec3(0.f), prog);

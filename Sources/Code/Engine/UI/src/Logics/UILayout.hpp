@@ -29,7 +29,7 @@ public:
 
 private:
 
-    AABB2Di calculateItem(Vec2i& offset, Vec2i& prevMargin, EntityId itemId);
+    AABB2Di calculateItem(int& offset, int& prevMargin, EntityId itemId);
     Vec2i calcAligmentCenter(AABB2Di& parentBox, AABB2Di& box);
     void calculateAligment(std::vector<AABB2Di>& boxes);
     void calculateLayout();

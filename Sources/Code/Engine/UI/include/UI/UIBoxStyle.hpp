@@ -11,6 +11,7 @@ enum class UIBoxSizeInvariant {
 };
 
 class UIBoxStyle {
+public:
 
     class Margin {
     public:

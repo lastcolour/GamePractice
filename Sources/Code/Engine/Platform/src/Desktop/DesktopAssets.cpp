@@ -111,7 +111,7 @@ std::string GetSafeStrErrno() {
 #ifdef PLATFORM_WINDOWS
     char cErrorMsg[MAX_ERROR_MSG_LEN];
     strerror_s(&(cErrorMsg[0]), MAX_ERROR_MSG_LEN, errno);
-    return &(cErrorMsg[0]); 
+    return &(cErrorMsg[0]);
 #else
     return strerror(errno);
 #endif

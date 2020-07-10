@@ -40,7 +40,7 @@ void MixGraph::mix(float* out, int channels, int samples) {
 
     for(int i = 0; i < samples * channels; ++i) {
         out[i] = std::min(1.f, std::max(out[i], -1.f));
-    } 
+    }
 }
 
 SourceNode* MixGraph::getFreeSource() {

@@ -13,7 +13,7 @@ public:
 
     ModuleSharedManager();
     virtual ~ModuleSharedManager();
- 
+
     // SystemLogic
     bool init() override;
     void deinit() override;

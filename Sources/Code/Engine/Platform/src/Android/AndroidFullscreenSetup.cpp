@@ -31,7 +31,7 @@ void AndroidFullscreenSetup::makeAppFullScreen() {
     JNI::JVObject decorViewOjb = windowObj.callObjectMethod("getDecorView", "()Landroid/view/View;");
 
     JNI::JVClass viewClass = JNI::JVClass::FindClass("android/view/View");
-    
+
     const int SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN = viewClass.getStaticField<int>("SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN", "I");
     const int SYSTEM_UI_FLAG_HIDE_NAVIGATION = viewClass.getStaticField<int>("SYSTEM_UI_FLAG_HIDE_NAVIGATION", "I");
     const int SYSTEM_UI_FLAG_FULLSCREEN = viewClass.getStaticField<int>("SYSTEM_UI_FLAG_FULLSCREEN", "I");

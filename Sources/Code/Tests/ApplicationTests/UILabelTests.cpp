@@ -62,8 +62,8 @@ TEST_F(UILabelTests, CheckTextScaling) {
         auto origSize = origBox.getSize();
         auto scaledSize = scaledBox.getSize();
 
-        ASSERT_EQ(origSize.x, scaledSize.x * 2);
-        ASSERT_EQ(origSize.y, scaledSize.y * 2);
+        EXPECT_EQ(origSize.x, scaledSize.x * 2);
+        EXPECT_EQ(origSize.y, scaledSize.y * 2);
     }
 
     tm.scale *= 2;
@@ -74,8 +74,8 @@ TEST_F(UILabelTests, CheckTextScaling) {
         auto origSize = origBox.getSize();
         auto scaledSize = scaledBox.getSize();
 
-        ASSERT_EQ(origSize.x, scaledSize.x * 2);
-        ASSERT_EQ(origSize.y, scaledSize.y * 2);
+        EXPECT_EQ(origSize.x, scaledSize.x * 2);
+        EXPECT_EQ(origSize.y, scaledSize.y * 2);
     }
 }
 

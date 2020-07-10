@@ -45,7 +45,7 @@ std::shared_ptr<RenderMaterial> RenderMaterialManager::ET_createMaterial(const c
     auto programId = createMaterialProgram(reqMatName);
     if(!programId) {
         return nullptr;
-    } 
+    }
     std::shared_ptr<RenderMaterial> material(new RenderMaterial(programId));
     materials[reqMatName] = material;
     return material;

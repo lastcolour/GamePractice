@@ -404,7 +404,7 @@ TEST_F(EntityTests, TestReflectVoidEntityWithRenderTest) {
         stream.read(textStr);
         ASSERT_STREQ(textStr.c_str(), "Test");
     }
-} 
+}
 
 TEST_F(EntityTests, TestAddElementToUILayout) {
     EntityId entityId;

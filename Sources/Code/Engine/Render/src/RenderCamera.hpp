@@ -7,7 +7,7 @@
 
 class RenderCamera : public SystemLogic,
     ETNode<ETRenderCamera> {
-public: 
+public:
 
     RenderCamera();
     virtual ~RenderCamera();

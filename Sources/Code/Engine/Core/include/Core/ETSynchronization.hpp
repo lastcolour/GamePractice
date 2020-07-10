@@ -29,7 +29,7 @@ public:
 private:
 
     bool isRouteSafeForCurrentThread(TypeId reqRouteId) const;
-    void addRouteForCurrentThread(TypeId reqRouteId); 
+    void addRouteForCurrentThread(TypeId reqRouteId);
     void popRouteForCurrentThread();
 
 private:

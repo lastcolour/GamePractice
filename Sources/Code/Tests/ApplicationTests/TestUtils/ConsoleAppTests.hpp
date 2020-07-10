@@ -32,7 +32,7 @@ protected:
 private:
 
     std::vector<std::unique_ptr<Entity>> tempObject;
-}; 
+};
 
 #endif /* __CONSOLE_APP_TESTS_HPP__ */
 

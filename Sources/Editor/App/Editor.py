@@ -37,10 +37,10 @@ class EditorView(QMainWindow):
 
         self._fileMenu = MainFileMenu(self)
         self._viewMenu = MainViewMenu(self)
-    
+
         self.menuBar().addMenu(self._fileMenu)
         self.menuBar().addMenu(self._viewMenu)
-    
+
         self.addToolBar(MainToolBar())
         self.setStatusBar(StatusBar())
 

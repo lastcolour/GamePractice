@@ -13,7 +13,7 @@ struct ETGameTick {
 
 struct ETGameEndTimerUpdater {
     virtual ~ETGameEndTimerUpdater() = default;
-    virtual void ET_setEndTime(float endTime) = 0; 
+    virtual void ET_setEndTime(float endTime) = 0;
 };
 
 struct ETGameScore {

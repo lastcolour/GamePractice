@@ -5,7 +5,7 @@ from .EngineOutputFrameView import EngineOutputFrameView
 class EngineOutputView(QWidget):
     def __init__(self):
         super().__init__()
-        
+
         self._rootLayout = QVBoxLayout()
 
         self._engineOutFrame = EngineOutputFrameView()

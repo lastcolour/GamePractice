@@ -4,6 +4,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "UIUtils.hpp"
 
 #include <cassert>
 
@@ -57,7 +58,6 @@ void UIBox::calculateBox() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
-    margin = calculateMargin();
     aabb.bot = Vec2i(0);
     aabb.top = calculateBoxSize();
 
@@ -83,16 +83,7 @@ void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
 UIBoxMargin UIBox::ET_getMargin() const {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-
-    const auto& scale = tm.scale;
-    auto resMargin = margin;
-
-    resMargin.bot = static_cast<int>(resMargin.bot * scale.y);
-    resMargin.top = static_cast<int>(resMargin.top * scale.y);
-    resMargin.left = static_cast<int>(resMargin.left * scale.x);
-    resMargin.right = static_cast<int>(resMargin.right * scale.x);
-
-    return resMargin;
+    return UI::CalculateMargin(style.margin, tm);
 }
 
 Vec2i UIBox::calculateBoxSize() {
@@ -124,18 +115,6 @@ Vec2i UIBox::calculateBoxSize() {
         assert(false && "Invalid size invariant");
     }
     return resSize;
-}
-
-UIBoxMargin UIBox::calculateMargin() {
-    UIBoxMargin resMargin;
-
-    auto uiConfig = ET_getShared<UIConfig>();
-    resMargin.left = uiConfig->getSizeOnGrind(style.margin.left);
-    resMargin.right = uiConfig->getSizeOnGrind(style.margin.right);
-    resMargin.bot = uiConfig->getSizeOnGrind(style.margin.bot);
-    resMargin.top = uiConfig->getSizeOnGrind(style.margin.top);
-
-    return resMargin;
 }
 
 void UIBox::ET_onRenderPortResized() {

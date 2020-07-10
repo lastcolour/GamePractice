@@ -51,13 +51,11 @@ private:
 
     void calculateBox();
     Vec2i calculateBoxSize();
-    UIBoxMargin calculateMargin();
 
 private:
 
     AABB2Di aabb;
     UIBoxStyle style;
-    UIBoxMargin margin;
     EntityId boxRenderId;
 };
 
