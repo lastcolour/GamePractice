@@ -13,11 +13,10 @@ public:
 public:
 
     GameLaucherConfig();
-    virtual ~GameLaucherConfig();
+    ~GameLaucherConfig();
 
 public:
 
-    std::string mainView;
 };
 
 #endif /* __GAME_LAUCHER_CONFIG_HPP__ */

@@ -1,0 +1,27 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "GameBoardElem",
+      "id": 1,
+      "data": {}
+    },
+    {
+      "type": "RenderColoredTexture",
+      "id": 2,
+      "data": {
+        "size": {
+          "x": 100,
+          "y": 100
+        },
+        "image": "Images/block.png",
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255,
+          "a": 255
+        }
+      }
+    }
+  ]
+}

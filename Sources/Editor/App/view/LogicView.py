@@ -99,6 +99,7 @@ class LogicView(QWidget):
         self._tree.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._tree.itemCollapsed.connect(self._signal_tree_itemCollapseExpanded)
         self._tree.itemExpanded.connect(self._signal_tree_itemCollapseExpanded)
+        self._tree.setIndentation(12)
         self._frameLayout.addWidget(self._tree)
 
         self._frame.setLayout(self._frameLayout)

@@ -38,6 +38,7 @@ EntityId UIElement::ET_getLayout() {
 void UIElement::ET_setZIndex(int newZIndex) {
     zIndex = newZIndex;
     onZIndexChanged(zIndex);
+    ET_SendEvent(getEntityId(), &ETUIBoxEvents::ET_onZIndexChanged, newZIndex);
 }
 
 int UIElement::ET_getZIndex() const {

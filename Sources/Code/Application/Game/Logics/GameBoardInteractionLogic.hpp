@@ -34,8 +34,6 @@ public:
 
 private:
 
-    void onStartElemMove();
-    void onElemMove();
     void onEndElemMove(const Vec2i& pt);
 
 private:

@@ -92,8 +92,9 @@ void UIPressAnimation::ET_onAppTick(float dt) {
         currTm.scale *= currScale;
         ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, currTm);
     } else {
-        ET_SendEvent(getEntityId(), &ETUIAnimationEvents::ET_onAnimationEnd);
-        ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
         ETNode<ETAppTimerEvents>::disconnect();
+        ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
+        ET_SendEvent(getEntityId(), &ETUIAnimationEvents::ET_onAnimationEnd);
+
     }
 }

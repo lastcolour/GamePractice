@@ -37,12 +37,15 @@ class EditArrayValue(QWidget):
         return self._title
 
     def createObjecValueWrap(self, value):
-        raise RuntimeError("Not implemented")
+        removeBt = QPushButton("x")
+        removeBt.clicked.connect(lambda: self._signal_removeBt_clicked(removeBt))
+        removeBt._value = value
+        return removeBt
 
     def createSimpleWrap(self, editWidget):
         removeBt = QPushButton("x")
         removeBt.clicked.connect(lambda: self._signal_removeBt_clicked(removeBt))
-        removeBt._editWidget = editWidget
+        removeBt._value = editWidget._val
         editWidget._rootLayout.addWidget(removeBt)
         return editWidget
 
@@ -51,8 +54,7 @@ class EditArrayValue(QWidget):
         self._rebuildArrayView()
 
     def _signal_removeBt_clicked(self, button):
-        editWidget = button._editWidget
-        elemId = editWidget._val._arrayId
+        elemId = button._value._arrayId
         self._val.removeElement(elemId)
         self._rebuildArrayView()
 

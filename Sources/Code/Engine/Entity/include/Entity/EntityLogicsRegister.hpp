@@ -16,6 +16,8 @@ public:
     void registerLogic() {
         static_assert(std::is_base_of<EntityLogic, LogicT>::value,
             "Can't register entity logic if it isn't derived from 'EntityLogic'");
+        static_assert(!std::is_abstract<LogicT>::value,
+            "Can't register abstract class as an entity logic");
         ReflectContext ctx;
         ctx.reflect<LogicT>();
         registerFromReflectCtx(ctx);

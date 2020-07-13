@@ -268,21 +268,6 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     ASSERT_FLOAT_EQ(ptDiff.z, 0.f);
 }
 
-TEST_F(GameBoardTests, CheckGameBoardConnections) {
-    TestBoardParams params;
-    params.boardSize = Vec2i(1);
-    params.moveSpeed = 1.f;
-    board->setParams(params);
-    ASSERT_TRUE(board->init());
-
-    auto entId = board->getEntityId();
-
-    ASSERT_TRUE(ET_IsExistNode<ETEntityEvents>(entId));
-    ASSERT_TRUE(ET_IsExistNode<ETUIBoxEvents>(entId));
-    ASSERT_TRUE(ET_IsExistNode<ETGameTimerEvents>(entId));
-    ASSERT_TRUE(ET_IsExistNode<ETGameBoard>(entId));
-}
-
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     std::unique_ptr<UIBox> uiBoxLogicPtr(new UIBox);
     auto uiBoxPtr = uiBoxLogicPtr.get();

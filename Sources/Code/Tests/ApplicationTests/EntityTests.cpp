@@ -217,6 +217,58 @@ TEST_F(EntityTests, CheckLocalTransform) {
     }
 }
 
+TEST_F(EntityTests, CheckScaleAffectLocalTransform) {
+    auto parent = createVoidObject();
+    auto child = createVoidObject();
+
+    Transform tm;
+    tm.pt = Vec3(1.f);
+    tm.scale = Vec3(1.f);
+    parent->ET_setTransform(tm);
+
+    tm.pt = Vec3(2.f);
+    tm.scale = Vec3(1.f);
+
+    child->ET_setTransform(tm);
+
+    parent->ET_addChild(child->getEntityId());
+
+    tm.scale = Vec3(0.5);
+    parent->ET_setTransform(tm);
+
+    {
+        auto currTm = child->ET_getTransform();
+
+        EXPECT_FLOAT_EQ(currTm.pt.x, 1.5f);
+        EXPECT_FLOAT_EQ(currTm.pt.y, 1.5f);
+        EXPECT_FLOAT_EQ(currTm.pt.z, 1.5f);
+
+        auto currLocalTm = child->ET_getLocalTransform();
+
+        EXPECT_FLOAT_EQ(currLocalTm.pt.x, 0.5f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.y, 0.5f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.z, 0.5f);
+    }
+
+    tm.scale = Vec3(1.f);
+    parent->ET_setTransform(tm);
+
+    {
+        auto currTm = child->ET_getTransform();
+
+        EXPECT_FLOAT_EQ(currTm.pt.x, 2.f);
+        EXPECT_FLOAT_EQ(currTm.pt.y, 2.f);
+        EXPECT_FLOAT_EQ(currTm.pt.z, 2.f);
+
+        auto currLocalTm = child->ET_getLocalTransform();
+
+        EXPECT_FLOAT_EQ(currLocalTm.pt.x, 1.f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.y, 1.f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.z, 1.f);
+    }
+
+}
+
 TEST_F(EntityTests, CheckRegisterEntityLogics) {
     EntityLogicsRegister logicsRegister("Test");
     logicsRegister.registerLogic<TestLogic>();
@@ -356,12 +408,11 @@ TEST_F(EntityTests, TestReflectSimpleEntity) {
 }
 
 TEST_F(EntityTests, TestReflectVoidEntityWithRenderTest) {
-    EntityId objId = InvalidEntityId;
-    ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, "Game/Void.json");
-    ASSERT_NE(objId, InvalidEntityId);
+    auto entity = createVoidObject();
+    ASSERT_NE(entity->getEntityId(), InvalidEntityId);
 
     EntityLogicId logicId = InvalidEntityLogicId;
-    ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, objId, "RenderText");
+    ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "RenderText");
     ASSERT_NE(logicId, InvalidEntityLogicId);
 
     MemoryStream stream;
@@ -369,7 +420,7 @@ TEST_F(EntityTests, TestReflectVoidEntityWithRenderTest) {
     {
         stream.openForWrite();
         bool res = false;
-        ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, objId, logicId, 3, stream);
+        ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entity->getEntityId(), logicId, 3, stream);
         ASSERT_TRUE(res);
     }
 
@@ -386,14 +437,14 @@ TEST_F(EntityTests, TestReflectVoidEntityWithRenderTest) {
         stream.write("Test");
         stream.reopenForRead();
         bool res = false;
-        ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, objId, logicId, 3, stream);
+        ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, entity->getEntityId(), logicId, 3, stream);
         ASSERT_TRUE(res);
     }
 
     {
         stream.reopenForWrite();
         bool res = false;
-        ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, objId, logicId, 3, stream);
+        ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entity->getEntityId(), logicId, 3, stream);
         ASSERT_TRUE(res);
     }
 

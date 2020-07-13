@@ -34,8 +34,8 @@ class ValueType:
 class ValueNative(NativeObject):
     def __init__(self, valueType):
         self._name = None
-        self._arrayId = None
         self._arrayVal = None
+        self._isArrayElement = False
         self._logic = None
         self._valueId = None
         self._isModified = False
@@ -43,9 +43,7 @@ class ValueNative(NativeObject):
         self._type = valueType
 
     def getName(self):
-        if self._name is not None:
-            return self._name
-        return "[{0}]".format(self._arrayId)
+        return self._name
 
     def getType(self):
         return self._type
@@ -57,14 +55,18 @@ class ValueNative(NativeObject):
         return self._isModified
 
     def getEntity(self):
-        if self._name is not None:
+        if self._logic is not None:
             return self._logic.getEntity()
-        return self._arrayVal.getEntity()
+        if self._arrayVal is not None:
+            return self._arrayVal.getEntity()
+        raise RuntimeError("Invalid value")
 
     def getLogicId(self):
-        if self._name is not None:
+        if self._logic is not None:
             return self._logic.getNativeId()
-        return self._arrayVal.getNativeId()
+        if self._arrayVal is not None:
+            return self._arrayVal.getLogicId()
+        raise RuntimeError("Invalid value")
 
     def getEntityId(self):
         return self.getEntity().getNativeId()
@@ -73,18 +75,19 @@ class ValueNative(NativeObject):
         self._isWriteOnly = flag
 
     def _isLoadedToNative(self):
+        return self.getEntity().isLoadedToNative()
+
+    def _setArrayVal(self, arrayVal):
         if self._logic is not None:
-            return self._logic.getEntity().isLoadedToNative()
-        if self._arrayVal is not None:
-            return self._arrayVal.getEntity().isLoadedToNative()
-        return False
+            raise RuntimeError("Value already belongs to a logic")
+        self._arrayVal = arrayVal
 
     def _onValueChanged(self):
         if self.getPrimitiveValueCount() != 1:
             raise RuntimeError("Can't write to native non-primitive values")
         if not self._isLoadedToNative():
             return
-        if self._name is not None:
+        if self._arrayVal is None:
             _syncValueWithNative(self)
         else:
             _syncValueWithNative(self._arrayVal)
@@ -96,13 +99,13 @@ class BoolValue(ValueNative):
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._val = bool(node[self._name])
         else:
             self._val = bool(node)
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = self._val
         else:
             node.append(self._val)
@@ -126,13 +129,13 @@ class IntValue(ValueNative):
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._val = int(node[self._name])
         else:
             self._val = int(node)
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = self._val
         else:
             node.append(self._val)
@@ -156,13 +159,13 @@ class FloatValue(ValueNative):
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._val = float(node[self._name])
         else:
             self._val = float(node)
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = self._val
         else:
             node.append(self._val)
@@ -186,13 +189,13 @@ class StringValue(ValueNative):
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._val = str(node[self._name])
         else:
             self._val = str(node)
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = self._val
         else:
             node.append(self._val)
@@ -217,7 +220,7 @@ class Vec2iValue(ValueNative):
         self._yVal = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._xVal = int(node[self._name]["x"])
             self._yVal = int(node[self._name]["y"])
         else:
@@ -225,7 +228,7 @@ class Vec2iValue(ValueNative):
             self._yVal = int(node["y"])
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = {"x": self._xVal, "y": self._yVal}
         else:
             node.append({"x": self._xVal, "y": self._yVal})
@@ -253,7 +256,7 @@ class Vec2Value(ValueNative):
         self._yVal = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._xVal = float(node[self._name]["x"])
             self._yVal = float(node[self._name]["y"])
         else:
@@ -261,7 +264,7 @@ class Vec2Value(ValueNative):
             self._yVal = float(node["y"])
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = {"x": self._xVal, "y": self._yVal}
         else:
             node.append({"x": self._xVal, "y": self._yVal})
@@ -290,7 +293,7 @@ class Vec3Value(ValueNative):
         self._zVal = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._xVal = float(node[self._name]["x"])
             self._yVal = float(node[self._name]["y"])
             self._zVal = float(node[self._name]["z"])
@@ -300,7 +303,7 @@ class Vec3Value(ValueNative):
             self._zVal = float(node["z"])
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = {"x": self._xVal, "y": self._yVal, "z": self._zVal}
         else:
             node.append({"x": self._xVal, "y": self._yVal, "z": self._zVal})
@@ -333,7 +336,7 @@ class Vec4Value(ValueNative):
         self._wVal = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._xVal = float(node[self._name]["x"])
             self._yVal = float(node[self._name]["y"])
             self._zVal = float(node[self._name]["z"])
@@ -345,7 +348,7 @@ class Vec4Value(ValueNative):
             self._wVal = float(node["w"])
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = {"x": self._xVal, "y": self._yVal, "z": self._zVal, "w": self._wVal}
         else:
             node.append({"x": self._xVal, "y": self._yVal, "z": self._zVal, "w": self._wVal})
@@ -381,7 +384,7 @@ class QuatValue(ValueNative):
         self._wVal = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._xVal = float(node[self._name]["x"])
             self._yVal = float(node[self._name]["y"])
             self._zVal = float(node[self._name]["z"])
@@ -393,7 +396,7 @@ class QuatValue(ValueNative):
             self._wVal = float(node["w"])
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = {"x": self._xVal, "y": self._yVal, "z": self._zVal, "w": self._wVal}
         else:
             node.append({"x": self._xVal, "y": self._yVal, "z": self._zVal, "w": self._wVal})
@@ -429,7 +432,7 @@ class ColorValue(ValueNative):
         self._aVal = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._rVal = int(node[self._name]["r"])
             self._gVal = int(node[self._name]["g"])
             self._bVal = int(node[self._name]["b"])
@@ -441,7 +444,7 @@ class ColorValue(ValueNative):
             self._aVal = int(node["a"])
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = {"r": self._rVal, "g": self._gVal, "b": self._bVal, "a": self._aVal}
         else:
             node.append({"r": self._rVal, "g": self._gVal, "b": self._bVal, "a": self._aVal})
@@ -472,7 +475,7 @@ class ArrayValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Array)
         self._vals = None
-        self._elemCls = None
+        self._elemType = None
 
     def readFromDict(self, node):
         if self._name is None:
@@ -480,9 +483,9 @@ class ArrayValue(ValueNative):
         self._vals = []
         idx = 0
         for elemNode in node[self._name]:
-            elem = self._elemCls()
-            elem._arrayId = idx
-            elem._arrayVal = self
+            elem = _createValue("[{0}]".format(idx), self._elemType)
+            elem._setArrayVal(self)
+            elem._isArrayElement = True
             idx += 1
             elem.readFromDict(elemNode)
             self._vals.append(elem)
@@ -496,14 +499,21 @@ class ArrayValue(ValueNative):
         node[self._name] = resList
 
     def readFromStream(self, stream):
-        self._vals = []
         size = stream.readInt()
-        for i in range(size):
-            elem = self._elemCls()
-            elem._arrayId = i
-            elem._arrayVal = self
-            elem.readFromStream(stream)
-            self._vals.append(elem)
+        if self._vals is None:
+            self._vals = []
+            for i in range(size):
+                elem = _createValue("[{0}]".format(i), self._elemType)
+                elem._setArrayVal(self)
+                elem._isArrayElement = True
+                elem.readFromStream(stream)
+                self._vals.append(elem)
+        else:
+            if size != len(self._vals):
+                raise RuntimeError("Array size was changed in an invalid way")
+            for item in self._vals:
+                item.readFromStream(stream)
+
 
     def writeToStream(self, stream):
         stream.writeInt(len(self._vals))
@@ -533,7 +543,7 @@ class EnumValue(ValueNative):
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             strVal = str(node[self._name])
         else:
             strVal = str(node)
@@ -542,7 +552,7 @@ class EnumValue(ValueNative):
     def writeToDict(self, node):
         for item in self._table:
             if self._table[item] == self._val:
-                if self._name is not None:
+                if not self._isArrayElement:
                     node[self._name] = str(item)
                 else:
                     node.append(str(item))
@@ -578,7 +588,7 @@ class ObjectValue(ValueNative):
 
     def readFromDict(self, node):
         objectNode = node
-        if self._name is not None:
+        if not self._isArrayElement and self._name is not None:
             objectNode = node[self._name]
         for val in self._vals:
             val.readFromDict(objectNode)
@@ -587,7 +597,7 @@ class ObjectValue(ValueNative):
         objectNode = {}
         for val in self._vals:
             val.writeToDict(objectNode)
-        if self._name is not None:
+        if not self._isArrayElement and self._name is not None:
             node[self._name] = objectNode
         else:
             node.append(objectNode)
@@ -611,13 +621,18 @@ class ObjectValue(ValueNative):
         for item in self._vals:
             item.setWriteOnly(flag)
 
+    def _setArrayVal(self, arrayVal):
+        self._arrayVal = arrayVal
+        for item in self._vals:
+            item._setArrayVal(arrayVal)
+
 class ResourceValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Resource)
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._val = str(node[self._name])
         else:
             self._val = str(node)
@@ -649,13 +664,13 @@ class EntityValue(ValueNative):
         self._val = None
 
     def readFromDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             self._val = str(node[self._name])
         else:
             self._val = str(node)
 
     def writeToDict(self, node):
-        if self._name is not None:
+        if not self._isArrayElement:
             node[self._name] = self._val
         else:
             node.append(self._val)
@@ -721,7 +736,7 @@ def _createValue(valueName, valueType):
             elemType = _getReflectModel().getArrayElemType(valueType)
             if elemType is None:
                 raise RuntimeError("Can't find element type of array: '{0}'".format(valueType))
-            val._elemCls = _createValue(None, elemType).__class__
+            val._elemType = elemType
         elif valModelType == "enum":
             val = EnumValue()
             val._table = _getReflectModel().getEnumTable(valueType)

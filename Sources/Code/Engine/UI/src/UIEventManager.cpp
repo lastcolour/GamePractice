@@ -1,4 +1,5 @@
 #include "UIEventManager.hpp"
+#include "Core/ETLogger.hpp"
 
 UIEventManager::UIEventManager() {
 }
@@ -24,4 +25,27 @@ void UIEventManager::ET_setActiveButton(EntityId buttonId) {
 }
 
 void UIEventManager::ET_onEvent(UIEventType eventType) {
+    UIViewType activeViewType = UIViewType::None;
+    ET_SendEventReturn(activeViewType, &ETUIViewManager::ET_getActiveViewType);
+
+    switch(eventType) {
+        case UIEventType::OnStartGame: {
+            if(activeViewType != UIViewType::Main) {
+                LogError("[UIEventManager::ET_onEvent] Can't start game from non-main view");
+                return;
+            }
+            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Main);
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Game);
+            break;
+        }
+        case UIEventType::OnBackButton: {
+            if(activeViewType != UIViewType::Game) {
+                return;
+            }
+            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+        }
+        default: {
+        }
+    }
 }

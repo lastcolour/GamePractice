@@ -72,6 +72,7 @@ struct ETGameBoard {
     virtual const AABB2Di& ET_getBoardBox() const = 0;
     virtual int ET_getCellSize() const = 0;
     virtual Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const = 0;
+    virtual void ET_setVisualParams(int zIndex, const AABB2Di& box) = 0;
 };
 
 struct ETGameConfig {

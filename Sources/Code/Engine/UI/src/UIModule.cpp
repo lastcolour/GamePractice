@@ -9,6 +9,7 @@
 #include "Logics/UIButton.hpp"
 #include "Logics/UIPressAnimation.hpp"
 #include "Logics/UILabel.hpp"
+#include "Logics/UIViewAppearAnimation.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -35,4 +36,5 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIButton>();
     logicsRegister.registerLogic<UIPressAnimation>();
     logicsRegister.registerLogic<UILabel>();
+    logicsRegister.registerLogic<UIViewAppearAnimation>();
 }

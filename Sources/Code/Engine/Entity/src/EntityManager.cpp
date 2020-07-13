@@ -152,7 +152,6 @@ bool EntityManager::ET_renameEntity(EntityId entId, const char* newName) {
 void EntityManager::ET_destroyEntity(EntityId entityId) {
     auto it = entities.find(entityId);
     if(it == entities.end()) {
-        LogWarning("[EntityManager::ET_destroyEntity] Can't find entity to destroy");
         return;
     }
     LogDebug("[EntityManager::ET_destroyEntity] Destroy entity: '%s'", it->second->ET_getName());

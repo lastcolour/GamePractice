@@ -12,6 +12,7 @@
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
 #include "Game/Logics/GameBoardMatchLogic.hpp"
+#include "Game/Logics/GameBoardSpawner.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
@@ -38,4 +39,5 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameScoreUpdaterLogic>();
     logicsRegister.registerLogic<GameBoardAppearAnimationLogic>();
     logicsRegister.registerLogic<GameBoardMatchLogic>();
+    logicsRegister.registerLogic<GameBoardSpawner>();
 }

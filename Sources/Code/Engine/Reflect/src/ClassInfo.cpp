@@ -13,6 +13,9 @@ const int MAX_PRIMITIVE_PROPERTIES = 255;
 } // namespace
 
 ClassInfo::ClassInfo(const char* name, TypeId typeId) :
+    createFunc(nullptr),
+    deleteFunc(nullptr),
+    getValueFunc(nullptr),
     className(name),
     instanceTypeId(typeId),
     primitiveValueCount(0) {
@@ -122,6 +125,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
 
 ClassInstance ClassInfo::createInstance() {
     if(!createFunc) {
+        assert(false && "Can't create instance of abstract classs");
         return ClassInstance();
     }
     auto object = createFunc();

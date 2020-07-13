@@ -9,6 +9,5 @@ GameLaucherConfig::~GameLaucherConfig() {
 
 void GameLaucherConfig::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameLaucherConfig>("GameLaucherConfig")) {
-        classInfo->addField("mainView", &GameLaucherConfig::mainView);
     }
 }

@@ -57,7 +57,13 @@ Entity::Entity(const char* entityName, EntityId entId) :
 }
 
 Entity::~Entity() {
-    for(auto it = children.rbegin(), end = children.rend(); it != end; ++it) {
+    if(parentId.isValid()) {
+        auto currentParent = parentId;
+        parentId = InvalidEntityId;
+        ET_SendEvent(currentParent, &ETEntity::ET_removeChild, entityId);
+    }
+    auto entToRemove = std::move(children);
+    for(auto it = entToRemove.rbegin(), end = entToRemove.rend(); it != end; ++it) {
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, it->childEntId);
     }
     for(auto it = logics.rbegin(), end = logics.rend(); it != end; ++it) {

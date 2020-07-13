@@ -22,8 +22,6 @@ struct BoardElement {
 
 class GameBoardLogic : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
-    public ETNode<ETUIBoxEvents>,
-    public ETNode<ETEntityEvents>,
     public ETNode<ETGameBoard> {
 public:
 
@@ -51,17 +49,10 @@ public:
     const Vec2i& ET_getBoardSize() const override;
     const AABB2Di& ET_getBoardBox() const override;
     Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const override;
+    void ET_setVisualParams(int zIndex, const AABB2Di& box) override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
-
-    // ETUIBoxEvents
-    void ET_onBoxResized(const AABB2Di& newAabb) override;
-
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
-    void ET_onChildAdded(EntityId childId) override { (void)childId; }
-    void ET_onAllLogicsCreated() override {}
 
 protected:
 
@@ -74,14 +65,13 @@ protected:
     int getVoidElemBelow(const Vec2i& boardPt) const;
     const BoardElement* getTopElem(const Vec2i& boardPt) const;
     bool moveElem(BoardElement& elem, float dt);
-    void initNewElem(BoardElement& elem, const Vec2i& boardPt) const;
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
     ColorB getElemColor(EBoardElemType elemType) const;
     void updateAfterRemoves();
     void updateBoard();
-    void initBoardBox();
     void setCellObject(const char* cellObjectName);
+    bool createNewElement(const Vec2i& boardPt);
 
 protected:
 

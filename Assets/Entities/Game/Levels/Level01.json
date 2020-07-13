@@ -1,0 +1,42 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "GameBoard",
+      "id": 1,
+      "data": {
+        "fallSpeed": 1.0,
+        "size": {
+          "x": 10,
+          "y": 10
+        },
+        "cellObject": "Game/Cell.json",
+        "cellScale": 0.699999988079071
+      }
+    },
+    {
+      "type": "GameBoardElemSwitcher",
+      "id": 2,
+      "data": {
+        "switchDuration": 1.0
+      }
+    },
+    {
+      "type": "GameBoardMatcher",
+      "id": 3,
+      "data": {}
+    },
+    {
+      "type": "GameBoardElemDestroy",
+      "id": 4,
+      "data": {
+        "destroyDuration": 0.10000000149011612
+      }
+    },
+    {
+      "type": "GameBoardInteraction",
+      "id": 5,
+      "data": {}
+    }
+  ]
+}

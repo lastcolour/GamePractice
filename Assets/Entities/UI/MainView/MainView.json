@@ -78,8 +78,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 67,
-                            "y": 67
+                            "x": 232,
+                            "y": 232
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -152,8 +152,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 80,
-                      "y": 80
+                      "x": 279,
+                      "y": 279
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -305,7 +305,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.30434781312942505,
+                          "fontSize": 1.02173912525177,
                           "text": "Start"
                         }
                       }
@@ -332,7 +332,7 @@
                     },
                     "render": 0,
                     "label": 1,
-                    "event": "None"
+                    "event": "OnStartGame"
                   }
                 },
                 {
@@ -350,8 +350,8 @@
                   "id": 4,
                   "data": {
                     "size": {
-                      "x": 107,
-                      "y": 27
+                      "x": 372,
+                      "y": 93
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -481,8 +481,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 70,
+                            "y": 70
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -553,8 +553,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 93,
+                      "y": 93
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -622,8 +622,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 70,
+                            "y": 70
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -694,8 +694,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 93,
+                      "y": 93
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -763,8 +763,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 70,
+                            "y": 70
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -835,8 +835,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 93,
+                      "y": 93
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -920,8 +920,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 150,
-                "y": 266
+                "x": 522,
+                "y": 928
               },
               "startColor": {
                 "r": 212,
