@@ -38,11 +38,9 @@ void RenderSimpleLogic::onRender(RenderContext& renderCtx) {
     Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
-    mat->bind();
     mat->setUniformMat4("MVP", mvp);
     mat->setUniform4f("color", color);
     geom->draw();
-    mat->unbind();
 }
 
 void RenderSimpleLogic::ET_setColor(const ColorB& col) {

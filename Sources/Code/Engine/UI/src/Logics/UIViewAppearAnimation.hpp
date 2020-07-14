@@ -36,7 +36,22 @@ public:
 
 private:
 
+    void updateTransform(UIViewAppearAnimationElement& elem, float prog);
+    void updateAlpha(UIViewAppearAnimationElement& elem, float prog);
+
+private:
+
+    enum class State {
+        None = 0,
+        Appear,
+        Disappear
+    };
+
+private:
+
     std::vector<UIViewAppearAnimationElement> elements;
+    float animDuration;
+    State state;
 };
 
 #endif /* __UI_VIEW_APPEAR_ANIMATION_HPP__ */

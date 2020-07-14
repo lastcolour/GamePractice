@@ -83,9 +83,7 @@ void RenderLinearGradientRect::onRender(RenderContext& renderCtx) {
     Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
-    mat->bind();
     mat->setUniformMat4("MVP", mvp);
     mat->setTexture2D("tex", tex->texId);
     geom->draw();
-    mat->unbind();
 }

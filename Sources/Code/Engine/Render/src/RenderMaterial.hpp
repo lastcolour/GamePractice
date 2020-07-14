@@ -17,6 +17,7 @@ public:
 
     void setTexture2D(const char* name, int texId);
     void setUniform1i(const char* name, int val);
+    void setUniform1f(const char* ane, float val);
     void setUniform4f(const char* name, const Vec4& vec);
     void setUniform4f(const char* name, const ColorB& col);
     void setUniformMat4(const char* name, const Mat4& mat);

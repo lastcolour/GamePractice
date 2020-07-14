@@ -9,6 +9,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemBoolValue(self):
         v = BoolValue()
         v.setVal(True)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [True,])
@@ -45,6 +46,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemIntValue(self):
         v = IntValue()
         v.setVal(1)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [1,])
@@ -81,6 +83,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemFloatValue(self):
         v = FloatValue()
         v.setVal(1.0)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [1.0,])
@@ -117,6 +120,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemStringValue(self):
         v = StringValue()
         v.setVal("1")
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, ["1",])
@@ -153,6 +157,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemVec2iValue(self):
         v = Vec2iValue()
         v.setVal(1, 2)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [{"x":1, "y":2},])
@@ -195,6 +200,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemVec2Value(self):
         v = Vec2Value()
         v.setVal(1.5, 2.5)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [{"x":1.5, "y":2.5},])
@@ -237,6 +243,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemVec3Value(self):
         v = Vec3Value()
         v.setVal(1.5, 2.5, 3.5)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [{"x":1.5, "y":2.5, "z":3.5},])
@@ -283,6 +290,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemVec4Value(self):
         v = Vec4Value()
         v.setVal(1.5, 2.5, 3.5, 4.5)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [{"x":1.5, "y":2.5, "z":3.5, "w":4.5},])
@@ -333,6 +341,7 @@ class LogicValueTests(unittest.TestCase):
     def testEntityElemColorValue(self):
         v = ColorValue()
         v.setVal(251, 252, 253, 254)
+        v._isArrayElement = True
         res = []
         v.writeToDict(res)
         self.assertEqual(res, [{"r":251, "g":252, "b":253, "a":254},])

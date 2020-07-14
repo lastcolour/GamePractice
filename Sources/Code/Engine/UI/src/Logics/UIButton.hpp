@@ -24,19 +24,18 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETUIVisibleElement
+    // ETUIElement
+    int ET_getZIndexDepth() const override;
     void ET_show() override;
     void ET_hide() override;
     bool ET_isVisible() const override;
+    void ET_setAlpha(float newAlpha) override;
 
     // ETUIInteractionBox
     void ET_onPress() override;
     void ET_onHover(bool flag) override;
     AABB2Di ET_getHitBox() const override;
     bool ET_isHovered() const override;
-
-    // ETUIElement
-    int ET_getZIndexDepth() const override;
 
     // ETUIAnimationEvents
     void ET_onAnimationEnd() override;

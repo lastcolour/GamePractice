@@ -26,6 +26,8 @@ public:
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
     void ET_update() override;
+    void ET_setIgnoreUpdates(bool flag) override;
+    std::vector<EntityId> ET_getItems() const override;
 
 private:
 
@@ -38,6 +40,7 @@ private:
 
     UILayoutStyle style;
     std::vector<EntityId> children;
+    bool ingoreUpdates;
 };
 
 #endif /* __UI_LAYOUT_HPP__ */

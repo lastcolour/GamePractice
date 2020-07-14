@@ -9,7 +9,6 @@ class ReflectContext;
 
 class UILabel : public UIElement,
     public ETNode<ETUILabel>,
-    public ETNode<ETUIVisibleElement>,
     public ETNode<ETRenderCameraEvents> {
 public:
 
@@ -32,13 +31,12 @@ public:
     void ET_setTextRender(EntityId newRenderId) override;
 
     // ETUIElement
-    virtual AABB2Di ET_getBox() const override;
-    virtual UIBoxMargin ET_getMargin() const override;
-
-    // ETUIVisibleElement
+    AABB2Di ET_getBox() const override;
+    UIBoxMargin ET_getMargin() const override;
     void ET_show() override;
     void ET_hide() override;
     bool ET_isVisible() const override;
+    void ET_setAlpha(float newAlpha) override;
 
     // ETRenderCameraEvents
     void ET_onRenderPortResized() override;

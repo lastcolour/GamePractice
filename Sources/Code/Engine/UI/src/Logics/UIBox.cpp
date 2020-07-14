@@ -26,7 +26,6 @@ bool UIBox::init() {
 
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETRenderCameraEvents>::connect(getEntityId());
-    ETNode<ETUIVisibleElement>::connect(getEntityId());
 
     calculateBox();
 
@@ -124,13 +123,39 @@ void UIBox::ET_onRenderPortResized() {
 }
 
 void UIBox::ET_show() {
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
+    std::vector<EntityId> layoutElems;
+    ET_SendEventReturn(layoutElems, getEntityId(), &ETUILayout::ET_getItems);
+    for(auto elemId : layoutElems) {
+        ET_SendEvent(elemId, &ETUIElement::ET_show);
+    }
 }
 
 void UIBox::ET_hide() {
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
+    std::vector<EntityId> layoutElems;
+    ET_SendEventReturn(layoutElems, getEntityId(), &ETUILayout::ET_getItems);
+    for(auto elemId : layoutElems) {
+        ET_SendEvent(elemId, &ETUIElement::ET_hide);
+    }
+}
+
+void UIBox::ET_setAlpha(float newAlpha) {
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setAlpha, newAlpha);
+    std::vector<EntityId> layoutElems;
+    ET_SendEventReturn(layoutElems, getEntityId(), &ETUILayout::ET_getItems);
+    for(auto elemId : layoutElems) {
+        ET_SendEvent(elemId, &ETUIElement::ET_setAlpha, newAlpha);
+    }
 }
 
 bool UIBox::ET_isVisible() const {
-    return true;
+    if(!boxRenderId.isValid()) {
+        return false;
+    }
+    bool res = false;
+    ET_SendEventReturn(res, boxRenderId, &ETRenderNode::ET_isVisible);
+    return res;
 }
 
 void UIBox::onZIndexChanged(int newZIndex) {

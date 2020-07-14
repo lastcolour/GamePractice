@@ -1,29 +1,26 @@
 #include "Logics/UIViewAppearAnimationElement.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Reflect/EnumInfo.hpp"
 
 void UIViewAppearAnimationElement::Reflect(ReflectContext& ctx) {
-    if(auto enumInfo = ctx.enumInfo<AppearType>("AppearType")) {
-        enumInfo->addValues<AppearType>({
-            {"None", AppearType::None},
-            {"FromTop", AppearType::FromTop}
-        });
-    }
     if(auto classInfo = ctx.classInfo<UIViewAppearAnimationElement>("UIViewAppearAnimationElement")) {
         classInfo->addField("element", &UIViewAppearAnimationElement::elemId);
         classInfo->addField("startDelay", &UIViewAppearAnimationElement::startDelay);
-        classInfo->addField("moveOffset", &UIViewAppearAnimationElement::moveOffset);
         classInfo->addField("duration", &UIViewAppearAnimationElement::duration);
-        classInfo->addField("appearType", &UIViewAppearAnimationElement::appearType);
+        classInfo->addField("xMoveOffset", &UIViewAppearAnimationElement::xMoveOffset);
+        classInfo->addField("yMoveOffset", &UIViewAppearAnimationElement::yMoveOffset);
+        classInfo->addField("startScale", &UIViewAppearAnimationElement::startScale);
+        classInfo->addField("startAlpha", &UIViewAppearAnimationElement::startAlpha);
     }
 }
 
 UIViewAppearAnimationElement::UIViewAppearAnimationElement() :
-    elemId(),
-    startDelay(0.0f),
-    moveOffset(10.f),
-    duration(0.1f),
-    appearType(AppearType::FromTop) {
+    startDelay(0.f),
+    duration(0.3f),
+    xMoveOffset(0.f),
+    yMoveOffset(30.f),
+    startScale(1.5f),
+    startAlpha(0.0f),
+    isHidded(false) {
 }
 
 UIViewAppearAnimationElement::~UIViewAppearAnimationElement() {

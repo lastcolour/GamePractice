@@ -987,6 +987,47 @@
         },
         "render": 4
       }
+    },
+    {
+      "type": "UIViewAppearAnimation",
+      "id": 5,
+      "data": {
+        "elements": [
+          {
+            "element": 1,
+            "startDelay": 0.0,
+            "duration": 0.4000000059604645,
+            "xMoveOffset": 0.0,
+            "xMoveDir": "FromLeft",
+            "yMoveOffset": 80.0,
+            "yMoveDir": "FromTop",
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          },
+          {
+            "element": 2,
+            "startDelay": 0.20000000298023224,
+            "duration": 0.4000000059604645,
+            "xMoveOffset": 0.0,
+            "xMoveDir": "FromLeft",
+            "yMoveOffset": 50.0,
+            "yMoveDir": "FromTop",
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          },
+          {
+            "element": 3,
+            "startDelay": 0.4000000059604645,
+            "duration": 0.4000000059604645,
+            "xMoveOffset": 0.0,
+            "xMoveDir": "FromLeft",
+            "yMoveOffset": 30.0,
+            "yMoveDir": "FromTop",
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          }
+        ]
+      }
     }
   ]
 }

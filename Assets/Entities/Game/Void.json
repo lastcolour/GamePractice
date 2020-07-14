@@ -1,20 +1,4 @@
 {
   "children": [],
-  "logics": [
-    {
-      "type": "UIViewAppearAnimation",
-      "id": 1,
-      "data": {
-        "elements": [
-          {
-            "element": -1,
-            "startDelay": 10.0,
-            "moveOffset": 10.0,
-            "duration": 0.10000000149011612,
-            "appearType": "FromTop"
-          }
-        ]
-      }
-    }
-  ]
+  "logics": []
 }

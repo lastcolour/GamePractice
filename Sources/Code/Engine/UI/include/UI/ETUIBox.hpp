@@ -3,6 +3,8 @@
 
 #include "Math/AABB.hpp"
 
+#include <vector>
+
 class UIBoxStyle;
 class UIBoxMargin;
 class UILayoutStyle;
@@ -16,6 +18,10 @@ struct ETUIElement {
     virtual void ET_setZIndex(int newZIndex) = 0;
     virtual int ET_getZIndex() const = 0;
     virtual int ET_getZIndexDepth() const = 0;
+    virtual void ET_setAlpha(float newAlpha) = 0;
+    virtual void ET_show() = 0;
+    virtual void ET_hide() = 0;
+    virtual bool ET_isVisible() const = 0;
 };
 
 struct ETUIBox {
@@ -36,13 +42,8 @@ struct ETUILayout {
     virtual void ET_setStyle(const UILayoutStyle& newStyle) = 0;
     virtual void ET_addItem(EntityId entityId) = 0;
     virtual void ET_update() = 0;
-};
-
-struct ETUIVisibleElement {
-    virtual ~ETUIVisibleElement() = default;
-    virtual void ET_show() = 0;
-    virtual void ET_hide() = 0;
-    virtual bool ET_isVisible() const = 0;
+    virtual void ET_setIgnoreUpdates(bool flag) = 0;
+    virtual std::vector<EntityId> ET_getItems() const = 0;
 };
 
 struct ETUILabel {

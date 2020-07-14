@@ -14,6 +14,7 @@ struct ETRenderNode {
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
     virtual void ET_setMaterial(const char* matName) = 0;
     virtual void ET_setGeometry(PrimitiveGeometryType geomType) = 0;
+    virtual void ET_setAlpha(float newAlpha) = 0;
     virtual int ET_getDrawPriority() const = 0;
 };
 

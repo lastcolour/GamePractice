@@ -26,10 +26,10 @@ bool UIViewManager::init() {
 void UIViewManager::deinit() {
 }
 
-void UIViewManager::ET_onViewAppeared() {
+void UIViewManager::ET_onViewAppeared(EntityId viewId) {
 }
 
-void UIViewManager::ET_onViewDisappeared() {
+void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
 }
 
 bool UIViewManager::ET_openView(UIViewType viewType) {

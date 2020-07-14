@@ -8,8 +8,7 @@
 
 class UIBox : public UIElement,
     public ETNode<ETUIBox>,
-    public ETNode<ETRenderCameraEvents>,
-    public ETNode<ETUIVisibleElement> {
+    public ETNode<ETRenderCameraEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,6 +25,10 @@ public:
     // ETUIElement
     AABB2Di ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
+    void ET_show() override;
+    void ET_hide() override;
+    bool ET_isVisible() const override;
+    void ET_setAlpha(float newAlpha) override;
 
     // ETUIBox
     const UIBoxStyle& ET_getStyle() const override;
@@ -37,11 +40,6 @@ public:
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onAllLogicsCreated() override;
-
-    // ETUIVisibleElement
-    void ET_show() override;
-    void ET_hide() override;
-    bool ET_isVisible() const override;
 
 protected:
 

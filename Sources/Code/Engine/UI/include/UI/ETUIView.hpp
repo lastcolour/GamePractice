@@ -39,8 +39,8 @@ struct ETUIViewAppearAnimation {
 
 struct ETUIViewAppearAnimationEvents {
     virtual ~ETUIViewAppearAnimationEvents() = default;
-    virtual void ET_onViewAppeared() = 0;
-    virtual void ET_onViewDisappeared() = 0;
+    virtual void ET_onViewAppeared(EntityId viewId) = 0;
+    virtual void ET_onViewDisappeared(EntityId viewId) = 0;
 };
 
 #endif /* __ET_UI_VIEW_HPP__ */

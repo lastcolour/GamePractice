@@ -1,8 +1,11 @@
 #include "Logics/RenderNode.hpp"
 #include "Render/ETRenderManager.hpp"
+#include "RenderMaterial.hpp"
 
 RenderNode::RenderNode() :
+    alpha(1.f),
     drawPriority(0),
+    blending(RenderBlendingType::NONE),
     isVisible(true) {
 }
 
@@ -27,6 +30,10 @@ void RenderNode::ET_setGeometry(PrimitiveGeometryType geomType) {
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomType);
 }
 
+void RenderNode::ET_setAlpha(float newAlpha) {
+    alpha = newAlpha;
+}
+
 bool RenderNode::ET_isVisible() const {
     if(!mat) {
         return false;
@@ -41,7 +48,21 @@ void RenderNode::ET_onRender(RenderContext& renderCtx) {
     if(!ET_isVisible()) {
         return;
     }
+
+    if(blending != RenderBlendingType::NONE) {
+        renderCtx.setBlending(blending);
+    } else {
+        if(alpha < 1.f) {
+            renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+        } else {
+            renderCtx.setBlending(blending);
+        }
+    }
+
+    mat->bind();
+    mat->setUniform1f("alpha", alpha);
     onRender(renderCtx);
+    mat->unbind();
 }
 
 void RenderNode::ET_hide() {
@@ -59,4 +80,8 @@ void RenderNode::ET_setDrawPriority(int newDrawPriority) {
 
 int RenderNode::ET_getDrawPriority() const {
     return drawPriority;
+}
+
+void RenderNode::setBlendingMode(RenderBlendingType newBlending) {
+    blending = newBlending;
 }

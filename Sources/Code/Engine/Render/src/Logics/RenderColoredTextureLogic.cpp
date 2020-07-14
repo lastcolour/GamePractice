@@ -8,6 +8,8 @@
 
 RenderColoredTextureLogic::RenderColoredTextureLogic() :
     color(255, 255, 255) {
+
+    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
 }
 
 RenderColoredTextureLogic::~RenderColoredTextureLogic() {
@@ -41,12 +43,8 @@ void RenderColoredTextureLogic::onRender(RenderContext& renderCtx) {
     Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
-    renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
-    mat->bind();
     mat->setUniformMat4("MVP", mvp);
     mat->setTexture2D("tex", tex->texId);
     mat->setUniform4f("color", color);
     geom->draw();
-    mat->unbind();
-    renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
 }

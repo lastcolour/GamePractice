@@ -10,6 +10,8 @@
 
 RenderImageLogic::RenderImageLogic() :
     size(100) {
+    
+    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -42,13 +44,9 @@ void RenderImageLogic::onRender(RenderContext& renderCtx) {
     Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
     mvp = renderCtx.proj2dMat * mvp;
 
-    renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
-    mat->bind();
     mat->setUniformMat4("MVP", mvp);
     mat->setTexture2D("tex", tex->texId);
     geom->draw();
-    mat->unbind();
-    renderCtx.setBlending(RenderBlendingType::NONE);
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {

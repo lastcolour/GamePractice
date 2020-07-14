@@ -24,7 +24,6 @@ UILabel::~UILabel() {
 bool UILabel::init() {
     UIElement::init();
     ETNode<ETUILabel>::connect(getEntityId());
-    ETNode<ETUIVisibleElement>::connect(getEntityId());
     ETNode<ETRenderCameraEvents>::connect(getEntityId());
     if(ET_IsExistNode<ETRenderTextLogic>(labelRenderId)) {
         ET_setTextRender(labelRenderId);
@@ -96,13 +95,24 @@ void UILabel::ET_onRenderPortResized() {
 }
 
 void UILabel::ET_show() {
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_show);
 }
 
 void UILabel::ET_hide() {
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
 }
 
 bool UILabel::ET_isVisible() const {
-    return true;
+    if(!labelRenderId.isValid()) {
+        return false;
+    }
+    bool res = false;
+    ET_SendEventReturn(res, labelRenderId, &ETRenderNode::ET_isVisible);
+    return res;
+}
+
+void UILabel::ET_setAlpha(float newAlpha) {
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setAlpha, newAlpha);
 }
 
 void UILabel::ET_onAllLogicsCreated() {

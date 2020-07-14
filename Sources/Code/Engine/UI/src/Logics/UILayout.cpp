@@ -14,7 +14,8 @@ void UILayout::Reflect(ReflectContext& ctx) {
     }
 }
 
-UILayout::UILayout() {
+UILayout::UILayout() :
+    ingoreUpdates(false) {
 }
 
 UILayout::~UILayout() {
@@ -42,6 +43,10 @@ void UILayout::ET_addItem(EntityId entityId) {
     children.push_back(entityId);
     ET_SendEvent(entityId, &ETUIElement::ET_setLayout, getEntityId());
     calculateLayout();
+}
+
+void UILayout::ET_setIgnoreUpdates(bool flag) {
+    ingoreUpdates = flag;
 }
 
 Vec2i UILayout::calcAligmentCenter(AABB2Di& parentBox, AABB2Di& box) {
@@ -179,6 +184,9 @@ AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
 }
 
 void UILayout::ET_update() {
+    if(ingoreUpdates) {
+        return;
+    }
     calculateLayout();
 }
 
@@ -219,4 +227,8 @@ void UILayout::calculateLayout() {
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
         ET_SendEvent(childId, &ETRenderNode::ET_setDrawPriority, childZIndex);
     }
+}
+
+std::vector<EntityId> UILayout::ET_getItems() const {
+    return children;
 }

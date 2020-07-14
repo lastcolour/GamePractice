@@ -2,13 +2,9 @@
 #define __UI_VIEW_APPEAR_ANIMATION_ELEMENT_HPP__
 
 #include "Core/Core.hpp"
+#include "Math/Transform.hpp"
 
 class ReflectContext;
-
-enum class AppearType {
-    None = 0,
-    FromTop
-};
 
 struct UIViewAppearAnimationElement {
 public:
@@ -23,10 +19,14 @@ public:
 public:
 
     EntityId elemId;
+    Transform origTm;
     float startDelay;
-    float moveOffset;
     float duration;
-    AppearType appearType;
+    float xMoveOffset;
+    float yMoveOffset;
+    float startScale;
+    float startAlpha;
+    bool isHidded;
 };
 
 #endif /* __UI_VIEW_APPEAR_ANIMATION_ELEMENT_HPP__ */

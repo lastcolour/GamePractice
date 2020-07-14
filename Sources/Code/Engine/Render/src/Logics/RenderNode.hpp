@@ -5,6 +5,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "RenderContext.hpp"
 
 class RenderMaterial;
 class RenderGeometry;
@@ -29,6 +30,7 @@ public:
     int ET_getDrawPriority() const override;
     void ET_setMaterial(const char* matName) override;
     void ET_setGeometry(PrimitiveGeometryType geomType) override;
+    void ET_setAlpha(float newAlpha) override;
 
     // ETRenderEvents
     void ET_onRender(RenderContext& renderCtx) override;
@@ -39,12 +41,18 @@ protected:
 
 protected:
 
+    void setBlendingMode(RenderBlendingType newBlending);
+
+protected:
+
     std::shared_ptr<RenderMaterial> mat;
     std::shared_ptr<RenderGeometry> geom;
 
 private:
 
+    float alpha;
     int drawPriority;
+    RenderBlendingType blending;
     bool isVisible;
 };
 

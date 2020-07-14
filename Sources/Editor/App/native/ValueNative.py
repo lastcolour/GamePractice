@@ -59,23 +59,29 @@ class ValueNative(NativeObject):
             return self._logic.getEntity()
         if self._arrayVal is not None:
             return self._arrayVal.getEntity()
-        raise RuntimeError("Invalid value")
+        return None
 
     def getLogicId(self):
         if self._logic is not None:
             return self._logic.getNativeId()
         if self._arrayVal is not None:
             return self._arrayVal.getLogicId()
-        raise RuntimeError("Invalid value")
+        return None
 
     def getEntityId(self):
-        return self.getEntity().getNativeId()
+        ent = self.getEntity()
+        if ent is None:
+            return None
+        return ent.getNativeId()
 
     def setWriteOnly(self, flag):
         self._isWriteOnly = flag
 
     def _isLoadedToNative(self):
-        return self.getEntity().isLoadedToNative()
+        ent = self.getEntity()
+        if ent is None:
+            return None
+        return ent.isLoadedToNative()
 
     def _setArrayVal(self, arrayVal):
         if self._logic is not None:
@@ -502,18 +508,17 @@ class ArrayValue(ValueNative):
         size = stream.readInt()
         if self._vals is None:
             self._vals = []
-            for i in range(size):
-                elem = _createValue("[{0}]".format(i), self._elemType)
-                elem._setArrayVal(self)
-                elem._isArrayElement = True
-                elem.readFromStream(stream)
-                self._vals.append(elem)
-        else:
-            if size != len(self._vals):
-                raise RuntimeError("Array size was changed in an invalid way")
-            for item in self._vals:
-                item.readFromStream(stream)
-
+        newElemsCount = size - len(self._vals)
+        if newElemsCount > 1:
+            raise RuntimeError("Array size was changed in an invalid way")
+        for item in self._vals:
+            item.readFromStream(stream)
+        for i in range(newElemsCount):
+            elem = _createValue("[{0}]".format(i), self._elemType)
+            elem._setArrayVal(self)
+            elem._isArrayElement = True
+            elem.readFromStream(stream)
+            self._vals.append(elem)
 
     def writeToStream(self, stream):
         stream.writeInt(len(self._vals))

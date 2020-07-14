@@ -22,6 +22,8 @@ const float NEXT_LINE_OFFSET = 1.2f;
 RenderTextLogic::RenderTextLogic() :
     color(255, 255, 255),
     fontScale(1.f) {
+
+    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
 }
 
 RenderTextLogic::~RenderTextLogic() {
@@ -61,8 +63,6 @@ bool RenderTextLogic::init() {
 }
 
 void RenderTextLogic::onRender(RenderContext& renderCtx) {
-    renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
-    mat->bind();
     mat->setTexture2D("tex", font->getTexId());
     mat->setUniformMat4("MVP", renderCtx.proj2dMat);
     mat->setUniform4f("color", color);
@@ -127,8 +127,6 @@ void RenderTextLogic::onRender(RenderContext& renderCtx) {
             ++it;
         }
     }
-    mat->unbind();
-    renderCtx.setBlending(RenderBlendingType::NONE);
 }
 
 void RenderTextLogic::calcTextSize() {

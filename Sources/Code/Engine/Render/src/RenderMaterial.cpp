@@ -46,6 +46,13 @@ void RenderMaterial::setUniform1i(const char* name, int val) {
     }
 }
 
+void RenderMaterial::setUniform1f(const char* name, float val) {
+    GLint uniLoc = -1;
+    if(findUniform(name, uniLoc)) {
+        glUniform1f(uniLoc, val);
+    }
+}
+
 void RenderMaterial::setUniformMat4(const char* name, const Mat4& mat) {
     GLint uniLoc = -1;
     if(findUniform(name, uniLoc)) {

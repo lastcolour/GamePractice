@@ -26,8 +26,8 @@ public:
     EntityId ET_getActiveViewId() const override;
 
     // ETUIViewAppearAnimationEvents
-    void ET_onViewAppeared() override;
-    void ET_onViewDisappeared() override;
+    void ET_onViewAppeared(EntityId viewId) override;
+    void ET_onViewDisappeared(EntityId viewId) override;
 
 private:
 
