@@ -26,6 +26,12 @@ struct ETUIViewManager {
     virtual EntityId ET_getActiveViewId() const = 0;
 };
 
+struct ETUIViewTransitionManager {
+    virtual ~ETUIViewTransitionManager() = default;
+    virtual void ET_addAppearing(EntityId viewId) = 0;
+    virtual void ET_addDisappearing(EntityId viewId) = 0;
+};
+
 struct ETUIEventManager {
     virtual ~ETUIEventManager() = default;
     virtual void ET_onEvent(UIEventType eventType) = 0;

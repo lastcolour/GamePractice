@@ -5,8 +5,15 @@
 #include "UI/ETUIBox.hpp"
 #include "Core/ETApplication.hpp"
 #include "UIConfig.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <algorithm>
+
+namespace {
+
+const float DISAPPEAR_TIME_SCALE = 1.2f;
+
+} // namespace
 
 void UIViewAppearAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIViewAppearAnimation>("UIViewAppearAnimation")) {
@@ -24,7 +31,6 @@ UIViewAppearAnimation::~UIViewAppearAnimation() {
 
 bool UIViewAppearAnimation::init() {
     ETNode<ETUIViewAppearAnimation>::connect(getEntityId());
-    ET_appear();
     return true;
 }
 
@@ -38,21 +44,29 @@ void UIViewAppearAnimation::deinit() {
 void UIViewAppearAnimation::ET_onAppTick(float dt) {
     auto elemsInProgress = elements.size();
     animDuration += dt;
+    auto resAnimDuration = animDuration;
+    if(state == State::Disappear) {
+        resAnimDuration *= DISAPPEAR_TIME_SCALE;
+    }
     for(auto& elem : elements) {
         if(!elem.elemId.isValid()) {
             --elemsInProgress;
             continue;
         }
-        auto elemTime = animDuration - elem.startDelay;
+        auto elemTime = resAnimDuration - elem.startDelay;
         if(elemTime < 0.f) {
             continue;
         }
-        if(elem.isHidded) {
+        if(state == State::Appear && elem.isHidded) {
             ET_SendEvent(elem.elemId, &ETUIElement::ET_show);
             elem.isHidded = false;
         }
         if(elemTime >= elem.duration) {
             --elemsInProgress;
+            if(state == State::Disappear && !elem.isHidded) {
+                ET_SendEvent(elem.elemId, &ETUIElement::ET_hide);
+                elem.isHidded = true;
+            }
         }
         auto elemProg = std::min(1.f, elemTime / elem.duration);
         if(state == State::Disappear) {
@@ -62,7 +76,17 @@ void UIViewAppearAnimation::ET_onAppTick(float dt) {
         updateAlpha(elem, elemProg);
     }
     if(!elemsInProgress) {
-        ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewAppeared, getEntityId());
+        for(auto& elem : elements) {
+            if(elem.elemId.isValid()) {
+                ET_SendEvent(elem.elemId, &ETEntity::ET_setTransform, elem.origTm);
+            }
+        }
+        if(state == State::Appear) {
+            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewAppeared, getEntityId());
+        } else {
+            ET_SendEvent(getEntityId(), &ETUIElement::ET_hide);
+            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewDisappeared, getEntityId());
+        }
         ET_SendEvent(getEntityId(), &ETUILayout::ET_setIgnoreUpdates, false);
         ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
         ETNode<ETAppTimerEvents>::disconnect();
@@ -95,10 +119,16 @@ void UIViewAppearAnimation::ET_appear() {
     ETNode<ETAppTimerEvents>::connect(getEntityId());
     for(auto& elem : elements) {
         if(!elem.elemId.isValid()) {
+            LogWarning("[UIViewAppearAnimation::ET_appear] Invalid element's id");
             continue;
         }
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, elem.elemId, &ETUIElement::ET_isHidden);
+        if(!isHidden) {
+            LogWarning("[UIViewAppearAnimation::ET_appear] Element '%s' isn't hidden before appear animation start",
+                EntityUtils::GetEntityName(elem.elemId));
+        }
         ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getTransform);
-        ET_SendEvent(elem.elemId, &ETUIElement::ET_hide);
         elem.isHidded = true;
     }
     ET_SendEvent(getEntityId(), &ETUILayout::ET_setIgnoreUpdates, true);
@@ -106,4 +136,23 @@ void UIViewAppearAnimation::ET_appear() {
 }
 
 void UIViewAppearAnimation::ET_disappear() {
+    animDuration = 0.f;
+    state = State::Disappear;
+    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    for(auto& elem : elements) {
+        if(!elem.elemId.isValid()) {
+            LogWarning("[UIViewAppearAnimation::ET_disappear] Invalid element's id");
+            continue;
+        }
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, elem.elemId, &ETUIElement::ET_isHidden);
+        if(isHidden) {
+            LogWarning("[UIViewAppearAnimation::ET_disappear] Element '%s' is hidden before appear animation start",
+                EntityUtils::GetEntityName(elem.elemId));
+        }
+        ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getTransform);
+        elem.isHidded = false;
+    }
+    ET_SendEvent(getEntityId(), &ETUILayout::ET_setIgnoreUpdates, true);
+    ETNode<ETAppTimerEvents>::connect(getEntityId());
 }

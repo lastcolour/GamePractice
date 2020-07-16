@@ -1,13 +1,17 @@
 #include "UIViewManager.hpp"
 #include "Core/ETLogger.hpp"
 #include "Entity/ETEntityManger.hpp"
+#include "UI/ETUIBox.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 namespace {
 
 const char* MAIN_VIEW = "UI/MainView/MainView.json";
 const char* GAME_VIEW = "UI/GameView/GameView.json";
+
+const int Z_INDEX_VIEW_OFFSET = 1000;
 
 } // namespace
 
@@ -19,56 +23,66 @@ UIViewManager::~UIViewManager() {
 
 bool UIViewManager::init() {
     ETNode<ETUIViewManager>::connect(getEntityId());
-    ETNode<ETUIViewAppearAnimationEvents>::connect(getEntityId());
     return true;
 }
 
 void UIViewManager::deinit() {
 }
 
-void UIViewManager::ET_onViewAppeared(EntityId viewId) {
-}
-
-void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
-}
-
-bool UIViewManager::ET_openView(UIViewType viewType) {
+EntityId UIViewManager::getViewId(UIViewType viewType) {
+    auto it = loadedViews.find(viewType);
+    if(it != loadedViews.end()) {
+        return it->second;
+    }
+    const char* viewName = nullptr;
     switch(viewType) {
         case UIViewType::Main: {
-            EntityId viewId;
-            ET_SendEventReturn(viewId, &ETEntityManager::ET_createEntity, MAIN_VIEW);
-            if(!viewId.isValid()) {
-                LogError("[UIViewManager::ET_openView] Can't create MAIN view: '%s'", MAIN_VIEW);
-                return false;
-            }
-            UIViewNode node;
-            node.type = UIViewType::Main;
-            node.id = viewId;
-            stack.push_back(node);
-            return true;
+            viewName = MAIN_VIEW;
+            break;
         }
         case UIViewType::Game: {
-            EntityId viewId;
-            ET_SendEventReturn(viewId, &ETEntityManager::ET_createEntity, GAME_VIEW);
-            if(!viewId.isValid()) {
-                LogError("[UIViewManager::ET_openView] Can't create GAME view: '%s'", GAME_VIEW);
-                return false;
-            }
-            UIViewNode node;
-            node.type = UIViewType::Game;
-            node.id = viewId;
-            stack.push_back(node);
-            return true;
+            viewName = GAME_VIEW;
+            break;
         }
         case UIViewType::None: {
             [[fallthrough]];
         }
         default: {
-            assert(false && "Invalid View Type");
+            assert(false && "Invalid view type");
+            return InvalidEntityId;
         }
     }
-    return false;
+    EntityId viewId;
+    ET_SendEventReturn(viewId, &ETEntityManager::ET_createEntity, viewName);
+    if(!viewId.isValid()) {
+        LogError("[ UIViewManager::getViewId] Can't create view: '%s'", viewName);
+        return InvalidEntityId;
+    }
+    loadedViews[viewType] = viewId;
+    ET_SendEvent(viewId, &ETUIElement::ET_hide);
+    return viewId;
 }
+
+bool UIViewManager::ET_openView(UIViewType viewType) {
+    int zIndex = 0;
+    if(!stack.empty()) {
+        auto topViewId = stack.back().id;
+        ET_SendEventReturn(zIndex, topViewId, &ETUIElement::ET_getZIndex);
+        zIndex += Z_INDEX_VIEW_OFFSET;
+    }
+    UIViewNode node;
+    node.type = viewType;
+    node.id = getViewId(viewType);
+    if(node.id == InvalidEntityId) {
+        LogWarning("[UIViewManager::ET_openView] Can't create view!");
+        return false;
+    }
+    stack.push_back(node);
+    ET_SendEvent(node.id, &ETUIElement::ET_setZIndex, zIndex);
+    ET_SendEvent(&ETUIViewTransitionManager::ET_addAppearing, node.id);
+    return true;
+}
+
 void UIViewManager::ET_closeView(UIViewType viewType) {
     auto it = std::find_if(stack.begin(), stack.end(), [viewType](const UIViewNode& node){
         return viewType == node.type;
@@ -77,7 +91,7 @@ void UIViewManager::ET_closeView(UIViewType viewType) {
         LogWarning("[UIViewManager::ET_closeView] Can't find view to close");
         return;
     }
-    ET_SendEvent(&ETEntityManager::ET_destroyEntity, it->id);
+    ET_SendEvent(&ETUIViewTransitionManager::ET_addDisappearing, it->id);
     stack.erase(it);
 }
 

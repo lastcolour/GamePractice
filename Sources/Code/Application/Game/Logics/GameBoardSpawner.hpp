@@ -25,6 +25,8 @@ public:
     // ETUIBoxEvents
     void ET_onBoxResized(const AABB2Di& newAabb) override;
     void ET_onZIndexChanged(int newZIndex) override;
+    void ET_onHidden() override;
+    void ET_onShown() override;
 
 private:
 

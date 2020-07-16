@@ -21,7 +21,7 @@ struct ETUIElement {
     virtual void ET_setAlpha(float newAlpha) = 0;
     virtual void ET_show() = 0;
     virtual void ET_hide() = 0;
-    virtual bool ET_isVisible() const = 0;
+    virtual bool ET_isHidden() const = 0;
 };
 
 struct ETUIBox {
@@ -34,6 +34,8 @@ struct ETUIBoxEvents {
     virtual ~ETUIBoxEvents() = default;
     virtual void ET_onBoxResized(const AABB2Di& newAabb) = 0;
     virtual void ET_onZIndexChanged(int newZIndex) = 0;
+    virtual void ET_onHidden() = 0;
+    virtual void ET_onShown() = 0;
 };
 
 struct ETUILayout {

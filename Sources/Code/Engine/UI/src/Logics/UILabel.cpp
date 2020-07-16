@@ -94,21 +94,12 @@ void UILabel::ET_onRenderPortResized() {
     ET_setFontSize(style.fontSize);
 }
 
-void UILabel::ET_show() {
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_show);
-}
-
-void UILabel::ET_hide() {
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
-}
-
-bool UILabel::ET_isVisible() const {
-    if(!labelRenderId.isValid()) {
-        return false;
+void UILabel::onHide(bool flag) {
+    if(flag) {
+        ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(labelRenderId, &ETRenderNode::ET_show);
     }
-    bool res = false;
-    ET_SendEventReturn(res, labelRenderId, &ETRenderNode::ET_isVisible);
-    return res;
 }
 
 void UILabel::ET_setAlpha(float newAlpha) {

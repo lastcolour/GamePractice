@@ -21,23 +21,22 @@ public:
     ETSyncRoute();
     ~ETSyncRoute();
 
+    bool tryPushUniqueRoute(TypeId reqRouteId);
     void pushRoute(TypeId reqRouteId);
     void popRoute();
-    bool tryBlockRoute(TypeId reqRouteId);
-    void unlockRoute(TypeId reqRouteId);
+    bool isRouteUniqueForCurrentThread(TypeId reqRouteId) const;
 
 private:
 
     bool isRouteSafeForCurrentThread(TypeId reqRouteId) const;
     void addRouteForCurrentThread(TypeId reqRouteId);
     void popRouteForCurrentThread();
+    size_t getRountCountForCurrentThread(TypeId reqRouteId) const;
 
 private:
 
     ThreadRouteMapT routesMap;
-    std::vector<TypeId> blockedRoutes;
     std::mutex routeMutex;
-    std::mutex blockMutex;
     std::condition_variable cond;
 };
 

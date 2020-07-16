@@ -24,6 +24,9 @@ public:
     void ET_setZIndex(int newZIndex) override;
     int ET_getZIndex() const override;
     int ET_getZIndexDepth() const override;
+    void ET_show() override;
+    void ET_hide() override;
+    bool ET_isHidden() const override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override {}
@@ -37,11 +40,13 @@ protected:
 protected:
 
     virtual void onZIndexChanged(int newZIndex) = 0;
+    virtual void onHide(bool flag) = 0;
 
 protected:
 
     EntityId layoutId;
     int zIndex;
+    bool isHidden;
 };
 
 #endif /* __UI_ELEMENT_HPP__ */

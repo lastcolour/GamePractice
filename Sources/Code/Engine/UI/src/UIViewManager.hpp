@@ -6,10 +6,10 @@
 #include "UI/ETUIView.hpp"
 
 #include <vector>
+#include <unordered_map>
 
 class UIViewManager : public SystemLogic,
-    public ETNode<ETUIViewManager>,
-    public ETNode<ETUIViewAppearAnimationEvents> {
+    public ETNode<ETUIViewManager> {
 public:
 
     UIViewManager();
@@ -25,10 +25,6 @@ public:
     UIViewType ET_getActiveViewType() const override;
     EntityId ET_getActiveViewId() const override;
 
-    // ETUIViewAppearAnimationEvents
-    void ET_onViewAppeared(EntityId viewId) override;
-    void ET_onViewDisappeared(EntityId viewId) override;
-
 private:
 
     struct UIViewNode {
@@ -38,6 +34,12 @@ private:
 
 private:
 
+    EntityId getViewId(UIViewType viewType);
+    int get() const;
+
+private:
+
+    std::unordered_map<UIViewType, EntityId> loadedViews;
     std::vector<UIViewNode> stack;
 };
 

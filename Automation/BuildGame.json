@@ -5,7 +5,7 @@
         "platform":"${currentPlatform}",
         "skipLibsBuild":"True",
         "skipGameTests":"False",
-        "skipEditorTests":"False"
+        "skipEditorTests":"True"
     },
     "Steps":[
         {

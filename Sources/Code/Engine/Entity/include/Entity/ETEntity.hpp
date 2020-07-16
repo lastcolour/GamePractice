@@ -27,4 +27,10 @@ struct ETEntity {
     virtual std::vector<EntityId> ET_getChildren() const = 0;
 };
 
+namespace EntityUtils {
+
+const char* GetEntityName(EntityId entityId);
+
+} // namespace EntityUtils
+
 #endif /* __ET_ENTITY_HPP__ */

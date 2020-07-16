@@ -78,8 +78,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 232,
-                            "y": 232
+                            "x": 67,
+                            "y": 67
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -152,8 +152,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 279,
-                      "y": 279
+                      "x": 80,
+                      "y": 80
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -305,7 +305,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 1.02173912525177,
+                          "fontSize": 0.30434781312942505,
                           "text": "Start"
                         }
                       }
@@ -350,8 +350,8 @@
                   "id": 4,
                   "data": {
                     "size": {
-                      "x": 372,
-                      "y": 93
+                      "x": 107,
+                      "y": 27
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -481,8 +481,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 70,
-                            "y": 70
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -553,8 +553,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 93,
-                      "y": 93
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -622,8 +622,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 70,
-                            "y": 70
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -694,8 +694,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 93,
-                      "y": 93
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -763,8 +763,8 @@
                         "id": 1,
                         "data": {
                           "size": {
-                            "x": 70,
-                            "y": 70
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -835,8 +835,8 @@
                   "id": 5,
                   "data": {
                     "size": {
-                      "x": 93,
-                      "y": 93
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -920,8 +920,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 522,
-                "y": 928
+                "x": 150,
+                "y": 266
               },
               "startColor": {
                 "r": 212,
@@ -998,9 +998,7 @@
             "startDelay": 0.0,
             "duration": 0.4000000059604645,
             "xMoveOffset": 0.0,
-            "xMoveDir": "FromLeft",
             "yMoveOffset": 80.0,
-            "yMoveDir": "FromTop",
             "startScale": 1.5,
             "startAlpha": 0.0
           },
@@ -1009,9 +1007,7 @@
             "startDelay": 0.20000000298023224,
             "duration": 0.4000000059604645,
             "xMoveOffset": 0.0,
-            "xMoveDir": "FromLeft",
             "yMoveOffset": 50.0,
-            "yMoveDir": "FromTop",
             "startScale": 1.5,
             "startAlpha": 0.0
           },
@@ -1020,9 +1016,7 @@
             "startDelay": 0.4000000059604645,
             "duration": 0.4000000059604645,
             "xMoveOffset": 0.0,
-            "xMoveDir": "FromLeft",
             "yMoveOffset": 30.0,
-            "yMoveDir": "FromTop",
             "startScale": 1.5,
             "startAlpha": 0.0
           }

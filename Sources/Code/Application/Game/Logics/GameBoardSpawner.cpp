@@ -70,3 +70,9 @@ void GameBoardSpawner::deinit() {
         gameBoardId = InvalidEntityId;
     }
 }
+
+void GameBoardSpawner::ET_onHidden() {
+}
+
+void GameBoardSpawner::ET_onShown() {
+}

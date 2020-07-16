@@ -33,9 +33,6 @@ public:
     // ETUIElement
     AABB2Di ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
-    void ET_show() override;
-    void ET_hide() override;
-    bool ET_isVisible() const override;
     void ET_setAlpha(float newAlpha) override;
 
     // ETRenderCameraEvents
@@ -47,6 +44,7 @@ public:
 protected:
 
     void onZIndexChanged(int newZIndex) override;
+    void onHide(bool flag) override;
 
 private:
 

@@ -173,12 +173,12 @@ TEST_F(ETSyncTests, CheckBlockRoute) {
     {
         std::thread t2([&syncRoute, this](){
             while(t2_needRun.load()) {
-                if(syncRoute.tryBlockRoute(1)) {
+                if(syncRoute.tryPushUniqueRoute(1)) {
                     t2_run.store(true);
                     while(t2_needRun.load()) {
                         std::this_thread::yield();
                     }
-                    syncRoute.unlockRoute(1);
+                    syncRoute.popRoute();
                     t2_run.store(false);
                 }
             }

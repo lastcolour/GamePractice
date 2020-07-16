@@ -1,7 +1,8 @@
 #include "Logics/UIElement.hpp"
 
 UIElement::UIElement() :
-    zIndex(0) {
+    zIndex(0),
+    isHidden(false) {
 }
 
 UIElement::~UIElement() {
@@ -47,4 +48,18 @@ int UIElement::ET_getZIndex() const {
 
 int UIElement::ET_getZIndexDepth() const {
     return 1;
+}
+
+void UIElement::ET_show() {
+    isHidden = false;
+    onHide(false);
+}
+
+void UIElement::ET_hide() {
+    isHidden = true;
+    onHide(true);
+}
+
+bool UIElement::ET_isHidden() const {
+    return isHidden;
 }

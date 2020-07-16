@@ -89,28 +89,18 @@ int UIButton::ET_getZIndexDepth() const {
     return 2;
 }
 
-void UIButton::ET_show() {
-    UIBox::ET_show();
-    ET_SendEvent(labelId, &ETRenderNode::ET_show);
-}
-
-void UIButton::ET_hide() {
-    UIBox::ET_hide();
-    ET_SendEvent(labelId, &ETRenderNode::ET_hide);
+void UIButton::onHide(bool flag) {
+    UIBox::onHide(flag);
+    if(flag) {
+        ET_SendEvent(labelId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(labelId, &ETRenderNode::ET_show);
+    }
 }
 
 void UIButton::ET_setAlpha(float newAlpha) {
     UIBox::ET_setAlpha(newAlpha);
     ET_SendEvent(labelId, &ETRenderNode::ET_setAlpha, newAlpha);
-}
-
-bool UIButton::ET_isVisible() const {
-    if(UIBox::ET_isVisible()) {
-        return true;
-    }
-    bool res = false;
-    ET_SendEventReturn(res, labelId, &ETRenderNode::ET_isVisible);
-    return res;
 }
 
 void UIButton::ET_onAllLogicsCreated() {

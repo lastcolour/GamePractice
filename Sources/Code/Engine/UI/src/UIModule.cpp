@@ -3,6 +3,7 @@
 #include "UIViewManager.hpp"
 #include "UIEventManager.hpp"
 #include "UIConfig.hpp"
+#include "UIViewTransitionManager.hpp"
 #include "Logics/UIBox.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIView.hpp"
@@ -20,7 +21,8 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
         new SystemLogicContainer<
             UISurfaceEventHandler,
             UIViewManager,
-            UIEventManager>()
+            UIEventManager,
+            UIViewTransitionManager>()
         );
     return container;
 }

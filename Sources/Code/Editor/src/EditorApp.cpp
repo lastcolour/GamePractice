@@ -102,9 +102,7 @@ const char* EditorApp::getEntityName(EntityId entityId) {
         LogError("[EditorApp::getEntityName] Can't get name of invalid entity");
         return nullptr;
     }
-    const char* entityName = nullptr;
-    ET_SendEventReturn(entityName, entityId, &ETEntity::ET_getName);
-    return entityName;
+    return EntityUtils::GetEntityName(entityId);
 }
 
 void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
