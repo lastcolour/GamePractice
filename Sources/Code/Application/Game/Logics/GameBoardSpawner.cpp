@@ -21,20 +21,6 @@ void GameBoardSpawner::setGameBoard(const char* gameBoard) {
     gameBoardName = gameBoard;
 }
 
-void GameBoardSpawner::ET_onBoxResized(const AABB2Di& newAabb) {
-    int zIndex = 0;
-    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-
-    ET_SendEvent(gameBoardId, &ETGameBoard::ET_setVisualParams, zIndex + 1, newAabb);
-}
-
-void GameBoardSpawner::ET_onZIndexChanged(int newZIndex) {
-    AABB2Di box;
-    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
-
-    ET_SendEvent(gameBoardId, &ETGameBoard::ET_setVisualParams, newZIndex + 1, box);
-}
-
 bool GameBoardSpawner::init() {
     if(gameBoardName.empty()) {
         return true;
@@ -50,17 +36,10 @@ bool GameBoardSpawner::init() {
     ET_SendEvent(gameBoardId, &ETEntity::ET_setTransform, tm);
     ET_SendEvent(gameBoardId, &ETEntity::ET_setParent, getEntityId());
 
-    int zIndex = 0;
-    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-
-    AABB2Di box;
-    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
-
-    ET_SendEvent(gameBoardId, &ETGameBoard::ET_setVisualParams, zIndex + 1, box);
+    ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());
 
     ET_SendEvent(&ETGameTimer::ET_resumeTimer);
-    
-    ETNode<ETUIBoxEvents>::connect(getEntityId());
+
     return true;
 }
 
@@ -69,10 +48,4 @@ void GameBoardSpawner::deinit() {
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, gameBoardId);
         gameBoardId = InvalidEntityId;
     }
-}
-
-void GameBoardSpawner::ET_onHidden() {
-}
-
-void GameBoardSpawner::ET_onShown() {
 }

@@ -30,8 +30,8 @@
             "id": 1,
             "data": {
               "size": {
-                "x": 414,
-                "y": 736
+                "x": 522,
+                "y": 927
               },
               "startColor": {
                 "r": 0,
@@ -148,8 +148,8 @@
                         "id": 2,
                         "data": {
                           "size": {
-                            "x": 26,
-                            "y": 26
+                            "x": 33,
+                            "y": 33
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -215,7 +215,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.41304346919059753,
+                          "fontSize": 0.52173912525177,
                           "text": "Time: 999"
                         }
                       }
@@ -248,8 +248,8 @@
                   "id": 2,
                   "data": {
                     "size": {
-                      "x": 207,
-                      "y": 37
+                      "x": 261,
+                      "y": 47
                     },
                     "color": {
                       "r": 103,
@@ -353,7 +353,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 0.41304346919059753,
+                          "fontSize": 0.52173912525177,
                           "text": "Score: 999"
                         }
                       }
@@ -409,8 +409,8 @@
                         "id": 2,
                         "data": {
                           "size": {
-                            "x": 26,
-                            "y": 26
+                            "x": 33,
+                            "y": 33
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -450,8 +450,8 @@
                   "id": 2,
                   "data": {
                     "size": {
-                      "x": 207,
-                      "y": 37
+                      "x": 261,
+                      "y": 47
                     },
                     "color": {
                       "r": 226,
@@ -505,8 +505,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 414,
-                "y": 55
+                "x": 522,
+                "y": 69
               },
               "color": {
                 "r": 189,
@@ -607,8 +607,8 @@
                   "id": 3,
                   "data": {
                     "size": {
-                      "x": 393,
-                      "y": 588
+                      "x": 495,
+                      "y": 741
                     },
                     "color": {
                       "r": 74,
@@ -654,8 +654,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 414,
-                "y": 625
+                "x": 522,
+                "y": 787
               },
               "color": {
                 "r": 165,
@@ -731,8 +731,8 @@
             "id": 2,
             "data": {
               "size": {
-                "x": 414,
-                "y": 55
+                "x": 522,
+                "y": 69
               },
               "color": {
                 "r": 216,
@@ -779,6 +779,32 @@
           2,
           3,
           4
+        ]
+      }
+    },
+    {
+      "type": "UIViewAppearAnimation",
+      "id": 3,
+      "data": {
+        "elements": [
+          {
+            "element": 2,
+            "startDelay": 0.0,
+            "duration": 0.30000001192092896,
+            "xMoveOffset": 0.0,
+            "yMoveOffset": 30.0,
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          },
+          {
+            "element": 3,
+            "startDelay": 0.0,
+            "duration": 0.30000001192092896,
+            "xMoveOffset": 0.0,
+            "yMoveOffset": 30.0,
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          }
         ]
       }
     }

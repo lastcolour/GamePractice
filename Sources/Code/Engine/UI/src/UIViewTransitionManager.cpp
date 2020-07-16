@@ -84,3 +84,7 @@ void UIViewTransitionManager::startNextTask() {
         }
     }
 }
+
+bool UIViewTransitionManager::ET_hasActiveTransition() const {
+    return !tasks.empty();
+}

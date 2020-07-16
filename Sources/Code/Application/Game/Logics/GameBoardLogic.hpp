@@ -22,7 +22,8 @@ struct BoardElement {
 
 class GameBoardLogic : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
-    public ETNode<ETGameBoard> {
+    public ETNode<ETGameBoard>,
+    public ETNode<ETUIElementEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -49,7 +50,15 @@ public:
     const Vec2i& ET_getBoardSize() const override;
     const AABB2Di& ET_getBoardBox() const override;
     Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const override;
-    void ET_setVisualParams(int zIndex, const AABB2Di& box) override;
+    void ET_setUIElement(EntityId rootUIElementId) override;
+
+    // ETUIElementEvents
+    void ET_onBoxResized(const AABB2Di& newAabb) override;
+    void ET_onZIndexChanged(int newZIndex) override;
+    void ET_onAlphaChanged(float newAlpha) override;
+    void ET_onHidden(bool flag) override;
+    void ET_onDisabled(bool flag) override;
+    void ET_onIngoreTransform(bool flag) override {}
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -84,6 +93,7 @@ protected:
     AABB2Di boardBox;
     Vec2i boardSize;
     Vec2i objectSize;
+    EntityId uiBoxId;
     float cellScale;
     float moveSpeed;
     int cellSize;

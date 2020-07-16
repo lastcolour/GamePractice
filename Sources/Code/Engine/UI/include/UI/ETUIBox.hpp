@@ -19,9 +19,24 @@ struct ETUIElement {
     virtual int ET_getZIndex() const = 0;
     virtual int ET_getZIndexDepth() const = 0;
     virtual void ET_setAlpha(float newAlpha) = 0;
+    virtual float ET_getAlpha() const = 0;
     virtual void ET_show() = 0;
     virtual void ET_hide() = 0;
     virtual bool ET_isHidden() const = 0;
+    virtual void ET_enable() = 0;
+    virtual void ET_disable() = 0;
+    virtual bool ET_isEnabled() const = 0;
+    virtual void ET_setIgnoreTransform(bool flag) = 0;
+};
+
+struct ETUIElementEvents {
+    virtual ~ETUIElementEvents() = default;
+    virtual void ET_onBoxResized(const AABB2Di& newAabb) = 0;
+    virtual void ET_onZIndexChanged(int newZIndex) = 0;
+    virtual void ET_onAlphaChanged(float newAlpha) = 0;
+    virtual void ET_onHidden(bool flag) = 0;
+    virtual void ET_onDisabled(bool flag) = 0;
+    virtual void ET_onIngoreTransform(bool flag) = 0;
 };
 
 struct ETUIBox {
@@ -30,22 +45,12 @@ struct ETUIBox {
     virtual void ET_setStyle(const UIBoxStyle& newStyle) = 0;
 };
 
-struct ETUIBoxEvents {
-    virtual ~ETUIBoxEvents() = default;
-    virtual void ET_onBoxResized(const AABB2Di& newAabb) = 0;
-    virtual void ET_onZIndexChanged(int newZIndex) = 0;
-    virtual void ET_onHidden() = 0;
-    virtual void ET_onShown() = 0;
-};
-
 struct ETUILayout {
     virtual ~ETUILayout() = default;
     virtual const UILayoutStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UILayoutStyle& newStyle) = 0;
     virtual void ET_addItem(EntityId entityId) = 0;
     virtual void ET_update() = 0;
-    virtual void ET_setIgnoreUpdates(bool flag) = 0;
-    virtual std::vector<EntityId> ET_getItems() const = 0;
 };
 
 struct ETUILabel {

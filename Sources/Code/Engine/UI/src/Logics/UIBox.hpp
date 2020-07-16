@@ -25,7 +25,6 @@ public:
     // ETUIElement
     AABB2Di ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
-    void ET_setAlpha(float newAlpha) override;
 
     // ETUIBox
     const UIBoxStyle& ET_getStyle() const override;
@@ -35,13 +34,15 @@ public:
     void ET_onRenderPortResized() override;
 
     // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onAllLogicsCreated() override;
 
 protected:
 
     void onZIndexChanged(int newZIndex) override;
     void onHide(bool flag) override;
+    void onAlphaChanged(float newAlpha) override;
+    void onDisabled(bool flag) override {}
+    void onTransformChanged(const Transform& newTm) override;
 
 private:
 

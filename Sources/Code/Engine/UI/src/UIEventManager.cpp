@@ -25,6 +25,12 @@ void UIEventManager::ET_setActiveButton(EntityId buttonId) {
 }
 
 void UIEventManager::ET_onEvent(UIEventType eventType) {
+    bool transitionInProgress = false;
+    ET_SendEventReturn(transitionInProgress, &ETUIViewTransitionManager::ET_hasActiveTransition);
+    if(transitionInProgress) {
+        return;
+    }
+
     UIViewType activeViewType = UIViewType::None;
     ET_SendEventReturn(activeViewType, &ETUIViewManager::ET_getActiveViewType);
 

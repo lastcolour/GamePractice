@@ -33,7 +33,6 @@ public:
     // ETUIElement
     AABB2Di ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
-    void ET_setAlpha(float newAlpha) override;
 
     // ETRenderCameraEvents
     void ET_onRenderPortResized() override;
@@ -45,6 +44,9 @@ protected:
 
     void onZIndexChanged(int newZIndex) override;
     void onHide(bool flag) override;
+    void onAlphaChanged(float newAlpha) override;
+    void onDisabled(bool flag) override {}
+    void onTransformChanged(const Transform& newTm) override {}
 
 private:
 

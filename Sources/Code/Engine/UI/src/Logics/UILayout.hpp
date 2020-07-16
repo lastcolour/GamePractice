@@ -7,7 +7,8 @@
 #include "Core/ETPrimitives.hpp"
 
 class UILayout : public EntityLogic,
-    public ETNode<ETUILayout> {
+    public ETNode<ETUILayout>,
+    public ETNode<ETUIElementEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,8 +27,14 @@ public:
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
     void ET_update() override;
-    void ET_setIgnoreUpdates(bool flag) override;
-    std::vector<EntityId> ET_getItems() const override;
+
+    // ETUIElementEvents
+    void ET_onBoxResized(const AABB2Di& newAabb) override;
+    void ET_onZIndexChanged(int newZIndex) override;
+    void ET_onAlphaChanged(float newAlpha) override;
+    void ET_onHidden(bool flag) override;
+    void ET_onDisabled(bool flag) override;
+    void ET_onIngoreTransform(bool flag) override;
 
 private:
 
@@ -40,7 +47,6 @@ private:
 
     UILayoutStyle style;
     std::vector<EntityId> children;
-    bool ingoreUpdates;
 };
 
 #endif /* __UI_LAYOUT_HPP__ */

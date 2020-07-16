@@ -40,6 +40,7 @@ bool UIButton::init() {
 void UIButton::deinit() {
     UIBox::deinit();
     ETNode<ETUIInteractionBox>::disconnect();
+    ETNode<ETUIAnimationEvents>::disconnect();
 }
 
 void UIButton::ET_onPress() {
@@ -98,9 +99,17 @@ void UIButton::onHide(bool flag) {
     }
 }
 
-void UIButton::ET_setAlpha(float newAlpha) {
-    UIBox::ET_setAlpha(newAlpha);
+void UIButton::onAlphaChanged(float newAlpha) {
+    UIBox::onAlphaChanged(newAlpha);
     ET_SendEvent(labelId, &ETRenderNode::ET_setAlpha, newAlpha);
+}
+
+void UIButton::onDisabled(bool flag) {
+    if(flag) {
+        ETNode<ETUIInteractionBox>::disconnect();
+    } else {
+        ETNode<ETUIInteractionBox>::connect(getEntityId());
+    }
 }
 
 void UIButton::ET_onAllLogicsCreated() {

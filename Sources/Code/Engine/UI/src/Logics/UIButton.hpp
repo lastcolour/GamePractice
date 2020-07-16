@@ -26,7 +26,6 @@ public:
 
     // ETUIElement
     int ET_getZIndexDepth() const override;
-    void ET_setAlpha(float newAlpha) override;
 
     // ETUIInteractionBox
     void ET_onPress() override;
@@ -44,6 +43,8 @@ protected:
 
     void onZIndexChanged(int newZIndex) override;
     void onHide(bool flag) override;
+    void onAlphaChanged(float newAlpha) override;
+    void onDisabled(bool flag) override;
 
 private:
 

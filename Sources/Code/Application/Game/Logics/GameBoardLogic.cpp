@@ -111,25 +111,6 @@ int GameBoardLogic::ET_getCellSize() const {
     return cellSize;
 }
 
-void GameBoardLogic::ET_setVisualParams(int zIndex, const AABB2Di& visualBox) {
-    auto visualSize = visualBox.getSize();
-    float cellSizeX = visualSize.x / static_cast<float>(boardSize.x);
-    float cellSizeY = visualSize.y / static_cast<float>(boardSize.y);
-    cellSize = static_cast<int>(floorf(std::min(cellSizeX, cellSizeY)));
-    objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
-    Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
-
-    boardBox.bot = Vec2i(0);
-    boardBox.top = boardBoxSize;
-    boardBox.setCenter(visualBox.getCenter());
-
-    for(auto& elem : elements) {
-        setElemBoardPos(elem, elem.boardPt);
-        ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
-        ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, zIndex);
-    }
-}
-
 ColorB GameBoardLogic::getElemColor(EBoardElemType elemType) const {
     ColorB retCol(255, 255, 255);
     switch(elemType) {
@@ -188,7 +169,8 @@ bool GameBoardLogic::init() {
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
     AABB2Di visualBox(Vec2i(0), renderPort);
-    ET_setVisualParams(0, visualBox);
+    ET_onZIndexChanged(0);
+    ET_onBoxResized(visualBox);
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
@@ -385,4 +367,72 @@ const Vec2i& GameBoardLogic::ET_getBoardSize() const {
 
 const AABB2Di& GameBoardLogic::ET_getBoardBox() const {
     return boardBox;
+}
+
+void GameBoardLogic::ET_onBoxResized(const AABB2Di& newAabb) {
+    auto abbSize = newAabb.getSize();
+    float cellSizeX = abbSize.x / static_cast<float>(boardSize.x);
+    float cellSizeY = abbSize.y / static_cast<float>(boardSize.y);
+    cellSize = static_cast<int>(floorf(std::min(cellSizeX, cellSizeY)));
+    objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
+    Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
+
+    boardBox.bot = Vec2i(0);
+    boardBox.top = boardBoxSize;
+    boardBox.setCenter(newAabb.getCenter());
+
+    for(auto& elem : elements) {
+        setElemBoardPos(elem, elem.boardPt);
+        ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
+    }
+}
+
+void GameBoardLogic::ET_onZIndexChanged(int newZIndex) {
+    for(auto& elem : elements) {
+        ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, newZIndex + 1);
+    }
+}
+
+void GameBoardLogic::ET_onAlphaChanged(float newAlpha) {
+    for(auto& elem : elements) {
+        ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlpha, newAlpha);
+    }
+}
+
+void GameBoardLogic::ET_onHidden(bool flag) {
+    if(flag) {
+        for(auto& elem : elements) {
+            ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
+        }
+    } else {
+        for(auto& elem : elements) {
+            ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
+        }
+    }
+}
+
+void GameBoardLogic::ET_onDisabled(bool flag) {
+}
+
+void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
+    ETNode<ETUIElementEvents>::disconnect();
+    uiBoxId = rootUIElementId;
+
+    int zIndex = 0;
+    ET_SendEventReturn(zIndex, uiBoxId, &ETUIElement::ET_getZIndex);
+    ET_onZIndexChanged(zIndex);
+
+    bool isHidden = false;
+    ET_SendEventReturn(isHidden, uiBoxId, &ETUIElement::ET_isHidden);
+    ET_onHidden(isHidden);
+
+    float alpha = 1.f;
+    ET_SendEventReturn(alpha, uiBoxId, &ETUIElement::ET_getAlpha);
+    ET_onAlphaChanged(alpha);
+
+    AABB2Di aabb;
+    ET_SendEventReturn(aabb, uiBoxId, &ETUIElement::ET_getBox);
+    ET_onBoxResized(aabb);
+
+    ETNode<ETUIElementEvents>::connect(uiBoxId);
 }

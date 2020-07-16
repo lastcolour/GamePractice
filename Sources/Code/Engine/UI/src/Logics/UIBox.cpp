@@ -64,7 +64,7 @@ void UIBox::calculateBox() {
         static_cast<int>(tm.pt.y));
     aabb.setCenter(center);
 
-    ET_SendEvent(getEntityId(), &ETUIBoxEvents::ET_onBoxResized, aabb);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxResized, aabb);
     ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
 }
 
@@ -122,34 +122,20 @@ void UIBox::ET_onRenderPortResized() {
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
 }
 
-void UIBox::ET_setAlpha(float newAlpha) {
+void UIBox::onAlphaChanged(float newAlpha) {
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setAlpha, newAlpha);
-    std::vector<EntityId> layoutElems;
-    ET_SendEventReturn(layoutElems, getEntityId(), &ETUILayout::ET_getItems);
-    for(auto elemId : layoutElems) {
-        ET_SendEvent(elemId, &ETUIElement::ET_setAlpha, newAlpha);
-    }
 }
 
 void UIBox::onHide(bool flag) {
-    std::vector<EntityId> layoutElems;
-    ET_SendEventReturn(layoutElems, getEntityId(), &ETUILayout::ET_getItems);
     if(flag) {
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
-        for(auto elemId : layoutElems) {
-            ET_SendEvent(elemId, &ETUIElement::ET_hide);
-        }
     } else {
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
-        for(auto elemId : layoutElems) {
-            ET_SendEvent(elemId, &ETUIElement::ET_show);
-        }
     }
 }
 
 void UIBox::onZIndexChanged(int newZIndex) {
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
 }
 
 void UIBox::ET_onAllLogicsCreated() {
@@ -160,6 +146,6 @@ void UIBox::ET_onAllLogicsCreated() {
     ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
 }
 
-void UIBox::ET_onTransformChanged(const Transform& newTm) {
+void UIBox::onTransformChanged(const Transform& newTm) {
     calculateBox();
 }

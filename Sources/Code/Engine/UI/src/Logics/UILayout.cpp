@@ -14,8 +14,7 @@ void UILayout::Reflect(ReflectContext& ctx) {
     }
 }
 
-UILayout::UILayout() :
-    ingoreUpdates(false) {
+UILayout::UILayout() {
 }
 
 UILayout::~UILayout() {
@@ -24,6 +23,7 @@ UILayout::~UILayout() {
 bool UILayout::init() {
     calculateLayout();
     ETNode<ETUILayout>::connect(getEntityId());
+    ETNode<ETUIElementEvents>::connect(getEntityId());
     return true;
 }
 
@@ -43,10 +43,6 @@ void UILayout::ET_addItem(EntityId entityId) {
     children.push_back(entityId);
     ET_SendEvent(entityId, &ETUIElement::ET_setLayout, getEntityId());
     calculateLayout();
-}
-
-void UILayout::ET_setIgnoreUpdates(bool flag) {
-    ingoreUpdates = flag;
 }
 
 Vec2i UILayout::calcAligmentCenter(AABB2Di& parentBox, AABB2Di& box) {
@@ -184,9 +180,6 @@ AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
 }
 
 void UILayout::ET_update() {
-    if(ingoreUpdates) {
-        return;
-    }
     calculateLayout();
 }
 
@@ -229,6 +222,54 @@ void UILayout::calculateLayout() {
     }
 }
 
-std::vector<EntityId> UILayout::ET_getItems() const {
-    return children;
+void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {
+    calculateLayout();
+}
+
+void UILayout::ET_onZIndexChanged(int newZIndex) {
+    int zIndex = 0;
+    int zIndexDepth = 0;
+    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
+    int childZIndex = zIndex + zIndexDepth + 1;
+
+    for(auto childId : children) {
+        ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
+    }
+}
+
+void UILayout::ET_onAlphaChanged(float newAlpha) {
+    for(auto childId : children) {
+        ET_SendEvent(childId, &ETUIElement::ET_setAlpha, newAlpha);
+    }
+}
+
+void UILayout::ET_onHidden(bool flag) {
+    if(flag) {
+        for(auto childId : children) {
+            ET_SendEvent(childId, &ETUIElement::ET_hide);
+        }
+    } else {
+        for(auto childId : children) {
+            ET_SendEvent(childId, &ETUIElement::ET_show);
+        }
+    }
+}
+
+void UILayout::ET_onDisabled(bool flag) {
+    if(flag) {
+        for(auto childId : children) {
+            ET_SendEvent(childId, &ETUIElement::ET_disable);
+        }
+    } else {
+        for(auto childId : children) {
+            ET_SendEvent(childId, &ETUIElement::ET_enable);
+        }
+    }
+}
+
+void UILayout::ET_onIngoreTransform(bool flag) {
+    for(auto childId : children) {
+        ET_SendEvent(childId, &ETUIElement::ET_setIgnoreTransform, flag);
+    }
 }

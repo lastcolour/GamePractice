@@ -87,7 +87,7 @@ void UIViewAppearAnimation::ET_onAppTick(float dt) {
             ET_SendEvent(getEntityId(), &ETUIElement::ET_hide);
             ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewDisappeared, getEntityId());
         }
-        ET_SendEvent(getEntityId(), &ETUILayout::ET_setIgnoreUpdates, false);
+        ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
         ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
         ETNode<ETAppTimerEvents>::disconnect();
         state = State::None;
@@ -117,21 +117,18 @@ void UIViewAppearAnimation::ET_appear() {
     animDuration = 0.f;
     state = State::Appear;
     ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_show);
+
     for(auto& elem : elements) {
         if(!elem.elemId.isValid()) {
             LogWarning("[UIViewAppearAnimation::ET_appear] Invalid element's id");
             continue;
         }
-        bool isHidden = false;
-        ET_SendEventReturn(isHidden, elem.elemId, &ETUIElement::ET_isHidden);
-        if(!isHidden) {
-            LogWarning("[UIViewAppearAnimation::ET_appear] Element '%s' isn't hidden before appear animation start",
-                EntityUtils::GetEntityName(elem.elemId));
-        }
+        ET_SendEvent(elem.elemId, &ETUIElement::ET_hide);
         ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getTransform);
         elem.isHidded = true;
     }
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_setIgnoreUpdates, true);
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
     ETNode<ETAppTimerEvents>::connect(getEntityId());
 }
 
@@ -153,6 +150,6 @@ void UIViewAppearAnimation::ET_disappear() {
         ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getTransform);
         elem.isHidded = false;
     }
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_setIgnoreUpdates, true);
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
     ETNode<ETAppTimerEvents>::connect(getEntityId());
 }

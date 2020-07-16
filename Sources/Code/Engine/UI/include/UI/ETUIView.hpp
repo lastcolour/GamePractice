@@ -30,6 +30,7 @@ struct ETUIViewTransitionManager {
     virtual ~ETUIViewTransitionManager() = default;
     virtual void ET_addAppearing(EntityId viewId) = 0;
     virtual void ET_addDisappearing(EntityId viewId) = 0;
+    virtual bool ET_hasActiveTransition() const = 0;
 };
 
 struct ETUIEventManager {

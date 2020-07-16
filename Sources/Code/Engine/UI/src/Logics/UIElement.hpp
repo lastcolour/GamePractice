@@ -27,9 +27,15 @@ public:
     void ET_show() override;
     void ET_hide() override;
     bool ET_isHidden() const override;
+    float ET_getAlpha() const override;
+    void ET_setAlpha(float newAlpha) override;
+    void ET_enable() override;
+    void ET_disable() override;
+    bool ET_isEnabled() const override;
+    void ET_setIgnoreTransform(bool flag) override;
 
     // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override {}
+    void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onAllLogicsCreated() override {}
     void ET_onChildAdded(EntityId childId) override {}
 
@@ -41,12 +47,18 @@ protected:
 
     virtual void onZIndexChanged(int newZIndex) = 0;
     virtual void onHide(bool flag) = 0;
+    virtual void onAlphaChanged(float newAlpha) = 0;
+    virtual void onDisabled(bool flag) = 0;
+    virtual void onTransformChanged(const Transform& newTm) = 0;
 
 protected:
 
     EntityId layoutId;
+    float alpha;
     int zIndex;
+    bool isIgnoringTransform;
     bool isHidden;
+    bool isEnabled;
 };
 
 #endif /* __UI_ELEMENT_HPP__ */

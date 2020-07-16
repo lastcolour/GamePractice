@@ -102,7 +102,7 @@ void UILabel::onHide(bool flag) {
     }
 }
 
-void UILabel::ET_setAlpha(float newAlpha) {
+void UILabel::onAlphaChanged(float newAlpha) {
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setAlpha, newAlpha);
 }
 
