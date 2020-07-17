@@ -21,6 +21,9 @@ UILayout::~UILayout() {
 }
 
 bool UILayout::init() {
+    for(auto elemId : children) {
+        ET_SendEvent(elemId, &ETUIElement::ET_setLayout, getEntityId());
+    }
     calculateLayout();
     ETNode<ETUILayout>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
@@ -28,6 +31,9 @@ bool UILayout::init() {
 }
 
 void UILayout::deinit() {
+    for(auto elemId : children) {
+        ET_SendEvent(elemId, &ETUIElement::ET_setLayout, InvalidEntityId);
+    }
 }
 
 const UILayoutStyle& UILayout::ET_getStyle() const {

@@ -8,6 +8,9 @@
 void UIConfig::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIConfig>("UIConfig")) {
         classInfo->addField("horizontalGrid", &UIConfig::horizontalGrid);
+        classInfo->addField("mainView", &UIConfig::mainView);
+        classInfo->addField("gameView", &UIConfig::gameView);
+        classInfo->addField("backgroundView", &UIConfig::backgroundView);
     }
 }
 

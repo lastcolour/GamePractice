@@ -21,6 +21,9 @@ public:
 public:
 
     int horizontalGrid;
+    std::string mainView;
+    std::string gameView;
+    std::string backgroundView;
 };
 
 #endif /* __UI_CONFIG_HPP__ */

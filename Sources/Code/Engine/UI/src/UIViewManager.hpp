@@ -35,7 +35,6 @@ private:
 private:
 
     EntityId getViewId(UIViewType viewType);
-    int get() const;
 
 private:
 

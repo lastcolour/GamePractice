@@ -26,6 +26,7 @@ public:
     void ET_onElemsDestroyed(int count) override;
 
     // ETGameScore
+    void ET_resetScore() override;
     int ET_getGameScore() const override;
 
 private:

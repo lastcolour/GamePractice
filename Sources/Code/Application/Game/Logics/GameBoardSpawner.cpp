@@ -38,8 +38,6 @@ bool GameBoardSpawner::init() {
 
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());
 
-    ET_SendEvent(&ETGameTimer::ET_resumeTimer);
-
     return true;
 }
 

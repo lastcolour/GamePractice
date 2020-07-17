@@ -889,67 +889,6 @@
           }
         ]
       }
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Background",
-      "id": 4,
-      "internal": true,
-      "data": {
-        "children": [],
-        "logics": [
-          {
-            "type": "RenderLinearGradientRect",
-            "id": 2,
-            "data": {
-              "size": {
-                "x": 150,
-                "y": 266
-              },
-              "startColor": {
-                "r": 212,
-                "g": 212,
-                "b": 212,
-                "a": 255
-              },
-              "endColor": {
-                "r": 188,
-                "g": 188,
-                "b": 188,
-                "a": 255
-              },
-              "isVertical": true
-            }
-          },
-          {
-            "type": "SoundPlayer",
-            "id": 3,
-            "data": {
-              "looped": true,
-              "volume": 0.5,
-              "sound": "UI/ambient.ogg",
-              "autoStart": true
-            }
-          }
-        ]
-      }
     }
   ],
   "logics": [
@@ -985,7 +924,7 @@
             "right": 0.0
           }
         },
-        "render": 4
+        "render": -1
       }
     },
     {
@@ -996,25 +935,25 @@
           {
             "element": 1,
             "startDelay": 0.0,
-            "duration": 0.4000000059604645,
-            "xMoveOffset": 0.0,
-            "yMoveOffset": 80.0,
-            "startScale": 1.5,
-            "startAlpha": 0.0
-          },
-          {
-            "element": 2,
-            "startDelay": 0.20000000298023224,
-            "duration": 0.4000000059604645,
+            "duration": 0.20000000298023224,
             "xMoveOffset": 0.0,
             "yMoveOffset": 50.0,
             "startScale": 1.5,
             "startAlpha": 0.0
           },
           {
+            "element": 2,
+            "startDelay": 0.10000000149011612,
+            "duration": 0.20000000298023224,
+            "xMoveOffset": 0.0,
+            "yMoveOffset": 40.0,
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          },
+          {
             "element": 3,
-            "startDelay": 0.4000000059604645,
-            "duration": 0.4000000059604645,
+            "startDelay": 0.20000000298023224,
+            "duration": 0.20000000298023224,
             "xMoveOffset": 0.0,
             "yMoveOffset": 30.0,
             "startScale": 1.5,

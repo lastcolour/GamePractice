@@ -9,6 +9,7 @@
 
 #include <type_traits>
 #include <algorithm>
+#include <cassert>
 
 static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");
 static_assert(std::is_same<int, GLint>::value, "int != GLint");
@@ -16,11 +17,9 @@ static_assert(std::is_same<float, GLfloat>::value, "float != GLfloat");
 static_assert(std::is_same<unsigned int, GLuint>::value, "unsigned int != GLuint");
 
 Render::Render() :
-    clearColor(0, 0, 0),
     hasContext(false),
     canOffscrenRender(false),
-    canScreenRender(false),
-    needUpdateRenderQueue(true) {
+    canScreenRender(false) {
 }
 
  Render::~Render() {
@@ -77,43 +76,6 @@ bool Render::canRenderToFramebuffer() const {
     return true;
 }
 
-void Render::ET_updateRenderQueue() {
-    needUpdateRenderQueue = true;
-}
-
-void Render::updateRenderQueue() {
-    if(!needUpdateRenderQueue) {
-        return;
-    }
-    needUpdateRenderQueue = false;
-    renderQueue = ET_GetAll<ETRenderNode>();
-    std::sort(renderQueue.begin(), renderQueue.end(), [](EntityId first, EntityId second){
-        int firstPriority = 0;
-        ET_SendEventReturn(firstPriority, first, &ETRenderNode::ET_getDrawPriority);
-        int secondPriority = 0;
-        ET_SendEventReturn(secondPriority, second, &ETRenderNode::ET_getDrawPriority);
-        return firstPriority < secondPriority;
-    });
-}
-
-void Render::drawRoutine() {
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-
-    auto clearColF = clearColor.getColorF();
-    glClearColor(clearColF.r, clearColF.g, clearColF.b, clearColF.a);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    RenderContext renderCtx;
-    ET_SendEventReturn(renderCtx.proj2dMat, &ETRenderCamera::ET_getProj2DMat4);
-
-    updateRenderQueue();
-    for(auto nodeId : renderQueue) {
-        ET_SendEvent(nodeId, &ETRenderEvents::ET_onRender, renderCtx);
-        renderCtx.setBlending(RenderBlendingType::NONE);
-    }
-}
-
 void Render::ET_drawFrame() {
     if(!canRenderToScreen()) {
         return;
@@ -123,7 +85,7 @@ void Render::ET_drawFrame() {
     ET_SendEventReturn(surfaceSize, &ETSurface::ET_getSize);
     updateRenderPort(surfaceSize);
 
-    drawRoutine();
+    renderGraph.render();
 
     ET_SendEvent(&ETSurface::ET_swapBuffers);
 }
@@ -142,7 +104,7 @@ void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
 
     renderFb.bind();
 
-    drawRoutine();
+    renderGraph.render();
 
     renderFb.read();
     renderFb.unbind();
@@ -161,11 +123,11 @@ void Render::updateRenderPort(const Vec2i& size) {
 }
 
 const ColorB& Render::ET_getClearColor() const {
-    return clearColor;
+    return renderGraph.getContext().getClearColor();
 }
 
 void Render::ET_setClearColor(const ColorB& col) {
-    clearColor = col;
+    renderGraph.getContext().setClearColor(col);
 }
 
 void Render::ET_onSurfaceDestroyed() {
@@ -204,4 +166,9 @@ void Render::ET_onContextSuspended() {
 
 void Render::ET_onContextRestored() {
     hasContext = true;
+}
+
+void Render::ET_registerNode(RenderNode* renderNode) {
+    assert(renderNode && "Invalid render node");
+    renderGraph.addChild(renderNode);
 }

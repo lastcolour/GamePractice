@@ -9,13 +9,9 @@
 #include <memory>
 #include <string>
 
+class RenderNode;
 class RenderContext;
 class RenderTextureFramebuffer;
-
-struct ETRenderEvents {
-    virtual ~ETRenderEvents() = default;
-    virtual void ET_onRender(RenderContext& renderCtx) = 0;
-};
 
 struct ETRender {
     virtual ~ETRender() = default;
@@ -23,7 +19,7 @@ struct ETRender {
     virtual void ET_setClearColor(const ColorB& col) = 0;
     virtual void ET_drawFrame() = 0;
     virtual void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) = 0;
-    virtual void ET_updateRenderQueue() = 0;
+    virtual void ET_registerNode(RenderNode* renderNode) = 0;
 };
 
 struct ETRenderContextEvents {

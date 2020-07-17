@@ -19,6 +19,12 @@ bool GameScoreLogic::init() {
 }
 
 void GameScoreLogic::deinit() {
+    score = 0;
+}
+
+void GameScoreLogic::ET_resetScore() {
+    score = 0;
+    ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, 0);
 }
 
 void GameScoreLogic::ET_onElemsDestroyed(int count) {

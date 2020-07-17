@@ -6,6 +6,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "RenderGraph/RenderGraph.hpp"
 
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
@@ -26,7 +27,7 @@ public:
     void ET_setClearColor(const ColorB& col) override;
     void ET_drawFrame() override;
     void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) override;
-    void ET_updateRenderQueue() override;
+    void ET_registerNode(RenderNode* renderNode) override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;
@@ -55,12 +56,10 @@ private:
 
 private:
 
-    std::vector<EntityId> renderQueue;
-    ColorB clearColor;
+    RenderGraph renderGraph;
     bool hasContext;
     bool canOffscrenRender;
     bool canScreenRender;
-    bool needUpdateRenderQueue;
 };
 
 #endif /* __RENDER_HPP__ */

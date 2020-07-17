@@ -19,14 +19,13 @@ public:
     void deinit() override;
 
     // ETGameStateManager
-    void ET_initGame() override;
     void ET_startGame() override;
     void ET_pauseGame() override;
     void ET_resumeGame() override;
+    void ET_finishGame() override;
     bool ET_isGamePaused() const override;
-    bool ET_isGameState() const override;
-    void ET_interruptGame() override;
-    void ET_changeState(EGameState newState) override;
+    bool ET_isInGameState() const override;
+    void ET_changeState(EGameState newGameState) override;
 
 private:
 

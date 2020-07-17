@@ -1,8 +1,10 @@
 #include "Logics/RenderNode.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "RenderMaterial.hpp"
+#include "RenderGraph/RenderGraph.hpp"
 
 RenderNode::RenderNode() :
+    renderGraph(nullptr),
     alpha(1.f),
     drawPriority(0),
     blending(RenderBlendingType::NONE),
@@ -14,12 +16,21 @@ RenderNode::~RenderNode() {
 
 bool RenderNode::init() {
     ETNode<ETRenderNode>::connect(getEntityId());
-    ETNode<ETRenderEvents>::connect(getEntityId());
-    ET_SendEvent(&ETRender::ET_updateRenderQueue);
+    if(!renderGraph) {
+        ET_SendEvent(&ETRender::ET_registerNode, this);
+    }
     return true;
 }
 
 void RenderNode::deinit() {
+    if(renderGraph) {
+        renderGraph->removeChild(this);
+        renderGraph = nullptr;
+    }
+}
+
+void RenderNode::setRenderGraph(RenderGraph* graph) {
+    renderGraph = graph;
 }
 
 void RenderNode::ET_setMaterial(const char* matName) {
@@ -44,11 +55,12 @@ bool RenderNode::ET_isVisible() const {
     return isVisible;
 }
 
-void RenderNode::ET_onRender(RenderContext& renderCtx) {
+void RenderNode::render() {
     if(!ET_isVisible()) {
         return;
     }
 
+    auto& renderCtx = renderGraph->getContext();
     if(blending != RenderBlendingType::NONE) {
         renderCtx.setBlending(blending);
     } else {
@@ -75,7 +87,9 @@ void RenderNode::ET_show() {
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
     drawPriority = newDrawPriority;
-    ET_SendEvent(&ETRender::ET_updateRenderQueue);
+    if(renderGraph) {
+        renderGraph->reorderNodes();
+    }
 }
 
 int RenderNode::ET_getDrawPriority() const {

@@ -17,13 +17,14 @@ GameScoreUpdaterLogic::~GameScoreUpdaterLogic() {
 
 void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameScoreUpdaterLogic>("GameScoreUpdater")) {
-        classInfo->addField("stepIncrease", &GameScoreUpdaterLogic::increaseSpeed);
+        classInfo->addField("increaseSpeed", &GameScoreUpdaterLogic::increaseSpeed);
     }
 }
 
 bool GameScoreUpdaterLogic::init() {
     ETNode<ETGameScoreUpdater>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
+    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, "0");
     return true;
 }
 
@@ -49,5 +50,5 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
     currentValue = std::min(currentValue + increaseStep, targetValue);
 
     std::string text = StringFormat("%d", currentValue);
-    // ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
+    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
 }

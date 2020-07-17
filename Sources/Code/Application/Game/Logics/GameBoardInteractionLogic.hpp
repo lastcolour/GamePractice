@@ -5,12 +5,14 @@
 #include "Platform/ETSurface.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Math/Transform.hpp"
 
 class ReflectContext;
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
-    public ETNode<ETGAmeBoardInteractionLogic> {
+    public ETNode<ETGAmeBoardInteractionLogic>,
+    public ETNode<ETGameTimerEvents>  {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -32,15 +34,32 @@ public:
     void ET_allowInteraction(bool flag) override;
     bool ET_canInteract() const override;
 
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
+
 private:
 
     void onEndElemMove(const Vec2i& pt);
+    void createSwitchElemsTask(EntityId firstId, EntityId secondId);
+    void switchElements(EntityId firstId, EntityId secondId);
+
+private:
+
+    struct SwitchTask {
+        EntityId firstId;
+        Transform firstTm;
+        EntityId secondId;
+        Transform secondTm;
+        float duration;
+    };
 
 private:
 
     Vec2i startPt;
     Vec2i lastPt;
     EntityId activeElemId;
+    float switchDuration;
+    std::vector<SwitchTask> switchTasks;
 };
 
 #endif /* __GAME_BOARD_INTERACTION_LOGIC_HPP__ */

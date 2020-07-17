@@ -15,7 +15,8 @@ enum class UIEventType {
 enum class UIViewType {
     None = 0,
     Main,
-    Game
+    Game,
+    Background
 };
 
 struct ETUIViewManager {

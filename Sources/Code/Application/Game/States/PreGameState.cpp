@@ -9,8 +9,12 @@ PreGameState::~PreGameState() {
 
 void PreGameState::onEnter(EntityId gameEntityId) {
     ETNode<ETGameBoardAppearAnimationEvents>::connect(gameEntityId);
-
-    ET_SendEvent(&ETGameBoardAppearAnimation::ET_startBoardAppearing);
+    ET_SendEvent(&ETGameScore::ET_resetScore);
+    if(ET_IsExistNode<ETGameBoardAppearAnimation>()) {
+        ET_SendEvent(&ETGameBoardAppearAnimation::ET_startBoardAppearing);
+    } else {
+        ET_onBoardAppeared();
+    }
 }
 
 void PreGameState::onLeave() {

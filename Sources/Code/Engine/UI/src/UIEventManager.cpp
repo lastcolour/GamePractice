@@ -1,5 +1,6 @@
 #include "UIEventManager.hpp"
 #include "Core/ETLogger.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 UIEventManager::UIEventManager() {
 }
@@ -10,6 +11,7 @@ UIEventManager::~UIEventManager() {
 bool UIEventManager::init() {
     ETNode<ETUIButtonEventManager>::connect(getEntityId());
     ETNode<ETUIEventManager>::connect(getEntityId());
+    ETNode<ETUIViewAppearAnimationEvents>::connect(getEntityId());
     return true;
 }
 
@@ -22,6 +24,19 @@ EntityId UIEventManager::ET_getActiveButton() const {
 
 void UIEventManager::ET_setActiveButton(EntityId buttonId) {
     activeButtonId = buttonId;
+}
+
+void UIEventManager::ET_onViewAppeared(EntityId viewId) {
+    EntityId activeViewId;
+    ET_SendEventReturn(activeViewId, &ETUIViewManager::ET_getActiveViewId);
+    if(viewId != activeViewId) {
+        return;
+    }
+    UIViewType viewType = UIViewType::None;
+    ET_SendEventReturn(viewType, &ETUIViewManager::ET_getActiveViewType);
+    if(viewType == UIViewType::Game) {
+        ET_SendEvent(&ETGameStateManager::ET_startGame);
+    }
 }
 
 void UIEventManager::ET_onEvent(UIEventType eventType) {
@@ -48,8 +63,18 @@ void UIEventManager::ET_onEvent(UIEventType eventType) {
             if(activeViewType != UIViewType::Game) {
                 return;
             }
+            ET_SendEvent(&ETGameStateManager::ET_finishGame);
             ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
             ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+            break;
+        }
+        case UIEventType::OnGameEnd: {
+            if(activeViewType != UIViewType::Game) {
+                return;
+            }
+            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+            break;
         }
         default: {
         }

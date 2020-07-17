@@ -2,14 +2,13 @@
 #include "Core/ETLogger.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Core/ETApplication.hpp"
+#include "UIConfig.hpp"
 
 #include <cassert>
 #include <algorithm>
 
 namespace {
-
-const char* MAIN_VIEW = "UI/MainView/MainView.json";
-const char* GAME_VIEW = "UI/GameView/GameView.json";
 
 const int Z_INDEX_VIEW_OFFSET = 1000;
 
@@ -35,13 +34,18 @@ EntityId UIViewManager::getViewId(UIViewType viewType) {
         return it->second;
     }
     const char* viewName = nullptr;
+    auto uiConfig = ET_getShared<UIConfig>();
     switch(viewType) {
         case UIViewType::Main: {
-            viewName = MAIN_VIEW;
+            viewName = uiConfig->mainView.c_str();
             break;
         }
         case UIViewType::Game: {
-            viewName = GAME_VIEW;
+            viewName = uiConfig->gameView.c_str();
+            break;
+        }
+        case UIViewType::Background: {
+            viewName = uiConfig->backgroundView.c_str();
             break;
         }
         case UIViewType::None: {

@@ -5,20 +5,13 @@
       "type": "GameBoard",
       "id": 1,
       "data": {
-        "fallSpeed": 1.0,
+        "fallSpeed": 6.0,
         "size": {
           "x": 10,
           "y": 10
         },
         "cellObject": "Game/Cell.json",
         "cellScale": 0.699999988079071
-      }
-    },
-    {
-      "type": "GameBoardElemSwitcher",
-      "id": 2,
-      "data": {
-        "switchDuration": 1.0
       }
     },
     {
@@ -36,6 +29,20 @@
     {
       "type": "GameBoardInteraction",
       "id": 5,
+      "data": {
+        "switchDuration": 0.20000000298023224
+      }
+    },
+    {
+      "type": "GameEndTimer",
+      "id": 6,
+      "data": {
+        "gameDuration": 60.0
+      }
+    },
+    {
+      "type": "GameScore",
+      "id": 7,
       "data": {}
     }
   ]

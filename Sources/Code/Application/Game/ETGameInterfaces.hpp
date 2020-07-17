@@ -19,16 +19,12 @@ struct ETGameEndTimerUpdater {
 struct ETGameScore {
     virtual ~ETGameScore() = default;
     virtual int ET_getGameScore() const = 0;
+    virtual void ET_resetScore() = 0;
 };
 
 struct ETGameScoreUpdater {
     virtual ~ETGameScoreUpdater() = default;
     virtual void ET_setGameScore(int score) = 0;
-};
-
-struct ETGameBoardElemSwitcher {
-    virtual ~ETGameBoardElemSwitcher() = default;
-    virtual void ET_switchBoardElems(EntityId firstId, EntityId secondId) = 0;
 };
 
 struct ETGameBoardElemDestroy {
@@ -126,13 +122,12 @@ enum class EGameState {
 
 struct ETGameStateManager {
     virtual ~ETGameStateManager() = default;
-    virtual void ET_initGame() = 0;
     virtual void ET_startGame() = 0;
     virtual void ET_pauseGame() = 0;
     virtual void ET_resumeGame() = 0;
+    virtual void ET_finishGame() = 0;
     virtual bool ET_isGamePaused() const = 0;
-    virtual bool ET_isGameState() const = 0;
-    virtual void ET_interruptGame() = 0;
+    virtual bool ET_isInGameState() const = 0;
     virtual void ET_changeState(EGameState newGameState) = 0;
 };
 

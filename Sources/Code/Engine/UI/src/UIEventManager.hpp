@@ -8,7 +8,8 @@
 
 class UIEventManager : public SystemLogic,
     public ETNode<ETUIButtonEventManager>,
-    public ETNode<ETUIEventManager> {
+    public ETNode<ETUIEventManager>,
+    public ETNode<ETUIViewAppearAnimationEvents> {
 public:
 
     UIEventManager();
@@ -21,6 +22,10 @@ public:
     // ETUIButtonEventManager
     EntityId ET_getActiveButton() const override;
     void ET_setActiveButton(EntityId buttonId) override;
+
+    // ETUIViewAppearAnimationEvents
+    void ET_onViewAppeared(EntityId viewId) override;
+    void ET_onViewDisappeared(EntityId viewId) override {}
 
     // ETUIEventManager
     void ET_onEvent(UIEventType eventType) override;

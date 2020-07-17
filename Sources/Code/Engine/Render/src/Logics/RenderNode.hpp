@@ -9,14 +9,17 @@
 
 class RenderMaterial;
 class RenderGeometry;
+class RenderGraph;
 
 class RenderNode : public EntityLogic,
-    public ETNode<ETRenderNode>,
-    public ETNode<ETRenderEvents> {
+    public ETNode<ETRenderNode> {
 public:
 
     RenderNode();
     virtual ~RenderNode();
+
+    void setRenderGraph(RenderGraph* graph);
+    void render();
 
     // EntityLogic
     bool init() override;
@@ -31,9 +34,6 @@ public:
     void ET_setMaterial(const char* matName) override;
     void ET_setGeometry(PrimitiveGeometryType geomType) override;
     void ET_setAlpha(float newAlpha) override;
-
-    // ETRenderEvents
-    void ET_onRender(RenderContext& renderCtx) override;
 
 protected:
 
@@ -50,6 +50,7 @@ protected:
 
 private:
 
+    RenderGraph* renderGraph;
     float alpha;
     int drawPriority;
     RenderBlendingType blending;

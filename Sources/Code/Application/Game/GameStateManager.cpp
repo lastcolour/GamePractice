@@ -20,13 +20,10 @@ void GameStateManager::deinit() {
     ETNode<ETGameStateManager>::disconnect();
 }
 
-void GameStateManager::ET_initGame() {
-    ET_changeState(EGameState::PreGame);
-}
-
 void GameStateManager::ET_startGame() {
-    assert(gameState == EGameState::PreGame && "Invalid game state");
+    assert(gameState == EGameState::None && "Invalid game state");
     ET_SendEvent(&ETGameTimer::ET_resumeTimer);
+    ET_changeState(EGameState::PreGame);
 }
 
 void GameStateManager::ET_pauseGame() {
@@ -43,14 +40,14 @@ bool GameStateManager::ET_isGamePaused() const {
     return res;
 }
 
-bool GameStateManager::ET_isGameState() const {
+bool GameStateManager::ET_isInGameState() const {
     if(gameState == EGameState::None) {
         return false;
     }
     return true;
 }
 
-void GameStateManager::ET_interruptGame() {
+void GameStateManager::ET_finishGame() {
     switch(gameState)
     {
     case EGameState::PreGame: {
