@@ -209,7 +209,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "0",
+                          "text": "60.0",
                           "render": 0
                         }
                       },
@@ -224,7 +224,7 @@
                             "a": 255
                           },
                           "fontSize": 0.52173912525177,
-                          "text": "999"
+                          "text": "60.0"
                         }
                       },
                       {
@@ -460,7 +460,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "999",
+                          "text": "0",
                           "render": 0
                         }
                       },
@@ -475,14 +475,15 @@
                             "a": 255
                           },
                           "fontSize": 0.52173912525177,
-                          "text": "999"
+                          "text": "0"
                         }
                       },
                       {
                         "type": "GameScoreUpdater",
                         "id": 3,
                         "data": {
-                          "increaseSpeed": 20
+                          "increaseSpeed": 20,
+                          "increseSound": "Game/scoreIncrease.ogg"
                         }
                       }
                     ]

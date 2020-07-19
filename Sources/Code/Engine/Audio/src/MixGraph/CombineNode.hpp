@@ -12,7 +12,6 @@ public:
     virtual ~CombineNode();
 
     void addChild(MixNode* node);
-    void removeChild(MixNode* node);
 
     // MixNode
     void additiveMixTo(float* out, int channels, int samples) override;

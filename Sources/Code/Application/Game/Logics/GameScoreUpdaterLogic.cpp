@@ -19,6 +19,7 @@ GameScoreUpdaterLogic::~GameScoreUpdaterLogic() {
 void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameScoreUpdaterLogic>("GameScoreUpdater")) {
         classInfo->addField("increaseSpeed", &GameScoreUpdaterLogic::increaseSpeed);
+        classInfo->addResourceField("increseSound", &GameScoreUpdaterLogic::setIncreaseSoundEvent);
     }
 }
 
@@ -41,6 +42,10 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
         return;
     }
 
+    if(increaseSound) {
+        increaseSound->emit();
+    }
+
     currentStepDelay += dt;
     int increaseStep = static_cast<int>((static_cast<float>(increaseSpeed) * currentStepDelay));
     if(increaseStep == 0) {
@@ -52,4 +57,8 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
 
     std::string text = StringFormat("%d", currentValue);
     ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
+}
+
+void GameScoreUpdaterLogic::setIncreaseSoundEvent(const char* soundName) {
+    ET_SendEventReturn(increaseSound, &ETSoundManager::ET_createEvent, soundName);
 }

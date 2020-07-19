@@ -26,14 +26,17 @@ void SourceNode::attachToStream(SoundStream* stream) {
     assert(stream && "invalid stream");
     assert(!oggData.isOpened() && "already opened another stream");
 
-    auto& data = stream->getData();
+    auto data = stream->getData();
+    assert(data);
     if(!oggData.open(data)) {
         LogError("[SourceNode::attachToStream] Can't open OGG data stream");
-        getParent()->removeChild(this);
+        setParent(nullptr);
         return;
     }
     samplesOffset = stream->getSamplesOffset();
-    oggData.setSampleOffset(samplesOffset);
+    if(samplesOffset != 0) {
+        oggData.setSampleOffset(samplesOffset);
+    }
     volume = stream->getMixVolume();
 
     if(!stream->isEvent()) {
@@ -50,7 +53,7 @@ void SourceNode::detachFromStream() {
     samplesOffset = 0;
     volume = 1.f;
     oggData.close();
-    getParent()->removeChild(this);
+    setParent(nullptr);
 }
 
 unsigned int SourceNode::getSamplesOffset() const {

@@ -31,12 +31,15 @@ public:
 
 private:
 
+    void setIncreaseSoundEvent(const char* soundName);
+
+private:
+
+    std::unique_ptr<SoundEvent> increaseSound;
     float currentStepDelay;
     int increaseSpeed;
     int currentValue;
     int targetValue;
-
-    std::unique_ptr<SoundEvent> increaseSound;
 };
 
 #endif /* __GAME_SCORE_UPDATER_LOGIC_HPP__ */

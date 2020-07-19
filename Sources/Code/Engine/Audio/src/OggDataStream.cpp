@@ -18,6 +18,7 @@ OggDataStream::~OggDataStream() {
 }
 
 bool OggDataStream::open(Buffer& buffer) {
+    assert(oggStream == nullptr && "Reopen OGG data stream");
     oggBuffer = buffer;
     oggStream = stb_vorbis_open_memory(
         static_cast<const unsigned char*>(oggBuffer.getReadData()),
@@ -35,11 +36,15 @@ bool OggDataStream::open(Buffer& buffer) {
 }
 
 void OggDataStream::close() {
-    if(oggStream) {
-        stb_vorbis_close(oggStream);
-        oggStream = nullptr;
-        oggBuffer.reset();
+    if(!oggStream) {
+        return;
     }
+    stb_vorbis_close(oggStream);
+    oggStream = nullptr;
+    oggBuffer.reset();
+    oggChannels = 0;
+    oggSampleRate = 0;
+    oggSampleCount = 0;
 }
 
 bool OggDataStream::isOpened() const {
