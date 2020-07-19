@@ -2,6 +2,7 @@
 #include "SoundStream.hpp"
 #include "MixGraph/MixGraph.hpp"
 #include "Math/Primitivies.hpp"
+#include "OggDataStream.hpp"
 
 #include <cassert>
 
@@ -12,13 +13,15 @@ Resampler::Resampler(MixGraph* mixGraph) :
 Resampler::~Resampler() {
 }
 
-void Resampler::exclusiveResampleTo(float* out, int channels, int samples, SoundStream& stream) {
-    auto inSampleRate = stream.getSampleRate();
+StreamMixState Resampler::exclusiveResampleTo(float* out, int channels, int samples, bool looped, OggDataStream* stream) {
+    auto inSampleRate =  stream->getSampleRate();
     auto outSampleRate = graph->getMixConfig().outSampleRate;
 
+    StreamMixState mixState;
     if(inSampleRate == outSampleRate) {
-        stream.exclusiveMixTo(out, channels, samples);
-        return;
+        mixState.samplesRead = stream->readF32(out, channels, samples, looped);
+        mixState.isEnded = mixState.samplesRead < samples;
+        return mixState;
     }
 
     auto inSamples = (outSampleRate * inSampleRate) / samples;
@@ -29,7 +32,9 @@ void Resampler::exclusiveResampleTo(float* out, int channels, int samples, Sound
 
     float* source = static_cast<float*>(buffer.getWriteData());
     std::fill_n(source, channels * inSamples, 0.f);
-    stream.exclusiveMixTo(source, channels, inSamples);
+
+    mixState.samplesRead = stream->readF32(source, channels, inSamples, looped);
+    mixState.isEnded = mixState.samplesRead < inSamples;
 
     float ratio = inSamples / static_cast<float>(samples);
     float currentFIdx = 0.f;
@@ -54,4 +59,6 @@ void Resampler::exclusiveResampleTo(float* out, int channels, int samples, Sound
     } else {
         assert(false && "Too many channels");
     }
+
+    return mixState;
 }

@@ -2,8 +2,8 @@
 #define __ET_SOUND_HPP__
 
 #include <memory>
-
-struct Sound {
+class Sound {
+public:
     virtual ~Sound() = default;
     virtual void play() = 0;
     virtual void stop() = 0;
@@ -17,6 +17,12 @@ struct Sound {
     virtual bool isPaused() const = 0;
 };
 
+class SoundEvent {
+public:
+    virtual ~SoundEvent() = default;
+    virtual void emit() = 0;
+};
+
 struct ETSoundPlayer {
     virtual ~ETSoundPlayer() = default;
     virtual void ET_play() = 0;
@@ -26,6 +32,7 @@ struct ETSoundPlayer {
 struct ETSoundManager {
     virtual ~ETSoundManager() = default;
     virtual std::unique_ptr<Sound> ET_createSound(const char* soundName) = 0;
+    virtual std::unique_ptr<SoundEvent> ET_createEvent(const char* soundName) = 0;
 };
 
-#endif /* __ET_SOUND_HPP__ */
+#endif /* __ET_SOUND_HPP__ */ 

@@ -50,6 +50,9 @@ Buffer::Buffer(const void* dataPtr, size_t dataSize) :
     memcpy(buffImpl->data.get(), dataPtr, dataSize);
 }
 
+Buffer::~Buffer() {
+}
+
 Buffer& Buffer::operator=(const Buffer& buff) {
     if(this != &buff) {
         buffImpl = buff.buffImpl;
@@ -145,4 +148,8 @@ void Buffer::resize(size_t newSize) {
             buffImpl->data[0] = 0u;
         }
     }
+}
+
+void Buffer::reset() {
+    buffImpl.reset();
 }

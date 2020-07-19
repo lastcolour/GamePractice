@@ -2,6 +2,7 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Audio/ETSound.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -24,6 +25,7 @@ GameBoardInteractionLogic::~GameBoardInteractionLogic() {
 void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardInteractionLogic>("GameBoardInteraction")) {
         classInfo->addField("switchDuration", &GameBoardInteractionLogic::switchDuration);
+        classInfo->addResourceField("switchSound", &GameBoardInteractionLogic::setSwitchSoundEvent);
     }
 }
 
@@ -37,12 +39,12 @@ bool GameBoardInteractionLogic::init() {
 void GameBoardInteractionLogic::deinit() {
 }
 
-void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {
+bool GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     EBoardElemState state = EBoardElemState::Void;
     ET_SendEventReturn(state, getEntityId(), &ETGameBoard::ET_getElemState, activeElemId);
     if(state != EBoardElemState::Static) {
         activeElemId = InvalidEntityId;
-        return;
+        return false;
     }
 
     Transform tm;
@@ -67,19 +69,20 @@ void GameBoardInteractionLogic::onEndElemMove(const Vec2i& endPt) {
     int cellSize = 0;
     ET_SendEventReturn(cellSize, getEntityId(), &ETGameBoard::ET_getCellSize);
     if(moveDir.getLenght() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
-        return;
+        return false;
     }
     EntityId nextElemId;
     ET_SendEventReturn(nextElemId, getEntityId(), &ETGameBoard::ET_getElemByBoardPos, nextBoardPt);
     if(!nextElemId.isValid()) {
-        return;
+        return false;
     }
     state = EBoardElemState::Void;
     ET_SendEventReturn(state, getEntityId(), &ETGameBoard::ET_getElemState, nextElemId);
     if(state != EBoardElemState::Static) {
-        return;
+        return false;
     }
     createSwitchElemsTask(activeElemId, nextElemId);
+    return true;
 }
 
 void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& pt) {
@@ -101,13 +104,18 @@ void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& 
         break;
     }
     case EActionType::Move: {
+        if(activeElemId.isValid()) {
+            if(tryFinishElemMove(pt)) {
+                activeElemId = InvalidEntityId;
+            }
+        }
         break;
     }
     case EActionType::Release: {
         if(activeElemId.isValid()) {
-            onEndElemMove(pt);
+            tryFinishElemMove(pt);
+            activeElemId = InvalidEntityId;
         }
-        activeElemId = InvalidEntityId;
         break;
     }
     default:
@@ -153,6 +161,10 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
 void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId secondId) {
     assert(firstId != secondId && "Can't switch same element");
 
+    if(switchSoundEvent) {
+        switchSoundEvent->emit();
+    }
+
     SwitchTask task;
     task.duration = 0.f;
 
@@ -178,4 +190,8 @@ void GameBoardInteractionLogic::ET_allowInteraction(bool flag) {
 
 bool GameBoardInteractionLogic::ET_canInteract() const {
     return ET_IsExistNode<ETInputEvents>(getEntityId());
+}
+
+void GameBoardInteractionLogic::setSwitchSoundEvent(const char* soundName) {
+    ET_SendEventReturn(switchSoundEvent, &ETSoundManager::ET_createEvent, soundName);
 }

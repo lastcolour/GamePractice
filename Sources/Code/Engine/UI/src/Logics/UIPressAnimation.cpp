@@ -8,7 +8,7 @@ void UIPressAnimation::Reflect(ReflectContext& ctx) {
         classInfo->addField("inDuration", &UIPressAnimation::inDuration);
         classInfo->addField("outDuration", &UIPressAnimation::outDuration);
         classInfo->addField("minScale", &UIPressAnimation::minScale);
-        classInfo->addResourceField("sound", &UIPressAnimation::setSound);
+        classInfo->addResourceField("sound", &UIPressAnimation::setSoundEvent);
     }
 }
 
@@ -31,8 +31,8 @@ bool UIPressAnimation::init() {
 void UIPressAnimation::deinit() {
 }
 
-void UIPressAnimation::setSound(const char* soundName) {
-    ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, soundName);
+void UIPressAnimation::setSoundEvent(const char* soundName) {
+    ET_SendEventReturn(soundEvent, &ETSoundManager::ET_createEvent, soundName);
 }
 
 void UIPressAnimation::ET_start() {
@@ -40,11 +40,8 @@ void UIPressAnimation::ET_start() {
     isReversed = false;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
     ETNode<ETAppTimerEvents>::connect(getEntityId());
-    if(sound) {
-        if(sound->isPlaying()) {
-            sound->stop();
-        }
-        sound->play();
+    if(soundEvent) {
+        soundEvent->emit();
     }
 }
 
@@ -95,6 +92,5 @@ void UIPressAnimation::ET_onAppTick(float dt) {
         ETNode<ETAppTimerEvents>::disconnect();
         ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
         ET_SendEvent(getEntityId(), &ETUIAnimationEvents::ET_onAnimationEnd);
-
     }
 }

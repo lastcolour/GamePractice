@@ -15,7 +15,7 @@ public:
     Buffer(const void* dataPtr, size_t dataSize);
     explicit Buffer(size_t buffSize);
 
-    ~Buffer() = default;
+    ~Buffer();
 
     Buffer& operator=(Buffer&& buff);
     Buffer& operator=(const Buffer& buff);
@@ -29,6 +29,7 @@ public:
     void* getWriteData();
     const void* getReadData() const;
     void resize(size_t newSize);
+    void reset();
 
 private:
 

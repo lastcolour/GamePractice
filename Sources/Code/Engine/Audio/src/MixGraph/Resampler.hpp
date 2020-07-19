@@ -3,8 +3,13 @@
 
 #include "Core/Buffer.hpp"
 
-class SoundStream;
+class OggDataStream;
 class MixGraph;
+
+struct StreamMixState {
+    int samplesRead;
+    bool isEnded;
+};
 
 class Resampler {
 public:
@@ -12,7 +17,7 @@ public:
     Resampler(MixGraph* mixGraph);
     ~Resampler();
 
-    void exclusiveResampleTo(float* out, int channels, int samples, SoundStream& stream);
+    StreamMixState exclusiveResampleTo(float* out, int channels, int samples, bool looped, OggDataStream* stream);
 
 private:
 

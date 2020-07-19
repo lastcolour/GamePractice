@@ -8,6 +8,7 @@
 #include "Math/Transform.hpp"
 
 class ReflectContext;
+class SoundEvent;
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
@@ -39,9 +40,10 @@ public:
 
 private:
 
-    void onEndElemMove(const Vec2i& pt);
+    bool tryFinishElemMove(const Vec2i& pt);
     void createSwitchElemsTask(EntityId firstId, EntityId secondId);
     void switchElements(EntityId firstId, EntityId secondId);
+    void setSwitchSoundEvent(const char* soundName);
 
 private:
 
@@ -60,6 +62,7 @@ private:
     EntityId activeElemId;
     float switchDuration;
     std::vector<SwitchTask> switchTasks;
+    std::unique_ptr<SoundEvent> switchSoundEvent;
 };
 
 #endif /* __GAME_BOARD_INTERACTION_LOGIC_HPP__ */

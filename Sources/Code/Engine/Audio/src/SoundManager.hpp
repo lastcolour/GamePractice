@@ -21,6 +21,7 @@ public:
 
     // ETSoundManager
     std::unique_ptr<Sound> ET_createSound(const char* soundName) override;
+    std::unique_ptr<SoundEvent> ET_createEvent(const char* soundName) override;
 
 private:
 

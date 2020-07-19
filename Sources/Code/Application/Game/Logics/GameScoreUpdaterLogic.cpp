@@ -2,6 +2,7 @@
 #include "UI/ETUIBox.hpp"
 #include "Core/StringFormat.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Audio/ETSound.hpp"
 
 #include <algorithm>
 

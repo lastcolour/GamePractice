@@ -14,7 +14,6 @@ SoundPlayLogic::SoundPlayLogic() :
     volume(1.f),
     looped(false),
     autoStart(false) {
-
 }
 
 SoundPlayLogic::~SoundPlayLogic() {
@@ -34,6 +33,8 @@ void SoundPlayLogic::deinit() {
 
 void SoundPlayLogic::ET_play() {
     if(sound) {
+        sound->setLooped(looped);
+        sound->setVolume(volume);
         sound->play();
     }
 }

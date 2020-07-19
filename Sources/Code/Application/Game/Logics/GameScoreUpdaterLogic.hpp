@@ -5,6 +5,7 @@
 #include "Game/ETGameInterfaces.hpp"
 
 class ReflectContext;
+class SoundEvent;
 
 class GameScoreUpdaterLogic : public EntityLogic,
     public ETNode<ETGameScoreUpdater>,
@@ -34,6 +35,8 @@ private:
     int increaseSpeed;
     int currentValue;
     int targetValue;
+
+    std::unique_ptr<SoundEvent> increaseSound;
 };
 
 #endif /* __GAME_SCORE_UPDATER_LOGIC_HPP__ */

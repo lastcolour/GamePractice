@@ -14,6 +14,8 @@ public:
     void setSampleOffset(int sampleOffset);
 
     bool open(Buffer& buffer);
+    void close();
+    bool isOpened() const;
 
     int readI16(void* out, int channels, int samples, bool looped);
     int readF32(void* out, int channels, int samples, bool looped);

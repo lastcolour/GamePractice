@@ -14,14 +14,11 @@ OggDataStream::OggDataStream() :
 }
 
 OggDataStream::~OggDataStream() {
-    if(!oggStream) {
-        stb_vorbis_close(oggStream);
-        oggStream = nullptr;
-    }
+    close();
 }
 
 bool OggDataStream::open(Buffer& buffer) {
-    oggBuffer = std::move(buffer);
+    oggBuffer = buffer;
     oggStream = stb_vorbis_open_memory(
         static_cast<const unsigned char*>(oggBuffer.getReadData()),
             static_cast<int>(oggBuffer.getSize()), nullptr, nullptr);
@@ -35,6 +32,18 @@ bool OggDataStream::open(Buffer& buffer) {
     oggSampleRate = orbisInfo.sample_rate;
     oggSampleCount = stb_vorbis_stream_length_in_samples(oggStream) * orbisInfo.channels;
     return true;
+}
+
+void OggDataStream::close() {
+    if(oggStream) {
+        stb_vorbis_close(oggStream);
+        oggStream = nullptr;
+        oggBuffer.reset();
+    }
+}
+
+bool OggDataStream::isOpened() const {
+    return oggStream != nullptr;
 }
 
 void OggDataStream::setSampleOffset(int sampleOffset) {
@@ -58,11 +67,11 @@ int OggDataStream::readF32(void* out, int channels, int samples, bool looped) {
     if(readCount < samples && looped) {
         int leftCount = samples - readCount;
         while(leftCount > 0) {
-            setSampleOffset(0);
+            stb_vorbis_seek_start(oggStream);
             int offset = readCount * channels;
             readCount = stb_vorbis_get_samples_float_interleaved(oggStream, channels,
                 static_cast<float*>(out) + offset, leftCount * channels);
-            leftCount = samples - readCount;
+            leftCount -= readCount;
         }
     }
     return readCount;

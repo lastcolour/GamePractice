@@ -59,8 +59,8 @@ bool MixGraph::playSound(SoundStream* stream) {
         LogWarning("[MixGraph::playSound] Can't find free source");
         return false;
     }
-    source->setStream(stream);
     root.addChild(source);
+    source->attachToStream(stream);
     return true;
 }
 
