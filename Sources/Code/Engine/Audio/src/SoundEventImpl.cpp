@@ -4,9 +4,11 @@
 
 #include <cassert>
 
-SoundEventImpl::SoundEventImpl(Buffer& data) :
+SoundEventImpl::SoundEventImpl(float volumeVal, float nextDelayVa, Buffer& data) :
     soundData(data),
-    volume(0.7f) {
+    volume(volumeVal),
+    nextDelay(nextDelayVa),
+    lastPlayTime(-1.f) {
 }
 
 SoundEventImpl::~SoundEventImpl() {
@@ -37,5 +39,8 @@ Buffer& SoundEventImpl::getData() {
 
 void SoundEventImpl::emit() {
     assert(soundData && "Invalid sound data");
+    if(lastPlayTime < 0.f) {
+        lastPlayTime = -1.f;
+    }
     ET_SendEvent(&ETSoundPlayManager::ET_play, this);
 }

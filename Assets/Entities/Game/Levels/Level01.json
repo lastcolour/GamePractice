@@ -31,7 +31,7 @@
       "id": 5,
       "data": {
         "switchDuration": 0.20000000298023224,
-        "switchSound": "Game/switchSuccess.ogg"
+        "switchSound": "elemSwitch_01"
       }
     },
     {

@@ -8,6 +8,22 @@ from utils.AppConfig import AppConfig
 
 from native.EditorNative import EditorNative
 from native.EntityNativeLoader import EntityNativeLoader
+from native.MemoryStream import MemoryStream
+
+def _dumpEntityToMemoryStream(entity, stream):
+    stream.writeString(entity._name)
+    stream.writeBool(entity._isInternal)
+    if entity._childId is not None:
+        stream.writeInt(entity._childId)
+    else:
+        stream.writeInt(-1)
+    stream.writeInt(len(entity._logics) + 1)
+    entity._tmLogic.writeToStream(stream)
+    for logic in entity._logics:
+        logic.writeToStream(stream)
+    stream.writeInt(len(entity._children))
+    for child in entity._children:
+        _dumpEntityToMemoryStream(child, stream)
 
 class EntityContentTests(unittest.TestCase):
 

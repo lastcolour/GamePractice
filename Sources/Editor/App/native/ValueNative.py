@@ -31,6 +31,26 @@ class ValueType:
     Object = 14
     Array = 15
 
+class ResourceType:
+    Invalid = 0
+    Entity = 1
+    Image = 2
+    Sound = 3
+    SoundEvent = 4
+
+    @staticmethod
+    def getResourceType(valType):
+        if valType == "Entity":
+            return ResourceType.Entity
+        elif valType == "Image":
+            return ResourceType.Image
+        elif valType == "Sound":
+            return ResourceType.Sound
+        elif valType == "SoundEvent":
+            return ResourceType.SoundEvent
+        else:
+            raise RuntimeError("Invalid resource type '{0}'".format(valType))
+
 class ValueNative(NativeObject):
     def __init__(self, valueType):
         self._name = None
@@ -634,6 +654,7 @@ class ObjectValue(ValueNative):
 class ResourceValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Resource)
+        self._resType = None
         self._val = None
 
     def readFromDict(self, node):
@@ -655,6 +676,9 @@ class ResourceValue(ValueNative):
 
     def writeToStream(self, stream):
         stream.writeString(self._val)
+
+    def getResourceType(self):
+        return self._resType
 
     def setVal(self, val):
         self._val = str(val)
@@ -721,10 +745,11 @@ def _createValue(valueName, valueType):
         val = QuatValue()
     elif valueType == "color":
         val = ColorValue()
-    elif valueType == "resource":
-        val = ResourceValue()
     elif valueType == "entity":
         val = EntityValue()
+    elif len(valueType) > 9 and valueType[:9] == "resource.":
+        val = ResourceValue()
+        val._resType = ResourceType.getResourceType(valueType[9:])
     else:
         valueModel = _getReflectModel().getTypeModel(valueType)
         if valueModel is None:

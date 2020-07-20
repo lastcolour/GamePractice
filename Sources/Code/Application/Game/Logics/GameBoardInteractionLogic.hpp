@@ -62,7 +62,7 @@ private:
     EntityId activeElemId;
     float switchDuration;
     std::vector<SwitchTask> switchTasks;
-    std::unique_ptr<SoundEvent> switchSoundEvent;
+    std::shared_ptr<SoundEvent> switchSoundEvent;
 };
 
 #endif /* __GAME_BOARD_INTERACTION_LOGIC_HPP__ */

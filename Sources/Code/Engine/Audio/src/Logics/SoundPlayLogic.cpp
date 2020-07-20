@@ -5,7 +5,7 @@ void SoundPlayLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<SoundPlayLogic>("SoundPlayer")) {
         classInfo->addField("looped", &SoundPlayLogic::looped);
         classInfo->addField("volume", &SoundPlayLogic::volume);
-        classInfo->addResourceField("sound", &SoundPlayLogic::setSound);
+        classInfo->addResourceField("sound", ResourceType::Sound, &SoundPlayLogic::setSound);
         classInfo->addField("autoStart", &SoundPlayLogic::autoStart);
     }
 }

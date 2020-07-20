@@ -45,7 +45,7 @@ private:
 private:
 
     Transform startTm;
-    std::unique_ptr<SoundEvent> soundEvent;
+    std::shared_ptr<SoundEvent> soundEvent;
     float inDuration;
     float outDuration;
     float minScale;

@@ -7,7 +7,7 @@
 
 void GameBoardSpawner::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardSpawner>("GameBoardSpawner")) {
-        classInfo->addResourceField("gameBoard", &GameBoardSpawner::setGameBoard);
+        classInfo->addResourceField("gameBoard", ResourceType::Entity, &GameBoardSpawner::setGameBoard);
     }
 }
 

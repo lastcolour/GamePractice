@@ -76,7 +76,7 @@ public:
 
     static void Reflect(ReflectContext& reflectCtx) {
         if(auto classInfo = reflectCtx.classInfo<ObjectWithResource>("ObjectWithResource")) {
-            classInfo->addResourceField("resource", &ObjectWithResource::setResource);
+            classInfo->addResourceField("resource", ResourceType::Entity, &ObjectWithResource::setResource);
         }
     }
 

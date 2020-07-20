@@ -9,7 +9,7 @@ class SoundEventImpl : public SoundStream,
     public SoundEvent {
 public:
 
-    SoundEventImpl(Buffer& data);
+    SoundEventImpl(float volumeVal, float nextDelayVal, Buffer& data);
     virtual ~SoundEventImpl();
 
     // SoundStream
@@ -27,6 +27,8 @@ private:
 
     Buffer soundData;
     float volume;
+    float nextDelay;
+    float lastPlayTime;
 };
 
 #endif /* __SOUND_EVENT_IMPL_HPP__ */

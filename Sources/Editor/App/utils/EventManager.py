@@ -109,6 +109,9 @@ class _EventManager:
     def getAssetsModel(self):
         return self._app._assetsModel
 
+    def getSoundEventsModel(self):
+        return self._app._soundEventsModel
+
     def hasEditEntity(self):
         return self._currentEntity is not None
 

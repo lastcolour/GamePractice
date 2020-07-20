@@ -32,7 +32,7 @@ struct ETSoundPlayer {
 struct ETSoundManager {
     virtual ~ETSoundManager() = default;
     virtual std::unique_ptr<Sound> ET_createSound(const char* soundName) = 0;
-    virtual std::unique_ptr<SoundEvent> ET_createEvent(const char* soundName) = 0;
+    virtual std::shared_ptr<SoundEvent> ET_createEvent(const char* soundName) = 0;
 };
 
 #endif /* __ET_SOUND_HPP__ */ 

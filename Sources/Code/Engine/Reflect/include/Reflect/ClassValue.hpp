@@ -38,7 +38,7 @@ public:
     ClassValue();
     ~ClassValue();
 
-    const char* getTypeName() const;
+    std::string getTypeName() const;
     bool writeValueTo(void* instance, void* valuePtr, MemoryStream& stream);
     bool readValueFrom(void* instance, void* valuePtr, MemoryStream& stream);
     bool readValueFrom(void* instance, void* valuePtr, const JSONNode& node);
@@ -51,6 +51,7 @@ public:
     ClassValueType type;
     ValuePtrT ptr;
     TypeId typeId;
+    ResourceType resourceType;
     SetResourceFuncT setResourceFunc;
     int primitiveValueCount;
     bool isElement;

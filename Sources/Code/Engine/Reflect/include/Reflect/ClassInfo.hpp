@@ -60,18 +60,18 @@ public:
         } else {
             valueTypeId = GetTypeId<ValueT>();
         }
-        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), valueTypeId, nullptr);
+        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), valueTypeId, ResourceType::Invalid, nullptr);
     }
 
     template<typename ClassT>
-    void addResourceField(const char* name, void (ClassT::*setFunc)(const char*)) {
+    void addResourceField(const char* name, ResourceType resType, void (ClassT::*setFunc)(const char*)) {
         if(!checkIfSameType(GetTypeId<ClassT>())) {
             return;
         }
         ClassValue::SetResourceFuncT valueSetFunc = [setFunc](void* instance, const char* resourceName){
             (static_cast<ClassT*>(instance)->*setFunc)(resourceName);
         };
-        registerClassValue(name, ClassValueType::Resource, nullptr, InvalidTypeId, valueSetFunc);
+        registerClassValue(name, ClassValueType::Resource, nullptr, InvalidTypeId, resType, valueSetFunc);
     }
 
     template<typename ClassT>
@@ -93,7 +93,7 @@ private:
     ClassValue* findValueByPrimitiveValueId(void*& instance, int valueId);
     void registerBaseClass(TypeId baseClassTypeId);
     void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
-        ClassValue::SetResourceFuncT valueSetFunc);
+        ResourceType resType, ClassValue::SetResourceFuncT valueSetFunc);
     void getAllClasses(std::vector<ClassInfo*>& classes);
 
 private:

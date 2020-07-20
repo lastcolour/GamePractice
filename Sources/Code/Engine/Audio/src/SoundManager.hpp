@@ -21,15 +21,17 @@ public:
 
     // ETSoundManager
     std::unique_ptr<Sound> ET_createSound(const char* soundName) override;
-    std::unique_ptr<SoundEvent> ET_createEvent(const char* soundName) override;
+    std::shared_ptr<SoundEvent> ET_createEvent(const char* soundName) override;
 
 private:
 
+    bool loadEvents();
     Buffer loadSoundBuffer(const char* soundName);
 
 private:
 
     std::unordered_map<std::string, Buffer> buffers;
+    std::unordered_map<std::string, std::shared_ptr<SoundEvent>> eventMap;
 };
 
 #endif /* __SOUND_MANAGER_HPP__ */

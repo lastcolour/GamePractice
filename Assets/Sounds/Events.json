@@ -1,0 +1,22 @@
+{
+    "Events":[
+        {
+            "name":"buttonPress_01",
+            "sound":"UI/buttonPress_01.ogg",
+            "volume":0.7,
+            "nextDelay":0
+        },
+        {
+            "name":"elemSwitch_01",
+            "sound":"Game/switchSuccess.ogg",
+            "volume":0.8,
+            "nextDelay":0
+        },
+        {
+            "name":"scoreIncrease_01",
+            "sound":"Game/scoreIncrease.ogg",
+            "volume":0.5,
+            "nextDelay":0.1
+        }
+    ]
+}

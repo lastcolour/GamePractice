@@ -342,7 +342,7 @@
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
                     "minScale": 0.949999988079071,
-                    "sound": "UI/buttonPress_01.ogg"
+                    "sound": "buttonPress_01"
                   }
                 },
                 {
@@ -350,7 +350,7 @@
                   "id": 4,
                   "data": {
                     "size": {
-                      "x": 372,
+                      "x": 371,
                       "y": 93
                     },
                     "image": "Images/StartButton_BG.png",
@@ -524,7 +524,7 @@
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
                     "minScale": 0.949999988079071,
-                    "sound": "UI/buttonPress_01.ogg"
+                    "sound": "buttonPress_01"
                   }
                 },
                 {
@@ -686,7 +686,7 @@
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
                     "minScale": 0.949999988079071,
-                    "sound": "UI/buttonPress_01.ogg"
+                    "sound": "buttonPress_01"
                   }
                 },
                 {
@@ -827,7 +827,7 @@
                     "inDuration": 0.07500000298023224,
                     "outDuration": 0.07500000298023224,
                     "minScale": 0.949999988079071,
-                    "sound": "UI/buttonPress_01.ogg"
+                    "sound": "buttonPress_01"
                   }
                 },
                 {

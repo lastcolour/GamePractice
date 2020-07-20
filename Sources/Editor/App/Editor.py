@@ -17,6 +17,7 @@ from native.EditorNative import EditorNative
 
 from model.AssetsModel import AssetsModel
 from model.LogicsModel import LogicsModel
+from model.SoundEventsModel import SoundEventsModel
 
 from menu.MainFileMenu import MainFileMenu
 from menu.MainToolBar import MainToolBar
@@ -87,6 +88,10 @@ class EditorView(QMainWindow):
         self._logicsModel = LogicsModel(self._editorNative)
         if not self._logicsModel.init():
             Log.error("[EditorView:_init] Can't init logics model")
+            return False
+        self._soundEventsModel = SoundEventsModel(self._appConfig)
+        if not self._soundEventsModel.init():
+            Log.error("[EditorView:_init] Can't init sound events model")
             return False
         return True
 

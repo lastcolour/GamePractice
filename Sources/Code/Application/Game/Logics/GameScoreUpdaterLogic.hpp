@@ -35,7 +35,7 @@ private:
 
 private:
 
-    std::unique_ptr<SoundEvent> increaseSound;
+    std::shared_ptr<SoundEvent> increaseSound;
     float currentStepDelay;
     int increaseSpeed;
     int currentValue;

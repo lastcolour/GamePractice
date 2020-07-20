@@ -25,7 +25,7 @@ GameBoardInteractionLogic::~GameBoardInteractionLogic() {
 void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardInteractionLogic>("GameBoardInteraction")) {
         classInfo->addField("switchDuration", &GameBoardInteractionLogic::switchDuration);
-        classInfo->addResourceField("switchSound", &GameBoardInteractionLogic::setSwitchSoundEvent);
+        classInfo->addResourceField("switchSound", ResourceType::SoundEvent, &GameBoardInteractionLogic::setSwitchSoundEvent);
     }
 }
 

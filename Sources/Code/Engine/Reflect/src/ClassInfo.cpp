@@ -37,7 +37,7 @@ const char* ClassInfo::getName() const {
 }
 
 void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
-    ClassValue::SetResourceFuncT valueSetFunc) {
+    ResourceType resType, ClassValue::SetResourceFuncT valueSetFunc) {
     const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class '%s' (Error: %s)";
     if(!valueName || !valueName[0]) {
         LogError(errStr, valueName, className, "empty name");
@@ -52,6 +52,11 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     if(valueType == ClassValueType::Resource) {
         if(!valueSetFunc) {
             LogError(errStr, valueName, className, "resource without create function");
+            assert(false && "can't register class value");
+            return;
+        }
+        if(resType == ResourceType::Invalid) {
+            LogError(errStr, valueName, className, "resource of invalid type");
             assert(false && "can't register class value");
             return;
         }
@@ -100,6 +105,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     classValue.type = valueType;
     classValue.ptr = valuePtr;
     classValue.typeId = valueTypeId;
+    classValue.resourceType = resType;
     classValue.setResourceFunc = valueSetFunc;
     classValue.primitiveValueCount = 1;
 

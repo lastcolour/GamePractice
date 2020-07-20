@@ -30,7 +30,7 @@ void GameBoardLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
         classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
         classInfo->addField("size", &GameBoardLogic::boardSize);
-        classInfo->addResourceField("cellObject", &GameBoardLogic::setCellObject);
+        classInfo->addResourceField("cellObject", ResourceType::Entity, &GameBoardLogic::setCellObject);
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
     }
 }

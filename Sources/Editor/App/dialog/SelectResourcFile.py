@@ -5,8 +5,10 @@ from view.base.FileTreeView import FileTreeView
 from utils.EventManager import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
 
+from native.ValueNative import ResourceType
+
 class SelectResourceFile(QDialog):
-    def __init__(self):
+    def __init__(self, resType):
         super().__init__()
 
         self._selectedFile = None
@@ -20,7 +22,11 @@ class SelectResourceFile(QDialog):
         self._rootLayout.addWidget(self._lineEdit)
 
         self._tree = FileTreeView()
-        self._tree._setFileTreeModel(GetEventManager().getAssetsModel().getResourcesTree())
+        if resType != ResourceType.SoundEvent:
+            self._tree._setFileTreeModel(GetEventManager().getAssetsModel().getResourcesTree())
+        else:
+            self._tree._setFileTreeModel(GetEventManager().getSoundEventsModel().getResourceTree())
+
         self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
         self._rootLayout.addWidget(self._tree)
 

@@ -19,7 +19,7 @@ GameScoreUpdaterLogic::~GameScoreUpdaterLogic() {
 void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameScoreUpdaterLogic>("GameScoreUpdater")) {
         classInfo->addField("increaseSpeed", &GameScoreUpdaterLogic::increaseSpeed);
-        classInfo->addResourceField("increseSound", &GameScoreUpdaterLogic::setIncreaseSoundEvent);
+        classInfo->addResourceField("increseSound", ResourceType::SoundEvent, &GameScoreUpdaterLogic::setIncreaseSoundEvent);
     }
 }
 

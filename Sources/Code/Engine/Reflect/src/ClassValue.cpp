@@ -236,6 +236,30 @@ bool readJSONColor(void* valuePtr, const JSONNode& node) {
     return true;
 }
 
+const char* getResourceName(ResourceType resType) {
+    switch(resType) {
+        case ResourceType::Entity: {
+            return "Entity";
+        }
+        case ResourceType::Sound: {
+            return "Sound";
+        }
+        case ResourceType::SoundEvent: {
+            return "SoundEvent";
+        }
+        case ResourceType::Image: {
+            return "Image";
+        }
+        case ResourceType::Invalid: {
+            [[fallthrough]];
+        }
+        default: {
+            assert(false && "Invalid resource type");
+        }
+    }
+    return "";
+}
+
 } // namespace
 
 ClassValue::ClassValue() :
@@ -243,6 +267,7 @@ ClassValue::ClassValue() :
     type(ClassValueType::Invalid),
     ptr(),
     typeId(InvalidTypeId),
+    resourceType(ResourceType::Invalid),
     primitiveValueCount(0),
     isElement(false) {
 }
@@ -250,7 +275,7 @@ ClassValue::ClassValue() :
 ClassValue::~ClassValue() {
 }
 
-const char* ClassValue::getTypeName() const {
+std::string ClassValue::getTypeName() const {
     switch(type) {
         case ClassValueType::Bool: {
             return "bool";
@@ -283,7 +308,9 @@ const char* ClassValue::getTypeName() const {
             return "color";
         }
         case ClassValueType::Resource: {
-            return "resource";
+            std::string name = "resource.";
+            name += getResourceName(resourceType);
+            return name;
         }
         case ClassValueType::Enum: {
             EnumInfo* enumInfo = nullptr;

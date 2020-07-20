@@ -8,7 +8,7 @@ void UIPressAnimation::Reflect(ReflectContext& ctx) {
         classInfo->addField("inDuration", &UIPressAnimation::inDuration);
         classInfo->addField("outDuration", &UIPressAnimation::outDuration);
         classInfo->addField("minScale", &UIPressAnimation::minScale);
-        classInfo->addResourceField("sound", &UIPressAnimation::setSoundEvent);
+        classInfo->addResourceField("sound", ResourceType::SoundEvent, &UIPressAnimation::setSoundEvent);
     }
 }
 

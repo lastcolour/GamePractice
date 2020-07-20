@@ -32,6 +32,14 @@ enum class ClassValueType {
     Entity
 };
 
+enum class ResourceType {
+    Invalid = 0,
+    Entity,
+    Sound,
+    SoundEvent,
+    Image
+};
+
 namespace ReflectUtils {
 
 template<typename>

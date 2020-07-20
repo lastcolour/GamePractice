@@ -34,7 +34,7 @@ class EditResourceValue(QWidget):
         self._pull()
 
     def _signal_selectBt_clicked(self):
-        dialog = SelectResourceFile()
+        dialog = SelectResourceFile(self._val.getResourceType())
         dialog.exec()
         res = dialog.getSelectedResource()
         if res is None:

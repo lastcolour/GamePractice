@@ -27,7 +27,7 @@ void SourceNode::attachToStream(SoundStream* stream) {
     assert(!oggData.isOpened() && "already opened another stream");
 
     auto data = stream->getData();
-    assert(data);
+    assert(data && "Invalid stream sound data");
     if(!oggData.open(data)) {
         LogError("[SourceNode::attachToStream] Can't open OGG data stream");
         setParent(nullptr);
