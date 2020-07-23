@@ -19,6 +19,7 @@ RenderLinearGradientRect::~RenderLinearGradientRect() {
 
 void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderLinearGradientRect>("RenderLinearGradientRect")) {
+        classInfo->addBaseClass<RenderNode>();
         classInfo->addField("size", &RenderLinearGradientRect::size);
         classInfo->addField("startColor", &RenderLinearGradientRect::startCol);
         classInfo->addField("endColor", &RenderLinearGradientRect::endCol);

@@ -27,39 +27,14 @@ struct ETGameScoreUpdater {
     virtual void ET_setGameScore(int score) = 0;
 };
 
-struct ETGameBoardElemDestroy {
-    virtual ~ETGameBoardElemDestroy() = default;
-    virtual void ET_destroyBoardElem(EntityId elemId) = 0;
-};
-
 struct ETGameBoardElemDestoryEvents {
     virtual ~ETGameBoardElemDestoryEvents() = default;
     virtual void ET_onElemsDestroyed(int count) = 0;
 };
 
-enum class EBoardElemState {
-    Void = 0,
-    Static,
-    Moving,
-    Removing,
-    Switching,
-};
-
-enum class EBoardElemType {
-    None = 0,
-    Red,
-    Blue,
-    Green,
-    Purple,
-    Yellow
-};
-
 struct ETGameBoard {
     virtual ~ETGameBoard() = default;
     virtual void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) = 0;
-    virtual void ET_setElemState(EntityId elemEntId, EBoardElemState newState) = 0;
-    virtual EBoardElemState ET_getElemState(EntityId elemEntId) const = 0;
-    virtual EBoardElemType ET_getElemType(EntityId elemEntId) const = 0;
     virtual void ET_updateBoard() = 0;
     virtual EntityId ET_getElemByPos(const Vec2i& pt) const = 0;
     virtual EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const = 0;

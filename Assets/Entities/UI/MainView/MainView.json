@@ -43,7 +43,7 @@
                 "w": 1.0
               }
             },
-            "name": "Bacground",
+            "name": "Background",
             "id": 1,
             "internal": true,
             "data": {
@@ -77,6 +77,9 @@
                         "type": "RenderColoredTexture",
                         "id": 1,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "size": {
                             "x": 232,
                             "y": 232
@@ -151,6 +154,9 @@
                   "type": "RenderColoredTexture",
                   "id": 5,
                   "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 0,
                     "size": {
                       "x": 279,
                       "y": 279
@@ -299,6 +305,9 @@
                         "type": "RenderText",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -349,8 +358,11 @@
                   "type": "RenderColoredTexture",
                   "id": 4,
                   "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 0,
                     "size": {
-                      "x": 371,
+                      "x": 372,
                       "y": 93
                     },
                     "image": "Images/StartButton_BG.png",
@@ -480,6 +492,9 @@
                         "type": "RenderColoredTexture",
                         "id": 1,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "size": {
                             "x": 70,
                             "y": 70
@@ -552,6 +567,9 @@
                   "type": "RenderColoredTexture",
                   "id": 5,
                   "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 0,
                     "size": {
                       "x": 93,
                       "y": 93
@@ -621,6 +639,9 @@
                         "type": "RenderColoredTexture",
                         "id": 1,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "size": {
                             "x": 70,
                             "y": 70
@@ -693,6 +714,9 @@
                   "type": "RenderColoredTexture",
                   "id": 5,
                   "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 0,
                     "size": {
                       "x": 93,
                       "y": 93
@@ -762,6 +786,9 @@
                         "type": "RenderColoredTexture",
                         "id": 1,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "size": {
                             "x": 70,
                             "y": 70
@@ -834,6 +861,9 @@
                   "type": "RenderColoredTexture",
                   "id": 5,
                   "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 0,
                     "size": {
                       "x": 93,
                       "y": 93

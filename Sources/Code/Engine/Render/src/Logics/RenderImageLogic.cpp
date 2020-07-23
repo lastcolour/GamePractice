@@ -19,6 +19,7 @@ RenderImageLogic::~RenderImageLogic() {
 
 void RenderImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImage")) {
+        classInfo->addBaseClass<RenderNode>();
         classInfo->addField("size", &RenderImageLogic::size);
         classInfo->addResourceField("image", ResourceType::Image, &RenderImageLogic::ET_setImage);
     }

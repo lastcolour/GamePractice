@@ -4,6 +4,7 @@
 #include "SoundStream.hpp"
 #include "Audio/ETSound.hpp"
 #include "Core/Buffer.hpp"
+#include "Core/TimePoint.hpp"
 
 class SoundEventImpl : public SoundStream,
     public SoundEvent {
@@ -28,7 +29,7 @@ private:
     Buffer soundData;
     float volume;
     float nextDelay;
-    float lastPlayTime;
+    TimePoint lastPlayTime;
 };
 
 #endif /* __SOUND_EVENT_IMPL_HPP__ */

@@ -1,5 +1,6 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Game/ETGameElem.hpp"
 
 GameBoardMatchLogic::GameBoardMatchLogic() :
     minLineLen(3),
@@ -23,22 +24,24 @@ void GameBoardMatchLogic::deinit() {
 
 bool GameBoardMatchLogic::isElementsMatch(EntityId firstId, EntityId secondId) const {
     {
-        EBoardElemState firstState = EBoardElemState::Void;
-        ET_SendEventReturn(firstState, getEntityId(), &ETGameBoard::ET_getElemState, firstId);
+        bool firstCanMatch = false;
+        ET_SendEventReturn(firstCanMatch, firstId, &ETGameBoardElem::ET_canMatch);
+        if(!firstCanMatch) {
+            return false;
+        }
 
-        EBoardElemState secondState = EBoardElemState::Void;
-        ET_SendEventReturn(secondState, getEntityId(), &ETGameBoard::ET_getElemState, secondId);
-
-        if(firstState != secondState || firstState != EBoardElemState::Static) {
+        bool secondCanMatch = false;
+        ET_SendEventReturn(secondCanMatch, secondId, &ETGameBoardElem::ET_canMatch);
+        if(!secondCanMatch) {
             return false;
         }
     }
     {
         EBoardElemType firstType = EBoardElemType::None;
-        ET_SendEventReturn(firstType, getEntityId(), &ETGameBoard::ET_getElemType, firstId);
+        ET_SendEventReturn(firstType, firstId, &ETGameBoardElem::ET_getType);
 
         EBoardElemType secondType = EBoardElemType::None;
-        ET_SendEventReturn(secondType, getEntityId(), &ETGameBoard::ET_getElemType, secondId);
+        ET_SendEventReturn(secondType, secondId, &ETGameBoardElem::ET_getType);
 
         if(secondType != firstType || secondType == EBoardElemType::None) {
             return false;

@@ -5,6 +5,7 @@
 #include "Render/ETRenderCamera.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntityManger.hpp"
+#include "Game/ETGameElem.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -13,6 +14,26 @@ namespace {
 
 const int INVALID_BOARD_ELEM_ID = -1;
 const char* DUMMY_CELL_OBJECT= "Game/Simple.json";
+
+EBoardElemMoveState getElemMoveState(EntityId elemId) {
+    EBoardElemMoveState state = EBoardElemMoveState::Static;
+    ET_SendEventReturn(state, elemId, &ETGameBoardElem::ET_getMoveState);
+    return state;
+}
+
+EBoardElemLifeState getElemLifeState(EntityId elemId) {
+    EBoardElemLifeState state = EBoardElemLifeState::Void;
+    ET_SendEventReturn(state, elemId, &ETGameBoardElem::ET_getLifeState);
+    return state;
+}
+
+void setElemMoveState(EntityId elemId, EBoardElemMoveState state) {
+    ET_SendEvent(elemId, &ETGameBoardElem::ET_setMoveState, state);
+}
+
+void setElemLifeState(EntityId elemId, EBoardElemLifeState state) {
+    ET_SendEvent(elemId, &ETGameBoardElem::ET_setLifeState, state);
+}
 
 } // namespace
 
@@ -51,40 +72,14 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
     setElemBoardPos(*secondElem, secondElem->boardPt);
 }
 
-void GameBoardLogic::ET_setElemState(EntityId elemEntId, EBoardElemState newState) {
-    auto elem = getElem(elemEntId);
-    if(!elem) {
-        assert(false && "Try set state to invalid board element");
-        return;
-    }
-    elem->state = newState;
-}
-
-EBoardElemState GameBoardLogic::ET_getElemState(EntityId elemEntId) const {
-    auto elem = getElem(elemEntId);
-    if(!elem) {
-        assert(false && "Try get state from invalid board element");
-        return EBoardElemState::Void;
-    }
-    return elem->state;
-}
-
-EBoardElemType GameBoardLogic::ET_getElemType(EntityId elemEntId) const {
-    auto elem = getElem(elemEntId);
-    if(!elem) {
-        assert(false && "Try get type from invalid board element");
-        return EBoardElemType::None;
-    }
-    return elem->type;
-}
-
 void GameBoardLogic::ET_updateBoard() {
     doUpdate = true;
 }
 
 EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
     for(auto& elem : elements) {
-        if(elem.state == EBoardElemState::Static) {
+        auto state = getElemMoveState(elem.entId);
+        if(state == EBoardElemMoveState::Static) {
             if(elem.box.bot < pt && pt < elem.box.top) {
                 return elem.entId;
             }
@@ -111,30 +106,6 @@ int GameBoardLogic::ET_getCellSize() const {
     return cellSize;
 }
 
-ColorB GameBoardLogic::getElemColor(EBoardElemType elemType) const {
-    ColorB retCol(255, 255, 255);
-    switch(elemType) {
-        case EBoardElemType::Red:
-            retCol = ColorB(255, 0, 0);
-            break;
-        case EBoardElemType::Blue:
-            retCol = ColorB(0, 0, 255);
-            break;
-        case EBoardElemType::Green:
-            retCol = ColorB(0, 255, 0);
-            break;
-        case EBoardElemType::Purple:
-            retCol = ColorB(255, 0, 255);
-            break;
-        case EBoardElemType::Yellow:
-            retCol = ColorB(255, 255, 0);
-            break;
-        default:
-            break;
-    }
-    return retCol;
-}
-
 bool GameBoardLogic::createNewElement(const Vec2i& boardPt) {
     EntityId cellObjId = InvalidEntityId;
     ET_SendEventReturn(cellObjId, &ETEntityManager::ET_createEntity, cellObject.c_str());
@@ -146,9 +117,10 @@ bool GameBoardLogic::createNewElement(const Vec2i& boardPt) {
     BoardElement elem;
     elem.entId = cellObjId;
     elem.boardPt = boardPt;
-    elem.state = EBoardElemState::Static;
     elem.movePt = boardPt;
-    setElemType(elem);
+    setElemMoveState(elem.entId, EBoardElemMoveState::Static);
+    setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
+    setRandomElemType(elem);
     elements.push_back(elem);
     return true;
 }
@@ -248,9 +220,9 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
 }
 
-void GameBoardLogic::setElemType(BoardElement& elem) const {
-    elem.type = static_cast<EBoardElemType>(Math::RandomInt(1, static_cast<int>(EBoardElemType::Yellow)));
-    ET_SendEvent(elem.entId, &ETRenderColoredTexture::ET_setTextureColor, getElemColor(elem.type));
+void GameBoardLogic::setRandomElemType(BoardElement& elem) const {
+    auto type = static_cast<EBoardElemType>(Math::RandomInt(1, static_cast<int>(EBoardElemType::Yellow)));
+    ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setType, type);
 }
 
 const BoardElement* GameBoardLogic::getTopElem(const Vec2i& boardPt) const {
@@ -270,8 +242,14 @@ int GameBoardLogic::getVoidElemBelow(const Vec2i& boardPt) const {
     auto count = 0;
     for(int i = 0; i < boardPt.y; ++i) {
         auto elem = getElem(Vec2i(boardPt.x, i));
-        if(!elem || elem->state == EBoardElemState::Void) {
+        if(!elem) {
             ++count;
+            continue;
+        }
+        auto state = getElemLifeState(elem->entId);
+        if(state == EBoardElemLifeState::Void) {
+            ++count;
+            continue;
         }
     }
     return count;
@@ -279,20 +257,27 @@ int GameBoardLogic::getVoidElemBelow(const Vec2i& boardPt) const {
 
 void GameBoardLogic::updateAfterRemoves() {
     for(auto& elem : elements) {
-        if(elem.state == EBoardElemState::Static || elem.state == EBoardElemState::Moving) {
-            int voidBelow = getVoidElemBelow(elem.boardPt);
-            if(voidBelow > 0) {
-                elem.state = EBoardElemState::Moving;
-                elem.movePt = Vec2i(elem.boardPt.x, elem.boardPt.y - voidBelow);
+        auto lifeState = getElemLifeState(elem.entId);
+        auto moveState = getElemMoveState(elem.entId);
+        if(lifeState == EBoardElemLifeState::Alive) {
+            if(moveState == EBoardElemMoveState::Static || moveState == EBoardElemMoveState::Falling) {
+                int voidBelow = getVoidElemBelow(elem.boardPt);
+                if(voidBelow > 0) {
+                    elem.movePt = Vec2i(elem.boardPt.x, elem.boardPt.y - voidBelow);
+                    setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
+                }
             }
-        } else if(elem.state == EBoardElemState::Void) {
+        } else if(lifeState == EBoardElemLifeState::Void) {
             auto topElem = getTopElem(elem.boardPt);
             Vec2i topPt = topElem->boardPt;
             topPt.y += 1;
+
             setElemBoardPos(elem, topPt);
-            setElemType(elem);
+            setRandomElemType(elem);
+            setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
+            setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
+
             int voidBelow = getVoidElemBelow(elem.boardPt);
-            elem.state = EBoardElemState::Moving;
             elem.movePt = Vec2i(topPt.x, topPt.y - voidBelow);
 
             Transform topTm;
@@ -310,8 +295,7 @@ void GameBoardLogic::updateBoard() {
     for(auto& elemEntId : elemToRemove) {
         auto boardElem = getElem(elemEntId);
         assert(boardElem && "Try to remove invalid board elem");
-        boardElem->state = EBoardElemState::Void;
-        ET_SendEvent(getEntityId(), &ETGameBoardElemDestroy::ET_destroyBoardElem, boardElem->entId);
+        ET_SendEvent(boardElem->entId, &ETGameBoardElem::ET_triggerDestroy);
     }
     updateAfterRemoves();
 }
@@ -340,7 +324,7 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
         ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
         return true;
     } else {
-        elem.state = EBoardElemState::Static;
+        setElemMoveState(elem.entId, EBoardElemMoveState::Static);
         setElemBoardPos(elem, elem.movePt);
         return false;
     }
@@ -348,7 +332,8 @@ bool GameBoardLogic::moveElem(BoardElement& elem, float dt) {
 
 void GameBoardLogic::ET_onGameTick(float dt) {
     for(auto& elem : elements) {
-        if(elem.state == EBoardElemState::Moving) {
+        auto state = getElemMoveState(elem.entId);
+        if(state == EBoardElemMoveState::Falling) {
             if(!moveElem(elem, dt)) {
                 doUpdate = true;
                 continue;
@@ -411,7 +396,8 @@ void GameBoardLogic::ET_onHidden(bool flag) {
     }
 }
 
-void GameBoardLogic::ET_onDisabled(bool flag) {}
+void GameBoardLogic::ET_onDisabled(bool flag) {
+}
 
 void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
     ETNode<ETUIElementEvents>::disconnect();

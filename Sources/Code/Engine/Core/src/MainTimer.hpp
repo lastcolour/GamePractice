@@ -5,13 +5,10 @@
 #include "Core/ETTimer.hpp"
 #include "Core/ETPrimitives.hpp"
 
-#include <chrono>
-
 class MainTimer : public SystemLogic,
     public ETNode<ETMainThreadTimer> {
 
-    using ClockT = std::chrono::high_resolution_clock;
-    using TimePointT = std::chrono::time_point<ClockT>;
+    //using TimePointT = std::chrono::time_point<ClockT>;
 
 public:
 
@@ -25,10 +22,11 @@ public:
     // ETMainThreadTimer
     void ET_onMainThreadStep() override;
     void ET_setAppTimeScale(float newScale) override;
+    TimePoint ET_getFrameStartTime() const override;
 
 private:
 
-    TimePointT lastTickT;
+    TimePoint frameStartT;
     float appTimeScale;
 };
 

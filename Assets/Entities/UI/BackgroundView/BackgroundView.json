@@ -34,6 +34,9 @@
       "type": "RenderLinearGradientRect",
       "id": 3,
       "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
         "size": {
           "x": 522,
           "y": 928

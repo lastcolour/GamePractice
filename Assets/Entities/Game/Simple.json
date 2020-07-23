@@ -5,6 +5,9 @@
       "type": "RenderSimple",
       "id": 1,
       "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
         "size": {
           "x": 20,
           "y": 20

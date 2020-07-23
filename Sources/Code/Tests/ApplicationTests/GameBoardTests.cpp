@@ -3,10 +3,21 @@
 #include "Core/JSONNode.hpp"
 #include "Entity.hpp"
 #include "Logics/UIBox.hpp"
+#include "Game/ETGameElem.hpp"
 
 namespace {
 
-const char* TEST_CELL_OBJECT = "Game/Simple.json";
+const char* TEST_CELL_OBJECT = "Game/Cell.json";
+
+EBoardElemMoveState getElemMoveState(const BoardElement& elem) {
+    EBoardElemMoveState state = EBoardElemMoveState::Static;
+    ET_SendEventReturn(state, elem.entId, &ETGameBoardElem::ET_getMoveState);
+    return state;
+}
+
+void setElemLifeState(const BoardElement& elem, EBoardElemLifeState state) {
+    ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setLifeState, state);
+}
 
 } // namespace
 
@@ -45,7 +56,7 @@ public:
         for(int i = 0; i < lineLen; ++i) {
             auto elem = getElem(elemPt);
             assert(elem && "Try remove invalid elem");
-            elem->state = EBoardElemState::Void;
+            setElemLifeState(*elem, EBoardElemLifeState::Void);
             ++elemPt.y;
         }
     }
@@ -55,7 +66,7 @@ public:
         for(int i = 0; i < lineLen; ++i) {
             auto elem = getElem(elemPt);
             assert(elem && "Try remove invalid elem");
-            elem->state = EBoardElemState::Void;
+            setElemLifeState(*elem, EBoardElemLifeState::Void);
             ++elemPt.x;
         }
     }
@@ -77,7 +88,9 @@ public:
 
 protected:
 
-    void setElemType(BoardElement& elem) const override { elem.type = EBoardElemType::Blue; }
+    void setRandomElemType(BoardElement& elem) const override {
+        ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setType, EBoardElemType::Blue);
+    }
 };
 
 void GameBoardTests::SetUp() {
@@ -95,7 +108,7 @@ TEST_F(GameBoardTests, CheckInit) {
 
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 1u);
-    ASSERT_EQ(elems[0].state, EBoardElemState::Static);
+    ASSERT_EQ(getElemMoveState(elems[0]), EBoardElemMoveState::Static);
     ASSERT_EQ(elems[0].boardPt, Vec2i(0));
 }
 
@@ -126,7 +139,7 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        ASSERT_EQ(elem.state, EBoardElemState::Moving);
+        ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
         ASSERT_EQ(elem.boardPt, Vec2i(elem.movePt.x, elem.movePt.y + 1));
     }
 }
@@ -147,7 +160,7 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        ASSERT_EQ(elem.state, EBoardElemState::Moving);
+        ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
         if(elem.movePt == Vec2i(0)) {
             ASSERT_EQ(elem.boardPt, Vec2i(0, 3));
         } else if(elem.movePt == Vec2i(0, 1)) {
@@ -168,26 +181,26 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     auto elem1 = board->getElem(Vec2i(0, 0));
     ASSERT_TRUE(elem1);
-    elem1->state = EBoardElemState::Void;
+    setElemLifeState(*elem1, EBoardElemLifeState::Void);
 
     board->updateAfterRemoves();
 
     auto elem2 = board->getElem(Vec2i(0, 1));
     ASSERT_TRUE(elem2);
-    ASSERT_EQ(elem2->state, EBoardElemState::Moving);
+    ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
     ASSERT_EQ(elem2->movePt, Vec2i(0, 0));
 
     auto elem3 = board->getElem(Vec2i(0, 2));
     ASSERT_TRUE(elem3);
-    ASSERT_EQ(elem3->state, EBoardElemState::Moving);
+    ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
     ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
 
-    elem2->state = EBoardElemState::Void;
+    setElemLifeState(*elem2, EBoardElemLifeState::Void);
 
     board->updateAfterRemoves();
 
     ASSERT_TRUE(elem3);
-    ASSERT_EQ(elem3->state, EBoardElemState::Moving);
+    ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
     ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
 }
 

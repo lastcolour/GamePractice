@@ -128,6 +128,8 @@ bool Entity::removeLogic(EntityLogicId logicId) {
     if(it == logics.end()) {
         return false;
     }
+    auto logicPtr = static_cast<EntityLogic*>(it->logic.get());
+    logicPtr->deinit();
     logics.erase(it);
     return true;
 }

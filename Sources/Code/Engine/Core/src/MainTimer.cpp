@@ -3,7 +3,6 @@
 #include <cassert>
 
 MainTimer::MainTimer() :
-    lastTickT(),
     appTimeScale(1.f) {
 }
 
@@ -11,7 +10,7 @@ MainTimer::~MainTimer() {
 }
 
 bool MainTimer::init() {
-    lastTickT = ClockT::now();
+    frameStartT = TimePoint::GetNowTime();
     ETNode<ETMainThreadTimer>::connect(getEntityId());
     return true;
 }
@@ -26,13 +25,17 @@ void MainTimer::ET_setAppTimeScale(float newScale) {
 }
 
 void MainTimer::ET_onMainThreadStep() {
-    auto timeNow = ClockT::now();
-    auto timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - lastTickT).count();
-    auto tickDuration = static_cast<float>(timeDiff / 1000.f);
-    lastTickT = timeNow;
+    auto currT = TimePoint::GetNowTime();
+
+    auto tickDuration = currT.getSecondsElapsedFrom(frameStartT);
+    frameStartT = currT;
 
     ET_SendEvent(&ETSystemTimerEvents::ET_onSystemTick, tickDuration);
 
     auto appTickDuration = tickDuration * appTimeScale;
     ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, appTickDuration);
+}
+
+TimePoint MainTimer::ET_getFrameStartTime() const {
+    return frameStartT;
 }

@@ -31,6 +31,7 @@ RenderTextLogic::~RenderTextLogic() {
 
 void RenderTextLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderTextLogic>("RenderText")) {
+        classInfo->addBaseClass<RenderNode>();
         classInfo->addField("color", &RenderTextLogic::color);
         classInfo->addField("fontSize", &RenderTextLogic::fontScale);
         classInfo->addField("text", &RenderTextLogic::text);

@@ -16,8 +16,6 @@ struct BoardElement {
     Vec2i movePt;
     Vec2i boardPt;
     EntityId entId;
-    EBoardElemType type;
-    EBoardElemState state;
 };
 
 class GameBoardLogic : public EntityLogic,
@@ -39,9 +37,6 @@ public:
 
     // ETGameBoard
     void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) override;
-    void ET_setElemState(EntityId elemEntId, EBoardElemState newState) override;
-    EBoardElemState ET_getElemState(EntityId elemEntId) const override;
-    EBoardElemType ET_getElemType(EntityId elemEntId) const override;
     void ET_updateBoard() override;
     EntityId ET_getElemByPos(const Vec2i& pt) const override;
     EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const override;
@@ -76,7 +71,6 @@ protected:
     bool moveElem(BoardElement& elem, float dt);
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
-    ColorB getElemColor(EBoardElemType elemType) const;
     void updateAfterRemoves();
     void updateBoard();
     void setCellObject(const char* cellObjectName);
@@ -84,7 +78,7 @@ protected:
 
 protected:
 
-    virtual void setElemType(BoardElement& elem) const;
+    virtual void setRandomElemType(BoardElement& elem) const;
 
 protected:
 

@@ -10,9 +10,14 @@
 class RenderMaterial;
 class RenderGeometry;
 class RenderGraph;
+class ReflectContext;
 
 class RenderNode : public EntityLogic,
     public ETNode<ETRenderNode> {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
 public:
 
     RenderNode();

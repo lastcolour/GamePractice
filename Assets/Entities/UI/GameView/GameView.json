@@ -96,6 +96,9 @@
                         "type": "RenderColoredTexture",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "size": {
                             "x": 33,
                             "y": 33
@@ -158,13 +161,16 @@
                         "type": "RenderText",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.52173912525177,
+                          "fontSize": 0.5,
                           "text": "Time:"
                         }
                       }
@@ -217,13 +223,16 @@
                         "type": "RenderText",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.52173912525177,
+                          "fontSize": 0.5,
                           "text": "60.0"
                         }
                       },
@@ -345,13 +354,16 @@
                         "type": "RenderText",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.52173912525177,
+                          "fontSize": 0.5,
                           "text": "Score:"
                         }
                       }
@@ -406,6 +418,9 @@
                         "type": "RenderColoredTexture",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "size": {
                             "x": 33,
                             "y": 33
@@ -468,13 +483,16 @@
                         "type": "RenderText",
                         "id": 2,
                         "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 0,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.52173912525177,
+                          "fontSize": 0.5,
                           "text": "0"
                         }
                       },

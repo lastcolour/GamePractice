@@ -17,6 +17,7 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 
 void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderSimpleLogic>("RenderSimple")) {
+        classInfo->addBaseClass<RenderNode>();
         classInfo->addField("size", &RenderSimpleLogic::size);
         classInfo->addField("color", &RenderSimpleLogic::color);
     }

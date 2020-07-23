@@ -4,8 +4,10 @@
 #include "Platform/OpenGL.hpp"
 
 #include <algorithm>
+#include <cassert>
 
-RenderGraph::RenderGraph() {
+RenderGraph::RenderGraph() :
+    needReorder(false) {
 }
 
 RenderGraph::~RenderGraph() {
@@ -34,6 +36,8 @@ void RenderGraph::removeChild(RenderNode* node) {
         std::swap(*it, children.back());
         children.pop_back();
         needReorder = true;
+    } else {
+        assert(false && "Can't find child to remove");
     }
 }
 

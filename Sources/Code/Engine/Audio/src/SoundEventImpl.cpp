@@ -1,14 +1,16 @@
 #include "SoundEventImpl.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Core/ETTimer.hpp"
 
 #include <cassert>
 
-SoundEventImpl::SoundEventImpl(float volumeVal, float nextDelayVa, Buffer& data) :
+SoundEventImpl::SoundEventImpl(float volumeVal, float nextDelayVal, Buffer& data) :
     soundData(data),
     volume(volumeVal),
-    nextDelay(nextDelayVa),
-    lastPlayTime(-1.f) {
+    nextDelay(nextDelayVal) {
+
+    assert(soundData && "Invalid sound data");
 }
 
 SoundEventImpl::~SoundEventImpl() {
@@ -38,9 +40,11 @@ Buffer& SoundEventImpl::getData() {
 }
 
 void SoundEventImpl::emit() {
-    assert(soundData && "Invalid sound data");
-    if(lastPlayTime < 0.f) {
-        lastPlayTime = -1.f;
+    TimePoint frameStartT;
+    ET_SendEventReturn(frameStartT, &ETMainThreadTimer::ET_getFrameStartTime);
+    if(frameStartT.getSecondsElapsedFrom(lastPlayTime) < (nextDelay + 0.001f)) {
+        return;
     }
+    lastPlayTime = frameStartT;
     ET_SendEvent(&ETSoundPlayManager::ET_play, this);
 }

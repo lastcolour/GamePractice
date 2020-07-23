@@ -42,7 +42,7 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
         return;
     }
 
-    if(increaseSound) {
+    if(increaseSound && targetValue > currentValue) {
         increaseSound->emit();
     }
 

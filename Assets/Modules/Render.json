@@ -1,6 +1,6 @@
 {
     "RenderConfig":{
-        "defaultFont":"Render/Fonts/Shanti-Regular.ttf",
+        "defaultFont":"Render/Fonts/OpenSans-Regular.ttf",
         "defualtFontSize":48
     }
 }

@@ -2,6 +2,15 @@
 #include "Render/ETRenderManager.hpp"
 #include "RenderMaterial.hpp"
 #include "RenderGraph/RenderGraph.hpp"
+#include "Reflect/ReflectContext.hpp"
+
+void RenderNode::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<RenderNode>("RenderNode")) {
+        classInfo->addField("isVisible", &RenderNode::isVisible);
+        classInfo->addField("alpha", &RenderNode::alpha);
+        classInfo->addField("drawPriority", &RenderNode::drawPriority);
+    }
+}
 
 RenderNode::RenderNode() :
     renderGraph(nullptr),

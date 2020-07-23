@@ -1,13 +1,4 @@
 {
   "children": [],
-  "logics": [
-    {
-      "type": "GameScoreUpdater",
-      "id": 1,
-      "data": {
-        "increaseSpeed": 10,
-        "increseSound": ""
-      }
-    }
-  ]
+  "logics": []
 }
