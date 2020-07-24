@@ -38,10 +38,10 @@ void UIViewAppearAnimation::deinit() {
     if(state == State::None) {
         return;
     }
-    ET_onAppTick(1024.f);
+    ET_onUITick(1024.f);
 }
 
-void UIViewAppearAnimation::ET_onAppTick(float dt) {
+void UIViewAppearAnimation::ET_onUITick(float dt) {
     auto elemsInProgress = elements.size();
     animDuration += dt;
     auto resAnimDuration = animDuration;
@@ -89,7 +89,7 @@ void UIViewAppearAnimation::ET_onAppTick(float dt) {
         }
         ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
         ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
-        ETNode<ETAppTimerEvents>::disconnect();
+        ETNode<ETUITimerEvents>::disconnect();
         state = State::None;
     }
 }
@@ -116,7 +116,7 @@ void UIViewAppearAnimation::updateTransform(UIViewAppearAnimationElement& elem, 
 void UIViewAppearAnimation::ET_appear() {
     animDuration = 0.f;
     state = State::Appear;
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
     ET_SendEvent(getEntityId(), &ETUIElement::ET_show);
 
     for(auto& elem : elements) {
@@ -129,13 +129,13 @@ void UIViewAppearAnimation::ET_appear() {
         elem.isHidded = true;
     }
     ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
 }
 
 void UIViewAppearAnimation::ET_disappear() {
     animDuration = 0.f;
     state = State::Disappear;
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
     for(auto& elem : elements) {
         if(!elem.elemId.isValid()) {
             LogWarning("[UIViewAppearAnimation::ET_disappear] Invalid element's id");
@@ -151,5 +151,5 @@ void UIViewAppearAnimation::ET_disappear() {
         elem.isHidded = false;
     }
     ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
 }

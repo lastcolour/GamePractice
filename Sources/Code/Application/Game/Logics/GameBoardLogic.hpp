@@ -7,6 +7,8 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Entity/ETEntity.hpp"
+#include "Game/ETGame.hpp"
+#include "Core/ETPrimitives.hpp"
 
 #include <vector>
 #include <memory>
@@ -46,6 +48,7 @@ public:
     const AABB2Di& ET_getBoardBox() const override;
     Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const override;
     void ET_setUIElement(EntityId rootUIElementId) override;
+    bool ET_isAllElemStatic() const override;
 
     // ETUIElementEvents
     void ET_onBoxResized(const AABB2Di& newAabb) override;

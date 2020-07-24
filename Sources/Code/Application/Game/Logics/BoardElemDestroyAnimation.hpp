@@ -6,6 +6,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Math/Transform.hpp"
+#include "Game/ETGame.hpp"
 
 class ReflectContext;
 class SoundEvent;

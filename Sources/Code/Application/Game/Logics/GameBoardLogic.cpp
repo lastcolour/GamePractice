@@ -341,9 +341,29 @@ void GameBoardLogic::ET_onGameTick(float dt) {
         }
     }
     if(doUpdate) {
+        doUpdate = false;
         updateBoard();
+        if(ET_isAllElemStatic()) {
+            ET_SendEvent(&ETGameBoardEvents::ET_onAllElemsStatic);
+        }
     }
-    doUpdate = false;
+}
+
+bool GameBoardLogic::ET_isAllElemStatic() const {
+    if(doUpdate) {
+        return false;
+    }
+    for(auto& elem : elements) {
+        auto lifeState = getElemLifeState(elem.entId);
+        if(lifeState != EBoardElemLifeState::Alive) {
+            return false;
+        }
+        auto moveState = getElemMoveState(elem.entId);
+        if(moveState != EBoardElemMoveState::Static) {
+            return false;
+        }
+    }
+    return true;
 }
 
 const Vec2i& GameBoardLogic::ET_getBoardSize() const {

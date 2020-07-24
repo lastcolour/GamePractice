@@ -1,6 +1,5 @@
 #include "Application.hpp"
 #include "Core/ETApplication.hpp"
-#include "Core/ETTimer.hpp"
 #include "Core/CoreModule.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
@@ -9,6 +8,9 @@
 #include "Laucher/GameLaucherModule.hpp"
 #include "Game/GameModule.hpp"
 #include "Platform/PlatformModule.hpp"
+#include "Parallel/TasksRunner.hpp"
+#include "Parallel/RunTask.hpp"
+#include "Core/ETTasks.hpp"
 
 Application::Application() :
     etSystem(new ETSystem()) {
@@ -58,11 +60,42 @@ void Application::deinit() {
 }
 
 void Application::mainLoop() {
-    bool needRun = true;
-    while(needRun) {
-        ET_SendEvent(&ETMainThreadTimer::ET_onMainThreadStep);
+    RunTask inputUpdate([](){
+        ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
+    });
+    inputUpdate.setType(RunTaskType::MainThreadOnly);
+    RunTask assetsUpdate([](){
+        ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
+    });
+    assetsUpdate.setType(RunTaskType::NoInMainThread);
+    RunTask entitiesUpdate([](){
+        ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
+    });
+    RunTask uiUpdate([](){
+        ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
+    });
+    RunTask soundUpdate([](){
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+    });
+    RunTask gameUpdate([](){
+        ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
+    });
+    RunTask renderUpdate([](){
+        // ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
+    });
+    renderUpdate.setType(RunTaskType::MainThreadOnly);
 
-        needRun = false;
+    TasksRunner runner;
+    runner.addTask(inputUpdate);
+    runner.addTask(soundUpdate);
+    runner.addTask(assetsUpdate);
+    runner.addTask(entitiesUpdate);
+    runner.addTask(uiUpdate);
+    runner.addTask(gameUpdate);
+    runner.addTask(renderUpdate);
+    runner.runUntil(4, [](){
+        bool needRun = false;
         ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);
-    }
+        return needRun;
+    });
 }

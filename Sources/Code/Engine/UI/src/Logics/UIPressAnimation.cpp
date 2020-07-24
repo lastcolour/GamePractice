@@ -39,7 +39,7 @@ void UIPressAnimation::ET_start() {
     currDuration = 0.f;
     isReversed = false;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
     if(soundEvent) {
         soundEvent->emit();
     }
@@ -49,15 +49,15 @@ void UIPressAnimation::ET_startReverse() {
     currDuration = 0.f;
     isReversed = true;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
 }
 
 void UIPressAnimation::ET_pause() {
-    ETNode<ETAppTimerEvents>::disconnect();
+    ETNode<ETUITimerEvents>::disconnect();
 }
 
 void UIPressAnimation::ET_resume() {
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETUITimerEvents>::connect(getEntityId());
 }
 
 void UIPressAnimation::ET_reverse() {
@@ -72,7 +72,7 @@ float UIPressAnimation::ET_getDuration() const {
     return inDuration + outDuration;
 }
 
-void UIPressAnimation::ET_onAppTick(float dt) {
+void UIPressAnimation::ET_onUITick(float dt) {
     currDuration += dt;
     if(currDuration < inDuration) {
         auto currInTime = currDuration;
@@ -89,7 +89,7 @@ void UIPressAnimation::ET_onAppTick(float dt) {
         currTm.scale *= currScale;
         ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, currTm);
     } else {
-        ETNode<ETAppTimerEvents>::disconnect();
+        ETNode<ETUITimerEvents>::disconnect();
         ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
         ET_SendEvent(getEntityId(), &ETUIAnimationEvents::ET_onAnimationEnd);
     }

@@ -1,15 +1,10 @@
 #ifndef __ET_GAME_INTERFACES_HPP__
 #define __ET_GAME_INTERFACES_HPP__
 
+#include "Core/Core.hpp"
 #include "Render/Color.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Math/Vector.hpp"
 #include "Math/AABB.hpp"
-
-struct ETGameTick {
-    virtual ~ETGameTick() = default;
-    virtual void ET_onGameTick(float dt) = 0;
-};
 
 struct ETGameEndTimerUpdater {
     virtual ~ETGameEndTimerUpdater() = default;
@@ -29,7 +24,7 @@ struct ETGameScoreUpdater {
 
 struct ETGameBoardElemDestoryEvents {
     virtual ~ETGameBoardElemDestoryEvents() = default;
-    virtual void ET_onElemsDestroyed(int count) = 0;
+    virtual void ET_onElemsDestroyed(EntityId elemId) = 0;
 };
 
 struct ETGameBoard {
@@ -44,16 +39,12 @@ struct ETGameBoard {
     virtual int ET_getCellSize() const = 0;
     virtual Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const = 0;
     virtual void ET_setUIElement(EntityId rootUIElementId) = 0;
+    virtual bool ET_isAllElemStatic() const = 0;
 };
 
-struct ETGameConfig {
-    virtual ~ETGameConfig() = default;
-    virtual bool ET_isSoundEnabled() const = 0;
-    virtual void ET_setSoundEnabled(bool flag) = 0;
-    virtual bool ET_isVibrationEnabled() const = 0;
-    virtual void ET_setVibrationEnabled(bool flag) = 0;
-    virtual int ET_getHighScore() const = 0;
-    virtual void ET_setHighScore(int newHighScore) = 0;
+struct ETGameBoardEvents {
+    virtual ~ETGameBoardEvents() = default;
+    virtual void ET_onAllElemsStatic() = 0;
 };
 
 struct ETGameEndTimer {
@@ -68,16 +59,16 @@ struct ETGameEndTimerEvents {
     virtual void ET_onGameTimeOut() = 0;
 };
 
-struct ETGameTimer {
-    virtual ~ETGameTimer() = default;
-    virtual void ET_pauseTimer() = 0;
-    virtual void ET_resumeTimer() = 0;
-    virtual bool ET_isTimerPaused() const = 0;
+enum class ObjectiveType {
+    Fail = 0,
+    OneStar,
+    TwoStars,
+    ThreeStars
 };
 
-struct ETGameTimerEvents {
-    virtual ~ETGameTimerEvents() = default;
-    virtual void ET_onGameTick(float dt) = 0;
+struct ETGameObjectiveEvents {
+    virtual ~ETGameObjectiveEvents() = default;
+    virtual void ET_onObjectiveCompleted(ObjectiveType type) = 0;
 };
 
 struct EndGameResult {
@@ -86,24 +77,6 @@ struct EndGameResult {
 
     EndGameResult() :
         score(0), newHighScore(false) {}
-};
-
-enum class EGameState {
-    PreGame = 0,
-    InGame,
-    PostGame,
-    None
-};
-
-struct ETGameStateManager {
-    virtual ~ETGameStateManager() = default;
-    virtual void ET_startGame() = 0;
-    virtual void ET_pauseGame() = 0;
-    virtual void ET_resumeGame() = 0;
-    virtual void ET_finishGame() = 0;
-    virtual bool ET_isGamePaused() const = 0;
-    virtual bool ET_isInGameState() const = 0;
-    virtual void ET_changeState(EGameState newGameState) = 0;
 };
 
 struct ETGameEndResult {
@@ -121,8 +94,8 @@ struct ETGameBoardAppearAnimationEvents {
     virtual void ET_onBoardAppeared() = 0;
 };
 
-struct ETGAmeBoardInteractionLogic {
-    virtual ~ETGAmeBoardInteractionLogic() = default;
+struct ETGameBoardInteractionLogic {
+    virtual ~ETGameBoardInteractionLogic() = default;
     virtual void ET_allowInteraction(bool flag) = 0;
     virtual bool ET_canInteract() const = 0;
 };

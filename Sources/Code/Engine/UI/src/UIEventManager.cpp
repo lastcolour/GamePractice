@@ -1,6 +1,6 @@
 #include "UIEventManager.hpp"
 #include "Core/ETLogger.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGame.hpp"
 
 UIEventManager::UIEventManager() {
 }
@@ -72,8 +72,7 @@ void UIEventManager::ET_onEvent(UIEventType eventType) {
             if(activeViewType != UIViewType::Game) {
                 return;
             }
-            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
-            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
             break;
         }
         default: {

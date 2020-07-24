@@ -8,15 +8,27 @@ PostGameState::PostGameState() :
 PostGameState::~PostGameState() {
 }
 
-void PostGameState::onEnter(EntityId gameEntityId) {
-    ETNode<ETGameEndResult>::connect(gameEntityId);
-    ETNode<ETGameTimerEvents>::connect(gameEntityId);
+void PostGameState::onEnter(EntityId gameId) {
+    gameEntityId = gameId;
+    ETNode<ETGameEndResult>::connect(gameId);
+    bool isAllElemStatic = false;
+    ET_SendEventReturn(isAllElemStatic, &ETGameBoard::ET_isAllElemStatic);
+    if(!isAllElemStatic) {
+        ETNode<ETGameBoardEvents>::connect(gameId);
+    } else {
+        ET_onAllElemsStatic();
+    }
+}
+
+void PostGameState::ET_onAllElemsStatic() {
     postGameTime = 1.f;
+    ETNode<ETGameTimerEvents>::connect(gameEntityId);
 }
 
 void PostGameState::onLeave() {
     ETNode<ETGameTimerEvents>::disconnect();
     setupEndResult();
+    gameEntityId = InvalidEntityId;
 }
 
 void PostGameState::ET_onGameTick(float dt) {

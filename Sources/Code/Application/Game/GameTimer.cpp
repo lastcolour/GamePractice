@@ -10,13 +10,13 @@ GameTimer::~GameTimer() {
 
 bool GameTimer::init() {
     ETNode<ETGameTimer>::connect(getEntityId());
-    ETNode<ETAppTimerEvents>::connect(getEntityId());
+    ETNode<ETGameUpdateTask>::connect(getEntityId());
     return true;
 }
 
 void GameTimer::deinit() {
     ETNode<ETGameTimer>::disconnect();
-    ETNode<ETAppTimerEvents>::disconnect();
+    ETNode<ETGameUpdateTask>::disconnect();
 }
 
 void GameTimer::ET_pauseTimer() {
@@ -28,10 +28,11 @@ void GameTimer::ET_resumeTimer() {
     skipUpdate = true;
 }
 
-void GameTimer::ET_onAppTick(float dt) {
+void GameTimer::ET_updateGame() {
     if(isPaused) {
         return;
     }
+    float dt = 0.f;
     if(skipUpdate) {
         dt = 0.f;
         skipUpdate = false;

@@ -4,12 +4,11 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETAssets.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Core/ETTimer.hpp"
+#include "Core/ETTasks.hpp"
 
 class AssetsCacheManager : SystemLogic,
-    public ETNode<ETAssetsCacheManager>,
-    public ETNode<ETSystemTimerEvents>
-{
+    public ETNode<ETAssetsUpdateTask>,
+    public ETNode<ETAssetsCacheManager> {
 private:
 
     struct AssetCacheNode {
@@ -37,8 +36,8 @@ public:
     float ET_getCacheLifetime() const override;
     void ET_clear() override;
 
-    // ETSystemTimerEvents
-    void ET_onSystemTick(float dt) override;
+    // ETAssetsUpdateTask
+    void ET_updateAssets() override;
 
 private:
 

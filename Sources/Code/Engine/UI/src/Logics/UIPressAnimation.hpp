@@ -4,7 +4,7 @@
 #include "UI/ETUIAnimation.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Core/ETTimer.hpp"
+#include "UI/ETUITimer.hpp"
 #include "Math/Transform.hpp"
 
 class SoundEvent;
@@ -12,7 +12,7 @@ class ReflectContext;
 
 class UIPressAnimation : public EntityLogic,
     public ETNode<ETUIAnimation>,
-    public ETNode<ETAppTimerEvents> {
+    public ETNode<ETUITimerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -35,8 +35,8 @@ public:
     bool ET_isReversed() const override;
     float ET_getDuration() const override;
 
-    // ETAppTimerEvents
-    void ET_onAppTick(float dt) override;
+    // ETUITimerEvents
+    void ET_onUITick(float dt) override;
 
 private:
 

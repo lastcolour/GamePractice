@@ -24,6 +24,7 @@ public:
     std::string mainView;
     std::string gameView;
     std::string backgroundView;
+    std::string endGameView;
 };
 
 #endif /* __UI_CONFIG_HPP__ */

@@ -31,13 +31,28 @@
       "type": "GameEndTimer",
       "id": 6,
       "data": {
-        "gameDuration": 60.0
+        "gameDuration": 15.0
       }
     },
     {
       "type": "GameScore",
       "id": 7,
       "data": {}
+    },
+    {
+      "type": "ScoreObjective",
+      "id": 8,
+      "data": {
+        "oneStar": {
+          "minScore": 50
+        },
+        "twoStars": {
+          "minScore": 100
+        },
+        "threeStars": {
+          "minScore": 150
+        }
+      }
     }
   ]
 }

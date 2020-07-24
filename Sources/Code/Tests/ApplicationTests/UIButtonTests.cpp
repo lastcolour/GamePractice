@@ -155,7 +155,7 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 0u);
 
-    ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, animDuration + 0.001f);
+    ET_SendEvent(&ETUITimerEvents::ET_onUITick, animDuration + 0.001f);
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
 
     ASSERT_EQ(buttonListener->eventQueue[0], UIEventType::None);

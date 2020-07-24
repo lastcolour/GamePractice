@@ -27,8 +27,8 @@ void GameScoreLogic::ET_resetScore() {
     ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, 0);
 }
 
-void GameScoreLogic::ET_onElemsDestroyed(int count) {
-    score += count;
+void GameScoreLogic::ET_onElemsDestroyed(EntityId elemId) {
+    score += 1;
     ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, score);
 }
 

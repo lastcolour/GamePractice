@@ -1,9 +1,9 @@
 #include "Core/CoreModule.hpp"
-#include "MainTimer.hpp"
 #include "AppRunState.hpp"
 #include "AssetsCacheManager.hpp"
 #include "ModuleSharedManager.hpp"
 #include "Reflect/ClassInfoManager.hpp"
+#include "AsyncAssetsLoader.hpp"
 #include "Platform/PlatformLogger.hpp"
 
 CoreModule::CoreModule() :
@@ -16,7 +16,7 @@ CoreModule::LogicsContainerPtrT CoreModule::createSystemLogics() const {
             ClassInfoManager,
             ModuleSharedManager,
             PlatformLogger,
-            MainTimer,
+            AsyncAssetsLoader,
             AssetsCacheManager>()
         );
     return container;

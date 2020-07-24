@@ -5,7 +5,7 @@
 #include "Game/States/PreGameState.hpp"
 #include "Game/States/InGameState.hpp"
 #include "Game/States/PostGameState.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGame.hpp"
 
 class GameStateManager : public SystemLogic,
     public ETNode<ETGameStateManager> {

@@ -4,6 +4,7 @@
 #include "Core/ETAssets.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
+#include "Core/ETTasks.hpp"
 
 #include <filesystem>
 

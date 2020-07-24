@@ -5,6 +5,7 @@
 #include "Platform/ETSurface.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGame.hpp"
 #include "Math/Transform.hpp"
 
 class ReflectContext;
@@ -12,7 +13,7 @@ class SoundEvent;
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
-    public ETNode<ETGAmeBoardInteractionLogic>,
+    public ETNode<ETGameBoardInteractionLogic>,
     public ETNode<ETGameTimerEvents>  {
 public:
 
@@ -31,7 +32,7 @@ public:
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
     void ET_onButton(EActionType actionType, EButtonId buttonId) override { (void)actionType; (void)buttonId; }
 
-    // ETGAmeBoardInteractionLogic
+    // ETGameBoardInteractionLogic
     void ET_allowInteraction(bool flag) override;
     bool ET_canInteract() const override;
 

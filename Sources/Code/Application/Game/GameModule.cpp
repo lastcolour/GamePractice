@@ -13,6 +13,7 @@
 #include "Game/Logics/GameBoardSpawner.hpp"
 #include "Game/Logics/BoardElemDestroyAnimation.hpp"
 #include "Game/Logics/BoardElemSelectAnimation.hpp"
+#include "Game/Logics/ScoreObjective.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
@@ -40,4 +41,5 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameBoardSpawner>();
     logicsRegister.registerLogic<BoardElemDestroyAnimation>();
     logicsRegister.registerLogic<BoardElemSelectAnimation>();
+    logicsRegister.registerLogic<ScoreObjective>();
 }

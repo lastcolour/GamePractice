@@ -2,6 +2,8 @@
 #define __GAME_BOARD_APPEAR_ANIMATION_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
+#include "Game/ETGame.hpp"
+#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 class ReflectContext;

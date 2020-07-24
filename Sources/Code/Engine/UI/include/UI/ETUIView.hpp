@@ -16,6 +16,7 @@ enum class UIViewType {
     None = 0,
     Main,
     Game,
+    EndGame,
     Background
 };
 

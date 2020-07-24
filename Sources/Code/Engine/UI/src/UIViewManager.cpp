@@ -48,6 +48,10 @@ EntityId UIViewManager::getViewId(UIViewType viewType) {
             viewName = uiConfig->backgroundView.c_str();
             break;
         }
+        case UIViewType::EndGame: {
+            viewName = uiConfig->endGameView.c_str();
+            break;
+        }
         case UIViewType::None: {
             [[fallthrough]];
         }

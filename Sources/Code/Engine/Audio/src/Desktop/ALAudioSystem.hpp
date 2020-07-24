@@ -2,7 +2,7 @@
 #define __AL_AUDIO_SYSTEM_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETTimer.hpp"
+#include "Core/ETTasks.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "MixGraph/MixGraph.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
@@ -12,7 +12,7 @@ struct ALCcontext;
 class ALSoundSource;
 
 class ALAudioSystem : public SystemLogic,
-    public ETNode<ETSystemTimerEvents>,
+    public ETNode<ETSoundUpdateTask>,
     public ETNode<ETSoundPlayManager> {
 public:
 
@@ -23,8 +23,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETSystemTimerEvents
-    void ET_onSystemTick(float dt) override;
+    // ETSoundUpdateTask
+    void ET_updateSound() override;
 
     // ETSoundPlayManager
     bool ET_play(SoundStream* soundStream) override;

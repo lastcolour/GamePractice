@@ -1,5 +1,6 @@
 #include "Entity/EntityModule.hpp"
 #include "EntityManager.hpp"
+#include "AsyncEntityManager.hpp"
 
 EntityModule::EntityModule() :
     SystemModule("Entity") {}
@@ -7,7 +8,8 @@ EntityModule::EntityModule() :
 EntityModule::LogicsContainerPtrT EntityModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
-            EntityManager>()
+            EntityManager,
+            AsyncEntityManager>()
         );
     return container;
 }

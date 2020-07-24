@@ -3,6 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Core/ETPrimitives.hpp"
 
 class ReflectContext;
 
@@ -23,7 +24,7 @@ public:
     void deinit() override;
 
     // ETGameBoardElemDestoryEvents
-    void ET_onElemsDestroyed(int count) override;
+    void ET_onElemsDestroyed(EntityId elemId) override;
 
     // ETGameScore
     void ET_resetScore() override;

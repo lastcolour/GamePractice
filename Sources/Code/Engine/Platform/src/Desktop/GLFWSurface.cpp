@@ -134,7 +134,7 @@ bool GLFWSurface::init() {
     // ET_show();
 
     ETNode<ETSurface>::connect(getEntityId());
-    ETNode<ETSystemTimerEvents>::connect(getEntityId());
+    ETNode<ETInputUpdateTask>::connect(getEntityId());
 
     return true;
 }
@@ -143,8 +143,7 @@ void GLFWSurface::deinit() {
     ETNode<ETSurface>::disconnect();
 }
 
-void GLFWSurface::ET_onSystemTick(float dt) {
-    (void)dt;
+void GLFWSurface::ET_updateInput() {
     glfwPollEvents();
     if(window != nullptr && glfwWindowShouldClose(window)) {
         ET_SendEvent(&ETAppRunStateEvents::ET_onTerminate);
@@ -209,15 +208,6 @@ GLContextType GLFWSurface::ET_getGLContextType() const {
         return GLContextType::ES30;
     }
     return GLContextType::None;
-}
-
-void GLFWSurface::ET_setEditorMode(bool flag) {
-    editorMode = flag;
-    if(editorMode) {
-        ETNode<ETSystemTimerEvents>::disconnect();
-    } else {
-        ETNode<ETSystemTimerEvents>::connect(getEntityId());
-    }
 }
 
 void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) {

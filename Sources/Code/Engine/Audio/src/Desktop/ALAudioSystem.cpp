@@ -54,7 +54,7 @@ bool ALAudioSystem::init() {
         LogError("[ALAudioSystem::init] Can't init mix graph");
         return false;
     }
-    ETNode<ETSystemTimerEvents>::connect(getEntityId());
+    ETNode<ETSoundUpdateTask>::connect(getEntityId());
     ETNode<ETSoundPlayManager>::connect(getEntityId());
     return true;
 }
@@ -141,7 +141,7 @@ bool ALAudioSystem::initAlSource() {
     return true;
 }
 
-void ALAudioSystem::ET_onSystemTick(float dt) {
+void ALAudioSystem::ET_updateSound() {
     if(!alSourcePlaying) {
         alSourcePlay(alSourceId);
         alSourcePlaying = true;

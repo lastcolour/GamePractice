@@ -2,11 +2,12 @@
 #define __GAME_TIMER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETTimer.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Core/ETTasks.hpp"
+#include "Game/ETGame.hpp"
+#include "Core/ETPrimitives.hpp"
 
 class GameTimer : public SystemLogic,
-    public ETNode<ETAppTimerEvents>,
+    public ETNode<ETGameUpdateTask>,
     public ETNode<ETGameTimer> {
 public:
 
@@ -17,8 +18,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETAppTimerEvents
-    void ET_onAppTick(float dt) override;
+    // ETGameUpdateTask
+    void ET_updateGame() override;
 
     // ETGameTimer
     void ET_pauseTimer() override;

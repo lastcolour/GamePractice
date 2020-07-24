@@ -4,8 +4,10 @@
 #include <cassert>
 
 namespace {
-    const float DEFAULT_LIFETIME = 5.f;
-}
+
+const float DEFAULT_LIFETIME = 5.f;
+
+} // namespace
 
 AssetsCacheManager::AssetsCacheManager() :
     assetsLifetime(DEFAULT_LIFETIME) {
@@ -16,16 +18,17 @@ AssetsCacheManager::~AssetsCacheManager() {
 
 bool AssetsCacheManager::init() {
     ETNode<ETAssetsCacheManager>::connect(getEntityId());
-    ETNode<ETSystemTimerEvents>::connect(getEntityId());
+    ETNode<ETAssetsUpdateTask>::connect(getEntityId());
     return true;
 }
 
 void AssetsCacheManager::deinit() {
     ETNode<ETAssetsCacheManager>::disconnect();
-    ETNode<ETSystemTimerEvents>::disconnect();
+    ETNode<ETAssetsUpdateTask>::disconnect();
 }
 
-void AssetsCacheManager::ET_onSystemTick(float dt) {
+void AssetsCacheManager::ET_updateAssets() {
+    float dt = 0.f;
     auto it = assetsCacheMap.begin();
     while(it != assetsCacheMap.end()) {
         AssetCacheNode& node = it->second;

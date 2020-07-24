@@ -2,7 +2,7 @@
 #define __UI_VIEW_APPEAR_ANIMATION_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETTimer.hpp"
+#include "UI/ETUITimer.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUIView.hpp"
 #include "Logics/UIViewAppearAnimationElement.hpp"
@@ -12,7 +12,7 @@
 class ReflectContext;
 
 class UIViewAppearAnimation : public EntityLogic,
-    public ETNode<ETAppTimerEvents>,
+    public ETNode<ETUITimerEvents>,
     public ETNode<ETUIViewAppearAnimation> {
 public:
 
@@ -27,8 +27,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETAppTimerEvents
-    void ET_onAppTick(float dt) override;
+    // ETUITimerEvents
+    void ET_onUITick(float dt) override;
 
     // ETUIViewAppearAnimation
     void ET_appear() override;

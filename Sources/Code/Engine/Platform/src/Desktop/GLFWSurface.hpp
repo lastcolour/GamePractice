@@ -2,9 +2,9 @@
 #define __GLFWS_SURFACE_HPP__
 
 #include "Core/ETPrimitives.hpp"
-#include "Core/ETTimer.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Core/SystemLogic.hpp"
+#include "Core/ETTasks.hpp"
 
 #include <memory>
 #include <vector>
@@ -14,7 +14,7 @@ struct GLFWwindow;
 
 class GLFWSurface : public SystemLogic,
     public ETNode<ETSurface>,
-    public ETNode<ETSystemTimerEvents> {
+    public ETNode<ETInputUpdateTask> {
 public:
 
     GLFWSurface();
@@ -33,10 +33,9 @@ public:
     GLContextType ET_getGLContextType() const override;
     bool ET_isVisible() const override;
     bool ET_isValid() const override;
-    void ET_setEditorMode(bool flag) override;
 
-    // ETSystemTimerEvents
-    void ET_onSystemTick(float dt) override;
+    // ETInputUpdateTask
+    void ET_updateInput() override;
 
     const GLFWwindow* getWindow() const;
 

@@ -4,6 +4,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Audio/ETSound.hpp"
 #include "Game/ETGameElem.hpp"
+#include "Render/ETRenderNode.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -31,7 +32,7 @@ void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
 }
 
 bool GameBoardInteractionLogic::init() {
-    ETNode<ETGAmeBoardInteractionLogic>::connect(getEntityId());
+    ETNode<ETGameBoardInteractionLogic>::connect(getEntityId());
     ETNode<ETInputEvents>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     return true;
@@ -143,6 +144,12 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
         auto& task = *it;
         if(task.duration > switchDuration) {
             ET_SendEvent(getEntityId(), &ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
+
+            int drawPriority = 0;
+            ET_SendEventReturn(drawPriority, task.firstId, &ETRenderNode::ET_getDrawPriority);
+            drawPriority -= 1;
+            ET_SendEvent(task.firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
+
             ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Static);
             ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Static);
             isNeedUpdateBoard = true;
@@ -166,6 +173,11 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
 
     SwitchTask task;
     task.duration = 0.f;
+
+    int drawPriority = 0;
+    ET_SendEventReturn(drawPriority, firstId, &ETRenderNode::ET_getDrawPriority);
+    drawPriority += 1;
+    ET_SendEvent(firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
 
     task.firstId = firstId;
     ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getTransform);

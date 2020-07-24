@@ -1,7 +1,6 @@
 #include "SoundEventImpl.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Core/ETTimer.hpp"
 
 #include <cassert>
 
@@ -41,7 +40,7 @@ Buffer& SoundEventImpl::getData() {
 
 void SoundEventImpl::emit() {
     TimePoint frameStartT;
-    ET_SendEventReturn(frameStartT, &ETMainThreadTimer::ET_getFrameStartTime);
+    // ET_SendEventReturn(frameStartT, &ETMainThreadTimer::ET_getFrameStartTime);
     if(frameStartT.getSecondsElapsedFrom(lastPlayTime) < (nextDelay + 0.001f)) {
         return;
     }

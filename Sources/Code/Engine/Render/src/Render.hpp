@@ -2,7 +2,7 @@
 #define __RENDER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETTimer.hpp"
+#include "Core/ETTasks.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
@@ -11,7 +11,7 @@
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
     public ETNode<ETRender>,
-    public ETNode<ETSystemTimerEvents>,
+    public ETNode<ETRenderUpdateTask>,
     public ETNode<ETRenderContextEvents> {
 public:
 
@@ -38,8 +38,8 @@ public:
     void ET_onSurfaceGainFocus() override {}
     void ET_onSurfaceResized(const Vec2i& size) override;
 
-    // ETSystemTimerEvents
-    void ET_onSystemTick(float dt) override;
+    // ETRenderUpdateTask
+    void ET_updateRender() override;
 
     // ETRenderContextEvents
     void ET_onContextSuspended() override;

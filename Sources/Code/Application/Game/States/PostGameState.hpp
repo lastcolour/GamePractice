@@ -3,9 +3,11 @@
 
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGame.hpp"
 
 class PostGameState : public ETNode<ETGameEndResult>,
-    public ETNode<ETGameTimerEvents> {
+    public ETNode<ETGameTimerEvents>,
+    public ETNode<ETGameBoardEvents> {
 public:
 
     PostGameState();
@@ -19,6 +21,9 @@ public:
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
+
+    // ETGameBoardEvents
+    void ET_onAllElemsStatic() override;
 
 private:
 

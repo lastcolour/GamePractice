@@ -6,6 +6,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Math/Vector.hpp"
+#include "Game/ETGame.hpp"
 
 class ReflectContext;
 
@@ -53,7 +54,6 @@ private:
     float minForegroundScale;
     State state;
     Vec2i startSize;
-    //float backgroundStartAlpha;
     EntityId backgroundId;
 };
 

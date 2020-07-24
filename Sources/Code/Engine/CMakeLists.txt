@@ -5,6 +5,7 @@ project(Engine CXX)
 include(dependicies.cmake)
 
 add_subdirectory(Core)
+add_subdirectory(Parallel)
 add_subdirectory(Platform)
 add_subdirectory(Math)
 add_subdirectory(Reflect)
@@ -25,6 +26,7 @@ include_directories(
     ${MATH_INCLUDE_DIR}
     ${REFLECT_INCLUDE_DIR}
     ${PLATFORM_INCLUDE_DIR}
+    ${PARALLEL_INCLUDE_DIR}
     ${ENGINE_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME} STATIC
@@ -34,6 +36,7 @@ add_library(${PROJECT_NAME} STATIC
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
     Core
+    Parallel
     Math
     Reflect
     Platform
