@@ -5,6 +5,7 @@
 #include "Core/ETTasks.hpp"
 #include "Game/ETGame.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Core/TimePoint.hpp"
 
 class GameTimer : public SystemLogic,
     public ETNode<ETGameUpdateTask>,
@@ -28,6 +29,7 @@ public:
 
 private:
 
+    TimePoint lastTickT;
     bool skipUpdate;
     bool isPaused;
 };

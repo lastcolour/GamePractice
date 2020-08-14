@@ -216,3 +216,53 @@ bool ETNodeRegistry::isExist(TypeId etId, EntityId addressId) {
     endRoute();
     return result;
 }
+
+void ETNodeRegistry::queueEventForAddress(TypeId etId, EntityId addressId, CallFunctionT callF) {
+    std::lock_guard<std::mutex> lock(eventMutex);
+    auto it = pendingEvents.find(etId);
+    if(it != pendingEvents.end()) {
+        it->second.emplace_back(Event{callF, addressId});
+    } else {
+        pendingEvents.emplace(etId, std::vector<Event>{Event{callF, addressId}});
+    }
+}
+
+void ETNodeRegistry::queueEventForAll(TypeId etId, CallFunctionT callF) {
+    std::lock_guard<std::mutex> lock(eventMutex);
+    auto it = pendingEvents.find(etId);
+    if(it != pendingEvents.end()) {
+        it->second.emplace_back(Event{callF, InvalidEntityId});
+    } else {
+        pendingEvents.emplace(etId, std::vector<Event>{Event{callF, InvalidEntityId}});
+    }
+}
+
+void ETNodeRegistry::pollAllEvents(TypeId etId) {
+    std::vector<Event> events;
+    {
+        std::lock_guard<std::mutex> lock(eventMutex);
+        auto it = pendingEvents.find(etId);
+        if(it == pendingEvents.end()) {
+            return;
+        }
+        if(it->second.empty()) {
+            return;
+        }
+        events = std::move(it->second);
+    }
+    startRoute(etId);
+    {
+        auto it = connections.find(etId);
+        if(it != connections.end()) {
+            auto& nodes = it->second;
+            for(auto& event : events) {
+                for(auto& node : nodes) {
+                    if((event.id == InvalidEntityId || event.id == node.id) && node.id != InvalidEntityId) {
+                        event.callF(node.ptr);
+                    }
+                }
+            }
+        }
+    }
+    endRoute();
+}

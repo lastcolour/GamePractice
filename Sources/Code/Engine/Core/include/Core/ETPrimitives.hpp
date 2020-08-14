@@ -119,4 +119,38 @@ std::vector<EntityId> ET_GetAll() {
     return GetETSystem()->getAll<ETType>();
 }
 
+template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_QueueEvent(RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    GetETSystem()->queueEvent(method, std::forward<ParamType>(params)...);
+}
+
+template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_QueueEvent(RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    GetETSystem()->queueEvent(method, std::forward<ParamType>(params)...);
+}
+
+template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_QueueEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    GetETSystem()->queueEvent(addressId, method, std::forward<ParamType>(params)...);
+}
+
+template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+void ET_QueueEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    GetETSystem()->queueEvent(addressId, method, std::forward<ParamType>(params)...);
+}
+
+template<typename ETType>
+void ET_pollEvents() {
+    static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
+    return GetETSystem()->pollEvents<ETType>();
+}
+
 #endif /* __ET_PRIMITIVES_HPP__ */

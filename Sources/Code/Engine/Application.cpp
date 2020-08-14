@@ -81,7 +81,7 @@ void Application::mainLoop() {
         ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
     });
     RunTask renderUpdate([](){
-        // ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
+        ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
     });
     renderUpdate.setType(RunTaskType::MainThreadOnly);
 
@@ -93,7 +93,7 @@ void Application::mainLoop() {
     runner.addTask(uiUpdate);
     runner.addTask(gameUpdate);
     runner.addTask(renderUpdate);
-    runner.runUntil(4, [](){
+    runner.runUntil(2, [](){
         bool needRun = false;
         ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);
         return needRun;

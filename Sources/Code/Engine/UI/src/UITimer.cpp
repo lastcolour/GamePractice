@@ -8,6 +8,7 @@ UITimer::~UITimer() {
 }
 
 bool UITimer::init() {
+    lastTickT = TimePoint::GetNowTime();
     ETNode<ETUIUpdateTask>::connect(getEntityId());
     return true;
 }
@@ -16,6 +17,8 @@ void UITimer::deinit() {
 }
 
 void UITimer::ET_updateUI() {
-    float dt = 0.f;
+    auto currTime = TimePoint::GetNowTime();
+    auto dt = currTime.getSecondsElapsedFrom(lastTickT);
+    lastTickT = currTime;
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, dt);
 }

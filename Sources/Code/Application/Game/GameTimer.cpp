@@ -32,11 +32,13 @@ void GameTimer::ET_updateGame() {
     if(isPaused) {
         return;
     }
-    float dt = 0.f;
+    auto currTime = TimePoint::GetNowTime();
+    auto dt = currTime.getSecondsElapsedFrom(lastTickT);
     if(skipUpdate) {
         dt = 0.f;
         skipUpdate = false;
     }
+    lastTickT = currTime;
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
 }
 

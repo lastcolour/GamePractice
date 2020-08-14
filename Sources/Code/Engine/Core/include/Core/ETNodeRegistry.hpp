@@ -18,6 +18,13 @@ public:
         EntityId id;
     };
 
+    using CallFunctionT = std::function<void(ETNodeBase*)>;
+
+    struct Event {
+        CallFunctionT callF;
+        EntityId id;
+    };
+
     struct ConnectionRequest {
         ETNodeBase* ptr;
         EntityId id;
@@ -25,7 +32,6 @@ public:
         bool isConnect;
     };
 
-    using CallFunctionT = std::function<void(ETNodeBase*)>;
     using NodesT = std::vector<Node>;
 
 public:
@@ -45,6 +51,10 @@ public:
     std::vector<EntityId> getAll(TypeId etId);
     bool isExist(TypeId etId, EntityId addressId);
 
+    void queueEventForAddress(TypeId etId, EntityId addressId, CallFunctionT callF);
+    void queueEventForAll(TypeId etId, CallFunctionT callF);
+    void pollAllEvents(TypeId etId);
+
 private:
 
     void doSoftDisconnect(TypeId etId, ETNodeBase* ptr);
@@ -57,8 +67,10 @@ private:
 
     ETSyncRoute syncRoute;
     std::recursive_mutex pendingConnMutex;
+    std::mutex eventMutex;
     std::unordered_map<TypeId, NodesT> connections;
     std::vector<ConnectionRequest> pendingConnections;
+    std::unordered_map<TypeId, std::vector<Event>> pendingEvents;
 };
 
 #endif /* __ET_NODE_REGISTRY_HPP__ */

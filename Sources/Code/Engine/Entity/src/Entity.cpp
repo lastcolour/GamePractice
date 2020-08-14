@@ -233,7 +233,6 @@ EntityChildId Entity::ET_addChild(EntityId entId) {
     if(entParentId != entityId) {
         ET_SendEvent(entId, &ETEntity::ET_setParent, entityId);
     }
-    ET_SendEvent(entityId, &ETEntityEvents::ET_onChildAdded, entId);
     return childId;
 }
 

@@ -114,6 +114,43 @@ public:
         });
     }
 
+    template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+    void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        registry.queueEventForAddress(GetTypeId<ETType>(), addressId, [=](ETNodeBase* node){
+            auto obj = static_cast<ETNode<ETType>*>(node);
+            (obj->*func)(std::forward<ParamType>(params)...);
+        });
+    }
+
+    template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+    void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        registry.queueEventForAddress(GetTypeId<ETType>(), addressId, [=](ETNodeBase* node){
+            auto obj = static_cast<ETNode<ETType>*>(node);
+            (obj->*func)(std::forward<ParamType>(params)...);
+        });
+    }
+
+    template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+    void queueEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
+        registry.queueEventForAll(GetTypeId<ETType>(), [=](ETNodeBase* node){
+            auto obj = static_cast<ETNode<ETType>*>(node);
+            (obj->*func)(std::forward<ParamType>(params)...);
+        });
+    }
+
+    template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
+    void queueEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
+        registry.queueEventForAll(GetTypeId<ETType>(), [=](ETNodeBase* node){
+            auto obj = static_cast<ETNode<ETType>*>(node);
+            (obj->*func)(std::forward<ParamType>(params)...);
+        });
+    }
+
+    template<typename ETType>
+    void pollEvents() {
+        registry.pollEventsForAll(GetTypeId<ETType>());
+    }
+
 private:
 
     ETSystem(const ETSystem&) = delete;

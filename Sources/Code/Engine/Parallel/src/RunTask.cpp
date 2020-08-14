@@ -38,6 +38,15 @@ int RunTask::getRunCount() const {
 }
 
 bool RunTask::canStart(int threadId) const {
+    if(type == RunTaskType::MainThreadOnly) {
+        if(threadId != 0) {
+            return false;
+        }
+    } else if(type == RunTaskType::NoInMainThread) {
+        if(threadId == 0) {
+            return false;
+        }
+    }
     return state == RunState::Waiting;
 }
 

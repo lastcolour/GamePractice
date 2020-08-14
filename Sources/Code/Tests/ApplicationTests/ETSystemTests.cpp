@@ -300,3 +300,22 @@ TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
     auto activeConn = etSystem->getAll<TestETInterface>();
     ASSERT_EQ(activeConn.size(), 1u);
 }
+
+
+TEST_F(ETSystemTests, CheckQueueEvents) {
+    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+
+    auto entId_1 = etSystem->createNewEntityId();
+    TestETNode node_1;
+    etSystem->connectNode(node_1, entId_1);
+
+    auto entId_2 = etSystem->createNewEntityId();
+    TestETNode node_2;
+    etSystem->connectNode(node_2, entId_2);
+
+    TestObject inObj;
+    etSystem->queueEvent(entId_1, &TestETInterface::ET_DoSomething, inObj);
+
+    TestObject inObj;
+    etSystem->queueEvent(entId_1, &TestETInterface::ET_DoSomething, inObj);
+}

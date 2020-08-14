@@ -4,6 +4,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
+#include "Core/TimePoint.hpp"
 
 class UITimer : public SystemLogic,
     public ETNode<ETUIUpdateTask> {
@@ -18,6 +19,10 @@ public:
 
     // ETUIUpdateTask
     void ET_updateUI() override;
+
+private:
+
+    TimePoint lastTickT;
 };
 
 #endif /* __UI_TIMER_HPP__ */

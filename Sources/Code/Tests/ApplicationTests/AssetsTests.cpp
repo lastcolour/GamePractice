@@ -1,7 +1,7 @@
 #include "AssetsTests.hpp"
 #include "Desktop/DesktopAssets.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/ETTimer.hpp"
+#include "Core/ETTasks.hpp"
 
 #include <algorithm>
 
@@ -106,7 +106,7 @@ TEST_F(AssetsTests, CheckAssetsCache) {
     ET_SendEventReturn(cacheLifetime, &ETAssetsCacheManager::ET_getCacheLifetime);
     cacheLifetime += 1.f;
 
-    ET_SendEvent(&ETSystemTimerEvents::ET_onSystemTick, cacheLifetime);
+    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
 
     Buffer buff3;
     ET_SendEventReturn(buff3, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
