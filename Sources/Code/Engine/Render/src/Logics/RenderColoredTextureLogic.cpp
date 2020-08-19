@@ -1,15 +1,10 @@
 #include "Logics/RenderColoredTextureLogic.hpp"
-#include "RenderMaterial.hpp"
-#include "RenderGeometry.hpp"
-#include "RenderTexture.hpp"
-#include "RenderContext.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Nodes/ETRenderProxyNode.hpp"
 
 RenderColoredTextureLogic::RenderColoredTextureLogic() :
+    RenderImageLogic(RenderNodeType::ColoredTexture),
     color(255, 255, 255) {
-
-    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
 }
 
 RenderColoredTextureLogic::~RenderColoredTextureLogic() {
@@ -24,27 +19,17 @@ void RenderColoredTextureLogic::Reflect(ReflectContext& ctx) {
 
 void RenderColoredTextureLogic::ET_setTextureColor(const ColorB& newColor) {
     color = newColor;
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, color);
 }
 
 bool RenderColoredTextureLogic::init() {
-    if(!RenderImageLogic::init()) {
-        return false;
-    }
-    ET_setMaterial("tex_solid_color");
-    if(!mat) {
-        return false;
-    }
+    RenderImageLogic::init();
     ETNode<ETRenderColoredTexture>::connect(getEntityId());
+    ET_setImage(image.c_str());
+    ET_setTextureColor(color);
+    ET_setSize(size);
+    if(ET_isVisible()) {
+        ET_show();
+    }
     return true;
-}
-
-void RenderColoredTextureLogic::onRender(RenderContext& renderCtx) {
-    auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
-    mvp = renderCtx.proj2dMat * mvp;
-
-    mat->setUniformMat4("MVP", mvp);
-    mat->setTexture2D("tex", tex->texId);
-    mat->setUniform4f("color", color);
-    geom->draw();
 }

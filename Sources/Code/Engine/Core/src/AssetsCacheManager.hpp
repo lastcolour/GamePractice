@@ -5,6 +5,7 @@
 #include "Core/ETAssets.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/ETTasks.hpp"
+#include "Core/TimePoint.hpp"
 
 class AssetsCacheManager : SystemLogic,
     public ETNode<ETAssetsUpdateTask>,
@@ -41,6 +42,7 @@ public:
 
 private:
 
+    TimePoint lastTickT;
     AssetsCacheMapT assetsCacheMap;
     float assetsLifetime;
 };

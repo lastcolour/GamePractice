@@ -2,6 +2,7 @@
 #define __ET_SYNCHRONIZATION_HPP__
 
 #include "Core/TypeId.hpp"
+#include "ThreadStack.hpp"
 
 #include <vector>
 #include <thread>
@@ -12,9 +13,7 @@
 class ETSyncRoute {
 private:
 
-    using ThreadIdT = std::thread::id;
-    using RouteArrayT = std::vector<TypeId>;
-    using ThreadRouteMapT = std::unordered_map<ThreadIdT, RouteArrayT>;
+    using ThreadRouteMapT = std::unordered_map<std::thread::id, ThreadStack>;
 
 public:
 
@@ -29,9 +28,6 @@ public:
 private:
 
     bool isRouteSafeForCurrentThread(TypeId reqRouteId) const;
-    void addRouteForCurrentThread(TypeId reqRouteId);
-    void popRouteForCurrentThread();
-    size_t getRountCountForCurrentThread(TypeId reqRouteId) const;
 
 private:
 

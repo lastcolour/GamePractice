@@ -25,18 +25,19 @@ void ThreadWorker::stop() {
 }
 
 void ThreadWorker::run() {
-    ThreadJob prevJob(nullptr);
+    ThreadJob* prevJob = nullptr;
     while(!stopped.load()) {
         auto job = pool->getNextJobForThread(prevJob, id);
-        if(!job.task) {
-            std::this_thread::yield();
+        if(job) {
+            job->execute();
         } else {
-            job.execute();
+            std::this_thread::yield();
         }
         prevJob = job;
     }
-    if(prevJob.task) {
+    if(prevJob) {
         pool->getNextJobForThread(prevJob, id);
+        prevJob = nullptr;
     }
     terminated.store(true);
 }

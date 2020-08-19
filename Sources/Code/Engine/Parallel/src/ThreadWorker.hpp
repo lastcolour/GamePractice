@@ -26,10 +26,10 @@ private:
 private:
 
     ThreadsPool* pool;
-    int id;
+    std::thread thread;
     std::atomic<bool> stopped;
     std::atomic<bool> terminated;
-    std::thread thread;
+    int id;
 };
 
 #endif /* __THREAD_WORKER_HPP__ */

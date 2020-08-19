@@ -1,8 +1,9 @@
 #include "ETSyncTests.hpp"
-#include "Core/ETSynchronization.hpp"
 #include "TestUtils/FutureTimePoint.hpp"
+#include "ETSynchronization.hpp"
 
 #include <atomic>
+#include <thread>
 
 namespace {
 

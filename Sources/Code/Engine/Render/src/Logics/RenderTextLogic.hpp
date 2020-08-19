@@ -21,16 +21,10 @@ public:
     bool init() override;
 
     // ETRenderTextLogic
-    void ET_setFont(const char* fontName) override;
-    void ET_setColor(const ColorB& col) override;
+    void ET_setColor(const ColorB& newColor) override;
     void ET_setText(const char* str) override;
     void ET_setFontHeight(int fontHeight) override;
     virtual AABB2D ET_getTextAABB() const override;
-
-protected:
-
-    // RenderNode
-    void onRender(RenderContext& renderCtx) override;
 
 private:
 
@@ -38,11 +32,10 @@ private:
 
 private:
 
-    Vec2 textSize;
     std::shared_ptr<RenderFont> font;
+    int fontHeight;
     std::string text;
     ColorB color;
-    float fontScale;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */

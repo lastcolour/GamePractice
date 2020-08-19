@@ -35,27 +35,31 @@ void ThreadsPool::deinitWorkers() {
         if(hasRunningThread) {
             std::this_thread::yield();
         }
-    } 
+    }
     threadWorkers.clear();
 }
 
-ThreadJob ThreadsPool::getNextJobForThread(ThreadJob& prevJob, int threadId) {
-    RunTask* nextTask = nextTask = provider->finishAndGetNext(prevJob.task, threadId);
-    ThreadJob job(nextTask);
-    return job;
+ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* prevJob, int threadId) {
+    auto nextJob = provider->finishAndGetNext(prevJob, threadId);
+    return nextJob;
 }
 
 void ThreadsPool::run(int numThreads) {
     if(!initWorkers(numThreads - 1)) {
         return;
     }
-    ThreadJob prevJob(nullptr);
+    ThreadJob* prevJob = nullptr;
     while(true) {
         auto job = getNextJobForThread(prevJob, 0);
-        if(!job.task && !provider->canRun()) {
-            break;
+        if(job) {
+            job->execute();
+        } else {
+            if(provider->canRun()) {
+                std::this_thread::yield();
+            } else {
+                break;
+            }
         }
-        job.execute();
         prevJob = job;
     }
     deinitWorkers();

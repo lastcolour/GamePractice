@@ -8,47 +8,29 @@
 #include <algorithm>
 #include <cassert>
 
-RenderFont::RenderFont() :
-    fontHeight(0) {
+namespace {
+
+const float NEXT_LINE_OFFSET = 1.f;
+
+} // namespace
+
+RenderFont::RenderFont(int fontMaxHeight) :
+    fontHeight(fontMaxHeight) {
 }
 
 RenderFont::~RenderFont() {
 }
 
-const Vec2i& RenderFont::getTexSize() const {
-    return tex->size;
+void RenderFont::setFontAtlas(std::shared_ptr<RenderTexture>& newFontAtlas) {
+    fontAtlas = newFontAtlas;
 }
 
-int RenderFont::getTexId() const {
-    if(tex) {
-        return tex->texId;
-    }
-    return 0;
-}
-
-bool RenderFont::createAtlas(unsigned int width, unsigned int height) {
-    if(tex) {
-        LogError("[RenderFont::createAtlas] Trying re-create font texture atlas");
-        return false;
-    }
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(width, height), ETextureType::R8);
-    if(!tex) {
-        return false;
-    }
-
-    return true;
+const RenderTexture* RenderFont::getFontAtlas() const {
+    return fontAtlas.get();
 }
 
 void RenderFont::addGlyph(int ch, int shift, const RenderGlyph& glyphData, const void* buffer) {
-    fontHeight = std::max(fontHeight, glyphData.size.y);
     glyphs[ch] = glyphData;
-    if(glyphData.size > Vec2i(0)) {
-        glTexSubImage2D(GL_TEXTURE_2D, 0, shift, 0, glyphData.size.x, glyphData.size.y,
-            GL_RED, GL_UNSIGNED_BYTE, buffer);
-        if(!CheckGLError()) {
-            LogError("[RenderFont::addGlyph] Can't add glyph '%c' to font atlas", static_cast<char>(ch));
-        }
-    }
 }
 
 int RenderFont::getHeight() const {
@@ -61,4 +43,30 @@ const RenderGlyph* RenderFont::getGlyph(int ch) const {
         return &it->second;
     }
     return nullptr;
+}
+
+Vec2i RenderFont::getTextSize(const std::string& text) const {
+    Vec2i pt(0);
+    pt.y = text.empty() ? 0 : fontHeight;
+    int currentLineX = 0;
+    for(size_t i = 0u, sz = text.size(); i < sz; ++i) {
+        auto ch = text[i];
+        if(auto glyph = getGlyph(ch)) {
+            if(i + 1u < sz) {
+                currentLineX += glyph->advance.x;
+            } else {
+                if(ch == ' ') {
+                    currentLineX += glyph->advance.x;
+                } else {
+                    currentLineX += glyph->size.x;
+                }
+            }
+        } else if(ch == '\n') {
+            pt.y += static_cast<int>(fontHeight * NEXT_LINE_OFFSET);
+            pt.x = std::max(pt.x, currentLineX);
+            currentLineX = 0;
+        }
+    }
+    pt.x = std::max(pt.x, currentLineX);
+    return pt;
 }

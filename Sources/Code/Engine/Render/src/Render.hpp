@@ -8,6 +8,8 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "RenderGraph/RenderGraph.hpp"
 
+#include <thread>
+
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
     public ETNode<ETRender>,
@@ -23,11 +25,8 @@ public:
     void deinit() override;
 
     // ETRender
-    const ColorB& ET_getClearColor() const override;
-    void ET_setClearColor(const ColorB& col) override;
-    void ET_drawFrame() override;
     void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) override;
-    void ET_registerNode(RenderNode* renderNode) override;
+    bool ET_isRenderThread() const override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;
@@ -56,7 +55,7 @@ private:
 
 private:
 
-    RenderGraph renderGraph;
+    std::thread::id renderThreadId;
     bool hasContext;
     bool canOffscrenRender;
     bool canScreenRender;

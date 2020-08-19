@@ -3,7 +3,6 @@
 
 #include "Logics/RenderNode.hpp"
 
-class RenderTexture;
 class ReflectContext;
 
 class RenderImageLogic : public RenderNode,
@@ -16,6 +15,7 @@ public:
 public:
 
     RenderImageLogic();
+    RenderImageLogic(RenderNodeType nodeType);
     virtual ~RenderImageLogic();
 
     // EntityLogic
@@ -29,17 +29,9 @@ public:
     void ET_setSize(const Vec2i& newSize) override;
     Vec2i ET_getSize() const override;
 
-    // RenderNode
-    bool ET_isVisible() const override;
-
 protected:
 
-    // RenderNode
-    void onRender(RenderContext& renderCtx) override;
-
-protected:
-
-    std::shared_ptr<RenderTexture> tex;
+    std::string image;
     Vec2i size;
 };
 

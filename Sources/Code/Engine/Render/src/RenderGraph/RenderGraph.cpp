@@ -1,5 +1,5 @@
 #include "RenderGraph/RenderGraph.hpp"
-#include "Logics/RenderNode.hpp"
+#include "Nodes/Node.hpp"
 #include "RenderContext.hpp"
 #include "Platform/OpenGL.hpp"
 
@@ -24,13 +24,13 @@ const RenderContext& RenderGraph::getContext() const {
     return ctx;
 }
 
-void RenderGraph::addChild(RenderNode* node) {
+void RenderGraph::addChild(Node* node) {
     needReorder = true;
     node->setRenderGraph(this);
     children.push_back(node);
 }
 
-void RenderGraph::removeChild(RenderNode* node) {
+void RenderGraph::removeChild(Node* node) {
     auto it = std::find(children.begin(), children.end(), node);
     if(it != children.end()) {
         std::swap(*it, children.back());
@@ -41,14 +41,14 @@ void RenderGraph::removeChild(RenderNode* node) {
     }
 }
 
-void RenderGraph::reorderNodes() {
+void RenderGraph::setNeedReorderNodes() {
     needReorder = true;
 }
 
 void RenderGraph::render() {
     if(needReorder) {
-        std::sort(children.begin(), children.end(), [](RenderNode* first, RenderNode* second){
-            return first->ET_getDrawPriority() < second->ET_getDrawPriority();
+        std::sort(children.begin(), children.end(), [](Node* first, Node* second){
+            return first->getDrawPriority() < second->getDrawPriority();
         });
         needReorder = false;
     }

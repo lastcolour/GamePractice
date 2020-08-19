@@ -2,13 +2,14 @@
 #define __ET_NODE_REGISTRY_HPP__
 
 #include "Core/TypeId.hpp"
-#include "Core/ETSynchronization.hpp"
 
 #include <functional>
 #include <vector>
 #include <unordered_map>
+#include <mutex>
 
 class ETNodeBase;
+class ETSyncRoute;
 
 class ETNodeRegistry {
 public:
@@ -53,7 +54,7 @@ public:
 
     void queueEventForAddress(TypeId etId, EntityId addressId, CallFunctionT callF);
     void queueEventForAll(TypeId etId, CallFunctionT callF);
-    void pollAllEvents(TypeId etId);
+    void pollEventsForAll(TypeId etId);
 
 private:
 
@@ -65,7 +66,7 @@ private:
 
 private:
 
-    ETSyncRoute syncRoute;
+    std::unique_ptr<ETSyncRoute> syncRoute;
     std::recursive_mutex pendingConnMutex;
     std::mutex eventMutex;
     std::unordered_map<TypeId, NodesT> connections;

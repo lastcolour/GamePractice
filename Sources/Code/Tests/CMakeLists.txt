@@ -9,6 +9,7 @@ set(TESTS_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests)
 include_directories(${GTEST_INCLUDE_DIR}
     ${TESTS_SOURCES_DIR}
     ${CORE_INCLUDE_DIR}
+    ${ENGINE_INCLUDE_DIR}/Core/src
     ${RENDER_INCLUDE_DIR}
     ${ENGINE_INCLUDE_DIR}/Render/src
     ${ENGINE_INCLUDE_DIR}

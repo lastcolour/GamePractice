@@ -5,6 +5,8 @@
 #include "Platform/OpenGL.hpp"
 #include "Core/ETApplication.hpp"
 #include "RenderConfig.hpp"
+#include "RenderTexture.hpp"
+#include "RenderUtils.hpp"
 
 #include <algorithm>
 
@@ -112,6 +114,8 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
     unsigned int texWidth = 0;
     unsigned int texHeight = 0;
 
+    int fontHeight = 0;
+
     FT_GlyphSlot glyph = fontFace->glyph;
     for(auto ch : characterSet) {
         if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
@@ -120,17 +124,21 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
         }
         texWidth += glyph->bitmap.width + padding;
         texHeight = std::max(texHeight, glyph->bitmap.rows);
+        fontHeight = std::max(fontHeight, static_cast<int>(glyph->bitmap.rows));
     }
 
-    std::shared_ptr<RenderFont> font(new RenderFont);
-    if(!font->createAtlas(texWidth, texHeight)) {
+    std::shared_ptr<RenderFont> font(new RenderFont(fontHeight));
+
+    std::shared_ptr<RenderTexture> fontAtlas;
+    ET_SendEventReturn(fontAtlas, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(texWidth, texHeight), ETextureType::R8);
+    if(!fontAtlas) {
         LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: %s", fontName);
         FT_Done_Face(fontFace);
         FT_Done_FreeType(ftLib);
         return nullptr;
     }
 
-    glBindTexture(GL_TEXTURE_2D, font->getTexId());
+    glBindTexture(GL_TEXTURE_2D, fontAtlas->texId);
 
     int shift = 0;
     for(auto ch : characterSet) {
@@ -149,12 +157,25 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
         glyphData.texCoords.top = Vec2((shift + glyph->bitmap.width) / static_cast<float>(texWidth),
             glyph->bitmap.rows / static_cast<float>(texHeight));
 
+        if(glyphData.size > Vec2i(0)) {
+            glTexSubImage2D(GL_TEXTURE_2D, 0, shift, 0, glyphData.size.x, glyphData.size.y,
+                GL_RED, GL_UNSIGNED_BYTE, glyph->bitmap.buffer);
+            if(!CheckGLError()) {
+                LogError("[RenderFont::createFontImpl] Can't copy a glyph '%c' bitmap buffer to a font atlas", static_cast<char>(ch));
+                FT_Done_Face(fontFace);
+                FT_Done_FreeType(ftLib);
+                return nullptr;
+            }
+        }
+
         font->addGlyph(ch, shift, glyphData, glyph->bitmap.buffer);
 
         shift += glyph->bitmap.width + padding;
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    font->setFontAtlas(fontAtlas);
 
     FT_Done_Face(fontFace);
     FT_Done_FreeType(ftLib);

@@ -22,11 +22,6 @@ public:
     // ETRenderColoredTexture
     void ET_setTextureColor(const ColorB& newColor) override;
 
-protected:
-
-    // RenderNode
-    void onRender(RenderContext& renderCtx) override;
-
 private:
 
     ColorB color;

@@ -118,7 +118,7 @@ public:
     void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
         registry.queueEventForAddress(GetTypeId<ETType>(), addressId, [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(std::forward<ParamType>(params)...);
+            (obj->*func)(params...);
         });
     }
 
@@ -126,7 +126,7 @@ public:
     void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
         registry.queueEventForAddress(GetTypeId<ETType>(), addressId, [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(std::forward<ParamType>(params)...);
+            (obj->*func)(params...);
         });
     }
 
@@ -134,7 +134,7 @@ public:
     void queueEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
         registry.queueEventForAll(GetTypeId<ETType>(), [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(std::forward<ParamType>(params)...);
+            (obj->*func)(params...);
         });
     }
 
@@ -142,12 +142,12 @@ public:
     void queueEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
         registry.queueEventForAll(GetTypeId<ETType>(), [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(std::forward<ParamType>(params)...);
+            (obj->*func)(params...);
         });
     }
 
     template<typename ETType>
-    void pollEvents() {
+    void pollAllEvents() {
         registry.pollEventsForAll(GetTypeId<ETType>());
     }
 

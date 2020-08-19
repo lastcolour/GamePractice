@@ -60,40 +60,47 @@ void Application::deinit() {
 }
 
 void Application::mainLoop() {
-    RunTask inputUpdate([](){
+    std::unique_ptr<RunTask> inputUpdate(new RunTask("Input", [](){
         ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
-    });
-    inputUpdate.setType(RunTaskType::MainThreadOnly);
-    RunTask assetsUpdate([](){
+    }));
+    inputUpdate->setType(RunTaskType::MainThreadOnly);
+
+    std::unique_ptr<RunTask> assetsUpdate(new RunTask("Assets", [](){
         ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
-    });
-    assetsUpdate.setType(RunTaskType::NoInMainThread);
-    RunTask entitiesUpdate([](){
+    }));
+    assetsUpdate->setType(RunTaskType::NoInMainThread);
+
+    std::unique_ptr<RunTask> entitiesUpdate(new RunTask("Entities", [](){
         ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
-    });
-    RunTask uiUpdate([](){
+    }));
+
+    std::unique_ptr<RunTask> uiUpdate(new RunTask("UI", [](){
         ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
-    });
-    RunTask soundUpdate([](){
-        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
-    });
-    RunTask gameUpdate([](){
+    }));
+
+    std::unique_ptr<RunTask> gameUpdate(new RunTask("Game", [](){
         ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
-    });
-    RunTask renderUpdate([](){
+    }));
+
+    gameUpdate->addChild(uiUpdate);
+    std::unique_ptr<RunTask> soundUpdate(new RunTask("Sound", [](){
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+    }));
+
+    std::unique_ptr<RunTask> renderUpdate(new RunTask("Render", [](){
         ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
-    });
-    renderUpdate.setType(RunTaskType::MainThreadOnly);
+    }));
+    renderUpdate->setType(RunTaskType::MainThreadOnly);
 
     TasksRunner runner;
-    runner.addTask(inputUpdate);
-    runner.addTask(soundUpdate);
-    runner.addTask(assetsUpdate);
-    runner.addTask(entitiesUpdate);
-    runner.addTask(uiUpdate);
-    runner.addTask(gameUpdate);
-    runner.addTask(renderUpdate);
-    runner.runUntil(2, [](){
+    runner.addTask(std::move(inputUpdate));
+    runner.addTask(std::move(soundUpdate));
+    runner.addTask(std::move(assetsUpdate));
+    runner.addTask(std::move(entitiesUpdate));
+    runner.addTask(std::move(uiUpdate));
+    runner.addTask(std::move(gameUpdate));
+    runner.addTask(std::move(renderUpdate));
+    runner.runUntil(4, [](){
         bool needRun = false;
         ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);
         return needRun;

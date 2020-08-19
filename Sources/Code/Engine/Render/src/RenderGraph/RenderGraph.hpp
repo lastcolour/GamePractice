@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class RenderNode;
+class Node;
 
 class RenderGraph {
 public:
@@ -13,19 +13,19 @@ public:
     RenderGraph();
     ~RenderGraph();
 
-    void addChild(RenderNode* node);
-    void removeChild(RenderNode* node);
+    void addChild(Node* node);
+    void removeChild(Node* node);
 
     void render();
 
     RenderContext& getContext();
     const RenderContext& getContext() const;
-    void reorderNodes();
+    void setNeedReorderNodes();
 
 private:
 
     RenderContext ctx;
-    std::vector<RenderNode*> children;
+    std::vector<Node*> children;
     bool needReorder;
 };
 

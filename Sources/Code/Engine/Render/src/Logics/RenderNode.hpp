@@ -6,6 +6,9 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "RenderContext.hpp"
+#include "Nodes/ETRenderNodeManager.hpp"
+#include "Nodes/ETRenderProxyNode.hpp"
+#include "Entity/ETEntity.hpp"
 
 class RenderMaterial;
 class RenderGeometry;
@@ -13,18 +16,17 @@ class RenderGraph;
 class ReflectContext;
 
 class RenderNode : public EntityLogic,
-    public ETNode<ETRenderNode> {
+    public ETNode<ETRenderNode>,
+    public ETNode<ETEntityEvents>,
+    public ETNode<ETRenderProxyNodeEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    RenderNode();
-    virtual ~RenderNode();
-
-    void setRenderGraph(RenderGraph* graph);
-    void render();
+    RenderNode(RenderNodeType nodeType);
+    virtual ~RenderNode() = 0;
 
     // EntityLogic
     bool init() override;
@@ -36,30 +38,23 @@ public:
     void ET_show() override;
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
-    void ET_setMaterial(const char* matName) override;
-    void ET_setGeometry(PrimitiveGeometryType geomType) override;
     void ET_setAlpha(float newAlpha) override;
 
+    // ETRenderProxyNodeEvents
+    void ET_syncTransform() override;
+
+    // ETEntityEvents
+    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onAllLogicsCreated() override {}
+
 protected:
 
-    virtual void onRender(RenderContext& ctx) = 0;
-
-protected:
-
-    void setBlendingMode(RenderBlendingType newBlending);
-
-protected:
-
-    std::shared_ptr<RenderMaterial> mat;
-    std::shared_ptr<RenderGeometry> geom;
-
-private:
-
-    RenderGraph* renderGraph;
+    EntityId renderNodeId;
     float alpha;
     int drawPriority;
-    RenderBlendingType blending;
+    RenderNodeType type;
     bool isVisible;
+    bool isTransformUpdated;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

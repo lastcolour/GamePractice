@@ -1,25 +1,13 @@
 #include "Parallel/RunTask.hpp"
 
-RunTask::RunTask(RunTask::CallT callFunc) :
+#include <algorithm>
+#include <cassert>
+
+RunTask::RunTask(const std::string& taskName, RunTask::CallT callFunc) :
+    name(taskName),
     func(callFunc),
     type(RunTaskType::Default),
-    state(RunState::Waiting),
     runCount(0) {
-}
-
-RunTask::RunTask(const RunTask& other) :
-    func(other.func),
-    type(other.type),
-    state(other.state),
-    runCount(other.runCount) {
-}
-
-RunTask& RunTask::operator=(const RunTask& other) {
-    func = other.func;
-    type = other.type;
-    state = other.state;
-    runCount = other.runCount;
-    return *this;
 }
 
 RunTask::~RunTask() {
@@ -33,28 +21,25 @@ void RunTask::setType(RunTaskType newType) {
     type = newType;
 }
 
+RunTaskType RunTask::getType() const {
+    return type;
+}
+
+void RunTask::addChild(std::unique_ptr<RunTask>& other) {
+    assert(other && "Invalid child task");
+    auto it = std::find(childrenTasks.begin(), childrenTasks.end(), other.get());
+    assert(it == childrenTasks.end() && "Children already exists");
+    childrenTasks.push_back(other.get());
+}
+
+std::vector<RunTask*>& RunTask::getChildren() {
+    return childrenTasks;
+}
+
+void RunTask::setRunCount(int newRunCount) {
+    runCount = newRunCount;
+}
+
 int RunTask::getRunCount() const {
     return runCount;
-}
-
-bool RunTask::canStart(int threadId) const {
-    if(type == RunTaskType::MainThreadOnly) {
-        if(threadId != 0) {
-            return false;
-        }
-    } else if(type == RunTaskType::NoInMainThread) {
-        if(threadId == 0) {
-            return false;
-        }
-    }
-    return state == RunState::Waiting;
-}
-
-void RunTask::onStarted() {
-    state = RunState::Running;
-}
-
-void RunTask::onFinished() {
-    state = RunState::Waiting;
-    ++runCount;
 }

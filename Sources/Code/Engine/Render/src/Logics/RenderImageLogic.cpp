@@ -1,17 +1,14 @@
 #include "Logics/RenderImageLogic.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
-#include "RenderTexture.hpp"
-#include "RenderMaterial.hpp"
-#include "RenderGeometry.hpp"
-#include "RenderContext.hpp"
-#include "Render/ETRenderManager.hpp"
-#include "Render/ETRenderManager.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Nodes/ETRenderProxyNode.hpp"
 
 RenderImageLogic::RenderImageLogic() :
+    RenderImageLogic(RenderNodeType::Image) {
+}
+
+RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
+    RenderNode(nodeType),
     size(100) {
-    
-    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -27,55 +24,30 @@ void RenderImageLogic::Reflect(ReflectContext& ctx) {
 
 bool RenderImageLogic::init() {
     RenderNode::init();
-    ET_setGeometry(PrimitiveGeometryType::Sqaure_Tex);
-    if(!geom) {
-        return false;
-    }
-    ET_setMaterial("simple_image");
-    if(!mat) {
-        return false;
-    }
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
+    ET_setImage(image.c_str());
+    ET_setSize(size);
+    if(ET_isVisible()) {
+        ET_show();
+    }
     return true;
 }
 
-void RenderImageLogic::onRender(RenderContext& renderCtx) {
-    auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 mvp = Render::CalcModelMat(getEntityId(), Vec3(scale, 1.f), *geom);
-    mvp = renderCtx.proj2dMat * mvp;
-
-    mat->setUniformMat4("MVP", mvp);
-    mat->setTexture2D("tex", tex->texId);
-    geom->draw();
-}
-
 void RenderImageLogic::ET_setImage(const char* imageName) {
-    if(!imageName || !imageName[0]) {
-        tex.reset();
-    } else {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, imageName, ETextureType::RGBA);
-    }
+    image = imageName;
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setImage, image);
 }
 
 Vec2i RenderImageLogic::ET_getImageSize() const {
-    if(tex) {
-        return tex->size;
-    }
     return Vec2i(0);
 }
 
 void RenderImageLogic::ET_setSize(const Vec2i& newSize) {
     size = newSize;
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
 Vec2i RenderImageLogic::ET_getSize() const {
     return size;
-}
-
-bool RenderImageLogic::ET_isVisible() const {
-    if(!tex) {
-        return false;
-    }
-    return RenderNode::ET_isVisible();
 }

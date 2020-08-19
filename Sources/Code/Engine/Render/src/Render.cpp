@@ -6,6 +6,8 @@
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Nodes/ETRenderNodeManager.hpp"
+#include "Nodes/Node.hpp"
 
 #include <type_traits>
 #include <algorithm>
@@ -36,6 +38,8 @@ bool Render::init() {
         }
     }
 
+    renderThreadId = std::this_thread::get_id();
+
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
     ETNode<ETRenderUpdateTask>::connect(getEntityId());
@@ -52,7 +56,17 @@ void Render::deinit() {
 }
 
 void Render::ET_updateRender() {
-    ET_drawFrame();
+    if(!canRenderToScreen()) {
+        return;
+    }
+
+    Vec2i surfaceSize(0);
+    ET_SendEventReturn(surfaceSize, &ETSurface::ET_getSize);
+    updateRenderPort(surfaceSize);
+
+    ET_SendEvent(&ETRenderNodeManager::ET_update);
+
+    ET_SendEvent(&ETSurface::ET_swapBuffers);
 }
 
 bool Render::canRenderToScreen() const {
@@ -75,20 +89,6 @@ bool Render::canRenderToFramebuffer() const {
     return true;
 }
 
-void Render::ET_drawFrame() {
-    if(!canRenderToScreen()) {
-        return;
-    }
-
-    Vec2i surfaceSize(0);
-    ET_SendEventReturn(surfaceSize, &ETSurface::ET_getSize);
-    updateRenderPort(surfaceSize);
-
-    renderGraph.render();
-
-    ET_SendEvent(&ETSurface::ET_swapBuffers);
-}
-
 void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
     if(!canRenderToFramebuffer()) {
         return;
@@ -103,7 +103,7 @@ void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
 
     renderFb.bind();
 
-    renderGraph.render();
+    ET_SendEvent(&ETRenderNodeManager::ET_update);
 
     renderFb.read();
     renderFb.unbind();
@@ -119,14 +119,6 @@ void Render::updateRenderPort(const Vec2i& size) {
     glViewport(0, 0, size.x, size.y);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
     ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
-}
-
-const ColorB& Render::ET_getClearColor() const {
-    return renderGraph.getContext().getClearColor();
-}
-
-void Render::ET_setClearColor(const ColorB& col) {
-    renderGraph.getContext().setClearColor(col);
 }
 
 void Render::ET_onSurfaceDestroyed() {
@@ -167,7 +159,6 @@ void Render::ET_onContextRestored() {
     hasContext = true;
 }
 
-void Render::ET_registerNode(RenderNode* renderNode) {
-    assert(renderNode && "Invalid render node");
-    renderGraph.addChild(renderNode);
+bool Render::ET_isRenderThread() const {
+    return renderThreadId == std::this_thread::get_id();
 }

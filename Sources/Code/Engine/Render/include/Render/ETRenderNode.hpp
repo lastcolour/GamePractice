@@ -12,8 +12,6 @@ struct ETRenderNode {
     virtual void ET_hide() = 0;
     virtual void ET_show() = 0;
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
-    virtual void ET_setMaterial(const char* matName) = 0;
-    virtual void ET_setGeometry(PrimitiveGeometryType geomType) = 0;
     virtual void ET_setAlpha(float newAlpha) = 0;
     virtual int ET_getDrawPriority() const = 0;
 };
@@ -31,7 +29,6 @@ struct ETRenderSimpleLogic {
 
 struct ETRenderTextLogic {
     virtual ~ETRenderTextLogic() = default;
-    virtual void ET_setFont(const char* fontName) = 0;
     virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setFontHeight(int fontHeight) = 0;

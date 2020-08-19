@@ -19,7 +19,7 @@ include_directories(
 file(GLOB RENDER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RenderGraph/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Nodes/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Nodes/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp)
 
 file(GLOB RENDER_HEADERS

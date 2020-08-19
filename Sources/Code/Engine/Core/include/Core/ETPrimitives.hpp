@@ -53,6 +53,7 @@ template<typename ValRetType, typename ETType, typename RetType, typename ... Ar
 void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    static_assert(!std::is_same<RetType, void>::value, "The ET function has void return type");
     GetETSystem()->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
 }
 
@@ -67,6 +68,7 @@ template<typename ValRetType, typename ETType, typename RetType, typename ... Ar
 void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*method)(ArgsType...) const, ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    static_assert(!std::is_same<RetType, void>::value, "The ET function has void return type");
     GetETSystem()->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
 }
 
@@ -83,6 +85,7 @@ template<typename ValRetType, typename ETType, typename RetType, typename ... Ar
 void ET_SendEventReturn(ValRetType& retVal, RetType (ETType::*method)(ArgsType...), ParamType&& ... params) {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    static_assert(!std::is_same<RetType, void>::value, "The ET function has void return type");
     GetETSystem()->sendEventReturn(retVal, method, std::forward<ParamType>(params)...);
 }
 
@@ -98,6 +101,7 @@ void ET_SendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType:
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
     static_assert(!std::is_same<RetType, void>::value, "Can't return void type");
     static_assert(sizeof...(ArgsType) == sizeof...(ParamType), "Diffrent argument count");
+    static_assert(!std::is_same<RetType, void>::value, "The ET function has void return type");
     GetETSystem()->sendEventReturn(retVal, addressId, method, std::forward<ParamType>(params)...);
 }
 
@@ -148,9 +152,9 @@ void ET_QueueEvent(EntityId addressId, RetType (ETType::*method)(ArgsType...) co
 }
 
 template<typename ETType>
-void ET_pollEvents() {
+void ET_PollAllEvents() {
     static_assert(std::is_abstract<ETType>::value, "ETType can be only abstract class");
-    return GetETSystem()->pollEvents<ETType>();
+    return GetETSystem()->pollAllEvents<ETType>();
 }
 
 #endif /* __ET_PRIMITIVES_HPP__ */

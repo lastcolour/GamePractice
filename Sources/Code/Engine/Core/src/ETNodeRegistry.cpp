@@ -1,8 +1,10 @@
 #include "Core/ETNodeRegistry.hpp"
+#include "ETSynchronization.hpp"
 
 #include <cassert>
 
-ETNodeRegistry::ETNodeRegistry() {
+ETNodeRegistry::ETNodeRegistry() :
+    syncRoute(new ETSyncRoute()) {
 }
 
 ETNodeRegistry::~ETNodeRegistry() {
@@ -61,9 +63,9 @@ void ETNodeRegistry::connectNode(TypeId etId, EntityId addressId, ETNodeBase* pt
     if(!addressId.isValid()) {
         return;
     }
-    if(syncRoute.tryPushUniqueRoute(etId)) {
+    if(syncRoute->tryPushUniqueRoute(etId)) {
         doConnect(etId, addressId, ptr);
-        syncRoute.popRoute();
+        syncRoute->popRoute();
     } else {
         std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
         bool isConnect = true;
@@ -73,9 +75,9 @@ void ETNodeRegistry::connectNode(TypeId etId, EntityId addressId, ETNodeBase* pt
 
 void ETNodeRegistry::disconnectNode(TypeId etId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
-    syncRoute.pushRoute(etId);
+    syncRoute->pushRoute(etId);
     {
-        if(syncRoute.isRouteUniqueForCurrentThread(etId)) {
+        if(syncRoute->isRouteUniqueForCurrentThread(etId)) {
             doDisconnect(etId, ptr);
         } else {
             doSoftDisconnect(etId, ptr);
@@ -84,7 +86,7 @@ void ETNodeRegistry::disconnectNode(TypeId etId, ETNodeBase* ptr) {
             pendingConnections.push_back({ptr, InvalidEntityId, etId, isConnect});
         }
     }
-    syncRoute.popRoute();
+    syncRoute->popRoute();
 }
 
 void ETNodeRegistry::forEachNode(TypeId etId, EntityId addressId, CallFunctionT callF) {
@@ -156,22 +158,22 @@ void ETNodeRegistry::forFirst(TypeId etId, CallFunctionT callF) {
 }
 
 void ETNodeRegistry::startRoute(TypeId etId) {
-    syncRoute.pushRoute(etId);
+    syncRoute->pushRoute(etId);
 }
 
 void ETNodeRegistry::endRoute() {
-    syncRoute.popRoute();
+    syncRoute->popRoute();
     std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
     auto it = pendingConnections.begin();
     while(it != pendingConnections.end()) {
         auto& pendConn = *it;
-        if(syncRoute.tryPushUniqueRoute(pendConn.etId)) {
+        if(syncRoute->tryPushUniqueRoute(pendConn.etId)) {
             if(pendConn.isConnect) {
                 doConnect(pendConn.etId, pendConn.id, pendConn.ptr);
             } else {
                 doDisconnect(pendConn.etId, pendConn.ptr);
             }
-            syncRoute.popRoute();
+            syncRoute->popRoute();
             it = pendingConnections.erase(it);
         } else {
             ++it;
@@ -237,7 +239,7 @@ void ETNodeRegistry::queueEventForAll(TypeId etId, CallFunctionT callF) {
     }
 }
 
-void ETNodeRegistry::pollAllEvents(TypeId etId) {
+void ETNodeRegistry::pollEventsForAll(TypeId etId) {
     std::vector<Event> events;
     {
         std::lock_guard<std::mutex> lock(eventMutex);

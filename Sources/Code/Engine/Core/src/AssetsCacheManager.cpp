@@ -28,7 +28,10 @@ void AssetsCacheManager::deinit() {
 }
 
 void AssetsCacheManager::ET_updateAssets() {
-    float dt = 0.f;
+    auto nowT = TimePoint::GetNowTime();
+    auto dt = nowT.getSecondsElapsedFrom(lastTickT);
+    lastTickT = nowT;
+
     auto it = assetsCacheMap.begin();
     while(it != assetsCacheMap.end()) {
         AssetCacheNode& node = it->second;

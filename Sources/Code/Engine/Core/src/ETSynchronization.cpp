@@ -1,4 +1,4 @@
-#include "Core/ETSynchronization.hpp"
+#include "ETSynchronization.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -9,46 +9,47 @@ ETSyncRoute::ETSyncRoute() {
 ETSyncRoute::~ETSyncRoute() {
 }
 
-void ETSyncRoute::addRouteForCurrentThread(TypeId reqRouteId) {
-    auto threadId = std::this_thread::get_id();
-    auto it = routesMap.find(threadId);
-    RouteArrayT* activeRoute = nullptr;
-    if(it == routesMap.end()) {
-        activeRoute = &(routesMap[threadId]);
-    } else {
-        activeRoute = &(it->second);
-    }
-    activeRoute->push_back(reqRouteId);
-}
-
-void ETSyncRoute::popRouteForCurrentThread() {
-    auto threadId = std::this_thread::get_id();
-    auto it = routesMap.find(threadId);
-    assert(it != routesMap.end() && "Invalid thread id");
-    RouteArrayT* activeRoute = &(it->second);
-    activeRoute->pop_back();
-}
-
 void ETSyncRoute::pushRoute(TypeId reqRouteId) {
     std::unique_lock<std::mutex> lock(routeMutex);
-    cond.wait(lock, [this, reqRouteId](){
+    auto& stack = routesMap[std::this_thread::get_id()];
+    stack.startWait(reqRouteId);
+    cond.wait(lock, [this, reqRouteId]() {
         return isRouteSafeForCurrentThread(reqRouteId);
     });
-    addRouteForCurrentThread(reqRouteId);
+    stack.stopWait();
+    stack.push(reqRouteId);
 }
 
 void ETSyncRoute::popRoute() {
-    std::lock_guard<std::mutex> lock(routeMutex);
-    popRouteForCurrentThread();
+    {
+        std::lock_guard<std::mutex> lock(routeMutex);
+        auto it = routesMap.find(std::this_thread::get_id());
+        assert(it != routesMap.end() && "Invalid thread id");
+        auto& stack = it->second;
+        stack.pop();
+    }
     cond.notify_all();
 }
 
 bool ETSyncRoute::isRouteSafeForCurrentThread(TypeId reqRouteId) const {
-    auto threadId = std::this_thread::get_id();
+    auto it = routesMap.find(std::this_thread::get_id());
+    assert(it != routesMap.end() && "Can't find stack for thread");
+    auto threadId = it->first;
+    auto& routeStack = it->second;
+
     for(const auto& routeNode : routesMap) {
         if(routeNode.first != threadId) {
-            auto it = std::find(routeNode.second.begin(), routeNode.second.end(), reqRouteId);
-            if(it != routeNode.second.end()) {
+            auto& otherStack = routeNode.second;
+            if(otherStack.isDeadLock(routeStack)) {
+                assert(false && "Detected deadlock between two threads");
+            }
+        }
+    }
+
+    for(const auto& routeNode : routesMap) {
+        if(routeNode.first != threadId) {
+            auto& otherStack = routeNode.second;
+            if(otherStack.contain(reqRouteId)) {
                 return false;
             }
         }
@@ -58,27 +59,19 @@ bool ETSyncRoute::isRouteSafeForCurrentThread(TypeId reqRouteId) const {
 
 bool ETSyncRoute::tryPushUniqueRoute(TypeId reqRouteId) {
     std::lock_guard<std::mutex> lock(routeMutex);
+    auto& stack = routesMap[std::this_thread::get_id()];
     if(!isRouteSafeForCurrentThread(reqRouteId)) {
         return false;
     }
-    if(getRountCountForCurrentThread(reqRouteId) != 0) {
+    if(stack.contain(reqRouteId)) {
         return false;
     }
-    addRouteForCurrentThread(reqRouteId);
+    stack.push(reqRouteId);
     return true;
 }
 
-size_t ETSyncRoute::getRountCountForCurrentThread(TypeId reqRouteId) const {
-    auto threadId = std::this_thread::get_id();
-    size_t routeCount = 0;
-    for(const auto& routeNode : routesMap) {
-        if(routeNode.first == threadId) {
-            routeCount = std::count(routeNode.second.begin(), routeNode.second.end(), reqRouteId);
-        }
-    }
-    return routeCount;
-}
-
 bool ETSyncRoute::isRouteUniqueForCurrentThread(TypeId reqRouteId) const {
-    return getRountCountForCurrentThread(reqRouteId) == 1;
+    auto it = routesMap.find(std::this_thread::get_id());
+    assert(it != routesMap.end() && "Can't find required route");
+    return !it->second.contain(reqRouteId);
 }

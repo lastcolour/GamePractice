@@ -24,6 +24,6 @@ TimePoint::~TimePoint() {
 
 float TimePoint::getSecondsElapsedFrom(const TimePoint& other) const {
     auto msValue = std::chrono::duration_cast<std::chrono::milliseconds>(value - other.value).count();
-    auto sValue = static_cast<float>(msValue / 1000.f);
+    auto sValue = static_cast<float>(msValue / 100.f);
     return sValue;
 }

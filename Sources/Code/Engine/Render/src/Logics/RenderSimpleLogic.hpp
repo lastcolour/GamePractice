@@ -27,11 +27,6 @@ public:
     void ET_setSize(const Vec2i& newSize) override;
     Vec2i ET_getSize() const override;
 
-protected:
-
-    // RenderNode
-    void onRender(RenderContext& renderCtx) override;
-
 private:
 
     Vec2i size;

@@ -66,9 +66,12 @@ struct TestETInterface {
     virtual TestObject ET_DoSomething(TestObject& inObj) = 0;
     virtual void ET_CreateObject(size_t count, std::vector<std::unique_ptr<TestETNode>>& objects, ETSystem& etSystem) = 0;
     virtual void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) = 0;
+    virtual void ET_IncreaseCounter(int num) = 0;
 };
 
 struct TestETNode : public ETNode<TestETInterface> {
+
+    TestETNode() : counter(0) {}
     virtual ~TestETNode() = default;
 
     TestObject ET_DoSomething(TestObject& inObj) override {
@@ -90,6 +93,14 @@ struct TestETNode : public ETNode<TestETInterface> {
     void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) override {
         etSystem.disconnectNode(etNode);
     }
+
+    void ET_IncreaseCounter(int num) override {
+        counter += num;
+    }
+
+public:
+
+    int counter;
 
 };
 
@@ -301,7 +312,6 @@ TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
     ASSERT_EQ(activeConn.size(), 1u);
 }
 
-
 TEST_F(ETSystemTests, CheckQueueEvents) {
     std::unique_ptr<ETSystem> etSystem(new ETSystem);
 
@@ -313,9 +323,20 @@ TEST_F(ETSystemTests, CheckQueueEvents) {
     TestETNode node_2;
     etSystem->connectNode(node_2, entId_2);
 
-    TestObject inObj;
-    etSystem->queueEvent(entId_1, &TestETInterface::ET_DoSomething, inObj);
+    etSystem->queueEvent(entId_1, &TestETInterface::ET_IncreaseCounter, 1);
 
-    TestObject inObj;
-    etSystem->queueEvent(entId_1, &TestETInterface::ET_DoSomething, inObj);
+    EXPECT_EQ(node_1.counter, 0);
+
+    ET_PollAllEvents<TestETInterface>();
+
+    EXPECT_EQ(node_1.counter, 1);
+
+    etSystem->queueEvent(&TestETInterface::ET_IncreaseCounter, 1);
+
+    EXPECT_EQ(node_2.counter, 0);
+
+    ET_PollAllEvents<TestETInterface>();
+
+    EXPECT_EQ(node_1.counter, 2);
+    EXPECT_EQ(node_2.counter, 1);
 }

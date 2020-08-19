@@ -10,11 +10,6 @@ enum class RunTaskType {
     NoInMainThread,
 };
 
-enum class RunState {
-    Waiting = 0,
-    Running
-};
-
 class RunTask {
 public:
 
@@ -22,24 +17,24 @@ public:
 
 public:
 
-    RunTask(CallT callFunc);
-    RunTask(const RunTask& other);
-    RunTask& operator=(const RunTask& other);
+    RunTask(const std::string& name, CallT callFunc);
     ~RunTask();
 
-    void setType(RunTaskType newType);
-    bool canStart(int threadId) const;
-    void onStarted();
-    void onFinished();
+    void setRunCount(int newRunCount);
     int getRunCount() const;
+    void setType(RunTaskType newType);
+    RunTaskType getType() const;
+    void addChild(std::unique_ptr<RunTask>& other);
+    std::vector<RunTask*>& getChildren();
+
     void execute();
 
 private:
 
+    std::vector<RunTask*> childrenTasks;
+    std::string name;
     CallT func;
     RunTaskType type;
-    RunState state;
-    int frameId;
     int runCount;
 };
 

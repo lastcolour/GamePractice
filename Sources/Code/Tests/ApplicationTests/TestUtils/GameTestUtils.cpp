@@ -1,6 +1,5 @@
 #include "TestUtils/GameTestUtils.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETTimer.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGame.hpp"
 
@@ -29,7 +28,7 @@ void WaitPreGameEnd() {
     float elapsedT = 0.f;
     while (!listener.isBoardAppeard) {
         float dt = 0.01f;
-        ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, dt);
+        // ET_SendEvent(&ETAppTimerEvents::ET_onAppTick, dt);
         elapsedT += dt;
         if(elapsedT > 360.f) {
             break;

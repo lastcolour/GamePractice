@@ -17,7 +17,7 @@ public:
 
     void run(int numThreads);
 
-    ThreadJob getNextJobForThread(ThreadJob& prevJob, int threadId);
+    ThreadJob* getNextJobForThread(ThreadJob* prevJob, int threadId);
 
 private:
 
