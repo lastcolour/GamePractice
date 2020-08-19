@@ -3,7 +3,7 @@
     "InputVariables":{
         "buildType":"Debug",
         "platform":"${currentPlatform}",
-        "skipLibsBuild":"True",
+        "skipLibsBuild":"False",
         "skipGameTests":"False",
         "skipEditorTests":"False"
     },
