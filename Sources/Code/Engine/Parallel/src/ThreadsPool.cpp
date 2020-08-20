@@ -3,6 +3,8 @@
 #include "ThreadJob.hpp"
 #include "Parallel/TasksRunner.hpp"
 
+#include <cassert>
+
 ThreadsPool::ThreadsPool(TasksRunner* tasksProvider) :
     provider(tasksProvider) {
 }
@@ -39,18 +41,20 @@ void ThreadsPool::deinitWorkers() {
     threadWorkers.clear();
 }
 
-ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* prevJob, int threadId) {
-    auto nextJob = provider->finishAndGetNext(prevJob, threadId);
+ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* prevJob, const TimePoint& currTime, int threadId) {
+    auto nextJob = provider->finishAndGetNext(prevJob, currTime, threadId);
     return nextJob;
 }
 
 void ThreadsPool::run(int numThreads) {
+    assert(numThreads > 0 && "Invalid thread number");
     if(!initWorkers(numThreads - 1)) {
         return;
     }
     ThreadJob* prevJob = nullptr;
     while(true) {
-        auto job = getNextJobForThread(prevJob, 0);
+        timePoint = TimePoint::GetNowTime();
+        auto job = getNextJobForThread(prevJob, timePoint, 0);
         if(job) {
             job->execute();
         } else {

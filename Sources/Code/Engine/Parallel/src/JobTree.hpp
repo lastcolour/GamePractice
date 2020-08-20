@@ -20,12 +20,14 @@ public:
     int getJobsCount() const;
     void setJobsCount(int newJobsCount);
     int getRunCount() const;
+    bool isDelayPassed(const TimePoint& currTime) const;
 
 private:
 
     TimePoint prevTickT;
     std::vector<ThreadJob*> rootJobs;
     std::atomic<int> pendingJobsCount;
+    float runDelay;
     int jobsCount;
     int runCount;
 };

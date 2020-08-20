@@ -1,11 +1,10 @@
 #ifndef __ET_NODE_REGISTRY_HPP__
 #define __ET_NODE_REGISTRY_HPP__
 
-#include "Core/TypeId.hpp"
+#include "Core/Core.hpp"
 
 #include <functional>
 #include <vector>
-#include <unordered_map>
 #include <mutex>
 
 class ETNodeBase;
@@ -29,7 +28,6 @@ public:
     struct ConnectionRequest {
         ETNodeBase* ptr;
         EntityId id;
-        TypeId etId;
         bool isConnect;
     };
 
@@ -40,38 +38,43 @@ public:
     ETNodeRegistry();
     ~ETNodeRegistry();
 
-    void connectNode(TypeId etId, EntityId addressId, ETNodeBase* ptr);
-    void disconnectNode(TypeId etId, ETNodeBase* ptr);
+    void connectNode(int etId, EntityId addressId, ETNodeBase* ptr);
+    void disconnectNode(int etId, ETNodeBase* ptr);
 
-    void forEachNode(TypeId etId, EntityId addressId, CallFunctionT callF);
-    void forEachNode(TypeId etId, CallFunctionT callF);
+    void forEachNode(int etId, EntityId addressId, CallFunctionT callF);
+    void forEachNode(int etId, CallFunctionT callF);
 
-    void forFirst(TypeId etId, EntityId addressId, CallFunctionT callF);
-    void forFirst(TypeId etId, CallFunctionT callF);
+    void forFirst(int etId, EntityId addressId, CallFunctionT callF);
+    void forFirst(int etId, CallFunctionT callF);
 
-    std::vector<EntityId> getAll(TypeId etId);
-    bool isExist(TypeId etId, EntityId addressId);
+    std::vector<EntityId> getAll(int etId);
+    bool isExist(int etId, EntityId addressId);
 
-    void queueEventForAddress(TypeId etId, EntityId addressId, CallFunctionT callF);
-    void queueEventForAll(TypeId etId, CallFunctionT callF);
-    void pollEventsForAll(TypeId etId);
+    void queueEventForAddress(int etId, EntityId addressId, CallFunctionT callF);
+    void queueEventForAll(int etId, CallFunctionT callF);
+    void pollEventsForAll(int etId);
 
 private:
 
-    void doSoftDisconnect(TypeId etId, ETNodeBase* ptr);
-    void doConnect(TypeId etId, EntityId addressId, ETNodeBase* ptr);
-    void doDisconnect(TypeId etId, ETNodeBase* ptr);
-    void startRoute(TypeId etId);
-    void endRoute();
+    void doSoftDisconnect(int etId, ETNodeBase* ptr);
+    void doConnect(int etId, EntityId addressId, ETNodeBase* ptr);
+    void doDisconnect(int etId, ETNodeBase* ptr);
+    bool startRoute(int etId);
+    void endRoute(bool isUnique, int etId);
+
+private:
+
+    struct Registry {
+        std::vector<Node> nodes;
+        std::vector<Event> pendingEvents;
+        std::vector<ConnectionRequest> pendingConnections;
+    };
 
 private:
 
     std::unique_ptr<ETSyncRoute> syncRoute;
-    std::recursive_mutex pendingConnMutex;
+    std::vector<Registry> connections;
     std::mutex eventMutex;
-    std::unordered_map<TypeId, NodesT> connections;
-    std::vector<ConnectionRequest> pendingConnections;
-    std::unordered_map<TypeId, std::vector<Event>> pendingEvents;
 };
 
 #endif /* __ET_NODE_REGISTRY_HPP__ */

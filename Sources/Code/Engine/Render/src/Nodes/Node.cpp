@@ -34,7 +34,7 @@ void Node::ET_setAlpha(float newAlpha) {
     if(Render::IsRenderThread()) {
         alpha = newAlpha;
     } else {
-        ET_QueueEvent(&ETRenderProxyNode::ET_setAlpha, newAlpha);
+        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);
     }
 }
 
@@ -45,7 +45,7 @@ void Node::ET_setDrawPriority(int newDrawPriority) {
             renderGraph->setNeedReorderNodes();
         }
     } else {
-        ET_QueueEvent(&ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
+        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
     }
 }
 
@@ -53,7 +53,7 @@ void Node::ET_setVisible(bool flag) {
     if(Render::IsRenderThread()) {
         visible = flag;
     } else {
-        ET_QueueEvent(&ETRenderProxyNode::ET_setVisible, flag);
+        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setVisible, flag);
     }
 }
 

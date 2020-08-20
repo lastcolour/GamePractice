@@ -6,6 +6,28 @@
 #include <type_traits>
 #include <mutex>
 
+namespace ET {
+
+int GetNextETId();
+
+int GetTotalETIds();
+
+template<typename T>
+class ETIdHelper {
+public:
+    static int value() {
+        static const int etId = GetNextETId();
+        return etId;
+    }
+};
+
+template<typename T>
+constexpr int GetETId() {
+    return ETIdHelper<T>::value();
+}
+
+} // namespace ET
+
 template<typename T>
 class ETNode;
 
@@ -28,29 +50,29 @@ public:
 
     template<typename ETType>
     std::vector<EntityId> getAll() {
-        return registry.getAll(GetTypeId<ETType>());
+        return registry.getAll(ET::GetETId<ETType>());
     }
 
     template<typename ETType>
     bool isExistNode(EntityId addressId) {
-        return registry.isExist(GetTypeId<ETType>(), addressId);
+        return registry.isExist(ET::GetETId<ETType>(), addressId);
     }
 
     template<template<class> class ETNode, class ETType>
     void connectNode(ETNode<ETType>& node, EntityId addressId) {
-        registry.connectNode(GetTypeId<ETType>(), addressId, &node);
+        registry.connectNode(ET::GetETId<ETType>(), addressId, &node);
     }
 
     template<template<class> class ETNode, class ETType>
     void disconnectNode(ETNode<ETType>& node) {
-        registry.disconnectNode(GetTypeId<ETType>(), &node);
+        registry.disconnectNode(ET::GetETId<ETType>(), &node);
     }
 
     // ==--------------- Const ETs ---------------==
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.forEachNode(GetTypeId<ETType>(), addressId, [&](ETNodeBase* node){
+        registry.forEachNode(ET::GetETId<ETType>(), addressId, [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -58,7 +80,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.forFirst(GetTypeId<ETType>(), addressId, [&](ETNodeBase* node){
+        registry.forFirst(ET::GetETId<ETType>(), addressId, [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             retVal = (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -66,7 +88,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.forEachNode(GetTypeId<ETType>(), [&](ETNodeBase* node){
+        registry.forEachNode(ET::GetETId<ETType>(), [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -74,7 +96,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.forFirst(GetTypeId<ETType>(), [&](ETNodeBase* node){
+        registry.forFirst(ET::GetETId<ETType>(), [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             retVal = (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -84,7 +106,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.forEachNode(GetTypeId<ETType>(), addressId, [&](ETNodeBase* node){
+        registry.forEachNode(ET::GetETId<ETType>(), addressId, [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -92,7 +114,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.forFirst(GetTypeId<ETType>(), addressId, [&](ETNodeBase* node){
+        registry.forFirst(ET::GetETId<ETType>(), addressId, [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             retVal = (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -100,7 +122,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.forEachNode(GetTypeId<ETType>(), [&](ETNodeBase* node){
+        registry.forEachNode(ET::GetETId<ETType>(), [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -108,7 +130,7 @@ public:
 
     template<typename ValRetType, typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void sendEventReturn(ValRetType& retVal, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.forFirst(GetTypeId<ETType>(), [&](ETNodeBase* node){
+        registry.forFirst(ET::GetETId<ETType>(), [&](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             retVal = (obj->*func)(std::forward<ParamType>(params)...);
         });
@@ -116,7 +138,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.queueEventForAddress(GetTypeId<ETType>(), addressId, [=](ETNodeBase* node){
+        registry.queueEventForAddress(ET::GetETId<ETType>(), addressId, [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(params...);
         });
@@ -124,7 +146,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.queueEventForAddress(GetTypeId<ETType>(), addressId, [=](ETNodeBase* node){
+        registry.queueEventForAddress(ET::GetETId<ETType>(), addressId, [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(params...);
         });
@@ -132,7 +154,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.queueEventForAll(GetTypeId<ETType>(), [=](ETNodeBase* node){
+        registry.queueEventForAll(ET::GetETId<ETType>(), [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(params...);
         });
@@ -140,7 +162,7 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.queueEventForAll(GetTypeId<ETType>(), [=](ETNodeBase* node){
+        registry.queueEventForAll(ET::GetETId<ETType>(), [=](ETNodeBase* node){
             auto obj = static_cast<ETNode<ETType>*>(node);
             (obj->*func)(params...);
         });
@@ -148,7 +170,7 @@ public:
 
     template<typename ETType>
     void pollAllEvents() {
-        registry.pollEventsForAll(GetTypeId<ETType>());
+        registry.pollEventsForAll(ET::GetETId<ETType>());
     }
 
 private:

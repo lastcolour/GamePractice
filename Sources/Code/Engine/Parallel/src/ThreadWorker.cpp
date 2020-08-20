@@ -27,7 +27,8 @@ void ThreadWorker::stop() {
 void ThreadWorker::run() {
     ThreadJob* prevJob = nullptr;
     while(!stopped.load()) {
-        auto job = pool->getNextJobForThread(prevJob, id);
+        timePoint = TimePoint::GetNowTime();
+        auto job = pool->getNextJobForThread(prevJob, timePoint, id);
         if(job) {
             job->execute();
         } else {
@@ -36,7 +37,8 @@ void ThreadWorker::run() {
         prevJob = job;
     }
     if(prevJob) {
-        pool->getNextJobForThread(prevJob, id);
+        timePoint = TimePoint::GetNowTime();
+        pool->getNextJobForThread(prevJob, timePoint, id);
         prevJob = nullptr;
     }
     terminated.store(true);

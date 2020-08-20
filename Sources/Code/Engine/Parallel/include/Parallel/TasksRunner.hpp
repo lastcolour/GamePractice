@@ -11,6 +11,7 @@ class RunTask;
 class ThreadsPool;
 class ThreadJob;
 class JobTree;
+class TimePoint;
 
 class TasksRunner {
 public:
@@ -27,7 +28,7 @@ public:
     void runUntil(int threadCount, PredicateT predicate);
 
     bool canRun() const;
-    ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId);
+    ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, const TimePoint& timePoint, int threadId);
     std::vector<std::unique_ptr<RunTask>>& getTasks();
 
 private:

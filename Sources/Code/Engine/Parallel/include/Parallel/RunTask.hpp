@@ -20,6 +20,8 @@ public:
     RunTask(const std::string& name, CallT callFunc);
     ~RunTask();
 
+    void setFrequency(int frequency);
+    int getFrequency() const;
     void setRunCount(int newRunCount);
     int getRunCount() const;
     void setType(RunTaskType newType);
@@ -36,6 +38,7 @@ private:
     CallT func;
     RunTaskType type;
     int runCount;
+    int frequency;
 };
 
 #endif /* __RUN_TASK_HPP__ */

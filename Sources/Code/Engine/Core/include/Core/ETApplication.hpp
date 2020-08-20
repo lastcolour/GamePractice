@@ -2,6 +2,7 @@
 #define __ET_APLLICATION_HPP__
 
 #include "Core/ETPrimitives.hpp"
+#include "Core/TypeId.hpp"
 
 class ClassInstance;
 

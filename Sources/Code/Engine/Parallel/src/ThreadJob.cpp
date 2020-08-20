@@ -43,17 +43,28 @@ int ThreadJob::getRunCount() const {
     return tree->getRunCount();
 }
 
-bool ThreadJob::canStart(int threadId) const {
-    if(task->getType() == RunTaskType::MainThreadOnly) {
-        if(threadId != 0) {
-            return false;
+bool ThreadJob::canStart(const TimePoint& currTime, int threadId) const {
+    switch(task->getType()) {
+        case RunTaskType::Default: {
+            break;
         }
-    } else if(task->getType() == RunTaskType::NoInMainThread) {
-        if(threadId == 0) {
-            return false;
+        case RunTaskType::MainThreadOnly: {
+            if(threadId != 0) {
+                return false;
+            }
+            break;
+        }
+        case RunTaskType::NoInMainThread: {
+            if(threadId == 0) {
+                return false;
+            }
+            break;
+        }
+        default: {
+            assert(false && "Invalid job type");
         }
     }
-    if(pendingParents.load()) {
+    if(!parentsCount && !tree->isDelayPassed(currTime)) {
         return false;
     }
     return true;
@@ -71,8 +82,13 @@ void ThreadJob::onFinished() {
     }
 }
 
-std::vector<ThreadJob*>& ThreadJob::getNextJob() {
-    return *nextJobs;
+void ThreadJob::scheduleNextJobs(std::vector<ThreadJob*>& output) {
+    for(auto job : *nextJobs) {
+        if(job->pendingParents.load() == 0) {
+            job->pendingParents.store(job->parentsCount);
+            output.push_back(job);
+        }
+    }
 }
 
 void ThreadJob::onParentTaskFinished() {

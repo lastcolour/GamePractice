@@ -9,6 +9,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <condition_variable>
+#include <atomic>
 
 class ETSyncRoute {
 private:
@@ -17,23 +18,25 @@ private:
 
 public:
 
-    ETSyncRoute();
+    ETSyncRoute(int etNodesCount);
     ~ETSyncRoute();
 
-    bool tryPushUniqueRoute(TypeId reqRouteId);
-    void pushRoute(TypeId reqRouteId);
-    void popRoute();
-    bool isRouteUniqueForCurrentThread(TypeId reqRouteId) const;
+    bool tryPushUniqueRoute(int reqRouteId);
+    bool pushRoute(int reqRouteId);
+    void popRoute(int reqRouteId);
 
 private:
 
-    bool isRouteSafeForCurrentThread(TypeId reqRouteId) const;
+    struct Node {
+        std::recursive_mutex mutex;
+        int count;
+
+        Node() : count(0) {}
+    };
 
 private:
 
-    ThreadRouteMapT routesMap;
-    std::mutex routeMutex;
-    std::condition_variable cond;
+    std::unique_ptr<Node[]> blockedRouteMap;
 };
 
 #endif /* __ET_SYNCHRONIZATION_HPP__ */

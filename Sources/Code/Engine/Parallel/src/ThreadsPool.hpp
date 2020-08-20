@@ -2,6 +2,7 @@
 #define __THREAD_POOL_HPP__
 
 #include "ThreadJob.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <memory>
 #include <vector>
@@ -17,7 +18,7 @@ public:
 
     void run(int numThreads);
 
-    ThreadJob* getNextJobForThread(ThreadJob* prevJob, int threadId);
+    ThreadJob* getNextJobForThread(ThreadJob* prevJob, const TimePoint& currTime, int threadId);
 
 private:
 
@@ -27,6 +28,7 @@ private:
 private:
 
     TasksRunner* provider;
+    TimePoint timePoint;
     std::vector<std::unique_ptr<ThreadWorker>> threadWorkers;
 };
 

@@ -6,6 +6,7 @@
 
 class RunTask;
 class JobTree;
+class TimePoint;
 
 class ThreadJob {
 public:
@@ -13,8 +14,9 @@ public:
     ThreadJob(RunTask* runTask);
     ~ThreadJob();
 
-    bool canStart(int threadId) const;
-    std::vector<ThreadJob*>& getNextJob();
+    bool canStart(const TimePoint& currTime, int threadId) const;
+    void scheduleNextJobs(std::vector<ThreadJob*>& output);
+    std::vector<ThreadJob*>& getNextJobs();
     std::vector<ThreadJob*>& getChildJobs();
     void setTree(JobTree* tree);
     JobTree* getTree();

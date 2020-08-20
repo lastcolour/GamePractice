@@ -70,7 +70,7 @@ bool ETSyncTests::isSecondThreadRunning() {
 }
 
 TEST_F(ETSyncTests, CheckSeparateRoutes) {
-    ETSyncRoute syncRoute;
+    ETSyncRoute syncRoute(10);
 
     {
         std::thread t1([&syncRoute, this](){
@@ -79,7 +79,7 @@ TEST_F(ETSyncTests, CheckSeparateRoutes) {
             while(t1_needRun.load()) {
                 std::this_thread::yield();
             }
-            syncRoute.popRoute();
+            syncRoute.popRoute(1);
             t1_run.store(false);
         });
         t1.detach();
@@ -92,7 +92,7 @@ TEST_F(ETSyncTests, CheckSeparateRoutes) {
             while(t2_needRun.load()) {
                 std::this_thread::yield();
             }
-            syncRoute.popRoute();
+            syncRoute.popRoute(2);
             t2_run.store(false);
         });
         t2.detach();
@@ -114,7 +114,7 @@ void ETSyncTests::SetUp() {
 }
 
 TEST_F(ETSyncTests, CheckIntersectRoutes) {
-    ETSyncRoute syncRoute;
+    ETSyncRoute syncRoute(10);
 
     {
         std::thread t1([&syncRoute, this](){
@@ -123,7 +123,7 @@ TEST_F(ETSyncTests, CheckIntersectRoutes) {
             while(t1_needRun.load()) {
                 std::this_thread::yield();
             }
-            syncRoute.popRoute();
+            syncRoute.popRoute(1);
             t1_run.store(false);
         });
         t1.detach();
@@ -138,7 +138,7 @@ TEST_F(ETSyncTests, CheckIntersectRoutes) {
             while(t2_needRun.load()) {
                 std::this_thread::yield();
             }
-            syncRoute.popRoute();
+            syncRoute.popRoute(1);
             t2_run.store(false);
         });
         t2.detach();
@@ -154,7 +154,7 @@ TEST_F(ETSyncTests, CheckIntersectRoutes) {
 }
 
 TEST_F(ETSyncTests, CheckBlockRoute) {
-    ETSyncRoute syncRoute;
+    ETSyncRoute syncRoute(10);
 
     {
         std::thread t1([&syncRoute, this](){
@@ -163,7 +163,7 @@ TEST_F(ETSyncTests, CheckBlockRoute) {
             while(t1_needRun.load()) {
                 std::this_thread::yield();
             }
-            syncRoute.popRoute();
+            syncRoute.popRoute(1);
             t1_run.store(false);
         });
         t1.detach();
@@ -179,7 +179,7 @@ TEST_F(ETSyncTests, CheckBlockRoute) {
                     while(t2_needRun.load()) {
                         std::this_thread::yield();
                     }
-                    syncRoute.popRoute();
+                    syncRoute.popRoute(1);
                     t2_run.store(false);
                 }
             }
@@ -202,7 +202,7 @@ TEST_F(ETSyncTests, CheckBlockRoute) {
             while(t1_needRun.load()) {
                 std::this_thread::yield();
             }
-            syncRoute.popRoute();
+            syncRoute.popRoute(1);
             t1_run.store(false);
         });
         t1.detach();

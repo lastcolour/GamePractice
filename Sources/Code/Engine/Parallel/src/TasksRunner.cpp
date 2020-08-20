@@ -11,8 +11,6 @@
 namespace {
 
 void mergeJobTrees(JobTree* tree, JobTree* otherTree, ThreadJob* ignoreRootJob) {
-    tree->setJobsCount(tree->getJobsCount() + otherTree->getJobsCount());
-
     std::vector<ThreadJob*> otherJobs;
     for(auto job : otherTree->getRootJobs()) {
         if(job != ignoreRootJob) {
@@ -20,15 +18,20 @@ void mergeJobTrees(JobTree* tree, JobTree* otherTree, ThreadJob* ignoreRootJob) 
         }
         otherJobs.push_back(job);
     }
+    int mergedJobs = 0;
     while(!otherJobs.empty()) {
         auto job = otherJobs.back();
         otherJobs.pop_back();
-        job->setTree(tree);
-        for(auto childJob : job->getChildJobs()) {
-            otherJobs.push_back(childJob);
+        if(job->getTree() != tree) {
+            job->getTree()->setJobsCount(0);
+            job->setTree(tree);
+            ++mergedJobs;
+            for(auto childJob : job->getChildJobs()) {
+                otherJobs.push_back(childJob);
+            }
         }
     }
-    otherTree->setJobsCount(0);
+    tree->setJobsCount(tree->getJobsCount() + mergedJobs);
 }
 
 } // namespace
@@ -75,39 +78,34 @@ void TasksRunner::initJobTrees() {
         auto job = jobs[i].get();
         jobIdMap[job] = i;
         jobTrees.emplace_back(new JobTree());
+        jobTrees[i]->setJobsCount(1);
+        jobTrees[i]->addRootJob(job);
+        job->setTree(jobTrees[i].get());
     }
 
-    std::vector<size_t> visited(jobs.size(), 0);
     for(size_t i = 0u, sz = jobs.size(); i < sz; ++i) {
-        if(visited[i]) {
+        if(jobTrees[i]->getJobsCount() == 0) {
             continue;
         }
-        auto rootTree = jobTrees[i].get();
-        rootTree->addRootJob(jobs[i].get());
+        auto rootJob = jobs[i].get();
+        auto rootTree = rootJob->getTree();
 
         std::vector<size_t> queue;
+
         queue.push_back(i);
         while(!queue.empty()) {
             auto idx = queue.front();
-            visited[idx] = 1;
             std::swap(queue.front(), queue.back());
             queue.pop_back();
 
-            rootTree->setJobsCount(rootTree->getJobsCount() + 1);
-
-            auto job = jobs[i].get();
-            job->setTree(rootTree);
-
+            auto job = jobs[idx].get();
             for(auto childJob : job->getChildJobs()) {
                 auto childIdx = jobIdMap[childJob];
                 childJob->setParentsCount(childJob->getParentsCount() + 1);
-                if(visited[childIdx]) {
-                    if(childJob->getTree() != rootTree) {
-                        mergeJobTrees(rootTree, childJob->getTree(), childJob);
-                    }
-                } else {
-                    queue.push_back(childIdx);
+                if(childJob->getTree() != rootTree) {
+                    mergeJobTrees(rootTree, childJob->getTree(), childJob);
                 }
+                queue.push_back(childIdx);
             }
         }
     }
@@ -115,6 +113,8 @@ void TasksRunner::initJobTrees() {
     jobTrees.erase(std::remove_if(jobTrees.begin(), jobTrees.end(), [](const std::unique_ptr<JobTree>& jobTree){
         return jobTree->getJobsCount() == 0;
     }), jobTrees.end());
+
+    assert(!jobTrees.empty() && "Can't generate any job tree");
 
     for(auto& jobTree : jobTrees) {
         auto& treeRootJobs = jobTree->getRootJobs();
@@ -149,38 +149,30 @@ bool TasksRunner::canRun() const {
     return !predicateFailed.load();
 }
 
-ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
+ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, const TimePoint& timePoint, int threadId) {
+    if(threadId == 0) {
+        auto res = predFunc();
+        predicateFailed.store(!res);
+        if(!res) {
+            return nullptr;
+        }
+    } else if(predicateFailed.load()) {
+        return nullptr;
+    }
     ThreadJob* nextJob = nullptr;
     {
         std::lock_guard<std::mutex> lock(mutex);
-        if(threadId == 0) {
-            auto res = predFunc();
-            predicateFailed.store(!res);
-        }
-        if(predicateFailed.load()) {
-            return nullptr;
-        }
         if(prevJob) {
-            for(auto job : prevJob->getNextJob()) {
-                pendingJobs.push_back(job);
-            }
+            prevJob->scheduleNextJobs(pendingJobs);
         }
-        size_t nextJobIdx = 0;
-        auto minRunCount = std::numeric_limits<int>::max();
         for(size_t i = 0u, sz = pendingJobs.size(); i < sz; ++i) {
             auto job = pendingJobs[i];
-            if(!job->canStart(threadId)) {
-                continue;
-            }
-            if(job->getRunCount() < minRunCount) {
-                nextJobIdx = i;
+            if(job->canStart(timePoint, threadId)) {
                 nextJob = job;
-                minRunCount = nextJob->getRunCount();
+                std::swap(pendingJobs[pendingJobs.size() - 1], pendingJobs[i]);
+                pendingJobs.pop_back();
+                break;
             }
-        }
-        if(nextJob) {
-            std::swap(pendingJobs[pendingJobs.size() - 1], pendingJobs[nextJobIdx]);
-            pendingJobs.pop_back();
         }
     }
     return nextJob;

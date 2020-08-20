@@ -3,75 +3,36 @@
 #include <cassert>
 #include <algorithm>
 
-ETSyncRoute::ETSyncRoute() {
+ETSyncRoute::ETSyncRoute(int etNodesCount) {
+    assert(etNodesCount > 0 && "Invalud ET nodes count");
+    blockedRouteMap.reset(new Node[etNodesCount]);
 }
 
 ETSyncRoute::~ETSyncRoute() {
 }
 
-void ETSyncRoute::pushRoute(TypeId reqRouteId) {
-    std::unique_lock<std::mutex> lock(routeMutex);
-    auto& stack = routesMap[std::this_thread::get_id()];
-    stack.startWait(reqRouteId);
-    cond.wait(lock, [this, reqRouteId]() {
-        return isRouteSafeForCurrentThread(reqRouteId);
-    });
-    stack.stopWait();
-    stack.push(reqRouteId);
+bool ETSyncRoute::pushRoute(int reqRouteId) {
+    auto& node = blockedRouteMap[reqRouteId];
+    node.mutex.lock();
+    node.count += 1;
+    return node.count == 1;
 }
 
-void ETSyncRoute::popRoute() {
-    {
-        std::lock_guard<std::mutex> lock(routeMutex);
-        auto it = routesMap.find(std::this_thread::get_id());
-        assert(it != routesMap.end() && "Invalid thread id");
-        auto& stack = it->second;
-        stack.pop();
-    }
-    cond.notify_all();
+void ETSyncRoute::popRoute(int reqRouteId) {
+    auto& node = blockedRouteMap[reqRouteId];
+    node.count -= 1;
+    node.mutex.unlock();
 }
 
-bool ETSyncRoute::isRouteSafeForCurrentThread(TypeId reqRouteId) const {
-    auto it = routesMap.find(std::this_thread::get_id());
-    assert(it != routesMap.end() && "Can't find stack for thread");
-    auto threadId = it->first;
-    auto& routeStack = it->second;
-
-    for(const auto& routeNode : routesMap) {
-        if(routeNode.first != threadId) {
-            auto& otherStack = routeNode.second;
-            if(otherStack.isDeadLock(routeStack)) {
-                assert(false && "Detected deadlock between two threads");
-            }
-        }
-    }
-
-    for(const auto& routeNode : routesMap) {
-        if(routeNode.first != threadId) {
-            auto& otherStack = routeNode.second;
-            if(otherStack.contain(reqRouteId)) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-bool ETSyncRoute::tryPushUniqueRoute(TypeId reqRouteId) {
-    std::lock_guard<std::mutex> lock(routeMutex);
-    auto& stack = routesMap[std::this_thread::get_id()];
-    if(!isRouteSafeForCurrentThread(reqRouteId)) {
+bool ETSyncRoute::tryPushUniqueRoute(int reqRouteId) {
+    auto& node = blockedRouteMap[reqRouteId];
+    if(!node.mutex.try_lock()) {
         return false;
     }
-    if(stack.contain(reqRouteId)) {
-        return false;
+    if(node.count == 0) {
+        node.count += 1;
+        return true;
     }
-    stack.push(reqRouteId);
-    return true;
-}
-
-bool ETSyncRoute::isRouteUniqueForCurrentThread(TypeId reqRouteId) const {
-    auto it = routesMap.find(std::this_thread::get_id());
-    assert(it != routesMap.end() && "Can't find required route");
-    return !it->second.contain(reqRouteId);
+    node.mutex.unlock();
+    return false;
 }

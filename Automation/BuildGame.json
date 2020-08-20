@@ -3,9 +3,9 @@
     "InputVariables":{
         "buildType":"Debug",
         "platform":"${currentPlatform}",
-        "skipLibsBuild":"False",
+        "skipLibsBuild":"True",
         "skipGameTests":"False",
-        "skipEditorTests":"False"
+        "skipEditorTests":"True"
     },
     "Steps":[
         {

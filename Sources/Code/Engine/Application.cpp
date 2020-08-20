@@ -64,33 +64,40 @@ void Application::mainLoop() {
         ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
     }));
     inputUpdate->setType(RunTaskType::MainThreadOnly);
+    inputUpdate->setFrequency(120);
 
     std::unique_ptr<RunTask> assetsUpdate(new RunTask("Assets", [](){
         ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
     }));
     assetsUpdate->setType(RunTaskType::NoInMainThread);
+    assetsUpdate->setFrequency(120);
 
     std::unique_ptr<RunTask> entitiesUpdate(new RunTask("Entities", [](){
         ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
     }));
+    entitiesUpdate->setFrequency(120);
 
     std::unique_ptr<RunTask> uiUpdate(new RunTask("UI", [](){
         ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
     }));
+    uiUpdate->setFrequency(60);
 
     std::unique_ptr<RunTask> gameUpdate(new RunTask("Game", [](){
         ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
     }));
+    gameUpdate->setFrequency(60);
 
     gameUpdate->addChild(uiUpdate);
     std::unique_ptr<RunTask> soundUpdate(new RunTask("Sound", [](){
         ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
     }));
+    gameUpdate->setFrequency(60);
 
     std::unique_ptr<RunTask> renderUpdate(new RunTask("Render", [](){
         ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
     }));
     renderUpdate->setType(RunTaskType::MainThreadOnly);
+    renderUpdate->setFrequency(120);
 
     TasksRunner runner;
     runner.addTask(std::move(inputUpdate));

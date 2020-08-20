@@ -4,6 +4,7 @@
 
 JobTree::JobTree() :
     pendingJobsCount(0),
+    runDelay(0.f),
     jobsCount(0),
     runCount(0) {
 }
@@ -14,10 +15,12 @@ JobTree::~JobTree() {
 bool JobTree::tryFinishTreeByOneJob() {
     auto remaimingJobs = pendingJobsCount.fetch_sub(1) - 1;
     if(!remaimingJobs) {
+        prevTickT = TimePoint::GetNowTime();
         ++runCount;
         pendingJobsCount.store(jobsCount);
+        return true;
     }
-    return remaimingJobs == 0;
+    return false;
 }
 
 int JobTree::getRunCount() const {
@@ -38,5 +41,9 @@ int JobTree::getJobsCount() const {
 
 void JobTree::setJobsCount(int newJobsCount) {
     jobsCount = newJobsCount;
-    pendingJobsCount.fetch_add(jobsCount);
+    pendingJobsCount.store(jobsCount);
+}
+
+bool JobTree::isDelayPassed(const TimePoint& currTime) const {
+    return currTime.getSecondsElapsedFrom(prevTickT) > runDelay;
 }

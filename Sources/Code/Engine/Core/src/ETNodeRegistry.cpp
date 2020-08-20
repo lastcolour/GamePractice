@@ -1,270 +1,221 @@
 #include "Core/ETNodeRegistry.hpp"
 #include "ETSynchronization.hpp"
+#include "Core/ETSystem.hpp"
 
 #include <cassert>
 
+namespace {
+
+const int MAX_ET_NODE_TYPES = 128;
+
+} // namespace
+
 ETNodeRegistry::ETNodeRegistry() :
-    syncRoute(new ETSyncRoute()) {
+    syncRoute(new ETSyncRoute(MAX_ET_NODE_TYPES)),
+    connections(MAX_ET_NODE_TYPES) {
+
 }
 
 ETNodeRegistry::~ETNodeRegistry() {
 }
 
-void ETNodeRegistry::doConnect(TypeId etId, EntityId addressId, ETNodeBase* ptr) {
-    NodesT* nodes = nullptr;
-    auto it = connections.find(etId);
-    if(it == connections.end()) {
-        nodes = &(connections[etId]);
-    } else {
-        nodes = &it->second;
-    }
-    auto nodeIt = std::find_if(nodes->begin(), nodes->end(), [ptr](const Node& node){
-        return node.ptr == ptr;
-    });
-    if(nodeIt != nodes->end()) {
-        return;
-    }
-    nodes->push_back({ptr, addressId});
-}
-
-void ETNodeRegistry::doDisconnect(TypeId etId, ETNodeBase* ptr) {
-    auto it = connections.find(etId);
-    if(it == connections.end()) {
-        return;
-    }
-    auto& nodes = it->second;
+void ETNodeRegistry::doConnect(int etId, EntityId addressId, ETNodeBase* ptr) {
+    auto& nodes = connections[etId].nodes;
     auto nodeIt = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
         return node.ptr == ptr;
     });
-    if(nodeIt == nodes.end()) {
+    if(nodeIt != nodes.end()) {
         return;
     }
-    *nodeIt = std::move(nodes.back());
+    nodes.push_back({ptr, addressId});
+}
+
+void ETNodeRegistry::doDisconnect(int etId, ETNodeBase* ptr) {
+    auto& nodes = connections[etId].nodes;
+    auto it = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
+        return node.ptr == ptr;
+    });
+    if(it == nodes.end()) {
+        return;
+    }
+    *it = std::move(nodes.back());
     nodes.pop_back();
 }
 
-void ETNodeRegistry::doSoftDisconnect(TypeId etId, ETNodeBase* ptr) {
-    auto it = connections.find(etId);
-    if(it == connections.end()) {
-        return;
-    }
-    auto& nodes = it->second;
-    auto nodeIt = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
+void ETNodeRegistry::doSoftDisconnect(int etId, ETNodeBase* ptr) {
+    auto& nodes = connections[etId].nodes;
+    auto it = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
         return node.ptr == ptr;
     });
-    if(nodeIt == nodes.end()) {
+    if(it == nodes.end()) {
         return;
     }
-    nodeIt->id = InvalidEntityId;
+    it->id = InvalidEntityId;
 }
 
-void ETNodeRegistry::connectNode(TypeId etId, EntityId addressId, ETNodeBase* ptr) {
+void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
     if(!addressId.isValid()) {
         return;
     }
-    if(syncRoute->tryPushUniqueRoute(etId)) {
+    auto isUnique = syncRoute->pushRoute(etId);
+    if(isUnique) {
         doConnect(etId, addressId, ptr);
-        syncRoute->popRoute();
     } else {
-        std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
         bool isConnect = true;
-        pendingConnections.push_back({ptr, addressId, etId, isConnect});
+        connections[etId].pendingConnections.push_back({ptr, addressId, isConnect});
     }
+    syncRoute->popRoute(etId);
 }
 
-void ETNodeRegistry::disconnectNode(TypeId etId, ETNodeBase* ptr) {
+void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
-    syncRoute->pushRoute(etId);
+    auto isUnique = syncRoute->pushRoute(etId);
     {
-        if(syncRoute->isRouteUniqueForCurrentThread(etId)) {
+        if(isUnique) {
             doDisconnect(etId, ptr);
         } else {
             doSoftDisconnect(etId, ptr);
-            std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
             bool isConnect = false;
-            pendingConnections.push_back({ptr, InvalidEntityId, etId, isConnect});
+            connections[etId].pendingConnections.push_back({ptr, InvalidEntityId, isConnect});
         }
     }
-    syncRoute->popRoute();
+    syncRoute->popRoute(etId);
 }
 
-void ETNodeRegistry::forEachNode(TypeId etId, EntityId addressId, CallFunctionT callF) {
+void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT callF) {
     if(!addressId.isValid()) {
         return;
     }
-    startRoute(etId);
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            for(auto& node : it->second) {
-                if(node.id == addressId) {
-                    callF(node.ptr);
-                }
+        for(auto& node : connections[etId].nodes) {
+            if(node.id == addressId) {
+                callF(node.ptr);
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
 }
 
-void ETNodeRegistry::forEachNode(TypeId etId, CallFunctionT callF) {
-    startRoute(etId);
+void ETNodeRegistry::forEachNode(int etId, CallFunctionT callF) {
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            for(auto& node : it->second) {
-                if(node.id != InvalidEntityId) {
-                    callF(node.ptr);
-                }
+        for(auto& node : connections[etId].nodes) {
+            if(node.id != InvalidEntityId) {
+                callF(node.ptr);
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
 }
 
-void ETNodeRegistry::forFirst(TypeId etId, EntityId addressId, CallFunctionT callF) {
+void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF) {
     if(!addressId.isValid()) {
         return;
     }
-    startRoute(etId);
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            for(auto& node : it->second) {
-                if(node.id == addressId) {
-                    callF(node.ptr);
-                    break;
-                }
+        for(auto& node : connections[etId].nodes) {
+            if(node.id == addressId) {
+                callF(node.ptr);
+                break;
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
 }
 
-void ETNodeRegistry::forFirst(TypeId etId, CallFunctionT callF) {
-    startRoute(etId);
+void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            for(auto& node : it->second) {
-                if(node.id != InvalidEntityId) {
-                    callF(node.ptr);
-                    break;
-                }
+        for(auto& node : connections[etId].nodes) {
+            if(node.id != InvalidEntityId) {
+                callF(node.ptr);
+                break;
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
 }
 
-void ETNodeRegistry::startRoute(TypeId etId) {
-    syncRoute->pushRoute(etId);
+bool ETNodeRegistry::startRoute(int etId) {
+    assert(etId < MAX_ET_NODE_TYPES && "Too many ET nodes types");
+    return syncRoute->pushRoute(etId);
 }
 
-void ETNodeRegistry::endRoute() {
-    syncRoute->popRoute();
-    std::lock_guard<std::recursive_mutex> lock(pendingConnMutex);
-    auto it = pendingConnections.begin();
-    while(it != pendingConnections.end()) {
-        auto& pendConn = *it;
-        if(syncRoute->tryPushUniqueRoute(pendConn.etId)) {
-            if(pendConn.isConnect) {
-                doConnect(pendConn.etId, pendConn.id, pendConn.ptr);
+void ETNodeRegistry::endRoute(bool isUnique, int etId) {
+    if(isUnique) {
+        for(auto& req : connections[etId].pendingConnections) {
+            if(req.isConnect) {
+                doConnect(etId, req.id, req.ptr);
             } else {
-                doDisconnect(pendConn.etId, pendConn.ptr);
+                doDisconnect(etId, req.ptr);
             }
-            syncRoute->popRoute();
-            it = pendingConnections.erase(it);
-        } else {
-            ++it;
         }
+        connections[etId].pendingConnections.clear();
     }
+    syncRoute->popRoute(etId);
 }
 
-std::vector<EntityId> ETNodeRegistry::getAll(TypeId etId) {
+std::vector<EntityId> ETNodeRegistry::getAll(int etId) {
     std::vector<EntityId> result;
-    startRoute(etId);
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            for(auto& node : it->second) {
-                if(node.id != InvalidEntityId) {
-                    result.push_back(node.id);
-                }
+        for(auto& node : connections[etId].nodes) {
+            if(node.id != InvalidEntityId) {
+                result.push_back(node.id);
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
     return result;
 }
 
-bool ETNodeRegistry::isExist(TypeId etId, EntityId addressId) {
+bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
     if(!addressId.isValid()) {
         return false;
     }
     bool result = false;
-    startRoute(etId);
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            for(auto& node : it->second) {
-                if(node.id == addressId) {
-                    result = true;
-                    break;
-                }
+        for(auto& node : connections[etId].nodes) {
+            if(node.id == addressId) {
+                result = true;
+                break;
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
     return result;
 }
 
-void ETNodeRegistry::queueEventForAddress(TypeId etId, EntityId addressId, CallFunctionT callF) {
+void ETNodeRegistry::queueEventForAddress(int etId, EntityId addressId, CallFunctionT callF) {
     std::lock_guard<std::mutex> lock(eventMutex);
-    auto it = pendingEvents.find(etId);
-    if(it != pendingEvents.end()) {
-        it->second.emplace_back(Event{callF, addressId});
-    } else {
-        pendingEvents.emplace(etId, std::vector<Event>{Event{callF, addressId}});
-    }
+    connections[etId].pendingEvents.emplace_back(Event{callF, addressId});
 }
 
-void ETNodeRegistry::queueEventForAll(TypeId etId, CallFunctionT callF) {
+void ETNodeRegistry::queueEventForAll(int etId, CallFunctionT callF) {
     std::lock_guard<std::mutex> lock(eventMutex);
-    auto it = pendingEvents.find(etId);
-    if(it != pendingEvents.end()) {
-        it->second.emplace_back(Event{callF, InvalidEntityId});
-    } else {
-        pendingEvents.emplace(etId, std::vector<Event>{Event{callF, InvalidEntityId}});
-    }
+    connections[etId].pendingEvents.emplace_back(Event{callF, InvalidEntityId});
 }
 
-void ETNodeRegistry::pollEventsForAll(TypeId etId) {
+void ETNodeRegistry::pollEventsForAll(int etId) {
     std::vector<Event> events;
     {
         std::lock_guard<std::mutex> lock(eventMutex);
-        auto it = pendingEvents.find(etId);
-        if(it == pendingEvents.end()) {
-            return;
-        }
-        if(it->second.empty()) {
-            return;
-        }
-        events = std::move(it->second);
+        events = std::move(connections[etId].pendingEvents);
     }
-    startRoute(etId);
+    auto isUnique = startRoute(etId);
     {
-        auto it = connections.find(etId);
-        if(it != connections.end()) {
-            auto& nodes = it->second;
-            for(auto& event : events) {
-                for(auto& node : nodes) {
-                    if((event.id == InvalidEntityId || event.id == node.id) && node.id != InvalidEntityId) {
-                        event.callF(node.ptr);
-                    }
+        auto& nodes = connections[etId].nodes;
+        for(auto& event : events) {
+            for(auto& node : nodes) {
+                if((event.id == InvalidEntityId || event.id == node.id) && node.id != InvalidEntityId) {
+                    event.callF(node.ptr);
                 }
             }
         }
     }
-    endRoute();
+    endRoute(isUnique, etId);
 }
