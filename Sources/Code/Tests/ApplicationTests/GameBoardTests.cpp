@@ -215,7 +215,7 @@ TEST_F(GameBoardTests, CheckMoving) {
     board->updateAfterRemoves();
 
     ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));;
+    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
     ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
 

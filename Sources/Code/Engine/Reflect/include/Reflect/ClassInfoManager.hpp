@@ -35,7 +35,7 @@ public:
     int ET_getRegisteredClassCount() override;
     void ET_makeReflectModel(JSONNode& node) override;
     EntityId ET_setActiveEntity(EntityId entityId) override;
-    EntityId ET_getActiveEntity() override;;
+    EntityId ET_getActiveEntity() override;
 
 private:
 

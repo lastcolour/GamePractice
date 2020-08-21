@@ -5,6 +5,8 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
 
+#include <memory>
+
 class PostGameState : public ETNode<ETGameEndResult>,
     public ETNode<ETGameTimerEvents>,
     public ETNode<ETGameBoardEvents> {

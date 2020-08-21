@@ -28,4 +28,5 @@ file(GLOB UI_HEADERS
 add_library(${PROJECT_NAME} STATIC ${UI_SOURCES} ${UI_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
-    Core)
+    Core
+    Entity)

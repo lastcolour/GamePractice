@@ -31,7 +31,7 @@ Vec2i CaclScaledGeomSize(const Vec2& scale, const RenderGeometry& geom) {
     return size;
 }
 
-bool Render::IsRenderThread() {
+bool IsRenderThread() {
     bool res = false;
     ET_SendEventReturn(res, &ETRender::ET_isRenderThread);
     return res;

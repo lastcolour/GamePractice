@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(${MAIN_PROJECT_NAME}Tests CXX)
 
-find_package(Threads REQUIRED)
-
 set(TESTS_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationTests)
 
 include_directories(${GTEST_INCLUDE_DIR}
@@ -44,6 +42,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 
 target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIB_STATIC_BIN}
-    ${CMAKE_THREAD_LIBS_INIT}
+    ${THREADS_LIB_SHARED_BIN}
     Engine
     Application)

@@ -58,4 +58,5 @@ endif()
 
 target_link_libraries(${PROJECT_NAME}
     ${RENDER_LIB_DEPENDICIES}
+    Math
     Core)

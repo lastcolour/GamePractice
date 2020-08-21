@@ -66,6 +66,9 @@ if(BUILD_PLATFORM STREQUAL "Linux")
     find_package(ZLIB REQUIRED)
     set(ZLIB_LIB_SHARED_BIN ${ZLIB_LIBRARIES} CACHE PATH "ZLib Library Path")
 
+    find_package(Threads REQUIRED)
+    set(THREADS_LIB_SHARED_BIN ${CMAKE_THREAD_LIBS_INIT} CACHE PATH "Thread Library Path")
+
     CreateSharedLibDependecy("GLAD"
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLAD/include
         glad

@@ -6,6 +6,7 @@
 #include <functional>
 #include <vector>
 #include <mutex>
+#include <memory>
 
 class ETNodeBase;
 class ETSyncRoute;
