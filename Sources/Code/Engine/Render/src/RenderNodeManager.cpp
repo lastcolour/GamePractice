@@ -82,9 +82,5 @@ void RenderNodeManager::ET_removeNode(EntityId nodeId) {
 }
 
 void RenderNodeManager::ET_update() {
-    ET_PollAllEvents<ETRenderNodeManager>();
-    ET_PollAllEvents<ETRenderProxyNode>();
-    ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncTransform);
-
     renderGraph.render();
 }

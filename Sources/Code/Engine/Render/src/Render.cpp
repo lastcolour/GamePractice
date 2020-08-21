@@ -118,7 +118,7 @@ void Render::updateRenderPort(const Vec2i& size) {
     LogDebug("[Render::updateRenderPort] Set viewport: [%ix%i]", size.x, size.y);
     glViewport(0, 0, size.x, size.y);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
-    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
+    ET_QueueEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
 }
 
 void Render::ET_onSurfaceDestroyed() {
@@ -161,4 +161,10 @@ void Render::ET_onContextRestored() {
 
 bool Render::ET_isRenderThread() const {
     return renderThreadId == std::this_thread::get_id();
+}
+
+void Render::ET_syncWithGame() {
+    ET_PollAllEvents<ETRenderNodeManager>();
+    ET_PollAllEvents<ETRenderProxyNode>();
+    ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncTransform);
 }

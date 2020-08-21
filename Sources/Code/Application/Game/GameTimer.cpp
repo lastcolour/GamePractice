@@ -1,4 +1,6 @@
 #include "Game/GameTimer.hpp"
+#include "Platform/ETSurface.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 GameTimer::GameTimer() :
     skipUpdate(false),
@@ -29,6 +31,9 @@ void GameTimer::ET_resumeTimer() {
 }
 
 void GameTimer::ET_updateGame() {
+    ET_PollAllEvents<ETInputEvents>();
+    ET_PollAllEvents<ETRenderCameraEvents>();
+
     if(isPaused) {
         return;
     }
@@ -39,6 +44,7 @@ void GameTimer::ET_updateGame() {
         skipUpdate = false;
     }
     lastTickT = currTime;
+
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
 }
 

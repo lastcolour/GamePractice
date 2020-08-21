@@ -1,13 +1,12 @@
 #ifndef __TASKS_RUNNER_HPP__
 #define __TASKS_RUNNER_HPP__
 
-#include <vector>
+#include "Parallel/RunTask.hpp"
+
 #include <memory>
 #include <mutex>
-#include <functional>
 #include <atomic>
 
-class RunTask;
 class ThreadsPool;
 class ThreadJob;
 class JobTree;
@@ -23,8 +22,7 @@ public:
     TasksRunner();
     ~TasksRunner();
 
-    void addTask(RunTask* task);
-    void addTask(std::unique_ptr<RunTask>&& task);
+    RunTask* createTask(const char* name, RunTask::CallT func);
     void runUntil(int threadCount, PredicateT predicate);
 
     bool canRun() const;
@@ -35,7 +33,6 @@ private:
 
     void initJobs();
     void initJobTrees();
-    void finishTasks();
 
 private:
 

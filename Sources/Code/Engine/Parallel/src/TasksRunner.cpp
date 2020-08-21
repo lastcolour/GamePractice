@@ -34,6 +34,21 @@ void mergeJobTrees(JobTree* tree, JobTree* otherTree, ThreadJob* ignoreRootJob) 
     tree->setJobsCount(tree->getJobsCount() + mergedJobs);
 }
 
+void calculateParents(JobTree* tree) {
+    std::vector<ThreadJob*> queue;
+    for(auto job : tree->getRootJobs()) {
+        queue.push_back(job);
+    }
+    while(!queue.empty()) {
+        auto job = queue.back();
+        queue.pop_back();
+        for(auto childJob : job->getChildJobs()) {
+            childJob->setParentsCount(childJob->getParentsCount() + 1);
+            queue.push_back(childJob);
+        }
+    }
+}
+
 } // namespace
 
 TasksRunner::TasksRunner() :
@@ -43,14 +58,9 @@ TasksRunner::TasksRunner() :
 TasksRunner::~TasksRunner() {
 }
 
-void TasksRunner::addTask(RunTask* task) {
-    assert(task && "Invalid run task");
-    tasks.emplace_back(task);
-}
-
-void TasksRunner::addTask(std::unique_ptr<RunTask>&& task) {
-    assert(task && "Invalid run task");
-    tasks.push_back(std::move(task));
+RunTask* TasksRunner::createTask(const char* name, RunTask::CallT func) {
+    auto& task = tasks.emplace_back(new RunTask(name, func));
+    return task.get();
 }
 
 void TasksRunner::initJobs() {
@@ -63,8 +73,8 @@ void TasksRunner::initJobs() {
     }
     for(size_t i = 0u, sz = tasks.size(); i < sz; ++i) {
         auto parentJob = jobs[i].get();
-        auto parentTask = tasks[i].get();
-        for(auto childTask : parentTask->getChildren()) {
+        auto parentTask =  tasks[i].get();
+        for(auto& childTask : parentTask->getChildren()) {
             auto childIdx = taskIdMap[childTask];
             auto childJob = jobs[childIdx].get();
             parentJob->addChildJob(childJob);
@@ -101,7 +111,6 @@ void TasksRunner::initJobTrees() {
             auto job = jobs[idx].get();
             for(auto childJob : job->getChildJobs()) {
                 auto childIdx = jobIdMap[childJob];
-                childJob->setParentsCount(childJob->getParentsCount() + 1);
                 if(childJob->getTree() != rootTree) {
                     mergeJobTrees(rootTree, childJob->getTree(), childJob);
                 }
@@ -117,6 +126,7 @@ void TasksRunner::initJobTrees() {
     assert(!jobTrees.empty() && "Can't generate any job tree");
 
     for(auto& jobTree : jobTrees) {
+        calculateParents(jobTree.get());
         auto& treeRootJobs = jobTree->getRootJobs();
         pendingJobs.insert(pendingJobs.end(), treeRootJobs.begin(), treeRootJobs.end());
     }
@@ -135,14 +145,6 @@ void TasksRunner::runUntil(int threadCount, TasksRunner::PredicateT predicate) {
     threadsPool.reset(new ThreadsPool(this));
     threadsPool->run(threadCount);
     threadsPool.reset();
-    finishTasks();
-}
-
-void TasksRunner::finishTasks() {
-    for(auto& job : jobs) {
-        auto task = job->getTask();
-        task->setRunCount(job->getRunCount());
-    }
 }
 
 bool TasksRunner::canRun() const {

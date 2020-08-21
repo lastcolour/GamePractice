@@ -17,16 +17,15 @@ public:
 
 public:
 
-    RunTask(const std::string& name, CallT callFunc);
+    RunTask(const char* name, CallT callFunc);
     ~RunTask();
 
+    void addChild(RunTask* other);
     void setFrequency(int frequency);
     int getFrequency() const;
-    void setRunCount(int newRunCount);
     int getRunCount() const;
     void setType(RunTaskType newType);
     RunTaskType getType() const;
-    void addChild(std::unique_ptr<RunTask>& other);
     std::vector<RunTask*>& getChildren();
 
     void execute();

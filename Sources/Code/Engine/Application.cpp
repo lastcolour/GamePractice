@@ -60,53 +60,57 @@ void Application::deinit() {
 }
 
 void Application::mainLoop() {
-    std::unique_ptr<RunTask> inputUpdate(new RunTask("Input", [](){
-        ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
-    }));
-    inputUpdate->setType(RunTaskType::MainThreadOnly);
-    inputUpdate->setFrequency(120);
-
-    std::unique_ptr<RunTask> assetsUpdate(new RunTask("Assets", [](){
-        ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
-    }));
-    assetsUpdate->setType(RunTaskType::NoInMainThread);
-    assetsUpdate->setFrequency(120);
-
-    std::unique_ptr<RunTask> entitiesUpdate(new RunTask("Entities", [](){
-        ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
-    }));
-    entitiesUpdate->setFrequency(120);
-
-    std::unique_ptr<RunTask> uiUpdate(new RunTask("UI", [](){
-        ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
-    }));
-    uiUpdate->setFrequency(60);
-
-    std::unique_ptr<RunTask> gameUpdate(new RunTask("Game", [](){
-        ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
-    }));
-    gameUpdate->setFrequency(60);
-
-    gameUpdate->addChild(uiUpdate);
-    std::unique_ptr<RunTask> soundUpdate(new RunTask("Sound", [](){
-        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
-    }));
-    gameUpdate->setFrequency(60);
-
-    std::unique_ptr<RunTask> renderUpdate(new RunTask("Render", [](){
-        ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
-    }));
-    renderUpdate->setType(RunTaskType::MainThreadOnly);
-    renderUpdate->setFrequency(120);
-
     TasksRunner runner;
-    runner.addTask(std::move(inputUpdate));
-    runner.addTask(std::move(soundUpdate));
-    runner.addTask(std::move(assetsUpdate));
-    runner.addTask(std::move(entitiesUpdate));
-    runner.addTask(std::move(uiUpdate));
-    runner.addTask(std::move(gameUpdate));
-    runner.addTask(std::move(renderUpdate));
+    {
+        auto inputUpdate = runner.createTask("Input", []{
+            ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
+        });
+        inputUpdate->setType(RunTaskType::MainThreadOnly);
+        inputUpdate->setFrequency(120);
+    }
+    {
+        auto assetsUpdate = runner.createTask("Assets", [](){
+            ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
+        });
+        assetsUpdate->setType(RunTaskType::NoInMainThread);
+        assetsUpdate->setFrequency(120);
+    }
+    {
+        auto entitiesUpdate = runner.createTask("Entities", [](){
+            ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
+        });
+        entitiesUpdate->setFrequency(120);
+    }
+    {
+        auto uiUpdate = runner.createTask("UI", [](){
+            ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
+        });
+        auto renderSync = runner.createTask("RenderSync", [](){
+            ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
+        });
+        renderSync->setType(RunTaskType::MainThreadOnly);
+    
+        auto gameUpdate = runner.createTask("Game", [](){
+            ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
+        });
+
+        gameUpdate->setFrequency(120);
+        gameUpdate->addChild(uiUpdate);
+        uiUpdate->addChild(renderSync);
+    }
+    {
+        auto soundUpdate = runner.createTask("Sound", [](){
+            ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+        });
+        soundUpdate->setFrequency(60);
+    }
+    {
+        auto renderUpdate = runner.createTask("Render", [](){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
+        });
+        renderUpdate->setType(RunTaskType::MainThreadOnly);
+        renderUpdate->setFrequency(120);
+    }
     runner.runUntil(4, [](){
         bool needRun = false;
         ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);

@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <cassert>
 
-RunTask::RunTask(const std::string& taskName, RunTask::CallT callFunc) :
+RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
     name(taskName),
     func(callFunc),
     type(RunTaskType::Default),
     runCount(0),
-    frequency(60) {
+    frequency(120) {
 }
 
 RunTask::~RunTask() {
@@ -16,6 +16,7 @@ RunTask::~RunTask() {
 
 void RunTask::execute() {
     func();
+    ++runCount;
 }
 
 void RunTask::setType(RunTaskType newType) {
@@ -26,19 +27,12 @@ RunTaskType RunTask::getType() const {
     return type;
 }
 
-void RunTask::addChild(std::unique_ptr<RunTask>& other) {
-    assert(other && "Invalid child task");
-    auto it = std::find(childrenTasks.begin(), childrenTasks.end(), other.get());
-    assert(it == childrenTasks.end() && "Children already exists");
-    childrenTasks.push_back(other.get());
+void RunTask::addChild(RunTask* other) {
+    childrenTasks.push_back(other);
 }
 
 std::vector<RunTask*>& RunTask::getChildren() {
     return childrenTasks;
-}
-
-void RunTask::setRunCount(int newRunCount) {
-    runCount = newRunCount;
 }
 
 int RunTask::getRunCount() const {

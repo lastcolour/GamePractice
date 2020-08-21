@@ -108,15 +108,15 @@ bool AndroidEventManager::hadleMotionEvent(AInputEvent* inputEvent) {
     switch(eventAction)
     {
     case AMOTION_EVENT_ACTION_DOWN: {
-        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, touchPt);
+        ET_QueueEvent(&ETInputEvents::ET_onTouch, EActionType::Press, touchPt);
         return true;
     }
     case AMOTION_EVENT_ACTION_MOVE: {
-        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, touchPt);
+        ET_QueueEvent(&ETInputEvents::ET_onTouch, EActionType::Move, touchPt);
         return true;
     }
     case AMOTION_EVENT_ACTION_UP: {
-        ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, touchPt);
+        ET_QueueEvent(&ETInputEvents::ET_onTouch, EActionType::Release, touchPt);
         return true;
     }
     default:
@@ -131,10 +131,10 @@ bool AndroidEventManager::handleKeyEvent(AInputEvent* inputEvent) {
     }
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
     if(eventAction == AKEY_EVENT_ACTION_DOWN) {
-        ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+        ET_QueueEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
         return true;
     } else if(eventAction == AKEY_EVENT_ACTION_UP) {
-        ET_SendEvent(&ETInputEvents::ET_onButton, EActionType::Release, EButtonId::Back);
+        ET_QueueEvent(&ETInputEvents::ET_onButton, EActionType::Release, EButtonId::Back);
         return true;
     }
     return false;
