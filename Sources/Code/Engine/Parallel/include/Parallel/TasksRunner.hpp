@@ -26,7 +26,7 @@ public:
     void runUntil(int threadCount, PredicateT predicate);
 
     bool canRun() const;
-    ThreadJob* finishAndGetNext(ThreadJob* prevJob, const TimePoint& timePoint, int threadId);
+    ThreadJob* finishAndGetNext(ThreadJob* prevJob, int threadId);
     std::vector<std::unique_ptr<RunTask>>& getTasks();
 
 private:

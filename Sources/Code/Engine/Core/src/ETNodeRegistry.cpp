@@ -191,6 +191,9 @@ bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
 }
 
 void ETNodeRegistry::queueEventForAddress(int etId, EntityId addressId, CallFunctionT callF) {
+    if(!addressId.isValid()) {
+        return;
+    }
     std::lock_guard<std::mutex> lock(eventMutex);
     connections[etId].pendingEvents.emplace_back(Event{callF, addressId});
 }

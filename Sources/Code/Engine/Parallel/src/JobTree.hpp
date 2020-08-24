@@ -15,12 +15,12 @@ public:
     ~JobTree();
 
     void addRootJob(ThreadJob* job);
-    bool tryFinishTreeByOneJob();
+    bool tryFinishTreeByOneJob(const TimePoint& currTime);
     std::vector<ThreadJob*>& getRootJobs();
     int getJobsCount() const;
     void setJobsCount(int newJobsCount);
-    int getRunCount() const;
     bool isDelayPassed(const TimePoint& currTime) const;
+    void setRunDelay(float newRunDelay);
 
 private:
 
@@ -29,7 +29,6 @@ private:
     std::atomic<int> pendingJobsCount;
     float runDelay;
     int jobsCount;
-    int runCount;
 };
 
 #endif /* __JOB_TREE_HPP__ */

@@ -2,6 +2,8 @@
 #include "AudioConfig.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETApplication.hpp"
+#include "Nodes/ETSoundNodeManager.hpp"
+#include "Nodes/ETSoundNode.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -142,6 +144,10 @@ bool ALAudioSystem::initAlSource() {
 }
 
 void ALAudioSystem::ET_updateSound() {
+    ET_PollAllEvents<ETSoundNodeManager>();
+    ET_PollAllEvents<ETSoundNode>();
+    ET_PollAllEvents<ETSoundEventNode>();
+
     if(!alSourcePlaying) {
         alSourcePlay(alSourceId);
         alSourcePlaying = true;
@@ -171,6 +177,11 @@ void ALAudioSystem::ET_updateSound() {
         alBufferData(bufferId, DEVICE_FORMAT, mixBuffer.get(),
             SAMPLES_PER_BUFFER * sizeof(int16_t) * DEVICE_CHANNELS, DEVICE_FRAMERATE);
         alSourceQueueBuffers(alSourceId, 1, &bufferId);
+    }
+
+    alGetSourcei(alSourceId, AL_BUFFERS_PROCESSED, &buffersProcessed);
+    if(buffersProcessed > 0) {
+        LogWarning("[ALAudioSystem::ET_onSystemTick] Very slow mixing!");
     }
 
     ALenum alSourceState;

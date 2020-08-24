@@ -14,7 +14,7 @@ public:
     ThreadJob(RunTask* runTask);
     ~ThreadJob();
 
-    bool canStart(const TimePoint& currTime, int threadId) const;
+    bool canStartInThread(int threadId) const;
     void scheduleNextJobs(std::vector<ThreadJob*>& output);
     std::vector<ThreadJob*>& getNextJobs();
     std::vector<ThreadJob*>& getChildJobs();
@@ -22,14 +22,14 @@ public:
     JobTree* getTree();
     void setParentsCount(int newParentCount);
     int getParentsCount() const;
-    void execute();
     int getRunCount() const;
     void addChildJob(ThreadJob* childJob);
     RunTask* getTask();
+    void execute(const TimePoint& currTime);
 
 private:
 
-    void onFinished();
+    void onFinished(const TimePoint& currTime);
     void onParentTaskFinished();
 
 private:

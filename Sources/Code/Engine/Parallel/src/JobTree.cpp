@@ -5,26 +5,20 @@
 JobTree::JobTree() :
     pendingJobsCount(0),
     runDelay(0.f),
-    jobsCount(0),
-    runCount(0) {
+    jobsCount(0) {
 }
 
 JobTree::~JobTree() {
 }
 
-bool JobTree::tryFinishTreeByOneJob() {
+bool JobTree::tryFinishTreeByOneJob(const TimePoint& currTime) {
     auto remaimingJobs = pendingJobsCount.fetch_sub(1) - 1;
     if(!remaimingJobs) {
-        prevTickT = TimePoint::GetNowTime();
-        ++runCount;
+        prevTickT = currTime;
         pendingJobsCount.store(jobsCount);
         return true;
     }
     return false;
-}
-
-int JobTree::getRunCount() const {
-    return runCount;
 }
 
 std::vector<ThreadJob*>& JobTree::getRootJobs() {
@@ -45,5 +39,9 @@ void JobTree::setJobsCount(int newJobsCount) {
 }
 
 bool JobTree::isDelayPassed(const TimePoint& currTime) const {
-    return currTime.getSecondsElapsedFrom(prevTickT) > runDelay;
+    return currTime.getSecondsElapsedFrom(prevTickT) >= runDelay;
+}
+
+void JobTree::setRunDelay(float newRunDelay) {
+    runDelay = newRunDelay;
 }

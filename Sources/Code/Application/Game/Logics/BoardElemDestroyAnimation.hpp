@@ -7,9 +7,9 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Math/Transform.hpp"
 #include "Game/ETGame.hpp"
+#include "Audio/SoundEvent.hpp"
 
 class ReflectContext;
-class SoundEvent;
 
 class BoardElemDestroyAnimation : public EntityLogic,
     public ETNode<ETBoardElemDetroyAnimation>,
@@ -39,7 +39,7 @@ private:
 
 private:
 
-    std::shared_ptr<SoundEvent> destroySound;
+    SoundEvent destroySound;
     float startDelay;
     float duration;
     float currDuration;

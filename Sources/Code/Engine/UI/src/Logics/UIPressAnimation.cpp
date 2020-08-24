@@ -40,9 +40,7 @@ void UIPressAnimation::ET_start() {
     isReversed = false;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
     ETNode<ETUITimerEvents>::connect(getEntityId());
-    if(soundEvent) {
-        soundEvent->emit();
-    }
+    soundEvent.emit();
 }
 
 void UIPressAnimation::ET_startReverse() {

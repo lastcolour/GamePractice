@@ -1,6 +1,7 @@
 #include "ThreadWorker.hpp"
 #include "ThreadsPool.hpp"
 #include "ThreadJob.hpp"
+#include "Core/TimePoint.hpp"
 
 ThreadWorker::ThreadWorker(ThreadsPool* parentPool, int threadId) :
     pool(parentPool),
@@ -26,19 +27,19 @@ void ThreadWorker::stop() {
 
 void ThreadWorker::run() {
     ThreadJob* prevJob = nullptr;
+    TimePoint timePoint;
     while(!stopped.load()) {
         timePoint = TimePoint::GetNowTime();
-        auto job = pool->getNextJobForThread(prevJob, timePoint, id);
+        auto job = pool->getNextJobForThread(prevJob, id);
         if(job) {
-            job->execute();
+            job->execute(timePoint);
         } else {
             std::this_thread::yield();
         }
         prevJob = job;
     }
     if(prevJob) {
-        timePoint = TimePoint::GetNowTime();
-        pool->getNextJobForThread(prevJob, timePoint, id);
+        pool->getNextJobForThread(prevJob, id);
         prevJob = nullptr;
     }
     terminated.store(true);

@@ -2,6 +2,7 @@
 #include "ThreadsPool.hpp"
 #include "ThreadJob.hpp"
 #include "Parallel/TasksRunner.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <cassert>
 
@@ -41,8 +42,8 @@ void ThreadsPool::deinitWorkers() {
     threadWorkers.clear();
 }
 
-ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* prevJob, const TimePoint& currTime, int threadId) {
-    auto nextJob = provider->finishAndGetNext(prevJob, currTime, threadId);
+ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* prevJob, int threadId) {
+    auto nextJob = provider->finishAndGetNext(prevJob, threadId);
     return nextJob;
 }
 
@@ -52,11 +53,12 @@ void ThreadsPool::run(int numThreads) {
         return;
     }
     ThreadJob* prevJob = nullptr;
+    TimePoint timePoint;
     while(true) {
         timePoint = TimePoint::GetNowTime();
-        auto job = getNextJobForThread(prevJob, timePoint, 0);
+        auto job = getNextJobForThread(prevJob, 0);
         if(job) {
-            job->execute();
+            job->execute(timePoint);
         } else {
             if(provider->canRun()) {
                 std::this_thread::yield();

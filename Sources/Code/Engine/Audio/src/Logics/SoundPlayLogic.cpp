@@ -32,17 +32,13 @@ void SoundPlayLogic::deinit() {
 }
 
 void SoundPlayLogic::ET_play() {
-    if(sound) {
-        sound->setLooped(looped);
-        sound->setVolume(volume);
-        sound->play();
-    }
+    sound.setLooped(looped);
+    sound.setVolume(volume);
+    sound.play();
 }
 
 void SoundPlayLogic::ET_stop() {
-    if(sound) {
-        sound->stop();
-    }
+    sound.stop();
 }
 
 void SoundPlayLogic::setSound(const char* soundName) {

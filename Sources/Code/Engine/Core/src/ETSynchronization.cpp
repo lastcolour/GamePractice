@@ -3,36 +3,40 @@
 #include <cassert>
 #include <algorithm>
 
-ETSyncRoute::ETSyncRoute(int etNodesCount) {
-    assert(etNodesCount > 0 && "Invalud ET nodes count");
-    blockedRouteMap.reset(new Node[etNodesCount]);
+ETSyncRoute::ETSyncRoute(int etNodesCount) :
+    blockedRouteMap(etNodesCount) {
 }
 
 ETSyncRoute::~ETSyncRoute() {
 }
 
 bool ETSyncRoute::pushRoute(int reqRouteId) {
+    bool isUnique = false;
+    auto threadId = std::this_thread::get_id();
+    int zero = 0;
     auto& node = blockedRouteMap[reqRouteId];
-    node.mutex.lock();
-    node.count += 1;
-    return node.count == 1;
+    {
+        if(node.count.compare_exchange_strong(zero, 1)) {
+            node.threadId = threadId;
+            return true;
+        }
+    }
+    {
+        std::unique_lock<std::mutex> uniqueLock(mutex);
+        if(node.threadId != threadId) {
+            cond.wait(uniqueLock, [&node, &zero](){
+                return node.count.compare_exchange_strong(zero, 1);
+            });
+            node.threadId = threadId;
+            return true;
+        }
+    }
+    node.count.fetch_add(1);
+    return false;
 }
 
 void ETSyncRoute::popRoute(int reqRouteId) {
     auto& node = blockedRouteMap[reqRouteId];
-    node.count -= 1;
-    node.mutex.unlock();
-}
-
-bool ETSyncRoute::tryPushUniqueRoute(int reqRouteId) {
-    auto& node = blockedRouteMap[reqRouteId];
-    if(!node.mutex.try_lock()) {
-        return false;
-    }
-    if(node.count == 0) {
-        node.count += 1;
-        return true;
-    }
-    node.mutex.unlock();
-    return false;
+    node.count.fetch_sub(1);
+    cond.notify_all();
 }

@@ -67,7 +67,5 @@ void BoardElemDestroyAnimation::ET_playDestroy() {
     currDuration = 0.f;
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getTransform);
-    if(destroySound) {
-        destroySound->emit();
-    }
+    destroySound.emit();
 }

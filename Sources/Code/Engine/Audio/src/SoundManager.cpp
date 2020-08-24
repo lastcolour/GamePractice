@@ -2,10 +2,11 @@
 #include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "OggDataStream.hpp"
-#include "SoundImpl.hpp"
-#include "SoundEventImpl.hpp"
+#include "Nodes/SoundNode.hpp"
+#include "Nodes/SoundEventNode.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 namespace {
 
@@ -21,18 +22,16 @@ SoundManager::~SoundManager() {
 }
 
 bool SoundManager::init() {
-    if(!loadEvents()) {
-        LogError("[SoundManager::init] Can't load sound events");
-        return false;
-    }
     ETNode<ETSoundManager>::connect(getEntityId());
+    ETNode<ETSoundNodeManager>::connect(getEntityId());
+    ET_QueueEvent(&ETSoundNodeManager::ET_loadSoundEvents);
     return true;
 }
 
 void SoundManager::deinit() {
 }
 
-Buffer SoundManager::loadSoundBuffer(const char* soundName) {
+Buffer SoundManager::ET_loadSoundBuffer(const char* soundName) {
     auto it = buffers.find(soundName);
     if(it != buffers.end()) {
         return it->second;
@@ -48,80 +47,98 @@ Buffer SoundManager::loadSoundBuffer(const char* soundName) {
     return buff;
 }
 
-bool SoundManager::loadEvents() {
+void SoundManager::ET_loadSoundEvents() {
     JSONNode rootNode;
     ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, SOUND_EVENTS);
     if(!rootNode) {
-        return false;
+        return;
     }
     rootNode = rootNode.object("Events");
     if(!rootNode) {
-        LogError("[SoundManager::loadEvents] Can't find required 'Events' node in '%s'", SOUND_EVENTS);
-        return false;
+        LogError("[SoundManager::ET_loadSoundEvents] Can't find required 'Events' node in '%s'", SOUND_EVENTS);
+        return;
     }
     for(auto& effectNode : rootNode) {
         std::string name;
         effectNode.read("name", name);
         if(name.empty()) {
-            LogWarning("[SoundManager::loadEvents] Effect name empty");
+            LogWarning("[SoundManager::ET_loadSoundEvents] Effect name empty");
             continue;
         }
         auto it = eventMap.find(name);
         if(it != eventMap.end()) {
-            LogWarning("[SoundManager::loadEvents] Dublicate sound event '%s'", name);
+            LogWarning("[SoundManager::ET_loadSoundEvents] Dublicate sound event '%s'", name);
             continue;
         }
         std::string sound;
         effectNode.read("sound", sound);
         if(sound.empty()) {
-            LogWarning("[SoundManager::loadEvents] Event's '%s' sound is empty", name);
+            LogWarning("[SoundManager::ET_loadSoundEvents] Event's '%s' sound is empty", name);
             continue;
         }
-        auto buffer = loadSoundBuffer(sound.c_str());
+        auto buffer = ET_loadSoundBuffer(sound.c_str());
         if(!buffer) {
-            LogWarning("[SoundManager::loadEvents] Can't load event '%s' sound '%s'", name, sound);
+            LogWarning("[SoundManager::ET_loadSoundEvents] Can't load event '%s' sound '%s'", name, sound);
             continue;
         }
         float volume = 1.f;
         effectNode.read("volume", volume);
         if(volume > 1.f || volume < 0.f) {
-            LogWarning("[SoundManager::loadEvents] Event's '%s' volume should be in range: [0, 1]", name);
+            LogWarning("[SoundManager::ET_loadSoundEvents] Event's '%s' volume should be in range: [0, 1]", name);
             volume = std::max(0.f, std::min(1.f, volume));
         }
         float nextDelay = 0.f;
         effectNode.read("nextDelay", nextDelay);
         if(nextDelay < 0.f) {
-            LogWarning("[SoundManager::loadEvents] Event's '%s' nextDelay should be greater 0", name);
+            LogWarning("[SoundManager::ET_loadSoundEvents] Event's '%s' nextDelay should be greater 0", name);
             nextDelay = std::max(nextDelay, 0.f);
         }
 
-        auto event = std::shared_ptr<SoundEvent>(new SoundEventImpl(volume, nextDelay, buffer));
-        eventMap[name] = event;
+        auto nodeId = GetETSystem()->createNewEntityId();
+        std::unique_ptr<SoundEventNode> eventNode(new SoundEventNode(nodeId, buffer, volume, nextDelay));
+        eventMap[name] = std::move(eventNode);
     }
-    return true;
 }
 
-std::unique_ptr<Sound> SoundManager::ET_createSound(const char* soundName) {
-    if(!soundName || !soundName[0]) {
-        return nullptr;
+Sound SoundManager::ET_createSound(const char* soundName) {
+    std::string name = soundName;
+    if(name.empty()) {
+        return Sound(InvalidEntityId);
     }
-    auto buff = loadSoundBuffer(soundName);
-    if(!buff) {
-        return nullptr;
-    }
-    std::unique_ptr<Sound> sound(new SoundImpl(buff));
-    return sound;
+    auto node = new SoundNode(GetETSystem()->createNewEntityId());
+    ET_QueueEvent(&ETSoundNodeManager::ET_initSoundNode, node, name);
+    return Sound(node->getNodeId());
 }
 
-std::shared_ptr<SoundEvent> SoundManager::ET_createEvent(const char* eventName) {
+void SoundManager::ET_initSoundNode(SoundNode* node, std::string soundName) {
+    assert(node && "Invalid node");
+    auto buffer = ET_loadSoundBuffer(soundName.c_str());
+    if(!buffer) {
+        LogError("[SoundManager::ET_createSoundNode] Can't load sound: '%s'", soundName);
+        delete node;
+        return;
+    }
+    node->setData(buffer);
+    soundNodes[node->getNodeId()].reset(node);
+}
+
+SoundEvent SoundManager::ET_createEvent(const char* eventName) {
     if(!eventName || !eventName[0]) {
-        return nullptr;
+        return SoundEvent(InvalidEntityId);
     }
+    bool isEventMapLoaded = false;
     auto it = eventMap.find(eventName);
     if(it == eventMap.end()) {
         LogWarning("[SoundManager::ET_createEvent] Can't find event: '%s'", eventName);
-        return nullptr;
+        return SoundEvent(InvalidEntityId);
     }
-    auto& event = it->second;
-    return event;
+    auto& node = it->second;
+    return SoundEvent(node->getNodeId());
+}
+
+void SoundManager::ET_removeSoundNode(EntityId nodeId) {
+    auto it = soundNodes.find(nodeId);
+    if(it != soundNodes.end()) {
+        soundNodes.erase(it);
+    }
 }

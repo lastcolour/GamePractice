@@ -39,13 +39,21 @@ void calculateParents(JobTree* tree) {
     for(auto job : tree->getRootJobs()) {
         queue.push_back(job);
     }
+    int treeMinFrequency = std::numeric_limits<int>::max();
     while(!queue.empty()) {
         auto job = queue.back();
         queue.pop_back();
+
+        treeMinFrequency = std::min(treeMinFrequency, job->getTask()->getFrequency());
+
         for(auto childJob : job->getChildJobs()) {
             childJob->setParentsCount(childJob->getParentsCount() + 1);
             queue.push_back(childJob);
         }
+    }
+    if(treeMinFrequency > 0) {
+        auto runDelay = 1.f / static_cast<float>(treeMinFrequency);
+        tree->setRunDelay(runDelay);
     }
 }
 
@@ -151,7 +159,7 @@ bool TasksRunner::canRun() const {
     return !predicateFailed.load();
 }
 
-ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, const TimePoint& timePoint, int threadId) {
+ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
     if(threadId == 0) {
         auto res = predFunc();
         predicateFailed.store(!res);
@@ -167,12 +175,11 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, const TimePoint& ti
         if(prevJob) {
             prevJob->scheduleNextJobs(pendingJobs);
         }
-        for(size_t i = 0u, sz = pendingJobs.size(); i < sz; ++i) {
-            auto job = pendingJobs[i];
-            if(job->canStart(timePoint, threadId)) {
+        for(auto it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it) {
+            auto job = *it;
+            if(job->canStartInThread(threadId)) {
                 nextJob = job;
-                std::swap(pendingJobs[pendingJobs.size() - 1], pendingJobs[i]);
-                pendingJobs.pop_back();
+                pendingJobs.erase(it);
                 break;
             }
         }

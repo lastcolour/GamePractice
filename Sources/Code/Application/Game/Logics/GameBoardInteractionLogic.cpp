@@ -167,9 +167,7 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
 void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId secondId) {
     assert(firstId != secondId && "Can't switch same element");
 
-    if(switchSoundEvent) {
-        switchSoundEvent->emit();
-    }
+    switchSoundEvent.emit();
 
     SwitchTask task;
     task.duration = 0.f;

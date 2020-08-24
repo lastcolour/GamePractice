@@ -1,0 +1,39 @@
+#ifndef __SOUND_EVENT_NODE_HPP__
+#define __SOUND_EVENT_NODE_HPP__
+
+#include "Core/ETPrimitives.hpp"
+#include "Nodes/ETSoundNode.hpp"
+#include "Core/TimePoint.hpp"
+#include "Core/Buffer.hpp"
+#include "SoundStream.hpp"
+
+class SoundEventNode : public SoundStream,
+    public ETNode<ETSoundEventNode> {
+public:
+
+    SoundEventNode(EntityId soundNodeId, Buffer& data, float eventVolue, float eventDelay);
+    virtual ~SoundEventNode();
+
+    EntityId getNodeId() const;
+
+    // SoundStream
+    unsigned int getSamplesOffset() const override;
+    void setMixNode(SourceNode* node) override;
+    float getMixVolume() const override;
+    bool isEvent() const override;
+    bool isMixLooped() const override;
+    Buffer& getData() override;
+
+    // ETSoundEventNode
+    void ET_emit() override;
+
+private:
+
+    EntityId nodeId;
+    Buffer soundData;
+    float volume;
+    float nextDelay;
+    TimePoint lastPlayTime;
+};
+
+#endif /* __SOUND_EVENT_NODE_HPP__ */

@@ -5,11 +5,16 @@
 #include "Audio/ETSound.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/Buffer.hpp"
+#include "Nodes/ETSoundNodeManager.hpp"
 
 #include <unordered_map>
 
+class SoundEventNode;
+class SoundNode;
+
 class SoundManager : public SystemLogic,
-    public ETNode<ETSoundManager> {
+    public ETNode<ETSoundManager>,
+    public ETNode<ETSoundNodeManager> {
 public:
 
     SoundManager();
@@ -20,18 +25,20 @@ public:
     void deinit() override;
 
     // ETSoundManager
-    std::unique_ptr<Sound> ET_createSound(const char* soundName) override;
-    std::shared_ptr<SoundEvent> ET_createEvent(const char* soundName) override;
+    Sound ET_createSound(const char* soundName) override;
+    SoundEvent ET_createEvent(const char* soundName) override;
 
-private:
-
-    bool loadEvents();
-    Buffer loadSoundBuffer(const char* soundName);
+    // ETSoundNodeManager
+    void ET_initSoundNode(SoundNode* node, std::string soundName) override;
+    void ET_removeSoundNode(EntityId nodeId) override;
+    Buffer ET_loadSoundBuffer(const char* name) override;
+    void ET_loadSoundEvents() override;
 
 private:
 
     std::unordered_map<std::string, Buffer> buffers;
-    std::unordered_map<std::string, std::shared_ptr<SoundEvent>> eventMap;
+    std::unordered_map<std::string, std::unique_ptr<SoundEventNode>> eventMap;
+    std::unordered_map<EntityId, std::unique_ptr<SoundNode>> soundNodes;
 };
 
 #endif /* __SOUND_MANAGER_HPP__ */

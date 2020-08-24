@@ -8,7 +8,7 @@ RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
     func(callFunc),
     type(RunTaskType::Default),
     runCount(0),
-    frequency(120) {
+    frequency(0) {
 }
 
 RunTask::~RunTask() {

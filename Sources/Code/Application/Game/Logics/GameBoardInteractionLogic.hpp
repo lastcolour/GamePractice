@@ -7,9 +7,9 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
 #include "Math/Transform.hpp"
+#include "Audio/SoundEvent.hpp"
 
 class ReflectContext;
-class SoundEvent;
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
@@ -64,7 +64,7 @@ private:
     EntityId activeElemId;
     float switchDuration;
     std::vector<SwitchTask> switchTasks;
-    std::shared_ptr<SoundEvent> switchSoundEvent;
+    SoundEvent switchSoundEvent;
 };
 
 #endif /* __GAME_BOARD_INTERACTION_LOGIC_HPP__ */

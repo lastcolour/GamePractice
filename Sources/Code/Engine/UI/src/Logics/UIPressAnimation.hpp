@@ -6,8 +6,8 @@
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUITimer.hpp"
 #include "Math/Transform.hpp"
+#include "Audio/SoundEvent.hpp"
 
-class SoundEvent;
 class ReflectContext;
 
 class UIPressAnimation : public EntityLogic,
@@ -45,7 +45,7 @@ private:
 private:
 
     Transform startTm;
-    std::shared_ptr<SoundEvent> soundEvent;
+    SoundEvent soundEvent;
     float inDuration;
     float outDuration;
     float minScale;

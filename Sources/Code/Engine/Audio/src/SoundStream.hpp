@@ -1,8 +1,6 @@
 #ifndef __SOUND_STREAM_HPP__
 #define __SOUND_STREAM_HPP__
 
-#include <memory>
-
 class SourceNode;
 class Buffer;
 

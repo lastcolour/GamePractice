@@ -33,17 +33,16 @@ int ThreadJob::getParentsCount() const {
     return parentsCount;
 }
 
-void ThreadJob::execute() {
-    assert(task && "Invalid task");
-    task->execute();
-    onFinished();
+void ThreadJob::execute(const TimePoint& currTime) {
+    if(parentsCount > 0 || tree->isDelayPassed(currTime)) {
+        task->execute();
+        onFinished(currTime);
+    } else {
+        nextJobs = nullptr;
+    }
 }
 
-int ThreadJob::getRunCount() const {
-    return tree->getRunCount();
-}
-
-bool ThreadJob::canStart(const TimePoint& currTime, int threadId) const {
+bool ThreadJob::canStartInThread(int threadId) const {
     switch(task->getType()) {
         case RunTaskType::Default: {
             break;
@@ -64,25 +63,26 @@ bool ThreadJob::canStart(const TimePoint& currTime, int threadId) const {
             assert(false && "Invalid job type");
         }
     }
-    if(!parentsCount && !tree->isDelayPassed(currTime)) {
-        return false;
-    }
     return true;
 }
 
-void ThreadJob::onFinished() {
+void ThreadJob::onFinished(const TimePoint& currTime) {
     pendingParents.store(parentsCount);
-    if(tree->tryFinishTreeByOneJob()) {
+    if(tree->tryFinishTreeByOneJob(currTime)) {
         nextJobs = &(tree->getRootJobs());
     } else {
         nextJobs = &childrenJobs;
-    }
-    for(auto child : childrenJobs) {
-        child->onParentTaskFinished();
+        for(auto child : childrenJobs) {
+            child->onParentTaskFinished();
+        }
     }
 }
 
 void ThreadJob::scheduleNextJobs(std::vector<ThreadJob*>& output) {
+    if(!nextJobs) {
+        output.push_back(this);
+        return;
+    }
     for(auto job : *nextJobs) {
         if(job->pendingParents.load() == 0) {
             job->pendingParents.store(job->parentsCount);

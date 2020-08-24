@@ -42,8 +42,8 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
         return;
     }
 
-    if(increaseSound && targetValue > currentValue) {
-        increaseSound->emit();
+    if(targetValue > currentValue) {
+        increaseSound.emit();
     }
 
     currentStepDelay += dt;

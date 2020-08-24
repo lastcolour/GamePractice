@@ -1,8 +1,6 @@
 #ifndef __THREAD_WORKER_HPP__
 #define __THREAD_WORKER_HPP__
 
-#include "Core/TimePoint.hpp"
-
 #include <atomic>
 #include <thread>
 
@@ -27,7 +25,6 @@ private:
 
 private:
 
-    TimePoint timePoint;
     ThreadsPool* pool;
     std::thread thread;
     std::atomic<bool> stopped;

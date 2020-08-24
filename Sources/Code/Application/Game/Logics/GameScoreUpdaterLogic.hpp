@@ -5,9 +5,9 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGame.hpp"
+#include "Audio/SoundEvent.hpp"
 
 class ReflectContext;
-class SoundEvent;
 
 class GameScoreUpdaterLogic : public EntityLogic,
     public ETNode<ETGameScoreUpdater>,
@@ -37,7 +37,7 @@ private:
 
 private:
 
-    std::shared_ptr<SoundEvent> increaseSound;
+    SoundEvent increaseSound;
     float currentStepDelay;
     int increaseSpeed;
     int currentValue;

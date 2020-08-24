@@ -32,7 +32,7 @@ private:
 
 private:
 
-    std::unique_ptr<Sound> sound;
+    Sound sound;
     float volume;
     bool looped;
     bool autoStart;
