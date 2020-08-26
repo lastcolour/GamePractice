@@ -31,7 +31,7 @@ bool OggDataStream::open(Buffer& buffer) {
     stb_vorbis_info orbisInfo = stb_vorbis_get_info(oggStream);
     oggChannels = orbisInfo.channels;
     oggSampleRate = orbisInfo.sample_rate;
-    oggSampleCount = stb_vorbis_stream_length_in_samples(oggStream) * orbisInfo.channels;
+    oggSampleCount = stb_vorbis_stream_length_in_samples(oggStream);
     return true;
 }
 
@@ -97,4 +97,8 @@ int OggDataStream::readI16(void* out, int channels, int samples, bool looped) {
         }
     }
     return readCount;
+}
+
+int OggDataStream::getTotalSamples() const {
+    return oggSampleCount;
 }

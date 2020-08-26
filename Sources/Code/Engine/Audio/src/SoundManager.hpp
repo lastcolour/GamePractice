@@ -8,6 +8,7 @@
 #include "Nodes/ETSoundNodeManager.hpp"
 
 #include <unordered_map>
+#include <vector>
 
 class SoundEventNode;
 class SoundNode;
@@ -32,7 +33,11 @@ public:
     void ET_initSoundNode(SoundNode* node, std::string soundName) override;
     void ET_removeSoundNode(EntityId nodeId) override;
     Buffer ET_loadSoundBuffer(const char* name) override;
-    void ET_loadSoundEvents() override;
+    void ET_loadSoundEventsBuffers() override;
+
+private:
+
+    void loadSoundEventsTable();
 
 private:
 

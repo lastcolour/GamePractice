@@ -23,6 +23,7 @@ public:
     bool isPlaying() const;
     bool isPaused() const;
     bool isLooped() const;
+    bool isValid() const;
 
 private:
 

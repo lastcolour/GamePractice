@@ -24,15 +24,16 @@ unsigned int SoundNode::getSamplesOffset() const {
     return samplesOffset;
 }
 
-void SoundNode::setMixNode(SourceNode* node) {
-    if(mixNode) {
-        assert(!node && "Can't change a mix node");
-        samplesOffset = mixNode->getSamplesOffset();
-        mixNode = nullptr;
-    } else {
-        assert(node && "Can't detach from a mix without attach");
-        mixNode = node;
-    }
+void SoundNode::onAttachToMixNode(SourceNode* node) {
+    assert(node && "Invalid mix node");
+    assert(!mixNode && "Can't attach without detach");
+    mixNode = node;
+}
+
+void SoundNode::onDetachFromMixNode(int newSampleOffset) {
+    assert(mixNode && "Can't detach from a mix without attach");
+    mixNode = nullptr;
+    samplesOffset = newSampleOffset;
 }
 
 float SoundNode::getMixVolume() const {

@@ -23,16 +23,6 @@ void MixNode::setMixGraph(MixGraph* mixGraph) {
     graph = mixGraph;
 }
 
-const MixConfig& MixNode::getMixConfig() const {
-    assert(graph && "Invalid mix graph");
-    return graph->getMixConfig();
-}
-
-Resampler& MixNode::getResampler() {
-    assert(graph && "Invalid mix graph");
-    return graph->getResampler();
-}
-
-Buffer& MixNode::getTempBuffer() {
-    return graph->getTempBuffer();
+MixGraph* MixNode::getMixGraph() {
+    return graph;
 }

@@ -14,6 +14,7 @@ public:
 
     // Sound
     void emit();
+    bool isValid() const;
 
 private:
 

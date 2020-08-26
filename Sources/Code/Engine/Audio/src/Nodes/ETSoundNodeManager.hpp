@@ -8,7 +8,7 @@ class SoundNode;
 struct ETSoundNodeManager {
     virtual ~ETSoundNodeManager() = default;
     virtual Buffer ET_loadSoundBuffer(const char* name) = 0;
-    virtual void ET_loadSoundEvents() = 0;
+    virtual void ET_loadSoundEventsBuffers() = 0;
     virtual void ET_initSoundNode(SoundNode* node, std::string soundName) = 0;
     virtual void ET_removeSoundNode(EntityId nodeId) = 0;
 };

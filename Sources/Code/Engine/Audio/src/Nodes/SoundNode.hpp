@@ -18,11 +18,12 @@ public:
 
     // SoundStream
     unsigned int getSamplesOffset() const override;
-    void setMixNode(SourceNode* node) override;
     bool isMixLooped() const override;
     float getMixVolume() const override;
     bool isEvent() const override;
     Buffer& getData() override;
+    void onAttachToMixNode(SourceNode* node) override;
+    void onDetachFromMixNode(int newSampleOffset) override;
 
     // ETSoundNode
     void ET_play() override;

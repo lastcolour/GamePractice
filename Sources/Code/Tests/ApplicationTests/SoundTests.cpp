@@ -9,44 +9,43 @@ const int MAX_PARALLEL_SOUNDS = 16;
 } // namespace
 
 TEST_F(SoundTests, CheckCreateSound) {
-    std::unique_ptr<Sound> sound;
+    Sound sound;
     ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, TEST_SOUND_NAME);
-    ASSERT_TRUE(sound);
+    ASSERT_TRUE(sound.isValid());
 
-    ASSERT_FALSE(sound->isPlaying());
+    ASSERT_FALSE(sound.isPlaying());
 
-    sound->play();
+    sound.play();
 
-    ASSERT_TRUE(sound->isPlaying());
+    ASSERT_TRUE(sound.isPlaying());
 
-    sound->pause();
+    sound.pause();
 
-    ASSERT_FALSE(sound->isPlaying());
+    ASSERT_FALSE(sound.isPlaying());
 
-    sound->resume();
+    sound.resume();
 
-    ASSERT_TRUE(sound->isPlaying());
+    ASSERT_TRUE(sound.isPlaying());
 
-    sound->stop();
+    sound.stop();
 
-    ASSERT_FALSE(sound->isPlaying());
+    ASSERT_FALSE(sound.isPlaying());
 }
 
 TEST_F(SoundTests, CheckCreateManySound) {
-    std::vector<std::shared_ptr<Sound>> sounds;
+    std::vector<Sound> sounds;
     for(int i = 0; i < MAX_PARALLEL_SOUNDS; ++i) {
-        std::unique_ptr<Sound> sound;
+        Sound sound;
         ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, TEST_SOUND_NAME);
-        if(sound) {
-            sounds.push_back(std::move(sound));
-        }
+        EXPECT_TRUE(sound.isValid());
+        sounds.emplace_back(std::move(sound));
     }
 
     ASSERT_EQ(sounds.size(), MAX_PARALLEL_SOUNDS);
 
     for(size_t i = 0, sz = sounds.size(); i < sz; ++i) {
         auto& sound = sounds[i];
-        sound->play();
-        EXPECT_TRUE(sound->isPlaying());
+        sound.play();
+        EXPECT_TRUE(sound.isPlaying());
     }
 }

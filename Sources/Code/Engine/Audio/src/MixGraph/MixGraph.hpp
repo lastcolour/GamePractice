@@ -29,15 +29,15 @@ public:
 
 private:
 
-    SourceNode* getFreeSource();
+    MixNode* getFreeSource();
 
 private:
 
     Resampler resampler;
     MixConfig config;
-    CombineNode root;
+    CombineNode rootCombine;
     Buffer buffer;
-    std::vector<std::unique_ptr<SourceNode>> sources;
+    std::vector<std::unique_ptr<MixNode>> sources;
 };
 
 #endif /* __MIX_GRAPH_HPP__ */

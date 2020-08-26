@@ -1,4 +1,5 @@
 #include "MixGraph/MixGraph.hpp"
+#include "MixGraph/SourceRampNode.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <algorithm>
@@ -18,9 +19,9 @@ MixGraph::~MixGraph() {
 }
 
 bool MixGraph::init() {
-    root.setMixGraph(this);
+    rootCombine.setMixGraph(this);
     for(int i = 0; i < MAX_SOURCES; ++i) {
-        auto source = new SourceNode();
+        auto source = new SourceRampNode();
         source->setMixGraph(this);
         sources.emplace_back(source);
     }
@@ -35,16 +36,31 @@ void MixGraph::mix(float* out, int channels, int samples) {
         buffer.resize(minBufferSize);
     }
 
-    root.additiveMixTo(out, channels, samples);
+    rootCombine.additiveMixTo(out, channels, samples);
     auto outData = static_cast<float*>(out);
 
+    int lowClipCount = 0;
+    int highClipCount = 0;
     for(int i = 0; i < samples * channels; ++i) {
-        out[i] = std::min(1.f, std::max(out[i], -1.f));
+        if(out[i] > 1.f) {
+            out[i] = 1.f;
+            ++highClipCount;
+        } else if(out[i] < -1.f) {
+            out[i] = 1.f;
+            ++lowClipCount;
+        }
+    }
+
+    if(lowClipCount > 1) {
+        LogWarning("[MixGraph::mix] Detected low-clipping: %d", lowClipCount);
+    }
+    if(highClipCount > 1) {
+        LogWarning("[MixGraph::mix] Detected high-clipping: %d", highClipCount);
     }
 }
 
-SourceNode* MixGraph::getFreeSource() {
-    SourceNode* freeSource = nullptr;
+MixNode* MixGraph::getFreeSource() {
+    MixNode* freeSource = nullptr;
     for(auto& source : sources) {
         if(!source->getParent()) {
             freeSource = source.get();
@@ -54,13 +70,14 @@ SourceNode* MixGraph::getFreeSource() {
 }
 
 bool MixGraph::playSound(SoundStream* stream) {
-    auto source = getFreeSource();
-    if(!source) {
+    auto mixNode = getFreeSource();
+    if(!mixNode) {
         LogWarning("[MixGraph::playSound] Can't find free source");
         return false;
     }
-    root.addChild(source);
-    source->attachToStream(stream);
+    auto sourceNode = static_cast<SourceRampNode*>(mixNode);
+    sourceNode->attachToStream(stream);
+    rootCombine.addChild(mixNode);
     return true;
 }
 

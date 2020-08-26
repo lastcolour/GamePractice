@@ -82,3 +82,7 @@ bool Sound::isPaused() const {
     ET_SendEventReturn(res, nodeId, &ETSoundNode::ET_isPaused);
     return res;
 }
+
+bool Sound::isValid() const {
+    return nodeId.isValid();
+}

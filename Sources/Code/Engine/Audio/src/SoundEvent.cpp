@@ -28,3 +28,7 @@ SoundEvent::~SoundEvent() {
 void SoundEvent::emit() {
     ET_QueueEvent(nodeId, &ETSoundEventNode::ET_emit);
 }
+
+bool SoundEvent::isValid() const {
+    return nodeId.isValid();
+}

@@ -22,6 +22,7 @@ public:
 
     int getChannels() const;
     int getSampleRate() const;
+    int getTotalSamples() const;
 
 private:
 

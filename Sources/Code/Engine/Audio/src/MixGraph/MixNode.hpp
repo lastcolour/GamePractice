@@ -3,9 +3,7 @@
 
 class CombineNode;
 class MixGraph;
-class Resampler;
-class Buffer;
-struct MixConfig;
+struct SourceNode;
 
 class MixNode {
 public:
@@ -18,9 +16,7 @@ public:
     CombineNode* getParent();
     void setParent(CombineNode* newParent);
     void setMixGraph(MixGraph* mixGraph);
-    const MixConfig& getMixConfig() const;
-    Resampler& getResampler();
-    Buffer& getTempBuffer();
+    MixGraph* getMixGraph();
 
 private:
 
