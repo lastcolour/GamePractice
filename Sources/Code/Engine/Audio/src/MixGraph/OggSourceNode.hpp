@@ -27,6 +27,7 @@ public:
     unsigned int getTotalSamples() const;
     SoundStream* getSoundStream();
     void setSoundStream(SoundStream* newStream);
+    bool isLooped() const;
 
 private:
 

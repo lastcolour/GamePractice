@@ -39,6 +39,7 @@ private:
     int fadeoutStart;
     int offset;
     int maxSamplesToProcess;
+    int totalSamples;
     float fraction;
     float value;
 };

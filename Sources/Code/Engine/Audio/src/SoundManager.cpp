@@ -4,6 +4,7 @@
 #include "OggDataStream.hpp"
 #include "Nodes/SoundNode.hpp"
 #include "Nodes/SoundEventNode.hpp"
+#include "AudioUtils.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -97,6 +98,7 @@ void SoundManager::loadSoundEventsTable() {
             LogWarning("[SoundManager::loadSoundEventsTable] Event's '%s' volume should be in range: [0, 1]", name);
             volume = std::max(0.f, std::min(1.f, volume));
         }
+        volume = Audio::CovertToExpVolume(volume);
         float nextDelay = 0.f;
         effectNode.read("nextDelay", nextDelay);
         if(nextDelay < 0.f) {

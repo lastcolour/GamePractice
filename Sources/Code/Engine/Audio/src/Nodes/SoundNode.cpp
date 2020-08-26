@@ -2,6 +2,7 @@
 #include "MixGraph/SourceNode.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
+#include "AudioUtils.hpp"
 
 #include <cassert>
 
@@ -88,7 +89,7 @@ void SoundNode::ET_setLooped(bool flag) {
 }
 
 void SoundNode::ET_setVolume(float newVolume) {
-    volume = newVolume;
+    volume = Audio::CovertToExpVolume(newVolume);
 }
 
 bool SoundNode::ET_isPlaying() const {

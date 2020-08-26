@@ -78,6 +78,7 @@ void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
 
     auto mixState = getMixGraph()->getResampler().exclusiveResampleTo(inData, channels, samples, looped, &oggData);
     samplesOffset += mixState.samplesRead;
+    samplesOffset %= oggData.getTotalSamples();
 
     for(int i = 0; i < channels * samples; ++i) {
         out[i] += inData[i] * volume;
@@ -102,4 +103,11 @@ unsigned int OggSourceNode::getSamplesOffset() const {
 
 void OggSourceNode::setSoundStream(SoundStream* newStream) {
     soundStream = newStream;
+}
+
+bool OggSourceNode::isLooped() const {
+    if(!soundStream) {
+        return false;
+    }
+    return soundStream->isMixLooped();
 }

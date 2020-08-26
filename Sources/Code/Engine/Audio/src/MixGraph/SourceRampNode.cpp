@@ -59,6 +59,7 @@ SourceRampNode::SourceRampNode() :
     fadeoutStart(0),
     offset(0),
     maxSamplesToProcess(0),
+    totalSamples(0),
     fraction(0.f),
     value(0.f) {
 }
@@ -81,20 +82,25 @@ void SourceRampNode::attachToStream(SoundStream* stream) {
     state = State::FadeIn;
     offset = 0;
     value = 0.f;
-    maxSamplesToProcess = getRemainingSamples(oggSource, mixConfig.outSampleRate);
     fadeintEnd = static_cast<int>(mixConfig.outSampleRate * FADE_IN_DURATION);
-    fadeoutStart = maxSamplesToProcess - static_cast<int>(mixConfig.outSampleRate * FADE_OUT_DURATION);
-    if(fadeoutStart < fadeintEnd) {
-        auto mean = (fadeoutStart + fadeintEnd) / 2;
-        fadeoutStart = mean;
-        fadeintEnd = mean;
-    }
     fraction = 1.f / static_cast<float>(fadeintEnd);
+    totalSamples = static_cast<int>(oggSource.getTotalSamples() * static_cast<float>(mixConfig.outSampleRate / oggSource.getSampleRate()));
+    if(oggSource.isLooped()) {
+        fadeoutStart = -1;
+        maxSamplesToProcess = -1;
+    } else {
+        maxSamplesToProcess = getRemainingSamples(oggSource, mixConfig.outSampleRate);
+        fadeoutStart = maxSamplesToProcess - static_cast<int>(mixConfig.outSampleRate * FADE_OUT_DURATION);
+        if(fadeoutStart < fadeintEnd) {
+            auto mean = (fadeoutStart + fadeintEnd) / 2;
+            fadeoutStart = mean;
+            fadeintEnd = mean;
+        }
+    }
 }
 
 void SourceRampNode::detachFromStream() {
     const auto& mixConfig = getMixGraph()->getMixConfig();
-
     if(state != State::FadeOut) {
         int remainingSamples = getRemainingSamples(oggSource, mixConfig.outSampleRate);
         maxSamplesToProcess = std::min(remainingSamples, offset + static_cast<int>(mixConfig.outSampleRate * FADE_OUT_DURATION));
@@ -104,7 +110,6 @@ void SourceRampNode::detachFromStream() {
         state = State::FadeOut;
         fraction = -value / static_cast<float>(maxSamplesToProcess - offset);
     }
-
     auto stream = oggSource.getSoundStream();
     if(stream) {
         auto sourceSampleOffset = maxSamplesToProcess - offset;
@@ -144,14 +149,18 @@ void SourceRampNode::additiveMixTo(float* out, int channels, int samples) {
             [[fallthrough]];
         }
         case State::Normal: {
-            int prorcessSamples = std::min(offset + remaingSamples, fadeoutStart) - offset;
+            int prorcessSamples = remaingSamples;
+            if(fadeoutStart > 0) {
+                prorcessSamples = std::min(offset + remaingSamples, fadeoutStart) - offset;
+            }
             int startIdx = samples - remaingSamples;
             int endIdx = startIdx + prorcessSamples;
             assert(endIdx <= samples);
             additiveMix(out, inData, channels, startIdx, endIdx);
-            offset += prorcessSamples;
             remaingSamples -= prorcessSamples;
-            if(offset >= fadeoutStart) {
+            offset += prorcessSamples;
+            offset %= totalSamples;
+            if(fadeoutStart > 0 && offset >= fadeoutStart) {
                 state = State::FadeOut;
             } else {
                 break;
