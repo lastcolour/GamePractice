@@ -35,7 +35,7 @@ bool RenderTextLogic::init() {
 
 void RenderTextLogic::ET_setFontHeight(int newFontHeight) {
     fontHeight = newFontHeight;
-    ET_SendEvent(&ETRenderProxyNode::ET_setFontHeight, newFontHeight);
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setFontHeight, newFontHeight);
 }
 
 AABB2D RenderTextLogic::ET_getTextAABB() const {

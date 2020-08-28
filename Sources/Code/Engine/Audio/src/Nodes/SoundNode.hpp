@@ -13,7 +13,7 @@ public:
     SoundNode(EntityId soundNodeId);
     ~SoundNode();
 
-    void setData(Buffer& data);
+    void setSoundData(Buffer& buffer);
     EntityId getNodeId() const;
 
     // SoundStream
@@ -43,6 +43,7 @@ private:
     float volume;
     unsigned int samplesOffset;
     bool looped;
+    bool dataIsSet;
 };
 
 #endif /* __SOUND_NODE_HPP__ */

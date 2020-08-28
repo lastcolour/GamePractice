@@ -27,4 +27,9 @@ struct ETEntityManager {
         EntityLogicValueId valueId) = 0;
 };
 
+struct ETAsyncEntityManager {
+    virtual ~ETAsyncEntityManager() = default;
+    virtual void ET_createAsyncEntity(const char* entityName, std::function<void(EntityId)> callback) = 0;
+};
+
 #endif /* __ET_ENTITY_MANAGER_HPP__ */

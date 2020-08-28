@@ -14,7 +14,8 @@ const int Z_INDEX_VIEW_OFFSET = 1000;
 
 } // namespace
 
-UIViewManager::UIViewManager() {
+UIViewManager::UIViewManager() :
+    isLoadingView(false) {
 }
 
 UIViewManager::~UIViewManager() {
@@ -28,11 +29,16 @@ bool UIViewManager::init() {
 void UIViewManager::deinit() {
 }
 
-EntityId UIViewManager::getViewId(UIViewType viewType) {
+EntityId UIViewManager::getLoadedViewId(UIViewType viewType) const {
     auto it = loadedViews.find(viewType);
-    if(it != loadedViews.end()) {
-        return it->second;
+    if(it == loadedViews.end()) {
+        return InvalidEntityId;
     }
+    auto viewId = it->second;
+    return viewId;
+}
+
+const char* UIViewManager::getViewName(UIViewType viewType) const {
     const char* viewName = nullptr;
     auto uiConfig = ET_getShared<UIConfig>();
     switch(viewType) {
@@ -57,21 +63,36 @@ EntityId UIViewManager::getViewId(UIViewType viewType) {
         }
         default: {
             assert(false && "Invalid view type");
-            return InvalidEntityId;
         }
     }
-    EntityId viewId;
-    ET_SendEventReturn(viewId, &ETEntityManager::ET_createEntity, viewName);
-    if(!viewId.isValid()) {
-        LogError("[ UIViewManager::getViewId] Can't create view: '%s'", viewName);
-        return InvalidEntityId;
-    }
-    loadedViews[viewType] = viewId;
-    ET_SendEvent(viewId, &ETUIElement::ET_hide);
-    return viewId;
+    return viewName;
 }
 
 bool UIViewManager::ET_openView(UIViewType viewType) {
+    if(isLoadingView) {
+        LogError("[UIViewManager::ET_openView] Already loading another view");
+    }
+    EntityId viewId = getLoadedViewId(viewType);
+    if(viewId.isValid()) {
+        ET_onViewLoaded(viewType, viewId);
+    } else {
+        auto viewName = getViewName(viewType);
+        ET_SendEvent(&ETAsyncEntityManager::ET_createAsyncEntity, viewName, [viewType](EntityId viewId){
+            ET_QueueEvent(&ETUIViewManager::ET_onViewLoaded, viewType, viewId);
+        });
+    }
+    return true;
+}
+
+void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
+    isLoadingView = false;
+    if(viewId == InvalidEntityId) {
+        LogWarning("[UIViewManager::ET_onViewLoaded] Can't create view!");
+        return;
+    }
+    
+    loadedViews[viewType] = viewId;
+
     int zIndex = 0;
     if(!stack.empty()) {
         auto topViewId = stack.back().id;
@@ -80,15 +101,11 @@ bool UIViewManager::ET_openView(UIViewType viewType) {
     }
     UIViewNode node;
     node.type = viewType;
-    node.id = getViewId(viewType);
-    if(node.id == InvalidEntityId) {
-        LogWarning("[UIViewManager::ET_openView] Can't create view!");
-        return false;
-    }
+    node.id = viewId;
     stack.push_back(node);
+
     ET_SendEvent(node.id, &ETUIElement::ET_setZIndex, zIndex);
     ET_SendEvent(&ETUIViewTransitionManager::ET_addAppearing, node.id);
-    return true;
 }
 
 void UIViewManager::ET_closeView(UIViewType viewType) {

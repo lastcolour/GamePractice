@@ -60,8 +60,9 @@ private:
     void doSoftDisconnect(int etId, ETNodeBase* ptr);
     void doConnect(int etId, EntityId addressId, ETNodeBase* ptr);
     void doDisconnect(int etId, ETNodeBase* ptr);
-    bool startRoute(int etId);
-    void endRoute(bool isUnique, int etId);
+    void startRoute(int etId);
+    void endRoute(int etId);
+    void processPendingConnections(int etId);
 
 private:
 
@@ -75,6 +76,7 @@ private:
 
     std::unique_ptr<ETSyncRoute> syncRoute;
     std::vector<Registry> connections;
+    std::mutex connMutex;
     std::mutex eventMutex;
 };
 

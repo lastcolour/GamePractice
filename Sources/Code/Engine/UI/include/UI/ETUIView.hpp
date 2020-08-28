@@ -26,6 +26,7 @@ struct ETUIViewManager {
     virtual void ET_closeView(UIViewType viewType) = 0;
     virtual UIViewType ET_getActiveViewType() const = 0;
     virtual EntityId ET_getActiveViewId() const = 0;
+    virtual void ET_onViewLoaded(UIViewType viewType, EntityId viewId) = 0;
 };
 
 struct ETUIViewTransitionManager {

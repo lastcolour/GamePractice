@@ -72,14 +72,14 @@ int RenderNode::ET_getDrawPriority() const {
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
-    isTransformUpdated = true;
+    isTransformUpdated.store(true);
 }
 
 void RenderNode::ET_syncTransform() {
-    if(isTransformUpdated) {
+    bool isChanged = true;
+    if(isTransformUpdated.compare_exchange_strong(isChanged, false)) {
         Transform tm;
         ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
         ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
-        isTransformUpdated = false;
     }
 }

@@ -11,7 +11,8 @@ SoundNode::SoundNode(EntityId soundNodeId) :
     mixNode(nullptr),
     volume(1.f),
     samplesOffset(0),
-    looped(false) {
+    looped(false),
+    dataIsSet(false) {
 
     assert(nodeId.isValid() && "Invalid node id");
     ETNode<ETSoundNode>::connect(nodeId);
@@ -54,7 +55,10 @@ Buffer& SoundNode::getData() {
 }
 
 void SoundNode::ET_play() {
-    assert(soundData && "Invalid sound data");
+    if(!soundData && !dataIsSet) {
+        ET_QueueEvent(nodeId, &ETSoundNode::ET_play);
+        return;
+    }
     if(ET_isPlaying()) {
         return;
     }
@@ -107,6 +111,7 @@ EntityId SoundNode::getNodeId() const {
     return nodeId;
 }
 
-void SoundNode::setData(Buffer& data) {
+void SoundNode::setSoundData(Buffer& data) {
     soundData = data;
+    dataIsSet = true;
 }

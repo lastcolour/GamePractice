@@ -24,6 +24,7 @@ public:
     void ET_closeView(UIViewType viewType) override;
     UIViewType ET_getActiveViewType() const override;
     EntityId ET_getActiveViewId() const override;
+    void ET_onViewLoaded(UIViewType viewType, EntityId viewId) override;
 
 private:
 
@@ -34,12 +35,13 @@ private:
 
 private:
 
-    EntityId getViewId(UIViewType viewType);
-
+    EntityId getLoadedViewId(UIViewType viewType) const;
+    const char* getViewName(UIViewType viewType) const;
 private:
 
     std::unordered_map<UIViewType, EntityId> loadedViews;
     std::vector<UIViewNode> stack;
+    bool isLoadingView;
 };
 
 #endif /* __UI_VIEW_MANAGER_HPP__ */

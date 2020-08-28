@@ -3,6 +3,7 @@
 #include "Core/ETSystem.hpp"
 
 #include <cassert>
+#include <cstdio>
 
 namespace {
 
@@ -58,36 +59,45 @@ void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) 
     if(!addressId.isValid()) {
         return;
     }
-    auto isUnique = syncRoute->pushRoute(etId);
-    if(isUnique) {
+    if(syncRoute->blockRoute(etId)) {
+        printf("[ETNodeRegistry] doConnect() - NOW\n");
         doConnect(etId, addressId, ptr);
+        processPendingConnections(etId);
+        syncRoute->unlockRoute(etId);
     } else {
+        printf("[ETNodeRegistry] doConnect() - PENDING\n");
+        std::lock_guard<std::mutex> lock(connMutex);
         bool isConnect = true;
         connections[etId].pendingConnections.push_back({ptr, addressId, isConnect});
     }
-    syncRoute->popRoute(etId);
 }
 
 void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
-    auto isUnique = syncRoute->pushRoute(etId);
-    {
-        if(isUnique) {
-            doDisconnect(etId, ptr);
-        } else {
+    if(syncRoute->blockRoute(etId)) {
+        printf("[ETNodeRegistry] doDisconnect() - NOW\n");
+        doDisconnect(etId, ptr);
+        processPendingConnections(etId);
+        syncRoute->unlockRoute(etId);
+    } else {
+        {
+            printf("[ETNodeRegistry] doDisconnect() - PENDING\n");
+            syncRoute->softBlock(etId);
             doSoftDisconnect(etId, ptr);
-            bool isConnect = false;
-            connections[etId].pendingConnections.push_back({ptr, InvalidEntityId, isConnect});
+            syncRoute->softUnlock(etId);
         }
+        std::lock_guard<std::mutex> lock(connMutex);
+        bool isConnect = false;
+        connections[etId].pendingConnections.push_back({ptr, InvalidEntityId, isConnect});
     }
-    syncRoute->popRoute(etId);
 }
 
 void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT callF) {
     if(!addressId.isValid()) {
         return;
     }
-    auto isUnique = startRoute(etId);
+    printf("[ETNodeRegistry] forEachNode()\n");
+    startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
             if(node.id == addressId) {
@@ -95,11 +105,12 @@ void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT cal
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
 }
 
 void ETNodeRegistry::forEachNode(int etId, CallFunctionT callF) {
-    auto isUnique = startRoute(etId);
+    printf("[ETNodeRegistry] forEachNode()\n");
+    startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
             if(node.id != InvalidEntityId) {
@@ -107,14 +118,15 @@ void ETNodeRegistry::forEachNode(int etId, CallFunctionT callF) {
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
 }
 
 void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF) {
     if(!addressId.isValid()) {
         return;
     }
-    auto isUnique = startRoute(etId);
+    printf("[ETNodeRegistry] forFirst()\n");
+    startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
             if(node.id == addressId) {
@@ -123,11 +135,12 @@ void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF)
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
 }
 
 void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
-    auto isUnique = startRoute(etId);
+    printf("[ETNodeRegistry] forFirst()\n");
+    startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
             if(node.id != InvalidEntityId) {
@@ -136,31 +149,41 @@ void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
 }
 
-bool ETNodeRegistry::startRoute(int etId) {
+void ETNodeRegistry::startRoute(int etId) {
     assert(etId < MAX_ET_NODE_TYPES && "Too many ET nodes types");
-    return syncRoute->pushRoute(etId);
+    syncRoute->pushRoute(etId);
 }
 
-void ETNodeRegistry::endRoute(bool isUnique, int etId) {
-    if(isUnique) {
-        for(auto& req : connections[etId].pendingConnections) {
-            if(req.isConnect) {
-                doConnect(etId, req.id, req.ptr);
-            } else {
-                doDisconnect(etId, req.ptr);
-            }
-        }
-        connections[etId].pendingConnections.clear();
-    }
+void ETNodeRegistry::endRoute(int etId) {
     syncRoute->popRoute(etId);
+    if(syncRoute->blockRoute(etId)) {
+        processPendingConnections(etId);
+        syncRoute->unlockRoute(etId);
+    }
+}
+
+void ETNodeRegistry::processPendingConnections(int etId) {
+    printf("[ETNodeRegistry] processPendingConnections()\n");
+    std::vector<ConnectionRequest> connectionReq;
+    {
+        std::lock_guard<std::mutex> lock(connMutex);
+        connectionReq = std::move(connections[etId].pendingConnections);
+    }
+    for(auto& req : connectionReq) {
+        if(req.isConnect) {
+            doConnect(etId, req.id, req.ptr);
+        } else {
+            doDisconnect(etId, req.ptr);
+        }
+    }
 }
 
 std::vector<EntityId> ETNodeRegistry::getAll(int etId) {
     std::vector<EntityId> result;
-    auto isUnique = startRoute(etId);
+    startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
             if(node.id != InvalidEntityId) {
@@ -168,7 +191,7 @@ std::vector<EntityId> ETNodeRegistry::getAll(int etId) {
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
     return result;
 }
 
@@ -177,7 +200,7 @@ bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
         return false;
     }
     bool result = false;
-    auto isUnique = startRoute(etId);
+    startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
             if(node.id == addressId) {
@@ -186,7 +209,7 @@ bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
     return result;
 }
 
@@ -208,8 +231,11 @@ void ETNodeRegistry::pollEventsForAll(int etId) {
     {
         std::lock_guard<std::mutex> lock(eventMutex);
         events = std::move(connections[etId].pendingEvents);
+        if(events.empty()) {
+            return;
+        }
     }
-    auto isUnique = startRoute(etId);
+    startRoute(etId);
     {
         auto& nodes = connections[etId].nodes;
         for(auto& event : events) {
@@ -220,5 +246,5 @@ void ETNodeRegistry::pollEventsForAll(int etId) {
             }
         }
     }
-    endRoute(isUnique, etId);
+    endRoute(etId);
 }

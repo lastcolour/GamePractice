@@ -16,17 +16,34 @@ public:
     ETSyncRoute(int etNodesCount);
     ~ETSyncRoute();
 
-    bool pushRoute(int reqRouteId);
+    bool blockRoute(int reqRouteId);
+    void unlockRoute(int reqRouteId);
+
+    void pushRoute(int reqRouteId);
     void popRoute(int reqRouteId);
+
+    void softBlock(int reqRouteId);
+    void softUnlock(int reqRouteId);
 
 private:
 
-    struct Node {
-        std::atomic<int> count;
+    struct ThreadData {
+        int count { 0 };
         std::thread::id threadId;
-
-        Node() : count(0) {}
     };
+
+    struct Node {
+        bool blocked {false};
+        ThreadData data[4];
+    };
+
+private:
+
+    bool isBlockable(const Node& node) const;
+    bool isUniqueThread(const Node& node, const std::thread::id& threadId) const;
+    void addThread(Node& node, const std::thread::id& threadId);
+    void removeThread(Node& node, const std::thread::id& threadId);
+    int getThreadId(const Node& node, const std::thread::id& threadId) const;
 
 private:
 

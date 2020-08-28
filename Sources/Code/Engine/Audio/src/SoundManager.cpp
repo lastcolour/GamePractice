@@ -130,7 +130,7 @@ void SoundManager::ET_initSoundNode(SoundNode* node, std::string soundName) {
         delete node;
         return;
     }
-    node->setData(buffer);
+    node->setSoundData(buffer);
     soundNodes[node->getNodeId()].reset(node);
 }
 
