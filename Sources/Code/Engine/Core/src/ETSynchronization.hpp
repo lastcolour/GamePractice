@@ -16,14 +16,15 @@ public:
     ETSyncRoute(int etNodesCount);
     ~ETSyncRoute();
 
-    bool blockRoute(int reqRouteId);
+    bool tryBlockRoute(int reqRouteId);
     void unlockRoute(int reqRouteId);
 
-    void pushRoute(int reqRouteId);
+    bool pushRoute(int reqRouteId);
     void popRoute(int reqRouteId);
+    bool popAndBlock(int reqRouteId);
 
-    void softBlock(int reqRouteId);
-    void softUnlock(int reqRouteId);
+    bool tryHardBlock(int reqRouteId);
+    void hardUnlock(int reqRouteId);
 
 private:
 
@@ -43,7 +44,6 @@ private:
     bool isUniqueThread(const Node& node, const std::thread::id& threadId) const;
     void addThread(Node& node, const std::thread::id& threadId);
     void removeThread(Node& node, const std::thread::id& threadId);
-    int getThreadId(const Node& node, const std::thread::id& threadId) const;
 
 private:
 

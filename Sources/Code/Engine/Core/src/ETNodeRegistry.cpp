@@ -3,7 +3,6 @@
 #include "Core/ETSystem.hpp"
 
 #include <cassert>
-#include <cstdio>
 
 namespace {
 
@@ -14,7 +13,6 @@ const int MAX_ET_NODE_TYPES = 128;
 ETNodeRegistry::ETNodeRegistry() :
     syncRoute(new ETSyncRoute(MAX_ET_NODE_TYPES)),
     connections(MAX_ET_NODE_TYPES) {
-
 }
 
 ETNodeRegistry::~ETNodeRegistry() {
@@ -54,18 +52,17 @@ void ETNodeRegistry::doSoftDisconnect(int etId, ETNodeBase* ptr) {
     it->id = InvalidEntityId;
 }
 
-void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) {
+void ETNodeRegistry::connectNode(int etId, bool isThreadSafe, EntityId addressId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
     if(!addressId.isValid()) {
         return;
     }
-    if(syncRoute->blockRoute(etId)) {
-        printf("[ETNodeRegistry] doConnect() - NOW\n");
+    connections[etId].isThreadSafe = isThreadSafe;
+    if(syncRoute->tryBlockRoute(etId)) {
         doConnect(etId, addressId, ptr);
         processPendingConnections(etId);
         syncRoute->unlockRoute(etId);
     } else {
-        printf("[ETNodeRegistry] doConnect() - PENDING\n");
         std::lock_guard<std::mutex> lock(connMutex);
         bool isConnect = true;
         connections[etId].pendingConnections.push_back({ptr, addressId, isConnect});
@@ -74,29 +71,21 @@ void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) 
 
 void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
-    if(syncRoute->blockRoute(etId)) {
-        printf("[ETNodeRegistry] doDisconnect() - NOW\n");
+    if(syncRoute->tryHardBlock(etId)) {
         doDisconnect(etId, ptr);
         processPendingConnections(etId);
-        syncRoute->unlockRoute(etId);
     } else {
-        {
-            printf("[ETNodeRegistry] doDisconnect() - PENDING\n");
-            syncRoute->softBlock(etId);
-            doSoftDisconnect(etId, ptr);
-            syncRoute->softUnlock(etId);
-        }
-        std::lock_guard<std::mutex> lock(connMutex);
+        doSoftDisconnect(etId, ptr);
         bool isConnect = false;
         connections[etId].pendingConnections.push_back({ptr, InvalidEntityId, isConnect});
     }
+    syncRoute->hardUnlock(etId);
 }
 
 void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT callF) {
     if(!addressId.isValid()) {
         return;
     }
-    printf("[ETNodeRegistry] forEachNode()\n");
     startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
@@ -109,7 +98,6 @@ void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT cal
 }
 
 void ETNodeRegistry::forEachNode(int etId, CallFunctionT callF) {
-    printf("[ETNodeRegistry] forEachNode()\n");
     startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
@@ -125,7 +113,6 @@ void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF)
     if(!addressId.isValid()) {
         return;
     }
-    printf("[ETNodeRegistry] forFirst()\n");
     startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
@@ -139,7 +126,6 @@ void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF)
 }
 
 void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
-    printf("[ETNodeRegistry] forFirst()\n");
     startRoute(etId);
     {
         for(auto& node : connections[etId].nodes) {
@@ -154,19 +140,20 @@ void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
 
 void ETNodeRegistry::startRoute(int etId) {
     assert(etId < MAX_ET_NODE_TYPES && "Too many ET nodes types");
-    syncRoute->pushRoute(etId);
+    bool isThreadIntersection = syncRoute->pushRoute(etId);
+    if(!connections[etId].isThreadSafe) {
+        assert(isThreadIntersection && "Thread intersection for non-thread safe routes");
+    }
 }
 
 void ETNodeRegistry::endRoute(int etId) {
-    syncRoute->popRoute(etId);
-    if(syncRoute->blockRoute(etId)) {
+    if(syncRoute->popAndBlock(etId)) {
         processPendingConnections(etId);
         syncRoute->unlockRoute(etId);
     }
 }
 
 void ETNodeRegistry::processPendingConnections(int etId) {
-    printf("[ETNodeRegistry] processPendingConnections()\n");
     std::vector<ConnectionRequest> connectionReq;
     {
         std::lock_guard<std::mutex> lock(connMutex);

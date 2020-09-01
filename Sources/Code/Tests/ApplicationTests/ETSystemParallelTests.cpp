@@ -24,12 +24,16 @@ public:
         etSystem.connectNode(*this, entId);
     }
 
+    void disconnect() {
+        ETNode<ETObject>::disconnect();
+    }
+
     void ET_triggerUpdate() override {
         ET_SendEvent(entId, &ETObject::ET_update);
     }
 
     void ET_update() override {
-        // ++updated;
+        ++updated;
     }
 
 public:
@@ -82,7 +86,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
 TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
     ETSystem etSystem;
 
-    const int MAX_OBJECTS = 2;
+    const int MAX_OBJECTS = 200;
 
     std::atomic<int> waitThtread(2);
 
@@ -98,7 +102,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
         obj->connect(etSystem);
     }
 
-    // std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     auto all = etSystem.getAll<ETObject>();
     EXPECT_EQ(all.size(), MAX_OBJECTS);
@@ -107,6 +111,8 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 
     std::thread t2([&waitThtread, &objects1, &etSystem](){
         while(!objects1.empty()) {
+            auto& obj = objects1.back();
+            obj->disconnect();
             objects1.pop_back();
         }
         waitThtread.fetch_sub(1);

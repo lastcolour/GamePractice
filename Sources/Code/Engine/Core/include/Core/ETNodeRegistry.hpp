@@ -39,7 +39,7 @@ public:
     ETNodeRegistry();
     ~ETNodeRegistry();
 
-    void connectNode(int etId, EntityId addressId, ETNodeBase* ptr);
+    void connectNode(int etId, bool isThreadSafe, EntityId addressId, ETNodeBase* ptr);
     void disconnectNode(int etId, ETNodeBase* ptr);
 
     void forEachNode(int etId, EntityId addressId, CallFunctionT callF);
@@ -70,6 +70,7 @@ private:
         std::vector<Node> nodes;
         std::vector<Event> pendingEvents;
         std::vector<ConnectionRequest> pendingConnections;
+        bool isThreadSafe { false };
     };
 
 private:
