@@ -5,6 +5,7 @@
 #include "UIConfig.hpp"
 #include "UITimer.hpp"
 #include "UIViewTransitionManager.hpp"
+#include "UIViewPortManager.hpp"
 #include "Logics/UIBox.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIView.hpp"
@@ -24,7 +25,8 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
             UIViewManager,
             UIEventManager,
             UITimer,
-            UIViewTransitionManager>()
+            UIViewTransitionManager,
+            UIViewPortManager>()
         );
     return container;
 }

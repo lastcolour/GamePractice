@@ -19,7 +19,7 @@ public:
     bool tryBlockRoute(int reqRouteId);
     void unlockRoute(int reqRouteId);
 
-    bool pushRoute(int reqRouteId);
+    void pushRoute(int reqRouteId);
     void popRoute(int reqRouteId);
     bool popAndBlock(int reqRouteId);
 
@@ -34,8 +34,8 @@ private:
     };
 
     struct Node {
-        bool blocked {false};
         ThreadData data[4];
+        bool blocked {false};
     };
 
 private:

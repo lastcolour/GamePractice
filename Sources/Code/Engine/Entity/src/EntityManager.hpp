@@ -4,19 +4,16 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Entity/ETEntityManger.hpp"
+#include "EntityRegistry.hpp"
 
 #include <memory>
 #include <string>
 #include <unordered_map>
 
-class Entity;
 class ClassInfo;
 
 class EntityManager : public SystemLogic,
     public ETNode<ETEntityManager> {
-
-    using EntityPtrT = std::unique_ptr<Entity>;
-
 public:
 
     EntityManager();
@@ -48,7 +45,6 @@ private:
 
     Entity* createEntityImpl(const JSONNode& entityNode, const char* entityName);
     Entity* createEntity(const char* entityName);
-    Entity* findEntity(EntityId entityId);
     JSONNode loadEntityRootNode(const char* entityName) const;
     bool setupEntityTranform(Entity* entity, const JSONNode& node);
     bool setupEntityLogics(Entity* entity, const JSONNode& node) const;
@@ -63,8 +59,8 @@ private:
 
 private:
 
+    EntityRegistry registry;
     std::unordered_map<std::string, LogicNode> registeredLogics;
-    std::unordered_map<EntityId, EntityPtrT> entities;
     ClassInfo* tmClassInfo;
 };
 

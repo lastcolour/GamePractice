@@ -2,7 +2,6 @@
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUIButton.hpp"
 #include "UI/ETUIView.hpp"
-#include "Render/ETRenderCamera.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Logics/UIButton.hpp"
 #include "Logics/UIBox.hpp"
@@ -55,9 +54,9 @@ Entity* UIButtonTests::createUIButton(const Vec2i& pos, const Vec2& size) {
 }
 
 TEST_F(UIButtonTests, CheckTouchInside) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    Vec2i center = renderPort / 2;
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
 
     auto button = createUIButton(center, Vec2(0.5f));
 
@@ -72,9 +71,9 @@ TEST_F(UIButtonTests, CheckTouchInside) {
 }
 
 TEST_F(UIButtonTests, CheckTouchMoveRelease) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    Vec2i center = renderPort / 2;
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
 
     auto button = createUIButton(center, Vec2(0.5f));
 
@@ -82,7 +81,7 @@ TEST_F(UIButtonTests, CheckTouchMoveRelease) {
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
 
-    pt.y = renderPort.y;
+    pt.y = viewPort.y;
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, pt);
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
@@ -91,14 +90,14 @@ TEST_F(UIButtonTests, CheckTouchMoveRelease) {
 }
 
 TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    Vec2i center = renderPort / 2;
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
 
-    Vec2i topButtonCenter = Vec2i(center.x, 3 * renderPort.y / 4);
+    Vec2i topButtonCenter = Vec2i(center.x, 3 * viewPort.y / 4);
     auto topButton = createUIButton(topButtonCenter, Vec2(0.5f));
 
-    Vec2i botButtonCenter = Vec2i(center.x, renderPort.y / 4);
+    Vec2i botButtonCenter = Vec2i(center.x, viewPort.y / 4);
     auto botButton = createUIButton(botButtonCenter, Vec2(0.5f));
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
@@ -111,14 +110,14 @@ TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
 }
 
 TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    Vec2i center = renderPort / 2;
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
 
-    Vec2i topButtonCenter = Vec2i(center.x, 3 * renderPort.y / 4);
+    Vec2i topButtonCenter = Vec2i(center.x, 3 * viewPort.y / 4);
     auto topButton = createUIButton(topButtonCenter, Vec2(0.5f));
 
-    Vec2i botButtonCenter = Vec2i(center.x, renderPort.y / 4);
+    Vec2i botButtonCenter = Vec2i(center.x, viewPort.y / 4);
     auto botButton = createUIButton(botButtonCenter, Vec2(0.5f));
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
@@ -132,9 +131,9 @@ TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
 }
 
 TEST_F(UIButtonTests, CheckButtonPressAnimation) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    Vec2i center = renderPort / 2;
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
 
     auto button = createUIButton(center, Vec2(0.5f));
 

@@ -6,7 +6,7 @@
 
 struct ETRenderCameraEvents {
     virtual ~ETRenderCameraEvents() = default;
-    virtual void ET_onRenderPortResized() = 0;
+    virtual void ET_onRenderPortResized(const Vec2i& newSize) = 0;
 };
 
 struct ETRenderCamera {

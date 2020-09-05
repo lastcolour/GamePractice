@@ -39,7 +39,7 @@ public:
     ETNodeRegistry();
     ~ETNodeRegistry();
 
-    void connectNode(int etId, bool isThreadSafe, EntityId addressId, ETNodeBase* ptr);
+    void connectNode(int etId, EntityId addressId, ETNodeBase* ptr);
     void disconnectNode(int etId, ETNodeBase* ptr);
 
     void forEachNode(int etId, EntityId addressId, CallFunctionT callF);

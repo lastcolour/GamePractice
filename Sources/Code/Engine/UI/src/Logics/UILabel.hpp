@@ -1,15 +1,15 @@
 #ifndef __UI_LABEL_HPP__
 #define __UI_LABEL_HPP__
 
+#include "UI/ETUIViewPort.hpp"
 #include "Logics/UIElement.hpp"
-#include "Render/ETRenderCamera.hpp"
 #include "Logics/UILabelStyle.hpp"
 
 class ReflectContext;
 
 class UILabel : public UIElement,
     public ETNode<ETUILabel>,
-    public ETNode<ETRenderCameraEvents> {
+    public ETNode<ETUIViewPortEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -34,8 +34,8 @@ public:
     AABB2Di ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 
-    // ETRenderCameraEvents
-    void ET_onRenderPortResized() override;
+    // ETUIViewPortEvents
+    void ET_onViewPortChanged(const Vec2i& newSize) override;
 
     // ETEntityEvents
     void ET_onAllLogicsCreated() override;

@@ -7,6 +7,8 @@
 #include "Core/ETTasks.hpp"
 #include "Core/TimePoint.hpp"
 
+#include <mutex>
+
 class AssetsCacheManager : SystemLogic,
     public ETNode<ETAssetsUpdateTask>,
     public ETNode<ETAssetsCacheManager> {
@@ -42,6 +44,7 @@ public:
 
 private:
 
+    mutable std::mutex mutex;
     TimePoint lastTickT;
     AssetsCacheMapT assetsCacheMap;
     float assetsLifetime;

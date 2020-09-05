@@ -29,7 +29,7 @@ void RenderTextLogic::Reflect(ReflectContext& ctx) {
 bool RenderTextLogic::init() {
     RenderNode::init();
     ETNode<ETRenderTextLogic>::connect(getEntityId());
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
     return true;
 }
 

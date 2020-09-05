@@ -16,8 +16,8 @@ public:
     // EntityLogic
     bool init() override;
 
-    // ETRenderCameraEvents
-    void ET_onRenderPortResized() override;
+    // ETViewPortEvents
+    void ET_onViewPortChanged(const Vec2i& newSize) override;
 };
 
 #endif /* __UI_VIEW_HPP__ */

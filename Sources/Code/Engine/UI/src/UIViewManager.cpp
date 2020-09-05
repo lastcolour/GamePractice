@@ -90,7 +90,7 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
         LogWarning("[UIViewManager::ET_onViewLoaded] Can't create view!");
         return;
     }
-    
+
     loadedViews[viewType] = viewId;
 
     int zIndex = 0;

@@ -1,6 +1,6 @@
 #include "UIConfig.hpp"
+#include "UI/ETUIViewPort.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Render/ETRenderCamera.hpp"
 #include "Core/ETPrimitives.hpp"
 
 #include <cmath>
@@ -23,8 +23,8 @@ UIConfig::~UIConfig() {
 }
 
 int UIConfig::getSizeOnGrind(float value) const {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    float pixelsPerValue = renderPort.y / static_cast<float>(horizontalGrid);
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    float pixelsPerValue = viewPort.y / static_cast<float>(horizontalGrid);
     return static_cast<int>(ceil(pixelsPerValue * value));
 }

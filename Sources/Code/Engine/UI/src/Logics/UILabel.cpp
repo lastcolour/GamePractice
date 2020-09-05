@@ -24,7 +24,7 @@ UILabel::~UILabel() {
 bool UILabel::init() {
     UIElement::init();
     ETNode<ETUILabel>::connect(getEntityId());
-    ETNode<ETRenderCameraEvents>::connect(getEntityId());
+    ETNode<ETUIViewPortEvents>::connect(getEntityId());
     if(ET_IsExistNode<ETRenderTextLogic>(labelRenderId)) {
         ET_setTextRender(labelRenderId);
     }
@@ -90,7 +90,7 @@ void UILabel::onZIndexChanged(int newZIndex) {
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
 }
 
-void UILabel::ET_onRenderPortResized() {
+void UILabel::ET_onViewPortChanged(const Vec2i& newSize) {
     ET_setFontSize(style.fontSize);
 }
 

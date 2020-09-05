@@ -3,6 +3,7 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "UIConfig.hpp"
 #include "Core/ETApplication.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 void UIBoxTests::SetUp() {
     ConsoleAppTests::SetUp();
@@ -22,11 +23,11 @@ UIBox* UIBoxTests::createUIBox() {
 TEST_F(UIBoxTests, CheckUIBoxSize) {
     UIBox* uiBox = createUIBox();
 
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
     Transform tm;
-    tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
+    tm.pt = Vec3(viewPort.x / 2.f, viewPort.y / 2.f, 0.f);
     ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_setTransform, tm);
 
     {
@@ -38,8 +39,8 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
         uiBox->ET_setStyle(style);
 
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 4, renderPort.y / 2));
-        ASSERT_EQ(aabb.getCenter(), renderPort / 2);
+        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 4, viewPort.y / 2));
+        ASSERT_EQ(aabb.getCenter(), viewPort / 2);
     }
     {
         UIBoxStyle style;
@@ -50,8 +51,8 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
         uiBox->ET_setStyle(style);
 
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 2, renderPort.y / 4));
-        ASSERT_EQ(aabb.getCenter(), renderPort / 2);
+        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 2, viewPort.y / 4));
+        ASSERT_EQ(aabb.getCenter(), viewPort / 2);
     }
 }
 
@@ -65,18 +66,17 @@ TEST_F(UIBoxTests, CheckRenderPortResized) {
     style.heightInv = UIBoxSizeInvariant::Relative;
     uiBox->ET_setStyle(style);
 
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    renderPort.x *= 2;
-    renderPort.y *= 2;
+    viewPort.x *= 2;
+    viewPort.y *= 2;
 
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, renderPort);
-    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized);
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, viewPort);
 
     {
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 2, renderPort.y / 2));
+        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
 }
 
@@ -98,23 +98,23 @@ TEST_F(UIBoxTests, CheckTransformScaleChanged) {
         ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_setTransform, tm);
     }
     {
-        Vec2i renderPort(0);
-        ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+        Vec2i viewPort(0);
+        ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(renderPort.x / 2, renderPort.y / 2));
+        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
 }
 
 TEST_F(UIBoxTests, CheckTransformPosChanged) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
     auto uiBox = createUIBox();
     {
         Transform tm;
-        tm.pt = Vec3(static_cast<float>(renderPort.x) / 2.f,
-            static_cast<float>(renderPort.y) / 2.f, 0.f);
+        tm.pt = Vec3(static_cast<float>(viewPort.x) / 2.f,
+            static_cast<float>(viewPort.y) / 2.f, 0.f);
 
         ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_setTransform, tm);
     }
@@ -128,20 +128,20 @@ TEST_F(UIBoxTests, CheckTransformPosChanged) {
     }
     {
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 2, renderPort.y / 2));
-        ASSERT_EQ(aabb.getSize(),  Vec2i(renderPort.x / 2, renderPort.y / 2));
+        ASSERT_EQ(aabb.getCenter(), Vec2i(viewPort.x / 2, viewPort.y / 2));
+        ASSERT_EQ(aabb.getSize(),  Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
     {
         Transform tm;
         ET_SendEventReturn(tm, uiBox->getEntityId(), &ETEntity::ET_getTransform);
-        tm.pt = Vec3(static_cast<float>(renderPort.x) / 4.f,
-            static_cast<float>(renderPort.y) / 4.f, 0.f);
+        tm.pt = Vec3(static_cast<float>(viewPort.x) / 4.f,
+            static_cast<float>(viewPort.y) / 4.f, 0.f);
 
         ET_SendEvent(uiBox->getEntityId(), &ETEntity::ET_setTransform, tm);
     }
     {
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getCenter(), Vec2i(renderPort.x / 4, renderPort.y / 4));
-        ASSERT_EQ(aabb.getSize(),  Vec2i(renderPort.x / 2, renderPort.y / 2));
+        ASSERT_EQ(aabb.getCenter(), Vec2i(viewPort.x / 4, viewPort.y / 4));
+        ASSERT_EQ(aabb.getSize(),  Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
 }

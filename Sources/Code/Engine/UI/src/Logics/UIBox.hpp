@@ -2,13 +2,13 @@
 #define __UI_BOX_HPP__
 
 #include "Logics/UIElement.hpp"
-#include "Render/ETRenderCamera.hpp"
 #include "Entity/ETEntity.hpp"
 #include "UI/UIBoxStyle.hpp"
+#include "UI/ETUIViewPort.hpp"
 
 class UIBox : public UIElement,
     public ETNode<ETUIBox>,
-    public ETNode<ETRenderCameraEvents> {
+    public ETNode<ETUIViewPortEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -30,8 +30,8 @@ public:
     const UIBoxStyle& ET_getStyle() const override;
     void ET_setStyle(const UIBoxStyle& newBoxStyle) override;
 
-    // ETRenderCameraEvents
-    void ET_onRenderPortResized() override;
+    // ETUIViewPortEvents
+    void ET_onViewPortChanged(const Vec2i& newSize) override;
 
     // ETEntityEvents
     void ET_onAllLogicsCreated() override;

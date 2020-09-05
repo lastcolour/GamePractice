@@ -4,6 +4,8 @@
 #include "Core/ETLogger.hpp"
 #include "Core/SystemLogic.hpp"
 
+#include <mutex>
+
 class PlatformLogger: public SystemLogic,
     public ETNode<ETLogger> {
 public:
@@ -27,6 +29,7 @@ protected:
 private:
 
     LogLevel logLevel;
+    std::mutex mutex;
 };
 
 #endif /* __PLATFORM_LOGGER_HPP__ */

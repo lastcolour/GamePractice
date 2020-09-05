@@ -33,10 +33,11 @@ void RenderCamera::deinit() {
     ETNode<ETRenderCamera>::disconnect();
 }
 
-void RenderCamera::ET_setRenderPort(const Vec2i& newViewport) {
-    viewport = newViewport;
+void RenderCamera::ET_setRenderPort(const Vec2i& newSize) {
+    viewport = newSize;
     Math::ProjectOrtho(projection, 0.f, static_cast<float>(viewport.x),
         0.f, static_cast<float>(viewport.y), DEF_Z_NEAR, DEF_Z_FAR);
+    ET_QueueEvent(&ETRenderCameraEvents::ET_onRenderPortResized, newSize);
 }
 
 const Vec2i& RenderCamera::ET_getRenderPort() const {

@@ -52,12 +52,11 @@ void ETNodeRegistry::doSoftDisconnect(int etId, ETNodeBase* ptr) {
     it->id = InvalidEntityId;
 }
 
-void ETNodeRegistry::connectNode(int etId, bool isThreadSafe, EntityId addressId, ETNodeBase* ptr) {
+void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
     if(!addressId.isValid()) {
         return;
     }
-    connections[etId].isThreadSafe = isThreadSafe;
     if(syncRoute->tryBlockRoute(etId)) {
         doConnect(etId, addressId, ptr);
         processPendingConnections(etId);
@@ -140,10 +139,7 @@ void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
 
 void ETNodeRegistry::startRoute(int etId) {
     assert(etId < MAX_ET_NODE_TYPES && "Too many ET nodes types");
-    bool isThreadIntersection = syncRoute->pushRoute(etId);
-    if(!connections[etId].isThreadSafe) {
-        assert(isThreadIntersection && "Thread intersection for non-thread safe routes");
-    }
+    syncRoute->pushRoute(etId);
 }
 
 void ETNodeRegistry::endRoute(int etId) {

@@ -31,8 +31,8 @@ void GameTimer::ET_resumeTimer() {
 }
 
 void GameTimer::ET_updateGame() {
-    ET_PollAllEvents<ETInputEvents>();
     ET_PollAllEvents<ETRenderCameraEvents>();
+    ET_PollAllEvents<ETInputEvents>();
 
     if(isPaused) {
         return;

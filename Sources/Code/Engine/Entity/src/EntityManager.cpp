@@ -109,7 +109,7 @@ EntityId EntityManager::ET_createEntity(const char* entityName) {
 
 EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char* entityName) {
     const char* errStr = "[EntityManager::ET_createChildEntity] Can't create child entity (Error: %s)";
-    auto parentEntity = findEntity(parentId);
+    auto parentEntity = registry.findEntity(parentId);
     if(!CheckEntity(errStr, parentId, parentEntity)) {
         return InvalidEntityChildId;
     }
@@ -120,11 +120,13 @@ EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char*
 
     EntityId childEntityId;
     {
-        EntityPtrT childEntity(new Entity(entityName, GetETSystem()->createNewEntityId()));
-        auto tm = parentEntity->ET_getTransform();
+        auto childEntity = registry.createEntity(entityName);
+        if(!childEntity) {
+            assert(false && "Can't create entity");
+            return InvalidEntityChildId;
+        }
+        auto& tm = parentEntity->ET_getTransform();
         childEntity->ET_setTransform(tm);
-        childEntityId = childEntity->getEntityId();
-        entities[childEntityId] = std::move(childEntity);
     }
 
     auto childId = parentEntity->ET_addChild(childEntityId);
@@ -137,7 +139,7 @@ EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char*
 
 bool EntityManager::ET_renameEntity(EntityId entId, const char* newName) {
     const char* errStr = "[EntityManager::ET_renameEntity] Can't rename entity (Error: %s)";
-    auto entity = findEntity(entId);
+    auto entity = registry.findEntity(entId);
     if(!CheckEntity(errStr, entId, entity)) {
         return false;
     }
@@ -150,17 +152,11 @@ bool EntityManager::ET_renameEntity(EntityId entId, const char* newName) {
 }
 
 void EntityManager::ET_destroyEntity(EntityId entityId) {
-    auto it = entities.find(entityId);
-    if(it == entities.end()) {
-        return;
-    }
-    LogDebug("[EntityManager::ET_destroyEntity] Destroy entity: '%s'", it->second->ET_getName());
-    entities.erase(it);
+    registry.removeEntity(entityId);
 }
 
 void EntityManager::ET_destroyAllEntities() {
-    auto entitiesToRemove = std::move(entities);
-    entitiesToRemove.clear();
+    registry.removeAllEntities();
 }
 
 bool EntityManager::ET_registerLogics(EntityLogicsRegister& logicsRegister) {
@@ -204,7 +200,7 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
 
 EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* logicName) {
     const char* errStr = "[EntityManager::ET_addLogicToEntity] Can't add logic (Error: %s)";
-    auto entity = findEntity(entityId);
+    auto entity = registry.findEntity(entityId);
     if(!CheckEntity(errStr, entityId, entity)) {
         return InvalidEntityLogicId;
     }
@@ -233,7 +229,7 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
 
 void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
     const char* errStr = "[EntityManager::ET_removeLogicFromEntity] Can't remove logic (Error: %s)";
-    auto entity = findEntity(entityId);
+    auto entity = registry.findEntity(entityId);
     if(!CheckEntityLogic(errStr, entityId, entity, logicId)) {
         return;
     }
@@ -248,7 +244,7 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
 bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
     const char* errStr = "[EntityManager::ET_readEntityLogicData] Can't read logic data (Error: %s)";
-    auto entity = findEntity(entityId);
+    auto entity = registry.findEntity(entityId);
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
@@ -267,7 +263,7 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
 bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
     const char* errStr = "[EntityManager::ET_writeEntityLogicData] Can't write logic data (Error: %s)";
-    auto entity = findEntity(entityId);
+    auto entity = registry.findEntity(entityId);
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
@@ -287,7 +283,7 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
 bool EntityManager::ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
     EntityLogicValueId valueId) {
     const char* errStr = "[EntityManager::ET_addEntityLogicArrayElement] Can't add entity logic array element (Error: %s)";
-    auto entity = findEntity(entityId);
+    auto entity = registry.findEntity(entityId);
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
@@ -443,19 +439,22 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
     if(!entityNode) {
         return nullptr;
     }
-    EntityPtrT entity(new Entity(entityName, GetETSystem()->createNewEntityId()));
-    ActiveEntityScope entityScope(entity->getEntityId());
-    if(!setupEntityChildren(entity.get(), entityNode)) {
+    auto entity = registry.createEntity(entityName);
+    if(!entity) {
+        assert(false && "Can't create entity");
         return nullptr;
     }
-    if(!setupEntityLogics(entity.get(), entityNode)) {
+    ActiveEntityScope entityScope(entity->getEntityId());
+    if(!setupEntityChildren(entity, entityNode)) {
+        registry.removeEntity(entity);
+        return nullptr;
+    }
+    if(!setupEntityLogics(entity, entityNode)) {
+        registry.removeEntity(entity);
         return nullptr;
     }
     ET_SendEvent(entity->getEntityId(), &ETEntityEvents::ET_onAllLogicsCreated);
-    auto resEntPtr = entity.get();
-    auto resEntId = entity->getEntityId();
-    entities[resEntPtr->getEntityId()] = std::move(entity);
-    return resEntPtr;
+    return entity;
 }
 
 Entity* EntityManager::createEntity(const char* entityName) {
@@ -489,15 +488,4 @@ JSONNode EntityManager::ET_getRegisteredLogics() const {
         }
     }
     return node;
-}
-
-Entity* EntityManager::findEntity(EntityId entityId) {
-    if(entityId == InvalidEntityId) {
-        return nullptr;
-    }
-    auto it = entities.find(entityId);
-    if(it == entities.end()) {
-        return nullptr;
-    }
-    return it->second.get();
 }

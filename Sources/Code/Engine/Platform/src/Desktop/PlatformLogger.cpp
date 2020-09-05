@@ -21,6 +21,7 @@ void PlatformLogger::deinit() {
 }
 
 void PlatformLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
+    std::lock_guard<std::mutex> lock(mutex);
     if(logLevel > lvl) {
         return;
     }
@@ -35,6 +36,7 @@ void PlatformLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
 }
 
 void PlatformLogger::ET_setLogLevel(LogLevel lvl) {
+    std::lock_guard<std::mutex> lock(mutex);
     logLevel = lvl;
 }
 

@@ -25,7 +25,7 @@ public:
     void deinit() override;
 
     // ETRenderCameraEvents
-    void ET_onRenderPortResized() override;
+    void ET_onRenderPortResized(const Vec2i& newSize) override;
 
     // ETEditEntityTracker
     void ET_startTrackingEntity(EntityId entityId) override;

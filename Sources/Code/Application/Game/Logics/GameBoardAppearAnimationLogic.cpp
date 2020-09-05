@@ -1,7 +1,7 @@
 #include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
 #include "Entity/ETEntity.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Render/ETRenderCamera.hpp"
+#include "UI/ETUIViewPort.hpp"
 #include "Reflect/ReflectContext.hpp"
 
 #include <algorithm>
@@ -36,9 +36,9 @@ void GameBoardAppearAnimationLogic::deinit() {
 }
 
 void GameBoardAppearAnimationLogic::alignSpeedWithScreenSize() {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    fallSpeed *= renderPort.y;
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    fallSpeed *= viewPort.y;
 }
 
 void GameBoardAppearAnimationLogic::ET_startBoardAppearing() {

@@ -25,7 +25,7 @@ bool UIBox::init() {
     UIElement::init();
 
     ETNode<ETUIBox>::connect(getEntityId());
-    ETNode<ETRenderCameraEvents>::connect(getEntityId());
+    ETNode<ETUIViewPortEvents>::connect(getEntityId());
 
     calculateBox();
 
@@ -86,8 +86,8 @@ UIBoxMargin UIBox::ET_getMargin() const {
 }
 
 Vec2i UIBox::calculateBoxSize() {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     Vec2i resSize(0);
 
     auto uiConfig = ET_getShared<UIConfig>();
@@ -97,7 +97,7 @@ Vec2i UIBox::calculateBoxSize() {
         resSize.x = uiConfig->getSizeOnGrind(style.width);
         break;
     case UIBoxSizeInvariant::Relative:
-        resSize.x = static_cast<int>(renderPort.x * style.width);
+        resSize.x = static_cast<int>(viewPort.x * style.width);
         break;
     default:
         assert(false && "Invalid size invariant");
@@ -108,7 +108,7 @@ Vec2i UIBox::calculateBoxSize() {
         resSize.y = uiConfig->getSizeOnGrind(style.height);
         break;
     case UIBoxSizeInvariant::Relative:
-        resSize.y = static_cast<int>(renderPort.y * style.height);
+        resSize.y = static_cast<int>(viewPort.y * style.height);
         break;
     default:
         assert(false && "Invalid size invariant");
@@ -116,7 +116,7 @@ Vec2i UIBox::calculateBoxSize() {
     return resSize;
 }
 
-void UIBox::ET_onRenderPortResized() {
+void UIBox::ET_onViewPortChanged(const Vec2i& newSize) {
     calculateBox();
     updateLayout();
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());

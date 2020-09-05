@@ -7,8 +7,8 @@
       "data": {
         "fallSpeed": 6.0,
         "size": {
-          "x": 10,
-          "y": 10
+          "x": 3,
+          "y": 3
         },
         "cellObject": "Game/Cell.json",
         "cellScale": 0.699999988079071

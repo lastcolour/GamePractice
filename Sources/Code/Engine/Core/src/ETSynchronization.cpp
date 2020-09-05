@@ -43,7 +43,7 @@ void ETSyncRoute::hardUnlock(int reqRouteId) {
     }
 }
 
-bool ETSyncRoute::pushRoute(int reqRouteId) {
+void ETSyncRoute::pushRoute(int reqRouteId) {
     auto& node = blockedRouteMap[reqRouteId];
     bool isThreadIntersection = true;
     auto threadId = std::this_thread::get_id();
@@ -56,9 +56,7 @@ bool ETSyncRoute::pushRoute(int reqRouteId) {
         }
         assert(!node.blocked && "Node is blocked");
         addThread(node, threadId);
-        isThreadIntersection = !isUniqueThread(node, threadId);
     }
-    return isThreadIntersection;
 }
 
 void ETSyncRoute::popRoute(int reqRouteId) {

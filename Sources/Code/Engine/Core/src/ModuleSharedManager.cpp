@@ -20,6 +20,7 @@ void ModuleSharedManager::deinit() {
 }
 
 void ModuleSharedManager::ET_registerShared(ClassInstance& instance) {
+    std::lock_guard<std::mutex> lock(mutex);
     if(!instance.get()) {
         assert(false && "Invalid config");
         return;
@@ -34,6 +35,7 @@ void ModuleSharedManager::ET_registerShared(ClassInstance& instance) {
 }
 
 const void* ModuleSharedManager::ET_getShared(TypeId typeId) {
+    std::lock_guard<std::mutex> lock(mutex);
     auto it = sharedObjects.find(typeId);
     if(it != sharedObjects.end()) {
         return it->second.get();

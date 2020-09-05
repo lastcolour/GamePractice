@@ -63,8 +63,10 @@ void RenderNode::ET_show() {
 }
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
-    drawPriority = newDrawPriority;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
+    if(newDrawPriority != drawPriority) {
+        drawPriority = newDrawPriority;
+        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
+    }
 }
 
 int RenderNode::ET_getDrawPriority() const {

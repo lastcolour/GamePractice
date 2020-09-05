@@ -20,7 +20,7 @@ void TextNode::onInit() {
     setGeometry(PrimitiveGeometryType::Text_Vert_Chunk);
     setMaterial("text_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_createDefaultFont);
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
 }
 
 void TextNode::ET_setFontHeight(int newHeight) {

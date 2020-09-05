@@ -9,6 +9,7 @@
 #include <memory>
 
 class EntityLogic;
+class EntityRegistry;
 
 class Entity : public ETNode<ETEntity> {
 public:

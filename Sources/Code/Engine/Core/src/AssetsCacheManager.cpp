@@ -28,6 +28,8 @@ void AssetsCacheManager::deinit() {
 }
 
 void AssetsCacheManager::ET_updateAssets() {
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto nowT = TimePoint::GetNowTime();
     auto dt = nowT.getSecondsElapsedFrom(lastTickT);
     lastTickT = nowT;
@@ -45,6 +47,8 @@ void AssetsCacheManager::ET_updateAssets() {
 }
 
 Buffer AssetsCacheManager::ET_getAssetFromCache(const char* assetName) {
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto it = assetsCacheMap.find(assetName);
     if(it == assetsCacheMap.end()) {
         return Buffer();
@@ -63,6 +67,8 @@ void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer&
         assert(false && "invalid asset buffer");
         return;
     }
+
+    std::lock_guard<std::mutex> lock(mutex);
     auto it = assetsCacheMap.find(assetName);
     if(it != assetsCacheMap.end()) {
         LogWarning("[AssetsCacheManager::ET_putAssetToCache] Double try to put asset into cache: '%s'", assetName);
@@ -76,6 +82,7 @@ void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer&
 }
 
 void AssetsCacheManager::ET_setCacheLifetime(float seconds) {
+    std::lock_guard<std::mutex> lock(mutex);
     if(seconds < 0.f) {
         assetsCacheMap.clear();
     }
@@ -83,9 +90,11 @@ void AssetsCacheManager::ET_setCacheLifetime(float seconds) {
 }
 
 float AssetsCacheManager::ET_getCacheLifetime() const {
+    std::lock_guard<std::mutex> lock(mutex);
     return assetsLifetime;
 }
 
 void AssetsCacheManager::ET_clear() {
+    std::lock_guard<std::mutex> lock(mutex);
     assetsCacheMap.clear();
 }

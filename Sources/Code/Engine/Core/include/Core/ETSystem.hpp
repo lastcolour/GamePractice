@@ -2,7 +2,6 @@
 #define __ET_SYSTEM_HPP__
 
 #include "Core/ETNodeRegistry.hpp"
-#include "Core/ETThreadSafe.hpp"
 
 #include <mutex>
 
@@ -60,7 +59,7 @@ public:
 
     template<template<class> class ETNode, class ETType>
     void connectNode(ETNode<ETType>& node, EntityId addressId) {
-        registry.connectNode(ET::GetETId<ETType>(), ET::IsThreadSafe<ETType>(), addressId, &node);
+        registry.connectNode(ET::GetETId<ETType>(), addressId, &node);
     }
 
     template<template<class> class ETNode, class ETType>

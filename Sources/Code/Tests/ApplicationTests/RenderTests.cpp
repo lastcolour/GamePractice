@@ -279,7 +279,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
 
 TEST_F(RenderTests, CheckCreateSameFontTwice) {
     std::shared_ptr<RenderFont> font1;
-    ET_SendEventReturn(font1, &ETRenderFontManager::ET_createDefaultFont);
+    ET_SendEventReturn(font1, &ETRenderFontManager::ET_getDefaultFont);
 
     ASSERT_TRUE(font1);
 
@@ -289,7 +289,7 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
     ASSERT_NE(atlas->texId, 0);
 
     std::shared_ptr<RenderFont> font2;
-    ET_SendEventReturn(font2, &ETRenderFontManager::ET_createDefaultFont);
+    ET_SendEventReturn(font2, &ETRenderFontManager::ET_getDefaultFont);
 
     ASSERT_EQ(font1.get(), font2.get());
 }

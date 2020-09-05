@@ -2,10 +2,10 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Render/ETRenderCamera.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Game/ETGameElem.hpp"
+#include "UI/ETUIViewPort.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -138,9 +138,9 @@ bool GameBoardLogic::init() {
         }
     }
 
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    AABB2Di visualBox(Vec2i(0), renderPort);
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    AABB2Di visualBox(Vec2i(0), viewPort);
     ET_onZIndexChanged(0);
     ET_onBoxResized(visualBox);
 

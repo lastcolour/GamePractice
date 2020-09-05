@@ -55,6 +55,9 @@ RenderFontManager::~RenderFontManager() {
 bool RenderFontManager::init() {
     ETNode<ETRenderFontManager>::connect(getEntityId());
     ETNode<ETRenderResourceManager>::connect(getEntityId());
+    if(!loadDefaultFont()) {
+        return false;
+    }
     return true;
 }
 
@@ -63,12 +66,12 @@ void RenderFontManager::deinit() {
     ETNode<ETRenderResourceManager>::disconnect();
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::ET_createDefaultFont() {
+std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
     auto renderConfig = ET_getShared<RenderConfig>();
     return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::ET_createFont(const char* fontName) {
+std::shared_ptr<RenderFont> RenderFontManager::ET_getFont(const char* fontName) {
     auto renderConfig = ET_getShared<RenderConfig>();
     return createFont(fontName, renderConfig->defaultFontSize);
 }
@@ -86,6 +89,12 @@ std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontNam
         return font;
     }
     return nullptr;
+}
+
+bool RenderFontManager::loadDefaultFont() {
+    auto renderConfig = ET_getShared<RenderConfig>();
+    auto res = createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
+    return res != nullptr;
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontName, int fontSize) {

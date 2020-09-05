@@ -6,6 +6,7 @@
 #include "Reflect/ClassInstance.hpp"
 
 #include <unordered_map>
+#include <mutex>
 
 class ModuleSharedManager : public SystemLogic,
     public ETNode<ETModuleSharedManager> {
@@ -24,6 +25,7 @@ public:
 
 private:
 
+    std::mutex mutex;
     std::unordered_map<TypeId, ClassInstance> sharedObjects;
 };
 
