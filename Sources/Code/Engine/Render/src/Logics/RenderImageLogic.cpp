@@ -36,7 +36,7 @@ bool RenderImageLogic::init() {
 
 void RenderImageLogic::ET_setImage(const char* imageName) {
     image = imageName;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setImage, image);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setImage, image);
 }
 
 Vec2i RenderImageLogic::ET_getImageSize() const {
@@ -45,7 +45,7 @@ Vec2i RenderImageLogic::ET_getImageSize() const {
 
 void RenderImageLogic::ET_setSize(const Vec2i& newSize) {
     size = newSize;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
 Vec2i RenderImageLogic::ET_getSize() const {

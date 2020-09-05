@@ -36,25 +36,13 @@ bool ColoredTextureNode::isVisible() const {
 }
 
 void ColoredTextureNode::ET_setColor0(const ColorB& newColor) {
-    if(Render::IsRenderThread()) {
-        color = newColor;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setColor0, newColor);
-    }
+    color = newColor;
 }
 
 void ColoredTextureNode::ET_setSize(const Vec2i& newSize) {
-    if(Render::IsRenderThread()) {
-        size = newSize;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setSize, newSize);
-    }
+    size = newSize;
 }
 
 void ColoredTextureNode::ET_setImage(const std::string& newImage) {
-    if(Render::IsRenderThread()) {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setImage, newImage);
-    }
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
 }

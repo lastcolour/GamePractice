@@ -39,13 +39,13 @@ bool RenderNode::init() {
 }
 
 void RenderNode::deinit() {
-    ET_SendEvent(&ETRenderNodeManager::ET_removeNode, renderNodeId);
+    ET_QueueEvent(&ETRenderNodeManager::ET_removeNode, renderNodeId);
     renderNodeId = InvalidEntityId;
 }
 
 void RenderNode::ET_setAlpha(float newAlpha) {
     alpha = newAlpha;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);
 }
 
 bool RenderNode::ET_isVisible() const {
@@ -54,18 +54,18 @@ bool RenderNode::ET_isVisible() const {
 
 void RenderNode::ET_hide() {
     isVisible = false;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
 }
 
 void RenderNode::ET_show() {
     isVisible = true;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
 }
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
     if(newDrawPriority != drawPriority) {
         drawPriority = newDrawPriority;
-        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
+        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
     }
 }
 
@@ -82,6 +82,6 @@ void RenderNode::ET_syncTransform() {
     if(isTransformUpdated.compare_exchange_strong(isChanged, false)) {
         Transform tm;
         ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
     }
 }

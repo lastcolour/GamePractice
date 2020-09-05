@@ -26,9 +26,9 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
 bool RenderLinearGradientRect::init() {
     RenderNode::init();
     ETNode<ETRenderRect>::connect(getEntityId());
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, startCol);
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setColor1, endCol);
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVertical, isVertical);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, startCol);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor1, endCol);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVertical, isVertical);
     ET_setSize(size);
     if(ET_isVisible()) {
         ET_show();
@@ -38,7 +38,7 @@ bool RenderLinearGradientRect::init() {
 
 void RenderLinearGradientRect::ET_setSize(const Vec2i& newSize) {
     size = newSize;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
 Vec2i RenderLinearGradientRect::ET_getSize() const {

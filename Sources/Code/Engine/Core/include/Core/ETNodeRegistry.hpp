@@ -7,6 +7,8 @@
 #include <vector>
 #include <mutex>
 #include <memory>
+#include <unordered_set>
+#include <unordered_map>
 
 class ETNodeBase;
 class ETSyncRoute;
@@ -67,10 +69,10 @@ private:
 private:
 
     struct Registry {
-        std::vector<Node> nodes;
+        std::unordered_map<ETNodeBase*, EntityId> ptrToIdMap;
+        std::unordered_multimap<EntityId, ETNodeBase*> idToPtrMap;
         std::vector<Event> pendingEvents;
         std::vector<ConnectionRequest> pendingConnections;
-        bool isThreadSafe { false };
     };
 
 private:

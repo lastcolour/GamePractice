@@ -15,19 +15,11 @@ void SimpleNode::onInit() {
 }
 
 void SimpleNode::ET_setColor0(const ColorB& newColor) {
-    if(Render::IsRenderThread()) {
-        color = newColor;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setColor0, newColor);
-    }
+    color = newColor;
 }
 
 void SimpleNode::ET_setSize(const Vec2i& newSize) {
-    if(Render::IsRenderThread()) {
-        size = newSize;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setSize, newSize);
-    }
+    size = newSize;
 }
 
 void SimpleNode::onRender(RenderContext& ctx) {

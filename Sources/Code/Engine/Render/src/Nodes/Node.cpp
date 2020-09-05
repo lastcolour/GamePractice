@@ -17,7 +17,6 @@ Node::Node() :
 Node::~Node() {
 }
 
-
 void Node::initConnection(EntityId renderNodeId, const RenderNodeCreateParams& params) {
     nodeId = renderNodeId;
     alpha = params.alpha;
@@ -31,30 +30,18 @@ void Node::initRender() {
 }
 
 void Node::ET_setAlpha(float newAlpha) {
-    if(Render::IsRenderThread()) {
-        alpha = newAlpha;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);
-    }
+    alpha = newAlpha;
 }
 
 void Node::ET_setDrawPriority(int newDrawPriority) {
-    if(Render::IsRenderThread()) {
-        drawPriority = newDrawPriority;
-        if(renderGraph) {
-            renderGraph->setNeedReorderNodes();
-        }
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
+    drawPriority = newDrawPriority;
+    if(renderGraph) {
+        renderGraph->setNeedReorderNodes();
     }
 }
 
 void Node::ET_setVisible(bool flag) {
-    if(Render::IsRenderThread()) {
-        visible = flag;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setVisible, flag);
-    }
+    visible = flag;
 }
 
 void Node::setBlendingMode(RenderBlendingType newBlending) {

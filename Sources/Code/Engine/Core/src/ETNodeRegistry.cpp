@@ -3,6 +3,7 @@
 #include "Core/ETSystem.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 namespace {
 
@@ -19,37 +20,65 @@ ETNodeRegistry::~ETNodeRegistry() {
 }
 
 void ETNodeRegistry::doConnect(int etId, EntityId addressId, ETNodeBase* ptr) {
-    auto& nodes = connections[etId].nodes;
-    auto nodeIt = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
-        return node.ptr == ptr;
-    });
-    if(nodeIt != nodes.end()) {
-        return;
+    {
+        auto& ptrToIdMap = connections[etId].ptrToIdMap;
+        if(ptrToIdMap.count(ptr)) {
+            return;
+        }
+        ptrToIdMap[ptr] = addressId;
     }
-    nodes.push_back({ptr, addressId});
+    {
+        auto& idToPtrMap = connections[etId].idToPtrMap;
+        idToPtrMap.insert({addressId, ptr});
+    }
 }
 
 void ETNodeRegistry::doDisconnect(int etId, ETNodeBase* ptr) {
-    auto& nodes = connections[etId].nodes;
-    auto it = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
-        return node.ptr == ptr;
-    });
-    if(it == nodes.end()) {
-        return;
+    EntityId ptrId;
+    {
+        auto& ptrToIdMap = connections[etId].ptrToIdMap;
+        auto it = ptrToIdMap.find(ptr);
+        if(it == ptrToIdMap.end()) {
+            return;
+        }
+        ptrId = it->second;
+        ptrToIdMap.erase(it);
     }
-    *it = std::move(nodes.back());
-    nodes.pop_back();
+    {
+        auto& idToPtrMap = connections[etId].idToPtrMap;
+        auto range = idToPtrMap.equal_range(ptrId);
+        auto removeIt = idToPtrMap.end();
+        for(auto& it = range.first; it != range.second; ++it) {
+            if(it->second == ptr || it->second == nullptr) {
+                removeIt = it;
+                break;
+            }
+        }
+        idToPtrMap.erase(removeIt);
+    }
 }
 
 void ETNodeRegistry::doSoftDisconnect(int etId, ETNodeBase* ptr) {
-    auto& nodes = connections[etId].nodes;
-    auto it = std::find_if(nodes.begin(), nodes.end(), [ptr](const Node& node){
-        return node.ptr == ptr;
-    });
-    if(it == nodes.end()) {
-        return;
+    EntityId ptrId;
+    {
+        auto& ptrToIdMap = connections[etId].ptrToIdMap;
+        auto it = ptrToIdMap.find(ptr);
+        if(it == ptrToIdMap.end()) {
+            return;
+        }
+        ptrId = it->second;
     }
-    it->id = InvalidEntityId;
+    {
+        auto& idToPtrMap = connections[etId].idToPtrMap;
+        auto range = idToPtrMap.equal_range(ptrId);
+        auto removeIt = idToPtrMap.end();
+        for(auto& it = range.first; it != range.second; ++it) {
+            if(it->second == ptr) {
+                it->second = nullptr;
+                break;
+            }
+        }
+    }
 }
 
 void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) {
@@ -87,9 +116,10 @@ void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT cal
     }
     startRoute(etId);
     {
-        for(auto& node : connections[etId].nodes) {
-            if(node.id == addressId) {
-                callF(node.ptr);
+        auto range = connections[etId].idToPtrMap.equal_range(addressId);
+        for(auto it = range.first; it != range.second; ++it) {
+            if(it->second != nullptr) {
+                callF(it->second);
             }
         }
     }
@@ -99,9 +129,9 @@ void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT cal
 void ETNodeRegistry::forEachNode(int etId, CallFunctionT callF) {
     startRoute(etId);
     {
-        for(auto& node : connections[etId].nodes) {
-            if(node.id != InvalidEntityId) {
-                callF(node.ptr);
+        for(auto& node : connections[etId].idToPtrMap) {
+            if(node.second != nullptr) {
+                callF(node.second);
             }
         }
     }
@@ -114,9 +144,10 @@ void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF)
     }
     startRoute(etId);
     {
-        for(auto& node : connections[etId].nodes) {
-            if(node.id == addressId) {
-                callF(node.ptr);
+        auto range = connections[etId].idToPtrMap.equal_range(addressId);
+        for(auto it = range.first; it != range.second; ++it) {
+            if(it->second != nullptr) {
+                callF(it->second);
                 break;
             }
         }
@@ -127,9 +158,9 @@ void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF)
 void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
     startRoute(etId);
     {
-        for(auto& node : connections[etId].nodes) {
-            if(node.id != InvalidEntityId) {
-                callF(node.ptr);
+        for(auto& node : connections[etId].idToPtrMap) {
+            if(node.second != nullptr) {
+                callF(node.second);
                 break;
             }
         }
@@ -168,9 +199,9 @@ std::vector<EntityId> ETNodeRegistry::getAll(int etId) {
     std::vector<EntityId> result;
     startRoute(etId);
     {
-        for(auto& node : connections[etId].nodes) {
-            if(node.id != InvalidEntityId) {
-                result.push_back(node.id);
+        for(auto& node : connections[etId].idToPtrMap) {
+            if(node.second != nullptr) {
+                result.push_back(node.first);
             }
         }
     }
@@ -185,8 +216,9 @@ bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
     bool result = false;
     startRoute(etId);
     {
-        for(auto& node : connections[etId].nodes) {
-            if(node.id == addressId) {
+        auto range = connections[etId].idToPtrMap.equal_range(addressId);
+        for(auto it = range.first; it != range.second; ++it) {
+            if(it->second != nullptr) {
                 result = true;
                 break;
             }
@@ -220,11 +252,20 @@ void ETNodeRegistry::pollEventsForAll(int etId) {
     }
     startRoute(etId);
     {
-        auto& nodes = connections[etId].nodes;
+        auto& nodes = connections[etId].idToPtrMap;
         for(auto& event : events) {
-            for(auto& node : nodes) {
-                if((event.id == InvalidEntityId || event.id == node.id) && node.id != InvalidEntityId) {
-                    event.callF(node.ptr);
+            if(event.id == InvalidEntityId) {
+                for(auto& node : nodes) {
+                    if(node.second != nullptr) {
+                        event.callF(node.second);
+                    }
+                }
+            } else {
+                auto range = connections[etId].idToPtrMap.equal_range(event.id);
+                for(auto it = range.first; it != range.second; ++it) {
+                    if(it->second != nullptr) {
+                        event.callF(it->second);
+                    }
                 }
             }
         }

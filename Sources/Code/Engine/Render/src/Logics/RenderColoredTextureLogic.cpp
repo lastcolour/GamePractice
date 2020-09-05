@@ -19,7 +19,7 @@ void RenderColoredTextureLogic::Reflect(ReflectContext& ctx) {
 
 void RenderColoredTextureLogic::ET_setTextureColor(const ColorB& newColor) {
     color = newColor;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, color);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, color);
 }
 
 bool RenderColoredTextureLogic::init() {

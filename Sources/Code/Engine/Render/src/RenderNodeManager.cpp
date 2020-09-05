@@ -54,11 +54,7 @@ EntityId RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) 
         }
     }
     node->initConnection(nodeId, params);
-    if(Render::IsRenderThread()) {
-        ET_initRenderNode(node.release());
-    } else {
-        ET_QueueEvent(&ETRenderNodeManager::ET_initRenderNode, node.release());
-    }
+    ET_QueueEvent(&ETRenderNodeManager::ET_initRenderNode, node.release());
     return nodeId;
 }
 
@@ -69,10 +65,7 @@ void RenderNodeManager::ET_initRenderNode(Node* node) {
 }
 
 void RenderNodeManager::ET_removeNode(EntityId nodeId) {
-    if(!Render::IsRenderThread()) {
-        ET_QueueEvent(&ETRenderNodeManager::ET_removeNode, nodeId);
-        return;
-    }
+    assert(Render::IsRenderThread() && "Can't remove node from non-render thread");
     auto it = nodes.find(nodeId);
     if(it == nodes.end()) {
         return;

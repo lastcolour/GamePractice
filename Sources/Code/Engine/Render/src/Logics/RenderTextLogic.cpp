@@ -35,7 +35,7 @@ bool RenderTextLogic::init() {
 
 void RenderTextLogic::ET_setFontHeight(int newFontHeight) {
     fontHeight = newFontHeight;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setFontHeight, newFontHeight);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setFontHeight, newFontHeight);
 }
 
 AABB2D RenderTextLogic::ET_getTextAABB() const {
@@ -55,10 +55,10 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
 
 void RenderTextLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, newColor);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, newColor);
 }
 
 void RenderTextLogic::ET_setText(const char* str) {
     text = str;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setText, text);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setText, text);
 }

@@ -10,19 +10,11 @@ ImageNode::~ImageNode() {
 }
 
 void ImageNode::ET_setSize(const Vec2i& newSize) {
-    if(Render::IsRenderThread()) {
-        size = newSize;
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setSize, newSize);
-    }
+    size = newSize;
 }
 
 void ImageNode::ET_setImage(const std::string& newImage) {
-    if(Render::IsRenderThread()) {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
-    } else {
-        ET_QueueEvent(nodeId, &ETRenderProxyNode::ET_setImage, newImage);
-    }
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
 }
 
 void ImageNode::onInit() {

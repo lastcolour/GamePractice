@@ -33,12 +33,12 @@ bool RenderSimpleLogic::init() {
 
 void RenderSimpleLogic::ET_setColor(const ColorB& col) {
     color = col;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, col);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, col);
 }
 
 void RenderSimpleLogic::ET_setSize(const Vec2i& newSize) {
     size = newSize;
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
 Vec2i RenderSimpleLogic::ET_getSize() const {
