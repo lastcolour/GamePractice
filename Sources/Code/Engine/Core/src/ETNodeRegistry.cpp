@@ -3,7 +3,6 @@
 #include "Core/ETSystem.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 namespace {
 

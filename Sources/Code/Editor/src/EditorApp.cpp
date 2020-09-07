@@ -15,6 +15,8 @@
 #include "Core/ETAssets.hpp"
 #include "Core/ETLogger.hpp"
 #include "ETEditorInterfaces.hpp"
+#include "Parallel/TasksRunner.hpp"
+#include "Core/ETTasks.hpp"
 
 EditorApp::EditorApp() :
     Application(),
@@ -25,15 +27,62 @@ EditorApp::~EditorApp() {
 }
 
 bool EditorApp::initialize() {
-    bool res = init();
-    if(!res) {
-        return res;
+    if(!init()) {
+        return false;
     }
-    return res;
+    runner = buildTasksRunner();
+    if(!runner) {
+        return false;
+    }
+    runner->startOtherThreads(3);
+    return true;
 }
 
 void EditorApp::deinitiazlie() {
+    if(runner) {
+        runner->stopOtherTreads();
+        runner.reset();
+    }
     deinit();
+}
+
+std::unique_ptr<TasksRunner> EditorApp::buildTasksRunner() {
+    std::unique_ptr<TasksRunner> taskRunner(new TasksRunner);
+    {
+        auto assetsUpdate = taskRunner->createTask("Assets", [](){
+            ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
+        });
+        assetsUpdate->setType(RunTaskType::NoInMainThread);
+        assetsUpdate->setFrequency(120);
+    }
+    {
+        auto entitiesUpdate = taskRunner->createTask("Entities", [](){
+            ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
+        });
+        entitiesUpdate->setFrequency(120);
+    }
+    {
+        auto uiUpdate = taskRunner->createTask("UI", [](){
+            ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
+        });
+        auto renderSync = taskRunner->createTask("RenderSync", [](){
+            ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
+        });
+        renderSync->setType(RunTaskType::MainThreadOnly);
+        auto gameUpdate = taskRunner->createTask("Game", [](){
+            ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
+        });
+        gameUpdate->setFrequency(120);
+        gameUpdate->addChild(uiUpdate);
+        uiUpdate->addChild(renderSync);
+    }
+    {
+        auto soundUpdate = taskRunner->createTask("Sound", [](){
+            ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+        });
+        soundUpdate->setFrequency(60);
+    }
+    return taskRunner;
 }
 
 Buffer EditorApp::getReflectModel() {
@@ -104,6 +153,8 @@ const char* EditorApp::getEntityName(EntityId entityId) {
 }
 
 void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
+    runner->stepMainTread();
+
     Vec2i renderSize = Vec2i(width, height);
     frameBuffer.setSize(renderSize);
     frameBuffer.clear();
@@ -201,11 +252,9 @@ void EditorApp::unloadAll() {
 }
 
 void EditorApp::setTimeScale(float timeScale) {
-    // ET_SendEvent(&ETMainThreadTimer::ET_setAppTimeScale, timeScale);
 }
 
 void EditorApp::enableGameUpdate(bool flag) {
-    updateGame = flag;
 }
 
 bool EditorApp::renameEntity(EntityId entityId, const char* newName) {

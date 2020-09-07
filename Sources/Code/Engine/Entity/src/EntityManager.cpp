@@ -14,6 +14,7 @@ namespace {
 
 const char* GAME_ENTITIES = "Entities";
 const EntityLogicId TransformLogicId = 0;
+const int ENTITY_LOADING_TIME_LOG_THRESHOLD = 5;
 
 bool CheckEntity(const char* errStr, EntityId entityId, Entity* entity) {
     if(entityId == InvalidEntityId) {
@@ -193,7 +194,9 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
     auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - startTimeP).count();
 
-    LogDebug("[EntityManager::ET_createEntityFromJSON] Create entity: '%s' (%d ms)", entityName, duration);
+    if(duration > ENTITY_LOADING_TIME_LOG_THRESHOLD) {
+        LogDebug("[EntityManager::ET_createEntityFromJSON] Create entity: '%s' (%d ms)", entityName, duration);
+    }
 
     return entity->getEntityId();
 }
@@ -469,7 +472,9 @@ Entity* EntityManager::createEntity(const char* entityName) {
     auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - startTimeP).count();
 
-    LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, duration);
+    if(duration > ENTITY_LOADING_TIME_LOG_THRESHOLD) {
+        LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, duration);
+    }
 
     return entity;
 }

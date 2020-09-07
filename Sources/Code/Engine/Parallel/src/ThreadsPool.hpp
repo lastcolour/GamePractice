@@ -17,6 +17,10 @@ public:
 
     void run(int numThreads);
 
+    void startOtherThreads(int numThread);
+    bool stepMainThread();
+    void stopOtherTreads();
+
     ThreadJob* getNextJobForThread(ThreadJob* prevJob, int threadId);
 
 private:
@@ -27,6 +31,7 @@ private:
 private:
 
     TasksRunner* provider;
+    ThreadJob* prevJob;
     std::vector<std::unique_ptr<ThreadWorker>> threadWorkers;
 };
 

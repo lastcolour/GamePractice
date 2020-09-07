@@ -57,6 +57,5 @@ void EntityRegistry::removeEntity(EntityId entityId) {
         entityToRemove = std::move(it->second);
         entities.erase(it);
     }
-    LogDebug("[EntityRegistry::removeEntity] Destroy entity: '%s'", entityToRemove->ET_getName());
     entityToRemove.reset();
 }

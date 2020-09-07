@@ -7,6 +7,8 @@
 #include "Platform/ETSurface.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
 
+class TasksRunner;
+
 class EditorApp : public Application {
 public:
 
@@ -39,10 +41,12 @@ public:
 protected:
 
     void buildModules(ModuleListT& modules) override;
+    std::unique_ptr<TasksRunner> buildTasksRunner();
 
 private:
 
     RenderTextureFramebuffer frameBuffer;
+    std::unique_ptr<TasksRunner> runner;
     bool updateGame;
 };
 

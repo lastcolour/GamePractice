@@ -7,7 +7,8 @@
 #include <cassert>
 
 ThreadsPool::ThreadsPool(TasksRunner* tasksProvider) :
-    provider(tasksProvider) {
+    provider(tasksProvider),
+    prevJob(nullptr) {
 }
 
 ThreadsPool::~ThreadsPool() {
@@ -52,21 +53,32 @@ void ThreadsPool::run(int numThreads) {
     if(!initWorkers(numThreads - 1)) {
         return;
     }
-    ThreadJob* prevJob = nullptr;
-    TimePoint timePoint;
-    while(true) {
-        timePoint = TimePoint::GetNowTime();
-        auto job = getNextJobForThread(prevJob, 0);
-        if(job) {
-            job->execute(timePoint);
-        } else {
-            if(provider->canRun()) {
-                std::this_thread::yield();
-            } else {
-                break;
-            }
+    while(provider->canRun()) {
+        if(!stepMainThread()) {
+            std::this_thread::yield();
         }
-        prevJob = job;
     }
+    deinitWorkers();
+}
+
+void ThreadsPool::startOtherThreads(int numThreads) {
+    assert(numThreads > 0 && "Invalid thread number");
+    if(!initWorkers(numThreads)) {
+        return;
+    }
+}
+
+bool ThreadsPool::stepMainThread() {
+    auto job = getNextJobForThread(prevJob, 0);
+    prevJob = job;
+    if(job) {
+        TimePoint timePoint = TimePoint::GetNowTime();
+        job->execute(timePoint);
+        return true;
+    }
+    return false;
+}
+
+void ThreadsPool::stopOtherTreads() {
     deinitWorkers();
 }

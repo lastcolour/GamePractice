@@ -80,8 +80,8 @@ TEST_F(TaskRunnerTests, TestFrequency) {
         return currTime.getSecondsElapsedFrom(startTime) < 1.f;
     });
 
-    EXPECT_EQ(task->getRunCount(), 60);
-    EXPECT_EQ(value, 60);
+    EXPECT_GE(task->getRunCount(), 59);
+    EXPECT_LE(value, 60);
 }
 
 TEST_F(TaskRunnerTests, RunTaskWithChildren) {

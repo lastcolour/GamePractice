@@ -25,6 +25,10 @@ public:
     RunTask* createTask(const char* name, RunTask::CallT func);
     void runUntil(int threadCount, PredicateT predicate);
 
+    void startOtherThreads(int threadCount);
+    void stepMainTread();
+    void stopOtherTreads();
+
     bool canRun() const;
     ThreadJob* finishAndGetNext(ThreadJob* prevJob, int threadId);
     std::vector<std::unique_ptr<RunTask>>& getTasks();
@@ -36,6 +40,14 @@ private:
 
 private:
 
+    enum class RunMode {
+        None = 0,
+        RunUntil,
+        MainThreadManualStep
+    };
+
+private:
+
     std::mutex mutex;
     PredicateT predFunc;
     std::unique_ptr<ThreadsPool> threadsPool;
@@ -44,6 +56,7 @@ private:
     std::vector<std::unique_ptr<ThreadJob>> jobs;
     std::vector<ThreadJob*> pendingJobs;
     std::atomic<bool> predicateFailed;
+    RunMode mode;
 };
 
 #endif /* __TASKS_RUNNER_HPP__ */

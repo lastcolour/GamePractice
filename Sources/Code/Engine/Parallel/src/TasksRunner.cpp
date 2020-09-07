@@ -60,13 +60,15 @@ void calculateParents(JobTree* tree) {
 } // namespace
 
 TasksRunner::TasksRunner() :
-    predicateFailed(false) {
+    predicateFailed(false),
+    mode(RunMode::None) {
 }
 
 TasksRunner::~TasksRunner() {
 }
 
 RunTask* TasksRunner::createTask(const char* name, RunTask::CallT func) {
+    assert(mode == RunMode::None && "Invalid run mode");
     auto& task = tasks.emplace_back(new RunTask(name, func));
     return task.get();
 }
@@ -141,6 +143,8 @@ void TasksRunner::initJobTrees() {
 }
 
 void TasksRunner::runUntil(int threadCount, TasksRunner::PredicateT predicate) {
+    assert(mode == RunMode::None && "Invalid run mode");
+    mode = RunMode::RunUntil;
     if(tasks.empty()) {
         return;
     }
@@ -189,4 +193,28 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
 
 std::vector<std::unique_ptr<RunTask>>& TasksRunner::getTasks() {
     return tasks;
+}
+
+void TasksRunner::startOtherThreads(int threadCount) {
+    assert(mode == RunMode::None && "Invlaid run mode");
+    assert(!predFunc && "Invalid run predicate");
+    predFunc = [](){ return true; };
+    mode = RunMode::MainThreadManualStep;
+    if(tasks.empty()) {
+        return;
+    }
+    initJobs();
+    initJobTrees();
+    threadsPool.reset(new ThreadsPool(this));
+    threadsPool->startOtherThreads(threadCount);
+}
+
+void TasksRunner::stepMainTread() {
+    assert(mode == RunMode::MainThreadManualStep && "Invlaid run mode");
+    threadsPool->stepMainThread();
+}
+
+void TasksRunner::stopOtherTreads() {
+    assert(mode == RunMode::MainThreadManualStep && "Invlaid run mode");
+    threadsPool->stopOtherTreads();
 }
