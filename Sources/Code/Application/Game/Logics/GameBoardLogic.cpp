@@ -141,8 +141,14 @@ bool GameBoardLogic::init() {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     AABB2Di visualBox(Vec2i(0), viewPort);
-    ET_onZIndexChanged(0);
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+
+    visualBox.setCenter(Vec2i(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y)));
     ET_onBoxResized(visualBox);
+
+    ET_onZIndexChanged(0);
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
@@ -272,11 +278,6 @@ void GameBoardLogic::updateAfterRemoves() {
             Vec2i topPt = topElem->boardPt;
             topPt.y += 1;
 
-            setElemBoardPos(elem, topPt);
-            setRandomElemType(elem);
-            setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
-            setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
-
             int voidBelow = getVoidElemBelow(elem.boardPt);
             elem.movePt = Vec2i(topPt.x, topPt.y - voidBelow);
 
@@ -285,6 +286,11 @@ void GameBoardLogic::updateAfterRemoves() {
             topTm.pt.y += cellSize;
             topTm.scale = Vec3(1.f);
             ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, topTm);
+
+            setElemBoardPos(elem, topPt);
+            setRandomElemType(elem);
+            setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
+            setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
         }
     }
 }

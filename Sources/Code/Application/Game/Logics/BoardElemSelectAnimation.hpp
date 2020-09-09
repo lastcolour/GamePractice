@@ -6,7 +6,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Math/Vector.hpp"
-#include "Game/ETGame.hpp"
+#include "Game/ETGameTimer.hpp"
 
 class ReflectContext;
 

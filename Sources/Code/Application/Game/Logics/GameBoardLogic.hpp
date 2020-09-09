@@ -7,7 +7,7 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Entity/ETEntity.hpp"
-#include "Game/ETGame.hpp"
+#include "Game/ETGameTimer.hpp"
 #include "Core/ETPrimitives.hpp"
 
 #include <vector>

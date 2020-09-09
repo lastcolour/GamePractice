@@ -19,23 +19,6 @@ struct ETGameStateManager {
     virtual void ET_changeState(EGameState newGameState) = 0;
 };
 
-struct ETGameTimer {
-    virtual ~ETGameTimer() = default;
-    virtual void ET_pauseTimer() = 0;
-    virtual void ET_resumeTimer() = 0;
-    virtual bool ET_isTimerPaused() const = 0;
-};
-
-struct ETGameTimerEvents {
-    virtual ~ETGameTimerEvents() = default;
-    virtual void ET_onGameTick(float dt) = 0;
-};
-
-struct ETGameTick {
-    virtual ~ETGameTick() = default;
-    virtual void ET_onGameTick(float dt) = 0;
-};
-
 struct ETGameConfig {
     virtual ~ETGameConfig() = default;
     virtual bool ET_isSoundEnabled() const = 0;

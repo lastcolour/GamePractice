@@ -3,7 +3,7 @@
 
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Game/ETGame.hpp"
+#include "Game/ETGameTimer.hpp"
 
 #include <memory>
 

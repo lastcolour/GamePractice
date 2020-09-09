@@ -17,6 +17,7 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     drawPriority(0),
     type(nodeType),
     isVisible(true),
+    showAfterSync(false),
     isTransformUpdated(false) {
 }
 
@@ -26,7 +27,6 @@ RenderNode::~RenderNode() {
 bool RenderNode::init() {
     ETNode<ETRenderNode>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
-    ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 
     RenderNodeCreateParams params;
     ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
@@ -58,8 +58,15 @@ void RenderNode::ET_hide() {
 }
 
 void RenderNode::ET_show() {
+    if(isVisible) {
+        return;
+    }
     isVisible = true;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    if(isTransformUpdated.load()) {
+        showAfterSync = true;
+    } else {
+        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    }
 }
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
@@ -74,7 +81,10 @@ int RenderNode::ET_getDrawPriority() const {
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
-    isTransformUpdated.store(true);
+    if(!isTransformUpdated.load()) {
+        isTransformUpdated.store(true);
+        ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
+    }
 }
 
 void RenderNode::ET_syncTransform() {
@@ -83,5 +93,12 @@ void RenderNode::ET_syncTransform() {
         Transform tm;
         ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
         ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+
+        if(showAfterSync) {
+            showAfterSync = false;
+            ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+        }
+
+        ETNode<ETRenderProxyNodeEvents>::disconnect();
     }
 }

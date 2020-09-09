@@ -56,6 +56,7 @@ private:
     std::vector<std::unique_ptr<ThreadJob>> jobs;
     std::vector<ThreadJob*> pendingJobs;
     std::atomic<bool> predicateFailed;
+    std::atomic<bool> pendingsEmpty;
     RunMode mode;
 };
 

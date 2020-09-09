@@ -23,6 +23,15 @@ uint32_t Initiliaze() {
     return 0u;
 }
 
+void DeInitialize() {
+    if (!EDITOR_APP) {
+        return;
+    }
+    EDITOR_APP->deinitiazlie();
+    delete EDITOR_APP;
+    EDITOR_APP = nullptr;
+}
+
 const char* GetReflectModel() {
     if(!EDITOR_APP) {
         return nullptr;
@@ -37,14 +46,6 @@ const char* GetRegisteredEntityLogics() {
     }
     INTERNAL_BUFFER = EDITOR_APP->getRegisteredEntityLogics();
     return INTERNAL_BUFFER.getCString();
-}
-
-void DeInitialize() {
-    if(!EDITOR_APP) {
-        return;
-    }
-    delete EDITOR_APP;
-    EDITOR_APP = nullptr;
 }
 
 uint32_t LoadEntity(const char* entityName) {

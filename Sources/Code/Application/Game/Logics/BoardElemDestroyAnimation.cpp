@@ -4,6 +4,7 @@
 #include "Audio/ETSound.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Math/Primitivies.hpp"
+#include "Render/ETRenderNode.hpp"
 
 #include <algorithm>
 
@@ -43,6 +44,7 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
     auto animDuration = currDuration - startDelay;
     if(animDuration >= duration) {
         currDuration = -1.f;
+        ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
         ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
         ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimationEvents::ET_onDestryAnimEnded);
         ETNode<ETGameTimerEvents>::disconnect();

@@ -17,6 +17,9 @@
 #include "ETEditorInterfaces.hpp"
 #include "Parallel/TasksRunner.hpp"
 #include "Core/ETTasks.hpp"
+#include "UI/ETUITimer.hpp"
+#include "Game/ETGameTimer.hpp"
+#include "Audio/ETAudioSystem.hpp"
 
 EditorApp::EditorApp() :
     Application(),
@@ -35,6 +38,9 @@ bool EditorApp::initialize() {
         return false;
     }
     runner->startOtherThreads(3);
+
+    enableGameUpdate(false);
+
     return true;
 }
 
@@ -63,14 +69,14 @@ std::unique_ptr<TasksRunner> EditorApp::buildTasksRunner() {
     }
     {
         auto uiUpdate = taskRunner->createTask("UI", [](){
-            ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
+            ET_SendEvent(&ETUITimer::ET_onTick);
         });
         auto renderSync = taskRunner->createTask("RenderSync", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
         });
         renderSync->setType(RunTaskType::MainThreadOnly);
         auto gameUpdate = taskRunner->createTask("Game", [](){
-            ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
+            ET_SendEvent(&ETGameTimer::ET_onTick);
         });
         gameUpdate->setFrequency(120);
         gameUpdate->addChild(uiUpdate);
@@ -243,7 +249,7 @@ EntityChildId EditorApp::createChildEntity(EntityId entityId, const char* childN
 }
 
 void EditorApp::mouseInputEvent(EActionType actionType, const Vec2i& pos) {
-    ET_SendEvent(&ETInputEvents::ET_onTouch, actionType, pos);
+    ET_QueueEvent(&ETInputEvents::ET_onTouch, actionType, pos);
 }
 
 void EditorApp::unloadAll() {
@@ -252,9 +258,20 @@ void EditorApp::unloadAll() {
 }
 
 void EditorApp::setTimeScale(float timeScale) {
+    ET_SendEvent(&ETUITimer::ET_setScale, timeScale);
+    ET_SendEvent(&ETGameTimer::ET_setScale, timeScale);
 }
 
 void EditorApp::enableGameUpdate(bool flag) {
+    if(!flag) {
+        ET_QueueEvent(&ETUITimer::ET_pause);
+        ET_QueueEvent(&ETGameTimer::ET_pause);
+        ET_QueueEvent(&ETAudioSystem::ET_setMasterVolume, 0.f);
+    } else {
+        ET_QueueEvent(&ETUITimer::ET_resume);
+        ET_QueueEvent(&ETGameTimer::ET_resume);
+        ET_QueueEvent(&ETAudioSystem::ET_setMasterVolume, 1.f);
+    }
 }
 
 bool EditorApp::renameEntity(EntityId entityId, const char* newName) {

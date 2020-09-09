@@ -27,6 +27,9 @@ public:
     Resampler& getResampler();
     Buffer& getTempBuffer();
 
+    void setMasterVolume(float newVolume);
+    float getMasterVolume() const;
+
 private:
 
     MixNode* getFreeSource();
@@ -38,6 +41,7 @@ private:
     CombineNode rootCombine;
     Buffer buffer;
     std::vector<std::unique_ptr<MixNode>> sources;
+    float masterVolume;
 };
 
 #endif /* __MIX_GRAPH_HPP__ */

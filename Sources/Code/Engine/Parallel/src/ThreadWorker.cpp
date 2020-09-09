@@ -2,6 +2,7 @@
 #include "ThreadsPool.hpp"
 #include "ThreadJob.hpp"
 #include "Core/TimePoint.hpp"
+#include "ParallelUtils.hpp"
 
 ThreadWorker::ThreadWorker(ThreadsPool* parentPool, int threadId) :
     pool(parentPool),
@@ -34,7 +35,7 @@ void ThreadWorker::run() {
         if(job) {
             job->execute(timePoint);
         } else {
-            std::this_thread::yield();
+            Parallel::ThreadIdle();
         }
         prevJob = job;
     }

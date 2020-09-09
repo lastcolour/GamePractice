@@ -1,12 +1,7 @@
 #include "Nodes/TextNode.hpp"
 #include "RenderTexture.hpp"
 #include "Render/ETRenderManager.hpp"
-
-namespace {
-
-const float NEXT_LINE_OFFSET = 1.2f;
-
-} // namespace
+#include "Logics/RenderAuxFunctions.hpp"
 
 TextNode::TextNode() :
     color(255, 255, 255),
@@ -59,7 +54,7 @@ void TextNode::onRender(RenderContext& ctx) {
         if(it != text.end()) {
             auto ch = *it;
             if(ch == '\n') {
-                pt.y -= font->getHeight() * NEXT_LINE_OFFSET * scale.y;
+                pt.y -= font->getHeight() * Render::TextNewLineOffset * scale.y;
                 pt.x = aabb.bot.x;
             } else if(auto glyph = font->getGlyph(ch)) {
                 Vec2 glyphPt(0);

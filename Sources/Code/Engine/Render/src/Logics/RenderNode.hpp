@@ -56,6 +56,7 @@ protected:
     int drawPriority;
     RenderNodeType type;
     bool isVisible;
+    bool showAfterSync;
     std::atomic<bool> isTransformUpdated;
 };
 

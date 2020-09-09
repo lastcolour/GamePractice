@@ -106,7 +106,6 @@ void GameBoardElemLogic::ET_setSelected(bool flag) {
 
 void GameBoardElemLogic::ET_onDestryAnimEnded() {
     lifeState = EBoardElemLifeState::Void;
-    ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
     ET_SendEvent(getParentId(), &ETGameBoard::ET_updateBoard);
     ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
 }

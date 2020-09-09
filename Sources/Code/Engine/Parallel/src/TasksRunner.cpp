@@ -61,6 +61,7 @@ void calculateParents(JobTree* tree) {
 
 TasksRunner::TasksRunner() :
     predicateFailed(false),
+    pendingsEmpty(false),
     mode(RunMode::None) {
 }
 
@@ -175,6 +176,11 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
     }
     ThreadJob* nextJob = nullptr;
     {
+        if(!prevJob) {
+            if(pendingsEmpty.load()) {
+                return nullptr;
+            }
+        }
         std::lock_guard<std::mutex> lock(mutex);
         if(prevJob) {
             prevJob->scheduleNextJobs(pendingJobs);
@@ -187,6 +193,7 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
                 break;
             }
         }
+        pendingsEmpty.store(pendingJobs.empty());
     }
     return nextJob;
 }

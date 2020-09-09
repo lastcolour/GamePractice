@@ -2,7 +2,7 @@
 #define __GAME_BOARD_APPEAR_ANIMATION_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Game/ETGame.hpp"
+#include "Game/ETGameTimer.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 

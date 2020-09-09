@@ -3,6 +3,7 @@
 #include "Core/ETLogger.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 namespace {
 
@@ -11,7 +12,8 @@ const int MAX_SOURCES = 32;
 } // namespace
 
 MixGraph::MixGraph() :
-    resampler(this) {
+    resampler(this),
+    masterVolume(1.f) {
 }
 
 MixGraph::~MixGraph() {
@@ -42,6 +44,7 @@ void MixGraph::mix(float* out, int channels, int samples) {
     int lowClipCount = 0;
     int highClipCount = 0;
     for(int i = 0; i < samples * channels; ++i) {
+        out[i] *= masterVolume;
         if(out[i] > 1.f) {
             out[i] = 1.f;
             ++highClipCount;
@@ -51,11 +54,8 @@ void MixGraph::mix(float* out, int channels, int samples) {
         }
     }
 
-    if(lowClipCount > 1) {
-        LogWarning("[MixGraph::mix] Detected low-clipping: %d", lowClipCount);
-    }
-    if(highClipCount > 1) {
-        LogWarning("[MixGraph::mix] Detected high-clipping: %d", highClipCount);
+    if(lowClipCount > 1 || highClipCount > 1) {
+        LogWarning("[MixGraph::mix] Detected clipping: LOW = %d, HIGHT = %d", lowClipCount, highClipCount);
     }
 }
 
@@ -91,4 +91,14 @@ Resampler& MixGraph::getResampler() {
 
 Buffer& MixGraph::getTempBuffer() {
     return buffer;
+}
+
+
+void MixGraph::setMasterVolume(float newVolume) {
+    assert(newVolume >= 0 && "Negative master volume");
+    masterVolume = newVolume;
+}
+
+float MixGraph::getMasterVolume() const {
+    return masterVolume;
 }

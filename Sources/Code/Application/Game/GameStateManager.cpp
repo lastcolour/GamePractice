@@ -22,21 +22,21 @@ void GameStateManager::deinit() {
 
 void GameStateManager::ET_startGame() {
     assert(gameState == EGameState::None && "Invalid game state");
-    ET_SendEvent(&ETGameTimer::ET_resumeTimer);
+    ET_SendEvent(&ETGameTimer::ET_resume);
     ET_changeState(EGameState::PreGame);
 }
 
 void GameStateManager::ET_pauseGame() {
-    ET_SendEvent(&ETGameTimer::ET_pauseTimer);
+    ET_SendEvent(&ETGameTimer::ET_pause);
 }
 
 void GameStateManager::ET_resumeGame() {
-    ET_SendEvent(&ETGameTimer::ET_resumeTimer);
+    ET_SendEvent(&ETGameTimer::ET_resume);
 }
 
 bool GameStateManager::ET_isGamePaused() const {
     bool res = false;
-    ET_SendEventReturn(res, &ETGameTimer::ET_isTimerPaused);
+    ET_SendEventReturn(res, &ETGameTimer::ET_isPaused);
     return res;
 }
 
@@ -70,7 +70,7 @@ void GameStateManager::ET_finishGame() {
         break;
     }
     gameState = EGameState::None;
-    ET_SendEvent(&ETGameTimer::ET_pauseTimer);
+    ET_SendEvent(&ETGameTimer::ET_pause);
 }
 
 void GameStateManager::ET_changeState(EGameState newState) {

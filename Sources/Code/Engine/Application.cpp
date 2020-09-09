@@ -11,6 +11,8 @@
 #include "Parallel/TasksRunner.hpp"
 #include "Parallel/RunTask.hpp"
 #include "Core/ETTasks.hpp"
+#include "UI/ETUITimer.hpp"
+#include "Game/ETGameTimer.hpp"
 
 Application::Application() :
     etSystem(new ETSystem()) {
@@ -83,7 +85,7 @@ void Application::mainLoop() {
     }
     {
         auto uiUpdate = runner.createTask("UI", [](){
-            ET_SendEvent(&ETUIUpdateTask::ET_updateUI);
+            ET_SendEvent(&ETUITimer::ET_onTick);
         });
         auto renderSync = runner.createTask("RenderSync", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
@@ -91,7 +93,7 @@ void Application::mainLoop() {
         renderSync->setType(RunTaskType::MainThreadOnly);
     
         auto gameUpdate = runner.createTask("Game", [](){
-            ET_SendEvent(&ETGameUpdateTask::ET_updateGame);
+            ET_SendEvent(&ETGameTimer::ET_onTick);
         });
 
         gameUpdate->setFrequency(120);

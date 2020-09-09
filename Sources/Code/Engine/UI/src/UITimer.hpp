@@ -3,11 +3,12 @@
 
 #include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
-#include "Core/ETTasks.hpp"
 #include "Core/TimePoint.hpp"
+#include "Core/ETTasks.hpp"
+#include "UI/ETUITimer.hpp"
 
 class UITimer : public SystemLogic,
-    public ETNode<ETUIUpdateTask> {
+    public ETNode<ETUITimer> {
 public:
 
     UITimer();
@@ -17,12 +18,20 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETUIUpdateTask
-    void ET_updateUI() override;
+    // ETUITimer
+    void ET_onTick() override;
+    void ET_setScale(float newScale) override;
+    void ET_pause() override;
+    void ET_resume() override;
+    bool ET_isPaused() const override;
 
 private:
 
     TimePoint lastTickT;
+    float scale;
+    bool skipUpdate;
+    bool isPaused;
 };
+
 
 #endif /* __UI_TIMER_HPP__ */

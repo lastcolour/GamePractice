@@ -58,6 +58,7 @@ bool ALAudioSystem::init() {
     }
     ETNode<ETSoundUpdateTask>::connect(getEntityId());
     ETNode<ETSoundPlayManager>::connect(getEntityId());
+    ETNode<ETAudioSystem>::connect(getEntityId());
     return true;
 }
 
@@ -144,6 +145,7 @@ bool ALAudioSystem::initAlSource() {
 }
 
 void ALAudioSystem::ET_updateSound() {
+    ET_PollAllEvents<ETAudioSystem>();
     ET_PollAllEvents<ETSoundNodeManager>();
     ET_PollAllEvents<ETSoundNode>();
     ET_PollAllEvents<ETSoundEventNode>();
@@ -193,4 +195,12 @@ void ALAudioSystem::ET_updateSound() {
 
 bool ALAudioSystem::ET_play(SoundStream* soundStream) {
     return mixGrap.playSound(soundStream);
+}
+
+void ALAudioSystem::ET_setMasterVolume(float newVolume) {
+    mixGrap.setMasterVolume(newVolume);
+}
+
+float ALAudioSystem::ET_getMasterVolume() const {
+    return mixGrap.getMasterVolume();
 }

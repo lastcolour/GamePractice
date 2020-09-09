@@ -1,20 +1,10 @@
 #ifndef __ET_TASKS_HPP__
 #define __ET_TASKS_HPP__
 
-struct ETGameUpdateTask {
-    virtual ~ETGameUpdateTask() = default;
-    virtual void ET_updateGame() = 0;
-};
-
 struct ETRenderUpdateTask {
     virtual ~ETRenderUpdateTask() = default;
     virtual void ET_updateRender() = 0;
     virtual void ET_syncWithGame() = 0;
-};
-
-struct ETUIUpdateTask {
-    virtual ~ETUIUpdateTask() = default;
-    virtual void ET_updateUI() = 0;
 };
 
 struct ETInputUpdateTask {

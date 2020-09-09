@@ -2,7 +2,10 @@
 #include "UI/ETUITimer.hpp"
 #include "UI/ETUIView.hpp"
 
-UITimer::UITimer() {
+UITimer::UITimer() :
+    scale(1.f),
+    skipUpdate(false),
+    isPaused(false) {
 }
 
 UITimer::~UITimer() {
@@ -10,18 +13,45 @@ UITimer::~UITimer() {
 
 bool UITimer::init() {
     lastTickT = TimePoint::GetNowTime();
-    ETNode<ETUIUpdateTask>::connect(getEntityId());
+    ETNode<ETUITimer>::connect(getEntityId());
     return true;
 }
 
 void UITimer::deinit() {
 }
 
-void UITimer::ET_updateUI() {
+void UITimer::ET_onTick() {
+    ET_PollAllEvents<ETUITimer>();
     ET_PollAllEvents<ETUIViewManager>();
-
+    if(isPaused) {
+        return;
+    }
     auto currTime = TimePoint::GetNowTime();
     auto dt = currTime.getSecondsElapsedFrom(lastTickT);
     lastTickT = currTime;
+
+    if(skipUpdate) {
+        dt = 0.f;
+        skipUpdate = false;
+    }
+
+    dt *= scale;
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, dt);
+}
+
+void UITimer::ET_setScale(float newScale) {
+    scale = newScale;
+}
+
+void UITimer::ET_pause() {
+    isPaused = true;
+}
+
+void UITimer::ET_resume() {
+    isPaused = false;
+    skipUpdate = true;
+}
+
+bool UITimer::ET_isPaused() const {
+    return isPaused;
 }

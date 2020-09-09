@@ -6,6 +6,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "MixGraph/MixGraph.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
+#include "Audio/ETAudioSystem.hpp"
 
 struct ALCdevice;
 struct ALCcontext;
@@ -13,7 +14,8 @@ class ALSoundSource;
 
 class ALAudioSystem : public SystemLogic,
     public ETNode<ETSoundUpdateTask>,
-    public ETNode<ETSoundPlayManager> {
+    public ETNode<ETSoundPlayManager>,
+    public ETNode<ETAudioSystem> {
 public:
 
     ALAudioSystem();
@@ -28,6 +30,10 @@ public:
 
     // ETSoundPlayManager
     bool ET_play(SoundStream* soundStream) override;
+
+    // ETAudioSystem
+    void ET_setMasterVolume(float newVolume) override;
+    float ET_getMasterVolume() const override;
 
 private:
 

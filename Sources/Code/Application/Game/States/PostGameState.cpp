@@ -1,5 +1,6 @@
 #include "Game/States/PostGameState.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGame.hpp"
 
 PostGameState::PostGameState() :
     postGameTime(1.f) {

@@ -10,6 +10,8 @@ class RenderGeometry;
 
 namespace Render {
 
+const float TextNewLineOffset = 1.f;
+
 Mat4 CalcModelMat(const Transform& tm, const Vec3& scale, const RenderGeometry& geom);
 
 Vec2 CalcGeomScaleForSize(const Vec2i& size, const RenderGeometry& geom);

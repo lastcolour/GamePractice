@@ -4,15 +4,10 @@
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 #include "Render/ETRenderManager.hpp"
+#include "Logics/RenderAuxFunctions.hpp"
 
 #include <algorithm>
 #include <cassert>
-
-namespace {
-
-const float NEXT_LINE_OFFSET = 1.f;
-
-} // namespace
 
 RenderFont::RenderFont(int fontMaxHeight) :
     fontHeight(fontMaxHeight) {
@@ -62,7 +57,7 @@ Vec2i RenderFont::getTextSize(const std::string& text) const {
                 }
             }
         } else if(ch == '\n') {
-            pt.y += static_cast<int>(fontHeight * NEXT_LINE_OFFSET);
+            pt.y += static_cast<int>(fontHeight * Render::TextNewLineOffset);
             pt.x = std::max(pt.x, currentLineX);
             currentLineX = 0;
         }

@@ -3,12 +3,11 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
-#include "Game/ETGame.hpp"
+#include "Game/ETGameTimer.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Core/TimePoint.hpp"
 
 class GameTimer : public SystemLogic,
-    public ETNode<ETGameUpdateTask>,
     public ETNode<ETGameTimer> {
 public:
 
@@ -19,17 +18,17 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETGameUpdateTask
-    void ET_updateGame() override;
-
     // ETGameTimer
-    void ET_pauseTimer() override;
-    void ET_resumeTimer() override;
-    bool ET_isTimerPaused() const override;
+    void ET_onTick() override;
+    void ET_setScale(float newScale) override;
+    void ET_pause() override;
+    void ET_resume() override;
+    bool ET_isPaused() const override;
 
 private:
 
     TimePoint lastTickT;
+    float scale;
     bool skipUpdate;
     bool isPaused;
 };
