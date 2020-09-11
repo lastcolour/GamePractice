@@ -16,9 +16,8 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     alpha(1.f),
     drawPriority(0),
     type(nodeType),
-    isVisible(true),
-    showAfterSync(false),
-    isTransformUpdated(false) {
+    syncWithRender(false),
+    isVisible(true) {
 }
 
 RenderNode::~RenderNode() {
@@ -58,15 +57,9 @@ void RenderNode::ET_hide() {
 }
 
 void RenderNode::ET_show() {
-    if(isVisible) {
-        return;
-    }
     isVisible = true;
-    if(isTransformUpdated.load()) {
-        showAfterSync = true;
-    } else {
-        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
-    }
+    syncWithRender.store(true);
+    ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
@@ -81,24 +74,15 @@ int RenderNode::ET_getDrawPriority() const {
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
-    if(!isTransformUpdated.load()) {
-        isTransformUpdated.store(true);
-        ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
-    }
+    syncWithRender.store(true);
+    ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
 void RenderNode::ET_syncTransform() {
-    bool isChanged = true;
-    if(isTransformUpdated.compare_exchange_strong(isChanged, false)) {
-        Transform tm;
-        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
-
-        if(showAfterSync) {
-            showAfterSync = false;
-            ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
-        }
-
-        ETNode<ETRenderProxyNodeEvents>::disconnect();
-    }
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    ETNode<ETRenderProxyNodeEvents>::disconnect();
+    syncWithRender.store(false);
 }

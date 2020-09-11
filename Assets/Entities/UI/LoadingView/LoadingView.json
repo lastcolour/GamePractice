@@ -1,0 +1,188 @@
+{
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "LoadingText",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "UILabel",
+            "id": 1,
+            "data": {
+              "style": {
+                "fontSize": 10.0,
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "text": "Loading...",
+              "render": 0
+            }
+          },
+          {
+            "type": "RenderText",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 2,
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              },
+              "fontSize": 47,
+              "text": "Loading..."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "LoadingImage",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "style": {
+                "width": 10.0,
+                "widthInv": "Grid",
+                "height": 10.0,
+                "heightInv": "Grid",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": 0
+            }
+          },
+          {
+            "type": "RenderColoredTexture",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 2,
+              "size": {
+                "x": 94,
+                "y": 94
+              },
+              "image": "Images/block.png",
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "UIView",
+      "id": 1,
+      "data": {
+        "style": {
+          "width": 1.0,
+          "widthInv": "Relative",
+          "height": 1.0,
+          "heightInv": "Relative",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        },
+        "render": 0
+      }
+    },
+    {
+      "type": "RenderSimple",
+      "id": 2,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
+        "size": {
+          "x": 528,
+          "y": 938
+        },
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 255
+        }
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 3,
+      "data": {
+        "style": {
+          "type": "Vertical",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          2,
+          1
+        ]
+      }
+    }
+  ]
+}

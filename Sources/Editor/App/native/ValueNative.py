@@ -510,9 +510,9 @@ class ArrayValue(ValueNative):
         idx = 0
         for elemNode in node[self._name]:
             elem = _createValue("[{0}]".format(idx), self._elemType)
+            idx += 1
             elem._setArrayVal(self)
             elem._isArrayElement = True
-            idx += 1
             elem.readFromDict(elemNode)
             self._vals.append(elem)
 
@@ -531,10 +531,14 @@ class ArrayValue(ValueNative):
         newElemsCount = size - len(self._vals)
         if newElemsCount > 1:
             raise RuntimeError("Array size was changed in an invalid way")
+        idx = 0
         for item in self._vals:
             item.readFromStream(stream)
+            item._name = "[{0}]".format(idx)
+            idx += 1
         for i in range(newElemsCount):
-            elem = _createValue("[{0}]".format(i), self._elemType)
+            elem = _createValue("[{0}]".format(idx), self._elemType)
+            idx += 1
             elem._setArrayVal(self)
             elem._isArrayElement = True
             elem.readFromStream(stream)
@@ -554,8 +558,8 @@ class ArrayValue(ValueNative):
             raise RuntimeError("Native error when adding ne element")
         return self._vals[-1]
 
-    def removeElement(self, elementId):
-        del self._vals[elementId]
+    def removeElement(self, arrayValue):
+        self._vals.remove(arrayValue)
         self._onValueChanged()
 
     def getValues(self):

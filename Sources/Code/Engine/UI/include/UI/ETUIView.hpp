@@ -17,7 +17,8 @@ enum class UIViewType {
     Main,
     Game,
     EndGame,
-    Background
+    Background,
+    Loading
 };
 
 struct ETUIViewManager {

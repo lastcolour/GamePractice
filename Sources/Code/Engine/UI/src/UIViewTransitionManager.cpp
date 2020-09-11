@@ -65,22 +65,22 @@ void UIViewTransitionManager::ET_addDisappearing(EntityId viewId) {
 }
 
 void UIViewTransitionManager::startNextTask() {
-    if(tasks.empty()) {
-        return;
-    }
-    auto& task = tasks.front();
-    if(!ET_IsExistNode<ETUIViewAppearAnimation>(task.viewId)) {
-        if(task.isAppearing) {
-            ET_SendEvent(task.viewId, &ETUIElement::ET_show);
+    while(!tasks.empty()) {
+        auto& task = tasks.front();
+        if(!ET_IsExistNode<ETUIViewAppearAnimation>(task.viewId)) {
+            if(task.isAppearing) {
+                ET_SendEvent(task.viewId, &ETUIElement::ET_show);
+            } else {
+                ET_SendEvent(task.viewId, &ETUIElement::ET_hide);
+            }
+            tasks.erase(tasks.begin());
         } else {
-            ET_SendEvent(task.viewId, &ETUIElement::ET_hide);
-        }
-        tasks.pop_back();
-    } else {
-        if(task.isAppearing) {
-            ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_appear);
-        } else {
-            ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_disappear);
+            if(task.isAppearing) {
+                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_appear);
+            } else {
+                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_disappear);
+            }
+            break;
         }
     }
 }

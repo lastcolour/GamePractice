@@ -70,7 +70,6 @@ void ETNodeRegistry::doSoftDisconnect(int etId, ETNodeBase* ptr) {
     {
         auto& idToPtrMap = connections[etId].idToPtrMap;
         auto range = idToPtrMap.equal_range(ptrId);
-        auto removeIt = idToPtrMap.end();
         for(auto& it = range.first; it != range.second; ++it) {
             if(it->second == ptr) {
                 it->second = nullptr;
@@ -104,7 +103,10 @@ void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {
     } else {
         doSoftDisconnect(etId, ptr);
         bool isConnect = false;
-        connections[etId].pendingConnections.push_back({ptr, InvalidEntityId, isConnect});
+        {
+            std::lock_guard<std::mutex> lock(connMutex);
+            connections[etId].pendingConnections.push_back({ptr, InvalidEntityId, isConnect});
+        }
     }
     syncRoute->hardUnlock(etId);
 }

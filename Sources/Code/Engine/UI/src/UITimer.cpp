@@ -1,6 +1,6 @@
 #include "UITimer.hpp"
 #include "UI/ETUITimer.hpp"
-#include "UI/ETUIView.hpp"
+#include "UI/ETUIViewCache.hpp"
 
 UITimer::UITimer() :
     scale(1.f),
@@ -22,7 +22,7 @@ void UITimer::deinit() {
 
 void UITimer::ET_onTick() {
     ET_PollAllEvents<ETUITimer>();
-    ET_PollAllEvents<ETUIViewManager>();
+    ET_PollAllEvents<ETUIViewCache>();
     if(isPaused) {
         return;
     }

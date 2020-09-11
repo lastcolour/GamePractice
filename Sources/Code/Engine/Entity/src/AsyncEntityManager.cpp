@@ -34,8 +34,6 @@ void AsyncEntityManager::ET_updateEntities() {
     for(auto& req : requests) {
         EntityId entId;
         ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, req.name.c_str());
-        if(entId.isValid()) {
-            req.callback(entId);
-        }
+        req.callback(entId);
     }
 }

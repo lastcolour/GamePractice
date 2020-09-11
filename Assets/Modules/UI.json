@@ -4,6 +4,7 @@
         "mainView":"UI/MainView/MainView.json",
         "gameView":"UI/GameView/GameView.json",
         "backgroundView":"UI/BackgroundView/BackgroundView.json",
-        "endGameView":"UI/GameEndView/GameEndView.json"
+        "endGameView":"UI/GameEndView/GameEndView.json",
+        "loadingView":"UI/LoadingView/LoadingView.json"
     }
 }

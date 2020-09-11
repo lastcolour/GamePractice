@@ -31,7 +31,7 @@
       "type": "GameEndTimer",
       "id": 6,
       "data": {
-        "gameDuration": 180.0
+        "gameDuration": 30.0
       }
     },
     {

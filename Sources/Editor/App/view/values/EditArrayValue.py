@@ -54,8 +54,7 @@ class EditArrayValue(QWidget):
         self._rebuildArrayView()
 
     def _signal_removeBt_clicked(self, button):
-        elemId = button._value._arrayId
-        self._val.removeElement(elemId)
+        self._val.removeElement(button._value)
         self._rebuildArrayView()
 
     def _rebuildArrayView(self):

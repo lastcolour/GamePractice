@@ -4,6 +4,7 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUIView.hpp"
+#include "LoadingScreenManager.hpp"
 
 #include <vector>
 #include <unordered_map>
@@ -35,11 +36,7 @@ private:
 
 private:
 
-    EntityId getLoadedViewId(UIViewType viewType) const;
-    const char* getViewName(UIViewType viewType) const;
-private:
-
-    std::unordered_map<UIViewType, EntityId> loadedViews;
+    LoadingScreenManager loadingScreenMgr;
     std::vector<UIViewNode> stack;
     bool isLoadingView;
 };

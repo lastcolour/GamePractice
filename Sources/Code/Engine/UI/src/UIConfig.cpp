@@ -12,6 +12,7 @@ void UIConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("gameView", &UIConfig::gameView);
         classInfo->addField("backgroundView", &UIConfig::backgroundView);
         classInfo->addField("endGameView", &UIConfig::endGameView);
+        classInfo->addField("loadingView", &UIConfig::loadingView);
     }
 }
 

@@ -128,6 +128,7 @@ EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char*
         }
         auto& tm = parentEntity->ET_getTransform();
         childEntity->ET_setTransform(tm);
+        childEntityId = childEntity->getEntityId();
     }
 
     auto childId = parentEntity->ET_addChild(childEntityId);

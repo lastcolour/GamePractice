@@ -100,8 +100,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 93,
-                            "y": 93
+                            "x": 27,
+                            "y": 27
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -167,8 +167,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 93,
-                            "y": 93
+                            "x": 27,
+                            "y": 27
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -234,8 +234,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 93,
-                            "y": 93
+                            "x": 27,
+                            "y": 27
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -368,7 +368,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.7916666865348816,
+                          "fontSize": 11,
                           "text": "Restart"
                         }
                       }
@@ -416,8 +416,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 279,
-                      "y": 70
+                      "x": 80,
+                      "y": 20
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -510,7 +510,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.7916666865348816,
+                          "fontSize": 11,
                           "text": "Exit"
                         }
                       }
@@ -558,8 +558,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 279,
-                      "y": 70
+                      "x": 80,
+                      "y": 20
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -676,7 +676,7 @@
                                   "b": 0,
                                   "a": 255
                                 },
-                                "fontSize": 0.9791666865348816,
+                                "fontSize": 14,
                                 "text": "0"
                               }
                             }
@@ -712,8 +712,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 79,
-                            "y": 79
+                            "x": 23,
+                            "y": 23
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -770,8 +770,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 372,
-                      "y": 70
+                      "x": 107,
+                      "y": 20
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -845,8 +845,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 372,
-                "y": 418
+                "x": 107,
+                "y": 120
               },
               "image": "Images/block.png",
               "color": {
@@ -878,7 +878,7 @@
             "right": 0.0
           }
         },
-        "render": -1
+        "render": 0
       }
     },
     {
@@ -910,6 +910,25 @@
             "startAlpha": 0.0
           }
         ]
+      }
+    },
+    {
+      "type": "RenderSimple",
+      "id": 4,
+      "data": {
+        "isVisible": true,
+        "alpha": 0.5,
+        "drawPriority": 0,
+        "size": {
+          "x": 150,
+          "y": 266
+        },
+        "color": {
+          "r": 0,
+          "g": 68,
+          "b": 255,
+          "a": 255
+        }
       }
     }
   ]

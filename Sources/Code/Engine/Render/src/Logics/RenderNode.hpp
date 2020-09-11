@@ -55,9 +55,9 @@ protected:
     float alpha;
     int drawPriority;
     RenderNodeType type;
+    std::atomic<bool> syncWithRender;
     bool isVisible;
-    bool showAfterSync;
-    std::atomic<bool> isTransformUpdated;
+
 };
 
 #endif /* __RENDER_NODE_HPP__ */

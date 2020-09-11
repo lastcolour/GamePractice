@@ -1,9 +1,8 @@
 #include "UIViewManager.hpp"
-#include "Core/ETLogger.hpp"
-#include "Entity/ETEntityManger.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Core/ETApplication.hpp"
-#include "UIConfig.hpp"
+#include "UI/ETUIViewCache.hpp"
+#include "UI/ETLoadingScreen.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -29,69 +28,34 @@ bool UIViewManager::init() {
 void UIViewManager::deinit() {
 }
 
-EntityId UIViewManager::getLoadedViewId(UIViewType viewType) const {
-    auto it = loadedViews.find(viewType);
-    if(it == loadedViews.end()) {
-        return InvalidEntityId;
-    }
-    auto viewId = it->second;
-    return viewId;
-}
-
-const char* UIViewManager::getViewName(UIViewType viewType) const {
-    const char* viewName = nullptr;
-    auto uiConfig = ET_getShared<UIConfig>();
-    switch(viewType) {
-        case UIViewType::Main: {
-            viewName = uiConfig->mainView.c_str();
-            break;
-        }
-        case UIViewType::Game: {
-            viewName = uiConfig->gameView.c_str();
-            break;
-        }
-        case UIViewType::Background: {
-            viewName = uiConfig->backgroundView.c_str();
-            break;
-        }
-        case UIViewType::EndGame: {
-            viewName = uiConfig->endGameView.c_str();
-            break;
-        }
-        case UIViewType::None: {
-            [[fallthrough]];
-        }
-        default: {
-            assert(false && "Invalid view type");
-        }
-    }
-    return viewName;
-}
-
 bool UIViewManager::ET_openView(UIViewType viewType) {
     if(isLoadingView) {
         LogError("[UIViewManager::ET_openView] Already loading another view");
     }
-    EntityId viewId = getLoadedViewId(viewType);
+    EntityId viewId;
+    ET_SendEventReturn(viewId, &ETUIViewCache::ET_getViewId, viewType);
     if(viewId.isValid()) {
         ET_onViewLoaded(viewType, viewId);
     } else {
-        auto viewName = getViewName(viewType);
-        ET_SendEvent(&ETAsyncEntityManager::ET_createAsyncEntity, viewName, [viewType](EntityId viewId){
-            ET_QueueEvent(&ETUIViewManager::ET_onViewLoaded, viewType, viewId);
-        });
+        isLoadingView = true;
+        ET_SendEvent(&ETLoadingScreenManager::ET_showLoadingScreen);
+        ET_SendEvent(&ETUIViewCache::ET_asyncLoadView, viewType);
     }
     return true;
 }
 
 void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
     isLoadingView = false;
+    bool loadingScreenOpened = false;
+    ET_SendEventReturn(loadingScreenOpened, &ETLoadingScreenManager::ET_isLoadingScreenActive);
+    if(loadingScreenOpened) {
+        ET_SendEvent(&ETLoadingScreenManager::ET_hideLoadingScreen);
+    }
+
     if(viewId == InvalidEntityId) {
         LogWarning("[UIViewManager::ET_onViewLoaded] Can't create view!");
         return;
     }
-
-    loadedViews[viewType] = viewId;
 
     int zIndex = 0;
     if(!stack.empty()) {
@@ -99,6 +63,7 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
         ET_SendEventReturn(zIndex, topViewId, &ETUIElement::ET_getZIndex);
         zIndex += Z_INDEX_VIEW_OFFSET;
     }
+
     UIViewNode node;
     node.type = viewType;
     node.id = viewId;

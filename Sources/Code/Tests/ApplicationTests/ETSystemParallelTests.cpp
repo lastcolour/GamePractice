@@ -11,20 +11,37 @@ struct ETObject {
     virtual ~ETObject() = default;
     virtual void ET_update() = 0;
     virtual void ET_triggerUpdate() = 0;
+    virtual void ET_triggerDisconnect() = 0;
 };
 
-class TestObject : public ETNode<ETObject> {
+struct ETAltObject {
+    virtual ~ETAltObject() = default;
+    virtual void ET_altTriggerConnect() = 0;
+};
+
+class TestObject : public ETNode<ETObject>,
+    public ETNode<ETAltObject> {
 public:
 
-    TestObject() : updated(0) {}
+    TestObject(ETSystem& et) : etSystem(&et), updated(0) {
+        entId = etSystem->createNewEntityId();
+    }
     virtual ~TestObject() {}
 
-    void connect(ETSystem& etSystem) {
-        entId = etSystem.createNewEntityId();
-        etSystem.connectNode(*this, entId);
+    void connect() {
+        etSystem->connectNode(static_cast<ETNode<ETObject>&>(*this), entId);
+        etSystem->connectNode(static_cast<ETNode<ETAltObject>&>(*this), entId);
     }
 
     void disconnect() {
+        ETNode<ETObject>::disconnect();
+    }
+
+    void ET_altTriggerConnect() override {
+        etSystem->connectNode(static_cast<ETNode<ETObject>&>(*this), entId);
+    }
+
+    void ET_triggerDisconnect() override {
         ETNode<ETObject>::disconnect();
     }
 
@@ -38,6 +55,7 @@ public:
 
 public:
 
+    ETSystem* etSystem;
     EntityId entId;
     int updated;
 };
@@ -60,8 +78,8 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
 
     std::thread t2([&waitThtread, &objects1, &etSystem](){
         while(objects1.size() < 1000) {
-            auto obj = objects1.emplace_back(new TestObject).get();
-            obj->connect(etSystem);
+            auto obj = objects1.emplace_back(new TestObject(etSystem)).get();
+            obj->connect();
             
         }
         waitThtread.fetch_sub(1);
@@ -69,7 +87,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
 
     std::thread t3([&waitThtread, &objects2, &etSystem](){
         while(objects2.size() < 1000) {
-            auto obj = objects2.emplace_back(new TestObject).get();
+            auto obj = objects2.emplace_back(new TestObject(etSystem)).get();
             etSystem.connectNode(*obj, etSystem.createNewEntityId());
         }
         waitThtread.fetch_sub(1);
@@ -98,8 +116,8 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 
     std::vector<std::unique_ptr<TestObject>> objects1;
     for(int i = 0; i < MAX_OBJECTS; ++i) {
-        auto obj = objects1.emplace_back(new TestObject).get();
-        obj->connect(etSystem);
+        auto obj = objects1.emplace_back(new TestObject(etSystem)).get();
+        obj->connect();
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -120,8 +138,8 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 
     std::thread t3([&waitThtread, &objects2, &etSystem, MAX_OBJECTS](){
         while(objects2.size() < MAX_OBJECTS) {
-            auto obj = objects2.emplace_back(new TestObject).get();
-            obj->connect(etSystem);
+            auto obj = objects2.emplace_back(new TestObject(etSystem)).get();
+            obj->connect();
         }
         waitThtread.fetch_sub(1);
     });
@@ -132,4 +150,43 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 
     all = etSystem.getAll<ETObject>();
     EXPECT_EQ(all.size(), MAX_OBJECTS);
+}
+
+TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
+    ETSystem etSystem;
+
+    const int MAX_OBJECTS = 200;
+    const int CONNECT_LOOPS = 1000;
+
+    std::atomic<bool> runFlag;
+    runFlag.store(true);
+
+    std::vector<std::unique_ptr<TestObject>> objects;
+    for(int i = 0; i < MAX_OBJECTS; ++i) {
+        auto& obj = objects.emplace_back(new TestObject(etSystem));
+        obj->connect();
+    }
+
+    std::thread t1([&runFlag, &etSystem](){
+        while(runFlag.load()){
+            etSystem.sendEvent(&ETObject::ET_triggerDisconnect);
+        }
+    });
+
+    std::thread t2([&runFlag, &objects, &etSystem, CONNECT_LOOPS](){
+        for(int i = 0; i < CONNECT_LOOPS; ++i) {
+            for(auto& obj : objects) {
+                etSystem.sendEvent(obj->entId, &ETAltObject::ET_altTriggerConnect);
+            }
+        }
+        runFlag.store(false);
+    });
+
+    t1.join();
+    t2.join();
+
+    etSystem.sendEvent(&ETAltObject::ET_altTriggerConnect);
+
+    auto etObjects = etSystem.getAll<ETObject>();
+    EXPECT_EQ(etObjects.size(), MAX_OBJECTS);
 }
