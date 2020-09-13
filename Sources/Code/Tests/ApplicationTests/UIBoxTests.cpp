@@ -7,7 +7,7 @@
 
 void UIBoxTests::SetUp() {
     ConsoleAppTests::SetUp();
-    auto gridSize = ET_getShared<UIConfig>()->horizontalGrid;
+    auto gridSize = ET_getShared<UIConfig>()->verticalGrid;
     Vec2i portSize(gridSize, gridSize);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, portSize);
 }
@@ -34,7 +34,7 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
         UIBoxStyle style;
         style.width = 0.25f;
         style.widthInv = UIBoxSizeInvariant::Relative;
-        style.height = ET_getShared<UIConfig>()->horizontalGrid / 2.f;
+        style.height = ET_getShared<UIConfig>()->verticalGrid / 2.f;
         style.heightInv = UIBoxSizeInvariant::Grid;
         uiBox->ET_setStyle(style);
 
@@ -44,7 +44,7 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
     }
     {
         UIBoxStyle style;
-        style.width = ET_getShared<UIConfig>()->horizontalGrid / 2.f;
+        style.width = ET_getShared<UIConfig>()->verticalGrid / 2.f;
         style.widthInv = UIBoxSizeInvariant::Grid;
         style.height = 0.25f;
         style.heightInv = UIBoxSizeInvariant::Relative;

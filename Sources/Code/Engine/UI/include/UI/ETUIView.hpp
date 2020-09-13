@@ -5,13 +5,15 @@
 
 enum class UIEventType {
     None = 0,
-    OnStartGame,
+    OnMainViewStartGame,
+    OnGameEndViewExit,
     OnBackButton,
-    OnRestartButton,
-    OnExitGameEndViewButton,
-    OnGameEnd,
+    OnGameGameEnd,
     OnSurfaceHidden,
-    OnSurfaceShown
+    OnSurfaceShown,
+    OnPauseViewResume,
+    OnPauseViewRestart,
+    OnPauseViewExit
 };
 
 enum class UIViewType {
@@ -19,6 +21,7 @@ enum class UIViewType {
     Main,
     Game,
     EndGame,
+    PauseGame,
     Background,
     Loading
 };

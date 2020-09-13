@@ -308,148 +308,6 @@
                 "w": 1.0
               }
             },
-            "name": "RestartButton",
-            "id": 2,
-            "internal": true,
-            "data": {
-              "children": [
-                {
-                  "transform": {
-                    "pos": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0
-                    },
-                    "scale": {
-                      "x": 1.0,
-                      "y": 1.0,
-                      "z": 1.0
-                    },
-                    "rot": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0,
-                      "w": 1.0
-                    }
-                  },
-                  "name": "Label",
-                  "id": 1,
-                  "internal": true,
-                  "data": {
-                    "children": [],
-                    "logics": [
-                      {
-                        "type": "UILabel",
-                        "id": 1,
-                        "data": {
-                          "style": {
-                            "fontSize": 8.0,
-                            "margin": {
-                              "top": 0.0,
-                              "bot": 0.0,
-                              "left": 0.0,
-                              "right": 0.0
-                            }
-                          },
-                          "text": "Restart",
-                          "render": 0
-                        }
-                      },
-                      {
-                        "type": "RenderText",
-                        "id": 2,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 5,
-                          "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
-                          },
-                          "fontSize": 38,
-                          "text": "Restart"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
-              "logics": [
-                {
-                  "type": "UIButton",
-                  "id": 3,
-                  "data": {
-                    "style": {
-                      "width": 60.0,
-                      "widthInv": "Grid",
-                      "height": 15.0,
-                      "heightInv": "Grid",
-                      "margin": {
-                        "top": 3.0,
-                        "bot": 3.0,
-                        "left": 0.0,
-                        "right": 0.0
-                      }
-                    },
-                    "render": 0,
-                    "label": 1,
-                    "event": "OnRestartButton"
-                  }
-                },
-                {
-                  "type": "UIPressAnimation",
-                  "id": 4,
-                  "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
-                    "minScale": 0.9750000238418579,
-                    "sound": "buttonPress_01"
-                  }
-                },
-                {
-                  "type": "RenderColoredTexture",
-                  "id": 5,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 1.0,
-                    "drawPriority": 4,
-                    "size": {
-                      "x": 282,
-                      "y": 71
-                    },
-                    "image": "Images/StartButton_BG.png",
-                    "color": {
-                      "r": 130,
-                      "g": 130,
-                      "b": 130,
-                      "a": 255
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "transform": {
-              "pos": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              },
-              "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-              },
-              "rot": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 1.0
-              }
-            },
             "name": "ExitButton",
             "id": 3,
             "internal": true,
@@ -537,7 +395,7 @@
                     },
                     "render": 0,
                     "label": 1,
-                    "event": "OnExitGameEndViewButton"
+                    "event": "OnGameEndViewExit"
                   }
                 },
                 {
@@ -832,7 +690,7 @@
               "children": [
                 4,
                 1,
-                2,
+                -1,
                 3
               ]
             }

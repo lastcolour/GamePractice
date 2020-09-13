@@ -32,6 +32,10 @@ const char* getViewName(UIViewType viewType) {
             viewName = uiConfig->loadingView.c_str();
             break;
         }
+        case UIViewType::PauseGame: {
+            viewName = uiConfig->pauseView.c_str();
+            break;
+        }
         case UIViewType::None: {
             [[fallthrough]];
         }

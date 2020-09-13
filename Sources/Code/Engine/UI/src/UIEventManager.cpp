@@ -9,6 +9,8 @@ UIEventManager::~UIEventManager() {
 }
 
 bool UIEventManager::init() {
+    initEventHandlers();
+
     ETNode<ETUIButtonEventManager>::connect(getEntityId());
     ETNode<ETUIEventManager>::connect(getEntityId());
     ETNode<ETUIViewAppearAnimationEvents>::connect(getEntityId());
@@ -47,13 +49,83 @@ void UIEventManager::handleBackButtonEvent(UIViewType activeViewType) {
             break;
         }
         case UIViewType::Game: {
-            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
-            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
+            ET_SendEvent(&ETGameStateManager::ET_pauseGame);
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::PauseGame);
+            break;
+        }
+        case UIViewType::PauseGame: {
+            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
+            ET_SendEvent(&ETGameStateManager::ET_resumeGame);
             break;
         }
         default: {
         }
     }
+}
+
+void UIEventManager::initEventHandlers() {
+    eventHandlers[UIEventType::OnBackButton];
+    eventHandlers[UIEventType::OnMainViewStartGame] = [](UIViewType activeView){
+        if(activeView != UIViewType::Main) {
+            LogError("[UIEventManager::ET_onEvent] Can't start game from non-main view");
+            return;
+        }
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Main);
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Game);
+    };
+    eventHandlers[UIEventType::OnGameEndViewExit] = [](UIViewType activeView){
+        if(activeView != UIViewType::EndGame) {
+            LogError("[UIEventType::ET_onEvent] Can't trigger exit from game end view from non-game view");
+            return;
+        }
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+    };
+    eventHandlers[UIEventType::OnBackButton] = [this](UIViewType activeView){
+        handleBackButtonEvent(activeView);
+    };
+    eventHandlers[UIEventType::OnGameGameEnd] = [](UIViewType activeView){
+        if(activeView != UIViewType::Game) {
+            LogError("[UIEventType::ET_onEvent] Can't trigger game end from non-game end view");
+            return;
+        }
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
+    };
+    eventHandlers[UIEventType::OnSurfaceHidden] = [](UIViewType activeView){
+
+    };
+    eventHandlers[UIEventType::OnSurfaceShown] = [](UIViewType activeView){
+
+    };
+    eventHandlers[UIEventType::OnPauseViewResume] = [](UIViewType activeView){
+        if(activeView != UIViewType::PauseGame) {
+            LogError("[UIEventType::ET_onEvent] Can't resume game from non-pause view");
+            return;
+        }
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
+        ET_SendEvent(&ETGameStateManager::ET_resumeGame);
+    };
+    eventHandlers[UIEventType::OnPauseViewRestart] = [](UIViewType activeView){
+        if(activeView != UIViewType::PauseGame) {
+            LogError("[UIEventType::ET_onEvent] Can't restart game from non-pause view");
+            return;
+        }
+        ET_SendEvent(&ETGameStateManager::ET_finishGame);
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Game);
+    };
+    eventHandlers[UIEventType::OnPauseViewExit] = [](UIViewType activeView){
+        if(activeView != UIViewType::PauseGame) {
+            LogError("[UIEventType::ET_onEvent] Can't exit game from non-pause view");
+            return;
+        }
+        ET_SendEvent(&ETGameStateManager::ET_finishGame);
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+    };
 }
 
 void UIEventManager::ET_onEvent(UIEventType eventType) {
@@ -63,54 +135,14 @@ void UIEventManager::ET_onEvent(UIEventType eventType) {
         return;
     }
 
+    auto it = eventHandlers.find(eventType);
+    if(it == eventHandlers.end()) {
+        return;
+    }
+
     UIViewType activeViewType = UIViewType::None;
     ET_SendEventReturn(activeViewType, &ETUIViewManager::ET_getActiveViewType);
 
-    switch(eventType) {
-        case UIEventType::OnStartGame: {
-            if(activeViewType != UIViewType::Main) {
-                LogError("[UIEventManager::ET_onEvent] Can't start game from non-main view");
-                return;
-            }
-            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Main);
-            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Game);
-            break;
-        }
-        case UIEventType::OnBackButton: {
-            handleBackButtonEvent(activeViewType);
-            break;
-        }
-        case UIEventType::OnGameEnd: {
-            if(activeViewType != UIViewType::Game) {
-                LogError("[UIEventType::ET_onEvent] Can't trigger game end from non-game view");
-                return;
-            }
-            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
-            break;
-        }
-        case UIEventType::OnRestartButton: {
-            if(activeViewType != UIViewType::EndGame) {
-                LogError("[UIEventType::ET_onEvent] Can't restart from non game-end view");
-                return;
-            }
-            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
-            ET_onEvent(UIEventType::OnStartGame);
-            break;
-        }
-        case UIEventType::OnExitGameEndViewButton: {
-            if(activeViewType != UIViewType::EndGame) {
-                LogError("[UIEventType::ET_onEvent] Can't exit from non game-end view");
-                return;
-            }
-            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
-            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
-            break;
-        }
-        case UIEventType::OnSurfaceShown: {
-            break;
-        }
-        default: {
-            LogError("[UIEventManager::ET_onEvent] Unknown event type: '%d'", eventType);
-        }
-    }
+    auto& callF = it->second;
+    callF(activeViewType);
 }

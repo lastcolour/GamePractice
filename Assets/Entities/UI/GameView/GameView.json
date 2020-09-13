@@ -98,7 +98,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "size": {
                             "x": 33,
                             "y": 33
@@ -163,14 +163,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.5,
+                          "fontSize": 24,
                           "text": "Time:"
                         }
                       }
@@ -215,7 +215,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "60.0",
+                          "text": "30.0",
                           "render": 0
                         }
                       },
@@ -225,15 +225,15 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.5,
-                          "text": "60.0"
+                          "fontSize": 24,
+                          "text": "30.0"
                         }
                       },
                       {
@@ -356,14 +356,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.5,
+                          "fontSize": 24,
                           "text": "Score:"
                         }
                       }
@@ -420,7 +420,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "size": {
                             "x": 33,
                             "y": 33
@@ -485,14 +485,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 0.5,
+                          "fontSize": 24,
                           "text": "0"
                         }
                       },

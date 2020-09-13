@@ -79,10 +79,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 6,
                           "size": {
-                            "x": 232,
-                            "y": 232
+                            "x": 67,
+                            "y": 67
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -156,10 +156,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 0,
+                    "drawPriority": 4,
                     "size": {
-                      "x": 279,
-                      "y": 279
+                      "x": 80,
+                      "y": 80
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -307,14 +307,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 5,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 1.02173912525177,
+                          "fontSize": 47,
                           "text": "Start"
                         }
                       }
@@ -341,7 +341,7 @@
                     },
                     "render": 0,
                     "label": 1,
-                    "event": "OnStartGame"
+                    "event": "OnMainViewStartGame"
                   }
                 },
                 {
@@ -360,10 +360,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 0,
+                    "drawPriority": 4,
                     "size": {
-                      "x": 372,
-                      "y": 93
+                      "x": 376,
+                      "y": 94
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -494,10 +494,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 5,
                           "size": {
-                            "x": 70,
-                            "y": 70
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -569,10 +569,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 0,
+                    "drawPriority": 4,
                     "size": {
-                      "x": 93,
-                      "y": 93
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -641,10 +641,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 5,
                           "size": {
-                            "x": 70,
-                            "y": 70
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -716,10 +716,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 0,
+                    "drawPriority": 4,
                     "size": {
-                      "x": 93,
-                      "y": 93
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -788,10 +788,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "drawPriority": 5,
                           "size": {
-                            "x": 70,
-                            "y": 70
+                            "x": 20,
+                            "y": 20
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -863,10 +863,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 0,
+                    "drawPriority": 4,
                     "size": {
-                      "x": 93,
-                      "y": 93
+                      "x": 27,
+                      "y": 27
                     },
                     "image": "Images/block.png",
                     "color": {

@@ -3,6 +3,7 @@
 #include "UI/ETUIViewCache.hpp"
 #include "UI/ETLoadingScreen.hpp"
 #include "Core/ETLogger.hpp"
+#include "UIUtils.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -52,10 +53,23 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
         ET_SendEvent(&ETLoadingScreenManager::ET_hideLoadingScreen);
     }
 
+    auto viewTypeStr = UI::GetViewTypeName(viewType);
+
     if(viewId == InvalidEntityId) {
-        LogWarning("[UIViewManager::ET_onViewLoaded] Can't create view!");
+        LogWarning("[UIViewManager::ET_onViewLoaded] Can't load '%s' view!", viewTypeStr);
         return;
     }
+
+    auto it = std::find_if(stack.begin(), stack.end(), [viewType](const UIViewNode& node){
+        return viewType == node.type;
+    });
+
+    if(it != stack.end()) {
+        LogError("[UIViewManager::ET_onViewLoaded] View '%s' already opened", viewTypeStr);
+        return;
+    }
+
+    LogDebug("[UIViewManager::ET_onViewLoaded] Open view: '%s'", viewTypeStr);
 
     int zIndex = 0;
     if(!stack.empty()) {
@@ -74,13 +88,16 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
 }
 
 void UIViewManager::ET_closeView(UIViewType viewType) {
+    assert(viewType != UIViewType::None && "Invalid view type");
     auto it = std::find_if(stack.begin(), stack.end(), [viewType](const UIViewNode& node){
         return viewType == node.type;
     });
+    auto viewTypeStr = UI::GetViewTypeName(viewType);
     if(it == stack.end()) {
-        LogWarning("[UIViewManager::ET_closeView] Can't find view to close");
+        LogWarning("[UIViewManager::ET_closeView] Can't find view %s' to close", viewTypeStr);
         return;
     }
+    LogDebug("[UIViewManager::ET_closeView] Close view: '%s'", viewTypeStr);
     ET_SendEvent(&ETUIViewTransitionManager::ET_addDisappearing, it->id);
     stack.erase(it);
 }

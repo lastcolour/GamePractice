@@ -6,6 +6,9 @@
 #include "UI/ETUIView.hpp"
 #include "Core/ETPrimitives.hpp"
 
+#include <unordered_map>
+#include <functional>
+
 class UIEventManager : public SystemLogic,
     public ETNode<ETUIButtonEventManager>,
     public ETNode<ETUIEventManager>,
@@ -32,11 +35,13 @@ public:
 
 private:
 
+    void initEventHandlers();
     void handleBackButtonEvent(UIViewType activeViewType);
 
 private:
 
     EntityId activeButtonId;
+    std::unordered_map<UIEventType, std::function<void(UIViewType)>> eventHandlers;
 };
 
 #endif /* __UI_EVENT_MANGER_HPP__ */

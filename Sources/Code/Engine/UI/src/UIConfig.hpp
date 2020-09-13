@@ -20,12 +20,13 @@ public:
 
 public:
 
-    int horizontalGrid;
+    int verticalGrid;
     std::string mainView;
     std::string gameView;
     std::string backgroundView;
     std::string endGameView;
     std::string loadingView;
+    std::string pauseView;
 };
 
 #endif /* __UI_CONFIG_HPP__ */

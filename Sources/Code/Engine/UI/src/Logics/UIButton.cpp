@@ -11,10 +11,15 @@ void UIButton::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<UIEventType>("UIEventType")) {
         enumInfo->addValues<UIEventType>({
             {"None", UIEventType::None},
-            {"OnStartGame", UIEventType::OnStartGame},
+            {"OnMainViewStartGame", UIEventType::OnMainViewStartGame},
+            {"OnGameEndViewExit", UIEventType::OnGameEndViewExit},
             {"OnBackButton", UIEventType::OnBackButton},
-            {"OnRestartButton", UIEventType::OnRestartButton},
-            {"OnExitGameEndViewButton", UIEventType::OnExitGameEndViewButton}
+            {"OnGameGameEnd", UIEventType::OnGameGameEnd},
+            {"OnSurfaceHidden", UIEventType::OnSurfaceHidden},
+            {"OnSurfaceShown", UIEventType::OnSurfaceShown},
+            {"OnPauseViewResume", UIEventType::OnPauseViewResume},
+            {"OnPauseViewRestart", UIEventType::OnPauseViewRestart},
+            {"OnPauseViewExit", UIEventType::OnPauseViewExit}
         });
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {

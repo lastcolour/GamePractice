@@ -1,0 +1,585 @@
+{
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Mid",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "ResumeButton",
+            "id": 1,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "ResumeLabel",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "fontSize": 6.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "Resume",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 5,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
+                            "a": 255
+                          },
+                          "fontSize": 29,
+                          "text": "Resume"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIButton",
+                  "id": 1,
+                  "data": {
+                    "style": {
+                      "width": 75.0,
+                      "widthInv": "Grid",
+                      "height": 15.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 2.0,
+                        "bot": 2.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0,
+                    "label": 1,
+                    "event": "OnPauseViewResume"
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 2,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 353,
+                      "y": 71
+                    },
+                    "image": "Images/StartButton_BG.png",
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
+                  }
+                },
+                {
+                  "type": "UIPressAnimation",
+                  "id": 3,
+                  "data": {
+                    "inDuration": 0.07500000298023224,
+                    "outDuration": 0.07500000298023224,
+                    "minScale": 0.949999988079071,
+                    "sound": "buttonPress_01"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "ExitButton",
+            "id": 2,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "ExitLabel",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "fontSize": 6.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "Exit",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 5,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
+                            "a": 255
+                          },
+                          "fontSize": 29,
+                          "text": "Exit"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIButton",
+                  "id": 1,
+                  "data": {
+                    "style": {
+                      "width": 75.0,
+                      "widthInv": "Grid",
+                      "height": 15.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 2.0,
+                        "bot": 2.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0,
+                    "label": 1,
+                    "event": "OnPauseViewExit"
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 2,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 353,
+                      "y": 71
+                    },
+                    "image": "Images/StartButton_BG.png",
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
+                  }
+                },
+                {
+                  "type": "UIPressAnimation",
+                  "id": 3,
+                  "data": {
+                    "inDuration": 0.07500000298023224,
+                    "outDuration": 0.07500000298023224,
+                    "minScale": 0.949999988079071,
+                    "sound": "buttonPress_01"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "RestartButton",
+            "id": 3,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "RestartLabel",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "fontSize": 6.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "Restart",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 5,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
+                            "a": 255
+                          },
+                          "fontSize": 29,
+                          "text": "Restart"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIButton",
+                  "id": 1,
+                  "data": {
+                    "style": {
+                      "width": 75.0,
+                      "widthInv": "Grid",
+                      "height": 15.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 2.0,
+                        "bot": 2.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0,
+                    "label": 1,
+                    "event": "OnPauseViewRestart"
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 2,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 353,
+                      "y": 71
+                    },
+                    "image": "Images/StartButton_BG.png",
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
+                  }
+                },
+                {
+                  "type": "UIPressAnimation",
+                  "id": 3,
+                  "data": {
+                    "inDuration": 0.07500000298023224,
+                    "outDuration": 0.07500000298023224,
+                    "minScale": 0.949999988079071,
+                    "sound": "buttonPress_01"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "style": {
+                "width": 80.0,
+                "widthInv": "Grid",
+                "height": 75.0,
+                "heightInv": "Grid",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": 0
+            }
+          },
+          {
+            "type": "RenderColoredTexture",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 2,
+              "size": {
+                "x": 376,
+                "y": 353
+              },
+              "image": "Images/block.png",
+              "color": {
+                "r": 27,
+                "g": 27,
+                "b": 27,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 3,
+            "data": {
+              "style": {
+                "type": "Vertical",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                1,
+                3,
+                2
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "UIView",
+      "id": 1,
+      "data": {
+        "style": {
+          "width": 1.0,
+          "widthInv": "Relative",
+          "height": 1.0,
+          "heightInv": "Relative",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        },
+        "render": 0
+      }
+    },
+    {
+      "type": "RenderSimple",
+      "id": 2,
+      "data": {
+        "isVisible": true,
+        "alpha": 0.5,
+        "drawPriority": 0,
+        "size": {
+          "x": 528,
+          "y": 939
+        },
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 255
+        }
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 3,
+      "data": {
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          1
+        ]
+      }
+    },
+    {
+      "type": "UIViewAppearAnimation",
+      "id": 4,
+      "data": {
+        "elements": [
+          {
+            "element": 1,
+            "startDelay": 0.0,
+            "duration": 0.30000001192092896,
+            "xMoveOffset": 0.0,
+            "yMoveOffset": 30.0,
+            "startScale": 1.5,
+            "startAlpha": 0.0
+          }
+        ]
+      }
+    }
+  ]
+}
