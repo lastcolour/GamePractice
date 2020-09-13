@@ -100,8 +100,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 27,
-                            "y": 27
+                            "x": 94,
+                            "y": 94
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -167,8 +167,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 27,
-                            "y": 27
+                            "x": 94,
+                            "y": 94
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -234,8 +234,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 27,
-                            "y": 27
+                            "x": 94,
+                            "y": 94
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -368,7 +368,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 11,
+                          "fontSize": 38,
                           "text": "Restart"
                         }
                       }
@@ -395,7 +395,7 @@
                     },
                     "render": 0,
                     "label": 1,
-                    "event": "None"
+                    "event": "OnRestartButton"
                   }
                 },
                 {
@@ -416,8 +416,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 80,
-                      "y": 20
+                      "x": 282,
+                      "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -510,7 +510,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 11,
+                          "fontSize": 38,
                           "text": "Exit"
                         }
                       }
@@ -537,7 +537,7 @@
                     },
                     "render": 0,
                     "label": 1,
-                    "event": "None"
+                    "event": "OnExitGameEndViewButton"
                   }
                 },
                 {
@@ -558,8 +558,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 80,
-                      "y": 20
+                      "x": 282,
+                      "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -676,7 +676,7 @@
                                   "b": 0,
                                   "a": 255
                                 },
-                                "fontSize": 14,
+                                "fontSize": 47,
                                 "text": "0"
                               }
                             }
@@ -712,8 +712,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 23,
-                            "y": 23
+                            "x": 80,
+                            "y": 80
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -770,8 +770,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 107,
-                      "y": 20
+                      "x": 376,
+                      "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -845,8 +845,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 107,
-                "y": 120
+                "x": 376,
+                "y": 423
               },
               "image": "Images/block.png",
               "color": {
@@ -920,8 +920,8 @@
         "alpha": 0.5,
         "drawPriority": 0,
         "size": {
-          "x": 150,
-          "y": 266
+          "x": 528,
+          "y": 939
         },
         "color": {
           "r": 0,

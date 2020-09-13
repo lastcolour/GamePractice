@@ -10,8 +10,6 @@
 #include "Nodes/ETRenderProxyNode.hpp"
 #include "Entity/ETEntity.hpp"
 
-#include <atomic>
-
 class RenderMaterial;
 class RenderGeometry;
 class RenderGraph;
@@ -55,7 +53,6 @@ protected:
     float alpha;
     int drawPriority;
     RenderNodeType type;
-    std::atomic<bool> syncWithRender;
     bool isVisible;
 
 };

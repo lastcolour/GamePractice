@@ -7,6 +7,8 @@ enum class UIEventType {
     None = 0,
     OnStartGame,
     OnBackButton,
+    OnRestartButton,
+    OnExitGameEndViewButton,
     OnGameEnd,
     OnSurfaceHidden,
     OnSurfaceShown

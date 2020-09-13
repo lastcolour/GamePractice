@@ -13,6 +13,8 @@ void UIButton::Reflect(ReflectContext& ctx) {
             {"None", UIEventType::None},
             {"OnStartGame", UIEventType::OnStartGame},
             {"OnBackButton", UIEventType::OnBackButton},
+            {"OnRestartButton", UIEventType::OnRestartButton},
+            {"OnExitGameEndViewButton", UIEventType::OnExitGameEndViewButton}
         });
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {

@@ -64,6 +64,7 @@ private:
     float alpha;
     int drawPriority;
     bool visible;
+    bool waitSync;
 };
 
 #endif /* __NODE_HPP__ */

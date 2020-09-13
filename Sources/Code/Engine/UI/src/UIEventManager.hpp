@@ -32,6 +32,10 @@ public:
 
 private:
 
+    void handleBackButtonEvent(UIViewType activeViewType);
+
+private:
+
     EntityId activeButtonId;
 };
 
