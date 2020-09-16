@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <vector>
+#include <chrono>
 
 class RunTask;
 class JobTree;
@@ -25,11 +26,12 @@ public:
     int getRunCount() const;
     void addChildJob(ThreadJob* childJob);
     RunTask* getTask();
-    void execute(const TimePoint& currTime);
+    void execute();
+    std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
 
 private:
 
-    void onFinished(const TimePoint& currTime);
+    void onFinished();
     void onParentTaskFinished();
 
 private:

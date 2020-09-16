@@ -15,19 +15,20 @@ public:
     ~JobTree();
 
     void addRootJob(ThreadJob* job);
-    bool tryFinishTreeByOneJob(const TimePoint& currTime);
+    bool tryFinishTreeByOneJob();
     std::vector<ThreadJob*>& getRootJobs();
     int getJobsCount() const;
     void setJobsCount(int newJobsCount);
     bool isDelayPassed(const TimePoint& currTime) const;
-    void setRunDelay(float newRunDelay);
+    void setRunFrequency(int frequency);
+    std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
 
 private:
 
     TimePoint prevTickT;
     std::vector<ThreadJob*> rootJobs;
     std::atomic<int> pendingJobsCount;
-    float runDelay;
+    std::chrono::microseconds runDelay;
     int jobsCount;
 };
 

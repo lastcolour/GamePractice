@@ -27,3 +27,11 @@ float TimePoint::getSecondsElapsedFrom(const TimePoint& other) const {
     auto sValue = static_cast<float>(msValue / 1000.f);
     return sValue;
 }
+
+typename TimePoint::ClockT::time_point TimePoint::getStdTimePoint() const {
+    return value;
+}
+
+typename TimePoint::ClockT::time_point TimePoint::getStdFutureTimePoint(int msOffset) const {
+    return value + std::chrono::milliseconds(msOffset);
+}

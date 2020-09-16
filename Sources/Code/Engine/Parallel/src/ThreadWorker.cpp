@@ -14,7 +14,6 @@ ThreadWorker::~ThreadWorker() {
 
 void ThreadWorker::start() {
     terminated.store(false);
-    stopped.store(false);
     std::thread t1([this](){
         run();
     });
@@ -22,26 +21,17 @@ void ThreadWorker::start() {
     thread.detach();
 }
 
-void ThreadWorker::stop() {
-    stopped.store(true);
-}
-
 void ThreadWorker::run() {
     ThreadJob* prevJob = nullptr;
     TimePoint timePoint;
-    while(!stopped.load()) {
-        timePoint = TimePoint::GetNowTime();
+    while(true) {
         auto job = pool->getNextJobForThread(prevJob, id);
         if(job) {
-            job->execute(timePoint);
+            job->execute();
+            prevJob = job;
         } else {
-            Parallel::ThreadIdle();
+            break;
         }
-        prevJob = job;
-    }
-    if(prevJob) {
-        pool->getNextJobForThread(prevJob, id);
-        prevJob = nullptr;
     }
     terminated.store(true);
 }

@@ -1,20 +1,21 @@
 #include "JobTree.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 JobTree::JobTree() :
     pendingJobsCount(0),
-    runDelay(0.f),
+    runDelay(0),
     jobsCount(0) {
 }
 
 JobTree::~JobTree() {
 }
 
-bool JobTree::tryFinishTreeByOneJob(const TimePoint& currTime) {
+bool JobTree::tryFinishTreeByOneJob() {
     auto remaimingJobs = pendingJobsCount.fetch_sub(1) - 1;
     if(!remaimingJobs) {
-        prevTickT = currTime;
+        prevTickT = TimePoint::GetNowTime();
         pendingJobsCount.store(jobsCount);
         return true;
     }
@@ -39,9 +40,22 @@ void JobTree::setJobsCount(int newJobsCount) {
 }
 
 bool JobTree::isDelayPassed(const TimePoint& currTime) const {
-    return currTime.getSecondsElapsedFrom(prevTickT) >= runDelay;
+    return getRemainingWaitTime(currTime).count() == 0;
 }
 
-void JobTree::setRunDelay(float newRunDelay) {
-    runDelay = newRunDelay;
+void JobTree::setRunFrequency(int frequency) {
+    auto microSecDelay = static_cast<int>((1000000.0 / (static_cast<double>(frequency))));
+    runDelay = std::chrono::microseconds(microSecDelay);
+}
+
+std::chrono::microseconds JobTree::getRemainingWaitTime(const TimePoint& currTime) const {
+    if(prevTickT.getStdTimePoint().time_since_epoch().count() == 0) {
+        return std::chrono::microseconds(0);
+    }
+    auto delta = (prevTickT.getStdTimePoint() + runDelay) - currTime.getStdTimePoint();
+    auto microSecVal = std::chrono::duration_cast<std::chrono::microseconds>(delta);
+    if(microSecVal.count() < 0) {
+        return std::chrono::microseconds(0);
+    }
+    return microSecVal;
 }

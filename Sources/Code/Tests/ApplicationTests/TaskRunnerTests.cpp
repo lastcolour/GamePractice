@@ -113,6 +113,6 @@ TEST_F(TaskRunnerTests, RunTaskWithChildren) {
     });
 
     for(auto& task : runner.getTasks()) {
-        EXPECT_EQ(task->getRunCount(), botValue.load());
+        EXPECT_LE(task->getRunCount(), botValue.load());
     }
 }

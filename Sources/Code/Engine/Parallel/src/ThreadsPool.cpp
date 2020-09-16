@@ -24,9 +24,6 @@ bool ThreadsPool::initWorkers(int numWorkers) {
 }
 
 void ThreadsPool::deinitWorkers() {
-    for(auto& worker : threadWorkers) {
-        worker->stop();
-    }
     bool hasRunningThread = true;
     while(hasRunningThread) {
         hasRunningThread = false;
@@ -72,8 +69,7 @@ bool ThreadsPool::stepMainThread() {
     auto job = getNextJobForThread(prevJob, 0);
     prevJob = job;
     if(job) {
-        TimePoint timePoint = TimePoint::GetNowTime();
-        job->execute(timePoint);
+        job->execute();
         return true;
     }
     return false;

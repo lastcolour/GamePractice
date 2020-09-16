@@ -4,6 +4,7 @@
 #include <chrono>
 
 class TimePoint {
+public:
 
     using ClockT = std::chrono::high_resolution_clock;
 
@@ -19,6 +20,9 @@ public:
     ~TimePoint();
 
     float getSecondsElapsedFrom(const TimePoint& other) const;
+
+    ClockT::time_point getStdTimePoint() const;
+    ClockT::time_point getStdFutureTimePoint(int msOffset) const;
 
 private:
 

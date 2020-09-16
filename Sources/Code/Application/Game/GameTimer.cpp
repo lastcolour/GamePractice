@@ -2,6 +2,8 @@
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderCamera.hpp"
 
+#include <cassert>
+
 GameTimer::GameTimer() :
     scale(1.f),
     skipUpdate(false),
@@ -31,10 +33,14 @@ void GameTimer::ET_onTick() {
 
     auto currTime = TimePoint::GetNowTime();
     auto dt = currTime.getSecondsElapsedFrom(lastTickT);
+
+    assert(dt > 0.0001f && "Very fast game loop step");
+
     if(skipUpdate) {
         dt = 0.f;
         skipUpdate = false;
     }
+
     lastTickT = currTime;
     dt *= scale;
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);

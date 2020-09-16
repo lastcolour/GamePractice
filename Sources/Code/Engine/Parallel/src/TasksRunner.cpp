@@ -52,8 +52,7 @@ void calculateParents(JobTree* tree) {
         }
     }
     if(treeMinFrequency > 0) {
-        auto runDelay = 1.f / static_cast<float>(treeMinFrequency);
-        tree->setRunDelay(runDelay);
+        tree->setRunFrequency(treeMinFrequency);
     }
 }
 
@@ -61,7 +60,6 @@ void calculateParents(JobTree* tree) {
 
 TasksRunner::TasksRunner() :
     predicateFailed(false),
-    pendingsEmpty(false),
     mode(RunMode::None) {
 }
 
@@ -169,33 +167,50 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
         auto res = predFunc();
         predicateFailed.store(!res);
         if(!res) {
+            cond.notify_all();
             return nullptr;
         }
     } else if(predicateFailed.load()) {
         return nullptr;
     }
+
     ThreadJob* nextJob = nullptr;
     {
-        if(!prevJob) {
-            if(pendingsEmpty.load()) {
-                return nullptr;
-            }
-        }
-        std::lock_guard<std::mutex> lock(mutex);
+        std::unique_lock<std::mutex> ulock(mutex);
         if(prevJob) {
             prevJob->scheduleNextJobs(pendingJobs);
+            cond.notify_all();
         }
-        for(auto it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it) {
-            auto job = *it;
-            if(job->canStartInThread(threadId)) {
-                nextJob = job;
-                pendingJobs.erase(it);
+        std::chrono::microseconds waitTime(0);
+        while(!predicateFailed.load()) {
+            auto currTime = TimePoint::GetNowTime();
+            nextJob = getNextJobOrWaitTime(currTime, threadId, waitTime);
+            if(!nextJob && threadId != 0) {
+                cond.wait_for(ulock, waitTime);
+            } else {
                 break;
             }
         }
-        pendingsEmpty.store(pendingJobs.empty());
     }
     return nextJob;
+}
+
+ThreadJob* TasksRunner::getNextJobOrWaitTime(const TimePoint& currTime, int threadId, std::chrono::microseconds& outWaitTime) {
+    auto minWaitTime = std::chrono::microseconds(std::numeric_limits<std::chrono::microseconds::rep>::max());
+    for(auto it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it) {
+        auto job = *it;
+        if(job->canStartInThread(threadId)) {
+            auto jobRemainingWaitTime = job->getRemainingWaitTime(currTime);
+            if(jobRemainingWaitTime.count() == 0) {
+                pendingJobs.erase(it);
+                return job;
+            } else {
+                minWaitTime = std::min(minWaitTime, jobRemainingWaitTime);
+            }
+        }
+    }
+    outWaitTime = minWaitTime;
+    return nullptr;
 }
 
 std::vector<std::unique_ptr<RunTask>>& TasksRunner::getTasks() {
