@@ -20,9 +20,9 @@ public:
     TypeId getElemTypeId() const;
     const char* getName() const;
     void makeReflectModel(JSONNode& node);
-    bool writeValuesTo(void* valuePtr, MemoryStream& stream);
-    bool readValuesFrom(void* valuePtr, const JSONNode& node);
-    bool readValuesFrom(void* valuePtr, MemoryStream& stream);
+    bool writeValuesTo(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream);
+    bool readValuesFrom(const SerializeContext& ctx, void* valuePtr, const JSONNode& node);
+    bool readValuesFrom(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream);
     void setDefaultValue(void* valuePtr);
     bool addElement(void* valuePtr);
 

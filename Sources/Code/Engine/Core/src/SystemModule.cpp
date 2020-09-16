@@ -70,7 +70,9 @@ bool SystemModule::serializeConfigs() {
             configClass->getName(), name);
         return false;
     }
-    if(!configInstance.readAllValuesFrom(classNode)) {
+    SerializeContext serCtx;
+    serCtx.entityId = InvalidEntityId;
+    if(!configInstance.readAllValuesFrom(serCtx, classNode)) {
         LogError("[SystemModule::serializeConfigs] Can't read values of instance of module configs '%s' for module: '%s'",
             configClass->getName(), name);
         return false;

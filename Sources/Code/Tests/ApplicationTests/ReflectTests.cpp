@@ -214,7 +214,8 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     ASSERT_EQ(classInstance.getInstanceTypeId(), classInfo->getIntanceTypeId());
 
     auto object = classInstance.acquire<SimpleEntityLogic>();
@@ -242,7 +243,8 @@ TEST_F(ReflectTests, TestObjectWithObject) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = classInstance.acquire<ObjectWithObjectEntity>();
     ASSERT_TRUE(object);
 
@@ -326,7 +328,8 @@ TEST_F(ReflectTests, TestBaseAndDeriveded) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = classInstance.acquire<DerivedObject>();
     ASSERT_TRUE(object);
 
@@ -348,7 +351,8 @@ TEST_F(ReflectTests, TestResource) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = classInstance.acquire<ObjectWithResource>();
     ASSERT_TRUE(object);
 
@@ -367,7 +371,8 @@ TEST_F(ReflectTests, TestEnum) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = classInstance.acquire<ObjectWithEnum>();
     ASSERT_TRUE(object);
 
@@ -385,7 +390,8 @@ TEST_F(ReflectTests, TestArray) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = classInstance.acquire<ObjectWitArray>();
     ASSERT_TRUE(object);
 
@@ -405,7 +411,8 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = static_cast<ObjectWithStringArray*>(classInstance.get());
     ASSERT_TRUE(object);
 
@@ -419,7 +426,7 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(classInstance.writeValueTo(AllEntityLogicValueId, stream));
+    ASSERT_TRUE(classInstance.writeValueTo(ctx, AllEntityLogicValueId, stream));
 
     stream.reopenForRead();
 
@@ -454,7 +461,8 @@ TEST_F(ReflectTests, TestArrayOfVec3) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    ASSERT_TRUE(classInstance.readAllValuesFrom(jsonNode));
+    SerializeContext ctx;
+    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = classInstance.acquire<ObjectWithArrayOfVec3>();
     ASSERT_TRUE(object);
 
@@ -502,13 +510,15 @@ TEST_F(ReflectTests, TestReadValuesSimpleObject) {
     auto classInfo =  reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
+    SerializeContext ctx;
+
     auto instance = classInfo->createInstance();
-    ASSERT_TRUE(instance.readAllValuesFrom(jsonNode));
+    ASSERT_TRUE(instance.readAllValuesFrom(ctx, jsonNode));
 
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.writeAllValuesTo(stream));
+    ASSERT_TRUE(instance.writeAllValuesTo(ctx, stream));
 
     auto buffer = stream.flushToBuffer();
     ASSERT_TRUE(buffer);
@@ -565,10 +575,12 @@ TEST_F(ReflectTests, TestWriteClassValueOfSimpleEntity) {
 
     stream.reopenForRead();
 
-    ASSERT_TRUE(instance.readValueFrom(1, stream));
-    ASSERT_TRUE(instance.readValueFrom(2, stream));
-    ASSERT_TRUE(instance.readValueFrom(3, stream));
-    ASSERT_TRUE(instance.readValueFrom(4, stream));
+    SerializeContext ctx;
+
+    ASSERT_TRUE(instance.readValueFrom(ctx, 1, stream));
+    ASSERT_TRUE(instance.readValueFrom(ctx, 2, stream));
+    ASSERT_TRUE(instance.readValueFrom(ctx, 3, stream));
+    ASSERT_TRUE(instance.readValueFrom(ctx, 4, stream));
 
     ASSERT_EQ(logicPtr->boolF, boolVal);
     ASSERT_EQ(logicPtr->intF, intVal);
@@ -596,10 +608,12 @@ TEST_F(ReflectTests, TestReadClassValueOfSimpleEntity) {
 
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.writeValueTo(1, stream));
-    ASSERT_TRUE(instance.writeValueTo(2, stream));
-    ASSERT_TRUE(instance.writeValueTo(3, stream));
-    ASSERT_TRUE(instance.writeValueTo(4, stream));
+    SerializeContext ctx;
+
+    ASSERT_TRUE(instance.writeValueTo(ctx, 1, stream));
+    ASSERT_TRUE(instance.writeValueTo(ctx, 2, stream));
+    ASSERT_TRUE(instance.writeValueTo(ctx, 3, stream));
+    ASSERT_TRUE(instance.writeValueTo(ctx, 4, stream));
 
     stream.reopenForRead();
 
@@ -642,7 +656,9 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.writeValueTo(3, stream));
+    SerializeContext ctx;
+
+    ASSERT_TRUE(instance.writeValueTo(ctx, 3, stream));
 
     stream.reopenForRead();
 
@@ -656,7 +672,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
 
     stream.reopenForRead();
 
-    instance.readValueFrom(3, stream);
+    instance.readValueFrom(ctx, 3, stream);
 
     ASSERT_FLOAT_EQ(objectPtr->objectF.floatF, 2.f);
 }
@@ -684,7 +700,8 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
 
     stream.reopenForRead();
 
-    ASSERT_TRUE(instance.readValueFrom(1, stream));
+    SerializeContext ctx;
+    ASSERT_TRUE(instance.readValueFrom(ctx, 1, stream));
 
     ASSERT_EQ(objectPtr->array.size(), 3);
 
@@ -700,7 +717,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
 
     stream.reopenForWrite();
 
-    instance.writeValueTo(1, stream);
+    instance.writeValueTo(ctx, 1, stream);
 
     stream.reopenForRead();
 
@@ -739,7 +756,8 @@ TEST_F(ReflectTests, CheckAddArrayElemet) {
     MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(instance.writeValueTo(1, stream));
+    SerializeContext ctx;
+    ASSERT_TRUE(instance.writeValueTo(ctx, 1, stream));
 
     stream.reopenForRead();
 
@@ -775,7 +793,6 @@ TEST_F(ReflectTests, TestEntityReference) {
 
     stream.reopenForRead();
 
-    ET_SendEvent(&ETClassInfoManager::ET_setActiveEntity, parentEntity->getEntityId());
     parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
 
     ASSERT_EQ(logicPtr->entityId, childEntity->getEntityId());

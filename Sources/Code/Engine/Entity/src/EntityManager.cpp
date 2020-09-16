@@ -51,27 +51,6 @@ bool CheckEntityLogicValue(const char* errStr, EntityId entityId, Entity* entity
     return true;
 }
 
-class ActiveEntityScope {
-public:
-
-    ActiveEntityScope(EntityId entityId) {
-        ET_SendEventReturn(prevActiveId, &ETClassInfoManager::ET_setActiveEntity, entityId);
-    }
-
-    ~ActiveEntityScope() {
-        ET_SendEvent(&ETClassInfoManager::ET_setActiveEntity, prevActiveId);
-    }
-
-private:
-
-    ActiveEntityScope(const ActiveEntityScope&) = delete;
-    ActiveEntityScope& operator=(const ActiveEntityScope&) = delete;
-
-private:
-
-    EntityId prevActiveId;
-};
-
 } // namespace
 
 EntityManager::EntityManager() :
@@ -252,10 +231,13 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
-    ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
+
+        SerializeContext serCtx;
+        serCtx.entityId = entity->getEntityId();
+
         auto localTm = entity->ET_getLocalTransform();
-        if(!tmClassInfo->writeValueTo(&localTm, valueId, stream)) {
+        if(!tmClassInfo->writeValueTo(serCtx, &localTm, valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data from entity: '%s'", entity->ET_getName()));
             return false;
         }
@@ -271,10 +253,11 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
     if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
         return false;
     }
-    ActiveEntityScope entityScope(entity->getEntityId());
     if(logicId == TransformLogicId) {
         Transform localTm;
-        if(!tmClassInfo->readValueFrom(&localTm, valueId, stream)) {
+        SerializeContext serCtx;
+        serCtx.entityId = entityId;
+        if(!tmClassInfo->readValueFrom(serCtx, &localTm, valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data for entity: '%s'", entity->ET_getName()));
             return false;
         }
@@ -296,7 +279,6 @@ bool EntityManager::ET_addEntityLogicArrayElement(EntityId entityId, EntityLogic
             entity->ET_getName());
         return false;
     }
-    ActiveEntityScope entityScope(entity->getEntityId());
     if(!entity->addLogicValueArrayElemet(logicId, valueId)) {
         return false;
     }
@@ -347,7 +329,11 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
             LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
-        if(!logicInstance.readAllValuesFrom(logicData)) {
+
+        SerializeContext serCtx;
+        serCtx.entityId = entity->getEntityId();
+
+        if(!logicInstance.readAllValuesFrom(serCtx, logicData)) {
             LogWarning("[EntityManager::setupEntityLogics] Can't read logic data of type '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
@@ -413,8 +399,12 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
                 childEntName, entity->ET_getName());
             return false;
         }
+
+        SerializeContext serCtx;
+        serCtx.entityId = childEntity->getEntityId();
+
         Transform localTm;
-        if(!tmClassInfo->readValueFrom(&localTm, AllEntityLogicValueId, tmNode)) {
+        if(!tmClassInfo->readValueFrom(serCtx, &localTm, AllEntityLogicValueId, tmNode)) {
             LogWarning("[EntityManager::setupEntityTranform] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
             return false;
         }
@@ -448,7 +438,6 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
         assert(false && "Can't create entity");
         return nullptr;
     }
-    ActiveEntityScope entityScope(entity->getEntityId());
     if(!setupEntityChildren(entity, entityNode)) {
         registry.removeEntity(entity);
         return nullptr;

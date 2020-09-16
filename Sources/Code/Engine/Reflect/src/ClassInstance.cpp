@@ -72,19 +72,19 @@ void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     deleteFunc = deleteF;
 }
 
-bool ClassInstance::readAllValuesFrom(const JSONNode& node) {
-    return readValueFrom(AllEntityLogicValueId, node);
+bool ClassInstance::readAllValuesFrom(const SerializeContext& ctx, const JSONNode& node) {
+    return readValueFrom(ctx, AllEntityLogicValueId, node);
 }
 
-bool ClassInstance::readAllValuesFrom(MemoryStream& stream) {
-    return readValueFrom(AllEntityLogicValueId, stream);
+bool ClassInstance::readAllValuesFrom(const SerializeContext& ctx, MemoryStream& stream) {
+    return readValueFrom(ctx, AllEntityLogicValueId, stream);
 }
 
-bool ClassInstance::writeAllValuesTo(MemoryStream& stream) {
-    return writeValueTo(AllEntityLogicValueId, stream);
+bool ClassInstance::writeAllValuesTo(const SerializeContext& ctx, MemoryStream& stream) {
+    return writeValueTo(ctx, AllEntityLogicValueId, stream);
 }
 
-bool ClassInstance::readValueFrom(EntityLogicValueId valueId, const JSONNode& node) {
+bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, const JSONNode& node) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -93,10 +93,10 @@ bool ClassInstance::readValueFrom(EntityLogicValueId valueId, const JSONNode& no
         LogError("[ClassInstance::readValueFrom] Can't read value of instance without class info");
         return false;
     }
-    return classInfo->readValueFrom(instance, valueId, node);
+    return classInfo->readValueFrom(ctx, instance, valueId, node);
 }
 
-bool ClassInstance::readValueFrom(EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -105,10 +105,10 @@ bool ClassInstance::readValueFrom(EntityLogicValueId valueId, MemoryStream& stre
         LogError("[ClassInstance::readValueFrom] Can't read value of instance without class info");
         return false;
     }
-    return classInfo->readValueFrom(instance, valueId, stream);
+    return classInfo->readValueFrom(ctx, instance, valueId, stream);
 }
 
-bool ClassInstance::writeValueTo(EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -117,7 +117,7 @@ bool ClassInstance::writeValueTo(EntityLogicValueId valueId, MemoryStream& strea
         LogError("[ClassInstance::writeValueTo] Can't write value of instance without class info");
         return false;
     }
-    return classInfo->writeValueTo(instance, valueId, stream);
+    return classInfo->writeValueTo(ctx, instance, valueId, stream);
 }
 
 bool ClassInstance::addValueArrayElement(EntityLogicValueId valueId) {

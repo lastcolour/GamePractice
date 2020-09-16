@@ -12,13 +12,13 @@
 
 namespace {
 
-EntityId getEntityIdFromChildId(EntityChildId childId) {
+EntityId getEntityIdFromChildId(const SerializeContext& ctx, EntityChildId childId) {
     if(childId == InvalidEntityChildId) {
         return InvalidEntityId;
     }
-    EntityId parentId;
-    ET_SendEventReturn(parentId, &ETClassInfoManager::ET_getActiveEntity);
+    EntityId parentId = ctx.entityId;
     if(!parentId.isValid()) {
+        assert(false && "Invalid serializable entity");
         LogWarning("[ClassValue::getEntityIdFromChildId] No active entity to query child id");
         return InvalidEntityId;
     }
@@ -32,13 +32,13 @@ EntityId getEntityIdFromChildId(EntityChildId childId) {
     return childEntId;
 }
 
-EntityChildId getChildIdFromEntityId(EntityId childEntId) {
+EntityChildId getChildIdFromEntityId(const SerializeContext& ctx, EntityId childEntId) {
     if(childEntId == InvalidEntityId) {
         return InvalidEntityChildId;
     }
-    EntityId parentId;
-    ET_SendEventReturn(parentId, &ETClassInfoManager::ET_getActiveEntity);
+    EntityId parentId = ctx.entityId;
     if(!parentId.isValid()) {
+        assert(false && "Invalid serializable entity");
         LogWarning("[ClassValue::getChildIdFromEntityId] No active entity to query child id");
         return InvalidEntityChildId;
     }
@@ -353,7 +353,7 @@ std::string ClassValue::getTypeName() const {
     }
 }
 
-bool ClassValue::readValueFrom(void* instance, void* valuePtr, const JSONNode& node) {
+bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void* valuePtr, const JSONNode& node) {
     if(!isElement) {
         if(!node.hasKey(name.c_str())) {
             LogError("[ClassValue::readValueFrom] Can't find required field '%s'", name);
@@ -403,12 +403,12 @@ bool ClassValue::readValueFrom(void* instance, void* valuePtr, const JSONNode& n
                 LogError("[ClassValue::readValueFrom] Can't get object from data for a field '%s'", name);
                 return false;
             }
-            if(!classInfo->readValueFrom(valuePtr, AllEntityLogicValueId, objectNode)) {
+            if(!classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, objectNode)) {
                 LogError("[ClassValue::readValueFrom] Can't serialize object field '%s'", name);
                 return false;
             }
         } else {
-            if(!classInfo->readValueFrom(valuePtr, AllEntityLogicValueId, node)) {
+            if(!classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, node)) {
                 LogError("[ClassValue::readValueFrom] Can't serialize object of array");
                 return false;
             }
@@ -509,7 +509,7 @@ bool ClassValue::readValueFrom(void* instance, void* valuePtr, const JSONNode& n
             LogError("[ClassValue::readValueFrom] Can't get array object from data for a field '%s'", name);
             return false;
         }
-        if(!arrayInfo->readValuesFrom(valuePtr, arrayNode)) {
+        if(!arrayInfo->readValuesFrom(ctx, valuePtr, arrayNode)) {
             LogError("[ClassValue::readValueFrom] Can't read array values from data for a field '%s'", name);
             return false;
         }
@@ -539,7 +539,7 @@ bool ClassValue::readValueFrom(void* instance, void* valuePtr, const JSONNode& n
     case ClassValueType::Entity: {
         EntityChildId childId = InvalidEntityChildId;
         readJSONValue(isElement, name, childId, node);
-        getRef<EntityId>(valuePtr) = getEntityIdFromChildId(childId);
+        getRef<EntityId>(valuePtr) = getEntityIdFromChildId(ctx, childId);
         return true;
     }
     default:
@@ -549,7 +549,7 @@ bool ClassValue::readValueFrom(void* instance, void* valuePtr, const JSONNode& n
     }
 }
 
-bool ClassValue::writeValueTo(void* instance, void* valuePtr, MemoryStream& stream) {
+bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, MemoryStream& stream) {
     switch(type) {
     case ClassValueType::Bool: {
         stream.write(getRef<bool>(valuePtr));
@@ -617,7 +617,7 @@ bool ClassValue::writeValueTo(void* instance, void* valuePtr, MemoryStream& stre
             LogError("[ClassValue::writeValueTo] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->writeValueTo(valuePtr, AllEntityLogicValueId, stream);
+        return classInfo->writeValueTo(ctx, valuePtr, AllEntityLogicValueId, stream);
     }
     case ClassValueType::Resource: {
         stream.write("");
@@ -634,11 +634,11 @@ bool ClassValue::writeValueTo(void* instance, void* valuePtr, MemoryStream& stre
             LogError("[ClassValue::writeValueTo] Can't find array info for a field '%s'", name);
             return false;
         }
-        return arrayInfo->writeValuesTo(valuePtr, stream);
+        return arrayInfo->writeValuesTo(ctx, valuePtr, stream);
     }
     case ClassValueType::Entity: {
         auto entityId = getRef<EntityId>(valuePtr);
-        auto childId = getChildIdFromEntityId(entityId);
+        auto childId = getChildIdFromEntityId(ctx, entityId);
         stream.write(childId);
         break;
     }
@@ -650,7 +650,7 @@ bool ClassValue::writeValueTo(void* instance, void* valuePtr, MemoryStream& stre
     return true;
 }
 
-bool ClassValue::readValueFrom(void* instance, void* valuePtr, MemoryStream& stream) {
+bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void* valuePtr, MemoryStream& stream) {
     switch(type) {
     case ClassValueType::Bool: {
         bool val = false;
@@ -745,7 +745,7 @@ bool ClassValue::readValueFrom(void* instance, void* valuePtr, MemoryStream& str
             LogError("[ClassValue::readValueFrom] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->readValueFrom(valuePtr, AllEntityLogicValueId, stream);
+        return classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, stream);
     }
     case ClassValueType::Resource: {
         std::string val;
@@ -766,12 +766,12 @@ bool ClassValue::readValueFrom(void* instance, void* valuePtr, MemoryStream& str
             LogError("[ClassValue::readValueFrom] Can't find array info for a field '%s'", name);
             return false;
         }
-        return arrayInfo->readValuesFrom(valuePtr, stream);
+        return arrayInfo->readValuesFrom(ctx, valuePtr, stream);
     }
     case ClassValueType::Entity: {
         EntityChildId childId = InvalidEntityChildId;
         stream.read(childId);
-        getRef<EntityId>(valuePtr) = getEntityIdFromChildId(childId);
+        getRef<EntityId>(valuePtr) = getEntityIdFromChildId(ctx, childId);
         break;
     }
     case ClassValueType::Invalid:

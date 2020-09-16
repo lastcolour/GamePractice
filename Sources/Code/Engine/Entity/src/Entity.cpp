@@ -2,6 +2,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Core/ETLogger.hpp"
+#include "Reflect/ClassValue.hpp"
 
 #include <cassert>
 
@@ -154,7 +155,9 @@ bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, Me
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    if(!logicInstance->writeValueTo(valueId, stream)) {
+    SerializeContext serCtx;
+    serCtx.entityId = entityId;
+    if(!logicInstance->writeValueTo(serCtx, valueId, stream)) {
         LogWarning(errStr, StringFormat("Error during read from logic with id '%d' in entity: '%s'",
              logicId, ET_getName()));
         return false;
@@ -171,7 +174,10 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     bool res = true;
     auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
     logicPtr->deinit();
-    if(!logicInstance->readValueFrom(valueId, stream)) {
+
+    SerializeContext serCtx;
+    serCtx.entityId = entityId;
+    if(!logicInstance->readValueFrom(serCtx, valueId, stream)) {
         LogError(errStr, StringFormat("Error during write to logic with id '%d' in entity: '%s'",
              logicId, ET_getName()));
         res = false;

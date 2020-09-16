@@ -6,6 +6,10 @@
 class JSONNode;
 class MemoryStream;
 
+struct SerializeContext {
+    EntityId entityId;
+};
+
 class ClassValue {
 public:
 
@@ -39,9 +43,9 @@ public:
     ~ClassValue();
 
     std::string getTypeName() const;
-    bool writeValueTo(void* instance, void* valuePtr, MemoryStream& stream);
-    bool readValueFrom(void* instance, void* valuePtr, MemoryStream& stream);
-    bool readValueFrom(void* instance, void* valuePtr, const JSONNode& node);
+    bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
+    bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
+    bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, const JSONNode& node);
     bool addArrayElement(void* valuePtr);
     void setDefaultValue(void* valuePtr);
 

@@ -34,15 +34,12 @@ public:
     void ET_reset() override;
     int ET_getRegisteredClassCount() override;
     void ET_makeReflectModel(JSONNode& node) override;
-    EntityId ET_setActiveEntity(EntityId entityId) override;
-    EntityId ET_getActiveEntity() override;
 
 private:
 
     std::unordered_map<TypeId, ClassInfoPtrT> classInfoMap;
     std::unordered_map<TypeId, EnumInfoPtrT> enumInfoMap;
     std::unordered_map<TypeId, ArrayInfoPtrT> arrayInfoMap;
-    EntityId activeEntityId;
 };
 
 #endif /* __CLASS_INFO_MANAGER_HPP__ */

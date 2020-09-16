@@ -10,6 +10,7 @@
 class ClassInfo;
 class MemoryStream;
 class JSONNode;
+struct SerializeContext;
 
 class ClassInstance {
 
@@ -53,12 +54,12 @@ public:
     void* get();
 
     TypeId getInstanceTypeId() const;
-    bool readAllValuesFrom(const JSONNode& node);
-    bool readAllValuesFrom(MemoryStream& stream);
-    bool writeAllValuesTo(MemoryStream& stream);
-    bool readValueFrom(EntityLogicValueId valueId, const JSONNode& node);
-    bool readValueFrom(EntityLogicValueId valueId, MemoryStream& stream);
-    bool writeValueTo(EntityLogicValueId valueId, MemoryStream& stream);
+    bool readAllValuesFrom(const SerializeContext& ctx, const JSONNode& node);
+    bool readAllValuesFrom(const SerializeContext& ctx, MemoryStream& stream);
+    bool writeAllValuesTo(const SerializeContext& ctx, MemoryStream& stream);
+    bool readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, const JSONNode& node);
+    bool readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
+    bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
     bool addValueArrayElement(EntityLogicValueId valueId);
 
 private:

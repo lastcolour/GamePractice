@@ -295,7 +295,7 @@ void ClassInfo::makeReflectModel(JSONNode& node) {
     node.write("data", fieldsNode);
 }
 
-bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, const JSONNode& node) {
+bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, const JSONNode& node) {
     assert(instance && "Invalid instance");
     if(!node) {
         LogError("[ClassInfo::readValueFrom] Can't read class value with id '%d' of class '%s' from invalid JSON node",
@@ -313,7 +313,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, const 
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.readValueFrom(instance, ptr, node)) {
+                if(!value.readValueFrom(ctx, instance, ptr, node)) {
                     LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
                         value.name, className);
                     return false;
@@ -327,7 +327,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, const 
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->readValueFrom(instance, ptr, node)) {
+        if(!value->readValueFrom(ctx, instance, ptr, node)) {
             LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                 value->name, className);
             return false;
@@ -337,7 +337,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, const 
     return true;
 }
 
-bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
     assert(instance && "Invalid instance");
     if(!stream.isOpenedForRead()) {
         LogError("[ClassInfo::readValueFrom] Can't read class value with id '%d' of class '%s' from non-read stream",
@@ -355,7 +355,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, Memory
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.readValueFrom(instance, ptr, stream)) {
+                if(!value.readValueFrom(ctx, instance, ptr, stream)) {
                     LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
                         value.name, className);
                     return false;
@@ -369,7 +369,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, Memory
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->readValueFrom(instance, ptr, stream)) {
+        if(!value->readValueFrom(ctx, instance, ptr, stream)) {
             LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                 value->name, className);
             return false;
@@ -379,7 +379,7 @@ bool ClassInfo::readValueFrom(void* instance, EntityLogicValueId valueId, Memory
     return true;
 }
 
-bool ClassInfo::writeValueTo(void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
     assert(instance && "Invalid instance");
     if(!stream.isOpenedForWrite()) {
         LogError("[ClassInfo::writeValueTo] Can't write class value with id '%d' of class '%s' to non-write stream",
@@ -397,7 +397,7 @@ bool ClassInfo::writeValueTo(void* instance, EntityLogicValueId valueId, MemoryS
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.writeValueTo(instance, ptr, stream)) {
+                if(!value.writeValueTo(ctx, instance, ptr, stream)) {
                     LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
                         value.name, className);
                     return false;
@@ -411,7 +411,7 @@ bool ClassInfo::writeValueTo(void* instance, EntityLogicValueId valueId, MemoryS
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->writeValueTo(instance, ptr, stream)) {
+        if(!value->writeValueTo(ctx, instance, ptr, stream)) {
             LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
                 value->name, className);
             return false;
