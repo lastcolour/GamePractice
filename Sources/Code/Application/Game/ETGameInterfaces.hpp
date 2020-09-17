@@ -11,12 +11,6 @@ struct ETGameEndTimerUpdater {
     virtual void ET_setEndTime(float endTime) = 0;
 };
 
-struct ETGameScore {
-    virtual ~ETGameScore() = default;
-    virtual int ET_getGameScore() const = 0;
-    virtual void ET_resetScore() = 0;
-};
-
 struct ETGameScoreUpdater {
     virtual ~ETGameScoreUpdater() = default;
     virtual void ET_setGameScore(int score) = 0;
@@ -57,31 +51,6 @@ struct ETGameEndTimer {
 struct ETGameEndTimerEvents {
     virtual ~ETGameEndTimerEvents() = default;
     virtual void ET_onGameTimeOut() = 0;
-};
-
-enum class ObjectiveType {
-    Fail = 0,
-    OneStar,
-    TwoStars,
-    ThreeStars
-};
-
-struct ETGameObjectiveEvents {
-    virtual ~ETGameObjectiveEvents() = default;
-    virtual void ET_onObjectiveCompleted(ObjectiveType type) = 0;
-};
-
-struct EndGameResult {
-    int score;
-    bool newHighScore;
-
-    EndGameResult() :
-        score(0), newHighScore(false) {}
-};
-
-struct ETGameEndResult {
-    virtual ~ETGameEndResult() = default;
-    virtual const EndGameResult* ET_getGameEndResult() const = 0;
 };
 
 struct ETGameBoardAppearAnimation {

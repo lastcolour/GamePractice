@@ -4,6 +4,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameTimer.hpp"
+#include "Game/ETGameScore.hpp"
 
 #include <memory>
 
@@ -19,7 +20,7 @@ public:
     void onLeave();
 
     // ETGameEndResult
-    const EndGameResult* ET_getGameEndResult() const override;
+    const EndGameResult& ET_getLastGameResult() const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -33,9 +34,9 @@ private:
 
 private:
 
-    std::unique_ptr<EndGameResult> endResult;
-    float postGameTime;
+    EndGameResult endResult;
     EntityId gameEntityId;
+    float postGameTime;
 };
 
 #endif /* __POST_GAME_STATE_HPP__ */

@@ -13,6 +13,10 @@ class Entity;
 class EntityRegistry {
 public:
 
+    using EntityContainerT = std::unordered_map<EntityId, std::unique_ptr<Entity>>;
+
+public:
+
     EntityRegistry();
     ~EntityRegistry();
 
@@ -25,7 +29,7 @@ public:
 private:
 
     std::mutex mutex;
-    std::unordered_map<EntityId, std::unique_ptr<Entity>> entities;
+    EntityContainerT entities;
 };
 
 #endif /* __ENTITY_CONTEXT_HPP__ */

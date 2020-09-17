@@ -238,5 +238,7 @@ void TasksRunner::stepMainTread() {
 
 void TasksRunner::stopOtherTreads() {
     assert(mode == RunMode::MainThreadManualStep && "Invlaid run mode");
+    predicateFailed.store(true);
+    cond.notify_all();
     threadsPool->stopOtherTreads();
 }

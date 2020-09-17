@@ -285,6 +285,17 @@
                       3
                     ]
                   }
+                },
+                {
+                  "type": "UIGameEndStarsAppearAnimation",
+                  "id": 4,
+                  "data": {
+                    "firstStar": 1,
+                    "secondStar": 2,
+                    "thirdStar": 3,
+                    "duration": 0.20000000298023224,
+                    "startScale": 2.0
+                  }
                 }
               ]
             }
@@ -788,6 +799,11 @@
           "a": 255
         }
       }
+    },
+    {
+      "type": "UIGameEndViewScript",
+      "id": 5,
+      "data": {}
     }
   ]
 }

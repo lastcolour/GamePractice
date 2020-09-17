@@ -59,48 +59,6 @@ class EditorAppTests(unittest.TestCase):
 
         EditorAppTests.NATIVE_LIB.removeLogicFromEntity(self._centralEntityId, logicId)
 
-    def testSetGetLogicData(self):
-        logicId = 1
-        valueId = 2
-        stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId, 0)
-        self.assertIsNotNone(stream)
-        self.assertTrue(stream.getSize() > 0)
-
-        sizeX = stream.readInt()
-        sizeY = stream.readInt()
-
-        self.assertGreater(sizeX, 1.0)
-        self.assertGreater(sizeY, 1.0)
-
-        r = stream.readUChar()
-        g = stream.readUChar()
-        b = stream.readUChar()
-        a = stream.readUChar()
-
-        self.assertEqual(r, 255)
-        self.assertEqual(g, 255)
-        self.assertEqual(b, 255)
-        self.assertEqual(a, 255)
-
-        stream.resetPos()
-        stream.writeUChar(1)
-        stream.writeUChar(2)
-        stream.writeUChar(3)
-        stream.writeUChar(4)
-
-        EditorAppTests.NATIVE_LIB.setEntityLogicData(self._centralEntityId, logicId, valueId, stream)
-        stream = EditorAppTests.NATIVE_LIB.getEntityLogicData(self._centralEntityId, logicId, valueId)
-
-        r = stream.readUChar()
-        g = stream.readUChar()
-        b = stream.readUChar()
-        a = stream.readUChar()
-
-        self.assertEqual(r, 1)
-        self.assertEqual(g, 2)
-        self.assertEqual(b, 3)
-        self.assertEqual(a, 4)
-
     def testAddChildEntity(self):
         childId = EditorAppTests.NATIVE_LIB.createChildEntity(self._centralEntityId, "TestEntity")
         self.assertNotEqual(childId, -1)

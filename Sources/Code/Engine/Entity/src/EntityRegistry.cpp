@@ -35,14 +35,16 @@ Entity* EntityRegistry::findEntity(EntityId entityId) {
 }
 
 void EntityRegistry::removeEntity(Entity* entity) {
-    std::lock_guard<std::mutex> lock(mutex);
     assert(entity && "Invalid entity");
     removeEntity(entity->getEntityId());
 }
 
 void EntityRegistry::removeAllEntities() {
-    std::lock_guard<std::mutex> lock(mutex);
-    auto entitiesToRemove = std::move(entities);
+    EntityContainerT entitiesToRemove;
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        entitiesToRemove = std::move(entities);
+    }
     entitiesToRemove.clear();
 }
 

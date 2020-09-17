@@ -31,13 +31,8 @@
       "type": "GameEndTimer",
       "id": 6,
       "data": {
-        "gameDuration": 30.0
+        "gameDuration": 2.0
       }
-    },
-    {
-      "type": "GameScore",
-      "id": 7,
-      "data": {}
     },
     {
       "type": "ScoreObjective",

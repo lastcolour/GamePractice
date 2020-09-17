@@ -116,3 +116,30 @@ TEST_F(TaskRunnerTests, RunTaskWithChildren) {
         EXPECT_LE(task->getRunCount(), botValue.load());
     }
 }
+
+TEST_F(TaskRunnerTests, CheckManualMainThreadStepping) {
+    int MAX_ITER = 10000;
+    std::atomic<int> value(0);
+    std::atomic<int> auxValue(0);
+
+    TasksRunner runner;
+
+    auto mainTask = runner.createTask("Main", [&value](){
+        value.fetch_add(1);
+    });
+    mainTask->setType(RunTaskType::MainThreadOnly);
+
+    auto auxTask = runner.createTask("Aux", [&auxValue](){
+        auxValue.fetch_add(1);
+    });
+    auxTask->setType(RunTaskType::NoInMainThread);
+
+    runner.startOtherThreads(1);
+    for(int i = 0; i < MAX_ITER; ++i) {
+        runner.stepMainTread();
+    }
+    runner.stopOtherTreads();
+
+    EXPECT_EQ(value.load(), MAX_ITER);
+    EXPECT_GE(auxValue.load(), value.load());
+}

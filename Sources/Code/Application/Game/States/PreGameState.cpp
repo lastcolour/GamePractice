@@ -1,6 +1,7 @@
 #include "Game/States/PreGameState.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
+#include "Game/ETGameScore.hpp"
 
 PreGameState::PreGameState() {
 }

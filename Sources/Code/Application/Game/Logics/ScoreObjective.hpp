@@ -5,11 +5,13 @@
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/Logics/ObjectiveTarget.hpp"
+#include "Game/ETGameScore.hpp"
 
 class ReflectContext;
 
 class ScoreObjective : public EntityLogic,
-    public ETNode<ETGameBoardElemDestoryEvents> {
+    public ETNode<ETGameBoardElemDestoryEvents>,
+    public ETNode<ETGameScore> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,13 +28,18 @@ public:
     // ETGameBoardElemDestoryEvents
     void ET_onElemsDestroyed(EntityId elemId) override;
 
+    // ETGameScore
+    void ET_resetScore() override;
+    int ET_getGameScore() const override;
+    ObjectiveProgress ET_getObjectiveProgress() const override;
+
 private:
 
     bool isObjectiveComplete(ObjectiveTarget& target) const;
 
 private:
 
-    ObjectiveType type;
+    ObjectiveProgress currentProgress;
     int currentScore;
     ObjectiveTarget oneStarTarget;
     ObjectiveTarget twoStarsTarget;

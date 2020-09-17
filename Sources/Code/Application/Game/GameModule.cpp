@@ -6,7 +6,6 @@
 #include "Game/Logics/GameEndTimerLogic.hpp"
 #include "Game/Logics/GameEndTimerUpdaterLogic.hpp"
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
-#include "Game/Logics/GameScoreLogic.hpp"
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "Game/Logics/GameBoardAppearAnimationLogic.hpp"
 #include "Game/Logics/GameBoardMatchLogic.hpp"
@@ -34,7 +33,6 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameEndTimerLogic>();
     logicsRegister.registerLogic<GameEndTimerUpdaterLogic>();
     logicsRegister.registerLogic<GameBoardInteractionLogic>();
-    logicsRegister.registerLogic<GameScoreLogic>();
     logicsRegister.registerLogic<GameScoreUpdaterLogic>();
     logicsRegister.registerLogic<GameBoardAppearAnimationLogic>();
     logicsRegister.registerLogic<GameBoardMatchLogic>();

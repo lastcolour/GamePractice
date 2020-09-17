@@ -25,8 +25,8 @@ void InGameState::ET_onGameTimeOut() {
     ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::PostGame);
 }
 
-void InGameState::ET_onObjectiveCompleted(ObjectiveType type) {
-    if(type == ObjectiveType::ThreeStars) {
+void InGameState::ET_onObjectiveCompleted(ObjectiveProgress type) {
+    if(type == ObjectiveProgress::ThreeStars) {
         ET_onGameTimeOut();
     }
 }

@@ -34,30 +34,6 @@ class EditorEntityTest(unittest.TestCase):
     def _getEntityLoader(self):
         return self._getEditor().getEntityLoader()
 
-    def testLoadEntity(self):
-        loader = self._getEntityLoader()
-        entity = loader.loadEntity("Game/Simple.json")
-        self.assertIsNotNone(entity)
-        self.assertEqual(entity.getName(), "Game/Simple.json")
-
-        logics = entity.getLogics()
-        self.assertGreater(len(logics), 0)
-
-        logic = logics[0]
-        self.assertEqual(logic.getName(), "RenderSimple")
-        self.assertEqual(logic._logicId, 1)
-
-        values = logic.getValues()
-        self.assertEqual(len(values), 2)
-
-        self.assertEqual(values[0].getName(), "size")
-        self.assertEqual(values[0].getType(), ValueType.Vec2i)
-        self.assertEqual(values[0]._valueId, 1)
-
-        self.assertEqual(values[1].getName(), "color")
-        self.assertEqual(values[1].getType(), ValueType.Color)
-        self.assertEqual(values[1]._valueId, 2)
-
     def testAllLogicMemoryLayout(self):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
         self.assertTrue(entity.loadToNative())
@@ -76,25 +52,6 @@ class EditorEntityTest(unittest.TestCase):
             self.assertEqual(current.tellg(), native.getSize())
             self.assertEqual(current._data[:native.getSize()], native._data)
             entity.removeLogic(logic.getNativeId())
-
-    def testModifyLogicValue(self):
-        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
-        self.assertTrue(entity.loadToNative())
-        self.assertTrue(entity.isLoadedToNative())
-        renderLogic = entity.getLogics()[0]
-        colorVal = renderLogic.getValues()[1]
-        colorVal.setVal(123, 124, 125, 126)
-
-        stream = self._getEditor().getLibrary().getEntityLogicData(entity.getNativeId(), renderLogic.getNativeId(), 2)
-        r = stream.readUChar()
-        g = stream.readUChar()
-        b = stream.readUChar()
-        a = stream.readUChar()
-
-        self.assertEqual(r, 123)
-        self.assertEqual(g, 124)
-        self.assertEqual(b, 125)
-        self.assertEqual(a, 126)
 
     def testIfModifiedAfterAddRemoveLogic(self):
         entity = self._getEntityLoader().loadEntity("Game/Simple.json")
@@ -166,7 +123,7 @@ class EditorEntityTest(unittest.TestCase):
         self.assertIsNotNone(newElemVal)
         self.assertEqual(newElemVal.getType(), ValueType.Entity)
         self.assertEqual(newElemVal.getName(), "[0]")
-        arrayVal.removeElement(0)
+        arrayVal.removeElement(newElemVal)
         elemCount = arrayVal.getValues()
         self.assertEqual(len(elemCount), 0)
 
@@ -182,17 +139,6 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(childEntity.isInternal())
         self.assertTrue(childEntity.rename("NewTest"))
         self.assertEqual(childEntity.getName(), "NewTest")
-
-    def testReadWriteSringVal(self):
-        entity = self._getEntityLoader().loadEntity("Game/Void.json")
-        self.assertTrue(entity.loadToNative())
-        logic = entity.addLogic("RenderText")
-        self.assertIsNotNone(logic)
-
-        textVal = logic.getValues()[2]
-        textVal.setVal("Test")
-        res = textVal.getVal()
-        self.assertEqual(res, "Test")
 
 if __name__ == "__main__":
     unittest.main()

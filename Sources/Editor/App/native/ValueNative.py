@@ -558,8 +558,10 @@ class ArrayValue(ValueNative):
             raise RuntimeError("Native error when adding ne element")
         return self._vals[-1]
 
-    def removeElement(self, arrayValue):
-        self._vals.remove(arrayValue)
+    def removeElement(self, arrayVal):
+        if arrayVal not in self._vals:
+            raise RuntimeError("Can't find an value in array elements")
+        self._vals.remove(arrayVal)
         self._onValueChanged()
 
     def getValues(self):
