@@ -40,6 +40,7 @@ class EntityTreeView(QWidget):
         treeItem.setText(0, entity.getName())
         treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
         treeItem._entity = entity
+        treeItem.setExpanded(True)
         for child in entity.getChildren():
             self._createTreeItem(treeItem, child)
 

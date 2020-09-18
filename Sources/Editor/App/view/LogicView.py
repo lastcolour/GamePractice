@@ -6,6 +6,8 @@ from native.ValueNative import ValueType
 from utils.ViewUtils import GetMinimunWidgetTreeHeight
 from utils.EventManager import GetEventManager
 
+from menu.EntityLogicMenu import EntityLogicMenu
+
 from .values.EditIntValue import EditIntValue
 from .values.EditFloatValue import EditFloatValue
 from .values.EditBoolValue import EditBoolValue
@@ -38,6 +40,8 @@ class LogicViewTopBar(QWidget):
         self._frameLayout = QHBoxLayout()
         self._frameLayout.setSpacing(1)
         self._frameLayout.setContentsMargins(0, 0, 0, 0)
+        self._frame.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._frame.customContextMenuRequested.connect(self._signal_frame_contexMenuRequested)
 
         self._expandLogicBt = QPushButton()
         self._expandLogicBt.setIcon(self.style().standardIcon(QStyle.SP_TitleBarShadeButton))
@@ -71,6 +75,11 @@ class LogicViewTopBar(QWidget):
 
     def _signal_removeBt_clicked(self):
         GetEventManager().onRemoveEntityLogicBtClicked(self._entityLogic)
+
+    def _signal_frame_contexMenuRequested(self, pt):
+        menu = EntityLogicMenu(self)
+        globalPt = self._frame.mapToGlobal(pt)
+        menu.onMenuRequestedOnLogic(globalPt, self._entityLogic)
 
 class LogicView(QWidget):
     def __init__(self, entityLogic):

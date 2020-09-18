@@ -114,8 +114,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 94,
-                "y": 94
+                "x": 47,
+                "y": 47
               },
               "image": "Images/block.png",
               "color": {

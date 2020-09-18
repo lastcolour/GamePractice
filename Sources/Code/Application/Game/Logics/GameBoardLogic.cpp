@@ -406,7 +406,7 @@ void GameBoardLogic::ET_onZIndexChanged(int newZIndex) {
 
 void GameBoardLogic::ET_onAlphaChanged(float newAlpha) {
     for(auto& elem : elements) {
-        ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlpha, newAlpha);
+        ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
     }
 }
 

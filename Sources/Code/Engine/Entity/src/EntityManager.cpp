@@ -290,6 +290,10 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
     if(!logicsNodes || logicsNodes.size() == 0u) {
         return true;
     }
+
+    SerializeContext serCtx;
+    serCtx.entityId = entity->getEntityId();
+
     for(const auto& logicNode : logicsNodes) {
         if(!logicNode.hasKey("type")) {
             LogWarning("[EntityManager::setupEntityLogics] Can't find required logic 'type' data for an entity '%s'",
@@ -329,10 +333,6 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
             LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;
         }
-
-        SerializeContext serCtx;
-        serCtx.entityId = entity->getEntityId();
-
         if(!logicInstance.readAllValuesFrom(serCtx, logicData)) {
             LogWarning("[EntityManager::setupEntityLogics] Can't read logic data of type '%s' for entity '%s'", logicType, entity->ET_getName());
             return false;

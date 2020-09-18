@@ -25,8 +25,8 @@ EntityId getEntityIdFromChildId(const SerializeContext& ctx, EntityChildId child
     EntityId childEntId;
     ET_SendEventReturn(childEntId, parentId, &ETEntity::ET_getEntityIdFromChildId, childId);
     if(!childEntId.isValid()) {
-        LogWarning("[ClassValue::getEntityIdFromChildId] Can't find child with childId '%d' in entity with id '%d'",
-            childId, parentId.getRawId());
+        LogWarning("[ClassValue::getEntityIdFromChildId] Can't find child with childId '%d' in entity '%s'",
+            childId, EntityUtils::GetEntityName(parentId));
         return InvalidEntityId;
     }
     return childEntId;
@@ -45,8 +45,8 @@ EntityChildId getChildIdFromEntityId(const SerializeContext& ctx, EntityId child
     EntityChildId childId = InvalidEntityChildId;
     ET_SendEventReturn(childId, parentId, &ETEntity::ET_getChildIdFromEntityId, childEntId);
     if(childId == InvalidEntityChildId) {
-        LogWarning("[ClassValue::getChildIdFromEntityId] Can't find child with entityId '%d' in entity with id '%d'",
-            childEntId.getRawId(), parentId.getRawId());
+        LogWarning("[ClassValue::getChildIdFromEntityId] Can't find child '%s' in entity '%s'",
+            EntityUtils::GetEntityName(childEntId), EntityUtils::GetEntityName(parentId));
         return InvalidEntityChildId;
     }
     return childId;

@@ -1,14 +1,20 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QFrame, QScrollArea
+from PyQt5 import QtCore
 
 from .LogicView import LogicView
+from .values.EditTransformValue import EditTransformValue
+
 from utils.ViewUtils import ClearLayout
 from utils.EventManager import GetEventManager
-from .values.EditTransformValue import EditTransformValue
+
+from menu.EntityLogicMenu import EntityLogicMenu
 
 class EntityLogicsView(QWidget):
     def __init__(self):
         super().__init__()
         self._editEntity = None
+
+        self._logicMenu = EntityLogicMenu(self)
 
         self._rootLayout = QVBoxLayout()
 
@@ -27,6 +33,8 @@ class EntityLogicsView(QWidget):
         self._frameLayout.addLayout(self._logicsLayout)
         self._frameLayout.addStretch()
         self._frame.setLayout(self._frameLayout)
+        self._frame.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self._frame.customContextMenuRequested.connect(self._signal_frame_contexMenuRequested)
 
         self._scroll = QScrollArea()
         self._scroll.setWidget(self._frame)
@@ -69,3 +77,12 @@ class EntityLogicsView(QWidget):
 
     def _signal_addLogicBt_clicked(self):
         GetEventManager().onAddLogicBtClicked(self._editEntity)
+
+    def _signal_frame_contexMenuRequested(self, pt):
+        for i in range(self._logicsLayout.count()):
+            widget = self._logicsLayout.itemAt(i).widget()
+            if widget is not None:
+                if widget.underMouse():
+                    return
+        globalPt = self._frame.mapToGlobal(pt)
+        self._logicMenu.onMenuRequestedOnEntity(globalPt, self._editEntity)

@@ -248,6 +248,207 @@
                       }
                     ]
                   }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "SecondBase",
+                  "id": 5,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "width": 19.0,
+                            "widthInv": "Grid",
+                            "height": 19.0,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 4.0,
+                              "right": 4.0
+                            }
+                          },
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderColoredTexture",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 6,
+                          "size": {
+                            "x": 90,
+                            "y": 90
+                          },
+                          "image": "Images/block.png",
+                          "color": {
+                            "r": 117,
+                            "g": 117,
+                            "b": 117,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "ThirdBase",
+                  "id": 6,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "width": 19.0,
+                            "widthInv": "Grid",
+                            "height": 19.0,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderColoredTexture",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 6,
+                          "size": {
+                            "x": 90,
+                            "y": 90
+                          },
+                          "image": "Images/block.png",
+                          "color": {
+                            "r": 117,
+                            "g": 117,
+                            "b": 117,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "FirstBase",
+                  "id": 7,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "width": 19.0,
+                            "widthInv": "Grid",
+                            "height": 19.0,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderColoredTexture",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 6,
+                          "size": {
+                            "x": 90,
+                            "y": 90
+                          },
+                          "image": "Images/block.png",
+                          "color": {
+                            "r": 117,
+                            "g": 117,
+                            "b": 117,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
                 }
               ],
               "logics": [
@@ -296,6 +497,22 @@
                     "duration": 0.20000000298023224,
                     "startScale": 2.0
                   }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 5,
+                  "data": {
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      7,
+                      5,
+                      6
+                    ]
+                  }
                 }
               ]
             }
@@ -319,7 +536,7 @@
                 "w": 1.0
               }
             },
-            "name": "ExitButton",
+            "name": "ContinueButton",
             "id": 3,
             "internal": true,
             "data": {
@@ -362,7 +579,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Exit",
+                          "text": "Continue",
                           "render": 0
                         }
                       },
@@ -380,7 +597,7 @@
                             "a": 255
                           },
                           "fontSize": 38,
-                          "text": "Exit"
+                          "text": "Continue"
                         }
                       }
                     ]
@@ -485,84 +702,18 @@
                       "w": 1.0
                     }
                   },
-                  "name": "Chapter",
-                  "id": 1,
+                  "name": "LevelLabel",
+                  "id": 2,
                   "internal": true,
                   "data": {
-                    "children": [
-                      {
-                        "transform": {
-                          "pos": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                          },
-                          "scale": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                          },
-                          "rot": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0,
-                            "w": 1.0
-                          }
-                        },
-                        "name": "Label",
-                        "id": 1,
-                        "internal": true,
-                        "data": {
-                          "children": [],
-                          "logics": [
-                            {
-                              "type": "UILabel",
-                              "id": 1,
-                              "data": {
-                                "style": {
-                                  "fontSize": 10.0,
-                                  "margin": {
-                                    "top": 0.0,
-                                    "bot": 0.0,
-                                    "left": 0.0,
-                                    "right": 0.0
-                                  }
-                                },
-                                "text": "0",
-                                "render": 0
-                              }
-                            },
-                            {
-                              "type": "RenderText",
-                              "id": 2,
-                              "data": {
-                                "isVisible": true,
-                                "alpha": 1.0,
-                                "drawPriority": 8,
-                                "color": {
-                                  "r": 0,
-                                  "g": 0,
-                                  "b": 0,
-                                  "a": 255
-                                },
-                                "fontSize": 47,
-                                "text": "0"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    ],
+                    "children": [],
                     "logics": [
                       {
-                        "type": "UIBox",
+                        "type": "UILabel",
                         "id": 1,
                         "data": {
                           "style": {
-                            "width": 17.0,
-                            "widthInv": "Grid",
-                            "height": 17.0,
-                            "heightInv": "Grid",
+                            "fontSize": 7.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -570,41 +721,25 @@
                               "right": 0.0
                             }
                           },
+                          "text": "Level 01",
                           "render": 0
                         }
                       },
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderText",
                         "id": 2,
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "size": {
-                            "x": 80,
-                            "y": 80
-                          },
-                          "image": "Images/block.png",
                           "color": {
-                            "r": 177,
-                            "g": 177,
-                            "b": 177,
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
                             "a": 255
-                          }
-                        }
-                      },
-                      {
-                        "type": "UILayout",
-                        "id": 3,
-                        "data": {
-                          "style": {
-                            "type": "Horizontal",
-                            "xAlign": "Center",
-                            "yAlign": "Center"
                           },
-                          "children": [
-                            1
-                          ]
+                          "fontSize": 33,
+                          "text": "Level 01"
                         }
                       }
                     ]
@@ -657,12 +792,219 @@
                   "data": {
                     "style": {
                       "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      2
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Score",
+            "id": 5,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Label",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "fontSize": 5.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 5.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "Score: ",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 6,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 24,
+                          "text": "Score: "
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Amount",
+                  "id": 2,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "style": {
+                            "fontSize": 5.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "300",
+                          "render": 0
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 6,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 24,
+                          "text": "300"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "style": {
+                      "width": 50.0,
+                      "widthInv": "Grid",
+                      "height": 10.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 5.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    },
+                    "render": 0
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 3,
+                  "data": {
+                    "style": {
+                      "type": "Horizontal",
                       "xAlign": "Left",
                       "yAlign": "Center"
                     },
                     "children": [
-                      1
+                      1,
+                      2
                     ]
+                  }
+                },
+                {
+                  "type": "RenderColoredTexture",
+                  "id": 4,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 235,
+                      "y": 47
+                    },
+                    "image": "Images/StartButton_BG.png",
+                    "color": {
+                      "r": 0,
+                      "g": 0,
+                      "b": 0,
+                      "a": 255
+                    }
                   }
                 }
               ]
@@ -701,7 +1043,7 @@
               "children": [
                 4,
                 1,
-                -1,
+                5,
                 3
               ]
             }
@@ -790,11 +1132,11 @@
         "drawPriority": 0,
         "size": {
           "x": 528,
-          "y": 939
+          "y": 938
         },
         "color": {
-          "r": 0,
-          "g": 68,
+          "r": 255,
+          "g": 255,
           "b": 255,
           "a": 255
         }

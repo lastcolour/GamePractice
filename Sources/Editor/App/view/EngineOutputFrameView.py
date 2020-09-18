@@ -67,7 +67,9 @@ class EngineOutputFrameView(QWidget):
         if height > size.height():
             scaleFactor = size.height() / height
         newWidth = int(max(size.width() * scaleFactor, 1))
+        newWidth -= newWidth % 2
         newHeight = int(max(height * scaleFactor, 1))
+        newHeight -= newHeight % 2
         self._image = self._image.scaled(newWidth, newHeight)
         GetEngineViewManager().onOutputFrameSizeChanged(newWidth, newHeight)
 

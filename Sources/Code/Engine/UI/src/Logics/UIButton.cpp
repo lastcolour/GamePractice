@@ -108,7 +108,7 @@ void UIButton::onHide(bool flag) {
 
 void UIButton::onAlphaChanged(float newAlpha) {
     UIBox::onAlphaChanged(newAlpha);
-    ET_SendEvent(labelId, &ETRenderNode::ET_setAlpha, newAlpha);
+    ET_SendEvent(labelId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
 void UIButton::onDisabled(bool flag) {

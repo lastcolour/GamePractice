@@ -38,7 +38,7 @@ public:
     void ET_show() override;
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
-    void ET_setAlpha(float newAlpha) override;
+    void ET_setAlphaMultiplier(float newAlphaMult) override;
 
     // ETRenderProxyNodeEvents
     void ET_syncTransform() override;
@@ -51,6 +51,7 @@ protected:
 
     EntityId renderNodeId;
     float alpha;
+    float alphaMult;
     int drawPriority;
     RenderNodeType type;
     bool isVisible;

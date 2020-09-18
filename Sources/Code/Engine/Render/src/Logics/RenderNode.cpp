@@ -14,6 +14,7 @@ void RenderNode::Reflect(ReflectContext& ctx) {
 
 RenderNode::RenderNode(RenderNodeType nodeType) :
     alpha(1.f),
+    alphaMult(1.f),
     drawPriority(0),
     type(nodeType),
     isVisible(true) {
@@ -28,7 +29,7 @@ bool RenderNode::init() {
 
     RenderNodeCreateParams params;
     ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
-    params.alpha = alpha;
+    params.alpha = std::min(1.f, std::max(0.f, alpha));
     params.drawPriority = drawPriority;
     params.type = type;
     ET_SendEventReturn(renderNodeId, &ETRenderNodeManager::ET_createNode, params);
@@ -41,8 +42,10 @@ void RenderNode::deinit() {
     renderNodeId = InvalidEntityId;
 }
 
-void RenderNode::ET_setAlpha(float newAlpha) {
-    alpha = newAlpha;
+void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
+    alphaMult = newAlphaMult;
+    auto newAlpha = alpha * alphaMult;
+    newAlpha = std::min(1.f, std::max(0.f, newAlpha));
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);
 }
 

@@ -78,7 +78,8 @@ void UILabel::ET_setTextRender(EntityId newRenderId) {
         return;
     }
     if(!ET_IsExistNode<ETRenderTextLogic>(labelRenderId)) {
-        LogWarning("[UILabel::ET_setTextRender] Can't find text renderer in entity: %d", labelRenderId.getRawId());
+        LogWarning("[UILabel::ET_setTextRender] Can't find text renderer in entity: '%s'",
+            EntityUtils::GetEntityName(labelRenderId));
         return;
     }
     ET_setText(text.c_str());
@@ -103,7 +104,7 @@ void UILabel::onHide(bool flag) {
 }
 
 void UILabel::onAlphaChanged(float newAlpha) {
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setAlpha, newAlpha);
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
 void UILabel::ET_onAllLogicsCreated() {

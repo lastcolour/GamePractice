@@ -6,6 +6,7 @@ from utils.AppConfig import AppConfig
 from utils.EventManager import CreateEventManager
 from utils.EngineViewManager import CreateEngineViewManager
 from utils.MainViewManager import CreateMainViewManager, GetMainViewManager
+from utils.CopyPasteManager import CreateCopyPasteManager
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
@@ -58,6 +59,7 @@ class EditorView(QMainWindow):
         CreateMainViewManager(self)
         CreateEngineViewManager(self)
         CreateEventManager(self)
+        CreateCopyPasteManager(self)
 
     def _openEntityTreeView(self):
         self._entityTreeView = EntityTreeView()

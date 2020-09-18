@@ -6,12 +6,14 @@ from .LibraryNative import LibraryNative
 from .EntityNativeLoader import EntityNativeLoader
 from .Native import NativeObject
 from .ReflectModel import ReflectModel
+from .GameMonitor import GameMonitor
 
 class EditorNative:
     def __init__(self, appConfig):
         self._appConfig = appConfig
         self._nativeLib = None
         self._reflectModel = None
+        self._gameMonitor = GameMonitor()
         self._entityLoader = EntityNativeLoader()
 
     def init(self):
@@ -48,3 +50,6 @@ class EditorNative:
 
     def getReflectModel(self):
         return self._reflectModel
+
+    def getGameMonitor(self):
+        return self._gameMonitor

@@ -62,7 +62,7 @@ class _EventManager:
 
     def onAddLogicBtClicked(self, editEntity):
         if editEntity is None:
-            raise RuntimeError("Can't add logic to invlid entity")
+            raise RuntimeError("Can't add logic to invalid entity")
         if not editEntity.isLoadedToNative():
             raise RuntimeError("Can't add logic to entity '{0}' that is not loaded to native".format(
                 editEntity.getName()))
@@ -74,6 +74,17 @@ class _EventManager:
         entityLogic = editEntity.addLogic(logic.getName())
         if entityLogic is None:
             raise RuntimeError("Can't add logic '{0}' to  entity '{1}'".format(logic.getName(), editEntity.getName()))
+        self._app._entityLogicsView.addLogicView(entityLogic)
+
+    def onAddCopyLogic(self, editEntity, logicName, logicData):
+        if editEntity is None:
+            raise RuntimeError("Can't add logic to invalid entity")
+        if not editEntity.isLoadedToNative():
+            raise RuntimeError("Can't add logic to entity '{0}' that is not loaded to native".format(
+                editEntity.getName()))
+        entityLogic = editEntity.addCopyLogic(logicName, logicData)
+        if entityLogic is None:
+            raise RuntimeError("Can't add logic '{0}' to entity '{1}'".format(logicName, editEntity.getName()))
         self._app._entityLogicsView.addLogicView(entityLogic)
 
     def onRemoveEntityLogicBtClicked(self, editLogic):

@@ -82,6 +82,26 @@ class EntityNative(NativeObject):
         self._isModified = True
         return logic
 
+    def addCopyLogic(self, logicName, logicData):
+        if not self.isLoadedToNative():
+            raise RuntimeError("Can't add logic '{0}' to entity that is not loaded to edit: '{1}'".format(
+                logicName, self._name))
+        logicId = self._getAPI().getLibrary().addLogicToEntity(self._entityId, logicName)
+        if logicId == -1:
+            print("[EntityNative:addLogic] Can't create native part of logic '{0}' for entity '{1}'".format(
+                logicName, self._name))
+            return None
+        logic = CreateLogic(logicName)
+        if logic is None:
+            print("[EntityNative:addLogic] Can't add '{0}' logic to entity '{1}'".format(logicName, self._name))
+            return None
+        logic._logicId = logicId
+        logic._entity = self
+        logic.readFromCopyDict(logicData)
+        self._logics.append(logic)
+        self._isModified = True
+        return logic
+
     def addLogicWithData(self, logicName, logicId, logicData):
         if self.isLoadedToNative():
             raise RuntimeError("Can't add logic '{0}' with data to entity that is loaded to editor: '{1}'".format(

@@ -714,7 +714,10 @@ class EntityValue(ValueNative):
         self._val = stream.readInt()
 
     def writeToStream(self, stream):
-        stream.writeInt(self._val)
+        if isinstance(self._val, str):
+            stream.writeInt(-1)
+        else:
+            stream.writeInt(self._val)
 
     def setEntityValue(self, entity):
         if entity is None:

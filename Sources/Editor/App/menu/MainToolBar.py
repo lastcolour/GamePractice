@@ -8,7 +8,7 @@ class MainToolBar(QToolBar):
     def __init__(self):
         super().__init__()
 
-        self._gameUpateBt = QPushButton("Update Game")
+        self._gameUpateBt = QPushButton("Enable Updates")
         self._gameUpateBt.setCheckable(True)
         self._gameUpateBt.clicked.connect(self._signal_gameUpdateBt_clicked)
         self.addWidget(self._gameUpateBt)
@@ -60,6 +60,12 @@ class MainToolBar(QToolBar):
         self._aspectRationBox.currentTextChanged.connect(self._singnal_aspectRationBox_changed)
         self.addWidget(self._aspectRationBox)
 
+        self.addSeparator()
+
+        self._startGameBt = QPushButton("Start Game")
+        self._startGameBt.clicked.connect(self._signal_startGameBt_clicked)
+        self.addWidget(self._startGameBt)
+
         self.setMovable(False)
         self.layout().setSpacing(5)
 
@@ -91,3 +97,6 @@ class MainToolBar(QToolBar):
         else:
             raise RuntimeError("Unknown aspect ration: '{0}'".format(text))
         GetEngineViewManager().onAspectRatioChanged(aspectRation)
+
+    def _signal_startGameBt_clicked(self):
+        pass

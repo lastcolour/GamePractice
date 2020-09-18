@@ -123,7 +123,7 @@ void UIBox::ET_onViewPortChanged(const Vec2i& newSize) {
 }
 
 void UIBox::onAlphaChanged(float newAlpha) {
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setAlpha, newAlpha);
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
 void UIBox::onHide(bool flag) {

@@ -78,6 +78,7 @@ void UIEventManager::initEventHandlers() {
             LogError("[UIEventType::ET_onEvent] Can't trigger exit from game end view from non-game view");
             return;
         }
+        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
     };
@@ -89,7 +90,6 @@ void UIEventManager::initEventHandlers() {
             LogError("[UIEventType::ET_onEvent] Can't trigger game end from non-game end view");
             return;
         }
-        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
     };
     eventHandlers[UIEventType::OnSurfaceHidden] = [](UIViewType activeView){

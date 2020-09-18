@@ -12,18 +12,18 @@ def ClearLayout(layout):
             widget.close()
 
 def _getWidgetTreeItemHeight(treeWidget, item):
-    height = treeWidget.visualItemRect(item).height() + 1
+    height = treeWidget.visualItemRect(item).height()
     for i in range(item.childCount()):
         childItem = item.child(i)
         childHeight = _getWidgetTreeItemHeight(treeWidget, childItem)
-        height += childHeight + 1
+        height += childHeight
     return height
 
 def GetMinimunWidgetTreeHeight(treeWidget):
-    height = 0
+    height = 1
     for i in range(treeWidget.topLevelItemCount()):
         item = treeWidget.topLevelItem(i)
-        height += _getWidgetTreeItemHeight(treeWidget, item)
+        height += _getWidgetTreeItemHeight(treeWidget, item) + 1
     return height
 
 def OpenPlatformFileExplorer(filePath):
