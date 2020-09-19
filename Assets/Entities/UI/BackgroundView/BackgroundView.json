@@ -6,7 +6,7 @@
       "id": 1,
       "data": {
         "looped": true,
-        "volume": 0.5,
+        "volume": 0.3,
         "sound": "UI/Chad_Crouch_-_Moonrise.ogg",
         "autoStart": true
       }

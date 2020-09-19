@@ -114,8 +114,17 @@ class _EventManager:
         if not childEntity.extractToFile(resFile):
             return False
         self._app._assetsModel.reload()
-        GetMainViewManager().refreshEntityFileView()
+        self._app._entityFileView.setFileTreeModel(self._app._assetsModel.getEntitiesTree())
         return True
+
+    def onAddCopyChild(self, entity, copyEntitydata):
+        if entity is None:
+            raise RuntimeError("Can't add logic to invalid entity")
+        if not entity.isLoadedToNative():
+            raise RuntimeError("Can't add logic to entity '{0}' that is not loaded to native".format(
+                entity.getName()))
+        copyEntity = entity.addChildEntityFromData(copyEntitydata._name, copyEntitydata._data)
+        return copyEntity
 
     def getAssetsModel(self):
         return self._app._assetsModel

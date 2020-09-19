@@ -87,6 +87,15 @@ EntityId EntityManager::ET_createEntity(const char* entityName) {
     return entity->getEntityId();
 }
 
+EntityId EntityManager::ET_createEntityFromData(const char* entityName, const char* entityData) {
+    auto node = JSONNode::ParseString(entityData);
+    if(!node) {
+        LogError("[EntityManager::ET_createEntityFromData] Can't parse data to create an entity: '%s'", entityName);
+        return InvalidEntityId;
+    }
+    return ET_createEntityFromJSON(node, entityName);
+}
+
 EntityChildId EntityManager::ET_createChildEntity(EntityId parentId, const char* entityName) {
     const char* errStr = "[EntityManager::ET_createChildEntity] Can't create child entity (Error: %s)";
     auto parentEntity = registry.findEntity(parentId);

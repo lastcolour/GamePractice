@@ -37,23 +37,20 @@ class LogicNative(NativeObject):
 
     def readFromCopyDict(self, data):
         self._rootValue.readFromDict(data)
-        stream = MemoryStream()
-        self._rootValue.writeToStream(stream)
-        self._getAPI().getLibrary().setEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID, stream)
-        stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
-        self._rootValue.readFromStream(stream)
-
-    def setWriteOnly(self, flag):
-        self._rootValue.setWriteOnly(flag)
+        self.writeToNative()
+        self.readFromNative()
 
     def writeToStream(self, stream):
         self._rootValue.writeToStream(stream)
 
     def readFromNative(self):
-        if self._rootValue._isWriteOnly:
-            return
         stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
         self._rootValue.readFromStream(stream)
+
+    def writeToNative(self):
+        stream = MemoryStream()
+        self.writeToStream(stream)
+        self._getAPI().getLibrary().setEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID, stream)
 
 def CreateLogic(logicType):
     logic = LogicNative()

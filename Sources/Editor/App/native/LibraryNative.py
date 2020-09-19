@@ -3,6 +3,7 @@ from .MemoryStream import MemoryStream
 import ctypes
 import os
 import pathlib
+import json
 
 class LibraryNative:
     def __init__(self):
@@ -28,9 +29,13 @@ class LibraryNative:
         self._getRegisteredEntityLogicsFunc.argstype = None
         self._getRegisteredEntityLogicsFunc.restype = ctypes.c_char_p
 
-        self._loadEntityFunc = self._editorLib.LoadEntity
-        self._loadEntityFunc.argstype = [ctypes.c_char_p,]
-        self._loadEntityFunc.restype = ctypes.c_uint32
+        self._loadEntityFromFileFunc = self._editorLib.LoadEntityFromFile
+        self._loadEntityFromFileFunc.argstype = [ctypes.c_char_p,]
+        self._loadEntityFromFileFunc.restype = ctypes.c_uint32
+
+        self._loadEntityFromDataFunc = self._editorLib.LoadEntityFromData
+        self._loadEntityFromDataFunc.argstype = [ctypes.c_char_p, ctypes.c_char_p]
+        self._loadEntityFromDataFunc.restype = ctypes.c_uint32
 
         self._unloadEntityFunc = self._editorLib.UnloadEntity
         self._unloadEntityFunc.argstype = [ctypes.c_uint32,]
@@ -109,9 +114,15 @@ class LibraryNative:
         model = self._getReflectModelFunc()
         return model.decode('ascii')
 
-    def loadEntity(self, entityName):
+    def loadEntityFromFile(self, entityName):
         cEntityName = ctypes.c_char_p(entityName.encode('ascii') + b'\x00')
-        return self._loadEntityFunc(cEntityName)
+        return self._loadEntityFromFileFunc(cEntityName)
+
+    def loadEntityFromData(self, entityName, entityData):
+        dataStr = json.dumps(entityData)
+        cEntityName = ctypes.c_char_p(entityName.encode('ascii') + b'\x00')
+        cEntityData = ctypes.c_char_p(dataStr.encode('ascii') + b'\x00')
+        return self._loadEntityFromDataFunc(cEntityName, cEntityData)
 
     def unloadEntity(self, entityId):
         cEntId = ctypes.c_uint32(entityId)

@@ -111,7 +111,7 @@ void Application::mainLoop() {
             ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
         });
         renderUpdate->setType(RunTaskType::MainThreadOnly);
-        renderUpdate->setFrequency(120);
+        renderUpdate->setFrequency(60);
     }
     runner.runUntil(4, [](){
         bool needRun = false;

@@ -9,19 +9,19 @@
         {
             "name":"elemSwitch_01",
             "sound":"Game/switchSuccess.ogg",
-            "volume":0.8,
+            "volume":0.4,
             "nextDelay":0
         },
         {
             "name":"elemDestroy_01",
             "sound":"Game/elemDestroy_01.ogg",
-            "volume":0.7,
+            "volume":0.5,
             "nextDelay":0.1
         },
         {
             "name":"scoreIncrease_01",
             "sound":"Game/scoreIncrease.ogg",
-            "volume":0.25,
+            "volume":0.4,
             "nextDelay":0.05
         }
     ]

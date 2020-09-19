@@ -140,5 +140,21 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(childEntity.rename("NewTest"))
         self.assertEqual(childEntity.getName(), "NewTest")
 
+    def testCreateChildFromData(self):
+        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        self.assertTrue(entity.loadToNative())
+        voidData = entity.dumpToDict()
+
+        firstChild = entity.addChildEntityFromData("void", voidData)
+        self.assertIsNotNone(firstChild)
+
+        secondChild = entity.addChildEntityFromData("void", voidData)
+        self.assertIsNotNone(secondChild)
+
+        self.assertNotEqual(firstChild.getName(), secondChild.getName())
+
+        res = entity.dumpToDict()
+        self.assertEqual(len(res['children']), 2)
+
 if __name__ == "__main__":
     unittest.main()

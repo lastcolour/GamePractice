@@ -55,7 +55,10 @@ class EditEntityValue(QWidget):
 
     def _pull(self):
         entity = self._val.getEntityValue()
-        if entity is None:
-            self._lineEdit.setText("")
-        else:
-            self._lineEdit.setText(_getChildPath(entity))
+        resText = "none"
+        if entity is not None:
+            if entity == self._val.getEntity():
+                resText = "this"
+            else:
+                resText = "\"{0}\"".format(_getChildPath(entity))
+        self._lineEdit.setText(resText)

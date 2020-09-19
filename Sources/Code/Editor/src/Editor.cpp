@@ -48,11 +48,19 @@ const char* GetRegisteredEntityLogics() {
     return INTERNAL_BUFFER.getCString();
 }
 
-uint32_t LoadEntity(const char* entityName) {
+uint32_t LoadEntityFromFile(const char* entityName) {
     if(!EDITOR_APP) {
         return InvalidEntityId.getRawId();
     }
-    auto entityId = EDITOR_APP->loadEntity(entityName);
+    auto entityId = EDITOR_APP->loadEntityFromFile(entityName);
+    return entityId.getRawId();
+}
+
+uint32_t LoadEntityFromData(const char* entityName, const char* entityData) {
+    if(!EDITOR_APP) {
+        return InvalidEntityId.getRawId();
+    }
+    auto entityId = EDITOR_APP->loadEntityFromData(entityName, entityData);
     return entityId.getRawId();
 }
 

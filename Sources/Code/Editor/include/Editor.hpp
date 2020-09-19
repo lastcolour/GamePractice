@@ -19,7 +19,9 @@ LIB_EXPORT const char* GetRegisteredEntityLogics();
 
 LIB_EXPORT void DeInitialize();
 
-LIB_EXPORT uint32_t LoadEntity(const char* entityName);
+LIB_EXPORT uint32_t LoadEntityFromFile(const char* entityName);
+
+LIB_EXPORT uint32_t LoadEntityFromData(const char* entityName, const char* entityData);
 
 LIB_EXPORT void UnloadEntity(uint32_t entityId);
 

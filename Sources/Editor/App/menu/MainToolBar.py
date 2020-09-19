@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QToolBar, QPushButton, QComboBox, QLabel
 
 from utils.EngineViewManager import GetEngineViewManager
+from utils.GameManager import GetGameManager
 
 from view.EngineOutputFrameView import AspecRatio
 
@@ -99,4 +100,4 @@ class MainToolBar(QToolBar):
         GetEngineViewManager().onAspectRatioChanged(aspectRation)
 
     def _signal_startGameBt_clicked(self):
-        pass
+        GetGameManager().startGame()

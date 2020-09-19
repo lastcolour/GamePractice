@@ -19,7 +19,8 @@ public:
     void deinitiazlie();
     Buffer getReflectModel();
     Buffer getRegisteredEntityLogics();
-    EntityId loadEntity(const char* entityName);
+    EntityId loadEntityFromFile(const char* entityName);
+    EntityId loadEntityFromData(const char* entityName, const char* entityData);
     void unloadEntity(EntityId entityId);
     EntityId getEntityChildEntityId(EntityId entityId, EntityChildId childId);
     const char* getEntityName(EntityId entityId);

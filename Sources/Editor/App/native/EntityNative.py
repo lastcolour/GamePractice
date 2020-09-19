@@ -1,6 +1,20 @@
 from .Native import NativeObject
 from .LogicNative import CreateLogic
 
+def _getUniqueNameForNewChild(entity, entityName):
+    childEntityName = entityName
+    isNameUnique = False
+    idx = 1
+    while not isNameUnique:
+        isNameUnique = True
+        for child in entity._children:
+            if child._name == childEntityName:
+                childEntityName = "{0} ({1})".format(entityName, idx)
+                idx += 1
+                isNameUnique = False
+                break
+    return childEntityName
+
 class EntityNative(NativeObject):
     def __init__(self):
         self._isModified = False
@@ -51,7 +65,7 @@ class EntityNative(NativeObject):
     def loadToNative(self):
         if self._isInternal:
             raise RuntimeError("Can't load internal entity '{0}' to native".format(self._name))
-        self._entityId = self._getAPI().getLibrary().loadEntity(self._name)
+        self._entityId = self._getAPI().getLibrary().loadEntityFromFile(self._name)
         if self._entityId == 0:
             print("[EntityNative:loadToNative] Can't load entity '{0}' to editor".format(self._name))
             return False
@@ -158,7 +172,7 @@ class EntityNative(NativeObject):
         childEntity._childId = self._getAPI().getLibrary().addChildEntityToEntity(self._entityId, childEntity._entityId)
         if childEntity._childId == -1:
             childEntity.unloadFromNative()
-            print("[EntityNative:addChildEntity] Can't add child entity '{0}' to entity: '{1}'".format(entityName, self._name))
+            print("[EntityNative:addChildEntity] Can't add child entity '{0}' to entity '{1}'".format(entityName, self._name))
             return None
         childEntity._parent = self
         self._children.append(childEntity)
@@ -181,6 +195,34 @@ class EntityNative(NativeObject):
         self._getAPI().getLibrary().removeChildEntityFromEntity(self._entityId, childEntity.getNativeId())
         self._children.remove(childToRemove)
         self._isModified = True
+
+    def addChildEntityFromData(self, entityName, entityData):
+        if not self.isLoadedToNative():
+            raise RuntimeError("Can't add child '{0}' entity to entity '{1}' that is not loaded to edit".format(
+                entityName, self._name))
+        uniqueChildName = _getUniqueNameForNewChild(self, entityName)
+        childEntity = self._getAPI().getEntityLoader()._loadEntityFromData(uniqueChildName, entityData)
+        if childEntity is None:
+            print("[EntityNative:addChildEntityFromData] Can't load entity form data to add as a child to '{0}'".format(self._name))
+            return None
+        childEntity._entityId = self._getAPI().getLibrary().loadEntityFromData(uniqueChildName, entityData)
+        if childEntity._entityId is None:
+            print("[EntityNative:addChildEntityFromData] Can't load entity to native to add as a child to '{0}'".format(self._name))
+            return None
+        childEntity._childId = self._getAPI().getLibrary().addChildEntityToEntity(self._entityId, childEntity._entityId)
+        if childEntity._childId == -1:
+            print("[EntityNative:addChildEntityFromData] Can't add child entity '{0}' from data to entity '{1}'".format(entityName, self._name))
+            childEntity.unloadFromNative()
+            return None
+        childEntity._parent = self
+        childEntity._isInternal = True
+        childEntity._isModified = True
+        self._getAPI().getEntityLoader().setupDefaultTransform(childEntity)
+        childEntity._tmLogic.writeToNative()
+        self._children.append(childEntity)
+        self._isModified = True
+        self._syncWithNative()
+        return childEntity
 
     def getFullFilePath(self):
         return self._getAPI().getEntityLoader().getEntityFullPath(self._name)
@@ -245,7 +287,6 @@ class EntityNative(NativeObject):
         tmLogic = CreateLogic("Transform")
         tmLogic._logicId = 0
         tmLogic._entity = self
-        tmLogic.setWriteOnly(True)
         return tmLogic
 
     def rename(self, newName):

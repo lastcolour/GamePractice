@@ -50,6 +50,7 @@ class EditTransformValue(LogicView):
         super().__init__(EmptyTransformLogic())
         self._logicTopBar._removeLogicBt.hide()
         self._tree.setEnabled(False)
+        self._setCanCopy(False)
 
     def setEditEntity(self, entity):
         if entity is None:

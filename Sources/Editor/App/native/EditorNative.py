@@ -13,7 +13,7 @@ class EditorNative:
         self._appConfig = appConfig
         self._nativeLib = None
         self._reflectModel = None
-        self._gameMonitor = GameMonitor()
+        self._gameMonitor = GameMonitor(self._appConfig)
         self._entityLoader = EntityNativeLoader()
 
     def init(self):

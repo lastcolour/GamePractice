@@ -2,7 +2,6 @@
 #include "ThreadsPool.hpp"
 #include "ThreadJob.hpp"
 #include "Core/TimePoint.hpp"
-#include "ParallelUtils.hpp"
 
 ThreadWorker::ThreadWorker(ThreadsPool* parentPool, int threadId) :
     pool(parentPool),

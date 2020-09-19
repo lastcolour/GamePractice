@@ -119,7 +119,7 @@ void EditorApp::buildModules(ModuleListT& modules) {
     modules.emplace_back(new GameModule);
 }
 
-EntityId EditorApp::loadEntity(const char* entityName) {
+EntityId EditorApp::loadEntityFromFile(const char* entityName) {
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);
     EntityId entId;
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, entityName);
@@ -127,6 +127,12 @@ EntityId EditorApp::loadEntity(const char* entityName) {
         return InvalidEntityId;
     }
     ET_SendEvent(&ETEditEntityTracker::ET_startTrackingEntity, entId);
+    return entId;
+}
+
+EntityId EditorApp::loadEntityFromData(const char* entityName, const char* entityData) {
+    EntityId entId;
+    ET_SendEventReturn(entId, &ETEntityManager::ET_createEntityFromData, entityName, entityData);
     return entId;
 }
 

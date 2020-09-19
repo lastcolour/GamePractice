@@ -38,11 +38,6 @@ class _MainViewManager:
             return
         self._app._openEntityLogicsView()
 
-    def refreshEntityFileView(self):
-        if self._app._entityFileView is None:
-            return
-        self._app._entityFileView._refresh()
-
     def onMainViewClosed(self, view):
         if view == self._app._entityFileView:
             self._app._entityFileView = None

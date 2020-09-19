@@ -90,7 +90,6 @@ class AssetsModel:
     def __init__(self, appConfig):
         self._appConfig = appConfig
         self._resourceRootDir = DirNode()
-        self._entitiesRootDir = DirNode()
 
     def _scanDir(self, dirNode):
         dirPath = dirNode.getFullPath()
@@ -209,6 +208,7 @@ class AssetsModel:
         return True
 
     def reload(self):
+        self._resourceRootDir = DirNode()
         if not self.init():
             raise RuntimeError("Can't reload assets model")
 

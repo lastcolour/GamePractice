@@ -31,6 +31,8 @@ class LogicViewTopBar(QWidget):
     def __init__(self):
         super().__init__()
 
+        self._canCopy = True
+
         self._entityLogic = None
 
         self._frame = QFrame()
@@ -73,10 +75,15 @@ class LogicViewTopBar(QWidget):
         self._entityLogic = entityLogic
         self._logicNameLabel.setText(self._entityLogic.getName())
 
+    def _setCanCopy(self, copyFlag):
+        self._canCopy = copyFlag
+
     def _signal_removeBt_clicked(self):
         GetEventManager().onRemoveEntityLogicBtClicked(self._entityLogic)
 
     def _signal_frame_contexMenuRequested(self, pt):
+        if not self._canCopy:
+            return
         menu = EntityLogicMenu(self)
         globalPt = self._frame.mapToGlobal(pt)
         menu.onMenuRequestedOnLogic(globalPt, self._entityLogic)
@@ -120,6 +127,9 @@ class LogicView(QWidget):
         self.setLayout(self._rootLayout)
 
         self._setupLogic(self._entityLogic)
+
+    def _setCanCopy(self, copyFlag):
+        self._logicTopBar._setCanCopy(copyFlag)
 
     def _updateTreeSize(self):
         minTreeHeight = GetMinimunWidgetTreeHeight(self._tree)
