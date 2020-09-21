@@ -527,6 +527,7 @@ class ArrayValue(ValueNative):
         if newElemsCount > 1:
             raise RuntimeError("Array size was changed in an invalid way")
         idx = 0
+        self._val = self._vals[:size]
         for item in self._vals:
             item.readFromStream(stream)
             item._name = "[{0}]".format(idx)
@@ -630,7 +631,11 @@ class ObjectValue(ValueNative):
 
     def readFromStream(self, stream):
         for item in self._vals:
-            item.readFromStream(stream)
+            try:
+                item.readFromStream(stream)
+            except:
+                print("[ObjectValue:readFromStream] Can't read value: '{0}'".format(item._name))
+                raise
 
     def writeToStream(self, stream):
         for item in self._vals:

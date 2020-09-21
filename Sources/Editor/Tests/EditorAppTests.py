@@ -21,7 +21,7 @@ class EditorAppTests(unittest.TestCase):
         cls.NATIVE_LIB.deinitialize()
 
     def setUp(self):
-        self._centralEntityId = EditorAppTests.NATIVE_LIB.loadEntity("Game/Simple.json")
+        self._centralEntityId = EditorAppTests.NATIVE_LIB.loadEntityFromFile("Game/Simple.json")
         self.assertNotEqual(self._centralEntityId, 0)
 
     def tearDown(self):
@@ -40,7 +40,7 @@ class EditorAppTests(unittest.TestCase):
         entityName = EditorAppTests.NATIVE_LIB.getEntityName(self._centralEntityId)
         self.assertEqual(entityName, "Game/Simple.json")
 
-        voidEntId = EditorAppTests.NATIVE_LIB.loadEntity("Game/Void.json")
+        voidEntId = EditorAppTests.NATIVE_LIB.loadEntityFromFile("Game/Void.json")
         self.assertNotEqual(voidEntId, 0)
 
         childId = EditorAppTests.NATIVE_LIB.addChildEntityToEntity(self._centralEntityId, voidEntId)

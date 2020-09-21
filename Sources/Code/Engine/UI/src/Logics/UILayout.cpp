@@ -3,6 +3,7 @@
 #include "UI/UIBoxStyle.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -14,7 +15,8 @@ void UILayout::Reflect(ReflectContext& ctx) {
     }
 }
 
-UILayout::UILayout() {
+UILayout::UILayout() :
+    isCalculatingLayout(false) {
 }
 
 UILayout::~UILayout() {
@@ -193,14 +195,35 @@ void UILayout::calculateLayout() {
     if(children.empty()) {
         return;
     }
+
+    if(isCalculatingLayout) {
+        LogError("[UILayout::calculateLayout] Can't do recursive layout calcuation for an entity '%s'",
+            EntityUtils::GetEntityName(getEntityId()));
+        assert(false && "Invalid request to calculate layout");
+        return;
+    }
+
+    isCalculatingLayout = true;
+
     std::vector<AABB2Di> childBoxes;
     childBoxes.reserve(children.size());
     int offset = 0;
     int prevMargin = 0;
     for(auto childId : children) {
-        auto resBox = calculateItem(offset, prevMargin, childId);
-        childBoxes.push_back(resBox);
+        AABB2Di childBox;
+        childBox.bot = Vec2i(0);
+        childBox.top = Vec2i(0);
+        if(childId == getEntityId()) {
+            LogWarning("[UILayout::calculateLayout] Can't have an host entity '%s' on layout", EntityUtils::GetEntityName(childId));
+        } else if(!childId.isValid()) {
+            LogWarning("[UILayout::calculateLayout] Invalid child on entity layout: '%s'", EntityUtils::GetEntityName(getEntityId()));
+        } else {
+            childBox = calculateItem(offset, prevMargin, childId);
+        }
+        childBoxes.push_back(childBox);
     }
+
+    assert(childBoxes.size() == children.size() && "Invalid amount of child boxes");
 
     calculateAligment(childBoxes);
 
@@ -212,6 +235,10 @@ void UILayout::calculateLayout() {
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
+        if(!childId.isValid() || childId == getEntityId()) {
+            continue;
+        }
+
         auto childBox = childBoxes[i];
 
         Transform tm;
@@ -226,6 +253,8 @@ void UILayout::calculateLayout() {
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
         ET_SendEvent(childId, &ETRenderNode::ET_setDrawPriority, childZIndex);
     }
+
+    isCalculatingLayout = false;
 }
 
 void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {

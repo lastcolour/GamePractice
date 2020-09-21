@@ -47,6 +47,7 @@ private:
 
     UILayoutStyle style;
     std::vector<EntityId> children;
+    bool isCalculatingLayout;
 };
 
 #endif /* __UI_LAYOUT_HPP__ */
