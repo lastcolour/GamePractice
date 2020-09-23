@@ -37,12 +37,11 @@ private:
     void onRelease(const Vec2i& pt);
 
     bool isHover(const Vec2i& pt, EntityId entId) const;
-    EntityId getHoveredEntity(const Vec2i& pt) const;
+    std::vector<EntityId> getHoveredEntities(const Vec2i& pt) const;
 
 private:
 
-    EntityId pressElemId;
-    EntityId hoveredElemId;
+    std::vector<EntityId> eventHandlers;
 };
 
 #endif /* __UI_SURFACE_EVENT_HANDLER_HPP__ */

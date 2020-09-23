@@ -26,6 +26,7 @@ public:
     // ETEntityManager
     EntityId ET_createEntity(const char* entityName) override;
     EntityId ET_createEntityFromData(const char* entityName, const char* entityData) override;
+    Entity* ET_createRawEntity(const char* entityName) override;
     EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) override;
     void ET_destroyEntity(EntityId entityId) override;
     bool ET_renameEntity(EntityId entId, const char* newName) override;

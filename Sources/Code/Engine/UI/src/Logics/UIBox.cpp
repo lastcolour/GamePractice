@@ -1,5 +1,5 @@
 #include "Logics/UIBox.hpp"
-#include "UIConfig.hpp"
+#include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Core/ETLogger.hpp"

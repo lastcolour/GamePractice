@@ -20,6 +20,7 @@ public:
 
     // ETUIViewPort
     const Vec2i& ET_getViewport() const override;
+    void ET_postUpdate() override;
 
     // ETRenderCameraEvents
     void ET_onRenderPortResized(const Vec2i& newSize) override;
@@ -27,6 +28,7 @@ public:
 private:
 
     Vec2i viewPort;
+    bool viewPortUpdated;
 };
 
 #endif /* __UI_VIEW_PORT_MANAGER_HPP__ */

@@ -1,7 +1,7 @@
 #include "UILayoutTests.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIBox.hpp"
-#include "UIConfig.hpp"
+#include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 
 namespace {

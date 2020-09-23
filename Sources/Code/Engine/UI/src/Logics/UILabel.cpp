@@ -1,7 +1,7 @@
 #include "Logics/UILabel.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "UIConfig.hpp"
+#include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "UI/UIBoxStyle.hpp"
 #include "Core/ETLogger.hpp"

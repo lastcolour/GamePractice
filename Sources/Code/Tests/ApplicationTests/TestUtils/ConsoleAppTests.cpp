@@ -9,6 +9,7 @@
 #include <Game/GameModule.hpp>
 #include <Platform/PlatformModule.hpp>
 #include <Core/ETLogger.hpp>
+#include <Entity/ETEntityManger.hpp>
 
 namespace {
 
@@ -52,12 +53,15 @@ void ConsoleAppTests::TearDownTestCase() {
 }
 
 void ConsoleAppTests::TearDown() {
+    for(auto entId : tempObject) {
+        ET_SendEvent(&ETEntityManager::ET_destroyEntity, entId);
+    }
     tempObject.clear();
 }
 
 Entity* ConsoleAppTests::createVoidObject() {
-    std::unique_ptr<Entity> objectPtr(new Entity(TEST_OBJECT_NAME, GetETSystem()->createNewEntityId()));
-    auto ptr = objectPtr.get();
-    tempObject.push_back(std::move(objectPtr));
-    return ptr;
+    Entity* resEntity;
+    ET_SendEventReturn(resEntity, &ETEntityManager::ET_createRawEntity, TEST_OBJECT_NAME);
+    tempObject.push_back(resEntity->getEntityId());
+    return resEntity;
 }

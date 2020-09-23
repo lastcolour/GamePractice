@@ -1,7 +1,7 @@
 #include "UIBoxTests.hpp"
 #include "Logics/UIBox.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "UIConfig.hpp"
+#include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "Render/ETRenderCamera.hpp"
 

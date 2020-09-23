@@ -15,7 +15,7 @@ class Entity : public ETNode<ETEntity> {
 public:
 
     struct EntityChildNode {
-        EntityId childEntId;
+        Entity* childEntity;
         EntityChildId childId;
     };
 
@@ -26,7 +26,7 @@ public:
 
 public:
 
-    Entity(const char* entityName, EntityId entId);
+    Entity(const char* entityName, EntityRegistry* entityRegistry, EntityId entId);
     virtual ~Entity();
 
     void addChildEntityWithId(EntityChildId childId, Entity& entity);
@@ -39,6 +39,7 @@ public:
     bool addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId);
     EntityId getEntityId() const { return entityId; }
     void setName(const char* newName);
+    void purgeAllRelationships();
 
     // ETEntity
     const char* ET_getName() const override;
@@ -67,11 +68,12 @@ private:
 
 private:
 
+    EntityRegistry* registry;
+    Entity* parent;
     Transform tm;
     std::vector<EntityLogicNode> logics;
     std::vector<EntityChildNode> children;
     std::string name;
-    EntityId parentId;
     EntityId entityId;
 };
 

@@ -3,7 +3,6 @@
 
 #include "UI/UIBoxStyle.hpp"
 
-
 class UILabelStyle {
 public:
 

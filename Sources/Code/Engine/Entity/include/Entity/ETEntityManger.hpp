@@ -6,6 +6,7 @@
 class EntityLogicsRegister;
 class JSONNode;
 class MemoryStream;
+class Entity;
 
 struct ETEntityManager {
     virtual ~ETEntityManager() = default;
@@ -13,6 +14,7 @@ struct ETEntityManager {
     virtual EntityId ET_createEntityFromData(const char* entityName, const char* entityData) = 0;
     virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;
     virtual EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) = 0;
+    virtual Entity* ET_createRawEntity(const char* entityName) = 0;
     virtual void ET_destroyEntity(EntityId entId) = 0;
     virtual bool ET_renameEntity(EntityId entId, const char* newName) = 0;
     virtual void ET_destroyAllEntities() = 0;

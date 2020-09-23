@@ -15,7 +15,7 @@ Entity* EntityRegistry::createEntity(const char* name) {
     Entity* res = nullptr;
     {
         std::lock_guard<std::mutex> lock(mutex);
-        std::unique_ptr<Entity> entity(new Entity(name, GetETSystem()->createNewEntityId()));
+        std::unique_ptr<Entity> entity(new Entity(name, this, GetETSystem()->createNewEntityId()));
         res = entity.get();
         entities[res->getEntityId()] = std::move(entity);
     }
@@ -44,6 +44,9 @@ void EntityRegistry::removeAllEntities() {
     {
         std::lock_guard<std::mutex> lock(mutex);
         entitiesToRemove = std::move(entities);
+    }
+    for(auto& entity : entitiesToRemove) {
+        entity.second->purgeAllRelationships();
     }
     entitiesToRemove.clear();
 }

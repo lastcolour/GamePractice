@@ -4,7 +4,7 @@
 #include "Math/Primitivies.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Core/ETApplication.hpp"
-#include "UIConfig.hpp"
+#include "Config/UIConfig.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <algorithm>

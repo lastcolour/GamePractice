@@ -4,6 +4,8 @@
 #include "Entity/ETEntity.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Core/ETLogger.hpp"
+#include "UI/ETUIViewPort.hpp"
+#include "UIUtils.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -22,7 +24,15 @@ UILayout::UILayout() :
 UILayout::~UILayout() {
 }
 
+void UILayout::ET_setHostBox(EntityId entityId) {
+    hostBoxId = entityId;
+    calculateLayout();
+}
+
 bool UILayout::init() {
+    if(!hostBoxId.isValid()) {
+        hostBoxId = getEntityId();
+    }
     for(auto elemId : children) {
         ET_SendEvent(elemId, &ETUIElement::ET_setLayout, getEntityId());
     }
@@ -53,45 +63,6 @@ void UILayout::ET_addItem(EntityId entityId) {
     calculateLayout();
 }
 
-Vec2i UILayout::calcAligmentCenter(AABB2Di& parentBox, AABB2Di& box) {
-    Vec2i center(0);
-    switch(style.xAlign) {
-        case UIXAlign::Left: {
-            center.x = parentBox.bot.x + box.getSize().x / 2;
-            break;
-        }
-        case UIXAlign::Center: {
-            center.x = parentBox.getCenter().x;
-            break;
-        }
-        case UIXAlign::Right: {
-            center.x = parentBox.top.x - box.getSize().x / 2;
-            break;
-        }
-        default: {
-            assert(false && "Invalid x-aligment type");
-        }
-    }
-    switch(style.yAlign) {
-        case UIYAlign::Bot: {
-            center.y = parentBox.bot.y + box.getSize().y / 2;
-            break;
-        }
-        case UIYAlign::Center: {
-            center.y = parentBox.getCenter().y;
-            break;
-        }
-        case UIYAlign::Top: {
-            center.y = parentBox.top.y - box.getSize().y / 2;
-            break;
-        }
-        default: {
-            assert(false && "Invalid y-aligment type");
-        }
-    }
-    return center;
-}
-
 void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     AABB2Di layoutBox;
     layoutBox.top = Vec2i(std::numeric_limits<int>::min());
@@ -107,7 +78,7 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     Vec2i currentCenter = layoutBox.getCenter();
 
     for(auto& childBox : childrenBoxes) {
-        auto aligmentCenter = calcAligmentCenter(layoutBox, childBox);
+        auto aligmentCenter = UI::CalcAligmentCenter(style.xAlign, style.yAlign, layoutBox, childBox);
         switch(style.type) {
             case UILayoutType::Horizontal: {
                 auto childCenter = childBox.getCenter();
@@ -127,14 +98,22 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
         }
     }
 
-    AABB2Di box;
-    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
-    auto center = calcAligmentCenter(box, layoutBox);
+    AABB2Di box(Vec2i(0), Vec2i(0));
+    if(hostBoxId.isValid()) {
+        ET_SendEventReturn(box, hostBoxId, &ETUIElement::ET_getBox);
+    } else {
+        Vec2i viewPort = Vec2i(0);
+        ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+        box.top = viewPort;
+    }
+    auto center = UI::CalcAligmentCenter(style.xAlign, style.yAlign, box, layoutBox);
 
     Vec2i centerShift = center - layoutBox.getCenter();
     for(auto& childBox : childrenBoxes) {
         childBox.setCenter(childBox.getCenter() + centerShift);
     }
+
+    combinedBox = layoutBox;
 }
 
 AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
@@ -192,6 +171,8 @@ void UILayout::ET_update() {
 }
 
 void UILayout::calculateLayout() {
+    combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
+
     if(children.empty()) {
         return;
     }
@@ -213,7 +194,7 @@ void UILayout::calculateLayout() {
         AABB2Di childBox;
         childBox.bot = Vec2i(0);
         childBox.top = Vec2i(0);
-        if(childId == getEntityId()) {
+        if(childId == hostBoxId) {
             LogWarning("[UILayout::calculateLayout] Can't have an host entity '%s' on layout", EntityUtils::GetEntityName(childId));
         } else if(!childId.isValid()) {
             LogWarning("[UILayout::calculateLayout] Invalid child on entity layout: '%s'", EntityUtils::GetEntityName(getEntityId()));
@@ -229,29 +210,19 @@ void UILayout::calculateLayout() {
 
     int zIndex = 0;
     int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
+    ET_SendEventReturn(zIndex, hostBoxId, &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, hostBoxId, &ETUIElement::ET_getZIndexDepth);
     int childZIndex = zIndex + zIndexDepth + 1;
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
-        if(!childId.isValid() || childId == getEntityId()) {
+        if(!childId.isValid() || childId == hostBoxId) {
             continue;
         }
-
         auto childBox = childBoxes[i];
-
-        Transform tm;
-        ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
-
         auto center = childBox.getCenter();
-        tm.pt.x = static_cast<float>(center.x);
-        tm.pt.y = static_cast<float>(center.y);
-
-        ET_SendEvent(childId, &ETEntity::ET_setTransform, tm);
-
+        UI::Set2DPosition(childId, center);
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
-        ET_SendEvent(childId, &ETRenderNode::ET_setDrawPriority, childZIndex);
     }
 
     isCalculatingLayout = false;
@@ -264,8 +235,8 @@ void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {
 void UILayout::ET_onZIndexChanged(int newZIndex) {
     int zIndex = 0;
     int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
+    ET_SendEventReturn(zIndex, hostBoxId, &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, hostBoxId, &ETUIElement::ET_getZIndexDepth);
     int childZIndex = zIndex + zIndexDepth + 1;
 
     for(auto childId : children) {
@@ -307,4 +278,8 @@ void UILayout::ET_onIngoreTransform(bool flag) {
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setIgnoreTransform, flag);
     }
+}
+
+const AABB2Di& UILayout::ET_getCombinedBox() const {
+    return combinedBox;
 }

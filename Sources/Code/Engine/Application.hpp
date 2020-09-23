@@ -1,16 +1,15 @@
 #ifndef __APPLICATION_HPP__
 #define __APPLICATION_HPP__
 
-#include <memory>
 #include <vector>
+#include <memory>
 
 class SystemModule;
-class ETSystem;
+class GlobalEnvironment;
 
 class Application {
 public:
 
-    using ETSystemPtrT = std::unique_ptr<ETSystem>;
     using ModuleListT = std::vector<std::unique_ptr<SystemModule>>;
 
 public:
@@ -37,7 +36,7 @@ private:
 
 private:
 
-    ETSystemPtrT etSystem;
+    std::unique_ptr<GlobalEnvironment> globalEnv;
     ModuleListT systemModules;
 };
 

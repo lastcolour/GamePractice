@@ -1,4 +1,16 @@
 {
   "children": [],
-  "logics": []
+  "logics": [
+    {
+      "type": "UIScrollArea",
+      "id": 1,
+      "data": {
+        "style": {
+          "type": "Vertical",
+          "origin": "Start"
+        },
+        "target": -1
+      }
+    }
+  ]
 }

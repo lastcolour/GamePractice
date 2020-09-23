@@ -9,6 +9,7 @@
 #include <Reflect/ETReflectInterfaces.hpp>
 #include <Entity.hpp>
 #include <Entity/EntityLogic.hpp>
+#include <EntityRegistry.hpp>
 
 namespace {
 
@@ -777,14 +778,16 @@ TEST_F(ReflectTests, TestEntityReference) {
     ObjectWithEntity* logicPtr = nullptr;
     EntityLogicId logicId = InvalidEntityLogicId;
 
-    std::unique_ptr<Entity> parentEntity(new Entity("Parent", GetETSystem()->createNewEntityId()));
+    EntityRegistry registy;
+    auto parentEntity = registy.createEntity("Parent");
+
     auto logicInstance = classInfo->createInstance();
     logicPtr = static_cast<ObjectWithEntity*>(logicInstance.get());
     logicId = parentEntity->addLogic(std::move(logicInstance));
     ASSERT_NE(logicId, InvalidEntityLogicId);
 
     EntityChildId childId = 1;
-    std::unique_ptr<Entity> childEntity(new Entity("Child", GetETSystem()->createNewEntityId()));
+    auto childEntity = registy.createEntity("Child");
     parentEntity->addChildEntityWithId(childId, *childEntity);
 
     MemoryStream stream;

@@ -3,6 +3,7 @@
 #include "Entity/ETEntityManger.hpp"
 #include "Core/ETLogger.hpp"
 #include "Reflect/ClassValue.hpp"
+#include "EntityRegistry.hpp"
 
 #include <cassert>
 
@@ -48,7 +49,9 @@ bool IsValidLogicId(EntityLogicId logicId, const std::vector<Entity::EntityLogic
 
 } // namespace
 
-Entity::Entity(const char* entityName, EntityId entId) :
+Entity::Entity(const char* entityName, EntityRegistry* entityRegistry, EntityId entId) :
+    registry(entityRegistry),
+    parent(nullptr),
     name(entityName),
     entityId(entId) {
 
@@ -58,14 +61,12 @@ Entity::Entity(const char* entityName, EntityId entId) :
 }
 
 Entity::~Entity() {
-    if(parentId.isValid()) {
-        auto currentParent = parentId;
-        parentId = InvalidEntityId;
-        ET_SendEvent(currentParent, &ETEntity::ET_removeChild, entityId);
+    if(parent) {
+        parent->ET_removeChild(getEntityId());
     }
     auto entToRemove = std::move(children);
     for(auto it = entToRemove.rbegin(), end = entToRemove.rend(); it != end; ++it) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, it->childEntId);
+        registry->removeEntity(it->childEntity);
     }
     for(auto it = logics.rbegin(), end = logics.rend(); it != end; ++it) {
         auto logicPtr = static_cast<EntityLogic*>(it->logic.get());
@@ -75,7 +76,7 @@ Entity::~Entity() {
 
 void Entity::addChildEntityWithId(EntityChildId childId, Entity& childEntity) {
     assert(IsValidChildId(childId, children) && "Invalid children id");
-    childEntity.parentId = entityId;
+    childEntity.parent = this;
 
     Transform childTm = childEntity.tm;
     childTm.pt += tm.pt;
@@ -84,7 +85,7 @@ void Entity::addChildEntityWithId(EntityChildId childId, Entity& childEntity) {
     childTm.scale.z *= tm.scale.z;
     childEntity.ET_setTransform(childTm);
 
-    children.emplace_back(EntityChildNode{childEntity.entityId, childId});
+    children.emplace_back(EntityChildNode{&childEntity, childId});
 }
 
 EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
@@ -212,32 +213,48 @@ const char* Entity::ET_getName() const {
 
 void Entity::ET_setParent(EntityId entId) {
     assert(entId != entityId && "Can't set self as a parent");
-    if(parentId == entId) {
+    if(parent && parent->getEntityId() == entId) {
         return;
     }
-    if(parentId != InvalidEntityId) {
-        ET_SendEvent(parentId, &ETEntity::ET_removeChild, entityId);
+    Entity* newParent = nullptr;
+    if(entId.isValid()) {
+        newParent = registry->findEntity(entId);
+        if(!newParent) {
+            LogWarning("[Entity::ET_setParent] Can't find entity with id '%d' to set as a parent for: '%s'",
+                entId.getRawId(), name);
+        }
     }
-    parentId = entId;
-    if(parentId != InvalidEntityId) {
-        ET_SendEvent(parentId, &ETEntity::ET_addChild, entityId);
+    if(parent) {
+        parent->ET_removeChild(getEntityId());
+    }
+    parent = newParent;
+    if(parent) {
+        parent->ET_addChild(getEntityId());
     }
 }
 
 EntityChildId Entity::ET_addChild(EntityId entId) {
     assert(entId != entityId && "Can't add self as a child");
     assert(entId != InvalidEntityId && "Invalid entity id");
+
+    auto childEntity = registry->findEntity(entId);
+    if(!childEntity) {
+        LogError("[Entity::ET_addChild] Can't find entity with id '%d' to add as a child to: '%s'",
+            entId.getRawId(), name);
+        return InvalidEntityChildId;
+    }
+
     for(auto childNode : children) {
-        if(childNode.childEntId == entId) {
+        if(childNode.childEntity == childEntity) {
             return InvalidEntityChildId;
         }
     }
+
     auto childId = createNewChildId();
-    children.emplace_back(EntityChildNode{entId, childId});
-    EntityId entParentId;
-    ET_SendEventReturn(entParentId, entId, &ETEntity::ET_getParentId);
-    if(entParentId != entityId) {
-        ET_SendEvent(entId, &ETEntity::ET_setParent, entityId);
+    children.emplace_back(EntityChildNode{childEntity, childId});
+
+    if(childEntity->ET_getParentId() != getEntityId()) {
+        childEntity->ET_setParent(getEntityId());
     }
     return childId;
 }
@@ -245,22 +262,24 @@ EntityChildId Entity::ET_addChild(EntityId entId) {
 void Entity::ET_removeChild(EntityId entId) {
     auto it = children.begin();
     for(auto end = children.end(); it != end; ++it) {
-        if(it->childEntId == entId) {
+        if(it->childEntity->getEntityId() == entId) {
             break;
         }
     }
     if(it != children.end()) {
+        auto childEntity = it->childEntity;
         children.erase(it);
-        EntityId entParentId;
-        ET_SendEventReturn(entParentId, entId, &ETEntity::ET_getParentId);
-        if(entParentId == entityId) {
-            ET_SendEvent(entId, &ETEntity::ET_setParent, InvalidEntityId);
+        if(childEntity->ET_getParentId() == getEntityId()) {
+            childEntity->ET_setParent(InvalidEntityId);
         }
     }
 }
 
 EntityId Entity::ET_getParentId() const {
-    return parentId;
+    if(parent) {
+        return parent->getEntityId();
+    }
+    return InvalidEntityId;
 }
 
 const Transform& Entity::ET_getTransform() const {
@@ -270,9 +289,9 @@ const Transform& Entity::ET_getTransform() const {
 void Entity::ET_setTransform(const Transform& newTm) {
     Vec3 scaleFactor = newTm.scale / tm.scale;
     for(auto& childNode : children) {
-        auto childId = childNode.childEntId;
-        Transform childTm;
-        ET_SendEventReturn(childTm, childId, &ETEntity::ET_getLocalTransform);
+        auto childEntity = childNode.childEntity;
+
+        Transform childTm = childEntity->ET_getLocalTransform();
 
         childTm.pt.x *= scaleFactor.x;
         childTm.pt.y *= scaleFactor.y;
@@ -283,7 +302,7 @@ void Entity::ET_setTransform(const Transform& newTm) {
         childTm.scale.y *= tm.scale.y * scaleFactor.y;
         childTm.scale.z *= tm.scale.z * scaleFactor.z;
 
-        ET_SendEvent(childId, &ETEntity::ET_setTransform, childTm);
+        childEntity->ET_setTransform(childTm);
     }
 
     tm = newTm;
@@ -291,12 +310,11 @@ void Entity::ET_setTransform(const Transform& newTm) {
 }
 
 Transform Entity::ET_getLocalTransform() const {
-    if(!parentId.isValid()) {
+    if(!parent) {
         return tm;
     }
 
-    Transform parentTm;
-    ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+    Transform parentTm = parent->ET_getTransform();
 
     Transform localTm;
     localTm.pt = tm.pt - parentTm.pt;
@@ -308,14 +326,13 @@ Transform Entity::ET_getLocalTransform() const {
 }
 
 void Entity::ET_setLocalTransform(const Transform& localTm) {
-    if(!parentId.isValid()) {
+    if(!parent) {
         LogWarning("[Entity::ET_setLocalTransform] Can't set local transform to entity '%s' without parent",
             name);
         return;
     }
 
-    Transform parentTm;
-    ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+    Transform parentTm = parent->ET_getTransform();
 
     Transform newTm;
     newTm.pt = parentTm.pt + localTm.pt;
@@ -351,7 +368,7 @@ EntityChildId Entity::ET_getChildIdFromEntityId(EntityId childEntId) const {
         return 0;
     }
     for(auto& chilNode : children) {
-        if(chilNode.childEntId == childEntId) {
+        if(chilNode.childEntity->getEntityId() == childEntId) {
             return chilNode.childId;
         }
     }
@@ -364,7 +381,7 @@ EntityId Entity::ET_getEntityIdFromChildId(EntityChildId childId) const {
     }
     for(auto& chilNode : children) {
         if(chilNode.childId == childId) {
-            return chilNode.childEntId;
+            return chilNode.childEntity->getEntityId();
         }
     }
     return InvalidEntityId;
@@ -374,7 +391,12 @@ std::vector<EntityId> Entity::ET_getChildren() const {
     std::vector<EntityId> res;
     res.reserve(children.size());
     for(auto& childNode : children) {
-        res.push_back(childNode.childEntId);
+        res.push_back(childNode.childEntity->getEntityId());
     }
     return res;
+}
+
+void Entity::purgeAllRelationships() {
+    parent = nullptr;
+    children.clear();
 }

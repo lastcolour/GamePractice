@@ -1,6 +1,7 @@
 #include "Application.hpp"
 #include "Core/ETApplication.hpp"
 #include "Core/CoreModule.hpp"
+#include "Core/GlobalEnvironment.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
 #include "Entity/EntityModule.hpp"
@@ -15,7 +16,7 @@
 #include "Game/ETGameTimer.hpp"
 
 Application::Application() :
-    etSystem(new ETSystem()) {
+    globalEnv(new GlobalEnvironment()) {
 }
 
 Application::~Application() {

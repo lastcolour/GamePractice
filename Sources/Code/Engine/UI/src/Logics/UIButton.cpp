@@ -4,6 +4,8 @@
 #include "Reflect/EnumInfo.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "UIUtils.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 
@@ -38,6 +40,10 @@ UIButton::~UIButton() {
 }
 
 bool UIButton::init() {
+    if(labelId == getEntityId()) {
+        LogWarning("[UIButton::init] Label should be other entity than this: '%s'", EntityUtils::GetEntityName(getEntityId()));
+        labelId = InvalidEntityId;
+    }
     UIBox::init();
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIAnimationEvents>::connect(getEntityId());
@@ -50,11 +56,42 @@ void UIButton::deinit() {
     ETNode<ETUIAnimationEvents>::disconnect();
 }
 
-void UIButton::ET_onPress() {
+EInputEventResult UIButton::ET_onInputEvent(EActionType type, const Vec2i& pt) {
+    EInputEventResult res;
+    switch(type) {
+        case EActionType::Press:
+            res = onPress(pt);
+            break;
+        case EActionType::Move:
+            res = onMove(pt);
+            break;
+        case EActionType::Release:
+            res = onRelease(pt);
+            break;
+    }
+    return res;
+}
+
+EInputEventResult UIButton::onPress(const Vec2i& pt) {
     EntityId activeBtId;
     ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
     if(activeBtId.isValid()) {
-        return;
+        return EInputEventResult::Ignore;
+    }
+    return EInputEventResult::Accept;
+}
+
+EInputEventResult UIButton::onMove(const Vec2i& pt) {
+    auto box = ET_getBox();
+    if(!UI::IsInsideBox(pt, box)) {
+        return EInputEventResult::Ignore;
+    }
+    return EInputEventResult::Accept;
+}
+
+EInputEventResult UIButton::onRelease(const Vec2i& pt) {
+    if(!UI::IsInsideBox(pt, ET_getBox())) {
+        return EInputEventResult::Ignore;
     }
     if(!ET_IsExistNode<ETUIAnimation>(getEntityId())) {
         ET_SendEvent(&ETUIEventManager::ET_onEvent, eventType);
@@ -62,14 +99,7 @@ void UIButton::ET_onPress() {
         ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, getEntityId());
         ET_SendEvent(getEntityId(), &ETUIAnimation::ET_start);
     }
-}
-
-bool UIButton::ET_isHovered() const {
-    return isHovered;
-}
-
-void UIButton::ET_onHover(bool flag) {
-    isHovered = flag;
+    return EInputEventResult::Accept;
 }
 
 AABB2Di UIButton::ET_getHitBox() const {
@@ -116,14 +146,5 @@ void UIButton::onDisabled(bool flag) {
         ETNode<ETUIInteractionBox>::disconnect();
     } else {
         ETNode<ETUIInteractionBox>::connect(getEntityId());
-    }
-}
-
-void UIButton::ET_onAllLogicsCreated() {
-    UIBox::ET_onAllLogicsCreated();
-    if(labelId == getEntityId()) {
-        auto labelZIndex = ET_getZIndex() + 1;
-        ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, labelZIndex);
-        ET_SendEvent(labelId, &ETRenderNode::ET_setDrawPriority, labelZIndex);
     }
 }

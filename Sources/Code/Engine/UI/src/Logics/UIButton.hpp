@@ -28,16 +28,11 @@ public:
     int ET_getZIndexDepth() const override;
 
     // ETUIInteractionBox
-    void ET_onPress() override;
-    void ET_onHover(bool flag) override;
+    EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
     AABB2Di ET_getHitBox() const override;
-    bool ET_isHovered() const override;
 
     // ETUIAnimationEvents
     void ET_onAnimationEnd() override;
-
-    // ETEntityEvents
-    void ET_onAllLogicsCreated() override;
 
 protected:
 
@@ -45,6 +40,12 @@ protected:
     void onHide(bool flag) override;
     void onAlphaChanged(float newAlpha) override;
     void onDisabled(bool flag) override;
+
+private:
+
+    EInputEventResult onPress(const Vec2i& pt);
+    EInputEventResult onMove(const Vec2i& pt);
+    EInputEventResult onRelease(const Vec2i& pt);
 
 private:
 

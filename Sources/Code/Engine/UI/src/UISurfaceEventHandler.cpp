@@ -1,6 +1,11 @@
 #include "UISurfaceEventHandler.hpp"
 #include "UI/ETUIView.hpp"
 #include "UI/ETUIButton.hpp"
+#include "UI/ETUIBox.hpp"
+#include "UIUtils.hpp"
+
+#include <algorithm>
+#include <cassert>
 
 UISurfaceEventHandler::UISurfaceEventHandler() {
 }
@@ -22,53 +27,54 @@ void UISurfaceEventHandler::deinit() {
 bool UISurfaceEventHandler::isHover(const Vec2i& pt, EntityId entId) const {
     AABB2Di elemBox(0);
     ET_SendEventReturn(elemBox, entId, &ETUIInteractionBox::ET_getHitBox);
-    return pt >= elemBox.bot && pt <= elemBox.top;
+    return UI::IsInsideBox(pt, elemBox);
 }
 
-EntityId UISurfaceEventHandler::getHoveredEntity(const Vec2i& pt) const {
+std::vector<EntityId> UISurfaceEventHandler::getHoveredEntities(const Vec2i& pt) const {
+    std::vector<EntityId> res;
     auto interactiveElems = ET_GetAll<ETUIInteractionBox>();
     for(auto elemId : interactiveElems) {
         if(isHover(pt, elemId)) {
-            return elemId;
+            res.push_back(elemId);
         }
     }
-    return InvalidEntityId;
+    return res;
 }
 
 void UISurfaceEventHandler::onPress(const Vec2i& pt) {
-    hoveredElemId = getHoveredEntity(pt);
-    if(hoveredElemId.isValid()) {
-        pressElemId = hoveredElemId;
-        ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, true);
+    eventHandlers.clear();
+    auto uiElems = getHoveredEntities(pt);
+    for(auto elemId : uiElems) {
+        EInputEventResult handleRes = EInputEventResult::Ignore;
+        ET_SendEventReturn(handleRes, elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Press, pt);
+        if(handleRes == EInputEventResult::Accept) {
+            eventHandlers.push_back(elemId);
+            break;
+        }
     }
 }
 
 void UISurfaceEventHandler::onMove(const Vec2i& pt) {
-    auto currHoveredId = getHoveredEntity(pt);
-    if(currHoveredId == InvalidEntityId) {
-        if(hoveredElemId.isValid()) {
-            ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, false);
-            hoveredElemId = InvalidEntityId;
+    for(auto& elemId : eventHandlers) {
+        if(!elemId.isValid()) {
+            continue;
         }
-    } else if(currHoveredId != hoveredElemId) {
-        if(hoveredElemId.isValid()) {
-            ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, false);
+        EInputEventResult handleRes = EInputEventResult::Ignore;
+        ET_SendEventReturn(handleRes, elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Move, pt);
+        if(handleRes == EInputEventResult::Ignore) {
+            elemId = InvalidEntityId;
         }
-        ET_SendEvent(currHoveredId, &ETUIInteractionBox::ET_onHover, true);
-        hoveredElemId = currHoveredId;
     }
 }
 
 void UISurfaceEventHandler::onRelease(const Vec2i& pt) {
-    auto releseElemId = getHoveredEntity(pt);
-    if(hoveredElemId.isValid()) {
-        ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onHover, false);
-        if(releseElemId == pressElemId) {
-            ET_SendEvent(hoveredElemId, &ETUIInteractionBox::ET_onPress);
+    for(auto& elemId : eventHandlers) {
+        if(!elemId.isValid()) {
+            continue;
         }
+        ET_SendEvent(elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Release, pt);
     }
-    hoveredElemId = InvalidEntityId;
-    pressElemId = InvalidEntityId;
+    eventHandlers.clear();
 }
 
 void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) {
@@ -84,6 +90,7 @@ void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) 
         onRelease(pt);
         break;
     default:
+        assert(false && "Invalid event type");
         break;
     }
 }

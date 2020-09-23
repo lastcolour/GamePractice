@@ -1,9 +1,7 @@
 #ifndef __UI_CONFIG_HPP__
 #define __UI_CONFIG_HPP__
 
-#include <string>
-
-class ReflectContext;
+#include "UIViewConfig.hpp"
 
 class UIConfig {
 public:
@@ -21,12 +19,7 @@ public:
 public:
 
     int verticalGrid;
-    std::string mainView;
-    std::string gameView;
-    std::string backgroundView;
-    std::string endGameView;
-    std::string loadingView;
-    std::string pauseView;
+    UIViewConfig views;
 };
 
 #endif /* __UI_CONFIG_HPP__ */

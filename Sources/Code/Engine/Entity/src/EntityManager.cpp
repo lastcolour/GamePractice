@@ -493,3 +493,12 @@ JSONNode EntityManager::ET_getRegisteredLogics() const {
     }
     return node;
 }
+
+Entity* EntityManager::ET_createRawEntity(const char* entityName) {
+    auto entity = registry.createEntity(entityName);
+    if(!entity) {
+        assert(false && "Can't create entity");
+        return nullptr;
+    }
+    return entity;
+}

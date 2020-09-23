@@ -27,6 +27,8 @@ public:
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
     void ET_update() override;
+    void ET_setHostBox(EntityId entityId) override;
+    const AABB2Di& ET_getCombinedBox() const override;
 
     // ETUIElementEvents
     void ET_onBoxResized(const AABB2Di& newAabb) override;
@@ -39,12 +41,13 @@ public:
 private:
 
     AABB2Di calculateItem(int& offset, int& prevMargin, EntityId itemId);
-    Vec2i calcAligmentCenter(AABB2Di& parentBox, AABB2Di& box);
     void calculateAligment(std::vector<AABB2Di>& boxes);
     void calculateLayout();
 
 private:
 
+    EntityId hostBoxId;
+    AABB2Di combinedBox;
     UILayoutStyle style;
     std::vector<EntityId> children;
     bool isCalculatingLayout;

@@ -1,5 +1,5 @@
 #include "UIViewCache.hpp"
-#include "UIConfig.hpp"
+#include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Core/ETLogger.hpp"
@@ -10,30 +10,30 @@ namespace {
 
 const char* getViewName(UIViewType viewType) {
     const char* viewName = nullptr;
-    auto uiConfig = ET_getShared<UIConfig>();
+    const auto& viewsConfig = ET_getShared<UIConfig>()->views;
     switch(viewType) {
         case UIViewType::Main: {
-            viewName = uiConfig->mainView.c_str();
+            viewName = viewsConfig.mainView.c_str();
             break;
         }
         case UIViewType::Game: {
-            viewName = uiConfig->gameView.c_str();
+            viewName = viewsConfig.gameView.c_str();
             break;
         }
         case UIViewType::Background: {
-            viewName = uiConfig->backgroundView.c_str();
+            viewName = viewsConfig.backgroundView.c_str();
             break;
         }
         case UIViewType::EndGame: {
-            viewName = uiConfig->endGameView.c_str();
+            viewName = viewsConfig.endGameView.c_str();
             break;
         }
         case UIViewType::Loading: {
-            viewName = uiConfig->loadingView.c_str();
+            viewName = viewsConfig.loadingView.c_str();
             break;
         }
         case UIViewType::PauseGame: {
-            viewName = uiConfig->pauseView.c_str();
+            viewName = viewsConfig.pauseView.c_str();
             break;
         }
         case UIViewType::None: {
