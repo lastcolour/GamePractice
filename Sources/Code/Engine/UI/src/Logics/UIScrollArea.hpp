@@ -6,6 +6,9 @@
 #include "UI/ETUIButton.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/UIScrollAreaStyle.hpp"
+#include "UI/ETUITimer.hpp"
+#include "UI/ETUIScrollArea.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <vector>
 
@@ -13,7 +16,9 @@ class ReflectContext;
 
 class UIScrollArea : public EntityLogic,
     public ETNode<ETUIInteractionBox>,
-    public ETNode<ETUIElementEvents> {
+    public ETNode<ETUIElementEvents>,
+    public ETNode<ETUITimerEvents>,
+    public ETNode<ETUIScrollArea> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -31,6 +36,12 @@ public:
     EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
     AABB2Di ET_getHitBox() const override;
 
+    // ETUIScrollArea
+    void ET_setTarget(EntityId newTargetId) override;
+    EntityId ET_getTarget() const override;
+    void ET_setStyle(const UIScrollAreaStyle& newStyle) override;
+    const UIScrollAreaStyle& ET_getStyle() const override;
+
     // ETUIElementEvents
     void ET_onBoxResized(const AABB2Di& newAabb) override;
     void ET_onZIndexChanged(int newZIndex) override;
@@ -38,6 +49,9 @@ public:
     void ET_onHidden(bool flag) override;
     void ET_onDisabled(bool flag) override;
     void ET_onIngoreTransform(bool flag) override;
+
+    // ETUITimerEvents
+    void ET_onUITick(float dt) override;
 
 private:
 
@@ -48,12 +62,20 @@ private:
 
 private:
 
+    struct PathPoint {
+        TimePoint timeP;
+        Vec2i pt;
+    };
+
+private:
+
     UIScrollAreaStyle style;
-    std::vector<Vec2i> path;
-    EntityId scrollElemId;
+    std::vector<PathPoint> path;
+    EntityId targetId;
     float currentProg;
-    Vec2i startPt;
-    Vec2i endPt;
+    float currentSpeed;
+    Vec2i maxPt;
+    Vec2i minPt;
 };
 
 #endif /* __UI_SCROLL_AREA_HPP__ */

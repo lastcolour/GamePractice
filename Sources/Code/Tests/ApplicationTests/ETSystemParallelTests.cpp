@@ -1,5 +1,6 @@
 #include "ETSystemParallelTests.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Core/GlobalEnvironment.hpp"
 
 #include <thread>
 #include <atomic>
@@ -26,7 +27,8 @@ public:
     TestObject(ETSystem& et) : etSystem(&et), updated(0) {
         entId = etSystem->createNewEntityId();
     }
-    virtual ~TestObject() {}
+    virtual ~TestObject() {
+    }
 
     void connect() {
         etSystem->connectNode(static_cast<ETNode<ETObject>&>(*this), entId);
@@ -46,7 +48,8 @@ public:
     }
 
     void ET_triggerUpdate() override {
-        ET_SendEvent(entId, &ETObject::ET_update);
+        etSystem->sendEvent(entId, &ETObject::ET_update);
+
     }
 
     void ET_update() override {
@@ -63,13 +66,14 @@ public:
 } // namespace
 
 TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
-    ETSystem etSystem;
+    GlobalEnvironment env;
+    ETSystem& etSystem = *env.GetETSystem();
 
     std::atomic<int> waitThtread(2);
 
-    std::thread t1([&waitThtread](){
+    std::thread t1([&waitThtread, &etSystem](){
         while(waitThtread.load() != 0) {
-            ET_SendEvent(&ETObject::ET_triggerUpdate);
+            etSystem.sendEvent(&ETObject::ET_triggerUpdate);
         }
     });
 
@@ -99,18 +103,22 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
 
     auto all = etSystem.getAll<ETObject>();
     EXPECT_EQ(all.size(), 2000);
+
+    objects1.clear();
+    objects2.clear();
 }
 
 TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
-    ETSystem etSystem;
+    GlobalEnvironment env;
+    ETSystem& etSystem = *env.GetETSystem();
 
     const int MAX_OBJECTS = 200;
 
     std::atomic<int> waitThtread(2);
 
-    std::thread t1([&waitThtread](){
+    std::thread t1([&waitThtread, &etSystem](){
         while(waitThtread.load() != 0) {
-            ET_SendEvent(&ETObject::ET_triggerUpdate);
+            etSystem.sendEvent(&ETObject::ET_triggerUpdate);
         }
     });
 
@@ -150,10 +158,14 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 
     all = etSystem.getAll<ETObject>();
     EXPECT_EQ(all.size(), MAX_OBJECTS);
+
+    objects1.clear();
+    objects2.clear();
 }
 
 TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
-    ETSystem etSystem;
+    GlobalEnvironment env;
+    ETSystem& etSystem = *env.GetETSystem();
 
     const int MAX_OBJECTS = 200;
     const int CONNECT_LOOPS = 1000;
@@ -189,4 +201,6 @@ TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
 
     auto etObjects = etSystem.getAll<ETObject>();
     EXPECT_EQ(etObjects.size(), MAX_OBJECTS);
+
+    objects.clear();
 }

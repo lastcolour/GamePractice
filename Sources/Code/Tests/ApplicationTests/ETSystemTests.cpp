@@ -2,6 +2,7 @@
 
 #include <Core/ETSystem.hpp>
 #include <Core/ETPrimitives.hpp>
+#include <Core/GlobalEnvironment.hpp>
 
 namespace {
 
@@ -107,11 +108,12 @@ public:
 } // namespace
 
 TEST_F(ETSystemTests, CheckEnv) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    std::unique_ptr<GlobalEnvironment> env(new GlobalEnvironment);
+    auto etSystem = env->GetETSystem();
 
-    ASSERT_EQ(etSystem.get(), GetETSystem());
+    ASSERT_EQ(etSystem, GetETSystem());
 
-    etSystem.reset();
+    env.reset();
 
     ASSERT_EQ(GetETSystem(), nullptr);
 }
@@ -129,7 +131,8 @@ TEST_F(ETSystemTests, CheckCretaeEntityId) {
 }
 
 TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     TestETNode node;
     etSystem->connectNode(node, InvalidEntityId);
@@ -139,7 +142,8 @@ TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
 }
 
 TEST_F(ETSystemTests, CheckDobuleConnect) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
@@ -151,7 +155,8 @@ TEST_F(ETSystemTests, CheckDobuleConnect) {
 }
 
 TEST_F(ETSystemTests, CheckDoubleDisconnect) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
@@ -166,7 +171,8 @@ TEST_F(ETSystemTests, CheckDoubleDisconnect) {
 }
 
 TEST_F(ETSystemTests, CheckGetAll) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
@@ -184,7 +190,9 @@ TEST_F(ETSystemTests, CheckGetAll) {
 }
 
 TEST_F(ETSystemTests, CheckSendEvent) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
     etSystem->connectNode(node, entId);
@@ -201,7 +209,9 @@ TEST_F(ETSystemTests, CheckSendEvent) {
 }
 
 TEST_F(ETSystemTests, CheckSendEventAfterDisconect) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
     etSystem->connectNode(node, entId);
@@ -219,7 +229,8 @@ TEST_F(ETSystemTests, CheckSendEventAfterDisconect) {
 }
 
 TEST_F(ETSystemTests, CheckSendEventAll) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
@@ -241,7 +252,9 @@ TEST_F(ETSystemTests, CheckSendEventAll) {
 }
 
 TEST_F(ETSystemTests, CheckSendEventReturn) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
     etSystem->connectNode(node, entId);
@@ -260,7 +273,9 @@ TEST_F(ETSystemTests, CheckSendEventReturn) {
 }
 
 TEST_F(ETSystemTests, CheckRecursiveETNodeCreate) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
     auto entId = etSystem->createNewEntityId();
 
     TestETNode node;
@@ -277,7 +292,8 @@ TEST_F(ETSystemTests, CheckRecursiveETNodeCreate) {
 }
 
 TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node_1;
@@ -296,7 +312,8 @@ TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
 }
 
 TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
@@ -313,7 +330,8 @@ TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
 }
 
 TEST_F(ETSystemTests, CheckQueueEvents) {
-    std::unique_ptr<ETSystem> etSystem(new ETSystem);
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;

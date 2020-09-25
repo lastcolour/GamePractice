@@ -45,6 +45,10 @@ public:
         return *this;
     }
 
+    Vector2 operator-() {
+        return Vector2(-x, -y);
+    }
+
     const T* getPtr() const { return &x; }
     T getLenghtSq() const { return x * x + y * y; }
     T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
@@ -100,6 +104,10 @@ public:
         y *= a;
         z *= a;
         return *this;
+    }
+
+    Vector3 operator-() {
+        return Vector3(-x, -y, -z);
     }
 
     const T* getPtr() const { return &x; }
@@ -162,6 +170,10 @@ public:
         z *= a;
         w *= a;
         return *this;
+    }
+
+    Vector4 operator-() {
+        return Vector4(-x, -y, -z, -w);
     }
 
     const T* getPtr() const { return &x; }

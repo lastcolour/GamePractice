@@ -48,7 +48,6 @@ struct ETUIBox {
 struct ETUILayout {
     virtual ~ETUILayout() = default;
     virtual const UILayoutStyle& ET_getStyle() const = 0;
-    virtual void ET_setHostBox(EntityId entityId) = 0; 
     virtual void ET_setStyle(const UILayoutStyle& newStyle) = 0;
     virtual void ET_addItem(EntityId entityId) = 0;
     virtual void ET_update() = 0;

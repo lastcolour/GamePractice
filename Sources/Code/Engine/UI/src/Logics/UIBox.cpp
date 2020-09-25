@@ -29,9 +29,6 @@ bool UIBox::init() {
 
     calculateBox();
 
-    if(ET_IsExistNode<ETRenderRect>(boxRenderId)) {
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
-    }
     return true;
 }
 
@@ -57,6 +54,8 @@ void UIBox::calculateBox() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
+    auto prevSize = aabb.getSize();
+
     aabb.bot = Vec2i(0);
     aabb.top = calculateBoxSize();
 
@@ -64,8 +63,11 @@ void UIBox::calculateBox() {
         static_cast<int>(tm.pt.y));
     aabb.setCenter(center);
 
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxResized, aabb);
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+    if(prevSize != aabb.getSize()) {
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
+        ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxResized, aabb);
+        ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+    }
 }
 
 const UIBoxStyle& UIBox::ET_getStyle() const {
@@ -76,7 +78,6 @@ void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
     style = newStyle;
     calculateBox();
     updateLayout();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
 }
 
 UIBoxMargin UIBox::ET_getMargin() const {
@@ -119,7 +120,6 @@ Vec2i UIBox::calculateBoxSize() {
 void UIBox::ET_onViewPortChanged(const Vec2i& newSize) {
     calculateBox();
     updateLayout();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
 }
 
 void UIBox::onAlphaChanged(float newAlpha) {

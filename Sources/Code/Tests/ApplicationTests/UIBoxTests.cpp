@@ -9,7 +9,7 @@ void UIBoxTests::SetUp() {
     ConsoleAppTests::SetUp();
     auto gridSize = ET_getShared<UIConfig>()->verticalGrid;
     Vec2i portSize(gridSize, gridSize);
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, portSize);
+    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized, portSize);
 }
 
 UIBox* UIBoxTests::createUIBox() {

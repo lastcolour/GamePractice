@@ -3,6 +3,7 @@
 #include "Core/ETApplication.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Core/ETLogger.hpp"
+#include "UI/ETUIViewPort.hpp"
 
 #include <cassert>
 
@@ -77,6 +78,11 @@ void UIViewCache::ET_onAsyncLoadDone(UIViewType viewType, EntityId viewId) {
         LogError("[UIViewCache::ET_onAsyncLoadDone] Async load of view '%s' failed", getViewName(viewType));
         return;
     }
+
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    ET_SendEvent(viewId, &ETUIViewPortEvents::ET_onViewPortChanged, viewPort);
+
     loadedViews[viewType] = viewId;
     ET_SendEvent(&ETUIViewManager::ET_onViewLoaded, viewType, viewId);
 }

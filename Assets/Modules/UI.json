@@ -2,7 +2,8 @@
     "UIConfig":{
         "verticalGrid":200,
         "views":{
-            "mainView":"UI/MainView/MainView.json",
+            "mainView":"Game/Void.json",
+            "mainView_1":"UI/LevelsView/LevelsView.json",
             "gameView":"UI/GameView/GameView.json",
             "backgroundView":"UI/BackgroundView/BackgroundView.json",
             "endGameView":"UI/GameEndView/GameEndView.json",

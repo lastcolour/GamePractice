@@ -13,7 +13,11 @@ int GetNextETId() {
 } // namespace ET
 
 ETSystem* GetETSystem() {
-    return GetEnv()->GetETSystem();
+    auto env = GetEnv();
+    if(!env) {
+        return nullptr;
+    }
+    return env->GetETSystem();
 }
 
 ETSystem::ETSystem() :

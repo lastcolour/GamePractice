@@ -24,15 +24,7 @@ UILayout::UILayout() :
 UILayout::~UILayout() {
 }
 
-void UILayout::ET_setHostBox(EntityId entityId) {
-    hostBoxId = entityId;
-    calculateLayout();
-}
-
 bool UILayout::init() {
-    if(!hostBoxId.isValid()) {
-        hostBoxId = getEntityId();
-    }
     for(auto elemId : children) {
         ET_SendEvent(elemId, &ETUIElement::ET_setLayout, getEntityId());
     }
@@ -99,13 +91,8 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     }
 
     AABB2Di box(Vec2i(0), Vec2i(0));
-    if(hostBoxId.isValid()) {
-        ET_SendEventReturn(box, hostBoxId, &ETUIElement::ET_getBox);
-    } else {
-        Vec2i viewPort = Vec2i(0);
-        ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
-        box.top = viewPort;
-    }
+    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
+
     auto center = UI::CalcAligmentCenter(style.xAlign, style.yAlign, box, layoutBox);
 
     Vec2i centerShift = center - layoutBox.getCenter();
@@ -180,7 +167,7 @@ void UILayout::calculateLayout() {
     if(isCalculatingLayout) {
         LogError("[UILayout::calculateLayout] Can't do recursive layout calcuation for an entity '%s'",
             EntityUtils::GetEntityName(getEntityId()));
-        assert(false && "Invalid request to calculate layout");
+        assert(false && "Recursive layout recalculation");
         return;
     }
 
@@ -194,7 +181,7 @@ void UILayout::calculateLayout() {
         AABB2Di childBox;
         childBox.bot = Vec2i(0);
         childBox.top = Vec2i(0);
-        if(childId == hostBoxId) {
+        if(childId == getEntityId()) {
             LogWarning("[UILayout::calculateLayout] Can't have an host entity '%s' on layout", EntityUtils::GetEntityName(childId));
         } else if(!childId.isValid()) {
             LogWarning("[UILayout::calculateLayout] Invalid child on entity layout: '%s'", EntityUtils::GetEntityName(getEntityId()));
@@ -210,13 +197,13 @@ void UILayout::calculateLayout() {
 
     int zIndex = 0;
     int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, hostBoxId, &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, hostBoxId, &ETUIElement::ET_getZIndexDepth);
+    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
     int childZIndex = zIndex + zIndexDepth + 1;
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
-        if(!childId.isValid() || childId == hostBoxId) {
+        if(!childId.isValid() || childId == getEntityId()) {
             continue;
         }
         auto childBox = childBoxes[i];
@@ -235,8 +222,8 @@ void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {
 void UILayout::ET_onZIndexChanged(int newZIndex) {
     int zIndex = 0;
     int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, hostBoxId, &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, hostBoxId, &ETUIElement::ET_getZIndexDepth);
+    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
     int childZIndex = zIndex + zIndexDepth + 1;
 
     for(auto childId : children) {

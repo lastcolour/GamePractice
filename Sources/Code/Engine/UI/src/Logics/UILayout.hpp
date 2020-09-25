@@ -27,7 +27,6 @@ public:
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
     void ET_update() override;
-    void ET_setHostBox(EntityId entityId) override;
     const AABB2Di& ET_getCombinedBox() const override;
 
     // ETUIElementEvents
@@ -46,7 +45,6 @@ private:
 
 private:
 
-    EntityId hostBoxId;
     AABB2Di combinedBox;
     UILayoutStyle style;
     std::vector<EntityId> children;
