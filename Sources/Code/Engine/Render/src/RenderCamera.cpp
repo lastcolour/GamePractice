@@ -1,8 +1,9 @@
 #include "RenderCamera.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
-
+#include "Core/ETLogger.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Platform/OpenGL.hpp"
 
 namespace {
 
@@ -34,9 +35,18 @@ void RenderCamera::deinit() {
 }
 
 void RenderCamera::ET_setRenderPort(const Vec2i& newSize) {
+    if(newSize == viewport) {
+        return;
+    }
+
+    LogDebug("[Render::updateRenderPort] Set viewport: [%ix%i]", newSize.x, newSize.y);
     viewport = newSize;
+
+    glViewport(0, 0, viewport.x, viewport.y);
+
     Math::ProjectOrtho(projection, 0.f, static_cast<float>(viewport.x),
         0.f, static_cast<float>(viewport.y), DEF_Z_NEAR, DEF_Z_FAR);
+
     ET_QueueEvent(&ETRenderCameraEvents::ET_onRenderPortResized, newSize);
 }
 

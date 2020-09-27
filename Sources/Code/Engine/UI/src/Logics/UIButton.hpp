@@ -5,6 +5,7 @@
 #include "UI/ETUIButton.hpp"
 #include "UI/ETUIView.hpp"
 #include "UI/ETUIAnimation.hpp"
+#include "Core/TimePoint.hpp"
 
 class ReflectContext;
 
@@ -46,12 +47,14 @@ private:
     EInputEventResult onPress(const Vec2i& pt);
     EInputEventResult onMove(const Vec2i& pt);
     EInputEventResult onRelease(const Vec2i& pt);
+    bool canContinueEvent(const Vec2i& pt) const;
 
 private:
 
     EntityId labelId;
+    Vec2i pressPt;
+    TimePoint pressTime;
     UIEventType eventType;
-    bool isHovered;
 };
 
 #endif /* __UI_BUTTON_HPP__ */

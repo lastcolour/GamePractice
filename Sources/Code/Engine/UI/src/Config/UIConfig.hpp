@@ -15,6 +15,7 @@ public:
 
 
     int getSizeOnGrind(float value) const;
+    float convertFromGrid(int value) const;
 
 public:
 

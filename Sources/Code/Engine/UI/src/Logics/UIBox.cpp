@@ -1,6 +1,4 @@
 #include "Logics/UIBox.hpp"
-#include "Config/UIConfig.hpp"
-#include "Core/ETApplication.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
@@ -54,7 +52,7 @@ void UIBox::calculateBox() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
-    auto prevSize = aabb.getSize();
+    auto prevBox = aabb;
 
     aabb.bot = Vec2i(0);
     aabb.top = calculateBoxSize();
@@ -63,10 +61,13 @@ void UIBox::calculateBox() {
         static_cast<int>(tm.pt.y));
     aabb.setCenter(center);
 
-    if(prevSize != aabb.getSize()) {
+    if(prevBox.getSize() != aabb.getSize()) {
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
-        ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxResized, aabb);
         ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+    }
+
+    if(prevBox.bot != aabb.bot || prevBox.top != aabb.top) {
+        ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxChanged, aabb);
     }
 }
 
@@ -77,7 +78,7 @@ const UIBoxStyle& UIBox::ET_getStyle() const {
 void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
     style = newStyle;
     calculateBox();
-    updateLayout();
+    updateHostLayout();
 }
 
 UIBoxMargin UIBox::ET_getMargin() const {
@@ -91,11 +92,10 @@ Vec2i UIBox::calculateBoxSize() {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     Vec2i resSize(0);
 
-    auto uiConfig = ET_getShared<UIConfig>();
     switch (style.widthInv)
     {
     case UIBoxSizeInvariant::Grid:
-        resSize.x = uiConfig->getSizeOnGrind(style.width);
+        resSize.x = UI::GetValueOnGrind(style.width);
         break;
     case UIBoxSizeInvariant::Relative:
         resSize.x = static_cast<int>(viewPort.x * style.width);
@@ -106,7 +106,7 @@ Vec2i UIBox::calculateBoxSize() {
     switch (style.heightInv)
     {
     case UIBoxSizeInvariant::Grid:
-        resSize.y = uiConfig->getSizeOnGrind(style.height);
+        resSize.y = UI::GetValueOnGrind(style.height);
         break;
     case UIBoxSizeInvariant::Relative:
         resSize.y = static_cast<int>(viewPort.y * style.height);
@@ -119,7 +119,7 @@ Vec2i UIBox::calculateBoxSize() {
 
 void UIBox::ET_onViewPortChanged(const Vec2i& newSize) {
     calculateBox();
-    updateLayout();
+    updateHostLayout();
 }
 
 void UIBox::onAlphaChanged(float newAlpha) {

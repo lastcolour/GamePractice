@@ -23,7 +23,7 @@ struct ETRenderProxyNode {
 
 struct ETRenderProxyNodeEvents {
     virtual ~ETRenderProxyNodeEvents() = default;
-    virtual void ET_syncTransform() = 0;
+    virtual void ET_syncWithRender() = 0;
 };
 
 #endif /* __ET_RENDER_PROXY_NODE_HPP__ */

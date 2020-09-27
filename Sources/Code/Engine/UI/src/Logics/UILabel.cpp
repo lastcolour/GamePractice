@@ -38,7 +38,7 @@ void UILabel::deinit() {
 void UILabel::ET_setText(const char* newText) {
     text = newText;
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setText, newText);
-    updateLayout();
+    updateHostLayout();
 }
 
 const char* UILabel::ET_getText() const {
@@ -53,7 +53,7 @@ void UILabel::ET_setFontSize(float newFontSize) {
     style.fontSize = newFontSize;
     auto fontHeight = ET_getShared<UIConfig>()->getSizeOnGrind(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setFontHeight, fontHeight);
-    updateLayout();
+    updateHostLayout();
 }
 
 AABB2Di UILabel::ET_getBox() const {

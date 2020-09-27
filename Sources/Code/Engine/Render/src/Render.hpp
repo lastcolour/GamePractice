@@ -50,9 +50,6 @@ private:
 
     bool canRenderToScreen() const;
     bool canRenderToFramebuffer() const;
-    void updateRenderQueue();
-    void updateRenderPort(const Vec2i& size);
-    void drawRoutine();
 
 private:
 

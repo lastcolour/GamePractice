@@ -21,21 +21,21 @@ bool UIElement::init() {
 void UIElement::deinit() {
 }
 
-void UIElement::updateLayout() {
-    if(layoutId.isValid()) {
-        ET_SendEvent(layoutId, &ETUILayout::ET_update);
+void UIElement::updateHostLayout() {
+    if(hostLayoutId.isValid()) {
+        ET_SendEvent(hostLayoutId, &ETUILayout::ET_update);
     }
 }
 
-void UIElement::ET_setLayout(EntityId newLayoutId) {
-    layoutId = newLayoutId;
-    if (layoutId == InvalidEntityId) {
+void UIElement::ET_setHostLayout(EntityId newLayoutId) {
+    hostLayoutId = newLayoutId;
+    if (hostLayoutId == InvalidEntityId) {
         ET_setZIndex(0);
     }
 }
 
-EntityId UIElement::ET_getLayout() {
-    return layoutId;
+EntityId UIElement::ET_getHostLayout() const {
+    return hostLayoutId;
 }
 
 void UIElement::ET_setZIndex(int newZIndex) {

@@ -11,8 +11,7 @@ Node::Node() :
     alpha(1.f),
     drawPriority(0),
     blending(RenderBlendingType::NONE),
-    visible(false),
-    waitSync(false) {
+    visible(false) {
 }
 
 Node::~Node() {
@@ -42,9 +41,6 @@ void Node::ET_setDrawPriority(int newDrawPriority) {
 }
 
 void Node::ET_setVisible(bool flag) {
-    if(!visible && flag) {
-        waitSync = true;
-    }
     visible = flag;
 }
 
@@ -62,13 +58,9 @@ void Node::setGeometry(PrimitiveGeometryType geomType) {
 
 void Node::ET_setTransform(const Transform& newTm) {
     tm = newTm;
-    waitSync = false;
 }
 
 bool Node::isVisible() const {
-    if(waitSync) {
-        return false;
-    }
     if(!mat) {
         return false;
     }

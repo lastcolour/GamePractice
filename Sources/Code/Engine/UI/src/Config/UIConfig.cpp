@@ -25,3 +25,10 @@ int UIConfig::getSizeOnGrind(float value) const {
     float pixelsPerValue = viewPort.y / static_cast<float>(verticalGrid);
     return static_cast<int>(ceil(pixelsPerValue * value));
 }
+
+float UIConfig::convertFromGrid(int value) const {
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    float pixelsPerValue = viewPort.y / static_cast<float>(verticalGrid);
+    return value / pixelsPerValue;
+}

@@ -21,6 +21,10 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, A
 
 void Set2DPosition(EntityId elemId, const Vec2i& pos);
 
+int GetValueOnGrind(float val);
+
+float CovertValueFromGrid(int val);
+
 } // namespace
 
 #endif /* __UI_UTILS_HPPP__ */

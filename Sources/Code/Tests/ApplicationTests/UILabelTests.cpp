@@ -78,6 +78,3 @@ TEST_F(UILabelTests, CheckTextScaling) {
         EXPECT_EQ(origSize.y, scaledSize.y * 2);
     }
 }
-
-TEST_F(UILabelTests, TestLayout) {
-}

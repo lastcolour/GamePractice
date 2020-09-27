@@ -139,8 +139,10 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
-        ASSERT_EQ(elem.boardPt, Vec2i(elem.movePt.x, elem.movePt.y + 1));
+        EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
+        EXPECT_EQ(elem.boardPt.x, elem.movePt.x);
+        EXPECT_EQ(elem.boardPt.y, 1);
+        EXPECT_EQ(elem.movePt.y, 0);
     }
 }
 

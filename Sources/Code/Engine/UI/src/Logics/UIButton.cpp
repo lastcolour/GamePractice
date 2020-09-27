@@ -9,6 +9,36 @@
 
 #include <cassert>
 
+namespace {
+
+const float MOVE_AWAY_GRID_LEN = 1.f;
+const float TIME_OUT_SEC_DUR = 1000.f;
+
+bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
+    auto diff = currPt - pressPt;
+
+    Vec2 shift(0);
+    shift.x = UI::CovertValueFromGrid(diff.y);
+    shift.y = UI::CovertValueFromGrid(diff.x);
+
+    if(shift.getLenght() > MOVE_AWAY_GRID_LEN) {
+        return true;
+    }
+
+    return false;
+}
+
+bool isPressTimeRunOut(const TimePoint& pressTime) {
+    auto now = TimePoint::GetNowTime();
+    auto dt = now.getSecondsElapsedFrom(pressTime);
+    if(dt > TIME_OUT_SEC_DUR) {
+        return true;
+    }
+    return false;
+}
+
+} // namespace
+
 void UIButton::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<UIEventType>("UIEventType")) {
         enumInfo->addValues<UIEventType>({
@@ -32,8 +62,8 @@ void UIButton::Reflect(ReflectContext& ctx) {
 }
 
 UIButton::UIButton() :
-    eventType(UIEventType::None),
-    isHovered(false) {
+    pressPt(0),
+    eventType(UIEventType::None) {
 }
 
 UIButton::~UIButton() {
@@ -72,25 +102,42 @@ EInputEventResult UIButton::ET_onInputEvent(EActionType type, const Vec2i& pt) {
     return res;
 }
 
+bool UIButton::canContinueEvent(const Vec2i& pt) const {
+    if(isPressTimeRunOut(pressTime)) {
+        LogDebug("[UIButton::canContinueEvent] Press time run away");
+        return false;
+    }
+    if(isMoveAway(pressPt, pt)) {
+        LogDebug("[UIButton::canContinueEvent] Cursor moved-away");
+        return false;
+    }
+    if(!UI::IsInsideBox(pt, ET_getHitBox())) {
+        LogDebug("[UIButton::canContinueEvent] Cursor moved out of the hit box");
+        return false;
+    }
+    return true;
+}
+
 EInputEventResult UIButton::onPress(const Vec2i& pt) {
     EntityId activeBtId;
     ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
     if(activeBtId.isValid()) {
         return EInputEventResult::Ignore;
     }
+    pressPt = pt;
+    pressTime = TimePoint::GetNowTime();
     return EInputEventResult::Accept;
 }
 
 EInputEventResult UIButton::onMove(const Vec2i& pt) {
-    auto box = ET_getBox();
-    if(!UI::IsInsideBox(pt, box)) {
+    if(!canContinueEvent(pt)) {
         return EInputEventResult::Ignore;
     }
     return EInputEventResult::Accept;
 }
 
 EInputEventResult UIButton::onRelease(const Vec2i& pt) {
-    if(!UI::IsInsideBox(pt, ET_getBox())) {
+    if(!canContinueEvent(pt)) {
         return EInputEventResult::Ignore;
     }
     if(!ET_IsExistNode<ETUIAnimation>(getEntityId())) {

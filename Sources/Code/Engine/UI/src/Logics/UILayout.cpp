@@ -26,7 +26,7 @@ UILayout::~UILayout() {
 
 bool UILayout::init() {
     for(auto elemId : children) {
-        ET_SendEvent(elemId, &ETUIElement::ET_setLayout, getEntityId());
+        ET_SendEvent(elemId, &ETUIElement::ET_setHostLayout, getEntityId());
     }
     calculateLayout();
     ETNode<ETUILayout>::connect(getEntityId());
@@ -36,7 +36,7 @@ bool UILayout::init() {
 
 void UILayout::deinit() {
     for(auto elemId : children) {
-        ET_SendEvent(elemId, &ETUIElement::ET_setLayout, InvalidEntityId);
+        ET_SendEvent(elemId, &ETUIElement::ET_setHostLayout, InvalidEntityId);
     }
 }
 
@@ -51,7 +51,7 @@ void UILayout::ET_setStyle(const UILayoutStyle& newStyle) {
 
 void UILayout::ET_addItem(EntityId entityId) {
     children.push_back(entityId);
-    ET_SendEvent(entityId, &ETUIElement::ET_setLayout, getEntityId());
+    ET_SendEvent(entityId, &ETUIElement::ET_setHostLayout, getEntityId());
     calculateLayout();
 }
 
@@ -215,8 +215,7 @@ void UILayout::calculateLayout() {
     isCalculatingLayout = false;
 }
 
-void UILayout::ET_onBoxResized(const AABB2Di& newAabb) {
-    calculateLayout();
+void UILayout::ET_onBoxChanged(const AABB2Di& newAabb) {
 }
 
 void UILayout::ET_onZIndexChanged(int newZIndex) {

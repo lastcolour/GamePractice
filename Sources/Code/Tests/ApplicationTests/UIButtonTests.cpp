@@ -6,6 +6,8 @@
 #include "Logics/UIButton.hpp"
 #include "Logics/UIBox.hpp"
 #include "Logics/UIPressAnimation.hpp"
+#include "Core/ETApplication.hpp"
+#include "Config/UIConfig.hpp"
 
 class TestButtonEventListener : public ETNode<ETUIEventManager> {
 public:
@@ -27,11 +29,17 @@ public:
 };
 
 void UIButtonTests::SetUp() {
+    ConsoleAppTests::SetUp();
     buttonListener.reset(new TestButtonEventListener);
+
+    auto gridSize = ET_getShared<UIConfig>()->verticalGrid;
+    Vec2i portSize(gridSize, gridSize);
+    ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
 }
 
 void UIButtonTests::TearDown() {
     buttonListener.reset();
+    ConsoleAppTests::TearDown();
 }
 
 Entity* UIButtonTests::createUIButton(const Vec2i& pos, const Vec2& size) {

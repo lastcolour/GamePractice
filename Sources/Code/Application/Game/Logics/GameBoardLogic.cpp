@@ -146,7 +146,7 @@ bool GameBoardLogic::init() {
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
     visualBox.setCenter(Vec2i(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y)));
-    ET_onBoxResized(visualBox);
+    ET_onBoxChanged(visualBox);
 
     ET_onZIndexChanged(0);
 
@@ -278,7 +278,7 @@ void GameBoardLogic::updateAfterRemoves() {
             Vec2i topPt = topElem->boardPt;
             topPt.y += 1;
 
-            int voidBelow = getVoidElemBelow(elem.boardPt);
+            int voidBelow = getVoidElemBelow(topPt);
             elem.movePt = Vec2i(topPt.x, topPt.y - voidBelow);
 
             Transform topTm;
@@ -380,10 +380,14 @@ const AABB2Di& GameBoardLogic::ET_getBoardBox() const {
     return boardBox;
 }
 
-void GameBoardLogic::ET_onBoxResized(const AABB2Di& newAabb) {
-    auto abbSize = newAabb.getSize();
-    float cellSizeX = abbSize.x / static_cast<float>(boardSize.x);
-    float cellSizeY = abbSize.y / static_cast<float>(boardSize.y);
+void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
+    auto aabbSize = newAabb.getSize();
+
+    assert(aabbSize.x > 0 && "Invalid size of game board box");
+    assert(aabbSize.y > 0 && "Invalid size of game board box");
+
+    float cellSizeX = aabbSize.x / static_cast<float>(boardSize.x);
+    float cellSizeY = aabbSize.y / static_cast<float>(boardSize.y);
     cellSize = static_cast<int>(floorf(std::min(cellSizeX, cellSizeY)));
     objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
     Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
@@ -443,7 +447,7 @@ void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
 
     AABB2Di aabb;
     ET_SendEventReturn(aabb, uiBoxId, &ETUIElement::ET_getBox);
-    ET_onBoxResized(aabb);
+    ET_onBoxChanged(aabb);
 
     ETNode<ETUIElementEvents>::connect(uiBoxId);
 }

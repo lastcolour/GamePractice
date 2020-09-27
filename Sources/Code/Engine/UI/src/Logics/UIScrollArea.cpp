@@ -110,8 +110,7 @@ void UIScrollArea::onMove(const Vec2i& pt) {
     path.push_back({TimePoint::GetNowTime(), pt});
 }
 
-void UIScrollArea::ET_onBoxResized(const AABB2Di& newAabb) {
-    ET_SendEvent(targetId, &ETUIElementEvents::ET_onBoxResized, newAabb);
+void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
     initScrollElem();
 }
 

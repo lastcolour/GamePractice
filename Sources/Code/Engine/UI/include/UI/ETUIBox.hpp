@@ -13,8 +13,8 @@ struct ETUIElement {
     virtual ~ETUIElement() = default;
     virtual AABB2Di ET_getBox() const = 0;
     virtual UIBoxMargin ET_getMargin() const = 0;
-    virtual void ET_setLayout(EntityId newLayoutId) = 0;
-    virtual EntityId ET_getLayout() = 0;
+    virtual void ET_setHostLayout(EntityId newLayoutId) = 0;
+    virtual EntityId ET_getHostLayout() const = 0;
     virtual void ET_setZIndex(int newZIndex) = 0;
     virtual int ET_getZIndex() const = 0;
     virtual int ET_getZIndexDepth() const = 0;
@@ -31,7 +31,7 @@ struct ETUIElement {
 
 struct ETUIElementEvents {
     virtual ~ETUIElementEvents() = default;
-    virtual void ET_onBoxResized(const AABB2Di& newAabb) = 0;
+    virtual void ET_onBoxChanged(const AABB2Di& newAabb) = 0;
     virtual void ET_onZIndexChanged(int newZIndex) = 0;
     virtual void ET_onAlphaChanged(float newAlpha) = 0;
     virtual void ET_onHidden(bool flag) = 0;

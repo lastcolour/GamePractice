@@ -62,7 +62,6 @@ void RenderNode::ET_hide() {
 
 void RenderNode::ET_show() {
     isVisible = true;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
     ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
@@ -81,9 +80,10 @@ void RenderNode::ET_onTransformChanged(const Transform& newTm) {
     ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
-void RenderNode::ET_syncTransform() {
+void RenderNode::ET_syncWithRender() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
     ETNode<ETRenderProxyNodeEvents>::disconnect();
 }

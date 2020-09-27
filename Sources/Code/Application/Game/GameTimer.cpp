@@ -23,9 +23,9 @@ void GameTimer::deinit() {
 }
 
 void GameTimer::ET_onTick() {
-    ET_PollAllEvents<ETGameTimer>();
     ET_PollAllEvents<ETRenderCameraEvents>();
     ET_PollAllEvents<ETInputEvents>();
+    ET_PollAllEvents<ETGameTimer>();
 
     if(isPaused) {
         return;

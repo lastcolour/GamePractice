@@ -59,13 +59,7 @@ void Render::ET_updateRender() {
     if(!canRenderToScreen()) {
         return;
     }
-
-    Vec2i surfaceSize(0);
-    ET_SendEventReturn(surfaceSize, &ETSurface::ET_getSize);
-    updateRenderPort(surfaceSize);
-
     ET_SendEvent(&ETRenderNodeManager::ET_update);
-
     ET_SendEvent(&ETSurface::ET_swapBuffers);
 }
 
@@ -99,7 +93,10 @@ void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
         return;
     }
 
-    updateRenderPort(renderFb.getSize());
+    Vec2i prevViewPort(0);
+    ET_SendEventReturn(prevViewPort, &ETRenderCamera::ET_getRenderPort);
+
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, renderFb.getSize());
 
     renderFb.bind();
 
@@ -107,17 +104,8 @@ void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
 
     renderFb.read();
     renderFb.unbind();
-}
 
-void Render::updateRenderPort(const Vec2i& size) {
-    Vec2i renderPort(0);
-    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
-    if(renderPort == size) {
-        return;
-    }
-    LogDebug("[Render::updateRenderPort] Set viewport: [%ix%i]", size.x, size.y);
-    glViewport(0, 0, size.x, size.y);
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }
 
 void Render::ET_onSurfaceDestroyed() {
@@ -142,7 +130,7 @@ void Render::ET_onSurfaceShown() {
 }
 
 void Render::ET_onSurfaceResized(const Vec2i& size) {
-    (void)size;
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
 }
 
 void Render::ET_onContextReCreated() {
@@ -165,5 +153,5 @@ bool Render::ET_isRenderThread() const {
 void Render::ET_syncWithGame() {
     ET_PollAllEvents<ETRenderNodeManager>();
     ET_PollAllEvents<ETRenderProxyNode>();
-    ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncTransform);
+    ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncWithRender);
 }

@@ -9,8 +9,11 @@ UIViewPortManager::~UIViewPortManager() {
 }
 
 bool UIViewPortManager::init() {
+   ET_SendEventReturn(viewPort, &ETRenderCamera::ET_getRenderPort);
+
     ETNode<ETUIViewPort>::connect(getEntityId());
     ETNode<ETRenderCameraEvents>::connect(getEntityId());
+
     return true;
 }
 
@@ -22,13 +25,12 @@ const Vec2i& UIViewPortManager::ET_getViewport() const {
 }
 
 void UIViewPortManager::ET_onRenderPortResized(const Vec2i& newSize) {
-    viewPort = newSize;
-    viewPortUpdated = true;
+    ET_setViewPort(newSize);
 }
 
-void UIViewPortManager::ET_postUpdate() {
-    if(viewPortUpdated) {
-        ET_SendEvent(&ETUIViewPortEvents::ET_onViewPortChanged, viewPort);
-        viewPortUpdated = false;
+void UIViewPortManager::ET_setViewPort(const Vec2i& newSize) {
+    if(viewPort != newSize) {
+        viewPort = newSize;
+        ET_SendEvent(&ETUIViewPortEvents::ET_onViewPortChanged, newSize);
     }
 }

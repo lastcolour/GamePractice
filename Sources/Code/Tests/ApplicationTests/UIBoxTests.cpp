@@ -56,7 +56,7 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
     }
 }
 
-TEST_F(UIBoxTests, CheckRenderPortResized) {
+TEST_F(UIBoxTests, CheckViewPortResized) {
     auto uiBox = createUIBox();
 
     UIBoxStyle style;
@@ -72,7 +72,7 @@ TEST_F(UIBoxTests, CheckRenderPortResized) {
     viewPort.x *= 2;
     viewPort.y *= 2;
 
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, viewPort);
+    ET_SendEvent(&ETUIViewPort::ET_setViewPort, viewPort);
 
     {
         auto aabb = uiBox->ET_getBox();

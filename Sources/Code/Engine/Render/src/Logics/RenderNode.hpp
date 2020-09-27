@@ -41,7 +41,7 @@ public:
     void ET_setAlphaMultiplier(float newAlphaMult) override;
 
     // ETRenderProxyNodeEvents
-    void ET_syncTransform() override;
+    void ET_syncWithRender() override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
@@ -55,7 +55,6 @@ protected:
     int drawPriority;
     RenderNodeType type;
     bool isVisible;
-
 };
 
 #endif /* __RENDER_NODE_HPP__ */

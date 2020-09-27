@@ -25,8 +25,6 @@ void UITimer::ET_onTick() {
     ET_PollAllEvents<ETUITimer>();
     ET_PollAllEvents<ETUIViewCache>();
 
-    ET_SendEvent(&ETUIViewPort::ET_postUpdate);
-
     if(isPaused) {
         return;
     }

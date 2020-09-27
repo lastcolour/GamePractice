@@ -118,4 +118,14 @@ void Set2DPosition(EntityId elemId, const Vec2i& pos) {
     ET_SendEvent(elemId, &ETEntity::ET_setTransform, tm);
 }
 
+int GetValueOnGrind(float val) {
+    auto uiConfig = ET_getShared<UIConfig>();
+    return uiConfig->getSizeOnGrind(val);
+}
+
+float CovertValueFromGrid(int val) {
+    auto uiConfig = ET_getShared<UIConfig>();
+    return uiConfig->convertFromGrid(val);
+}
+
 } // namespace UI

@@ -19,8 +19,8 @@ public:
     void deinit() override;
 
     // ETUIElement
-    void ET_setLayout(EntityId newLayoutId) override;
-    EntityId ET_getLayout() override;
+    void ET_setHostLayout(EntityId newLayoutId) override;
+    EntityId ET_getHostLayout() const override;
     void ET_setZIndex(int newZIndex) override;
     int ET_getZIndex() const override;
     int ET_getZIndexDepth() const override;
@@ -40,7 +40,7 @@ public:
 
 protected:
 
-    void updateLayout();
+    void updateHostLayout();
 
 protected:
 
@@ -52,7 +52,7 @@ protected:
 
 protected:
 
-    EntityId layoutId;
+    EntityId hostLayoutId;
     float alpha;
     int zIndex;
     bool isIgnoringTransform;
