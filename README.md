@@ -39,7 +39,7 @@ There is list of 3rd party dependecies used in Engine
 
 # Editor
 
-The Engine's Editor is PyQt5 application that allow to setup/update game entities; Editor is communicating with Engine via ctype API with Engine;
+The Engine's Editor is PyQt5 application that allow to setup/update game entities; Editor is communicating with Engine via ctype API;
 
 ## Info
 
