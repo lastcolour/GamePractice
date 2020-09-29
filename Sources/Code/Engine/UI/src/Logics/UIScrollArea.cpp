@@ -68,6 +68,9 @@ void UIScrollArea::initScrollElem() {
     tm.pt.x += shiftPt.x;
     tm.pt.y += shiftPt.y;
     ET_SendEvent(targetId, &ETEntity::ET_setTransform, tm);
+
+    auto childZIndex = UI::GetZIndexForChild(getEntityId());
+    ET_SendEvent(&ETUIElement::ET_setZIndex, childZIndex);
 }
 
 void UIScrollArea::deinit() {
@@ -115,23 +118,32 @@ void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
 }
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
-    ET_SendEvent(targetId, &ETUIElementEvents::ET_onZIndexChanged, newZIndex);
+    auto childZIndex = UI::GetZIndexForChild(getEntityId());
+    ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 
 void UIScrollArea::ET_onAlphaChanged(float newAlpha) {
-    ET_SendEvent(targetId, &ETUIElementEvents::ET_onAlphaChanged, newAlpha);
+    ET_SendEvent(targetId, &ETUIElement::ET_setAlpha, newAlpha);
 }
 
 void UIScrollArea::ET_onHidden(bool flag) {
-    ET_SendEvent(targetId, &ETUIElementEvents::ET_onHidden, flag);
+    if(flag) {
+        ET_SendEvent(targetId, &ETUIElement::ET_hide);
+    } else {
+        ET_SendEvent(targetId, &ETUIElement::ET_show);
+    }
 }
 
 void UIScrollArea::ET_onDisabled(bool flag) {
-    ET_SendEvent(targetId, &ETUIElementEvents::ET_onDisabled, flag);
+    if(flag) {
+        ET_SendEvent(targetId, &ETUIElement::ET_disable);
+    } else {
+        ET_SendEvent(targetId, &ETUIElement::ET_enable);
+    }
 }
 
 void UIScrollArea::ET_onIngoreTransform(bool flag) {
-    ET_SendEvent(targetId, &ETUIElementEvents::ET_onIngoreTransform, flag);
+    ET_SendEvent(targetId, &ETUIElement::ET_setIgnoreTransform, flag);
 }
 
 void UIScrollArea::ET_onUITick(float dt) {

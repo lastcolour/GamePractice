@@ -1,5 +1,6 @@
 #include "SoundTests.hpp"
 #include "Audio/ETSound.hpp"
+#include "Core/ETTasks.hpp"
 
 namespace {
 
@@ -11,25 +12,37 @@ const int MAX_PARALLEL_SOUNDS = 16;
 TEST_F(SoundTests, CheckCreateSound) {
     Sound sound;
     ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, TEST_SOUND_NAME);
+
     ASSERT_TRUE(sound.isValid());
-
     ASSERT_FALSE(sound.isPlaying());
 
-    sound.play();
+    {
+        sound.play();
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
 
-    ASSERT_TRUE(sound.isPlaying());
+        ASSERT_TRUE(sound.isPlaying());
+    }
 
-    sound.pause();
+    {
+        sound.pause();
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
 
-    ASSERT_FALSE(sound.isPlaying());
+        ASSERT_FALSE(sound.isPlaying());
+    }
 
-    sound.resume();
+    {
+        sound.resume();
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
 
-    ASSERT_TRUE(sound.isPlaying());
+        ASSERT_TRUE(sound.isPlaying());
+    }
 
-    sound.stop();
+    {
+        sound.stop();
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
 
-    ASSERT_FALSE(sound.isPlaying());
+        ASSERT_FALSE(sound.isPlaying());
+    }
 }
 
 TEST_F(SoundTests, CheckCreateManySound) {
@@ -46,6 +59,12 @@ TEST_F(SoundTests, CheckCreateManySound) {
     for(size_t i = 0, sz = sounds.size(); i < sz; ++i) {
         auto& sound = sounds[i];
         sound.play();
+    }
+
+    ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+
+    for(size_t i = 0, sz = sounds.size(); i < sz; ++i) {
+        auto& sound = sounds[i];
         EXPECT_TRUE(sound.isPlaying());
     }
 }

@@ -31,35 +31,20 @@ bool UIBox::init() {
 }
 
 void UIBox::deinit() {
+    UIElement::deinit();
 }
 
 AABB2Di UIBox::ET_getBox() const {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    const auto& scale = tm.scale;
-
-    AABB2Di resBox;
-    resBox.bot = Vec2i(0);
-    resBox.top = aabb.getSize();
-    resBox.top.x = static_cast<int>(resBox.top.x * scale.x);
-    resBox.top.y = static_cast<int>(resBox.top.y * scale.y);
-    resBox.setCenter(aabb.getCenter());
-
-    return resBox;
+    auto resBox = UI::SetTmCenterToBox(getEntityId(), aabb);
+    return UI::GetTmScaledBox(getEntityId(), resBox);
 }
 
 void UIBox::calculateBox() {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-
     auto prevBox = aabb;
 
     aabb.bot = Vec2i(0);
-    aabb.top = calculateBoxSize();
-
-    Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
-        static_cast<int>(tm.pt.y));
-    aabb.setCenter(center);
+    aabb.top = UI::CalculateBoxSize(style);
+    aabb = UI::SetTmCenterToBox(getEntityId(), aabb);
 
     if(prevBox.getSize() != aabb.getSize()) {
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
@@ -82,39 +67,7 @@ void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
 }
 
 UIBoxMargin UIBox::ET_getMargin() const {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    return UI::CalculateMargin(style.margin, tm);
-}
-
-Vec2i UIBox::calculateBoxSize() {
-    Vec2i viewPort(0);
-    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
-    Vec2i resSize(0);
-
-    switch (style.widthInv)
-    {
-    case UIBoxSizeInvariant::Grid:
-        resSize.x = UI::GetValueOnGrind(style.width);
-        break;
-    case UIBoxSizeInvariant::Relative:
-        resSize.x = static_cast<int>(viewPort.x * style.width);
-        break;
-    default:
-        assert(false && "Invalid size invariant");
-    }
-    switch (style.heightInv)
-    {
-    case UIBoxSizeInvariant::Grid:
-        resSize.y = UI::GetValueOnGrind(style.height);
-        break;
-    case UIBoxSizeInvariant::Relative:
-        resSize.y = static_cast<int>(viewPort.y * style.height);
-        break;
-    default:
-        assert(false && "Invalid size invariant");
-    }
-    return resSize;
+    return UI::CalculateMargin(getEntityId(), style.margin);
 }
 
 void UIBox::ET_onViewPortChanged(const Vec2i& newSize) {

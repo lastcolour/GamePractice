@@ -11,7 +11,7 @@ class UILayoutStyle;
 
 namespace UI {
 
-UIBoxMargin CalculateMargin(const UIBoxStyle::Margin& margin, const Transform& tm);
+UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin);
 
 const char* GetViewTypeName(UIViewType viewType);
 
@@ -19,11 +19,19 @@ bool IsInsideBox(const Vec2i& pt, const AABB2Di& box);
 
 Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, AABB2Di& box);
 
-void Set2DPosition(EntityId elemId, const Vec2i& pos);
+void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos);
 
 int GetValueOnGrind(float val);
 
 float CovertValueFromGrid(int val);
+
+Vec2i CalculateBoxSize(const UIBoxStyle& style);
+
+int GetZIndexForChild(EntityId entityId);
+
+AABB2Di GetTmScaledBox(EntityId entityId, const AABB2Di& box);
+
+AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box);
 
 } // namespace
 

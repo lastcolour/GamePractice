@@ -50,8 +50,14 @@ struct ETUILayout {
     virtual const UILayoutStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UILayoutStyle& newStyle) = 0;
     virtual void ET_addItem(EntityId entityId) = 0;
+    virtual std::vector<EntityId> ET_getItems() const = 0;
     virtual void ET_update() = 0;
     virtual const AABB2Di& ET_getCombinedBox() const = 0;
+};
+
+struct ETUILayoutEvents {
+    virtual ~ETUILayoutEvents() = default;
+    virtual void ET_onLayoutChanged(const AABB2Di& newCombinedBox) = 0;
 };
 
 struct ETUILabel {

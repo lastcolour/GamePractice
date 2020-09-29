@@ -144,7 +144,7 @@ TEST_F(ETSyncTests, CheckIntersectRoutes) {
         t2.detach();
     }
 
-    EXPECT_FALSE(isSecondThreadRunning());
+    EXPECT_TRUE(isSecondThreadRunning());
 
     stopFristThread();
 

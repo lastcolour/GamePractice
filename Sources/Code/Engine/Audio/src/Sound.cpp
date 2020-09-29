@@ -9,7 +9,7 @@ Sound::Sound() :
 
 Sound::Sound(EntityId soundNodeId) :
     nodeId(soundNodeId),
-    volume(1.f), 
+    volume(1.f),
     looped(false) {
 }
 
@@ -64,7 +64,7 @@ bool Sound::isLooped() const {
 
 void Sound::setVolume(float newVolume) {
     volume = newVolume;
-    ET_QueueEvent(nodeId, &ETSoundNode::ET_setVolume, looped);
+    ET_QueueEvent(nodeId, &ETSoundNode::ET_setVolume, volume);
 }
 
 float Sound::getVolume() const {

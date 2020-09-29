@@ -67,9 +67,7 @@ AABB2Di UILabel::ET_getBox() const {
 }
 
 UIBoxMargin UILabel::ET_getMargin() const {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    return UI::CalculateMargin(style.margin, tm);
+    return UI::CalculateMargin(getEntityId(), style.margin);
 }
 
 void UILabel::ET_setTextRender(EntityId newRenderId) {

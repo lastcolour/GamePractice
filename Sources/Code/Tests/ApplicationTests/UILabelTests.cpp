@@ -62,19 +62,20 @@ TEST_F(UILabelTests, CheckTextScaling) {
         auto origSize = origBox.getSize();
         auto scaledSize = scaledBox.getSize();
 
-        EXPECT_EQ(origSize.x, scaledSize.x * 2);
-        EXPECT_EQ(origSize.y, scaledSize.y * 2);
+        EXPECT_EQ(origSize.x, scaledSize.x * 2 + origSize.x % 2);
+        EXPECT_EQ(origSize.y, scaledSize.y * 2 + origSize.y % 2);
     }
 
     tm.scale *= 2;
 
     ET_SendEvent(label->getEntityId(), &ETEntity::ET_setTransform, tm);
+    auto rescaledBox = label->ET_getBox();
 
     {
         auto origSize = origBox.getSize();
-        auto scaledSize = scaledBox.getSize();
+        auto rescaledSize = rescaledBox.getSize();
 
-        EXPECT_EQ(origSize.x, scaledSize.x * 2);
-        EXPECT_EQ(origSize.y, scaledSize.y * 2);
+        EXPECT_EQ(origSize.x, rescaledSize.x);
+        EXPECT_EQ(origSize.y, rescaledSize.y);
     }
 }

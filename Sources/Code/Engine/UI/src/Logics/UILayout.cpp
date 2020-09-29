@@ -18,6 +18,7 @@ void UILayout::Reflect(ReflectContext& ctx) {
 }
 
 UILayout::UILayout() :
+    combinedBox(Vec2i(0), Vec2i(0)),
     isCalculatingLayout(false) {
 }
 
@@ -55,7 +56,7 @@ void UILayout::ET_addItem(EntityId entityId) {
     calculateLayout();
 }
 
-void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
+AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     AABB2Di layoutBox;
     layoutBox.top = Vec2i(std::numeric_limits<int>::min());
     layoutBox.bot = Vec2i(std::numeric_limits<int>::max());
@@ -100,7 +101,7 @@ void UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
         childBox.setCenter(childBox.getCenter() + centerShift);
     }
 
-    combinedBox = layoutBox;
+    return layoutBox;
 }
 
 AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
@@ -158,9 +159,8 @@ void UILayout::ET_update() {
 }
 
 void UILayout::calculateLayout() {
-    combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
-
     if(children.empty()) {
+        ET_SendEvent(getEntityId(), &ETUILayoutEvents::ET_onLayoutChanged, combinedBox);
         return;
     }
 
@@ -193,13 +193,9 @@ void UILayout::calculateLayout() {
 
     assert(childBoxes.size() == children.size() && "Invalid amount of child boxes");
 
-    calculateAligment(childBoxes);
+    combinedBox = calculateAligment(childBoxes);
 
-    int zIndex = 0;
-    int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
-    int childZIndex = zIndex + zIndexDepth + 1;
+    auto childZIndex = UI::GetZIndexForChild(getEntityId());
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
@@ -208,10 +204,11 @@ void UILayout::calculateLayout() {
         }
         auto childBox = childBoxes[i];
         auto center = childBox.getCenter();
-        UI::Set2DPosition(childId, center);
+        UI::Set2DPositionDoNotUpdateLayout(childId, center);
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }
 
+    ET_SendEvent(getEntityId(), &ETUILayoutEvents::ET_onLayoutChanged, combinedBox);
     isCalculatingLayout = false;
 }
 
@@ -219,12 +216,7 @@ void UILayout::ET_onBoxChanged(const AABB2Di& newAabb) {
 }
 
 void UILayout::ET_onZIndexChanged(int newZIndex) {
-    int zIndex = 0;
-    int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, getEntityId(), &ETUIElement::ET_getZIndexDepth);
-    int childZIndex = zIndex + zIndexDepth + 1;
-
+    auto childZIndex = UI::GetZIndexForChild(getEntityId());
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }
@@ -268,4 +260,8 @@ void UILayout::ET_onIngoreTransform(bool flag) {
 
 const AABB2Di& UILayout::ET_getCombinedBox() const {
     return combinedBox;
+}
+
+std::vector<EntityId> UILayout::ET_getItems() const {
+    return children;
 }

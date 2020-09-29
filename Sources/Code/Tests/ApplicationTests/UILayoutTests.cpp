@@ -2,6 +2,7 @@
 #include "Logics/UILayout.hpp"
 #include "Logics/UIBox.hpp"
 #include "Config/UIConfig.hpp"
+#include "Logics/UILayoutBox.hpp"
 #include "Core/ETApplication.hpp"
 
 namespace {
@@ -34,6 +35,20 @@ Entity* UILayoutTests::createUIBox(float width, float height) {
     boxStyle.width = height;
     boxStyle.widthInv = UIBoxSizeInvariant::Relative;
     rootBoxPtr->ET_setStyle(boxStyle);
+
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+
+    Transform tm;
+    tm.pt = Vec3(viewPort.x / 2.f, viewPort.y / 2.f, 0.f);
+    ET_SendEvent(entity->getEntityId(), &ETEntity::ET_setTransform, tm);
+
+    return entity;
+}
+
+Entity* UILayoutTests::createUILayoutBox() {
+    auto entity = createVoidObject();
+    entity->addCustomLogic(std::unique_ptr<EntityLogic>(new UILayoutBox));
 
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
@@ -404,5 +419,36 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         rootLayout->ET_setStyle(style);
 
         CheckUIBox(childEntity->getEntityId(), Vec2i(center.x, shift + boxSize.y / 2), boxSize);
+    }
+}
+
+TEST_F(UILayoutTests, CheckLayoutOnLayoutBox) {
+    auto layoutBox = createUILayoutBox();
+    auto rootLayout = addUILayout(layoutBox, UILayoutType::Vertical, UIXAlign::Center, UIYAlign::Center);
+
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+
+    Vec2i center = viewPort / 2;
+
+    {
+        CheckUIBox(layoutBox->getEntityId(), center, Vec2i(0));
+    }
+
+    auto firstBox = createUIBox(0.5f, 0.5f);
+    rootLayout->ET_addItem(firstBox->getEntityId());
+
+    {
+        CheckUIBox(layoutBox->getEntityId(), center, center);
+        CheckUIBox(firstBox->getEntityId(), center, center);
+    }
+
+    auto secondBox = createUIBox(0.5f, 0.5f);
+    rootLayout->ET_addItem(secondBox->getEntityId());
+
+    {
+        CheckUIBox(layoutBox->getEntityId(), center, Vec2i(center.x, viewPort.y));
+        CheckUIBox(firstBox->getEntityId(), Vec2i(center.x, 3 * viewPort.y / 4), center);
+        CheckUIBox(secondBox->getEntityId(), Vec2i(center.x, viewPort.y / 4), center);
     }
 }

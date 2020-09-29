@@ -20,6 +20,7 @@
 #include "UI/ETUITimer.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Audio/ETAudioSystem.hpp"
+#include "Render/ETRenderCamera.hpp"
 
 EditorApp::EditorApp() :
     Application(),
@@ -165,13 +166,15 @@ const char* EditorApp::getEntityName(EntityId entityId) {
 }
 
 void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
+    Vec2i viewport = Vec2i(width, height);
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, viewport);
+
     runner->stepMainTread();
 
-    Vec2i renderSize = Vec2i(width, height);
-    frameBuffer.setSize(renderSize);
+    frameBuffer.setSize(viewport);
     frameBuffer.clear();
     ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, frameBuffer);
-    memcpy(out, frameBuffer.getPtr(), renderSize.x * renderSize.y * 4);
+    memcpy(out, frameBuffer.getPtr(), viewport.x * viewport.y * 4);
 }
 
 EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {

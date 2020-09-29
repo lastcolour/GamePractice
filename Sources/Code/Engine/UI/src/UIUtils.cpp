@@ -4,12 +4,17 @@
 #include "UI/UILayoutStyle.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Entity/ETEntity.hpp"
+#include "UI/ETUIViewPort.hpp"
+#include "UI/ETUIBox.hpp"
 
 #include <cassert>
 
 namespace UI {
 
-UIBoxMargin CalculateMargin(const UIBoxStyle::Margin& margin, const Transform& tm) {
+UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin) {
+    Transform tm;
+    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
+
     UIBoxMargin resMargin;
 
     auto uiConfig = ET_getShared<UIConfig>();
@@ -108,7 +113,9 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, A
     return center;
 }
 
-void Set2DPosition(EntityId elemId, const Vec2i& pos) {
+void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos) {
+    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, true);
+
     Transform tm;
     ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
 
@@ -116,6 +123,8 @@ void Set2DPosition(EntityId elemId, const Vec2i& pos) {
     tm.pt.y = static_cast<float>(pos.y);
 
     ET_SendEvent(elemId, &ETEntity::ET_setTransform, tm);
+
+    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
 }
 
 int GetValueOnGrind(float val) {
@@ -126,6 +135,73 @@ int GetValueOnGrind(float val) {
 float CovertValueFromGrid(int val) {
     auto uiConfig = ET_getShared<UIConfig>();
     return uiConfig->convertFromGrid(val);
+}
+
+Vec2i CalculateBoxSize(const UIBoxStyle& style) {
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i resSize(0);
+
+    switch (style.widthInv)
+    {
+    case UIBoxSizeInvariant::Grid:
+        resSize.x = UI::GetValueOnGrind(style.width);
+        break;
+    case UIBoxSizeInvariant::Relative:
+        resSize.x = static_cast<int>(viewPort.x * style.width);
+        break;
+    default:
+        assert(false && "Invalid size invariant");
+    }
+    switch (style.heightInv)
+    {
+    case UIBoxSizeInvariant::Grid:
+        resSize.y = UI::GetValueOnGrind(style.height);
+        break;
+    case UIBoxSizeInvariant::Relative:
+        resSize.y = static_cast<int>(viewPort.y * style.height);
+        break;
+    default:
+        assert(false && "Invalid size invariant");
+    }
+    return resSize;
+}
+
+int GetZIndexForChild(EntityId entityId) {
+    int zIndex = 0;
+    int zIndexDepth = 0;
+    ET_SendEventReturn(zIndex, entityId, &ETUIElement::ET_getZIndex);
+    ET_SendEventReturn(zIndexDepth, entityId, &ETUIElement::ET_getZIndexDepth);
+    int childZIndex = zIndex + zIndexDepth + 1;
+    return childZIndex;
+}
+
+AABB2Di GetTmScaledBox(EntityId entityId, const AABB2Di& box) {
+    Transform tm;
+    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
+    const auto& scale = tm.scale;
+
+    AABB2Di resBox;
+    resBox.bot = Vec2i(0);
+    resBox.top = box.getSize();
+    resBox.top.x = static_cast<int>(resBox.top.x * scale.x);
+    resBox.top.y = static_cast<int>(resBox.top.y * scale.y);
+    resBox.setCenter(box.getCenter());
+
+    return resBox;
+}
+
+AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box) {
+    Transform tm;
+    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
+
+    auto resBox = box;
+
+    Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
+        static_cast<int>(tm.pt.y));
+    resBox.setCenter(center);
+
+    return resBox;
 }
 
 } // namespace UI

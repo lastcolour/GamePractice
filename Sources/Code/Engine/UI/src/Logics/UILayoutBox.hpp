@@ -1,22 +1,19 @@
-#ifndef __UI_BOX_HPP__
-#define __UI_BOX_HPP__
+#ifndef __UI_LAYOUT_BOX_HPP__
+#define __UI_LAYOUT_BOX_HPP__
 
 #include "Logics/UIElement.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/UIBoxStyle.hpp"
-#include "UI/ETUIViewPort.hpp"
 
-class UIBox : public UIElement,
-    public ETNode<ETUIBox>,
-    public ETNode<ETUIViewPortEvents> {
+class UILayoutBox : public UIElement,
+    public ETNode<ETUILayoutEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    UIBox();
-    virtual ~UIBox();
+    UILayoutBox();
+    virtual ~UILayoutBox();
 
     // EntityLogic
     bool init() override;
@@ -26,12 +23,8 @@ public:
     AABB2Di ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 
-    // ETUIBox
-    const UIBoxStyle& ET_getStyle() const override;
-    void ET_setStyle(const UIBoxStyle& newBoxStyle) override;
-
-    // ETUIViewPortEvents
-    void ET_onViewPortChanged(const Vec2i& newSize) override;
+    // ETUILayoutEvents
+    void ET_onLayoutChanged(const AABB2Di& newCombinedBox) override;
 
     // ETEntityEvents
     void ET_onAllLogicsCreated() override;
@@ -46,13 +39,9 @@ protected:
 
 private:
 
-    void calculateBox();
-
-private:
-
     AABB2Di aabb;
-    UIBoxStyle style;
+    UIBoxStyle::Margin styleMargin;
     EntityId boxRenderId;
 };
 
-#endif /* __UI_BOX_HPP__ */
+#endif /* __UI_LAYOUT_BOX_HPP__ */

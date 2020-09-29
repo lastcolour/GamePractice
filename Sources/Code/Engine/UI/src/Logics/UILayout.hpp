@@ -28,6 +28,7 @@ public:
     void ET_addItem(EntityId entityId) override;
     void ET_update() override;
     const AABB2Di& ET_getCombinedBox() const override;
+    std::vector<EntityId> ET_getItems() const override;
 
     // ETUIElementEvents
     void ET_onBoxChanged(const AABB2Di& newAabb) override;
@@ -40,7 +41,7 @@ public:
 private:
 
     AABB2Di calculateItem(int& offset, int& prevMargin, EntityId itemId);
-    void calculateAligment(std::vector<AABB2Di>& boxes);
+    AABB2Di calculateAligment(std::vector<AABB2Di>& boxes);
     void calculateLayout();
 
 private:

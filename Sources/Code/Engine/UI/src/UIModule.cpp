@@ -18,6 +18,7 @@
 #include "Logics/UIGameEndStarsAppearAnimation.hpp"
 #include "Logics/UIGameEndViewScript.hpp"
 #include "Logics/UIScrollArea.hpp"
+#include "Logics/UILayoutBox.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -53,4 +54,5 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIGameEndViewScript>();
     logicsRegister.registerLogic<UIGameEndStarsAppearAnimation>();
     logicsRegister.registerLogic<UIScrollArea>();
+    logicsRegister.registerLogic<UILayoutBox>();
 }
