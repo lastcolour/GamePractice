@@ -215,7 +215,7 @@ TEST_F(UIScrollAreaTests, CheckSimpleVerticalScroll) {
 
     auto shift = childCurrTm.pt - childOrigTm.pt;
     Vec2 expectedShift(0.f);
-    expectedShift.y = -parentBox.y * 0.5f;
+    expectedShift.y = parentBox.y * 0.5f;
 
     EXPECT_FLOAT_EQ(shift.x, expectedShift.x);
     EXPECT_FLOAT_EQ(shift.y, expectedShift.y);
@@ -238,7 +238,7 @@ TEST_F(UIScrollAreaTests, CheckSimpleHorizontalScroll) {
 
     auto shift = childCurrTm.pt - childOrigTm.pt;
     Vec2 expectedShift(0.f);
-    expectedShift.x = parentBox.y * 0.5f;
+    expectedShift.x = -parentBox.y * 0.5f;
 
     EXPECT_FLOAT_EQ(shift.x, expectedShift.x);
     EXPECT_FLOAT_EQ(shift.y, expectedShift.y);
@@ -302,7 +302,29 @@ TEST_F(UIScrollAreaTests, CheckScrollLimits) {
     SubmitEventSequence(ctx, {Vec2(0.f, -0.75f), Vec2(0.f, 0.f), Vec2(0.f, 0.75f)});
 
     Vec2 expectedShift(0.f);
-    expectedShift.y = (parentBox.y - childBox.y) / 2.f;
+    expectedShift.y = static_cast<float>(childBox.y - parentBox.y);
+
+    auto childCurrTm = ctx.childEntity->ET_getTransform();
+    auto shift = childCurrTm.pt - childOrigTm.pt;
+
+    EXPECT_FLOAT_EQ(shift.x, expectedShift.x);
+    EXPECT_FLOAT_EQ(shift.y, expectedShift.y);
+}
+
+TEST_F(UIScrollAreaTests, CheckIgnoreScrollForSmallerChild) {
+    auto parentBox = Vec2i(100);
+    auto childBox = Vec2i(50);
+
+    UIScrollAreaStyle style;
+    style.origin = UIScrollOrigin::Start;
+    style.type = UIScrollType::Vertical;
+    auto ctx = createTestContext(parentBox, childBox, style);
+
+    auto childOrigTm = ctx.childEntity->ET_getTransform();
+
+    SubmitEventSequence(ctx, {Vec2(0.f, -0.75f), Vec2(0.f, 0.f), Vec2(0.f, 0.75f)});
+
+    Vec2 expectedShift(0.f);
 
     auto childCurrTm = ctx.childEntity->ET_getTransform();
     auto shift = childCurrTm.pt - childOrigTm.pt;

@@ -8,20 +8,50 @@
 
 namespace {
 
-template<typename T>
-T getMaxByMagnitude(T val, T testVal) {
-    if(testVal <= static_cast<T>(0)) {
-        return std::min(val, testVal);
-    }
-    return std::max(val, testVal);
+struct MoveResult {
+    int deltaShift;
+    float remainingDt;
+};
+
+Vec2i clampToEdges(const AABB2Di& box, const Vec2i& pt) {
+    Vec2i resPt;
+    resPt.x = Math::Clamp(pt.x, box.bot.x, box.top.x);
+    resPt.y = Math::Clamp(pt.y, box.bot.y, box.top.y);
+    return resPt;
 }
 
-template<typename T>
-T getMinByMagnitude(T val, T testVal) {
-    if(testVal <= static_cast<T>(0)) {
-        return std::max(val, testVal);
+float getScrollSpeed(float currentSpeed, float newSpeed) {
+    if(newSpeed > 0.f) {
+        if(currentSpeed > 0.f) {
+            currentSpeed = (currentSpeed + newSpeed) / 2.f;
+        } else {
+            currentSpeed = newSpeed;
+        }
+    } else {
+        if(currentSpeed < 0.f) {
+            currentSpeed = (currentSpeed + newSpeed) / 2.f;
+        } else {
+            currentSpeed = newSpeed;
+        }
     }
-    return std::min(val, testVal);
+    return currentSpeed;
+}
+
+MoveResult moveScroll(float dt, float newSpeed, float currentSpeed, int reaminingShift) {
+    currentSpeed = getScrollSpeed(currentSpeed, newSpeed);
+    int deltaShift = static_cast<int>(currentSpeed * dt);
+    if(std::abs(deltaShift) > 0) {
+        dt -= deltaShift / currentSpeed;
+    }
+    if(currentSpeed > 0.f) {
+        deltaShift = std::min(deltaShift, reaminingShift);
+    } else {
+        deltaShift = std::max(deltaShift, reaminingShift);
+    }
+    MoveResult res;
+    res.deltaShift = deltaShift;
+    res.remainingDt = dt;
+    return res;
 }
 
 } // namespace
@@ -37,8 +67,7 @@ UIScrollArea::UIScrollArea() :
     endScrollPt(0),
     scrollSpeed(0.f),
     accumulativeDt(0.f),
-    minPt(0),
-    maxPt(0),
+    scrollBox(Vec2i(0), Vec2i(0)),
     isPressed(false) {
 }
 
@@ -74,34 +103,36 @@ void UIScrollArea::initScrollElem() {
     box.top = box.getSize();
     box.bot = Vec2i(0);
 
+    Vec2i botPt(0);
+    Vec2i topPt(0);
     if(style.type == UIScrollType::Horizontal) {
-        minPt = UI::CalcAligmentCenter(UIXAlign::Left, UIYAlign::Center, box, elemBox);
-        maxPt = UI::CalcAligmentCenter(UIXAlign::Right, UIYAlign::Center, box, elemBox);
+        botPt = UI::CalcAligmentCenter(UIXAlign::Right, UIYAlign::Center, box, elemBox);
+        topPt = UI::CalcAligmentCenter(UIXAlign::Left, UIYAlign::Center, box, elemBox);
     } else {
-        minPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, box, elemBox);
-        maxPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, box, elemBox);
+        botPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, box, elemBox);
+        topPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, box, elemBox);
     }
+
+    assert(botPt <= topPt && "Invalid bot-top of scroll box");
 
     auto size = box.getSize();
 
-    minPt = center + minPt - size / 2;
-    maxPt = center + maxPt - size / 2;
+    scrollBox.bot = center + botPt - size / 2;
+    scrollBox.top = center + topPt - size / 2;
 
-    if(style.origin == UIScrollOrigin::Start) {
-        if(style.type == UIScrollType::Vertical) {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, maxPt);
+    if(style.type == UIScrollType::Vertical) {
+        if(style.origin == UIScrollOrigin::Start) {
+            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.bot);
         } else {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, minPt);
+            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.top);
         }
     } else {
-        if(style.type == UIScrollType::Vertical) {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, minPt);
+        if(style.origin == UIScrollOrigin::Start) {
+            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.top);
         } else {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, maxPt);
+            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.bot);
         }
     }
-
-    assert(minPt <= maxPt && "Invalid min-max pos for scroll area");
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
@@ -146,13 +177,16 @@ void UIScrollArea::onPress(const Vec2i& pt) {
 
 void UIScrollArea::onRelease(const Vec2i& pt) {
     isPressed = false;
-    path.push_back({TimePoint::GetNowTime(), pt});
+    auto box = ET_getHitBox();
+    auto clampPt = clampToEdges(box, pt);
+    path.push_back({TimePoint::GetNowTime(), clampPt});
 }
 
 bool UIScrollArea::onMove(const Vec2i& pt) {
     auto box = ET_getHitBox();
     if(!UI::IsInsideBox(pt, box)) {
-        onRelease(pt);
+        auto clampPt = clampToEdges(box, pt);
+        onRelease(clampPt);
         return false;
     } else {
         path.push_back({TimePoint::GetNowTime(), pt});
@@ -212,38 +246,29 @@ void UIScrollArea::ET_onUITick(float dt) {
         shiftTime = std::max(shiftTime, 0.016f);
 
         endScrollPt = targetPt + ptShift;
-        endScrollPt.x = Math::Clamp(endScrollPt.x, minPt.x, maxPt.x);
-        endScrollPt.y = Math::Clamp(endScrollPt.y, maxPt.y, minPt.y);
+        endScrollPt = clampToEdges(scrollBox, endScrollPt);
 
         path.clear();
         path.push_back(endEvent);
     }
 
+    auto remainingShift = endScrollPt - targetPt;
     Vec2i deltaShift(0);
 
     if(style.type == UIScrollType::Horizontal) {
         auto newSpeed = ptShift.x / shiftTime;
-        scrollSpeed = getMaxByMagnitude(scrollSpeed, newSpeed);
-        deltaShift.x = static_cast<int>(scrollSpeed * accumulativeDt);
-        if(std::abs(deltaShift.x) > 0) {
-            accumulativeDt -= deltaShift.x / scrollSpeed;
-        }
+        auto state = moveScroll(accumulativeDt, newSpeed, scrollSpeed, remainingShift.x);
+        deltaShift.x = state.deltaShift;
+        accumulativeDt = state.remainingDt;
     } else {
         auto newSpeed = ptShift.y / shiftTime;
-        scrollSpeed = getMaxByMagnitude(scrollSpeed, newSpeed);
-        deltaShift.y = static_cast<int>(scrollSpeed * accumulativeDt);
-        if(std::abs(deltaShift.y) > 0) {
-            accumulativeDt -= deltaShift.y / scrollSpeed;
-        }
+        auto state = moveScroll(accumulativeDt, newSpeed, scrollSpeed, remainingShift.y);
+        deltaShift.y = state.deltaShift;
+        accumulativeDt = state.remainingDt;
     }
 
-    auto remainingShift = endScrollPt - targetPt;
-    deltaShift.x = getMinByMagnitude(deltaShift.x, remainingShift.x);
-    deltaShift.y = getMinByMagnitude(deltaShift.y, remainingShift.y);
-
     targetPt += deltaShift;
-    targetPt.x = Math::Clamp(targetPt.x, minPt.x, maxPt.x);
-    targetPt.y = Math::Clamp(targetPt.y, maxPt.y, minPt.y);
+    targetPt = clampToEdges(scrollBox, targetPt);
 
     UI::Set2DPositionDoNotUpdateLayout(targetId, targetPt);
 

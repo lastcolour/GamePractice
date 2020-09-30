@@ -1,7 +1,6 @@
 #include "RenderCamera.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
-#include "Core/ETLogger.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Platform/OpenGL.hpp"
 
@@ -39,7 +38,6 @@ void RenderCamera::ET_setRenderPort(const Vec2i& newSize) {
         return;
     }
 
-    LogDebug("[Render::updateRenderPort] Set viewport: [%ix%i]", newSize.x, newSize.y);
     viewport = newSize;
 
     glViewport(0, 0, viewport.x, viewport.y);

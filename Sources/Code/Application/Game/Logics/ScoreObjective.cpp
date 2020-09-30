@@ -51,6 +51,7 @@ ObjectiveProgress ScoreObjective::ET_getObjectiveProgress() const {
 
 void ScoreObjective::ET_onElemsDestroyed(EntityId elemId) {
     currentScore += 1;
+    ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, currentScore);
     switch(currentProgress) {
         case ObjectiveProgress::Fail: {
             if(isObjectiveComplete(oneStarTarget)) {

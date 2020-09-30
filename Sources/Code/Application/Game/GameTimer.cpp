@@ -1,6 +1,7 @@
 #include "Game/GameTimer.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderCamera.hpp"
+#include "UI/ETUIViewPort.hpp"
 
 #include <cassert>
 
@@ -23,7 +24,7 @@ void GameTimer::deinit() {
 }
 
 void GameTimer::ET_onTick() {
-    ET_PollAllEvents<ETRenderCameraEvents>();
+    ET_SendEvent(&ETUIViewPort::ET_update);
     ET_PollAllEvents<ETInputEvents>();
     ET_PollAllEvents<ETGameTimer>();
 

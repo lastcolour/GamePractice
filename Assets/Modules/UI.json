@@ -2,13 +2,13 @@
     "UIConfig":{
         "verticalGrid":200,
         "views":{
-            "mainView":"UI/LevelsView/LevelsView.json",
-            "mainView_1":"UI/MainView/MainView.json",
+            "mainView":"UI/MainView/MainView.json",
             "gameView":"UI/GameView/GameView.json",
             "backgroundView":"UI/BackgroundView/BackgroundView.json",
             "endGameView":"UI/GameEndView/GameEndView.json",
             "loadingView":"UI/LoadingView/LoadingView.json",
-            "pauseView":"UI/PauseView/PauseView.json"
+            "pauseView":"UI/PauseView/PauseView.json",
+            "levelsView":"UI/LevelsView/LevelsView.json"
         },
         "scroll":{
             

@@ -1037,7 +1037,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -41.0,
+                      "x": -40.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1099,7 +1099,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 3.0,
+                      "x": 4.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1351,7 +1351,7 @@
       }
     },
     {
-      "type": "UIGameEndViewScript",
+      "type": "GameResultViewScript",
       "id": 5,
       "data": {}
     }

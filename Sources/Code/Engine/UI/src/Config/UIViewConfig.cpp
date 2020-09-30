@@ -15,5 +15,6 @@ void UIViewConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("endGameView", &UIViewConfig::endGameView);
         classInfo->addField("loadingView", &UIViewConfig::loadingView);
         classInfo->addField("pauseView", &UIViewConfig::pauseView);
+        classInfo->addField("levelsView", &UIViewConfig::levelsView);
     }
 }

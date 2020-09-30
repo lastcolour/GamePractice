@@ -141,7 +141,7 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
         return EInputEventResult::Ignore;
     }
     if(!ET_IsExistNode<ETUIAnimation>(getEntityId())) {
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, eventType);
+        ET_SendEvent(&ETUIViewScript::ET_onEvent, eventType);
     } else {
         ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, getEntityId());
         ET_SendEvent(getEntityId(), &ETUIAnimation::ET_start);
@@ -160,7 +160,7 @@ void UIButton::ET_onAnimationEnd() {
         assert(activeBtId == getEntityId());
     }
     ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, InvalidEntityId);
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, eventType);
+    ET_SendEvent(&ETUIViewScript::ET_onEvent, eventType);
 }
 
 void UIButton::onZIndexChanged(int newZIndex) {

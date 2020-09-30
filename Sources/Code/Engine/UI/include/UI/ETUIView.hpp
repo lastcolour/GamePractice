@@ -3,19 +3,6 @@
 
 #include "Core/Core.hpp"
 
-enum class UIEventType {
-    None = 0,
-    OnMainViewStartGame,
-    OnGameEndViewExit,
-    OnBackButton,
-    OnGameGameEnd,
-    OnSurfaceHidden,
-    OnSurfaceShown,
-    OnPauseViewResume,
-    OnPauseViewRestart,
-    OnPauseViewExit
-};
-
 enum class UIViewType {
     None = 0,
     Main,
@@ -23,6 +10,7 @@ enum class UIViewType {
     EndGame,
     PauseGame,
     Background,
+    Levels,
     Loading
 };
 
@@ -40,11 +28,6 @@ struct ETUIViewTransitionManager {
     virtual void ET_addAppearing(EntityId viewId) = 0;
     virtual void ET_addDisappearing(EntityId viewId) = 0;
     virtual bool ET_hasActiveTransition() const = 0;
-};
-
-struct ETUIEventManager {
-    virtual ~ETUIEventManager() = default;
-    virtual void ET_onEvent(UIEventType eventType) = 0;
 };
 
 struct ETUIViewAppearAnimation {

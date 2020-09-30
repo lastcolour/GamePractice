@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 0.0,
+                "y": 81.0,
                 "z": 0.0
               },
               "scale": {
@@ -141,7 +141,7 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 353,
+                      "x": 352,
                       "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
@@ -170,7 +170,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 0.0,
+                "y": -81.0,
                 "z": 0.0
               },
               "scale": {
@@ -283,7 +283,7 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 353,
+                      "x": 352,
                       "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
@@ -425,7 +425,7 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 353,
+                      "x": 352,
                       "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
@@ -480,7 +480,7 @@
               "drawPriority": 2,
               "size": {
                 "x": 376,
-                "y": 353
+                "y": 352
               },
               "image": "Images/block.png",
               "color": {
@@ -540,7 +540,7 @@
         "drawPriority": 0,
         "size": {
           "x": 528,
-          "y": 939
+          "y": 938
         },
         "color": {
           "r": 0,
@@ -580,6 +580,11 @@
           }
         ]
       }
+    },
+    {
+      "type": "PauseViewScript",
+      "id": 5,
+      "data": {}
     }
   ]
 }

@@ -37,6 +37,9 @@ const char* getViewName(UIViewType viewType) {
             viewName = viewsConfig.pauseView.c_str();
             break;
         }
+        case UIViewType::Levels: {
+            viewName = viewsConfig.levelsView.c_str();
+        }
         case UIViewType::None: {
             [[fallthrough]];
         }

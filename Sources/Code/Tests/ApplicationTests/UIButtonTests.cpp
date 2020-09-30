@@ -1,24 +1,28 @@
 #include "UIButtonTests.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUIButton.hpp"
-#include "UI/ETUIView.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Logics/UIButton.hpp"
 #include "Logics/UIBox.hpp"
 #include "Logics/UIPressAnimation.hpp"
 #include "Core/ETApplication.hpp"
 #include "Config/UIConfig.hpp"
+#include "UI/ETUIViewScript.hpp"
 
-class TestButtonEventListener : public ETNode<ETUIEventManager> {
+class TestButtonEventListener : public ETNode<ETUIViewScript> {
 public:
     TestButtonEventListener() {
         auto entId = GetETSystem()->createNewEntityId();
-        ETNode<ETUIEventManager>::connect(entId);
+        ETNode<ETUIViewScript>::connect(entId);
     }
 
     virtual ~TestButtonEventListener() = default;
 
     // ETUIEventManager
+    void ET_onGetFocus() override {}
+
+    void ET_onLostFocus() override {}
+
     void ET_onEvent(UIEventType eventType) override {
         eventQueue.push_back(eventType);
     }

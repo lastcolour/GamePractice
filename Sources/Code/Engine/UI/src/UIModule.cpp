@@ -1,7 +1,6 @@
 #include "UI/UIModule.hpp"
 #include "UISurfaceEventHandler.hpp"
 #include "UIViewManager.hpp"
-#include "UIEventManager.hpp"
 #include "Config/UIConfig.hpp"
 #include "UITimer.hpp"
 #include "UIViewTransitionManager.hpp"
@@ -16,7 +15,6 @@
 #include "Logics/UILabel.hpp"
 #include "Logics/UIViewAppearAnimation.hpp"
 #include "Logics/UIGameEndStarsAppearAnimation.hpp"
-#include "Logics/UIGameEndViewScript.hpp"
 #include "Logics/UIScrollArea.hpp"
 #include "Logics/UILayoutBox.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
@@ -29,7 +27,6 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
         new SystemLogicContainer<
             UISurfaceEventHandler,
             UIViewManager,
-            UIEventManager,
             UITimer,
             UIViewTransitionManager,
             UIViewPortManager,
@@ -51,7 +48,6 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIPressAnimation>();
     logicsRegister.registerLogic<UILabel>();
     logicsRegister.registerLogic<UIViewAppearAnimation>();
-    logicsRegister.registerLogic<UIGameEndViewScript>();
     logicsRegister.registerLogic<UIGameEndStarsAppearAnimation>();
     logicsRegister.registerLogic<UIScrollArea>();
     logicsRegister.registerLogic<UILayoutBox>();

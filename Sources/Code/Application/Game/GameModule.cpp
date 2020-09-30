@@ -13,6 +13,11 @@
 #include "Game/Logics/BoardElemDestroyAnimation.hpp"
 #include "Game/Logics/BoardElemSelectAnimation.hpp"
 #include "Game/Logics/ScoreObjective.hpp"
+#include "Game/ViewScripts/GameResultViewScript.hpp"
+#include "Game/ViewScripts/GameViewScript.hpp"
+#include "Game/ViewScripts/LevelsViewScript.hpp"
+#include "Game/ViewScripts/MainViewScript.hpp"
+#include "Game/ViewScripts/PauseViewScript.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
@@ -40,4 +45,10 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<BoardElemDestroyAnimation>();
     logicsRegister.registerLogic<BoardElemSelectAnimation>();
     logicsRegister.registerLogic<ScoreObjective>();
+
+    logicsRegister.registerLogic<GameResultViewScript>();
+    logicsRegister.registerLogic<GameViewScript>();
+    logicsRegister.registerLogic<LevelsViewScript>();
+    logicsRegister.registerLogic<MainViewScript>();
+    logicsRegister.registerLogic<PauseViewScript>();
 }

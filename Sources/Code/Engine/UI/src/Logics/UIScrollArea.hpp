@@ -77,8 +77,7 @@ private:
     UIScrollAreaStyle style;
     std::vector<PathPoint> path;
     EntityId targetId;
-    Vec2i maxPt;
-    Vec2i minPt;
+    AABB2Di scrollBox;
     Vec2i endScrollPt;
     float scrollSpeed;
     float accumulativeDt;

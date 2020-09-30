@@ -23,6 +23,7 @@ public:
     std::string endGameView;
     std::string loadingView;
     std::string pauseView;
+    std::string levelsView;
 };
 
 #endif /* __UI_VIEW_CONFIG_HPP__ */

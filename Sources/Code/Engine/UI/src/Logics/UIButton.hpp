@@ -3,7 +3,7 @@
 
 #include "Logics/UIBox.hpp"
 #include "UI/ETUIButton.hpp"
-#include "UI/ETUIView.hpp"
+#include "UI/ETUIViewScript.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Core/TimePoint.hpp"
 

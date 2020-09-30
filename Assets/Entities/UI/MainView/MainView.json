@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 0.0,
+          "y": 280.0,
           "z": 0.0
         },
         "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 67,
-                            "y": 67
+                            "x": 235,
+                            "y": 235
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -158,8 +158,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 80,
-                      "y": 80
+                      "x": 282,
+                      "y": 282
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -215,7 +215,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 0.0,
+          "y": -95.0,
           "z": 0.0
         },
         "scale": {
@@ -419,7 +419,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 0.0,
+          "y": -376.0,
           "z": 0.0
         },
         "scale": {
@@ -442,7 +442,7 @@
           {
             "transform": {
               "pos": {
-                "x": 0.0,
+                "x": -141.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -496,8 +496,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 71,
+                            "y": 71
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -571,8 +571,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 94,
+                      "y": 94
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -643,8 +643,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 71,
+                            "y": 71
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -718,8 +718,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 94,
+                      "y": 94
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -736,7 +736,7 @@
           {
             "transform": {
               "pos": {
-                "x": 0.0,
+                "x": 141.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -790,8 +790,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 20,
-                            "y": 20
+                            "x": 71,
+                            "y": 71
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -865,8 +865,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 27,
-                      "y": 27
+                      "x": 94,
+                      "y": 94
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -991,6 +991,11 @@
           }
         ]
       }
+    },
+    {
+      "type": "MainViewScript",
+      "id": 6,
+      "data": {}
     }
   ]
 }

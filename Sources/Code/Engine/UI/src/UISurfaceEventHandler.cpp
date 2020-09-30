@@ -1,7 +1,7 @@
 #include "UISurfaceEventHandler.hpp"
-#include "UI/ETUIView.hpp"
 #include "UI/ETUIButton.hpp"
 #include "UI/ETUIBox.hpp"
+#include "UI/ETUIViewScript.hpp"
 #include "UIUtils.hpp"
 
 #include <algorithm>
@@ -16,6 +16,7 @@ UISurfaceEventHandler::~UISurfaceEventHandler() {
 bool UISurfaceEventHandler::init() {
     ETNode<ETInputEvents>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
+    ETNode<ETUIButtonEventManager>::connect(getEntityId());
     return true;
 }
 
@@ -96,14 +97,22 @@ void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) 
 
 void UISurfaceEventHandler::ET_onButton(EActionType actionType, EButtonId buttonId) {
     if(actionType == EActionType::Press && buttonId == EButtonId::Back) {
-        ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnBackButton);
+        ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnBackButton);
     }
 }
 
 void UISurfaceEventHandler::ET_onSurfaceHidden() {
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnSurfaceHidden);
+    ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnSurfaceHidden);
 }
 
 void UISurfaceEventHandler::ET_onSurfaceShown() {
-    ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnSurfaceShown);
+    ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnSurfaceShown);
+}
+
+EntityId UISurfaceEventHandler::ET_getActiveButton() const {
+    return activeButtonId;
+}
+
+void UISurfaceEventHandler::ET_setActiveButton(EntityId buttonId) {
+    activeButtonId = buttonId;
 }

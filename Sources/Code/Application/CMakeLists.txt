@@ -17,12 +17,14 @@ file(GLOB APPLICATION_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/Logics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/States/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game/ViewScripts/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Laucher/*.cpp)
 
 file(GLOB APPLICATION_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/Logics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game/States/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game/ViewScripts/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Laucher/*.hpp)
 
 add_library(${PROJECT_NAME} STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})

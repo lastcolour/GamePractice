@@ -1,6 +1,6 @@
 #include "Game/GameStateManager.hpp"
 #include "Core/ETLogger.hpp"
-#include "UI/ETUIView.hpp"
+#include "UI/ETUIViewScript.hpp"
 
 #include <cassert>
 
@@ -107,7 +107,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: None");
             gameState = newState;
             postGame.onLeave();
-            ET_SendEvent(&ETUIEventManager::ET_onEvent, UIEventType::OnGameGameEnd);
+            ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnGameGameEnd);
             break;
         }
         default: {

@@ -7,6 +7,7 @@ struct ETUIViewPort {
     virtual ~ETUIViewPort() = default;
     virtual const Vec2i& ET_getViewport() const = 0;
     virtual void ET_setViewPort(const Vec2i& newSize) = 0;
+    virtual void ET_update() = 0;
 };
 
 struct ETUIViewPortEvents {
