@@ -40,6 +40,8 @@ There is a list 3rd party dependencies used in Engine
 
 The Engine's Editor is PyQt5 application that allows to setup/update game entities; Editor is communicating with Engine via ctype API;
 
+![Editor](https://github.com/lastcolour/GamePractice/blob/master/Docs/Editor_Example_01.png)
+
 ## Info
 
 The next command will start an Editor
