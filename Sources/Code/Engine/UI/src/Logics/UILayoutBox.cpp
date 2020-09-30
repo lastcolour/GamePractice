@@ -10,7 +10,8 @@ void UILayoutBox::Reflect(ReflectContext& ctx) {
     }
 }
 
-UILayoutBox::UILayoutBox() {
+UILayoutBox::UILayoutBox()
+    : aabb(Vec2i(0), Vec2i(0)) {
 }
 
 UILayoutBox::~UILayoutBox() {
@@ -20,7 +21,9 @@ bool UILayoutBox::init() {
     UIElement::init();
     ETNode<ETUILayoutEvents>::connect(getEntityId());
 
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+    auto combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
+    ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
+    ET_onLayoutChanged(combinedBox);
 
     return true;
 }
@@ -30,16 +33,19 @@ void UILayoutBox::deinit() {
 }
 
 void UILayoutBox::ET_onAllLogicsCreated() {
-    if(boxRenderId == getEntityId()) {
+    auto combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
+    ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
+    ET_onLayoutChanged(combinedBox);
+    if(boxRenderId.isValid()) {
         auto box = ET_getBox();
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, box.getSize());
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     }
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
 }
 
 AABB2Di UILayoutBox::ET_getBox() const {
-    return UI::GetTmScaledBox(getEntityId(), aabb);
+    auto resBox = UI::GetTmScaledBox(getEntityId(), aabb);
+    return UI::SetTmCenterToBox(getEntityId(), resBox);
 }
 
 UIBoxMargin UILayoutBox::ET_getMargin() const {
@@ -63,12 +69,12 @@ void UILayoutBox::onAlphaChanged(float newAlpha) {
 }
 
 void UILayoutBox::onTransformChanged(const Transform& newTm) {
-    // ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+    ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
 }
 
 void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
     auto newAabb = UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
-    auto shiftPt = newAabb.getCenter() - newCombinedBox.getCenter();
+    auto shiftPt = newCombinedBox.getCenter() - newAabb.getCenter();
 
     std::vector<EntityId> children;
     ET_SendEventReturn(children, getEntityId(), &ETUILayout::ET_getItems);
@@ -79,9 +85,7 @@ void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
         tm.pt.x += static_cast<float>(shiftPt.x);
         tm.pt.y += static_cast<float>(shiftPt.y);
 
-        ET_SendEvent(childId, &ETUIElement::ET_setIgnoreTransform, true);
-        ET_SendEvent(childId, &ETEntity::ET_setTransform, tm);
-        ET_SendEvent(childId, &ETUIElement::ET_setIgnoreTransform, false);
+        UI::SetTmDoNotUpdateLayout(childId, tm);
     }
 
     aabb = newAabb;

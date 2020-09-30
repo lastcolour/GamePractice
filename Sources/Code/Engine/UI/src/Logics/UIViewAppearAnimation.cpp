@@ -6,6 +6,7 @@
 #include "Core/ETApplication.hpp"
 #include "Config/UIConfig.hpp"
 #include "Core/ETLogger.hpp"
+#include "UI/ETUILayout.hpp"
 
 #include <algorithm>
 
@@ -88,7 +89,7 @@ void UIViewAppearAnimation::ET_onUITick(float dt) {
             ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewDisappeared, getEntityId());
         }
         ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
-        ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+        ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
         ETNode<ETUITimerEvents>::disconnect();
         state = State::None;
     }

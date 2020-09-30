@@ -3,6 +3,7 @@
 
 #include "Logics/UIElement.hpp"
 #include "UI/UIBoxStyle.hpp"
+#include "UI/ETUILayout.hpp"
 
 class UILayoutBox : public UIElement,
     public ETNode<ETUILayoutEvents> {

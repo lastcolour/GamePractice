@@ -2,12 +2,12 @@
 #define __ET_UI_BOX_HPP__
 
 #include "Math/AABB.hpp"
+#include "Core/Core.hpp"
 
 #include <vector>
 
 class UIBoxStyle;
 class UIBoxMargin;
-class UILayoutStyle;
 
 struct ETUIElement {
     virtual ~ETUIElement() = default;
@@ -43,21 +43,6 @@ struct ETUIBox {
     virtual ~ETUIBox() = default;
     virtual const UIBoxStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIBoxStyle& newStyle) = 0;
-};
-
-struct ETUILayout {
-    virtual ~ETUILayout() = default;
-    virtual const UILayoutStyle& ET_getStyle() const = 0;
-    virtual void ET_setStyle(const UILayoutStyle& newStyle) = 0;
-    virtual void ET_addItem(EntityId entityId) = 0;
-    virtual std::vector<EntityId> ET_getItems() const = 0;
-    virtual void ET_update() = 0;
-    virtual const AABB2Di& ET_getCombinedBox() const = 0;
-};
-
-struct ETUILayoutEvents {
-    virtual ~ETUILayoutEvents() = default;
-    virtual void ET_onLayoutChanged(const AABB2Di& newCombinedBox) = 0;
 };
 
 struct ETUILabel {

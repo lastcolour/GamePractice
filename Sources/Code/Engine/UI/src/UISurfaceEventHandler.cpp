@@ -49,7 +49,6 @@ void UISurfaceEventHandler::onPress(const Vec2i& pt) {
         ET_SendEventReturn(handleRes, elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Press, pt);
         if(handleRes == EInputEventResult::Accept) {
             eventHandlers.push_back(elemId);
-            break;
         }
     }
 }

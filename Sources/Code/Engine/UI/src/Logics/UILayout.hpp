@@ -2,13 +2,15 @@
 #define __UI_LAYOUT_HPP__
 
 #include "Entity/EntityLogic.hpp"
+#include "UI/ETUILayout.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/UILayoutStyle.hpp"
 #include "Core/ETPrimitives.hpp"
 
 class UILayout : public EntityLogic,
     public ETNode<ETUILayout>,
-    public ETNode<ETUIElementEvents> {
+    public ETNode<ETUIElementEvents>,
+    public ETNode<ETUIElemAligner> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,9 +28,11 @@ public:
     const UILayoutStyle& ET_getStyle() const override;
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
-    void ET_update() override;
     const AABB2Di& ET_getCombinedBox() const override;
     std::vector<EntityId> ET_getItems() const override;
+
+    // ETUIElemAligner
+    void ET_reAlign() override;
 
     // ETUIElementEvents
     void ET_onBoxChanged(const AABB2Di& newAabb) override;

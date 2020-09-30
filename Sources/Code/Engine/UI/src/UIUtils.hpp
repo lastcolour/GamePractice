@@ -21,6 +21,8 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, A
 
 void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos);
 
+void SetTmDoNotUpdateLayout(EntityId elemId, const Transform& tm);
+
 int GetValueOnGrind(float val);
 
 float CovertValueFromGrid(int val);

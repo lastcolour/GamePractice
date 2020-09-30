@@ -32,6 +32,7 @@ bool UILayout::init() {
     calculateLayout();
     ETNode<ETUILayout>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
+    ETNode<ETUIElemAligner>::connect(getEntityId());
     return true;
 }
 
@@ -101,6 +102,7 @@ AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
         childBox.setCenter(childBox.getCenter() + centerShift);
     }
 
+    layoutBox.setCenter(center);
     return layoutBox;
 }
 
@@ -154,7 +156,7 @@ AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
     return itemBox;
 }
 
-void UILayout::ET_update() {
+void UILayout::ET_reAlign() {
     calculateLayout();
 }
 

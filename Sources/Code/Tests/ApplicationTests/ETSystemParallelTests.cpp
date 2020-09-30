@@ -84,7 +84,6 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
         while(objects1.size() < 1000) {
             auto obj = objects1.emplace_back(new TestObject(etSystem)).get();
             obj->connect();
-            
         }
         waitThtread.fetch_sub(1);
     });
@@ -92,7 +91,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
     std::thread t3([&waitThtread, &objects2, &etSystem](){
         while(objects2.size() < 1000) {
             auto obj = objects2.emplace_back(new TestObject(etSystem)).get();
-            etSystem.connectNode(*obj, etSystem.createNewEntityId());
+            obj->connect();
         }
         waitThtread.fetch_sub(1);
     });

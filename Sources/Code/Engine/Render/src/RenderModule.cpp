@@ -6,6 +6,7 @@
 #include "RenderCamera.hpp"
 #include "RenderTextureManager.hpp"
 #include "RenderNodeManager.hpp"
+#include "Debug/DebugRender.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
 #include "Logics/RenderImageLogic.hpp"
@@ -26,7 +27,8 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             RenderMaterialManager,
             RenderTextureManager,
             RenderNodeManager,
-            RenderFontManager>()
+            RenderFontManager,
+            DebugRender>()
         );
     return container;
 }

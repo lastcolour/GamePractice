@@ -56,6 +56,8 @@ void calculateParents(JobTree* tree) {
     }
 }
 
+int MIN_MICROSEC_TO_SLEEP = 256;
+
 } // namespace
 
 TasksRunner::TasksRunner() :
@@ -186,7 +188,13 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
             auto currTime = TimePoint::GetNowTime();
             nextJob = getNextJobOrWaitTime(currTime, threadId, waitTime);
             if(!nextJob && threadId != 0) {
-                cond.wait_for(ulock, waitTime);
+                if(waitTime.count() < MIN_MICROSEC_TO_SLEEP) {
+                    cond.wait_for(ulock, waitTime);
+                } else {
+                    ulock.unlock();
+                    std::this_thread::yield();
+                    ulock.lock();
+                }
             } else {
                 break;
             }

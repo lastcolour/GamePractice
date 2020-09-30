@@ -2,6 +2,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "UI/ETUILayout.hpp"
 #include "UIUtils.hpp"
 
 #include <cassert>
@@ -48,7 +49,7 @@ void UIBox::calculateBox() {
 
     if(prevBox.getSize() != aabb.getSize()) {
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
-        ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+        ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
     }
 
     if(prevBox.bot != aabb.bot || prevBox.top != aabb.top) {
@@ -92,11 +93,11 @@ void UIBox::onZIndexChanged(int newZIndex) {
 }
 
 void UIBox::ET_onAllLogicsCreated() {
-    if(boxRenderId == getEntityId()) {
+    if(boxRenderId.isValid()) {
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     }
-    ET_SendEvent(getEntityId(), &ETUILayout::ET_update);
+    ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
 }
 
 void UIBox::onTransformChanged(const Transform& newTm) {

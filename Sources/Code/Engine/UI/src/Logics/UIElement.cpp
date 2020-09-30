@@ -1,4 +1,5 @@
 #include "Logics/UIElement.hpp"
+#include "UI/ETUILayout.hpp"
 
 UIElement::UIElement() :
     alpha(1.f),
@@ -23,7 +24,7 @@ void UIElement::deinit() {
 
 void UIElement::updateHostLayout() {
     if(hostLayoutId.isValid()) {
-        ET_SendEvent(hostLayoutId, &ETUILayout::ET_update);
+        ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
     }
 }
 

@@ -127,6 +127,12 @@ void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos) {
     ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
 }
 
+void SetTmDoNotUpdateLayout(EntityId elemId, const Transform& tm) {
+    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, true);
+    ET_SendEvent(elemId, &ETEntity::ET_setTransform, tm);
+    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
+}
+
 int GetValueOnGrind(float val) {
     auto uiConfig = ET_getShared<UIConfig>();
     return uiConfig->getSizeOnGrind(val);

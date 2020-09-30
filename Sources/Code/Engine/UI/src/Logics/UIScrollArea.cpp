@@ -3,6 +3,29 @@
 #include "Entity/ETEntity.hpp"
 #include "UIUtils.hpp"
 
+#include <algorithm>
+#include <cassert>
+
+namespace {
+
+template<typename T>
+T getMaxByMagnitude(T val, T testVal) {
+    if(testVal <= static_cast<T>(0)) {
+        return std::min(val, testVal);
+    }
+    return std::max(val, testVal);
+}
+
+template<typename T>
+T getMinByMagnitude(T val, T testVal) {
+    if(testVal <= static_cast<T>(0)) {
+        return std::max(val, testVal);
+    }
+    return std::min(val, testVal);
+}
+
+} // namespace
+
 void UIScrollArea::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIScrollArea>("UIScrollArea")) {
         classInfo->addField("style", &UIScrollArea::style);
@@ -11,10 +34,12 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
 }
 
 UIScrollArea::UIScrollArea() :
-    currentProg(0.f),
-    currentSpeed(0.f),
+    endScrollPt(0),
+    scrollSpeed(0.f),
+    accumulativeDt(0.f),
     minPt(0),
-    maxPt(0) {
+    maxPt(0),
+    isPressed(false) {
 }
 
 UIScrollArea::~UIScrollArea() {
@@ -24,7 +49,7 @@ bool UIScrollArea::init() {
     ETNode<ETUIScrollArea>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
-    ETNode<ETUITimerEvents>::connect(getEntityId());
+    ETNode<ETUIElemAligner>::connect(getEntityId());
     initScrollElem();
     return true;
 }
@@ -33,44 +58,53 @@ void UIScrollArea::initScrollElem() {
     if(!targetId.isValid()) {
         return;
     }
+    if(targetId == getEntityId()) {
+        return;
+    }
 
     AABB2Di elemBox(Vec2i(0), Vec2i(0));
     ET_SendEventReturn(elemBox, targetId, &ETUIElement::ET_getBox);
+
     elemBox.top = elemBox.getSize();
     elemBox.bot = Vec2i(0);
 
     AABB2Di box = ET_getHitBox();
+    auto center = box.getCenter();
+
     box.top = box.getSize();
     box.bot = Vec2i(0);
 
-    Vec2i startPt(0);
-    Vec2i endPt(0);
-
     if(style.type == UIScrollType::Horizontal) {
-        startPt = UI::CalcAligmentCenter(UIXAlign::Left, UIYAlign::Center, box, elemBox);
-        endPt = UI::CalcAligmentCenter(UIXAlign::Right, UIYAlign::Center, box, elemBox);
+        minPt = UI::CalcAligmentCenter(UIXAlign::Left, UIYAlign::Center, box, elemBox);
+        maxPt = UI::CalcAligmentCenter(UIXAlign::Right, UIYAlign::Center, box, elemBox);
     } else {
-        startPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, box, elemBox);
-        endPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, box, elemBox);
-    }
-
-    if(style.origin == UIScrollOrigin::End) {
-        std::swap(startPt, endPt);
+        minPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, box, elemBox);
+        maxPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, box, elemBox);
     }
 
     auto size = box.getSize();
-    Vec2 origCenter(size.x / 2.f, size.y / 2.f);
-    Vec2 newCenter(static_cast<float>(startPt.x), static_cast<float>(startPt.y));
-    Vec2 shiftPt = newCenter - origCenter;
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    tm.pt.x += shiftPt.x;
-    tm.pt.y += shiftPt.y;
-    ET_SendEvent(targetId, &ETEntity::ET_setTransform, tm);
+    minPt = center + minPt - size / 2;
+    maxPt = center + maxPt - size / 2;
+
+    if(style.origin == UIScrollOrigin::Start) {
+        if(style.type == UIScrollType::Vertical) {
+            UI::Set2DPositionDoNotUpdateLayout(targetId, maxPt);
+        } else {
+            UI::Set2DPositionDoNotUpdateLayout(targetId, minPt);
+        }
+    } else {
+        if(style.type == UIScrollType::Vertical) {
+            UI::Set2DPositionDoNotUpdateLayout(targetId, minPt);
+        } else {
+            UI::Set2DPositionDoNotUpdateLayout(targetId, maxPt);
+        }
+    }
+
+    assert(minPt <= maxPt && "Invalid min-max pos for scroll area");
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
-    ET_SendEvent(&ETUIElement::ET_setZIndex, childZIndex);
+    ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 
 void UIScrollArea::deinit() {
@@ -83,7 +117,9 @@ EInputEventResult UIScrollArea::ET_onInputEvent(EActionType type, const Vec2i& p
             break;
         }
         case EActionType::Move: {
-            onMove(pt);
+            if(!onMove(pt)) {
+                return EInputEventResult::Ignore;
+            }
             break;
         }
         case EActionType::Release: {
@@ -101,16 +137,27 @@ AABB2Di UIScrollArea::ET_getHitBox() const {
 }
 
 void UIScrollArea::onPress(const Vec2i& pt) {
+    accumulativeDt = 0.f;
+    isPressed = true;
+    ETNode<ETUITimerEvents>::connect(getEntityId());
     path.clear();
     path.push_back({TimePoint::GetNowTime(), pt});
 }
 
 void UIScrollArea::onRelease(const Vec2i& pt) {
+    isPressed = false;
     path.push_back({TimePoint::GetNowTime(), pt});
 }
 
-void UIScrollArea::onMove(const Vec2i& pt) {
-    path.push_back({TimePoint::GetNowTime(), pt});
+bool UIScrollArea::onMove(const Vec2i& pt) {
+    auto box = ET_getHitBox();
+    if(!UI::IsInsideBox(pt, box)) {
+        onRelease(pt);
+        return false;
+    } else {
+        path.push_back({TimePoint::GetNowTime(), pt});
+    }
+    return true;
 }
 
 void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
@@ -147,40 +194,62 @@ void UIScrollArea::ET_onIngoreTransform(bool flag) {
 }
 
 void UIScrollArea::ET_onUITick(float dt) {
-    Vec2 ptShift(0.f);
+    accumulativeDt += dt;
+
+    Transform tm;
+    ET_SendEventReturn(tm, targetId, &ETEntity::ET_getTransform);
+    Vec2i targetPt(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
+
+    Vec2i ptShift(0);
     float shiftTime = 0.f;
 
     if(path.size() > 1) {
         auto& startEvent = path.front();
-        auto& endEvent = path.back();
+        auto endEvent = path.back();
 
-        auto ptDiff = endEvent.pt - startEvent.pt;
-
-        ptShift.x = static_cast<float>(ptDiff.x);
-        ptShift.y = static_cast<float>(ptDiff.y);
-
+        ptShift = endEvent.pt - startEvent.pt;
         shiftTime = endEvent.timeP.getSecondsElapsedFrom(startEvent.timeP);
+        shiftTime = std::max(shiftTime, 0.016f);
+
+        endScrollPt = targetPt + ptShift;
+        endScrollPt.x = Math::Clamp(endScrollPt.x, minPt.x, maxPt.x);
+        endScrollPt.y = Math::Clamp(endScrollPt.y, maxPt.y, minPt.y);
 
         path.clear();
-    } else {
-        return;
+        path.push_back(endEvent);
     }
 
-    ptShift = -ptShift;
-
-    Transform tm;
-    ET_SendEventReturn(tm, targetId, &ETEntity::ET_getTransform);
+    Vec2i deltaShift(0);
 
     if(style.type == UIScrollType::Horizontal) {
-        tm.pt.x += ptShift.x;
+        auto newSpeed = ptShift.x / shiftTime;
+        scrollSpeed = getMaxByMagnitude(scrollSpeed, newSpeed);
+        deltaShift.x = static_cast<int>(scrollSpeed * accumulativeDt);
+        if(std::abs(deltaShift.x) > 0) {
+            accumulativeDt -= deltaShift.x / scrollSpeed;
+        }
     } else {
-        tm.pt.y += ptShift.y;
+        auto newSpeed = ptShift.y / shiftTime;
+        scrollSpeed = getMaxByMagnitude(scrollSpeed, newSpeed);
+        deltaShift.y = static_cast<int>(scrollSpeed * accumulativeDt);
+        if(std::abs(deltaShift.y) > 0) {
+            accumulativeDt -= deltaShift.y / scrollSpeed;
+        }
     }
 
-    // tm.pt.x = Math::Clamp(tm.pt.x, static_cast<float>(minPt.x), static_cast<float>(maxPt.x));
-    // tm.pt.y = Math::Clamp(tm.pt.y, static_cast<float>(minPt.y), static_cast<float>(maxPt.y));
+    auto remainingShift = endScrollPt - targetPt;
+    deltaShift.x = getMinByMagnitude(deltaShift.x, remainingShift.x);
+    deltaShift.y = getMinByMagnitude(deltaShift.y, remainingShift.y);
 
-    ET_SendEvent(targetId, &ETEntity::ET_setTransform, tm);
+    targetPt += deltaShift;
+    targetPt.x = Math::Clamp(targetPt.x, minPt.x, maxPt.x);
+    targetPt.y = Math::Clamp(targetPt.y, maxPt.y, minPt.y);
+
+    UI::Set2DPositionDoNotUpdateLayout(targetId, targetPt);
+
+    if(targetPt == endScrollPt && !isPressed) {
+        ETNode<ETUITimerEvents>::disconnect();
+    }
 }
 
 void UIScrollArea::ET_setTarget(EntityId newTargetId) {
@@ -199,4 +268,8 @@ void UIScrollArea::ET_setStyle(const UIScrollAreaStyle& newStyle) {
 
 const UIScrollAreaStyle& UIScrollArea::ET_getStyle() const {
     return style;
+}
+
+void UIScrollArea::ET_reAlign() {
+    initScrollElem();
 }
