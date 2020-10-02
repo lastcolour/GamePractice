@@ -28,10 +28,16 @@ void GameStateManager::ET_startGame() {
 
 void GameStateManager::ET_pauseGame() {
     ET_SendEvent(&ETGameTimer::ET_pause);
+    if(gameState == EGameState::InGame) {
+        ET_SendEvent(&ETGameBoardInteractionLogic::ET_allowInteraction, false);
+    }
 }
 
 void GameStateManager::ET_resumeGame() {
     ET_SendEvent(&ETGameTimer::ET_resume);
+    if(gameState == EGameState::InGame) {
+        ET_SendEvent(&ETGameBoardInteractionLogic::ET_allowInteraction, true);
+    }
 }
 
 bool GameStateManager::ET_isGamePaused() const {
@@ -107,7 +113,8 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: None");
             gameState = newState;
             postGame.onLeave();
-            ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnGameGameEnd);
+            UIEvent endEvent{getEntityId(), UIEvent::EventType::OnGameGameEnd};
+            ET_SendEvent(&ETUIViewScript::ET_onEvent, endEvent);
             break;
         }
         default: {

@@ -19,11 +19,11 @@ public:
     // ETUIViewScript
     void ET_onGetFocus() override;
     void ET_onLostFocus() override;
-    void ET_onEvent(UIEventType eventType) override;
+    void ET_onEvent(const UIEvent& event) override;
 
 protected:
 
-    virtual void onEvent(UIEventType eventType) = 0;
+    virtual void onEvent(const UIEvent& event) = 0;
 
 private:
 

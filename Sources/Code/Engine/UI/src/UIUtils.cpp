@@ -63,7 +63,12 @@ const char* GetViewTypeName(UIViewType viewType) {
             viewTypeStr = "Loading";
             break;
         }
+        case UIViewType::Levels: {
+            viewTypeStr = "Levels";
+            break;
+        }
         default: {
+            assert(false && "INvalid view type");
             break;
         }
     }

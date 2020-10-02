@@ -97,16 +97,19 @@ void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) 
 
 void UISurfaceEventHandler::ET_onButton(EActionType actionType, EButtonId buttonId) {
     if(actionType == EActionType::Press && buttonId == EButtonId::Back) {
-        ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnBackButton);
+        UIEvent backEvent{getEntityId(), UIEvent::EventType::OnBackButton};
+        ET_SendEvent(&ETUIViewScript::ET_onEvent, backEvent);
     }
 }
 
 void UISurfaceEventHandler::ET_onSurfaceHidden() {
-    ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnSurfaceHidden);
+    UIEvent hiddenEvent{getEntityId(), UIEvent::EventType::OnSurfaceHidden};
+    ET_SendEvent(&ETUIViewScript::ET_onEvent, hiddenEvent);
 }
 
 void UISurfaceEventHandler::ET_onSurfaceShown() {
-    ET_SendEvent(&ETUIViewScript::ET_onEvent, UIEventType::OnSurfaceShown);
+    UIEvent shownEvent{getEntityId(), UIEvent::EventType::OnSurfaceShown};
+    ET_SendEvent(&ETUIViewScript::ET_onEvent, shownEvent);
 }
 
 EntityId UISurfaceEventHandler::ET_getActiveButton() const {

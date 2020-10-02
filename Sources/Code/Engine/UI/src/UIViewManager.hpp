@@ -10,8 +10,7 @@
 #include <unordered_map>
 
 class UIViewManager : public SystemLogic,
-    public ETNode<ETUIViewManager>,
-    public ETNode<ETUIViewAppearAnimationEvents> {
+    public ETNode<ETUIViewManager> {
 public:
 
     UIViewManager();
@@ -27,8 +26,6 @@ public:
     UIViewType ET_getActiveViewType() const override;
     EntityId ET_getActiveViewId() const override;
     void ET_onViewLoaded(UIViewType viewType, EntityId viewId) override;
-
-    // ETUIViewAppearAnimationEvents
     void ET_onViewAppeared(EntityId viewId) override;
     void ET_onViewDisappeared(EntityId viewId) override;
 

@@ -54,7 +54,7 @@ private:
     EntityId labelId;
     Vec2i pressPt;
     TimePoint pressTime;
-    UIEventType eventType;
+    UIEvent::EventType eventType;
 };
 
 #endif /* __UI_BUTTON_HPP__ */

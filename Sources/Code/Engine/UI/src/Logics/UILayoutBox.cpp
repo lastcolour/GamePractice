@@ -68,10 +68,6 @@ void UILayoutBox::onAlphaChanged(float newAlpha) {
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
-void UILayoutBox::onTransformChanged(const Transform& newTm) {
-    ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
-}
-
 void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
     auto newAabb = UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
     auto shiftPt = newCombinedBox.getCenter() - newAabb.getCenter();

@@ -41,11 +41,11 @@ GameResultViewScript::GameResultViewScript() {
 GameResultViewScript::~GameResultViewScript() {
 }
 
-void GameResultViewScript::onEvent(UIEventType eventType) {
-    if(eventType == UIEventType::OnBackButton || eventType == UIEventType::OnGameEndViewExit) {
+void GameResultViewScript::onEvent(const UIEvent& event) {
+    if(event.type == UIEvent::EventType::OnBackButton || event.type == UIEvent::EventType::OnGameEndViewExit) {
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
-        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Main);
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Levels);
     }
 }
 
@@ -56,9 +56,5 @@ void GameResultViewScript::ET_onGetFocus() {
     ET_SendEventReturn(gameResult, &ETGameEndResult::ET_getLastGameResult);
 
     auto starsCount = covertToStarsCount(gameResult.objectiveCompleted);
-    if(starsCount > 0) {
-        ET_SendEvent(&ETUIStarsAppearAnimation::ET_showStars, 3);
-    }
-
     ET_SendEvent(&ETUIStarsAppearAnimation::ET_showStars, 3);
 }

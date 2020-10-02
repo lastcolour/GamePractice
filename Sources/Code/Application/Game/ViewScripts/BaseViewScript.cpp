@@ -23,9 +23,9 @@ void BaseViewScript::ET_onLostFocus() {
     hasFocus = false;
 }
 
-void BaseViewScript::ET_onEvent(UIEventType eventType) {
+void BaseViewScript::ET_onEvent(const UIEvent& event) {
     if(!hasFocus) {
         return;
     }
-    onEvent(eventType);
+    onEvent(event);
 }

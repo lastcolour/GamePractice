@@ -2,6 +2,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntity.hpp"
 #include "UIUtils.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -88,6 +89,9 @@ void UIScrollArea::initScrollElem() {
         return;
     }
     if(targetId == getEntityId()) {
+        LogWarning("[UIScrollArea::initScrollElem] Can't have host element '%s' as a scroll target",
+            EntityUtils::GetEntityName(targetId));
+        targetId == InvalidEntityId;
         return;
     }
 
@@ -170,6 +174,12 @@ AABB2Di UIScrollArea::ET_getHitBox() const {
 void UIScrollArea::onPress(const Vec2i& pt) {
     accumulativeDt = 0.f;
     isPressed = true;
+
+    Transform tm;
+    ET_SendEventReturn(tm, targetId, &ETEntity::ET_getTransform);
+    endScrollPt.x = static_cast<int>(tm.pt.x);
+    endScrollPt.y = static_cast<int>(tm.pt.y);
+
     ETNode<ETUITimerEvents>::connect(getEntityId());
     path.clear();
     path.push_back({TimePoint::GetNowTime(), pt});

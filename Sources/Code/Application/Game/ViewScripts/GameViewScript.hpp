@@ -21,7 +21,7 @@ public:
 
 protected:
 
-    void onEvent(UIEventType eventType) override;
+    void onEvent(const UIEvent& event) override;
 };
 
 #endif /* __GAME_VIEW_SCRIPT_HPP__ */

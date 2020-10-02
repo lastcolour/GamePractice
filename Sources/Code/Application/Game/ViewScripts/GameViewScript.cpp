@@ -31,10 +31,10 @@ void GameViewScript::ET_onGetFocus() {
     }
 }
 
-void GameViewScript::onEvent(UIEventType eventType) {
-    if(eventType == UIEventType::OnBackButton) {
+void GameViewScript::onEvent(const UIEvent& event) {
+    if(event.type == UIEvent::EventType::OnBackButton) {
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::PauseGame);
-    } else if(eventType == UIEventType::OnGameGameEnd) {
+    } else if(event.type == UIEvent::EventType::OnGameGameEnd) {
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
     }
 }

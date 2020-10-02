@@ -14,7 +14,7 @@ class ReflectContext;
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
     public ETNode<ETGameBoardInteractionLogic>,
-    public ETNode<ETGameTimerEvents>  {
+    public ETNode<ETGameTimerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);

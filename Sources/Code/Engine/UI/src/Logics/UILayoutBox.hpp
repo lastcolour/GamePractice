@@ -35,7 +35,7 @@ protected:
     void onZIndexChanged(int newZIndex) override;
     void onHide(bool flag) override;
     void onAlphaChanged(float newAlpha) override;
-    void onTransformChanged(const Transform& newTm) override;
+    void onTransformChanged(const Transform& newTm) override {}
     void onDisabled(bool flag) override {}
 
 private:

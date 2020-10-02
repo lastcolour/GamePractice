@@ -83,10 +83,10 @@ void UIViewAppearAnimation::ET_onUITick(float dt) {
             }
         }
         if(state == State::Appear) {
-            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewAppeared, getEntityId());
+            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onAppeared, getEntityId());
         } else {
             ET_SendEvent(getEntityId(), &ETUIElement::ET_hide);
-            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onViewDisappeared, getEntityId());
+            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onDisappeared, getEntityId());
         }
         ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
         ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);

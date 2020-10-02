@@ -179,12 +179,13 @@ void UILayout::calculateLayout() {
     childBoxes.reserve(children.size());
     int offset = 0;
     int prevMargin = 0;
-    for(auto childId : children) {
+    for(auto& childId : children) {
         AABB2Di childBox;
         childBox.bot = Vec2i(0);
         childBox.top = Vec2i(0);
         if(childId == getEntityId()) {
             LogWarning("[UILayout::calculateLayout] Can't have an host entity '%s' on layout", EntityUtils::GetEntityName(childId));
+            childId = InvalidEntityId;
         } else if(!childId.isValid()) {
             LogWarning("[UILayout::calculateLayout] Invalid child on entity layout: '%s'", EntityUtils::GetEntityName(getEntityId()));
         } else {
@@ -201,7 +202,7 @@ void UILayout::calculateLayout() {
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
-        if(!childId.isValid() || childId == getEntityId()) {
+        if(!childId.isValid()) {
             continue;
         }
         auto childBox = childBoxes[i];

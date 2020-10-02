@@ -40,18 +40,19 @@ bool isPressTimeRunOut(const TimePoint& pressTime) {
 } // namespace
 
 void UIButton::Reflect(ReflectContext& ctx) {
-    if(auto enumInfo = ctx.enumInfo<UIEventType>("UIEventType")) {
-        enumInfo->addValues<UIEventType>({
-            {"None", UIEventType::None},
-            {"OnMainViewStartGame", UIEventType::OnMainViewStartGame},
-            {"OnGameEndViewExit", UIEventType::OnGameEndViewExit},
-            {"OnBackButton", UIEventType::OnBackButton},
-            {"OnGameGameEnd", UIEventType::OnGameGameEnd},
-            {"OnSurfaceHidden", UIEventType::OnSurfaceHidden},
-            {"OnSurfaceShown", UIEventType::OnSurfaceShown},
-            {"OnPauseViewResume", UIEventType::OnPauseViewResume},
-            {"OnPauseViewRestart", UIEventType::OnPauseViewRestart},
-            {"OnPauseViewExit", UIEventType::OnPauseViewExit}
+    if(auto enumInfo = ctx.enumInfo<UIEvent::EventType>("UIEventType")) {
+        enumInfo->addValues<UIEvent::EventType>({
+            {"None", UIEvent::EventType::None},
+            {"OnMainViewStartGame", UIEvent::EventType::OnMainViewStartGame},
+            {"OnGameEndViewExit", UIEvent::EventType::OnGameEndViewExit},
+            {"OnBackButton", UIEvent::EventType::OnBackButton},
+            {"OnGameGameEnd", UIEvent::EventType::OnGameGameEnd},
+            {"OnSurfaceHidden", UIEvent::EventType::OnSurfaceHidden},
+            {"OnSurfaceShown", UIEvent::EventType::OnSurfaceShown},
+            {"OnPauseViewResume", UIEvent::EventType::OnPauseViewResume},
+            {"OnPauseViewRestart", UIEvent::EventType::OnPauseViewRestart},
+            {"OnPauseViewExit", UIEvent::EventType::OnPauseViewExit},
+            {"OnLevelsStartLevel", UIEvent::EventType::OnLevelsStartLevel}
         });
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
@@ -63,7 +64,7 @@ void UIButton::Reflect(ReflectContext& ctx) {
 
 UIButton::UIButton() :
     pressPt(0),
-    eventType(UIEventType::None) {
+    eventType(UIEvent::EventType::None) {
 }
 
 UIButton::~UIButton() {
@@ -141,7 +142,8 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
         return EInputEventResult::Ignore;
     }
     if(!ET_IsExistNode<ETUIAnimation>(getEntityId())) {
-        ET_SendEvent(&ETUIViewScript::ET_onEvent, eventType);
+        UIEvent buttonEvent{getEntityId(), eventType};
+        ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
     } else {
         ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, getEntityId());
         ET_SendEvent(getEntityId(), &ETUIAnimation::ET_start);
@@ -154,13 +156,14 @@ AABB2Di UIButton::ET_getHitBox() const {
 }
 
 void UIButton::ET_onAnimationEnd() {
-    {
-        EntityId activeBtId;
-        ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
-        assert(activeBtId == getEntityId());
-    }
+    EntityId activeBtId;
+    ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
+    assert(activeBtId == getEntityId());
+
     ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, InvalidEntityId);
-    ET_SendEvent(&ETUIViewScript::ET_onEvent, eventType);
+
+    UIEvent buttonEvent{getEntityId(), eventType};
+    ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
 }
 
 void UIButton::onZIndexChanged(int newZIndex) {

@@ -24,7 +24,6 @@ UIViewManager::~UIViewManager() {
 
 bool UIViewManager::init() {
     ETNode<ETUIViewManager>::connect(getEntityId());
-    ETNode<ETUIViewAppearAnimationEvents>::connect(getEntityId());
     return true;
 }
 
@@ -104,7 +103,7 @@ void UIViewManager::ET_closeView(UIViewType viewType) {
     });
     auto viewTypeStr = UI::GetViewTypeName(viewType);
     if(it == stack.end()) {
-        LogWarning("[UIViewManager::ET_closeView] Can't find view %s' to close", viewTypeStr);
+        LogWarning("[UIViewManager::ET_closeView] Can't find view '%s' to close", viewTypeStr);
         return;
     }
     LogDebug("[UIViewManager::ET_closeView] Close view: '%s'", viewTypeStr);
@@ -135,6 +134,10 @@ void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
     if(stack.empty()) {
         return;
     }
-    auto topViewId = stack.back().id;
-    ET_SendEvent(topViewId, &ETUIViewScript::ET_onGetFocus);
+    bool hasActiveTransition = false;
+    ET_SendEventReturn(hasActiveTransition, &ETUIViewTransitionManager::ET_hasActiveTransition);
+    if(!hasActiveTransition) {
+        auto topViewId = stack.back().id;
+        ET_SendEvent(topViewId, &ETUIViewScript::ET_onGetFocus);
+    }
 }

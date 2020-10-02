@@ -20,27 +20,27 @@ bool UIViewTransitionManager::init() {
 void UIViewTransitionManager::deinit() {
 }
 
-void UIViewTransitionManager::ET_onViewAppeared(EntityId viewId) {
-    if(tasks.empty()) {
-        return;
-    }
-    auto& currentTask = tasks.front();
-    if(currentTask.viewId == viewId) {
-        assert(currentTask.isAppearing && "Invalid task type");
-        tasks.erase(tasks.begin());
-        startNextTask();
+void UIViewTransitionManager::ET_onAppeared(EntityId viewId) {
+    if(!tasks.empty()) {
+        auto& currentTask = tasks.front();
+        if(currentTask.viewId == viewId) {
+            assert(currentTask.isAppearing && "Invalid task type");
+            tasks.erase(tasks.begin());
+            ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, viewId);
+            startNextTask();
+        }
     }
 }
 
-void UIViewTransitionManager::ET_onViewDisappeared(EntityId viewId) {
-    if(tasks.empty()) {
-        return;
-    }
-    auto& currentTask = tasks.front();
-    if(currentTask.viewId == viewId) {
-        assert(!currentTask.isAppearing && "Invalid task type");
-        tasks.erase(tasks.begin());
-        startNextTask();
+void UIViewTransitionManager::ET_onDisappeared(EntityId viewId) {
+    if(!tasks.empty()) {
+        auto& currentTask = tasks.front();
+        if(currentTask.viewId == viewId) {
+            assert(!currentTask.isAppearing && "Invalid task type");
+            tasks.erase(tasks.begin());
+            ET_SendEvent(&ETUIViewManager::ET_onViewDisappeared, viewId);
+            startNextTask();
+        }
     }
 }
 
@@ -66,14 +66,16 @@ void UIViewTransitionManager::ET_addDisappearing(EntityId viewId) {
 
 void UIViewTransitionManager::startNextTask() {
     while(!tasks.empty()) {
-        auto& task = tasks.front();
+        auto task = tasks.front();
         if(!ET_IsExistNode<ETUIViewAppearAnimation>(task.viewId)) {
+            tasks.erase(tasks.begin());
             if(task.isAppearing) {
                 ET_SendEvent(task.viewId, &ETUIElement::ET_show);
+                ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, task.viewId);
             } else {
                 ET_SendEvent(task.viewId, &ETUIElement::ET_hide);
+                ET_SendEvent(&ETUIViewManager::ET_onViewDisappeared, task.viewId);
             }
-            tasks.erase(tasks.begin());
         } else {
             if(task.isAppearing) {
                 ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_appear);

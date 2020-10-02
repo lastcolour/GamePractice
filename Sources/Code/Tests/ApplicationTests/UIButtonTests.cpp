@@ -23,13 +23,13 @@ public:
 
     void ET_onLostFocus() override {}
 
-    void ET_onEvent(UIEventType eventType) override {
-        eventQueue.push_back(eventType);
+    void ET_onEvent(const UIEvent& event) override {
+        eventQueue.push_back(event);
     }
 
 public:
 
-    std::vector<UIEventType> eventQueue;
+    std::vector<UIEvent> eventQueue;
 };
 
 void UIButtonTests::SetUp() {
@@ -79,7 +79,10 @@ TEST_F(UIButtonTests, CheckTouchInside) {
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
-    ASSERT_EQ(buttonListener->eventQueue[0], UIEventType::None);
+
+    auto& event = buttonListener->eventQueue[0];
+    EXPECT_EQ(event.type, UIEvent::EventType::None);
+    EXPECT_EQ(event.senderId, button->getEntityId());
 }
 
 TEST_F(UIButtonTests, CheckTouchMoveRelease) {
@@ -139,7 +142,10 @@ TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, botButtonCenter);
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 2u);
-    ASSERT_EQ(buttonListener->eventQueue[0], UIEventType::None);
+
+    auto& event = buttonListener->eventQueue[0];
+    EXPECT_EQ(event.type, UIEvent::EventType::None);
+    EXPECT_EQ(event.senderId, topButton->getEntityId());
 }
 
 TEST_F(UIButtonTests, CheckButtonPressAnimation) {
@@ -169,5 +175,7 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, animDuration + 0.001f);
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
 
-    ASSERT_EQ(buttonListener->eventQueue[0], UIEventType::None);
+    auto& event = buttonListener->eventQueue[0];
+    EXPECT_EQ(event.type, UIEvent::EventType::None);
+    EXPECT_EQ(event.senderId, button->getEntityId());
 }

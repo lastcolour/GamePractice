@@ -14,15 +14,15 @@ PauseViewScript::PauseViewScript() {
 PauseViewScript::~PauseViewScript() {
 }
 
-void PauseViewScript::onEvent(UIEventType eventType) {
-    if(eventType == UIEventType::OnPauseViewResume || eventType == UIEventType::OnBackButton) {
+void PauseViewScript::onEvent(const UIEvent& event) {
+    if(event.type == UIEvent::EventType::OnPauseViewResume || event.type == UIEvent::EventType::OnBackButton) {
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
-    } else if(eventType == UIEventType::OnPauseViewRestart) {
+    } else if(event.type == UIEvent::EventType::OnPauseViewRestart) {
         ET_SendEvent(&ETGameStateManager::ET_finishGame);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Game);
-    } else if(eventType == UIEventType::OnPauseViewExit) {
+    } else if(event.type == UIEvent::EventType::OnPauseViewExit) {
         ET_SendEvent(&ETGameStateManager::ET_finishGame);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::PauseGame);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);

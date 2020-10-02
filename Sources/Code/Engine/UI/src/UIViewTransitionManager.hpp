@@ -20,8 +20,8 @@ public:
     void deinit() override;
 
     // ETUIViewAppearAnimationEvents
-    void ET_onViewAppeared(EntityId viewId) override;
-    void ET_onViewDisappeared(EntityId viewId) override;
+    void ET_onAppeared(EntityId viewId) override;
+    void ET_onDisappeared(EntityId viewId) override;
     bool ET_hasActiveTransition() const override;
 
     // ETUIViewTransitionManager

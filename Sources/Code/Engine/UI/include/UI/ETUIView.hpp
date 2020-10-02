@@ -21,6 +21,8 @@ struct ETUIViewManager {
     virtual UIViewType ET_getActiveViewType() const = 0;
     virtual EntityId ET_getActiveViewId() const = 0;
     virtual void ET_onViewLoaded(UIViewType viewType, EntityId viewId) = 0;
+    virtual void ET_onViewAppeared(EntityId viewId) = 0;
+    virtual void ET_onViewDisappeared(EntityId viewId) = 0;
 };
 
 struct ETUIViewTransitionManager {
@@ -38,8 +40,8 @@ struct ETUIViewAppearAnimation {
 
 struct ETUIViewAppearAnimationEvents {
     virtual ~ETUIViewAppearAnimationEvents() = default;
-    virtual void ET_onViewAppeared(EntityId viewId) = 0;
-    virtual void ET_onViewDisappeared(EntityId viewId) = 0;
+    virtual void ET_onAppeared(EntityId viewId) = 0;
+    virtual void ET_onDisappeared(EntityId viewId) = 0;
 };
 
 #endif /* __ET_UI_VIEW_HPP__ */
