@@ -91,7 +91,7 @@ void UIScrollArea::initScrollElem() {
     if(targetId == getEntityId()) {
         LogWarning("[UIScrollArea::initScrollElem] Can't have host element '%s' as a scroll target",
             EntityUtils::GetEntityName(targetId));
-        targetId == InvalidEntityId;
+        targetId = InvalidEntityId;
         return;
     }
 

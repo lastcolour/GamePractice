@@ -2,11 +2,12 @@
 #define __ANDROIND_EVENT_MANGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Core/ETTasks.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Android/ETAndroidInterfaces.hpp"
 
 class AndroidEventManager : public SystemLogic,
-    public ETNode<ETSystemTimer>,
+    public ETNode<ETInputUpdateTask>,
     public ETNode<ETAndroidActivityEvents>,
     public ETNode<ETAndroidInputEvents> {
 public:
@@ -18,8 +19,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETSystemTimer
-    void ET_onSytemTick(float dt) override;
+    // ETInputUpdateTask
+    void ET_updateInput() override;
 
     // ETAndroidActivityEvents
     void ET_onActivityEvent(ActivityEventType eventType) override;

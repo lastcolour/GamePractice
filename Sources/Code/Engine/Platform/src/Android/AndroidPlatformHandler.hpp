@@ -1,8 +1,7 @@
 #ifndef __ANDROID_PLATFORM_HANDLER_HPP__
 #define __ANDROID_PLATFORM_HANDLER_HPP__
 
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
-#include "Platforms/Android/JNIHelpers.hpp"
+#include "Android/ETAndroidInterfaces.hpp"
 
 #include <memory>
 #include <mutex>
@@ -35,8 +34,8 @@ public:
     ANativeWindow* getWindow();
     const char* getInternalPath() const;
 
-    JNI::JVObject getActivityJavaObject();
-    JavaVM* getJavaVM();
+    void* getActivityJavaObject();
+    void* getJavaVM();
 
 private:
 

@@ -1,5 +1,5 @@
-#include "Platforms/Android/JNIHelpers.hpp"
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
+#include "Android/JNIHelpers.hpp"
+#include "Android/AndroidPlatformHandler.hpp"
 
 namespace JNI {
 
@@ -11,7 +11,7 @@ JNIAttacher::JNIAttacher() {
         return;
     }
 
-    JavaVM* javaVM = GetAndroindPlatformHandler()->getJavaVM();
+    JavaVM* javaVM = static_cast<JavaVM*>(GetAndroindPlatformHandler()->getJavaVM());
     jint res = javaVM->GetEnv(reinterpret_cast<void**>(&ENV_DATA.env), JNI_VERSION_1_6);
     if(res == JNI_EDETACHED) {
         res = javaVM->AttachCurrentThread(&ENV_DATA.env, nullptr);
@@ -30,7 +30,7 @@ JNIAttacher::~JNIAttacher() {
         return;
     }
     if(!ENV_DATA.inMain) {
-        JavaVM* javaVM = GetAndroindPlatformHandler()->getJavaVM();
+        JavaVM* javaVM = static_cast<JavaVM*>(GetAndroindPlatformHandler()->getJavaVM());
         javaVM->DetachCurrentThread();
     }
     ENV_DATA.env = nullptr;
@@ -43,6 +43,12 @@ JNIEnv* JNIAttacher::GetJNIEnv() {
         return nullptr;
     }
     return ENV_DATA.env;
+}
+
+JVObject JVObject::GetActivityObject() {
+    jobject jvObject = static_cast<jobject>(
+            GetAndroindPlatformHandler()->getActivityJavaObject());
+    return JVObject(jvObject);
 }
 
 bool CheckJavaException() {

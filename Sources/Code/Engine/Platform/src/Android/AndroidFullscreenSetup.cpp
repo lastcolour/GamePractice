@@ -1,6 +1,6 @@
-#include "Platforms/Android/AndroidFullscreenSetup.hpp"
-#include "Platforms/Android/JNIHelpers.hpp"
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
+#include "Android/AndroidFullscreenSetup.hpp"
+#include "Android/JNIHelpers.hpp"
+#include "Android/AndroidPlatformHandler.hpp"
 
 AndroidFullscreenSetup::AndroidFullscreenSetup() {
 }
@@ -26,7 +26,7 @@ void AndroidFullscreenSetup::ET_onMainThreadActivityEvent(ActivityEventType even
 void AndroidFullscreenSetup::makeAppFullScreen() {
     JNI::JNIAttacher attacher;
 
-    JNI::JVObject activityObj = GetAndroindPlatformHandler()->getActivityJavaObject();
+    JNI::JVObject activityObj = JNI::JVObject::GetActivityObject();
     JNI::JVObject windowObj =  activityObj.callObjectMethod("getWindow", "()Landroid/view/Window;");
     JNI::JVObject decorViewOjb = windowObj.callObjectMethod("getDecorView", "()Landroid/view/View;");
 

@@ -10,6 +10,7 @@
 #include <vector>
 #include <type_traits>
 #include <functional>
+#include <string>
 
 class ReflectContext;
 

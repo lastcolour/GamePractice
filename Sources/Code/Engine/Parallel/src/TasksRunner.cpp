@@ -6,7 +6,9 @@
 #include <cassert>
 #include <unordered_map>
 #include <limits>
+#include <thread>
 #include <algorithm>
+#include <cstdlib>
 
 namespace {
 

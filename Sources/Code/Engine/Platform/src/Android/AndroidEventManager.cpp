@@ -1,7 +1,10 @@
-#include "Platforms/Android/AndroidEventManager.hpp"
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
-#include "ETApplicationInterfaces.hpp"
+#include "Android/AndroidEventManager.hpp"
+#include "Android/AndroidPlatformHandler.hpp"
+#include "Android/ETAndroidInterfaces.hpp"
+#include "Core/ETApplication.hpp"
+#include "Platform/ETSurface.hpp"
+#include "Math/Vector.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 
@@ -77,16 +80,16 @@ bool AndroidEventManager::init() {
     }
     ETNode<ETAndroidInputEvents>::connect(getEntityId());
     ETNode<ETAndroidActivityEvents>::connect(getEntityId());
-    ETNode<ETSystemTimerEvents>::connect(getEntityId());
+    ETNode<ETInputUpdateTask>::connect(getEntityId());
     return true;
 }
 
 void AndroidEventManager::deinit() {
     ETNode<ETAndroidActivityEvents>::disconnect();
-    ETNode<ETSystemTimerEvents>::disconnect();
+    ETNode<ETInputUpdateTask>::disconnect();
 }
 
-void AndroidEventManager::ET_onSytemTick(float dt) {
+void AndroidEventManager::ET_updateInput() {
     GetAndroindPlatformHandler()->pollEvents();
 }
 

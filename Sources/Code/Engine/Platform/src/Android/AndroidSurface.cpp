@@ -1,6 +1,7 @@
-#include "Platforms/Android/AndroidSurface.hpp"
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
+#include "Android/AndroidSurface.hpp"
+#include "Android/AndroidPlatformHandler.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <EGL/eglext.h>
 #include <android/native_activity.h>
@@ -160,14 +161,14 @@ AndroidSurface::~AndroidSurface() {
 }
 
 bool AndroidSurface::init() {
-    ETNode<ETSystemTimerEvents>::connect(getEntityId());
+    ETNode<ETInputUpdateTask>::connect(getEntityId());
     ETNode<ETAndroidActivityEvents>::connect(getEntityId());
     ETNode<ETSurface>::connect(getEntityId());
     return true;
 }
 
 void AndroidSurface::deinit() {
-    ETNode<ETSystemTimerEvents>::disconnect();
+    ETNode<ETInputUpdateTask>::disconnect();
     ETNode<ETAndroidActivityEvents>::disconnect();
     ETNode<ETSurface>::disconnect();
 }
@@ -306,7 +307,7 @@ void AndroidSurface::ET_onActivityEvent(ActivityEventType eventType) {
     }
 }
 
-void AndroidSurface::ET_onSystemTick(float dt) {
+void AndroidSurface::ET_updateInput() {
     if(!ET_isValid()) {
         return;
     }

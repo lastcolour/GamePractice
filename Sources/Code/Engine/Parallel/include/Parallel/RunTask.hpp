@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <functional>
+#include <string>
 
 enum class RunTaskType {
     Default = 0,

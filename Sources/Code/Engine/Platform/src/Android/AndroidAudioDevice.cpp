@@ -1,6 +1,5 @@
-#include "Platforms/Android/AndroidAudioDevice.hpp"
-#include "Platforms/Android/JNIHelpers.hpp"
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
+#include "Android/AndroidAudioDevice.hpp"
+#include "Android/JNIHelpers.hpp"
 
 AndroidAudioDevice::AndroidAudioDevice() {
 }
@@ -11,7 +10,7 @@ AndroidAudioDevice::~AndroidAudioDevice() {
 bool AndroidAudioDevice::readDeviceConfig() {
     JNI::JNIAttacher attacher;
 
-    JNI::JVObject activityObj = GetAndroindPlatformHandler()->getActivityJavaObject();
+    JNI::JVObject activityObj = JNI::JVObject::GetActivityObject();
 
     auto contextClass = JNI::JVClass::FindClass("android/content/Context");
     auto audioService = contextClass.getStaticObjectField("AUDIO_SERVICE", "Ljava/lang/String;");
@@ -42,14 +41,14 @@ bool AndroidAudioDevice::init() {
     if(!readDeviceConfig()) {
         return false;
     }
-    ETNode<ETAndroidAudioDevice>::connect(getEntityId());
+    ETNode<ETDevice>::connect(getEntityId());
     return true;
 }
 
 void AndroidAudioDevice::deinit() {
-    ETNode<ETAndroidAudioDevice>::disconnect();
+    ETNode<ETDevice>::disconnect();
 }
 
-const AndroidAudioDeviceConfig* AndroidAudioDevice::ET_getAudioConfig() const {
+const DeviceAudioConfig* AndroidAudioDevice::ET_getAudioConfig() const {
     return &deviceConfig;
 }

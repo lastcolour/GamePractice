@@ -34,14 +34,6 @@
             }
         },
         {
-            "name":"Building Android",
-            "type":"IfVariableEqual",
-            "data":{
-                "varA":"${platform}",
-                "varB":"Android"
-            }
-        },
-        {
             "name":"Build GLFW",
             "type":"CmakeGenerate",
             "dependOn":["Building PC"],
@@ -61,13 +53,26 @@
             }
         },
         {
-            "name":"Copy GLFW Binaries",
+            "name":"Copy GLFW Binaries Linux",
             "type":"CopyCompiledBinaries",
-            "dependOn":["Build GLFW"],
+            "dependOn":["Build GLFW", "Building Linux"],
             "data":{
                 "type":"all",
                 "platform":"${platform}",
                 "name":"glfw",
+                "from":"${libsBins}/GLFW/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Copy GLFW Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build GLFW", "Building Windows"],
+            "data":{
+                "type":"all",
+                "platform":"${platform}",
+                "name":"glfw3",
                 "from":"${libsBins}/GLFW/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true
@@ -198,31 +203,6 @@
                 "platform":"${platform}",
                 "name":"openal",
                 "from":"${libsBins}/OpenAL-Soft/Release",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
-            "name":"Build Oboe",
-            "type": "CmakeGenerate",
-            "dependOn":["Building Android"],
-            "data": {
-                "run_dir": "${libSources}/Oboe",
-                "out_dir": "${libsBins}/Oboe",
-                "build_type":"Release",
-                "verbosity":"silent",
-                "defs" : {}
-            }
-        },
-        {
-            "name":"Copy Oboe Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build Oboe"],
-            "data":{
-                "type":"static",
-                "platform":"${platform}",
-                "name":"oboe",
-                "from":"${libsBins}/OBOE/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true
             }

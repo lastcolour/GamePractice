@@ -1,0 +1,84 @@
+{
+    "Project":"Build Android",
+    "InputVariables":{
+        "buildType":"Debug"
+    },
+    "Steps":[
+        {
+            "name":"Create Project Variables",
+            "type":"CreateVariables",
+            "data":{
+                "rootSources":"${currentDir}/../Sources",
+                "gameSources":"${rootSources}/Code",
+                "binsRoot":"${currentDir}/../_build/Android",
+                "gameBinsRoot":"${binsRoot}/Game",
+                "libSources":"${rootSources}/Libs",
+                "libsBins":"${binsRoot}/Libs"
+            }
+        },
+        {
+            "name":"Build Oboe",
+            "type": "AndroidCmakeGenerate",
+            "dependOn":[],
+            "data": {
+                "run_dir": "${libSources}/Oboe",
+                "out_dir": "${libsBins}/Oboe",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs" : {}
+            }
+        },
+        {
+            "name":"Copy Oboe Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build Oboe"],
+            "data":{
+                "type":"static",
+                "platform":"Android",
+                "name":"oboe",
+                "from":"${libsBins}/OBOE/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build FreeType2",
+            "type": "AndroidCmakeGenerate",
+            "data": {
+                "run_dir": "${libSources}/FreeType2",
+                "out_dir": "${libsBins}/FreeType2",
+                "build_type":"Release",
+                "verbosity":"silent",
+                "defs" : {
+                    "Linux":{
+                        "BUILD_SHARED_LIBS":"ON"
+                    }
+                }
+            }
+        },
+        {
+            "name":"Copy Freetype2 Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build FreeType2"],
+            "data":{
+                "type":"all",
+                "platform":"Android",
+                "name":"freetype",
+                "from":"${libsBins}/FreeType2/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
+            "name":"Build Game",
+            "type":"AndroidCmakeGenerate",
+            "dependOn":[],
+            "data":{
+                "run_dir":"${gameSources}",
+                "out_dir":"${gameBinsRoot}",
+                "build_type":"${buildType}",
+                "defs":{}
+            }
+        }
+    ]
+}

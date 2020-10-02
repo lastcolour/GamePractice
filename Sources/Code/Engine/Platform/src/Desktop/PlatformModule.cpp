@@ -4,7 +4,7 @@
 #include "Desktop/GLFWSurface.hpp"
 
 PlatformModule::PlatformModule() :
-    SystemModule("PlatformModule") {}
+    SystemModule("DesktopModule") {}
 
 PlatformModule::LogicsContainerPtrT PlatformModule::createSystemLogics() const {
     LogicsContainerPtrT container(

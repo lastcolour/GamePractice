@@ -1,7 +1,7 @@
 #ifndef __JNI_HELPERS_HPP__
 #define __JNI_HELPERS_HPP__
 
-#include "ETApplicationInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <jni.h>
 #include <cassert>
@@ -42,6 +42,10 @@ private:
 };
 
 class JVObject {
+public:
+
+    static JVObject GetActivityObject();
+
 public:
 
     explicit JVObject(jobject jv_object) : value(jv_object) {}

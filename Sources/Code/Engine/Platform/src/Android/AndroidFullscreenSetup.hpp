@@ -3,7 +3,7 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Android/ETAndroidInterfaces.hpp"
 
 class AndroidFullscreenSetup : public SystemLogic,
     public ETNode<ETAndroidMainThreadActivityEvents> {

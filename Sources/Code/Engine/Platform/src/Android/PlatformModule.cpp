@@ -7,10 +7,7 @@
 #include "Android/AndroidAudioDevice.hpp"
 
 PlatformModule::PlatformModule() :
-    SystemModule("PlatformModule") {
-}
-
-PlatformModule::~PlatformModule() {
+    SystemModule("AndroidModule") {
 }
 
 PlatformModule::LogicsContainerPtrT PlatformModule::createSystemLogics() const {

@@ -5,6 +5,7 @@
 #include "Core/TimePoint.hpp"
 
 #include <cassert>
+#include <cstdlib>
 
 ThreadsPool::ThreadsPool(TasksRunner* tasksProvider) :
     provider(tasksProvider),

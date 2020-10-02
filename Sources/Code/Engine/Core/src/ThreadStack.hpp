@@ -4,6 +4,7 @@
 #include "Core/TypeId.hpp"
 
 #include <thread>
+#include <vector>
 
 class ThreadStack {
 public:

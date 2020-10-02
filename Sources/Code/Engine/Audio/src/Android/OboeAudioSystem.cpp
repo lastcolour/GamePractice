@@ -1,8 +1,6 @@
-#include "Audio/Android/OboeAudioSystem.hpp"
-#include "Audio/AudioConfig.hpp"
-#include "Audio/Android/OboeSoundSource.hpp"
-#include "ETApplicationInterfaces.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Android/OboeAudioSystem.hpp"
+#include "Platform/ETDevice.hpp"
+#include "Core/ETLogger.hpp"
 
 namespace {
 
@@ -18,8 +16,8 @@ OboeAudioSystem::~OboeAudioSystem() {
 }
 
 bool OboeAudioSystem::initOboeMixer() {
-    const AndroidAudioDeviceConfig* deviceConfig = nullptr;
-    ET_SendEventReturn(deviceConfig, &ETAndroidAudioDevice::ET_getAudioConfig);
+    const DeviceAudioConfig* deviceConfig = nullptr;
+    ET_SendEventReturn(deviceConfig, &ETDevice::ET_getAudioConfig);
     if(!deviceConfig) {
         LogError("[OboeAudioSystem::initOboeMixer] Can't get config of audio device");
         return false;
@@ -53,13 +51,29 @@ bool OboeAudioSystem::init() {
     if(!initOboeMixer()) {
         return false;
     }
-    if(!initOboeSources()) {
-        return false;
-    }
     if(!initOboeStream()) {
         return false;
     }
+
+    ETNode<ETSoundPlayManager>::connect(getEntityId());
+    ETNode<ETSoundUpdateTask>::connect(getEntityId());
+    ETNode<ETAudioSystem>::connect(getEntityId());
+
     return true;
+}
+
+void OboeAudioSystem::ET_updateSound() {
+}
+
+bool OboeAudioSystem::ET_play(SoundStream* soundStream) {
+    return false;
+}
+
+void OboeAudioSystem::ET_setMasterVolume(float newVolume) {
+}
+
+float OboeAudioSystem::ET_getMasterVolume() const {
+    return 0.f;
 }
 
 void OboeAudioSystem::stopOboeStream() {

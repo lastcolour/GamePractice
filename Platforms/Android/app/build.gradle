@@ -11,10 +11,10 @@ android {
         applicationId 'com.lastcolour.Game01'
 
         // Defines the minimum API level required to run the app.
-        minSdkVersion 16
+        minSdkVersion 21
 
         // Specifies the API level used to test the app.
-        targetSdkVersion 29
+        targetSdkVersion 30
 
         // Defines the version number of your app.
         versionCode 1

@@ -3,10 +3,10 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Platform/ETDevice.hpp"
 
 class AndroidAudioDevice : public SystemLogic,
-    public ETNode<ETAndroidAudioDevice> {
+    public ETNode<ETDevice> {
 public:
 
     AndroidAudioDevice();
@@ -16,8 +16,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETAndroidAudioDevice
-    const AndroidAudioDeviceConfig* ET_getAudioConfig() const override;
+    // ETDevice
+    const DeviceAudioConfig* ET_getAudioConfig() const override;
 
 private:
 
@@ -25,7 +25,7 @@ private:
 
 private:
 
-    AndroidAudioDeviceConfig deviceConfig;
+    DeviceAudioConfig deviceConfig;
 };
 
 #endif /* __ANDROID_AUDIO_DEVICE_HPP__ */

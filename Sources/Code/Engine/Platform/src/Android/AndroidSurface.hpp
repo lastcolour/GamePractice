@@ -2,15 +2,17 @@
 #define __ANDROID_SURFACE_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "ETApplicationInterfaces.hpp"
-#include "Platforms/Android/ETAndroidInterfaces.hpp"
+#include "Core/ETTasks.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Platform/ETSurface.hpp"
+#include "Android/ETAndroidInterfaces.hpp"
 
 #include <EGL/egl.h>
 
 class AndroidSurface : public SystemLogic,
     public ETNode<ETSurface>,
     public ETNode<ETAndroidActivityEvents>,
-    public ETNode<ETSystemTimerEvents> {
+    public ETNode<ETInputUpdateTask> {
 public:
     AndroidSurface();
     virtual ~AndroidSurface();
@@ -32,8 +34,8 @@ public:
     // ETAndroidActivityEvents
     void ET_onActivityEvent(ActivityEventType eventType) override;
 
-    // ETSystemTimerEvents
-    void ET_onSystemTick(float dt) override;
+    // ETInputUpdateTask
+    void ET_updateInput() override;
 
 private:
 

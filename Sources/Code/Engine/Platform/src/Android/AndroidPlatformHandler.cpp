@@ -1,5 +1,4 @@
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
-#include "Platforms/Android/AndroidPlatform.hpp"
+#include "Android/AndroidPlatformHandler.hpp"
 #include "Application.hpp"
 #include "Core/ETPrimitives.hpp"
 
@@ -129,7 +128,7 @@ void AndroindPlatformHandler::start() {
     std::thread thread([this](){
         initAppThread();
         {
-            Application app(std::unique_ptr<Platform>(new AndroidPlatform()));
+            Application app;
             isAppCreated.store(true);
             app.run();
             waitOnDestroyEvent();
@@ -156,11 +155,11 @@ const char* AndroindPlatformHandler::getInternalPath() const {
     return nativeActivity->internalDataPath;
 }
 
-JNI::JVObject AndroindPlatformHandler::getActivityJavaObject() {
-    return JNI::JVObject(nativeActivity->clazz);
+void* AndroindPlatformHandler::getActivityJavaObject() {
+    return nativeActivity->clazz;
 }
 
-JavaVM* AndroindPlatformHandler::getJavaVM() {
+void* AndroindPlatformHandler::getJavaVM() {
     return nativeActivity->vm;
 }
 

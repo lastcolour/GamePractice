@@ -32,7 +32,11 @@ else()
 
     set(PLATFORM_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Android)
 
+    include_directories(
+        ${ENGINE_INCLUDE_DIR})
+
     set(PLATFORM_LIB_DEPENDICIES
+        Engine
         log android z)
 
 endif()

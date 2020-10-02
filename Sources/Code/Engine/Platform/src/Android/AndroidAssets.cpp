@@ -1,6 +1,7 @@
-#include "Platforms/Android/AndroidAssets.hpp"
-#include "Platforms/Android/AndroidPlatformHandler.hpp"
+#include "Android/AndroidAssets.hpp"
+#include "Android/AndroidPlatformHandler.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <fstream>
 
