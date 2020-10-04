@@ -35,14 +35,15 @@ add_library(${PROJECT_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Application.hpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME}
-    Core
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Application
+    UI
+    Entity
+    Audio
+    Render
     Parallel
     Math
-    Reflect
     Platform
-    Render
-    Audio
-    Entity
-    UI
-    Application)
+    Reflect
+    Core)

@@ -13,7 +13,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fPIC -Wall -pedantic -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fPIC -Wall -pedantic -Wextra -Wno-unused-parameter")
 
     if(COMPILE_FLAGS_SANITIZE_MEMORY)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -25,8 +25,15 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
+    set(CMAKE_CXX_FLAGS 
+"-DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong \
+-no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security \
+-fno-rtti -fno-exceptions -Wall -pedantic -Wextra -Wno-unused-parameter -Os -DNDEBUG")
+
 else()
+
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")
+
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

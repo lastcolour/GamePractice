@@ -56,6 +56,5 @@ file(GLOB AUDIO_HEADERS
 add_library(${PROJECT_NAME} STATIC ${AUDIO_SOURCES} ${AUDIO_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME}
-    ${AUDIO_LIB_DEPENDICIES}
-    Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${AUDIO_LIB_DEPENDICIES})

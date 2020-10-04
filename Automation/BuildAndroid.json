@@ -1,7 +1,7 @@
 {
     "Project":"Build Android",
     "InputVariables":{
-        "buildType":"Debug"
+        "buildType":"Release"
     },
     "Steps":[
         {
@@ -49,11 +49,7 @@
                 "out_dir": "${libsBins}/FreeType2",
                 "build_type":"Release",
                 "verbosity":"silent",
-                "defs" : {
-                    "Linux":{
-                        "BUILD_SHARED_LIBS":"ON"
-                    }
-                }
+                "defs" : {}
             }
         },
         {

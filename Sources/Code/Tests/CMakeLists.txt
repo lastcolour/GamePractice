@@ -40,8 +40,7 @@ add_executable(${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GTEST_LIB_STATIC_BIN}
     ${THREADS_LIB_SHARED_BIN}
-    Engine
-    Application)
+    Engine)

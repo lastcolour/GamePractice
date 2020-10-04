@@ -58,7 +58,5 @@ else()
 
 endif()
 
-target_link_libraries(${PROJECT_NAME}
-    ${RENDER_LIB_DEPENDICIES}
-    Math
-    Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${RENDER_LIB_DEPENDICIES})
