@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(UI CXX)
 
-set(UI_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "UI include dir")
-
 include_directories(
     ${ENTITY_INCLUDE_DIR}
     ${UI_INCLUDE_DIR}

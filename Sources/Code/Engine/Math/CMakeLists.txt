@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Math CXX)
 
-set(MATH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Math include dir")
-
 include_directories(
     ${MATH_INCLUDE_DIR}
     ${CORE_INCLUDE_DIR}

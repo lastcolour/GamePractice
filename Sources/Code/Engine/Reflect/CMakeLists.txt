@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Reflect CXX)
 
-set(REFLECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Reflect include dir")
-
 include_directories(
     ${REFLECT_INCLUDE_DIR}
     ${CORE_INCLUDE_DIR}

@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Core CXX)
 
-set(CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Core include dir")
-
 include_directories(
     ${CORE_INCLUDE_DIR}
     ${RAPID_JSON_INCLUDE_DIR}

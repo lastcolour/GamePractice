@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Platform CXX)
 
-set(PLATFORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Platform include dir")
-
 if(BUILD_PLATFORM STREQUAL "Windows")
 
     set(PLATFORM_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Desktop)

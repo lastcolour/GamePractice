@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Parallel CXX)
 
-set(PARALLEL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Parallel include dir")
-
 include_directories(
     ${PARALLEL_INCLUDE_DIR}
     ${CORE_INCLUDE_DIR}

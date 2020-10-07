@@ -4,6 +4,16 @@ project(Engine CXX)
 
 include(dependicies.cmake)
 
+set(CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core/include CACHE PATH "Core include dir")
+set(MATH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Math/include CACHE PATH "Math include dir")
+set(REFLECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Reflect/include CACHE PATH "Reflect include dir")
+set(PARALLEL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Parallel/include CACHE PATH "Parallel include dir")
+set(PLATFORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Platform/include CACHE PATH "Platform include dir")
+set(ENTITY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Entity/include CACHE PATH "Entity include dir")
+set(RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Render/include CACHE PATH "Render include dir")
+set(UI_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/UI/include CACHE PATH "UI include dir")
+set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Engine include dir")
+
 add_subdirectory(Core)
 add_subdirectory(Math)
 add_subdirectory(Reflect)
@@ -13,8 +23,6 @@ add_subdirectory(Entity)
 add_subdirectory(Render)
 add_subdirectory(Audio)
 add_subdirectory(UI)
-
-set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Engine include dir")
 
 include_directories(
     ${CORE_INCLUDE_DIR}

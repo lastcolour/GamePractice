@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Render CXX)
 
-set(RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Render include dir")
-
 include_directories(
     ${CORE_INCLUDE_DIR}
     ${RENDER_INCLUDE_DIR}
