@@ -17,6 +17,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/compile_flags.cmake)
 
 # Build target project
 set(APPLICATION_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Application)
+set(RESULT_OUTPUT_DIR ${CMAKE_BINARY_DIR}/../ CACHE PATH "Result output directory")
 
 add_subdirectory(Engine)
 add_subdirectory(Application)
@@ -52,5 +53,9 @@ else()
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${RESULT_OUTPUT_DIR}/Debug)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${RESULT_OUTPUT_DIR}/Release)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELWITHDEPINFO ${RESULT_OUTPUT_DIR}/RelWithDebInfo)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Engine)

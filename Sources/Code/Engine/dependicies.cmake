@@ -6,17 +6,16 @@ if(BUILD_PLATFORM STREQUAL "Windows")
 
     set(LIB_PREFIX "")
     set(LIB_SHARED_EXTENSION ".dll")
-    set(LIB_STATIC_EXTENSION ".lib")
 
 elseif(BUILD_PLATFORM STREQUAL "Linux" OR BUILD_PLATFORM STREQUAL "Android")
 
     set(LIB_PREFIX "lib")
-    set(LIB_STATIC_EXTENSION ".a")
     set(LIB_SHARED_EXTENSION ".so")
 
 endif()
 
 set(LIBS_ROOT_DIR ${MAIN_PROJECT_SOURCE_ROOT}/../Libs)
+set(LIBS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/../../../Libs)
 
 set(STB_INCLUDE_DIR ${LIBS_ROOT_DIR}/STB CACHE PATH "STB Include dir")
 set(RAPID_JSON_INCLUDE_DIR ${LIBS_ROOT_DIR}/RapidJSON/include CACHE PATH "RapidJSON Include dir")
@@ -31,7 +30,7 @@ function(CreateStaticLibDependecy LibName LibIncludeDir LibLinkBinary)
     endif()
 
     set(${LibName}_LIB_STATIC_BIN
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LIB_PREFIX}${LibLinkBinary}${LIB_STATIC_EXTENSION}
+        ${LibLinkBinary}
         CACHE PATH "${LibName} Library Path")
 
     if(NOT EXISTS ${${LibName}_LIB_STATIC_BIN})
@@ -69,73 +68,87 @@ if(BUILD_PLATFORM STREQUAL "Linux")
     find_package(Threads REQUIRED)
     set(THREADS_LIB_SHARED_BIN ${CMAKE_THREAD_LIBS_INIT} CACHE PATH "Thread Library Path")
 
-    CreateSharedLibDependecy("GLAD"
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLAD/include
-        glad
-    )
-
-    CreateSharedLibDependecy("FREETYPE2"
-        ${LIBS_ROOT_DIR}/FreeType2/include
-        freetype
-    )
-
-    CreateSharedLibDependecy("GLFW"
-        ${LIBS_ROOT_DIR}/GLFW/include
-        glfw
-    )
-
-    CreateSharedLibDependecy("OPENAL_SOFT"
-        ${LIBS_ROOT_DIR}/OpenAL-Soft/include
-        openal
-    )
-
-    CreateStaticLibDependecy("GTEST"
-        ${LIBS_ROOT_DIR}/GTEST/googletest/include
-        gtestd
-    )
-
-elseif(BUILD_PLATFORM STREQUAL "Windows")
-
     CreateStaticLibDependecy("GLAD"
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLAD/include
-        glad
+        ${LIBS_OUTPUT_DIR}/GLAD/_cmake/include
+        ${LIBS_OUTPUT_DIR}/GLAD/${CMAKE_BUILD_TYPE}/libglad.a
     )
 
     CreateStaticLibDependecy("FREETYPE2"
         ${LIBS_ROOT_DIR}/FreeType2/include
-        freetype
+        ${LIBS_OUTPUT_DIR}/FreeType2/Release/libfreetype.a
     )
 
     CreateStaticLibDependecy("GLFW"
         ${LIBS_ROOT_DIR}/GLFW/include
-        glfw3dll
+        ${LIBS_OUTPUT_DIR}/GLFW/Release/libglfw3.a
     )
 
     CreateStaticLibDependecy("OPENAL_SOFT"
         ${LIBS_ROOT_DIR}/OpenAL-Soft/include
-        OpenAL32
+        ${LIBS_OUTPUT_DIR}/OpenAL-Soft/Release/libopenal.a
+    )
+
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        CreateStaticLibDependecy("GTEST"
+            ${LIBS_ROOT_DIR}/GTEST/googletest/include
+            ${LIBS_OUTPUT_DIR}/GTEST/${CMAKE_BUILD_TYPE}/libgtestd.a
+        )
+    else()
+        CreateStaticLibDependecy("GTEST"
+            ${LIBS_ROOT_DIR}/GTEST/googletest/include
+            ${LIBS_OUTPUT_DIR}/GTEST/${CMAKE_BUILD_TYPE}/libgtest.a
+        )
+    endif()
+
+elseif(BUILD_PLATFORM STREQUAL "Windows")
+
+    CreateStaticLibDependecy("GLAD"
+        ${LIBS_OUTPUT_DIR}/GLAD/_cmake/include
+        ${LIBS_OUTPUT_DIR}/GLAD/${CMAKE_BUILD_TYPE}/glad.lib
+    )
+
+    CreateStaticLibDependecy("FREETYPE2"
+        ${LIBS_ROOT_DIR}/FreeType2/include
+        ${LIBS_OUTPUT_DIR}/FreeType2/Release/freetype.lib
+    )
+
+    CreateStaticLibDependecy("GLFW"
+        ${LIBS_ROOT_DIR}/GLFW/include
+        ${LIBS_OUTPUT_DIR}/GLFW/Release/glfw3dll.lib
+    )
+
+    CreateStaticLibDependecy("OPENAL_SOFT"
+        ${LIBS_ROOT_DIR}/OpenAL-Soft/include
+        ${LIBS_OUTPUT_DIR}/OpenAL-Soft/Release/OpenAL32.lib
     )
 
     CreateStaticLibDependecy("ZLIB"
         ${LIBS_ROOT_DIR}/ZLIB
-        zlib
+        ${LIBS_OUTPUT_DIR}/ZLIB/Release/zlibstatic.lib
     )
 
-    CreateStaticLibDependecy("GTEST"
-        ${LIBS_ROOT_DIR}/GTEST/googletest/include
-        gtestd
-    )
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        CreateStaticLibDependecy("GTEST"
+            ${LIBS_ROOT_DIR}/GTEST/googletest/include
+            ${LIBS_OUTPUT_DIR}/GTEST/${CMAKE_BUILD_TYPE}/gtestd.lib
+        )
+    else()
+        CreateStaticLibDependecy("GTEST"
+            ${LIBS_ROOT_DIR}/GTEST/googletest/include
+            ${LIBS_OUTPUT_DIR}/GTEST/${CMAKE_BUILD_TYPE}/gtest.lib
+        )
+    endif()
 
 elseif(BUILD_PLATFORM STREQUAL "Android")
 
     CreateStaticLibDependecy("OBOE"
         ${LIBS_ROOT_DIR}/Oboe/include
-        oboe
+        ${LIBS_OUTPUT_DIR}/Oboe/Release/liboboe.a
     )
 
     CreateStaticLibDependecy("FREETYPE2"
         ${LIBS_ROOT_DIR}/FreeType2/include
-        freetype
+        ${LIBS_OUTPUT_DIR}/FreeType2/Release/libfreetype.a
     )
 
 endif()

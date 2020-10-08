@@ -21,6 +21,7 @@
             "type": "AndroidCmakeGenerate",
             "dependOn":[],
             "data": {
+                "separate_bins":true,
                 "run_dir": "${libSources}/Oboe",
                 "out_dir": "${libsBins}/Oboe",
                 "build_type":"Release",
@@ -29,22 +30,10 @@
             }
         },
         {
-            "name":"Copy Oboe Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build Oboe"],
-            "data":{
-                "type":"static",
-                "platform":"Android",
-                "name":"oboe",
-                "from":"${libsBins}/OBOE/Release",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
             "name":"Build FreeType2",
             "type": "AndroidCmakeGenerate",
             "data": {
+                "separate_bins":true,
                 "run_dir": "${libSources}/FreeType2",
                 "out_dir": "${libsBins}/FreeType2",
                 "build_type":"Release",
@@ -53,23 +42,11 @@
             }
         },
         {
-            "name":"Copy Freetype2 Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build FreeType2"],
-            "data":{
-                "type":"all",
-                "platform":"Android",
-                "name":"freetype",
-                "from":"${libsBins}/FreeType2/Release",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
             "name":"Build Game",
             "type":"AndroidCmakeGenerate",
             "dependOn":[],
             "data":{
+                "separate_bins":false,
                 "run_dir":"${gameSources}",
                 "out_dir":"${gameBinsRoot}",
                 "build_type":"${buildType}",

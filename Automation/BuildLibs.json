@@ -38,6 +38,7 @@
             "type":"CmakeGenerate",
             "dependOn":["Building PC"],
             "data":{
+                "separate_bins":true,
                 "run_dir":"${libSources}/GLFW",
                 "out_dir":"${libsBins}/GLFW",
                 "build_type":"Release",
@@ -57,7 +58,7 @@
             "type":"CopyCompiledBinaries",
             "dependOn":["Build GLFW", "Building Linux"],
             "data":{
-                "type":"all",
+                "type":"shared",
                 "platform":"${platform}",
                 "name":"glfw",
                 "from":"${libsBins}/GLFW/Release",
@@ -70,7 +71,7 @@
             "type":"CopyCompiledBinaries",
             "dependOn":["Build GLFW", "Building Windows"],
             "data":{
-                "type":"all",
+                "type":"shared",
                 "platform":"${platform}",
                 "name":"glfw3",
                 "from":"${libsBins}/GLFW/Release",
@@ -83,6 +84,7 @@
             "type":"CmakeGenerate",
             "dependOn":["Building PC"],
             "data":{
+                "separate_bins":true,
                 "run_dir":"${libSources}/GLAD",
                 "out_dir":"${libsBins}/GLAD",
                 "build_type":"${buildType}",
@@ -101,31 +103,10 @@
             }
         },
         {
-            "name":"Copy GLAD Include",
-            "type":"CopyFile",
-            "dependOn":["Build GLAD"],
-            "data":{
-                "target": "${libsBins}/GLAD/${buildType}/_cmake/include",
-                "to": "${gameBinsRoot}/${buildType}/GLAD"
-            }
-        },
-        {
-            "name":"Copy GLAD Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build GLAD"],
-            "data":{
-                "type":"all",
-                "platform":"${platform}",
-                "name":"glad",
-                "from":"${libsBins}/GLAD/${buildType}",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
             "name":"Build FreeType2",
             "type": "CmakeGenerate",
             "data": {
+                "separate_bins":true,
                 "run_dir": "${libSources}/FreeType2",
                 "out_dir": "${libsBins}/FreeType2",
                 "build_type":"Release",
@@ -138,23 +119,11 @@
             }
         },
         {
-            "name":"Copy Freetype2 Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build FreeType2"],
-            "data":{
-                "type":"all",
-                "platform":"${platform}",
-                "name":"freetype",
-                "from":"${libsBins}/FreeType2/Release",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
             "name":"Build ZLib",
             "dependOn":["Building Windows"],
             "type": "CmakeGenerate",
             "data": {
+                "separate_bins":true,
                 "run_dir": "${libSources}/ZLIB",
                 "out_dir": "${libsBins}/ZLIB",
                 "build_type":"Release",
@@ -163,23 +132,11 @@
             }
         },
         {
-            "name":"Copy ZLib Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build ZLib"],
-            "data":{
-                "type":"static",
-                "platform":"${platform}",
-                "name":"zlib",
-                "from":"${libsBins}/ZLIB/Release",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
             "name":"Build OpenAL-Soft",
             "type": "CmakeGenerate",
             "dependOn":["Building PC"],
             "data": {
+                "separate_bins":true,
                 "run_dir": "${libSources}/OpenAL-Soft",
                 "out_dir": "${libsBins}/OpenAL-Soft",
                 "build_type":"Release",
@@ -199,7 +156,7 @@
             "type":"CopyCompiledBinaries",
             "dependOn":["Build OpenAL-Soft"],
             "data":{
-                "type":"all",
+                "type":"shared",
                 "platform":"${platform}",
                 "name":"openal",
                 "from":"${libsBins}/OpenAL-Soft/Release",
@@ -212,6 +169,7 @@
             "type": "CmakeGenerate",
             "dependOn":["Building PC"],
             "data": {
+                "separate_bins":true,
                 "run_dir": "${libSources}/GTEST",
                 "out_dir": "${libsBins}/GTEST",
                 "build_type":"${buildType}",
@@ -221,19 +179,6 @@
                         "gtest_force_shared_crt": "ON"
                     }
                 }
-            }
-        },
-        {
-            "name":"Copy GTest Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build GTest"],
-            "data":{
-                "type":"static",
-                "platform":"${platform}",
-                "name":"gtestd",
-                "from":"${libsBins}/GTEST/${buildType}",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
             }
         }
     ]
