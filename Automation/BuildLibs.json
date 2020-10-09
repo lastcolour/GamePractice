@@ -103,6 +103,19 @@
             }
         },
         {
+            "name":"Copy GLAD Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build GLAD", "Building Linux"],
+            "data":{
+                "type":"shared",
+                "platform":"${platform}",
+                "name":"glad",
+                "from":"${libsBins}/GLAD/${buildType}",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
+            }
+        },
+        {
             "name":"Build FreeType2",
             "type": "CmakeGenerate",
             "data": {
@@ -116,6 +129,19 @@
                         "BUILD_SHARED_LIBS":"ON"
                     }
                 }
+            }
+        },
+        {
+            "name":"Copy FreeType2 Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build FreeType2", "Building Linux"],
+            "data":{
+                "type":"shared",
+                "platform":"${platform}",
+                "name":"freetype",
+                "from":"${libsBins}/FreeType2/Release",
+                "to":"${gameBinsRoot}/${buildType}",
+                "force":true
             }
         },
         {

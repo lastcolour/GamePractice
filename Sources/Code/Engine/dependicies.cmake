@@ -2,18 +2,6 @@ if(NOT MAIN_PROJECT_SOURCE_ROOT)
     message(FATAL_ERROR "Required cmake variable MAIN_PROJECT_SOURCE_ROOT not defined")
 endif()
 
-if(BUILD_PLATFORM STREQUAL "Windows")
-
-    set(LIB_PREFIX "")
-    set(LIB_SHARED_EXTENSION ".dll")
-
-elseif(BUILD_PLATFORM STREQUAL "Linux" OR BUILD_PLATFORM STREQUAL "Android")
-
-    set(LIB_PREFIX "lib")
-    set(LIB_SHARED_EXTENSION ".so")
-
-endif()
-
 set(LIBS_ROOT_DIR ${MAIN_PROJECT_SOURCE_ROOT}/../Libs)
 set(LIBS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/../../../Libs)
 
@@ -50,7 +38,7 @@ function(CreateSharedLibDependecy LibName LibIncludeDir LibLinkBinary)
     endif()
 
     set(${LibName}_LIB_SHARED_BIN
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LIB_PREFIX}${LibLinkBinary}${LIB_SHARED_EXTENSION}
+        ${CMAKE_CURRENT_BINARY_DIR}/../../${CMAKE_BUILD_TYPE}/${LibLinkBinary}
         CACHE PATH "${LibName} Library Path")
 
     if(NOT EXISTS ${${LibName}_LIB_SHARED_BIN})
@@ -68,24 +56,24 @@ if(BUILD_PLATFORM STREQUAL "Linux")
     find_package(Threads REQUIRED)
     set(THREADS_LIB_SHARED_BIN ${CMAKE_THREAD_LIBS_INIT} CACHE PATH "Thread Library Path")
 
-    CreateStaticLibDependecy("GLAD"
+    CreateSharedLibDependecy("GLAD"
         ${LIBS_OUTPUT_DIR}/GLAD/_cmake/include
-        ${LIBS_OUTPUT_DIR}/GLAD/${CMAKE_BUILD_TYPE}/libglad.a
+        libglad.so
     )
 
-    CreateStaticLibDependecy("FREETYPE2"
+    CreateSharedLibDependecy("FREETYPE2"
         ${LIBS_ROOT_DIR}/FreeType2/include
-        ${LIBS_OUTPUT_DIR}/FreeType2/Release/libfreetype.a
+        libfreetype.so
     )
 
-    CreateStaticLibDependecy("GLFW"
+    CreateSharedLibDependecy("GLFW"
         ${LIBS_ROOT_DIR}/GLFW/include
-        ${LIBS_OUTPUT_DIR}/GLFW/Release/libglfw3.a
+        libglfw.so
     )
 
-    CreateStaticLibDependecy("OPENAL_SOFT"
+    CreateSharedLibDependecy("OPENAL_SOFT"
         ${LIBS_ROOT_DIR}/OpenAL-Soft/include
-        ${LIBS_OUTPUT_DIR}/OpenAL-Soft/Release/libopenal.a
+        libopenal.so
     )
 
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")

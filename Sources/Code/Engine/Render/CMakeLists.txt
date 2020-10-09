@@ -45,6 +45,7 @@ elseif(BUILD_PLATFORM STREQUAL "Linux")
     set(RENDER_LIB_DEPENDICIES
         ${FREETYPE2_LIB_SHARED_BIN}
         ${ZLIB_LIB_SHARED_BIN}
+        ${GLAD_LIB_SHARED_BIN}
         png
         CACHE INTERNAL "Render link dependecies")
 
