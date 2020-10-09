@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Audio CXX)
 
-set(AUDIO_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Audio include dir")
-
 if(BUILD_PLATFORM STREQUAL "Windows" OR BUILD_PLATFORM STREQUAL "Linux")
 
     set(AUDIO_PLATFORM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Desktop)
@@ -56,5 +54,5 @@ file(GLOB AUDIO_HEADERS
 add_library(${PROJECT_NAME} STATIC ${AUDIO_SOURCES} ${AUDIO_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME}
     ${AUDIO_LIB_DEPENDICIES})

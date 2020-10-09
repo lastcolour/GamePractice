@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /EHsc /GR- /WX")
         set(CMAKE_CXX_FLAGS_DEBUG "/MD /Zi /Ob0 /Od /RTC1")
     endif()
@@ -27,10 +27,10 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
-    set(CMAKE_CXX_FLAGS 
+    set(CMAKE_CXX_FLAGS
 "-DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong \
 -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security \
--fno-rtti -fno-exceptions -Wall -pedantic -Wextra -Wno-unused-parameter -Os -DNDEBUG")
+-fno-rtti -fno-exceptions -Wall -pedantic -Wextra -Wno-unused-parameter")
 
 else()
 

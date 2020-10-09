@@ -34,7 +34,6 @@ else()
         ${ENGINE_INCLUDE_DIR})
 
     set(PLATFORM_LIB_DEPENDICIES
-        Engine
         log android z)
 
 endif()
@@ -60,4 +59,5 @@ file(GLOB PLATFORM_HEADERS
 add_library(${PROJECT_NAME} STATIC ${PLATFORM_SOURCES} ${PLATFORM_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    ${PLATFORM_LIB_DEPENDICIES})
+    ${PLATFORM_LIB_DEPENDICIES}
+    Engine)

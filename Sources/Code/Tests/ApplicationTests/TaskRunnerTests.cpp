@@ -141,5 +141,5 @@ TEST_F(TaskRunnerTests, CheckManualMainThreadStepping) {
     runner.stopOtherTreads();
 
     EXPECT_EQ(value.load(), MAX_ITER);
-    EXPECT_GE(auxValue.load(), value.load());
+    EXPECT_GE(auxValue.load(), MAX_ITER / 2);
 }

@@ -16,6 +16,8 @@
 #include "Render/ETRenderCamera.hpp"
 #include "RenderTexture.hpp"
 
+#include <algorithm>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 

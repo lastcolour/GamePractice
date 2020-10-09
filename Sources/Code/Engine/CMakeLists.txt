@@ -12,17 +12,18 @@ set(PLATFORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Platform/include CACHE PATH
 set(ENTITY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Entity/include CACHE PATH "Entity include dir")
 set(RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Render/include CACHE PATH "Render include dir")
 set(UI_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/UI/include CACHE PATH "UI include dir")
+set(AUDIO_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Audio include dir")
 set(ENGINE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Engine include dir")
 
-add_subdirectory(Core)
-add_subdirectory(Math)
-add_subdirectory(Reflect)
-add_subdirectory(Parallel)
-add_subdirectory(Platform)
-add_subdirectory(Entity)
-add_subdirectory(Render)
-add_subdirectory(Audio)
 add_subdirectory(UI)
+add_subdirectory(Render)
+add_subdirectory(Entity)
+add_subdirectory(Audio)
+add_subdirectory(Parallel)
+add_subdirectory(Math)
+add_subdirectory(Platform)
+add_subdirectory(Reflect)
+add_subdirectory(Core)
 
 include_directories(
     ${CORE_INCLUDE_DIR}
@@ -46,12 +47,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Application
+    Platform
     UI
     Entity
     Audio
     Render
     Parallel
-    Math
-    Platform
     Reflect
+    Math
     Core)
