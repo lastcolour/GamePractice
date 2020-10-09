@@ -78,6 +78,7 @@ public:
     static void Reflect(ReflectContext& reflectCtx) {
         if(auto classInfo = reflectCtx.classInfo<ObjectWithResource>("ObjectWithResource")) {
             classInfo->addResourceField("resource", ResourceType::Entity, &ObjectWithResource::setResource);
+            classInfo->addResourceField("otherResource", ResourceType::Entity, &ObjectWithResource::otherResource);
         }
     }
 
@@ -90,6 +91,7 @@ public:
 public:
 
     std::shared_ptr<std::string> resource;
+    std::string otherResource;
 };
 
 class ObjectWithEnum {
@@ -348,7 +350,7 @@ TEST_F(ReflectTests, TestResource) {
     auto classInfo = reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    auto jsonNode = JSONNode::ParseString("{ \"resource\" : \"ObjectWithResource\" }");
+    auto jsonNode = JSONNode::ParseString("{ \"resource\" : \"ObjectWithResource\", \"otherResource\" : \"OtherResourceName\" }");
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
@@ -359,6 +361,7 @@ TEST_F(ReflectTests, TestResource) {
 
     ASSERT_TRUE(object->resource);
     ASSERT_STREQ(object->resource->c_str(), "ObjectWithResource");
+    ASSERT_STREQ(object->otherResource.c_str(), "OtherResourceName");
 }
 
 TEST_F(ReflectTests, TestEnum) {

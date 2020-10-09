@@ -55,6 +55,19 @@ MoveResult moveScroll(float dt, float newSpeed, float currentSpeed, int reaminin
     return res;
 }
 
+bool doesScrollSupported(UIScrollType scrollType, const AABB2Di& targetBox, const AABB2Di& box) {
+    if(scrollType == UIScrollType::Horizontal) {
+        if(targetBox.getSize().x <= box.getSize().x) {
+            return false;
+        }
+    } else {
+        if(targetBox.getSize().y <= box.getSize().y) {
+            return false;
+        }
+    }
+    return true;
+}
+
 } // namespace
 
 void UIScrollArea::Reflect(ReflectContext& ctx) {
@@ -107,6 +120,8 @@ void UIScrollArea::initScrollElem() {
     box.top = box.getSize();
     box.bot = Vec2i(0);
 
+    auto size = box.getSize();
+
     Vec2i botPt(0);
     Vec2i topPt(0);
     if(style.type == UIScrollType::Horizontal) {
@@ -116,10 +131,6 @@ void UIScrollArea::initScrollElem() {
         botPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, box, elemBox);
         topPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, box, elemBox);
     }
-
-    assert(botPt <= topPt && "Invalid bot-top of scroll box");
-
-    auto size = box.getSize();
 
     scrollBox.bot = center + botPt - size / 2;
     scrollBox.top = center + topPt - size / 2;
@@ -135,6 +146,22 @@ void UIScrollArea::initScrollElem() {
             UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.top);
         } else {
             UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.bot);
+        }
+    }
+
+    if(!doesScrollSupported(style.type, elemBox, box)) {
+        if(style.type == UIScrollType::Vertical) {
+            if(style.origin == UIScrollOrigin::Start) {
+                scrollBox.top = scrollBox.bot;
+            } else {
+                scrollBox.bot = scrollBox.top;
+            }
+        } else {
+            if(style.origin == UIScrollOrigin::Start) {
+                scrollBox.bot = scrollBox.top;
+            } else {
+                scrollBox.top = scrollBox.bot;
+            }
         }
     }
 

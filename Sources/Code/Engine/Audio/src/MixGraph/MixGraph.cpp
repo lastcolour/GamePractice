@@ -39,7 +39,6 @@ void MixGraph::mix(float* out, int channels, int samples) {
     }
 
     rootCombine.additiveMixTo(out, channels, samples);
-    auto outData = static_cast<float*>(out);
 
     int lowClipCount = 0;
     int highClipCount = 0;

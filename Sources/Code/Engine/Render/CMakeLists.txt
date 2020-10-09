@@ -37,6 +37,7 @@ if(BUILD_PLATFORM STREQUAL "Windows")
     set(RENDER_LIB_DEPENDICIES
         ${FREETYPE2_LIB_STATIC_BIN}
         ${ZLIB_LIB_STATIC_BIN}
+        ${GLAD_LIB_STATIC_BIN}
         CACHE INTERNAL "Render link dependecies")
 
 elseif(BUILD_PLATFORM STREQUAL "Linux")

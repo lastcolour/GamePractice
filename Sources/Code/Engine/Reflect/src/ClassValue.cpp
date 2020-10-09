@@ -308,9 +308,9 @@ std::string ClassValue::getTypeName() const {
             return "color";
         }
         case ClassValueType::Resource: {
-            std::string name = "resource.";
-            name += getResourceName(resourceType);
-            return name;
+            std::string typeName = "resource.";
+            typeName += getResourceName(resourceType);
+            return typeName;
         }
         case ClassValueType::Enum: {
             EnumInfo* enumInfo = nullptr;
@@ -533,7 +533,11 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
     case ClassValueType::Resource: {
         std::string value;
         readJSONValue(isElement, name, value, node);
-        setResourceFunc(instance, value.c_str());
+        if(setResourceFunc) {
+            setResourceFunc(instance, value.c_str());
+        } else {
+            getRef<std::string>(valuePtr) = value;
+        }
         return true;
     }
     case ClassValueType::Entity: {
@@ -750,7 +754,11 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
     case ClassValueType::Resource: {
         std::string val;
         stream.read(val);
-        setResourceFunc(instance, val.c_str());
+        if(setResourceFunc) {
+            setResourceFunc(instance, val.c_str());
+        } else {
+            getRef<std::string>(valuePtr) = val;
+        }
         break;
     }
     case ClassValueType::Enum: {

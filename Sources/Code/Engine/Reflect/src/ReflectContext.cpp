@@ -31,7 +31,6 @@ bool ReflectContext::registerInfos() {
 bool ReflectContext::registerEnums() {
     bool res = true;
     for(auto& enumInfo : enumInfos) {
-        bool res = false;
         ET_SendEventReturn(res, &ETClassInfoManager::ET_registerEnumInfo, enumInfo);
         if(!res) {
             LogError("[ReflectContext::registerEnums] Can't register enum: %s", enumInfo->getName());

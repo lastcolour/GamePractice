@@ -177,7 +177,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
             }
         }
 
-        font->addGlyph(ch, shift, glyphData, glyph->bitmap.buffer);
+        font->addGlyph(ch, shift, glyphData);
 
         shift += glyph->bitmap.width + padding;
     }

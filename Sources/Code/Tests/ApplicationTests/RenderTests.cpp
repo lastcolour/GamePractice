@@ -39,6 +39,33 @@ void SyncAndDrawFrameToFB(RenderTextureFramebuffer& fb) {
     ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, fb);
 }
 
+AABB2Di DrawAndGetDirtyBoxForFrameBuffer(RenderTextureFramebuffer& fb) {
+    SyncAndDrawFrameToFB(fb);
+
+    bool isDirty = false;
+    AABB2Di dirtyBox(Vec2i(fb.getSize()), Vec2i(0));
+
+    const Vec2i size = fb.getSize();
+    for(int i = 0; i < size.x; ++i) {
+        for(int j = 0; j < size.y; ++j) {
+            const ColorB& col = fb.getColor(i, j);
+            if(col != CLEAR_COLOR) {
+                dirtyBox.bot.x = std::min(dirtyBox.bot.x, i);
+                dirtyBox.bot.y = std::min(dirtyBox.bot.y, j);
+                dirtyBox.top.x = std::max(dirtyBox.top.x, i);
+                dirtyBox.top.y = std::max(dirtyBox.top.y, j);
+                isDirty = true;
+            }
+        }
+    }
+
+    if(!isDirty) {
+        return AABB2Di(Vec2i(0), Vec2i(0));
+    }
+
+    return dirtyBox;
+}
+
 } // namespace
 
 std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;
@@ -269,7 +296,7 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
     auto atlas = font1->getFontAtlas();
     ASSERT_TRUE(atlas);
     ASSERT_GT(atlas->size, Vec2i(0));
-    ASSERT_NE(atlas->texId, 0);
+    ASSERT_NE(atlas->texId, 0u);
 
     std::shared_ptr<RenderFont> font2;
     ET_SendEventReturn(font2, &ETRenderFontManager::ET_getDefaultFont);
@@ -301,7 +328,7 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
 
     for(int ch = 32; ch < 127; ++ch)
     {
-        std::string text(1, ch);
+        std::string text(1, static_cast<char>(ch));
         renderText->ET_setText(text.c_str());
         box = renderText->ET_getTextAABB();
         if (ch != '\n') {
@@ -495,4 +522,43 @@ TEST_F(RenderTests, CheckHideUnhide) {
     dumpFramebuffer();
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, boxId);
+}
+
+TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
+auto gameObj = createVoidObject();
+    RenderTextLogic* renderText = new RenderTextLogic;
+    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
+    renderText->ET_setFontHeight(35);
+    ASSERT_TRUE(renderText->init());
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Vec2 portCenter;
+    portCenter.x = renderPort.x / 2.f;
+    portCenter.y = renderPort.y / 2.f;
+
+    Transform tm;
+    tm.pt = Vec3(portCenter, 0.f);
+    gameObj->ET_setTransform(tm);
+
+    std::vector<std::string> words = {"", "1", "Ppqt", "a", "A"};
+    for(const auto& word : words) {
+        renderText->ET_setText(word.c_str());
+        AABB2D box = renderText->ET_getTextAABB();
+
+        auto dirtyBox = DrawAndGetDirtyBoxForFrameBuffer(*textureFramebuffer);
+    
+        if(word.empty()) {
+            EXPECT_EQ(dirtyBox.bot.x, 0);
+            EXPECT_EQ(dirtyBox.bot.y, 0);
+            EXPECT_EQ(dirtyBox.top.x, 0);
+            EXPECT_EQ(dirtyBox.top.y, 0);
+        } else {
+            EXPECT_EQ(static_cast<int>(box.bot.x), dirtyBox.bot.x) << "word='" << word << "'";
+            EXPECT_EQ(static_cast<int>(box.bot.y), dirtyBox.bot.y) << "word='" << word << "'";
+            EXPECT_EQ(static_cast<int>(box.top.x), dirtyBox.top.x) << "word='" << word << "'";
+            EXPECT_EQ(static_cast<int>(box.top.y), dirtyBox.top.y) << "word='" << word << "'";
+        }
+    }
 }

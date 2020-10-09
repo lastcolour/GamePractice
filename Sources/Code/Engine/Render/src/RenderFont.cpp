@@ -24,7 +24,7 @@ const RenderTexture* RenderFont::getFontAtlas() const {
     return fontAtlas.get();
 }
 
-void RenderFont::addGlyph(int ch, int shift, const RenderGlyph& glyphData, const void* buffer) {
+void RenderFont::addGlyph(int ch, int shift, const RenderGlyph& glyphData) {
     glyphs[ch] = glyphData;
 }
 

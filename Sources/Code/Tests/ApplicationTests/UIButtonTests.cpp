@@ -110,10 +110,10 @@ TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
     Vec2i center = viewPort / 2;
 
     Vec2i topButtonCenter = Vec2i(center.x, 3 * viewPort.y / 4);
-    auto topButton = createUIButton(topButtonCenter, Vec2(0.5f));
+    createUIButton(topButtonCenter, Vec2(0.5f));
 
     Vec2i botButtonCenter = Vec2i(center.x, viewPort.y / 4);
-    auto botButton = createUIButton(botButtonCenter, Vec2(0.5f));
+    createUIButton(botButtonCenter, Vec2(0.5f));
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
 
@@ -133,7 +133,7 @@ TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
     auto topButton = createUIButton(topButtonCenter, Vec2(0.5f));
 
     Vec2i botButtonCenter = Vec2i(center.x, viewPort.y / 4);
-    auto botButton = createUIButton(botButtonCenter, Vec2(0.5f));
+    createUIButton(botButtonCenter, Vec2(0.5f));
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, topButtonCenter);

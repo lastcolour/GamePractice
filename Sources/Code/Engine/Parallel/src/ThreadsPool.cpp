@@ -41,8 +41,8 @@ void ThreadsPool::deinitWorkers() {
     threadWorkers.clear();
 }
 
-ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* prevJob, int threadId) {
-    auto nextJob = provider->finishAndGetNext(prevJob, threadId);
+ThreadJob* ThreadsPool::getNextJobForThread(ThreadJob* finishedJob, int threadId) {
+    auto nextJob = provider->finishAndGetNext(finishedJob, threadId);
     return nextJob;
 }
 

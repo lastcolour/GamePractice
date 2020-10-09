@@ -75,6 +75,14 @@ public:
     }
 
     template<typename ClassT>
+    void addResourceField(const char* name, ResourceType resType, std::string ClassT::* valuePtr) {
+        if(!checkIfSameType(GetTypeId<ClassT>())) {
+            return;
+        }
+        registerClassValue(name, ClassValueType::Resource, ClassValue::CastToPtr(valuePtr), InvalidTypeId, resType, nullptr);
+    }
+
+    template<typename ClassT>
     void addBaseClass() {
         constexpr auto type = GetClassValueType<ClassT>();
         static_assert(type == ClassValueType::Object, "Base class should have object type");

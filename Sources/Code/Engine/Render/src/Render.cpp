@@ -6,6 +6,7 @@
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Render/ETDebugRender.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Nodes/Node.hpp"
 
@@ -60,6 +61,7 @@ void Render::ET_updateRender() {
         return;
     }
     ET_SendEvent(&ETRenderNodeManager::ET_update);
+    ET_SendEvent(&ETDebugRender::ET_update);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
 }
 

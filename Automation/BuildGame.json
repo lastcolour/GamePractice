@@ -1,7 +1,7 @@
 {
     "Project":"Build Game",
     "InputVariables":{
-        "buildType":"Release",
+        "buildType":"Debug",
         "platform":"${currentPlatform}",
         "skipLibsBuild":"False",
         "skipGameTests":"False",

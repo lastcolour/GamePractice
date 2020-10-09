@@ -58,6 +58,7 @@ bool ALAudioSystem::init() {
     }
     ETNode<ETSoundUpdateTask>::connect(getEntityId());
     ETNode<ETAudioSystem>::connect(getEntityId());
+    ETNode<ETSoundPlayManager>::connect(getEntityId());
     return true;
 }
 

@@ -39,7 +39,7 @@ std::string StringFormat(const std::string& format) {
 template<typename ... ArgsT>
 std::string StringFormat(const std::string& format, const ArgsT& ... args) {
     Buffer buff(format.size() + 1);
-    if(sizeof...(args) > 0u) {
+    if constexpr (sizeof...(args) > 0u) {
         Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);
     } else {
         size_t i = 0u;

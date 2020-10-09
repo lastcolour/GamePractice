@@ -57,10 +57,10 @@ RenderTexture::~RenderTexture() {
 }
 
 void RenderTexture::modifyRGBA(const Vec2i& startPt, const Vec2i& endPt, const ColorB* pixels) {
-    Vec2i size = endPt - startPt;
+    Vec2i subSize = endPt - startPt;
     glBindTexture(GL_TEXTURE_2D, texId);
     {
-        glTexSubImage2D(GL_TEXTURE_2D, 0, startPt.x, startPt.y, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, startPt.x, startPt.y, subSize.x, subSize.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 }

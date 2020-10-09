@@ -88,7 +88,7 @@ void UIButton::deinit() {
 }
 
 EInputEventResult UIButton::ET_onInputEvent(EActionType type, const Vec2i& pt) {
-    EInputEventResult res;
+    EInputEventResult res = EInputEventResult::Ignore;
     switch(type) {
         case EActionType::Press:
             res = onPress(pt);
@@ -99,6 +99,10 @@ EInputEventResult UIButton::ET_onInputEvent(EActionType type, const Vec2i& pt) {
         case EActionType::Release:
             res = onRelease(pt);
             break;
+        default: {
+            assert(false && "Invalid input event");
+            break;
+        }
     }
     return res;
 }

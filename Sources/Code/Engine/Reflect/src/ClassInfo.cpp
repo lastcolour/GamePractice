@@ -50,8 +50,8 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
         return;
     }
     if(valueType == ClassValueType::Resource) {
-        if(!valueSetFunc) {
-            LogError(errStr, valueName, className, "resource without create function");
+        if(!valueSetFunc && !valuePtr) {
+            LogError(errStr, valueName, className, "resource without create function or string value");
             assert(false && "can't register class value");
             return;
         }

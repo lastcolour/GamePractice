@@ -24,7 +24,7 @@ public:
 
     void setFontAtlas(std::shared_ptr<RenderTexture>& newFontAtlas);
     const RenderTexture* getFontAtlas() const;
-    void addGlyph(int ch, int shift, const RenderGlyph& glyphData, const void* buffer);
+    void addGlyph(int ch, int shift, const RenderGlyph& glyphData);
     const RenderGlyph* getGlyph(int ch) const;
     int getHeight() const;
     Vec2i getTextSize(const std::string& text) const;

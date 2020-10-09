@@ -6,7 +6,7 @@
 
 #include <string>
 
-struct DebugDrawLine {
+struct DebugDrawLineCmd {
     Vec2i startPt;
     Vec2i endPt;
     ColorB startCol;
@@ -14,14 +14,15 @@ struct DebugDrawLine {
     int width;
 };
 
-struct DebugDrawQuad {
+struct DebugDrawQuadCmd {
     AABB2Di box;
     ColorB col;
 };
 
-struct DebugDrawText {
+struct DebugDrawTextCmd {
     Vec2i pt;
     std::string text;
+    float size;
     ColorB col;
 };
 

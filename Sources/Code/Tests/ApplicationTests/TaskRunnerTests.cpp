@@ -9,7 +9,7 @@
 TEST_F(TaskRunnerTests, SimpleOneTimeTaskOneThread) {
     TasksRunner runner;
     int value = 0;
-    auto task = runner.createTask("Test", [&value](){
+    runner.createTask("Test", [&value](){
         ++value;
         std::this_thread::yield();
     });
