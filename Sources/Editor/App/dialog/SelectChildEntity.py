@@ -51,6 +51,10 @@ class SelectChildEntity(QDialog):
     def getResultEntity(self):
         return self._resultEntityFileNode
 
+    def reject(self):
+        self._resultEntityFileNode = None
+        super().reject()
+
     def _signal_cancelBt_clicked(self):
         self._resultEntityFileNode = None
         self.done(0)

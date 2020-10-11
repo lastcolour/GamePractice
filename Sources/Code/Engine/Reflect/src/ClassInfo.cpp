@@ -314,7 +314,7 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Entit
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
                 if(!value.readValueFrom(ctx, instance, ptr, node)) {
-                    LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
+                    LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                         value.name, className);
                     return false;
                 }
@@ -356,7 +356,7 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Entit
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
                 if(!value.readValueFrom(ctx, instance, ptr, stream)) {
-                    LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
+                    LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                         value.name, className);
                     return false;
                 }

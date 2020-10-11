@@ -55,6 +55,10 @@ class SelectResourceFile(QDialog):
         self._selectedFile = None
         self.done(0)
 
+    def reject(self):
+        self._selectedFile = None
+        super().reject()
+
     def _signal_selectBt_clicked(self):
         self.done(0)
 

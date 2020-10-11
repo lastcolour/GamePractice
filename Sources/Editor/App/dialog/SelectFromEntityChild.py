@@ -13,7 +13,7 @@ class SelectFromEntityChild(QDialog):
         self._tree.setColumnCount(1)
         self._tree.setSortingEnabled(False)
         self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
-        self._buildTree()
+        self._buildTree(self._entity, self._tree.invisibleRootItem())
         self._rootLayout.addWidget(self._tree)
 
         self._buttotLayout = QHBoxLayout()
@@ -39,15 +39,15 @@ class SelectFromEntityChild(QDialog):
     def _signal_selectBt_clicked(self):
         self.done(0)
 
-    def _buildTree(self):
-        rootItem = self._tree.invisibleRootItem()
+    def _buildTree(self, rootEntity, rootItem):
         item = QTreeWidgetItem(rootItem)
-        item.setText(0, self._entity.getName())
-        item._entity = self._entity
-        for childEnt in self._entity.getChildren():
-            childItem = QTreeWidgetItem(item)
-            childItem.setText(0, childEnt.getName())
-            childItem._entity = childEnt
+        if  rootEntity == self._entity:
+            item.setText(0, "{0} (this)".format(rootEntity.getName()))
+        else:
+            item.setText(0, rootEntity.getName())
+        item._entity = rootEntity
+        for childEnt in rootEntity.getChildren():
+            self._buildTree(childEnt, item)
         item.setExpanded(True)
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
@@ -60,3 +60,7 @@ class SelectFromEntityChild(QDialog):
 
     def getSelectedEntity(self):
         return self._selectedEntity
+
+    def reject(self):
+        self._selectedEntity = None
+        super().reject()

@@ -89,7 +89,9 @@
                               "right": 1.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -154,7 +156,9 @@
                             }
                           },
                           "text": "Time:",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -216,7 +220,9 @@
                             }
                           },
                           "text": "60.0",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -262,7 +268,9 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0
+                    "render": [
+                      0
+                    ]
                   }
                 },
                 {
@@ -295,9 +303,15 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      2,
-                      3,
-                      4
+                      [
+                        2
+                      ],
+                      [
+                        3
+                      ],
+                      [
+                        4
+                      ]
                     ]
                   }
                 }
@@ -367,7 +381,9 @@
                             }
                           },
                           "text": "Score:",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -431,7 +447,9 @@
                               "right": 1.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -496,7 +514,9 @@
                             }
                           },
                           "text": "0",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -545,7 +565,9 @@
                         "right": 2.0
                       }
                     },
-                    "render": 0
+                    "render": [
+                      0
+                    ]
                   }
                 },
                 {
@@ -578,9 +600,15 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      3,
-                      2,
-                      4
+                      [
+                        3
+                      ],
+                      [
+                        2
+                      ],
+                      [
+                        4
+                      ]
                     ]
                   }
                 }
@@ -605,7 +633,7 @@
                   "right": 0.0
                 }
               },
-              "render": -1
+              "render": []
             }
           },
           {
@@ -618,7 +646,9 @@
                 "yAlign": "Center"
               },
               "children": [
-                3
+                [
+                  3
+                ]
               ]
             }
           },
@@ -632,7 +662,9 @@
                 "yAlign": "Center"
               },
               "children": [
-                4
+                [
+                  4
+                ]
               ]
             }
           }
@@ -704,7 +736,7 @@
                         "right": 0.0
                       }
                     },
-                    "render": -1
+                    "render": []
                   }
                 },
                 {
@@ -735,7 +767,7 @@
                   "right": 0.0
                 }
               },
-              "render": -1
+              "render": []
             }
           },
           {
@@ -748,7 +780,9 @@
                 "yAlign": "Center"
               },
               "children": [
-                1
+                [
+                  1
+                ]
               ]
             }
           }
@@ -796,7 +830,7 @@
                   "right": 0.0
                 }
               },
-              "render": -1
+              "render": []
             }
           }
         ]
@@ -820,7 +854,7 @@
             "right": 0.0
           }
         },
-        "render": -1
+        "render": []
       }
     },
     {
@@ -833,9 +867,15 @@
           "yAlign": "Top"
         },
         "children": [
-          2,
-          3,
-          4
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
         ]
       }
     },
@@ -845,7 +885,9 @@
       "data": {
         "elements": [
           {
-            "element": 2,
+            "element": [
+              2
+            ],
             "startDelay": 0.0,
             "duration": 0.30000001192092896,
             "xMoveOffset": 0.0,
@@ -854,7 +896,9 @@
             "startAlpha": 0.0
           },
           {
-            "element": 3,
+            "element": [
+              3
+            ],
             "startDelay": 0.0,
             "duration": 0.30000001192092896,
             "xMoveOffset": 0.0,

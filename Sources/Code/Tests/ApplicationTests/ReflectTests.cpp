@@ -795,6 +795,7 @@ TEST_F(ReflectTests, TestEntityReference) {
 
     MemoryStream stream;
     stream.openForWrite();
+    stream.write(1);
     stream.write(childId);
 
     stream.reopenForRead();
@@ -802,4 +803,112 @@ TEST_F(ReflectTests, TestEntityReference) {
     parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
 
     ASSERT_EQ(logicPtr->entityId, childEntity->getEntityId());
+}
+
+TEST_F(ReflectTests, TestSelfReferencing) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithEntity>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    ObjectWithEntity* logicPtr = nullptr;
+    EntityLogicId logicId = InvalidEntityLogicId;
+
+    EntityRegistry registy;
+    auto parentEntity = registy.createEntity("Parent");
+
+    auto logicInstance = classInfo->createInstance();
+    logicPtr = static_cast<ObjectWithEntity*>(logicInstance.get());
+    
+    {
+        auto jsonNode = JSONNode::ParseString("{ \"entity\": [0] }");
+        ASSERT_TRUE(jsonNode);
+
+        SerializeContext ctx;
+        ctx.entityId = parentEntity->getEntityId();
+        logicInstance.readAllValuesFrom(ctx, jsonNode);
+
+        EXPECT_EQ(logicPtr->entityId, parentEntity->getEntityId());
+    }
+
+    {
+        auto jsonNode = JSONNode::ParseString("{ \"entity\": [] }");
+        ASSERT_TRUE(jsonNode);
+
+        SerializeContext ctx;
+        ctx.entityId = parentEntity->getEntityId();
+        logicInstance.readAllValuesFrom(ctx, jsonNode);
+
+        EXPECT_EQ(logicPtr->entityId, InvalidEntityId);
+    }
+
+    logicId = parentEntity->addLogic(std::move(logicInstance));
+    ASSERT_NE(logicId, InvalidEntityLogicId);
+
+    MemoryStream stream;
+    stream.openForWrite();
+    stream.write(1);
+    stream.write(0);
+
+    stream.reopenForRead();
+
+    parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
+
+    ASSERT_EQ(logicPtr->entityId, parentEntity->getEntityId());
+
+    stream.reopenForWrite();
+
+    parentEntity->readLogicData(logicId, AllEntityLogicValueId, stream);
+
+    stream.reopenForRead();
+
+    {
+        int val = 0;
+        stream.read(val);
+        EXPECT_EQ(val, 1);
+
+        val = -1;
+        stream.read(val);
+        EXPECT_EQ(val, 0);
+    }
+}
+
+TEST_F(ReflectTests, CheckLongEntityReference) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithEntity>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    ObjectWithEntity* logicPtr = nullptr;
+    EntityLogicId logicId = InvalidEntityLogicId;
+
+    EntityRegistry registy;
+    auto parentEntity = registy.createEntity("Parent");
+
+    auto logicInstance = classInfo->createInstance();
+    logicPtr = static_cast<ObjectWithEntity*>(logicInstance.get());
+    logicId = parentEntity->addLogic(std::move(logicInstance));
+    ASSERT_NE(logicId, InvalidEntityLogicId);
+
+    EntityChildId firstChildId = 1;
+    auto firstChildEntity = registy.createEntity("FirstChild");
+    parentEntity->addChildEntityWithId(firstChildId, *firstChildEntity);
+
+    EntityChildId secondChildId = 3;
+    auto secondChildEntity = registy.createEntity("SecondChild");
+    firstChildEntity->addChildEntityWithId(secondChildId, *secondChildEntity);
+
+    MemoryStream stream;
+    stream.openForWrite();
+    stream.write(2);
+    stream.write(firstChildId);
+    stream.write(secondChildId);
+
+    stream.reopenForRead();
+
+    parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
+
+    ASSERT_EQ(logicPtr->entityId, secondChildEntity->getEntityId());
 }

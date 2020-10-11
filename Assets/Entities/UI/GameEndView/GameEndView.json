@@ -89,7 +89,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -156,7 +158,9 @@
                               "right": 3.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -223,7 +227,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -290,7 +296,9 @@
                               "right": 4.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -357,7 +365,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -424,7 +434,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -468,7 +480,7 @@
                         "right": 0.0
                       }
                     },
-                    "render": -1
+                    "render": []
                   }
                 },
                 {
@@ -481,9 +493,15 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      1,
-                      2,
-                      3
+                      [
+                        1
+                      ],
+                      [
+                        2
+                      ],
+                      [
+                        3
+                      ]
                     ]
                   }
                 },
@@ -491,9 +509,15 @@
                   "type": "UIGameEndStarsAppearAnimation",
                   "id": 4,
                   "data": {
-                    "firstStar": 1,
-                    "secondStar": 2,
-                    "thirdStar": 3,
+                    "firstStar": [
+                      1
+                    ],
+                    "secondStar": [
+                      2
+                    ],
+                    "thirdStar": [
+                      3
+                    ],
                     "duration": 0.20000000298023224,
                     "startScale": 2.0
                   }
@@ -508,9 +532,15 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      7,
-                      5,
-                      6
+                      [
+                        7
+                      ],
+                      [
+                        5
+                      ],
+                      [
+                        6
+                      ]
                     ]
                   }
                 }
@@ -580,7 +610,9 @@
                             }
                           },
                           "text": "Continue",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -621,8 +653,12 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0,
-                    "label": 1,
+                    "render": [
+                      0
+                    ],
+                    "label": [
+                      1
+                    ],
                     "event": "OnGameEndViewExit"
                   }
                 },
@@ -722,7 +758,9 @@
                             }
                           },
                           "text": "Level 01",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -763,7 +801,9 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0
+                    "render": [
+                      0
+                    ]
                   }
                 },
                 {
@@ -796,7 +836,9 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      2
+                      [
+                        2
+                      ]
                     ]
                   }
                 }
@@ -866,7 +908,9 @@
                             }
                           },
                           "text": "Score: ",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -928,7 +972,9 @@
                             }
                           },
                           "text": "300",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -969,7 +1015,9 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0
+                    "render": [
+                      0
+                    ]
                   }
                 },
                 {
@@ -982,8 +1030,12 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      1,
-                      2
+                      [
+                        1
+                      ],
+                      [
+                        2
+                      ]
                     ]
                   }
                 },
@@ -1073,7 +1125,9 @@
                             }
                           },
                           "text": "Time:  ",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -1135,7 +1189,9 @@
                             }
                           },
                           "text": "60s",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -1176,7 +1232,9 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0
+                    "render": [
+                      0
+                    ]
                   }
                 },
                 {
@@ -1189,8 +1247,12 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      1,
-                      2
+                      [
+                        1
+                      ],
+                      [
+                        2
+                      ]
                     ]
                   }
                 },
@@ -1235,7 +1297,9 @@
                   "right": 0.0
                 }
               },
-              "render": 0
+              "render": [
+                0
+              ]
             }
           },
           {
@@ -1248,11 +1312,21 @@
                 "yAlign": "Top"
               },
               "children": [
-                4,
-                1,
-                5,
-                6,
-                3
+                [
+                  4
+                ],
+                [
+                  1
+                ],
+                [
+                  5
+                ],
+                [
+                  6
+                ],
+                [
+                  3
+                ]
               ]
             }
           },
@@ -1297,7 +1371,9 @@
             "right": 0.0
           }
         },
-        "render": 0
+        "render": [
+          0
+        ]
       }
     },
     {
@@ -1310,7 +1386,9 @@
           "yAlign": "Center"
         },
         "children": [
-          1
+          [
+            1
+          ]
         ]
       }
     },
@@ -1320,7 +1398,9 @@
       "data": {
         "elements": [
           {
-            "element": 0,
+            "element": [
+              0
+            ],
             "startDelay": 0.0,
             "duration": 0.30000001192092896,
             "xMoveOffset": 0.0,

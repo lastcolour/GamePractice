@@ -109,7 +109,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       }
                     ]
@@ -133,7 +135,9 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0
+                    "render": [
+                      0
+                    ]
                   }
                 },
                 {
@@ -146,7 +150,9 @@
                       "yAlign": "Center"
                     },
                     "children": [
-                      1
+                      [
+                        1
+                      ]
                     ]
                   }
                 },
@@ -191,7 +197,7 @@
                   "right": 0.0
                 }
               },
-              "render": -1
+              "render": []
             }
           },
           {
@@ -204,7 +210,9 @@
                 "yAlign": "Center"
               },
               "children": [
-                1
+                [
+                  1
+                ]
               ]
             }
           }
@@ -298,7 +306,9 @@
                             }
                           },
                           "text": "Start",
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       },
                       {
@@ -339,8 +349,12 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0,
-                    "label": 1,
+                    "render": [
+                      0
+                    ],
+                    "label": [
+                      1
+                    ],
                     "event": "OnMainViewStartGame"
                   }
                 },
@@ -395,7 +409,7 @@
                   "right": 0.0
                 }
               },
-              "render": -1
+              "render": []
             }
           },
           {
@@ -408,7 +422,9 @@
                 "yAlign": "Center"
               },
               "children": [
-                1
+                [
+                  1
+                ]
               ]
             }
           }
@@ -524,7 +540,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       }
                     ]
@@ -558,8 +576,12 @@
                         "right": 10.0
                       }
                     },
-                    "render": 0,
-                    "label": 1,
+                    "render": [
+                      0
+                    ],
+                    "label": [
+                      1
+                    ],
                     "event": "None"
                   }
                 },
@@ -671,7 +693,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       }
                     ]
@@ -695,8 +719,12 @@
                         "right": 10.0
                       }
                     },
-                    "render": 0,
-                    "label": 1,
+                    "render": [
+                      0
+                    ],
+                    "label": [
+                      1
+                    ],
                     "event": "None"
                   }
                 },
@@ -818,7 +846,9 @@
                               "right": 0.0
                             }
                           },
-                          "render": 0
+                          "render": [
+                            0
+                          ]
                         }
                       }
                     ]
@@ -842,8 +872,12 @@
                         "right": 0.0
                       }
                     },
-                    "render": 0,
-                    "label": 1,
+                    "render": [
+                      0
+                    ],
+                    "label": [
+                      1
+                    ],
                     "event": "None"
                   }
                 },
@@ -898,7 +932,7 @@
                   "right": 0.0
                 }
               },
-              "render": -1
+              "render": []
             }
           },
           {
@@ -911,9 +945,15 @@
                 "yAlign": "Center"
               },
               "children": [
-                1,
-                2,
-                3
+                [
+                  1
+                ],
+                [
+                  2
+                ],
+                [
+                  3
+                ]
               ]
             }
           }
@@ -932,9 +972,15 @@
           "yAlign": "Center"
         },
         "children": [
-          1,
-          2,
-          3
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
         ]
       }
     },
@@ -954,7 +1000,7 @@
             "right": 0.0
           }
         },
-        "render": -1
+        "render": []
       }
     },
     {
@@ -963,7 +1009,9 @@
       "data": {
         "elements": [
           {
-            "element": 1,
+            "element": [
+              1
+            ],
             "startDelay": 0.0,
             "duration": 0.20000000298023224,
             "xMoveOffset": 0.0,
@@ -972,7 +1020,9 @@
             "startAlpha": 0.0
           },
           {
-            "element": 2,
+            "element": [
+              2
+            ],
             "startDelay": 0.10000000149011612,
             "duration": 0.20000000298023224,
             "xMoveOffset": 0.0,
@@ -981,7 +1031,9 @@
             "startAlpha": 0.0
           },
           {
-            "element": 3,
+            "element": [
+              3
+            ],
             "startDelay": 0.20000000298023224,
             "duration": 0.20000000298023224,
             "xMoveOffset": 0.0,

@@ -12,44 +12,72 @@
 
 namespace {
 
-EntityId getEntityIdFromChildId(const SerializeContext& ctx, EntityChildId childId) {
-    if(childId == InvalidEntityChildId) {
+EntityId getEntityIdFromChildIdSequence(const SerializeContext& ctx, const std::vector<EntityChildId>& childIdSequence) {
+    if(childIdSequence.empty()) {
         return InvalidEntityId;
     }
-    EntityId parentId = ctx.entityId;
-    if(!parentId.isValid()) {
+    if(!ctx.entityId.isValid()) {
+        LogError("[ClassValue::getEntityIdFromChildIdSequence] No active entity to query child id");
         assert(false && "Invalid serializable entity");
-        LogWarning("[ClassValue::getEntityIdFromChildId] No active entity to query child id");
         return InvalidEntityId;
     }
-    EntityId childEntId;
-    ET_SendEventReturn(childEntId, parentId, &ETEntity::ET_getEntityIdFromChildId, childId);
-    if(!childEntId.isValid()) {
-        LogWarning("[ClassValue::getEntityIdFromChildId] Can't find child with childId '%d' in entity '%s'",
-            childId, EntityUtils::GetEntityName(parentId));
-        return InvalidEntityId;
+    EntityId currentParentEntId = ctx.entityId;
+    EntityId currentChildEntId;
+    for(size_t i = 0, sz = childIdSequence.size(); i < sz; ++i) {
+        currentChildEntId = InvalidEntityId;
+        auto childId = childIdSequence[i];
+        ET_SendEventReturn(currentChildEntId, currentParentEntId, &ETEntity::ET_getEntityIdFromChildId, childId);
+        if(!currentChildEntId.isValid()) {
+            LogWarning("[ClassValue::getEntityIdFromChildIdSequence] Can't query entity id for a child with id '%d' from an entiy: '%s'",
+                childId, EntityUtils::GetEntityName(currentParentEntId));
+            break;
+        }
+        currentParentEntId = currentChildEntId;
     }
-    return childEntId;
+    return currentChildEntId;
 }
 
-EntityChildId getChildIdFromEntityId(const SerializeContext& ctx, EntityId childEntId) {
-    if(childEntId == InvalidEntityId) {
-        return InvalidEntityChildId;
+std::vector<EntityChildId> getChildIdSequenceFromEntityId(const SerializeContext& ctx, EntityId childEntId) {
+    std::vector<EntityChildId> childIdSequence;
+    if(!childEntId.isValid()) {
+        return childIdSequence;
     }
-    EntityId parentId = ctx.entityId;
-    if(!parentId.isValid()) {
-        assert(false && "Invalid serializable entity");
+    if(!ctx.entityId.isValid()) {
         LogWarning("[ClassValue::getChildIdFromEntityId] No active entity to query child id");
-        return InvalidEntityChildId;
+        assert(false && "Invalid serializable entity");
+        return childIdSequence;
     }
-    EntityChildId childId = InvalidEntityChildId;
-    ET_SendEventReturn(childId, parentId, &ETEntity::ET_getChildIdFromEntityId, childEntId);
-    if(childId == InvalidEntityChildId) {
-        LogWarning("[ClassValue::getChildIdFromEntityId] Can't find child '%s' in entity '%s'",
-            EntityUtils::GetEntityName(childEntId), EntityUtils::GetEntityName(parentId));
-        return InvalidEntityChildId;
+    if(ctx.entityId == childEntId) {
+        EntityChildId childId = InvalidEntityChildId;
+        ET_SendEventReturn(childId, ctx.entityId, &ETEntity::ET_getChildIdFromEntityId, childEntId);
+        childIdSequence.push_back(childId);
+        return childIdSequence;
     }
-    return childId;
+    EntityId currentChildEntId = childEntId;
+    while(true) {
+        EntityId parentEntId;
+        ET_SendEventReturn(parentEntId, currentChildEntId, &ETEntity::ET_getParentId);
+        if(!parentEntId.isValid()) {
+            LogWarning("[ClassValue::getChildIdSequenceFromEntityId] Child entity '%s' does not have a parent",
+                EntityUtils::GetEntityName(childEntId));
+            break;
+        }
+        EntityChildId childId = InvalidEntityChildId;
+        ET_SendEventReturn(childId, parentEntId, &ETEntity::ET_getChildIdFromEntityId, currentChildEntId);
+        if(childId == InvalidEntityChildId) {
+            LogError("[ClassValue::getChildIdSequenceFromEntityId] Can't get child id for a child entity '%s' from parent: '%s'",
+                EntityUtils::GetEntityName(currentChildEntId), EntityUtils::GetEntityName(parentEntId));
+            childIdSequence.clear();
+            break;
+        }
+        childIdSequence.push_back(childId);
+        if(ctx.entityId == parentEntId) {
+            break;
+        }
+        currentChildEntId = parentEntId;
+    }
+
+    return childIdSequence;
 }
 
 template<typename T>
@@ -258,6 +286,20 @@ const char* getResourceName(ResourceType resType) {
         }
     }
     return "";
+}
+
+bool readJSONChildIdSequence(std::vector<EntityChildId>& childIdSequence, const JSONNode& node) {
+    if(!node.isArray()) {
+        LogError("[ClassValue::readJSONChildIdSequence] Entity value type is not an 'array'");
+        return false;
+    }
+    assert(childIdSequence.empty() && "Invalid output arg");
+    for(const auto& val : node) {
+        EntityChildId childId = InvalidEntityChildId;
+        val.read(childId);
+        childIdSequence.push_back(childId);
+    }
+    return true;
 }
 
 } // namespace
@@ -541,9 +583,18 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return true;
     }
     case ClassValueType::Entity: {
-        EntityChildId childId = InvalidEntityChildId;
-        readJSONValue(isElement, name, childId, node);
-        getRef<EntityId>(valuePtr) = getEntityIdFromChildId(ctx, childId);
+        bool res = false;
+        std::vector<EntityChildId> childIdSequence;
+        if(isElement) {
+            res = readJSONChildIdSequence(childIdSequence, node);
+        } else {
+            res = readJSONChildIdSequence(childIdSequence, node.object(name.c_str()));
+        }
+        if(!res) {
+            LogError("[ClassValue::readValueFrom] Can't read 'entityId' field '%s'", name);
+            return false;
+        }
+        getRef<EntityId>(valuePtr) = getEntityIdFromChildIdSequence(ctx, childIdSequence);
         return true;
     }
     default:
@@ -642,8 +693,11 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
     }
     case ClassValueType::Entity: {
         auto entityId = getRef<EntityId>(valuePtr);
-        auto childId = getChildIdFromEntityId(ctx, entityId);
-        stream.write(childId);
+        auto childIdSequence = getChildIdSequenceFromEntityId(ctx, entityId);
+        stream.write(static_cast<int>(childIdSequence.size()));
+        for(auto& val : childIdSequence) {
+            stream.write(val);
+        }
         break;
     }
     case ClassValueType::Invalid:
@@ -777,9 +831,15 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return arrayInfo->readValuesFrom(ctx, valuePtr, stream);
     }
     case ClassValueType::Entity: {
-        EntityChildId childId = InvalidEntityChildId;
-        stream.read(childId);
-        getRef<EntityId>(valuePtr) = getEntityIdFromChildId(ctx, childId);
+        std::vector<EntityChildId> childIdSequence;
+        int idsCount = 0;
+        stream.read(idsCount);
+        for(int i = 0; i < idsCount; ++i) {
+            int val = 0;
+            stream.read(val);
+            childIdSequence.push_back(val);
+        }
+        getRef<EntityId>(valuePtr) = getEntityIdFromChildIdSequence(ctx, childIdSequence);
         break;
     }
     case ClassValueType::Invalid:

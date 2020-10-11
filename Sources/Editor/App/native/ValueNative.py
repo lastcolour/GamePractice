@@ -691,41 +691,63 @@ class ResourceValue(ValueNative):
 class EntityValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Entity)
-        self._val = None
+        self._vals = None
 
     def readFromDict(self, node):
+        readNode = node
         if not self._isArrayElement:
-            self._val = str(node[self._name])
-        else:
-            self._val = str(node)
+            readNode = node[self._name]
+        self._vals = []
+        for childId in readNode:
+            self._vals.append(childId)
 
     def writeToDict(self, node):
+        for val in self._vals:
+            if val == -1:
+                self._vals = []
         if not self._isArrayElement:
-            node[self._name] = self._val
+            node[self._name] = self._vals
         else:
-            node.append(self._val)
+            node.append(self._vals)
 
     def readFromStream(self, stream):
-        self._val = stream.readInt()
+        self._vals = []
+        childIds = stream.readInt()
+        for i in range(childIds):
+            val = stream.readInt()
+            self._vals.append(val)
 
     def writeToStream(self, stream):
-        if isinstance(self._val, str):
-            stream.writeInt(-1)
-        else:
-            stream.writeInt(self._val)
+        stream.writeInt(len(self._vals))
+        for val in self._vals:
+            stream.writeInt(val)
 
     def setEntityValue(self, entity):
-        if entity is None:
-            self._val = -1
+        self._vals = []
+        if entity == None:
+            pass
+        elif self.getEntityId() == entity.getNativeId():
+            self._vals.append(0)
         else:
-            if self.getEntityId() == entity.getNativeId():
-                self._val = 0
-            else:
-                self._val = entity._childId
+            while True:
+                refEntId = entity.getNativeId()
+                if refEntId != self.getEntityId():
+                    self._vals.append(entity._childId)
+                    entity = entity.getParent()
+                else:
+                    break
         self._onValueChanged()
 
     def getEntityValue(self):
-        return self.getEntity().getChildWithId(self._val)
+        hostEntity = self.getEntity()
+        res = None
+        for refEntId in self._vals:
+            res = hostEntity.getChildWithId(refEntId)
+            if res is None:
+                raise RuntimeError("Can't find child with id")
+            else:
+                hostEntity = res
+        return res
 
 def _createValue(valueName, valueType):
     val = None

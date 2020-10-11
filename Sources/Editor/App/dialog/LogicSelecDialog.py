@@ -23,6 +23,7 @@ class LogicSelectDialog(QDialog):
         self._tree.setSortingEnabled(False)
         self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
         self._buildTree(self._tree.invisibleRootItem(), logicsModel.getLogics())
+        self._tree.setSortingEnabled(True)
         self._rootLayout.addWidget(self._tree)
 
         self._buttotLayout = QHBoxLayout()
@@ -54,6 +55,10 @@ class LogicSelectDialog(QDialog):
     def _signal_cancelBt_clicked(self):
         self._resultLogic = None
         self.done(0)
+
+    def reject(self):
+        self._resultLogic = None
+        super().reject()
 
     def _signal_addBt_clicked(self):
         self._resultLogic = self._currentSelection

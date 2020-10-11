@@ -91,7 +91,9 @@
         "duration": 0.10000000149011612,
         "maxBackgroundScale": 1.100000023841858,
         "minForegroundScale": 0.8999999761581421,
-        "background": 1
+        "background": [
+          1
+        ]
       }
     }
   ]
