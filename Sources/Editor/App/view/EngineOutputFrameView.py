@@ -11,6 +11,7 @@ class AspecRatio:
     Ratio_16x10 = 2
     Ratio_5x3 = 3
     Ratio_18x9 = 4
+    Ratio_None = 5
 
 _MIN_WIDTH = 150
 
@@ -50,6 +51,8 @@ class EngineOutputFrameView(QWidget):
         elif self._ratio == AspecRatio.Ratio_18x9:
             x = 18
             y = 9
+        elif self._ratio == AspecRatio.Ratio_None:
+            return self.size().height()
         else:
             raise RuntimeError("Unknown aspect ratio: '{0}'".format(self._ratio))
         if self._isHorizontal:

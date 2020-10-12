@@ -55,7 +55,8 @@ class MainToolBar(QToolBar):
             "5x3",
             "16x9",
             "16x10",
-            "18x9"
+            "18x9",
+            "None"
         ])
         self._aspectRationBox.setCurrentIndex(self._aspectRationBox.findText("16x9"))
         self._aspectRationBox.currentTextChanged.connect(self._singnal_aspectRationBox_changed)
@@ -95,6 +96,8 @@ class MainToolBar(QToolBar):
             aspectRation = AspecRatio.Ratio_16x10
         elif text == "18x9":
             aspectRation = AspecRatio.Ratio_18x9
+        elif text == "None":
+            aspectRation = AspecRatio.Ratio_None
         else:
             raise RuntimeError("Unknown aspect ration: '{0}'".format(text))
         GetEngineViewManager().onAspectRatioChanged(aspectRation)

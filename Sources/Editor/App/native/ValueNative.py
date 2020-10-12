@@ -736,6 +736,7 @@ class EntityValue(ValueNative):
                     entity = entity.getParent()
                 else:
                     break
+        self._vals.reverse()
         self._onValueChanged()
 
     def getEntityValue(self):
@@ -744,7 +745,7 @@ class EntityValue(ValueNative):
         for refEntId in self._vals:
             res = hostEntity.getChildWithId(refEntId)
             if res is None:
-                raise RuntimeError("Can't find child with id")
+                raise RuntimeError("Can't find child with id: {0}".format(refEntId))
             else:
                 hostEntity = res
         return res

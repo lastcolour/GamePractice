@@ -9,6 +9,7 @@
 #include "Entity/ETEntity.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 namespace {
 
@@ -76,7 +77,7 @@ std::vector<EntityChildId> getChildIdSequenceFromEntityId(const SerializeContext
         }
         currentChildEntId = parentEntId;
     }
-
+    std::reverse(childIdSequence.begin(), childIdSequence.end());
     return childIdSequence;
 }
 
