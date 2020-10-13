@@ -27,6 +27,7 @@ public:
     int getRunCount() const;
     void setType(RunTaskType newType);
     RunTaskType getType() const;
+    const char* getName() const;
     std::vector<RunTask*>& getChildren();
 
     void execute();

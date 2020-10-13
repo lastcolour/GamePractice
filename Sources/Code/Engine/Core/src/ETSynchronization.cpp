@@ -136,15 +136,17 @@ void ETSyncRoute::removeThread(Node& node, const std::thread::id& threadId) {
 
 void ETSyncRoute::addThread(Node& node, const std::thread::id& threadId) {
     for(int i = 0; i < 4; ++i) {
-        if(node.data[i].threadId == threadId) {
-            node.data[i].count += 1;
+        auto& threadData = node.data[i];
+        if(threadData.threadId == threadId) {
+            threadData.count += 1;
             return;
         }
     }
     for(int i = 0; i < 4; ++i) {
-        if(node.data[i].threadId == std::thread::id()) {
-            node.data[i].threadId = threadId;
-            node.data[i].count = 1;
+        auto& threadData = node.data[i];
+        if(threadData.count == 0) {
+            threadData.threadId = threadId;
+            threadData.count = 1;
             return;
         }
     }

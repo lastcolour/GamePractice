@@ -100,7 +100,7 @@ void TasksRunner::initJobTrees() {
     for(size_t i = 0u, sz = jobs.size(); i < sz; ++i) {
         auto job = jobs[i].get();
         jobIdMap[job] = i;
-        jobTrees.emplace_back(new JobTree());
+        jobTrees.emplace_back(new JobTree(static_cast<int>(i)));
         jobTrees[i]->setJobsCount(1);
         jobTrees[i]->addRootJob(job);
         job->setTree(jobTrees[i].get());

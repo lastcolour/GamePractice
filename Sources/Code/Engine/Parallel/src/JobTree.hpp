@@ -11,25 +11,32 @@ class ThreadJob;
 class JobTree {
 public:
 
-    JobTree();
+    JobTree(int jobTreeId);
     ~JobTree();
 
+    void tryRestartTree(const TimePoint& currTime);
+    bool tryFinishTreeByOneJob(const TimePoint& currTime);
     void addRootJob(ThreadJob* job);
-    bool tryFinishTreeByOneJob();
     std::vector<ThreadJob*>& getRootJobs();
     int getJobsCount() const;
     void setJobsCount(int newJobsCount);
-    bool isDelayPassed(const TimePoint& currTime) const;
     void setRunFrequency(int frequency);
     std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
 
 private:
 
-    TimePoint prevTickT;
+    void checkRunTime();
+
+private:
+
+    int treeId;
+    TimePoint prevStartT;
+    TimePoint prevEndT;
     std::vector<ThreadJob*> rootJobs;
     std::atomic<int> pendingJobsCount;
     std::chrono::microseconds runDelay;
     int jobsCount;
+    std::atomic<bool> isRunning;
 };
 
 #endif /* __JOB_TREE_HPP__ */

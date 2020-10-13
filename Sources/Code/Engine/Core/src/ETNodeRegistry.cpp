@@ -84,15 +84,15 @@ void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) 
     if(!addressId.isValid()) {
         return;
     }
-    if(syncRoute->tryBlockRoute(etId)) {
+    if(syncRoute->tryHardBlock(etId)) {
         doConnect(etId, addressId, ptr);
         processPendingConnections(etId);
-        syncRoute->unlockRoute(etId);
     } else {
         std::lock_guard<std::mutex> lock(connMutex);
         bool isConnect = true;
         connections[etId].pendingConnections.push_back({ptr, addressId, isConnect});
     }
+    syncRoute->hardUnlock(etId);
 }
 
 void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {

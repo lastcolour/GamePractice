@@ -30,7 +30,7 @@ void FrameStatsTracker::onFrameEnd() {
     ET_SendEventReturn(viewPort, &ETRenderCamera::ET_getRenderPort);
 
     Vec2i drawPt = viewPort;
-    drawPt.x -= 140;
+    drawPt.x -= 80;
     drawPt.y -= 18;
 
     ColorB col(255, 255, 0);
@@ -40,6 +40,7 @@ void FrameStatsTracker::onFrameEnd() {
         ET_SendEvent(&ETDebugRender::ET_drawText, drawPt, 16.f, col, fpsText.c_str());
     }
 
+    drawPt.x -= 55;
     drawPt.y -= 16;
 
     {

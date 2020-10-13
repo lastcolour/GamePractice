@@ -28,6 +28,10 @@ RunTaskType RunTask::getType() const {
     return type;
 }
 
+const char* RunTask::getName() const {
+    return name.c_str();
+}
+
 void RunTask::addChild(RunTask* other) {
     childrenTasks.push_back(other);
 }

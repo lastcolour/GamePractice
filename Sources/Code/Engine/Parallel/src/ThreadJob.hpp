@@ -3,11 +3,11 @@
 
 #include <atomic>
 #include <vector>
-#include <chrono>
+
+#include "Core/TimePoint.hpp"
 
 class RunTask;
 class JobTree;
-class TimePoint;
 
 class ThreadJob {
 public:
@@ -28,6 +28,8 @@ public:
     RunTask* getTask();
     void execute();
     std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
+    std::chrono::microseconds getLastRunTime() const;
+    std::chrono::microseconds getLastWaitTime() const;
 
 private:
 
@@ -36,6 +38,9 @@ private:
 
 private:
 
+    TimePoint prevScheduleT;
+    TimePoint prevStartT;
+    TimePoint prevEndT;
     std::vector<ThreadJob*> childrenJobs;
     std::vector<ThreadJob*>* nextJobs;
     std::atomic<int> pendingParents;

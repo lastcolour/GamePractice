@@ -69,7 +69,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
     GlobalEnvironment env;
     ETSystem& etSystem = *env.GetETSystem();
 
-    const int MAX_OBJECTS_COUNT = 3000;
+    const int MAX_OBJECTS_COUNT = 200;
 
     std::atomic<int> waitThtread(2);
 
@@ -171,7 +171,7 @@ TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
     ETSystem& etSystem = *env.GetETSystem();
 
     const int MAX_OBJECTS = 200;
-    const int CONNECT_LOOPS = 1000;
+    const int CONNECT_LOOPS = 200;
 
     std::atomic<bool> runFlag;
     runFlag.store(true);

@@ -35,8 +35,8 @@ int ThreadJob::getParentsCount() const {
 }
 
 void ThreadJob::execute() {
-    auto now = TimePoint::GetNowTime();
-    assert(tree->isDelayPassed(now) && "Restart tree too early");
+    prevStartT = TimePoint::GetNowTime();
+    tree->tryRestartTree(prevStartT);
     task->execute();
     onFinished();
 }
@@ -66,8 +66,9 @@ bool ThreadJob::canStartInThread(int threadId) const {
 }
 
 void ThreadJob::onFinished() {
+    prevEndT = TimePoint::GetNowTime();
     pendingParents.store(parentsCount);
-    if(tree->tryFinishTreeByOneJob()) {
+    if(tree->tryFinishTreeByOneJob(prevEndT)) {
         nextJobs = &(tree->getRootJobs());
     } else {
         nextJobs = &childrenJobs;
@@ -84,6 +85,7 @@ void ThreadJob::scheduleNextJobs(std::vector<ThreadJob*>& output) {
     }
     for(auto job : *nextJobs) {
         if(job->pendingParents.load() == 0) {
+            job->prevScheduleT = prevEndT;
             job->pendingParents.store(job->parentsCount);
             output.push_back(job);
         }
@@ -108,4 +110,18 @@ RunTask* ThreadJob::getTask() {
 
 std::chrono::microseconds ThreadJob::getRemainingWaitTime(const TimePoint& currTime) const {
     return tree->getRemainingWaitTime(currTime);
+}
+
+std::chrono::microseconds ThreadJob::getLastRunTime() const {
+    return std::chrono::duration_cast<std::chrono::microseconds>(
+        prevEndT.getStdTimePoint() - prevStartT.getStdTimePoint());
+}
+
+std::chrono::microseconds ThreadJob::getLastWaitTime() const {
+    if(parentsCount == 0) {
+        return std::chrono::microseconds(0);
+    } else {
+        return std::chrono::duration_cast<std::chrono::microseconds>(
+            prevStartT.getStdTimePoint() - prevScheduleT.getStdTimePoint());
+    }
 }
