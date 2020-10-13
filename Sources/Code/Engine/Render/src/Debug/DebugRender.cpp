@@ -4,6 +4,7 @@
 
 #include <limits>
 #include <cmath>
+#include <algorithm>
 
 namespace {
 

@@ -4,6 +4,8 @@
 #include "Core/StringFormat.hpp"
 #include "Render/ETRenderCamera.hpp"
 
+#include <algorithm>
+
 FrameStatsTracker::FrameStatsTracker() :
     fpsValue(0.f) {
 }
