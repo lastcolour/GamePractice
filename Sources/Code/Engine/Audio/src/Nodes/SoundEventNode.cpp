@@ -57,7 +57,7 @@ void SoundEventNode::ET_emit() {
         return;
     }
     TimePoint frameStartT = TimePoint::GetNowTime();
-    if(frameStartT.getSecondsElapsedFrom(lastPlayTime) < (nextDelay + 0.001f)) {
+    if(frameStartT.getSecElapsedFrom(lastPlayTime) < (nextDelay + 0.001f)) {
         return;
     }
     lastPlayTime = frameStartT;

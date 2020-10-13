@@ -58,7 +58,7 @@ void calculateParents(JobTree* tree) {
     }
 }
 
-int MIN_MICROSEC_TO_SLEEP = 256;
+int MIN_MICROSEC_TO_SLEEP = 1024;
 
 } // namespace
 
@@ -189,7 +189,7 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
         while(!predicateFailed.load()) {
             auto currTime = TimePoint::GetNowTime();
             nextJob = getNextJobOrWaitTime(currTime, threadId, waitTime);
-            if(!nextJob && threadId != 0) {
+            if(!nextJob) {
                 if(waitTime.count() < MIN_MICROSEC_TO_SLEEP) {
                     cond.wait_for(ulock, waitTime);
                 } else {

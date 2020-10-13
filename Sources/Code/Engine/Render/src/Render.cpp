@@ -60,9 +60,11 @@ void Render::ET_updateRender() {
     if(!canRenderToScreen()) {
         return;
     }
+    tracker.onFrameStart();
     ET_SendEvent(&ETRenderNodeManager::ET_update);
     ET_SendEvent(&ETDebugRender::ET_update);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
+    tracker.onFrameEnd();
 }
 
 bool Render::canRenderToScreen() const {
@@ -102,7 +104,10 @@ void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
 
     renderFb.bind();
 
+    tracker.onFrameStart();
     ET_SendEvent(&ETRenderNodeManager::ET_update);
+    ET_SendEvent(&ETDebugRender::ET_update);
+    tracker.onFrameEnd();
 
     renderFb.read();
     renderFb.unbind();

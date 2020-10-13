@@ -33,7 +33,7 @@ void GameTimer::ET_onTick() {
     }
 
     auto currTime = TimePoint::GetNowTime();
-    auto dt = currTime.getSecondsElapsedFrom(lastTickT);
+    auto dt = currTime.getSecElapsedFrom(lastTickT);
 
     assert(dt > 0.0001f && "Very fast game loop step");
 

@@ -31,7 +31,7 @@ void AssetsCacheManager::ET_updateAssets() {
     std::lock_guard<std::mutex> lock(mutex);
 
     auto nowT = TimePoint::GetNowTime();
-    auto dt = nowT.getSecondsElapsedFrom(lastTickT);
+    auto dt = nowT.getSecElapsedFrom(lastTickT);
     lastTickT = nowT;
 
     auto it = assetsCacheMap.begin();

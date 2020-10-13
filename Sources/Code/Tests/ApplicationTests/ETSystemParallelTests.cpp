@@ -69,9 +69,11 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
     GlobalEnvironment env;
     ETSystem& etSystem = *env.GetETSystem();
 
+    const int MAX_OBJECTS_COUNT = 3000;
+
     std::atomic<int> waitThtread(2);
 
-    std::thread t1([&waitThtread, &etSystem](){
+    std::thread t1([&waitThtread, &etSystem, MAX_OBJECTS_COUNT](){
         while(waitThtread.load() != 0) {
             etSystem.sendEvent(&ETObject::ET_triggerUpdate);
         }
@@ -80,16 +82,16 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
     std::vector<std::unique_ptr<TestObject>> objects1;
     std::vector<std::unique_ptr<TestObject>> objects2;
 
-    std::thread t2([&waitThtread, &objects1, &etSystem](){
-        while(objects1.size() < 1000) {
+    std::thread t2([&waitThtread, &objects1, &etSystem, MAX_OBJECTS_COUNT](){
+        while(objects1.size() < MAX_OBJECTS_COUNT) {
             auto obj = objects1.emplace_back(new TestObject(etSystem)).get();
             obj->connect();
         }
         waitThtread.fetch_sub(1);
     });
 
-    std::thread t3([&waitThtread, &objects2, &etSystem](){
-        while(objects2.size() < 1000) {
+    std::thread t3([&waitThtread, &objects2, &etSystem, MAX_OBJECTS_COUNT](){
+        while(objects2.size() < MAX_OBJECTS_COUNT) {
             auto obj = objects2.emplace_back(new TestObject(etSystem)).get();
             obj->connect();
         }
@@ -101,8 +103,8 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
     t3.join();
 
     auto all = etSystem.getAll<ETObject>();
-    if(all.size() < 2000) {
-        ASSERT_EQ(all.size(), 2000);
+    if(all.size() < MAX_OBJECTS_COUNT * 2) {
+        ASSERT_EQ(all.size(), MAX_OBJECTS_COUNT * 2);
     }
 
     objects1.clear();

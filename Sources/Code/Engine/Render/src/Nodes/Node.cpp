@@ -82,24 +82,23 @@ int Node::getDrawPriority() const {
     return drawPriority;
 }
 
-void Node::render() {
+void Node::render(RenderContext& ctx) {
     if(!isVisible()) {
         return;
     }
 
-    auto& renderCtx = renderGraph->getContext();
     if(blending != RenderBlendingType::NONE) {
-        renderCtx.setBlending(blending);
+        ctx.setBlending(blending);
     } else {
         if(alpha < 1.f) {
-            renderCtx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+            ctx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
         } else {
-            renderCtx.setBlending(blending);
+            ctx.setBlending(blending);
         }
     }
 
     mat->bind();
     mat->setUniform1f("alpha", alpha);
-    onRender(renderCtx);
+    onRender(ctx);
     mat->unbind();
 }

@@ -7,6 +7,7 @@
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "RenderGraph/RenderGraph.hpp"
+#include "Debug/FrameStatsTracker.hpp"
 
 #include <thread>
 
@@ -54,6 +55,7 @@ private:
 private:
 
     std::thread::id renderThreadId;
+    FrameStatsTracker tracker;
     bool hasContext;
     bool canOffscrenRender;
     bool canScreenRender;

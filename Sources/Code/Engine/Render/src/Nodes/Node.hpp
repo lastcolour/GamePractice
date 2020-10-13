@@ -21,7 +21,7 @@ public:
     void initConnection(EntityId renderNodeId, const RenderNodeCreateParams& params);
     void initRender();
     void setRenderGraph(RenderGraph* graph);
-    void render();
+    void render(RenderContext& ctx);
     int getDrawPriority() const;
     EntityId getNodeId() const;
 

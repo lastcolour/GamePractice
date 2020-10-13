@@ -54,7 +54,7 @@ void RenderGraph::render() {
     }
     ctx.startFrame();
     for(auto node : children) {
-        node->render();
+        node->render(ctx);
     }
     ctx.endFrame();
 }

@@ -5,7 +5,8 @@
 
 TextNode::TextNode() :
     color(255, 255, 255),
-    fontHeight(24) {
+    fontHeight(24),
+    alignAtCenter(true) {
 }
 
 TextNode::~TextNode() {
@@ -43,7 +44,14 @@ void TextNode::onRender(RenderContext& ctx) {
     AABB2D aabb;
     aabb.bot = Vec2(0.f);
     aabb.top = Vec2(textSize.x * scale.x, textSize.y * scale.y);
-    aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
+
+    Vec2 drawPt(tm.pt.x, tm.pt.y);
+    if(alignAtCenter) {
+        aabb.setCenter(drawPt);
+    } else {
+        aabb.bot += drawPt;
+        aabb.top += drawPt;
+    }
 
     Vec2 pt = Vec2(aabb.bot.x, aabb.top.y);
     pt.y -= font->getHeight() * scale.y;
@@ -106,4 +114,8 @@ bool TextNode::isVisible() const {
         return false;
     }
     return Node::isVisible();
+}
+
+void TextNode::setAlignAtCenter(bool flag) {
+    alignAtCenter = flag;
 }

@@ -5,6 +5,8 @@
 #include "Core/ETPrimitives.hpp"
 #include "Render/ETDebugRender.hpp"
 #include "Debug/DeubgCommands.hpp"
+#include "Nodes/SimpleNode.hpp"
+#include "Nodes/TextNode.hpp"
 
 #include <vector>
 #include <mutex>
@@ -28,10 +30,18 @@ public:
 
 private:
 
+    void drawLines(RenderContext& ctx);
+    void drawQuads(RenderContext& ctx);
+    void drawTexts(RenderContext& ctx);
+
+private:
+
     std::mutex mutex;
     std::vector<DebugDrawLineCmd> drawLineCmds;
     std::vector<DebugDrawQuadCmd> drawQuadCmds;
     std::vector<DebugDrawTextCmd> drawTextCmds;
+    SimpleNode simpleNode;
+    TextNode textNode;
 };
 
 #endif /* __DEBUG_RENDER_HPP__ */

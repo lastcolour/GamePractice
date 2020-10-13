@@ -29,7 +29,7 @@ void UITimer::ET_onTick() {
         return;
     }
     auto currTime = TimePoint::GetNowTime();
-    auto dt = currTime.getSecondsElapsedFrom(lastTickT);
+    auto dt = currTime.getSecElapsedFrom(lastTickT);
     lastTickT = currTime;
 
     if(skipUpdate) {

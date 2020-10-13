@@ -30,7 +30,7 @@ bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
 
 bool isPressTimeRunOut(const TimePoint& pressTime) {
     auto now = TimePoint::GetNowTime();
-    auto dt = now.getSecondsElapsedFrom(pressTime);
+    auto dt = now.getSecElapsedFrom(pressTime);
     if(dt > TIME_OUT_SEC_DUR) {
         return true;
     }

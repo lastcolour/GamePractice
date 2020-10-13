@@ -77,7 +77,7 @@ TEST_F(TaskRunnerTests, TestFrequency) {
     TimePoint startTime = TimePoint::GetNowTime();
     runner.runUntil(1, [&value, &startTime](){
         auto currTime = TimePoint::GetNowTime();
-        return currTime.getSecondsElapsedFrom(startTime) < 1.f;
+        return currTime.getSecElapsedFrom(startTime) < 1.f;
     });
 
     EXPECT_GE(task->getRunCount(), 59);

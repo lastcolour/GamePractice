@@ -14,6 +14,8 @@ public:
     void ET_setColor0(const ColorB& newColor) override;
     void ET_setText(const std::string& newText) override;
 
+    void setAlignAtCenter(bool flag);
+
 protected:
 
     void onInit() override;
@@ -26,6 +28,7 @@ private:
     std::string text;
     ColorB color;
     int fontHeight;
+    bool alignAtCenter;
 };
 
 #endif /* __TEXT_NODE_HPP__ */
