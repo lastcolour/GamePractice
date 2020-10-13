@@ -1,9 +1,9 @@
-#include "Core/CoreModule.hpp"
-#include "AppRunState.hpp"
-#include "AssetsCacheManager.hpp"
-#include "ModuleSharedManager.hpp"
+#include "CoreModule.hpp"
+#include "Core/App/AppRunState.hpp"
+#include "Core/App/AssetsCacheManager.hpp"
+#include "Core/App/ModuleSharedManager.hpp"
+#include "Core/App/AsyncAssetsLoader.hpp"
 #include "Reflect/ClassInfoManager.hpp"
-#include "AsyncAssetsLoader.hpp"
 #include "Platform/PlatformLogger.hpp"
 
 CoreModule::CoreModule() :

@@ -1,4 +1,4 @@
-#include "ModuleSharedManager.hpp"
+#include "Core/App/ModuleSharedManager.hpp"
 #include "Reflect/ClassInstance.hpp"
 
 #include <cassert>

@@ -2,9 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 29
+    compileSdkVersion 30
 
-    buildToolsVersion "29.0.0"
+    ndkVersion "21.3.6528147"
 
     defaultConfig {
 
@@ -23,7 +23,7 @@ android {
         versionName "1.0"
 
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
     }
 
@@ -43,7 +43,10 @@ android {
     sourceSets {
 
         def ProjectRootDir = "$rootProject.projectDir.absolutePath/../.."
-        def BuildRootDir = "$ProjectRootDir/_build/Android"
+        def BuildRootDir = "$ProjectRootDir/_build/Android/_jniLibs"
+
+        assert file("$ProjectRootDir/Assets").exists()
+        assert file("$BuildRootDir/Debug").exists()
 
         main {
             assets.srcDirs = ["$ProjectRootDir/Assets"]

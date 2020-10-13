@@ -41,7 +41,9 @@ include_directories(
 
 add_library(${PROJECT_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Application.hpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CoreModule.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CoreModule.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 

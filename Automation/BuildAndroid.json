@@ -1,7 +1,7 @@
 {
     "Project":"Build Android",
     "InputVariables":{
-        "buildType":"Release"
+        "buildType":"Debug"
     },
     "Steps":[
         {
@@ -10,10 +10,8 @@
             "data":{
                 "rootSources":"${currentDir}/../Sources",
                 "gameSources":"${rootSources}/Code",
-                "binsRoot":"${currentDir}/../_build/Android",
-                "gameBinsRoot":"${binsRoot}/Game",
-                "libSources":"${rootSources}/Libs",
-                "libsBins":"${binsRoot}/Libs"
+                "androidOutDir":"${currentDir}/../_build/Android",
+                "libSources":"${rootSources}/Libs"
             }
         },
         {
@@ -23,7 +21,8 @@
             "data": {
                 "separate_bins":true,
                 "run_dir": "${libSources}/Oboe",
-                "out_dir": "${libsBins}/Oboe",
+                "project_out_dir": "Libs/Oboe",
+                "android_out_dir": "${androidOutDir}",
                 "build_type":"Release",
                 "verbosity":"silent",
                 "defs" : {}
@@ -35,7 +34,8 @@
             "data": {
                 "separate_bins":true,
                 "run_dir": "${libSources}/FreeType2",
-                "out_dir": "${libsBins}/FreeType2",
+                "project_out_dir": "Libs/FreeType2",
+                "android_out_dir": "${androidOutDir}",
                 "build_type":"Release",
                 "verbosity":"silent",
                 "defs" : {}
@@ -44,13 +44,53 @@
         {
             "name":"Build Game",
             "type":"AndroidCmakeGenerate",
-            "dependOn":[],
+            "dependOn":["Build FreeType2", "Build Oboe"],
             "data":{
                 "separate_bins":false,
+                "android_out_dir": "${androidOutDir}",
                 "run_dir":"${gameSources}",
-                "out_dir":"${gameBinsRoot}",
+                "project_out_dir": "Game",
                 "build_type":"${buildType}",
                 "defs":{}
+            }
+        },
+        {
+            "name":"Copy 'arm64-v8a' Game Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build Game"],
+            "data":{
+                "type":"shared",
+                "platform":"Linux",
+                "name":"Game01",
+                "from":"${androidOutDir}/arm64-v8a/Game/${buildType}",
+                "to":"${androidOutDir}/jniLibs/${buildType}/arm64-v8a",
+                "force":true
+            }
+        },
+        {
+            "name":"Copy 'x86' Game Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build Game"],
+            "data":{
+                "type":"shared",
+                "platform":"Linux",
+                "name":"Game01",
+                "from":"${androidOutDir}/x86/Game/${buildType}",
+                "to":"${androidOutDir}/jniLibs/${buildType}/x86",
+                "force":true
+            }
+        },
+        {
+            "name":"Copy 'armeabi-v7a' Game Binaries",
+            "type":"CopyCompiledBinaries",
+            "dependOn":["Build Game"],
+            "data":{
+                "type":"shared",
+                "platform":"Linux",
+                "name":"Game01",
+                "from":"${androidOutDir}/armeabi-v7a/Game/${buildType}",
+                "to":"${androidOutDir}/jniLibs/${buildType}/armeabi-v7a",
+                "force":true
             }
         }
     ]

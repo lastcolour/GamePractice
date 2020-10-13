@@ -27,11 +27,6 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
-    set(CMAKE_CXX_FLAGS
-"-DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong \
--no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security \
--fno-rtti -fno-exceptions -Wall -pedantic -Wextra -Wno-unused-parameter")
-
 else()
 
     message(FATAL_ERROR "Unknown compiler id: ${CMAKE_CXX_COMPILER_ID}")

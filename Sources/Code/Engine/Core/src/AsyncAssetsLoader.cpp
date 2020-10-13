@@ -1,4 +1,4 @@
-#include "AsyncAssetsLoader.hpp"
+#include "Core/App/AsyncAssetsLoader.hpp"
 
 AsyncAssetsLoader::AsyncAssetsLoader() {
 }

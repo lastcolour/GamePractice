@@ -1,6 +1,6 @@
 #include "Application.hpp"
 #include "Core/ETApplication.hpp"
-#include "Core/CoreModule.hpp"
+#include "CoreModule.hpp"
 #include "Core/GlobalEnvironment.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
