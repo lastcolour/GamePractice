@@ -58,8 +58,6 @@ void calculateParents(JobTree* tree) {
     }
 }
 
-int MIN_MICROSEC_TO_SLEEP = 1024;
-
 } // namespace
 
 TasksRunner::TasksRunner() :
@@ -171,7 +169,6 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
         auto res = predFunc();
         predicateFailed.store(!res);
         if(!res) {
-            cond.notify_all();
             return nullptr;
         }
     } else if(predicateFailed.load()) {
@@ -183,30 +180,22 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
         std::unique_lock<std::mutex> ulock(mutex);
         if(prevJob) {
             prevJob->scheduleNextJobs(pendingJobs);
-            cond.notify_all();
         }
-        std::chrono::microseconds waitTime(0);
         while(!predicateFailed.load()) {
             auto currTime = TimePoint::GetNowTime();
-            nextJob = getNextJobOrWaitTime(currTime, threadId, waitTime);
-            if(!nextJob) {
-                if(waitTime.count() < MIN_MICROSEC_TO_SLEEP) {
-                    cond.wait_for(ulock, waitTime);
-                } else {
-                    ulock.unlock();
-                    std::this_thread::yield();
-                    ulock.lock();
-                }
-            } else {
+            nextJob = getNextJob(currTime, threadId);
+            if(nextJob) {
                 break;
             }
+            ulock.unlock();
+            std::this_thread::yield();
+            ulock.lock();
         }
     }
     return nextJob;
 }
 
-ThreadJob* TasksRunner::getNextJobOrWaitTime(const TimePoint& currTime, int threadId, std::chrono::microseconds& outWaitTime) {
-    auto minWaitTime = std::chrono::microseconds(std::numeric_limits<std::chrono::microseconds::rep>::max());
+ThreadJob* TasksRunner::getNextJob(const TimePoint& currTime, int threadId) {
     for(auto it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it) {
         auto job = *it;
         if(job->canStartInThread(threadId)) {
@@ -214,12 +203,9 @@ ThreadJob* TasksRunner::getNextJobOrWaitTime(const TimePoint& currTime, int thre
             if(jobRemainingWaitTime.count() == 0) {
                 pendingJobs.erase(it);
                 return job;
-            } else {
-                minWaitTime = std::min(minWaitTime, jobRemainingWaitTime);
             }
         }
     }
-    outWaitTime = minWaitTime;
     return nullptr;
 }
 
@@ -249,6 +235,5 @@ void TasksRunner::stepMainTread() {
 void TasksRunner::stopOtherTreads() {
     assert(mode == RunMode::MainThreadManualStep && "Invlaid run mode");
     predicateFailed.store(true);
-    cond.notify_all();
     threadsPool->stopOtherTreads();
 }

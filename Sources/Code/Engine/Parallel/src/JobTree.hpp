@@ -2,6 +2,7 @@
 #define __JOB_TREE_HPP__
 
 #include "Core/TimePoint.hpp"
+#include "JobTreeRunTimeTracker.hpp"
 
 #include <vector>
 #include <atomic>
@@ -23,9 +24,10 @@ public:
     void setRunFrequency(int frequency);
     std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
 
-private:
-
-    void checkRunTime();
+    const TimePoint& getStartTime() const;
+    const TimePoint& getEndTime() const;
+    std::chrono::microseconds getRunDelay() const;
+    int getId() const;
 
 private:
 
@@ -37,6 +39,7 @@ private:
     std::chrono::microseconds runDelay;
     int jobsCount;
     std::atomic<bool> isRunning;
+    JobTreeRunTimeTracker tracker;
 };
 
 #endif /* __JOB_TREE_HPP__ */

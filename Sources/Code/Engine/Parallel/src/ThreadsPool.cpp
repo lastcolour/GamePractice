@@ -51,9 +51,13 @@ void ThreadsPool::run(int numThreads) {
     if(!initWorkers(numThreads - 1)) {
         return;
     }
-    while(provider->canRun()) {
-        if(!stepMainThread()) {
-            std::this_thread::yield();
+    while(true) {
+        auto job = getNextJobForThread(prevJob, 0);
+        prevJob = job;
+        if(job) {
+            job->execute();
+        } else {
+            break;
         }
     }
     deinitWorkers();

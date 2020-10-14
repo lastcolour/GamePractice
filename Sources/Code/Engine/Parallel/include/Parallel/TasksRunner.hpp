@@ -38,7 +38,7 @@ private:
 
     void initJobs();
     void initJobTrees();
-    ThreadJob* getNextJobOrWaitTime(const TimePoint& currTime, int threadId, std::chrono::microseconds& outWaitMs);
+    ThreadJob* getNextJob(const TimePoint& currTime, int threadId);
 
 private:
 
@@ -50,7 +50,6 @@ private:
 
 private:
 
-    std::condition_variable cond;
     std::mutex mutex;
     PredicateT predFunc;
     std::unique_ptr<ThreadsPool> threadsPool;

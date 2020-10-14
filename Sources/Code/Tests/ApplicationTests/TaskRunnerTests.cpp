@@ -65,23 +65,29 @@ TEST_F(TaskRunnerTests, RunTenTasksTenThreads) {
 }
 
 TEST_F(TaskRunnerTests, TestFrequency) {
-    int value = 0;
+    int TEST_FREQUENCY = 300;
 
+    std::atomic<int> value = 0;
     TasksRunner runner;
     auto task = runner.createTask("Test", [&value](){
         ++value;
         std::this_thread::yield();
     });
-    task->setFrequency(60);
+    task->setFrequency(TEST_FREQUENCY);
 
     TimePoint startTime = TimePoint::GetNowTime();
     runner.runUntil(1, [&value, &startTime](){
-        auto currTime = TimePoint::GetNowTime();
-        return currTime.getSecElapsedFrom(startTime) < 1.f;
+        if(value.load() == 1) {
+            startTime = TimePoint::GetNowTime();
+            return true;
+        } else {
+            auto currTime = TimePoint::GetNowTime();
+            return currTime.getSecElapsedFrom(startTime) < 1.f;
+        }
     });
 
-    EXPECT_GE(task->getRunCount(), 59);
-    EXPECT_LE(value, 60);
+    EXPECT_EQ(task->getRunCount(), value.load());
+    EXPECT_GE(value.load(), TEST_FREQUENCY - 1);
 }
 
 TEST_F(TaskRunnerTests, RunTaskWithChildren) {

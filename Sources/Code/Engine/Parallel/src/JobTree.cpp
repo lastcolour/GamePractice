@@ -1,7 +1,6 @@
 #include "JobTree.hpp"
 #include "Parallel/RunTask.hpp"
 #include "ThreadJob.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -11,34 +10,11 @@ JobTree::JobTree(int jobTreeId) :
     pendingJobsCount(0),
     runDelay(0),
     jobsCount(0),
-    isRunning(false) {
+    isRunning(false),
+    tracker(this) {
 }
 
 JobTree::~JobTree() {
-}
-
-void JobTree::checkRunTime() {
-    auto runTime = std::chrono::duration_cast<std::chrono::microseconds>(
-        prevEndT.getStdTimePoint() - prevStartT.getStdTimePoint());
-    if(runTime <= runDelay) {
-        return;
-    }
-
-    LogWarning("[JobTree::checkRunTime] Tree <%d> runs too long; (Expected: '%.1f ms' vs actual '%.1f ms')",
-        treeId, runDelay.count() / 1000.f, runTime.count() / 1000.f);
-
-    std::vector<ThreadJob*> jobs = rootJobs;
-    while(!jobs.empty()) {
-        auto job = jobs.back();
-        auto jobRunTime = job->getLastRunTime();
-        auto jobQueueTime = job->getLastWaitTime();
-        LogWarning("[JobTree::checkRunTime]  * <%d> Task '%s' - run time: '%.1f ms'; queue time: '%.1f ms'",
-            treeId, job->getTask()->getName(), jobRunTime.count() / 1000.f, jobQueueTime.count() / 1000.f);
-        jobs.pop_back();
-        for(auto childJob : job->getChildJobs()) {
-            jobs.push_back(childJob);
-        }
-    }
 }
 
 bool JobTree::tryFinishTreeByOneJob(const TimePoint& currTime) {
@@ -47,7 +23,7 @@ bool JobTree::tryFinishTreeByOneJob(const TimePoint& currTime) {
         prevEndT = currTime;
         isRunning.store(false);
         pendingJobsCount.store(jobsCount);
-        checkRunTime();
+        tracker.onTreeFinished();
         return true;
     }
     return false;
@@ -91,10 +67,26 @@ std::chrono::microseconds JobTree::getRemainingWaitTime(const TimePoint& currTim
     if(isRunning.load()) {
         return std::chrono::microseconds(0);
     }
-    auto delta = (prevStartT.getStdTimePoint() + runDelay) - currTime.getStdTimePoint();
-    auto microSecVal = std::chrono::duration_cast<std::chrono::microseconds>(delta);
-    if(microSecVal.count() < 0) {
+    auto delta = currTime.getStdTimePoint() - prevStartT.getStdTimePoint();
+    auto waitTime = std::chrono::duration_cast<std::chrono::microseconds>(runDelay - delta);
+    if(waitTime.count() < 0) {
         return std::chrono::microseconds(0);
     }
-    return microSecVal;
+    return waitTime;
+}
+
+const TimePoint& JobTree::getStartTime() const {
+    return prevStartT;
+}
+
+const TimePoint& JobTree::getEndTime() const {
+    return prevEndT;
+}
+
+std::chrono::microseconds JobTree::getRunDelay() const {
+    return runDelay;
+}
+
+int JobTree::getId() const {
+    return treeId;
 }
