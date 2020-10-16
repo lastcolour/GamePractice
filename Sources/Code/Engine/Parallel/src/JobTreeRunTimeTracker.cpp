@@ -9,7 +9,7 @@
 
 namespace {
 
-const float LOG_DELAY_SEC = 5.f;
+const float LOG_DELAY_SEC = 10.f;
 
 } // namespace
 

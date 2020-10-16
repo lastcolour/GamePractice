@@ -398,9 +398,9 @@ TEST_F(EntityTests, TestAddElementToUILayout) {
         ASSERT_EQ(size, 1);
     }
     {
-        EntityChildId childId = InvalidEntityChildId;
-        stream.read(childId);
-        ASSERT_EQ(childId, InvalidEntityChildId);
+        int childrendCount = 0;
+        stream.read(childrendCount);
+        ASSERT_EQ(childrendCount, 0);
     }
 
     stream.reopenForWrite();

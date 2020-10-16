@@ -46,7 +46,7 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
         currDuration = -1.f;
         ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
         ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
-        ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimationEvents::ET_onDestryAnimEnded);
+        ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimationEvents::ET_onDestroyAnimEnded);
         ETNode<ETGameTimerEvents>::disconnect();
     } else {
         float prog = std::min(1.f, animDuration / duration);

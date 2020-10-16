@@ -43,7 +43,7 @@ struct ETBoardElemDetroyAnimation {
 
 struct ETBoardElemDetroyAnimationEvents {
     virtual ~ETBoardElemDetroyAnimationEvents() = default;
-    virtual void ET_onDestryAnimEnded() = 0;
+    virtual void ET_onDestroyAnimEnded() = 0;
 };
 
 struct ETGameBoardElemSelectAnimation {

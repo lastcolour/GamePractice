@@ -9,7 +9,8 @@ RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
     func(callFunc),
     type(RunTaskType::Default),
     runCount(0),
-    frequency(std::numeric_limits<int>::max()) {
+    frequency(std::numeric_limits<int>::max()),
+    trackPerformance(false) {
 }
 
 RunTask::~RunTask() {
@@ -50,4 +51,12 @@ void RunTask::setFrequency(int newFrequency) {
 
 int RunTask::getFrequency() const {
     return frequency;
+}
+
+void RunTask::setTrackPerformance(bool flag) {
+    trackPerformance = flag;
+}
+
+bool RunTask::getTrackPerformance() const {
+    return trackPerformance;
 }

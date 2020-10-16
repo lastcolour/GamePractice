@@ -36,7 +36,7 @@ public:
     bool ET_canSwitch() const override;
 
     // ETBoardElemDetroyAnimationEvents
-    void ET_onDestryAnimEnded() override; 
+    void ET_onDestroyAnimEnded() override; 
 
 private:
 

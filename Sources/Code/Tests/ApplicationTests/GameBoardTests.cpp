@@ -35,10 +35,6 @@ public:
         GameBoardLogic::updateAfterRemoves();
     }
 
-    void updateBoard() {
-        GameBoardLogic::updateBoard();
-    }
-
     std::vector<BoardElement>& getElements() {
         return elements;
     }
@@ -141,7 +137,6 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     for(auto& elem : elems) {
         EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
         EXPECT_EQ(elem.boardPt.x, elem.movePt.x);
-        EXPECT_EQ(elem.boardPt.y, 1);
         EXPECT_EQ(elem.movePt.y, 0);
     }
 }
@@ -161,18 +156,25 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
 
     ASSERT_EQ(elems.size(), 3u);
 
+    bool hasFirst = false;
+    bool hasSecond = false;
+    bool hasThird = false;
     for(auto& elem : elems) {
         ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
         if(elem.movePt == Vec2i(0)) {
-            ASSERT_EQ(elem.boardPt, Vec2i(0, 3));
+            hasFirst = true;
         } else if(elem.movePt == Vec2i(0, 1)) {
-            ASSERT_EQ(elem.boardPt, Vec2i(0, 4));
+            hasSecond = true;
         } else if(elem.movePt == Vec2i(0, 2)) {
-            ASSERT_EQ(elem.boardPt, Vec2i(0, 5));
+            hasThird = true;
         } else {
             FAIL();
         }
     }
+
+    EXPECT_TRUE(hasFirst);
+    EXPECT_TRUE(hasSecond);
+    EXPECT_TRUE(hasThird);
 }
 
 TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
@@ -183,64 +185,61 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     auto elem1 = board->getElem(Vec2i(0, 0));
     ASSERT_TRUE(elem1);
-    setElemLifeState(*elem1, EBoardElemLifeState::Void);
-
-    board->updateAfterRemoves();
 
     auto elem2 = board->getElem(Vec2i(0, 1));
     ASSERT_TRUE(elem2);
-    ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
-    ASSERT_EQ(elem2->movePt, Vec2i(0, 0));
 
     auto elem3 = board->getElem(Vec2i(0, 2));
     ASSERT_TRUE(elem3);
-    ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
-    ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
 
     setElemLifeState(*elem2, EBoardElemLifeState::Void);
-
     board->updateAfterRemoves();
+    board->ET_onGameTick(0.1f);
 
-    ASSERT_TRUE(elem3);
-    ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
-    ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
-}
+    {
+        ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
+        ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
+    }
+    {
+        ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
+        ASSERT_EQ(elem2->movePt, Vec2i(0, 2));
+    }
+    {
+        ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Static);
+        ASSERT_EQ(elem1->boardPt, Vec2i(0, 0));
+    }
 
-TEST_F(GameBoardTests, CheckMoving) {
-    TestBoardParams params;
-    params.boardSize = Vec2i(1, 2);
-    params.moveSpeed = 1.f;
-    board->setParams(params);
-    ASSERT_TRUE(board->init());
-
-    board->removeVerticalLine(Vec2i(0, 0), 2);
+    setElemLifeState(*elem1, EBoardElemLifeState::Void);
     board->updateAfterRemoves();
+    board->ET_onGameTick(0.1f);
 
-    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
+    {
+        ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
+        ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
+    }
+    {
+        ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
+        ASSERT_EQ(elem2->movePt, Vec2i(0, 1));
+    }
+    {
+        ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Falling);
+        ASSERT_EQ(elem1->movePt, Vec2i(0, 2));
+    }
 
-    board->ET_onGameTick(0.5f);
+    board->ET_onGameTick(10.f);
 
-    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
-
-    board->ET_onGameTick(0.5f);
-
-    ASSERT_FALSE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 1)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
-
-    board->ET_onGameTick(1.f);
-
-    ASSERT_FALSE(board->getElem(Vec2i(0, 3)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 2)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 1)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 0)));
+    {
+        ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Static);
+        ASSERT_EQ(elem3->boardPt, Vec2i(0, 0));
+    }
+    {
+        ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Static);
+        ASSERT_EQ(elem2->boardPt, Vec2i(0, 1));
+    }
+    {
+        ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Static);
+        ASSERT_EQ(elem1->boardPt, Vec2i(0, 2));
+    }
 }
 
 TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
@@ -250,34 +249,30 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     board->setParams(params);
     ASSERT_TRUE(board->init());
 
-    board->removeVerticalLine(Vec2i(0, 1), 1);
-    board->updateAfterRemoves();
+    auto elem1 = board->getElem(Vec2i(0, 0));
+    ASSERT_TRUE(elem1);
 
-    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 0)));
+    auto elem2 = board->getElem(Vec2i(0, 1));
+    ASSERT_TRUE(elem2);
+
+    auto elem3 = board->getElem(Vec2i(0, 2));
+    ASSERT_TRUE(elem3);
+
+    setElemLifeState(*elem2, EBoardElemLifeState::Void);
+    board->updateAfterRemoves();
 
     board->ET_onGameTick(0.5f);
 
-    board->removeVerticalLine(Vec2i(0, 0), 1);
+    setElemLifeState(*elem1, EBoardElemLifeState::Void);
     board->updateAfterRemoves();
 
-    ASSERT_TRUE(board->getElem(Vec2i(0, 4)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 3)));
-    ASSERT_TRUE(board->getElem(Vec2i(0, 2)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 1)));
-    ASSERT_FALSE(board->getElem(Vec2i(0, 0)));
-
-    auto elem1 = board->getElem(Vec2i(0, 3));
-    Transform tm1;
-    ET_SendEventReturn(tm1, elem1->entId, &ETEntity::ET_getTransform);
-
-    auto elem2 = board->getElem(Vec2i(0, 4));
     Transform tm2;
     ET_SendEventReturn(tm2, elem2->entId, &ETEntity::ET_getTransform);
 
-    Vec3 ptDiff = tm2.pt - tm1.pt;
+    Transform tm1;
+    ET_SendEventReturn(tm1, elem1->entId, &ETEntity::ET_getTransform);
+
+    Vec3 ptDiff = tm1.pt - tm2.pt;
     ASSERT_FLOAT_EQ(ptDiff.x, 0.f);
     ASSERT_FLOAT_EQ(ptDiff.y, static_cast<float>(board->getCellSize()));
     ASSERT_FLOAT_EQ(ptDiff.z, 0.f);
@@ -291,7 +286,7 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     style.width = 0.5f;
     style.widthInv = UIBoxSizeInvariant::Relative;
     style.height = 0.5f;
-    style.widthInv = UIBoxSizeInvariant::Relative;
+    style.heightInv = UIBoxSizeInvariant::Relative;
     uiBoxPtr->ET_setStyle(style);
 
     TestBoardParams params;
@@ -301,11 +296,13 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     ASSERT_TRUE(board->init());
 
     const auto& uiBox = uiBoxPtr->ET_getBox();
+    board->ET_onBoxChanged(uiBox);
+
     auto cellSize = board->getCellSize();
 
     auto uiBoxSize = uiBox.getSize();
-    EXPECT_EQ(cellSize, uiBoxSize.x);
-    EXPECT_EQ(cellSize, uiBoxSize.y);
+    auto expectedCellSize = std::min(uiBoxSize.x, uiBoxSize.y);
+    EXPECT_EQ(cellSize, expectedCellSize);
 
     auto elem = board->getElem(Vec2i(0, 0));
     Transform tm;

@@ -26,7 +26,7 @@ public:
     void deinit() override;
 
     // ETRender
-    void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) override;
+    void ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) override;
     bool ET_isRenderThread() const override;
 
     // ETSurfaceEvents

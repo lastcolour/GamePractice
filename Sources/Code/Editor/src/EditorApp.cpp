@@ -173,7 +173,7 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
 
     frameBuffer.setSize(viewport);
     frameBuffer.clear();
-    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, frameBuffer);
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebuffer, frameBuffer, DrawContentFilter::None);
     memcpy(out, frameBuffer.getPtr(), viewport.x * viewport.y * 4);
 }
 

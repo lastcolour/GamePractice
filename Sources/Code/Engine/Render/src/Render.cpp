@@ -87,13 +87,13 @@ bool Render::canRenderToFramebuffer() const {
     return true;
 }
 
-void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
+void Render::ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) {
     if(!canRenderToFramebuffer()) {
         return;
     }
 
     if(!renderFb.isValid()) {
-        LogError("[Render::ET_drawFrameToFramebufer] Can't draw to invalid framebuffer");
+        LogError("[Render::ET_drawFrameToFramebuffer] Can't draw to invalid framebuffer");
         return;
     }
 
@@ -104,10 +104,14 @@ void Render::ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) {
 
     renderFb.bind();
 
-    tracker.onFrameStart();
+    if(filter != DrawContentFilter::NoDebugInfo) {
+        tracker.onFrameStart();
+    }
     ET_SendEvent(&ETRenderNodeManager::ET_update);
     ET_SendEvent(&ETDebugRender::ET_update);
-    tracker.onFrameEnd();
+    if(filter != DrawContentFilter::NoDebugInfo) {
+        tracker.onFrameEnd();
+    }
 
     renderFb.read();
     renderFb.unbind();

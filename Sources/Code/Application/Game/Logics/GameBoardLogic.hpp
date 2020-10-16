@@ -39,7 +39,7 @@ public:
 
     // ETGameBoard
     void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) override;
-    void ET_updateBoard() override;
+    void ET_matchElements() override;
     EntityId ET_getElemByPos(const Vec2i& pt) const override;
     EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const override;
     Vec2i ET_getElemBoardPos(EntityId elemEntId) const override;
@@ -63,21 +63,23 @@ public:
 
 protected:
 
-    int getElemId(const Vec2i& boardPt) const;
     Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const;
     const BoardElement* getElem(EntityId entId) const;
     BoardElement* getElem(EntityId entId);
     BoardElement* getElem(const Vec2i& boardPt);
     const BoardElement* getElem(const Vec2i& boardPt) const;
-    int getVoidElemBelow(const Vec2i& boardPt) const;
-    const BoardElement* getTopElem(const Vec2i& boardPt) const;
-    bool moveElem(BoardElement& elem, float dt);
+    void updateMovePosition(BoardElement& elem);
+    void moveElem(BoardElement& elem, float dt);
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
     void updateAfterRemoves();
-    void updateBoard();
+    void matchElements();
     void setCellObject(const char* cellObjectName);
     bool createNewElement(const Vec2i& boardPt);
+
+    void removeElem(BoardElement& elem);
+    int getAllElemsBelow(const BoardElement& elem);
+    BoardElement* getTopElemAbove(const Vec2i& boardPt);
 
 protected:
 
@@ -94,7 +96,7 @@ protected:
     float cellScale;
     float moveSpeed;
     int cellSize;
-    bool doUpdate;
+    bool doElemMathcing;
 };
 
 #endif /* __GAME_BOARD_LOGIC_HPP__ */

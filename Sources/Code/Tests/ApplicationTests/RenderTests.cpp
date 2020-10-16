@@ -38,7 +38,7 @@ const ColorB CLEAR_COLOR(0, 0, 0);
 
 void SyncAndDrawFrameToFB(RenderTextureFramebuffer& fb) {
     ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
-    ET_SendEvent(&ETRender::ET_drawFrameToFramebufer, fb);
+    ET_SendEvent(&ETRender::ET_drawFrameToFramebuffer, fb, DrawContentFilter::NoDebugInfo);
 }
 
 AABB2Di DrawAndGetDirtyBoxForFrameBuffer(RenderTextureFramebuffer& fb) {

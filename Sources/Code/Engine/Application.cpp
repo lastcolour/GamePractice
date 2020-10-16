@@ -97,6 +97,7 @@ void Application::mainLoop() {
             ET_SendEvent(&ETGameTimer::ET_onTick);
         });
 
+        gameUpdate->setTrackPerformance(true);
         gameUpdate->setFrequency(120);
         gameUpdate->addChild(uiUpdate);
         uiUpdate->addChild(renderSync);
@@ -105,12 +106,14 @@ void Application::mainLoop() {
         auto soundUpdate = runner.createTask("Sound", [](){
             ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
         });
+        soundUpdate->setTrackPerformance(true);
         soundUpdate->setFrequency(60);
     }
     {
         auto renderUpdate = runner.createTask("Render", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
         });
+        renderUpdate->setTrackPerformance(true);
         renderUpdate->setType(RunTaskType::MainThreadOnly);
         renderUpdate->setFrequency(60);
     }

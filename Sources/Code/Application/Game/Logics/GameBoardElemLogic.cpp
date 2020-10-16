@@ -92,7 +92,7 @@ void GameBoardElemLogic::ET_triggerDestroy() {
         lifeState = EBoardElemLifeState::Destroying;
         ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimation::ET_playDestroy);
     } else {
-        ET_onDestryAnimEnded();
+        ET_onDestroyAnimEnded();
     }
 }
 
@@ -104,9 +104,9 @@ void GameBoardElemLogic::ET_setSelected(bool flag) {
     }
 }
 
-void GameBoardElemLogic::ET_onDestryAnimEnded() {
+void GameBoardElemLogic::ET_onDestroyAnimEnded() {
     lifeState = EBoardElemLifeState::Void;
-    ET_SendEvent(getParentId(), &ETGameBoard::ET_updateBoard);
+    ET_SendEvent(getParentId(), &ETGameBoard::ET_matchElements);
     ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
 }
 

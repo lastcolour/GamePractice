@@ -42,11 +42,13 @@ void calculateParents(JobTree* tree) {
         queue.push_back(job);
     }
     int treeMinFrequency = std::numeric_limits<int>::max();
+    bool trackPerformance = false;
     while(!queue.empty()) {
         auto job = queue.back();
         queue.pop_back();
 
         treeMinFrequency = std::min(treeMinFrequency, job->getTask()->getFrequency());
+        trackPerformance |= job->getTask()->getTrackPerformance();
 
         for(auto childJob : job->getChildJobs()) {
             childJob->setParentsCount(childJob->getParentsCount() + 1);
@@ -55,6 +57,7 @@ void calculateParents(JobTree* tree) {
     }
     if(treeMinFrequency > 0) {
         tree->setRunFrequency(treeMinFrequency);
+        tree->setTrackPerformance(trackPerformance);
     }
 }
 

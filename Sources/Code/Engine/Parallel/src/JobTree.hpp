@@ -22,6 +22,7 @@ public:
     int getJobsCount() const;
     void setJobsCount(int newJobsCount);
     void setRunFrequency(int frequency);
+    void setTrackPerformance(bool flag);
     std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
 
     const TimePoint& getStartTime() const;
@@ -31,15 +32,16 @@ public:
 
 private:
 
-    int treeId;
+    JobTreeRunTimeTracker tracker;
+    std::vector<ThreadJob*> rootJobs;
     TimePoint prevStartT;
     TimePoint prevEndT;
-    std::vector<ThreadJob*> rootJobs;
-    std::atomic<int> pendingJobsCount;
     std::chrono::microseconds runDelay;
+    std::atomic<int> pendingJobsCount;
     int jobsCount;
+    int treeId;
     std::atomic<bool> isRunning;
-    JobTreeRunTimeTracker tracker;
+    bool trackPerformance;
 };
 
 #endif /* __JOB_TREE_HPP__ */

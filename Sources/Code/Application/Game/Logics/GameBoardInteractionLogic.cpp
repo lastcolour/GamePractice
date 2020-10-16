@@ -159,7 +159,7 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
     }
 
     if(isNeedUpdateBoard) {
-        ET_SendEvent(getEntityId(), &ETGameBoard::ET_updateBoard);
+        ET_SendEvent(getEntityId(), &ETGameBoard::ET_matchElements);
     }
 }
 

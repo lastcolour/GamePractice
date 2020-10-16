@@ -6,12 +6,12 @@
 #include <algorithm>
 
 JobTree::JobTree(int jobTreeId) :
-    treeId(jobTreeId),
+    tracker(this),
     pendingJobsCount(0),
-    runDelay(0),
     jobsCount(0),
+    treeId(jobTreeId),
     isRunning(false),
-    tracker(this) {
+    trackPerformance(false) {
 }
 
 JobTree::~JobTree() {
@@ -23,7 +23,9 @@ bool JobTree::tryFinishTreeByOneJob(const TimePoint& currTime) {
         prevEndT = currTime;
         isRunning.store(false);
         pendingJobsCount.store(jobsCount);
-        tracker.onTreeFinished();
+        if(trackPerformance) {
+            tracker.onTreeFinished();
+        }
         return true;
     }
     return false;
@@ -58,6 +60,10 @@ void JobTree::setJobsCount(int newJobsCount) {
 void JobTree::setRunFrequency(int frequency) {
     auto microSecDelay = static_cast<int>((1000000.0 / (static_cast<double>(frequency))));
     runDelay = std::chrono::microseconds(microSecDelay);
+}
+
+void JobTree::setTrackPerformance(bool flag) {
+    trackPerformance = flag;
 }
 
 std::chrono::microseconds JobTree::getRemainingWaitTime(const TimePoint& currTime) const {

@@ -3,9 +3,14 @@
 
 class RenderTextureFramebuffer;
 
+enum class DrawContentFilter {
+    None = 0,
+    NoDebugInfo
+};
+
 struct ETRender {
     virtual ~ETRender() = default;
-    virtual void ET_drawFrameToFramebufer(RenderTextureFramebuffer& renderFb) = 0;
+    virtual void ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) = 0;
     virtual bool ET_isRenderThread() const = 0;
 };
 
