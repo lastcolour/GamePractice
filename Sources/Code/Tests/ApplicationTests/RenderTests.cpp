@@ -77,6 +77,9 @@ void RenderTests::SetUpTestCase() {
 
     textureFramebuffer.reset(new RenderTextureFramebuffer());
     textureFramebuffer->setSize(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
+
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, textureFramebuffer->getSize());
+
     ASSERT_TRUE(textureFramebuffer->isValid());
 }
 
@@ -88,18 +91,19 @@ void RenderTests::TearDownTestCase() {
 void RenderTests::SetUp() {
     ConsoleAppTests::SetUp();
     textureFramebuffer->bind();
-}
-
-void RenderTests::TearDown() {
-    ConsoleAppTests::TearDown();
-    auto errCode = glGetError();
-    ASSERT_EQ(errCode, GL_NO_ERROR);
-
-    textureFramebuffer->clear();
 
     glClearColor(CLEAR_COLOR.r, CLEAR_COLOR.g, CLEAR_COLOR.b, CLEAR_COLOR.a);
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
+
+    textureFramebuffer->clear();
+}
+
+void RenderTests::TearDown() {
+    ConsoleAppTests::TearDown();
+
+    auto errCode = glGetError();
+    ASSERT_EQ(errCode, GL_NO_ERROR);
 
     auto renderNodes = ET_GetAll<ETRenderNode>();
     ASSERT_TRUE(renderNodes.empty());
@@ -191,8 +195,6 @@ TEST_F(RenderTests, CheckRenderSquare) {
     std::shared_ptr<RenderMaterial> material;
     ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
     ASSERT_TRUE(material);
-
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, textureFramebuffer->getSize());
 
     material->bind();
     material->setUniform1f("alpha", 1.f);
@@ -328,14 +330,14 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
     ASSERT_EQ(box.getSize(), Vec2(0.f));
     ASSERT_EQ(box.getCenter(), portCenter);
 
-    for(int ch = 32; ch < 127; ++ch)
-    {
+    for(int ch = 32; ch < 127; ++ch) {
+        if(ch == '\n' || ch == ' ') {
+            continue;
+        }
         std::string text(1, static_cast<char>(ch));
         renderText->ET_setText(text.c_str());
         box = renderText->ET_getTextAABB();
-        if (ch != '\n') {
-            EXPECT_GT(box.getSize(), Vec2(0.f)) << "Char: '" << static_cast<char>(ch) << "', code: " << ch;
-        }
+        EXPECT_GT(box.getSize(), Vec2(0.f)) << "Char: '" << static_cast<char>(ch) << "', code: " << ch;
     }
 
     renderText->ET_setText("Hello World!");
@@ -527,7 +529,7 @@ TEST_F(RenderTests, CheckHideUnhide) {
 }
 
 TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
-auto gameObj = createVoidObject();
+    auto gameObj = createVoidObject();
     RenderTextLogic* renderText = new RenderTextLogic;
     gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
     renderText->ET_setFontHeight(35);
@@ -544,23 +546,43 @@ auto gameObj = createVoidObject();
     tm.pt = Vec3(portCenter, 0.f);
     gameObj->ET_setTransform(tm);
 
-    std::vector<std::string> words = {"", "1", "Ppqt", "a", "A"};
+    const int FAIL_PIX_TOL = 3;
+
+    std::vector<std::string> words = {"", "1", "Ppqt", "a", "A", "A\nA", "a\n\naaa"};
     for(const auto& word : words) {
         renderText->ET_setText(word.c_str());
-        AABB2D box = renderText->ET_getTextAABB();
+        AABB2Di box = renderText->ET_getTextAABBi();
 
         auto dirtyBox = DrawAndGetDirtyBoxForFrameBuffer(*textureFramebuffer);
-    
+
+        {
+            auto dirtyBoxSize = dirtyBox.getSize();
+            auto boxSize = box.getSize();
+
+            EXPECT_GT(boxSize.x, dirtyBoxSize.x - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_LE(boxSize.x, dirtyBoxSize.x + FAIL_PIX_TOL) << "word='" << word << "'";
+
+            EXPECT_GT(boxSize.y, dirtyBoxSize.y - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_LE(boxSize.y, dirtyBoxSize.y + FAIL_PIX_TOL) << "word='" << word << "'";
+        }
+
         if(word.empty()) {
             EXPECT_EQ(dirtyBox.bot.x, 0);
             EXPECT_EQ(dirtyBox.bot.y, 0);
             EXPECT_EQ(dirtyBox.top.x, 0);
             EXPECT_EQ(dirtyBox.top.y, 0);
         } else {
-            EXPECT_EQ(static_cast<int>(box.bot.x), dirtyBox.bot.x) << "word='" << word << "'";
-            EXPECT_EQ(static_cast<int>(box.bot.y), dirtyBox.bot.y) << "word='" << word << "'";
-            EXPECT_EQ(static_cast<int>(box.top.x), dirtyBox.top.x) << "word='" << word << "'";
-            EXPECT_EQ(static_cast<int>(box.top.y), dirtyBox.top.y) << "word='" << word << "'";
+            EXPECT_GE(box.bot.x, dirtyBox.bot.x - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_LE(box.bot.x, dirtyBox.bot.x + FAIL_PIX_TOL) << "word='" << word << "'";
+
+            EXPECT_GE(box.bot.y, dirtyBox.bot.y - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_LE(box.bot.y, dirtyBox.bot.y + FAIL_PIX_TOL) << "word='" << word << "'";
+
+            EXPECT_GE(box.top.x, dirtyBox.top.x - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_LE(box.top.x, dirtyBox.top.x + FAIL_PIX_TOL) << "word='" << word << "'";
+
+            EXPECT_GE(box.top.y, dirtyBox.top.y - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_LE(box.top.y, dirtyBox.top.y + FAIL_PIX_TOL) << "word='" << word << "'";
         }
     }
 }

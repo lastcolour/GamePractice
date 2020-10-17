@@ -108,8 +108,8 @@ void Render::ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawC
         tracker.onFrameStart();
     }
     ET_SendEvent(&ETRenderNodeManager::ET_update);
-    ET_SendEvent(&ETDebugRender::ET_update);
     if(filter != DrawContentFilter::NoDebugInfo) {
+        ET_SendEvent(&ETDebugRender::ET_update);
         tracker.onFrameEnd();
     }
 

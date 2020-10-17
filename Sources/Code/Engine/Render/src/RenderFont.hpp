@@ -28,6 +28,7 @@ public:
     const RenderGlyph* getGlyph(int ch) const;
     int getHeight() const;
     Vec2i getTextSize(const std::string& text) const;
+    Vec2i getTextSize(const char* cStr, size_t len) const;
 
 private:
 

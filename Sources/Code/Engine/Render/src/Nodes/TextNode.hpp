@@ -22,6 +22,9 @@ protected:
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
 
+    void drawLines();
+    unsigned int drawLine(const Vec2& pt, const Vec2& scale, unsigned int vertShift, Vec4* vertChunk, size_t startIdx, size_t endIdx);
+
 private:
 
     std::shared_ptr<RenderFont> font;

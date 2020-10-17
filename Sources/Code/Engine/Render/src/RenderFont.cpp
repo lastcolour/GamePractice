@@ -40,28 +40,58 @@ const RenderGlyph* RenderFont::getGlyph(int ch) const {
     return nullptr;
 }
 
-Vec2i RenderFont::getTextSize(const std::string& text) const {
-    Vec2i pt(0);
-    pt.y = text.empty() ? 0 : fontHeight;
-    int currentLineX = 0;
-    for(size_t i = 0u, sz = text.size(); i < sz; ++i) {
-        auto ch = text[i];
-        if(auto glyph = getGlyph(ch)) {
-            if(i + 1u < sz) {
-                currentLineX += glyph->advance.x;
+Vec2i RenderFont::getTextSize(const char* cStr, size_t len) const {
+    Vec2i res(0);
+    if(len == 0) {
+        return res;
+    }
+
+    int currLineIdx = 0;
+    int maxLineLen = 0;
+    int currLineMaxY = 0;
+    int currLineMinY = 0;
+    int currLineLen = 0;
+
+    res.y = fontHeight;
+
+    for(size_t i = 0; i < len; ++i) {
+        auto ch = cStr[i];
+        if(ch == '\n') {
+            maxLineLen = std::max(maxLineLen, currLineLen);
+            currLineLen = 0;
+
+            res.y += static_cast<int>(fontHeight * Render::TextNewLineOffset);
+            if(currLineIdx == 0) {
+                res.y += (currLineMaxY - currLineMinY) - fontHeight;
+            }
+
+            ++currLineIdx;
+            currLineMaxY = 0;
+        } else {
+            auto glyph = getGlyph(ch);
+            if(!glyph) {
+                continue;
+            }
+            if(i + 1u < len) {
+                currLineLen += glyph->advance.x;
             } else {
                 if(ch == ' ') {
-                    currentLineX += glyph->advance.x;
+                    currLineLen += glyph->advance.x;
                 } else {
-                    currentLineX += glyph->size.x;
+                    currLineLen += glyph->size.x;
                 }
             }
-        } else if(ch == '\n') {
-            pt.y += static_cast<int>(fontHeight * Render::TextNewLineOffset);
-            pt.x = std::max(pt.x, currentLineX);
-            currentLineX = 0;
+            currLineMaxY = std::max(currLineMaxY, glyph->bearing.y);
+            currLineMinY = std::min(currLineMinY, glyph->bearing.y - glyph->size.y);
         }
     }
-    pt.x = std::max(pt.x, currentLineX);
-    return pt;
+
+    res.x = std::max(maxLineLen, currLineLen);
+    res.y += (currLineMaxY - currLineMinY) - fontHeight;
+
+    return res;
+}
+
+Vec2i RenderFont::getTextSize(const std::string& text) const {
+    return getTextSize(text.c_str(), text.size());
 }

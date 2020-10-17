@@ -59,6 +59,15 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
     return aabb;
 }
 
+AABB2Di RenderTextLogic::ET_getTextAABBi() const {
+    auto box = ET_getTextAABB();
+
+    AABB2Di resBox;
+    resBox.bot = Vec2i(static_cast<int>(box.bot.x), static_cast<int>(box.bot.y));
+    resBox.top = Vec2i(static_cast<int>(box.top.x), static_cast<int>(box.top.y));
+    return resBox;
+}
+
 void RenderTextLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, newColor);

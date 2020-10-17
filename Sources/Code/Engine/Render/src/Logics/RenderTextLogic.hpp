@@ -24,7 +24,8 @@ public:
     void ET_setColor(const ColorB& newColor) override;
     void ET_setText(const char* str) override;
     void ET_setFontHeight(int fontHeight) override;
-    virtual AABB2D ET_getTextAABB() const override;
+    AABB2D ET_getTextAABB() const override;
+    AABB2Di ET_getTextAABBi() const override;
 
 private:
 
