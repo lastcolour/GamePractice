@@ -29,9 +29,11 @@ private:
 
     std::shared_ptr<RenderFont> font;
     std::string text;
+    TextMetric textMetric;
     ColorB color;
     int fontHeight;
     bool alignAtCenter;
+    bool doUpdate;
 };
 
 #endif /* __TEXT_NODE_HPP__ */

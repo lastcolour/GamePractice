@@ -8,12 +8,27 @@
 
 class RenderTexture;
 
-class RenderGlyph {
-public:
+struct RenderGlyph {
     Vec2i advance;
     Vec2i size;
     Vec2i bearing;
     AABB2D texCoords;
+};
+
+struct TextMetric {
+public:
+
+    struct LineMetric {
+        int startIdx;
+        int endIdx;
+        int lineLen;
+    };
+
+public:
+
+    std::vector<LineMetric> lineMetrics;
+    Vec2i size;
+    int firstLineOffset;
 };
 
 class RenderFont {
@@ -28,7 +43,7 @@ public:
     const RenderGlyph* getGlyph(int ch) const;
     int getHeight() const;
     Vec2i getTextSize(const std::string& text) const;
-    Vec2i getTextSize(const char* cStr, size_t len) const;
+    TextMetric getTextMetric(const std::string& text) const;
 
 private:
 

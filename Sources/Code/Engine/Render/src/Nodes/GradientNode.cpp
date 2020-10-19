@@ -9,7 +9,8 @@ GradientNode::GradientNode() :
     size(100),
     startCol(255, 255, 255),
     endCol(0, 0, 0),
-    isVertical(true) {
+    isVertical(true),
+    doUpdate(true) {
 }
 
 GradientNode::~GradientNode() {
@@ -29,6 +30,10 @@ void GradientNode::onInit() {
 }
 
 void GradientNode::onRender(RenderContext& ctx) {
+    if(doUpdate) {
+        doUpdate = false;
+        updateTexData();
+    }
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 mvp = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
     mvp = ctx.proj2dMat * mvp;
@@ -47,17 +52,17 @@ bool GradientNode::isVisible() const {
 
 void GradientNode::ET_setVertical(bool flag) {
     isVertical = flag;
-    updateTexData();
+    doUpdate = true;
 }
 
 void GradientNode::ET_setColor0(const ColorB& newColor) {
     startCol = newColor;
-    updateTexData();
+    doUpdate = true;
 }
 
 void GradientNode::ET_setColor1(const ColorB& newColor) {
     endCol = newColor;
-    updateTexData();
+    doUpdate = true;
 }
 
 void GradientNode::ET_setSize(const Vec2i& newSize) {

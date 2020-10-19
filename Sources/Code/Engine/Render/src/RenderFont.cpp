@@ -40,58 +40,81 @@ const RenderGlyph* RenderFont::getGlyph(int ch) const {
     return nullptr;
 }
 
-Vec2i RenderFont::getTextSize(const char* cStr, size_t len) const {
-    Vec2i res(0);
-    if(len == 0) {
+Vec2i RenderFont::getTextSize(const std::string& text) const {
+    auto textMetric = getTextMetric(text);
+    return textMetric.size;
+}
+
+TextMetric RenderFont::getTextMetric(const std::string& text) const {
+    TextMetric res;
+    res.firstLineOffset = 0;
+    res.size = Vec2i(0);
+
+    if(text.empty()) {
         return res;
     }
 
-    int currLineIdx = 0;
-    int maxLineLen = 0;
-    int currLineMaxY = 0;
-    int currLineMinY = 0;
-    int currLineLen = 0;
+    TextMetric::LineMetric currLineMetric;
+    currLineMetric.startIdx = 0;
+    currLineMetric.endIdx = 0;
+    currLineMetric.lineLen = 0;
 
-    res.y = fontHeight;
+    int currLine = 0;
+    int currCharInLine = 0;
+    int prevLineOffset = 0;
+    const RenderGlyph* prevGlyph = nullptr;
 
-    for(size_t i = 0; i < len; ++i) {
-        auto ch = cStr[i];
+    for(size_t i = 0, sz = text.size(); i < sz; ++i) {
+        auto ch = text[i];
         if(ch == '\n') {
-            maxLineLen = std::max(maxLineLen, currLineLen);
-            currLineLen = 0;
-
-            res.y += static_cast<int>(fontHeight * Render::TextNewLineOffset);
-            if(currLineIdx == 0) {
-                res.y += (currLineMaxY - currLineMinY) - fontHeight;
+            if(prevGlyph) {
+                currLineMetric.lineLen -= prevGlyph->advance.x - (prevGlyph->bearing.x + prevGlyph->size.x);
             }
 
-            ++currLineIdx;
-            currLineMaxY = 0;
+            currLineMetric.endIdx = static_cast<int>(i);
+            res.lineMetrics.push_back(currLineMetric);
+
+            ++currLine;
+            currCharInLine = 0;
+            prevLineOffset = 0;
+            currLineMetric.lineLen = 0;
+            currLineMetric.startIdx = static_cast<int>(i + 1);
+            currLineMetric.endIdx = 0;
         } else {
             auto glyph = getGlyph(ch);
+            prevGlyph = glyph;
             if(!glyph) {
                 continue;
             }
-            if(i + 1u < len) {
-                currLineLen += glyph->advance.x;
-            } else {
-                if(ch == ' ') {
-                    currLineLen += glyph->advance.x;
-                } else {
-                    currLineLen += glyph->size.x;
-                }
+            if(currLine == 0) {
+                res.firstLineOffset = std::max(res.firstLineOffset, glyph->bearing.y);
             }
-            currLineMaxY = std::max(currLineMaxY, glyph->bearing.y);
-            currLineMinY = std::min(currLineMinY, glyph->bearing.y - glyph->size.y);
+            if(currCharInLine == 0) {
+                currLineMetric.lineLen += glyph->advance.x - glyph->bearing.x;
+            } else {
+                currLineMetric.lineLen += glyph->advance.x;
+            }
+            prevLineOffset = std::min(prevLineOffset, glyph->bearing.y - glyph->size.y);
+            ++currCharInLine;
         }
     }
 
-    res.x = std::max(maxLineLen, currLineLen);
-    res.y += (currLineMaxY - currLineMinY) - fontHeight;
+    if(prevGlyph) {
+        currLineMetric.lineLen -= prevGlyph->advance.x - (prevGlyph->bearing.x + prevGlyph->size.x);
+    }
+    currLineMetric.endIdx = static_cast<int>(text.size());
+    res.lineMetrics.push_back(currLineMetric);
+
+    res.size.y = fontHeight;
+    res.size.x = res.lineMetrics[0].lineLen;
+    for(size_t i = 1, sz = res.lineMetrics.size(); i < sz; ++i) {
+        auto& lineMetric = res.lineMetrics[i];
+        res.size.x = std::max(res.size.x, lineMetric.lineLen);
+        res.size.y += static_cast<int>(fontHeight * Render::TextNewLineOffset);
+    }
+
+    res.size.y -= fontHeight - res.firstLineOffset;
+    res.size.y -= prevLineOffset;
 
     return res;
-}
-
-Vec2i RenderFont::getTextSize(const std::string& text) const {
-    return getTextSize(text.c_str(), text.size());
 }

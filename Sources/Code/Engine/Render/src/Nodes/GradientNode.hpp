@@ -35,6 +35,7 @@ private:
     ColorB startCol;
     ColorB endCol;
     bool isVertical;
+    bool doUpdate;
 };
 
 #endif /* __GRADIENT_NODE_HPP__ */

@@ -532,7 +532,7 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
     auto gameObj = createVoidObject();
     RenderTextLogic* renderText = new RenderTextLogic;
     gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
-    renderText->ET_setFontHeight(35);
+    renderText->ET_setFontHeight(48);
     ASSERT_TRUE(renderText->init());
 
     Vec2i renderPort(0);
@@ -546,9 +546,9 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
     tm.pt = Vec3(portCenter, 0.f);
     gameObj->ET_setTransform(tm);
 
-    const int FAIL_PIX_TOL = 3;
+    const int FAIL_PIX_TOL = 4;
 
-    std::vector<std::string> words = {"", "1", "Ppqt", "a", "A", "A\nA", "a\n\naaa"};
+    std::vector<std::string> words = {"a", "A", "aA", "1", "1 1", "p", "pP", "Yy", "a\na", "a\nPp"};
     for(const auto& word : words) {
         renderText->ET_setText(word.c_str());
         AABB2Di box = renderText->ET_getTextAABBi();
@@ -559,10 +559,10 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
             auto dirtyBoxSize = dirtyBox.getSize();
             auto boxSize = box.getSize();
 
-            EXPECT_GT(boxSize.x, dirtyBoxSize.x - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_GE(boxSize.x, dirtyBoxSize.x - FAIL_PIX_TOL) << "word='" << word << "'";
             EXPECT_LE(boxSize.x, dirtyBoxSize.x + FAIL_PIX_TOL) << "word='" << word << "'";
 
-            EXPECT_GT(boxSize.y, dirtyBoxSize.y - FAIL_PIX_TOL) << "word='" << word << "'";
+            EXPECT_GE(boxSize.y, dirtyBoxSize.y - FAIL_PIX_TOL) << "word='" << word << "'";
             EXPECT_LE(boxSize.y, dirtyBoxSize.y + FAIL_PIX_TOL) << "word='" << word << "'";
         }
 
