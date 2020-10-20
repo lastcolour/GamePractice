@@ -30,9 +30,6 @@ bool RenderLinearGradientRect::init() {
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor1, endCol);
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVertical, isVertical);
     ET_setSize(size);
-    if(ET_isVisible()) {
-        ET_show();
-    }
     return true;
 }
 

@@ -28,8 +28,5 @@ bool RenderColoredTextureLogic::init() {
     ET_setImage(image.c_str());
     ET_setTextureColor(color);
     ET_setSize(size);
-    if(ET_isVisible()) {
-        ET_show();
-    }
     return true;
 }

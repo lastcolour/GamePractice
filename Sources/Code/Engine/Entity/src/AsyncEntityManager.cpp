@@ -1,4 +1,5 @@
 #include "AsyncEntityManager.hpp"
+#include "Entity/EntityLoadResult.hpp"
 
 AsyncEntityManager::AsyncEntityManager() {
 }
@@ -12,7 +13,7 @@ bool AsyncEntityManager::init() {
     return true;
 }
 
-void AsyncEntityManager::ET_createAsyncEntity(const char* entityName, std::function<void(EntityId)> callback) {
+void AsyncEntityManager::ET_createAsyncEntity(const char* entityName, std::function<void(std::shared_ptr<EntityLoadResult>)> callback) {
     CreateRequest req;
     req.name = entityName;
     req.callback = callback;
@@ -33,7 +34,8 @@ void AsyncEntityManager::ET_updateEntities() {
     }
     for(auto& req : requests) {
         EntityId entId;
-        ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, req.name.c_str());
-        req.callback(entId);
+        ET_SendEventReturn(entId, &ETEntityManager::ET_createUnfinishedEntity, req.name.c_str());
+        std::shared_ptr<EntityLoadResult> result(new EntityLoadResult(entId));
+        req.callback(std::move(result));
     }
 }

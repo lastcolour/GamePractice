@@ -115,7 +115,11 @@ bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance
 EntityLogicId Entity::addCustomLogic(std::unique_ptr<EntityLogic>&& logic) {
     assert(logic && "Can't add null custom game logic");
     ClassInstance logicInstance = ClassInstance::CreateWithoutClassInfo(logic.release());
-    return addLogic(std::move(logicInstance));
+    auto res = addLogic(std::move(logicInstance));
+    if(res) {
+        ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
+    }
+    return res;
 }
 
 bool Entity::removeLogic(EntityLogicId logicId) {

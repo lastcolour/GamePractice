@@ -20,7 +20,7 @@ public:
     EntityId ET_getViewId(UIViewType viewType) const override;
     EntityId ET_loadView(UIViewType viewType) override;
     void ET_asyncLoadView(UIViewType viewType) override;
-    void ET_onAsyncLoadDone(UIViewType viewType, EntityId viewId) override;
+    void ET_onAsyncLoadDone(UIViewType viewType, std::shared_ptr<EntityLoadResult> result) override;
 
 private:
 

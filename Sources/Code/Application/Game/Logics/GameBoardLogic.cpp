@@ -41,7 +41,8 @@ GameBoardLogic::GameBoardLogic() :
     boardSize(0),
     moveSpeed(1.f),
     cellScale(0.9f),
-    doElemMathcing(false) {
+    doElemMathcing(false),
+    isBoardStatic(false) {
 }
 
 GameBoardLogic::~GameBoardLogic() {
@@ -121,6 +122,7 @@ bool GameBoardLogic::createNewElement(const Vec2i& boardPt) {
     setElemMoveState(elem.entId, EBoardElemMoveState::Static);
     setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
     setRandomElemType(elem);
+    ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
     elements.push_back(elem);
     return true;
 }
@@ -280,6 +282,8 @@ void GameBoardLogic::moveElem(BoardElement& elem, float dt) {
         return;
     }
 
+    isBoardStatic = false;
+
     Transform tm;
     ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getTransform);
 
@@ -306,8 +310,11 @@ void GameBoardLogic::ET_onGameTick(float dt) {
         doElemMathcing = false;
         matchElements();
     }
-    if(ET_isAllElemStatic()) {
-        ET_SendEvent(&ETGameBoardEvents::ET_onAllElemsStatic);
+    if(!isBoardStatic) {
+        isBoardStatic = ET_isAllElemStatic();
+        if(isBoardStatic) {
+            ET_SendEvent(&ETGameBoardEvents::ET_onAllElemsStatic);
+        }
     }
 }
 

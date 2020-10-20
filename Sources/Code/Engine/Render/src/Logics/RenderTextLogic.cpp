@@ -33,9 +33,6 @@ bool RenderTextLogic::init() {
     ET_setColor(color);
     ET_setText(text.c_str());
     ET_setFontHeight(fontHeight);
-    if(ET_isVisible()) {
-        ET_show();
-    }
     return true;
 }
 

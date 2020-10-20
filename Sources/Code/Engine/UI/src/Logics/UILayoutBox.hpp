@@ -28,7 +28,7 @@ public:
     void ET_onLayoutChanged(const AABB2Di& newCombinedBox) override;
 
     // ETEntityEvents
-    void ET_onAllLogicsCreated() override;
+    void ET_onLoaded() override;
 
 protected:
 

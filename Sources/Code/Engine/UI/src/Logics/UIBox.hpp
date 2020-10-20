@@ -34,7 +34,7 @@ public:
     void ET_onViewPortChanged(const Vec2i& newSize) override;
 
     // ETEntityEvents
-    void ET_onAllLogicsCreated() override;
+    void ET_onLoaded() override;
 
 protected:
 

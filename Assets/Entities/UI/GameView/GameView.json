@@ -345,8 +345,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -10.0,
-                      "y": 0.0,
+                      "x": 0.0,
+                      "y": -12.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -361,151 +361,566 @@
                       "w": 1.0
                     }
                   },
-                  "name": "ScoreLabel",
-                  "id": 2,
+                  "name": "Stars",
+                  "id": 5,
                   "internal": true,
                   "data": {
-                    "children": [],
-                    "logics": [
+                    "children": [
                       {
-                        "type": "UILabel",
-                        "id": 1,
-                        "data": {
-                          "style": {
-                            "fontSize": 4.0,
-                            "margin": {
-                              "top": 0.0,
-                              "bot": 0.0,
-                              "left": 0.0,
-                              "right": 2.0
-                            }
+                        "transform": {
+                          "pos": {
+                            "x": -24.0,
+                            "y": 0.0,
+                            "z": 0.0
                           },
-                          "text": "Score:",
-                          "render": [
-                            0
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "First",
+                        "id": 1,
+                        "internal": true,
+                        "data": {
+                          "children": [
+                            {
+                              "transform": {
+                                "pos": {
+                                  "x": 0.0,
+                                  "y": 0.0,
+                                  "z": 0.0
+                                },
+                                "scale": {
+                                  "x": 1.0,
+                                  "y": 1.0,
+                                  "z": 1.0
+                                },
+                                "rot": {
+                                  "x": 0.0,
+                                  "y": 0.0,
+                                  "z": 0.0,
+                                  "w": 1.0
+                                }
+                              },
+                              "name": "Star",
+                              "id": 1,
+                              "internal": true,
+                              "data": {
+                                "children": [],
+                                "logics": [
+                                  {
+                                    "type": "UIBox",
+                                    "id": 1,
+                                    "data": {
+                                      "style": {
+                                        "width": 4.5,
+                                        "widthInv": "Grid",
+                                        "height": 4.5,
+                                        "heightInv": "Grid",
+                                        "margin": {
+                                          "top": 0.0,
+                                          "bot": 0.0,
+                                          "left": 0.0,
+                                          "right": 0.0
+                                        }
+                                      },
+                                      "render": [
+                                        0
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "type": "RenderColoredTexture",
+                                    "id": 2,
+                                    "data": {
+                                      "isVisible": false,
+                                      "alpha": 1.0,
+                                      "drawPriority": 10,
+                                      "size": {
+                                        "x": 22,
+                                        "y": 22
+                                      },
+                                      "image": "Images/block.png",
+                                      "color": {
+                                        "r": 255,
+                                        "g": 241,
+                                        "b": 79,
+                                        "a": 255
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "type": "UIViewAppearAnimation",
+                                    "id": 3,
+                                    "data": {
+                                      "elements": [
+                                        {
+                                          "element": [
+                                            0
+                                          ],
+                                          "startDelay": 0.0,
+                                          "duration": 0.30000001192092896,
+                                          "xMoveOffset": 0.0,
+                                          "yMoveOffset": 2.0,
+                                          "startScale": 1.5,
+                                          "startAlpha": 0.0
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "logics": [
+                            {
+                              "type": "UIBox",
+                              "id": 1,
+                              "data": {
+                                "style": {
+                                  "width": 4.0,
+                                  "widthInv": "Grid",
+                                  "height": 4.0,
+                                  "heightInv": "Grid",
+                                  "margin": {
+                                    "top": 0.0,
+                                    "bot": 0.0,
+                                    "left": 0.0,
+                                    "right": 0.0
+                                  }
+                                },
+                                "render": [
+                                  0
+                                ]
+                              }
+                            },
+                            {
+                              "type": "RenderColoredTexture",
+                              "id": 3,
+                              "data": {
+                                "isVisible": true,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "size": {
+                                  "x": 19,
+                                  "y": 19
+                                },
+                                "image": "Images/block.png",
+                                "color": {
+                                  "r": 109,
+                                  "g": 109,
+                                  "b": 109,
+                                  "a": 255
+                                }
+                              }
+                            },
+                            {
+                              "type": "UILayout",
+                              "id": 4,
+                              "data": {
+                                "style": {
+                                  "type": "Horizontal",
+                                  "xAlign": "Center",
+                                  "yAlign": "Center"
+                                },
+                                "children": [
+                                  [
+                                    1
+                                  ]
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
-                        "type": "RenderText",
-                        "id": 2,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 6,
-                          "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
+                        "transform": {
+                          "pos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
                           },
-                          "fontSize": 19,
-                          "text": "Score:"
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "Second",
+                        "id": 2,
+                        "internal": true,
+                        "data": {
+                          "children": [
+                            {
+                              "transform": {
+                                "pos": {
+                                  "x": 0.0,
+                                  "y": 0.0,
+                                  "z": 0.0
+                                },
+                                "scale": {
+                                  "x": 1.0,
+                                  "y": 1.0,
+                                  "z": 1.0
+                                },
+                                "rot": {
+                                  "x": 0.0,
+                                  "y": 0.0,
+                                  "z": 0.0,
+                                  "w": 1.0
+                                }
+                              },
+                              "name": "Star",
+                              "id": 1,
+                              "internal": true,
+                              "data": {
+                                "children": [],
+                                "logics": [
+                                  {
+                                    "type": "UIBox",
+                                    "id": 1,
+                                    "data": {
+                                      "style": {
+                                        "width": 4.5,
+                                        "widthInv": "Grid",
+                                        "height": 4.5,
+                                        "heightInv": "Grid",
+                                        "margin": {
+                                          "top": 0.0,
+                                          "bot": 0.0,
+                                          "left": 0.0,
+                                          "right": 0.0
+                                        }
+                                      },
+                                      "render": [
+                                        0
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "type": "RenderColoredTexture",
+                                    "id": 2,
+                                    "data": {
+                                      "isVisible": false,
+                                      "alpha": 1.0,
+                                      "drawPriority": 10,
+                                      "size": {
+                                        "x": 22,
+                                        "y": 22
+                                      },
+                                      "image": "Images/block.png",
+                                      "color": {
+                                        "r": 255,
+                                        "g": 241,
+                                        "b": 79,
+                                        "a": 255
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "type": "UIViewAppearAnimation",
+                                    "id": 3,
+                                    "data": {
+                                      "elements": [
+                                        {
+                                          "element": [
+                                            0
+                                          ],
+                                          "startDelay": 0.0,
+                                          "duration": 0.30000001192092896,
+                                          "xMoveOffset": 0.0,
+                                          "yMoveOffset": 2.0,
+                                          "startScale": 1.5,
+                                          "startAlpha": 0.0
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "logics": [
+                            {
+                              "type": "UIBox",
+                              "id": 1,
+                              "data": {
+                                "style": {
+                                  "width": 4.0,
+                                  "widthInv": "Grid",
+                                  "height": 4.0,
+                                  "heightInv": "Grid",
+                                  "margin": {
+                                    "top": 0.0,
+                                    "bot": 0.0,
+                                    "left": 1.0,
+                                    "right": 1.0
+                                  }
+                                },
+                                "render": [
+                                  0
+                                ]
+                              }
+                            },
+                            {
+                              "type": "RenderColoredTexture",
+                              "id": 3,
+                              "data": {
+                                "isVisible": true,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "size": {
+                                  "x": 19,
+                                  "y": 19
+                                },
+                                "image": "Images/block.png",
+                                "color": {
+                                  "r": 109,
+                                  "g": 109,
+                                  "b": 109,
+                                  "a": 255
+                                }
+                              }
+                            },
+                            {
+                              "type": "UILayout",
+                              "id": 4,
+                              "data": {
+                                "style": {
+                                  "type": "Horizontal",
+                                  "xAlign": "Center",
+                                  "yAlign": "Center"
+                                },
+                                "children": [
+                                  [
+                                    1
+                                  ]
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "transform": {
+                          "pos": {
+                            "x": 24.0,
+                            "y": 0.0,
+                            "z": 0.0
+                          },
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "Third",
+                        "id": 3,
+                        "internal": true,
+                        "data": {
+                          "children": [
+                            {
+                              "transform": {
+                                "pos": {
+                                  "x": 0.0,
+                                  "y": 0.0,
+                                  "z": 0.0
+                                },
+                                "scale": {
+                                  "x": 1.0,
+                                  "y": 1.0,
+                                  "z": 1.0
+                                },
+                                "rot": {
+                                  "x": 0.0,
+                                  "y": 0.0,
+                                  "z": 0.0,
+                                  "w": 1.0
+                                }
+                              },
+                              "name": "Star",
+                              "id": 1,
+                              "internal": true,
+                              "data": {
+                                "children": [],
+                                "logics": [
+                                  {
+                                    "type": "UIBox",
+                                    "id": 1,
+                                    "data": {
+                                      "style": {
+                                        "width": 4.5,
+                                        "widthInv": "Grid",
+                                        "height": 4.5,
+                                        "heightInv": "Grid",
+                                        "margin": {
+                                          "top": 0.0,
+                                          "bot": 0.0,
+                                          "left": 0.0,
+                                          "right": 0.0
+                                        }
+                                      },
+                                      "render": [
+                                        0
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "type": "RenderColoredTexture",
+                                    "id": 2,
+                                    "data": {
+                                      "isVisible": false,
+                                      "alpha": 1.0,
+                                      "drawPriority": 10,
+                                      "size": {
+                                        "x": 22,
+                                        "y": 22
+                                      },
+                                      "image": "Images/block.png",
+                                      "color": {
+                                        "r": 255,
+                                        "g": 241,
+                                        "b": 79,
+                                        "a": 255
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "type": "UIViewAppearAnimation",
+                                    "id": 3,
+                                    "data": {
+                                      "elements": [
+                                        {
+                                          "element": [
+                                            0
+                                          ],
+                                          "startDelay": 0.0,
+                                          "duration": 0.30000001192092896,
+                                          "xMoveOffset": 0.0,
+                                          "yMoveOffset": 2.0,
+                                          "startScale": 1.5,
+                                          "startAlpha": 0.0
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "logics": [
+                            {
+                              "type": "UIBox",
+                              "id": 1,
+                              "data": {
+                                "style": {
+                                  "width": 4.0,
+                                  "widthInv": "Grid",
+                                  "height": 4.0,
+                                  "heightInv": "Grid",
+                                  "margin": {
+                                    "top": 0.0,
+                                    "bot": 0.0,
+                                    "left": 0.0,
+                                    "right": 0.0
+                                  }
+                                },
+                                "render": [
+                                  0
+                                ]
+                              }
+                            },
+                            {
+                              "type": "RenderColoredTexture",
+                              "id": 3,
+                              "data": {
+                                "isVisible": true,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "size": {
+                                  "x": 19,
+                                  "y": 19
+                                },
+                                "image": "Images/block.png",
+                                "color": {
+                                  "r": 109,
+                                  "g": 109,
+                                  "b": 109,
+                                  "a": 255
+                                }
+                              }
+                            },
+                            {
+                              "type": "UILayout",
+                              "id": 4,
+                              "data": {
+                                "style": {
+                                  "type": "Horizontal",
+                                  "xAlign": "Center",
+                                  "yAlign": "Center"
+                                },
+                                "children": [
+                                  [
+                                    1
+                                  ]
+                                ]
+                              }
+                            }
+                          ]
                         }
                       }
-                    ]
-                  }
-                },
-                {
-                  "transform": {
-                    "pos": {
-                      "x": -53.0,
-                      "y": 0.0,
-                      "z": 0.0
-                    },
-                    "scale": {
-                      "x": 1.0,
-                      "y": 1.0,
-                      "z": 1.0
-                    },
-                    "rot": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0,
-                      "w": 1.0
-                    }
-                  },
-                  "name": "ScoreIcon",
-                  "id": 3,
-                  "internal": true,
-                  "data": {
-                    "children": [],
+                    ],
                     "logics": [
                       {
-                        "type": "UIBox",
-                        "id": 1,
+                        "type": "UILayout",
+                        "id": 2,
                         "data": {
                           "style": {
-                            "width": 5.0,
+                            "type": "Horizontal",
+                            "xAlign": "Center",
+                            "yAlign": "Center"
+                          },
+                          "children": [
+                            [
+                              1
+                            ],
+                            [
+                              2
+                            ],
+                            [
+                              3
+                            ]
+                          ]
+                        }
+                      },
+                      {
+                        "type": "UIBox",
+                        "id": 3,
+                        "data": {
+                          "style": {
+                            "width": 30.0,
                             "widthInv": "Grid",
                             "height": 5.0,
                             "heightInv": "Grid",
-                            "margin": {
-                              "top": 0.0,
-                              "bot": 0.0,
-                              "left": 1.0,
-                              "right": 1.0
-                            }
-                          },
-                          "render": [
-                            0
-                          ]
-                        }
-                      },
-                      {
-                        "type": "RenderColoredTexture",
-                        "id": 2,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 6,
-                          "size": {
-                            "x": 24,
-                            "y": 24
-                          },
-                          "image": "Images/block.png",
-                          "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
-                          }
-                        }
-                      }
-                    ]
-                  }
-                },
-                {
-                  "transform": {
-                    "pos": {
-                      "x": 31.0,
-                      "y": 0.0,
-                      "z": 0.0
-                    },
-                    "scale": {
-                      "x": 1.0,
-                      "y": 1.0,
-                      "z": 1.0
-                    },
-                    "rot": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0,
-                      "w": 1.0
-                    }
-                  },
-                  "name": "ScoreValue",
-                  "id": 4,
-                  "internal": true,
-                  "data": {
-                    "children": [],
-                    "logics": [
-                      {
-                        "type": "UILabel",
-                        "id": 1,
-                        "data": {
-                          "style": {
-                            "fontSize": 4.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -513,35 +928,276 @@
                               "right": 0.0
                             }
                           },
-                          "text": "0",
-                          "render": [
-                            0
+                          "render": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": -15.0,
+                      "y": 12.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Score",
+                  "id": 6,
+                  "internal": true,
+                  "data": {
+                    "children": [
+                      {
+                        "transform": {
+                          "pos": {
+                            "x": 45.0,
+                            "y": 0.0,
+                            "z": 0.0
+                          },
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "Value",
+                        "id": 1,
+                        "internal": true,
+                        "data": {
+                          "children": [],
+                          "logics": [
+                            {
+                              "type": "UILabel",
+                              "id": 1,
+                              "data": {
+                                "style": {
+                                  "fontSize": 4.0,
+                                  "margin": {
+                                    "top": 0.0,
+                                    "bot": 0.0,
+                                    "left": 0.0,
+                                    "right": 0.0
+                                  }
+                                },
+                                "text": "0",
+                                "render": [
+                                  0
+                                ]
+                              }
+                            },
+                            {
+                              "type": "RenderText",
+                              "id": 2,
+                              "data": {
+                                "isVisible": true,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "color": {
+                                  "r": 255,
+                                  "g": 255,
+                                  "b": 255,
+                                  "a": 255
+                                },
+                                "fontSize": 19,
+                                "text": "0"
+                              }
+                            },
+                            {
+                              "type": "GameScoreUpdater",
+                              "id": 3,
+                              "data": {
+                                "increaseSpeed": 20,
+                                "increseSound": "scoreIncrease_01"
+                              }
+                            }
                           ]
                         }
                       },
                       {
-                        "type": "RenderText",
-                        "id": 2,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 6,
-                          "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
+                        "transform": {
+                          "pos": {
+                            "x": -38.0,
+                            "y": 0.0,
+                            "z": 0.0
                           },
-                          "fontSize": 19,
-                          "text": "0"
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "Icon",
+                        "id": 2,
+                        "internal": true,
+                        "data": {
+                          "children": [],
+                          "logics": [
+                            {
+                              "type": "UIBox",
+                              "id": 1,
+                              "data": {
+                                "style": {
+                                  "width": 5.0,
+                                  "widthInv": "Grid",
+                                  "height": 5.0,
+                                  "heightInv": "Grid",
+                                  "margin": {
+                                    "top": 0.0,
+                                    "bot": 0.0,
+                                    "left": 1.0,
+                                    "right": 1.0
+                                  }
+                                },
+                                "render": [
+                                  0
+                                ]
+                              }
+                            },
+                            {
+                              "type": "RenderColoredTexture",
+                              "id": 2,
+                              "data": {
+                                "isVisible": true,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "size": {
+                                  "x": 24,
+                                  "y": 24
+                                },
+                                "image": "Images/block.png",
+                                "color": {
+                                  "r": 255,
+                                  "g": 255,
+                                  "b": 255,
+                                  "a": 255
+                                }
+                              }
+                            }
+                          ]
                         }
                       },
                       {
-                        "type": "GameScoreUpdater",
+                        "transform": {
+                          "pos": {
+                            "x": 5.0,
+                            "y": 0.0,
+                            "z": 0.0
+                          },
+                          "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                          },
+                          "rot": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                          }
+                        },
+                        "name": "Label",
                         "id": 3,
+                        "internal": true,
                         "data": {
-                          "increaseSpeed": 20,
-                          "increseSound": "scoreIncrease_01"
+                          "children": [],
+                          "logics": [
+                            {
+                              "type": "UILabel",
+                              "id": 1,
+                              "data": {
+                                "style": {
+                                  "fontSize": 4.0,
+                                  "margin": {
+                                    "top": 0.0,
+                                    "bot": 0.0,
+                                    "left": 0.0,
+                                    "right": 2.0
+                                  }
+                                },
+                                "text": "Score:",
+                                "render": [
+                                  0
+                                ]
+                              }
+                            },
+                            {
+                              "type": "RenderText",
+                              "id": 2,
+                              "data": {
+                                "isVisible": true,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "color": {
+                                  "r": 255,
+                                  "g": 255,
+                                  "b": 255,
+                                  "a": 255
+                                },
+                                "fontSize": 19,
+                                "text": "Score:"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "logics": [
+                      {
+                        "type": "UILayoutBox",
+                        "id": 1,
+                        "data": {
+                          "margin": {
+                            "top": 0.0,
+                            "bot": 0.0,
+                            "left": 1.0,
+                            "right": 0.0
+                          },
+                          "render": []
+                        }
+                      },
+                      {
+                        "type": "UILayout",
+                        "id": 2,
+                        "data": {
+                          "style": {
+                            "type": "Horizontal",
+                            "xAlign": "Center",
+                            "yAlign": "Center"
+                          },
+                          "children": [
+                            [
+                              2
+                            ],
+                            [
+                              3
+                            ],
+                            [
+                              1
+                            ]
+                          ]
                         }
                       }
                     ]
@@ -556,7 +1212,7 @@
                     "style": {
                       "width": 30.0,
                       "widthInv": "Grid",
-                      "height": 8.0,
+                      "height": 12.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -579,7 +1235,7 @@
                     "drawPriority": 4,
                     "size": {
                       "x": 141,
-                      "y": 38
+                      "y": 57
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -595,19 +1251,16 @@
                   "id": 3,
                   "data": {
                     "style": {
-                      "type": "Horizontal",
+                      "type": "Vertical",
                       "xAlign": "Left",
                       "yAlign": "Center"
                     },
                     "children": [
                       [
-                        3
+                        6
                       ],
                       [
-                        2
-                      ],
-                      [
-                        4
+                        5
                       ]
                     ]
                   }
@@ -912,7 +1565,31 @@
     {
       "type": "GameViewScript",
       "id": 4,
-      "data": {}
+      "data": {
+        "stars": {
+          "first": [
+            2,
+            4,
+            5,
+            1,
+            1
+          ],
+          "second": [
+            2,
+            4,
+            5,
+            2,
+            1
+          ],
+          "third": [
+            2,
+            4,
+            5,
+            3,
+            1
+          ]
+        }
+      }
     }
   ]
 }

@@ -183,11 +183,7 @@ int UIButton::ET_getZIndexDepth() const {
 
 void UIButton::onHide(bool flag) {
     UIBox::onHide(flag);
-    if(flag) {
-        ET_SendEvent(labelId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(labelId, &ETRenderNode::ET_show);
-    }
+    ET_SendEvent(labelId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
 }
 
 void UIButton::onAlphaChanged(float newAlpha) {

@@ -25,9 +25,6 @@ bool RenderSimpleLogic::init() {
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setColor(color);
     ET_setSize(size);
-    if(ET_isVisible()) {
-        ET_show();
-    }
     return true;
 }
 

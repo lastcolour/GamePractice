@@ -39,13 +39,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 50
+          "minScore": 5
         },
         "twoStars": {
-          "minScore": 100
+          "minScore": 10
         },
         "threeStars": {
-          "minScore": 150
+          "minScore": 15
         }
       }
     }

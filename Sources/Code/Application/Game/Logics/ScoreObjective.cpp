@@ -74,8 +74,8 @@ void ScoreObjective::ET_onElemsDestroyed(EntityId elemId) {
             [[fallthrough]];
         }
         case ObjectiveProgress::TwoStars: {
-            currentProgress = ObjectiveProgress::ThreeStars;
             if(isObjectiveComplete(threeStarsTarget)) {
+                currentProgress = ObjectiveProgress::ThreeStars;
                 LogDebug("[ScoreObjective::ET_onElemsDestroyed] Three-stars objective done");
                 ET_SendEvent(&ETGameObjectiveEvents::ET_onObjectiveCompleted, ObjectiveProgress::ThreeStars);
             }

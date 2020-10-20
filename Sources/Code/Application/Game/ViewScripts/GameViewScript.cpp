@@ -3,9 +3,12 @@
 #include "Game/ETGame.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "UI/ETUIView.hpp"
+#include "UI/ETUIAnimation.hpp"
+#include "Render/ETRenderNode.hpp"
 
 void GameViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameViewScript>("GameViewScript")) {
+        classInfo->addField("stars", &GameViewScript::progressStars);
     }
 }
 
@@ -13,6 +16,12 @@ GameViewScript::GameViewScript() {
 }
 
 GameViewScript::~GameViewScript() {
+}
+
+bool GameViewScript::init() {
+    BaseViewScript::init();
+    ETNode<ETGameObjectiveEvents>::connect(getEntityId());
+    return true;
 }
 
 void GameViewScript::ET_onLostFocus() {
@@ -37,4 +46,27 @@ void GameViewScript::onEvent(const UIEvent& event) {
     } else if(event.type == UIEvent::EventType::OnGameGameEnd) {
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
     }
+}
+
+void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
+    EntityId starId;
+    switch(type) {
+        case ObjectiveProgress::OneStar: {
+            starId = progressStars.fristId;
+            break;
+        }
+        case ObjectiveProgress::TwoStars: {
+            starId = progressStars.secondId;
+            break;
+        }
+        case ObjectiveProgress::ThreeStars: {
+            starId = progressStars.thirdId;
+            break;
+        }
+    }
+    if(!starId.isValid()) {
+        return;
+    }
+    ET_SendEvent(starId, &ETRenderNode::ET_show);
+    ET_SendEvent(starId, &ETUIViewAppearAnimation::ET_appear);
 }

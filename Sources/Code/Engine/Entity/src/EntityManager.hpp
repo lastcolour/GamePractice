@@ -42,15 +42,17 @@ public:
         EntityLogicValueId valueId, MemoryStream& stream) override;
     bool ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId) override;
+    EntityId ET_createUnfinishedEntity(const char* entityName) override;
+    bool ET_finishEntity(EntityId entityId) override;
 
 private:
 
-    Entity* createEntityImpl(const JSONNode& entityNode, const char* entityName);
-    Entity* createEntity(const char* entityName);
+    Entity* createEntityImpl(const JSONNode& entityNode, const char* entityName, bool finishLoad);
+    Entity* createEntity(const char* entityName, bool finishLoad);
     JSONNode loadEntityRootNode(const char* entityName) const;
     bool setupEntityTranform(Entity* entity, const JSONNode& node);
     bool setupEntityLogics(Entity* entity, const JSONNode& node) const;
-    bool setupEntityChildren(Entity* entity, const JSONNode& node);
+    bool setupEntityChildren(Entity* entity, const JSONNode& node, bool finishLoad);
 
 private:
 

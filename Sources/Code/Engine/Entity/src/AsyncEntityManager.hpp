@@ -22,7 +22,7 @@ public:
     void deinit() override;
 
     // ETAsyncEntityManager
-    void ET_createAsyncEntity(const char* entityName, std::function<void(EntityId)> callback) override;
+    void ET_createAsyncEntity(const char* entityName, std::function<void(std::shared_ptr<EntityLoadResult>)> callback) override;
 
     // ETEntitiesUpdateTask
     void ET_updateEntities() override;
@@ -31,7 +31,7 @@ private:
 
     struct CreateRequest {
         std::string name;
-        std::function<void(EntityId)> callback;
+        std::function<void(std::shared_ptr<EntityLoadResult>)> callback;
     };
 
 private:

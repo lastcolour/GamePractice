@@ -79,7 +79,8 @@ void EntityManager::deinit() {
 }
 
 EntityId EntityManager::ET_createEntity(const char* entityName) {
-    auto entity = createEntity(entityName);
+    bool finishLoad = true;
+    auto entity = createEntity(entityName, finishLoad);
     if(!entity) {
         LogWarning("[EntityManager::ET_createEntity] Can't create entity from: '%s'", entityName);
         return InvalidEntityId;
@@ -174,7 +175,8 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
 
     auto startTimeP = std::chrono::high_resolution_clock::now();
 
-    auto entity = createEntityImpl(node, entityName);
+    bool finishLoad = true;
+    auto entity = createEntityImpl(node, entityName, finishLoad);
     if(!entity) {
         LogWarning("[EntityManager::ET_createEntityFromJSON] Can't create entity from JSON node with name: '%s'", entityName);
         return InvalidEntityId;
@@ -354,7 +356,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
     return true;
 }
 
-bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
+bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bool finishLoad) {
     auto childrenNode = node.object("children");
     if(!childrenNode) {
         LogWarning("[EntityManager::setupEntityChildren] Can't find required 'children' node in entity '%s'", entity->ET_getName());
@@ -399,9 +401,9 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node) {
                     entity->ET_getName());
                 return false;
             }
-            childEntity = createEntityImpl(childData, childEntName.c_str());
+            childEntity = createEntityImpl(childData, childEntName.c_str(), finishLoad);
         } else {
-            childEntity = createEntity(childEntName.c_str());
+            childEntity = createEntity(childEntName.c_str(), finishLoad);
         }
         if(!childEntity) {
             LogWarning("[EntityManager::setupEntityChildren] Can't create child entity '%s' for an entity: '%s'",
@@ -438,7 +440,7 @@ JSONNode EntityManager::loadEntityRootNode(const char* entityName) const {
     return rootNode;
 }
 
-Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* entityName) {
+Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* entityName, bool finishLoad) {
     if(!entityNode) {
         return nullptr;
     }
@@ -447,7 +449,7 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
         assert(false && "Can't create entity");
         return nullptr;
     }
-    if(!setupEntityChildren(entity, entityNode)) {
+    if(!setupEntityChildren(entity, entityNode, finishLoad)) {
         registry.removeEntity(entity);
         return nullptr;
     }
@@ -455,15 +457,17 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
         registry.removeEntity(entity);
         return nullptr;
     }
-    ET_SendEvent(entity->getEntityId(), &ETEntityEvents::ET_onAllLogicsCreated);
+    if(finishLoad) {
+        ET_SendEvent(entity->getEntityId(), &ETEntityEvents::ET_onLoaded);
+    }
     return entity;
 }
 
-Entity* EntityManager::createEntity(const char* entityName) {
+Entity* EntityManager::createEntity(const char* entityName, bool finishLoad) {
     auto startTimeP = std::chrono::high_resolution_clock::now();
 
     auto entityNode = loadEntityRootNode(entityName);
-    auto entity = createEntityImpl(entityNode, entityName);
+    auto entity = createEntityImpl(entityNode, entityName, finishLoad);
     if(!entity) {
         return nullptr;
     }
@@ -501,4 +505,46 @@ Entity* EntityManager::ET_createRawEntity(const char* entityName) {
         return nullptr;
     }
     return entity;
+}
+
+EntityId EntityManager::ET_createUnfinishedEntity(const char* entityName) {
+    bool finishLoad = false;
+    auto entity = createEntity(entityName, finishLoad);
+    if(!entity) {
+        LogWarning("[EntityManager::ET_createUnfinishedEntity] Can't create entity from: '%s'", entityName);
+        return InvalidEntityId;
+    }
+    return entity->getEntityId();
+}
+
+bool EntityManager::ET_finishEntity(EntityId entityId) {
+    std::vector<EntityId> entityTree;
+    auto entity = registry.findEntity(entityId);
+    if(!entity) {
+        assert(false && "Invalid entity to finish load");
+        return false;
+    }
+    std::vector<Entity*> traverseOrder;
+    std::vector<Entity*> queue;
+    queue.push_back(entity);
+    while(!queue.empty()) {
+        auto currEntity = queue.back();
+        traverseOrder.push_back(currEntity);
+        queue.pop_back();
+        for(auto childEntId : currEntity->ET_getChildren()) {
+            auto childEnt = registry.findEntity(childEntId);
+            if(!childEnt) {
+                assert(false && "Invalid children");
+                return false;
+            }
+            queue.push_back(childEnt);
+        }
+    }
+
+    for(auto it = traverseOrder.rbegin(), end = traverseOrder.rend(); it != end; ++it) {
+        auto entId = (*it)->getEntityId();
+        ET_SendEvent(entId, &ETEntityEvents::ET_onLoaded);
+    }
+
+    return true;
 }

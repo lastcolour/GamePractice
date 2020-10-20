@@ -122,7 +122,7 @@
                               "type": "RenderColoredTexture",
                               "id": 2,
                               "data": {
-                                "isVisible": true,
+                                "isVisible": false,
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
@@ -136,6 +136,25 @@
                                   "b": 18,
                                   "a": 255
                                 }
+                              }
+                            },
+                            {
+                              "type": "UIViewAppearAnimation",
+                              "id": 3,
+                              "data": {
+                                "elements": [
+                                  {
+                                    "element": [
+                                      0
+                                    ],
+                                    "startDelay": 0.0,
+                                    "duration": 0.30000001192092896,
+                                    "xMoveOffset": 0.0,
+                                    "yMoveOffset": 30.0,
+                                    "startScale": 1.5,
+                                    "startAlpha": 0.0
+                                  }
+                                ]
                               }
                             }
                           ]
@@ -197,6 +216,25 @@
                             [
                               1
                             ]
+                          ]
+                        }
+                      },
+                      {
+                        "type": "UIViewAppearAnimation",
+                        "id": 4,
+                        "data": {
+                          "elements": [
+                            {
+                              "element": [
+                                1
+                              ],
+                              "startDelay": 0.0,
+                              "duration": 0.30000001192092896,
+                              "xMoveOffset": 0.0,
+                              "yMoveOffset": 30.0,
+                              "startScale": 1.5,
+                              "startAlpha": 0.0
+                            }
                           ]
                         }
                       }
@@ -277,7 +315,7 @@
                               "type": "RenderColoredTexture",
                               "id": 2,
                               "data": {
-                                "isVisible": true,
+                                "isVisible": false,
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
@@ -291,6 +329,25 @@
                                   "b": 18,
                                   "a": 255
                                 }
+                              }
+                            },
+                            {
+                              "type": "UIViewAppearAnimation",
+                              "id": 3,
+                              "data": {
+                                "elements": [
+                                  {
+                                    "element": [
+                                      0
+                                    ],
+                                    "startDelay": 0.0,
+                                    "duration": 0.30000001192092896,
+                                    "xMoveOffset": 0.0,
+                                    "yMoveOffset": 30.0,
+                                    "startScale": 1.5,
+                                    "startAlpha": 0.0
+                                  }
+                                ]
                               }
                             }
                           ]
@@ -432,7 +489,7 @@
                               "type": "RenderColoredTexture",
                               "id": 2,
                               "data": {
-                                "isVisible": true,
+                                "isVisible": false,
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
@@ -446,6 +503,25 @@
                                   "b": 18,
                                   "a": 255
                                 }
+                              }
+                            },
+                            {
+                              "type": "UIViewAppearAnimation",
+                              "id": 3,
+                              "data": {
+                                "elements": [
+                                  {
+                                    "element": [
+                                      0
+                                    ],
+                                    "startDelay": 0.0,
+                                    "duration": 0.30000001192092896,
+                                    "xMoveOffset": 0.0,
+                                    "yMoveOffset": 30.0,
+                                    "startScale": 1.5,
+                                    "startAlpha": 0.0
+                                  }
+                                ]
                               }
                             }
                           ]
@@ -583,7 +659,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -79.0,
+                "y": -142.0,
                 "z": 0.0
               },
               "scale": {
@@ -660,7 +736,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 38,
                           "text": "Continue"
                         }
                       }
@@ -712,8 +788,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 155,
-                      "y": 39
+                      "x": 282,
+                      "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -731,7 +807,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 99.0,
+                "y": 180.0,
                 "z": 0.0
               },
               "scale": {
@@ -808,7 +884,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 33,
                           "text": "Level 01"
                         }
                       }
@@ -846,8 +922,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 207,
-                      "y": 39
+                      "x": 376,
+                      "y": 71
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -881,7 +957,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -9.0,
+                "y": -16.0,
                 "z": 0.0
               },
               "scale": {
@@ -904,7 +980,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -21.0,
+                      "x": -44.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -958,7 +1034,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 11,
+                          "fontSize": 19,
                           "text": "Score: "
                         }
                       }
@@ -968,7 +1044,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 5.0,
+                      "x": 3.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -999,7 +1075,7 @@
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
-                              "left": 0.0,
+                              "left": 1.0,
                               "right": 0.0
                             }
                           },
@@ -1022,7 +1098,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 11,
+                          "fontSize": 19,
                           "text": "300"
                         }
                       }
@@ -1079,8 +1155,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 104,
-                      "y": 21
+                      "x": 188,
+                      "y": 38
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -1098,7 +1174,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -36.0,
+                "y": -64.0,
                 "z": 0.0
               },
               "scale": {
@@ -1121,7 +1197,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -22.0,
+                      "x": -44.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1175,7 +1251,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 11,
+                          "fontSize": 19,
                           "text": "Time:  "
                         }
                       }
@@ -1185,7 +1261,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 3.0,
+                      "x": 2.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1216,7 +1292,7 @@
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
-                              "left": 0.0,
+                              "left": 1.0,
                               "right": 0.0
                             }
                           },
@@ -1239,7 +1315,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 11,
+                          "fontSize": 19,
                           "text": "60s"
                         }
                       }
@@ -1296,8 +1372,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 104,
-                      "y": 21
+                      "x": 188,
+                      "y": 38
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -1370,8 +1446,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 207,
-                "y": 233
+                "x": 376,
+                "y": 423
               },
               "image": "Images/block.png",
               "color": {
@@ -1451,8 +1527,8 @@
         "alpha": 0.5,
         "drawPriority": 0,
         "size": {
-          "x": 290,
-          "y": 516
+          "x": 528,
+          "y": 938
         },
         "color": {
           "r": 255,

@@ -97,6 +97,7 @@ protected:
     float moveSpeed;
     int cellSize;
     bool doElemMathcing;
+    bool isBoardStatic;
 };
 
 #endif /* __GAME_BOARD_LOGIC_HPP__ */

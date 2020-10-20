@@ -4,6 +4,8 @@
 #include "Entity/ETEntityManger.hpp"
 #include "Core/ETLogger.hpp"
 #include "UI/ETUIViewPort.hpp"
+#include "Entity/EntityLoadResult.hpp"
+#include "UI/ETUIBox.hpp"
 
 #include <cassert>
 
@@ -76,8 +78,13 @@ EntityId UIViewCache::ET_getViewId(UIViewType viewType) const {
     return viewId;
 }
 
-void UIViewCache::ET_onAsyncLoadDone(UIViewType viewType, EntityId viewId) {
+void UIViewCache::ET_onAsyncLoadDone(UIViewType viewType, std::shared_ptr<EntityLoadResult> result) {
     assert(viewType != UIViewType::None && "Invalid view type");
+    if(!result) {
+        assert(false && "Invalid async load result");
+        return;
+    }
+    auto viewId = result->finishLoad();
     if(!viewId.isValid()) {
         LogError("[UIViewCache::ET_onAsyncLoadDone] Async load of view '%s' failed", getViewName(viewType));
         return;
@@ -87,14 +94,16 @@ void UIViewCache::ET_onAsyncLoadDone(UIViewType viewType, EntityId viewId) {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     ET_SendEvent(viewId, &ETUIViewPortEvents::ET_onViewPortChanged, viewPort);
 
+    ET_SendEvent(viewId, &ETUIElement::ET_hide);
+
     loadedViews[viewType] = viewId;
     ET_SendEvent(&ETUIViewManager::ET_onViewLoaded, viewType, viewId);
 }
 
 void UIViewCache::ET_asyncLoadView(UIViewType viewType) {
     auto viewName = getViewName(viewType);
-    ET_SendEvent(&ETAsyncEntityManager::ET_createAsyncEntity, viewName, [viewType](EntityId viewId){
-        ET_QueueEvent(&ETUIViewCache::ET_onAsyncLoadDone, viewType, viewId);
+    ET_SendEvent(&ETAsyncEntityManager::ET_createAsyncEntity, viewName, [viewType](std::shared_ptr<EntityLoadResult> result){
+        ET_QueueEvent(&ETUIViewCache::ET_onAsyncLoadDone, viewType, result);
     });
 }
 

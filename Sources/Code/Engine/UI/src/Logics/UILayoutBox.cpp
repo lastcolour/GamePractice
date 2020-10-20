@@ -32,7 +32,7 @@ void UILayoutBox::deinit() {
     UIElement::deinit();
 }
 
-void UILayoutBox::ET_onAllLogicsCreated() {
+void UILayoutBox::ET_onLoaded() {
     auto combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
     ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
     ET_onLayoutChanged(combinedBox);
@@ -57,11 +57,7 @@ void UILayoutBox::onZIndexChanged(int newZIndex) {
 }
 
 void UILayoutBox::onHide(bool flag) {
-    if(flag) {
-        ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
-    }
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
 }
 
 void UILayoutBox::onAlphaChanged(float newAlpha) {

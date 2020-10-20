@@ -81,18 +81,14 @@ void UIBox::onAlphaChanged(float newAlpha) {
 }
 
 void UIBox::onHide(bool flag) {
-    if(flag) {
-        ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
-    }
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
 }
 
 void UIBox::onZIndexChanged(int newZIndex) {
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
 }
 
-void UIBox::ET_onAllLogicsCreated() {
+void UIBox::ET_onLoaded() {
     if(boxRenderId.isValid()) {
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());

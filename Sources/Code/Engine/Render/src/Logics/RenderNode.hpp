@@ -39,13 +39,18 @@ public:
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
     void ET_setAlphaMultiplier(float newAlphaMult) override;
+    void ET_setVisibilityMultiplier(bool newVisMult) override;
 
     // ETRenderProxyNodeEvents
     void ET_syncWithRender() override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
-    void ET_onAllLogicsCreated() override {}
+    void ET_onLoaded() override;
+
+private:
+
+    void markForSyncWithRender();
 
 protected:
 
@@ -55,6 +60,8 @@ protected:
     int drawPriority;
     RenderNodeType type;
     bool isVisible;
+    bool visMult;
+    bool isLoaded;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

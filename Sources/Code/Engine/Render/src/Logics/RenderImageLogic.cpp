@@ -28,9 +28,6 @@ bool RenderImageLogic::init() {
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setImage(image.c_str());
     ET_setSize(size);
-    if(ET_isVisible()) {
-        ET_show();
-    }
     return true;
 }
 

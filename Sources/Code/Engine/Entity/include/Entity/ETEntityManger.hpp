@@ -7,10 +7,13 @@ class EntityLogicsRegister;
 class JSONNode;
 class MemoryStream;
 class Entity;
+class EntityLoadResult;
 
 struct ETEntityManager {
     virtual ~ETEntityManager() = default;
     virtual EntityId ET_createEntity(const char* entityName) = 0;
+    virtual EntityId ET_createUnfinishedEntity(const char* entityName) = 0;
+    virtual bool ET_finishEntity(EntityId entityId) = 0;
     virtual EntityId ET_createEntityFromData(const char* entityName, const char* entityData) = 0;
     virtual EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) = 0;
     virtual EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) = 0;
@@ -32,7 +35,7 @@ struct ETEntityManager {
 
 struct ETAsyncEntityManager {
     virtual ~ETAsyncEntityManager() = default;
-    virtual void ET_createAsyncEntity(const char* entityName, std::function<void(EntityId)> callback) = 0;
+    virtual void ET_createAsyncEntity(const char* entityName, std::function<void(std::shared_ptr<EntityLoadResult>)> callback) = 0;
 };
 
 #endif /* __ET_ENTITY_MANAGER_HPP__ */

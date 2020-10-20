@@ -19,7 +19,9 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     alphaMult(1.f),
     drawPriority(0),
     type(nodeType),
-    isVisible(true) {
+    isVisible(true),
+    visMult(true),
+    isLoaded(false) {
 }
 
 RenderNode::~RenderNode() {
@@ -52,17 +54,31 @@ void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
 }
 
 bool RenderNode::ET_isVisible() const {
-    return isVisible;
+    return isVisible && visMult;
 }
 
 void RenderNode::ET_hide() {
+    if(!isVisible) {
+        return;
+    }
     isVisible = false;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, false);
 }
 
 void RenderNode::ET_show() {
+    if(isVisible) {
+        return;
+    }
     isVisible = true;
-    ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
+    markForSyncWithRender();
+}
+
+void RenderNode::ET_setVisibilityMultiplier(bool newVisMult) {
+    if(visMult == newVisMult) {
+        return;
+    }
+    visMult = newVisMult;
+    markForSyncWithRender();
 }
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
@@ -77,6 +93,18 @@ int RenderNode::ET_getDrawPriority() const {
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
+    markForSyncWithRender();
+}
+
+void RenderNode::ET_onLoaded() {
+    isLoaded = true;
+    markForSyncWithRender();
+}
+
+void RenderNode::markForSyncWithRender() {
+    if(!isLoaded) {
+        return;
+    }
     ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
@@ -84,6 +112,7 @@ void RenderNode::ET_syncWithRender() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+    auto visFlag = ET_isVisible();
+    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, visFlag);
     ETNode<ETRenderProxyNodeEvents>::disconnect();
 }

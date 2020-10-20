@@ -90,18 +90,15 @@ void UILabel::ET_onViewPortChanged(const Vec2i& newSize) {
 }
 
 void UILabel::onHide(bool flag) {
-    if(flag) {
-        ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(labelRenderId, &ETRenderNode::ET_show);
-    }
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
+
 }
 
 void UILabel::onAlphaChanged(float newAlpha) {
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
-void UILabel::ET_onAllLogicsCreated() {
+void UILabel::ET_onLoaded() {
     if(labelRenderId != getEntityId()) {
         return;
     }
