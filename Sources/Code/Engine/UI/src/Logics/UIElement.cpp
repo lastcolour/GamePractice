@@ -40,6 +40,9 @@ EntityId UIElement::ET_getHostLayout() const {
 }
 
 void UIElement::ET_setZIndex(int newZIndex) {
+    if(zIndex == newZIndex) {
+        return;
+    }
     zIndex = newZIndex;
     onZIndexChanged(zIndex);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onZIndexChanged, newZIndex);
@@ -54,6 +57,9 @@ int UIElement::ET_getZIndexDepth() const {
 }
 
 void UIElement::ET_show() {
+    if(!isHidden) {
+        return;
+    }
     isHidden = false;
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
@@ -64,6 +70,9 @@ void UIElement::ET_show() {
 }
 
 void UIElement::ET_hide() {
+    if(isHidden) {
+        return;
+    }
     isHidden = true;
     onHide(true);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);

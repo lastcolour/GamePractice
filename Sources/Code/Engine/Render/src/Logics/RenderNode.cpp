@@ -21,7 +21,9 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     type(nodeType),
     isVisible(true),
     visMult(true),
-    isLoaded(false) {
+    isLoaded(false),
+    isTmChanged(false),
+    isVisChanged(false) {
 }
 
 RenderNode::~RenderNode() {
@@ -61,8 +63,11 @@ void RenderNode::ET_hide() {
     if(!isVisible) {
         return;
     }
+    bool wasVisible = ET_isVisible();
     isVisible = false;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, false);
+    if(wasVisible) {
+        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, false);
+    }
 }
 
 void RenderNode::ET_show() {
@@ -70,15 +75,26 @@ void RenderNode::ET_show() {
         return;
     }
     isVisible = true;
-    markForSyncWithRender();
+    if(ET_isVisible()) {
+        isVisChanged = true;
+        markForSyncWithRender();
+    }
 }
 
 void RenderNode::ET_setVisibilityMultiplier(bool newVisMult) {
     if(visMult == newVisMult) {
         return;
     }
+    bool wasVisible = ET_isVisible();
     visMult = newVisMult;
-    markForSyncWithRender();
+    if(wasVisible != ET_isVisible()) {
+        if(wasVisible) {
+            ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, false);
+        } else {
+            isVisChanged = true;
+            markForSyncWithRender();
+        }
+    }
 }
 
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
@@ -93,12 +109,16 @@ int RenderNode::ET_getDrawPriority() const {
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
+    isTmChanged = true;
     markForSyncWithRender();
 }
 
 void RenderNode::ET_onLoaded() {
     isLoaded = true;
-    markForSyncWithRender();
+    if(ET_isVisible()) {
+        isVisChanged = true;
+        markForSyncWithRender();
+    }
 }
 
 void RenderNode::markForSyncWithRender() {
@@ -109,10 +129,16 @@ void RenderNode::markForSyncWithRender() {
 }
 
 void RenderNode::ET_syncWithRender() {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
-    auto visFlag = ET_isVisible();
-    ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, visFlag);
+    if(isTmChanged) {
+        isTmChanged = false;
+        Transform tm;
+        ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+    }
+    if(isVisChanged) {
+        isVisChanged = false;
+        auto visFlag = ET_isVisible();
+        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, visFlag);
+    }
     ETNode<ETRenderProxyNodeEvents>::disconnect();
 }

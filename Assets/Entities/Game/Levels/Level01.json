@@ -5,7 +5,8 @@
       "type": "GameBoard",
       "id": 1,
       "data": {
-        "fallSpeed": 6.0,
+        "fallSpeed": 4.0,
+        "fallAcceleration": 15.0,
         "size": {
           "x": 10,
           "y": 10
@@ -39,14 +40,22 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 5
+          "minScore": 50
         },
         "twoStars": {
-          "minScore": 10
+          "minScore": 100
         },
         "threeStars": {
-          "minScore": 15
+          "minScore": 150
         }
+      }
+    },
+    {
+      "type": "GameBoardAnimation",
+      "id": 9,
+      "data": {
+        "minScale": 0.8999999761581421,
+        "scaleDuration": 0.5
       }
     }
   ]

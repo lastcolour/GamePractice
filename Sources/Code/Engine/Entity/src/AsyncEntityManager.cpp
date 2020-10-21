@@ -1,7 +1,10 @@
 #include "AsyncEntityManager.hpp"
 #include "Entity/EntityLoadResult.hpp"
 
-AsyncEntityManager::AsyncEntityManager() {
+#include <cassert>
+
+AsyncEntityManager::AsyncEntityManager() :
+    activeLoadResult(nullptr) {
 }
 
 AsyncEntityManager::~AsyncEntityManager() {
@@ -26,16 +29,32 @@ void AsyncEntityManager::ET_createAsyncEntity(const char* entityName, std::funct
 void AsyncEntityManager::deinit() {
 }
 
+bool AsyncEntityManager::ET_isInsideAsyncLoad() const {
+    return std::this_thread::get_id() == asyncLoadThreadId;
+}
+
+void AsyncEntityManager::ET_addEntityToFinishLater(EntityId entityId) {
+    assert(activeLoadResult && "Invalid active load result");
+    activeLoadResult->addEntityToFinish(entityId);
+}
+
 void AsyncEntityManager::ET_updateEntities() {
     std::vector<CreateRequest> requests;
     {
         std::lock_guard<std::mutex> lock(mutex);
         requests = std::move(pendingRequests);
     }
+    asyncLoadThreadId = std::this_thread::get_id();
     for(auto& req : requests) {
+        std::shared_ptr<EntityLoadResult> result(new EntityLoadResult());
+        activeLoadResult = result.get();
+
         EntityId entId;
         ET_SendEventReturn(entId, &ETEntityManager::ET_createUnfinishedEntity, req.name.c_str());
-        std::shared_ptr<EntityLoadResult> result(new EntityLoadResult(entId));
-        req.callback(std::move(result));
+        result->setResultEntity(entId);
+        activeLoadResult = nullptr;
+
+        req.callback(result);
     }
+    asyncLoadThreadId = std::thread::id();
 }

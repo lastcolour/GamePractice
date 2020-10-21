@@ -14,7 +14,6 @@
 #include "Logics/UIPressAnimation.hpp"
 #include "Logics/UILabel.hpp"
 #include "Logics/UIViewAppearAnimation.hpp"
-#include "Logics/UIGameEndStarsAppearAnimation.hpp"
 #include "Logics/UIScrollArea.hpp"
 #include "Logics/UILayoutBox.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
@@ -48,7 +47,6 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIPressAnimation>();
     logicsRegister.registerLogic<UILabel>();
     logicsRegister.registerLogic<UIViewAppearAnimation>();
-    logicsRegister.registerLogic<UIGameEndStarsAppearAnimation>();
     logicsRegister.registerLogic<UIScrollArea>();
     logicsRegister.registerLogic<UILayoutBox>();
 }

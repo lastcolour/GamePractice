@@ -1,7 +1,5 @@
 #include "Game/States/PreGameState.hpp"
-#include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
-#include "Game/ETGameScore.hpp"
 
 PreGameState::PreGameState() {
 }
@@ -10,19 +8,10 @@ PreGameState::~PreGameState() {
 }
 
 void PreGameState::onEnter(EntityId gameEntityId) {
-    ETNode<ETGameBoardAppearAnimationEvents>::connect(gameEntityId);
-    ET_SendEvent(&ETGameScore::ET_resetScore);
-    if(ET_IsExistNode<ETGameBoardAppearAnimation>()) {
-        ET_SendEvent(&ETGameBoardAppearAnimation::ET_startBoardAppearing);
-    } else {
-        ET_onBoardAppeared();
-    }
+    ET_SendEvent(&ETGameStateEvents::ET_onGameEnterState, EGameState::PreGame);
+    ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::InGame);
 }
 
 void PreGameState::onLeave() {
-    ETNode<ETGameBoardAppearAnimationEvents>::disconnect();
-}
-
-void PreGameState::ET_onBoardAppeared() {
-    ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::InGame);
+    ET_SendEvent(&ETGameStateEvents::ET_onGameLeaveState, EGameState::PreGame);
 }

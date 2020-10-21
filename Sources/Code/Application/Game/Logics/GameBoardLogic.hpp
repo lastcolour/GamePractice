@@ -18,6 +18,13 @@ struct BoardElement {
     Vec2i movePt;
     Vec2i boardPt;
     EntityId entId;
+    float vel;
+
+    BoardElement() :
+        box(Vec2i(0), Vec2i(0)),
+        movePt(-1),
+        boardPt(-1),
+        vel(0.f) {}
 };
 
 class GameBoardLogic : public EntityLogic,
@@ -95,6 +102,7 @@ protected:
     EntityId uiBoxId;
     float cellScale;
     float moveSpeed;
+    float moveAccel;
     int cellSize;
     bool doElemMathcing;
     bool isBoardStatic;

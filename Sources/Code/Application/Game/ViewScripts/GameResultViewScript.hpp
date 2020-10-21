@@ -2,6 +2,7 @@
 #define __GAME_RESULT_VIEW_SCRIPT_HPP__
 
 #include "Game/ViewScripts/BaseViewScript.hpp"
+#include "Game/ViewScripts/ProgressionStars.hpp"
 
 class ReflectContext;
 
@@ -21,6 +22,10 @@ public:
 protected:
 
     void onEvent(const UIEvent& event) override;
+
+private:
+
+    ProgressionStars progressStars;
 };
 
 #endif /* __GAME_RESULT_VIEW_SCRIPT_HPP__ */

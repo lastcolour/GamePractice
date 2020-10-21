@@ -5,10 +5,14 @@
 #include "UI/ETUIView.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Audio/ETSound.hpp"
 
 void GameViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameViewScript>("GameViewScript")) {
         classInfo->addField("stars", &GameViewScript::progressStars);
+        classInfo->addField("timeInfoBox", &GameViewScript::timeInfoBoxId);
+        classInfo->addField("boardSpawner", &GameViewScript::boardSpawnerId);
+        classInfo->addResourceField("getStartSound", ResourceType::SoundEvent, &GameViewScript::setGetStatSoundEvent);
     }
 }
 
@@ -21,7 +25,12 @@ GameViewScript::~GameViewScript() {
 bool GameViewScript::init() {
     BaseViewScript::init();
     ETNode<ETGameObjectiveEvents>::connect(getEntityId());
+    ETNode<ETGameStateEvents>::connect(getEntityId());
     return true;
+}
+
+void GameViewScript::setGetStatSoundEvent(const char* eventName) {
+    ET_SendEventReturn(getStarEvent, &ETSoundManager::ET_createEvent, eventName);
 }
 
 void GameViewScript::ET_onLostFocus() {
@@ -67,6 +76,16 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
     if(!starId.isValid()) {
         return;
     }
+    getStarEvent.emit();
     ET_SendEvent(starId, &ETRenderNode::ET_show);
     ET_SendEvent(starId, &ETUIViewAppearAnimation::ET_appear);
+}
+
+void GameViewScript::ET_onGameEnterState(EGameState state) {
+    if(state == EGameState::PostGame) {
+        ET_SendEvent(timeInfoBoxId, &ETUIViewAppearAnimation::ET_disappear);
+    }
+}
+
+void GameViewScript::ET_onGameLeaveState(EGameState state) {
 }

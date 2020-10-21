@@ -52,4 +52,9 @@ struct ETGameBoardElemSelectAnimation {
     virtual void ET_playDeselect() = 0;
 };
 
+struct ETGameBoardAnimation {
+    virtual ~ETGameBoardAnimation() = default;
+    virtual void ET_zoomOut() = 0;
+};
+
 #endif /* __ET_GAME_ELEM_HPP__ */

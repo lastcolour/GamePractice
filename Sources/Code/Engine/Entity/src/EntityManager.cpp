@@ -51,6 +51,12 @@ bool CheckEntityLogicValue(const char* errStr, EntityId entityId, Entity* entity
     return true;
 }
 
+bool isInsideAsyncLoad() {
+    bool res = false;
+    ET_SendEventReturn(res, &ETAsyncEntityManager::ET_isInsideAsyncLoad);
+    return res;
+}
+
 } // namespace
 
 EntityManager::EntityManager() :
@@ -79,12 +85,19 @@ void EntityManager::deinit() {
 }
 
 EntityId EntityManager::ET_createEntity(const char* entityName) {
-    bool finishLoad = true;
+    bool insideAsyncLoad = isInsideAsyncLoad();
+    bool finishLoad = !insideAsyncLoad;
+
     auto entity = createEntity(entityName, finishLoad);
     if(!entity) {
         LogWarning("[EntityManager::ET_createEntity] Can't create entity from: '%s'", entityName);
         return InvalidEntityId;
     }
+
+    if(insideAsyncLoad) {
+        ET_SendEvent(&ETAsyncEntityManager::ET_addEntityToFinishLater, entity->getEntityId());
+    }
+
     return entity->getEntityId();
 }
 

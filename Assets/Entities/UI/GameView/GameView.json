@@ -314,6 +314,25 @@
                       ]
                     ]
                   }
+                },
+                {
+                  "type": "UIViewAppearAnimation",
+                  "id": 4,
+                  "data": {
+                    "elements": [
+                      {
+                        "element": [
+                          0
+                        ],
+                        "startDelay": 0.0,
+                        "duration": 0.30000001192092896,
+                        "xMoveOffset": 0.0,
+                        "yMoveOffset": 5.0,
+                        "startScale": 1.5,
+                        "startAlpha": 0.0
+                      }
+                    ]
+                  }
                 }
               ]
             }
@@ -1588,7 +1607,16 @@
             3,
             1
           ]
-        }
+        },
+        "timeInfoBox": [
+          2,
+          3
+        ],
+        "boardSpawner": [
+          3,
+          1
+        ],
+        "getStartSound": "getProgressionStar_01"
       }
     }
   ]

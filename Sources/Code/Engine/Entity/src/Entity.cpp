@@ -97,6 +97,7 @@ EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
     }
     auto logicId = createNewLogicId();
     logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
+    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
     return logicId;
 }
 
@@ -190,6 +191,9 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     if(!logicPtr->init()) {
         LogWarning("[Entity::writeLogicData] Can't re-init logic after write");
     }
+
+    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
+
     return res;
 }
 
@@ -208,6 +212,9 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     if(!logicPtr->init()) {
         LogWarning("[Entity::addLogicValueArrayElemet] Can't re-init logic after element add");
     }
+
+    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
+
     return res;
 }
 
@@ -291,20 +298,20 @@ const Transform& Entity::ET_getTransform() const {
 }
 
 void Entity::ET_setTransform(const Transform& newTm) {
-    Vec3 scaleFactor = newTm.scale / tm.scale;
     for(auto& childNode : children) {
         auto childEntity = childNode.childEntity;
 
         Transform childTm = childEntity->ET_getLocalTransform();
 
-        childTm.pt.x *= scaleFactor.x;
-        childTm.pt.y *= scaleFactor.y;
-        childTm.pt.z *= scaleFactor.z;
-        childTm.pt += newTm.pt;
+        Vec3 childPt = newTm.pt;
+        childPt.x += childTm.pt.x * newTm.scale.x;
+        childPt.y += childTm.pt.y * newTm.scale.y;
+        childPt.z += childTm.pt.z * newTm.scale.z;
+        childTm.pt = childPt;
 
-        childTm.scale.x *= tm.scale.x * scaleFactor.x;
-        childTm.scale.y *= tm.scale.y * scaleFactor.y;
-        childTm.scale.z *= tm.scale.z * scaleFactor.z;
+        childTm.scale.x *= newTm.scale.x;
+        childTm.scale.y *= newTm.scale.y;
+        childTm.scale.z *= newTm.scale.z;
 
         childEntity->ET_setTransform(childTm);
     }
@@ -322,6 +329,10 @@ Transform Entity::ET_getLocalTransform() const {
 
     Transform localTm;
     localTm.pt = tm.pt - parentTm.pt;
+    localTm.pt.x /= parentTm.scale.x;
+    localTm.pt.y /= parentTm.scale.y;
+    localTm.pt.z /= parentTm.scale.z;
+
     localTm.scale.x = tm.scale.x / parentTm.scale.x;
     localTm.scale.y = tm.scale.y / parentTm.scale.y;
     localTm.scale.z = tm.scale.z / parentTm.scale.z;
@@ -338,8 +349,13 @@ void Entity::ET_setLocalTransform(const Transform& localTm) {
 
     Transform parentTm = parent->ET_getTransform();
 
+    Vec3 shift = localTm.pt;
+    shift.x *= parentTm.scale.x;
+    shift.y *= parentTm.scale.y;
+    shift.z *= parentTm.scale.z;
+
     Transform newTm;
-    newTm.pt = parentTm.pt + localTm.pt;
+    newTm.pt = parentTm.pt + shift;
     newTm.scale.x = parentTm.scale.x * localTm.scale.x;
     newTm.scale.y = parentTm.scale.y * localTm.scale.y;
     newTm.scale.z = parentTm.scale.z * localTm.scale.z;

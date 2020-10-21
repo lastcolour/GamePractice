@@ -23,6 +23,8 @@ public:
 
     // ETAsyncEntityManager
     void ET_createAsyncEntity(const char* entityName, std::function<void(std::shared_ptr<EntityLoadResult>)> callback) override;
+    bool ET_isInsideAsyncLoad() const override;
+    void ET_addEntityToFinishLater(EntityId entityId) override;
 
     // ETEntitiesUpdateTask
     void ET_updateEntities() override;
@@ -37,7 +39,9 @@ private:
 private:
 
     std::mutex mutex;
+    std::thread::id asyncLoadThreadId;
     std::vector<CreateRequest> pendingRequests;
+    EntityLoadResult* activeLoadResult;
 };
 
 #endif /* __ASYNC_ENTITY_MANAGER_HPP__ */

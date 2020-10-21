@@ -5,14 +5,10 @@
 #include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "RenderContext.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Nodes/ETRenderProxyNode.hpp"
 #include "Entity/ETEntity.hpp"
 
-class RenderMaterial;
-class RenderGeometry;
-class RenderGraph;
 class ReflectContext;
 
 class RenderNode : public EntityLogic,
@@ -62,6 +58,8 @@ protected:
     bool isVisible;
     bool visMult;
     bool isLoaded;
+    bool isTmChanged;
+    bool isVisChanged;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

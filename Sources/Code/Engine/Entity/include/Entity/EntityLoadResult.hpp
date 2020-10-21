@@ -6,17 +6,22 @@
 class EntityLoadResult {
 public:
 
-    EntityLoadResult(EntityId loadedEntId);
-    EntityLoadResult(const EntityLoadResult&& other);
-    EntityLoadResult& operator=(EntityLoadResult&& other);
+    EntityLoadResult();
     ~EntityLoadResult();
 
     EntityId finishLoad();
+    void addEntityToFinish(EntityId finishEntId);
+    void setResultEntity(EntityId resultEntId);
+
+private:
+
+    EntityLoadResult(const EntityLoadResult&) = delete;
+    EntityLoadResult& operator=(EntityLoadResult&) = delete;
 
 private:
 
     EntityId entityId;
-    int refCount;
+    std::vector<EntityId> waitFinishEntities;
 };
 
 #endif /* __ENTITY_LOAD_RESULT_HPP__ */

@@ -113,6 +113,7 @@ void GameStateManager::ET_changeState(EGameState newState) {
             LogInfo("[GameStateManager::ET_changeState] Change state to: None");
             gameState = newState;
             postGame.onLeave();
+            ET_SendEvent(&ETGameTimer::ET_pause);
             UIEvent endEvent{getEntityId(), UIEvent::EventType::OnGameGameEnd};
             ET_SendEvent(&ETUIViewScript::ET_onEvent, endEvent);
             break;

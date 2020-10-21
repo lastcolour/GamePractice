@@ -19,6 +19,12 @@ struct ETGameStateManager {
     virtual void ET_changeState(EGameState newGameState) = 0;
 };
 
+struct ETGameStateEvents {
+    virtual ~ETGameStateEvents() = default;
+    virtual void ET_onGameEnterState(EGameState state) = 0;
+    virtual void ET_onGameLeaveState(EGameState state) = 0;
+};
+
 struct ETGameConfig {
     virtual ~ETGameConfig() = default;
     virtual bool ET_isSoundEnabled() const = 0;

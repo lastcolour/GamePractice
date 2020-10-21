@@ -36,6 +36,8 @@ struct ETEntityManager {
 struct ETAsyncEntityManager {
     virtual ~ETAsyncEntityManager() = default;
     virtual void ET_createAsyncEntity(const char* entityName, std::function<void(std::shared_ptr<EntityLoadResult>)> callback) = 0;
+    virtual bool ET_isInsideAsyncLoad() const = 0;
+    virtual void ET_addEntityToFinishLater(EntityId entityId) = 0;
 };
 
 #endif /* __ET_ENTITY_MANAGER_HPP__ */

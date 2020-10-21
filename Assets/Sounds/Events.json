@@ -23,6 +23,12 @@
             "sound":"Game/scoreIncrease.ogg",
             "volume":0.4,
             "nextDelay":0.05
+        },
+        {
+            "name":"getProgressionStar_01",
+            "sound":"Game/bleep.ogg",
+            "volume":0.6,
+            "nextDelay":0.0
         }
     ]
 }

@@ -40,6 +40,7 @@ void setElemLifeState(EntityId elemId, EBoardElemLifeState state) {
 GameBoardLogic::GameBoardLogic() :
     boardSize(0),
     moveSpeed(1.f),
+    moveAccel(0.2f),
     cellScale(0.9f),
     doElemMathcing(false),
     isBoardStatic(false) {
@@ -51,6 +52,7 @@ GameBoardLogic::~GameBoardLogic() {
 void GameBoardLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
         classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
+        classInfo->addField("fallAcceleration", &GameBoardLogic::moveAccel);
         classInfo->addField("size", &GameBoardLogic::boardSize);
         classInfo->addResourceField("cellObject", ResourceType::Entity, &GameBoardLogic::setCellObject);
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
@@ -122,7 +124,6 @@ bool GameBoardLogic::createNewElement(const Vec2i& boardPt) {
     setElemMoveState(elem.entId, EBoardElemMoveState::Static);
     setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
     setRandomElemType(elem);
-    ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
     elements.push_back(elem);
     return true;
 }
@@ -201,22 +202,23 @@ BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) {
 }
 
 Vec3 GameBoardLogic::ET_getPosFromBoardPos(const Vec2i& boardPt) const {
-    Vec2 pt = Vec2(static_cast<float>(boardBox.bot.x), static_cast<float>(boardBox.bot.y));
-    pt.x += cellSize * (boardPt.x + 0.5f);
-    pt.y += cellSize * (boardPt.y + 0.5f);
-    return Vec3(pt, 0.f);
+    Vec2 midPt(boardSize.x / 2.f, boardSize.y / 2.f);
+    Vec2 resPt;
+    resPt.x = (boardPt.x - midPt.x + 0.5f) * cellSize;
+    resPt.y = (boardPt.y - midPt.y + 0.5f) * cellSize;
+    return Vec3(resPt, 0.f);
 }
 
 void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const {
     elem.box.bot = Vec2i(static_cast<int>(boardBox.bot.x + cellSize * boardPt.x),
-        static_cast<int>(boardBox.bot.y + cellSize * boardPt.y));
+    static_cast<int>(boardBox.bot.y + cellSize * boardPt.y));
     elem.box.top = elem.box.bot + Vec2i(static_cast<int>(cellSize));
+
     elem.boardPt = boardPt;
 
     Transform tm;
     tm.pt = ET_getPosFromBoardPos(boardPt);
-    tm.scale = Vec3(1.f);
-    ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
+    ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
 }
 
 void GameBoardLogic::setRandomElemType(BoardElement& elem) const {
@@ -285,13 +287,15 @@ void GameBoardLogic::moveElem(BoardElement& elem, float dt) {
     isBoardStatic = false;
 
     Transform tm;
-    ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
 
-    tm.pt.y -= moveSpeed * dt * cellSize;
+    elem.vel += dt * moveAccel;
+    tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
     Vec3 desirePt = ET_getPosFromBoardPos(elem.movePt);
     if(tm.pt.y > desirePt.y) {
-        ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
+        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
     } else {
+        elem.vel = 0.f;
         setElemMoveState(elem.entId, EBoardElemMoveState::Static);
         setElemBoardPos(elem, elem.movePt);
         doElemMathcing = true;
@@ -419,10 +423,10 @@ void GameBoardLogic::removeElem(BoardElement& elem) {
     auto topElem = getTopElemAbove(Vec2i(elem.boardPt.x, boardSize.y - 1));
     if(topElem) {
         Transform tm;
-        ET_SendEventReturn(tm, topElem->entId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(tm, topElem->entId, &ETEntity::ET_getLocalTransform);
 
         tm.pt.y += cellSize;
-        ET_SendEvent(elem.entId, &ETEntity::ET_setTransform, tm);
+        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
 
     } else {
         setElemBoardPos(elem, Vec2i(elem.boardPt.x, boardSize.y));
@@ -439,14 +443,14 @@ int GameBoardLogic::getAllElemsBelow(const BoardElement& topElem) {
     int count = 0;
 
     Transform tm;
-    ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
     float posY = tm.pt.y;
 
     for(auto& elem : elements) {
         if(elem.boardPt.x != topElem.boardPt.x) {
             continue;
         }
-        ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
         if(tm.pt.y < posY) {
             count += 1;
         }
@@ -463,7 +467,7 @@ BoardElement* GameBoardLogic::getTopElemAbove(const Vec2i& boardPt) {
             continue;
         }
         Transform tm;
-        ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
         if(tm.pt.y > topPosY) {
             topPosY = tm.pt.y;
             topElem = &elem;

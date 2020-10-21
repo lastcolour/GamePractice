@@ -340,7 +340,7 @@
                                     "element": [
                                       0
                                     ],
-                                    "startDelay": 0.0,
+                                    "startDelay": 0.30000001192092896,
                                     "duration": 0.30000001192092896,
                                     "xMoveOffset": 0.0,
                                     "yMoveOffset": 30.0,
@@ -514,7 +514,7 @@
                                     "element": [
                                       0
                                     ],
-                                    "startDelay": 0.0,
+                                    "startDelay": 0.6000000238418579,
                                     "duration": 0.30000001192092896,
                                     "xMoveOffset": 0.0,
                                     "yMoveOffset": 30.0,
@@ -630,26 +630,6 @@
                         4
                       ]
                     ]
-                  }
-                },
-                {
-                  "type": "UIGameEndStarsAppearAnimation",
-                  "id": 4,
-                  "data": {
-                    "firstStar": [
-                      1,
-                      1
-                    ],
-                    "secondStar": [
-                      3,
-                      1
-                    ],
-                    "thirdStar": [
-                      4,
-                      1
-                    ],
-                    "duration": 0.20000000298023224,
-                    "startScale": 2.0
                   }
                 }
               ]
@@ -980,7 +960,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -44.0,
+                      "x": -43.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1044,7 +1024,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 3.0,
+                      "x": 4.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1197,7 +1177,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -44.0,
+                      "x": -43.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1261,7 +1241,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 2.0,
+                      "x": 3.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1541,7 +1521,13 @@
     {
       "type": "GameResultViewScript",
       "id": 5,
-      "data": {}
+      "data": {
+        "stars": {
+          "first": [],
+          "second": [],
+          "third": []
+        }
+      }
     }
   ]
 }

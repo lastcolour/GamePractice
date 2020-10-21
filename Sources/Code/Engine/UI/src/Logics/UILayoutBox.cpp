@@ -10,8 +10,8 @@ void UILayoutBox::Reflect(ReflectContext& ctx) {
     }
 }
 
-UILayoutBox::UILayoutBox()
-    : aabb(Vec2i(0), Vec2i(0)) {
+UILayoutBox::UILayoutBox() :
+    aabb(Vec2i(0), Vec2i(0)) {
 }
 
 UILayoutBox::~UILayoutBox() {
@@ -20,11 +20,6 @@ UILayoutBox::~UILayoutBox() {
 bool UILayoutBox::init() {
     UIElement::init();
     ETNode<ETUILayoutEvents>::connect(getEntityId());
-
-    auto combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
-    ET_onLayoutChanged(combinedBox);
-
     return true;
 }
 
@@ -33,9 +28,9 @@ void UILayoutBox::deinit() {
 }
 
 void UILayoutBox::ET_onLoaded() {
+    ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
     auto combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
     ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
-    ET_onLayoutChanged(combinedBox);
     if(boxRenderId.isValid()) {
         auto box = ET_getBox();
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, box.getSize());
@@ -66,18 +61,20 @@ void UILayoutBox::onAlphaChanged(float newAlpha) {
 
 void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
     auto newAabb = UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
-    auto shiftPt = newCombinedBox.getCenter() - newAabb.getCenter();
+    auto shiftPt = newAabb.getCenter() - newCombinedBox.getCenter();
 
-    std::vector<EntityId> children;
-    ET_SendEventReturn(children, getEntityId(), &ETUILayout::ET_getItems);
-    for(auto childId : children) {
-        Transform tm;
-        ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
+    if(shiftPt.x != 0 || shiftPt.y != 0) {
+        std::vector<EntityId> children;
+        ET_SendEventReturn(children, getEntityId(), &ETUILayout::ET_getItems);
+        for(auto childId : children) {
+            Transform tm;
+            ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
 
-        tm.pt.x += static_cast<float>(shiftPt.x);
-        tm.pt.y += static_cast<float>(shiftPt.y);
+            tm.pt.x += static_cast<float>(shiftPt.x);
+            tm.pt.y += static_cast<float>(shiftPt.y);
 
-        UI::SetTmDoNotUpdateLayout(childId, tm);
+            UI::SetTmDoNotUpdateLayout(childId, tm);
+        }
     }
 
     aabb = newAabb;

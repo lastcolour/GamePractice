@@ -8,6 +8,8 @@ InGameState::~InGameState() {
 }
 
 void InGameState::onEnter(EntityId gameEntityId) {
+    ET_SendEvent(&ETGameStateEvents::ET_onGameEnterState, EGameState::InGame);
+
     ETNode<ETGameEndTimerEvents>::connect(gameEntityId);
     ETNode<ETGameObjectiveEvents>::connect(gameEntityId);
 
@@ -16,6 +18,8 @@ void InGameState::onEnter(EntityId gameEntityId) {
 }
 
 void InGameState::onLeave() {
+    ET_SendEvent(&ETGameStateEvents::ET_onGameLeaveState, EGameState::InGame);
+
     ETNode<ETGameObjectiveEvents>::disconnect();
     ETNode<ETGameEndTimerEvents>::disconnect();
 }

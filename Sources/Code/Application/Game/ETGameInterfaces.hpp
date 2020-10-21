@@ -53,16 +53,6 @@ struct ETGameEndTimerEvents {
     virtual void ET_onGameTimeOut() = 0;
 };
 
-struct ETGameBoardAppearAnimation {
-    virtual ~ETGameBoardAppearAnimation() = default;
-    virtual void ET_startBoardAppearing() = 0;
-};
-
-struct ETGameBoardAppearAnimationEvents {
-    virtual ~ETGameBoardAppearAnimationEvents() = default;
-    virtual void ET_onBoardAppeared() = 0;
-};
-
 struct ETGameBoardInteractionLogic {
     virtual ~ETGameBoardInteractionLogic() = default;
     virtual void ET_allowInteraction(bool flag) = 0;

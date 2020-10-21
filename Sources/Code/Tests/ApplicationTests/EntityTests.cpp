@@ -183,9 +183,9 @@ TEST_F(EntityTests, CheckLocalTransform) {
 
     {
         auto localTm = child->ET_getLocalTransform();
-        EXPECT_FLOAT_EQ(localTm.pt.x, -0.5f);
-        EXPECT_FLOAT_EQ(localTm.pt.y, -1.f);
-        EXPECT_FLOAT_EQ(localTm.pt.z, -1.5f);
+        EXPECT_FLOAT_EQ(localTm.pt.x, -1.f);
+        EXPECT_FLOAT_EQ(localTm.pt.y, -2.f);
+        EXPECT_FLOAT_EQ(localTm.pt.z, -3.f);
 
         EXPECT_FLOAT_EQ(localTm.scale.x, 1.f);
         EXPECT_FLOAT_EQ(localTm.scale.y, 1.f);
@@ -233,6 +233,7 @@ TEST_F(EntityTests, CheckScaleAffectLocalTransform) {
 
     parent->ET_addChild(child->getEntityId());
 
+    tm.pt = Vec3(2.f);
     tm.scale = Vec3(0.5);
     parent->ET_setTransform(tm);
 
@@ -245,9 +246,9 @@ TEST_F(EntityTests, CheckScaleAffectLocalTransform) {
 
         auto currLocalTm = child->ET_getLocalTransform();
 
-        EXPECT_FLOAT_EQ(currLocalTm.pt.x, 0.5f);
-        EXPECT_FLOAT_EQ(currLocalTm.pt.y, 0.5f);
-        EXPECT_FLOAT_EQ(currLocalTm.pt.z, 0.5f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.x, 1.f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.y, 1.f);
+        EXPECT_FLOAT_EQ(currLocalTm.pt.z, 1.f);
     }
 
     tm.scale = Vec3(1.f);

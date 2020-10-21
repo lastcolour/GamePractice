@@ -1,8 +1,8 @@
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Game/ETGameScore.hpp"
-#include "UI/ETUIGameEndView.hpp"
 #include "UI/ETUIView.hpp"
+#include "Render/ETRenderNode.hpp"
 
 #include <cassert>
 
@@ -32,6 +32,7 @@ int covertToStarsCount(ObjectiveProgress objectiveProgress) {
 
 void GameResultViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameResultViewScript>("GameResultViewScript")) {
+        classInfo->addField("stars", &GameResultViewScript::progressStars);
     }
 }
 
@@ -56,5 +57,16 @@ void GameResultViewScript::ET_onGetFocus() {
     ET_SendEventReturn(gameResult, &ETGameEndResult::ET_getLastGameResult);
 
     auto starsCount = covertToStarsCount(gameResult.objectiveCompleted);
-    ET_SendEvent(&ETUIStarsAppearAnimation::ET_showStars, 3);
+    if(starsCount > 0) {
+        ET_SendEvent(progressStars.fristId, &ETRenderNode::ET_show);
+        ET_SendEvent(progressStars.fristId, &ETUIViewAppearAnimation::ET_appear);
+    }
+    if(starsCount > 1) {
+        ET_SendEvent(progressStars.secondId, &ETRenderNode::ET_show);
+        ET_SendEvent(progressStars.secondId, &ETUIViewAppearAnimation::ET_appear);
+    }
+    if(starsCount > 2) {
+        ET_SendEvent(progressStars.thirdId, &ETRenderNode::ET_show);
+        ET_SendEvent(progressStars.thirdId, &ETUIViewAppearAnimation::ET_appear);
+    }
 }
