@@ -34,8 +34,8 @@ struct ETUIViewTransitionManager {
 
 struct ETUIViewAppearAnimation {
     virtual ~ETUIViewAppearAnimation() = default;
-    virtual void ET_appear() = 0;
-    virtual void ET_disappear() = 0;
+    virtual void ET_appear(EntityId triggerId) = 0;
+    virtual void ET_disappear(EntityId triggerId) = 0;
 };
 
 struct ETUIViewAppearAnimationEvents {

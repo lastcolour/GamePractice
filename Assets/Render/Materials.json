@@ -18,5 +18,9 @@
     "tex_vert_color":{
         "vert":"Shaders/tex_vert_color.vert",
         "frag":"Shaders/tex_vert_color.frag"
+    },
+    "particle":{
+        "vert":"Shaders/particle.vert",
+        "frag":"Shaders/particle.frag"
     }
 }

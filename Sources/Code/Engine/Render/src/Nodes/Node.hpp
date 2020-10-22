@@ -49,6 +49,7 @@ protected:
     void setBlendingMode(RenderBlendingType newBlending);
     void setMaterial(const char* matName);
     void setGeometry(PrimitiveGeometryType geomType);
+    void setSetupAlpha(bool flag);
 
 protected:
 
@@ -64,6 +65,7 @@ private:
     float alpha;
     int drawPriority;
     bool visible;
+    bool setupAlpha;
 };
 
 #endif /* __NODE_HPP__ */

@@ -35,10 +35,9 @@ void GradientNode::onRender(RenderContext& ctx) {
         updateTexData();
     }
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 mvp = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
-    mvp = ctx.proj2dMat * mvp;
+    Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
 
-    mat->setUniformMat4("MVP", mvp);
+    mat->setUniformMat4("ModelMat", modelMat);
     mat->setTexture2D("tex", tex->texId);
     geom->draw();
 }

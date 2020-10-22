@@ -31,8 +31,8 @@ public:
     void ET_onUITick(float dt) override;
 
     // ETUIViewAppearAnimation
-    void ET_appear() override;
-    void ET_disappear() override;
+    void ET_appear(EntityId triggerId) override;
+    void ET_disappear(EntityId triggerId) override;
 
 private:
 
@@ -52,6 +52,7 @@ private:
     std::vector<UIViewAppearAnimationElement> elements;
     float animDuration;
     State state;
+    EntityId triggerEntId;
 };
 
 #endif /* __UI_VIEW_APPEAR_ANIMATION_HPP__ */

@@ -10,7 +10,8 @@ enum ETextureType {
 enum class PrimitiveGeometryType {
     Square = 0,
     Sqaure_Tex,
-    Text_Vert_Chunk
+    Text_Vert_Chunk,
+    Particles
 };
 
 #endif /* __RENDER_COMMON_HPP__ */

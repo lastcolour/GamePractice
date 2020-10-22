@@ -78,9 +78,9 @@ void UIViewTransitionManager::startNextTask() {
             }
         } else {
             if(task.isAppearing) {
-                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_appear);
+                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
             } else {
-                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_disappear);
+                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_disappear, getEntityId());
             }
             break;
         }

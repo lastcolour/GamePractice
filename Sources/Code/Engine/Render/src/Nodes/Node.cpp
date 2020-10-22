@@ -11,7 +11,8 @@ Node::Node() :
     alpha(1.f),
     drawPriority(0),
     blending(RenderBlendingType::NONE),
-    visible(false) {
+    visible(false),
+    setupAlpha(true) {
 }
 
 Node::~Node() {
@@ -56,6 +57,10 @@ void Node::setGeometry(PrimitiveGeometryType geomType) {
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomType);
 }
 
+void Node::setSetupAlpha(bool flag) {
+    setupAlpha = flag;
+}
+
 void Node::ET_setTransform(const Transform& newTm) {
     tm = newTm;
 }
@@ -98,7 +103,10 @@ void Node::render(RenderContext& ctx) {
     }
 
     mat->bind();
-    mat->setUniform1f("alpha", alpha);
+    mat->setUniformMat4("CameraMat", ctx.proj2dMat);
+    if(setupAlpha) {
+        mat->setUniform1f("alpha", alpha);
+    }
     onRender(ctx);
     mat->unbind();
 }

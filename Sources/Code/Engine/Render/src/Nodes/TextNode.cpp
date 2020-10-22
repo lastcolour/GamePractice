@@ -130,7 +130,6 @@ void TextNode::onRender(RenderContext& ctx) {
     }
 
     mat->setTexture2D("tex", font->getFontAtlas()->texId);
-    mat->setUniformMat4("MVP", ctx.proj2dMat);
     mat->setUniform4f("color", color);
 
     drawLines();

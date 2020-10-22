@@ -11,7 +11,7 @@
 
 namespace {
 
-const float MOVE_AWAY_GRID_LEN = 1.f;
+const float MOVE_AWAY_GRID_LEN = 7.f;
 const float TIME_OUT_SEC_DUR = 1000.f;
 
 bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {

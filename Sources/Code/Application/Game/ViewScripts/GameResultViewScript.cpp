@@ -59,14 +59,14 @@ void GameResultViewScript::ET_onGetFocus() {
     auto starsCount = covertToStarsCount(gameResult.objectiveCompleted);
     if(starsCount > 0) {
         ET_SendEvent(progressStars.fristId, &ETRenderNode::ET_show);
-        ET_SendEvent(progressStars.fristId, &ETUIViewAppearAnimation::ET_appear);
+        ET_SendEvent(progressStars.fristId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
     }
     if(starsCount > 1) {
         ET_SendEvent(progressStars.secondId, &ETRenderNode::ET_show);
-        ET_SendEvent(progressStars.secondId, &ETUIViewAppearAnimation::ET_appear);
+        ET_SendEvent(progressStars.secondId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
     }
     if(starsCount > 2) {
         ET_SendEvent(progressStars.thirdId, &ETRenderNode::ET_show);
-        ET_SendEvent(progressStars.thirdId, &ETUIViewAppearAnimation::ET_appear);
+        ET_SendEvent(progressStars.thirdId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
     }
 }

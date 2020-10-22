@@ -83,11 +83,12 @@ void UIViewAppearAnimation::ET_onUITick(float dt) {
             }
         }
         if(state == State::Appear) {
-            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onAppeared, getEntityId());
+            ET_SendEvent(triggerEntId, &ETUIViewAppearAnimationEvents::ET_onAppeared, getEntityId());
         } else {
             ET_SendEvent(getEntityId(), &ETUIElement::ET_hide);
-            ET_SendEvent(&ETUIViewAppearAnimationEvents::ET_onDisappeared, getEntityId());
+            ET_SendEvent(triggerEntId, &ETUIViewAppearAnimationEvents::ET_onDisappeared, getEntityId());
         }
+        triggerEntId = InvalidEntityId;
         ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
         ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
         ETNode<ETUITimerEvents>::disconnect();
@@ -114,7 +115,8 @@ void UIViewAppearAnimation::updateTransform(UIViewAppearAnimationElement& elem, 
     ET_SendEvent(elem.elemId, &ETEntity::ET_setTransform, resTm);
 }
 
-void UIViewAppearAnimation::ET_appear() {
+void UIViewAppearAnimation::ET_appear(EntityId triggerId) {
+    triggerEntId = triggerId;
     animDuration = 0.f;
     state = State::Appear;
     ETNode<ETUITimerEvents>::connect(getEntityId());
@@ -133,7 +135,8 @@ void UIViewAppearAnimation::ET_appear() {
     ETNode<ETUITimerEvents>::connect(getEntityId());
 }
 
-void UIViewAppearAnimation::ET_disappear() {
+void UIViewAppearAnimation::ET_disappear(EntityId triggerId) {
+    triggerEntId = triggerId;
     animDuration = 0.f;
     state = State::Disappear;
     ETNode<ETUITimerEvents>::connect(getEntityId());

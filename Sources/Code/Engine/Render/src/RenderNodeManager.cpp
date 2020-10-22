@@ -5,6 +5,7 @@
 #include "Nodes/SimpleNode.hpp"
 #include "Nodes/TextNode.hpp"
 #include "Nodes/GradientNode.hpp"
+#include "Nodes/ParticlesNode.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
@@ -46,6 +47,10 @@ EntityId RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) 
         }
         case RenderNodeType::Text: {
             node.reset(new TextNode());
+            break;
+        }
+        case RenderNodeType::ParticleEmmiter: {
+            node.reset(new ParticlesNode());
             break;
         }
         default: {

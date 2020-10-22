@@ -11,7 +11,8 @@ enum class RenderNodeType {
     Image,
     ColoredTexture,
     Gradient,
-    Text
+    Text,
+    ParticleEmmiter
 };
 
 struct RenderNodeCreateParams {

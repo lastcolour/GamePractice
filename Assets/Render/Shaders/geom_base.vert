@@ -2,10 +2,11 @@
 
 precision mediump float;
 
-uniform mat4 MVP;
+uniform mat4 CameraMat;
+uniform mat4 ModelMat;
 
 layout(location = 0) in vec3 vert;
 
 void main() {
-    gl_Position = MVP * vec4(vert, 1.f);
+    gl_Position = CameraMat * ModelMat * vec4(vert, 1.f);
 }
