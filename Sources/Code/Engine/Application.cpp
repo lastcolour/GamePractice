@@ -116,6 +116,11 @@ void Application::mainLoop() {
         renderUpdate->setTrackPerformance(true);
         renderUpdate->setType(RunTaskType::MainThreadOnly);
         renderUpdate->setFrequency(60);
+
+        auto particlesUpdate = runner.createTask("Particles", [](){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles);
+        });
+        particlesUpdate->addChild(renderUpdate);
     }
     runner.runUntil(4, [](){
         bool needRun = false;

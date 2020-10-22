@@ -84,6 +84,13 @@ std::unique_ptr<TasksRunner> EditorApp::buildTasksRunner() {
         uiUpdate->addChild(renderSync);
     }
     {
+        auto updateParticles = taskRunner->createTask("UpdateParticles", [](){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles);
+        });
+        updateParticles->setType(RunTaskType::MainThreadOnly);
+        updateParticles->setFrequency(60);
+    }
+    {
         auto soundUpdate = taskRunner->createTask("Sound", [](){
             ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
         });

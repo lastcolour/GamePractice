@@ -18,7 +18,7 @@ public:
     Node();
     virtual ~Node();
 
-    void initConnection(EntityId renderNodeId, const RenderNodeCreateParams& params);
+    void initConnections(EntityId renderNodeId, const RenderNodeCreateParams& params);
     void initRender();
     void setRenderGraph(RenderGraph* graph);
     void render(RenderContext& ctx);
@@ -40,7 +40,8 @@ public:
 
 protected:
 
-    virtual void onInit() = 0;
+    virtual void onInitConnections() {}
+    virtual void onInitRender() = 0;
     virtual void onRender(RenderContext& ctx) = 0;
     virtual bool isVisible() const;
 

@@ -161,8 +161,13 @@ bool Render::ET_isRenderThread() const {
     return renderThreadId == std::this_thread::get_id();
 }
 
+void Render::ET_updateParticles() {
+    ET_SendEvent(&ETParticleEmitterProxyNode::ET_update, 0.01f);
+}
+
 void Render::ET_syncWithGame() {
     ET_PollAllEvents<ETRenderNodeManager>();
     ET_PollAllEvents<ETRenderProxyNode>();
+    ET_PollAllEvents<ETParticleEmitterProxyNode>();
     ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncWithRender);
 }

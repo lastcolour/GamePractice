@@ -9,7 +9,7 @@ SimpleNode::SimpleNode() :
 SimpleNode::~SimpleNode() {
 }
 
-void SimpleNode::onInit() {
+void SimpleNode::onInitRender() {
     setGeometry(PrimitiveGeometryType::Square);
     setMaterial("geom_solid_color");
 }

@@ -41,6 +41,7 @@ public:
     // ETRenderUpdateTask
     void ET_updateRender() override;
     void ET_syncWithGame() override;
+    void ET_updateParticles() override;
 
     // ETRenderContextEvents
     void ET_onContextSuspended() override;

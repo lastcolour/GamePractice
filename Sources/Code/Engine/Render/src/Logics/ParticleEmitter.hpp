@@ -3,18 +3,7 @@
 
 #include "Logics/RenderNode.hpp"
 #include "Render/ETPatricle.hpp"
-
-class ReflectContext;
-
-enum class EmitterType {
-    Sphere = 0,
-    Cone,
-    Box
-};
-
-struct Particle {
-
-};
+#include "Particles/ParticlesEmitterConfig.hpp"
 
 class ParticleEmitter : RenderNode,
     public ETNode<ETParticleEmitter> {
@@ -35,13 +24,10 @@ public:
 
 private:
 
-    EmitterType emitterType;
-    float duration;
-    float particleEmissionRate;
-    float particleLifetime;
-    float particleLifeTimeVar;
-    float particleSpeed;
-    float particleSpeedVar;
+    ParticleEmitterEmissionConfig emissionConfig;
+    ParticleEmitterMovementConfig movementConfig;
+    ParticleEmitterColorConfig colorConfig;
+    ParticleEmitterRenderConfig renderConfig;
 };
 
 #endif /* __PARTICLE_EMITTER_HPP__ */

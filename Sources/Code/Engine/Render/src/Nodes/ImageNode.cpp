@@ -17,7 +17,7 @@ void ImageNode::ET_setImage(const std::string& newImage) {
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
 }
 
-void ImageNode::onInit() {
+void ImageNode::onInitRender() {
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     setMaterial("simple_image");

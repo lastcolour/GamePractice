@@ -11,7 +11,7 @@ ColoredTextureNode::ColoredTextureNode() :
 ColoredTextureNode::~ColoredTextureNode() {
 }
 
-void ColoredTextureNode::onInit() {
+void ColoredTextureNode::onInitRender() {
     setMaterial("tex_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);

@@ -3,37 +3,33 @@
 
 #include "Nodes/Node.hpp"
 #include "RenderTexture.hpp"
+#include "Particles/ParticleUpdate.hpp"
 
-struct Particle {
-    float lifetime;
-    Vec3 velocity;
-    Vec3 acceleration;
-    Transform tm;
-};
-
-struct InstaceData {
-    ColorF color;
-    Math::Matrix4 mat;
-};
-
-class ParticlesNode : public Node {
+class ParticlesNode : public Node,
+    public ETNode<ETParticleEmitterProxyNode> {
 public:
 
     ParticlesNode();
     virtual ~ParticlesNode();
 
-    void update(float dt);
+    void ET_update(float dt) override;
+    void ET_setConfig(const ParticleEmitterEmissionConfig& emissionConf,
+        const ParticleEmitterMovementConfig& movementConf,
+        const ParticleEmitterColorConfig& colorConf,
+        const ParticleEmitterRenderConfig& renderConf) override;
 
 protected:
 
-    void onInit() override;
+    void onInitConnections() override;
+    void onInitRender() override;
     void onRender(RenderContext& ctx) override;
+    bool isVisible() const override;
 
 private:
 
     std::shared_ptr<RenderTexture> tex;
-    std::vector<Particle> particles;
-    std::vector<InstaceData> instacesData;
+    ParticleEmitterRenderConfig renderConfig;
+    EmitterState state;
 };
 
 #endif /* __PARTICLES_NODE_HPP__ */

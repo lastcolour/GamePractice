@@ -58,7 +58,7 @@ EntityId RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) 
             return InvalidEntityId;
         }
     }
-    node->initConnection(nodeId, params);
+    node->initConnections(nodeId, params);
     ET_QueueEvent(&ETRenderNodeManager::ET_initRenderNode, node.release());
     return nodeId;
 }

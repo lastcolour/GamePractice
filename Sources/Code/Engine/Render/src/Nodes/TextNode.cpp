@@ -15,7 +15,7 @@ TextNode::TextNode() :
 TextNode::~TextNode() {
 }
 
-void TextNode::onInit() {
+void TextNode::onInitRender() {
     setGeometry(PrimitiveGeometryType::Text_Vert_Chunk);
     setMaterial("text_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);

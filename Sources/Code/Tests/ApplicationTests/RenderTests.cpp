@@ -198,7 +198,8 @@ TEST_F(RenderTests, CheckRenderSquare) {
 
     material->bind();
     material->setUniform1f("alpha", 1.f);
-    material->setUniformMat4("MVP", Mat4(1.f));
+    material->setUniformMat4("CameraMat", Mat4(1.f));
+    material->setUniformMat4("ModelMat", Mat4(1.f));
     material->setUniform4f("color", DRAW_COLOR);
     geom->draw();
     material->unbind();
@@ -246,7 +247,8 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     textureFramebuffer->bind();
     material->bind();
     material->setUniform1f("alpha", 1.f);
-    material->setUniformMat4("MVP", tm);
+    material->setUniformMat4("CameraMat", Mat4(1.f));
+    material->setUniformMat4("ModelMat", tm);
     material->setUniform4f("color", DRAW_COLOR);
     geom->draw();
     material->unbind();

@@ -18,16 +18,17 @@ Node::Node() :
 Node::~Node() {
 }
 
-void Node::initConnection(EntityId renderNodeId, const RenderNodeCreateParams& params) {
+void Node::initConnections(EntityId renderNodeId, const RenderNodeCreateParams& params) {
     nodeId = renderNodeId;
     alpha = params.alpha;
     drawPriority = params.drawPriority;
     tm = params.tm;
     ETNode<ETRenderProxyNode>::connect(nodeId);
+    onInitConnections();
 }
 
 void Node::initRender() {
-    onInit();
+    onInitRender();
 }
 
 void Node::ET_setAlpha(float newAlpha) {

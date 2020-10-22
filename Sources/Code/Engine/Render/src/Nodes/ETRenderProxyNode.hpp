@@ -6,6 +6,11 @@
 
 #include <string>
 
+class ParticleEmitterEmissionConfig;
+class ParticleEmitterMovementConfig;
+class ParticleEmitterColorConfig;
+class ParticleEmitterRenderConfig;
+
 struct ETRenderProxyNode {
     virtual ~ETRenderProxyNode() = default;
     virtual void ET_setAlpha(float newAlpha) = 0;
@@ -24,6 +29,15 @@ struct ETRenderProxyNode {
 struct ETRenderProxyNodeEvents {
     virtual ~ETRenderProxyNodeEvents() = default;
     virtual void ET_syncWithRender() = 0;
+};
+
+struct ETParticleEmitterProxyNode {
+    virtual ~ETParticleEmitterProxyNode() = default;
+    virtual void ET_update(float dt) = 0;
+    virtual void ET_setConfig(const ParticleEmitterEmissionConfig& emissionConf,
+        const ParticleEmitterMovementConfig& movementConf,
+        const ParticleEmitterColorConfig& colorConf,
+        const ParticleEmitterRenderConfig& renderConf) = 0;
 };
 
 #endif /* __ET_RENDER_PROXY_NODE_HPP__ */

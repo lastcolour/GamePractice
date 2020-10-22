@@ -20,7 +20,7 @@ public:
 
 protected:
 
-    void onInit() override;
+    void onInitRender() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
 
