@@ -1,7 +1,7 @@
 {
     "Project":"Build Android",
     "InputVariables":{
-        "buildType":"Debug"
+        "buildType":"RelWithDebInfo"
     },
     "Steps":[
         {
@@ -63,7 +63,7 @@
                 "platform":"Linux",
                 "name":"Game01",
                 "from":"${androidOutDir}/arm64-v8a/Game/${buildType}",
-                "to":"${androidOutDir}/jniLibs/${buildType}/arm64-v8a",
+                "to":"${androidOutDir}/_jniLibs/${buildType}/arm64-v8a",
                 "force":true
             }
         },
@@ -76,7 +76,7 @@
                 "platform":"Linux",
                 "name":"Game01",
                 "from":"${androidOutDir}/x86/Game/${buildType}",
-                "to":"${androidOutDir}/jniLibs/${buildType}/x86",
+                "to":"${androidOutDir}/_jniLibs/${buildType}/x86",
                 "force":true
             }
         },
@@ -89,7 +89,7 @@
                 "platform":"Linux",
                 "name":"Game01",
                 "from":"${androidOutDir}/armeabi-v7a/Game/${buildType}",
-                "to":"${androidOutDir}/jniLibs/${buildType}/armeabi-v7a",
+                "to":"${androidOutDir}/_jniLibs/${buildType}/armeabi-v7a",
                 "force":true
             }
         }

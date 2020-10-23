@@ -128,6 +128,7 @@ void Render::ET_onSurfaceCreated() {
     canOffscrenRender = true;
     canScreenRender = false;
     ET_SendEventReturn(canScreenRender, &ETSurface::ET_isVisible);
+    ET_SendEvent(&ETDebugRender::ET_init);
 }
 
 void Render::ET_onSurfaceHidden() {

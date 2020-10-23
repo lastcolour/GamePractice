@@ -4,7 +4,7 @@ import platform
 
 class AppConfig:
     def __init__(self):
-        self._buildType = "Debug"
+        self._buildType = "RelWithDebInfo"
         self._platform = platform.system()
         self._projectRootPath = self._getProjectRootPath()
         self._assetsRootPath = "{0}/{1}".format(self._projectRootPath, "Assets")

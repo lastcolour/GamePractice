@@ -5,6 +5,8 @@
 #include "Logics/UIBox.hpp"
 #include "Game/ETGameElem.hpp"
 
+#include <algorithm>
+
 namespace {
 
 const char* TEST_CELL_OBJECT = "Game/Cell.json";

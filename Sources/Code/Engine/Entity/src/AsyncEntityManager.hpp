@@ -8,6 +8,7 @@
 
 #include <mutex>
 #include <vector>
+#include <thread>
 
 class AsyncEntityManager : public SystemLogic,
     public ETNode<ETEntitiesUpdateTask>,

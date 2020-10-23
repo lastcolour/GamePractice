@@ -46,11 +46,11 @@ android {
         def BuildRootDir = "$ProjectRootDir/_build/Android/_jniLibs"
 
         assert file("$ProjectRootDir/Assets").exists()
-        assert file("$BuildRootDir/Debug").exists()
+        assert file("$BuildRootDir/RelWithDebInfo").exists()
 
         main {
             assets.srcDirs = ["$ProjectRootDir/Assets"]
-            jniLibs.srcDirs = ["$BuildRootDir/Debug"]
+            jniLibs.srcDirs = ["$BuildRootDir/RelWithDebInfo"]
             jni.srcDirs = []
         }
     }

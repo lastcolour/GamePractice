@@ -3,11 +3,11 @@
 #include "Platform/OpenGL.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/Matrix.hpp"
+#include "Logics/RenderAuxFunctions.hpp"
 
 namespace {
 
 const int TEXT_CHUNK_VERTEX_COUNT = 6 * 32;
-const int MAX_PARTICLES_COUNT = 256;
 
 } // namespace
 
@@ -200,7 +200,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
     {
         glGenBuffers(1, &extraVboId);
         glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
-        glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES_COUNT * 5 * sizeof(Vec4), nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, Render::MaxParticlessPerDraw * 5 * sizeof(Vec4), nullptr, GL_STATIC_DRAW);
 
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 5 * sizeof(Vec4), reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(2);
