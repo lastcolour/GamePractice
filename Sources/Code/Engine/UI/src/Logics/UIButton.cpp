@@ -116,7 +116,8 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
         LogDebug("[UIButton::canContinueEvent] Cursor moved-away");
         return false;
     }
-    if(!UI::IsInsideBox(pt, ET_getHitBox())) {
+    auto hitBox = ET_getHitBox();
+    if(!hitBox.isInside(pt)) {
         LogDebug("[UIButton::canContinueEvent] Cursor moved out of the hit box");
         return false;
     }

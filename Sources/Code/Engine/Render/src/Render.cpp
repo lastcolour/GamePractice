@@ -39,8 +39,6 @@ bool Render::init() {
         }
     }
 
-    renderThreadId = std::this_thread::get_id();
-
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
     ETNode<ETRenderUpdateTask>::connect(getEntityId());
@@ -155,10 +153,6 @@ void Render::ET_onContextSuspended() {
 
 void Render::ET_onContextRestored() {
     hasContext = true;
-}
-
-bool Render::ET_isRenderThread() const {
-    return renderThreadId == std::this_thread::get_id();
 }
 
 void Render::ET_updateParticles() {

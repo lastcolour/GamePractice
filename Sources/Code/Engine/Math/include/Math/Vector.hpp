@@ -3,7 +3,6 @@
 
 #include "Math/Primitivies.hpp"
 
-#include <type_traits>
 #include <cmath>
 
 namespace Math {
@@ -25,6 +24,7 @@ public:
     ~Vector2() = default;
 
     T& operator[](int i) { return (&x)[i]; }
+
     T operator[](int i) const { return (&x)[i]; }
 
     Vector2& operator-=(const Vector2& v) {
@@ -45,16 +45,47 @@ public:
         return *this;
     }
 
+    Vector2& operator/=(const T a) {
+        x /= a;
+        y /= a;
+        return *this;
+    }
+
     Vector2 operator-() {
         return Vector2(-x, -y);
     }
 
     const T* getPtr() const { return &x; }
+
     T getLenghtSq() const { return x * x + y * y; }
-    T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
+
+    T getLenght() const { return static_cast<T>(static_cast<float>(sqrt(getLenghtSq()))); }
+
     Vector2<T> getNormilized() const {
         const auto len = getLenght();
         return Vector2<T>(x / len, y / len);
+    }
+
+    void normalize() {
+        *this = getNormilized();
+    }
+
+    void scale(const Vector2& v) {
+        x *= v.x;
+        y *= v.y;
+    }
+
+    void scale(float sX, float sY) {
+        x = static_cast<T>(x * sX);
+        y = static_cast<T>(y * sY);
+    }
+
+    Vector2 getScaled(const Vector2& v) const {
+        return Vector2(x * v.x, y * v.y);
+    }
+
+    Vector2 getScaled(float sX, float sY) const {
+        return Vector2(static_cast<T>(x * sX), static_cast<T>(y * sY));
     }
 
 public:
@@ -83,6 +114,7 @@ public:
     ~Vector3() = default;
 
     T& operator[](int i) { return (&x)[i]; }
+
     T operator[](int i) const { return (&x)[i]; }
 
     Vector3& operator-=(const Vector3& v) {
@@ -106,16 +138,61 @@ public:
         return *this;
     }
 
+    Vector3& operator/=(const T a) {
+        x /= a;
+        y /= a;
+        z /= a;
+        return *this;
+    }
+
     Vector3 operator-() {
         return Vector3(-x, -y, -z);
     }
 
     const T* getPtr() const { return &x; }
+
     T getLenghtSq() const { return x * x + y * y + z * z; }
-    T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
+
+    T getLenght() const { return static_cast<T>(static_cast<float>(sqrt(getLenghtSq()))); }
+
     Vector3<T> getNormilized() const {
         const auto len = getLenght();
         return Vector3<T>(x / len, y / len, z / len);
+    }
+
+    void normalize() {
+        *this = getNormilized();
+    }
+
+    void scale(const Vector3& v) {
+        x *= v.x;
+        y *= v.y;
+        z *= v.z;
+    }
+
+    void scale(float sX, float sY, float sZ) {
+        x = static_cast<T>(x * sX);
+        y = static_cast<T>(y * sY);
+        z = static_cast<T>(z * sZ);
+    }
+
+    Vector3 getScaled(const Vector3& v) const {
+        return Vector3(x * v.x, y * v.y, z * v.z);
+    }
+
+    Vector3 getScaled(float sX, float sY, float sZ) const {
+        return Vector3(static_cast<T>(x * sX), static_cast<T>(y * sY), static_cast<T>(z * sZ));
+    }
+
+    float dot(const Vector3& v) const {
+        return x * v.x + y * v.y + z * v.z;
+    }
+
+    Vector3 cross(const Vector3& v) const {
+        return Vector3(
+            y * v.z - v.y * z,
+            z * v.x - v.z * x,
+            x * v.y - v.x * y);
     }
 
 public:
@@ -146,6 +223,7 @@ public:
     ~Vector4() = default;
 
     T& operator[](int i) { return (&x)[i]; }
+
     T operator[](int i) const { return (&x)[i]; }
 
     Vector4& operator-=(const Vector4& v) {
@@ -172,16 +250,54 @@ public:
         return *this;
     }
 
+    Vector4& operator/=(const T a) {
+        x /= a;
+        y /= a;
+        z /= a;
+        w /= a;
+        return *this;
+    }
+
     Vector4 operator-() {
         return Vector4(-x, -y, -z, -w);
     }
 
     const T* getPtr() const { return &x; }
+
     T getLenghtSq() const { return x * x + y * y + z * z + w * w; }
-    T getLenght() const { return static_cast<T>(static_cast<double>(sqrt(getLenghtSq()))); }
+
+    T getLenght() const { return static_cast<T>(static_cast<float>(sqrt(getLenghtSq()))); }
+
     Vector4<T> getNormilized() const {
         const auto len = getLenght();
         return Vector4(x / len, y / len, z / len, w / len);
+    }
+
+    void normalize() {
+        *this = getNormilized();
+    }
+
+    void scale(const Vector4& v) {
+        x *= v.x;
+        y *= v.y;
+        z *= v.z;
+        w *= v.w;
+    }
+
+    void scale(float sX, float sY, float sZ, float sW) {
+        x = static_cast<T>(x * sX);
+        y = static_cast<T>(y * sY);
+        z = static_cast<T>(z * sZ);
+        w = static_cast<T>(w * sW);
+    }
+
+    Vector4 getScaled(const Vector4& v) const {
+        return Vector4(x * v.x, y * v.y, z * v.z, w * v.w);
+    }
+
+    Vector4 getScaled(float sX, float sY, float sZ, float sW) const {
+        return Vector4(static_cast<T>(x * sX), static_cast<T>(y * sY),
+            static_cast<T>(z * sZ), static_cast<T>(w * sW));
     }
 
 public:

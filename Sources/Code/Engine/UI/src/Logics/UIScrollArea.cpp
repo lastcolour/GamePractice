@@ -221,7 +221,7 @@ void UIScrollArea::onRelease(const Vec2i& pt) {
 
 bool UIScrollArea::onMove(const Vec2i& pt) {
     auto box = ET_getHitBox();
-    if(!UI::IsInsideBox(pt, box)) {
+    if(!box.isInside(pt)) {
         auto clampPt = clampToEdges(box, pt);
         onRelease(clampPt);
         return false;

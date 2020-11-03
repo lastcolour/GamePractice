@@ -24,12 +24,18 @@ public:
         return *this;
     }
 
+    bool isInside(const T& pos) const {
+        return pos >= bot && pos <= top;
+    }
+
     T getSize() const {
         return top - bot;
     }
+
     T getCenter() const {
         return (top + bot) / static_cast<T>(2);
     }
+
     void setCenter(const T& pt) {
         T shift = pt - getCenter();
         bot = bot + shift;

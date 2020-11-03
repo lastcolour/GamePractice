@@ -7,6 +7,16 @@
 #include <algorithm>
 #include <cassert>
 
+namespace {
+
+bool isHoverHitBox(const Vec2i& pt, EntityId entId) {
+    AABB2Di elemBox(0);
+    ET_SendEventReturn(elemBox, entId, &ETUIInteractionBox::ET_getHitBox);
+    return elemBox.isInside(pt);
+}
+
+} // namespace
+
 UISurfaceEventHandler::UISurfaceEventHandler() {
 }
 
@@ -25,17 +35,11 @@ void UISurfaceEventHandler::deinit() {
     ETNode<ETSurfaceEvents>::disconnect();
 }
 
-bool UISurfaceEventHandler::isHover(const Vec2i& pt, EntityId entId) const {
-    AABB2Di elemBox(0);
-    ET_SendEventReturn(elemBox, entId, &ETUIInteractionBox::ET_getHitBox);
-    return UI::IsInsideBox(pt, elemBox);
-}
-
 std::vector<EntityId> UISurfaceEventHandler::getHoveredEntities(const Vec2i& pt) const {
     std::vector<EntityId> res;
     auto interactiveElems = ET_GetAll<ETUIInteractionBox>();
     for(auto elemId : interactiveElems) {
-        if(isHover(pt, elemId)) {
+        if(isHoverHitBox(pt, elemId)) {
             res.push_back(elemId);
         }
     }

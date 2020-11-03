@@ -9,8 +9,6 @@
 #include "RenderGraph/RenderGraph.hpp"
 #include "Debug/FrameStatsTracker.hpp"
 
-#include <thread>
-
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
     public ETNode<ETRender>,
@@ -27,7 +25,6 @@ public:
 
     // ETRender
     void ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) override;
-    bool ET_isRenderThread() const override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;
@@ -55,7 +52,6 @@ private:
 
 private:
 
-    std::thread::id renderThreadId;
     FrameStatsTracker tracker;
     bool hasContext;
     bool canOffscrenRender;

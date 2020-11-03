@@ -11,7 +11,6 @@ enum class DrawContentFilter {
 struct ETRender {
     virtual ~ETRender() = default;
     virtual void ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) = 0;
-    virtual bool ET_isRenderThread() const = 0;
 };
 
 struct ETRenderContextEvents {

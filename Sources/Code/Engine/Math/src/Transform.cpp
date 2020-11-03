@@ -14,7 +14,7 @@ void Transform::Reflect(ReflectContext& ctx) {
 Transform::Transform() :
     pt(0.f),
     scale(1.f),
-    quat() {
+    quat(Quaternion::Indentity()) {
 }
 
 Transform::Transform(const Transform& tm) :

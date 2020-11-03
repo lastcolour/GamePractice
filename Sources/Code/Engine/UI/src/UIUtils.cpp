@@ -75,10 +75,6 @@ const char* GetViewTypeName(UIViewType viewType) {
     return viewTypeStr;
 }
 
-bool IsInsideBox(const Vec2i& pt, const AABB2Di& box) {
-    return pt >= box.bot && pt <= box.top;
-}
-
 Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, AABB2Di& box) {
     Vec2i center(0);
     switch(xAlign) {

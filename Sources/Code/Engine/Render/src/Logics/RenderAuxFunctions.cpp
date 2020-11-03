@@ -24,17 +24,4 @@ Vec2 CalcGeomScaleForSize(const Vec2i& size, const RenderGeometry& geom) {
     return scale;
 }
 
-Vec2i CaclScaledGeomSize(const Vec2& scale, const RenderGeometry& geom) {
-    const auto& aabbSize = geom.aabb.getSize();
-    Vec2i size = Vec2i(static_cast<int>(aabbSize.x * scale.x),
-        static_cast<int>(aabbSize.y * scale.y));
-    return size;
-}
-
-bool IsRenderThread() {
-    bool res = false;
-    ET_SendEventReturn(res, &ETRender::ET_isRenderThread);
-    return res;
-}
-
 } // namespace Render

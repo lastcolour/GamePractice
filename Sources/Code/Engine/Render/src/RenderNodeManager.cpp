@@ -70,7 +70,6 @@ void RenderNodeManager::ET_initRenderNode(Node* node) {
 }
 
 void RenderNodeManager::ET_removeNode(EntityId nodeId) {
-    assert(Render::IsRenderThread() && "Can't remove node from non-render thread");
     auto it = nodes.find(nodeId);
     if(it == nodes.end()) {
         return;

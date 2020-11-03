@@ -42,7 +42,6 @@ private:
     void onMove(const Vec2i& pt);
     void onRelease(const Vec2i& pt);
 
-    bool isHover(const Vec2i& pt, EntityId entId) const;
     std::vector<EntityId> getHoveredEntities(const Vec2i& pt) const;
 
 private:

@@ -16,10 +16,6 @@ Mat4 CalcModelMat(const Transform& tm, const Vec3& scale, const RenderGeometry& 
 
 Vec2 CalcGeomScaleForSize(const Vec2i& size, const RenderGeometry& geom);
 
-Vec2i CaclScaledGeomSize(const Vec2& scale, const RenderGeometry& geom);
-
-bool IsRenderThread();
-
 } // namespace Render
 
 #endif /* __RENDER_AUX_FUNCTIONS_HPP__ */
