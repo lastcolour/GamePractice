@@ -1,11 +1,11 @@
 {
     "Project":"Build Game",
     "InputVariables":{
-        "buildType":"Debug",
+        "buildType":"RelWithDebInfo",
         "platform":"${currentPlatform}",
-        "skipLibsBuild":"True",
+        "skipLibsBuild":"False",
         "skipGameTests":"False",
-        "skipEditorTests":"True"
+        "skipEditorTests":"False"
     },
     "Steps":[
         {

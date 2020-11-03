@@ -36,6 +36,7 @@ public:
 
 private:
 
+    void updateRunFlag(int threadId);
     void initJobs();
     void initJobTrees();
     ThreadJob* getNextJob(const TimePoint& currTime, int threadId);

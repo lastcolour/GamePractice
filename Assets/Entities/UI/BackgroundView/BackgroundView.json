@@ -24,7 +24,62 @@
       "internal": true,
       "data": {
         "children": [],
-        "logics": []
+        "logics": [
+          {
+            "type": "ParticleEmitter",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 1,
+              "emission": {
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 350.0,
+                  "y": 0.0
+                },
+                "duration": -1.0,
+                "emissionRate": 100.0,
+                "lifetime": 1.0,
+                "startDelay": 0.0,
+                "autoStart": true,
+                "loop": true
+              },
+              "movement": {
+                "startScale": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 0.5,
+                  "y": 0.5
+                },
+                "startSpeed": 300.0,
+                "endSpeed": 10.0,
+                "startRotation": 0.0,
+                "startRotationSpeed": 30.0,
+                "endRotationSpeed": 0.0
+              },
+              "color": {
+                "startCol": {
+                  "r": 83,
+                  "g": 255,
+                  "b": 244,
+                  "a": 255
+                },
+                "endCol": {
+                  "r": 171,
+                  "g": 237,
+                  "b": 255,
+                  "a": 255
+                }
+              },
+              "render": {
+                "texture": "Images/block.png"
+              }
+            }
+          }
+        ]
       }
     }
   ],
@@ -68,8 +123,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 528,
-          "y": 938
+          "x": 522,
+          "y": 928
         },
         "startColor": {
           "r": 51,
@@ -84,60 +139,6 @@
           "a": 255
         },
         "isVertical": true
-      }
-    },
-    {
-      "type": "ParticleEmitter",
-      "id": 4,
-      "data": {
-        "isVisible": true,
-        "alpha": 1.0,
-        "drawPriority": 0,
-        "emission": {
-          "emitterType": "Sphere",
-          "emitterVal": {
-            "x": 350.0,
-            "y": 0.0
-          },
-          "duration": 10.0,
-          "emissionRate": 100.0,
-          "lifetime": 1.0,
-          "startDelay": 0.0,
-          "autoStart": true,
-          "loop": true
-        },
-        "movement": {
-          "startScale": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612
-          },
-          "endScale": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "startSpeed": 10.0,
-          "endSpeed": 10.0,
-          "startRotation": 0.0,
-          "startRotationSpeed": 30.0,
-          "endRotationSpeed": 0.0
-        },
-        "color": {
-          "startCol": {
-            "r": 83,
-            "g": 255,
-            "b": 244,
-            "a": 255
-          },
-          "endCol": {
-            "r": 26,
-            "g": 164,
-            "b": 255,
-            "a": 255
-          }
-        },
-        "render": {
-          "texture": "Images/block.png"
-        }
       }
     }
   ]

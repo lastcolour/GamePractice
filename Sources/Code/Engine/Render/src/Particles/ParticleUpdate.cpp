@@ -125,6 +125,8 @@ void EmitterState::emitNew(const Transform& tm, float dt) {
         instaceData.emplace_back();
     }
 
+    emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
+
     for(int i = activeCount, sz = activeCount + emitCount; i < sz; ++i) {
         auto& p = particles[i];
         spawnNewParticle(tm, p);
@@ -179,6 +181,9 @@ void EmitterState::updateState(float dt) {
             break;
         }
         case EmitterLifeType::Alive: {
+            if(emissionConfig.duration < 0.f) {
+                break;
+            }
             duration += dt;
             if(duration > emissionConfig.duration) {
                 duration = 0.f;

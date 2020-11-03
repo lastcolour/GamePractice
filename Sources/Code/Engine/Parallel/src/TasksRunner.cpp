@@ -167,32 +167,36 @@ bool TasksRunner::canRun() const {
     return !predicateFailed.load();
 }
 
+void TasksRunner::updateRunFlag(int threadId) {
+    if(threadId != 0) {
+        return;
+    }
+    auto res = predFunc();
+    predicateFailed.store(!res);
+}
+
 ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
-    if(threadId == 0) {
-        auto res = predFunc();
-        predicateFailed.store(!res);
-        if(!res) {
-            return nullptr;
-        }
-    } else if(predicateFailed.load()) {
+    updateRunFlag(threadId);
+    if(predicateFailed.load()) {
         return nullptr;
     }
 
     ThreadJob* nextJob = nullptr;
     {
-        std::unique_lock<std::mutex> ulock(mutex);
         if(prevJob) {
+            std::unique_lock<std::mutex> ulock(mutex);
             prevJob->scheduleNextJobs(pendingJobs);
         }
         while(!predicateFailed.load()) {
             auto currTime = TimePoint::GetNowTime();
-            nextJob = getNextJob(currTime, threadId);
+            {
+                std::unique_lock<std::mutex> ulock(mutex);
+                nextJob = getNextJob(currTime, threadId);
+            }
             if(nextJob) {
                 break;
             }
-            ulock.unlock();
-            std::this_thread::yield();
-            ulock.lock();
+            updateRunFlag(threadId);
         }
     }
     return nextJob;

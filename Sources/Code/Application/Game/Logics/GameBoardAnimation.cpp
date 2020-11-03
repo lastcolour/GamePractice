@@ -2,6 +2,8 @@
 #include "Entity/ETEntity.hpp"
 #include "Reflect/ReflectContext.hpp"
 
+#include <algorithm>
+
 void GameBoardAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardAnimation>("GameBoardAnimation")) {
         classInfo->addField("minScale", &GameBoardAnimation::minScale);

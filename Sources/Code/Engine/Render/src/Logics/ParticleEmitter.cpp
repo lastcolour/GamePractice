@@ -28,10 +28,6 @@ bool ParticleEmitter::init() {
         LogWarning("[ParticlesNode::ET_setConfig] Particle lifetime is negative or zero");
         emissionConfig.lifetime = 0.01f;
     }
-    if(emissionConfig.duration <= 0.f) {
-        LogWarning("[ParticlesNode::ET_setConfig] Emitter duration is negative or zero");
-        emissionConfig.duration = 0.01f;
-    }
     if(emissionConfig.emissionRate <= 0.f) {
         LogWarning("[ParticlesNode::ET_setConfig] Emitter emission rate is negative or zero");
         emissionConfig.emissionRate = 1.f;

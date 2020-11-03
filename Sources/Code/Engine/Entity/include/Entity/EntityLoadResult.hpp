@@ -3,6 +3,8 @@
 
 #include "Entity/ETEntityManger.hpp"
 
+#include <vector>
+
 class EntityLoadResult {
 public:
 

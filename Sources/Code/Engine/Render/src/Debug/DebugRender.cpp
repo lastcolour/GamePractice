@@ -28,16 +28,17 @@ DebugRender::~DebugRender() {
 }
 
 bool DebugRender::init() {
+    ETNode<ETDebugRender>::connect(getEntityId());
+    return true;
+}
 
+void DebugRender::ET_init() {
     simpleNode.initRender();
     simpleNode.ET_setVisible(true);
 
     textNode.initRender();
     textNode.ET_setVisible(true);
     textNode.setAlignAtCenter(false);
-
-    ETNode<ETDebugRender>::connect(getEntityId());
-    return true;
 }
 
 void DebugRender::deinit() {
