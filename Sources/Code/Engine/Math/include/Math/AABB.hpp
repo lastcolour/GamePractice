@@ -65,8 +65,8 @@ bool operator!=(const AABB<T>& first, const AABB<T>& second) {
 
 } // namespace Math
 
-typedef Math::AABB<Vec2> AABB2D;
-typedef Math::AABB<Vec2i> AABB2Di;
-typedef Math::AABB<Vec3> AABB;
+using AABB2D = Math::AABB<Vec2>;
+using AABB2Di = Math::AABB<Vec2i>;
+using AABB = Math::AABB<Vec3>;
 
 #endif /* __AABB_HPP__ */

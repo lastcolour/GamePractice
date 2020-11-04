@@ -2,6 +2,59 @@
 
 namespace Math {
 
+Matrix2::Matrix2() {
+}
+
+Matrix2::Matrix2(float val) {
+    data[0] = Vec2(val, 0.f);
+    data[1] = Vec2(0.f, val);
+}
+
+Matrix2::Matrix2(const Vec2& col0, const Vec2& col1) {
+    data[0] = col0;
+    data[1] = col1;
+}
+
+Matrix2::Matrix2(const Matrix2& mat) {
+    data[0] = mat.data[0];
+    data[1] = mat.data[1];
+}
+
+Matrix2& Matrix2::operator=(const Matrix2& mat) {
+    data[0] = mat.data[0];
+    data[1] = mat.data[1];
+    return *this;
+}
+
+Matrix2& Matrix2::operator*=(const Matrix2& mat) {
+    *this = *this * mat;
+    return *this;
+}
+
+Matrix2& Matrix2::operator+=(const Matrix2& mat) {
+    data[0] += mat.data[0];
+    data[1] += mat.data[1];
+    return *this;
+}
+
+Matrix2& Matrix2::operator-=(const Matrix2& mat) {
+    data[0] -= mat.data[0];
+    data[1] -= mat.data[1];
+    return *this;
+}
+
+Vec2& Matrix2::operator[](int i) {
+    return data[i];
+}
+
+const Vec2& Matrix2::operator[](int i) const {
+    return data[i];
+}
+
+const float* Matrix2::getPtr() const {
+    return data[0].getPtr();
+}
+
 Matrix3x2::Matrix3x2() {
 }
 
@@ -258,6 +311,13 @@ Matrix4x3 Matrix4::toMat4x3() const {
         Vec3(data[3].x, data[3].y, data[3].z));
 }
 
+Vec2 operator*(const Matrix2& m, const Vec2& v) {
+    return Vec2(
+        m[0][0] * v[0] + m[1][0] * v[1],
+        m[0][1] * v[0] + m[1][1] * v[1]
+    );
+}
+
 Vec3 operator*(const Matrix3& m, const Vec3& v) {
     return Vec3(
         m[0][0] * v[0] + m[1][0] * v[1] + m[2][0] * v[2],
@@ -273,6 +333,19 @@ Vec4 operator*(const Matrix4& m, const Vec4& v) {
         m[0][2] * v[0] + m[1][2] * v[1] + m[2][2] * v[2] + m[3][2] * v[3],
         m[0][3] * v[0] + m[1][3] * v[1] + m[2][3] * v[2] + m[3][3] * v[3]
     );
+}
+
+Matrix2 operator*(const Matrix2& m1, const Matrix2& m2) {
+    const auto& ca0 = m1[0];
+    const auto& ca1 = m1[1];
+
+    const auto& cb0 = m2[0];
+    const auto& cb1 = m2[1];
+
+    const auto c0 = ca0 * cb0[0] + ca1 * cb0[1];
+    const auto c1 = ca0 * cb1[0] + ca1 * cb1[1];
+
+    return Matrix2(c0, c1);
 }
 
 Matrix3 operator*(const Matrix3& m1, const Matrix3& m2) {
@@ -310,6 +383,13 @@ Matrix4 operator*(const Matrix4& m1, const Matrix4& m2) {
     return Matrix4(c0, c1, c2, c3);
 }
 
+Matrix2 operator+(const Matrix2& m1, const Matrix2& m2) {
+    return Matrix2(
+        m1[0] + m2[0],
+        m1[1] + m2[1]
+    );
+}
+
 Matrix3x2 operator+(const Matrix3x2& m1, const Matrix3x2& m2) {
     return Matrix3x2(
         m1[0] + m2[0],
@@ -341,6 +421,13 @@ Matrix4 operator+(const Matrix4& m1, const Matrix4& m2) {
         m1[1] + m2[1],
         m1[2] + m2[2],
         m1[3] + m2[3]
+    );
+}
+
+Matrix2 operator-(const Matrix2& m1, const Matrix2& m2) {
+    return Matrix2(
+        m1[0] - m2[0],
+        m1[1] - m2[1]
     );
 }
 

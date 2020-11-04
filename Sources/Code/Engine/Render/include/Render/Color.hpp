@@ -96,7 +96,7 @@ namespace Color {
 
 } // namespace Color
 
-typedef Color::Color_RGBA_Float ColorF;
-typedef Color::Color_RGBA_Byte ColorB;
+using ColorF = Color::Color_RGBA_Float;
+using ColorB = Color::Color_RGBA_Byte;
 
 #endif /* __COLOR_HPP__ */

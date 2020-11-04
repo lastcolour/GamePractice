@@ -30,6 +30,6 @@ public:
 
 } // namespace Math
 
-typedef Math::Transform Transform;
+using Transform = Math::Transform;
 
 #endif /* __TRANSFORM_HPP__ */

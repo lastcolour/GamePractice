@@ -13,11 +13,11 @@ bool IsEqual<float>(float a, float b) {
     return fabs(a - b) <= 0.0001f;
 }
 
-float Deg2rad(float degrees) {
+float Deg2Rad(float degrees) {
     return degrees * PI / 180.f;
 }
 
-float Rad2deg(float radians) {
+float Rad2Deg(float radians) {
     return radians * 180.f / PI;
 }
 

@@ -13,9 +13,9 @@ bool IsEqual(T a, T b) {
 template<>
 bool IsEqual<float>(float a, float b);
 
-float Deg2rad(float degrees);
+float Deg2Rad(float degrees);
 
-float Rad2deg(float radians);
+float Rad2Deg(float radians);
 
 int RandomInt(int min, int max);
 

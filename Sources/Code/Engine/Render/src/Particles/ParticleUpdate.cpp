@@ -81,7 +81,7 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
 
             float shpereR = emissionConfig.emitterVal.x;
             float radius = getRandomFloatInRange(0.f, shpereR);
-            float angel = getRandomFloatInRange(0.f, Math::Deg2rad(emissionConfig.emitterVal.y));
+            float angel = getRandomFloatInRange(0.f, Math::Deg2Rad(emissionConfig.emitterVal.y));
 
             Vec2 dir;
             dir.x = radius * cos(angel);

@@ -514,9 +514,9 @@ bool operator<=(const Vector4<T>& v1, const Vector4<T>& v2) {
 
 } // namespace Math
 
-typedef Math::Vector2<int> Vec2i;
-typedef Math::Vector2<float> Vec2;
-typedef Math::Vector3<float> Vec3;
-typedef Math::Vector4<float> Vec4;
+using Vec2i = Math::Vector2<int>;
+using Vec2 = Math::Vector2<float>;
+using Vec3 = Math::Vector3<float>;
+using Vec4 = Math::Vector4<float>;
 
 #endif /* __VECTOR_HPP__ */

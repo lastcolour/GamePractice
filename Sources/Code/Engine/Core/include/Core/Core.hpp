@@ -37,16 +37,16 @@ namespace std {
 
 const EntityId InvalidEntityId;
 
-typedef int TypeId;
+using TypeId = int;
 const TypeId InvalidTypeId = 0;
 
-typedef int EntityLogicId;
+using EntityLogicId = int;
 const EntityLogicId InvalidEntityLogicId = -1;
 
-typedef int EntityChildId;
+using EntityChildId = int;
 const EntityChildId InvalidEntityChildId = -1;
 
-typedef int EntityLogicValueId;
+using EntityLogicValueId = int;
 const EntityLogicValueId InvalidEntityLogicValueId = -1;
 const EntityLogicValueId AllEntityLogicValueId = 0;
 

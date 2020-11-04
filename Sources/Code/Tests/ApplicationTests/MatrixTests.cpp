@@ -1,6 +1,87 @@
 #include "Math/Matrix.hpp"
 #include "MatrixTests.hpp"
 
+TEST_F(MatrixTests, Mat2_CheckContstructors) {
+    Vec2 col0(1.f, 2.f);
+    Vec2 col1(3.f, 4.f);
+
+    {
+        Mat2 m(col0, col1);
+
+        EXPECT_EQ(m[0], col0);
+        EXPECT_EQ(m[1], col1);
+    }
+    {
+        Mat2 m1;
+        Mat2 m2(col0, col1);
+
+        m1 = m2;
+
+        EXPECT_EQ(m1[0], col0);
+        EXPECT_EQ(m1[1], col1);
+    }
+    {
+        Mat2 m1(col0, col1);
+        Mat2 m2(m1);
+
+        EXPECT_EQ(m2[0], col0);
+        EXPECT_EQ(m2[1], col1);
+    }
+}
+
+TEST_F(MatrixTests, Mat2_CheckOperators) {
+    {
+        Mat2 m(2.f);
+        Vec2 p(1.f);
+
+        auto resP = m * p;
+
+        EXPECT_FLOAT_EQ(resP.x, 2.f);
+        EXPECT_FLOAT_EQ(resP.y, 2.f);
+    }
+
+    Vec2 col0(1.f, 2.f);
+    Vec2 col1(3.f, 4.f);
+
+    {
+        Mat2 m1(col0 + col1, col1 + col0);
+        Mat2 m2(-col1, -col0);
+
+        Mat2 resM = m1 + m2;
+
+        EXPECT_EQ(resM[0], col0);
+        EXPECT_EQ(resM[1], col1);
+    }
+    {
+        Mat2 m1(col0 + col1, col1 + col0);
+        Mat2 m2(-col1, -col0);
+
+        m1 += m2;
+
+        EXPECT_EQ(m1[0], col0);
+        EXPECT_EQ(m1[1], col1);
+    }
+
+    {
+        Mat2 m1(col0 - col1, col1 - col0);
+        Mat2 m2(-col1, -col0);
+
+        Mat2 resM = m1 - m2;
+
+        EXPECT_EQ(resM[0], col0);
+        EXPECT_EQ(resM[1], col1);
+    }
+    {
+        Mat2 m1(col0 - col1, col1 - col0);
+        Mat2 m2(-col1, -col0);
+
+        m1 -= m2;
+
+        EXPECT_EQ(m1[0], col0);
+        EXPECT_EQ(m1[1], col1);
+    }
+}
+
 TEST_F(MatrixTests, Mat3x2_CheckContstructors) {
     Vec2 col0(1.f, 2.f);
     Vec2 col1(3.f, 4.f);

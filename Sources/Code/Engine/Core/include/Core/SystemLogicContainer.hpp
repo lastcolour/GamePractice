@@ -14,7 +14,7 @@ public:
 template<typename ... ArgsT>
 class SystemLogicContainer : public SystemLogicContainerBase {
 
-    typedef std::tuple<ArgsT...> LogicsTupleT;
+    using LogicsTupleT = std::tuple<ArgsT...>;
 
 public:
 

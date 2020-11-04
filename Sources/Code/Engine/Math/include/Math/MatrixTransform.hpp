@@ -1,26 +1,29 @@
 #ifndef __MATRIX_TRANSFORM_HPP__
 #define __MATRIX_TRANSFORM_HPP__
 
-#include "Math/Matrix.hpp"
-#include "Math/Quaternion.hpp"
+#include "Math/Vector.hpp"
 
 namespace Math {
 
-void ProjectOrtho(Mat4& tm, float left, float right, float bot, float top, float zNear, float zFar);
+class Matrix4;
+class Matrix3;
+class Quaternion;
 
-void Translate(Mat4& mat, const Vec3& pos);
+void ProjectOrtho(Matrix4& mat, float left, float right, float bot, float top, float zNear, float zFar);
 
-void Rotate(Mat4& mat, float angle, const Vec3& rot);
+void Translate(Matrix4& mat, const Vec3& pos);
 
-void Rotate(Mat4& mat, const Quat& quat);
+void Rotate(Matrix4& mat, const Vec3& axis, float angle);
 
-void Scale(Mat4& mat, const Vec3& scale);
+void Rotate(Matrix4& mat, const Quaternion& quat);
 
-void Translate2D(Mat3& mat, const Vec2& pos);
+void Scale(Matrix4& mat, const Vec3& scale);
 
-void Rotate2D(Mat3& mat, float angle);
+void Translate2D(Matrix3& mat, const Vec2& pos);
 
-void Scale2D(Mat3& mat, const Vec2& scale);
+void Rotate2D(Matrix3& mat, float angle);
+
+void Scale2D(Matrix3& mat, const Vec2& scale);
 
 } // namespace Math
 

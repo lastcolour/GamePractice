@@ -41,8 +41,8 @@ public:
 
 struct JSONNodeIteratorImpl {
 
-    typedef JSONValueT::MemberIterator MemberIterator;
-    typedef JSONValueT::ValueIterator ValueIterator;
+    using MemberIterator = JSONValueT::MemberIterator;
+    using ValueIterator = JSONValueT::ValueIterator;
 
 public:
 

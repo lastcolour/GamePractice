@@ -355,8 +355,8 @@ void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
 
     float cellSizeX = aabbSize.x / static_cast<float>(boardSize.x);
     float cellSizeY = aabbSize.y / static_cast<float>(boardSize.y);
-    cellSize = static_cast<int>(floorf(std::min(cellSizeX, cellSizeY)));
-    objectSize = Vec2i(static_cast<int>(floorf(cellSize * cellScale)));
+    cellSize = static_cast<int>(floor(std::min(cellSizeX, cellSizeY)));
+    objectSize = Vec2i(static_cast<int>(floor(cellSize * cellScale)));
     Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
 
     boardBox.bot = Vec2i(0);

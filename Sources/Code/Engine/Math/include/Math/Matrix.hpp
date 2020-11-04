@@ -8,6 +8,29 @@ namespace Math {
 class Matrix3;
 class Matrix4;
 
+class Matrix2 {
+public:
+
+    Matrix2();
+    explicit Matrix2(float val);
+    Matrix2(const Vec2& col0, const Vec2& col1);
+    Matrix2(const Matrix2& mat);
+
+    Matrix2& operator=(const Matrix2& mat);
+    Matrix2& operator*=(const Matrix2& mat);
+    Matrix2& operator+=(const Matrix2& mat);
+    Matrix2& operator-=(const Matrix2& mat);
+
+    Vec2& operator[](int i);
+    const Vec2& operator[](int i) const;
+
+    const float* getPtr() const;
+
+private:
+
+    Vec2 data[2];
+};
+
 class Matrix3x2 {
 public:
 
@@ -106,17 +129,23 @@ private:
 
 // ==--------------- Mat * Vec ---------------==
 
+Vec2 operator*(const Matrix2& m, const Vec2& v);
+
 Vec3 operator*(const Matrix3& m, const Vec3& v);
 
 Vec4 operator*(const Matrix4& m, const Vec4& v);
 
 // ==--------------- Mat * Mat ---------------==
 
+Matrix2 operator*(const Matrix2& m1, const Matrix2& m2);
+
 Matrix3 operator*(const Matrix3& m1, const Matrix3& m2);
 
 Matrix4 operator*(const Matrix4& m1, const Matrix4& m2);
 
 // ==--------------- Mat + Mat ---------------==
+
+Matrix2 operator+(const Matrix2& m1, const Matrix2& m2);
 
 Matrix3x2 operator+(const Matrix3x2& m1, const Matrix3x2& m2);
 
@@ -128,6 +157,8 @@ Matrix4 operator+(const Matrix4& m1, const Matrix4& m2);
 
 // ==--------------- Mat - Mat ---------------==
 
+Matrix2 operator-(const Matrix2& m1, const Matrix2& m2);
+
 Matrix3x2 operator-(const Matrix3x2& m1, const Matrix3x2& m2);
 
 Matrix3 operator-(const Matrix3& m1, const Matrix3& m2);
@@ -138,9 +169,10 @@ Matrix4 operator-(const Matrix4& m1, const Matrix4& m2);
 
 } // namespace Math
 
-typedef Math::Matrix3x2 Mat3x2;
-typedef Math::Matrix3 Mat3;
-typedef Math::Matrix4x3 Mat4x3;
-typedef Math::Matrix4 Mat4;
+using Mat2 = Math::Matrix2;
+using Mat3x2 = Math::Matrix3x2;
+using Mat3 = Math::Matrix3;
+using Mat4x3 = Math::Matrix4x3;
+using Mat4 = Math::Matrix4;
 
 #endif /* __MATRIX_HPP__ */

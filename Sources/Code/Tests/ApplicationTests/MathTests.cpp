@@ -60,8 +60,8 @@ TEST_F(MathTests, CheckTranslate) {
 TEST_F(MathTests, CheckRotate) {
     Mat4 m(1.f);
     Vec3 axis(0.f, 0.f, 1.f);
-    float angle = 90.f;
-    Math::Rotate(m, angle, axis);
+    float angle = Math::Deg2Rad(90.f);
+    Math::Rotate(m, axis, angle);
 
     Vec4 testPos(1.f, 0.f, 0.f, 0.f);
     Vec4 resPos = m * testPos;
