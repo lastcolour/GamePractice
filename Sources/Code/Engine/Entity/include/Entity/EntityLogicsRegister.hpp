@@ -2,7 +2,7 @@
 #define __ENTITY_LOGICS_REGISTER_HPP__
 
 #include "Reflect/ReflectContext.hpp"
-#include "EntityLogic.hpp"
+#include "Entity/EntityLogic.hpp"
 
 #include <type_traits>
 

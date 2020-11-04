@@ -33,7 +33,7 @@ public:
 public:
 
     ColorF col;
-    Math::Matrix4 mat;
+    Math::Matrix3x2 mat;
 };
 
 #endif /* __PARTICLE_HPP__ */

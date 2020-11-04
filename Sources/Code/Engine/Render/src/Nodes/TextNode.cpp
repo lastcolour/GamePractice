@@ -139,7 +139,7 @@ bool TextNode::isVisible() const {
     if(text.empty()) {
         return false;
     }
-    if(!font->getFontAtlas()) {
+    if(!font || !font->getFontAtlas()) {
         return false;
     }
     return Node::isVisible();

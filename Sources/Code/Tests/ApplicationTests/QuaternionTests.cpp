@@ -57,11 +57,51 @@ TEST_F(QuaternionTests, CheckIndenity) {
     }
 
     {
-        Vec3 angles = q.getEulerAngels();
+        Math::EulerAngles angles(0.f, 0.f, 0.f);
+        angles = q.getEulerAngels();
 
-        EXPECT_FLOAT_EQ(angles.x, 0.f);
-        EXPECT_FLOAT_EQ(angles.y, 0.f);
-        EXPECT_FLOAT_EQ(angles.z, 0.f);
+        EXPECT_FLOAT_EQ(angles.yaw, 0.f);
+        EXPECT_FLOAT_EQ(angles.pitch, 0.f);
+        EXPECT_FLOAT_EQ(angles.roll, 0.f);
+    }
+}
+
+TEST_F(QuaternionTests, CheckEulerAngels) {
+    {
+        Quat q1;
+        q1.setEulerAngles(Math::EulerAngles(Math::PI, 0.f, 0.f));
+
+        Quat q2;
+        q2.setAxisAngle(Vec3(0.f, 0.f, 1.f), Math::PI);
+
+        EXPECT_FLOAT_EQ(q1.x, q2.x);
+        EXPECT_FLOAT_EQ(q1.y, q2.y);
+        EXPECT_FLOAT_EQ(q1.z, q2.z);
+        EXPECT_FLOAT_EQ(q1.w, q2.w);
+    }
+    {
+        Quat q1;
+        q1.setEulerAngles(Math::EulerAngles(0.f, Math::PI, 0.f));
+
+        Quat q2;
+        q2.setAxisAngle(Vec3(0.f, 1.f, 0.f), Math::PI);
+
+        EXPECT_FLOAT_EQ(q1.x, q2.x);
+        EXPECT_FLOAT_EQ(q1.y, q2.y);
+        EXPECT_FLOAT_EQ(q1.z, q2.z);
+        EXPECT_FLOAT_EQ(q1.w, q2.w);
+    }
+    {
+        Quat q1;
+        q1.setEulerAngles(Math::EulerAngles(0.f, 0.f, Math::PI));
+
+        Quat q2;
+        q2.setAxisAngle(Vec3(1.f, 0.f, 0.f), Math::PI);
+
+        EXPECT_FLOAT_EQ(q1.x, q2.x);
+        EXPECT_FLOAT_EQ(q1.y, q2.y);
+        EXPECT_FLOAT_EQ(q1.z, q2.z);
+        EXPECT_FLOAT_EQ(q1.w, q2.w);
     }
 }
 
@@ -83,14 +123,6 @@ TEST_F(QuaternionTests, CheckAxisAngle) {
 
     {
         EXPECT_FLOAT_EQ(q.getLenght(), 1.f);
-    }
-
-    {
-        Vec3 angles =  q.getEulerAngels();
-
-        EXPECT_FLOAT_EQ(angles.x, 0.f);
-        EXPECT_FLOAT_EQ(angles.y, 0.f);
-        EXPECT_FLOAT_EQ(angles.z, 0.f);
     }
 
     {
@@ -129,7 +161,7 @@ TEST_F(QuaternionTests, CheckAxisAngle) {
         q.getAxisAngle(axis, angle);
 
         Mat4 rotMat(1.f);
-        Math::Rotate(rotMat, axis, angle);
+        Math::AddRotate(rotMat, axis, angle);
 
         Vec3 pt(1.f);
 
@@ -211,9 +243,79 @@ TEST_F(QuaternionTests, CheckInverse) {
 }
 
 TEST_F(QuaternionTests, CheckSLerp) {
-    ASSERT_TRUE(false);
+    Quat q1;
+    q1.setAxisAngle(Vec3(0.f, 0.f, 1.f), 0.f);
+
+    Quat q2;
+    q2.setAxisAngle(Vec3(0.f, 0.f, 1.f), Math::PI);
+
+    Vec3 pt(1.f);
+    int N = 100;
+
+    float prevRotAngle = 0.f;
+
+    for(int i = 0; i <= N; ++i) {
+        float t = i / static_cast<float>(N);
+        Quat qRot = Math::SLerp(q1, q2, t);
+
+        Vec3 rotAxis(0.f);
+        float rotAngle = 0.f;
+
+        qRot.getAxisAngle(rotAxis, rotAngle);
+
+        EXPECT_FLOAT_EQ(rotAxis.x, 0.f);
+        EXPECT_FLOAT_EQ(rotAxis.y, 0.f);
+        if(rotAxis.z < 0.f) {
+            EXPECT_GE(rotAngle, prevRotAngle);
+            EXPECT_FLOAT_EQ(rotAxis.z, -1.f);
+        } else {
+            EXPECT_LE(rotAngle, prevRotAngle);
+            EXPECT_FLOAT_EQ(rotAxis.z, 1.f);
+        }
+
+        prevRotAngle = rotAngle;
+
+        Vec3 rotPt = qRot * pt;
+
+        EXPECT_FLOAT_EQ(rotPt.getLenght(), pt.getLenght());
+    }
 }
 
 TEST_F(QuaternionTests, CheckNLerp) {
-    ASSERT_TRUE(false);
+    Quat q1;
+    q1.setAxisAngle(Vec3(0.f, 0.f, 1.f), 0.f);
+
+    Quat q2;
+    q2.setAxisAngle(Vec3(0.f, 0.f, 1.f), Math::PI);
+
+    Vec3 pt(1.f);
+    int N = 100;
+
+    float prevRotAngle = 0.f;
+
+    for(int i = 0; i <= N; ++i) {
+        float t = i / static_cast<float>(N);
+        Quat qRot = Math::NLerp(q1, q2, t);
+
+        Vec3 rotAxis(0.f);
+        float rotAngle = 0.f;
+
+        qRot.getAxisAngle(rotAxis, rotAngle);
+
+        EXPECT_FLOAT_EQ(rotAxis.x, 0.f);
+        EXPECT_FLOAT_EQ(rotAxis.y, 0.f);
+        if(rotAxis.z < 0.f) {
+            EXPECT_GE(rotAngle, prevRotAngle);
+            EXPECT_FLOAT_EQ(rotAxis.z, -1.f);
+        } else {
+            EXPECT_LE(rotAngle, prevRotAngle);
+            EXPECT_FLOAT_EQ(rotAxis.z, 1.f);
+        }
+
+        prevRotAngle = rotAngle;
+
+        Vec3 rotPt = qRot * pt;
+
+        EXPECT_FLOAT_EQ(rotPt.getLenght(), pt.getLenght());
+    }
 }

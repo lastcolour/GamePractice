@@ -17,5 +17,5 @@ Particle::Particle() :
 
 ParticleInstanceData::ParticleInstanceData() :
     col(1.f),
-    mat(1.f) {
+    mat() {
 }

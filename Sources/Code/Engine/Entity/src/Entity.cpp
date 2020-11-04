@@ -336,7 +336,7 @@ Transform Entity::ET_getLocalTransform() const {
     localTm.scale.x = tm.scale.x / parentTm.scale.x;
     localTm.scale.y = tm.scale.y / parentTm.scale.y;
     localTm.scale.z = tm.scale.z / parentTm.scale.z;
-    localTm.quat = Quat();
+    localTm.quat.setIndentity();
     return localTm;
 }
 
@@ -359,7 +359,7 @@ void Entity::ET_setLocalTransform(const Transform& localTm) {
     newTm.scale.x = parentTm.scale.x * localTm.scale.x;
     newTm.scale.y = parentTm.scale.y * localTm.scale.y;
     newTm.scale.z = parentTm.scale.z * localTm.scale.z;
-    newTm.quat = Quat();
+    newTm.quat.setIndentity();
     ET_setTransform(newTm);
 }
 

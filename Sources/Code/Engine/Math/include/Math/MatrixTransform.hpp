@@ -11,19 +11,19 @@ class Quaternion;
 
 void ProjectOrtho(Matrix4& mat, float left, float right, float bot, float top, float zNear, float zFar);
 
-void Translate(Matrix4& mat, const Vec3& pos);
+void AddTranslate(Matrix4& mat, const Vec3& pos);
 
-void Rotate(Matrix4& mat, const Vec3& axis, float angle);
+void AddRotate(Matrix4& mat, const Vec3& axis, float angle);
 
-void Rotate(Matrix4& mat, const Quaternion& quat);
+void AddRotate(Matrix4& mat, const Quaternion& quat);
 
-void Scale(Matrix4& mat, const Vec3& scale);
+void AddScale(Matrix4& mat, const Vec3& scale);
 
-void Translate2D(Matrix3& mat, const Vec2& pos);
+void AddTranslate2D(Matrix3& mat, const Vec2& pos);
 
-void Rotate2D(Matrix3& mat, float angle);
+void AddRotate2D(Matrix3& mat, float angle);
 
-void Scale2D(Matrix3& mat, const Vec2& scale);
+void AddScale2D(Matrix3& mat, const Vec2& scale);
 
 } // namespace Math
 

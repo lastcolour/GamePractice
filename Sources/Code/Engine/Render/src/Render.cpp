@@ -25,8 +25,8 @@ Render::Render() :
     canScreenRender(false) {
 }
 
- Render::~Render() {
- }
+Render::~Render() {
+}
 
 bool Render::init() {
     GLContextType contextType = GLContextType::None;

@@ -107,6 +107,7 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
     p.startScale = movementConifg.startScale;
     p.endScale = movementConifg.endScale;
 
+    p.rot = movementConifg.startRotation;
     p.startRotSpeed = movementConifg.startRotationSpeed;
     p.endRotSpeed = movementConifg.endRotationSpeed;
 
@@ -148,19 +149,14 @@ void EmitterState::updateAlive(float dt) {
         Vec2 scale = Math::Lerp(p.startScale, p.endScale, prog);
 
         float rotSpeed = Math::Lerp(p.startRotSpeed, p.endRotSpeed, prog);
+        p.rot += rotSpeed * dt;
 
-        Transform tm;
-        tm.pt = Vec3(p.pt.x, p.pt.y, 0.f);
-        tm.scale = Vec3(scale.x, scale.y, 1.f);
+        Mat3 mat(1.f);
+        Math::AddTranslate2D(mat, p.pt);
+        Math::AddScale2D(mat, 20.f * scale);
+        Math::AddRotate2D(mat, p.rot);
 
-        Vec3 modelScale = Vec3(15.f);
-        tm.scale.x *= modelScale.x;
-        tm.scale.y *= modelScale.y;
-        tm.scale.z *= modelScale.z;
-
-        out.mat = Math::Matrix4(1.f);
-        Math::Translate(out.mat, tm.pt);
-        Math::Scale(out.mat, tm.scale);
+        out.mat = mat.toMat3x2();
 
         out.col.r = Math::Lerp(p.startCol.r, p.endCol.r, prog);
         out.col.g = Math::Lerp(p.startCol.g, p.endCol.g, prog);

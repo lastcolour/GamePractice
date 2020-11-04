@@ -31,7 +31,7 @@ T Clamp(const T& val, const T& min, const T& max) {
 
 template<typename T>
 T Lerp(const T& first, const T& second, float prog) {
-    return first * (1.f - prog) + second * prog;
+    return (1.f - prog) * first +  prog * second;
 }
 
 } // namespace Math

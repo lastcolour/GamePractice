@@ -236,8 +236,8 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     Mat4 proj;
     ET_SendEventReturn(proj, &ETRenderCamera::ET_getProj2DMat4);
     Mat4 tm(1.f);
-    Math::Translate(tm, center);
-    Math::Scale(tm, scale);
+    Math::AddTranslate(tm, center);
+    Math::AddScale(tm, scale);
     tm = proj * tm;
 
     std::shared_ptr<RenderMaterial> material;

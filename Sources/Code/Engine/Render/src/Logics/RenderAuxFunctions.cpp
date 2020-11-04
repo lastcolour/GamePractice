@@ -9,11 +9,11 @@ namespace Render {
 Mat4 CalcModelMat(const Transform& tm, const Vec3& scale, const RenderGeometry& geom) {
     Mat4 resMat(1.f);
     const Vec3 center = geom.aabb.getCenter();
-    Math::Translate(resMat, center);
-    Math::Rotate(resMat, tm.quat);
-    Math::Translate(resMat, tm.pt);
+    Math::AddTranslate(resMat, center);
+    Math::AddRotate(resMat, tm.quat);
+    Math::AddTranslate(resMat, tm.pt);
     Vec3 resScale = Vec3(scale.x * tm.scale.x, scale.y * tm.scale.y, scale.z * tm.scale.z);
-    Math::Scale(resMat, resScale);
+    Math::AddScale(resMat, resScale);
     return resMat;
 }
 

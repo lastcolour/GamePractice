@@ -42,7 +42,22 @@ Quaternion& Quaternion::operator=(const Quaternion& quat) {
 Quaternion::~Quaternion() {
 }
 
-void Quaternion::setEulerAngles(const Vec3& angles) {
+void Quaternion::setEulerAngles(const EulerAngles& angles) {
+    float halfY = angles.yaw * 0.5f;
+    float halfP = angles.pitch * 0.5f;
+    float halfR = angles.roll * 0.5f;
+
+    float cy = cos(halfY);
+    float sy = sin(halfY);
+    float cp = cos(halfP);
+    float sp = sin(halfP);
+    float cr = cos(halfR);
+    float sr = sin(halfR);
+
+    w = cr * cp * cy + sr * sp * sy;
+    x = sr * cp * cy - cr * sp * sy;
+    y = cr * sp * cy + sr * cp * sy;
+    z = cr * cp * sy - sr * sp * cy;
 }
 
 void Quaternion::setIndentity() {
@@ -129,8 +144,28 @@ void Quaternion::setRotationMat(const Mat3& mat) {
     }
 }
 
-Vec3 Quaternion::getEulerAngels() const {
-    return Vec3();
+EulerAngles Quaternion::getEulerAngels() const {
+    EulerAngles angles;
+    {
+        float sinA = 2 * (w * z + x * y);
+        float cosA = 1 - 2 * (y * y + z * z);
+        angles.yaw = atan2(sinA, cosA);
+    }
+    {
+        float sinA = 2.f * (w * y - z * x);
+        if(abs(sinA) >= 1) {
+            angles.pitch = copysign(Math::PI / 2.f, sinA);
+        } else {
+            angles.pitch = asin(sinA);
+        }
+    }
+    {
+        float sinA = 2.f * (w * x + y * z);
+        float cosA = 1.f - 2.f * (x * x + y * y);
+        angles.roll = atan2(sinA, cosA);
+    }
+
+    return angles;
 }
 
 void Quaternion::getAxisAngle(Vec3& outAxis, float& outAngle) const {
@@ -140,6 +175,7 @@ void Quaternion::getAxisAngle(Vec3& outAxis, float& outAngle) const {
         outAxis.x = x / s;
         outAxis.y = y / s;
         outAxis.z = z / s;
+        outAxis.normalize();
     } else {
         outAngle = 0.f;
         outAxis.x = 0.f;
@@ -234,6 +270,10 @@ Mat3 Quaternion::toMat3() const {
     return rotMat;
 }
 
+Quaternion operator*(float a, const Quaternion& q) {
+    return Quaternion(q.x * a, q.y * a, q.z * a, q.w * a);
+}
+
 Quaternion operator*(const Quaternion& q1, const Quaternion& q2) {
     Quaternion resQuat;
 
@@ -245,44 +285,78 @@ Quaternion operator*(const Quaternion& q1, const Quaternion& q2) {
     return resQuat;
 }
 
+Quaternion& Quaternion::operator*=(const Quaternion& q) {
+    *this = *this * q;
+    return *this;
+}
+
+Quaternion& Quaternion::operator+=(const Quaternion& q) {
+    *this = *this + q;
+    return *this;
+}
+
+Quaternion& Quaternion::operator-=(const Quaternion& q) {
+    *this = *this - q;
+    return *this;
+}
+
+Quaternion Quaternion::operator-() {
+    Quaternion q;
+    q.x = -x;
+    q.y = -y;
+    q.z = -z;
+    q.w = -w;
+    return q;
+}
+
+Quaternion operator+(const Quaternion& q1, const Quaternion& q2) {
+    return Quaternion(q1.x + q2.x, q1.y + q2.y, q1.z + q2.z, q1.w + q2.w);
+}
+
+Quaternion operator-(const Quaternion& q1, const Quaternion& q2) {
+    return Quaternion(q1.x - q2.x, q1.y - q2.y, q1.z - q2.z, q1.w - q2.w);
+}
+
 Vec3 operator*(const Quaternion& q, const Vec3& pt) {
     Vec3 u(q.x, q.y, q.z);
     return 2.0f * u.dot(pt) * u + (q.w * q.w - u.dot(u)) * pt + 2.0f * q.w * u.cross(pt);
 }
 
 Quaternion SLerp(const Quaternion& q1, const Quaternion& q2, float t) {
+    float cosA = Dot(q1, q2);
 
-    float cosVal = Dot(q1, q2);
-    if(cosVal > 0.995f) {
-        return NLerp(q1, q2, t);
-    }
-    if(cosVal < 0.f) {
-        cosVal -= cosVal;
+    float val2Sign = 1.f;
+    if(cosA < 0.f) {
+        cosA = -cosA;
+        val2Sign = -1.f;
     }
 
-    return Quaternion();
+    float val1;
+    float val2;
+
+    if(cosA > 0.995f) {
+        val1 = 1.f - t;
+        val2 = t;
+    } else {
+        float angle = acos(cosA);
+        float sinA = 1.f / sin(angle);
+        val1 = sin((1.f - t) * angle) * sinA;
+        val2 = sin(t * angle) * sinA;
+    }
+
+    val2 *= val2Sign;
+
+    return val1 * q1 + val2 * q2;
 }
 
 Quaternion NLerp(const Quaternion& q1, const Quaternion& q2, float t) {
-    Quaternion tq;
-
+    float valSign = 1.f;
     if(Dot(q1, q2) < 0.f) {
-        tq.x = -q2.x;
-        tq.y = -q2.y;
-        tq.z = -q2.z;
-        tq.w = -q2.w;
-    } else {
-        tq = q2;
+        valSign = -1;
     }
-
-    Quaternion resQ;
-    resQ.x = Lerp(q1.x, tq.x, t);
-    resQ.y = Lerp(q1.y, tq.y, t);
-    resQ.z = Lerp(q1.z, tq.z, t);
-    resQ.w = Lerp(q1.w, tq.w, t);
-    resQ.normilize();
-
-    return resQ;
+    Quaternion res = Math::Lerp(q1, valSign * q2, t);
+    res.normilize();
+    return res;
 }
 
 } // namespace Math

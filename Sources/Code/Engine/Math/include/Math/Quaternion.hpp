@@ -2,6 +2,7 @@
 #define __QUATERNION_HPP__
 
 #include "Math/Matrix.hpp"
+#include "EulerAngles.hpp"
 
 namespace Math {
 
@@ -19,14 +20,14 @@ public:
     ~Quaternion();
 
     void setIndentity();
-    void setEulerAngles(const Vec3& angles);
+    void setEulerAngles(const EulerAngles& angles);
     void setAxisAngle(const Vec3& axis, float angle);
     void setLookAtRotation(const Vec3& dir, const Vec3& up);
     void setRotationBetween(const Vec3& p1, const Vec3& p2);
     void setRotationMat(const Mat3& mat);
     void setRotationMat(const Mat4& mat);
 
-    Vec3 getEulerAngels() const;
+    EulerAngles getEulerAngels() const;
     void getAxisAngle(Vec3& outAxis, float& outAngle) const;
     float getLenght() const;
     float getLenghtSq() const;
@@ -41,6 +42,11 @@ public:
     Mat4 toMat4() const;
     Mat3 toMat3() const;
 
+    Quaternion& operator*=(const Quaternion& q);
+    Quaternion& operator+=(const Quaternion& q);
+    Quaternion& operator-=(const Quaternion& q);
+    Quaternion operator-();
+
 public:
 
     float x;
@@ -49,9 +55,15 @@ public:
     float w;
 };
 
+Quaternion operator*(float a, const Quaternion& q);
+
 Quaternion operator*(const Quaternion& q1, const Quaternion& q2);
 
 Vec3 operator*(const Quaternion& q, const Vec3& pt);
+
+Quaternion operator+(const Quaternion& q1, const Quaternion& q2);
+
+Quaternion operator-(const Quaternion& q1, const Quaternion& q2);
 
 Quaternion SLerp(const Quaternion& q1, const Quaternion& q2, float t);
 

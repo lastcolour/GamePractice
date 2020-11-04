@@ -45,10 +45,43 @@ TEST_F(MathTests, CheckProjectOrto) {
     ASSERT_FLOAT_EQ(resBot.y, -resYShift);
 }
 
+TEST_F(MathTests, CheckTranslate2D) {
+    Mat3 m(1.f);
+    Vec2 pos(1.f, 2.f);
+    Math::AddTranslate2D(m, pos);
+
+    Vec3 testPos(1.f);
+    Vec3 resPos = m * testPos;
+    Vec3 expectedPos = testPos + Vec3(pos, 0.f);
+
+    ASSERT_EQ(resPos, expectedPos);
+}
+
+TEST_F(MathTests, CheckRotate2D) {
+    Mat3 m(1.f);
+    Math::AddRotate2D(m, Math::Deg2Rad(90.f));
+
+    Vec3 testPos(1.f, 0.f, 0.f);
+    Vec3 resPos = m * testPos;
+
+    ASSERT_EQ(resPos, Vec3(0.f, 1.f, 0.f));
+}
+
+TEST_F(MathTests, CheckScale2D) {
+    Mat3 m(1.f);
+    Vec2 scale(2.f);
+    Math::AddScale2D(m, scale);
+
+    Vec3 testPos(1.f, 2.f, 0.f);
+    Vec3 resPos = m * testPos;
+
+    ASSERT_EQ(resPos, Vec3(2.f, 4.f, 0.f));
+}
+
 TEST_F(MathTests, CheckTranslate) {
     Mat4 m(1.f);
     Vec3 pos(1.f, 2.f, 3.f);
-    Math::Translate(m, pos);
+    Math::AddTranslate(m, pos);
 
     Vec4 testPos(1.f);
     Vec4 resPos = m * testPos;
@@ -61,7 +94,7 @@ TEST_F(MathTests, CheckRotate) {
     Mat4 m(1.f);
     Vec3 axis(0.f, 0.f, 1.f);
     float angle = Math::Deg2Rad(90.f);
-    Math::Rotate(m, axis, angle);
+    Math::AddRotate(m, axis, angle);
 
     Vec4 testPos(1.f, 0.f, 0.f, 0.f);
     Vec4 resPos = m * testPos;
@@ -69,10 +102,10 @@ TEST_F(MathTests, CheckRotate) {
     ASSERT_EQ(resPos, Vec4(0.f, 1.f, 0.f, 0.f));
 }
 
-TEST_F(MathTests, CheckSlace) {
+TEST_F(MathTests, CheckScale) {
     Mat4 m(1.f);
     Vec3 scale(2.f);
-    Math::Scale(m, scale);
+    Math::AddScale(m, scale);
 
     Vec4 testPos(1.f, 2.f, 3.f, 0.f);
     Vec4 resPos = m * testPos;
