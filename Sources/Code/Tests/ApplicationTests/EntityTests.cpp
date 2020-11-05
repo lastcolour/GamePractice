@@ -160,6 +160,66 @@ TEST_F(EntityTests, CheckChildInheritParentScale) {
     EXPECT_FLOAT_EQ(tm.scale.z, 0.5f);
 }
 
+TEST_F(EntityTests, CheckChildInheritParentRotation) {
+    EntityId parentId;
+    ET_SendEventReturn(parentId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    EntityId childId;
+    ET_SendEventReturn(childId, &ETEntityManager::ET_createEntity, TEST_OBJECT_NAME);
+
+    ET_SendEvent(childId, &ETEntity::ET_setParent, parentId);
+
+    {
+        Transform childTm;
+        ET_SendEventReturn(childTm, childId, &ETEntity::ET_getTransform);
+        childTm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), Math::PI / 4.f);
+        ET_SendEvent(childId, &ETEntity::ET_setTransform, childTm);
+    }
+
+    {
+        Transform parentTm;
+        ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+        parentTm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), -Math::PI / 4.f);
+        ET_SendEvent(parentId, &ETEntity::ET_setTransform, parentTm);
+    }
+
+    Transform tm;
+    ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
+
+    {
+        Vec3 axis(0.f);
+        float angle = 0.f;
+        tm.quat.getAxisAngle(axis, angle);
+
+        EXPECT_FLOAT_EQ(angle, 0.f);
+    }
+
+    {
+        Transform parentTm;
+        ET_SendEventReturn(parentTm, parentId, &ETEntity::ET_getTransform);
+        parentTm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), Math::PI / 4.f);
+        ET_SendEvent(parentId, &ETEntity::ET_setTransform, parentTm);
+    }
+
+    ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
+
+    {
+        Vec3 axis(0.f);
+        float angle = 0.f;
+        tm.quat.getAxisAngle(axis, angle);
+
+        EXPECT_FLOAT_EQ(axis.x, 0.f);
+        EXPECT_FLOAT_EQ(axis.y, 0.f);
+        if(axis.z > 0.f) {
+            EXPECT_FLOAT_EQ(axis.z, 1.f);
+            EXPECT_FLOAT_EQ(angle, Math::PI / 2.f);
+        } else {
+            EXPECT_FLOAT_EQ(axis.z, -1.f);
+            EXPECT_FLOAT_EQ(angle, -Math::PI / 2.f);
+        }
+    }
+}
+
 TEST_F(EntityTests, CheckLocalTransform) {
     auto parent = createVoidObject();
     auto child = createVoidObject();

@@ -32,8 +32,11 @@ class EmptyQuatValue(EmptyValue):
     def getType(self):
         return ValueType.Quat
 
+    def setVal(self, x, y, z, w):
+        pass
+
     def getVal(self):
-        return 0, 0, 0, 0
+        return 0, 0, 0, 1
 
 class EmptyTransformLogic:
     def __init_(self):
@@ -58,7 +61,4 @@ class EditTransformValue(LogicView):
             self._tree.setEnabled(False)
         else:
             self._setupLogic(entity.getTransformLogic())
-            if entity.getParent() is None:
-                self._tree.setEnabled(False)
-            else:
-                self._tree.setEnabled(True)
+            self._tree.setEnabled(True)

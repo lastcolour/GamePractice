@@ -302,16 +302,11 @@ void Entity::ET_setTransform(const Transform& newTm) {
         auto childEntity = childNode.childEntity;
 
         Transform childTm = childEntity->ET_getLocalTransform();
-
-        Vec3 childPt = newTm.pt;
-        childPt.x += childTm.pt.x * newTm.scale.x;
-        childPt.y += childTm.pt.y * newTm.scale.y;
-        childPt.z += childTm.pt.z * newTm.scale.z;
-        childTm.pt = childPt;
-
-        childTm.scale.x *= newTm.scale.x;
-        childTm.scale.y *= newTm.scale.y;
-        childTm.scale.z *= newTm.scale.z;
+        Vec3 shift = childTm.pt.getScaled(newTm.scale);
+        shift = newTm.quat * shift;
+        childTm.pt = newTm.pt + shift;
+        childTm.scale.scale(newTm.scale);
+        childTm.quat *= newTm.quat;
 
         childEntity->ET_setTransform(childTm);
     }
@@ -326,9 +321,11 @@ Transform Entity::ET_getLocalTransform() const {
     }
 
     Transform parentTm = parent->ET_getTransform();
+    Quat qInv = parentTm.quat.getInversed();
 
     Transform localTm;
     localTm.pt = tm.pt - parentTm.pt;
+    localTm.pt = qInv * localTm.pt;
     localTm.pt.x /= parentTm.scale.x;
     localTm.pt.y /= parentTm.scale.y;
     localTm.pt.z /= parentTm.scale.z;
@@ -336,14 +333,14 @@ Transform Entity::ET_getLocalTransform() const {
     localTm.scale.x = tm.scale.x / parentTm.scale.x;
     localTm.scale.y = tm.scale.y / parentTm.scale.y;
     localTm.scale.z = tm.scale.z / parentTm.scale.z;
-    localTm.quat.setIndentity();
+
+    localTm.quat = qInv * tm.quat;
     return localTm;
 }
 
 void Entity::ET_setLocalTransform(const Transform& localTm) {
     if(!parent) {
-        LogWarning("[Entity::ET_setLocalTransform] Can't set local transform to entity '%s' without parent",
-            name);
+        ET_setTransform(localTm);
         return;
     }
 
@@ -355,11 +352,10 @@ void Entity::ET_setLocalTransform(const Transform& localTm) {
     shift.z *= parentTm.scale.z;
 
     Transform newTm;
-    newTm.pt = parentTm.pt + shift;
-    newTm.scale.x = parentTm.scale.x * localTm.scale.x;
-    newTm.scale.y = parentTm.scale.y * localTm.scale.y;
-    newTm.scale.z = parentTm.scale.z * localTm.scale.z;
-    newTm.quat.setIndentity();
+    newTm.pt = parentTm.pt + parentTm.quat * shift;
+    newTm.scale = localTm.scale.getScaled(parentTm.scale);
+    newTm.quat = localTm.quat * parentTm.quat;
+
     ET_setTransform(newTm);
 }
 

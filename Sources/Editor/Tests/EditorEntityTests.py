@@ -7,9 +7,11 @@ from native.EntityNative import EntityNative
 from native.EntityNativeLoader import _DEFAULT_TRANSFORM
 
 from utils.AppConfig import AppConfig
+from view.values.EditQuatValue import _convertToEualerAngles, _convertFromEualerAngles
 
 import unittest
 import json
+import math
 
 class EditorEntityTest(unittest.TestCase):
 
@@ -155,6 +157,30 @@ class EditorEntityTest(unittest.TestCase):
 
         res = entity.dumpToDict()
         self.assertEqual(len(res['children']), 2)
+
+    def testChangeEntityRotation(self):
+        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        self.assertTrue(entity.loadToNative())
+        rotValue = None
+        for v in entity._tmLogic.getValues():
+            if v.getName() == "rot":
+                rotValue = v
+                break
+        self.assertIsNotNone(rotValue)
+        x, y, z, w = rotValue.getVal()
+
+        yaw, pitch, roll = _convertToEualerAngles(x, y, z, w)
+        roll += math.radians(1)
+
+        x, y, z, w = _convertFromEualerAngles(yaw, pitch, roll)
+        rotValue.setVal(x, y, z, w)
+
+        x, y, z, w = rotValue.getVal()
+        newYaw, newPitch, newRoll = _convertToEualerAngles(x, y, z, w)
+
+        self.assertAlmostEqual(newYaw, yaw)
+        self.assertAlmostEqual(newPitch, pitch)
+        self.assertAlmostEqual(newRoll, roll)
 
 if __name__ == "__main__":
     unittest.main()

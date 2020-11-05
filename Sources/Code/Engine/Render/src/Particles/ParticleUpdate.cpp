@@ -117,7 +117,10 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
 
 void EmitterState::emitNew(const Transform& tm, float dt) {
     emitFracTime += dt;
+
     int emitCount = static_cast<int>(emissionConfig.emissionRate * emitFracTime);
+    emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
+
     emitFracTime -= emitCount / emissionConfig.emissionRate;
 
     int newCount = std::max(((activeCount + emitCount) - static_cast<int>(particles.size())), 0);
@@ -126,14 +129,13 @@ void EmitterState::emitNew(const Transform& tm, float dt) {
         instaceData.emplace_back();
     }
 
-    emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
-
     for(int i = activeCount, sz = activeCount + emitCount; i < sz; ++i) {
         auto& p = particles[i];
         spawnNewParticle(tm, p);
     }
 
     activeCount += emitCount;
+    assert(activeCount < Render::MaxParticlessPerDraw && "Too Many Particles");
 }
 
 void EmitterState::updateAlive(float dt) {
@@ -153,8 +155,8 @@ void EmitterState::updateAlive(float dt) {
 
         Mat3 mat(1.f);
         Math::AddTranslate2D(mat, p.pt);
-        Math::AddScale2D(mat, 20.f * scale);
         Math::AddRotate2D(mat, p.rot);
+        Math::AddScale2D(mat, 20.f * scale);
 
         out.mat = mat.toMat3x2();
 

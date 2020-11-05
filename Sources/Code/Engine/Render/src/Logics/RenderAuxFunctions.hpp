@@ -12,7 +12,7 @@ namespace Render {
 
 const float TextNewLineOffset = 1.f;
 
-const int MaxParticlessPerDraw = 512;
+const int MaxParticlessPerDraw = 1024;
 
 Mat4 CalcModelMat(const Transform& tm, const Vec3& scale, const RenderGeometry& geom);
 

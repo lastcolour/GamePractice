@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
-
-from .FloatLineEdit import FloatLineEdit
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDoubleSpinBox
+from PyQt5.QtCore import Qt
 
 class EditVec3Value(QWidget):
     def __init__(self, value):
@@ -13,49 +12,61 @@ class EditVec3Value(QWidget):
         self._xLabel = QLabel("<b>X:</>")
         self._rootLayout.addWidget(self._xLabel)
 
-        self._xLineEdit = FloatLineEdit()
-        self._xLineEdit.textEdited.connect(self._signal_xEdit_textEdited)
-        self._rootLayout.addWidget(self._xLineEdit)
+        self._xSpinBox = QDoubleSpinBox()
+        self._xSpinBox.setMaximum(1000000.0)
+        self._xSpinBox.setMinimum(-1000000.0)
+        self._xSpinBox.setSingleStep(0.1)
+        self._xSpinBox.setAlignment(Qt.AlignRight)
+        self._xSpinBox.valueChanged.connect(self._signal_xSpinBox_valueChanged)
+        self._rootLayout.addWidget(self._xSpinBox)
 
         self._yLabel = QLabel("<b>Y:</>")
         self._rootLayout.addWidget(self._yLabel)
 
-        self._yLineEdit = FloatLineEdit()
-        self._yLineEdit.textEdited.connect(self._signal_yEdit_textEdited)
-        self._rootLayout.addWidget(self._yLineEdit)
+        self._ySpinBox = QDoubleSpinBox()
+        self._ySpinBox.setMaximum(1000000.0)
+        self._ySpinBox.setMinimum(-1000000.0)
+        self._ySpinBox.setSingleStep(0.1)
+        self._ySpinBox.setAlignment(Qt.AlignRight)
+        self._ySpinBox.valueChanged.connect(self._signal_ySpinBox_valueChanged)
+        self._rootLayout.addWidget(self._ySpinBox)
 
         self._zLabel = QLabel("<b>Z:</>")
         self._rootLayout.addWidget(self._zLabel)
 
-        self._zLineEdit = FloatLineEdit()
-        self._zLineEdit.textEdited.connect(self._signal_zEdit_textEdited)
-        self._rootLayout.addWidget(self._zLineEdit)
+        self._zSpinBox = QDoubleSpinBox()
+        self._zSpinBox.setMaximum(1000000.0)
+        self._zSpinBox.setMinimum(-1000000.0)
+        self._zSpinBox.setSingleStep(0.1)
+        self._zSpinBox.setAlignment(Qt.AlignRight)
+        self._zSpinBox.valueChanged.connect(self._signal_zSpinBox_valueChanged)
+        self._rootLayout.addWidget(self._zSpinBox)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
 
         self._pull()
 
-    def _signal_xEdit_textEdited(self, text):
+    def _signal_xSpinBox_valueChanged(self, newXVal):
         x, y, z = self._val.getVal()
-        self._push(self._xLineEdit._getFloat(), y, z)
+        self._push(newXVal, y, z)
         self._pull()
 
-    def _signal_yEdit_textEdited(self, text):
+    def _signal_ySpinBox_valueChanged(self, newYVal):
         x, y, z = self._val.getVal()
-        self._push(x, self._yLineEdit._getFloat(), z)
+        self._push(x, newYVal, z)
         self._pull()
 
-    def _signal_zEdit_textEdited(self, text):
+    def _signal_zSpinBox_valueChanged(self, newZVal):
         x, y, z = self._val.getVal()
-        self._push(x, y, self._zLineEdit._getFloat())
+        self._push(x, y, newZVal)
         self._pull()
 
     def _pull(self):
         x, y, z = self._val.getVal()
-        self._xLineEdit._setFloat(x)
-        self._yLineEdit._setFloat(y)
-        self._zLineEdit._setFloat(z)
+        self._xSpinBox.setValue(x)
+        self._ySpinBox.setValue(y)
+        self._zSpinBox.setValue(z)
 
     def _push(self, x, y, z):
         self._val.setVal(x, y, z)

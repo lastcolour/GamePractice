@@ -1,8 +1,5 @@
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QSpinBox, QWidget, QHBoxLayout, QLabel
 from PyQt5.QtCore import Qt
-from PyQt5.Qt import QIntValidator
-
-from .Utils import TextToInt, SetIntToLineEdit
 
 class EditVec2iValue(QWidget):
     def __init__(self, value):
@@ -15,40 +12,42 @@ class EditVec2iValue(QWidget):
         self._xLabel = QLabel("<b>X:</>")
         self._rootLayout.addWidget(self._xLabel)
 
-        self._xLineEdit = QLineEdit()
-        self._xLineEdit.textEdited.connect(self._signal_xEdit_textEdited)
-        self._xLineEdit.setAlignment(Qt.AlignRight)
-        self._xLineEdit.setValidator(QIntValidator())
-        self._rootLayout.addWidget(self._xLineEdit)
+        self._xSpinBox = QSpinBox()
+        self._xSpinBox.setMinimum(-1000000)
+        self._xSpinBox.setMaximum(1000000)
+        self._xSpinBox.setAlignment(Qt.AlignRight)
+        self._xSpinBox.valueChanged.connect(self._signal_xSpinBox_valueChanged)
+        self._rootLayout.addWidget(self._xSpinBox)
 
         self._yLabel = QLabel("<b>Y:</>")
         self._rootLayout.addWidget(self._yLabel)
 
-        self._yLineEdit = QLineEdit()
-        self._yLineEdit.textEdited.connect(self._signal_yEdit_textEdited)
-        self._yLineEdit.setAlignment(Qt.AlignRight)
-        self._yLineEdit.setValidator(QIntValidator())
-        self._rootLayout.addWidget(self._yLineEdit)
+        self._ySpinBox = QSpinBox()
+        self._ySpinBox.setMinimum(-1000000)
+        self._ySpinBox.setMaximum(1000000)
+        self._ySpinBox.setAlignment(Qt.AlignRight)
+        self._ySpinBox.valueChanged.connect(self._signal_ySpinBox_valueChanged)
+        self._rootLayout.addWidget(self._ySpinBox)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
 
         self._pull()
 
-    def _signal_xEdit_textEdited(self, text):
+    def _signal_xSpinBox_valueChanged(self, newXValue):
         x, y = self._val.getVal()
-        self._push(TextToInt(text), y)
+        self._push(newXValue, y)
         self._pull()
 
-    def _signal_yEdit_textEdited(self, text):
+    def _signal_ySpinBox_valueChanged(self, newYValue):
         x, y = self._val.getVal()
-        self._push(x, TextToInt(text))
+        self._push(x, newYValue)
         self._pull()
 
     def _pull(self):
         x, y = self._val.getVal()
-        SetIntToLineEdit(self._xLineEdit, x)
-        SetIntToLineEdit(self._yLineEdit, y)
+        self._xSpinBox.setValue(x)
+        self._ySpinBox.setValue(y)
 
     def _push(self, x, y):
         self._val.setVal(x, y)

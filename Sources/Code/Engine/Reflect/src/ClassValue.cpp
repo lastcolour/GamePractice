@@ -211,7 +211,8 @@ bool readJSONQuat(void* valuePtr, const JSONNode& node) {
     node.read("y", yVal);
     node.read("z", zVal);
     node.read("w", wVal);
-    getRef<Quat>(valuePtr) = Quat(xVal, yVal, zVal, wVal);
+    Quat q(xVal, yVal, zVal, wVal);
+    getRef<Quat>(valuePtr) = q.getNormalized();
     return true;
 }
 
@@ -782,7 +783,8 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         stream.read(yVal);
         stream.read(zVal);
         stream.read(wVal);
-        getRef<Quat>(valuePtr) = Quat(xVal, yVal, zVal, wVal);
+        Quat q(xVal, yVal, zVal, wVal);
+        getRef<Quat>(valuePtr) = q.getNormalized();
         break;
     }
     case ClassValueType::Color: {

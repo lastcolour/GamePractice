@@ -1,7 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QDoubleSpinBox
 from PyQt5.QtCore import Qt
-
-from .FloatLineEdit import FloatLineEdit
 
 class EditFloatValue(QWidget):
     def __init__(self, value):
@@ -11,17 +9,21 @@ class EditFloatValue(QWidget):
 
         self._rootLayout = QHBoxLayout()
 
-        self._floatLineEdit = FloatLineEdit()
-        self._floatLineEdit.textEdited.connect(self._signal_lineEdit_textEdited)
-        self._rootLayout.addWidget(self._floatLineEdit)
+        self._floatSpinBox = QDoubleSpinBox()
+        self._floatSpinBox.setSingleStep(0.1)
+        self._floatSpinBox.setMinimum(-1000000.0)
+        self._floatSpinBox.setMaximum(1000000.0)
+        self._floatSpinBox.setAlignment(Qt.AlignRight)
+        self._floatSpinBox.valueChanged.connect(self._signal_floatSpinBox_valueChanged)
+        self._rootLayout.addWidget(self._floatSpinBox)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
         self.setLayout(self._rootLayout)
 
         self._pull()
 
-    def _signal_lineEdit_textEdited(self, text):
-        self._push(self._floatLineEdit._getFloat())
+    def _signal_floatSpinBox_valueChanged(self, newValue):
+        self._push(newValue)
         self._pull()
 
     def _push(self, data):
@@ -29,4 +31,4 @@ class EditFloatValue(QWidget):
 
     def _pull(self):
         data = self._val.getVal()
-        self._floatLineEdit._setFloat(data)
+        self._floatSpinBox.setValue(data)

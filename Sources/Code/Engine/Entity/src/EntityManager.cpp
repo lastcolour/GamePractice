@@ -278,7 +278,7 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
         return false;
     }
     if(logicId == TransformLogicId) {
-        Transform localTm;
+        Transform localTm = entity->ET_getLocalTransform();
         SerializeContext serCtx;
         serCtx.entityId = entityId;
         if(!tmClassInfo->readValueFrom(serCtx, &localTm, valueId, stream)) {
