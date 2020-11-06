@@ -1,5 +1,6 @@
 #include "RenderGeometry.hpp"
 #include "Platform/OpenGL.hpp"
+#include "Math/Matrix.hpp"
 
 namespace {
 
@@ -11,7 +12,7 @@ int getVertexSize(VertexType vertType) {
     case VertexType::Vector4:
         return sizeof(Vec4);
     case VertexType::Particle:
-        return 5 * sizeof(Vec4);
+        return sizeof(Vec4) + sizeof(Mat3x2);
     default:
         return 0;
     }

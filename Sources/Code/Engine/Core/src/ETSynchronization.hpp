@@ -2,13 +2,11 @@
 #define __ET_SYNCHRONIZATION_HPP__
 
 #include "Core/TypeId.hpp"
-#include "ThreadStack.hpp"
 
 #include <vector>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <atomic>
 
 class ETSyncRoute {
 public:

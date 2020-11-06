@@ -15,7 +15,6 @@ public:
 
     void setEntity(const Entity* ownEntity);
     EntityId getEntityId() const;
-    EntityId getParentId() const;
 
 protected:
 

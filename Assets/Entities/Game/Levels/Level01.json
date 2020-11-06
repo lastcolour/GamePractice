@@ -32,7 +32,7 @@
       "type": "GameEndTimer",
       "id": 6,
       "data": {
-        "gameDuration": 60.0
+        "gameDuration": 15.0
       }
     },
     {
@@ -40,13 +40,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 50
+          "minScore": 15
         },
         "twoStars": {
-          "minScore": 100
+          "minScore": 30
         },
         "threeStars": {
-          "minScore": 150
+          "minScore": 50
         }
       }
     },

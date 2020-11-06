@@ -4,7 +4,6 @@
 #include <memory>
 
 class ETSystem;
-class Profiler;
 
 class GlobalEnvironment {
 public:
@@ -13,12 +12,10 @@ public:
     ~GlobalEnvironment();
 
     ETSystem* GetETSystem();
-    Profiler* GetProfiler();
 
 private:
 
     std::unique_ptr<ETSystem> etSystem;
-    std::unique_ptr<Profiler> profiler;
 };
 
 GlobalEnvironment* GetEnv();

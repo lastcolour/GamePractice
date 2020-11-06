@@ -1,4 +1,6 @@
 #include "Game/ViewScripts/BaseViewScript.hpp"
+#include "Core/ETLogger.hpp"
+#include "Entity/ETEntity.hpp"
 
 BaseViewScript::BaseViewScript() :
     hasFocus(false) {
@@ -15,11 +17,18 @@ bool BaseViewScript::init() {
 void BaseViewScript::deinit() {
 }
 
-void BaseViewScript::ET_onGetFocus() {
+void BaseViewScript::ET_onViewOpened() {
+    LogDebug("[BaseViewScript::ET_onViewOpened] View: '%s'", EntityUtils::GetEntityName(getEntityId()));
+}
+
+void BaseViewScript::ET_onViewClosed() {
+}
+
+void BaseViewScript::ET_onViewGetFocus() {
     hasFocus = true;
 }
 
-void BaseViewScript::ET_onLostFocus() {
+void BaseViewScript::ET_onViewLostFocus() {
     hasFocus = false;
 }
 

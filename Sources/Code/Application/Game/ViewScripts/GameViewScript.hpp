@@ -25,8 +25,8 @@ public:
     bool init() override;
 
     // BaseViewScript
-    void ET_onLostFocus() override;
-    void ET_onGetFocus() override;
+    void ET_onViewLostFocus() override;
+    void ET_onViewGetFocus() override;
 
     // ETGameStateEvents
     void ET_onGameEnterState(EGameState state) override;
@@ -37,6 +37,7 @@ public:
 
 protected:
 
+    // BaseViewScript
     void onEvent(const UIEvent& event) override;
 
 private:

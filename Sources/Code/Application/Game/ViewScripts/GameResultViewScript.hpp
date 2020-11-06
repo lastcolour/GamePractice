@@ -3,10 +3,12 @@
 
 #include "Game/ViewScripts/BaseViewScript.hpp"
 #include "Game/ViewScripts/ProgressionStars.hpp"
+#include "UI/ETUIView.hpp"
 
 class ReflectContext;
 
-class GameResultViewScript : public BaseViewScript {
+class GameResultViewScript : public BaseViewScript,
+    public ETNode<ETUIViewAppearAnimationEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -17,15 +19,45 @@ public:
     virtual ~GameResultViewScript();
 
     // BaseViewScript
-    void ET_onGetFocus() override;
+    bool init() override;
+
+    // BaseViewScript
+    void ET_onViewOpened() override;
+    void ET_onViewClosed() override;
+    void ET_onViewGetFocus() override;
+
+    // ETUIViewAppearAnimationEvents
+    void ET_onAppeared(EntityId viewId) override;
+    void ET_onDisappeared(EntityId viewId) override;
 
 protected:
 
+    // BaseViewScript
     void onEvent(const UIEvent& event) override;
 
 private:
 
+    void playAppearAnimation(EntityId elemId);
+
+private:
+
+    enum class State {
+        None,
+        ShowingStars,
+        ShowingContinueButton,
+        Waiting
+    };
+
+private:
+
+    State state;
+    EntityId waitingId;
     ProgressionStars progressStars;
+    EntityId continueButtonId;
+    EntityId timeValueId;
+    EntityId scoreValueId;
+    EntityId levelNameId;
+    EntityId emitterId;
 };
 
 #endif /* __GAME_RESULT_VIEW_SCRIPT_HPP__ */

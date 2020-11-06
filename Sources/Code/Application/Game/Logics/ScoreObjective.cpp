@@ -22,6 +22,7 @@ ScoreObjective::~ScoreObjective() {
 
 bool ScoreObjective::init() {
     ETNode<ETGameBoardElemDestoryEvents>::connect(getEntityId());
+    ETNode<ETGameScore>::connect(getEntityId());
     return true;
 }
 
@@ -29,7 +30,7 @@ void ScoreObjective::deinit() {
 }
 
 bool ScoreObjective::isObjectiveComplete(ObjectiveTarget& target) const {
-    if (currentScore >= target.minScore) {
+    if(currentScore >= target.minScore) {
         return true;
     }
     return false;

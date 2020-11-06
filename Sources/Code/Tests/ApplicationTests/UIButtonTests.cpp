@@ -19,9 +19,13 @@ public:
     virtual ~TestButtonEventListener() = default;
 
     // ETUIEventManager
-    void ET_onGetFocus() override {}
+    void ET_onViewOpened() override {}
 
-    void ET_onLostFocus() override {}
+    void ET_onViewClosed() override {}
+
+    void ET_onViewGetFocus() override {}
+
+    void ET_onViewLostFocus() override {}
 
     void ET_onEvent(const UIEvent& event) override {
         eventQueue.push_back(event);

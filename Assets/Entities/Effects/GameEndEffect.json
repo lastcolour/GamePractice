@@ -1,0 +1,59 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "ParticleEmitter",
+      "id": 1,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
+        "emission": {
+          "emitterType": "Sphere",
+          "emitterVal": {
+            "x": 5.0,
+            "y": 0.0
+          },
+          "duration": 0.10000000149011612,
+          "emissionRate": 2001.0,
+          "lifetime": 0.3100000023841858,
+          "startDelay": 0.0,
+          "autoStart": true,
+          "loop": true
+        },
+        "movement": {
+          "startScale": {
+            "x": 0.10000000149011612,
+            "y": 0.20000000298023224
+          },
+          "endScale": {
+            "x": 0.4000000059604645,
+            "y": 0.4000000059604645
+          },
+          "startSpeed": 600.0,
+          "endSpeed": 600.0,
+          "startRotation": 0.0,
+          "startRotationSpeed": 3.0,
+          "endRotationSpeed": 3.0
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endCol": {
+            "r": 0,
+            "g": 76,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "render": {
+          "texture": "Images/block.png"
+        }
+      }
+    }
+  ]
+}

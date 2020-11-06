@@ -46,7 +46,6 @@ void UIButton::Reflect(ReflectContext& ctx) {
             {"OnMainViewStartGame", UIEvent::EventType::OnMainViewStartGame},
             {"OnGameEndViewExit", UIEvent::EventType::OnGameEndViewExit},
             {"OnBackButton", UIEvent::EventType::OnBackButton},
-            {"OnGameGameEnd", UIEvent::EventType::OnGameGameEnd},
             {"OnSurfaceHidden", UIEvent::EventType::OnSurfaceHidden},
             {"OnSurfaceShown", UIEvent::EventType::OnSurfaceShown},
             {"OnPauseViewResume", UIEvent::EventType::OnPauseViewResume},

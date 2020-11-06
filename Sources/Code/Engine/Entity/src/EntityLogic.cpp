@@ -21,11 +21,3 @@ EntityId EntityLogic::getEntityId() const {
     assert(false && "No valid entity to query Id");
     return InvalidEntityId;
 }
-
-EntityId EntityLogic::getParentId() const {
-    if(entity) {
-        return entity->ET_getParentId();
-    }
-    assert(false && "No valid entity to query parent's Id");
-    return InvalidEntityId;
-}

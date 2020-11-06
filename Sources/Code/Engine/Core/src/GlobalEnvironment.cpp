@@ -1,6 +1,5 @@
 #include "Core/GlobalEnvironment.hpp"
 #include "Core/ETSystem.hpp"
-#include "Profiler.hpp"
 
 #include <cassert>
 
@@ -13,7 +12,6 @@ GlobalEnvironment::GlobalEnvironment() {
         ENV = this;
     }
     etSystem.reset(new ETSystem);
-    profiler.reset(new Profiler);
 }
 
 GlobalEnvironment::~GlobalEnvironment() {
@@ -24,10 +22,6 @@ GlobalEnvironment::~GlobalEnvironment() {
 
 ETSystem* GlobalEnvironment::GetETSystem() {
     return etSystem.get();
-}
-
-Profiler* GlobalEnvironment::GetProfiler() {
-    return profiler.get();
 }
 
 GlobalEnvironment* GetEnv() {

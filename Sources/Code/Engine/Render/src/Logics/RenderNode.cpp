@@ -3,6 +3,7 @@
 #include "Nodes/ETRenderProxyNode.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Entity/ETEntity.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <algorithm>
 
@@ -50,6 +51,11 @@ void RenderNode::deinit() {
 
 void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
     alphaMult = newAlphaMult;
+    if(alphaMult < 0.f || alphaMult > 1.f) {
+        LogWarning("[RenderNode::ET_setAlphaMultiplier] alpha-multiplier '%.1f' is out of range [0..1] (Entity: '%s'",
+            alphaMult, EntityUtils::GetEntityName(getEntityId()));
+        alphaMult = Math::Clamp(alphaMult, 0.f, 1.f);
+    }
     auto newAlpha = alpha * alphaMult;
     newAlpha = std::min(1.f, std::max(0.f, newAlpha));
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);

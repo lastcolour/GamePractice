@@ -33,13 +33,13 @@ void GameViewScript::setGetStatSoundEvent(const char* eventName) {
     ET_SendEventReturn(getStarEvent, &ETSoundManager::ET_createEvent, eventName);
 }
 
-void GameViewScript::ET_onLostFocus() {
-    BaseViewScript::ET_onLostFocus();
+void GameViewScript::ET_onViewLostFocus() {
+    BaseViewScript::ET_onViewLostFocus();
     ET_SendEvent(&ETGameStateManager::ET_pauseGame);
 }
 
-void GameViewScript::ET_onGetFocus() {
-    BaseViewScript::ET_onGetFocus();
+void GameViewScript::ET_onViewGetFocus() {
+    BaseViewScript::ET_onViewGetFocus();
     bool isGameStarted = false;
     ET_SendEventReturn(isGameStarted, &ETGameStateManager::ET_isInGameState);
     if(!isGameStarted) {
@@ -52,8 +52,6 @@ void GameViewScript::ET_onGetFocus() {
 void GameViewScript::onEvent(const UIEvent& event) {
     if(event.type == UIEvent::EventType::OnBackButton) {
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::PauseGame);
-    } else if(event.type == UIEvent::EventType::OnGameGameEnd) {
-        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
     }
 }
 
@@ -88,4 +86,7 @@ void GameViewScript::ET_onGameEnterState(EGameState state) {
 }
 
 void GameViewScript::ET_onGameLeaveState(EGameState state) {
+    if(state == EGameState::PostGame) {
+        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
+    }
 }

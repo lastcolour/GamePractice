@@ -36,7 +36,7 @@ bool UIViewManager::ET_openView(UIViewType viewType) {
     }
     if(!stack.empty()) {
         auto topViewId = stack.back().id;
-        ET_SendEvent(topViewId, &ETUIViewScript::ET_onLostFocus);
+        ET_SendEvent(topViewId, &ETUIViewScript::ET_onViewLostFocus);
     }
     EntityId viewId;
     ET_SendEventReturn(viewId, &ETUIViewCache::ET_getViewId, viewType);
@@ -64,7 +64,7 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
         LogWarning("[UIViewManager::ET_onViewLoaded] Can't load '%s' view!", viewTypeStr);
         if(!stack.empty()) {
             auto topViewId = stack.back().id;
-            ET_SendEvent(topViewId, &ETUIViewScript::ET_onGetFocus);
+            ET_SendEvent(topViewId, &ETUIViewScript::ET_onViewGetFocus);
         }
         return;
     }
@@ -93,6 +93,7 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
     stack.push_back(node);
 
     ET_SendEvent(node.id, &ETUIElement::ET_setZIndex, zIndex);
+    ET_SendEvent(node.id, &ETUIViewScript::ET_onViewOpened);
     ET_SendEvent(&ETUIViewTransitionManager::ET_addAppearing, node.id);
 }
 
@@ -107,7 +108,7 @@ void UIViewManager::ET_closeView(UIViewType viewType) {
         return;
     }
     LogDebug("[UIViewManager::ET_closeView] Close view: '%s'", viewTypeStr);
-    ET_SendEvent(it->id, &ETUIViewScript::ET_onLostFocus);
+    ET_SendEvent(it->id, &ETUIViewScript::ET_onViewLostFocus);
     ET_SendEvent(&ETUIViewTransitionManager::ET_addDisappearing, it->id);
     stack.erase(it);
 }
@@ -127,10 +128,11 @@ EntityId UIViewManager::ET_getActiveViewId() const {
 }
 
 void UIViewManager::ET_onViewAppeared(EntityId viewId) {
-    ET_SendEvent(viewId, &ETUIViewScript::ET_onGetFocus);
+    ET_SendEvent(viewId, &ETUIViewScript::ET_onViewGetFocus);
 }
 
 void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
+    ET_SendEvent(viewId, &ETUIViewScript::ET_onViewClosed);
     if(stack.empty()) {
         return;
     }
@@ -138,6 +140,6 @@ void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
     ET_SendEventReturn(hasActiveTransition, &ETUIViewTransitionManager::ET_hasActiveTransition);
     if(!hasActiveTransition) {
         auto topViewId = stack.back().id;
-        ET_SendEvent(topViewId, &ETUIViewScript::ET_onGetFocus);
+        ET_SendEvent(topViewId, &ETUIViewScript::ET_onViewGetFocus);
     }
 }

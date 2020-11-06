@@ -21,12 +21,16 @@ struct ETGameObjectiveEvents {
 };
 
 struct EndGameResult {
+    float gameTime;
     int score;
     ObjectiveProgress objectiveCompleted;
     bool newHighScore;
 
     EndGameResult() :
-        score(0), objectiveCompleted(ObjectiveProgress::Fail), newHighScore(false) {}
+        gameTime(0.f),
+        score(0),
+        objectiveCompleted(ObjectiveProgress::Fail),
+        newHighScore(false) {}
 };
 
 struct ETGameEndResult {

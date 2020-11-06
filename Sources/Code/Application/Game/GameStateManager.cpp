@@ -84,43 +84,38 @@ void GameStateManager::ET_changeState(EGameState newState) {
         assert(false && "Double state change request");
         return;
     }
-    switch(newState) {
+    auto prevState = gameState;
+    gameState = newState;
+    switch(gameState) {
         case EGameState::PreGame: {
-            assert(gameState == EGameState::None && "Invalid new game state");
+            assert(prevState == EGameState::None && "Invalid new game state");
             LogInfo("[GameStateManager::ET_changeState] Change state to: PreGame");
-            gameState = newState;
             preGame.onEnter(getEntityId());
             break;
         }
         case EGameState::InGame: {
-            assert(gameState == EGameState::PreGame && "Invalid new game state");
+            assert(prevState == EGameState::PreGame && "Invalid new game state");
             LogInfo("[GameStateManager::ET_changeState] Change state to: InGame");
-            gameState = newState;
             preGame.onLeave();
             inGame.onEnter(getEntityId());
             break;
         }
         case EGameState::PostGame: {
-            assert(gameState == EGameState::InGame && "Invalid new game state");
+            assert(prevState == EGameState::InGame && "Invalid new game state");
             LogInfo("[GameStateManager::ET_changeState] Change state to: PostGame");
-            gameState = newState;
             inGame.onLeave();
             postGame.onEnter(getEntityId());
             break;
         }
         case EGameState::None: {
-            assert(gameState == EGameState::PostGame && "Invalid new game state");
+            assert(prevState == EGameState::PostGame && "Invalid new game state");
             LogInfo("[GameStateManager::ET_changeState] Change state to: None");
-            gameState = newState;
-            postGame.onLeave();
             ET_SendEvent(&ETGameTimer::ET_pause);
-            UIEvent endEvent{getEntityId(), UIEvent::EventType::OnGameGameEnd};
-            ET_SendEvent(&ETUIViewScript::ET_onEvent, endEvent);
+            postGame.onLeave();
             break;
         }
         default: {
             assert(false && "Invalid game state");
-            return;
         }
     }
 }

@@ -17,6 +17,7 @@ public:
 
 protected:
 
+    // BaseViewScript
     void onEvent(const UIEvent& event) override;
 };
 

@@ -9,7 +9,6 @@ public:
         OnMainViewStartGame,
         OnGameEndViewExit,
         OnBackButton,
-        OnGameGameEnd,
         OnSurfaceHidden,
         OnSurfaceShown,
         OnPauseViewResume,
@@ -26,8 +25,10 @@ public:
 
 struct ETUIViewScript {
     virtual ~ETUIViewScript() = default;
-    virtual void ET_onGetFocus() = 0;
-    virtual void ET_onLostFocus() = 0;
+    virtual void ET_onViewOpened() = 0;
+    virtual void ET_onViewClosed() = 0;
+    virtual void ET_onViewGetFocus() = 0;
+    virtual void ET_onViewLostFocus() = 0;
     virtual void ET_onEvent(const UIEvent& event) = 0;
 };
 
