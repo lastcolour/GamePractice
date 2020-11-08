@@ -2,6 +2,7 @@
 #include "Android/AndroidPlatformHandler.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/ETLogger.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <fstream>
 
@@ -75,7 +76,7 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
         return buff;
     }
 
-    auto loadStartT = std::chrono::high_resolution_clock::now();
+    auto loadStartT = TimePoint::GetNowTime();
 
     buff = loadAssetImpl(assetName);
 
@@ -84,9 +85,8 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
     }
 
     if(buff) {
-        LogDebug("[AndroidAssets::ET_loadAsset] Loaded file '%s' in %d ms", assetName,
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now() - loadStartT).count());
+        float msValue = -static_cast<int>(loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
+        LogDebug("[AndroidAssets::ET_loadAsset] Loaded file '%s' in %d ms", assetName, msValue);
     }
 
     return buff;

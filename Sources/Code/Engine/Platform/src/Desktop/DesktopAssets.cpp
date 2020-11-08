@@ -1,8 +1,8 @@
 #include "Desktop/DesktopAssets.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
+#include "Core/TimePoint.hpp"
 
-#include <chrono>
 #include <fstream>
 #include <cassert>
 #include <algorithm>
@@ -211,7 +211,7 @@ Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
         return buff;
     }
 
-    auto loadStartT = std::chrono::high_resolution_clock::now();
+    auto loadStartT = TimePoint::GetNowTime();
 
     buff = loadFileFromDir(assetRootPath, normalAssetName);
 
@@ -220,9 +220,8 @@ Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     }
 
     if(buff) {
-        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %d ms", normalAssetName,
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::high_resolution_clock::now() - loadStartT).count());
+        int msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
+        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %d ms", normalAssetName, msValue);
     }
 
     return buff;

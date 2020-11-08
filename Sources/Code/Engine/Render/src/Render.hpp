@@ -25,6 +25,7 @@ public:
 
     // ETRender
     void ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) override;
+    bool ET_hasContext() const override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;

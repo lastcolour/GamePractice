@@ -117,6 +117,10 @@ void Render::ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawC
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }
 
+bool Render::ET_hasContext() const {
+    return canOffscrenRender;
+}
+
 void Render::ET_onSurfaceDestroyed() {
     canOffscrenRender = false;
     canScreenRender = false;

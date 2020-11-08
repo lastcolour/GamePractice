@@ -1,6 +1,7 @@
 #include "Debug/DebugRender.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderCamera.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 
 #include <limits>
 #include <cmath>
@@ -29,6 +30,13 @@ DebugRender::~DebugRender() {
 
 bool DebugRender::init() {
     ETNode<ETDebugRender>::connect(getEntityId());
+
+    bool hasContext = false;
+    ET_SendEventReturn(hasContext, &ETRender::ET_hasContext);
+    if(hasContext) {
+        ET_init();
+    }
+
     return true;
 }
 

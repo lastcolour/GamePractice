@@ -5,6 +5,7 @@
 #include "Core/ETApplication.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "Entity/ETEntityManger.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <cassert>
 
@@ -84,7 +85,7 @@ bool SystemModule::serializeConfigs() {
 bool SystemModule::init() {
     assert(!isInitialized && "Dobule module initializetion");
 
-    auto initStartT = std::chrono::high_resolution_clock::now();
+    auto initStarT = TimePoint::GetNowTime();
 
     if(!serializeConfigs()) {
         return false;
@@ -126,9 +127,9 @@ bool SystemModule::init() {
         return false;
     }
 
-    LogDebug("[SystemModule::init] Init module: '%s' in %d ms", name,
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::high_resolution_clock::now() - initStartT).count());
+
+    int msValue = -static_cast<int>(initStarT.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
+    LogDebug("[SystemModule::init] Init module: '%s' in %d ms", name, msValue);
 
     return true;
 }
