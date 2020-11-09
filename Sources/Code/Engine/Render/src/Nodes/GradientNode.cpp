@@ -6,7 +6,7 @@
 #include <cassert>
 
 GradientNode::GradientNode() :
-    size(100),
+    size(100.f),
     startCol(255, 255, 255),
     endCol(0, 0, 0),
     isVertical(true),
@@ -64,7 +64,7 @@ void GradientNode::ET_setColor1(const ColorB& newColor) {
     doUpdate = true;
 }
 
-void GradientNode::ET_setSize(const Vec2i& newSize) {
+void GradientNode::ET_setSize(const Vec2& newSize) {
     size = newSize;
 }
 

@@ -48,7 +48,8 @@ void UIBox::calculateBox() {
     aabb = UI::SetTmCenterToBox(getEntityId(), aabb);
 
     if(prevBox.getSize() != aabb.getSize()) {
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
+        Vec2i boxSize = aabb.getSize();
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
         ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
     }
 
@@ -90,7 +91,8 @@ void UIBox::onZIndexChanged(int newZIndex) {
 
 void UIBox::ET_onLoaded() {
     if(boxRenderId.isValid()) {
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
+        Vec2i boxSize = aabb.getSize();
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     }
     ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);

@@ -33,6 +33,8 @@ AABB2Di GetTmScaledBox(EntityId entityId, const AABB2Di& box);
 
 AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box);
 
+bool IsRootViewHasFocus(EntityId elemId);
+
 } // namespace
 
 #endif /* __UI_UTILS_HPPP__ */

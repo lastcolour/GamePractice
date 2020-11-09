@@ -35,6 +35,9 @@ public:
     // ETUIAnimationEvents
     void ET_onAnimationEnd() override;
 
+    // UIBox
+    void ET_onLoaded() override;
+
 protected:
 
     void onZIndexChanged(int newZIndex) override;
@@ -48,6 +51,7 @@ private:
     EInputEventResult onMove(const Vec2i& pt);
     EInputEventResult onRelease(const Vec2i& pt);
     bool canContinueEvent(const Vec2i& pt) const;
+    bool canAcceptEvent() const;
 
 private:
 
@@ -55,6 +59,7 @@ private:
     Vec2i pressPt;
     TimePoint pressTime;
     UIEvent::EventType eventType;
+    bool isLoaded;
 };
 
 #endif /* __UI_BUTTON_HPP__ */

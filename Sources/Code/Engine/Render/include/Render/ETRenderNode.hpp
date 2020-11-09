@@ -19,8 +19,8 @@ struct ETRenderNode {
 
 struct ETRenderRect {
     virtual ~ETRenderRect() = default;
-    virtual void ET_setSize(const Vec2i& newSize) = 0;
-    virtual Vec2i ET_getSize() const = 0;
+    virtual void ET_setSize(const Vec2& newSize) = 0;
+    virtual Vec2 ET_getSize() const = 0;
 };
 
 struct ETRenderSimpleLogic {
@@ -40,7 +40,6 @@ struct ETRenderTextLogic {
 struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
     virtual void ET_setImage(const char* imageName) = 0;
-    virtual Vec2i ET_getImageSize() const = 0;
 };
 
 struct ETRenderColoredTexture {

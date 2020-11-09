@@ -98,7 +98,7 @@ protected:
     std::string cellObject;
     AABB2Di boardBox;
     Vec2i boardSize;
-    Vec2i objectSize;
+    Vec2 objectSize;
     EntityId uiBoxId;
     float cellScale;
     float moveSpeed;

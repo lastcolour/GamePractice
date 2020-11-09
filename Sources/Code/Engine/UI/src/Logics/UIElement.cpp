@@ -63,10 +63,6 @@ void UIElement::ET_show() {
     isHidden = false;
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
-    if(isEnabled) {
-        onDisabled(false);
-        ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, false);
-    }
 }
 
 void UIElement::ET_hide() {
@@ -76,10 +72,6 @@ void UIElement::ET_hide() {
     isHidden = true;
     onHide(true);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
-    onDisabled(true);
-    if(isEnabled) {
-        ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, true);
-    }
 }
 
 bool UIElement::ET_isHidden() const {

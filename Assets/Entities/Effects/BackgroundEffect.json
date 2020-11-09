@@ -15,7 +15,7 @@
             "y": 0.0
           },
           "duration": -1.0,
-          "emissionRate": 3000.0,
+          "emissionRate": 50.0,
           "lifetime": 1.0,
           "startDelay": 0.0,
           "autoStart": true,
@@ -27,19 +27,19 @@
             "y": 0.10000000149011612
           },
           "endScale": {
-            "x": 0.5,
-            "y": 0.5
+            "x": 0.30000001192092896,
+            "y": 0.30000001192092896
           },
-          "startSpeed": 50.0,
+          "startSpeed": 10.0,
           "endSpeed": 10.0,
-          "startRotation": 0.0,
-          "startRotationSpeed": 30.0,
-          "endRotationSpeed": 0.0
+          "startRotation": 5.0,
+          "startRotationSpeed": 2.0,
+          "endRotationSpeed": 2.0
         },
         "color": {
           "startCol": {
-            "r": 255,
-            "g": 255,
+            "r": 184,
+            "g": 239,
             "b": 255,
             "a": 255
           },

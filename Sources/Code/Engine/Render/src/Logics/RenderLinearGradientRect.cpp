@@ -4,7 +4,7 @@
 
 RenderLinearGradientRect::RenderLinearGradientRect() :
     RenderNode(RenderNodeType::Gradient),
-    size(100),
+    size(100.f),
     startCol(255, 255, 255),
     endCol(0, 0, 0),
     isVertical(true) {
@@ -33,11 +33,11 @@ bool RenderLinearGradientRect::init() {
     return true;
 }
 
-void RenderLinearGradientRect::ET_setSize(const Vec2i& newSize) {
+void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {
     size = newSize;
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
-Vec2i RenderLinearGradientRect::ET_getSize() const {
+Vec2 RenderLinearGradientRect::ET_getSize() const {
     return size;
 }

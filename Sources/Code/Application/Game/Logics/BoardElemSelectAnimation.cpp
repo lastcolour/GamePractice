@@ -41,18 +41,12 @@ void BoardElemSelectAnimation::deinit() {
 
 void BoardElemSelectAnimation::updateBackground(float prog) {
     auto scale = Math::Lerp(1.f, minForegroundScale, prog);
-    auto size = startSize;
-    size.x = static_cast<int>(size.x * scale);
-    size.y = static_cast<int>(size.y * scale);
-    ET_SendEvent(getEntityId(), &ETRenderRect::ET_setSize, size);
+    ET_SendEvent(getEntityId(), &ETRenderRect::ET_setSize, startSize * scale);
 }
 
 void BoardElemSelectAnimation::updateForeground(float prog) {
     auto scale = Math::Lerp(1.f, maxBackgroundScale, prog);
-    auto size = startSize;
-    size.x = static_cast<int>(size.x * scale);
-    size.y = static_cast<int>(size.y * scale);
-    ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, size);
+    ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, startSize * scale);
 }
 
 void BoardElemSelectAnimation::ET_onGameTick(float dt) {

@@ -23,16 +23,15 @@ public:
 
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
-    Vec2i ET_getImageSize() const override;
 
     // ETRenderRect
-    void ET_setSize(const Vec2i& newSize) override;
-    Vec2i ET_getSize() const override;
+    void ET_setSize(const Vec2& newSize) override;
+    Vec2 ET_getSize() const override;
 
 protected:
 
     std::string image;
-    Vec2i size;
+    Vec2 size;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */

@@ -24,12 +24,12 @@ public:
     void ET_setColor(const ColorB& col) override;
 
     // ETRenderRect
-    void ET_setSize(const Vec2i& newSize) override;
-    Vec2i ET_getSize() const override;
+    void ET_setSize(const Vec2& newSize) override;
+    Vec2 ET_getSize() const override;
 
 private:
 
-    Vec2i size;
+    Vec2 size;
     ColorB color;
 };
 

@@ -37,9 +37,7 @@ public:
 
     void insert(T& elem) {
         pos += 1;
-        if(count < pos) {
-            count = pos;
-        }
+        count = std::max(count, pos);
         pos %= data.size();
         data[pos] = elem;
     }

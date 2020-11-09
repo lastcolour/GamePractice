@@ -11,7 +11,7 @@ public:
 
     // ETRenderProxyNode
     void ET_setColor0(const ColorB& newColor) override;
-    void ET_setSize(const Vec2i& newSize) override;
+    void ET_setSize(const Vec2& newSize) override;
 
 protected:
 
@@ -20,7 +20,7 @@ protected:
 
 private:
 
-    Vec2i size;
+    Vec2 size;
     ColorB color;
 };
 

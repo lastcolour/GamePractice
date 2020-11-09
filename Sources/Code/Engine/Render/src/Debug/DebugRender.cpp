@@ -94,7 +94,7 @@ void DebugRender::drawLines(RenderContext& ctx) {
         tm.pt = Vec3(center.x, center.y, 0.f);
         tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), acos(dir.x));
 
-        simpleNode.ET_setSize(Vec2i(lineLen, cmd.width));
+        simpleNode.ET_setSize(Vec2(lineLen, cmd.width));
         simpleNode.ET_setColor0(cmd.startCol);
         simpleNode.ET_setTransform(tm);
         simpleNode.render(ctx);
@@ -110,7 +110,7 @@ void DebugRender::drawQuads(RenderContext& ctx) {
         tm.pt = Vec3(cmd.box.getCenter(), 0.f);
         simpleNode.ET_setTransform(tm);
         Vec2 size = cmd.box.getSize();
-        simpleNode.ET_setSize(Vec2i(size.y, size.y));
+        simpleNode.ET_setSize(Vec2(size.y, size.y));
         simpleNode.ET_setColor0(cmd.col);
         simpleNode.render(ctx);
     }

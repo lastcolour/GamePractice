@@ -33,7 +33,7 @@ public:
     void ET_setColor0(const ColorB& newColor) override {}
     void ET_setColor1(const ColorB& newColor) override {}
     void ET_setFontHeight(int newHeight) override {}
-    void ET_setSize(const Vec2i& newSize) override {}
+    void ET_setSize(const Vec2& newSize) override {}
     void ET_setText(const std::string& newText) override {}
     void ET_setImage(const std::string& newImage) override {}
     void ET_setVertical(bool flag) override {}

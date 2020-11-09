@@ -3,6 +3,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Core/StringFormat.hpp"
 #include "Render/ETRenderCamera.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -38,23 +39,26 @@ void DrawFPSChart(Vec2& pt, const Vec2& size, const CycleArray<float>& fpsValues
     float maxFps = 60.f;
     float maxY = size.y * 0.8f;
 
-    startPt.x = pt.x;
-    startPt.y = pt.y + Math::Lerp(0.f, maxY, std::min(fpsValues[fpsValues.getPos()] / maxFps, 1.f));
-    endPt = pt;
+    float yVal = Math::Lerp(0.f, maxY, fpsValues[fpsValues.getPos() - 1] / maxFps);
+    yVal = std::min(size.y * 0.99f, yVal);
+    endPt.y = pt.y + yVal;
+    endPt.x = pt.x + size.x;
 
     for(size_t i = 1, sz = fpsValues.size(); i < sz; ++i) {
-        size_t valIdx = (i + fpsValues.getPos()) % fpsValues.maxSize();
-        endPt.x += step;
-        endPt.y = pt.y + Math::Lerp(0.f, maxY, std::min(fpsValues[valIdx] / maxFps, 1.f));
+        size_t valIdx = (i + fpsValues.getPos() - 1) % fpsValues.maxSize();
+        yVal = Math::Lerp(0.f, maxY, fpsValues[valIdx] / maxFps);
+        yVal = std::min(size.y * 0.99f, yVal);
+        startPt.x = endPt.x - step;
+        startPt.y = pt.y + yVal;
         ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255, 255, 0), endPt, ColorB(255, 255, 0), 1.f);
-        startPt = endPt;
+        endPt = startPt;
     }
 }
 
 } // namespace
 
 FrameStatsTracker::FrameStatsTracker() :
-    fpsValues(60) {
+    fpsValues(120) {
 }
 
 FrameStatsTracker::~FrameStatsTracker() {

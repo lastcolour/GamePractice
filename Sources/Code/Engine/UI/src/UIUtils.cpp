@@ -211,4 +211,22 @@ AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box) {
     return resBox;
 }
 
+bool IsRootViewHasFocus(EntityId elemId) {
+    EntityId hostLayoutId;
+    while(true) {
+        ET_SendEventReturn(hostLayoutId, elemId, &ETUIElement::ET_getHostLayout);
+        if(!hostLayoutId.isValid()) {
+            return true;
+        }
+        if(!ET_IsExistNode<ETUIView>(hostLayoutId)) {
+            elemId = hostLayoutId;
+        } else {
+            bool hasFocus = false;
+            ET_SendEventReturn(hasFocus, hostLayoutId, &ETUIView::ET_getFocus);
+            return hasFocus;
+        }
+    }
+    return false;
+}
+
 } // namespace UI

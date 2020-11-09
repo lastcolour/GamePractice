@@ -53,7 +53,7 @@ private:
     float maxBackgroundScale;
     float minForegroundScale;
     State state;
-    Vec2i startSize;
+    Vec2 startSize;
     EntityId backgroundId;
 };
 

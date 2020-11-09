@@ -3,13 +3,13 @@
 #include "Render/ETRenderManager.hpp"
 
 ImageNode::ImageNode() :
-    size(100) {
+    size(100.f) {
 }
 
 ImageNode::~ImageNode() {
 }
 
-void ImageNode::ET_setSize(const Vec2i& newSize) {
+void ImageNode::ET_setSize(const Vec2& newSize) {
     size = newSize;
 }
 

@@ -8,6 +8,8 @@
 #include "Core/ETApplication.hpp"
 #include "Config/UIConfig.hpp"
 #include "UI/ETUIViewScript.hpp"
+#include "Logics/UIView.hpp"
+#include "Logics/UILayout.hpp"
 
 class TestButtonEventListener : public ETNode<ETUIViewScript> {
 public:
@@ -182,4 +184,78 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
     auto& event = buttonListener->eventQueue[0];
     EXPECT_EQ(event.type, UIEvent::EventType::None);
     EXPECT_EQ(event.senderId, button->getEntityId());
+}
+
+TEST_F(UIButtonTests, CheckButtonFromNonFocusedView) {
+    auto parent = createVoidObject();
+    {
+        parent->addCustomLogic(std::unique_ptr<EntityLogic>(new UIView));
+        parent->addCustomLogic(std::unique_ptr<EntityLogic>(new UILayout));
+    }
+    auto child = createVoidObject();
+    {
+        child->addCustomLogic(std::unique_ptr<EntityLogic>(new UIButton));
+        
+        UIBoxStyle boxStyle;
+        boxStyle.widthInv = UIBoxSizeInvariant::Relative;
+        boxStyle.width = 0.5f;
+        boxStyle.heightInv = UIBoxSizeInvariant::Relative;
+        boxStyle.height = 0.5f;
+
+        ET_SendEvent(child->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+    }
+
+    ET_SendEvent(parent->getEntityId(), &ETUILayout::ET_addItem, child->getEntityId());
+
+    ET_SendEvent(parent->getEntityId(), &ETUIView::ET_setFocus, false);
+
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
+
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+
+    EXPECT_EQ(buttonListener->eventQueue.size(), 0u);
+
+    ET_SendEvent(parent->getEntityId(), &ETUIView::ET_setFocus, true);
+
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+
+    EXPECT_EQ(buttonListener->eventQueue.size(), 1u);
+}
+
+TEST_F(UIButtonTests, CheckHiddenButton) {
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
+
+    auto button = createUIButton(center, Vec2(0.5f));
+
+    ET_SendEvent(button->getEntityId(), &ETUIElement::ET_hide);
+
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+
+    ASSERT_TRUE(buttonListener->eventQueue.empty());
+}
+
+TEST_F(UIButtonTests, CheckDisabledButton) {
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewPort / 2;
+
+    auto button = createUIButton(center, Vec2(0.5f));
+
+    ET_SendEvent(button->getEntityId(), &ETUIElement::ET_disable);
+
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
+    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+
+    ASSERT_TRUE(buttonListener->eventQueue.empty());
 }

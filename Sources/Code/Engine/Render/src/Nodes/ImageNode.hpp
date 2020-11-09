@@ -11,7 +11,7 @@ public:
     virtual ~ImageNode();
 
     // ETRenderNodeProxy
-    void ET_setSize(const Vec2i& newSize) override;
+    void ET_setSize(const Vec2& newSize) override;
     void ET_setImage(const std::string& newImage) override;
 
 protected:
@@ -23,7 +23,7 @@ protected:
 private:
 
     std::shared_ptr<RenderTexture> tex;
-    Vec2i size;
+    Vec2 size;
 };
 
 #endif /* __IMAGE_NODE_HPP__ */

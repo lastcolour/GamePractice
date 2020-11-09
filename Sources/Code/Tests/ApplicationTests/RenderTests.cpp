@@ -261,7 +261,6 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * h * 0.5f);
 
     checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
-    dumpFramebuffer();
 }
 
 TEST_F(RenderTests, CheckRenderSimpleObject) {
@@ -277,8 +276,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEvent(objId, &ETEntity::ET_setTransform, tm);
 
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-    ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR),
-        static_cast<int>(size.y * SCALE_FACTOR)));
+    ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
 
     SyncAndDrawFrameToFB(*textureFramebuffer);
 
@@ -288,7 +286,6 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * size.y * 0.5f);
 
     checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
-    dumpFramebuffer();
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId);
 }
@@ -356,7 +353,6 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
             }
         }
     }
-    dumpFramebuffer();
 
     ASSERT_GT(changedPixels, 0);
 }
@@ -375,10 +371,7 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     gameObj->ET_setTransform(tm);
 
     renderImage->ET_setImage("Images/options.png");
-
-    Vec2i imageSize = renderImage->ET_getSize();
-    ASSERT_GT(imageSize.x, 0);
-    ASSERT_GT(imageSize.y, 0);
+    renderImage->ET_setSize(Vec2(100.f));
 
     SyncAndDrawFrameToFB(*textureFramebuffer);
 
@@ -392,7 +385,6 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
             }
         }
     }
-    dumpFramebuffer();
 
     ASSERT_GT(changedPixels, 0);
 }
@@ -406,7 +398,7 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
     ASSERT_TRUE(renderColorTex->init());
 
     renderColorTex->ET_setImage("Images/block.png");
-    Vec2i imageSize(100);
+    Vec2 imageSize(100.f);
     renderColorTex->ET_setSize(imageSize);
 
     Transform tm;
@@ -426,8 +418,6 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
     }
 
     EXPECT_GT(changedPixels, imageSize.x * imageSize.y * 3 / 4);
-
-    dumpFramebuffer();
 }
 
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
@@ -451,8 +441,7 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(firstSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR),
-            static_cast<int>(size.y * SCALE_FACTOR)));
+        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
         Transform tm;
         tm.pt = center;
         ET_SendEvent(firstSquareId, &ETEntity::ET_setTransform, tm);
@@ -462,8 +451,7 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(secondSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(secondSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR_B);
-        ET_SendEvent(secondSquareId, &ETRenderRect::ET_setSize, Vec2i(static_cast<int>(size.x * SCALE_FACTOR),
-            static_cast<int>(size.y * SCALE_FACTOR)));
+        ET_SendEvent(secondSquareId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
         Transform tm;
         tm.pt = center;
         ET_SendEvent(secondSquareId, &ETEntity::ET_setTransform, tm);
@@ -500,7 +488,7 @@ TEST_F(RenderTests, CheckHideUnhide) {
     {
         ET_SendEventReturn(boxId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(boxId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(boxId, &ETRenderRect::ET_setSize, size);
+        ET_SendEvent(boxId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y));
         Transform tm;
         tm.pt = center;
         ET_SendEvent(boxId, &ETEntity::ET_setTransform, tm);
@@ -524,8 +512,6 @@ TEST_F(RenderTests, CheckHideUnhide) {
         SyncAndDrawFrameToFB(*textureFramebuffer);
         checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
     }
-
-    dumpFramebuffer();
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, boxId);
 }

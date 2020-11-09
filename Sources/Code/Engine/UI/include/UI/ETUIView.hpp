@@ -14,6 +14,12 @@ enum class UIViewType {
     Loading
 };
 
+struct ETUIView {
+    virtual ~ETUIView() = default;
+    virtual void ET_setFocus(bool flag) = 0;
+    virtual bool ET_getFocus() const = 0;
+};
+
 struct ETUIViewManager {
     virtual ~ETUIViewManager() = default;
     virtual bool ET_openView(UIViewType viewType) = 0;

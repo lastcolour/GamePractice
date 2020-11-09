@@ -2,9 +2,9 @@
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIViewCache.hpp"
 #include "UI/ETLoadingScreen.hpp"
+#include "UI/ETUIViewScript.hpp"
 #include "Core/ETLogger.hpp"
 #include "UIUtils.hpp"
-#include "UI/ETUIViewScript.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -36,7 +36,7 @@ bool UIViewManager::ET_openView(UIViewType viewType) {
     }
     if(!stack.empty()) {
         auto topViewId = stack.back().id;
-        ET_SendEvent(topViewId, &ETUIViewScript::ET_onViewLostFocus);
+        ET_SendEvent(topViewId, &ETUIView::ET_setFocus, false);
     }
     EntityId viewId;
     ET_SendEventReturn(viewId, &ETUIViewCache::ET_getViewId, viewType);
@@ -64,7 +64,7 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
         LogWarning("[UIViewManager::ET_onViewLoaded] Can't load '%s' view!", viewTypeStr);
         if(!stack.empty()) {
             auto topViewId = stack.back().id;
-            ET_SendEvent(topViewId, &ETUIViewScript::ET_onViewGetFocus);
+            ET_SendEvent(topViewId, &ETUIView::ET_setFocus, true);
         }
         return;
     }
@@ -108,7 +108,7 @@ void UIViewManager::ET_closeView(UIViewType viewType) {
         return;
     }
     LogDebug("[UIViewManager::ET_closeView] Close view: '%s'", viewTypeStr);
-    ET_SendEvent(it->id, &ETUIViewScript::ET_onViewLostFocus);
+    ET_SendEvent(it->id, &ETUIView::ET_setFocus, false);
     ET_SendEvent(&ETUIViewTransitionManager::ET_addDisappearing, it->id);
     stack.erase(it);
 }
@@ -128,7 +128,7 @@ EntityId UIViewManager::ET_getActiveViewId() const {
 }
 
 void UIViewManager::ET_onViewAppeared(EntityId viewId) {
-    ET_SendEvent(viewId, &ETUIViewScript::ET_onViewGetFocus);
+    ET_SendEvent(viewId, &ETUIView::ET_setFocus, true);
 }
 
 void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
@@ -140,6 +140,6 @@ void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
     ET_SendEventReturn(hasActiveTransition, &ETUIViewTransitionManager::ET_hasActiveTransition);
     if(!hasActiveTransition) {
         auto topViewId = stack.back().id;
-        ET_SendEvent(topViewId, &ETUIViewScript::ET_onViewGetFocus);
+        ET_SendEvent(topViewId, &ETUIView::ET_setFocus, true);
     }
 }

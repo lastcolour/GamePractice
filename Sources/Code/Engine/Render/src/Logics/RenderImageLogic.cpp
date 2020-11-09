@@ -8,7 +8,7 @@ RenderImageLogic::RenderImageLogic() :
 
 RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
     RenderNode(nodeType),
-    size(100) {
+    size(100.f) {
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -36,15 +36,11 @@ void RenderImageLogic::ET_setImage(const char* imageName) {
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setImage, image);
 }
 
-Vec2i RenderImageLogic::ET_getImageSize() const {
-    return Vec2i(0);
-}
-
-void RenderImageLogic::ET_setSize(const Vec2i& newSize) {
+void RenderImageLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
-Vec2i RenderImageLogic::ET_getSize() const {
+Vec2 RenderImageLogic::ET_getSize() const {
     return size;
 }

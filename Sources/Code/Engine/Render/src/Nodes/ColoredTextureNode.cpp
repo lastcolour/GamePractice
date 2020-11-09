@@ -4,7 +4,7 @@
 #include "RenderTexture.hpp"
 
 ColoredTextureNode::ColoredTextureNode() :
-    size(100),
+    size(100.f),
     color(255, 255, 255) {
 }
 
@@ -38,7 +38,7 @@ void ColoredTextureNode::ET_setColor0(const ColorB& newColor) {
     color = newColor;
 }
 
-void ColoredTextureNode::ET_setSize(const Vec2i& newSize) {
+void ColoredTextureNode::ET_setSize(const Vec2& newSize) {
     size = newSize;
 }
 

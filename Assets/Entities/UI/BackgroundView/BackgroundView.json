@@ -13,10 +13,10 @@
           "z": 1.0
         },
         "rot": {
-          "x": 0,
-          "y": 0,
-          "z": 0,
-          "w": 1
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
         }
       },
       "name": "Effects/BackgroundEffect.json",
@@ -64,8 +64,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 150,
-          "y": 266
+          "x": 528.0,
+          "y": 938.0
         },
         "startColor": {
           "r": 51,

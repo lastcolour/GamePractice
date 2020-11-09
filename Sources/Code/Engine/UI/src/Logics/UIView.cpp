@@ -1,5 +1,6 @@
 #include "Logics/UIView.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "UI/ETUIViewScript.hpp"
 
 void UIView::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIView>("UIView")) {
@@ -7,14 +8,35 @@ void UIView::Reflect(ReflectContext& ctx) {
     }
 }
 
-UIView::UIView() {
+UIView::UIView() :
+    hasFocus(false) {
 }
 
 UIView::~UIView() {
 }
 
+void UIView::ET_setFocus(bool flag) {
+    if(flag == hasFocus) {
+        return;
+    }
+    hasFocus = flag;
+    if(hasFocus) {
+        ET_SendEvent(getEntityId(), &ETUIElement::ET_enable);
+        ET_SendEvent(getEntityId(), &ETUIViewScript::ET_onViewGetFocus);
+    } else {
+        ET_SendEvent(getEntityId(), &ETUIElement::ET_disable);
+        ET_SendEvent(getEntityId(), &ETUIViewScript::ET_onViewLostFocus);
+    }
+}
+
+bool UIView::ET_getFocus() const {
+    return hasFocus;
+}
+
 bool UIView::init() {
     UIBox::init();
+
+    ETNode<ETUIView>::connect(getEntityId());
 
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);

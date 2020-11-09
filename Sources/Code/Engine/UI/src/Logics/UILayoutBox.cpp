@@ -33,7 +33,8 @@ void UILayoutBox::ET_onLoaded() {
     ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
     if(boxRenderId.isValid()) {
         auto box = ET_getBox();
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, box.getSize());
+        Vec2i boxSize = box.getSize();
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     }
 }
@@ -79,6 +80,7 @@ void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
 
     aabb = newAabb;
     updateHostLayout();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, aabb.getSize());
+    Vec2i boxSize = aabb.getSize();
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxChanged, aabb);
 }

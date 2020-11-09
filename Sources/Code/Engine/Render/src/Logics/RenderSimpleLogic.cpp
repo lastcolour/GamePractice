@@ -4,7 +4,7 @@
 
 RenderSimpleLogic::RenderSimpleLogic() :
     RenderNode(RenderNodeType::Simple),
-    size(20),
+    size(20.f),
     color(255, 255, 255) {
 }
 
@@ -33,11 +33,11 @@ void RenderSimpleLogic::ET_setColor(const ColorB& col) {
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, col);
 }
 
-void RenderSimpleLogic::ET_setSize(const Vec2i& newSize) {
+void RenderSimpleLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
     ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
 }
 
-Vec2i RenderSimpleLogic::ET_getSize() const {
+Vec2 RenderSimpleLogic::ET_getSize() const {
     return size;
 }

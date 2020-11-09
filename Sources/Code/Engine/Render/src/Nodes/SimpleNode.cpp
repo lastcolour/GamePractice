@@ -2,7 +2,7 @@
 #include "Logics/RenderAuxFunctions.hpp"
 
 SimpleNode::SimpleNode() :
-    size(100),
+    size(100.f),
     color(255, 255, 255) {
 }
 
@@ -18,7 +18,7 @@ void SimpleNode::ET_setColor0(const ColorB& newColor) {
     color = newColor;
 }
 
-void SimpleNode::ET_setSize(const Vec2i& newSize) {
+void SimpleNode::ET_setSize(const Vec2& newSize) {
     size = newSize;
 }
 
