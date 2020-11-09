@@ -32,10 +32,4 @@ struct ETRenderMaterialManager {
     virtual std::shared_ptr<RenderMaterial> ET_createMaterial(const char* matName) = 0;
 };
 
-struct ETRenderResourceManager {
-    virtual ~ETRenderResourceManager() = default;
-    virtual void ET_forgetResoruces() = 0;
-    virtual void ET_cleanUnused() = 0;
-};
-
 #endif /* __ET_RENDER_MANAGER_HPP__ */

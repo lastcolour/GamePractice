@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 
 from native.ValueNative import ValueType
 from utils.ViewUtils import GetMinimunWidgetTreeHeight
-from utils.EventManager import GetEventManager
+from utils.Managers import GetEventManager
 
 from menu.EntityLogicMenu import EntityLogicMenu
 
@@ -185,6 +185,7 @@ class LogicView(QWidget):
             else:
                 item = QTreeWidgetItem(rootItem)
                 item.setText(0, value.getName())
+                item.setToolTip(0, value.getName())
                 widgetTree.setItemWidget(item, 1, self._createEditWidget(value))
 
     def _signal_tree_itemCollapseExpanded(self, item):

@@ -7,6 +7,52 @@
 #include <algorithm>
 #include <limits>
 
+namespace {
+
+void DrawFPSChart(Vec2& pt, Vec2& size, const CycleArray<float>& fpsValues) {
+    Vec2 startPt(0.f);
+    Vec2 endPt(0.f);
+
+    startPt = pt;
+    endPt = Vec2(startPt.x, startPt.y + size.y);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1);
+
+    startPt = pt;
+    endPt = Vec2(startPt.x + size.x, startPt.y);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1);
+
+    startPt = pt + size;
+    endPt = Vec2(startPt.x - size.x, startPt.y);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1);
+
+    startPt = pt + size;
+    endPt = Vec2(startPt.x, startPt.y - size.y);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1);
+
+    if(fpsValues.size() <= 1) {
+        return;
+    }
+
+    float step = size.x / fpsValues.maxSize();
+
+    float maxFps = 60.f;
+    float maxY = size.y * 0.8f;
+
+    startPt.x = pt.x;
+    startPt.y = pt.y + Math::Lerp(0.f, maxY, std::min(fpsValues[fpsValues.getPos()] / maxFps, 1.f));
+    endPt = pt;
+
+    for(size_t i = 1, sz = fpsValues.size(); i < sz; ++i) {
+        size_t valIdx = (i + fpsValues.getPos()) % fpsValues.maxSize();
+        endPt.x += step;
+        endPt.y = pt.y + Math::Lerp(0.f, maxY, std::min(fpsValues[valIdx] / maxFps, 1.f));
+        ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255, 255, 0), endPt, ColorB(255, 255, 0), 1.f);
+        startPt = endPt;
+    }
+}
+
+} // namespace
+
 FrameStatsTracker::FrameStatsTracker() :
     fpsValues(60) {
 }
@@ -52,9 +98,9 @@ void FrameStatsTracker::onFrameEnd() {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETRenderCamera::ET_getRenderPort);
 
-    Vec2i drawPt = viewPort;
-    drawPt.x -= 175;
-    drawPt.y -= 18;
+    Vec2 drawPt = Vec2(static_cast<float>(viewPort.x), static_cast<float>(viewPort.y));
+    drawPt.x = 10.f;
+    drawPt.y -= 18.f;
 
     ColorB col(255, 255, 0);
 
@@ -63,11 +109,14 @@ void FrameStatsTracker::onFrameEnd() {
         ET_SendEvent(&ETDebugRender::ET_drawText, drawPt, 16.f, col, fpsText.c_str());
     }
 
-    drawPt.x += 30;
-    drawPt.y -= 16;
+    drawPt.y -= 16.f;
 
     {
         std::string drawTimeText = StringFormat("Draw Time: %.2f ms ", drawTime);
         ET_SendEvent(&ETDebugRender::ET_drawText, drawPt, 14.f, col, drawTimeText.c_str());
     }
+
+    drawPt.y -= 45.f;
+
+    DrawFPSChart(drawPt, Vec2(120.f, 40.f), fpsValues);
 }

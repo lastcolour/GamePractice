@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushB
 
 from view.base.FileTreeView import FileTreeView
 
-from utils.EventManager import GetEventManager
+from utils.Managers import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
 
 from native.ValueNative import ResourceType

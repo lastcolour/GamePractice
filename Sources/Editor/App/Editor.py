@@ -3,11 +3,7 @@ from PyQt5 import QtCore
 
 from utils.Log import Log
 from utils.AppConfig import AppConfig
-from utils.EventManager import CreateEventManager
-from utils.EngineViewManager import CreateEngineViewManager
-from utils.MainViewManager import CreateMainViewManager, GetMainViewManager
-from utils.CopyPasteManager import CreateCopyPasteManager
-from utils.GameManager import CreateGameManager
+from utils.Managers import CreateManagers
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
@@ -57,11 +53,7 @@ class EditorView(QMainWindow):
         self._openFileTreeView()
         self._openEntityLogicsView()
 
-        CreateMainViewManager(self)
-        CreateEngineViewManager(self)
-        CreateEventManager(self)
-        CreateCopyPasteManager(self)
-        CreateGameManager(self)
+        CreateManagers(self)
 
     def _openEntityTreeView(self):
         self._entityTreeView = EntityTreeView()

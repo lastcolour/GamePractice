@@ -7,20 +7,20 @@
 #include <string>
 
 struct DebugDrawLineCmd {
-    Vec2i startPt;
-    Vec2i endPt;
+    Vec2 startPt;
+    Vec2 endPt;
     ColorB startCol;
     ColorB endCol;
-    int width;
+    float width;
 };
 
 struct DebugDrawQuadCmd {
-    AABB2Di box;
+    AABB2D box;
     ColorB col;
 };
 
 struct DebugDrawTextCmd {
-    Vec2i pt;
+    Vec2 pt;
     std::string text;
     float size;
     ColorB col;

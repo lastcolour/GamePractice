@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QFrame, QWidget, QVBoxLayout, QDockWidget
 from PyQt5 import QtCore
 
-from utils.MainViewManager import GetMainViewManager
+from utils.Managers import GetMainViewManager
 
 class _MainFrameWidget(QWidget):
     def __init__(self, widget):

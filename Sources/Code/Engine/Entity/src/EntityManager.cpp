@@ -372,7 +372,7 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
     auto childrenNode = node.object("children");
     if(!childrenNode) {
         LogWarning("[EntityManager::setupEntityChildren] Can't find required 'children' node in entity '%s'", entity->ET_getName());
-        return false;
+        return true;
     }
     for(const auto& childNode : childrenNode) {
         if(!childNode.hasKey("id")) {

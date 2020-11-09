@@ -47,7 +47,10 @@ Buffer::Buffer(size_t buffSize) :
 Buffer::Buffer(const void* dataPtr, size_t dataSize) :
     buffImpl() {
     resize(dataSize);
-    memcpy(buffImpl->data.get(), dataPtr, dataSize);
+    if(dataSize > 0) {
+        assert(dataPtr != nullptr && "Invalid source data");
+        memcpy(buffImpl->data.get(), dataPtr, dataSize);
+    }
 }
 
 Buffer::~Buffer() {

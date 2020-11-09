@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QToolBar, QPushButton, QComboBox, QLabel
 
-from utils.EngineViewManager import GetEngineViewManager
-from utils.GameManager import GetGameManager
+from utils.Managers import GetEngineViewManager
+from utils.Managers import GetGameManager
 
 from view.EngineOutputFrameView import AspecRatio
 

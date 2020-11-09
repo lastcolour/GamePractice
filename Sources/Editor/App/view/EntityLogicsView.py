@@ -5,7 +5,7 @@ from .LogicView import LogicView
 from .values.EditTransformValue import EditTransformValue
 
 from utils.ViewUtils import ClearLayout
-from utils.EventManager import GetEventManager
+from utils.Managers import GetEventManager
 
 from menu.EntityLogicMenu import EntityLogicMenu
 

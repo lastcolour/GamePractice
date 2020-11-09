@@ -6,8 +6,7 @@
 #include "Render/ETRenderManager.hpp"
 
 class RenderGeometryManager : public SystemLogic,
-    public ETNode<ETRenderGeometryManager>,
-    public ETNode<ETRenderResourceManager> {
+    public ETNode<ETRenderGeometryManager> {
 public:
 
     RenderGeometryManager();
@@ -19,10 +18,6 @@ public:
 
     // ETRenderGeometryManager
     std::shared_ptr<RenderGeometry> ET_createGeometry(PrimitiveGeometryType geomType) override;
-
-    // ETRenderResourceManager
-    void ET_forgetResoruces() override;
-    void ET_cleanUnused() override;
 
 private:
 

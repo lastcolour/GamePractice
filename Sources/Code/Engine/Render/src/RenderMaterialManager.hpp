@@ -6,8 +6,7 @@
 #include "Render/ETRenderManager.hpp"
 
 class RenderMaterialManager : public SystemLogic,
-    public ETNode<ETRenderMaterialManager>,
-    public ETNode<ETRenderResourceManager> {
+    public ETNode<ETRenderMaterialManager> {
 public:
 
     RenderMaterialManager();
@@ -19,10 +18,6 @@ public:
 
     // ETRenderMaterialManager
     std::shared_ptr<RenderMaterial> ET_createMaterial(const char* matName) override;
-
-    // ETRenderResourceManager
-    void ET_forgetResoruces() override;
-    void ET_cleanUnused() override;
 
 private:
 

@@ -19,12 +19,10 @@ RenderGeometryManager::~RenderGeometryManager() {
 
 bool RenderGeometryManager::init() {
     ETNode<ETRenderGeometryManager>::connect(getEntityId());
-    ETNode<ETRenderResourceManager>::connect(getEntityId());
     return true;
 }
 
 void RenderGeometryManager::deinit() {
-    ETNode<ETRenderResourceManager>::disconnect();
     ETNode<ETRenderGeometryManager>::disconnect();
 }
 
@@ -150,24 +148,6 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     geometry->vertType = VertexType::Vector4;
 
     return geometry;
-}
-
-void RenderGeometryManager::ET_forgetResoruces() {
-    geometris.clear();
-}
-
-void RenderGeometryManager::ET_cleanUnused() {
-    auto it = geometris.begin();
-    while(it != geometris.end()) {
-        auto& geomPtr = it->second;
-        if(geomPtr.use_count() == 1) {
-            glDeleteBuffers(1, &(geomPtr->vboId));
-            glDeleteVertexArrays(1, &(geomPtr->vaoId));
-            it = geometris.erase(it);
-        } else {
-            ++it;
-        }
-    }
 }
 
 std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {

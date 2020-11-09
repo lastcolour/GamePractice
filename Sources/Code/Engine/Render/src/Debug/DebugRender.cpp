@@ -7,21 +7,6 @@
 #include <cmath>
 #include <algorithm>
 
-namespace {
-
-AABB2Di GetBoxFromStartEnd(const Vec2i& startPt, const Vec2i& endPt) {
-    AABB2Di box;
-
-    box.bot.x = std::min(startPt.x, endPt.x);
-    box.bot.y = std::min(startPt.y, endPt.y);
-    box.top.x = std::max(startPt.x, endPt.x);
-    box.top.y = std::max(startPt.y, endPt.y);
-
-    return box;
-}
-
-} // namespace
-
 DebugRender::DebugRender() {
 }
 
@@ -52,7 +37,7 @@ void DebugRender::ET_init() {
 void DebugRender::deinit() {
 }
 
-void DebugRender::ET_drawLine(const Vec2i& startPt, const ColorB& startCol, const Vec2i& endPt, const ColorB& endCol, int width) {
+void DebugRender::ET_drawLine(const Vec2& startPt, const ColorB& startCol, const Vec2& endPt, const ColorB& endCol, float width) {
     std::lock_guard<std::mutex> lock(mutex);
     {
         DebugDrawLineCmd cmd;
@@ -65,7 +50,7 @@ void DebugRender::ET_drawLine(const Vec2i& startPt, const ColorB& startCol, cons
     }
 }
 
-void DebugRender::ET_drawQuad(const AABB2Di& box, const ColorB& col) {
+void DebugRender::ET_drawQuad(const AABB2D& box, const ColorB& col) {
     std::lock_guard<std::mutex> lock(mutex);
     {
         DebugDrawQuadCmd cmd;
@@ -75,7 +60,7 @@ void DebugRender::ET_drawQuad(const AABB2Di& box, const ColorB& col) {
     }
 }
 
-void DebugRender::ET_drawText(const Vec2i& pt, float size, const ColorB& col, const char* text) {
+void DebugRender::ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) {
     std::lock_guard<std::mutex> lock(mutex);
     {
         DebugDrawTextCmd cmd;
@@ -101,15 +86,17 @@ void DebugRender::drawLines(RenderContext& ctx) {
 
     Transform tm;
     for(auto& cmd : drawLineCmds) {
-        auto box = GetBoxFromStartEnd(cmd.startPt, cmd.endPt);
-        Vec2i center = box.getCenter();
-        Vec2i size = box.getSize();
-        tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
-        simpleNode.ET_setTransform(tm);
-        int lineLen = static_cast<int>(sqrtf(static_cast<float>(size.x * size.x + size.y * size.y)));
-        int lineWidth = 2;
-        simpleNode.ET_setSize(Vec2i(lineLen, lineWidth));
+        Vec2 center = (cmd.startPt + cmd.endPt) / 2.f;
+        Vec2 dir = cmd.endPt - cmd.startPt;
+        float lineLen = dir.getLenght();
+        dir.normalize();
+
+        tm.pt = Vec3(center.x, center.y, 0.f);
+        tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), acos(dir.x));
+
+        simpleNode.ET_setSize(Vec2i(lineLen, cmd.width));
         simpleNode.ET_setColor0(cmd.startCol);
+        simpleNode.ET_setTransform(tm);
         simpleNode.render(ctx);
     }
     drawLineCmds.clear();
@@ -120,10 +107,10 @@ void DebugRender::drawQuads(RenderContext& ctx) {
 
     Transform tm;
     for(auto& cmd : drawQuadCmds) {
-        Vec2i center = cmd.box.getCenter();
-        tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
+        tm.pt = Vec3(cmd.box.getCenter(), 0.f);
         simpleNode.ET_setTransform(tm);
-        simpleNode.ET_setSize(cmd.box.getSize());
+        Vec2 size = cmd.box.getSize();
+        simpleNode.ET_setSize(Vec2i(size.y, size.y));
         simpleNode.ET_setColor0(cmd.col);
         simpleNode.render(ctx);
     }

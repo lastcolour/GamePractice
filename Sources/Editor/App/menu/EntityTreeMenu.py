@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QMenu, QAction, QLineEdit
 
 from dialog.SelectChildEntity import SelectChildEntity
 
-from utils.CopyPasteManager import GetCopyPasteManager
-from utils.EventManager import GetEventManager
+from utils.Managers import GetCopyPasteManager
+from utils.Managers import GetEventManager
 
 class EntityNameEdit(QLineEdit):
     def __init__(self, parent):

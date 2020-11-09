@@ -8,8 +8,7 @@
 class RenderFont;
 
 class RenderFontManager : public SystemLogic,
-    public ETNode<ETRenderFontManager>,
-    public ETNode<ETRenderResourceManager> {
+    public ETNode<ETRenderFontManager> {
 public:
 
     RenderFontManager();
@@ -22,10 +21,6 @@ public:
     // ETRenderFontManager
     std::shared_ptr<RenderFont> ET_getDefaultFont() override;
     std::shared_ptr<RenderFont> ET_getFont(const char* fontName) override;
-
-    // ETRenderResourceManager
-    void ET_forgetResoruces() override;
-    void ET_cleanUnused() override;
 
 private:
 

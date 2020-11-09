@@ -2,8 +2,9 @@ from PyQt5.QtWidgets import QWidget, QSizePolicy
 from PyQt5.QtCore import Qt, QSize, QPoint, QTimer
 from PyQt5.QtGui import QPainter, QImage, QResizeEvent
 
-from utils.EventManager import GetEventManager
-from utils.EngineViewManager import GetEngineViewManager, MouseEventType
+from utils.Managers import GetEventManager
+from utils.Managers import GetEngineViewManager
+from utils.EngineViewManager import MouseEventType
 
 class AspecRatio:
     Ratio_4x3 = 0

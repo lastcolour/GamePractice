@@ -149,7 +149,6 @@ void Render::ET_onSurfaceResized(const Vec2i& size) {
 
 void Render::ET_onContextReCreated() {
     hasContext = true;
-    ET_SendEvent(&ETRenderResourceManager::ET_forgetResoruces);
 }
 
 void Render::ET_onContextSuspended() {

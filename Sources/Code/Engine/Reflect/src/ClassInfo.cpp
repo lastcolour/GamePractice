@@ -316,7 +316,6 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Entit
                 if(!value.readValueFrom(ctx, instance, ptr, node)) {
                     LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                         value.name, className);
-                    return false;
                 }
             }
         }

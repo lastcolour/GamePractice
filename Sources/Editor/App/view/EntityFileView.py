@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QTreeWidget, QLineEdit, QVBoxLayout, QTreeW
 from PyQt5 import QtCore
 
 from menu.FileTreeMenu import FileTreeMenu
-from utils.EventManager import GetEventManager
+from utils.Managers import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
 from view.base.FileTreeView import FileTreeView
 

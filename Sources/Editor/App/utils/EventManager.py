@@ -1,5 +1,4 @@
 from utils.Log import Log
-from utils.MainViewManager import GetMainViewManager
 
 from dialog.LogicSelecDialog import LogicSelectDialog
 from dialog.SaveEntityChanges import SaveEntityChanges
@@ -10,14 +9,11 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
 import os
 
-class _EventManager:
+class EventManager:
 
-    _INSTANCE = None
-
-    def __init__(self, app):
-        if _EventManager._INSTANCE is not None:
-            raise RuntimeError("One instance of event manager already exists")
-        self._app = app
+    def __init__(self, mgr):
+        self._mgr = mgr
+        self._app = mgr._app
         self._currentEntity = None
 
     def _askToSaveEntity(self):
@@ -53,12 +49,12 @@ class _EventManager:
             self._currentEntity.unloadFromNative()
         self._currentEntity = newEntity
         self._currentEntity._syncWithNative()
-        GetMainViewManager().onEntityDoubleClickFromFileTree(self._currentEntity)
+        self._mgr._mainViewMgr.onEntityDoubleClickFromFileTree(self._currentEntity)
 
     def onEntityClickedFromEntityTree(self, entity):
         if entity is not None:
             entity._syncWithNative()
-        GetMainViewManager().onEntityClickedFromEntityTree(entity)
+        self._mgr._mainViewMgr.onEntityClickedFromEntityTree(entity)
 
     def onAddLogicBtClicked(self, editEntity):
         if editEntity is None:
@@ -141,14 +137,7 @@ class _EventManager:
                 return
             self._currentEntity.unloadFromNative()
         self._currentEntity = None
-        GetMainViewManager().closeEditEntity()
+        self._mgr._mainViewMgr.closeEditEntity()
 
     def saveEditEntity(self):
         self._currentEntity.save()
-
-def GetEventManager():
-    return _EventManager._INSTANCE
-
-def CreateEventManager(app):
-    manger = _EventManager(app)
-    _EventManager._INSTANCE = manger

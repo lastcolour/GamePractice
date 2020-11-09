@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QTreeWidget, QVBoxLayout, QTreeWidgetItem, 
 from PyQt5 import QtCore
 
 from menu.EntityTreeMenu import EntityTreeMenu
-from utils.EventManager import GetEventManager
+from utils.Managers import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
 
 class EntityTreeView(QWidget):

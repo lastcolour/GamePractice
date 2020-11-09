@@ -15,7 +15,7 @@
             "y": 0.0
           },
           "duration": -1.0,
-          "emissionRate": 150.0,
+          "emissionRate": 3000.0,
           "lifetime": 1.0,
           "startDelay": 0.0,
           "autoStart": true,

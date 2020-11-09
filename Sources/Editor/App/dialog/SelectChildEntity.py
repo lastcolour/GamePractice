@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QTreeWidgetItem, QTreeWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit
 
 from view.base.FileTreeView import FileTreeView
-from utils.EventManager import GetEventManager
+from utils.Managers import GetEventManager
 
 def _disableItemIfCantBeChild(entity, treeItem):
     for i in range(treeItem.childCount()):

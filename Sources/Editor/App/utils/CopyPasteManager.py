@@ -3,12 +3,10 @@ class CopyEntityData:
         self._name = None
         self._data = None
 
-class _CopyPasteManager:
+class CopyPasteManager:
 
-    _INSTANCE = None
-
-    def __init__(self, app):
-        self._app = app
+    def __init__(self, mgr):
+        self._mgr = mgr
         self._copyLogicData = None
         self._copyEntityData = None
 
@@ -26,10 +24,3 @@ class _CopyPasteManager:
 
     def getCopyLogic(self):
         return self._copyLogicData
-
-def GetCopyPasteManager():
-    return _CopyPasteManager._INSTANCE
-
-def CreateCopyPasteManager(app):
-    manger = _CopyPasteManager(app)
-    _CopyPasteManager._INSTANCE = manger

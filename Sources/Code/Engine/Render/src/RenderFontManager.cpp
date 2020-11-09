@@ -54,7 +54,6 @@ RenderFontManager::~RenderFontManager() {
 
 bool RenderFontManager::init() {
     ETNode<ETRenderFontManager>::connect(getEntityId());
-    ETNode<ETRenderResourceManager>::connect(getEntityId());
     if(!loadDefaultFont()) {
         return false;
     }
@@ -63,7 +62,6 @@ bool RenderFontManager::init() {
 
 void RenderFontManager::deinit() {
     ETNode<ETRenderFontManager>::disconnect();
-    ETNode<ETRenderResourceManager>::disconnect();
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
@@ -189,11 +187,4 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
     FT_Done_Face(fontFace);
     FT_Done_FreeType(ftLib);
     return font;
-}
-
-void RenderFontManager::ET_forgetResoruces() {
-    fonts.clear();
-}
-
-void RenderFontManager::ET_cleanUnused() {
 }

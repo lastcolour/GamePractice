@@ -7,7 +7,7 @@ template<typename T>
 class CycleArray {
 public:
 
-    CycleArray(size_t size) :
+    explicit CycleArray(size_t size) :
         data(size),
         pos(0),
         count(0) {
@@ -19,10 +19,17 @@ public:
         return count;
     }
 
+    size_t maxSize() const {
+        return data.size();
+    }
+
+    size_t getPos() const {
+        return pos;
+    }
+
     T& operator[](size_t idx) {
         return data[idx];
     }
-
 
     const T& operator[](size_t idx) const {
         return data[idx];
@@ -30,7 +37,7 @@ public:
 
     void insert(T& elem) {
         pos += 1;
-        if(pos > count) {
+        if(count < pos) {
             count = pos;
         }
         pos %= data.size();

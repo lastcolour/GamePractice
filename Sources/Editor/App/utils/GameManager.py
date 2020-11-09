@@ -1,17 +1,8 @@
-class _GameManager:
+class GameManager:
 
-    _INSTANCE = None
-
-    def __init__(self, app):
-        self._app = app
+    def __init__(self, mgr):
+        self._mgr = mgr
 
     def startGame(self):
-        gameMonitor = self._app._editorNative.getGameMonitor()
+        gameMonitor = self._mgr._app._editorNative.getGameMonitor()
         gameMonitor.startGame()
-
-def GetGameManager():
-    return _GameManager._INSTANCE
-
-def CreateGameManager(app):
-    manger = _GameManager(app)
-    _GameManager._INSTANCE = manger

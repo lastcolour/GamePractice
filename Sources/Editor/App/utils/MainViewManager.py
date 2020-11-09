@@ -1,11 +1,8 @@
-from PyQt5 import QtCore
+class MainViewManager:
 
-class _MainViewManager:
-
-    _INSTANCE = None
-
-    def __init__(self, app):
-        self._app = app
+    def __init__(self, mgr):
+        self._mgr = mgr
+        self._app = mgr._app
 
     def onEntityDoubleClickFromFileTree(self, editEntity):
         if self._app._entityLogicsView is not None:
@@ -27,6 +24,7 @@ class _MainViewManager:
         if self._app._entityTreeView is not None:
             return
         self._app._openEntityTreeView()
+        self._app._entityTreeView.setEditEntity(self._mgr._eventMgr._currentEntity)
 
     def openFileTreeView(self):
         if self._app._entityFileView is not None:
@@ -37,6 +35,7 @@ class _MainViewManager:
         if self._app._entityLogicsView is not None:
             return
         self._app._openEntityLogicsView()
+        self._app._entityLogicsView.setEditEntity(self._mgr._eventMgr._currentEntity)
 
     def onMainViewClosed(self, view):
         if view == self._app._entityFileView:
@@ -47,10 +46,3 @@ class _MainViewManager:
             self._app._entityTreeView = None
         else:
             raise RuntimeError("Unknown main view")
-
-def GetMainViewManager():
-    return _MainViewManager._INSTANCE
-
-def CreateMainViewManager(app):
-    manger = _MainViewManager(app)
-    _MainViewManager._INSTANCE = manger

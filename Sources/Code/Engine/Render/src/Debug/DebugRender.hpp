@@ -24,9 +24,9 @@ public:
 
     // ETDebugRender
     void ET_init() override;
-    void ET_drawLine(const Vec2i& startPt, const ColorB& startCol, const Vec2i& endPt, const ColorB& endCol, int width) override;
-    void ET_drawQuad(const AABB2Di& box, const ColorB& col) override;
-    void ET_drawText(const Vec2i& pt, float size, const ColorB& col, const char* text) override;
+    void ET_drawLine(const Vec2& startPt, const ColorB& startCol, const Vec2& endPt, const ColorB& endCol, float width) override;
+    void ET_drawQuad(const AABB2D& box, const ColorB& col) override;
+    void ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) override;
     void ET_update() override;
 
 private:

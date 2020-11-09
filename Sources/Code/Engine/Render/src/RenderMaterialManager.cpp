@@ -23,13 +23,11 @@ RenderMaterialManager::~RenderMaterialManager() {
 
 bool RenderMaterialManager::init() {
     ETNode<ETRenderMaterialManager>::connect(getEntityId());
-    ETNode<ETRenderResourceManager>::connect(getEntityId());
     return true;
 }
 
 void RenderMaterialManager::deinit() {
     ETNode<ETRenderMaterialManager>::disconnect();
-    ETNode<ETRenderResourceManager>::disconnect();
 }
 
 std::shared_ptr<RenderMaterial> RenderMaterialManager::ET_createMaterial(const char* matName) {
@@ -166,21 +164,4 @@ int RenderMaterialManager::createMaterialProgram(const std::string& matName) {
         return programId;
     }
     return INVALID_PROGRAM_ID;
-}
-
-void RenderMaterialManager::ET_forgetResoruces() {
-    materials.clear();
-}
-
-void RenderMaterialManager::ET_cleanUnused() {
-    auto it = materials.begin();
-    while(it != materials.end()) {
-        auto& matPtr = it->second;
-        if(matPtr.use_count() == 1) {
-            glDeleteProgram(matPtr->getProgramId());
-            it = materials.erase(it);
-        } else {
-            ++it;
-        }
-    }
 }

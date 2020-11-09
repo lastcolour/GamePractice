@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMenu, QAction
 
-from utils.MainViewManager import GetMainViewManager
+from utils.Managers import GetMainViewManager
 
 class MainViewMenu(QMenu):
     def __init__(self, parent):

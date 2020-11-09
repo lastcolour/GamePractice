@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMenu, QAction
 
-from utils.EventManager import GetEventManager
-from utils.CopyPasteManager import GetCopyPasteManager
+from utils.Managers import GetEventManager
+from utils.Managers import GetCopyPasteManager
 
 class EntityLogicMenu(QMenu):
     def __init__(self, parent):

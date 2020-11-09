@@ -3,12 +3,11 @@ class MouseEventType:
     Move = 1
     Release = 2
 
-class _EngineViewManager:
+class EngineViewManager:
 
-    _INSTANCE = None
-
-    def __init__(self, app):
-        self._app = app
+    def __init__(self, mgr):
+        self._mgr = mgr
+        self._app = self._mgr._app
 
     def drawNativeFrameTo(self, ptr, width, height):
         self._app._editorNative.getLibrary().drawFrame(ptr, width, height)
@@ -30,10 +29,3 @@ class _EngineViewManager:
 
     def onMouseInputEvent(self, eventType, x, y):
         self._app._editorNative.getLibrary().mouseInputEvent(eventType, x, y)
-
-def GetEngineViewManager():
-    return _EngineViewManager._INSTANCE
-
-def CreateEngineViewManager(app):
-    manger = _EngineViewManager(app)
-    _EngineViewManager._INSTANCE = manger
