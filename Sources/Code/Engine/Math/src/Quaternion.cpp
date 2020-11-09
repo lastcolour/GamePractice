@@ -227,18 +227,6 @@ Mat4 Quaternion::toMat4() const {
 }
 
 Mat3 Quaternion::toMat3() const {
-    float xx = x * x;
-    float xy = x * y;
-    float xz = x * z;
-    float xw = x * w;
-
-    float yy = y * y;
-    float yz = y * z;
-    float yw = y * w;
-
-    float zz = z * z;
-    float zw = z * w;
-
     float x2 = x + x;
     float y2 = y + y;
     float z2 = z + z;

@@ -3,6 +3,8 @@
 
 #include "Core/Core.hpp"
 
+#include <memory>
+
 class EntityLogicsRegister;
 class JSONNode;
 class MemoryStream;

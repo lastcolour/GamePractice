@@ -9,7 +9,7 @@
 
 namespace {
 
-void DrawFPSChart(Vec2& pt, Vec2& size, const CycleArray<float>& fpsValues) {
+void DrawFPSChart(Vec2& pt, const Vec2& size, const CycleArray<float>& fpsValues) {
     Vec2 startPt(0.f);
     Vec2 endPt(0.f);
 
