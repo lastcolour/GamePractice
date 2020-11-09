@@ -332,7 +332,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
         }
         auto it = registeredLogics.find(logicType);
         if(it == registeredLogics.end()) {
-            LogWarning("[EntityManager::setupEntityLogics] Can't find logic type '%s' for entity '%s'", logicType, entity->ET_getName());
+            LogError("[EntityManager::setupEntityLogics] Can't find logic type '%s' for entity '%s'", logicType, entity->ET_getName());
             continue;
         }
         EntityLogicId logicId = InvalidEntityLogicId;

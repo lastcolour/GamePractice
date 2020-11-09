@@ -107,10 +107,12 @@ void UIViewManager::ET_closeView(UIViewType viewType) {
         LogWarning("[UIViewManager::ET_closeView] Can't find view '%s' to close", viewTypeStr);
         return;
     }
-    LogDebug("[UIViewManager::ET_closeView] Close view: '%s'", viewTypeStr);
-    ET_SendEvent(it->id, &ETUIView::ET_setFocus, false);
-    ET_SendEvent(&ETUIViewTransitionManager::ET_addDisappearing, it->id);
+    EntityId viewId = it->id;
     stack.erase(it);
+    closingViews.push_back(viewId);
+    LogDebug("[UIViewManager::ET_closeView] Close view: '%s'", viewTypeStr);
+    ET_SendEvent(viewId, &ETUIView::ET_setFocus, false);
+    ET_SendEvent(&ETUIViewTransitionManager::ET_addDisappearing, viewId);
 }
 
 UIViewType UIViewManager::ET_getActiveViewType() const {
@@ -133,6 +135,11 @@ void UIViewManager::ET_onViewAppeared(EntityId viewId) {
 
 void UIViewManager::ET_onViewDisappeared(EntityId viewId) {
     ET_SendEvent(viewId, &ETUIViewScript::ET_onViewClosed);
+    auto it = std::find(closingViews.begin(), closingViews.end(), viewId);
+    if(it == closingViews.end()) {
+        return;
+    }
+    closingViews.erase(it);
     if(stack.empty()) {
         return;
     }

@@ -21,26 +21,28 @@ void UIViewTransitionManager::deinit() {
 }
 
 void UIViewTransitionManager::ET_onAppeared(EntityId viewId) {
-    if(!tasks.empty()) {
-        auto& currentTask = tasks.front();
-        if(currentTask.viewId == viewId) {
-            assert(currentTask.isAppearing && "Invalid task type");
-            tasks.erase(tasks.begin());
-            ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, viewId);
-            startNextTask();
-        }
+    assert(!tasks.empty() && "Empty tasks");
+    auto& currentTask = tasks.front();
+    if(currentTask.viewId == viewId) {
+        assert(currentTask.isAppearing && "Invalid task type");
+        tasks.erase(tasks.begin());
+        ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, viewId);
+        startNextTask();
+    } else {
+        assert(false && "Invalid viewId");
     }
 }
 
 void UIViewTransitionManager::ET_onDisappeared(EntityId viewId) {
-    if(!tasks.empty()) {
-        auto& currentTask = tasks.front();
-        if(currentTask.viewId == viewId) {
-            assert(!currentTask.isAppearing && "Invalid task type");
-            tasks.erase(tasks.begin());
-            ET_SendEvent(&ETUIViewManager::ET_onViewDisappeared, viewId);
-            startNextTask();
-        }
+    assert(!tasks.empty() && "Empty tasks");
+    auto& currentTask = tasks.front();
+    if(currentTask.viewId == viewId) {
+        assert(!currentTask.isAppearing && "Invalid task type");
+        tasks.erase(tasks.begin());
+        ET_SendEvent(&ETUIViewManager::ET_onViewDisappeared, viewId);
+        startNextTask();
+    } else {
+        assert(false && "Invalid viewId");
     }
 }
 

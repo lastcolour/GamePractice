@@ -61,7 +61,7 @@ TEST_F(TaskRunnerTests, RunTenTasksTenThreads) {
     }
     EXPECT_EQ(value.load(), totalRunCount);
     EXPECT_GE(value.load(), 10000);
-    EXPECT_LE(value.load(), 10100);
+    EXPECT_LE(value.load(), 10200);
 }
 
 TEST_F(TaskRunnerTests, TestFrequency) {
@@ -147,5 +147,5 @@ TEST_F(TaskRunnerTests, CheckManualMainThreadStepping) {
     runner.stopOtherTreads();
 
     EXPECT_EQ(value.load(), MAX_ITER);
-    EXPECT_GE(auxValue.load(), MAX_ITER / 2);
+    EXPECT_GE(auxValue.load(), MAX_ITER / 3);
 }

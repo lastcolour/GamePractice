@@ -40,6 +40,7 @@ private:
 
     LoadingScreenManager loadingScreenMgr;
     std::vector<UIViewNode> stack;
+    std::vector<EntityId> closingViews;
     bool isLoadingView;
 };
 
