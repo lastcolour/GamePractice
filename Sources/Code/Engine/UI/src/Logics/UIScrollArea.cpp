@@ -245,11 +245,7 @@ void UIScrollArea::ET_onAlphaChanged(float newAlpha) {
 }
 
 void UIScrollArea::ET_onHidden(bool flag) {
-    if(flag) {
-        ET_SendEvent(targetId, &ETUIElement::ET_hide);
-    } else {
-        ET_SendEvent(targetId, &ETUIElement::ET_show);
-    }
+    ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
 }
 
 void UIScrollArea::ET_onDisabled(bool flag) {

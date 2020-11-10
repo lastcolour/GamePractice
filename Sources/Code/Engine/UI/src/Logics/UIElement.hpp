@@ -33,6 +33,7 @@ public:
     void ET_disable() override;
     bool ET_isEnabled() const override;
     void ET_setIgnoreTransform(bool flag) override;
+    void ET_setParentHidden(bool flag) override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
@@ -58,6 +59,7 @@ protected:
     bool isIgnoringTransform;
     bool isHidden;
     bool isEnabled;
+    bool isParentHidden;
 };
 
 #endif /* __UI_ELEMENT_HPP__ */

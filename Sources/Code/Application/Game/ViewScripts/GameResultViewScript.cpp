@@ -2,7 +2,6 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Game/ETGameScore.hpp"
 #include "UI/ETUIView.hpp"
-#include "Render/ETRenderNode.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Core/ETLogger.hpp"
@@ -79,6 +78,11 @@ void GameResultViewScript::ET_onViewOpened() {
 
     auto timeStr = StringFormat("%.1f", gameResult.gameTime);
     ET_SendEvent(timeValueId, &ETUILabel::ET_setText, timeStr.c_str());
+
+    ET_SendEvent(continueButtonId, &ETUIElement::ET_hide);
+    ET_SendEvent(progressStars.fristId, &ETUIElement::ET_hide);
+    ET_SendEvent(progressStars.secondId, &ETUIElement::ET_hide);
+    ET_SendEvent(progressStars.thirdId, &ETUIElement::ET_hide);
 }
 
 void GameResultViewScript::ET_onAppeared(EntityId viewId) {
@@ -89,8 +93,10 @@ void GameResultViewScript::ET_onAppeared(EntityId viewId) {
     if(state == State::ShowingStars) {
         state = State::ShowingContinueButton;
         waitingId = continueButtonId;
+        ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
         playAppearAnimation(continueButtonId);
     } else if(state == State::ShowingContinueButton) {
+        ET_SendEvent(continueButtonId, &ETUIElement::ET_enable);
         state = State::Waiting;
     }
 }
@@ -113,20 +119,18 @@ void GameResultViewScript::ET_onViewGetFocus() {
 
     if(starsCount == 0) {
         state = State::ShowingContinueButton;
+        ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
         playAppearAnimation(continueButtonId);
     } else {
             if(starsCount > 0) {
-            ET_SendEvent(progressStars.fristId, &ETRenderNode::ET_show);
             playAppearAnimation(progressStars.fristId);
             waitingId = progressStars.fristId;
         }
         if(starsCount > 1) {
-            ET_SendEvent(progressStars.secondId, &ETRenderNode::ET_show);
             playAppearAnimation(progressStars.secondId);
             waitingId = progressStars.secondId;
         }
         if(starsCount > 2) {
-            ET_SendEvent(progressStars.thirdId, &ETRenderNode::ET_show);
             playAppearAnimation(progressStars.thirdId);
             waitingId = progressStars.thirdId;
         }

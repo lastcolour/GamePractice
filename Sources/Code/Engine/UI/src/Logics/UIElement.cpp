@@ -6,7 +6,8 @@ UIElement::UIElement() :
     zIndex(0),
     isIgnoringTransform(false),
     isHidden(false),
-    isEnabled(true) {
+    isEnabled(true),
+    isParentHidden(false) {
 }
 
 UIElement::~UIElement() {
@@ -75,7 +76,7 @@ void UIElement::ET_hide() {
 }
 
 bool UIElement::ET_isHidden() const {
-    return isHidden;
+    return isHidden || isParentHidden;
 }
 
 float UIElement::ET_getAlpha() const {
@@ -113,4 +114,17 @@ void UIElement::ET_onTransformChanged(const Transform& newTm) {
         return;
     }
     onTransformChanged(newTm);
+}
+
+void UIElement::ET_setParentHidden(bool flag) {
+    if(isParentHidden == flag) {
+        return;
+    }
+    isParentHidden = flag;
+    if(isParentHidden) {
+        onHide(true);
+    } else if(!isHidden) {
+        onHide(false);
+    }
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, ET_isHidden());
 }

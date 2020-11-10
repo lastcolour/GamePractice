@@ -53,7 +53,11 @@ void UILayoutBox::onZIndexChanged(int newZIndex) {
 }
 
 void UILayoutBox::onHide(bool flag) {
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
+    if(flag) {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
+    }
 }
 
 void UILayoutBox::onAlphaChanged(float newAlpha) {

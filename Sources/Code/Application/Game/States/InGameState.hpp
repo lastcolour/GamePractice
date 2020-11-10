@@ -6,9 +6,11 @@
 #include "Game/ETGame.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameScore.hpp"
+#include "Game/ETGameTimer.hpp"
 
 class InGameState : public ETNode<ETGameEndTimerEvents>,
-    public ETNode<ETGameObjectiveEvents> {
+    public ETNode<ETGameObjectiveEvents>,
+    public ETNode<ETGameTimerEvents> {
 public:
 
     InGameState();
@@ -23,8 +25,12 @@ public:
     // ETGameObjectiveEvents
     void ET_onObjectiveCompleted(ObjectiveProgress type) override;
 
+    // ETGameTimerEvents
+    void ET_onGameTick(float dt) override;
+
 private:
 
+    float gameTime;
 };
 
 #endif /* __IN_GAME_STATE_HPP__ */

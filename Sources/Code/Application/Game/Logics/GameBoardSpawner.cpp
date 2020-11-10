@@ -7,7 +7,7 @@
 
 void GameBoardSpawner::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardSpawner>("GameBoardSpawner")) {
-        classInfo->addResourceField("gameBoard", ResourceType::Entity, &GameBoardSpawner::setGameBoard);
+        classInfo->addResourceField("gameBoard", ResourceType::Entity, &GameBoardSpawner::gameBoardName);
     }
 }
 
@@ -15,10 +15,6 @@ GameBoardSpawner::GameBoardSpawner() {
 }
 
 GameBoardSpawner::~GameBoardSpawner() {
-}
-
-void GameBoardSpawner::setGameBoard(const char* gameBoard) {
-    gameBoardName = gameBoard;
 }
 
 bool GameBoardSpawner::init() {

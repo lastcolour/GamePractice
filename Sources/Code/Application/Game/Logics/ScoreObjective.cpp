@@ -12,9 +12,7 @@ void ScoreObjective::Reflect(ReflectContext& ctx) {
     }
 }
 
-ScoreObjective::ScoreObjective() :
-    currentScore(0),
-    currentProgress(ObjectiveProgress::Fail) {
+ScoreObjective::ScoreObjective() {
 }
 
 ScoreObjective::~ScoreObjective() {
@@ -30,33 +28,27 @@ void ScoreObjective::deinit() {
 }
 
 bool ScoreObjective::isObjectiveComplete(ObjectiveTarget& target) const {
-    if(currentScore >= target.minScore) {
+    if(currentResult.score >= target.minScore) {
         return true;
     }
     return false;
 }
 
-void ScoreObjective::ET_resetScore() {
-    currentScore = 0;
-    currentProgress = ObjectiveProgress::Fail;
-    ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, 0);
+const EndGameResult& ScoreObjective::ET_getGameResult() const {
+    return currentResult;
 }
 
-int ScoreObjective::ET_getGameScore() const {
-    return currentScore;
-}
-
-ObjectiveProgress ScoreObjective::ET_getObjectiveProgress() const {
-    return currentProgress;
+void ScoreObjective::ET_setGameTime(float gameTime) {
+    currentResult.gameTime = gameTime;
 }
 
 void ScoreObjective::ET_onElemsDestroyed(EntityId elemId) {
-    currentScore += 1;
-    ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, currentScore);
-    switch(currentProgress) {
+    currentResult.score += 1;
+    ET_SendEvent(&ETGameScoreUpdater::ET_setGameScore, currentResult.score);
+    switch(currentResult.objectiveCompleted) {
         case ObjectiveProgress::Fail: {
             if(isObjectiveComplete(oneStarTarget)) {
-                currentProgress = ObjectiveProgress::OneStar;
+                currentResult.objectiveCompleted = ObjectiveProgress::OneStar;
                 LogDebug("[ScoreObjective::ET_onElemsDestroyed] One-star objective done");
                 ET_SendEvent(&ETGameObjectiveEvents::ET_onObjectiveCompleted, ObjectiveProgress::OneStar);
             } else {
@@ -66,7 +58,7 @@ void ScoreObjective::ET_onElemsDestroyed(EntityId elemId) {
         }
         case ObjectiveProgress::OneStar: {
             if(isObjectiveComplete(twoStarsTarget)) {
-                currentProgress = ObjectiveProgress::TwoStars;
+                currentResult.objectiveCompleted = ObjectiveProgress::TwoStars;
                 LogDebug("[ScoreObjective::ET_onElemsDestroyed] Two-stars objective done");
                 ET_SendEvent(&ETGameObjectiveEvents::ET_onObjectiveCompleted, ObjectiveProgress::TwoStars);
             } else {
@@ -76,7 +68,7 @@ void ScoreObjective::ET_onElemsDestroyed(EntityId elemId) {
         }
         case ObjectiveProgress::TwoStars: {
             if(isObjectiveComplete(threeStarsTarget)) {
-                currentProgress = ObjectiveProgress::ThreeStars;
+                currentResult.objectiveCompleted = ObjectiveProgress::ThreeStars;
                 LogDebug("[ScoreObjective::ET_onElemsDestroyed] Three-stars objective done");
                 ET_SendEvent(&ETGameObjectiveEvents::ET_onObjectiveCompleted, ObjectiveProgress::ThreeStars);
             }

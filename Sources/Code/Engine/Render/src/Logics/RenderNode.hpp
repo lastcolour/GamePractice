@@ -35,7 +35,6 @@ public:
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
     void ET_setAlphaMultiplier(float newAlphaMult) override;
-    void ET_setVisibilityMultiplier(bool newVisMult) override;
 
     // ETRenderProxyNodeEvents
     void ET_syncWithRender() override;
@@ -56,7 +55,6 @@ protected:
     int drawPriority;
     RenderNodeType type;
     bool isVisible;
-    bool visMult;
     bool isLoaded;
     bool isTmChanged;
     bool isVisChanged;

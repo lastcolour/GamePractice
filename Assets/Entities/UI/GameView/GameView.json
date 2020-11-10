@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 434.0,
+          "y": 413.0,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -183.0,
+                "x": -175.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -53.0,
+                      "x": -51.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -102,8 +102,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 24,
-                            "y": 24
+                            "x": 23.0,
+                            "y": 23.0
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -120,7 +120,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -13.0,
+                      "x": -12.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -174,7 +174,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 18,
                           "text": "Time:"
                         }
                       }
@@ -184,7 +184,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 39.0,
+                      "x": 36.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -219,7 +219,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "60.0",
+                          "text": "15.0",
                           "render": [
                             0
                           ]
@@ -238,8 +238,8 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
-                          "text": "60.0"
+                          "fontSize": 18,
+                          "text": "15.0"
                         }
                       },
                       {
@@ -281,8 +281,8 @@
                     "alpha": 0.5,
                     "drawPriority": 4,
                     "size": {
-                      "x": 141,
-                      "y": 38
+                      "x": 134.0,
+                      "y": 36.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -340,7 +340,7 @@
           {
             "transform": {
               "pos": {
-                "x": 184.0,
+                "x": 175.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -388,7 +388,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -24.0,
+                            "x": -23.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -459,12 +459,12 @@
                                     "type": "RenderColoredTexture",
                                     "id": 2,
                                     "data": {
-                                      "isVisible": false,
+                                      "isVisible": true,
                                       "alpha": 1.0,
                                       "drawPriority": 10,
                                       "size": {
-                                        "x": 22,
-                                        "y": 22
+                                        "x": 21.0,
+                                        "y": 21.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -528,8 +528,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 19,
-                                  "y": 19
+                                  "x": 18.0,
+                                  "y": 18.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -633,12 +633,12 @@
                                     "type": "RenderColoredTexture",
                                     "id": 2,
                                     "data": {
-                                      "isVisible": false,
+                                      "isVisible": true,
                                       "alpha": 1.0,
                                       "drawPriority": 10,
                                       "size": {
-                                        "x": 22,
-                                        "y": 22
+                                        "x": 21.0,
+                                        "y": 21.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -702,8 +702,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 19,
-                                  "y": 19
+                                  "x": 18.0,
+                                  "y": 18.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -736,7 +736,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 24.0,
+                            "x": 23.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -807,12 +807,12 @@
                                     "type": "RenderColoredTexture",
                                     "id": 2,
                                     "data": {
-                                      "isVisible": false,
+                                      "isVisible": true,
                                       "alpha": 1.0,
                                       "drawPriority": 10,
                                       "size": {
-                                        "x": 22,
-                                        "y": 22
+                                        "x": 21.0,
+                                        "y": 21.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -876,8 +876,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 19,
-                                  "y": 19
+                                  "x": 18.0,
+                                  "y": 18.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -957,7 +957,7 @@
                   "transform": {
                     "pos": {
                       "x": -15.0,
-                      "y": 12.0,
+                      "y": 11.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -980,7 +980,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 45.0,
+                            "x": 43.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1034,7 +1034,7 @@
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 19,
+                                "fontSize": 18,
                                 "text": "0"
                               }
                             },
@@ -1052,7 +1052,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -38.0,
+                            "x": -36.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1103,8 +1103,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 24,
-                                  "y": 24
+                                  "x": 23.0,
+                                  "y": 23.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -1175,7 +1175,7 @@
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 19,
+                                "fontSize": 18,
                                 "text": "Score:"
                               }
                             }
@@ -1253,8 +1253,8 @@
                     "alpha": 0.5,
                     "drawPriority": 4,
                     "size": {
-                      "x": 141,
-                      "y": 57
+                      "x": 134.0,
+                      "y": 54.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -1296,7 +1296,7 @@
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
-                "height": 0.07500000298023224,
+                "height": 0.07999999821186066,
                 "heightInv": "Relative",
                 "margin": {
                   "top": 0.0,
@@ -1465,7 +1465,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -433.0,
+          "y": -411.0,
           "z": 0.0
         },
         "scale": {

@@ -45,7 +45,7 @@ void DebugRender::ET_drawLine(const Vec2& startPt, const ColorB& startCol, const
         cmd.startCol = startCol;
         cmd.endPt = endPt;
         cmd.endCol = endCol;
-        cmd.width = width;
+        cmd.width = std::max(width, 1.15f);
         drawLineCmds.push_back(cmd);
     }
 }

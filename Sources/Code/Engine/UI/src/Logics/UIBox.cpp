@@ -82,7 +82,11 @@ void UIBox::onAlphaChanged(float newAlpha) {
 }
 
 void UIBox::onHide(bool flag) {
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
+    if(flag) {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
+    }
 }
 
 void UIBox::onZIndexChanged(int newZIndex) {

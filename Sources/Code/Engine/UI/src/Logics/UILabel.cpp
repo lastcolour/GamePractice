@@ -90,8 +90,11 @@ void UILabel::ET_onViewPortChanged(const Vec2i& newSize) {
 }
 
 void UILabel::onHide(bool flag) {
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setVisibilityMultiplier, !flag);
-
+    if(flag) {
+        ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(labelRenderId, &ETRenderNode::ET_show);
+    }
 }
 
 void UILabel::onAlphaChanged(float newAlpha) {

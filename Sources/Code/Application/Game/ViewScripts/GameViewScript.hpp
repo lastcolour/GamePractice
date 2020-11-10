@@ -25,6 +25,7 @@ public:
     bool init() override;
 
     // BaseViewScript
+    void ET_onViewOpened() override;
     void ET_onViewLostFocus() override;
     void ET_onViewGetFocus() override;
 

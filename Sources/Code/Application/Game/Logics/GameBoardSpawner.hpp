@@ -23,10 +23,6 @@ public:
 
 private:
 
-    void setGameBoard(const char* gameBoard);
-
-private:
-
     std::string gameBoardName;
     EntityId gameBoardId;
 };

@@ -8,18 +8,6 @@ enum class ObjectiveProgress {
     ThreeStars
 };
 
-struct ETGameScore {
-    virtual ~ETGameScore() = default;
-    virtual void ET_resetScore() = 0;
-    virtual int ET_getGameScore() const = 0;
-    virtual ObjectiveProgress ET_getObjectiveProgress() const = 0;
-};
-
-struct ETGameObjectiveEvents {
-    virtual ~ETGameObjectiveEvents() = default;
-    virtual void ET_onObjectiveCompleted(ObjectiveProgress type) = 0;
-};
-
 struct EndGameResult {
     float gameTime;
     int score;
@@ -31,6 +19,17 @@ struct EndGameResult {
         score(0),
         objectiveCompleted(ObjectiveProgress::Fail),
         newHighScore(false) {}
+};
+
+struct ETGameScore {
+    virtual ~ETGameScore() = default;
+    virtual void ET_setGameTime(float gameTime) = 0;
+    virtual const EndGameResult& ET_getGameResult() const = 0;
+};
+
+struct ETGameObjectiveEvents {
+    virtual ~ETGameObjectiveEvents() = default;
+    virtual void ET_onObjectiveCompleted(ObjectiveProgress type) = 0;
 };
 
 struct ETGameEndResult {

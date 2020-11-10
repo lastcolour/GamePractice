@@ -29,9 +29,8 @@ public:
     void ET_onElemsDestroyed(EntityId elemId) override;
 
     // ETGameScore
-    void ET_resetScore() override;
-    int ET_getGameScore() const override;
-    ObjectiveProgress ET_getObjectiveProgress() const override;
+    void ET_setGameTime(float gameTime) override;
+    const EndGameResult& ET_getGameResult() const override;
 
 private:
 
@@ -39,8 +38,7 @@ private:
 
 private:
 
-    ObjectiveProgress currentProgress;
-    int currentScore;
+    EndGameResult currentResult;
     ObjectiveTarget oneStarTarget;
     ObjectiveTarget twoStarsTarget;
     ObjectiveTarget threeStarsTarget;

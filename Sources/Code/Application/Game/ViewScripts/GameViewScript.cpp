@@ -4,8 +4,8 @@
 #include "Game/ETGameTimer.hpp"
 #include "UI/ETUIView.hpp"
 #include "UI/ETUIAnimation.hpp"
-#include "Render/ETRenderNode.hpp"
 #include "Audio/ETSound.hpp"
+#include "UI/ETUIBox.hpp"
 
 void GameViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameViewScript>("GameViewScript")) {
@@ -31,6 +31,13 @@ bool GameViewScript::init() {
 
 void GameViewScript::setGetStatSoundEvent(const char* eventName) {
     ET_SendEventReturn(getStarEvent, &ETSoundManager::ET_createEvent, eventName);
+}
+
+void GameViewScript::ET_onViewOpened() {
+    BaseViewScript::ET_onViewOpened();
+    ET_SendEvent(progressStars.fristId, &ETUIElement::ET_hide);
+    ET_SendEvent(progressStars.secondId, &ETUIElement::ET_hide);
+    ET_SendEvent(progressStars.thirdId, &ETUIElement::ET_hide);
 }
 
 void GameViewScript::ET_onViewLostFocus() {
@@ -75,7 +82,6 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
         return;
     }
     getStarEvent.emit();
-    ET_SendEvent(starId, &ETRenderNode::ET_show);
     ET_SendEvent(starId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
 }
 

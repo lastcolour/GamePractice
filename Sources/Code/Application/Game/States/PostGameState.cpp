@@ -47,19 +47,15 @@ void PostGameState::ET_onGameTick(float dt) {
 
 void PostGameState::setupEndResult() {
     ObjectiveProgress objectiveProgress = ObjectiveProgress::Fail;
-    ET_SendEventReturn(objectiveProgress, &ETGameScore::ET_getObjectiveProgress);
-    int gameScore = 0;
-    ET_SendEventReturn(gameScore, &ETGameScore::ET_getGameScore);
+    ET_SendEventReturn(endResult, &ETGameScore::ET_getGameResult);
+
     int highScore = 0;
     ET_SendEventReturn(highScore, &ETGameConfig::ET_getHighScore);
     bool newHighScore = false;
-    if(gameScore > highScore) {
-        ET_SendEvent(&ETGameConfig::ET_setHighScore, gameScore);
-        newHighScore = true;
+    if(endResult.score > highScore) {
+        ET_SendEvent(&ETGameConfig::ET_setHighScore, endResult.score);
+        endResult.newHighScore = true;
     }
-    endResult.score = gameScore;
-    endResult.newHighScore = newHighScore;
-    endResult.objectiveCompleted = objectiveProgress;
 }
 
 const EndGameResult& PostGameState::ET_getLastGameResult() const {

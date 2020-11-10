@@ -232,14 +232,8 @@ void UILayout::ET_onAlphaChanged(float newAlpha) {
 }
 
 void UILayout::ET_onHidden(bool flag) {
-    if(flag) {
-        for(auto childId : children) {
-            ET_SendEvent(childId, &ETUIElement::ET_hide);
-        }
-    } else {
-        for(auto childId : children) {
-            ET_SendEvent(childId, &ETUIElement::ET_show);
-        }
+    for(auto childId : children) {
+        ET_SendEvent(childId, &ETUIElement::ET_setParentHidden, flag);
     }
 }
 
