@@ -3,11 +3,13 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 #include "UI/ETUIBox.hpp"
 
 class ReflectContext;
 
-class GameBoardSpawner : public EntityLogic {
+class GameBoardSpawner : public EntityLogic,
+    public ETNode<ETGameBoardSpawner> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -20,6 +22,12 @@ public:
     // EntityLogic
     bool init() override;
     void deinit() override;
+
+    // ETGameBoardSpawner
+    void ET_setPendingLevel(const std::string& levelName) override;
+    void ET_loadPendingLevel() override;
+    void ET_unloadLevel() override;
+    const char* ET_getLevelName() const override;
 
 private:
 

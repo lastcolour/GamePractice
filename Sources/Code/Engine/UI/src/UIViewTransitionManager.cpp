@@ -73,6 +73,7 @@ void UIViewTransitionManager::startNextTask() {
             tasks.erase(tasks.begin());
             if(task.isAppearing) {
                 ET_SendEvent(task.viewId, &ETUIElement::ET_show);
+                ET_SendEvent(&ETUIViewManager::ET_onViewStartAppearing, task.viewId);
                 ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, task.viewId);
             } else {
                 ET_SendEvent(task.viewId, &ETUIElement::ET_hide);
@@ -80,6 +81,7 @@ void UIViewTransitionManager::startNextTask() {
             }
         } else {
             if(task.isAppearing) {
+                ET_SendEvent(&ETUIViewManager::ET_onViewStartAppearing, task.viewId);
                 ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
             } else {
                 ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_disappear, getEntityId());

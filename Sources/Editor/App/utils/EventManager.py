@@ -119,7 +119,10 @@ class EventManager:
         if not entity.isLoadedToNative():
             raise RuntimeError("Can't add logic to entity '{0}' that is not loaded to native".format(
                 entity.getName()))
-        copyEntity = entity.addChildEntityFromData(copyEntitydata._name, copyEntitydata._data)
+        if copyEntitydata._isInternal:
+            copyEntity = entity.addChildEntityFromData(copyEntitydata._name, copyEntitydata._data)
+        else:
+            copyEntity = entity.addChildEntity(copyEntitydata._name)
         return copyEntity
 
     def getAssetsModel(self):

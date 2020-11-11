@@ -3,11 +3,17 @@ from PyQt5.QtCore import Qt
 
 from dialog.SelectFromEntityChild import SelectFromEntityChild
 
-def _getChildPath(childEntity):
-    resPath = childEntity.getName()
+def _getChildPath(thisEntity, childEntity):
+    if childEntity.isInternal():
+        resPath = childEntity.getName()
+    else:
+        resPath = "{0} {1}".format(childEntity.getName(), childEntity.getNameSuffix())
     currEntity = childEntity.getParent()
-    while currEntity is not None and currEntity.getParent() is not None:
-        resPath = "{1}/{0}".format(resPath, currEntity.getName())
+    while currEntity != thisEntity:
+        if currEntity.isInternal():
+            resPath = "{0}/{1}".format(currEntity.getName(), resPath)
+        else:
+            resPath = "{0} {1}/{2}".format(currEntity.getName(), currEntity.getNameSuffix(), resPath)
         currEntity = currEntity.getParent()
     return resPath
 
@@ -58,7 +64,7 @@ class EditEntityValue(QWidget):
         resText = "none"
         if entity is not None:
             if entity == self._val.getEntity():
-                resText = "this"
+                resText = "\"this\""
             else:
-                resText = "\"{0}\"".format(_getChildPath(entity))
+                resText = "\"this/{0}\"".format(_getChildPath(self._val.getEntity(), entity))
         self._lineEdit.setText(resText)

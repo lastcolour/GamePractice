@@ -33,6 +33,12 @@ bool GameScoreUpdaterLogic::init() {
 void GameScoreUpdaterLogic::deinit() {
 }
 
+void GameScoreUpdaterLogic::ET_reset() {
+    currentValue = 0;
+    targetValue = 0;
+    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, "0");
+}
+
 void GameScoreUpdaterLogic::ET_setGameScore(int score) {
     targetValue = score;
 }

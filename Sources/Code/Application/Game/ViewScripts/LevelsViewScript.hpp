@@ -15,9 +15,16 @@ public:
     LevelsViewScript();
     virtual ~LevelsViewScript();
 
+    // BaseViewScript
+    void ET_onViewOpened() override;
+
 protected:
 
     void onEvent(const UIEvent& event) override;
+
+private:
+
+    EntityId progressLabelId;
 };
 
 #endif /* __LEVELS_VIEW_SCRIPT_HPP__ */

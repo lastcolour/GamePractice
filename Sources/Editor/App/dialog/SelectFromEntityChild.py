@@ -44,11 +44,13 @@ class SelectFromEntityChild(QDialog):
         if  rootEntity == self._entity:
             item.setText(0, "{0} (this)".format(rootEntity.getName()))
         else:
-            item.setText(0, rootEntity.getName())
+            if rootEntity.isInternal():
+                item.setText(0, rootEntity.getName())
+            else:
+                item.setText(0, "{0} {1}".format(rootEntity.getName(), rootEntity.getNameSuffix()))
         item._entity = rootEntity
         for childEnt in rootEntity.getChildren():
             self._buildTree(childEnt, item)
-        item.setExpanded(True)
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None:

@@ -93,8 +93,11 @@ void UIViewManager::ET_onViewLoaded(UIViewType viewType, EntityId viewId) {
     stack.push_back(node);
 
     ET_SendEvent(node.id, &ETUIElement::ET_setZIndex, zIndex);
-    ET_SendEvent(node.id, &ETUIViewScript::ET_onViewOpened);
     ET_SendEvent(&ETUIViewTransitionManager::ET_addAppearing, node.id);
+}
+
+void UIViewManager::ET_onViewStartAppearing(EntityId viewId) {
+    ET_SendEvent(viewId, &ETUIViewScript::ET_onViewOpened);
 }
 
 void UIViewManager::ET_closeView(UIViewType viewType) {

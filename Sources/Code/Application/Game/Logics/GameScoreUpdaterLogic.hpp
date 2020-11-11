@@ -26,6 +26,7 @@ public:
     void deinit() override;
 
     // ETGameScoreUpdater
+    void ET_reset() override;
     void ET_setGameScore(int score) override;
 
     // ETGameTimerEvents

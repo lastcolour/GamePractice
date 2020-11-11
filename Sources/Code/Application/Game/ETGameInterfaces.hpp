@@ -13,6 +13,7 @@ struct ETGameEndTimerUpdater {
 
 struct ETGameScoreUpdater {
     virtual ~ETGameScoreUpdater() = default;
+    virtual void ET_reset() = 0;
     virtual void ET_setGameScore(int score) = 0;
 };
 

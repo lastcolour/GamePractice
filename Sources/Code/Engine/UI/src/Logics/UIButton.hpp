@@ -51,7 +51,6 @@ private:
     EInputEventResult onMove(const Vec2i& pt);
     EInputEventResult onRelease(const Vec2i& pt);
     bool canContinueEvent(const Vec2i& pt) const;
-    bool canAcceptEvent() const;
 
 private:
 

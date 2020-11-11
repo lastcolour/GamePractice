@@ -114,23 +114,7 @@ EInputEventResult UIButton::ET_onInputEvent(EActionType type, const Vec2i& pt) {
     return res;
 }
 
-bool UIButton::canAcceptEvent() const {
-    if(ET_isHidden()) {
-        return false;
-    }
-    if(!ET_isEnabled()) {
-        return false;
-    }
-    if(!UI::IsRootViewHasFocus(getEntityId())) {
-        return false;
-    }
-    return true;
-}
-
 bool UIButton::canContinueEvent(const Vec2i& pt) const {
-    if(!canAcceptEvent()) {
-        return false;
-    }
     if(isPressTimeRunOut(pressTime)) {
         LogDebug("[UIButton::canContinueEvent] Press time run away");
         return false;
@@ -148,9 +132,6 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
 }
 
 EInputEventResult UIButton::onPress(const Vec2i& pt) {
-    if(!canAcceptEvent()) {
-        return EInputEventResult::Ignore;
-    }
     EntityId activeBtId;
     ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
     if(activeBtId.isValid()) {

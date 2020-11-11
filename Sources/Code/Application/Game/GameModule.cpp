@@ -1,6 +1,7 @@
 #include "Game/GameModule.hpp"
 #include "Game/GameTimer.hpp"
 #include "Game/GameStateManager.hpp"
+#include "Game/Progression/LevelProgression.hpp"
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/Logics/GameEndTimerLogic.hpp"
@@ -12,8 +13,9 @@
 #include "Game/Logics/BoardElemDestroyAnimation.hpp"
 #include "Game/Logics/BoardElemSelectAnimation.hpp"
 #include "Game/Logics/ScoreObjective.hpp"
-#include "Game/Logics/LevelSelectorLogic.hpp"
 #include "Game/Logics/GameBoardAnimation.hpp"
+#include "Game/Logics/LevelButtonList.hpp"
+#include "Game/Logics/LevelButton.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
@@ -25,7 +27,8 @@ GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             GameTimer,
-            GameStateManager>()
+            GameStateManager,
+            LevelProgression>()
         );
     return container;
 }
@@ -45,7 +48,6 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<BoardElemDestroyAnimation>();
     logicsRegister.registerLogic<BoardElemSelectAnimation>();
     logicsRegister.registerLogic<ScoreObjective>();
-    logicsRegister.registerLogic<LevelSelectorLogic>();
     logicsRegister.registerLogic<GameBoardAnimation>();
 
     logicsRegister.registerLogic<GameResultViewScript>();
@@ -53,4 +55,7 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<LevelsViewScript>();
     logicsRegister.registerLogic<MainViewScript>();
     logicsRegister.registerLogic<PauseViewScript>();
+
+    logicsRegister.registerLogic<LevelButtonList>();
+    logicsRegister.registerLogic<LevelButton>();
 }

@@ -24,11 +24,15 @@ class EntityNative(NativeObject):
         self._children = []
         self._logics = []
         self._parent = None
+        self._nameSuffix = None
         self._childId = None
         self._isInternal = False
 
     def getName(self):
         return self._name
+
+    def getNameSuffix(self):
+        return self._nameSuffix
 
     def getParent(self):
         return self._parent
@@ -175,6 +179,11 @@ class EntityNative(NativeObject):
             print("[EntityNative:addChildEntity] Can't add child entity '{0}' to entity '{1}'".format(entityName, self._name))
             return None
         childEntity._parent = self
+        duplicatesCount = 0
+        for entity in self._children:
+            if entity.getName() == entityName:
+                duplicatesCount += 1
+        childEntity._nameSuffix = "({0})".format(duplicatesCount)
         self._children.append(childEntity)
         self._isModified = True
         return childEntity

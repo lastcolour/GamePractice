@@ -26,6 +26,7 @@ public:
     UIViewType ET_getActiveViewType() const override;
     EntityId ET_getActiveViewId() const override;
     void ET_onViewLoaded(UIViewType viewType, EntityId viewId) override;
+    void ET_onViewStartAppearing(EntityId viewId) override;
     void ET_onViewAppeared(EntityId viewId) override;
     void ET_onViewDisappeared(EntityId viewId) override;
 

@@ -6,6 +6,8 @@
 #include "UI/ETUIAnimation.hpp"
 #include "Audio/ETSound.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
+#include "Game/ETGameInterfaces.hpp"
 
 void GameViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameViewScript>("GameViewScript")) {
@@ -35,9 +37,17 @@ void GameViewScript::setGetStatSoundEvent(const char* eventName) {
 
 void GameViewScript::ET_onViewOpened() {
     BaseViewScript::ET_onViewOpened();
+    ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_show);
+    ET_SendEvent(&ETGameScoreUpdater::ET_reset);
     ET_SendEvent(progressStars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(progressStars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(progressStars.thirdId, &ETUIElement::ET_hide);
+    ET_SendEvent(&ETGameBoardSpawner::ET_loadPendingLevel);
+}
+
+void GameViewScript::ET_onViewClosed() {
+    BaseViewScript::ET_onViewClosed();
+    ET_SendEvent(&ETGameBoardSpawner::ET_unloadLevel);
 }
 
 void GameViewScript::ET_onViewLostFocus() {

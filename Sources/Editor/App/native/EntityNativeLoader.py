@@ -78,6 +78,11 @@ class EntityNativeLoader(NativeObject):
             self._setupTransform(childEntity, childTm)
             childEntity._childId = childId
             childEntity._parent = entity
+            duplicatesCount = 0
+            for otherChild in entity._children:
+                if otherChild.getName() == childName:
+                    duplicatesCount += 1
+            childEntity._nameSuffix = "({0})".format(duplicatesCount)
             entity._children.append(childEntity)
         return True
 

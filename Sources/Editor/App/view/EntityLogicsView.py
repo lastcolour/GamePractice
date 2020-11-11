@@ -9,6 +9,14 @@ from utils.Managers import GetEventManager
 
 from menu.EntityLogicMenu import EntityLogicMenu
 
+def _isChildOfExternalEntity(entity):
+    currParent = entity.getParent()
+    while currParent != None:
+        if not currParent.isInternal() and currParent.getParent() != None:
+            return True
+        currParent = currParent.getParent()
+    return False
+
 class EntityLogicsView(QWidget):
     def __init__(self):
         super().__init__()
@@ -44,21 +52,38 @@ class EntityLogicsView(QWidget):
 
         self.setLayout(self._rootLayout)
 
+    def _canEditCurrentEntity(self):
+        currEntity = self._editEntity
+        canEdit = True
+        while currEntity != None:
+            if not currEntity.isInternal() and currEntity.getParent() != None:
+                canEdit = False
+                break
+            currEntity = currEntity.getParent()
+        return canEdit
+
     def _buildLogicsList(self):
         ClearLayout(self._logicsLayout)
         if self._editEntity is None:
             return
+        enableLogicView = self._canEditCurrentEntity()
         for logic in self._editEntity.getLogics():
             logicView = LogicView(logic)
+            logicView.setEnabled(enableLogicView)
             self._logicsLayout.addWidget(logicView)
 
     def setEditEntity(self, entity):
         self._editEntity = entity
+        canEdit = False
         if self._editEntity is not None:
-            self._addLogicBt.setEnabled(True)
+            if self._canEditCurrentEntity():
+                self._addLogicBt.setEnabled(True)
+            else:
+                self._addLogicBt.setEnabled(False)
         else:
             self._addLogicBt.setEnabled(False)
-        self._transformView.setEditEntity(entity)
+        canEditTransform = not _isChildOfExternalEntity(self._editEntity)
+        self._transformView.setEditEntity(entity, canEditTransform)
         self._buildLogicsList()
 
     def addLogicView(self, entityLogic):

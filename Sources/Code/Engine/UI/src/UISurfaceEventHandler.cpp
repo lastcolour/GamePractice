@@ -15,6 +15,23 @@ bool isHoverHitBox(const Vec2i& pt, EntityId entId) {
     return elemBox.isInside(pt);
 }
 
+bool canAcceptEvent(EntityId entId) {
+    bool result = false;
+    ET_SendEventReturn(result, entId, &ETUIElement::ET_isHidden);
+    if(result) {
+        return false;
+    }
+    result = false;
+    ET_SendEventReturn(result, entId, &ETUIElement::ET_isEnabled);
+    if(!result) {
+        return false;
+    }
+    if(!UI::IsRootViewHasFocus(entId)) {
+        return false;
+    }
+    return true;
+}
+
 } // namespace
 
 UISurfaceEventHandler::UISurfaceEventHandler() {
@@ -39,6 +56,9 @@ std::vector<EntityId> UISurfaceEventHandler::getHoveredEntities(const Vec2i& pt)
     std::vector<EntityId> res;
     auto interactiveElems = ET_GetAll<ETUIInteractionBox>();
     for(auto elemId : interactiveElems) {
+        if(!canAcceptEvent(elemId)) {
+            continue;
+        }
         if(isHoverHitBox(pt, elemId)) {
             res.push_back(elemId);
         }
@@ -64,7 +84,9 @@ void UISurfaceEventHandler::onMove(const Vec2i& pt) {
             continue;
         }
         EInputEventResult handleRes = EInputEventResult::Ignore;
-        ET_SendEventReturn(handleRes, elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Move, pt);
+        if(canAcceptEvent(elemId)) {
+            ET_SendEventReturn(handleRes, elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Move, pt);
+        }
         if(handleRes == EInputEventResult::Ignore) {
             elemId = InvalidEntityId;
         }

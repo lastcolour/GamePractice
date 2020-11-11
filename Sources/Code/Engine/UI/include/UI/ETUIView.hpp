@@ -27,6 +27,7 @@ struct ETUIViewManager {
     virtual UIViewType ET_getActiveViewType() const = 0;
     virtual EntityId ET_getActiveViewId() const = 0;
     virtual void ET_onViewLoaded(UIViewType viewType, EntityId viewId) = 0;
+    virtual void ET_onViewStartAppearing(EntityId viewId) = 0;
     virtual void ET_onViewAppeared(EntityId viewId) = 0;
     virtual void ET_onViewDisappeared(EntityId viewId) = 0;
 };

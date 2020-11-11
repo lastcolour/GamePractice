@@ -55,10 +55,10 @@ class EditTransformValue(LogicView):
         self._tree.setEnabled(False)
         self._setCanCopy(False)
 
-    def setEditEntity(self, entity):
+    def setEditEntity(self, entity, canEdit):
         if entity is None:
             self._setupLogic(EmptyTransformLogic())
             self._tree.setEnabled(False)
         else:
             self._setupLogic(entity.getTransformLogic())
-            self._tree.setEnabled(True)
+            self._tree.setEnabled(canEdit)

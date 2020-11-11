@@ -37,8 +37,12 @@ class EntityTreeView(QWidget):
 
     def _createTreeItem(self, parentItem, entity):
         treeItem = QTreeWidgetItem(parentItem)
-        treeItem.setText(0, entity.getName())
-        treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+        if entity.isInternal() or entity.getParent() == None:
+            treeItem.setText(0, entity.getName())
+            treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+        else:
+            treeItem.setText(0, "{0} {1}".format(entity.getName(), entity.getNameSuffix()))
+            treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileLinkIcon))
         treeItem._entity = entity
         for child in entity.getChildren():
             self._createTreeItem(treeItem, child)
