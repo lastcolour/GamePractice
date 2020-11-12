@@ -1,43 +1,53 @@
 #include "Reflect/ReflectUtils.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
-#include "ArrayInfo.hpp"
+#include "Core/ETAssets.hpp"
+#include "Core/ETPrimitives.hpp"
 #include "Core/ETLogger.hpp"
 
-#include <memory>
 #include <cassert>
 
 namespace ReflectUtils {
 
-bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc) {
+ClassInfo* FindClassInfo(TypeId typeId) {
     ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, instanceTypeId);
-    if(classInfo) {
-        return true;
-    }
-    ReflectContext ctx;
-    if(!ctx.reflectEmbedded(reflectFunc)) {
-        LogError("[ReflectUtils::ReflectClassByCall] Can't reflect embedded class info");
-        assert(false && "false reflect result");
-        return false;
-    }
-    return true;
+    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+    return classInfo;
 }
 
-bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc,
-    ArraySizeFuncT sizeFunc, ArrayGetElemFuncT getElemFunc, ArrayResetFuncT resetFunc) {
-    ArrayInfo* arrayInfo = nullptr;
-    ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, InvalidTypeId);
-    if(arrayInfo) {
-        return true;
+bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName) {
+    assert(object && "Invalid object");
+    if(!classInfo) {
+        LogError("[WriteInstanceToLocalFile] Can't find class info for an object");
+        return false;
     }
-    std::unique_ptr<ArrayInfo> arrayInfoPtr(new ArrayInfo(elemTypeId, elemType, createFunc,
-        sizeFunc, getElemFunc, resetFunc));
-    bool res = false;
-    ET_SendEventReturn(res, &ETClassInfoManager::ET_registerArrayInfo, arrayInfoPtr);
-    if(!res) {
-        LogError("[ReflectUtils::RegisterArrayInfo] Can't register array info");
-        assert(false && "false register result");
+    JSONNode node;
+    SerializeContext serCtx;
+    if(!classInfo->writeValueTo(serCtx, object, AllEntityLogicValueId, node)) {
+        return false;
+    }
+    bool saveRes = false;
+    auto buffer = node.flushToBuffer();
+    if(!buffer) {
+        LogError("[WriteInstanceToLocalFile] Can't dump JSON to a buffer");
+        return false;
+    }
+    ET_SendEventReturn(saveRes, &ETAssets::ET_saveLocalFile, fileName, buffer);
+    return saveRes;
+}
+
+bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fileName) {
+    assert(object && "Invalid object");
+    if(!classInfo) {
+        LogError("[WriteInstanceToLocalFile] Can't find class info for an object");
+        return false;
+    }
+    JSONNode node;
+    ET_SendEventReturn(node, &ETAssets::ET_loadLocalJSONFile, fileName);
+    if(!node) {
+        return false;
+    }
+    SerializeContext serCtx;
+    if(!classInfo->readValueFrom(serCtx, object, AllEntityLogicValueId, node)) {
         return false;
     }
     return true;

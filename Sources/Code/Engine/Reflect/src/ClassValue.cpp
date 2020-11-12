@@ -448,12 +448,12 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
                 return false;
             }
             if(!classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, objectNode)) {
-                LogError("[ClassValue::readValueFrom] Can't serialize object field '%s'", name);
+                LogError("[ClassValue::readValueFrom] Can't read object field '%s'", name);
                 return false;
             }
         } else {
             if(!classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, node)) {
-                LogError("[ClassValue::readValueFrom] Can't serialize object of array");
+                LogError("[ClassValue::readValueFrom] Can't read object of array");
                 return false;
             }
         }
@@ -566,12 +566,18 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
             LogError("[ClassValue::readValueFrom] Can't find enum info for a field '%s'", name);
             return false;
         }
-        std::string value;
-        readJSONValue(isElement, name, value, node);
-        if(!enumInfo->readValueFrom(valuePtr, value)) {
-            LogError("[ClassValue::readValueFrom] Can't serialize enum value for a field '%s'", name);
+        std::string enumStrVal;
+        readJSONValue(isElement, name, enumStrVal, node);
+        if(enumStrVal.empty()) {
+            LogError("[ClassValue::readValueFrom] Enum value for a field '%s' is empty", name);
             return false;
         }
+        int intEnumVal = 0;
+        if(!enumInfo->getValueFromString(enumStrVal, intEnumVal)) {
+            LogError("[ClassValue::readValueFrom] Can't find enum value of '%s' for a field '%s'", enumStrVal, name);
+            return false;
+        }
+        getRef<int>(valuePtr) = intEnumVal;
         return true;
     }
     case ClassValueType::Resource: {
@@ -604,6 +610,210 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         assert(false && "Unknown value type");
         return false;
     }
+}
+
+bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, JSONNode& node) {
+    switch(type) {
+    case ClassValueType::Bool: {
+        if(isElement) {
+            node.write(getRef<bool>(valuePtr));
+        } else {
+            node.write(name.c_str(), getRef<bool>(valuePtr));
+        }
+        break;
+    }
+    case ClassValueType::Int: {
+        if(isElement) {
+            node.write(getRef<int>(valuePtr));
+        } else {
+            node.write(name.c_str(), getRef<int>(valuePtr));
+        }
+        break;
+    }
+    case ClassValueType::Float: {
+        if(isElement) {
+            node.write(getRef<float>(valuePtr));
+        } else {
+            node.write(name.c_str(), getRef<float>(valuePtr));
+        }
+        break;
+    }
+    case ClassValueType::String: {
+        if(isElement) {
+            node.write(getRef<std::string>(valuePtr));
+        } else {
+            node.write(name.c_str(), getRef<std::string>(valuePtr));
+        }
+        break;
+    }
+    case ClassValueType::Vec2i: {
+        const Vec2i& val = getRef<Vec2i>(valuePtr);
+        JSONNode valNode;
+        valNode.write("x", val.x);
+        valNode.write("y", val.y);
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Vec2: {
+        const Vec2& val = getRef<Vec2>(valuePtr);
+        JSONNode valNode;
+        valNode.write("x", val.x);
+        valNode.write("y", val.y);
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Vec3: {
+        const Vec3& val = getRef<Vec3>(valuePtr);
+        JSONNode valNode;
+        valNode.write("x", val.x);
+        valNode.write("y", val.y);
+        valNode.write("z", val.z);
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Vec4: {
+        const Vec4& val = getRef<Vec4>(valuePtr);
+        JSONNode valNode;
+        valNode.write("x", val.x);
+        valNode.write("y", val.y);
+        valNode.write("z", val.z);
+        valNode.write("w", val.w);
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Quat: {
+        const Quat& val = getRef<Quat>(valuePtr);
+        JSONNode valNode;
+        valNode.write("x", val.x);
+        valNode.write("y", val.y);
+        valNode.write("z", val.z);
+        valNode.write("w", val.w);
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Color: {
+        const ColorB& val = getRef<ColorB>(valuePtr);
+        JSONNode valNode;
+        valNode.write("r", val.r);
+        valNode.write("g", val.g);
+        valNode.write("b", val.b);
+        valNode.write("a", val.a);
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Object: {
+        ClassInfo* classInfo = nullptr;
+        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        if(!classInfo) {
+            LogError("[ClassValue::writeValueTo] Can't find class info for a field '%s'", name);
+            return false;
+        }
+        JSONNode valNode;
+        if(!classInfo->writeValueTo(ctx, valuePtr, AllEntityLogicValueId, valNode)) {
+            LogError("[ClassValue::writeValueTo] Can't write object field '%s'", name);
+            return false;
+        }
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Resource: {
+        if(isElement) {
+            node.write("");
+        } else {
+            node.write(name.c_str(), "");
+        }
+        break;
+    }
+    case ClassValueType::Enum: {
+        EnumInfo* enumInfo = nullptr;
+        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
+        if(!enumInfo) {
+            LogError("[ClassValue::writeValueTo] Can't find enum info for a field '%s'", name);
+            return false;
+        }
+        const int& intEnumVal = getRef<int>(valuePtr);
+        std::string enumStrVal;
+        if(!enumInfo->getStringFromValue(intEnumVal, enumStrVal)) {
+            LogError("[ClassValue::writeValueTo] Can't find enum string '%d' of value '%s'", intEnumVal, name);
+            return false;
+        }
+        assert(!enumStrVal.empty() && "Invalid string for enum value");
+        if(isElement) {
+            node.write(enumStrVal);
+        } else {
+            node.write(name.c_str(), enumStrVal);
+        }
+        break;
+    }
+    case ClassValueType::Array: {
+        ArrayInfo* arrayInfo = nullptr;
+        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        if(!arrayInfo) {
+            LogError("[ClassValue::writeValueTo] Can't find array info for a field '%s'", name);
+            return false;
+        }
+        JSONNode valNode;
+        if(!arrayInfo->writeValuesTo(ctx, valuePtr, valNode)) {
+            LogError("[ClassValue::writeValueTo] Can't write array field '%s'", name);
+            return false;
+        }
+        if(isElement) {
+            assert(false && "Array of arrays is not supported");
+            return false;
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Entity: {
+        auto entityId = getRef<EntityId>(valuePtr);
+        auto childIdSequence = getChildIdSequenceFromEntityId(ctx, entityId);
+        JSONNode valNode;
+        assert(valNode.setArray() && "Can't set node to array type");
+        for(auto& val : childIdSequence) {
+            valNode.write(val);
+        }
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        break;
+    }
+    case ClassValueType::Invalid:
+    default:
+        assert(false && "Invalid value type");
+        return false;
+    }
+    return true;
 }
 
 bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, MemoryStream& stream) {

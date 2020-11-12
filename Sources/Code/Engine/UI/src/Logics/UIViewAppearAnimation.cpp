@@ -79,7 +79,7 @@ void UIViewAppearAnimation::ET_onUITick(float dt) {
     if(!elemsInProgress) {
         for(auto& elem : elements) {
             if(elem.elemId.isValid()) {
-                ET_SendEvent(elem.elemId, &ETEntity::ET_setTransform, elem.origTm);
+                ET_SendEvent(elem.elemId, &ETEntity::ET_setLocalTransform, elem.origTm);
             }
         }
         if(state == State::Appear) {
@@ -112,7 +112,7 @@ void UIViewAppearAnimation::updateTransform(UIViewAppearAnimationElement& elem, 
     resTm.pt.y += Math::Lerp(static_cast<float>(offset), 0.f, prog);
 
     resTm.scale *= Math::Lerp(elem.startScale, 1.f, prog);
-    ET_SendEvent(elem.elemId, &ETEntity::ET_setTransform, resTm);
+    ET_SendEvent(elem.elemId, &ETEntity::ET_setLocalTransform, resTm);
 }
 
 void UIViewAppearAnimation::ET_appear(EntityId triggerId) {
@@ -128,7 +128,7 @@ void UIViewAppearAnimation::ET_appear(EntityId triggerId) {
             continue;
         }
         ET_SendEvent(elem.elemId, &ETUIElement::ET_hide);
-        ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getLocalTransform);
         elem.isHidded = true;
     }
     ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
@@ -151,7 +151,7 @@ void UIViewAppearAnimation::ET_disappear(EntityId triggerId) {
             LogWarning("[UIViewAppearAnimation::ET_disappear] Element '%s' is hidden before appear animation start",
                 EntityUtils::GetEntityName(elem.elemId));
         }
-        ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(elem.origTm, elem.elemId, &ETEntity::ET_getLocalTransform);
         elem.isHidded = false;
     }
     ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);

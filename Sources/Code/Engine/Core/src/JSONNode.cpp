@@ -450,6 +450,15 @@ void JSONNode::write(const std::string& value) {
     nodeImpl->val->PushBack(valObject, nodeImpl->root->GetAllocator());
 }
 
+void JSONNode::write(const JSONNode& node) {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    JSONValueT copyValue(*(node.nodeImpl->val), nodeImpl->root->GetAllocator());
+    nodeImpl->val->PushBack(copyValue, nodeImpl->root->GetAllocator());
+}
+
 JSONNode JSONNode::object(const char* key) const {
     JSONNode node;
     if(!key || !key[0]) {
@@ -498,6 +507,11 @@ bool JSONNode::isArray() const {
         return true;
     }
     return false;
+}
+
+bool JSONNode::setArray() {
+    updateDocRoot();
+    return mutateToArray();
 }
 
 size_t JSONNode::size() const {

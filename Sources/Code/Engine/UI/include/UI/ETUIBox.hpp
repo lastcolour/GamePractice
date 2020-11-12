@@ -44,6 +44,8 @@ struct ETUIBox {
     virtual ~ETUIBox() = default;
     virtual const UIBoxStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIBoxStyle& newStyle) = 0;
+    virtual void ET_setRenderId(EntityId newRenderId) = 0;
+    virtual EntityId ET_getRenderId(EntityId newRenderId) const = 0;
 };
 
 struct ETUILabel {

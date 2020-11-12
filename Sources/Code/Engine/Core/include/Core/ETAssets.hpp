@@ -12,6 +12,7 @@ struct ETAssets {
     virtual JSONNode ET_loadLocalJSONFile(const char* fileName) = 0;
     virtual bool ET_saveLocalFile(const char* fileName, const Buffer& buff) = 0;
     virtual bool ET_removeLocalFile(const char* fileName) = 0;
+    virtual bool ET_isLocalFileExists(const char* fileName) const = 0;
 };
 
 struct ETAssetsCacheManager {

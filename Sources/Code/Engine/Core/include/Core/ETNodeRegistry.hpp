@@ -3,11 +3,9 @@
 
 #include "Core/Core.hpp"
 
-#include <functional>
 #include <vector>
 #include <mutex>
 #include <memory>
-#include <unordered_set>
 #include <unordered_map>
 
 class ETNodeBase;

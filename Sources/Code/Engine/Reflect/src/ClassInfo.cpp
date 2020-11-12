@@ -378,6 +378,42 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Entit
     return true;
 }
 
+bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, JSONNode& node) {
+    assert(instance && "Invalid instance");
+    if(valueId == InvalidEntityLogicValueId) {
+        LogError("ClassInfo::writeValueTo] Can't write value with invalid id");
+        return false;
+    }
+    if(valueId == AllEntityLogicValueId) {
+        std::vector<ClassInfo*> allClasses;
+        getAllClasses(allClasses);
+
+        for(auto classInfo : allClasses) {
+            for(auto& value : classInfo->values) {
+                auto ptr = getValueFunc(instance, value.ptr);
+                if(!value.writeValueTo(ctx, instance, ptr, node)) {
+                    LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
+                        value.name, className);
+                }
+            }
+        }
+    } else {
+        auto value = findValueById(instance, valueId);
+        if(!value) {
+            LogError("ClassInfo::readValueFrom] Can't find value with id '%d' in class '%s'", valueId, className);
+            return false;
+        }
+        auto ptr = getValueFunc(instance, value->ptr);
+        if(!value->writeValueTo(ctx, instance, ptr, node)) {
+            LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
+                value->name, className);
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
     assert(instance && "Invalid instance");
     if(!stream.isOpenedForWrite()) {
@@ -453,6 +489,7 @@ bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId value
 bool ClassInfo::checkIfSameType(TypeId typeId) const {
     if(getIntanceTypeId() != typeId) {
         assert(false && "Invalid type");
+        LogError("[ClassInfo::checkIfSameType] Instace type id has other type");
         return false;
     }
     return true;

@@ -21,6 +21,7 @@ public:
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
 
+    bool writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, JSONNode& node);
     bool writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream);
     bool readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, const JSONNode& node);
     bool readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream);

@@ -70,10 +70,12 @@ public:
     void write(bool value);
     void write(const char* value);
     void write(const std::string& value);
+    void write(const JSONNode& node);
 
     const char* key() const;
     JSONNode object(const char* key) const;
     bool hasKey(const char* key) const;
+    bool setArray();
 
     bool isArray() const;
     size_t size() const;

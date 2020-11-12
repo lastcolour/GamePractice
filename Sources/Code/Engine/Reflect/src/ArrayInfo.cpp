@@ -3,6 +3,8 @@
 #include "Core/StringFormat.hpp"
 #include "Core/MemoryStream.hpp"
 
+#include <cassert>
+
 ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF,
     SizeFuncT sizeF, GetElemFuncT getElemF, ResetFuncT resetF) :
     createFunc(createF),
@@ -65,6 +67,18 @@ bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, Memor
     for(int i = 0; i < sz; ++i) {
         auto elem = getElemFunc(i, valuePtr);
         if(!elemValue.writeValueTo(ctx, elem, elem, stream)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, JSONNode& node) {
+    int sz = static_cast<int>(sizeFunc(valuePtr));
+    assert(node.setArray() && "Can't set node to array");
+    for(int i = 0; i < sz; ++i) {
+        auto elem = getElemFunc(i, valuePtr);
+        if(!elemValue.writeValueTo(ctx, elem, elem, node)) {
             return false;
         }
     }

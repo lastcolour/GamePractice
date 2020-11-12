@@ -18,6 +18,7 @@ public:
     std::string levelName;
     EntityId buttonId;
     EntityId senderId;
+    int startsRequired;
 };
 
 class LevelButtonList : public EntityLogic,
@@ -36,6 +37,7 @@ public:
     void deinit() override;
 
     // ETLevelButtonList
+    void ET_updateLevelProgress();
     const char* ET_getLevelNameForSender(EntityId senderId) const override;
 
 private:

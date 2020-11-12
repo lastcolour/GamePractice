@@ -2,6 +2,10 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
 #include "Game/ETGameElem.hpp"
+#include "Game/Progression/LevelsProgressData.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
+#include "Game/ETLevelProgress.hpp"
+#include "Game/GameUtils.hpp"
 
 PostGameState::PostGameState() :
     postGameTime(1.f) {
@@ -49,13 +53,13 @@ void PostGameState::setupEndResult() {
     ObjectiveProgress objectiveProgress = ObjectiveProgress::Fail;
     ET_SendEventReturn(endResult, &ETGameScore::ET_getGameResult);
 
-    int highScore = 0;
-    ET_SendEventReturn(highScore, &ETGameConfig::ET_getHighScore);
-    bool newHighScore = false;
-    if(endResult.score > highScore) {
-        ET_SendEvent(&ETGameConfig::ET_setHighScore, endResult.score);
-        endResult.newHighScore = true;
-    }
+    LevelProgress newProgress;
+    ET_SendEventReturn(newProgress.name, &ETGameBoardSpawner::ET_getLevelName);
+    newProgress.completeTime = endResult.gameTime;
+    newProgress.score = endResult.score;
+    newProgress.stars = GameUtils::ConvertToStarsCount(endResult.objectiveCompleted);
+
+    ET_SendEvent(&ETLevelsProgression::ET_setLevelProgress, newProgress);
 }
 
 const EndGameResult& PostGameState::ET_getLastGameResult() const {

@@ -6,10 +6,10 @@
 class ArrayInfo {
 public:
 
-    using CreateElemFuncT = ReflectUtils::ArrayCreateElemFuncT;
-    using SizeFuncT = ReflectUtils::ArraySizeFuncT;
-    using GetElemFuncT = ReflectUtils::ArrayGetElemFuncT;
-    using ResetFuncT = ReflectUtils::ArrayResetFuncT;
+    using CreateElemFuncT = ReflectCore::ArrayCreateElemFuncT;
+    using SizeFuncT = ReflectCore::ArraySizeFuncT;
+    using GetElemFuncT = ReflectCore::ArrayGetElemFuncT;
+    using ResetFuncT = ReflectCore::ArrayResetFuncT;
 
 public:
 
@@ -20,6 +20,7 @@ public:
     TypeId getElemTypeId() const;
     const char* getName() const;
     void makeReflectModel(JSONNode& node);
+    bool writeValuesTo(const SerializeContext& ctx, void* valuePtr, JSONNode& node);
     bool writeValuesTo(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream);
     bool readValuesFrom(const SerializeContext& ctx, void* valuePtr, const JSONNode& node);
     bool readValuesFrom(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream);

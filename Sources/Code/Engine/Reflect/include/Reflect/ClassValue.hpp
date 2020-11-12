@@ -1,7 +1,7 @@
 #ifndef __CLASS_VALUE_HPP__
 #define __CLASS_VALUE_HPP__
 
-#include "Reflect/ReflectUtils.hpp"
+#include "Reflect/ReflectCore.hpp"
 
 class JSONNode;
 class MemoryStream;
@@ -44,6 +44,7 @@ public:
 
     std::string getTypeName() const;
     bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
+    bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, JSONNode& node);
     bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
     bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, const JSONNode& node);
     bool addArrayElement(void* valuePtr);

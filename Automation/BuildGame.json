@@ -64,8 +64,8 @@
             "dependOn":["Check Run Game Tests"],
             "data":{
                 "process":"${gameBinsRoot}/${buildType}/Game01Tests",
-                "cwd":"${gameBinsRoot}/${buildType}/_tests",
-                "createCwd":true,
+                "cwd":"${gameBinsRoot}/${buildType}",
+                "createCwd":false,
                 "args":[
                     "--gtest_filter=*"
                 ]

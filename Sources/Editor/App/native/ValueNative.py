@@ -524,8 +524,6 @@ class ArrayValue(ValueNative):
         if self._vals is None:
             self._vals = []
         newElemsCount = size - len(self._vals)
-        if newElemsCount > 1:
-            raise RuntimeError("Array size was changed in an invalid way")
         idx = 0
         self._val = self._vals[:size]
         for item in self._vals:

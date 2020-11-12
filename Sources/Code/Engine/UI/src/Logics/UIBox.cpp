@@ -105,3 +105,22 @@ void UIBox::ET_onLoaded() {
 void UIBox::onTransformChanged(const Transform& newTm) {
     calculateBox();
 }
+
+void UIBox::ET_setRenderId(EntityId newRenderId) {
+    boxRenderId = newRenderId;
+    if(!boxRenderId.isValid()) {
+        return;
+    }
+    Vec2i boxSize = aabb.getSize();
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    if(ET_isHidden()) {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
+    }
+}
+
+EntityId UIBox::ET_getRenderId(EntityId newRenderId) const {
+    return boxRenderId;
+}

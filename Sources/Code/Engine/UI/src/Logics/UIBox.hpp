@@ -29,6 +29,8 @@ public:
     // ETUIBox
     const UIBoxStyle& ET_getStyle() const override;
     void ET_setStyle(const UIBoxStyle& newBoxStyle) override;
+    void ET_setRenderId(EntityId newRenderId) override;
+    EntityId ET_getRenderId(EntityId newRenderId) const override;
 
     // ETUIViewPortEvents
     void ET_onViewPortChanged(const Vec2i& newSize) override;

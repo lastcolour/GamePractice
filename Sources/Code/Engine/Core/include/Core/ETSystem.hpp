@@ -3,8 +3,6 @@
 
 #include "Core/ETNodeRegistry.hpp"
 
-#include <mutex>
-
 namespace ET {
 
 int GetNextETId();

@@ -1,8 +1,15 @@
 #ifndef __ET_LEVEL_PROGRESS_HPP__
 #define __ET_LEVEL_PROGRESS_HPP__
 
+#include "Core/Core.hpp"
+
+class LevelProgress;
+
 struct ETLevelsProgression {
-    virtual ~ETLevelsProgression() = default; 
+    virtual ~ETLevelsProgression() = default;
+    virtual const LevelProgress* ET_getLevelProgress(const char* levelName) const = 0;
+    virtual void ET_setLevelProgress(const LevelProgress& newLevelProgress) = 0;
+    virtual int ET_getStarsDone() const = 0;
 };
 
 struct ETLevelButton {
@@ -15,6 +22,7 @@ struct ETLevelButton {
 
 struct ETLevelButtonList {
     virtual ~ETLevelButtonList() = default;
+    virtual void ET_updateLevelProgress() = 0;
     virtual const char* ET_getLevelNameForSender(EntityId senderId) const = 0;
 };
 

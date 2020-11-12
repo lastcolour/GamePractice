@@ -55,7 +55,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
+                    "drawPriority": 0,
                     "size": {
                       "x": 141.0,
                       "y": 141.0
@@ -194,7 +194,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -306,9 +306,9 @@
                                     "type": "RenderColoredTexture",
                                     "id": 2,
                                     "data": {
-                                      "isVisible": true,
+                                      "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 9,
+                                      "drawPriority": 11,
                                       "size": {
                                         "x": 33.0,
                                         "y": 33.0
@@ -389,7 +389,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 7,
+                                "drawPriority": 9,
                                 "size": {
                                   "x": 29.0,
                                   "y": 29.0
@@ -480,9 +480,9 @@
                                     "type": "RenderColoredTexture",
                                     "id": 2,
                                     "data": {
-                                      "isVisible": true,
+                                      "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 9,
+                                      "drawPriority": 11,
                                       "size": {
                                         "x": 33.0,
                                         "y": 33.0
@@ -563,7 +563,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 7,
+                                "drawPriority": 9,
                                 "size": {
                                   "x": 29.0,
                                   "y": 29.0
@@ -654,9 +654,9 @@
                                     "type": "RenderColoredTexture",
                                     "id": 2,
                                     "data": {
-                                      "isVisible": true,
+                                      "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 9,
+                                      "drawPriority": 11,
                                       "size": {
                                         "x": 33.0,
                                         "y": 33.0
@@ -737,7 +737,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 7,
+                                "drawPriority": 9,
                                 "size": {
                                   "x": 29.0,
                                   "y": 29.0
@@ -850,11 +850,9 @@
                 }
               },
               "render": [
-                1
+                2
               ],
-              "label": [
-                3
-              ],
+              "label": [],
               "event": "OnLevelsStartLevel"
             }
           },
@@ -866,6 +864,22 @@
               "outDuration": 0.07999999821186066,
               "minScale": 0.949999988079071,
               "sound": "buttonPress_01"
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 3,
+            "data": {
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                [
+                  3
+                ]
+              ]
             }
           }
         ]

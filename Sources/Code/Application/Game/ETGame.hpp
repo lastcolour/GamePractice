@@ -25,14 +25,4 @@ struct ETGameStateEvents {
     virtual void ET_onGameLeaveState(EGameState state) = 0;
 };
 
-struct ETGameConfig {
-    virtual ~ETGameConfig() = default;
-    virtual bool ET_isSoundEnabled() const = 0;
-    virtual void ET_setSoundEnabled(bool flag) = 0;
-    virtual bool ET_isVibrationEnabled() const = 0;
-    virtual void ET_setVibrationEnabled(bool flag) = 0;
-    virtual int ET_getHighScore() const = 0;
-    virtual void ET_setHighScore(int newHighScore) = 0;
-};
-
 #endif /* __ET_GAME_HPP__ */

@@ -3,7 +3,6 @@
 
 #include "Core/ETSystem.hpp"
 
-#include <vector>
 #include <type_traits>
 
 class ETNodeBase {

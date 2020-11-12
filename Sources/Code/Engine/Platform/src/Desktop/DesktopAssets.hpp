@@ -26,6 +26,7 @@ public:
     JSONNode ET_loadLocalJSONFile(const char* fileName) override;
     bool ET_saveLocalFile(const char* fileName, const Buffer& buff) override;
     bool ET_removeLocalFile(const char* fileName) override;
+    bool ET_isLocalFileExists(const char* fileName) const override;
 
 private:
 

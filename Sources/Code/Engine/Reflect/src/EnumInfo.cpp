@@ -39,20 +39,26 @@ TypeId EnumInfo::getEnumTypeId() const {
     return enumTypeId;
 }
 
-bool EnumInfo::readValueFrom(void* valuePtr, const std::string& valueStr) const {
+bool EnumInfo::getValueFromString(const std::string& valueStr, int& outValue) const {
     if(valueStr.empty()) {
-        LogError("[EnumInfo::readValueFrom] Can't serialize value of enum '%s' (Error: %s)",
-            enumName, "value empty");
         return false;
     }
     auto it = nameToVal.find(valueStr);
     if(it == nameToVal.end()) {
-        LogError("[EnumInfo::readValueFrom] Can't serialize value of enum '%s' (Error: %s)",
-            enumName, "can't find value");
         return false;
     }
-    *(static_cast<int*>(valuePtr)) = it->second;
+    outValue = it->second;
     return true;
+}
+
+bool EnumInfo::getStringFromValue(int value, std::string& outStrValue) const {
+    for(auto& node : nameToVal) {
+        if(node.second == value) {
+            outStrValue = node.first;
+            return true;
+        }
+    }
+    return false;
 }
 
 int EnumInfo::getDefaultValue() {

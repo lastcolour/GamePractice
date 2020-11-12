@@ -1,0 +1,62 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "GameBoard",
+      "id": 1,
+      "data": {
+        "fallSpeed": 4.0,
+        "fallAcceleration": 15.0,
+        "size": {
+          "x": 10,
+          "y": 10
+        },
+        "cellObject": "Game/Cell.json",
+        "cellScale": 0.699999988079071
+      }
+    },
+    {
+      "type": "GameBoardMatcher",
+      "id": 3,
+      "data": {}
+    },
+    {
+      "type": "GameBoardInteraction",
+      "id": 5,
+      "data": {
+        "switchDuration": 0.20000000298023224,
+        "switchSound": "elemSwitch_01"
+      }
+    },
+    {
+      "type": "GameEndTimer",
+      "id": 6,
+      "data": {
+        "gameDuration": 15.0
+      }
+    },
+    {
+      "type": "ScoreObjective",
+      "id": 8,
+      "data": {
+        "oneStar": {
+          "minScore": 15
+        },
+        "twoStars": {
+          "minScore": 30
+        },
+        "threeStars": {
+          "minScore": 50
+        }
+      }
+    },
+    {
+      "type": "GameBoardAnimation",
+      "id": 9,
+      "data": {
+        "minScale": 0.8999999761581421,
+        "scaleDuration": 0.5
+      }
+    }
+  ]
+}
