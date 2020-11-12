@@ -58,7 +58,7 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
     buff = loadAssetImpl(normalAssetName);
 
     if(buff) {
-        ET_SendEvent(&ETAssetsCacheManager::ET_putAssetToCache, normalAssetName, buff);
+        ET_SendEvent(&ETAssetsCacheManager::ET_putAssetToCache, normalAssetName.c_str(), buff);
     }
 
     if(buff) {

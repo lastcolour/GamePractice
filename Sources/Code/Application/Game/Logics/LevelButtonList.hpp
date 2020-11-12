@@ -37,7 +37,7 @@ public:
     void deinit() override;
 
     // ETLevelButtonList
-    void ET_updateLevelProgress();
+    void ET_updateLevelProgress() override;
     const char* ET_getLevelNameForSender(EntityId senderId) const override;
 
 private:

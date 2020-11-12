@@ -8,8 +8,10 @@
   #include <windows.h>
 #elif defined PLATFORM_LINUX
   #include <unistd.h>
+#elif defined PLATFORM_ANDROID
+  #include <unistd.h>
 #else
-  #error Neither PLATFORM_WINDOWS nor PLATFORM_LINUX is specified
+  #error build platfrom macro not specified
 #endif
 
 namespace {
