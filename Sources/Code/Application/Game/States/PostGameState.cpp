@@ -35,11 +35,10 @@ void PostGameState::ET_onAllElemsStatic() {
 }
 
 void PostGameState::onLeave() {
-    ET_SendEvent(&ETGameStateEvents::ET_onGameLeaveState, EGameState::PostGame);
-
-    ETNode<ETGameTimerEvents>::disconnect();
     setupEndResult();
     gameEntityId = InvalidEntityId;
+    ETNode<ETGameTimerEvents>::disconnect();
+    ET_SendEvent(&ETGameStateEvents::ET_onGameLeaveState, EGameState::PostGame);
 }
 
 void PostGameState::ET_onGameTick(float dt) {

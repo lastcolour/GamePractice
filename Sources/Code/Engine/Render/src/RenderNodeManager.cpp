@@ -85,11 +85,11 @@ void RenderNodeManager::ET_removeNode(Node* node) {
         return;
     }
     renderGraph.removeChild(it->second.get());
-    nodes.erase(it);
     if(node->getType() == RenderNodeType::ParticleEmmiter) {
         auto it = std::find(particles.begin(), particles.end(), node);
         particles.erase(it);
     }
+    nodes.erase(it);
 }
 
 void RenderNodeManager::ET_update() {

@@ -3,7 +3,7 @@
 
 #include "Game/ViewScripts/BaseViewScript.hpp"
 #include "Game/ViewScripts/ProgressionStars.hpp"
-#include "UI/ETUIView.hpp"
+#include "UI/ETUIAnimation.hpp"
 
 class ReflectContext;
 
@@ -27,8 +27,8 @@ public:
     void ET_onViewGetFocus() override;
 
     // ETUIViewAppearAnimationEvents
-    void ET_onAppeared(EntityId viewId) override;
-    void ET_onDisappeared(EntityId viewId) override;
+    void ET_onAppearPlayed(EntityId viewId) override;
+    void ET_onDisappearPlayed(EntityId viewId) override;
 
 protected:
 

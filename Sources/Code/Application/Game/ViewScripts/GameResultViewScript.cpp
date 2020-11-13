@@ -37,8 +37,6 @@ void GameResultViewScript::onEvent(const UIEvent& event) {
     if(event.type == UIEvent::EventType::OnBackButton || event.type == UIEvent::EventType::OnGameEndViewExit) {
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
-
-        ET_SendEvent(&ETLevelButtonList::ET_updateLevelProgress);
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Levels);
     }
 }
@@ -63,7 +61,7 @@ void GameResultViewScript::ET_onViewOpened() {
     ET_SendEvent(progressStars.thirdId, &ETUIElement::ET_hide);
 }
 
-void GameResultViewScript::ET_onAppeared(EntityId viewId) {
+void GameResultViewScript::ET_onAppearPlayed(EntityId viewId) {
     if(viewId != waitingId) {
         return;
     }
@@ -79,7 +77,7 @@ void GameResultViewScript::ET_onAppeared(EntityId viewId) {
     }
 }
 
-void GameResultViewScript::ET_onDisappeared(EntityId viewId) {
+void GameResultViewScript::ET_onDisappearPlayed(EntityId viewId) {
 }
 
 void GameResultViewScript::ET_onViewClosed() {
@@ -120,10 +118,10 @@ void GameResultViewScript::playAppearAnimation(EntityId elemId) {
         return;
     }
     if(ET_IsExistNode<ETUIViewAppearAnimation>(elemId)) {
-        ET_SendEvent(elemId, &ETUIViewAppearAnimation::ET_appear, getEntityId());
+        ET_SendEvent(elemId, &ETUIViewAppearAnimation::ET_playAppear, getEntityId());
     } else {
         LogWarning("[GameResultViewScript::playAppearAnimation] Can't find required appear animation on entity: '%s'",
             EntityUtils::GetEntityName(elemId));
-        ET_onAppeared(elemId);
+        ET_onAppearPlayed(elemId);
     }
 }

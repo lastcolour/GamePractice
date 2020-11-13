@@ -76,14 +76,14 @@ bool UIButton::init() {
         labelId = InvalidEntityId;
     }
     UIBox::init();
-    ETNode<ETUIAnimationEvents>::connect(getEntityId());
+    ETNode<ETUIPressAnimationEvents>::connect(getEntityId());
     return true;
 }
 
 void UIButton::deinit() {
     UIBox::deinit();
     ETNode<ETUIInteractionBox>::disconnect();
-    ETNode<ETUIAnimationEvents>::disconnect();
+    ETNode<ETUIPressAnimationEvents>::disconnect();
 }
 
 void UIButton::ET_onLoaded() {
@@ -153,12 +153,12 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
     if(!canContinueEvent(pt)) {
         return EInputEventResult::Ignore;
     }
-    if(!ET_IsExistNode<ETUIAnimation>(getEntityId())) {
+    if(!ET_IsExistNode<ETUIPressAnimation>(getEntityId())) {
         UIEvent buttonEvent{getEntityId(), eventType};
         ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
     } else {
         ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, getEntityId());
-        ET_SendEvent(getEntityId(), &ETUIAnimation::ET_start);
+        ET_SendEvent(getEntityId(), &ETUIPressAnimation::ET_playPress, getEntityId());
     }
     return EInputEventResult::Accept;
 }
@@ -167,7 +167,7 @@ AABB2Di UIButton::ET_getHitBox() const {
     return ET_getBox();
 }
 
-void UIButton::ET_onAnimationEnd() {
+void UIButton::ET_onPressPlayed() {
     EntityId activeBtId;
     ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
     assert(activeBtId == getEntityId());

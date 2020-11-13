@@ -4,6 +4,7 @@
 #include "Core/Core.hpp"
 
 class LevelProgress;
+struct LevelProgressDelta;
 
 enum class ELevelButtonState {
     Locked = 0,
@@ -16,14 +17,17 @@ struct ETLevelsProgression {
     virtual const LevelProgress* ET_getLevelProgress(const char* levelName) const = 0;
     virtual void ET_setLevelProgress(const LevelProgress& newLevelProgress) = 0;
     virtual int ET_getStarsDone() const = 0;
+    virtual const LevelProgressDelta* ET_getProgressDelta() const = 0;
+    virtual void ET_resetProgressDelta() = 0;
 };
 
 struct ETLevelButton {
     virtual ~ETLevelButton() = default;
+    virtual EntityId ET_getSenderId() const = 0;
     virtual void ET_setLevelId(const char* levelId) = 0;
     virtual void ET_setLevelState(ELevelButtonState newState) = 0;
     virtual void ET_setLevelStars(int count) = 0;
-    virtual EntityId ET_getSenderId() const = 0;
+    virtual void ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) = 0;
 };
 
 struct ETLevelButtonList {

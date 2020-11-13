@@ -2,8 +2,9 @@
 #define __UI_VIEW_TRANSITION_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "UI/ETUIView.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "UI/ETUIAnimation.hpp"
+#include "UI/ETUIView.hpp"
 
 #include <vector>
 
@@ -20,8 +21,10 @@ public:
     void deinit() override;
 
     // ETUIViewAppearAnimationEvents
-    void ET_onAppeared(EntityId viewId) override;
-    void ET_onDisappeared(EntityId viewId) override;
+    void ET_onAppearPlayed(EntityId viewId) override;
+    void ET_onDisappearPlayed(EntityId viewId) override;
+
+    // ETUIViewTransitionManager
     bool ET_hasActiveTransition() const override;
 
     // ETUIViewTransitionManager

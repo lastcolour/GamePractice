@@ -11,7 +11,7 @@ class ReflectContext;
 
 class UIButton : public UIBox,
     public ETNode<ETUIInteractionBox>,
-    public ETNode<ETUIAnimationEvents> {
+    public ETNode<ETUIPressAnimationEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -32,8 +32,8 @@ public:
     EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
     AABB2Di ET_getHitBox() const override;
 
-    // ETUIAnimationEvents
-    void ET_onAnimationEnd() override;
+    // ETUIPressAnimationEvents
+    void ET_onPressPlayed() override;
 
     // UIBox
     void ET_onLoaded() override;

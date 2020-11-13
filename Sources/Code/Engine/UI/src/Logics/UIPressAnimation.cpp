@@ -22,7 +22,7 @@ UIPressAnimation::~UIPressAnimation() {
 }
 
 bool UIPressAnimation::init() {
-    ETNode<ETUIAnimation>::connect(getEntityId());
+    ETNode<ETUIPressAnimation>::connect(getEntityId());
     return true;
 }
 
@@ -33,20 +33,21 @@ void UIPressAnimation::setSoundEvent(const char* soundName) {
     ET_SendEventReturn(soundEvent, &ETSoundManager::ET_createEvent, soundName);
 }
 
-void UIPressAnimation::ET_start() {
+void UIPressAnimation::ET_playPress(EntityId triggerId) {
     currDuration = 0.f;
+    senderId = triggerId;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getLocalTransform);
     ETNode<ETUITimerEvents>::connect(getEntityId());
     soundEvent.emit();
 }
 
-float UIPressAnimation::ET_getDuration() const {
+float UIPressAnimation::getTotalDuration() const {
     return (1.f + 1.f * UI::ReturnAnimScaleFactor) * duration;
 }
 
 void UIPressAnimation::ET_onUITick(float dt) {
     currDuration += dt;
-    if(currDuration < ET_getDuration()) {
+    if(currDuration < getTotalDuration()) {
         float prog = 1.f;
         if(currDuration < duration) {
             prog = currDuration / duration;
@@ -61,6 +62,6 @@ void UIPressAnimation::ET_onUITick(float dt) {
     } else {
         ETNode<ETUITimerEvents>::disconnect();
         UI::SetLocalTMDoNotUpdateLayout(getEntityId(), startTm);
-        ET_SendEvent(getEntityId(), &ETUIAnimationEvents::ET_onAnimationEnd);
+        ET_SendEvent(senderId, &ETUIPressAnimationEvents::ET_onPressPlayed);
     }
 }

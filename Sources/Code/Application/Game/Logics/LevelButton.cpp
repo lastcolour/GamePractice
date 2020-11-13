@@ -3,6 +3,7 @@
 #include "UI/ETUIBox.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Core/ETLogger.hpp"
+#include "UI/ETUIAnimation.hpp"
 
 void LevelButton::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelButton>("LevelButton")) {
@@ -15,7 +16,8 @@ void LevelButton::Reflect(ReflectContext& ctx) {
     }
 }
 
-LevelButton::LevelButton() {
+LevelButton::LevelButton() :
+    state(ELevelButtonState::Locked) {
 }
 
 LevelButton::~LevelButton() {
@@ -23,6 +25,7 @@ LevelButton::~LevelButton() {
 
 bool LevelButton::init() {
     ETNode<ETLevelButton>::connect(getEntityId());
+    ETNode<ETUIHighlightAnimationEvents>::connect(getEntityId());
     ET_SendEvent(stars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.thirdId, &ETUIElement::ET_hide);
@@ -90,4 +93,19 @@ void LevelButton::ET_setLevelStars(int count) {
     } else {
         LogError("[LevelButton::ET_setLevelStars] Invalid amount of stars: %d", count);
     }
+}
+
+void LevelButton::ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) {
+    if(newState != state) {
+        ET_setLevelState(newState);
+        ET_SendEvent(getEntityId(), &ETUIHighlightAnimation::ET_playHightlight, getEntityId());
+        ET_SendEvent(senderId, &ETUIElement::ET_disable);
+    }
+    if(prevStarCount != newStarCount) {
+        ET_setLevelStars(newStarCount);
+    }
+}
+
+void LevelButton::ET_onHighlightPlayed() {
+    ET_SendEvent(senderId, &ETUIElement::ET_enable);
 }

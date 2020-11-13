@@ -6,10 +6,13 @@
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETLevelProgress.hpp"
 #include "UI/ETUIBox.hpp"
+#include "UI/ETUIAnimation.hpp"
+#include "Game/Progression/LevelsProgressData.hpp"
 
 void LevelsViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelsViewScript>("LevelsViewScript")) {
         classInfo->addField("progressLabelId", &LevelsViewScript::progressLabelId);
+        classInfo->addField("progressBoxId", &LevelsViewScript::progressBoxId);
     }
 }
 
@@ -17,6 +20,10 @@ LevelsViewScript::LevelsViewScript() {
 }
 
 LevelsViewScript::~LevelsViewScript() {
+}
+
+void LevelsViewScript::ET_onViewClosed() {
+    ET_SendEvent(&ETLevelsProgression::ET_resetProgressDelta);
 }
 
 void LevelsViewScript::ET_onViewOpened() {
@@ -38,6 +45,21 @@ void LevelsViewScript::ET_onViewOpened() {
     }
 
     ET_SendEvent(progressLabelId, &ETUILabel::ET_setText, progressStr.c_str());
+}
+
+void LevelsViewScript::ET_onViewGetFocus() {
+    BaseViewScript::ET_onViewGetFocus();
+
+    const LevelProgressDelta* progressDelta = nullptr;
+    ET_SendEventReturn(progressDelta, &ETLevelsProgression::ET_getProgressDelta);
+    if(progressDelta) {
+        auto starsDelta = progressDelta->current.stars - progressDelta->prev.stars;
+        if(starsDelta > 0) {
+            ET_SendEvent(progressBoxId, &ETUIHighlightAnimation::ET_playHightlight, getEntityId());
+        }
+    }
+
+    ET_SendEvent(&ETLevelButtonList::ET_updateLevelProgress);
 }
 
 void LevelsViewScript::onEvent(const UIEvent& event) {

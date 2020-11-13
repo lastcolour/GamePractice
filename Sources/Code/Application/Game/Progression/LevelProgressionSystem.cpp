@@ -36,6 +36,9 @@ bool LevelProgressionSystem::init() {
     return true;
 }
 
+void LevelProgressionSystem::deinit() {
+}
+
 const LevelProgress* LevelProgressionSystem::ET_getLevelProgress(const char* levelName) const {
     for(auto& lvlProgress : levelsData.levels) {
         if(lvlProgress.name == levelName) {
@@ -52,24 +55,32 @@ void LevelProgressionSystem::ET_setLevelProgress(const LevelProgress& newLevelPr
             prevLvlProgress = &lvlProgress;
         }
     }
-    if(!prevLvlProgress) {
+
+    progressDelta.reset(new LevelProgressDelta);
+    progressDelta->current = newLevelProgress;
+
+    if(prevLvlProgress) {
+        progressDelta->prev = *prevLvlProgress;
+        *prevLvlProgress = newLevelProgress;
+    }  else {
         levelsData.levels.push_back(newLevelProgress);
-    } else {
-        bool newProgressIsBetter = false;
-        if(prevLvlProgress->completeTime > newLevelProgress.completeTime) {
-            newProgressIsBetter = true;
-        }
-        if(prevLvlProgress->stars < newLevelProgress.stars) {
-            newProgressIsBetter = true;
-        }
-        if(prevLvlProgress->stars < newLevelProgress.score) {
-            newProgressIsBetter = true;
-        }
-        if(!newProgressIsBetter) {
-            return;
-        }
     }
-    if(ReflectUtils::SaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
+
+    bool newProgressIsBetter = false;
+    if(progressDelta->prev.completeTime > newLevelProgress.completeTime) {
+        newProgressIsBetter = true;
+    }
+    if(progressDelta->prev.stars < newLevelProgress.stars) {
+        newProgressIsBetter = true;
+    }
+    if(progressDelta->prev.stars < newLevelProgress.score) {
+        newProgressIsBetter = true;
+    }
+    if(!newProgressIsBetter) {
+        return;
+    }
+
+    if(!ReflectUtils::SaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
         LogError("[LevelProgressionSystem::ET_setLevelProgress] Can't update level progress file: '%s'", LEVEL_PROGRESS_FILE);
     }
 }
@@ -82,5 +93,10 @@ int LevelProgressionSystem::ET_getStarsDone() const {
     return starsDone;
 }
 
-void LevelProgressionSystem::deinit() {
+const LevelProgressDelta* LevelProgressionSystem::ET_getProgressDelta() const {
+    return progressDelta.get();
+}
+
+void LevelProgressionSystem::ET_resetProgressDelta() {
+    progressDelta.reset();
 }

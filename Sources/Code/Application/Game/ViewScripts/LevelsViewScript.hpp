@@ -17,6 +17,8 @@ public:
 
     // BaseViewScript
     void ET_onViewOpened() override;
+    void ET_onViewClosed() override;
+    void ET_onViewGetFocus() override;
 
 protected:
 
@@ -24,6 +26,7 @@ protected:
 
 private:
 
+    EntityId progressBoxId;
     EntityId progressLabelId;
 };
 

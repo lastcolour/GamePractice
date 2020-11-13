@@ -39,16 +39,4 @@ struct ETUIViewTransitionManager {
     virtual bool ET_hasActiveTransition() const = 0;
 };
 
-struct ETUIViewAppearAnimation {
-    virtual ~ETUIViewAppearAnimation() = default;
-    virtual void ET_appear(EntityId triggerId) = 0;
-    virtual void ET_disappear(EntityId triggerId) = 0;
-};
-
-struct ETUIViewAppearAnimationEvents {
-    virtual ~ETUIViewAppearAnimationEvents() = default;
-    virtual void ET_onAppeared(EntityId viewId) = 0;
-    virtual void ET_onDisappeared(EntityId viewId) = 0;
-};
-
 #endif /* __ET_UI_VIEW_HPP__ */

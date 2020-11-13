@@ -11,7 +11,7 @@
 class ReflectContext;
 
 class UIPressAnimation : public EntityLogic,
-    public ETNode<ETUIAnimation>,
+    public ETNode<ETUIPressAnimation>,
     public ETNode<ETUITimerEvents> {
 public:
 
@@ -26,9 +26,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETUIAnimation
-    void ET_start() override;
-    float ET_getDuration() const override;
+    // ETUIPressAnimation
+    void ET_playPress(EntityId triggerId) override;
 
     // ETUITimerEvents
     void ET_onUITick(float dt) override;
@@ -36,11 +35,13 @@ public:
 private:
 
     void setSoundEvent(const char* soundName);
+    float getTotalDuration() const;
 
 private:
 
     Transform startTm;
     SoundEvent soundEvent;
+    EntityId senderId;
     float duration;
     float minScale;
     float currDuration;

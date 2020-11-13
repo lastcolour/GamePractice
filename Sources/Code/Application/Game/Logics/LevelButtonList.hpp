@@ -44,6 +44,10 @@ public:
 
 private:
 
+    void initLevelProress();
+
+private:
+
     std::vector<LevelButtonItem> levelButtons;
 };
 

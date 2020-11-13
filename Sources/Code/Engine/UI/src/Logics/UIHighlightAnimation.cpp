@@ -5,6 +5,8 @@
 #include "UIUtils.hpp"
 #include "UI/ETUIBox.hpp"
 
+#include <algorithm>
+
 void UIHighlightAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIHighlightAnimation>("UIHighlightAnimation")) {
         classInfo->addField("target", &UIHighlightAnimation::targetId);
@@ -24,17 +26,20 @@ UIHighlightAnimation::~UIHighlightAnimation() {
 
 void UIHighlightAnimation::ET_onUITick(float dt) {
     currentDuration += dt;
-    if(currentDuration > ET_getDuration()) {
+    if(currentDuration > getTotalDuration()) {
         UI::SetLocalTMDoNotUpdateLayout(targetId, startTm);
         ETNode<ETUITimerEvents>::disconnect();
+        ET_SendEvent(senderId, &ETUIHighlightAnimationEvents::ET_onHighlightPlayed);
         return;
     }
 
     float prog = 0.f; 
     if(currentDuration < duration) {
         prog = currentDuration / duration;
+        prog = std::min(prog, 1.f);
     } else {
         prog = 1.f - UI::ReturnAnimScaleFactor * (currentDuration - duration) / duration;
+        prog = std::max(0.f, prog);
     }
 
     float scaleVal = Math::Lerp(1.f, scale, prog);
@@ -45,25 +50,19 @@ void UIHighlightAnimation::ET_onUITick(float dt) {
     UI::SetLocalTMDoNotUpdateLayout(targetId, tm);
 }
 
-void UIHighlightAnimation::ET_start() {
+void UIHighlightAnimation::ET_playHightlight(EntityId triggerId) {
+    senderId = triggerId;
     currentDuration = 0.f;
-    ET_SendEvent(getEntityId(), &ETRenderNode::ET_show);
-
-    AABB2Di box(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(box, targetId, &ETUIElement::ET_getBox);
     ET_SendEventReturn(startTm, targetId, &ETEntity::ET_getLocalTransform);
-
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, startTm);
-
     ETNode<ETUITimerEvents>::connect(getEntityId());
 }
 
-float UIHighlightAnimation::ET_getDuration() const {
+float UIHighlightAnimation::getTotalDuration() const {
     return duration * (1.f + 1.f / UI::ReturnAnimScaleFactor);
 }
 
 bool UIHighlightAnimation::init() {
-    ETNode<ETUIAnimation>::connect(getEntityId());
+    ETNode<ETUIHighlightAnimation>::connect(getEntityId());
     return true;
 }
 

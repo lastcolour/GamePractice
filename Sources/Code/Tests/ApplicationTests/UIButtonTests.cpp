@@ -161,12 +161,8 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
 
     auto button = createUIButton(center, Vec2(0.5f));
 
-    float animDuration = 0.f;
-
     {
         auto pressAnimation = new UIPressAnimation();
-        animDuration = pressAnimation->ET_getDuration();
-        ASSERT_GT(animDuration, 0.f);
         button->addCustomLogic(std::unique_ptr<EntityLogic>(pressAnimation));
     }
 
@@ -178,7 +174,7 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 0u);
 
-    ET_SendEvent(&ETUITimerEvents::ET_onUITick, animDuration + 0.001f);
+    ET_SendEvent(&ETUITimerEvents::ET_onUITick, 1.f);
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
 
     auto& event = buttonListener->eventQueue[0];

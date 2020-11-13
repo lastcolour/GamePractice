@@ -23,6 +23,11 @@ public:
     int stars;
 };
 
+struct LevelProgressDelta {
+    LevelProgress prev;
+    LevelProgress current;
+};
+
 class LevelProgressList {
 public:
 

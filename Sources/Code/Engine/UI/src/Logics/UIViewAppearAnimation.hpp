@@ -4,7 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUITimer.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "UI/ETUIView.hpp"
+#include "UI/ETUIAnimation.hpp"
 #include "Logics/UIViewAppearAnimationElement.hpp"
 
 #include <vector>
@@ -31,8 +31,8 @@ public:
     void ET_onUITick(float dt) override;
 
     // ETUIViewAppearAnimation
-    void ET_appear(EntityId triggerId) override;
-    void ET_disappear(EntityId triggerId) override;
+    void ET_playAppear(EntityId triggerId) override;
+    void ET_playDissapear(EntityId triggerId) override;
 
 private:
 

@@ -105,8 +105,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 62.0,
-                      "y": 62.0
+                      "x": 140.0,
+                      "y": 140.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -196,7 +196,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 11.0,
+                      "y": 23.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -249,7 +249,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 47,
                           "text": "99"
                         }
                       }
@@ -260,7 +260,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -12.0,
+                      "y": -27.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -283,7 +283,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -18.0,
+                            "x": -38.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -358,8 +358,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 15.0,
-                                        "y": 15.0
+                                        "x": 33.0,
+                                        "y": 33.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -440,8 +440,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 13.0,
-                                  "y": 13.0
+                                  "x": 28.0,
+                                  "y": 28.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -533,8 +533,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 15.0,
-                                        "y": 15.0
+                                        "x": 33.0,
+                                        "y": 33.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -615,8 +615,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 13.0,
-                                  "y": 13.0
+                                  "x": 28.0,
+                                  "y": 28.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -633,7 +633,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 18.0,
+                            "x": 38.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -708,8 +708,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 15.0,
-                                        "y": 15.0
+                                        "x": 33.0,
+                                        "y": 33.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -790,8 +790,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 13.0,
-                                  "y": 13.0
+                                  "x": 28.0,
+                                  "y": 28.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -1019,6 +1019,17 @@
         "render": [
           0
         ]
+      }
+    },
+    {
+      "type": "UIHighlightAnimation",
+      "id": 5,
+      "data": {
+        "target": [
+          1
+        ],
+        "duration": 0.30000001192092896,
+        "scale": 1.2000000476837158
       }
     }
   ]
