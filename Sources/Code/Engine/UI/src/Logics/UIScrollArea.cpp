@@ -72,6 +72,7 @@ bool doesScrollSupported(UIScrollType scrollType, const AABB2Di& targetBox, cons
 
 void UIScrollArea::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIScrollArea>("UIScrollArea")) {
+        classInfo->addField("extraZOffset", &UIScrollArea::extraZOffset);
         classInfo->addField("style", &UIScrollArea::style);
         classInfo->addField("target", &UIScrollArea::targetId);
     }
@@ -79,6 +80,7 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
 
 UIScrollArea::UIScrollArea() :
     endScrollPt(0),
+    extraZOffset(0),
     scrollSpeed(0.f),
     accumulativeDt(0.f),
     scrollBox(Vec2i(0), Vec2i(0)),
@@ -166,6 +168,7 @@ void UIScrollArea::initScrollElem() {
     }
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
+    childZIndex += extraZOffset;
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 
@@ -237,6 +240,7 @@ void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
+    childZIndex += extraZOffset;
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 

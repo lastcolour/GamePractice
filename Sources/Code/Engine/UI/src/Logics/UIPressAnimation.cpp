@@ -2,22 +2,20 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Audio/ETSound.hpp"
+#include "UIUtils.hpp"
 
 void UIPressAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIPressAnimation>("UIPressAnimation")) {
-        classInfo->addField("inDuration", &UIPressAnimation::inDuration);
-        classInfo->addField("outDuration", &UIPressAnimation::outDuration);
+        classInfo->addField("duration", &UIPressAnimation::duration);
         classInfo->addField("minScale", &UIPressAnimation::minScale);
         classInfo->addResourceField("sound", ResourceType::SoundEvent, &UIPressAnimation::setSoundEvent);
     }
 }
 
 UIPressAnimation::UIPressAnimation() :
-    inDuration(0.075f),
-    outDuration(0.075f),
+    duration(0.075f),
     minScale(0.95f),
-    currDuration(0.f),
-    isReversed(false) {
+    currDuration(0.f) {
 }
 
 UIPressAnimation::~UIPressAnimation() {
@@ -37,58 +35,32 @@ void UIPressAnimation::setSoundEvent(const char* soundName) {
 
 void UIPressAnimation::ET_start() {
     currDuration = 0.f;
-    isReversed = false;
     ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getLocalTransform);
     ETNode<ETUITimerEvents>::connect(getEntityId());
     soundEvent.emit();
 }
 
-void UIPressAnimation::ET_startReverse() {
-    currDuration = 0.f;
-    isReversed = true;
-    ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getLocalTransform);
-    ETNode<ETUITimerEvents>::connect(getEntityId());
-}
-
-void UIPressAnimation::ET_pause() {
-    ETNode<ETUITimerEvents>::disconnect();
-}
-
-void UIPressAnimation::ET_resume() {
-    ETNode<ETUITimerEvents>::connect(getEntityId());
-}
-
-void UIPressAnimation::ET_reverse() {
-    isReversed = !isReversed;
-}
-
-bool UIPressAnimation::ET_isReversed() const {
-    return isReversed;
-}
-
 float UIPressAnimation::ET_getDuration() const {
-    return inDuration + outDuration;
+    return (1.f + 1.f * UI::ReturnAnimScaleFactor) * duration;
 }
 
 void UIPressAnimation::ET_onUITick(float dt) {
     currDuration += dt;
-    if(currDuration < inDuration) {
-        auto currInTime = currDuration;
-        auto prog = currInTime / inDuration;
-        auto currScale = Math::Lerp(1.f, minScale, prog);
-        auto currTm = startTm;
-        currTm.scale *= currScale;
-        ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, currTm);
-    } else if (currDuration < outDuration) {
-        auto currOutTime = currDuration - inDuration;
-        auto prog = currOutTime / outDuration;
-        auto currScale = Math::Lerp(minScale, 1.f, prog);
-        auto currTm = startTm;
-        currTm.scale *= currScale;
-        ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, currTm);
+    if(currDuration < ET_getDuration()) {
+        float prog = 1.f;
+        if(currDuration < duration) {
+            prog = currDuration / duration;
+        } else {
+            prog = 1.f -  UI::ReturnAnimScaleFactor * (currDuration - duration) / duration;
+        }
+        auto scaleFactor = Math::Lerp(1.f, minScale, prog);
+        auto tm = startTm;
+        tm.scale *= scaleFactor;
+        UI::SetLocalTMDoNotUpdateLayout(getEntityId(), tm);
+        ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
     } else {
         ETNode<ETUITimerEvents>::disconnect();
-        ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, startTm);
+        UI::SetLocalTMDoNotUpdateLayout(getEntityId(), startTm);
         ET_SendEvent(getEntityId(), &ETUIAnimationEvents::ET_onAnimationEnd);
     }
 }

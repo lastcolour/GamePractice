@@ -4,11 +4,6 @@
 struct ETUIAnimation {
     virtual ~ETUIAnimation() = default;
     virtual void ET_start() = 0;
-    virtual void ET_startReverse() = 0;
-    virtual void ET_pause() = 0;
-    virtual void ET_resume() = 0;
-    virtual void ET_reverse() = 0;
-    virtual bool ET_isReversed() const = 0;
     virtual float ET_getDuration() const = 0;
 };
 

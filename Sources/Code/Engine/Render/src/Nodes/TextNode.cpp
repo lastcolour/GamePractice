@@ -15,22 +15,22 @@ TextNode::TextNode() :
 TextNode::~TextNode() {
 }
 
-void TextNode::onInitRender() {
+void TextNode::onInit() {
     setGeometry(PrimitiveGeometryType::Text_Vert_Chunk);
     setMaterial("text_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
 }
 
-void TextNode::ET_setFontHeight(int newHeight) {
+void TextNode::setFontHeight(int newHeight) {
     fontHeight = newHeight;
 }
 
-void TextNode::ET_setColor0(const ColorB& newColor) {
+void TextNode::setColor0(const ColorB& newColor) {
     color = newColor;
 }
 
-void TextNode::ET_setText(const std::string& newText) {
+void TextNode::setText(const std::string& newText) {
     text = newText;
     doUpdate = true;
 }

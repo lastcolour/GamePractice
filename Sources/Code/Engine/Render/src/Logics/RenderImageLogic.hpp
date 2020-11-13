@@ -30,8 +30,14 @@ public:
 
 protected:
 
+    void onSyncWithRender() override;
+
+protected:
+
     std::string image;
     Vec2 size;
+    bool isImageChanged;
+    bool isSizeChanged;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */

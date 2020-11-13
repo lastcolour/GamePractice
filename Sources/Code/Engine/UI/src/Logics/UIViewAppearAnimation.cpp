@@ -7,14 +7,9 @@
 #include "Config/UIConfig.hpp"
 #include "Core/ETLogger.hpp"
 #include "UI/ETUILayout.hpp"
+#include "UIUtils.hpp"
 
 #include <algorithm>
-
-namespace {
-
-const float DISAPPEAR_TIME_SCALE = 1.2f;
-
-} // namespace
 
 void UIViewAppearAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIViewAppearAnimation>("UIViewAppearAnimation")) {
@@ -47,7 +42,7 @@ void UIViewAppearAnimation::ET_onUITick(float dt) {
     animDuration += dt;
     auto resAnimDuration = animDuration;
     if(state == State::Disappear) {
-        resAnimDuration *= DISAPPEAR_TIME_SCALE;
+        resAnimDuration *= UI::ReturnAnimScaleFactor;
     }
     for(auto& elem : elements) {
         if(!elem.elemId.isValid()) {

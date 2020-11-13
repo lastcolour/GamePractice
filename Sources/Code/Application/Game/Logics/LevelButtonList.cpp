@@ -30,10 +30,18 @@ bool LevelButtonList::init() {
     return true;
 }
 
-void LevelButtonList::ET_updateLevelProgress() {
+int LevelButtonList::ET_getTotalStars() const {
+    return levelButtons.size() * 3;
+}
+
+int LevelButtonList::ET_getDoneStars() const {
     int currStarDone = 0;
     ET_SendEventReturn(currStarDone, &ETLevelsProgression::ET_getStarsDone);
+    return currStarDone;
+}
 
+void LevelButtonList::ET_updateLevelProgress() {
+    int currStarDone = ET_getDoneStars();
     for(auto& button : levelButtons) {
         if(!button.buttonId.isValid()) {
             LogWarning("[LevelButtonList::init] Invalid button id");
@@ -41,14 +49,20 @@ void LevelButtonList::ET_updateLevelProgress() {
         }
         ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelId, button.levelId.c_str());
         if(button.startsRequired > currStarDone) {
-            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelLocked, true);
+            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Locked);
             ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelStars, 0);
         } else {
             const LevelProgress* lvlProgress = nullptr;
             ET_SendEventReturn(lvlProgress, &ETLevelsProgression::ET_getLevelProgress, button.levelName.c_str());
-            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelLocked, false);
+            int levelStars = 0;
             if(lvlProgress) {
-                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelStars, lvlProgress->stars);
+                levelStars = lvlProgress->stars;
+            }
+            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelStars, levelStars);
+            if(levelStars == 3) {
+                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Completed);
+            } else {
+                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Unlocked);
             }
         }
         ET_SendEventReturn(button.senderId, button.buttonId, &ETLevelButton::ET_getSenderId);

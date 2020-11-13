@@ -9,6 +9,7 @@ void LevelButton::Reflect(ReflectContext& ctx) {
         classInfo->addField("levelIdLabel", &LevelButton::levelIdLabel);
         classInfo->addField("senderId", &LevelButton::senderId);
         classInfo->addField("lockedBackgroundId", &LevelButton::lockedBackgroundId);
+        classInfo->addField("unlockedBackgroundId", &LevelButton::unlockedBackgroundId);
         classInfo->addField("completedBackgroundId", &LevelButton::completedBackgroundId);
         classInfo->addField("stars", &LevelButton::stars);
     }
@@ -25,7 +26,7 @@ bool LevelButton::init() {
     ET_SendEvent(stars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.thirdId, &ETUIElement::ET_hide);
-    ET_setLevelLocked(true);
+    ET_setLevelState(ELevelButtonState::Locked);
     return true;
 }
 
@@ -40,15 +41,32 @@ void LevelButton::ET_setLevelId(const char* levelId) {
     ET_SendEvent(levelIdLabel, &ETUILabel::ET_setText, levelId);
 }
 
-void LevelButton::ET_setLevelLocked(bool flag) {
-    if(flag) {
-        ET_SendEvent(senderId, &ETUIElement::ET_disable);
-        ET_SendEvent(senderId, &ETUIBox::ET_setRenderId, lockedBackgroundId);
-        ET_SendEvent(completedBackgroundId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(senderId, &ETUIElement::ET_enable);
-        ET_SendEvent(senderId, &ETUIBox::ET_setRenderId, completedBackgroundId);
-        ET_SendEvent(lockedBackgroundId, &ETRenderNode::ET_hide);
+void LevelButton::ET_setLevelState(ELevelButtonState newState) {
+    switch(newState) {
+        case ELevelButtonState::Locked: {
+            ET_SendEvent(senderId, &ETUIElement::ET_disable);
+            ET_SendEvent(senderId, &ETUIBox::ET_setRenderId, lockedBackgroundId);
+            ET_SendEvent(completedBackgroundId, &ETRenderNode::ET_hide);
+            ET_SendEvent(unlockedBackgroundId, &ETRenderNode::ET_hide);
+            break;
+        }
+        case ELevelButtonState::Unlocked: {
+            ET_SendEvent(senderId, &ETUIElement::ET_enable);
+            ET_SendEvent(senderId, &ETUIBox::ET_setRenderId, unlockedBackgroundId);
+            ET_SendEvent(lockedBackgroundId, &ETRenderNode::ET_hide);
+            ET_SendEvent(completedBackgroundId, &ETRenderNode::ET_hide);
+            break;
+        }
+        case ELevelButtonState::Completed: {
+            ET_SendEvent(senderId, &ETUIElement::ET_enable);
+            ET_SendEvent(senderId, &ETUIBox::ET_setRenderId, completedBackgroundId);
+            ET_SendEvent(lockedBackgroundId, &ETRenderNode::ET_hide);
+            ET_SendEvent(unlockedBackgroundId, &ETRenderNode::ET_hide);
+            break;
+        }
+        default: {
+            break;
+        }
     }
 }
 

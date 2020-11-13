@@ -1,11 +1,13 @@
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
+#include "Nodes/SimpleNode.hpp"
 
 RenderSimpleLogic::RenderSimpleLogic() :
     RenderNode(RenderNodeType::Simple),
     size(20.f),
-    color(255, 255, 255) {
+    color(255, 255, 255),
+    isSizeChanged(true),
+    isColorChanged(true) {
 }
 
 RenderSimpleLogic::~RenderSimpleLogic() {
@@ -30,14 +32,28 @@ bool RenderSimpleLogic::init() {
 
 void RenderSimpleLogic::ET_setColor(const ColorB& col) {
     color = col;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, col);
+    isColorChanged = true;
+    markForSyncWithRender();
 }
 
 void RenderSimpleLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
+    isSizeChanged = true;
+    markForSyncWithRender();
 }
 
 Vec2 RenderSimpleLogic::ET_getSize() const {
     return size;
+}
+
+void RenderSimpleLogic::onSyncWithRender() {
+    auto simpleProxyNode = static_cast<SimpleNode*>(proxyNode);
+    if(isSizeChanged) {
+        isSizeChanged = false;
+        simpleProxyNode->setSize(size);
+    }
+    if(isColorChanged) {
+        isColorChanged = false;
+        simpleProxyNode->setColor0(color);
+    }
 }

@@ -12,6 +12,7 @@
 
 void UILayout::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILayout>("UILayout")) {
+        classInfo->addField("extraZOffset", &UILayout::extraZOffset);
         classInfo->addField("style", &UILayout::style);
         classInfo->addField("children", &UILayout::children);
     }
@@ -19,6 +20,7 @@ void UILayout::Reflect(ReflectContext& ctx) {
 
 UILayout::UILayout() :
     combinedBox(Vec2i(0), Vec2i(0)),
+    extraZOffset(0),
     isCalculatingLayout(false) {
 }
 
@@ -199,6 +201,7 @@ void UILayout::calculateLayout() {
     combinedBox = calculateAligment(childBoxes);
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
+    childZIndex += extraZOffset;
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
@@ -220,6 +223,7 @@ void UILayout::ET_onBoxChanged(const AABB2Di& newAabb) {
 
 void UILayout::ET_onZIndexChanged(int newZIndex) {
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
+    childZIndex += extraZOffset;
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }

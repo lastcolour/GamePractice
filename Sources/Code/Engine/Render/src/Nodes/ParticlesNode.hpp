@@ -5,23 +5,23 @@
 #include "RenderTexture.hpp"
 #include "Particles/ParticleUpdate.hpp"
 
-class ParticlesNode : public Node,
-    public ETNode<ETParticleEmitterProxyNode> {
+class ParticlesNode : public Node {
 public:
 
     ParticlesNode();
     virtual ~ParticlesNode();
 
-    void ET_update(float dt) override;
-    void ET_setConfig(const ParticleEmitterEmissionConfig& emissionConf,
+    void update(float dt);
+
+    void setConfig(const ParticleEmitterEmissionConfig& emissionConf,
         const ParticleEmitterMovementConfig& movementConf,
         const ParticleEmitterColorConfig& colorConf,
-        const ParticleEmitterRenderConfig& renderConf) override;
+        const ParticleEmitterRenderConfig& renderConf);
 
 protected:
 
-    void onInitConnections() override;
-    void onInitRender() override;
+    // Node
+    void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
 

@@ -160,12 +160,10 @@ void Render::ET_onContextRestored() {
 }
 
 void Render::ET_updateParticles() {
-    ET_SendEvent(&ETParticleEmitterProxyNode::ET_update, 0.01f);
+    ET_SendEvent(&ETRenderNodeManager::ET_updateParticles, 0.016f);
 }
 
 void Render::ET_syncWithGame() {
     ET_PollAllEvents<ETRenderNodeManager>();
-    ET_PollAllEvents<ETRenderProxyNode>();
-    ET_PollAllEvents<ETParticleEmitterProxyNode>();
     ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncWithRender);
 }

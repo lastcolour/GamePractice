@@ -9,13 +9,13 @@ public:
     SimpleNode();
     virtual ~SimpleNode();
 
-    // ETRenderProxyNode
-    void ET_setColor0(const ColorB& newColor) override;
-    void ET_setSize(const Vec2& newSize) override;
+    void setColor0(const ColorB& newColor);
+    void setSize(const Vec2& newSize);
 
 protected:
 
-    void onInitRender() override;
+    // Node
+    void onInit() override;
     void onRender(RenderContext& ctx) override;
 
 private:

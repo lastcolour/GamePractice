@@ -9,16 +9,16 @@ SimpleNode::SimpleNode() :
 SimpleNode::~SimpleNode() {
 }
 
-void SimpleNode::onInitRender() {
+void SimpleNode::onInit() {
     setGeometry(PrimitiveGeometryType::Square);
     setMaterial("geom_solid_color");
 }
 
-void SimpleNode::ET_setColor0(const ColorB& newColor) {
+void SimpleNode::setColor0(const ColorB& newColor) {
     color = newColor;
 }
 
-void SimpleNode::ET_setSize(const Vec2& newSize) {
+void SimpleNode::setSize(const Vec2& newSize) {
     size = newSize;
 }
 

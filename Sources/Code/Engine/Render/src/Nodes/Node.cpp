@@ -11,38 +11,35 @@ Node::Node() :
     alpha(1.f),
     drawPriority(0),
     blending(RenderBlendingType::NONE),
-    visible(false),
-    setupAlpha(true) {
+    visible(false) {
 }
 
 Node::~Node() {
 }
 
-void Node::initConnections(EntityId renderNodeId, const RenderNodeCreateParams& params) {
-    nodeId = renderNodeId;
+void Node::preInit(const RenderNodeCreateParams& params) {
+    type = params.type;
     alpha = params.alpha;
     drawPriority = params.drawPriority;
     tm = params.tm;
-    ETNode<ETRenderProxyNode>::connect(nodeId);
-    onInitConnections();
 }
 
-void Node::initRender() {
-    onInitRender();
+void Node::init() {
+    onInit();
 }
 
-void Node::ET_setAlpha(float newAlpha) {
+void Node::setAlpha(float newAlpha) {
     alpha = newAlpha;
 }
 
-void Node::ET_setDrawPriority(int newDrawPriority) {
+void Node::setDrawPriority(int newDrawPriority) {
     drawPriority = newDrawPriority;
     if(renderGraph) {
         renderGraph->setNeedReorderNodes();
     }
 }
 
-void Node::ET_setVisible(bool flag) {
+void Node::setVisible(bool flag) {
     visible = flag;
 }
 
@@ -58,11 +55,7 @@ void Node::setGeometry(PrimitiveGeometryType geomType) {
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, geomType);
 }
 
-void Node::setSetupAlpha(bool flag) {
-    setupAlpha = flag;
-}
-
-void Node::ET_setTransform(const Transform& newTm) {
+void Node::setTransform(const Transform& newTm) {
     tm = newTm;
 }
 
@@ -80,12 +73,11 @@ void Node::setRenderGraph(RenderGraph* graph) {
     renderGraph = graph;
 }
 
-EntityId Node::getNodeId() const {
-    return nodeId;
-}
-
 int Node::getDrawPriority() const {
     return drawPriority;
+}
+RenderNodeType Node::getType() const {
+    return type;
 }
 
 void Node::render(RenderContext& ctx) {
@@ -105,9 +97,7 @@ void Node::render(RenderContext& ctx) {
 
     mat->bind();
     mat->setUniformMat4("CameraMat", ctx.proj2dMat);
-    if(setupAlpha) {
-        mat->setUniform1f("alpha", alpha);
-    }
+    mat->setUniform1f("alpha", alpha);
     onRender(ctx);
     mat->unbind();
 }

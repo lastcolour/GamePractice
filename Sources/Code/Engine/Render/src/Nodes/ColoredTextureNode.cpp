@@ -11,7 +11,7 @@ ColoredTextureNode::ColoredTextureNode() :
 ColoredTextureNode::~ColoredTextureNode() {
 }
 
-void ColoredTextureNode::onInitRender() {
+void ColoredTextureNode::onInit() {
     setMaterial("tex_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
@@ -34,14 +34,14 @@ bool ColoredTextureNode::isVisible() const {
     return Node::isVisible();
 }
 
-void ColoredTextureNode::ET_setColor0(const ColorB& newColor) {
+void ColoredTextureNode::setColor0(const ColorB& newColor) {
     color = newColor;
 }
 
-void ColoredTextureNode::ET_setSize(const Vec2& newSize) {
+void ColoredTextureNode::setSize(const Vec2& newSize) {
     size = newSize;
 }
 
-void ColoredTextureNode::ET_setImage(const std::string& newImage) {
+void ColoredTextureNode::setImage(const std::string& newImage) {
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
 }

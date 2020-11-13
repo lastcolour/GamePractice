@@ -25,7 +25,7 @@ public:
 
     // ETLevelButton
     void ET_setLevelId(const char* levelId) override;
-    void ET_setLevelLocked(bool flag) override;
+    void ET_setLevelState(ELevelButtonState newState) override;
     void ET_setLevelStars(int count) override;
     EntityId ET_getSenderId() const override;
 
@@ -34,6 +34,7 @@ private:
     EntityId levelIdLabel;
     EntityId senderId;
     EntityId lockedBackgroundId;
+    EntityId unlockedBackgroundId;
     EntityId completedBackgroundId;
     ProgressionStars stars;
 };

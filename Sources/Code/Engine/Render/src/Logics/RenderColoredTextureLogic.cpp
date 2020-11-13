@@ -1,10 +1,11 @@
 #include "Logics/RenderColoredTextureLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
+#include "Nodes/ColoredTextureNode.hpp"
 
 RenderColoredTextureLogic::RenderColoredTextureLogic() :
     RenderImageLogic(RenderNodeType::ColoredTexture),
-    color(255, 255, 255) {
+    color(255, 255, 255),
+    isColorChanged(true) {
 }
 
 RenderColoredTextureLogic::~RenderColoredTextureLogic() {
@@ -19,7 +20,8 @@ void RenderColoredTextureLogic::Reflect(ReflectContext& ctx) {
 
 void RenderColoredTextureLogic::ET_setTextureColor(const ColorB& newColor) {
     color = newColor;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, color);
+    isColorChanged = true;
+    markForSyncWithRender();
 }
 
 bool RenderColoredTextureLogic::init() {
@@ -29,4 +31,13 @@ bool RenderColoredTextureLogic::init() {
     ET_setTextureColor(color);
     ET_setSize(size);
     return true;
+}
+
+void RenderColoredTextureLogic::onSyncWithRender() {
+    RenderImageLogic::onSyncWithRender();
+    auto coloredTextureProxyNode = static_cast<ColoredTextureNode*>(proxyNode);
+    if(isColorChanged) {
+        isColorChanged = false;
+        coloredTextureProxyNode->setColor0(color);
+    }
 }

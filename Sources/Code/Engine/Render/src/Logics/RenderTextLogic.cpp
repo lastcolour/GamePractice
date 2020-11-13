@@ -3,7 +3,7 @@
 #include "Entity/ETEntity.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
+#include "Nodes/TextNode.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -11,7 +11,9 @@
 RenderTextLogic::RenderTextLogic() :
     RenderNode(RenderNodeType::Text),
     color(255, 255, 255),
-    fontHeight(24) {
+    fontHeight(24),
+    isTextChanged(true),
+    isColorChanged(true) {
 }
 
 RenderTextLogic::~RenderTextLogic() {
@@ -38,7 +40,8 @@ bool RenderTextLogic::init() {
 
 void RenderTextLogic::ET_setFontHeight(int newFontHeight) {
     fontHeight = newFontHeight;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setFontHeight, newFontHeight);
+    isTextChanged = true;
+    markForSyncWithRender();
 }
 
 AABB2D RenderTextLogic::ET_getTextAABB() const {
@@ -67,10 +70,25 @@ AABB2Di RenderTextLogic::ET_getTextAABBi() const {
 
 void RenderTextLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, newColor);
+    isColorChanged = true;
+    markForSyncWithRender();
 }
 
 void RenderTextLogic::ET_setText(const char* str) {
     text = str;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setText, text);
+    isTextChanged = true;
+    markForSyncWithRender();
+}
+
+void RenderTextLogic::onSyncWithRender() {
+    auto textProxyNode = static_cast<TextNode*>(proxyNode);
+    if(isTextChanged) {
+        isTextChanged = false;
+        textProxyNode->setText(text);
+        textProxyNode->setFontHeight(fontHeight);
+    }
+    if(isColorChanged) {
+        isColorChanged = false;
+        textProxyNode->setColor0(color);
+    }
 }

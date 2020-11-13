@@ -51,6 +51,7 @@ private:
 private:
 
     AABB2Di combinedBox;
+    int extraZOffset;
     UILayoutStyle style;
     std::vector<EntityId> children;
     bool isCalculatingLayout;

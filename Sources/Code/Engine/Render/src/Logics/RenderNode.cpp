@@ -1,6 +1,5 @@
 #include "Logics/RenderNode.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Core/ETLogger.hpp"
@@ -16,6 +15,7 @@ void RenderNode::Reflect(ReflectContext& ctx) {
 }
 
 RenderNode::RenderNode(RenderNodeType nodeType) :
+    proxyNode(nullptr),
     alpha(1.f),
     alphaMult(1.f),
     drawPriority(0),
@@ -30,22 +30,28 @@ RenderNode::~RenderNode() {
 }
 
 bool RenderNode::init() {
-    ETNode<ETRenderNode>::connect(getEntityId());
-    ETNode<ETEntityEvents>::connect(getEntityId());
-
     RenderNodeCreateParams params;
+
     ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
     params.alpha = std::min(1.f, std::max(0.f, alpha));
     params.drawPriority = drawPriority;
     params.type = type;
-    ET_SendEventReturn(renderNodeId, &ETRenderNodeManager::ET_createNode, params);
+    ET_SendEventReturn(proxyNode, &ETRenderNodeManager::ET_createNode, params);
+    if(!proxyNode) {
+        LogError("[RenderNode::init] Can't create proxy node an enity: '%s'",
+            EntityUtils::GetEntityName(getEntityId()));
+        return false;
+    }
+
+    ETNode<ETRenderNode>::connect(getEntityId());
+    ETNode<ETEntityEvents>::connect(getEntityId());
 
     return true;
 }
 
 void RenderNode::deinit() {
-    ET_QueueEvent(&ETRenderNodeManager::ET_removeNode, renderNodeId);
-    renderNodeId = InvalidEntityId;
+    ET_QueueEvent(&ETRenderNodeManager::ET_removeNode, proxyNode);
+    proxyNode = nullptr;
 }
 
 void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
@@ -55,9 +61,8 @@ void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
             alphaMult, EntityUtils::GetEntityName(getEntityId()));
         alphaMult = Math::Clamp(alphaMult, 0.f, 1.f);
     }
-    auto newAlpha = alpha * alphaMult;
-    newAlpha = std::min(1.f, std::max(0.f, newAlpha));
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setAlpha, newAlpha);
+    isAlphaChanged = true;
+    markForSyncWithRender();
 }
 
 bool RenderNode::ET_isVisible() const {
@@ -69,7 +74,8 @@ void RenderNode::ET_hide() {
         return;
     }
     isVisible = false;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, false);
+    isVisChanged = true;
+    markForSyncWithRender();
 }
 
 void RenderNode::ET_show() {
@@ -84,7 +90,8 @@ void RenderNode::ET_show() {
 void RenderNode::ET_setDrawPriority(int newDrawPriority) {
     if(newDrawPriority != drawPriority) {
         drawPriority = newDrawPriority;
-        ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setDrawPriority, newDrawPriority);
+        isDrawPriorityChanged = true;
+        markForSyncWithRender();
     }
 }
 
@@ -113,15 +120,25 @@ void RenderNode::markForSyncWithRender() {
 }
 
 void RenderNode::ET_syncWithRender() {
+    onSyncWithRender();
     if(isTmChanged) {
         isTmChanged = false;
         Transform tm;
         ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
-        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setTransform, tm);
+        proxyNode->setTransform(tm);
     }
     if(isVisChanged) {
         isVisChanged = false;
-        ET_SendEvent(renderNodeId, &ETRenderProxyNode::ET_setVisible, isVisible);
+        proxyNode->setVisible(isVisible);
+    }
+    if(isAlphaChanged) {
+        isAlphaChanged = false;
+        auto newAlpha = std::min(1.f, std::max(0.f, alphaMult * alpha));
+        proxyNode->setAlpha(newAlpha);
+    }
+    if(isDrawPriorityChanged) {
+        isDrawPriorityChanged = false;
+        proxyNode->setDrawPriority(drawPriority);
     }
     ETNode<ETRenderProxyNodeEvents>::disconnect();
 }

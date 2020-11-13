@@ -24,10 +24,16 @@ struct RenderNodeCreateParams {
 
 struct ETRenderNodeManager {
     virtual ~ETRenderNodeManager() = default;
-    virtual EntityId ET_createNode(const RenderNodeCreateParams& params) = 0;
-    virtual void ET_removeNode(EntityId nodeId) = 0;
+    virtual Node* ET_createNode(const RenderNodeCreateParams& params) = 0;
+    virtual void ET_removeNode(Node* node) = 0;
     virtual void ET_initRenderNode(Node* node) = 0;
     virtual void ET_update() = 0;
+    virtual void ET_updateParticles(float dt) = 0;
+};
+
+struct ETRenderProxyNodeEvents {
+    virtual ~ETRenderProxyNodeEvents() = default;
+    virtual void ET_syncWithRender() = 0;
 };
 
 #endif /* __ET_RENDER_NODE_MANAGER_HPP__ */

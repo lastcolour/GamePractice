@@ -1,6 +1,6 @@
 #include "Logics/RenderImageLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
+#include "Nodes/ImageNode.hpp"
 
 RenderImageLogic::RenderImageLogic() :
     RenderImageLogic(RenderNodeType::Image) {
@@ -8,7 +8,9 @@ RenderImageLogic::RenderImageLogic() :
 
 RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
     RenderNode(nodeType),
-    size(100.f) {
+    size(100.f),
+    isImageChanged(true),
+    isSizeChanged(true) {
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -33,14 +35,28 @@ bool RenderImageLogic::init() {
 
 void RenderImageLogic::ET_setImage(const char* imageName) {
     image = imageName;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setImage, image);
+    isImageChanged = true;
+    markForSyncWithRender();
 }
 
 void RenderImageLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
+    isSizeChanged = true;
+    markForSyncWithRender();
 }
 
 Vec2 RenderImageLogic::ET_getSize() const {
     return size;
+}
+
+void RenderImageLogic::onSyncWithRender() {
+    auto imageProxyNode = static_cast<ImageNode*>(proxyNode);
+    if(isSizeChanged) {
+        isSizeChanged = false;
+        imageProxyNode->setSize(size);
+    }
+    if(isImageChanged) {
+        isImageChanged = false;
+        imageProxyNode->setImage(image);
+    }
 }

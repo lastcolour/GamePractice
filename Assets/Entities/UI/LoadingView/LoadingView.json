@@ -118,8 +118,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 47,
-                "y": 47
+                "x": 47.0,
+                "y": 47.0
               },
               "image": "Images/block.png",
               "color": {
@@ -164,8 +164,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 528,
-          "y": 938
+          "x": 522.0,
+          "y": 928.0
         },
         "color": {
           "r": 0,
@@ -179,6 +179,7 @@
       "type": "UILayout",
       "id": 3,
       "data": {
+        "extraZOffset": 0,
         "style": {
           "type": "Vertical",
           "xAlign": "Center",

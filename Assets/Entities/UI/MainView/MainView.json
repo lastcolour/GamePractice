@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 280.0,
+          "y": 277.0,
           "z": 0.0
         },
         "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 235,
-                            "y": 235
+                            "x": 232.0,
+                            "y": 232.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -144,6 +144,7 @@
                   "type": "UILayout",
                   "id": 4,
                   "data": {
+                    "extraZOffset": 0,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -164,8 +165,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 282,
-                      "y": 282
+                      "x": 279.0,
+                      "y": 279.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -204,6 +205,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
+              "extraZOffset": 0,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -223,7 +225,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -95.0,
+          "y": -94.0,
           "z": 0.0
         },
         "scale": {
@@ -376,8 +378,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 376,
-                      "y": 94
+                      "x": 372.0,
+                      "y": 93.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -416,6 +418,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
+              "extraZOffset": 0,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -435,7 +438,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -376.0,
+          "y": -372.0,
           "z": 0.0
         },
         "scale": {
@@ -458,7 +461,7 @@
           {
             "transform": {
               "pos": {
-                "x": -141.0,
+                "x": -140.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -512,8 +515,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 71,
-                            "y": 71
+                            "x": 70.0,
+                            "y": 70.0
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -593,8 +596,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 94,
-                      "y": 94
+                      "x": 93.0,
+                      "y": 93.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -665,8 +668,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 71,
-                            "y": 71
+                            "x": 70.0,
+                            "y": 70.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -746,8 +749,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 94,
-                      "y": 94
+                      "x": 93.0,
+                      "y": 93.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -764,7 +767,7 @@
           {
             "transform": {
               "pos": {
-                "x": 141.0,
+                "x": 140.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -818,8 +821,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 71,
-                            "y": 71
+                            "x": 70.0,
+                            "y": 70.0
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -899,8 +902,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 94,
-                      "y": 94
+                      "x": 93.0,
+                      "y": 93.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -939,6 +942,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
+              "extraZOffset": 0,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -966,6 +970,7 @@
       "type": "UILayout",
       "id": 2,
       "data": {
+        "extraZOffset": 0,
         "style": {
           "type": "Vertical",
           "xAlign": "Center",

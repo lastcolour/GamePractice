@@ -10,17 +10,19 @@ public:
     TextNode();
     virtual ~TextNode();
 
-    void ET_setFontHeight(int newHeight) override;
-    void ET_setColor0(const ColorB& newColor) override;
-    void ET_setText(const std::string& newText) override;
-
+    void setFontHeight(int newHeight);
+    void setColor0(const ColorB& newColor);
+    void setText(const std::string& newText);
     void setAlignAtCenter(bool flag);
 
 protected:
 
-    void onInitRender() override;
+    // Node
+    void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
+
+private:
 
     void drawLines();
     unsigned int drawLine(const Vec2& pt, const Vec2& scale, unsigned int vertShift, Vec4* vertChunk, size_t startIdx, size_t endIdx);

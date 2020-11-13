@@ -22,9 +22,14 @@ public:
     // ETRenderColoredTexture
     void ET_setTextureColor(const ColorB& newColor) override;
 
+protected:
+
+    void onSyncWithRender() override;
+
 private:
 
     ColorB color;
+    bool isColorChanged;
 };
 
 #endif /* __RENDER_COLORED_TEXTURE_LOGIC_HPP__ */

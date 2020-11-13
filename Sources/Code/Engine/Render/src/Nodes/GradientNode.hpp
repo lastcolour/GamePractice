@@ -13,14 +13,15 @@ public:
     GradientNode();
     virtual ~GradientNode();
 
-    void ET_setColor0(const ColorB& newColor) override;
-    void ET_setColor1(const ColorB& newColor) override;
-    void ET_setSize(const Vec2& newSize) override;
-    void ET_setVertical(bool flag) override;
+    void setColor0(const ColorB& newColor);
+    void setColor1(const ColorB& newColor);
+    void setSize(const Vec2& newSize);
+    void setVertical(bool flag);
 
 protected:
 
-    void onInitRender() override;
+    // Node
+    void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
 

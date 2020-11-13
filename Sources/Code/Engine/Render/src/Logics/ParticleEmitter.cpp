@@ -1,6 +1,6 @@
 #include "Logics/ParticleEmitter.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
+#include "Nodes/ParticlesNode.hpp"
 #include "Core/ETLogger.hpp"
 
 void ParticleEmitter::Reflect(ReflectContext& ctx) {
@@ -14,7 +14,8 @@ void ParticleEmitter::Reflect(ReflectContext& ctx) {
 }
 
 ParticleEmitter::ParticleEmitter() :
-    RenderNode(RenderNodeType::ParticleEmmiter) {
+    RenderNode(RenderNodeType::ParticleEmmiter),
+    isConfigChanged(true) {
 }
 
 ParticleEmitter::~ParticleEmitter() {
@@ -37,11 +38,18 @@ bool ParticleEmitter::init() {
         emissionConfig.startDelay = 0.f;
     }
 
-    ET_QueueEvent(renderNodeId, &ETParticleEmitterProxyNode::ET_setConfig,
-        emissionConfig, movementConfig, colorConfig, renderConfig);
+    isConfigChanged = true;
 
     return true;
 }
 
 void ParticleEmitter::ET_emit() {
+}
+
+void ParticleEmitter::onSyncWithRender() {
+    auto emitterProxyNode = static_cast<ParticlesNode*>(proxyNode);
+    if(isConfigChanged) {
+        isConfigChanged = false;
+        emitterProxyNode->setConfig(emissionConfig, movementConfig, colorConfig, renderConfig);
+    }
 }

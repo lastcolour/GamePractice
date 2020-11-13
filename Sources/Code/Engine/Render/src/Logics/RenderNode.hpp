@@ -6,8 +6,8 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
 #include "Entity/ETEntity.hpp"
+#include "Nodes/Node.hpp"
 
 class ReflectContext;
 
@@ -43,13 +43,17 @@ public:
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onLoaded() override;
 
-private:
+protected:
+
+    virtual void onSyncWithRender() = 0;
+
+protected:
 
     void markForSyncWithRender();
 
 protected:
 
-    EntityId renderNodeId;
+    Node* proxyNode;
     float alpha;
     float alphaMult;
     int drawPriority;
@@ -58,6 +62,8 @@ protected:
     bool isLoaded;
     bool isTmChanged;
     bool isVisChanged;
+    bool isDrawPriorityChanged;
+    bool isAlphaChanged;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

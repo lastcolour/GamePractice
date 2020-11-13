@@ -22,12 +22,17 @@ public:
     // ETParticleEmitter
     void ET_emit() override;
 
+protected:
+
+    void onSyncWithRender() override;
+
 private:
 
     ParticleEmitterEmissionConfig emissionConfig;
     ParticleEmitterMovementConfig movementConfig;
     ParticleEmitterColorConfig colorConfig;
     ParticleEmitterRenderConfig renderConfig;
+    bool isConfigChanged;
 };
 
 #endif /* __PARTICLE_EMITTER_HPP__ */

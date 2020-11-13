@@ -26,11 +26,11 @@ bool DebugRender::init() {
 }
 
 void DebugRender::ET_init() {
-    simpleNode.initRender();
-    simpleNode.ET_setVisible(true);
+    simpleNode.init();
+    simpleNode.setVisible(true);
 
-    textNode.initRender();
-    textNode.ET_setVisible(true);
+    textNode.init();
+    textNode.setVisible(true);
     textNode.setAlignAtCenter(false);
 }
 
@@ -94,9 +94,9 @@ void DebugRender::drawLines(RenderContext& ctx) {
         tm.pt = Vec3(center.x, center.y, 0.f);
         tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), acos(dir.x));
 
-        simpleNode.ET_setSize(Vec2(lineLen, cmd.width));
-        simpleNode.ET_setColor0(cmd.startCol);
-        simpleNode.ET_setTransform(tm);
+        simpleNode.setSize(Vec2(lineLen, cmd.width));
+        simpleNode.setColor0(cmd.startCol);
+        simpleNode.setTransform(tm);
         simpleNode.render(ctx);
     }
     drawLineCmds.clear();
@@ -108,10 +108,10 @@ void DebugRender::drawQuads(RenderContext& ctx) {
     Transform tm;
     for(auto& cmd : drawQuadCmds) {
         tm.pt = Vec3(cmd.box.getCenter(), 0.f);
-        simpleNode.ET_setTransform(tm);
+        simpleNode.setTransform(tm);
         Vec2 size = cmd.box.getSize();
-        simpleNode.ET_setSize(Vec2(size.y, size.y));
-        simpleNode.ET_setColor0(cmd.col);
+        simpleNode.setSize(Vec2(size.y, size.y));
+        simpleNode.setColor0(cmd.col);
         simpleNode.render(ctx);
     }
     drawQuadCmds.clear();
@@ -123,10 +123,10 @@ void DebugRender::drawTexts(RenderContext& ctx) {
     Transform tm;
     for(auto& cmd : drawTextCmds) {
         tm.pt = Vec3(static_cast<float>(cmd.pt.x), static_cast<float>(cmd.pt.y), 0.f);
-        textNode.ET_setTransform(tm);
-        textNode.ET_setText(cmd.text);
-        textNode.ET_setColor0(cmd.col);
-        textNode.ET_setFontHeight(static_cast<int>(cmd.size));
+        textNode.setTransform(tm);
+        textNode.setText(cmd.text);
+        textNode.setColor0(cmd.col);
+        textNode.setFontHeight(static_cast<int>(cmd.size));
         textNode.render(ctx);
     }
     drawTextCmds.clear();

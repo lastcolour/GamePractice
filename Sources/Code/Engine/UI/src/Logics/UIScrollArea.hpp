@@ -79,6 +79,7 @@ private:
     EntityId targetId;
     AABB2Di scrollBox;
     Vec2i endScrollPt;
+    int extraZOffset;
     float scrollSpeed;
     float accumulativeDt;
     bool isPressed;

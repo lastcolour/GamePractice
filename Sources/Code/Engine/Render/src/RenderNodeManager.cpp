@@ -10,6 +10,7 @@
 #include "Render/ETRenderInterfaces.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 RenderNodeManager::RenderNodeManager() {
 }
@@ -25,8 +26,13 @@ bool RenderNodeManager::init() {
 void RenderNodeManager::deinit() {
 }
 
-EntityId RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) {
-    auto nodeId = GetETSystem()->createNewEntityId();
+void RenderNodeManager::ET_updateParticles(float dt) {
+    for(auto node : particles) {
+        node->update(dt);
+    }
+}
+
+Node* RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) {
     std::unique_ptr<Node> node;
     switch(params.type) {
         case RenderNodeType::ColoredTexture: {
@@ -55,27 +61,35 @@ EntityId RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) 
         }
         default: {
             assert(false && "Invalid node type");
-            return InvalidEntityId;
+            return nullptr;
         }
     }
-    node->initConnections(nodeId, params);
+    node->preInit(params);
+    auto resNode = node.get();
     ET_QueueEvent(&ETRenderNodeManager::ET_initRenderNode, node.release());
-    return nodeId;
+    return resNode;
 }
 
 void RenderNodeManager::ET_initRenderNode(Node* node) {
-    nodes.insert({node->getNodeId(), std::unique_ptr<Node>(node)});
-    node->initRender();
+    nodes.insert({node, std::unique_ptr<Node>(node)});
+    node->init();
     renderGraph.addChild(node);
+    if(node->getType() == RenderNodeType::ParticleEmmiter) {
+        particles.push_back(static_cast<ParticlesNode*>(node));
+    }
 }
 
-void RenderNodeManager::ET_removeNode(EntityId nodeId) {
-    auto it = nodes.find(nodeId);
+void RenderNodeManager::ET_removeNode(Node* node) {
+    auto it = nodes.find(node);
     if(it == nodes.end()) {
         return;
     }
     renderGraph.removeChild(it->second.get());
     nodes.erase(it);
+    if(node->getType() == RenderNodeType::ParticleEmmiter) {
+        auto it = std::find(particles.begin(), particles.end(), node);
+        particles.erase(it);
+    }
 }
 
 void RenderNodeManager::ET_update() {

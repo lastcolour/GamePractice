@@ -16,6 +16,7 @@
 #include "Logics/UIViewAppearAnimation.hpp"
 #include "Logics/UIScrollArea.hpp"
 #include "Logics/UILayoutBox.hpp"
+#include "Logics/UIHighlightAnimation.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -49,4 +50,5 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIViewAppearAnimation>();
     logicsRegister.registerLogic<UIScrollArea>();
     logicsRegister.registerLogic<UILayoutBox>();
+    logicsRegister.registerLogic<UIHighlightAnimation>();
 }

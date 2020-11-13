@@ -16,7 +16,7 @@ GradientNode::GradientNode() :
 GradientNode::~GradientNode() {
 }
 
-void GradientNode::onInitRender() {
+void GradientNode::onInit() {
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     setMaterial("tex_vert_color");
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(2), ETextureType::RGBA);
@@ -49,22 +49,22 @@ bool GradientNode::isVisible() const {
     return Node::isVisible();
 }
 
-void GradientNode::ET_setVertical(bool flag) {
+void GradientNode::setVertical(bool flag) {
     isVertical = flag;
     doUpdate = true;
 }
 
-void GradientNode::ET_setColor0(const ColorB& newColor) {
+void GradientNode::setColor0(const ColorB& newColor) {
     startCol = newColor;
     doUpdate = true;
 }
 
-void GradientNode::ET_setColor1(const ColorB& newColor) {
+void GradientNode::setColor1(const ColorB& newColor) {
     endCol = newColor;
     doUpdate = true;
 }
 
-void GradientNode::ET_setSize(const Vec2& newSize) {
+void GradientNode::setSize(const Vec2& newSize) {
     size = newSize;
 }
 

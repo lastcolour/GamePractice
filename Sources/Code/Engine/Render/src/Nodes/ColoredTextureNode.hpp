@@ -13,13 +13,14 @@ public:
     ColoredTextureNode();
     virtual ~ColoredTextureNode();
 
-    void ET_setColor0(const ColorB& newColor) override;
-    void ET_setSize(const Vec2& newSize) override;
-    void ET_setImage(const std::string& newImage) override;
+    void setColor0(const ColorB& newColor);
+    void setSize(const Vec2& newSize);
+    void setImage(const std::string& newImage);
 
 protected:
 
-    void onInitRender() override;
+    // Node
+    void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
 

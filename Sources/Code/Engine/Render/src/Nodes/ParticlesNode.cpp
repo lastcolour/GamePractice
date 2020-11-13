@@ -9,15 +9,11 @@ ParticlesNode::ParticlesNode() {
 ParticlesNode::~ParticlesNode() {
 }
 
-void ParticlesNode::onInitConnections() {
-    ETNode<ETParticleEmitterProxyNode>::connect(nodeId);
-}
-
-void ParticlesNode::ET_update(float dt) {
+void ParticlesNode::update(float dt) {
     state.update(tm, dt);
 }
 
-void ParticlesNode::ET_setConfig(const ParticleEmitterEmissionConfig& emissionConf, const ParticleEmitterMovementConfig& movementConf,
+void ParticlesNode::setConfig(const ParticleEmitterEmissionConfig& emissionConf, const ParticleEmitterMovementConfig& movementConf,
     const ParticleEmitterColorConfig& colorConf, const ParticleEmitterRenderConfig& renderConf) {
 
     renderConfig = renderConf;
@@ -39,11 +35,10 @@ bool ParticlesNode::isVisible() const {
     return Node::isVisible();
 }
 
-void ParticlesNode::onInitRender() {
+void ParticlesNode::onInit() {
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Particles);
     setMaterial("particle");
-    setSetupAlpha(false);
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {

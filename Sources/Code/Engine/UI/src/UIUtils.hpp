@@ -11,6 +11,8 @@ class UILayoutStyle;
 
 namespace UI {
 
+const float ReturnAnimScaleFactor = 1.3f;
+
 UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin);
 
 const char* GetViewTypeName(UIViewType viewType);
@@ -19,7 +21,9 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, A
 
 void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos);
 
-void SetTmDoNotUpdateLayout(EntityId elemId, const Transform& tm);
+void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
+
+void SetLocalTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
 
 int GetValueOnGrind(float val);
 

@@ -27,6 +27,10 @@ public:
     AABB2D ET_getTextAABB() const override;
     AABB2Di ET_getTextAABBi() const override;
 
+protected:
+
+    void onSyncWithRender() override;
+
 private:
 
     void calcTextSize();
@@ -37,6 +41,8 @@ private:
     int fontHeight;
     std::string text;
     ColorB color;
+    bool isTextChanged;
+    bool isColorChanged;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */

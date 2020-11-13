@@ -5,9 +5,11 @@
 #include "Core/ETLogger.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETLevelProgress.hpp"
+#include "UI/ETUIBox.hpp"
 
 void LevelsViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelsViewScript>("LevelsViewScript")) {
+        classInfo->addField("progressLabelId", &LevelsViewScript::progressLabelId);
     }
 }
 
@@ -19,6 +21,23 @@ LevelsViewScript::~LevelsViewScript() {
 
 void LevelsViewScript::ET_onViewOpened() {
     BaseViewScript::ET_onViewOpened();
+
+    int totalStars = 0;
+    ET_SendEventReturn(totalStars, &ETLevelButtonList::ET_getTotalStars);
+
+    int doneStars = 0;
+    ET_SendEventReturn(doneStars, &ETLevelButtonList::ET_getDoneStars);
+
+    std::string progressStr;
+    if(totalStars == doneStars) {
+        progressStr = StringFormat("100% (%d / %d)", totalStars, totalStars);
+    } else {
+        float fProg = (doneStars * 100.f) / static_cast<float>(totalStars);
+        int prog = static_cast<int>(ceil(fProg));
+        progressStr = StringFormat("%d%% (%d / %d)", prog, doneStars, totalStars);
+    }
+
+    ET_SendEvent(progressLabelId, &ETUILabel::ET_setText, progressStr.c_str());
 }
 
 void LevelsViewScript::onEvent(const UIEvent& event) {

@@ -78,7 +78,7 @@ void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
             tm.pt.x += static_cast<float>(shiftPt.x);
             tm.pt.y += static_cast<float>(shiftPt.y);
 
-            UI::SetTmDoNotUpdateLayout(childId, tm);
+            UI::SetTMDoNotUpdateLayout(childId, tm);
         }
     }
 

@@ -1,13 +1,15 @@
 #include "Logics/RenderLinearGradientRect.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Nodes/ETRenderProxyNode.hpp"
+#include "Nodes/GradientNode.hpp"
 
 RenderLinearGradientRect::RenderLinearGradientRect() :
     RenderNode(RenderNodeType::Gradient),
     size(100.f),
     startCol(255, 255, 255),
     endCol(0, 0, 0),
-    isVertical(true) {
+    isVertical(true),
+    isSizeChanged(true),
+    isColorChanged(true) {
 }
 
 RenderLinearGradientRect::~RenderLinearGradientRect() {
@@ -26,18 +28,31 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
 bool RenderLinearGradientRect::init() {
     RenderNode::init();
     ETNode<ETRenderRect>::connect(getEntityId());
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor0, startCol);
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setColor1, endCol);
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setVertical, isVertical);
+    isColorChanged = true;
     ET_setSize(size);
     return true;
 }
 
 void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    ET_QueueEvent(renderNodeId, &ETRenderProxyNode::ET_setSize, newSize);
+    isSizeChanged = true;
+    markForSyncWithRender();
 }
 
 Vec2 RenderLinearGradientRect::ET_getSize() const {
     return size;
+}
+
+void RenderLinearGradientRect::onSyncWithRender() {
+    auto gradientProxyNode = static_cast<GradientNode*>(proxyNode);
+    if(isSizeChanged) {
+        isSizeChanged = false;
+        gradientProxyNode->setSize(size);
+    }
+    if(isColorChanged) {
+        isColorChanged = false;
+        gradientProxyNode->setColor0(startCol);
+        gradientProxyNode->setColor1(endCol);
+        gradientProxyNode->setVertical(isVertical);
+    }
 }
