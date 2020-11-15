@@ -2,6 +2,7 @@
 #include "SoundManager.hpp"
 #include "AudioConfig.hpp"
 #include "Logics/SoundPlayLogic.hpp"
+#include "Logics/SoundEqualizerLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 #if defined PLATFORM_WINDOWS || defined PLATFORM_LINUX
@@ -42,4 +43,5 @@ void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
 
 void AudioModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
     logicsRegister.registerLogic<SoundPlayLogic>();
+    logicsRegister.registerLogic<SoundEqualizerLogic>();
 }

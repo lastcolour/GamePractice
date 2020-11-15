@@ -4,7 +4,7 @@
         "buildType":"RelWithDebInfo",
         "platform":"${currentPlatform}",
         "skipLibsBuild":"True",
-        "skipGameTests":"False",
+        "skipGameTests":"True",
         "skipEditorTests":"True"
     },
     "Steps":[

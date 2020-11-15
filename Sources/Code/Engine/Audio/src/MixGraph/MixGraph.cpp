@@ -39,6 +39,7 @@ void MixGraph::mix(float* out, int channels, int samples) {
     }
 
     rootCombine.additiveMixTo(out, channels, samples);
+    equalizer.exclusiveMixTo(out, samples, channels);
 
     int lowClipCount = 0;
     int highClipCount = 0;
@@ -92,6 +93,9 @@ Buffer& MixGraph::getTempBuffer() {
     return buffer;
 }
 
+void MixGraph::setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
+    equalizer.setSetup(eqSetup);
+}
 
 void MixGraph::setMasterVolume(float newVolume) {
     assert(newVolume >= 0 && "Negative master volume");

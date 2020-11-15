@@ -32,6 +32,7 @@ public:
     bool ET_play(SoundStream* soundStream) override;
 
     // ETAudioSystem
+    void ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) override;
     void ET_setMasterVolume(float newVolume) override;
     float ET_getMasterVolume() const override;
 

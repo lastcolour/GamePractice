@@ -193,6 +193,10 @@ void ALAudioSystem::ET_updateSound() {
     }
 }
 
+void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
+    mixGrap.setEqualizer(soundGroup, eqSetup);
+}
+
 bool ALAudioSystem::ET_play(SoundStream* soundStream) {
     return mixGrap.playSound(soundStream);
 }

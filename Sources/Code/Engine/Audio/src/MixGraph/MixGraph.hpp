@@ -6,6 +6,8 @@
 #include "MixGraph/MixConfig.hpp"
 #include "MixGraph/Resampler.hpp"
 #include "Core/Buffer.hpp"
+#include "Filters/Equalizer.hpp"
+#include "Audio/ETAudioSystem.hpp"
 
 #include <vector>
 #include <memory>
@@ -28,6 +30,7 @@ public:
     Buffer& getTempBuffer();
 
     void setMasterVolume(float newVolume);
+    void setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup);
     float getMasterVolume() const;
 
 private:
@@ -41,6 +44,7 @@ private:
     CombineNode rootCombine;
     Buffer buffer;
     std::vector<std::unique_ptr<MixNode>> sources;
+    Equalizer equalizer;
     float masterVolume;
 };
 
