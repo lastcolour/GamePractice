@@ -23,7 +23,8 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     isVisible(true),
     isLoaded(false),
     isTmChanged(false),
-    isVisChanged(false) {
+    isVisChanged(false),
+    isMarkedForSync(false) {
 }
 
 RenderNode::~RenderNode() {
@@ -116,6 +117,10 @@ void RenderNode::markForSyncWithRender() {
     if(!isLoaded) {
         return;
     }
+    if(isMarkedForSync) {
+        return;
+    }
+    isMarkedForSync = true;
     ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
@@ -141,4 +146,5 @@ void RenderNode::ET_syncWithRender() {
         proxyNode->setDrawPriority(drawPriority);
     }
     ETNode<ETRenderProxyNodeEvents>::disconnect();
+    isMarkedForSync = false;
 }

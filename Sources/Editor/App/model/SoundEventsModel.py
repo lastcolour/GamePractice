@@ -45,7 +45,7 @@ class SoundEventsModel:
             return False
         with open(eventsFile, 'r') as tFile:
             data = json.load(tFile)
-        for item in data["Events"]:
+        for item in data["events"]:
             event = SoundEvent()
             event._name = item["name"]
             if len(event._name) == 0:

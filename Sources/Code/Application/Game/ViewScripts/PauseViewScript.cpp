@@ -3,6 +3,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "UI/ETUIView.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
+#include "Audio/ETEqualizer.hpp"
 
 void PauseViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<PauseViewScript>("PauseViewScript")) {
@@ -13,6 +14,14 @@ PauseViewScript::PauseViewScript() {
 }
 
 PauseViewScript::~PauseViewScript() {
+}
+
+void PauseViewScript::ET_onViewOpened() {
+    ET_SendEvent(getEntityId(), &ETEqualizer::ET_enable);
+}
+
+void PauseViewScript::ET_onViewClosed() {
+    ET_SendEvent(getEntityId(), &ETEqualizer::ET_disable);
 }
 
 void PauseViewScript::onEvent(const UIEvent& event) {

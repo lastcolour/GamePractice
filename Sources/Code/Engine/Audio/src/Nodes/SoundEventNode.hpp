@@ -7,16 +7,16 @@
 #include "Core/Buffer.hpp"
 #include "SoundStream.hpp"
 
+class SoundEventInfo;
+
 class SoundEventNode : public SoundStream,
     public ETNode<ETSoundEventNode> {
 public:
 
-    SoundEventNode(EntityId soundNodeId, const std::string& soundFileName, float eventVolue, float eventDelay);
+    SoundEventNode(EntityId soundNodeId, SoundEventInfo* eventInfo);
     virtual ~SoundEventNode();
 
     EntityId getNodeId() const;
-    const std::string& getSoundName() const;
-    void setSoundData(Buffer& buffer);
 
     // SoundStream
     unsigned int getSamplesOffset() const override;
@@ -26,6 +26,7 @@ public:
     Buffer& getData() override;
     void onAttachToMixNode(SourceNode* node) override;
     void onDetachFromMixNode(int newSampleOffset) override;
+    ESoundGroup getGroup() const override;
 
     // ETSoundEventNode
     void ET_emit() override;
@@ -33,10 +34,7 @@ public:
 private:
 
     EntityId nodeId;
-    std::string soundName;
-    Buffer soundData;
-    float volume;
-    float nextDelay;
+    SoundEventInfo* info;
     TimePoint lastPlayTime;
 };
 

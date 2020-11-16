@@ -1,11 +1,12 @@
 #include "Filters/Equalizer.hpp"
 #include "Math/Primitivies.hpp"
+#include "AudioUtils.hpp"
 
 #include <cmath>
 
-namespace  {
+namespace {
 
-const int SampleRate = 44100;
+const int SampleRate = 44100.f;
 
 const float EQLowFreq = 60.f;
 const float EQLowMidFreq = 250.f;
@@ -23,7 +24,7 @@ float convertToGain(float val) {
     }
 }
 
-} // namespace 
+} // namespace
 
 Equalizer::Equalizer() :
     isUnit(false) {
@@ -70,9 +71,10 @@ void Equalizer::setSetup(const EqualizerSetup& newSetup) {
     rfilters[4] = lfilters[4];
 
     setup = newSetup;
+    setup.volume = Audio::CovertToExpVolume(setup.volume);
 }
 
-void Equalizer::exclusiveMixTo(float* samples, int samplesCount, int channels) {
+void Equalizer::exclusiveTransform(float* samples, int channels, int samplesCount) {
     if(!isUnit) {
         if(channels == 1) {
             for(int i = 0; i < samplesCount; ++i) {

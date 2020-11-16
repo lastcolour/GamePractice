@@ -3,31 +3,25 @@
 
 #include "MixGraph/MixNode.hpp"
 #include "OggDataStream.hpp"
+#include "MixGraph/SourceNode.hpp"
 
 #include <memory>
 
 class SoundStream;
 class OggDataStream;
 
-class OggSourceNode : public MixNode {
+class OggSourceNode : public MixNode, public SourceNode {
 public:
 
     OggSourceNode();
     virtual ~OggSourceNode();
 
+    // SourceNode
+    bool attachToStream(SoundStream* stream) override;
+    void detachFromStream() override;
+
     // MixNode
     void additiveMixTo(float* out, int channels, int samples) override;
-    void exclusiveMixTo(float* out, int channels, int samples);
-
-    void openStream(SoundStream* stream);
-    void closeStream();
-
-    unsigned int getSamplesOffset() const;
-    unsigned int getSampleRate() const;
-    unsigned int getTotalSamples() const;
-    SoundStream* getSoundStream();
-    void setSoundStream(SoundStream* newStream);
-    bool isLooped() const;
 
 private:
 

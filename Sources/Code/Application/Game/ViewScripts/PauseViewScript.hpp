@@ -15,6 +15,10 @@ public:
     PauseViewScript();
     virtual ~PauseViewScript();
 
+    // BaseViewScript
+    void ET_onViewOpened() override;
+    void ET_onViewClosed() override;
+
 protected:
 
     // BaseViewScript

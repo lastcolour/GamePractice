@@ -53,4 +53,22 @@ bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fi
     return true;
 }
 
+bool ReadInstanceFromAsset(void* object, ClassInfo* classInfo, const char* assetName) {
+    assert(object && "Invalid object");
+    if(!classInfo) {
+        LogError("[ReadInstanceFromAsset] Can't find class info for an object");
+        return false;
+    }
+    JSONNode node;
+    ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, assetName);
+    if(!node) {
+        return false;
+    }
+    SerializeContext serCtx;
+    if(!classInfo->readValueFrom(serCtx, object, AllEntityLogicValueId, node)) {
+        return false;
+    }
+    return true;
+}
+
 } // namespace ReflectUtils

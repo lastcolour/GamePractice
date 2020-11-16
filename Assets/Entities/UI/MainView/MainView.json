@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 277.0,
+          "y": 280.0,
           "z": 0.0
         },
         "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 232.0,
-                            "y": 232.0
+                            "x": 235.0,
+                            "y": 235.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -165,8 +165,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 279.0,
-                      "y": 279.0
+                      "x": 282.0,
+                      "y": 282.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -225,7 +225,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -94.0,
+          "y": -95.0,
           "z": 0.0
         },
         "scale": {
@@ -364,8 +364,7 @@
                   "type": "UIPressAnimation",
                   "id": 3,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -378,8 +377,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 372.0,
-                      "y": 93.0
+                      "x": 376.0,
+                      "y": 94.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -438,7 +437,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -372.0,
+          "y": -376.0,
           "z": 0.0
         },
         "scale": {
@@ -461,7 +460,7 @@
           {
             "transform": {
               "pos": {
-                "x": -140.0,
+                "x": -141.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -515,8 +514,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 70.0,
-                            "y": 70.0
+                            "x": 71.0,
+                            "y": 71.0
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -557,8 +556,7 @@
                   "type": "UIPressAnimation",
                   "id": 3,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -596,8 +594,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 93.0,
-                      "y": 93.0
+                      "x": 94.0,
+                      "y": 94.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -668,8 +666,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 70.0,
-                            "y": 70.0
+                            "x": 71.0,
+                            "y": 71.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -735,8 +733,7 @@
                   "type": "UIPressAnimation",
                   "id": 4,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -749,8 +746,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 93.0,
-                      "y": 93.0
+                      "x": 94.0,
+                      "y": 94.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -767,7 +764,7 @@
           {
             "transform": {
               "pos": {
-                "x": 140.0,
+                "x": 141.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -821,8 +818,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 70.0,
-                            "y": 70.0
+                            "x": 71.0,
+                            "y": 71.0
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -888,8 +885,7 @@
                   "type": "UIPressAnimation",
                   "id": 4,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -902,8 +898,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 93.0,
-                      "y": 93.0
+                      "x": 94.0,
+                      "y": 94.0
                     },
                     "image": "Images/block.png",
                     "color": {

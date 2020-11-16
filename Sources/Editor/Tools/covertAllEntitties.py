@@ -13,7 +13,8 @@ from native.EntityNativeLoader import EntityNativeLoader
 from native.MemoryStream import MemoryStream
 
 def converEntity(entity):
-    pass
+    entity.loadToNative()
+    entity.unloadFromNative()
 
 def main():
     appConfig = AppConfig()

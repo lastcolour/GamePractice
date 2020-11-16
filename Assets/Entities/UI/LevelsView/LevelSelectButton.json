@@ -105,8 +105,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 140.0,
-                      "y": 140.0
+                      "x": 141.0,
+                      "y": 141.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -196,7 +196,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 23.0,
+                      "y": 24.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -260,7 +260,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -27.0,
+                      "y": -26.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -283,7 +283,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -38.0,
+                            "x": -39.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -440,8 +440,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 28.0,
-                                  "y": 28.0
+                                  "x": 29.0,
+                                  "y": 29.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -615,8 +615,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 28.0,
-                                  "y": 28.0
+                                  "x": 29.0,
+                                  "y": 29.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -633,7 +633,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 38.0,
+                            "x": 39.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -790,8 +790,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 28.0,
-                                  "y": 28.0
+                                  "x": 29.0,
+                                  "y": 29.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -913,9 +913,9 @@
             "type": "UIPressAnimation",
             "id": 2,
             "data": {
-              "duration": 0.07500000298023224,
+              "duration": 0.07999999821186066,
               "minScale": 0.949999988079071,
-              "sound": ""
+              "sound": "buttonPress_01"
             }
           },
           {

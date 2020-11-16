@@ -64,6 +64,7 @@ protected:
     bool isVisChanged;
     bool isDrawPriorityChanged;
     bool isAlphaChanged;
+    bool isMarkedForSync;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

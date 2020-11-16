@@ -1,5 +1,7 @@
 #include "MixGraph/MixGraph.hpp"
-#include "MixGraph/SourceRampNode.hpp"
+#include "MixGraph/MixNode.hpp"
+#include "MixGraph/OggSourceNode.hpp"
+#include "SoundStream.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <algorithm>
@@ -21,25 +23,41 @@ MixGraph::~MixGraph() {
 }
 
 bool MixGraph::init() {
-    rootCombine.setMixGraph(this);
+    gameNode.setMixGraph(this);
+    musicNode.setMixGraph(this);
+    uiNode.setMixGraph(this);
     for(int i = 0; i < MAX_SOURCES; ++i) {
-        auto source = new SourceRampNode();
+        auto source = new OggSourceNode();
         source->setMixGraph(this);
         sources.emplace_back(source);
     }
+
+    lLowPass = CreateLowPass(20000.0 / 44100.f);
+    rLowPass = lLowPass;
+
     return true;
+}
+
+void MixGraph::resizeBuffers(int channels, int samples) {
+    auto minBufferSize = samples * channels * sizeof(float);
+    if(resampleBuffer.getSize() < minBufferSize) {
+        resampleBuffer.resize(minBufferSize);
+    }
+    if(combineBuffer.getSize() < minBufferSize) {
+        combineBuffer.resize(minBufferSize);
+    }
 }
 
 void MixGraph::mix(float* out, int channels, int samples) {
     std::fill_n(out, channels * samples, 0.f);
 
-    auto minBufferSize = samples * channels * sizeof(float);
-    if(buffer.getSize() < minBufferSize) {
-        buffer.resize(minBufferSize);
-    }
+    resizeBuffers(channels, samples);
 
-    rootCombine.additiveMixTo(out, channels, samples);
-    equalizer.exclusiveMixTo(out, samples, channels);
+    gameNode.additiveMixTo(out, channels, samples);
+    musicNode.additiveMixTo(out, channels, samples);
+    uiNode.additiveMixTo(out, channels, samples);
+
+    applyLowPass(out, channels, samples);
 
     int lowClipCount = 0;
     int highClipCount = 0;
@@ -64,20 +82,42 @@ MixNode* MixGraph::getFreeSource() {
     for(auto& source : sources) {
         if(!source->getParent()) {
             freeSource = source.get();
+            break;
         }
     }
     return freeSource;
 }
 
 bool MixGraph::playSound(SoundStream* stream) {
-    auto mixNode = getFreeSource();
-    if(!mixNode) {
+    auto freeSourceNode = getFreeSource();
+    if(!freeSourceNode) {
         LogWarning("[MixGraph::playSound] Can't find free source");
         return false;
     }
-    auto sourceNode = static_cast<SourceRampNode*>(mixNode);
-    sourceNode->attachToStream(stream);
-    rootCombine.addChild(mixNode);
+    CombineNode* combineNode = nullptr;
+    auto soundGroup = stream->getGroup();
+    switch(soundGroup) {
+        case ESoundGroup::Game: {
+            combineNode = &gameNode;
+            break;
+        }
+        case ESoundGroup::Music: {
+            combineNode = &musicNode;
+            break;
+        }
+        case ESoundGroup::UI: {
+            combineNode = &uiNode;
+            break;
+        }
+        default: {
+            assert(false && "Invalid sound group");
+            return false;
+        }
+    }
+    auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
+    if(sourceNode->attachToStream(stream)) {
+        combineNode->addChild(sourceNode);
+    }
     return true;
 }
 
@@ -89,12 +129,32 @@ Resampler& MixGraph::getResampler() {
     return resampler;
 }
 
-Buffer& MixGraph::getTempBuffer() {
-    return buffer;
+Buffer& MixGraph::getResampleBuffer() {
+    return resampleBuffer;
+}
+
+Buffer& MixGraph::getCombineBuffer() {
+    return combineBuffer;
 }
 
 void MixGraph::setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
-    equalizer.setSetup(eqSetup);
+    switch(soundGroup) {
+        case ESoundGroup::Game: {
+            gameNode.setEqualizerSetup(eqSetup);
+            break;
+        }
+        case ESoundGroup::Music: {
+            musicNode.setEqualizerSetup(eqSetup);
+            break;
+        }
+        case ESoundGroup::UI: {
+            uiNode.setEqualizerSetup(eqSetup);
+            break;
+        }
+        default: {
+            assert(false && "Invalid sound group");
+        }
+    }
 }
 
 void MixGraph::setMasterVolume(float newVolume) {
@@ -104,4 +164,17 @@ void MixGraph::setMasterVolume(float newVolume) {
 
 float MixGraph::getMasterVolume() const {
     return masterVolume;
+}
+
+void MixGraph::applyLowPass(float* out, int channels, int samples) {
+    if(channels == 1) {
+        for(int i = 0; i < samples; ++i) {
+            out[i] = lLowPass.apply(out[i]);
+        }
+    } else if(channels == 2) {
+        for(int i = 0; i < samples; ++i) {
+            out[2 * i] = lLowPass.apply(out[2 * i]);
+            out[2 * i + 1] = rLowPass.apply(out[2 * i + 1]);
+        }
+    }
 }

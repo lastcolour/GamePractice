@@ -37,7 +37,7 @@ void LevelsViewScript::ET_onViewOpened() {
 
     std::string progressStr;
     if(totalStars == doneStars) {
-        progressStr = StringFormat("100% (%d / %d)", totalStars, totalStars);
+        progressStr = StringFormat("100%% (%d / %d)", totalStars, totalStars);
     } else {
         float fProg = (doneStars * 100.f) / static_cast<float>(totalStars);
         int prog = static_cast<int>(ceil(fProg));

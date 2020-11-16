@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 80.0,
+                "y": 23.0,
                 "z": 0.0
               },
               "scale": {
@@ -105,7 +105,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28,
+                          "fontSize": 8,
                           "text": "Resume"
                         }
                       }
@@ -147,8 +147,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 348.0,
-                      "y": 70.0
+                      "x": 100.0,
+                      "y": 20.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -163,8 +163,7 @@
                   "type": "UIPressAnimation",
                   "id": 3,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -176,7 +175,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -80.0,
+                "y": -23.0,
                 "z": 0.0
               },
               "scale": {
@@ -253,7 +252,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28,
+                          "fontSize": 8,
                           "text": "Exit"
                         }
                       }
@@ -295,8 +294,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 348.0,
-                      "y": 70.0
+                      "x": 100.0,
+                      "y": 20.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -311,8 +310,7 @@
                   "type": "UIPressAnimation",
                   "id": 3,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -401,7 +399,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28,
+                          "fontSize": 8,
                           "text": "Restart"
                         }
                       }
@@ -443,8 +441,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 348.0,
-                      "y": 70.0
+                      "x": 100.0,
+                      "y": 20.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -459,8 +457,7 @@
                   "type": "UIPressAnimation",
                   "id": 3,
                   "data": {
-                    "inDuration": 0.07500000298023224,
-                    "outDuration": 0.07500000298023224,
+                    "duration": 0.07999999821186066,
                     "minScale": 0.949999988079071,
                     "sound": "buttonPress_01"
                   }
@@ -499,8 +496,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 372.0,
-                "y": 348.0
+                "x": 107.0,
+                "y": 100.0
               },
               "image": "Images/block.png",
               "color": {
@@ -568,8 +565,8 @@
         "alpha": 0.5,
         "drawPriority": 0,
         "size": {
-          "x": 522.0,
-          "y": 928.0
+          "x": 150.0,
+          "y": 266.0
         },
         "color": {
           "r": 0,
@@ -619,6 +616,22 @@
       "type": "PauseViewScript",
       "id": 5,
       "data": {}
+    },
+    {
+      "type": "SoundEqualizerLogic",
+      "id": 6,
+      "data": {
+        "group": "Music",
+        "eqaulizer": {
+          "volume": 1.100000023841858,
+          "low": -0.800000011920929,
+          "lowMid": -0.800000011920929,
+          "mid": -0.800000011920929,
+          "highMid": 0.6000000238418579,
+          "high": 0.800000011920929
+        },
+        "enabled": false
+      }
     }
   ]
 }

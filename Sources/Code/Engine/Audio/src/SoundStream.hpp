@@ -1,6 +1,8 @@
 #ifndef __SOUND_STREAM_HPP__
 #define __SOUND_STREAM_HPP__
 
+#include "Audio/ETAudioSystem.hpp"
+
 struct SourceNode;
 class Buffer;
 
@@ -14,6 +16,7 @@ public:
     virtual bool isEvent() const = 0;
     virtual bool isMixLooped() const = 0;
     virtual Buffer& getData() = 0;
+    virtual ESoundGroup getGroup() const = 0;
 };
 
 #endif /* __SOUND_STREAM_HPP__ */

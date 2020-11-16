@@ -31,7 +31,7 @@
       "data": {
         "looped": true,
         "volume": 0.4000000059604645,
-        "sound": "UI/Chad_Crouch_-_Moonrise.ogg",
+        "sound": "UI/emotional_6_0.ogg",
         "autoStart": true
       }
     },
@@ -64,8 +64,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 150.0,
-          "y": 266.0
+          "x": 528.0,
+          "y": 938.0
         },
         "startColor": {
           "r": 51,
@@ -80,21 +80,6 @@
           "a": 255
         },
         "isVertical": true
-      }
-    },
-    {
-      "type": "SoundEqualizerLogic",
-      "id": 4,
-      "data": {
-        "group": "Game",
-        "eqaulizer": {
-          "volume": 1.0,
-          "low": 0.0,
-          "lowMid": 0.0,
-          "mid": 0.0,
-          "highMid": 0.0,
-          "high": 0.0
-        }
       }
     }
   ]

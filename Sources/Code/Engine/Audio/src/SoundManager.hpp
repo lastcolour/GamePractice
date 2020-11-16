@@ -4,14 +4,12 @@
 #include "Core/SystemLogic.hpp"
 #include "Audio/ETSound.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Core/Buffer.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
+#include "SoundBufferManager.hpp"
+#include "SoundEventTable.hpp"
 
 #include <unordered_map>
 #include <vector>
-
-class SoundEventNode;
-class SoundNode;
 
 class SoundManager : public SystemLogic,
     public ETNode<ETSoundManager>,
@@ -32,17 +30,12 @@ public:
     // ETSoundNodeManager
     void ET_initSoundNode(SoundNode* node, std::string soundName) override;
     void ET_removeSoundNode(EntityId nodeId) override;
-    Buffer ET_loadSoundBuffer(const char* name) override;
     void ET_loadSoundEventsBuffers() override;
 
 private:
 
-    void loadSoundEventsTable();
-
-private:
-
-    std::unordered_map<std::string, Buffer> buffers;
-    std::unordered_map<std::string, std::unique_ptr<SoundEventNode>> eventMap;
+    SoundBufferManager bufferManager;
+    SoundEventTable eventTable;
     std::unordered_map<EntityId, std::unique_ptr<SoundNode>> soundNodes;
 };
 

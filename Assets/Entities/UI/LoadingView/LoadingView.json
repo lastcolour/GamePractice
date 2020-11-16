@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -24.0,
+          "y": -26.0,
           "z": 0.0
         },
         "scale": {
@@ -57,7 +57,7 @@
                 "b": 255,
                 "a": 255
               },
-              "fontSize": 47,
+              "fontSize": 52,
               "text": "Loading..."
             }
           }
@@ -68,7 +68,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 23.0,
+          "y": 26.0,
           "z": 0.0
         },
         "scale": {
@@ -118,8 +118,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 47.0,
-                "y": 47.0
+                "x": 52.0,
+                "y": 52.0
               },
               "image": "Images/block.png",
               "color": {
@@ -164,8 +164,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 522.0,
-          "y": 928.0
+          "x": 600.0,
+          "y": 1024.0
         },
         "color": {
           "r": 0,

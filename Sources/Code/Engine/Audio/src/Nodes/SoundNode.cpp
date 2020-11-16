@@ -67,8 +67,8 @@ void SoundNode::ET_play() {
 
 void SoundNode::ET_stop() {
     if(mixNode) {
-        samplesOffset = 0;
         mixNode->detachFromStream();
+        samplesOffset = 0;
     }
 }
 
@@ -114,4 +114,8 @@ EntityId SoundNode::getNodeId() const {
 void SoundNode::setSoundData(Buffer& data) {
     soundData = data;
     dataIsSet = true;
+}
+
+ESoundGroup SoundNode::getGroup() const {
+    return ESoundGroup::Music;
 }

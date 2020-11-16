@@ -1,26 +1,18 @@
 #include "Nodes/SoundEventNode.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
+#include "SoundEventTable.hpp"
 
 #include <cassert>
 
-SoundEventNode::SoundEventNode(EntityId soundNodeId, const std::string& soundFileName, float eventVolume, float eventDelay) :
+
+SoundEventNode::SoundEventNode(EntityId soundNodeId, SoundEventInfo* eventInfo) :
     nodeId(soundNodeId),
-    soundName(soundFileName),
-    volume(eventVolume),
-    nextDelay(eventDelay) {
+    info(eventInfo) {
 
     assert(nodeId.isValid() && "Invalid node id");
+    assert(info && "invalid event info");
 
     ETNode<ETSoundEventNode>::connect(nodeId);
-}
-
-const std::string& SoundEventNode::getSoundName() const {
-    return soundName;
-}
-
-void SoundEventNode::setSoundData(Buffer& buffer) {
-    assert(buffer && "Invalid sound data");
-    soundData = buffer;
 }
 
 SoundEventNode::~SoundEventNode() {
@@ -37,7 +29,7 @@ void SoundEventNode::onDetachFromMixNode(int newSampleOffset) {
 }
 
 float SoundEventNode::getMixVolume() const {
-    return volume;
+    return info->volume;
 }
 
 bool SoundEventNode::isEvent() const {
@@ -49,15 +41,15 @@ bool SoundEventNode::isMixLooped() const {
 }
 
 Buffer& SoundEventNode::getData() {
-    return soundData;
+    return info->data;
 }
 
 void SoundEventNode::ET_emit() {
-    if(!soundData) {
+    if(!info->data) {
         return;
     }
     TimePoint frameStartT = TimePoint::GetNowTime();
-    if(frameStartT.getSecElapsedFrom(lastPlayTime) < (nextDelay + 0.001f)) {
+    if(frameStartT.getSecElapsedFrom(lastPlayTime) < (info->nextDelay + 0.001f)) {
         return;
     }
     lastPlayTime = frameStartT;
@@ -66,4 +58,8 @@ void SoundEventNode::ET_emit() {
 
 EntityId SoundEventNode::getNodeId() const {
     return nodeId;
+}
+
+ESoundGroup SoundEventNode::getGroup() const {
+    return info->group;
 }

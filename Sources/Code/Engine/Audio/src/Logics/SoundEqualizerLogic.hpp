@@ -32,6 +32,8 @@ private:
 
     ESoundGroup soundGroup;
     EqualizerSetup eqSetup;
+    bool autoEnable;
+    bool isEnabled;
 };
 
 #endif /* __SOUND_EQUALIZER_LOGIC_HPP__ */

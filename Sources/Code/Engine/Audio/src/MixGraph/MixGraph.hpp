@@ -8,6 +8,7 @@
 #include "Core/Buffer.hpp"
 #include "Filters/Equalizer.hpp"
 #include "Audio/ETAudioSystem.hpp"
+#include "Filters/RecursiveFilter.hpp"
 
 #include <vector>
 #include <memory>
@@ -27,7 +28,8 @@ public:
 
     const MixConfig& getMixConfig() const;
     Resampler& getResampler();
-    Buffer& getTempBuffer();
+    Buffer& getResampleBuffer();
+    Buffer& getCombineBuffer();
 
     void setMasterVolume(float newVolume);
     void setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup);
@@ -35,16 +37,22 @@ public:
 
 private:
 
+    void applyLowPass(float* out, int channels, int samples);
+    void resizeBuffers(int channels, int samples);
     MixNode* getFreeSource();
 
 private:
 
     Resampler resampler;
     MixConfig config;
-    CombineNode rootCombine;
-    Buffer buffer;
+    CombineNode gameNode;
+    CombineNode musicNode;
+    CombineNode uiNode;
+    Buffer resampleBuffer;
+    Buffer combineBuffer;
+    RecursiveFilter lLowPass;
+    RecursiveFilter rLowPass;
     std::vector<std::unique_ptr<MixNode>> sources;
-    Equalizer equalizer;
     float masterVolume;
 };
 

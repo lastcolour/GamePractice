@@ -24,6 +24,7 @@ public:
     Buffer& getData() override;
     void onAttachToMixNode(SourceNode* node) override;
     void onDetachFromMixNode(int newSampleOffset) override;
+    ESoundGroup getGroup() const override;
 
     // ETSoundNode
     void ET_play() override;

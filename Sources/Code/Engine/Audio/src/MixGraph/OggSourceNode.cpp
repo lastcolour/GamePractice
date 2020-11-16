@@ -19,50 +19,6 @@ OggSourceNode::OggSourceNode() :
 OggSourceNode::~OggSourceNode() {
 }
 
-void OggSourceNode::openStream(SoundStream* stream) {
-    assert(stream && "invalid stream");
-    assert(!oggData.isOpened() && "already opened another stream");
-
-    auto data = stream->getData();
-    assert(data && "Invalid stream sound data");
-    if(!oggData.open(data)) {
-        LogError("[OggSourceNode::attachToStream] Can't open OGG data stream");
-        setParent(nullptr);
-        return;
-    }
-    samplesOffset = stream->getSamplesOffset();
-    if(samplesOffset != 0) {
-        oggData.setSampleOffset(samplesOffset);
-    }
-    volume = stream->getMixVolume();
-
-    if(!stream->isEvent()) {
-        soundStream = stream;
-    }
-}
-
-void OggSourceNode::closeStream() {
-    samplesOffset = 0;
-    volume = 1.f;
-    oggData.close();
-    soundStream = nullptr;
-}
-
-void OggSourceNode::exclusiveMixTo(float* out, int channels, int samples) {
-   bool looped = false;
-   if(soundStream) {
-       looped = soundStream->isMixLooped();
-       volume = soundStream->getMixVolume();
-   }
-
-    auto mixState = getMixGraph()->getResampler().exclusiveResampleTo(out, channels, samples, looped, &oggData);
-    samplesOffset += mixState.samplesRead;
-
-    for(int i = 0; i < channels * samples; ++i) {
-        out[i] *= volume;
-    }
-}
-
 void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
    bool looped = false;
    if(soundStream) {
@@ -70,44 +26,56 @@ void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
        volume = soundStream->getMixVolume();
    }
 
-    auto& tempBuffer = getMixGraph()->getTempBuffer();
-    assert(tempBuffer.getSize() >= channels * samples * sizeof(float) && "Very small temp buffer");
+    auto& resampleBuffer = getMixGraph()->getResampleBuffer();
+    assert(resampleBuffer.getSize() >= channels * samples * sizeof(float) && "Very small temp buffer");
 
-    auto inData = static_cast<float*>(tempBuffer.getWriteData());
-    std::fill_n(inData, channels * samples, 0.f);
+    auto resamplerOutData = static_cast<float*>(resampleBuffer.getWriteData());
+    std::fill_n(resamplerOutData, channels * samples, 0.f);
 
-    auto mixState = getMixGraph()->getResampler().exclusiveResampleTo(inData, channels, samples, looped, &oggData);
+    auto mixState = getMixGraph()->getResampler().exclusiveResampleTo(resamplerOutData, channels, samples, looped, &oggData);
     samplesOffset += mixState.samplesRead;
     samplesOffset %= oggData.getTotalSamples();
 
     for(int i = 0; i < channels * samples; ++i) {
-        out[i] += inData[i] * volume;
+        out[i] += resamplerOutData[i] * volume;
+    }
+
+    if(mixState.isEnded && !looped) {
+        detachFromStream();
     }
 }
 
-unsigned int OggSourceNode::getSampleRate() const {
-    return oggData.getSampleRate();
-}
+bool OggSourceNode::attachToStream(SoundStream* stream) {
+    assert(stream && "Invalid stream");
+    assert(!oggData.isOpened() && "Already opened another stream");
 
-unsigned int OggSourceNode::getTotalSamples() const {
-    return oggData.getTotalSamples();
-}
-
-SoundStream* OggSourceNode::getSoundStream() {
-    return soundStream;
-}
-
-unsigned int OggSourceNode::getSamplesOffset() const {
-    return samplesOffset;
-}
-
-void OggSourceNode::setSoundStream(SoundStream* newStream) {
-    soundStream = newStream;
-}
-
-bool OggSourceNode::isLooped() const {
-    if(!soundStream) {
+    auto data = stream->getData();
+    assert(data && "Invalid stream sound data");
+    if(!oggData.open(data)) {
+        LogError("[OggSourceNode::attachToStream] Can't open OGG data stream");
         return false;
     }
-    return soundStream->isMixLooped();
+    samplesOffset = stream->getSamplesOffset();
+    if(samplesOffset != 0) {
+        oggData.setSampleOffset(samplesOffset);
+    }
+    volume = stream->getMixVolume();
+    if(!stream->isEvent()) {
+        soundStream = stream;
+    }
+    stream->onAttachToMixNode(this);
+    return true;
+}
+
+void OggSourceNode::detachFromStream() {
+    if(soundStream) {
+        soundStream->onDetachFromMixNode(samplesOffset);
+        soundStream = nullptr;
+    }
+    samplesOffset = 0;
+    volume = 1.f;
+    oggData.close();
+    if(auto parent = getParent()) {
+        getParent()->removeChild(this);
+    }
 }

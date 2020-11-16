@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 427.0,
+          "y": 471.0,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -181.0,
+                "x": -212.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -53.0,
+                      "x": -58.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -102,8 +102,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 24.0,
-                            "y": 24.0
+                            "x": 26.0,
+                            "y": 26.0
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -174,7 +174,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21,
                           "text": "Time:"
                         }
                       }
@@ -184,7 +184,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 32.0,
+                      "x": 38.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -238,7 +238,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21,
                           "text": "0.0"
                         }
                       },
@@ -281,8 +281,8 @@
                     "alpha": 0.5,
                     "drawPriority": 4,
                     "size": {
-                      "x": 140.0,
-                      "y": 38.0
+                      "x": 154.0,
+                      "y": 41.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -341,7 +341,7 @@
           {
             "transform": {
               "pos": {
-                "x": 181.0,
+                "x": 212.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -366,7 +366,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -12.0,
+                      "y": -13.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -389,7 +389,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -24.0,
+                            "x": -27.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -464,8 +464,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 10,
                                       "size": {
-                                        "x": 21.0,
-                                        "y": 21.0
+                                        "x": 24.0,
+                                        "y": 24.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -529,8 +529,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 19.0,
-                                  "y": 19.0
+                                  "x": 21.0,
+                                  "y": 21.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -639,8 +639,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 10,
                                       "size": {
-                                        "x": 21.0,
-                                        "y": 21.0
+                                        "x": 24.0,
+                                        "y": 24.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -704,8 +704,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 19.0,
-                                  "y": 19.0
+                                  "x": 21.0,
+                                  "y": 21.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -739,7 +739,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 24.0,
+                            "x": 27.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -814,8 +814,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 10,
                                       "size": {
-                                        "x": 21.0,
-                                        "y": 21.0
+                                        "x": 24.0,
+                                        "y": 24.0
                                       },
                                       "image": "Images/block.png",
                                       "color": {
@@ -879,8 +879,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 19.0,
-                                  "y": 19.0
+                                  "x": 21.0,
+                                  "y": 21.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -962,7 +962,7 @@
                   "transform": {
                     "pos": {
                       "x": -15.0,
-                      "y": 12.0,
+                      "y": 13.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -985,7 +985,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 45.0,
+                            "x": 50.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1039,7 +1039,7 @@
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 19,
+                                "fontSize": 21,
                                 "text": "0"
                               }
                             },
@@ -1057,7 +1057,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -38.0,
+                            "x": -43.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1108,8 +1108,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 24.0,
-                                  "y": 24.0
+                                  "x": 26.0,
+                                  "y": 26.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -1180,7 +1180,7 @@
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 19,
+                                "fontSize": 21,
                                 "text": "Score:"
                               }
                             }
@@ -1259,8 +1259,8 @@
                     "alpha": 0.5,
                     "drawPriority": 4,
                     "size": {
-                      "x": 140.0,
-                      "y": 56.0
+                      "x": 154.0,
+                      "y": 62.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -1356,7 +1356,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -4.0,
+          "y": -5.0,
           "z": 0.0
         },
         "scale": {
@@ -1473,7 +1473,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -432.0,
+          "y": -478.0,
           "z": 0.0
         },
         "scale": {

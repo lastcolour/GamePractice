@@ -10,7 +10,7 @@ public:
     Equalizer();
 
     void setSetup(const EqualizerSetup& newSetup);
-    void exclusiveMixTo(float* samples, int samplesCount, int channels);
+    void exclusiveTransform(float* samples, int channels, int samplesCount);
 
 private:
 

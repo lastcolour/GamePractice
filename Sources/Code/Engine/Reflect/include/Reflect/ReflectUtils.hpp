@@ -11,6 +11,8 @@ bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fi
 
 bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
 
+bool ReadInstanceFromAsset(void* object, ClassInfo* classInfo, const char* fileName);
+
 template<typename T>
 ClassInfo* CreateClassInfo() {
     ReflectContext ctx;
@@ -26,6 +28,12 @@ ClassInfo* GetOrCreateClassInfo() {
         return CreateClassInfo<T>();
     }
     return classInfo;
+}
+
+template<typename T>
+bool LoadObjectFromAsset(T& object, const char* assetName) {
+    auto classInfo = GetOrCreateClassInfo<T>();
+    return ReadInstanceFromAsset(&object, classInfo, assetName);
 }
 
 template<typename T>
