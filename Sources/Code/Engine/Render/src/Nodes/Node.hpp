@@ -3,7 +3,7 @@
 
 #include "RenderContext.hpp"
 #include "Render/RenderCommon.hpp"
-#include "RenderMaterial.hpp"
+#include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Math/Transform.hpp"
@@ -38,13 +38,13 @@ protected:
 protected:
 
     void setBlendingMode(RenderBlendingType newBlending);
-    void setMaterial(const char* matName);
+    void setShader(const char* shaderName);
     void setGeometry(PrimitiveGeometryType geomType);
 
 protected:
 
     Transform tm;
-    std::shared_ptr<RenderMaterial> mat;
+    std::shared_ptr<RenderShader> shader;
     std::shared_ptr<RenderGeometry> geom;
 
 private:

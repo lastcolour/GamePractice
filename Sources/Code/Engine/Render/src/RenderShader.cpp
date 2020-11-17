@@ -1,0 +1,103 @@
+#include "RenderShader.hpp"
+#include "Core/ETLogger.hpp"
+#include "Platform/OpenGL.hpp"
+
+#include <cassert>
+
+RenderShader::RenderShader(int progId) :
+    activeTexUnitId(0),
+    programId(progId) {
+    assert(programId && "Invalid program id");
+}
+
+RenderShader::~RenderShader() {
+}
+
+void RenderShader::bind() {
+    glUseProgram(programId);
+}
+
+void RenderShader::unbind() {
+    glUseProgram(0);
+    activeTexUnitId = 0;
+}
+
+void RenderShader::setTexture2D(UniformType varType, int texId) {
+    setUniform1i(varType, activeTexUnitId);
+    glActiveTexture(GL_TEXTURE0 + activeTexUnitId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    ++activeTexUnitId;
+}
+
+void RenderShader::setUniform1i(UniformType varType, int val) {
+    glUniform1i(getUniformId(varType), val);
+}
+
+void RenderShader::setUniform1f(UniformType varType, float val) {
+    glUniform1f(getUniformId(varType), val);
+}
+
+void RenderShader::setUniformMat4(UniformType varType, const Mat4& mat) {
+    glUniformMatrix4fv(getUniformId(varType), 1, false, mat.getPtr());
+}
+
+void RenderShader::setUniform4f(UniformType varType, const ColorB& col) {
+    ColorF colF = col.getColorF();
+    setUniform4f(varType, Vec4(colF.r, colF.g, colF.b, colF.a));
+}
+
+void RenderShader::setUniform4f(UniformType varType, const Vec4& vec) {
+    glUniform4fv(getUniformId(varType), 1, vec.getPtr());
+}
+
+int RenderShader::getProgramId() const {
+    return programId;
+}
+
+void RenderShader::setProgramId(int newProgramId) {
+    programId = newProgramId;
+}
+
+int RenderShader::getUniformId(UniformType varType) const {
+    assert(varType != UniformType::ENUM_SIZE && "Invalid uniform type");
+    return chachedIds[static_cast<int>(varType)];
+}
+
+bool RenderShader::findUniform(const char* name, int& resUniLoc) const {
+    GLint uniLoc = glGetUniformLocation(programId, name);
+    if(uniLoc == -1) {
+        return false;
+    }
+    resUniLoc = uniLoc;
+    return true;
+}
+
+void RenderShader::cacheUniformIds() {
+    chachedIds.clear();
+    chachedIds.resize(static_cast<int>(UniformType::ENUM_SIZE));
+    {
+        int uniformId = -1;
+        findUniform("CameraMat", uniformId);
+        chachedIds[static_cast<int>(UniformType::CameraMat)] = uniformId;
+    }
+    {
+        int uniformId = -1;
+        findUniform("ModelMat", uniformId);
+        chachedIds[static_cast<int>(UniformType::ModelMat)] = uniformId;
+    }
+    {
+        int uniformId = -1;
+        findUniform("alpha", uniformId);
+        chachedIds[static_cast<int>(UniformType::Alpha)] = uniformId;
+    }
+    {
+        int uniformId = -1;
+        findUniform("tex", uniformId);
+        chachedIds[static_cast<int>(UniformType::Texture)] = uniformId;
+    }
+    {
+        int uniformId = -1;
+        findUniform("color", uniformId);
+        chachedIds[static_cast<int>(UniformType::Color)] = uniformId;
+    }
+}

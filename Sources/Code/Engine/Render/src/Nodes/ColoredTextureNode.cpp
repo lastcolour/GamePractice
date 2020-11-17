@@ -12,7 +12,7 @@ ColoredTextureNode::~ColoredTextureNode() {
 }
 
 void ColoredTextureNode::onInit() {
-    setMaterial("tex_solid_color");
+    setShader("tex_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
 }
@@ -21,9 +21,10 @@ void ColoredTextureNode::onRender(RenderContext& ctx) {
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
 
-    mat->setUniformMat4("ModelMat", modelMat);
-    mat->setTexture2D("tex", tex->texId);
-    mat->setUniform4f("color", color);
+    shader->setUniformMat4(UniformType::ModelMat, modelMat);
+    shader->setTexture2D(UniformType::Texture, tex->texId);
+    shader->setUniform4f(UniformType::Color, color);
+
     geom->draw();
 }
 

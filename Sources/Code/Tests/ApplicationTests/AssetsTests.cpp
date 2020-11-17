@@ -7,7 +7,7 @@
 
 namespace {
 
-const char* TEST_FILE_PATH = "Render/Materials.json";
+const char* TEST_FILE_PATH = "Render/Shaders.json";
 const char* TEST_LOCAL_PATH = "Test.txt";
 
 } // namepsace

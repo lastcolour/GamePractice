@@ -17,7 +17,7 @@ TextNode::~TextNode() {
 
 void TextNode::onInit() {
     setGeometry(PrimitiveGeometryType::Text_Vert_Chunk);
-    setMaterial("text_solid_color");
+    setShader("text_solid_color");
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
 }
@@ -129,8 +129,8 @@ void TextNode::onRender(RenderContext& ctx) {
         textMetric = font->getTextMetric(text);
     }
 
-    mat->setTexture2D("tex", font->getFontAtlas()->texId);
-    mat->setUniform4f("color", color);
+    shader->setTexture2D(UniformType::Texture, font->getFontAtlas()->texId);
+    shader->setUniform4f(UniformType::Color, color);
 
     drawLines();
 }

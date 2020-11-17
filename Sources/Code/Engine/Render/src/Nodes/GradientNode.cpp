@@ -18,7 +18,7 @@ GradientNode::~GradientNode() {
 
 void GradientNode::onInit() {
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
-    setMaterial("tex_vert_color");
+    setShader("tex_vert_color");
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(2), ETextureType::RGBA);
     if(tex) {
         tex->setTexLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
@@ -37,8 +37,8 @@ void GradientNode::onRender(RenderContext& ctx) {
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
 
-    mat->setUniformMat4("ModelMat", modelMat);
-    mat->setTexture2D("tex", tex->texId);
+    shader->setUniformMat4(UniformType::ModelMat, modelMat);
+    shader->setTexture2D(UniformType::Texture, tex->texId);
     geom->draw();
 }
 

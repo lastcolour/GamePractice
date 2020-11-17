@@ -2,7 +2,7 @@
 #include "Render.hpp"
 #include "RenderGeometryManager.hpp"
 #include "RenderFontManager.hpp"
-#include "RenderMaterialManager.hpp"
+#include "RenderShaderManager.hpp"
 #include "RenderCamera.hpp"
 #include "RenderTextureManager.hpp"
 #include "RenderNodeManager.hpp"
@@ -26,7 +26,7 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             Render,
             RenderCamera,
             RenderGeometryManager,
-            RenderMaterialManager,
+            RenderShaderManager,
             RenderTextureManager,
             RenderNodeManager,
             RenderFontManager,

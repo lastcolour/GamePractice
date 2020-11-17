@@ -47,8 +47,8 @@ void Node::setBlendingMode(RenderBlendingType newBlending) {
     blending = newBlending;
 }
 
-void Node::setMaterial(const char* matName) {
-    ET_SendEventReturn(mat, &ETRenderMaterialManager::ET_createMaterial, matName);
+void Node::setShader(const char* shaderName) {
+    ET_SendEventReturn(shader, &ETRenderShaderManager::ET_createShader, shaderName);
 }
 
 void Node::setGeometry(PrimitiveGeometryType geomType) {
@@ -60,7 +60,7 @@ void Node::setTransform(const Transform& newTm) {
 }
 
 bool Node::isVisible() const {
-    if(!mat) {
+    if(!shader) {
         return false;
     }
     if(!geom) {
@@ -95,9 +95,9 @@ void Node::render(RenderContext& ctx) {
         }
     }
 
-    mat->bind();
-    mat->setUniformMat4("CameraMat", ctx.proj2dMat);
-    mat->setUniform1f("alpha", alpha);
+    shader->bind();
+    shader->setUniformMat4(UniformType::CameraMat, ctx.proj2dMat);
+    shader->setUniform1f(UniformType::Alpha, alpha);
     onRender(ctx);
-    mat->unbind();
+    shader->unbind();
 }

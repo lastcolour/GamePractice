@@ -11,7 +11,7 @@ SimpleNode::~SimpleNode() {
 
 void SimpleNode::onInit() {
     setGeometry(PrimitiveGeometryType::Square);
-    setMaterial("geom_solid_color");
+    setShader("geom_solid_color");
 }
 
 void SimpleNode::setColor0(const ColorB& newColor) {
@@ -26,7 +26,7 @@ void SimpleNode::onRender(RenderContext& ctx) {
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
 
-    mat->setUniformMat4("ModelMat", modelMat);
-    mat->setUniform4f("color", color);
+    shader->setUniformMat4(UniformType::ModelMat, modelMat);
+    shader->setUniform4f(UniformType::Color, color);
     geom->draw();
 }

@@ -38,10 +38,10 @@ bool ParticlesNode::isVisible() const {
 void ParticlesNode::onInit() {
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Particles);
-    setMaterial("particle");
+    setShader("particle");
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {
-    mat->setTexture2D("tex", tex->texId);
+    shader->setTexture2D(UniformType::Texture, tex->texId);
     geom->drawInstanced(&state.instaceData[0], state.activeCount);
 }

@@ -3,9 +3,10 @@
 
 #include "Math/Vector.hpp"
 #include "Render/RenderCommon.hpp"
+
 #include <memory>
 
-class RenderMaterial;
+class RenderShader;
 class RenderFont;
 class RenderTexture;
 class RenderGeometry;
@@ -27,9 +28,9 @@ struct ETRenderTextureManger {
     virtual std::shared_ptr<RenderTexture> ET_createEmptyTexture(const Vec2i& texSize, ETextureType texType) = 0;
 };
 
-struct ETRenderMaterialManager {
-    virtual ~ETRenderMaterialManager() = default;
-    virtual std::shared_ptr<RenderMaterial> ET_createMaterial(const char* matName) = 0;
+struct ETRenderShaderManager {
+    virtual ~ETRenderShaderManager() = default;
+    virtual std::shared_ptr<RenderShader> ET_createShader(const char* shaderName) = 0;
 };
 
 #endif /* __ET_RENDER_MANAGER_HPP__ */

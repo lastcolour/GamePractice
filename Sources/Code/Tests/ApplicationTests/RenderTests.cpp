@@ -1,6 +1,6 @@
 #include "RenderTests.hpp"
 #include "Render.hpp"
-#include "RenderMaterial.hpp"
+#include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
 #include "Render/RenderTextureFramebuffer.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
@@ -26,7 +26,7 @@ namespace {
 const size_t RENDER_WIDTH = 400;
 const size_t RENDER_HEIGHT = 300;
 
-const char* TEST_MATERIAL_1 = "geom_solid_color";
+const char* TEST_SHADER_1 = "geom_solid_color";
 
 const char* SIMPLE_OBJECT = "Game/Simple.json";
 
@@ -168,10 +168,10 @@ TEST_F(RenderTests, CheckClear) {
     ASSERT_EQ(failPixCount, 0);
 }
 
-TEST_F(RenderTests, CheckCreateInvalidMaterial) {
-    std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, "");
-    ASSERT_FALSE(material);
+TEST_F(RenderTests, CheckCreateInvalidShader) {
+    std::shared_ptr<RenderShader> shader;
+    ET_SendEventReturn(shader, &ETRenderShaderManager::ET_createShader, "");
+    ASSERT_FALSE(shader);
 }
 
 TEST_F(RenderTests, CheckCreateSquareGeom) {
@@ -192,17 +192,17 @@ TEST_F(RenderTests, CheckRenderSquare) {
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, PrimitiveGeometryType::Square);
     ASSERT_TRUE(geom);
 
-    std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
-    ASSERT_TRUE(material);
+    std::shared_ptr<RenderShader> shader;
+    ET_SendEventReturn(shader, &ETRenderShaderManager::ET_createShader, TEST_SHADER_1);
+    ASSERT_TRUE(shader);
 
-    material->bind();
-    material->setUniform1f("alpha", 1.f);
-    material->setUniformMat4("CameraMat", Mat4(1.f));
-    material->setUniformMat4("ModelMat", Mat4(1.f));
-    material->setUniform4f("color", DRAW_COLOR);
+    shader->bind();
+    shader->setUniform1f(UniformType::Alpha, 1.f);
+    shader->setUniformMat4(UniformType::CameraMat, Mat4(1.f));
+    shader->setUniformMat4(UniformType::ModelMat, Mat4(1.f));
+    shader->setUniform4f(UniformType::Color, DRAW_COLOR);
     geom->draw();
-    material->unbind();
+    shader->unbind();
 
     ASSERT_TRUE(textureFramebuffer->read());
 
@@ -240,18 +240,18 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     Math::AddScale(tm, scale);
     tm = proj * tm;
 
-    std::shared_ptr<RenderMaterial> material;
-    ET_SendEventReturn(material, &ETRenderMaterialManager::ET_createMaterial, TEST_MATERIAL_1);
-    ASSERT_TRUE(material);
+    std::shared_ptr<RenderShader> shader;
+    ET_SendEventReturn(shader, &ETRenderShaderManager::ET_createShader, TEST_SHADER_1);
+    ASSERT_TRUE(shader);
 
     textureFramebuffer->bind();
-    material->bind();
-    material->setUniform1f("alpha", 1.f);
-    material->setUniformMat4("CameraMat", Mat4(1.f));
-    material->setUniformMat4("ModelMat", tm);
-    material->setUniform4f("color", DRAW_COLOR);
+    shader->bind();
+    shader->setUniform1f(UniformType::Alpha, 1.f);
+    shader->setUniformMat4(UniformType::CameraMat, Mat4(1.f));
+    shader->setUniformMat4(UniformType::ModelMat, tm);
+    shader->setUniform4f(UniformType::Color, DRAW_COLOR);
     geom->draw();
-    material->unbind();
+    shader->unbind();
     textureFramebuffer->read();
     textureFramebuffer->unbind();
 

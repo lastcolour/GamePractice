@@ -20,15 +20,15 @@ void ImageNode::setImage(const std::string& newImage) {
 void ImageNode::onInit() {
     setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
-    setMaterial("simple_image");
+    setShader("simple_image");
 }
 
 void ImageNode::onRender(RenderContext& ctx) {
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
 
-    mat->setUniformMat4("ModelMat", modelMat);
-    mat->setTexture2D("tex", tex->texId);
+    shader->setUniformMat4(UniformType::ModelMat, modelMat);
+    shader->setTexture2D(UniformType::Texture, tex->texId);
     geom->draw();
 }
 
