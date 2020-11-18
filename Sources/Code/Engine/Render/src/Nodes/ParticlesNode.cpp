@@ -22,7 +22,7 @@ void ParticlesNode::setConfig(const ParticleEmitterEmissionConfig& emissionConf,
     state.colorConfig = colorConf;
 
     state.reset();
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, renderConf.texture.c_str(), ETextureType::RGBA);
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage, renderConf.texture.c_str(), ETextureType::RGBA);
 }
 
 bool ParticlesNode::isVisible() const {

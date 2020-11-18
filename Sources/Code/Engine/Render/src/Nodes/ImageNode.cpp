@@ -14,7 +14,7 @@ void ImageNode::setSize(const Vec2& newSize) {
 }
 
 void ImageNode::setImage(const std::string& newImage) {
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage, newImage.c_str(), ETextureType::RGBA);
 }
 
 void ImageNode::onInit() {

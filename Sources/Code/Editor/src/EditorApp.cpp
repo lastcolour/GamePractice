@@ -178,10 +178,8 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
 
     runner->stepMainTread();
 
-    frameBuffer.setSize(viewport);
-    frameBuffer.clear();
-    ET_SendEvent(&ETRender::ET_drawFrameToFramebuffer, frameBuffer, DrawContentFilter::None);
-    memcpy(out, frameBuffer.getPtr(), viewport.x * viewport.y * 4);
+    ET_SendEvent(&ETRender::ET_drawFrameToBuffer, imageBuffer, Vec2i(width, height), DrawContentFilter::None);
+    memcpy(out, imageBuffer.getData().getReadData(), viewport.x * viewport.y * 4);
 }
 
 EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {

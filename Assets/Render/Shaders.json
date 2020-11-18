@@ -22,5 +22,9 @@
     "particle":{
         "vert":"Shaders/particle.vert",
         "frag":"Shaders/particle.frag"
+    },
+    "draw_framebuffer":{
+        "vert":"Shaders/draw_framebuffer.vert",
+        "frag":"Shaders/draw_framebuffer.frag"
     }
 }

@@ -3,6 +3,7 @@
 
 #include "Math/Vector.hpp"
 #include "Render/Color.hpp"
+#include "Render/RenderCommon.hpp"
 
 enum class TexLerpType {
     Linear = 0,
@@ -21,14 +22,25 @@ public:
     RenderTexture();
     ~RenderTexture();
 
-    void modifyRGBA(const Vec2i& startPt, const Vec2i& endPt, const ColorB* data);
-    void setWrapType(TexWrapType sWrapType, TexWrapType tWrapType);
-    void setTexLerpType(TexLerpType minType, TexLerpType magType);
+    void writeR8(const Vec2i& pt, const Vec2i& subSize, const void* data);
+    void writeRGB(const Vec2i& pt, const Vec2i& subSize, const void* data);
+    void writeRGBA(const Vec2i& pt, const Vec2i& subSize, const void* data);
+
+    void setPixelWrapType(TexWrapType sWrapType, TexWrapType tWrapType);
+    void setPixelLerpType(TexLerpType minType, TexLerpType magType);
+
+    void bind();
+    void unbind();
+
+    Vec2i getSize() const;
+    bool resize(const Vec2i& newSize);
+    bool resizeAndClear(const Vec2i& newSize);
 
 public:
 
-    unsigned int texId;
+    ETextureType type;
     Vec2i size;
+    unsigned int texId;
 };
 
 #endif /* __RENDER_TEXTURE_HPP__ */

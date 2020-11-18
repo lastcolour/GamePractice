@@ -137,7 +137,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
     std::shared_ptr<RenderFont> font(new RenderFont(fontHeight));
 
     std::shared_ptr<RenderTexture> fontAtlas;
-    ET_SendEventReturn(fontAtlas, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(texWidth, texHeight), ETextureType::R8);
+    ET_SendEventReturn(fontAtlas, &ETRenderTextureManger::ET_createTexture, ETextureType::R8);
     if(!fontAtlas) {
         LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: %s", fontName);
         FT_Done_Face(fontFace);
@@ -145,7 +145,10 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
         return nullptr;
     }
 
-    glBindTexture(GL_TEXTURE_2D, fontAtlas->texId);
+    fontAtlas->bind();
+    if(!fontAtlas->resizeAndClear(Vec2i(texWidth, texHeight))) {
+        return nullptr;
+    }
 
     int shift = 0;
     for(auto ch : characterSet) {
@@ -165,10 +168,10 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
             glyph->bitmap.rows / static_cast<float>(texHeight));
 
         if(glyphData.size > Vec2i(0)) {
-            glTexSubImage2D(GL_TEXTURE_2D, 0, shift, 0, glyphData.size.x, glyphData.size.y,
-                GL_RED, GL_UNSIGNED_BYTE, glyph->bitmap.buffer);
-            if(!CheckGLError()) {
-                LogError("[RenderFont::createFontImpl] Can't copy a glyph '%c' bitmap buffer to a font atlas", static_cast<char>(ch));
+            fontAtlas->writeR8(Vec2i(shift, 0), glyphData.size, glyph->bitmap.buffer);
+            if(auto errStr = RenderUtils::GetGLError()) {
+                LogError("[RenderFont::createFontImpl] Can't copy a glyph '%c' bitmap buffer to a font atlas (Error: %s)",
+                    static_cast<char>(ch), errStr);
                 FT_Done_Face(fontFace);
                 FT_Done_FreeType(ftLib);
                 return nullptr;
@@ -180,8 +183,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
         shift += glyph->bitmap.width + padding;
     }
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-
+    fontAtlas->unbind();
     font->setFontAtlas(fontAtlas);
 
     FT_Done_Face(fontFace);

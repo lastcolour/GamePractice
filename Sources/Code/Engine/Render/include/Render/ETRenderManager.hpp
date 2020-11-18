@@ -10,6 +10,7 @@ class RenderShader;
 class RenderFont;
 class RenderTexture;
 class RenderGeometry;
+class RenderFramebuffer;
 
 struct ETRenderGeometryManager {
     virtual ~ETRenderGeometryManager() = default;
@@ -24,8 +25,9 @@ struct ETRenderFontManager {
 
 struct ETRenderTextureManger {
     virtual ~ETRenderTextureManger() = default;
-    virtual std::shared_ptr<RenderTexture> ET_createTexture(const char* textureName, ETextureType texType) = 0;
-    virtual std::shared_ptr<RenderTexture> ET_createEmptyTexture(const Vec2i& texSize, ETextureType texType) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) = 0;
+    virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer() = 0;
 };
 
 struct ETRenderShaderManager {

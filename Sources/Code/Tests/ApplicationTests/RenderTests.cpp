@@ -2,7 +2,6 @@
 #include "Render.hpp"
 #include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
-#include "Render/RenderTextureFramebuffer.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
 #include "RenderFont.hpp"
@@ -15,6 +14,8 @@
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "RenderTexture.hpp"
+#include "RenderUtils.hpp"
+#include "RenderFramebuffer.hpp"
 
 #include <algorithm>
 
@@ -36,21 +37,22 @@ const ColorB DRAW_COLOR(0, 255, 0);
 const ColorB DRAW_COLOR_B(128, 128, 0);
 const ColorB CLEAR_COLOR(0, 0, 0);
 
-void SyncAndDrawFrameToFB(RenderTextureFramebuffer& fb) {
+void SyncAndDrawFrameToImageBuffer(ImageBuffer& imageBuffer) {
     ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
-    ET_SendEvent(&ETRender::ET_drawFrameToFramebuffer, fb, DrawContentFilter::NoDebugInfo);
+    ET_SendEvent(&ETRender::ET_drawFrameToBuffer, imageBuffer, imageBuffer.getSize(),
+        DrawContentFilter::NoDebugInfo);
 }
 
-AABB2Di DrawAndGetDirtyBoxForFrameBuffer(RenderTextureFramebuffer& fb) {
-    SyncAndDrawFrameToFB(fb);
+AABB2Di DrawAndGetDirtyBoxFromImageBuffer(ImageBuffer& imageBuffer) {
+    SyncAndDrawFrameToImageBuffer(imageBuffer);
 
     bool isDirty = false;
-    AABB2Di dirtyBox(Vec2i(fb.getSize()), Vec2i(0));
+    AABB2Di dirtyBox(Vec2i(imageBuffer.getSize()), Vec2i(0));
 
-    const Vec2i size = fb.getSize();
+    const Vec2i size = imageBuffer.getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorB& col = fb.getColor(i, j);
+            const ColorB& col = imageBuffer.getColor(i, j);
             if(col != CLEAR_COLOR) {
                 dirtyBox.bot.x = std::min(dirtyBox.bot.x, i);
                 dirtyBox.bot.y = std::min(dirtyBox.bot.y, j);
@@ -70,33 +72,41 @@ AABB2Di DrawAndGetDirtyBoxForFrameBuffer(RenderTextureFramebuffer& fb) {
 
 } // namespace
 
-std::unique_ptr<RenderTextureFramebuffer> RenderTests::textureFramebuffer;
+std::unique_ptr<ImageBuffer> RenderTests::IMAGE_BUFFER;
+std::shared_ptr<RenderFramebuffer> RenderTests::RENDER_FB;
 
 void RenderTests::SetUpTestCase() {
     ConsoleAppTests::SetUpTestCase();
 
-    textureFramebuffer.reset(new RenderTextureFramebuffer());
-    textureFramebuffer->setSize(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
+    IMAGE_BUFFER.reset(new ImageBuffer());
+    IMAGE_BUFFER->setSizeAndClear(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
 
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, textureFramebuffer->getSize());
+    ET_SendEventReturn(RENDER_FB, &ETRenderTextureManger::ET_createFramebuffer);
+    ASSERT_TRUE(RENDER_FB);
 
-    ASSERT_TRUE(textureFramebuffer->isValid());
+    RENDER_FB->texture.bind();
+    RENDER_FB->texture.resize(IMAGE_BUFFER->getSize());
+    RENDER_FB->texture.unbind();
+
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, IMAGE_BUFFER->getSize());
 }
 
 void RenderTests::TearDownTestCase() {
-    textureFramebuffer.reset();
+    IMAGE_BUFFER.reset();
+    RENDER_FB.reset();
     ConsoleAppTests::TearDownTestCase();
 }
 
 void RenderTests::SetUp() {
     ConsoleAppTests::SetUp();
-    textureFramebuffer->bind();
 
+    IMAGE_BUFFER->clear();
+
+    RENDER_FB->bind();
     glClearColor(CLEAR_COLOR.r, CLEAR_COLOR.g, CLEAR_COLOR.b, CLEAR_COLOR.a);
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
-
-    textureFramebuffer->clear();
+    RENDER_FB->unbind();
 }
 
 void RenderTests::TearDown() {
@@ -107,14 +117,19 @@ void RenderTests::TearDown() {
 
     auto renderNodes = ET_GetAll<ETRenderNode>();
     ASSERT_TRUE(renderNodes.empty());
+
+    auto fbSize = RENDER_FB->texture.getSize();
+    auto imageSize = IMAGE_BUFFER->getSize();
+    ASSERT_EQ(fbSize.x, imageSize.x);
+    ASSERT_EQ(fbSize.y, imageSize.y);
 }
 
 void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) {
     size_t failPixCount = 0;
-    const Vec2i size = textureFramebuffer->getSize();
+    const Vec2i size = IMAGE_BUFFER->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorB& col = textureFramebuffer->getColor(i, j);
+            const ColorB& col = IMAGE_BUFFER->getColor(i, j);
             if(i > xStart && i < xEnd && j > yStart && j < yEnd) {
                 if(col != drawColor) {
                     ++failPixCount;
@@ -133,33 +148,35 @@ void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEn
     EXPECT_EQ(failPixCount, 0u);
 }
 
-void RenderTests::dumpFramebuffer() {
+void RenderTests::dumpImageBuffer() {
     stbi_flip_vertically_on_write(1);
     std::string testName = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     testName += ".png";
-    const Vec2i size = textureFramebuffer->getSize();
+    const Vec2i size = IMAGE_BUFFER->getSize();
     const int compCount = 4;
     auto res = stbi_write_png(testName.c_str(), size.x, size.y,
-        compCount, textureFramebuffer->getPtr(), compCount * size.x);
+        compCount, IMAGE_BUFFER->getData().getReadData(), compCount * size.x);
 
     ASSERT_NE(res, 0);
 }
 
 TEST_F(RenderTests, CheckClear) {
-    textureFramebuffer->bind();
+    RENDER_FB->bind();
+
     ColorF clearColor(1.f, 0.3f, 0.5f);
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
 
-    ASSERT_TRUE(textureFramebuffer->read());
-    textureFramebuffer->unbind();
+    RENDER_FB->unbind();
+
+    ASSERT_TRUE(RenderUtils::ReadFramebufferToImage(*RENDER_FB, *IMAGE_BUFFER));
 
     size_t failPixCount = 0;
-    const Vec2i size = textureFramebuffer->getSize();
+    const Vec2i size = IMAGE_BUFFER->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorB col = textureFramebuffer->getColor(i, j);
+            const ColorB col = IMAGE_BUFFER->getColor(i, j);
             if(col.getColorF() != clearColor) {
                 ++failPixCount;
             }
@@ -196,6 +213,8 @@ TEST_F(RenderTests, CheckRenderSquare) {
     ET_SendEventReturn(shader, &ETRenderShaderManager::ET_createShader, TEST_SHADER_1);
     ASSERT_TRUE(shader);
 
+    RENDER_FB->bind();
+
     shader->bind();
     shader->setUniform1f(UniformType::Alpha, 1.f);
     shader->setUniformMat4(UniformType::CameraMat, Mat4(1.f));
@@ -204,13 +223,15 @@ TEST_F(RenderTests, CheckRenderSquare) {
     geom->draw();
     shader->unbind();
 
-    ASSERT_TRUE(textureFramebuffer->read());
+    RENDER_FB->unbind();
+
+    ASSERT_TRUE(RenderUtils::ReadFramebufferToImage(*RENDER_FB, *IMAGE_BUFFER));
 
     size_t failPixCount = 0;
-    const Vec2i size = textureFramebuffer->getSize();
+    const Vec2i size = IMAGE_BUFFER->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorB col = textureFramebuffer->getColor(i, j);
+            const ColorB col = IMAGE_BUFFER->getColor(i, j);
             if(col != DRAW_COLOR) {
                 ++failPixCount;
             }
@@ -221,9 +242,9 @@ TEST_F(RenderTests, CheckRenderSquare) {
 }
 
 TEST_F(RenderTests, CheckProjectionToScreen) {
-    const Vec2i fbSize = textureFramebuffer->getSize();
-    const auto w = fbSize.x;
-    const auto h = fbSize.y;
+    const Vec2i imageSize = IMAGE_BUFFER->getSize();
+    const auto w = imageSize.x;
+    const auto h = imageSize.y;
     const Vec3 center(w * 0.5f, h * 0.5f, 0.f);
 
     std::shared_ptr<RenderGeometry> geom;
@@ -244,7 +265,8 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     ET_SendEventReturn(shader, &ETRenderShaderManager::ET_createShader, TEST_SHADER_1);
     ASSERT_TRUE(shader);
 
-    textureFramebuffer->bind();
+    RENDER_FB->bind();
+
     shader->bind();
     shader->setUniform1f(UniformType::Alpha, 1.f);
     shader->setUniformMat4(UniformType::CameraMat, Mat4(1.f));
@@ -252,8 +274,10 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     shader->setUniform4f(UniformType::Color, DRAW_COLOR);
     geom->draw();
     shader->unbind();
-    textureFramebuffer->read();
-    textureFramebuffer->unbind();
+
+    RENDER_FB->unbind();
+
+    ASSERT_TRUE(RenderUtils::ReadFramebufferToImage(*RENDER_FB, *IMAGE_BUFFER));
 
     const size_t xStart = static_cast<size_t>(center.x - SCALE_FACTOR * w * 0.5f);
     const size_t xEnd = static_cast<size_t>(center.x + SCALE_FACTOR * w * 0.5f);
@@ -268,7 +292,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEventReturn(objId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
     ASSERT_NE(objId, InvalidEntityId);
 
-    auto size = textureFramebuffer->getSize();
+    auto size = IMAGE_BUFFER->getSize();
     const Vec3 center(size.x * 0.5f, size.y * 0.5f, 0.f);
 
     Transform tm;
@@ -278,7 +302,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
     ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
 
-    SyncAndDrawFrameToFB(*textureFramebuffer);
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     const size_t xStart = static_cast<size_t>(center.x - SCALE_FACTOR * size.x * 0.5f);
     const size_t xEnd = static_cast<size_t>(center.x + SCALE_FACTOR * size.x * 0.5f);
@@ -341,13 +365,13 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
 
     renderText->ET_setText("Hello World!");
 
-    SyncAndDrawFrameToFB(*textureFramebuffer);
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     int changedPixels = 0;
-    const Vec2i size = textureFramebuffer->getSize();
+    const Vec2i size = IMAGE_BUFFER->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorB& col = textureFramebuffer->getColor(i, j);
+            const ColorB& col = IMAGE_BUFFER->getColor(i, j);
             if(col != CLEAR_COLOR) {
                 ++changedPixels;
             }
@@ -373,13 +397,13 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     renderImage->ET_setImage("Images/options.png");
     renderImage->ET_setSize(Vec2(100.f));
 
-    SyncAndDrawFrameToFB(*textureFramebuffer);
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     int changedPixels = 0;
-    const Vec2i size = textureFramebuffer->getSize();
+    const Vec2i size = IMAGE_BUFFER->getSize();
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
-            const ColorB& col = textureFramebuffer->getColor(i, j);
+            const ColorB& col = IMAGE_BUFFER->getColor(i, j);
             if(col != CLEAR_COLOR) {
                 ++changedPixels;
             }
@@ -405,12 +429,12 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
     tm.pt = Vec3(imageSize.x / 2.f, imageSize.y / 2.f, 0.f);
     gameObj->ET_setTransform(tm);
 
-    SyncAndDrawFrameToFB(*textureFramebuffer);
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     int changedPixels = 0;
     for(int i = 0; i < imageSize.x; ++i) {
         for(int j = 0; j < imageSize.y; ++j) {
-            const ColorB& col = textureFramebuffer->getColor(i, j);
+            const ColorB& col = IMAGE_BUFFER->getColor(i, j);
             if(col == texColor) {
                 ++changedPixels;
             }
@@ -423,18 +447,18 @@ TEST_F(RenderTests, CheckRenderColoredTexture) {
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
     Vec2i texSize(100);
     std::shared_ptr<RenderTexture> tex1;
-    ET_SendEventReturn(tex1, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::R8);
+    ET_SendEventReturn(tex1, &ETRenderTextureManger::ET_createTexture, ETextureType::R8);
     EXPECT_TRUE(tex1);
 
     std::shared_ptr<RenderTexture> tex2;
-    ET_SendEventReturn(tex2, &ETRenderTextureManger::ET_createEmptyTexture, texSize, ETextureType::R8);
+    ET_SendEventReturn(tex2, &ETRenderTextureManger::ET_createTexture, ETextureType::R8);
     EXPECT_TRUE(tex2);
 
     EXPECT_NE(tex1.get(), tex2.get());
 }
 
 TEST_F(RenderTests, CheckRenderPriority) {
-    auto size = textureFramebuffer->getSize();
+    auto size = IMAGE_BUFFER->getSize();
     const Vec3 center(size.x * 0.5f, size.y * 0.5f, 0.f);
 
     EntityId firstSquareId = InvalidEntityId;
@@ -465,14 +489,14 @@ TEST_F(RenderTests, CheckRenderPriority) {
     ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 1);
     ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 0);
 
-    SyncAndDrawFrameToFB(*textureFramebuffer);
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
 
     ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 0);
     ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 1);
 
-    SyncAndDrawFrameToFB(*textureFramebuffer);
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     checkSquare(DRAW_COLOR_B, xStart, xEnd, yStart, yEnd);
 
@@ -481,7 +505,7 @@ TEST_F(RenderTests, CheckRenderPriority) {
 }
 
 TEST_F(RenderTests, CheckHideUnhide) {
-    auto size = textureFramebuffer->getSize();
+    auto size = IMAGE_BUFFER->getSize();
     const Vec3 center(size.x / 2.f, size.y / 2.f, 0.f);
 
     EntityId boxId = InvalidEntityId;
@@ -495,21 +519,21 @@ TEST_F(RenderTests, CheckHideUnhide) {
     }
 
     {
-        SyncAndDrawFrameToFB(*textureFramebuffer);
+        SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
         checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
     }
 
     ET_SendEvent(boxId, &ETRenderNode::ET_hide);
 
     {
-        SyncAndDrawFrameToFB(*textureFramebuffer);
+        SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
         checkSquare(CLEAR_COLOR, 0, size.x, 0, size.y);
     }
 
     ET_SendEvent(boxId, &ETRenderNode::ET_show);
 
     {
-        SyncAndDrawFrameToFB(*textureFramebuffer);
+        SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
         checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
     }
 
@@ -541,7 +565,7 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
         renderText->ET_setText(word.c_str());
         AABB2Di box = renderText->ET_getTextAABBi();
 
-        auto dirtyBox = DrawAndGetDirtyBoxForFrameBuffer(*textureFramebuffer);
+        auto dirtyBox = DrawAndGetDirtyBoxFromImageBuffer(*IMAGE_BUFFER);
 
         {
             auto dirtyBoxSize = dirtyBox.getSize();

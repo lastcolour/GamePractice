@@ -4,6 +4,7 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Render/ETDebugRender.hpp"
+#include "Render/ETRenderInterfaces.hpp"
 #include "Debug/DeubgCommands.hpp"
 #include "Nodes/SimpleNode.hpp"
 #include "Nodes/TextNode.hpp"
@@ -12,7 +13,8 @@
 #include <mutex>
 
 class DebugRender : public SystemLogic,
-    public ETNode<ETDebugRender> {
+    public ETNode<ETDebugRender>,
+    public ETNode<ETRenderContextEvents> {
 public:
 
     DebugRender();
@@ -23,11 +25,14 @@ public:
     void deinit() override;
 
     // ETDebugRender
-    void ET_init() override;
     void ET_drawLine(const Vec2& startPt, const ColorB& startCol, const Vec2& endPt, const ColorB& endCol, float width) override;
     void ET_drawQuad(const AABB2D& box, const ColorB& col) override;
     void ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) override;
     void ET_update() override;
+
+    // ETRenderContextEvents
+    void ET_onContextCreated() override;
+    void ET_onContextDestroyed() override;
 
 private:
 

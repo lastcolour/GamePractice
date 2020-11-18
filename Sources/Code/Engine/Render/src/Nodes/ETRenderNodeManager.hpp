@@ -5,6 +5,8 @@
 #include "Math/Transform.hpp"
 
 class Node;
+class ImageBuffer;
+enum class DrawContentFilter;
 
 enum class RenderNodeType {
     Simple = 0,
@@ -27,8 +29,9 @@ struct ETRenderNodeManager {
     virtual Node* ET_createNode(const RenderNodeCreateParams& params) = 0;
     virtual void ET_removeNode(Node* node) = 0;
     virtual void ET_initRenderNode(Node* node) = 0;
-    virtual void ET_update() = 0;
     virtual void ET_updateParticles(float dt) = 0;
+    virtual void ET_drawFrame() = 0;
+    virtual void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) = 0;
 };
 
 struct ETRenderProxyNodeEvents {

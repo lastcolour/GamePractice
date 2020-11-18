@@ -19,20 +19,19 @@ public:
     void deinit() override;
 
     // ETRenderTextureManger
-    std::shared_ptr<RenderTexture> ET_createTexture(const char* textureName, ETextureType texType) override;
-    std::shared_ptr<RenderTexture> ET_createEmptyTexture(const Vec2i& texSize, ETextureType texType) override;
+    std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) override;
+    std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) override;
+    std::shared_ptr<RenderFramebuffer> ET_createFramebuffer() override;
 
 private:
 
-    std::string createNewTexSizeName(const Vec2i& texSize) const;
-    std::string getLookupName(const char* textureName, ETextureType texType) const;
-
-    std::shared_ptr<RenderTexture> createEmptyTexture(const Vec2i& texSize, ETextureType texType);
     std::shared_ptr<RenderTexture> createTexture(const Buffer& buffer, ETextureType texType);
 
 private:
 
-    std::unordered_map<std::string, std::shared_ptr<RenderTexture>> textures;
+    std::unordered_map<std::string, std::shared_ptr<RenderTexture>> images;
+    std::vector<std::shared_ptr<RenderTexture>> textures;
+    std::vector<std::shared_ptr<RenderFramebuffer>> framebuffers;
 };
 
 #endif /* __RENDER_TEXTURE_MANAGER_HPP__ */

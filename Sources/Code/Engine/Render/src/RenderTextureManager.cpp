@@ -1,5 +1,6 @@
 #include "RenderTextureManager.hpp"
 #include "RenderTexture.hpp"
+#include "RenderFramebuffer.hpp"
 #include "RenderUtils.hpp"
 #include "Platform/OpenGL.hpp"
 #include "Core/Buffer.hpp"
@@ -12,39 +13,9 @@
 #define STBI_NO_STDIO
 #include <stb_image.h>
 
-RenderTextureManager::RenderTextureManager() {
-}
+namespace {
 
-RenderTextureManager::~RenderTextureManager() {
-}
-
-bool RenderTextureManager::init() {
-    ETNode<ETRenderTextureManger>::connect(getEntityId());
-    return true;
-}
-
-void RenderTextureManager::deinit() {
-    ETNode<ETRenderTextureManger>::disconnect();
-}
-
-std::string RenderTextureManager::createNewTexSizeName(const Vec2i& texSize) const {
-    std::string texNamePreffix = StringFormat("[%dx%d]_", texSize.x, texSize.y);
-    int tex_number = 0;
-    for(auto& texNode : textures) {
-        const auto& texName = texNode.first;
-        auto findPt = texName.find(texNamePreffix);
-        if(findPt != std::string::npos) {
-            std::string texNumStr = texName.substr(findPt + texNamePreffix.length());
-            int usedTexNum = std::stoi(texNumStr);
-            if(usedTexNum > tex_number) {
-                tex_number = usedTexNum + 1;
-            }
-        }
-    }
-    return StringFormat("%s%d", texNamePreffix, tex_number);
-}
-
-std::string RenderTextureManager::getLookupName(const char* textureName, ETextureType texType) const {
+std::string getLookupName(const char* imageName, ETextureType texType) {
     const char* suffix = "";
     switch(texType) {
         case ETextureType::R8: {
@@ -63,20 +34,37 @@ std::string RenderTextureManager::getLookupName(const char* textureName, ETextur
             assert(false && "Invalid texture type");
         }
     }
-    return StringFormat("%s%s", textureName, suffix);
+    return StringFormat("%s%s", imageName, suffix);
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(const char* textureName, ETextureType texType) {
-    std::string texLookupName = getLookupName(textureName, texType);
-    auto it = textures.find(texLookupName);
-    if(it != textures.end() && it->second) {
+} // namespace
+
+RenderTextureManager::RenderTextureManager() {
+}
+
+RenderTextureManager::~RenderTextureManager() {
+}
+
+bool RenderTextureManager::init() {
+    ETNode<ETRenderTextureManger>::connect(getEntityId());
+    return true;
+}
+
+void RenderTextureManager::deinit() {
+    ETNode<ETRenderTextureManger>::disconnect();
+}
+
+std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromImage(const char* imageName, ETextureType texType) {
+    std::string reqImageName = getLookupName(imageName, texType);
+    auto it = images.find(reqImageName);
+    if(it != images.end() && it->second) {
         return it->second;
     }
 
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, textureName);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, imageName);
     if(!buff) {
-        LogWarning("[RenderTextureManager::ET_createTexture] Can't load texture from: '%s'", textureName);
+        LogWarning("[RenderTextureManager::ET_createTexture] Can't load image from: '%s'", imageName);
         return nullptr;
     }
 
@@ -84,29 +72,44 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(const char
     if(!tex) {
         return nullptr;
     }
-    textures[texLookupName] = tex;
+    images[reqImageName] = tex;
     return tex;
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::ET_createEmptyTexture(const Vec2i& texSize, ETextureType texType) {
-    auto tex = createEmptyTexture(texSize, texType);
-    if(!tex) {
+std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureType texType) {
+    unsigned int textureId = 0;
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderTextureManager::createEmptyTexture] Can't create texture (Error: %s)", errStr);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDeleteTextures(1, &textureId);
         return nullptr;
     }
 
-    auto texLookupName = createNewTexSizeName(texSize);
-    textures[texLookupName] = tex;
-    return tex;
+    std::shared_ptr<RenderTexture> texture(new RenderTexture);
+    texture->type = texType;
+    texture->texId = textureId;
+    texture->size = Vec2i(0);
+    texture->setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
+    texture->setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    texture->unbind();
+
+    textures.push_back(texture);
+
+    return texture;
 }
 
 std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer& buff, ETextureType texType) {
     unsigned int textureId = 0;
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderTextureManager::createEmptyTexture] Can't create texture (Error: %s)", errStr);
+        return nullptr;
+    }
 
     int reqLoadChannel = 0;
     switch(texType) {
@@ -135,7 +138,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
         static_cast<int>(buff.getSize()), &texSize.x, &texSize.y, &numChannels, reqLoadChannel);
 
     if(data == nullptr) {
-        LogError("[RenderTextureManager::createTexture] Can't create texture from buffer");
+        LogError("[RenderTextureManager::createTexture] Can't parse image buffer");
         glBindTexture(GL_TEXTURE_2D, 0);
         glDeleteTextures(1, &textureId);
         return nullptr;
@@ -163,68 +166,62 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
 
     stbi_image_free(static_cast<void*>(data));
 
-    if(!CheckGLError()) {
-        LogError("[RenderTextureManager::createTexture] Can't transfter texture data from app to OpenGL");
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderTextureManager::createEmptyTexture] Can't copy texture data to GPU (Error: %s)", errStr);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDeleteTextures(1, &textureId);
         return nullptr;
     }
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-
     std::shared_ptr<RenderTexture> texture(new RenderTexture);
+    texture->type = texType;
     texture->texId = textureId;
     texture->size = texSize;
+    texture->setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
+    texture->setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    texture->unbind();
+
     return texture;
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::createEmptyTexture(const Vec2i& texSize, ETextureType texType) {
+std::shared_ptr<RenderFramebuffer> RenderTextureManager::ET_createFramebuffer() {
+    unsigned int framebufferId = 0;
+    glGenFramebuffers(1, &framebufferId);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderTextureManager::ET_createFramebuffer] Can't generate framebuffer (Error: %s)", errStr);
+        return nullptr;
+    }
+
     unsigned int textureId = 0;
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    switch(texType)
-    {
-        case ETextureType::R8: {
-            Buffer buff(texSize.x * texSize.y);
-            memset(buff.getWriteData(), 0, buff.getSize());
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texSize.x, texSize.y, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
-            break;
-        }
-        case ETextureType::RGB: {
-            Buffer buff(texSize.x * texSize.y * 3);
-            memset(buff.getWriteData(), 0, buff.getSize());
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texSize.x, texSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, buff.getReadData());
-            break;
-        }
-        case ETextureType::RGBA: {
-            Buffer buff(texSize.x * texSize.y * 4);
-            memset(buff.getWriteData(), 0, buff.getSize());
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texSize.x, texSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, buff.getReadData());
-            break;
-        }
-        default: {
-            assert(false && "Unsupported texture format");
-            return nullptr;
-        }
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderTextureManager::ET_createFramebuffer] Can't generate texture for a framebuffer (Error: %s)", errStr);
+        glDeleteFramebuffers(1, &framebufferId);
+        return nullptr;
     }
 
-    if(!CheckGLError()) {
-        LogError("[RenderTextureManager::createEmptyTexture] Can't transfter texture data from app to OpenGL");
-        glBindTexture(GL_TEXTURE_2D, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderTextureManager::ET_createFramebuffer] Can't attach texture a framebuffer (Error: %s)", errStr);
+        glDeleteFramebuffers(1, &framebufferId);
         glDeleteTextures(1, &textureId);
         return nullptr;
     }
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    std::shared_ptr<RenderFramebuffer> framebuffer(new RenderFramebuffer);
+    framebuffer->framebufferId = framebufferId;
+    framebuffer->texture.type = ETextureType::RGBA;
+    framebuffer->texture.texId = textureId;
+    framebuffer->texture.size = Vec2i(0);
+    framebuffer->texture.setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
+    framebuffer->texture.setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    framebuffer->unbind();
 
-    std::shared_ptr<RenderTexture> texture(new RenderTexture);
-    texture->texId = textureId;
-    texture->size = texSize;
-    return texture;
+    framebuffers.push_back(framebuffer);
+
+    return framebuffer;
 }

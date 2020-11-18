@@ -15,11 +15,6 @@ public:
     RenderContext();
     ~RenderContext();
 
-    void startFrame();
-    void endFrame();
-
-    void setClearColor(const ColorB& newColor);
-    const ColorB& getClearColor() const;
     void setBlending(RenderBlendingType newBlendingType);
     RenderBlendingType getBlendingType() const;
 
@@ -30,7 +25,6 @@ public:
 
 private:
 
-    ColorB clearColor;
     RenderBlendingType blendingType;
 };
 

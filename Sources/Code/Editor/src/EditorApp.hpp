@@ -5,7 +5,7 @@
 #include "Core/Buffer.hpp"
 #include "Core/Core.hpp"
 #include "Platform/ETSurface.hpp"
-#include "Render/RenderTextureFramebuffer.hpp"
+#include "Render/ImageBuffer.hpp"
 
 class TasksRunner;
 
@@ -46,7 +46,7 @@ protected:
 
 private:
 
-    RenderTextureFramebuffer frameBuffer;
+    ImageBuffer imageBuffer;
     std::unique_ptr<TasksRunner> runner;
     bool updateGame;
 };

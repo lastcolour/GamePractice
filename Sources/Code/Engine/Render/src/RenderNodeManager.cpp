@@ -20,6 +20,14 @@ RenderNodeManager::~RenderNodeManager() {
 
 bool RenderNodeManager::init() {
     ETNode<ETRenderNodeManager>::connect(getEntityId());
+    ETNode<ETRenderContextEvents>::connect(getEntityId());
+
+    bool hasContext = false;
+    ET_SendEventReturn(hasContext, &ETRender::ET_hasContext);
+    if(hasContext) {
+        ET_onContextCreated();
+    }
+
     return true;
 }
 
@@ -92,6 +100,17 @@ void RenderNodeManager::ET_removeNode(Node* node) {
     nodes.erase(it);
 }
 
-void RenderNodeManager::ET_update() {
+void RenderNodeManager::ET_onContextCreated() {
+    renderGraph.init();
+}
+
+void RenderNodeManager::ET_onContextDestroyed() {
+}
+
+void RenderNodeManager::ET_drawFrame() {
     renderGraph.render();
+}
+
+void RenderNodeManager::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) {
+    renderGraph.renderToBuffer(imageBuffer, filter);
 }

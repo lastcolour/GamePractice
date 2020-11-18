@@ -12,7 +12,8 @@
 class ParticlesNode;
 
 class RenderNodeManager : public SystemLogic,
-    public ETNode<ETRenderNodeManager> {
+    public ETNode<ETRenderNodeManager>,
+    public ETNode<ETRenderContextEvents> {
 public:
 
     RenderNodeManager();
@@ -26,8 +27,13 @@ public:
     Node* ET_createNode(const RenderNodeCreateParams& params) override;
     void ET_removeNode(Node* node) override;
     void ET_initRenderNode(Node* node) override;
-    void ET_update() override;
     void ET_updateParticles(float dt) override;
+    void ET_drawFrame();
+    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter);
+
+    // ETRenderContextEvents
+    void ET_onContextCreated() override;
+    void ET_onContextDestroyed() override;
 
 private:
 

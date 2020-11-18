@@ -44,5 +44,5 @@ void ColoredTextureNode::setSize(const Vec2& newSize) {
 }
 
 void ColoredTextureNode::setImage(const std::string& newImage) {
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, newImage.c_str(), ETextureType::RGBA);
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage, newImage.c_str(), ETextureType::RGBA);
 }

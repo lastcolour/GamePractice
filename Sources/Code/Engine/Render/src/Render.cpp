@@ -1,23 +1,12 @@
 #include "Render.hpp"
-#include "Render/RenderTextureFramebuffer.hpp"
 #include "RenderContext.hpp"
-#include "Platform/OpenGL.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Render/ETDebugRender.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Nodes/Node.hpp"
-
-#include <type_traits>
-#include <algorithm>
-#include <cassert>
-
-static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");
-static_assert(std::is_same<int, GLint>::value, "int != GLint");
-static_assert(std::is_same<float, GLfloat>::value, "float != GLfloat");
-static_assert(std::is_same<unsigned int, GLuint>::value, "unsigned int != GLuint");
+#include "RenderUtils.hpp"
 
 Render::Render() :
     hasContext(false),
@@ -59,8 +48,7 @@ void Render::ET_updateRender() {
         return;
     }
     tracker.onFrameStart();
-    ET_SendEvent(&ETRenderNodeManager::ET_update);
-    ET_SendEvent(&ETDebugRender::ET_update);
+    ET_SendEvent(&ETRenderNodeManager::ET_drawFrame);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
     tracker.onFrameEnd();
 }
@@ -85,34 +73,24 @@ bool Render::canRenderToFramebuffer() const {
     return true;
 }
 
-void Render::ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) {
+void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) {
     if(!canRenderToFramebuffer()) {
-        return;
-    }
-
-    if(!renderFb.isValid()) {
-        LogError("[Render::ET_drawFrameToFramebuffer] Can't draw to invalid framebuffer");
         return;
     }
 
     Vec2i prevViewPort(0);
     ET_SendEventReturn(prevViewPort, &ETRenderCamera::ET_getRenderPort);
-
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, renderFb.getSize());
-
-    renderFb.bind();
+    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, drawSize);
 
     if(filter != DrawContentFilter::NoDebugInfo) {
         tracker.onFrameStart();
     }
-    ET_SendEvent(&ETRenderNodeManager::ET_update);
+
+    ET_SendEvent(&ETRenderNodeManager::ET_drawFrameToBuffer, imageBuffer, filter);
+
     if(filter != DrawContentFilter::NoDebugInfo) {
-        ET_SendEvent(&ETDebugRender::ET_update);
         tracker.onFrameEnd();
     }
-
-    renderFb.read();
-    renderFb.unbind();
 
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }
@@ -130,7 +108,6 @@ void Render::ET_onSurfaceCreated() {
     canOffscrenRender = true;
     canScreenRender = false;
     ET_SendEventReturn(canScreenRender, &ETSurface::ET_isVisible);
-    ET_SendEvent(&ETDebugRender::ET_init);
 }
 
 void Render::ET_onSurfaceHidden() {
@@ -147,16 +124,12 @@ void Render::ET_onSurfaceResized(const Vec2i& size) {
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
 }
 
-void Render::ET_onContextReCreated() {
+void Render::ET_onContextCreated() {
     hasContext = true;
 }
 
-void Render::ET_onContextSuspended() {
+void Render::ET_onContextDestroyed() {
     hasContext = false;
-}
-
-void Render::ET_onContextRestored() {
-    hasContext = true;
 }
 
 void Render::ET_updateParticles() {

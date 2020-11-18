@@ -2,9 +2,10 @@
 #define __RENDER_TESTS_HPP__
 
 #include "TestUtils/ConsoleAppTests.hpp"
+#include "Render/ImageBuffer.hpp"
 #include "Render/Color.hpp"
 
-class RenderTextureFramebuffer;
+class RenderFramebuffer;
 
 class RenderTests : public ConsoleAppTests {
 protected:
@@ -14,7 +15,8 @@ protected:
 
 protected:
 
-    static std::unique_ptr<RenderTextureFramebuffer> textureFramebuffer;
+    static std::unique_ptr<ImageBuffer> IMAGE_BUFFER;
+    static std::shared_ptr<RenderFramebuffer> RENDER_FB;
 
 protected:
 
@@ -24,7 +26,7 @@ protected:
 protected:
 
     void checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd);
-    void dumpFramebuffer();
+    void dumpImageBuffer();
 };
 
 #endif /* __RENDER_TESTS_HPP__ */

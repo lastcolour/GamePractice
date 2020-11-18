@@ -24,7 +24,7 @@ public:
     void deinit() override;
 
     // ETRender
-    void ET_drawFrameToFramebuffer(RenderTextureFramebuffer& renderFb, DrawContentFilter filter) override;
+    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) override;
     bool ET_hasContext() const override;
 
     // ETSurfaceEvents
@@ -42,9 +42,8 @@ public:
     void ET_updateParticles() override;
 
     // ETRenderContextEvents
-    void ET_onContextSuspended() override;
-    void ET_onContextRestored() override;
-    void ET_onContextReCreated() override;
+    void ET_onContextCreated() override;
+    void ET_onContextDestroyed() override;
 
 private:
 

@@ -15,23 +15,27 @@ DebugRender::~DebugRender() {
 
 bool DebugRender::init() {
     ETNode<ETDebugRender>::connect(getEntityId());
+    ETNode<ETRenderContextEvents>::connect(getEntityId());
 
     bool hasContext = false;
     ET_SendEventReturn(hasContext, &ETRender::ET_hasContext);
     if(hasContext) {
-        ET_init();
+        ET_onContextCreated();
     }
 
     return true;
 }
 
-void DebugRender::ET_init() {
+void DebugRender::ET_onContextCreated() {
     simpleNode.init();
     simpleNode.setVisible(true);
 
     textNode.init();
     textNode.setVisible(true);
     textNode.setAlignAtCenter(false);
+}
+
+void DebugRender::ET_onContextDestroyed() {
 }
 
 void DebugRender::deinit() {
@@ -45,7 +49,7 @@ void DebugRender::ET_drawLine(const Vec2& startPt, const ColorB& startCol, const
         cmd.startCol = startCol;
         cmd.endPt = endPt;
         cmd.endCol = endCol;
-        cmd.width = std::max(width, 1.15f);
+        cmd.width = width;
         drawLineCmds.push_back(cmd);
     }
 }

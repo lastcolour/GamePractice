@@ -19,11 +19,14 @@ GradientNode::~GradientNode() {
 void GradientNode::onInit() {
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     setShader("tex_vert_color");
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createEmptyTexture, Vec2i(2), ETextureType::RGBA);
+    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, ETextureType::RGBA);
     if(tex) {
-        tex->setTexLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
-        tex->setWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
-        updateTexData();
+        tex->bind();
+        tex->resize(Vec2i(2));
+        tex->setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+        tex->setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+        tex->unbind();
+        doUpdate = true;
     } else {
         assert(false && "Can't create 2x2 texture for gradient");
     }
@@ -32,7 +35,9 @@ void GradientNode::onInit() {
 void GradientNode::onRender(RenderContext& ctx) {
     if(doUpdate) {
         doUpdate = false;
+        tex->bind();
         updateTexData();
+        tex->unbind();
     }
     auto scale = Render::CalcGeomScaleForSize(size, *geom);
     Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
@@ -79,7 +84,7 @@ void GradientNode::updateTexData() {
             endCol,
             endCol
         };
-        tex->modifyRGBA(Vec2i(0), Vec2i(2), vertColors);
+        tex->writeRGBA(Vec2i(0), Vec2i(2), vertColors);
     } else {
         ColorB vertColors[] = {
             startCol,
@@ -87,6 +92,6 @@ void GradientNode::updateTexData() {
             startCol,
             endCol
         };
-        tex->modifyRGBA(Vec2i(0), Vec2i(2), vertColors);
+        tex->writeRGBA(Vec2i(0), Vec2i(2), vertColors);
     }
 }
