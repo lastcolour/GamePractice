@@ -42,6 +42,6 @@ void ParticlesNode::onInit() {
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {
-    shader->setTexture2D(UniformType::Texture, tex->texId);
+    shader->setTexture2D(UniformType::Texture, *tex);
     geom->drawInstanced(&state.instaceData[0], state.activeCount);
 }

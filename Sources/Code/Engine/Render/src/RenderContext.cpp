@@ -5,7 +5,8 @@
 
 RenderContext::RenderContext() :
     dt(0.f),
-    blendingType(RenderBlendingType::NONE) {
+    blendingType(RenderBlendingType::NONE),
+    mainFBO(nullptr) {
 }
 
 RenderContext::~RenderContext() {

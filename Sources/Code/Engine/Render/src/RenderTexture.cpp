@@ -59,11 +59,11 @@ RenderTexture::RenderTexture() :
 RenderTexture::~RenderTexture() {
 }
 
-void RenderTexture::bind() {
+void RenderTexture::bind() const {
     glBindTexture(GL_TEXTURE_2D, texId);
 }
 
-void RenderTexture::unbind() {
+void RenderTexture::unbind() const {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

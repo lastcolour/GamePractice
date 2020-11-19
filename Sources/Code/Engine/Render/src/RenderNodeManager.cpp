@@ -6,6 +6,7 @@
 #include "Nodes/TextNode.hpp"
 #include "Nodes/GradientNode.hpp"
 #include "Nodes/ParticlesNode.hpp"
+#include "Nodes/BlurNode.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
@@ -67,6 +68,9 @@ Node* RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) {
             node.reset(new ParticlesNode());
             break;
         }
+        case RenderNodeType::Blur:
+            node.reset(new BlurNode());
+            break;
         default: {
             assert(false && "Invalid node type");
             return nullptr;

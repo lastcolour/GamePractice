@@ -26,5 +26,9 @@
     "draw_framebuffer":{
         "vert":"Shaders/draw_framebuffer.vert",
         "frag":"Shaders/draw_framebuffer.frag"
+    },
+    "blur":{
+        "vert":"Shaders/blur.vert",
+        "frag":"Shaders/blur.frag"
     }
 }

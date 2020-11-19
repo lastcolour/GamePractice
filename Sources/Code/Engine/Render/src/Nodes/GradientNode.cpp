@@ -43,7 +43,7 @@ void GradientNode::onRender(RenderContext& ctx) {
     Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
 
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
-    shader->setTexture2D(UniformType::Texture, tex->texId);
+    shader->setTexture2D(UniformType::Texture, *tex);
     geom->draw();
 }
 

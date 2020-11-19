@@ -14,6 +14,7 @@
 #include "Logics/RenderImageLogic.hpp"
 #include "Logics/RenderColoredTextureLogic.hpp"
 #include "Logics/RenderLinearGradientRect.hpp"
+#include "Logics/RenderBlurLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "RenderConfig.hpp"
 
@@ -47,4 +48,5 @@ void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) co
     logicsRegister.registerLogic<RenderColoredTextureLogic>();
     logicsRegister.registerLogic<RenderLinearGradientRect>();
     logicsRegister.registerLogic<ParticleEmitter>();
+    logicsRegister.registerLogic<RenderBlurLogic>();
 }

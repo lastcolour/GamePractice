@@ -1,6 +1,7 @@
 #include "RenderShader.hpp"
 #include "Core/ETLogger.hpp"
 #include "Platform/OpenGL.hpp"
+#include "RenderTexture.hpp"
 
 #include <cassert>
 
@@ -22,10 +23,10 @@ void RenderShader::unbind() {
     activeTexUnitId = 0;
 }
 
-void RenderShader::setTexture2D(UniformType varType, int texId) {
+void RenderShader::setTexture2D(UniformType varType, const RenderTexture& tex) {
     setUniform1i(varType, activeTexUnitId);
     glActiveTexture(GL_TEXTURE0 + activeTexUnitId);
-    glBindTexture(GL_TEXTURE_2D, texId);
+    tex.bind();
     ++activeTexUnitId;
 }
 
@@ -35,6 +36,17 @@ void RenderShader::setUniform1i(UniformType varType, int val) {
 
 void RenderShader::setUniform1f(UniformType varType, float val) {
     glUniform1f(getUniformId(varType), val);
+}
+
+void RenderShader::setUniform2f(UniformType varType, const Vec2i& val) {
+    Vec2 v;
+    v.x = static_cast<float>(val.x);
+    v.y = static_cast<float>(val.y);
+    glUniform2fv(getUniformId(varType), 1, v.getPtr());
+}
+
+void RenderShader::setUniform2f(UniformType varType, const Vec2& val) {
+    glUniform2fv(getUniformId(varType), 1, val.getPtr());
 }
 
 void RenderShader::setUniformMat4(UniformType varType, const Mat4& mat) {
@@ -60,6 +72,8 @@ void RenderShader::setProgramId(int newProgramId) {
 
 int RenderShader::getUniformId(UniformType varType) const {
     assert(varType != UniformType::ENUM_SIZE && "Invalid uniform type");
+    int id = static_cast<int>(varType);
+    assert(id != -1 && "Invalid uniform id");
     return chachedIds[static_cast<int>(varType)];
 }
 
@@ -99,5 +113,15 @@ void RenderShader::cacheUniformIds() {
         int uniformId = -1;
         findUniform("color", uniformId);
         chachedIds[static_cast<int>(UniformType::Color)] = uniformId;
+    }
+    {
+        int uniformId = -1;
+        findUniform("texSize", uniformId);
+        chachedIds[static_cast<int>(UniformType::TextureSize)] = uniformId;
+    }
+    {
+        int uniformId = -1;
+        findUniform("vertical", uniformId);
+        chachedIds[static_cast<int>(UniformType::IsVerticalPass)] = uniformId;
     }
 }

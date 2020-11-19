@@ -7,12 +7,16 @@
 #include <string>
 #include <vector>
 
+class RenderTexture;
+
 enum class UniformType {
     CameraMat = 0,
     ModelMat,
     Alpha,
     Color,
     Texture,
+    TextureSize,
+    IsVerticalPass,
     ENUM_SIZE
 };
 
@@ -27,9 +31,11 @@ public:
 
     void cacheUniformIds();
 
-    void setTexture2D(UniformType varType, int texId);
+    void setTexture2D(UniformType varType, const RenderTexture& tex);
     void setUniform1i(UniformType varType, int val);
     void setUniform1f(UniformType varType, float val);
+    void setUniform2f(UniformType varType, const Vec2i& val);
+    void setUniform2f(UniformType varType, const Vec2& val);
     void setUniform4f(UniformType varType, const Vec4& vec);
     void setUniform4f(UniformType varType, const ColorB& col);
     void setUniformMat4(UniformType varType, const Mat4& mat);

@@ -29,7 +29,7 @@ public:
 private:
 
     void prepareNodes();
-    void startFrame();
+    bool startFrame();
     void endFrame();
 
 private:
@@ -37,7 +37,8 @@ private:
     RenderContext ctx;
     DrawFrameNode drawFrameNode;
     std::vector<Node*> children;
-    std::shared_ptr<RenderFramebuffer> framebuffer;
+    std::shared_ptr<RenderFramebuffer> mainFBO;
+    std::vector<std::shared_ptr<RenderFramebuffer>> extraFBOs;
     bool needReorder;
     ColorF clearColor;
 };

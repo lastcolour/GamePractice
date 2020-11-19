@@ -29,8 +29,8 @@ public:
     void setPixelWrapType(TexWrapType sWrapType, TexWrapType tWrapType);
     void setPixelLerpType(TexLerpType minType, TexLerpType magType);
 
-    void bind();
-    void unbind();
+    void bind() const;
+    void unbind() const;
 
     Vec2i getSize() const;
     bool resize(const Vec2i& newSize);

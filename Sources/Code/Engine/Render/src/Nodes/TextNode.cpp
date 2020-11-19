@@ -129,7 +129,9 @@ void TextNode::onRender(RenderContext& ctx) {
         textMetric = font->getTextMetric(text);
     }
 
-    shader->setTexture2D(UniformType::Texture, font->getFontAtlas()->texId);
+    auto tex = font->getFontAtlas();
+
+    shader->setTexture2D(UniformType::Texture, *tex);
     shader->setUniform4f(UniformType::Color, color);
 
     drawLines();

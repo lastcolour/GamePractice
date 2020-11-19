@@ -67,4 +67,11 @@ bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBu
     return true;
 }
 
+void ClearFramebuffer(const ColorF& clearColor, RenderFramebuffer& framebuffer) {
+    framebuffer.bind();
+    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    glClear(GL_COLOR_BUFFER_BIT);
+    framebuffer.unbind();
+}
+
 } // namespace RenderUtils
