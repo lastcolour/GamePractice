@@ -11,11 +11,13 @@ void RenderNode::Reflect(ReflectContext& ctx) {
         classInfo->addField("isVisible", &RenderNode::isVisible);
         classInfo->addField("alpha", &RenderNode::alpha);
         classInfo->addField("drawPriority", &RenderNode::drawPriority);
+        classInfo->addField("maskNodeId", &RenderNode::maskNodeId);
     }
 }
 
 RenderNode::RenderNode(RenderNodeType nodeType) :
     proxyNode(nullptr),
+    maskProxyNode(nullptr),
     alpha(1.f),
     alphaMult(1.f),
     drawPriority(0),
@@ -24,6 +26,9 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     isLoaded(false),
     isTmChanged(false),
     isVisChanged(false),
+    isDrawPriorityChanged(false),
+    isAlphaChanged(false),
+    isMaskNodeIsChanged(false),
     isMarkedForSync(false) {
 }
 
@@ -42,6 +47,12 @@ bool RenderNode::init() {
         LogError("[RenderNode::init] Can't create proxy node an enity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
         return false;
+    }
+
+    if(maskNodeId == getEntityId()) {
+        LogWarning("[RenderNode::init] Render node can't mask for itself: '%s'",
+                EntityUtils::GetEntityName(getEntityId()));
+        maskNodeId = InvalidEntityId;
     }
 
     ETNode<ETRenderNode>::connect(getEntityId());
@@ -96,6 +107,10 @@ void RenderNode::ET_setDrawPriority(int newDrawPriority) {
     }
 }
 
+Node* RenderNode::ET_getProxyNode() {
+    return proxyNode;
+}
+
 int RenderNode::ET_getDrawPriority() const {
     return drawPriority;
 }
@@ -107,6 +122,18 @@ void RenderNode::ET_onTransformChanged(const Transform& newTm) {
 
 void RenderNode::ET_onLoaded() {
     isLoaded = true;
+
+    if(maskNodeId.isValid()) {
+        ET_SendEventReturn(maskProxyNode, maskNodeId, &ETRenderNode::ET_getProxyNode);
+        if(!maskProxyNode) {
+            LogWarning("[RenderNode::ET_onLoaded] Can't query mask proxy node from enity: '%s' for entity: '%s'",
+                EntityUtils::GetEntityName(maskNodeId), EntityUtils::GetEntityName(getEntityId()));
+        } else {
+            isMaskNodeIsChanged = true;
+            markForSyncWithRender();
+        }
+    }
+
     if(ET_isVisible()) {
         isVisChanged = true;
         markForSyncWithRender();
@@ -122,6 +149,31 @@ void RenderNode::markForSyncWithRender() {
     }
     isMarkedForSync = true;
     ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
+}
+
+void RenderNode::ET_setMaskId(EntityId newMaskNodeId) {
+    bool syncWithRender = false;
+    bool hadProxyMask = maskProxyNode != nullptr;
+
+    if(!newMaskNodeId.isValid() && hadProxyMask) {
+        syncWithRender = true;
+        maskProxyNode = nullptr;
+    } else {
+        ET_SendEventReturn(maskProxyNode, newMaskNodeId, &ETRenderNode::ET_getProxyNode);
+        if(!maskProxyNode) {
+            LogWarning("[RenderNode::ET_setMaskId] Can't query render proxy node from: '%s'",
+                EntityUtils::GetEntityName(newMaskNodeId));
+            if(hadProxyMask) {
+                syncWithRender = true;
+            }
+        } else {
+            syncWithRender = true;
+        }
+    }
+    if(syncWithRender) {
+        isMaskNodeIsChanged = true;
+        markForSyncWithRender();
+    }
 }
 
 void RenderNode::ET_syncWithRender() {
@@ -144,6 +196,10 @@ void RenderNode::ET_syncWithRender() {
     if(isDrawPriorityChanged) {
         isDrawPriorityChanged = false;
         proxyNode->setDrawPriority(drawPriority);
+    }
+    if(isMaskNodeIsChanged) {
+        isMaskNodeIsChanged = false;
+        proxyNode->setMaskNode(maskProxyNode);
     }
     ETNode<ETRenderProxyNodeEvents>::disconnect();
     isMarkedForSync = false;

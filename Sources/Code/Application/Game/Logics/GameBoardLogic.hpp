@@ -4,6 +4,7 @@
 #include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
+#include "Math/Random.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Entity/ETEntity.hpp"
@@ -90,13 +91,14 @@ protected:
 
 protected:
 
-    virtual void setRandomElemType(BoardElement& elem) const;
+    virtual void setRandomElemType(BoardElement& elem);
 
 protected:
 
     std::vector<BoardElement> elements;
     std::string cellObject;
     AABB2Di boardBox;
+    Math::RandomIntGenerator elemTypeGenerator;
     Vec2i boardSize;
     Vec2 objectSize;
     EntityId uiBoxId;

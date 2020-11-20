@@ -1,10 +1,13 @@
 #ifndef __ET_RENDER_NODE_HPP__
 #define __ET_RENDER_NODE_HPP__
 
+#include "Core/Core.hpp"
 #include "Math/Vector.hpp"
 #include "Math/AABB.hpp"
 #include "Render/Color.hpp"
 #include "Render/RenderCommon.hpp"
+
+class Node;
 
 struct ETRenderNode {
     virtual ~ETRenderNode() = default;
@@ -14,6 +17,8 @@ struct ETRenderNode {
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
     virtual void ET_setAlphaMultiplier(float newAlphaMult) = 0;
     virtual int ET_getDrawPriority() const = 0;
+    virtual Node* ET_getProxyNode() = 0;
+    virtual void ET_setMaskId(EntityId maskNodeId) = 0;
 };
 
 struct ETRenderRect {

@@ -184,7 +184,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
     return texture;
 }
 
-std::shared_ptr<RenderFramebuffer> RenderTextureManager::ET_createFramebuffer() {
+std::shared_ptr<RenderFramebuffer> RenderTextureManager::ET_createFramebuffer(EFramebufferType type) {
     unsigned int framebufferId = 0;
     glGenFramebuffers(1, &framebufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
@@ -212,13 +212,33 @@ std::shared_ptr<RenderFramebuffer> RenderTextureManager::ET_createFramebuffer() 
         return nullptr;
     }
 
+    unsigned int renderBufferId = 0;
+    if(type == EFramebufferType::Color_Depth_Stencil) {
+        glGenRenderbuffers(1, &renderBufferId);
+        glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 0, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferId);
+
+        if(auto errStr = RenderUtils::GetGLError()) {
+            LogError("[RenderTextureManager::ET_createFramebuffer] Can't attach stencil buffer (Error: %s)", errStr);
+            glDeleteFramebuffers(1, &framebufferId);
+            glDeleteTextures(1, &textureId);
+            glDeleteRenderbuffers(1, &renderBufferId);
+            return nullptr;
+        }
+    }
+
     std::shared_ptr<RenderFramebuffer> framebuffer(new RenderFramebuffer);
     framebuffer->framebufferId = framebufferId;
-    framebuffer->texture.type = ETextureType::RGBA;
-    framebuffer->texture.texId = textureId;
-    framebuffer->texture.size = Vec2i(0);
-    framebuffer->texture.setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
-    framebuffer->texture.setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    framebuffer->color0.type = ETextureType::RGB;
+    framebuffer->color0.texId = textureId;
+    framebuffer->color0.size = Vec2i(0);
+    framebuffer->color0.setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
+    framebuffer->color0.setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    framebuffer->renderBufferId = renderBufferId;
+    framebuffer->type = type;
     framebuffer->unbind();
 
     framebuffers.push_back(framebuffer);

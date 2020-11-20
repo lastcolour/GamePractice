@@ -27,7 +27,7 @@ bool DrawFrameNode::init() {
 
 void DrawFrameNode::draw(RenderFramebuffer& framebuffer) {
     shader->bind();
-    shader->setTexture2D(UniformType::Texture, framebuffer.texture);
+    shader->setTexture2D(UniformType::Texture, framebuffer.color0);
     geom->draw();
     shader->unbind();
 }

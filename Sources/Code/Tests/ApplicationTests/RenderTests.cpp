@@ -81,12 +81,9 @@ void RenderTests::SetUpTestCase() {
     IMAGE_BUFFER.reset(new ImageBuffer());
     IMAGE_BUFFER->setSizeAndClear(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
 
-    ET_SendEventReturn(RENDER_FB, &ETRenderTextureManger::ET_createFramebuffer);
+    ET_SendEventReturn(RENDER_FB, &ETRenderTextureManger::ET_createFramebuffer, EFramebufferType::Color);
     ASSERT_TRUE(RENDER_FB);
-
-    RENDER_FB->texture.bind();
-    RENDER_FB->texture.resize(IMAGE_BUFFER->getSize());
-    RENDER_FB->texture.unbind();
+    ASSERT_TRUE(RENDER_FB->resize(IMAGE_BUFFER->getSize()));
 
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, IMAGE_BUFFER->getSize());
 }
@@ -118,7 +115,7 @@ void RenderTests::TearDown() {
     auto renderNodes = ET_GetAll<ETRenderNode>();
     ASSERT_TRUE(renderNodes.empty());
 
-    auto fbSize = RENDER_FB->texture.getSize();
+    auto fbSize = RENDER_FB->color0.getSize();
     auto imageSize = IMAGE_BUFFER->getSize();
     ASSERT_EQ(fbSize.x, imageSize.x);
     ASSERT_EQ(fbSize.y, imageSize.y);
@@ -597,4 +594,64 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
             EXPECT_LE(box.top.y, dirtyBox.top.y + FAIL_PIX_TOL) << "word='" << word << "'";
         }
     }
+}
+
+TEST_F(RenderTests, CheckRenderWithMask) {
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    auto firstEnt = createVoidObject();
+    {
+        RenderSimpleLogic* logicPtr = new RenderSimpleLogic;
+        firstEnt->addCustomLogic(std::unique_ptr<EntityLogic>(logicPtr));
+
+        auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
+        logicPtr->ET_setSize(halfSize);
+        logicPtr->ET_setColor(ColorB(255, 0, 0));
+        logicPtr->ET_setDrawPriority(0);
+
+        Transform tm;
+        tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
+        firstEnt->ET_setTransform(tm);
+    }
+
+    Vec2 ptShift = Vec2(renderPort.x / 4.f, 0.f);
+    auto secondEnt = createVoidObject();
+    {
+        RenderSimpleLogic* logicPtr = new RenderSimpleLogic;
+        secondEnt->addCustomLogic(std::unique_ptr<EntityLogic>(logicPtr));
+
+        auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
+        logicPtr->ET_setSize(halfSize);
+        logicPtr->ET_setColor(ColorB(0, 255, 0));
+        logicPtr->ET_setDrawPriority(1);
+        logicPtr->ET_setMaskId(firstEnt->getEntityId());
+
+        Transform tm;
+        tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
+        tm.pt += Vec3(ptShift, 0.f);
+        secondEnt->ET_setTransform(tm);
+    }
+
+    ptShift = Vec2(renderPort.x / 4.f, renderPort.y / 4.f);
+    auto thirdEnt = createVoidObject();
+    {
+        RenderSimpleLogic* logicPtr = new RenderSimpleLogic;
+        thirdEnt->addCustomLogic(std::unique_ptr<EntityLogic>(logicPtr));
+
+        auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
+        logicPtr->ET_setSize(halfSize);
+        logicPtr->ET_setColor(ColorB(0, 0, 255));
+        logicPtr->ET_setDrawPriority(2);
+        logicPtr->ET_setMaskId(secondEnt->getEntityId());
+
+        Transform tm;
+        tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
+        tm.pt += Vec3(ptShift, 0.f);
+        thirdEnt->ET_setTransform(tm);
+    }
+
+    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
+
+    dumpImageBuffer();
 }

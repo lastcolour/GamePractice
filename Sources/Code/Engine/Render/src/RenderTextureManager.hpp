@@ -21,7 +21,7 @@ public:
     // ETRenderTextureManger
     std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) override;
     std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) override;
-    std::shared_ptr<RenderFramebuffer> ET_createFramebuffer() override;
+    std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) override;
 
 private:
 

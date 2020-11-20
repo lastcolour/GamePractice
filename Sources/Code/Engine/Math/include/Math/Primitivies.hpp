@@ -17,8 +17,6 @@ float Deg2Rad(float degrees);
 
 float Rad2Deg(float radians);
 
-int RandomInt(int min, int max);
-
 template<typename T>
 T Clamp(const T& val, const T& min, const T& max) {
     if(val < min) {

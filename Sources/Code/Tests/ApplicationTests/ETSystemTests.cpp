@@ -68,6 +68,7 @@ struct TestETInterface {
     virtual void ET_CreateObject(size_t count, std::vector<std::unique_ptr<TestETNode>>& objects, ETSystem& etSystem) = 0;
     virtual void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) = 0;
     virtual void ET_IncreaseCounter(int num) = 0;
+    virtual void ET_acquireObject(std::unique_ptr<TestObject>& obj) = 0;
 };
 
 struct TestETNode : public ETNode<TestETInterface> {
@@ -99,10 +100,14 @@ struct TestETNode : public ETNode<TestETInterface> {
         counter += num;
     }
 
+    void ET_acquireObject(std::unique_ptr<TestObject>& obj) override {
+        object = std::move(obj);
+    }
+
 public:
 
     int counter;
-
+    std::unique_ptr<TestObject> object;
 };
 
 } // namespace
@@ -208,7 +213,7 @@ TEST_F(ETSystemTests, CheckSendEvent) {
     EXPECT_EQ(inObj.moveAssignCount, 0u);
 }
 
-TEST_F(ETSystemTests, CheckSendEventAfterDisconect) {
+TEST_F(ETSystemTests, CheckSendEventAfterDisconnect) {
     GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
@@ -358,3 +363,24 @@ TEST_F(ETSystemTests, CheckQueueEvents) {
     EXPECT_EQ(node_1.counter, 2);
     EXPECT_EQ(node_2.counter, 1);
 }
+
+/*
+TEST_F(ETSystemTests, CheckQueueEventWithNonCopybaleObject) {
+    // require perfect lambda capture with support of transfering ownership of an object
+    GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
+    auto addressId = etSystem->createNewEntityId();
+    TestETNode node;
+    etSystem->connectNode(node, addressId);
+
+    EXPECT_FALSE(node.object.get());
+
+    std::unique_ptr<TestObject> testObject(new TestObject);
+    etSystem->queueEvent(&TestETInterface::ET_acquireObject, std::move(testObject));
+
+    ET_PollAllEvents<TestETInterface>();
+
+    EXPECT_TRUE(node.object.get());
+}
+*/

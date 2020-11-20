@@ -44,6 +44,8 @@ GameBoardLogic::GameBoardLogic() :
     cellScale(0.9f),
     doElemMathcing(false),
     isBoardStatic(false) {
+
+    elemTypeGenerator.setRange(1, static_cast<int>(EBoardElemType::Yellow));
 }
 
 GameBoardLogic::~GameBoardLogic() {
@@ -221,8 +223,8 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
 }
 
-void GameBoardLogic::setRandomElemType(BoardElement& elem) const {
-    auto type = static_cast<EBoardElemType>(Math::RandomInt(1, static_cast<int>(EBoardElemType::Yellow)));
+void GameBoardLogic::setRandomElemType(BoardElement& elem) {
+    auto type = static_cast<EBoardElemType>(elemTypeGenerator.generate());
     ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setType, type);
 }
 

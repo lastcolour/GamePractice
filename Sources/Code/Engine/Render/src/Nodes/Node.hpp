@@ -1,7 +1,7 @@
 #ifndef __NODE_HPP__
 #define __NODE_HPP__
 
-#include "RenderContext.hpp"
+#include "RenderGraph/RenderContext.hpp"
 #include "Render/RenderCommon.hpp"
 #include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
@@ -23,11 +23,13 @@ public:
     void render(RenderContext& ctx);
     int getDrawPriority() const;
     RenderNodeType getType() const;
+    Node* getMaskNode();
 
     void setAlpha(float newAlpha);
     void setDrawPriority(int newDrawPriority);
     void setVisible(bool flag);
     void setTransform(const Transform& newTm);
+    void setMaskNode(Node* newMaskNode);
 
 protected:
 
@@ -50,6 +52,7 @@ protected:
 private:
 
     RenderGraph* renderGraph;
+    Node* maskNode;
     RenderBlendingType blending;
     RenderNodeType type;
     float alpha;

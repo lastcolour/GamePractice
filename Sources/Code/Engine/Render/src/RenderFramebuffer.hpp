@@ -4,6 +4,8 @@
 #include "Math/Vector.hpp"
 #include "RenderTexture.hpp"
 
+enum class EFramebufferType;
+
 class RenderFramebuffer {
 public:
 
@@ -13,10 +15,15 @@ public:
     void bind();
     void unbind();
 
+    void clear();
+    bool resize(const Vec2i& newSize);
+
 public:
 
+    EFramebufferType type;
+    RenderTexture color0;
     unsigned int framebufferId;
-    RenderTexture texture;
+    unsigned int renderBufferId;
 };
 
 #endif /* __RENDER_FRAMEBUFFER_HPP__ */

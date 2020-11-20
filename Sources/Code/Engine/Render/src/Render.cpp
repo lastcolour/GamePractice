@@ -1,5 +1,4 @@
 #include "Render.hpp"
-#include "RenderContext.hpp"
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"

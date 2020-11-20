@@ -86,7 +86,7 @@ public:
 
 protected:
 
-    void setRandomElemType(BoardElement& elem) const override {
+    void setRandomElemType(BoardElement& elem) override {
         ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setType, EBoardElemType::Blue);
     }
 };

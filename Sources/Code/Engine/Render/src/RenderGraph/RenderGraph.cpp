@@ -1,6 +1,6 @@
 #include "RenderGraph/RenderGraph.hpp"
 #include "Nodes/Node.hpp"
-#include "RenderContext.hpp"
+#include "RenderGraph/RenderContext.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderFramebuffer.hpp"
 #include "Render/ETDebugRender.hpp"
@@ -31,29 +31,29 @@ RenderGraph::~RenderGraph() {
 }
 
 void RenderGraph::init() {
-    ET_SendEventReturn(mainFBO, &ETRenderTextureManger::ET_createFramebuffer);
+    ET_SendEventReturn(mainFBO, &ETRenderTextureManger::ET_createFramebuffer, EFramebufferType::Color_Depth_Stencil);
     if(!mainFBO) {
         LogError("[RenderGraph::init] Can't create main framebuffer");
         assert(false && "Can't create framebuffer");
     }
 
-    mainFBO->texture.bind();
-    mainFBO->texture.setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
-    mainFBO->texture.setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
-    mainFBO->texture.unbind();
+    mainFBO->color0.bind();
+    mainFBO->color0.setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
+    mainFBO->color0.setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+    mainFBO->color0.unbind();
 
     for(int i = 0; i < EXTRA_FBOS_COUNT; ++i) {
         std::shared_ptr<RenderFramebuffer> extraFBO;
-        ET_SendEventReturn(extraFBO, &ETRenderTextureManger::ET_createFramebuffer);
+        ET_SendEventReturn(extraFBO, &ETRenderTextureManger::ET_createFramebuffer, EFramebufferType::Color);
         if(!extraFBO) {
             LogError("[RenderGraph::init] Can't create extra framebuffer");
             assert(false && "Can't create extra framebuffer");
         }
 
-        extraFBO->texture.bind();
-        extraFBO->texture.setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
-        extraFBO->texture.setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
-        extraFBO->texture.unbind();
+        extraFBO->color0.bind();
+        extraFBO->color0.setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
+        extraFBO->color0.setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+        extraFBO->color0.unbind();
 
         extraFBOs.push_back(extraFBO);
     }
@@ -70,6 +70,7 @@ void RenderGraph::init() {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
+    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 }
 
 bool RenderGraph::startFrame() {
@@ -80,25 +81,13 @@ bool RenderGraph::startFrame() {
     Vec2i viewport(0);
     ET_SendEventReturn(viewport, &ETRenderCamera::ET_getRenderPort);
 
-    bool canDraw = true;
-
-    if(mainFBO->texture.getSize() != viewport) {
-        mainFBO->texture.bind();
-        if(!mainFBO->texture.resize(viewport)) {
-            canDraw = false;
-            LogError("[RenderGraph::startFrame] Can't resize framebuffer to size: %dx%d", viewport.x, viewport.y);
-        }
-        mainFBO->texture.unbind();
-    }
-
-    if(!canDraw) {
+    mainFBO->bind();
+    if(!mainFBO->resize(viewport)) {
+        mainFBO->unbind();
+        LogError("[RenderGraph::startFrame] Can't resize framebuffer to size: %dx%d", viewport.x, viewport.y);
         return false;
     }
-
-    RenderUtils::ClearFramebuffer(clearColor, *mainFBO);
-
-    mainFBO->bind();
-
+    mainFBO->clear();
     return true;
 }
 
@@ -142,7 +131,11 @@ void RenderGraph::render() {
         return;
     }
     for(auto node : children) {
-        node->render(ctx);
+        if(node->getMaskNode()) {
+            RenderUtils::DrawWithMask(*node, ctx);
+        } else {
+            node->render(ctx);
+        }
     }
     ET_SendEvent(&ETDebugRender::ET_update);
     endFrame();
@@ -154,7 +147,11 @@ void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter fil
         return;
     }
     for(auto node : children) {
-        node->render(ctx);
+        if(node->getMaskNode()) {
+            RenderUtils::DrawWithMask(*node, ctx);
+        } else {
+            node->render(ctx);
+        }
     }
     if(filter != DrawContentFilter::NoDebugInfo) {
         ET_SendEvent(&ETDebugRender::ET_update);

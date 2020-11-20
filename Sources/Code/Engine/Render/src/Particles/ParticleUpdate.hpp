@@ -4,9 +4,9 @@
 #include "Particles/Particle.hpp"
 #include "Particles/ParticlesEmitterConfig.hpp"
 #include "Math/Transform.hpp"
+#include "Math/Random.hpp"
 
 #include <vector>
-#include <random>
 
 enum class EmitterLifeType {
     StartDelay = 0,
@@ -47,8 +47,7 @@ public:
     int activeCount;
     EmitterLifeType lifeType;
 
-    std::default_random_engine randomGenerator;
-    std::uniform_real_distribution<float> randomDistribution;
+    Math::RandomFloatGenerator floatGen;
 };
 
 #endif /* __PARTICLE_UPDATE_HPP__ */

@@ -5,6 +5,8 @@
 
 class ImageBuffer;
 class RenderFramebuffer;
+class Node;
+class RenderContext;
 
 namespace RenderUtils {
 
@@ -12,7 +14,7 @@ const char* GetGLError();
 
 bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer);
 
-void ClearFramebuffer(const ColorF& clearColor, RenderFramebuffer& framebuffer);
+void DrawWithMask(Node& node, RenderContext& ctx);
 
 } // namespace RenderUtils
 

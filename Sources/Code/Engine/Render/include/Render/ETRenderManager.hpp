@@ -12,6 +12,11 @@ class RenderTexture;
 class RenderGeometry;
 class RenderFramebuffer;
 
+enum class EFramebufferType {
+    Color = 0,
+    Color_Depth_Stencil
+};
+
 struct ETRenderGeometryManager {
     virtual ~ETRenderGeometryManager() = default;
     virtual std::shared_ptr<RenderGeometry> ET_createGeometry(PrimitiveGeometryType geomType) = 0;
@@ -27,7 +32,7 @@ struct ETRenderTextureManger {
     virtual ~ETRenderTextureManger() = default;
     virtual std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) = 0;
     virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) = 0;
-    virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer() = 0;
+    virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) = 0;
 };
 
 struct ETRenderShaderManager {

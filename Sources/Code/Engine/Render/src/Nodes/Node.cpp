@@ -3,11 +3,13 @@
 #include "Render/ETRenderManager.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
+#include "Platform/OpenGL.hpp"
 
 #include <cassert>
 
 Node::Node() :
     renderGraph(nullptr),
+    maskNode(nullptr),
     alpha(1.f),
     drawPriority(0),
     blending(RenderBlendingType::NONE),
@@ -30,6 +32,14 @@ void Node::init() {
 
 void Node::setAlpha(float newAlpha) {
     alpha = newAlpha;
+}
+
+Node* Node::getMaskNode() {
+    return maskNode;
+}
+
+void Node::setMaskNode(Node* newMaskNode) {
+    maskNode = newMaskNode;
 }
 
 void Node::setDrawPriority(int newDrawPriority) {
@@ -66,6 +76,9 @@ bool Node::isVisible() const {
     if(!geom) {
         return false;
     }
+    if(maskNode && !maskNode->isVisible()) {
+        return false;
+    }
     return visible;
 }
 
@@ -85,14 +98,10 @@ void Node::render(RenderContext& ctx) {
         return;
     }
 
-    if(blending != RenderBlendingType::NONE) {
-        ctx.setBlending(blending);
+    if(alpha < 1.f && blending == RenderBlendingType::NONE) {
+        ctx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     } else {
-        if(alpha < 1.f) {
-            ctx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
-        } else {
-            ctx.setBlending(blending);
-        }
+        ctx.setBlending(blending);
     }
 
     shader->bind();

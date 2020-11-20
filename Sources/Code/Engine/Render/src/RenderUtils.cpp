@@ -3,8 +3,11 @@
 #include "Render/ImageBuffer.hpp"
 #include "Platform/OpenGL.hpp"
 #include "Core/ETLogger.hpp"
+#include "Nodes/Node.hpp"
+#include "RenderGraph/RenderContext.hpp"
 
 #include <type_traits>
+#include <cassert>
 
 static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");
 static_assert(std::is_same<int, GLint>::value, "int != GLint");
@@ -42,7 +45,7 @@ const char* GetGLError() {
 }
 
 bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer) {
-    auto size = framebuffer.texture.getSize();
+    auto size = framebuffer.color0.getSize();
     imageBuffer.setSizeAndClear(size);
 
     framebuffer.bind();
@@ -67,11 +70,41 @@ bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBu
     return true;
 }
 
-void ClearFramebuffer(const ColorF& clearColor, RenderFramebuffer& framebuffer) {
-    framebuffer.bind();
-    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-    glClear(GL_COLOR_BUFFER_BIT);
-    framebuffer.unbind();
+void DrawWithMask(Node& node, RenderContext& ctx) {
+    std::vector<Node*> drawNodes;
+    Node* currNode = &node;
+    drawNodes.push_back(currNode);
+    while(true) {
+        auto maskNode = currNode->getMaskNode();
+        if(maskNode) {
+            drawNodes.push_back(maskNode);
+            currNode = maskNode;
+        } else {
+            break;
+        }
+    }
+    std::reverse(drawNodes.begin(), drawNodes.end());
+
+    glClear(GL_STENCIL_BUFFER_BIT);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_INCR, GL_INCR);
+
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+
+    for(int i = 0, sz = drawNodes.size() - 1; i < sz; ++i) {
+        currNode = drawNodes[i];
+        currNode->render(ctx);
+    }
+
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glStencilFunc(GL_EQUAL, drawNodes.size() - 1, 0xFF);
+
+    currNode = drawNodes.back();
+    currNode->render(ctx);
+
+    glDisable(GL_STENCIL_TEST);
 }
 
 } // namespace RenderUtils

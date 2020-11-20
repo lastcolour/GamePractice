@@ -10,7 +10,7 @@ EmitterState::EmitterState() :
     emitFracTime(0.f),
     activeCount(0),
     lifeType(EmitterLifeType::StartDelay),
-    randomDistribution(0.f, 1.f) {
+    floatGen(0.f, 1.f) {
 }
 
 void EmitterState::reset() {
@@ -38,7 +38,7 @@ void EmitterState::removeOld(float dt) {
 }
 
 float EmitterState::getRandomFloatInRange(float start, float end) {
-    float val = randomDistribution(randomGenerator);
+    float val = floatGen.generate();
     return Math::Lerp(start, end, val);
 }
 
