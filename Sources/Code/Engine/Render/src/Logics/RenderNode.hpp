@@ -35,8 +35,7 @@ public:
     void ET_setDrawPriority(int newDrawPriority) override;
     int ET_getDrawPriority() const override;
     void ET_setAlphaMultiplier(float newAlphaMult) override;
-    Node* ET_getProxyNode() override;
-    void ET_setMaskId(EntityId newMaskNodeId) override;
+    void ET_setStencilData(const StencilWirteReadData& newSteniclData) override;
 
     // ETRenderProxyNodeEvents
     void ET_syncWithRender() override;
@@ -55,9 +54,8 @@ protected:
 
 protected:
 
+    StencilWirteReadData stencilData;
     Node* proxyNode;
-    Node* maskProxyNode;
-    EntityId maskNodeId;
     float alpha;
     float alphaMult;
     int drawPriority;
@@ -68,7 +66,7 @@ protected:
     bool isVisChanged;
     bool isDrawPriorityChanged;
     bool isAlphaChanged;
-    bool isMaskNodeIsChanged;
+    bool isStencilDataChanged;
     bool isMarkedForSync;
 };
 

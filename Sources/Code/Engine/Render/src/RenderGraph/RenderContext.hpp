@@ -3,6 +3,7 @@
 
 #include "Math/Matrix.hpp"
 #include "Render/Color.hpp"
+#include "Render/RenderCommon.hpp"
 
 #include <vector>
 
@@ -19,6 +20,7 @@ public:
     RenderContext();
     ~RenderContext();
 
+    void setStencilState(const StencilWirteReadData& newStencilState);
     void setBlending(RenderBlendingType newBlendingType);
     RenderBlendingType getBlendingType() const;
 
@@ -31,6 +33,7 @@ public:
 
 private:
 
+    StencilWirteReadData stencilState;
     RenderBlendingType blendingType;
 };
 

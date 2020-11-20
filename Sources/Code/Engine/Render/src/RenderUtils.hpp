@@ -5,16 +5,12 @@
 
 class ImageBuffer;
 class RenderFramebuffer;
-class Node;
-class RenderContext;
 
 namespace RenderUtils {
 
 const char* GetGLError();
 
 bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer);
-
-void DrawWithMask(Node& node, RenderContext& ctx);
 
 } // namespace RenderUtils
 

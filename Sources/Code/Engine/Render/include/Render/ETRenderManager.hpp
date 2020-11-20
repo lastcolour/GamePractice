@@ -2,7 +2,6 @@
 #define __ET_RENDER_MANAGER_HPP__
 
 #include "Math/Vector.hpp"
-#include "Render/RenderCommon.hpp"
 
 #include <memory>
 
@@ -12,10 +11,9 @@ class RenderTexture;
 class RenderGeometry;
 class RenderFramebuffer;
 
-enum class EFramebufferType {
-    Color = 0,
-    Color_Depth_Stencil
-};
+enum class ETextureType;
+enum class EFramebufferType;
+enum class PrimitiveGeometryType;
 
 struct ETRenderGeometryManager {
     virtual ~ETRenderGeometryManager() = default;

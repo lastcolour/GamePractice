@@ -2,7 +2,6 @@
 #define __NODE_HPP__
 
 #include "RenderGraph/RenderContext.hpp"
-#include "Render/RenderCommon.hpp"
 #include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
 #include "Core/ETPrimitives.hpp"
@@ -23,19 +22,21 @@ public:
     void render(RenderContext& ctx);
     int getDrawPriority() const;
     RenderNodeType getType() const;
-    Node* getMaskNode();
 
     void setAlpha(float newAlpha);
     void setDrawPriority(int newDrawPriority);
     void setVisible(bool flag);
     void setTransform(const Transform& newTm);
-    void setMaskNode(Node* newMaskNode);
+    void setStencilData(const StencilWirteReadData& newStencilData);
+
+    virtual bool isVisible() const;
 
 protected:
 
-    virtual void onInit() = 0;
+    virtual void onRenderStart(RenderContext& ctx);
     virtual void onRender(RenderContext& ctx) = 0;
-    virtual bool isVisible() const;
+    virtual void onRenderEnd(RenderContext& ctx);
+    virtual void onInit() = 0;
 
 protected:
 
@@ -52,7 +53,7 @@ protected:
 private:
 
     RenderGraph* renderGraph;
-    Node* maskNode;
+    StencilWirteReadData stencilData;
     RenderBlendingType blending;
     RenderNodeType type;
     float alpha;

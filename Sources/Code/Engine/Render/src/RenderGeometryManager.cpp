@@ -3,6 +3,7 @@
 #include "Platform/OpenGL.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/Matrix.hpp"
+#include "Render/RenderCommon.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 
 namespace {

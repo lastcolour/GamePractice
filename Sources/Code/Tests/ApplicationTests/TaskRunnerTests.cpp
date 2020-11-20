@@ -65,7 +65,7 @@ TEST_F(TaskRunnerTests, RunTenTasksTenThreads) {
 }
 
 TEST_F(TaskRunnerTests, TestFrequency) {
-    int TEST_FREQUENCY = 300;
+    int TEST_FREQUENCY = 200;
 
     std::atomic<int> value = 0;
     TasksRunner runner;

@@ -131,9 +131,7 @@ void RenderGraph::render() {
         return;
     }
     for(auto node : children) {
-        if(node->getMaskNode()) {
-            RenderUtils::DrawWithMask(*node, ctx);
-        } else {
+        if(node->isVisible()) {
             node->render(ctx);
         }
     }
@@ -147,9 +145,7 @@ void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter fil
         return;
     }
     for(auto node : children) {
-        if(node->getMaskNode()) {
-            RenderUtils::DrawWithMask(*node, ctx);
-        } else {
+        if(node->isVisible()) {
             node->render(ctx);
         }
     }

@@ -52,7 +52,7 @@ bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBu
     glReadBuffer(GL_COLOR_ATTACHMENT0);
 
     if(auto errStr = GetGLError()) {
-        LogError("[ReadFramebufferToImage] Can't read GL_COLOR_ATTACHMENT0 (Error: %s)", errStr);
+        LogError("[ReadFramebufferToImage6] Can't read GL_COLOR_ATTACHMENT0 (Error: %s)", errStr);
         framebuffer.unbind();
         return false;
     }
@@ -68,43 +68,6 @@ bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBu
 
     framebuffer.unbind();
     return true;
-}
-
-void DrawWithMask(Node& node, RenderContext& ctx) {
-    std::vector<Node*> drawNodes;
-    Node* currNode = &node;
-    drawNodes.push_back(currNode);
-    while(true) {
-        auto maskNode = currNode->getMaskNode();
-        if(maskNode) {
-            drawNodes.push_back(maskNode);
-            currNode = maskNode;
-        } else {
-            break;
-        }
-    }
-    std::reverse(drawNodes.begin(), drawNodes.end());
-
-    glClear(GL_STENCIL_BUFFER_BIT);
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_INCR, GL_INCR);
-
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 1, 0xFF);
-
-    for(int i = 0, sz = drawNodes.size() - 1; i < sz; ++i) {
-        currNode = drawNodes[i];
-        currNode->render(ctx);
-    }
-
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glStencilFunc(GL_EQUAL, drawNodes.size() - 1, 0xFF);
-
-    currNode = drawNodes.back();
-    currNode->render(ctx);
-
-    glDisable(GL_STENCIL_TEST);
 }
 
 } // namespace RenderUtils

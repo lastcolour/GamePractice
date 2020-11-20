@@ -1,6 +1,7 @@
 #include "RenderTests.hpp"
 #include "Render.hpp"
 #include "RenderShader.hpp"
+#include "Render/RenderCommon.hpp"
 #include "RenderGeometry.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
@@ -609,6 +610,10 @@ TEST_F(RenderTests, CheckRenderWithMask) {
         logicPtr->ET_setSize(halfSize);
         logicPtr->ET_setColor(ColorB(255, 0, 0));
         logicPtr->ET_setDrawPriority(0);
+        StencilWirteReadData stencilData;
+        stencilData.mode = EStencilOpType::Write;
+        stencilData.refVal = 1;
+        logicPtr->ET_setStencilData(stencilData);
 
         Transform tm;
         tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
@@ -625,7 +630,10 @@ TEST_F(RenderTests, CheckRenderWithMask) {
         logicPtr->ET_setSize(halfSize);
         logicPtr->ET_setColor(ColorB(0, 255, 0));
         logicPtr->ET_setDrawPriority(1);
-        logicPtr->ET_setMaskId(firstEnt->getEntityId());
+        StencilWirteReadData stencilData;
+        stencilData.mode = EStencilOpType::ReadIncrease;
+        stencilData.refVal = 1;
+        logicPtr->ET_setStencilData(stencilData);
 
         Transform tm;
         tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
@@ -643,7 +651,10 @@ TEST_F(RenderTests, CheckRenderWithMask) {
         logicPtr->ET_setSize(halfSize);
         logicPtr->ET_setColor(ColorB(0, 0, 255));
         logicPtr->ET_setDrawPriority(2);
-        logicPtr->ET_setMaskId(secondEnt->getEntityId());
+        StencilWirteReadData stencilData;
+        stencilData.mode = EStencilOpType::Read;
+        stencilData.refVal = 2;
+        logicPtr->ET_setStencilData(stencilData);
 
         Transform tm;
         tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
@@ -654,4 +665,15 @@ TEST_F(RenderTests, CheckRenderWithMask) {
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     dumpImageBuffer();
+
+    Vec2i c = renderPort / 2;
+
+    checkSquare(ColorB(255, 0, 0), c.x - c.x / 2, c.x,
+        c.y - c.y / 2,  c.y + c.y / 2);
+
+    checkSquare(ColorB(0, 255, 0), c.x, c.x + c.x / 2,
+        c.y - c.y / 2, c.y);
+
+    checkSquare(ColorB(0, 0, 255), c.x, c.x + c.x / 2,
+        c.y, c.y + c.y / 2);
 }

@@ -9,7 +9,6 @@
 
 Node::Node() :
     renderGraph(nullptr),
-    maskNode(nullptr),
     alpha(1.f),
     drawPriority(0),
     blending(RenderBlendingType::NONE),
@@ -32,14 +31,6 @@ void Node::init() {
 
 void Node::setAlpha(float newAlpha) {
     alpha = newAlpha;
-}
-
-Node* Node::getMaskNode() {
-    return maskNode;
-}
-
-void Node::setMaskNode(Node* newMaskNode) {
-    maskNode = newMaskNode;
 }
 
 void Node::setDrawPriority(int newDrawPriority) {
@@ -76,14 +67,15 @@ bool Node::isVisible() const {
     if(!geom) {
         return false;
     }
-    if(maskNode && !maskNode->isVisible()) {
-        return false;
-    }
     return visible;
 }
 
 void Node::setRenderGraph(RenderGraph* graph) {
     renderGraph = graph;
+}
+
+void Node::setStencilData(const StencilWirteReadData& newStencilData) {
+    stencilData = newStencilData;
 }
 
 int Node::getDrawPriority() const {
@@ -93,20 +85,25 @@ RenderNodeType Node::getType() const {
     return type;
 }
 
-void Node::render(RenderContext& ctx) {
-    if(!isVisible()) {
-        return;
-    }
-
+void Node::onRenderStart(RenderContext& ctx) {
     if(alpha < 1.f && blending == RenderBlendingType::NONE) {
         ctx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
     } else {
         ctx.setBlending(blending);
     }
 
+    ctx.setStencilState(stencilData);
     shader->bind();
     shader->setUniformMat4(UniformType::CameraMat, ctx.proj2dMat);
     shader->setUniform1f(UniformType::Alpha, alpha);
-    onRender(ctx);
+}
+
+void Node::onRenderEnd(RenderContext& ctx) {
     shader->unbind();
+}
+
+void Node::render(RenderContext& ctx) {
+    onRenderStart(ctx);
+    onRender(ctx);
+    onRenderEnd(ctx);
 }
