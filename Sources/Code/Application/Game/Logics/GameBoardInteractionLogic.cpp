@@ -52,7 +52,7 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     }
 
     Transform tm;
-    ET_SendEventReturn(tm, activeElemId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(tm, activeElemId, &ETEntity::ET_getLocalTransform);
     Vec2 moveDir = Vec2(static_cast<float>(endPt.x), static_cast<float>(endPt.y)) - Vec2(tm.pt.x, tm.pt.y);
 
     Vec2i nextBoardPt = startPt;
@@ -130,11 +130,11 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
 
         Transform newTm = task.firstTm;
         newTm.pt = Math::Lerp(task.firstTm.pt, task.secondTm.pt, prog);
-        ET_SendEvent(task.firstId, &ETEntity::ET_setTransform, newTm);
+        ET_SendEvent(task.firstId, &ETEntity::ET_setLocalTransform, newTm);
 
         newTm = task.secondTm;
         newTm.pt = Math::Lerp(task.secondTm.pt, task.firstTm.pt, prog);
-        ET_SendEvent(task.secondId, &ETEntity::ET_setTransform, newTm);
+        ET_SendEvent(task.secondId, &ETEntity::ET_setLocalTransform, newTm);
     }
 
     bool isNeedUpdateBoard = false;
@@ -177,11 +177,11 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
     ET_SendEvent(firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
 
     task.firstId = firstId;
-    ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getLocalTransform);
     ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Switching);
 
     task.secondId = secondId;
-    ET_SendEventReturn(task.secondTm, secondId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(task.secondTm, secondId, &ETEntity::ET_getLocalTransform);
     ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Switching);
 
     switchTasks.push_back(task);

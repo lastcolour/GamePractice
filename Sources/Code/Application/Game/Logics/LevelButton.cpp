@@ -25,7 +25,7 @@ LevelButton::~LevelButton() {
 
 bool LevelButton::init() {
     ETNode<ETLevelButton>::connect(getEntityId());
-    ETNode<ETUIHighlightAnimationEvents>::connect(getEntityId());
+    ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
     ET_SendEvent(stars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.thirdId, &ETUIElement::ET_hide);
@@ -98,7 +98,7 @@ void LevelButton::ET_setLevelStars(int count) {
 void LevelButton::ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) {
     if(newState != state) {
         ET_setLevelState(newState);
-        ET_SendEvent(getEntityId(), &ETUIHighlightAnimation::ET_playHightlight, getEntityId());
+        ET_SendEvent(getEntityId(), &ETUIAnimationSequence::ET_playAnimation, getEntityId(), EAnimSequenceType::Highlight);
         ET_SendEvent(senderId, &ETUIElement::ET_disable);
     }
     if(prevStarCount != newStarCount) {
@@ -106,6 +106,9 @@ void LevelButton::ET_playChangeAnimation(ELevelButtonState newState, int prevSta
     }
 }
 
-void LevelButton::ET_onHighlightPlayed() {
+void LevelButton::ET_onAnimationPlayed(EAnimSequenceType animType) {
+    if(animType != EAnimSequenceType::Highlight) {
+        return;
+    }
     ET_SendEvent(senderId, &ETUIElement::ET_enable);
 }

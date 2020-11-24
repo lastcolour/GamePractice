@@ -13,7 +13,6 @@
 namespace {
 
 const int INVALID_BOARD_ELEM_ID = -1;
-const char* DUMMY_CELL_OBJECT= "Game/Simple.json";
 
 EBoardElemMoveState getElemMoveState(EntityId elemId) {
     EBoardElemMoveState state = EBoardElemMoveState::Static;
@@ -56,13 +55,9 @@ void GameBoardLogic::Reflect(ReflectContext& ctx) {
         classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
         classInfo->addField("fallAcceleration", &GameBoardLogic::moveAccel);
         classInfo->addField("size", &GameBoardLogic::boardSize);
-        classInfo->addResourceField("cellObject", ResourceType::Entity, &GameBoardLogic::setCellObject);
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
+        classInfo->addField("backgroundId", &GameBoardLogic::backgroundId);
     }
-}
-
-void GameBoardLogic::setCellObject(const char* cellObjectName) {
-    cellObject = cellObjectName;
 }
 
 void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) {
@@ -113,28 +108,22 @@ int GameBoardLogic::ET_getCellSize() const {
 
 bool GameBoardLogic::createNewElement(const Vec2i& boardPt) {
     EntityId cellObjId = InvalidEntityId;
-    ET_SendEventReturn(cellObjId, &ETEntityManager::ET_createEntity, cellObject.c_str());
-    if(cellObjId == InvalidEntityId) {
+    ET_SendEventReturn(cellObjId, getEntityId(), &ETGameBoardElemsPool::ET_spawnElem);
+    if(!cellObjId.isValid()) {
         LogWarning("[GameBoardLogic::createNewElement] Can't create board cell entity");
-        return false;
+        return true;
     }
-    ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, cellObjId);
     BoardElement elem;
     elem.entId = cellObjId;
     elem.boardPt = boardPt;
     elem.movePt = boardPt;
     setElemMoveState(elem.entId, EBoardElemMoveState::Static);
     setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
-    setRandomElemType(elem);
     elements.push_back(elem);
     return true;
 }
 
 bool GameBoardLogic::init() {
-    if(cellObject.empty()) {
-        LogWarning("[GameBoardLogic::init] Cell object name is empty; Use dummy: '%s'", DUMMY_CELL_OBJECT);
-        cellObject = DUMMY_CELL_OBJECT;
-    }
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             if(!createNewElement(Vec2i(i, j))) {
@@ -161,10 +150,6 @@ bool GameBoardLogic::init() {
 }
 
 void GameBoardLogic::deinit() {
-    for(auto& elem : elements) {
-        ET_SendEvent(&ETEntityManager::ET_destroyEntity, elem.entId);
-    }
-    elements.clear();
 }
 
 const BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) const {
@@ -221,11 +206,6 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
     Transform tm;
     tm.pt = ET_getPosFromBoardPos(boardPt);
     ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-}
-
-void GameBoardLogic::setRandomElemType(BoardElement& elem) {
-    auto type = static_cast<EBoardElemType>(elemTypeGenerator.generate());
-    ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setType, type);
 }
 
 void GameBoardLogic::updateAfterRemoves() {
@@ -365,6 +345,8 @@ void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
     boardBox.top = boardBoxSize;
     boardBox.setCenter(newAabb.getCenter());
 
+    ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, Vec2(boardBoxSize.x, boardBoxSize.y));
+
     for(auto& elem : elements) {
         setElemBoardPos(elem, elem.boardPt);
         ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
@@ -372,12 +354,14 @@ void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
 }
 
 void GameBoardLogic::ET_onZIndexChanged(int newZIndex) {
+    ET_SendEvent(backgroundId, &ETRenderNode::ET_setDrawPriority, newZIndex);
     for(auto& elem : elements) {
         ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, newZIndex + 1);
     }
 }
 
 void GameBoardLogic::ET_onAlphaChanged(float newAlpha) {
+    ET_SendEvent(backgroundId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
     for(auto& elem : elements) {
         ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
     }
@@ -422,6 +406,12 @@ void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
 }
 
 void GameBoardLogic::removeElem(BoardElement& elem) {
+    ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
+    ET_SendEventReturn(elem.entId, getEntityId(), &ETGameBoardElemsPool::ET_spawnElem);
+    if(!elem.entId.isValid()) {
+        return;
+    }
+
     auto topElem = getTopElemAbove(Vec2i(elem.boardPt.x, boardSize.y - 1));
     if(topElem) {
         Transform tm;
@@ -436,7 +426,6 @@ void GameBoardLogic::removeElem(BoardElement& elem) {
 
     elem.boardPt.y = -1;
 
-    setRandomElemType(elem);
     setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
     setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
 }

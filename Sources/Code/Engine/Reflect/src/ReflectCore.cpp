@@ -27,7 +27,7 @@ bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc) {
 bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc,
     ArraySizeFuncT sizeFunc, ArrayGetElemFuncT getElemFunc, ArrayResetFuncT resetFunc) {
     ArrayInfo* arrayInfo = nullptr;
-    ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, InvalidTypeId);
+    ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, elemTypeId);
     if(arrayInfo) {
         return true;
     }

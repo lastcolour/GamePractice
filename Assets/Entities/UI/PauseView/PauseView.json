@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 81.0,
+                "y": 90.0,
                 "z": 0.0
               },
               "scale": {
@@ -105,7 +105,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 29,
+                          "fontSize": 32,
                           "text": "Resume"
                         }
                       }
@@ -147,8 +147,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 352.0,
-                      "y": 71.0
+                      "x": 393.0,
+                      "y": 79.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -175,7 +175,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -81.0,
+                "y": -90.0,
                 "z": 0.0
               },
               "scale": {
@@ -252,7 +252,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 29,
+                          "fontSize": 32,
                           "text": "Exit"
                         }
                       }
@@ -294,8 +294,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 352.0,
-                      "y": 71.0
+                      "x": 393.0,
+                      "y": 79.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -399,7 +399,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 29,
+                          "fontSize": 32,
                           "text": "Restart"
                         }
                       }
@@ -441,8 +441,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 352.0,
-                      "y": 71.0
+                      "x": 393.0,
+                      "y": 79.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -496,8 +496,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 376.0,
-                "y": 352.0
+                "x": 420.0,
+                "y": 393.0
               },
               "image": "Images/block.png",
               "color": {
@@ -555,25 +555,6 @@
         "render": [
           0
         ]
-      }
-    },
-    {
-      "type": "RenderSimple",
-      "id": 2,
-      "data": {
-        "isVisible": true,
-        "alpha": 0.20000000298023224,
-        "drawPriority": 0,
-        "size": {
-          "x": 528.0,
-          "y": 938.0
-        },
-        "color": {
-          "r": 0,
-          "g": 0,
-          "b": 0,
-          "a": 255
-        }
       }
     },
     {
@@ -640,7 +621,7 @@
         "isVisible": true,
         "alpha": 1.0,
         "drawPriority": 0,
-        "downScaleFactor": 5,
+        "downScaleFactor": 3,
         "passes": 2
       }
     }

@@ -55,7 +55,7 @@ void LevelsViewScript::ET_onViewGetFocus() {
     if(progressDelta) {
         auto starsDelta = progressDelta->current.stars - progressDelta->prev.stars;
         if(starsDelta > 0) {
-            ET_SendEvent(progressBoxId, &ETUIHighlightAnimation::ET_playHightlight, getEntityId());
+            ET_SendEvent(progressBoxId, &ETUIAnimationSequence::ET_playAnimation, getEntityId(), EAnimSequenceType::Highlight);
         }
     }
 

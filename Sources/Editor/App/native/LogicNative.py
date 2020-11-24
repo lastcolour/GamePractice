@@ -50,7 +50,7 @@ class LogicNative(NativeObject):
         except:
             print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(
                 self._name, stream._data))
-            raise
+            pass
 
     def writeToNative(self):
         stream = MemoryStream()

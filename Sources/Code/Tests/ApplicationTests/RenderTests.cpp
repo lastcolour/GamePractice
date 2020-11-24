@@ -664,8 +664,6 @@ TEST_F(RenderTests, CheckRenderWithMask) {
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
-    dumpImageBuffer();
-
     Vec2i c = renderPort / 2;
 
     checkSquare(ColorB(255, 0, 0), c.x - c.x / 2, c.x,

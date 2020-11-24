@@ -10,7 +10,9 @@ class EditEnumValue(QWidget):
         self._rootLayout.addStretch()
 
         self._comboBox = QComboBox()
-        for item in self._val.getTable():
+        enumItems = [x for x in self._val.getTable()]
+        enumItems.sort()
+        for item in enumItems:
             self._comboBox.addItem(item)
         self._comboBox.currentTextChanged.connect(self._signal_comboBox_textChanged)
         self._rootLayout.addWidget(self._comboBox)

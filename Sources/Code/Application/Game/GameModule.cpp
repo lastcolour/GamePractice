@@ -16,6 +16,7 @@
 #include "Game/Logics/GameBoardAnimation.hpp"
 #include "Game/Logics/LevelButtonList.hpp"
 #include "Game/Logics/LevelButton.hpp"
+#include "Game/Logics/GameBoardElemsPool.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
@@ -49,6 +50,7 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<BoardElemSelectAnimation>();
     logicsRegister.registerLogic<ScoreObjective>();
     logicsRegister.registerLogic<GameBoardAnimation>();
+    logicsRegister.registerLogic<GameBoardElemsPool>();
 
     logicsRegister.registerLogic<GameResultViewScript>();
     logicsRegister.registerLogic<GameViewScript>();

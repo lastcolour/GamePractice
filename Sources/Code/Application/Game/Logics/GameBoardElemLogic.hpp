@@ -4,6 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Game/ETGameBoard.hpp"
 
 class ReflectContext;
 
@@ -28,7 +29,6 @@ public:
     EBoardElemMoveState ET_getMoveState() const override;
     void ET_setLifeState(EBoardElemLifeState newState) override;
     EBoardElemLifeState ET_getLifeState() const override;
-    void ET_setType(EBoardElemType newType) override;
     EBoardElemType ET_getType() const override;
     void ET_triggerDestroy() override;
     void ET_setSelected(bool flag) override;

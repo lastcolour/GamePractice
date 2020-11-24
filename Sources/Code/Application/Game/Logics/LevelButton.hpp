@@ -11,7 +11,7 @@ class ReflectContext;
 
 class LevelButton : public EntityLogic,
     public ETNode<ETLevelButton>,
-    public ETNode<ETUIHighlightAnimationEvents> {
+    public ETNode<ETUIAnimationSequenceEvent> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -32,8 +32,8 @@ public:
     void ET_setLevelState(ELevelButtonState newState) override;
     void ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) override;
 
-    // ETUIHighlightAnimation
-    void ET_onHighlightPlayed() override;
+    // ETUIAnimationSequenceEvent
+    void ET_onAnimationPlayed(EAnimSequenceType animType) override;
 
 private:
 

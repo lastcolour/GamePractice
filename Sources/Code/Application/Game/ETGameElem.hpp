@@ -28,7 +28,6 @@ struct ETGameBoardElem {
     virtual EBoardElemMoveState ET_getMoveState() const = 0;
     virtual void ET_setLifeState(EBoardElemLifeState newState) = 0;
     virtual EBoardElemLifeState ET_getLifeState() const = 0;
-    virtual void ET_setType(EBoardElemType newType) = 0;
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy() = 0;
     virtual void ET_setSelected(bool flag) = 0;

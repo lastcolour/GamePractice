@@ -4,6 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "Game/Logics/ObjectiveTarget.hpp"
 #include "Game/ETGameScore.hpp"
 

@@ -2,7 +2,7 @@
 #define __GAME_BOARD_MATCH_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "Core/ETPrimitives.hpp"
 
 #include <unordered_set>

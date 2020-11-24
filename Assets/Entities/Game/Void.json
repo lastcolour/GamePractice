@@ -1,4 +1,240 @@
 {
-  "children": [],
-  "logics": []
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Hover",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "style": {
+                "width": 50.0,
+                "widthInv": "Grid",
+                "height": 15.0,
+                "heightInv": "Grid",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": [
+                0
+              ]
+            }
+          },
+          {
+            "type": "RenderColoredTexture",
+            "id": 2,
+            "data": {
+              "isVisible": false,
+              "alpha": 1.0,
+              "drawPriority": 3,
+              "size": {
+                "x": 94.0,
+                "y": 29.0
+              },
+              "image": "Images/StartButton_BG.png",
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 3,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Press",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.0,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 0.0,
+                  "onStartEvent": "Show",
+                  "onEndEvent": "None"
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0,
+                  "onStartEvent": "None",
+                  "onEndEvent": "Show"
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.03999999910593033,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 0.0,
+                  "onStartEvent": "None",
+                  "onEndEvent": "Hide"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "RenderColoredTexture",
+      "id": 2,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
+        "size": {
+          "x": 67.0,
+          "y": 20.0
+        },
+        "image": "Images/StartButton_BG.png",
+        "color": {
+          "r": 255,
+          "g": 0,
+          "b": 0,
+          "a": 255
+        }
+      }
+    },
+    {
+      "type": "UIButton",
+      "id": 4,
+      "data": {
+        "style": {
+          "width": 50.0,
+          "widthInv": "Grid",
+          "height": 15.0,
+          "heightInv": "Grid",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        },
+        "render": [
+          0
+        ],
+        "label": [],
+        "event": "None"
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 5,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Press",
+        "startDelay": 0.0,
+        "subAnimations": [
+          [
+            1
+          ]
+        ],
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 0.05000000074505806,
+            "offset": {
+              "x": -0.20000000298023224,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 0.9700000286102295,
+              "y": 0.9700000286102295
+            },
+            "alpha": 1.0,
+            "onStartEvent": "None",
+            "onEndEvent": "None"
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 0.05000000074505806,
+            "offset": {
+              "x": 0.20000000298023224,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0,
+            "onStartEvent": "None",
+            "onEndEvent": "None"
+          }
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 6,
+      "data": {
+        "extraZOffset": 0,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            1
+          ]
+        ]
+      }
+    }
+  ]
 }

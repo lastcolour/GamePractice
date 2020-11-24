@@ -1,36 +1,9 @@
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Reflect/EnumInfo.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Core/ETLogger.hpp"
 #include "Game/ETGameInterfaces.hpp"
-
-namespace {
-
-ColorB GetElemColorForType(EBoardElemType elemType) {
-    ColorB retCol(255, 255, 255);
-    switch(elemType) {
-        case EBoardElemType::Red:
-            retCol = ColorB(255, 0, 0);
-            break;
-        case EBoardElemType::Blue:
-            retCol = ColorB(0, 0, 255);
-            break;
-        case EBoardElemType::Green:
-            retCol = ColorB(0, 255, 0);
-            break;
-        case EBoardElemType::Purple:
-            retCol = ColorB(255, 0, 255);
-            break;
-        case EBoardElemType::Yellow:
-            retCol = ColorB(255, 255, 0);
-            break;
-        default:
-            break;
-    }
-    return retCol;
-}
-
-} // namespace
 
 GameBoardElemLogic::GameBoardElemLogic() :
     lifeState(EBoardElemLifeState::Void),
@@ -42,13 +15,23 @@ GameBoardElemLogic::~GameBoardElemLogic() {
 }
 
 void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
-    ctx.classInfo<GameBoardElemLogic>("GameBoardElem");
+    if(auto enumInfo = ctx.enumInfo<EBoardElemType>("EBoardElemType")) {
+        enumInfo->addValues<EBoardElemType>({
+            {"Red", EBoardElemType::Red},
+            {"Blue", EBoardElemType::Blue},
+            {"Green", EBoardElemType::Green},
+            {"Purple", EBoardElemType::Purple},
+            {"Yellow", EBoardElemType::Yellow}
+        });
+    }
+    if(auto classInfo = ctx.classInfo<GameBoardElemLogic>("GameBoardElem")) {
+        classInfo->addField("type", &GameBoardElemLogic::type);
+    }
 }
 
 bool GameBoardElemLogic::init() {
     ETNode<ETGameBoardElem>::connect(getEntityId());
     ETNode<ETBoardElemDetroyAnimationEvents>::connect(getEntityId());
-    ET_setType(type);
     return true;
 }
 
@@ -72,11 +55,6 @@ void GameBoardElemLogic::ET_setLifeState(EBoardElemLifeState newState) {
 
 EBoardElemLifeState GameBoardElemLogic::ET_getLifeState() const {
     return lifeState;
-}
-
-void GameBoardElemLogic::ET_setType(EBoardElemType newType) {
-    type = newType;
-    ET_SendEvent(getEntityId(), &ETRenderColoredTexture::ET_setTextureColor, GetElemColorForType(newType));
 }
 
 EBoardElemType GameBoardElemLogic::ET_getType() const {

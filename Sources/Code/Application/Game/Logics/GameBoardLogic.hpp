@@ -5,7 +5,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
 #include "Math/Random.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Game/ETGameTimer.hpp"
@@ -82,7 +82,6 @@ protected:
     void switchElements(int firstElem, int secondElem);
     void updateAfterRemoves();
     void matchElements();
-    void setCellObject(const char* cellObjectName);
     bool createNewElement(const Vec2i& boardPt);
 
     void removeElem(BoardElement& elem);
@@ -91,17 +90,13 @@ protected:
 
 protected:
 
-    virtual void setRandomElemType(BoardElement& elem);
-
-protected:
-
     std::vector<BoardElement> elements;
-    std::string cellObject;
     AABB2Di boardBox;
     Math::RandomIntGenerator elemTypeGenerator;
     Vec2i boardSize;
     Vec2 objectSize;
     EntityId uiBoxId;
+    EntityId backgroundId;
     float cellScale;
     float moveSpeed;
     float moveAccel;

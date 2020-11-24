@@ -2,7 +2,7 @@
 #include "Entity/ETEntityManger.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntity.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Core/ETLogger.hpp"
 

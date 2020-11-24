@@ -1,4 +1,118 @@
 {
-  "children": [],
-  "logics": []
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Select",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderColoredTexture",
+            "id": 1,
+            "data": {
+              "isVisible": false,
+              "alpha": 0.20000000298023224,
+              "drawPriority": 0,
+              "size": {
+                "x": 100.0,
+                "y": 100.0
+              },
+              "image": "Images/block.png",
+              "color": {
+                "r": 216,
+                "g": 44,
+                "b": 81,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "RenderStencilLogic",
+            "id": 2,
+            "data": {
+              "mode": "Read",
+              "refVal": 1
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "GameBoardElem",
+      "id": 1,
+      "data": {
+        "type": "Red"
+      }
+    },
+    {
+      "type": "RenderColoredTexture",
+      "id": 2,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 1,
+        "size": {
+          "x": 100.0,
+          "y": 100.0
+        },
+        "image": "Images/block.png",
+        "color": {
+          "r": 216,
+          "g": 44,
+          "b": 81,
+          "a": 255
+        }
+      }
+    },
+    {
+      "type": "BoardElemDestroyAnimation",
+      "id": 3,
+      "data": {
+        "startDelay": 0.10000000149011612,
+        "duration": 0.20000000298023224,
+        "soundEvent": "elemDestroy_01"
+      }
+    },
+    {
+      "type": "BoardElemSelectAnimation",
+      "id": 4,
+      "data": {
+        "duration": 0.10000000149011612,
+        "maxBackgroundScale": 1.100000023841858,
+        "minForegroundScale": 0.8999999761581421,
+        "background": [
+          1
+        ]
+      }
+    },
+    {
+      "type": "RenderStencilLogic",
+      "id": 5,
+      "data": {
+        "mode": "Read",
+        "refVal": 1
+      }
+    }
+  ]
 }

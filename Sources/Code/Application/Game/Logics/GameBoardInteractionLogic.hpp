@@ -5,6 +5,7 @@
 #include "Platform/ETSurface.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Math/Transform.hpp"
 #include "Audio/SoundEvent.hpp"

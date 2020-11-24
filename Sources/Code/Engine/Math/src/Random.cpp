@@ -8,7 +8,7 @@ RandomIntGenerator::RandomIntGenerator(int minVal, int maxVal) :
     generator(),
     distribution(minVal, maxVal) {
 
-    assert((minVal < maxVal) && "Invalid min val");
+    assert((minVal <= maxVal) && "Invalid min val");
 }
 
 RandomIntGenerator::RandomIntGenerator() :
@@ -19,7 +19,7 @@ RandomIntGenerator::~RandomIntGenerator() {
 }
 
 void RandomIntGenerator::setRange(int minVal, int maxVal) {
-    assert((minVal < maxVal) && "Invalid min val");
+    assert((minVal <= maxVal) && "Invalid min val");
     distribution = std::uniform_int_distribution<>(minVal, maxVal);
 }
 
@@ -31,7 +31,7 @@ RandomFloatGenerator::RandomFloatGenerator(float minVal, float maxVal) :
     generator(),
     distribution(minVal, maxVal) {
 
-    assert((minVal < maxVal) && "Invalid min val");
+    assert((minVal <= maxVal) && "Invalid min val");
 }
 
 RandomFloatGenerator::RandomFloatGenerator() :
@@ -42,7 +42,7 @@ RandomFloatGenerator::~RandomFloatGenerator() {
 }
 
 void RandomFloatGenerator::setRange(float minVal, float maxVal) {
-    assert((minVal < maxVal) && "Invalid min val");
+    assert((minVal <= maxVal) && "Invalid min val");
     distribution = std::uniform_real_distribution<>(minVal, maxVal);
 }
 

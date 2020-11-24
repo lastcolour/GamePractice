@@ -1,20 +1,81 @@
 {
-  "children": [],
-  "logics": [
+  "children": [
     {
-      "type": "GameBoard",
-      "id": 1,
-      "data": {
-        "fallSpeed": 4.0,
-        "fallAcceleration": 15.0,
-        "size": {
-          "x": 10,
-          "y": 10
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
         },
-        "cellObject": "Game/Cell.json",
-        "cellScale": 0.699999988079071
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Background",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderSimple",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 0.0,
+              "drawPriority": -1,
+              "size": {
+                "x": 590.0,
+                "y": 590.0
+              },
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "RenderStencilLogic",
+            "id": 2,
+            "data": {
+              "mode": "Write",
+              "refVal": 1
+            }
+          },
+          {
+            "type": "RenderSimple",
+            "id": 3,
+            "data": {
+              "isVisible": true,
+              "alpha": 0.30000001192092896,
+              "drawPriority": 0,
+              "size": {
+                "x": 590.0,
+                "y": 590.0
+              },
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          }
+        ]
       }
-    },
+    }
+  ],
+  "logics": [
     {
       "type": "GameBoardMatcher",
       "id": 3,
@@ -56,6 +117,50 @@
       "data": {
         "minScale": 0.8999999761581421,
         "scaleDuration": 0.5
+      }
+    },
+    {
+      "type": "GameBoardElemsPool",
+      "id": 10,
+      "data": {
+        "elems": [
+          {
+            "object": "Game/Blocks/Blue.json",
+            "weight": 1
+          },
+          {
+            "object": "Game/Blocks/Green.json",
+            "weight": 1
+          },
+          {
+            "object": "Game/Blocks/Yellow.json",
+            "weight": 1
+          },
+          {
+            "object": "Game/Blocks/Red.json",
+            "weight": 1
+          },
+          {
+            "object": "Game/Blocks/Purple.json",
+            "weight": 1
+          }
+        ]
+      }
+    },
+    {
+      "type": "GameBoard",
+      "id": 11,
+      "data": {
+        "fallSpeed": 4.0,
+        "fallAcceleration": 15.0,
+        "size": {
+          "x": 10,
+          "y": 10
+        },
+        "cellScale": 0.699999988079071,
+        "occluderId": [
+          1
+        ]
       }
     }
   ]

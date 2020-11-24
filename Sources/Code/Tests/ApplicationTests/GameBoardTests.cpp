@@ -4,12 +4,13 @@
 #include "Entity.hpp"
 #include "Logics/UIBox.hpp"
 #include "Game/ETGameElem.hpp"
+#include "Game/Logics/GameBoardElemsPool.hpp"
 
 #include <algorithm>
 
 namespace {
 
-const char* TEST_CELL_OBJECT = "Game/Cell.json";
+const char* TEST_OBJECT_1 = "Game/Blocks/Blue.json";
 
 EBoardElemMoveState getElemMoveState(const BoardElement& elem) {
     EBoardElemMoveState state = EBoardElemMoveState::Static;
@@ -77,25 +78,28 @@ public:
         boardSize = params.boardSize;
         cellScale = params.cellScale;
         moveSpeed = params.moveSpeed;
-        cellObject = TEST_CELL_OBJECT;
     }
 
     BoardElement* getElem(const Vec2i& boardPt) {
         return GameBoardLogic::getElem(boardPt);
     }
-
-protected:
-
-    void setRandomElemType(BoardElement& elem) override {
-        ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setType, EBoardElemType::Blue);
-    }
 };
 
 void GameBoardTests::SetUp() {
     entity = createVoidObject();
-    std::unique_ptr<TestGameBoardLogic> boardPtr(new TestGameBoardLogic);
-    board = boardPtr.get();
-    entity->addCustomLogic(std::move(boardPtr));
+    {
+        auto pool = new GameBoardElemsPool;
+        EXPECT_TRUE(entity->addCustomLogic(std::unique_ptr<EntityLogic>(pool)));
+
+        ElementDescriptor elemDescr;
+        elemDescr.weight = 1;
+        elemDescr.object = TEST_OBJECT_1;
+        pool->ET_addElemsToSpawn(elemDescr);
+    }
+    {
+        board = new TestGameBoardLogic;
+        EXPECT_TRUE(entity->addCustomLogic(std::unique_ptr<EntityLogic>(board)));
+    }
 }
 
 TEST_F(GameBoardTests, CheckInit) {

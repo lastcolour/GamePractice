@@ -1,5 +1,5 @@
 #include "Game/States/InGameState.hpp"
-#include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 
 InGameState::InGameState() :
     gameTime(0.f) {

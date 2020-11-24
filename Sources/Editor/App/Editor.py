@@ -4,6 +4,7 @@ from PyQt5 import QtCore
 from utils.Log import Log
 from utils.AppConfig import AppConfig
 from utils.Managers import CreateManagers
+from utils.ScreenScale import SetupScreenScale
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
@@ -96,11 +97,9 @@ class EditorView(QMainWindow):
             self._editorNative.deinit()
 
 def main():
-    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    SetupScreenScale()
 
     app = QApplication([])
-
     editor = EditorView()
     editor.show()
     sys.exit(app.exec_())

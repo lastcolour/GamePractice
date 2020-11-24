@@ -3,24 +3,14 @@
 
 #include "Core/Core.hpp"
 
-struct ETUIPressAnimation {
-    virtual ~ETUIPressAnimation() = default;
-    virtual void ET_playPress(EntityId triggerId) = 0;
-};
+class UIAnimationFrame;
 
-struct ETUIPressAnimationEvents {
-    virtual ~ETUIPressAnimationEvents() = default;
-    virtual void ET_onPressPlayed() = 0;
-};
-
-struct ETUIHighlightAnimation {
-    virtual ~ETUIHighlightAnimation() = default;
-    virtual void ET_playHightlight(EntityId triggerId) = 0;
-};
-
-struct ETUIHighlightAnimationEvents {
-    virtual ~ETUIHighlightAnimationEvents() = default;
-    virtual void ET_onHighlightPlayed() = 0;
+enum class EAnimSequenceType {
+    Default = 0,
+    Press,
+    Appear,
+    Disappear,
+    Highlight
 };
 
 struct ETUIViewAppearAnimation {
@@ -33,6 +23,22 @@ struct ETUIViewAppearAnimationEvents {
     virtual ~ETUIViewAppearAnimationEvents() = default;
     virtual void ET_onAppearPlayed(EntityId viewId) = 0;
     virtual void ET_onDisappearPlayed(EntityId viewId) = 0;
+};
+
+struct ETUIAnimationSequence {
+    virtual ~ETUIAnimationSequence() = default;
+    virtual bool ET_playAnimation(EntityId triggerId, EAnimSequenceType filter) = 0;
+    virtual void ET_addAnimationFrame(const UIAnimationFrame& newFrame) = 0;
+    virtual void ET_addSubAnimation(EntityId subAnimId) = 0;
+    virtual void ET_stopAnimation(EAnimSequenceType filter) = 0;
+    virtual EAnimSequenceType ET_getType() const = 0;
+    virtual void ET_setType(EAnimSequenceType newType) = 0;
+    virtual void ET_setLooped(bool flag) = 0;
+};
+
+struct ETUIAnimationSequenceEvent {
+    virtual ~ETUIAnimationSequenceEvent() = default;
+    virtual void ET_onAnimationPlayed(EAnimSequenceType animType) = 0;
 };
 
 #endif /* __ET_UI_ANIMATION_HPP__ */
