@@ -13,18 +13,6 @@ enum class EAnimSequenceType {
     Highlight
 };
 
-struct ETUIViewAppearAnimation {
-    virtual ~ETUIViewAppearAnimation() = default;
-    virtual void ET_playAppear(EntityId triggerId) = 0;
-    virtual void ET_playDissapear(EntityId triggerId) = 0;
-};
-
-struct ETUIViewAppearAnimationEvents {
-    virtual ~ETUIViewAppearAnimationEvents() = default;
-    virtual void ET_onAppearPlayed(EntityId viewId) = 0;
-    virtual void ET_onDisappearPlayed(EntityId viewId) = 0;
-};
-
 struct ETUIAnimationSequence {
     virtual ~ETUIAnimationSequence() = default;
     virtual bool ET_playAnimation(EntityId triggerId, EAnimSequenceType filter) = 0;
@@ -38,7 +26,7 @@ struct ETUIAnimationSequence {
 
 struct ETUIAnimationSequenceEvent {
     virtual ~ETUIAnimationSequenceEvent() = default;
-    virtual void ET_onAnimationPlayed(EAnimSequenceType animType) = 0;
+    virtual void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) = 0;
 };
 
 #endif /* __ET_UI_ANIMATION_HPP__ */

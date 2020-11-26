@@ -9,6 +9,7 @@
 
 void UILabel::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILabel>("UILabel")) {
+        classInfo->addBaseClass<UIElement>();
         classInfo->addField("style", &UILabel::style);
         classInfo->addField("text", &UILabel::text);
         classInfo->addField("render", &UILabel::labelRenderId);

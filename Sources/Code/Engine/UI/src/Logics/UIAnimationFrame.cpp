@@ -3,13 +3,6 @@
 #include "Reflect/EnumInfo.hpp"
 
 void UIAnimationFrame::Reflect(ReflectContext& ctx) {
-    if(auto enumInfo = ctx.enumInfo<EShowEvent>("EShowEvent")) {
-        enumInfo->addValues<EShowEvent>({
-            {"None", EShowEvent::None},
-            {"Hide", EShowEvent::Hide},
-            {"Show", EShowEvent::Show}
-        });
-    }
     if(auto enumInfo = ctx.enumInfo<EAnimLerpMode>("EAnimLerpMode")) {
         enumInfo->addValues<EAnimLerpMode>({
             {"Linear", EAnimLerpMode::Linear},
@@ -28,8 +21,6 @@ void UIAnimationFrame::Reflect(ReflectContext& ctx) {
         classInfo->addField("offset", &UIAnimationFrame::offset);
         classInfo->addField("scale", &UIAnimationFrame::scale);
         classInfo->addField("alpha", &UIAnimationFrame::alpha);
-        classInfo->addField("onStartEvent", &UIAnimationFrame::onStartEvent);
-        classInfo->addField("onEndEvent", &UIAnimationFrame::onEndEvent);
     }
 }
 
@@ -39,7 +30,5 @@ UIAnimationFrame::UIAnimationFrame() :
     duration(1.f),
     alpha(1.f),
     lerpMode(EAnimLerpMode::Linear),
-    onStartEvent(EShowEvent::None),
-    onEndEvent(EShowEvent::None),
     state(EAnimFrameState::Pending) {
 }

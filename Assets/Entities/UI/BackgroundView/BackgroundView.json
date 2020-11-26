@@ -39,6 +39,8 @@
       "type": "UIView",
       "id": 2,
       "data": {
+        "hidden": false,
+        "enabled": true,
         "style": {
           "width": 1.0,
           "widthInv": "Relative",
@@ -64,8 +66,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 590.0,
-          "y": 1048.0
+          "x": 600.0,
+          "y": 1024.0
         },
         "startColor": {
           "r": 10,

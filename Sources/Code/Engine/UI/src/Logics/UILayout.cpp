@@ -109,10 +109,16 @@ AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
 }
 
 AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
-    AABB2Di itemBox;
-    ET_SendEventReturn(itemBox, itemId, &ETUIElement::ET_getBox);
+    AABB2Di itemBox(Vec2i(0), Vec2i(0));
     UIBoxMargin itemMargin;
-    ET_SendEventReturn(itemMargin, itemId, &ETUIElement::ET_getMargin);
+    {
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, itemId, &ETUIElement::ET_isHidden);
+        if(!isHidden) {
+            ET_SendEventReturn(itemBox, itemId, &ETUIElement::ET_getBox);
+            ET_SendEventReturn(itemMargin, itemId, &ETUIElement::ET_getMargin);
+        }
+    }
 
     Vec2i center(0);
 

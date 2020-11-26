@@ -133,10 +133,6 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
 
 EInputEventResult UIButton::onPress(const Vec2i& pt) {
     EntityId activeBtId;
-    ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
-    if(activeBtId.isValid()) {
-        return EInputEventResult::Ignore;
-    }
     pressPt = pt;
     pressTime = TimePoint::GetNowTime();
     return EInputEventResult::Accept;
@@ -158,9 +154,6 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
     if(!animStarted) {
         UIEvent buttonEvent{getEntityId(), eventType};
         ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
-    } else {
-        ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, getEntityId());
-
     }
     return EInputEventResult::Accept;
 }
@@ -169,16 +162,13 @@ AABB2Di UIButton::ET_getHitBox() const {
     return ET_getBox();
 }
 
-void UIButton::ET_onAnimationPlayed(EAnimSequenceType animType) {
+void UIButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {
     if(animType != EAnimSequenceType::Press) {
         return;
     }
-    EntityId activeBtId;
-    ET_SendEventReturn(activeBtId, &ETUIButtonEventManager::ET_getActiveButton);
-    assert(activeBtId == getEntityId());
-
-    ET_SendEvent(&ETUIButtonEventManager::ET_setActiveButton, InvalidEntityId);
-
+    if(sourceId != getEntityId()) {
+        return;
+    }
     UIEvent buttonEvent{getEntityId(), eventType};
     ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
 }

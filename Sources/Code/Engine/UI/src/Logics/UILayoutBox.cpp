@@ -5,6 +5,7 @@
 
 void UILayoutBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILayoutBox>("UILayoutBox")) {
+        classInfo->addBaseClass<UIElement>();
         classInfo->addField("margin", &UILayoutBox::styleMargin);
         classInfo->addField("render", &UILayoutBox::boxRenderId);
     }

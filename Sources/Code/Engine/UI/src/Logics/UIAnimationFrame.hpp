@@ -45,8 +45,6 @@ public:
     float duration;
     float alpha;
     EAnimLerpMode lerpMode;
-    EShowEvent onStartEvent;
-    EShowEvent onEndEvent;
     EAnimFrameState state;
 };
 

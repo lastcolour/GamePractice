@@ -12,7 +12,7 @@ UIViewTransitionManager::~UIViewTransitionManager() {
 }
 
 bool UIViewTransitionManager::init() {
-    ETNode<ETUIViewAppearAnimationEvents>::connect(getEntityId());
+    ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
     ETNode<ETUIViewTransitionManager>::connect(getEntityId());
     return true;
 }
@@ -20,29 +20,24 @@ bool UIViewTransitionManager::init() {
 void UIViewTransitionManager::deinit() {
 }
 
-void UIViewTransitionManager::ET_onAppearPlayed(EntityId viewId) {
+void UIViewTransitionManager::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {
     assert(!tasks.empty() && "Empty tasks");
+
     auto& currentTask = tasks.front();
-    if(currentTask.viewId == viewId) {
-        assert(currentTask.isAppearing && "Invalid task type");
+    auto viewId = currentTask.viewId;
+
+    if(animType == EAnimSequenceType::Appear) {
+        assert(currentTask.isAppearing && "invalid task type");
+
         tasks.erase(tasks.begin());
         ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, viewId);
         startNextTask();
     } else {
-        assert(false && "Invalid viewId");
-    }
-}
+        assert(!currentTask.isAppearing && "invalid task type");
 
-void UIViewTransitionManager::ET_onDisappearPlayed(EntityId viewId) {
-    assert(!tasks.empty() && "Empty tasks");
-    auto& currentTask = tasks.front();
-    if(currentTask.viewId == viewId) {
-        assert(!currentTask.isAppearing && "Invalid task type");
         tasks.erase(tasks.begin());
         ET_SendEvent(&ETUIViewManager::ET_onViewDisappeared, viewId);
         startNextTask();
-    } else {
-        assert(false && "Invalid viewId");
     }
 }
 
@@ -69,23 +64,26 @@ void UIViewTransitionManager::ET_addDisappearing(EntityId viewId) {
 void UIViewTransitionManager::startNextTask() {
     while(!tasks.empty()) {
         auto task = tasks.front();
-        if(!ET_IsExistNode<ETUIViewAppearAnimation>(task.viewId)) {
+        bool animStarted = false;
+        if(task.isAppearing) {
+            ET_SendEvent(&ETUIViewManager::ET_onViewStartAppearing, task.viewId);
+            ET_SendEventReturn(animStarted, task.viewId, &ETUIAnimationSequence::ET_playAnimation,
+                getEntityId(), EAnimSequenceType::Appear);
+        } else {
+            ET_SendEventReturn(animStarted, task.viewId, &ETUIAnimationSequence::ET_playAnimation,
+                getEntityId(), EAnimSequenceType::Disappear);
+        }
+        if(!animStarted) {
+            auto viewId = task.viewId;
             tasks.erase(tasks.begin());
             if(task.isAppearing) {
                 ET_SendEvent(task.viewId, &ETUIElement::ET_show);
-                ET_SendEvent(&ETUIViewManager::ET_onViewStartAppearing, task.viewId);
                 ET_SendEvent(&ETUIViewManager::ET_onViewAppeared, task.viewId);
             } else {
                 ET_SendEvent(task.viewId, &ETUIElement::ET_hide);
                 ET_SendEvent(&ETUIViewManager::ET_onViewDisappeared, task.viewId);
             }
         } else {
-            if(task.isAppearing) {
-                ET_SendEvent(&ETUIViewManager::ET_onViewStartAppearing, task.viewId);
-                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_playAppear, getEntityId());
-            } else {
-                ET_SendEvent(task.viewId, &ETUIViewAppearAnimation::ET_playDissapear, getEntityId());
-            }
             break;
         }
     }

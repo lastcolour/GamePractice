@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 280.0,
+          "y": 306.0,
           "z": 0.0
         },
         "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 235.0,
-                            "y": 235.0
+                            "x": 256.0,
+                            "y": 256.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -97,6 +97,8 @@
                         "type": "UIBox",
                         "id": 2,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "width": 50.0,
                             "widthInv": "Grid",
@@ -123,6 +125,8 @@
                   "type": "UIBox",
                   "id": 1,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 60.0,
                       "widthInv": "Grid",
@@ -165,8 +169,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 282.0,
-                      "y": 282.0
+                      "x": 308.0,
+                      "y": 308.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -186,6 +190,8 @@
             "type": "UIBox",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
@@ -225,7 +231,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -95.0,
+          "y": -103.0,
           "z": 0.0
         },
         "scale": {
@@ -264,133 +270,9 @@
                 "w": 1.0
               }
             },
-            "name": "StartButton",
+            "name": "UI/MainView/StartButton.json",
             "id": 1,
-            "internal": true,
-            "data": {
-              "children": [
-                {
-                  "transform": {
-                    "pos": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0
-                    },
-                    "scale": {
-                      "x": 1.0,
-                      "y": 1.0,
-                      "z": 1.0
-                    },
-                    "rot": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0,
-                      "w": 1.0
-                    }
-                  },
-                  "name": "Label",
-                  "id": 1,
-                  "internal": true,
-                  "data": {
-                    "children": [],
-                    "logics": [
-                      {
-                        "type": "UILabel",
-                        "id": 1,
-                        "data": {
-                          "style": {
-                            "fontSize": 10.0,
-                            "margin": {
-                              "top": 0.0,
-                              "bot": 0.0,
-                              "left": 0.0,
-                              "right": 0.0
-                            }
-                          },
-                          "text": "Start",
-                          "render": [
-                            0
-                          ]
-                        }
-                      },
-                      {
-                        "type": "RenderText",
-                        "id": 2,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 5,
-                          "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
-                          },
-                          "fontSize": 47,
-                          "text": "Start"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
-              "logics": [
-                {
-                  "type": "UIButton",
-                  "id": 1,
-                  "data": {
-                    "style": {
-                      "width": 80.0,
-                      "widthInv": "Grid",
-                      "height": 20.0,
-                      "heightInv": "Grid",
-                      "margin": {
-                        "top": 0.0,
-                        "bot": 0.0,
-                        "left": 0.0,
-                        "right": 0.0
-                      }
-                    },
-                    "render": [
-                      0
-                    ],
-                    "label": [
-                      1
-                    ],
-                    "event": "OnMainViewStartGame"
-                  }
-                },
-                {
-                  "type": "UIPressAnimation",
-                  "id": 3,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
-                  }
-                },
-                {
-                  "type": "RenderColoredTexture",
-                  "id": 4,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 1.0,
-                    "drawPriority": 4,
-                    "size": {
-                      "x": 376.0,
-                      "y": 94.0
-                    },
-                    "image": "Images/StartButton_BG.png",
-                    "color": {
-                      "r": 100,
-                      "g": 100,
-                      "b": 100,
-                      "a": 255
-                    }
-                  }
-                }
-              ]
-            }
+            "internal": false
           }
         ],
         "logics": [
@@ -398,6 +280,8 @@
             "type": "UIBox",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
@@ -437,7 +321,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -376.0,
+          "y": -410.0,
           "z": 0.0
         },
         "scale": {
@@ -460,7 +344,7 @@
           {
             "transform": {
               "pos": {
-                "x": -141.0,
+                "x": -155.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -514,8 +398,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 71.0,
-                            "y": 71.0
+                            "x": 77.0,
+                            "y": 77.0
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -530,6 +414,8 @@
                         "type": "UIBox",
                         "id": 2,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "width": 15.0,
                             "widthInv": "Grid",
@@ -553,18 +439,11 @@
               ],
               "logics": [
                 {
-                  "type": "UIPressAnimation",
-                  "id": 3,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
-                  }
-                },
-                {
                   "type": "UIButton",
                   "id": 4,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 20.0,
                       "widthInv": "Grid",
@@ -594,8 +473,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 94.0,
-                      "y": 94.0
+                      "x": 103.0,
+                      "y": 103.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -666,8 +545,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 71.0,
-                            "y": 71.0
+                            "x": 77.0,
+                            "y": 77.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -682,6 +561,8 @@
                         "type": "UIBox",
                         "id": 2,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "width": 15.0,
                             "widthInv": "Grid",
@@ -708,6 +589,8 @@
                   "type": "UIButton",
                   "id": 3,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 20.0,
                       "widthInv": "Grid",
@@ -730,15 +613,6 @@
                   }
                 },
                 {
-                  "type": "UIPressAnimation",
-                  "id": 4,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
-                  }
-                },
-                {
                   "type": "RenderColoredTexture",
                   "id": 5,
                   "data": {
@@ -746,8 +620,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 94.0,
-                      "y": 94.0
+                      "x": 103.0,
+                      "y": 103.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -764,7 +638,7 @@
           {
             "transform": {
               "pos": {
-                "x": 141.0,
+                "x": 155.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -818,8 +692,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 71.0,
-                            "y": 71.0
+                            "x": 77.0,
+                            "y": 77.0
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -834,6 +708,8 @@
                         "type": "UIBox",
                         "id": 2,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "width": 15.0,
                             "widthInv": "Grid",
@@ -860,6 +736,8 @@
                   "type": "UIButton",
                   "id": 3,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 20.0,
                       "widthInv": "Grid",
@@ -882,15 +760,6 @@
                   }
                 },
                 {
-                  "type": "UIPressAnimation",
-                  "id": 4,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
-                  }
-                },
-                {
                   "type": "RenderColoredTexture",
                   "id": 5,
                   "data": {
@@ -898,8 +767,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 94.0,
-                      "y": 94.0
+                      "x": 103.0,
+                      "y": 103.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -919,6 +788,8 @@
             "type": "UIBox",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
@@ -989,6 +860,8 @@
       "type": "UIView",
       "id": 4,
       "data": {
+        "hidden": false,
+        "enabled": true,
         "style": {
           "width": 1.0,
           "widthInv": "Relative",
@@ -1002,47 +875,6 @@
           }
         },
         "render": []
-      }
-    },
-    {
-      "type": "UIViewAppearAnimation",
-      "id": 5,
-      "data": {
-        "elements": [
-          {
-            "element": [
-              1
-            ],
-            "startDelay": 0.0,
-            "duration": 0.20000000298023224,
-            "xMoveOffset": 0.0,
-            "yMoveOffset": 50.0,
-            "startScale": 1.5,
-            "startAlpha": 0.0
-          },
-          {
-            "element": [
-              2
-            ],
-            "startDelay": 0.10000000149011612,
-            "duration": 0.20000000298023224,
-            "xMoveOffset": 0.0,
-            "yMoveOffset": 40.0,
-            "startScale": 1.5,
-            "startAlpha": 0.0
-          },
-          {
-            "element": [
-              3
-            ],
-            "startDelay": 0.20000000298023224,
-            "duration": 0.20000000298023224,
-            "xMoveOffset": 0.0,
-            "yMoveOffset": 30.0,
-            "startScale": 1.5,
-            "startAlpha": 0.0
-          }
-        ]
       }
     },
     {

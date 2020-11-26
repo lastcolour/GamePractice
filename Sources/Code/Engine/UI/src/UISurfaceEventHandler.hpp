@@ -8,8 +8,7 @@
 
 class UISurfaceEventHandler : public SystemLogic,
     public ETNode<ETInputEvents>,
-    public ETNode<ETSurfaceEvents>,
-    public ETNode<ETUIButtonEventManager> {
+    public ETNode<ETSurfaceEvents> {
 public:
 
     UISurfaceEventHandler();
@@ -32,10 +31,6 @@ public:
     void ET_onSurfaceGainFocus() override {}
     void ET_onSurfaceResized(const Vec2i& size) override { (void)size; }
 
-    // ETUIButtonEventManager
-    EntityId ET_getActiveButton() const override;
-    void ET_setActiveButton(EntityId buttonId) override;
-
 private:
 
     void onPress(const Vec2i& pt);
@@ -46,7 +41,6 @@ private:
 
 private:
 
-    EntityId activeButtonId;
     std::vector<EntityId> eventHandlers;
 };
 

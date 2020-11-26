@@ -6,6 +6,7 @@
 #include "UI/ETUITimer.hpp"
 #include "Logics/UIAnimationFrame.hpp"
 #include "UI/ETUIAnimation.hpp"
+#include "Entity/ETEntity.hpp"
 
 #include <vector>
 
@@ -13,7 +14,8 @@ class ReflectContext;
 
 class UIAnimationSequence : public EntityLogic,
     public ETNode<ETUITimerEvents>,
-    public ETNode<ETUIAnimationSequence> {
+    public ETNode<ETUIAnimationSequence>,
+    public ETNode<ETEntityEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -39,15 +41,20 @@ public:
     void ET_setLooped(bool flag) override;
     void ET_addSubAnimation(EntityId subAnimId) override;
 
+    // ETEntityEvents
+    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onLoaded() override;
+
 private:
 
-    void startCycle();
+    void reStartCycle();
     void processFrame(float dt, UIAnimationFrame& task);
 
 private:
 
     struct PrevState {
-        Transform tm;
+        Vec2 offset;
+        Vec2 scale;
         float alpha;
     };
 
@@ -57,14 +64,17 @@ private:
     std::vector<EntityId> subAnimations;
     std::vector<UIAnimationFrame> frames;
     Transform origTm;
+    EntityId triggerId;
     float origAlpha;
     float currDuration;
     float startDelay;
-    EntityId triggerId;
     EAnimSequenceType seqType;
+    EShowEvent onStartEvent;
+    EShowEvent onEndEvent;
     bool cyclic;
     bool autoStart;
     bool isPlaying;
+    bool isOrigTmValid;
 };
 
 #endif /* __UI_ANIMATION_SEQUENCE_HPP__ */

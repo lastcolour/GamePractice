@@ -33,8 +33,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 315.0,
-                "y": 105.0
+                "x": 308.0,
+                "y": 103.0
               },
               "image": "Images/StartButton_BG.png",
               "color": {
@@ -49,6 +49,8 @@
             "type": "UIBox",
             "id": 2,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 60.0,
                 "widthInv": "Grid",
@@ -98,6 +100,8 @@
             "type": "UILabel",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "fontSize": 10.0,
                 "margin": {
@@ -126,8 +130,62 @@
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 53,
+              "fontSize": 52,
               "text": "Start"
+            }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 3,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Default",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.0,
+                  "offset": {
+                    "x": 15.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.30000001192092896,
+                  "offset": {
+                    "x": 10.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.5,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
             }
           }
         ]
@@ -139,6 +197,8 @@
       "type": "UIBox",
       "id": 1,
       "data": {
+        "hidden": false,
+        "enabled": true,
         "style": {
           "width": 30.0,
           "widthInv": "Grid",
@@ -197,8 +257,79 @@
         "isVisible": true,
         "alpha": 1.0,
         "drawPriority": 0,
-        "downScaleFactor": 2,
+        "downScaleFactor": 1,
         "passes": 1
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 5,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Default",
+        "startDelay": 1.0,
+        "subAnimations": [
+          [
+            2
+          ]
+        ],
+        "startEvent": "Show",
+        "endEvent": "Hide",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 0.0,
+            "offset": {
+              "x": 50.0,
+              "y": -10.0
+            },
+            "scale": {
+              "x": 0.4000000059604645,
+              "y": 0.5
+            },
+            "alpha": 0.0
+          },
+          {
+            "lerpMode": "InvPow_2",
+            "duration": 0.6000000238418579,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 2.0,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 0.4000000059604645,
+            "offset": {
+              "x": -50.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 0.800000011920929,
+              "y": 0.800000011920929
+            },
+            "alpha": 0.0
+          }
+        ]
       }
     }
   ]

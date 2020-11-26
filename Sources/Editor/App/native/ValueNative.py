@@ -804,6 +804,9 @@ def _createValue(valueName, valueType):
 
 def CreateObjectValue(rootValue, valueType):
     valueModel = _getReflectModel().getTypeModel(valueType)
+    if valueModel is None:
+        print("[CreateObjectValue] Can't find type model: '{0}'", valueType)
+        return False
     if valueModel["type"] != "class":
         raise RuntimeError("Invalid value type")
     if type(rootValue) is not ObjectValue:

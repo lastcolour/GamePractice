@@ -11,8 +11,8 @@
           "x": 10,
           "y": 10
         },
-        "cellObject": "Game/Cell.json",
-        "cellScale": 0.699999988079071
+        "cellScale": 0.699999988079071,
+        "backgroundId": []
       }
     },
     {

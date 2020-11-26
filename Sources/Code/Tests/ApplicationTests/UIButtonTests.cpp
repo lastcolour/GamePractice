@@ -164,11 +164,11 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
 
     {
         auto pressAnimation = new UIAnimationSequence();
+        button->addCustomLogic(std::unique_ptr<EntityLogic>(pressAnimation));
         UIAnimationFrame frame;
         frame.duration = 1.f;
         pressAnimation->ET_addAnimationFrame(frame);
         pressAnimation->ET_setType(EAnimSequenceType::Press);
-        button->addCustomLogic(std::unique_ptr<EntityLogic>(pressAnimation));
     }
 
     ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);

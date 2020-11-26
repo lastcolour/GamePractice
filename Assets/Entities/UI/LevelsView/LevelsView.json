@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 400.0,
+          "y": 435.0,
           "z": 0.0
         },
         "scale": {
@@ -27,8 +27,8 @@
           {
             "transform": {
               "pos": {
-                "x": -167.0,
-                "y": -45.0,
+                "x": -194.0,
+                "y": -48.0,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -42.0,
+                      "x": -45.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -77,6 +77,8 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "fontSize": 3.0,
                             "margin": {
@@ -105,7 +107,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 15,
+                          "fontSize": 16,
                           "text": "Progress: "
                         }
                       }
@@ -115,7 +117,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 36.0,
+                      "x": 38.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -141,6 +143,8 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "fontSize": 3.0,
                             "margin": {
@@ -169,7 +173,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 15,
+                          "fontSize": 16,
                           "text": "50% (15/30)"
                         }
                       }
@@ -182,6 +186,8 @@
                   "type": "UIBox",
                   "id": 1,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 37.0,
                       "widthInv": "Grid",
@@ -227,8 +233,8 @@
                     "alpha": 0.5,
                     "drawPriority": 59,
                     "size": {
-                      "x": 174.0,
-                      "y": 33.0
+                      "x": 190.0,
+                      "y": 36.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -238,17 +244,6 @@
                       "a": 255
                     }
                   }
-                },
-                {
-                  "type": "UIHighlightAnimation",
-                  "id": 5,
-                  "data": {
-                    "target": [
-                      0
-                    ],
-                    "duration": 0.30000001192092896,
-                    "scale": 1.2000000476837158
-                  }
                 }
               ]
             }
@@ -257,7 +252,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 20.0,
+                "y": 22.0,
                 "z": 0.0
               },
               "scale": {
@@ -306,6 +301,8 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "fontSize": 10.0,
                             "margin": {
@@ -334,7 +331,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 47,
+                          "fontSize": 52,
                           "text": "Intro"
                         }
                       }
@@ -347,6 +344,8 @@
                   "type": "UIBox",
                   "id": 1,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 60.0,
                       "widthInv": "Grid",
@@ -389,8 +388,8 @@
                     "alpha": 0.800000011920929,
                     "drawPriority": 54,
                     "size": {
-                      "x": 282.0,
-                      "y": 71.0
+                      "x": 308.0,
+                      "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -410,6 +409,8 @@
             "type": "UIBox",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
@@ -492,7 +493,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 351.0,
+                "y": 381.0,
                 "z": 0.0
               },
               "scale": {
@@ -516,7 +517,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -702.0,
+                      "y": -765.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -539,7 +540,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -546.0,
+                      "y": -595.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -562,7 +563,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -390.0,
+                      "y": -425.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -585,7 +586,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -234.0,
+                      "y": -255.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -608,7 +609,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -78.0,
+                      "y": -85.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -631,7 +632,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 78.0,
+                      "y": 85.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -654,7 +655,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 234.0,
+                      "y": 255.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -677,7 +678,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 390.0,
+                      "y": 425.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -700,7 +701,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 546.0,
+                      "y": 595.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -723,7 +724,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 702.0,
+                      "y": 765.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -792,6 +793,8 @@
                   "type": "UILayoutBox",
                   "id": 3,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "margin": {
                       "top": 0.0,
                       "bot": 0.0,
@@ -811,8 +814,8 @@
                     "alpha": 0.30000001192092896,
                     "drawPriority": 4,
                     "size": {
-                      "x": 141.0,
-                      "y": 1546.0
+                      "x": 154.0,
+                      "y": 1684.0
                     },
                     "color": {
                       "r": 202,
@@ -831,6 +834,8 @@
             "type": "UIBox",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 90.0,
                 "widthInv": "Grid",
@@ -870,8 +875,8 @@
               "alpha": 0.5,
               "drawPriority": 2,
               "size": {
-                "x": 423.0,
-                "y": 845.0
+                "x": 461.0,
+                "y": 922.0
               },
               "color": {
                 "r": 255,
@@ -890,6 +895,8 @@
       "type": "UIView",
       "id": 1,
       "data": {
+        "hidden": false,
+        "enabled": true,
         "style": {
           "width": 1.0,
           "widthInv": "Relative",
@@ -951,25 +958,6 @@
         "progressBoxId": [
           3,
           1
-        ]
-      }
-    },
-    {
-      "type": "UIViewAppearAnimation",
-      "id": 5,
-      "data": {
-        "elements": [
-          {
-            "element": [
-              0
-            ],
-            "startDelay": 0.0,
-            "duration": 0.30000001192092896,
-            "xMoveOffset": 0.0,
-            "yMoveOffset": -30.0,
-            "startScale": 1.5,
-            "startAlpha": 0.0
-          }
         ]
       }
     },

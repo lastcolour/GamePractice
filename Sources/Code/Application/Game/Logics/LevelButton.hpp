@@ -33,7 +33,7 @@ public:
     void ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) override;
 
     // ETUIAnimationSequenceEvent
-    void ET_onAnimationPlayed(EAnimSequenceType animType) override;
+    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
 
 private:
 

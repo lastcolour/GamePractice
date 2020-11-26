@@ -13,27 +13,8 @@
 
 namespace {
 
-void processFrameStartEvent(EntityId targetId, UIAnimationFrame& frame) {
-    switch(frame.onStartEvent) {
-        case EShowEvent::None: {
-            break;
-        }
-        case EShowEvent::Hide: {
-            ET_SendEvent(targetId, &ETUIElement::ET_hide);
-            break;
-        }
-        case EShowEvent::Show: {
-            ET_SendEvent(targetId, &ETUIElement::ET_show);
-            break;
-        }
-        default: {
-            assert(false && "Invalid event type");
-        }
-    }
-}
-
-void processFrameEndEvent(EntityId targetId, UIAnimationFrame& frame) {
-    switch(frame.onEndEvent) {
+void processShowEvent(EntityId targetId, EShowEvent event) {
+    switch(event) {
         case EShowEvent::None: {
             break;
         }
@@ -110,12 +91,21 @@ void UIAnimationSequence::Reflect(ReflectContext& ctx) {
             {"Highlight", EAnimSequenceType::Highlight}
         });
     }
+    if(auto enumInfo = ctx.enumInfo<EShowEvent>("EShowEvent")) {
+        enumInfo->addValues<EShowEvent>({
+            {"None", EShowEvent::None},
+            {"Hide", EShowEvent::Hide},
+            {"Show", EShowEvent::Show}
+        });
+    }
     if(auto classInfo = ctx.classInfo<UIAnimationSequence>("UIAnimationSequence")) {
         classInfo->addField("autoStart", &UIAnimationSequence::autoStart);
         classInfo->addField("cyclic", &UIAnimationSequence::cyclic);
         classInfo->addField("type", &UIAnimationSequence::seqType);
         classInfo->addField("startDelay", &UIAnimationSequence::startDelay);
         classInfo->addField("subAnimations", &UIAnimationSequence::subAnimations);
+        classInfo->addField("startEvent", &UIAnimationSequence::onStartEvent),
+        classInfo->addField("endEvent", &UIAnimationSequence::onEndEvent),
         classInfo->addField("frames", &UIAnimationSequence::frames);
     }
 }
@@ -125,9 +115,12 @@ UIAnimationSequence::UIAnimationSequence() :
     currDuration(0.f),
     startDelay(0.f),
     seqType(EAnimSequenceType::Default),
+    onStartEvent(EShowEvent::None),
+    onEndEvent(EShowEvent::None),
     cyclic(false),
     autoStart(false),
-    isPlaying(false) {
+    isPlaying(false),
+    isOrigTmValid(false) {
 }
 
 UIAnimationSequence::~UIAnimationSequence() {
@@ -152,12 +145,18 @@ bool UIAnimationSequence::init() {
         }
     }
 
+    ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETUIAnimationSequence>::connect(getEntityId());
+    return true;
+}
+
+void UIAnimationSequence::ET_onTransformChanged(const Transform& newTm) {
+}
+
+void UIAnimationSequence::ET_onLoaded() {
     if(autoStart) {
         ET_playAnimation(InvalidEntityId, seqType);
     }
-
-    return true;
 }
 
 void UIAnimationSequence::deinit() {
@@ -188,20 +187,36 @@ void UIAnimationSequence::ET_addSubAnimation(EntityId subAnimId) {
 }
 
 void UIAnimationSequence::ET_onUITick(float dt) {
-    currDuration += dt;
-    if(currDuration <= startDelay) {
-        return;
-    }
-    float animTime = currDuration - startDelay;
-    for(auto& frame : frames) {
-        processFrame(animTime, frame);
-        animTime -= frame.duration;
-        if(animTime < 0.f) {
-            break;
-        }
+    if(!isOrigTmValid) {
+        isOrigTmValid = true;
+        ET_SendEventReturn(origTm, getEntityId(), &ETEntity::ET_getLocalTransform);
+        ET_SendEventReturn(origAlpha, getEntityId(), &ETUIElement::ET_getAlpha);
+
+        prevState.offset = Vec2(0.f);
+        prevState.scale = Vec2(origTm.scale.x, origTm.scale.y);
+        prevState.alpha = origAlpha;
     }
 
+    currDuration += dt;
+    float animTime = currDuration - startDelay;
+
     assert(!frames.empty() && "frame list empty");
+
+    for(int i = 0, sz = frames.size(); i < sz; ++i) {
+        if(animTime <= 0.f) {
+            break;
+        }
+        auto& frame = frames[i];
+        if(i == 0 && frame.state == EAnimFrameState::Pending) {
+            processShowEvent(getEntityId(), onStartEvent);
+            for(auto& subAnimId : subAnimations) {
+                ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_playAnimation, InvalidEntityId, seqType);
+                ET_SendEvent(subAnimId, &ETUITimerEvents::ET_onUITick, dt);
+            }
+        }
+        processFrame(animTime, frame);
+        animTime -= frame.duration;
+    }
 
     if(frames.back().state == EAnimFrameState::Finished) {
         UI::SetLocalTMDoNotUpdateLayout(getEntityId(), origTm);
@@ -210,17 +225,18 @@ void UIAnimationSequence::ET_onUITick(float dt) {
             for(auto& subAnimId : subAnimations) {
                 ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_stopAnimation, seqType);
             }
-            startCycle();
+            processShowEvent(getEntityId(), onEndEvent);
+            reStartCycle();
         } else {
             ET_stopAnimation(seqType);
-            ET_SendEvent(triggerId, &ETUIAnimationSequenceEvent::ET_onAnimationPlayed, seqType);
+            ET_SendEvent(triggerId, &ETUIAnimationSequenceEvent::ET_onAnimationPlayed,
+                getEntityId(), seqType);
             triggerId = InvalidEntityId;
         }
     }
 }
 
 void UIAnimationSequence::ET_stopAnimation(EAnimSequenceType filter) {
-    LogDebug("[ET_stopAnimation] Entity: '%s'", EntityUtils::GetEntityName(getEntityId()));
     if(seqType != filter && seqType != EAnimSequenceType::Default) {
         return;
     }
@@ -239,18 +255,18 @@ void UIAnimationSequence::ET_stopAnimation(EAnimSequenceType filter) {
         ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_stopAnimation, filter);
     }
 
+    processShowEvent(getEntityId(), onEndEvent);
+
     ETNode<ETUITimerEvents>::disconnect();
 }
 
-void UIAnimationSequence::startCycle() {
+void UIAnimationSequence::reStartCycle() {
     currDuration = 0.f;
-    prevState.tm = origTm;
+    prevState.offset = Vec2(0.f);
+    prevState.scale = Vec2(origTm.scale.x, origTm.scale.y);
     prevState.alpha = origAlpha;
     for(auto& frame : frames) {
         frame.state = EAnimFrameState::Pending;
-    }
-    for(auto& subAnimId : subAnimations) {
-        ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_playAnimation, InvalidEntityId, seqType);
     }
 }
 
@@ -264,11 +280,12 @@ bool UIAnimationSequence::ET_playAnimation(EntityId animTriggerId, EAnimSequence
 
     triggerId = animTriggerId;
     isPlaying = true;
+    isOrigTmValid = false;
+    currDuration = 0.f;
 
-    ET_SendEventReturn(origTm, getEntityId(), &ETEntity::ET_getLocalTransform);
-    ET_SendEventReturn(origAlpha, getEntityId(), &ETUIElement::ET_getAlpha);
-
-    startCycle();
+    for(auto& frame : frames) {
+        frame.state = EAnimFrameState::Pending;
+    }
 
     ETNode<ETUITimerEvents>::connect(getEntityId());
     return true;
@@ -280,33 +297,32 @@ void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
     }
     if(frame.state == EAnimFrameState::Pending) {
         frame.state = EAnimFrameState::InProgress;
-        processFrameStartEvent(getEntityId(), frame);
     }
-
-    auto tm = prevState.tm;
-    Vec2 prevScale = Vec2(tm.scale.x, tm.scale.y);
 
     float prog = dt / frame.duration;
     prog = std::min(prog, 1.f);
     prog = lerpByMode(prog, frame.lerpMode);
 
-    Vec2 newOffset = Math::Lerp(Vec2(0), frame.offset, prog);
-    newOffset.x = UI::GetValueOnGrind(newOffset.x);
-    newOffset.y = UI::GetValueOnGrind(newOffset.y);
+    Vec2 newOffset = Math::Lerp(prevState.offset, frame.offset, prog);
 
-    Vec2 newScale = Math::Lerp(prevScale, frame.scale, prog);
+    Vec2 pfOffset;
+    pfOffset.x = UI::GetValueOnGrind(newOffset.x);
+    pfOffset.y = UI::GetValueOnGrind(newOffset.y);
 
-    tm.pt += Vec3(newOffset, 0.f);
-    tm.scale = Vec3(newScale, prevState.tm.scale.z);
+    Vec2 newScale = Math::Lerp(prevState.scale, frame.scale, prog);
+
+    auto tm = origTm;
+    tm.pt += Vec3(pfOffset, 0.f);
+    tm.scale = Vec3(newScale, origTm.scale.z);
     UI::SetLocalTMDoNotUpdateLayout(getEntityId(), tm);
 
-    float currAlpha = Math::Lerp(prevState.alpha, frame.alpha, prog);
-    ET_SendEvent(getEntityId(), &ETUIElement::ET_setAlpha, currAlpha);
+    float newAlpha = Math::Lerp(prevState.alpha, frame.alpha, prog);
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_setAlpha, newAlpha);
 
     if(dt >= frame.duration) {
-        prevState.tm = tm;
-        prevState.alpha = currAlpha;
+        prevState.offset = frame.offset;
+        prevState.scale = frame.scale;
+        prevState.alpha = frame.alpha;
         frame.state = EAnimFrameState::Finished;
-        processFrameEndEvent(getEntityId(), frame);
     }
 }

@@ -7,8 +7,6 @@
 #include "UI/ETUIAnimation.hpp"
 #include "Core/TimePoint.hpp"
 
-class ReflectContext;
-
 class UIButton : public UIBox,
     public ETNode<ETUIInteractionBox>,
     public ETNode<ETUIAnimationSequenceEvent> {
@@ -33,7 +31,7 @@ public:
     AABB2Di ET_getHitBox() const override;
 
     // ETUIAnimationSequenceEvent
-    void ET_onAnimationPlayed(EAnimSequenceType animType) override;
+    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
 
     // UIBox
     void ET_onLoaded() override;

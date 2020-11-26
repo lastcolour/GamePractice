@@ -158,9 +158,7 @@
           "y": 10
         },
         "cellScale": 0.699999988079071,
-        "occluderId": [
-          1
-        ]
+        "backgroundId": []
       }
     }
   ]

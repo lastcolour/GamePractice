@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 90.0,
+                "y": 88.0,
                 "z": 0.0
               },
               "scale": {
@@ -77,6 +77,8 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "fontSize": 6.0,
                             "margin": {
@@ -105,7 +107,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 32,
+                          "fontSize": 31,
                           "text": "Resume"
                         }
                       }
@@ -118,6 +120,8 @@
                   "type": "UIButton",
                   "id": 1,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 75.0,
                       "widthInv": "Grid",
@@ -147,8 +151,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 393.0,
-                      "y": 79.0
+                      "x": 384.0,
+                      "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -158,15 +162,6 @@
                       "a": 255
                     }
                   }
-                },
-                {
-                  "type": "UIPressAnimation",
-                  "id": 3,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
-                  }
                 }
               ]
             }
@@ -175,7 +170,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -90.0,
+                "y": -88.0,
                 "z": 0.0
               },
               "scale": {
@@ -224,6 +219,8 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "fontSize": 6.0,
                             "margin": {
@@ -252,7 +249,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 32,
+                          "fontSize": 31,
                           "text": "Exit"
                         }
                       }
@@ -265,6 +262,8 @@
                   "type": "UIButton",
                   "id": 1,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 75.0,
                       "widthInv": "Grid",
@@ -294,8 +293,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 393.0,
-                      "y": 79.0
+                      "x": 384.0,
+                      "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -304,15 +303,6 @@
                       "b": 255,
                       "a": 255
                     }
-                  }
-                },
-                {
-                  "type": "UIPressAnimation",
-                  "id": 3,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
                   }
                 }
               ]
@@ -371,6 +361,8 @@
                         "type": "UILabel",
                         "id": 1,
                         "data": {
+                          "hidden": false,
+                          "enabled": true,
                           "style": {
                             "fontSize": 6.0,
                             "margin": {
@@ -399,7 +391,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 32,
+                          "fontSize": 31,
                           "text": "Restart"
                         }
                       }
@@ -412,6 +404,8 @@
                   "type": "UIButton",
                   "id": 1,
                   "data": {
+                    "hidden": false,
+                    "enabled": true,
                     "style": {
                       "width": 75.0,
                       "widthInv": "Grid",
@@ -441,8 +435,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 393.0,
-                      "y": 79.0
+                      "x": 384.0,
+                      "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -451,15 +445,6 @@
                       "b": 255,
                       "a": 255
                     }
-                  }
-                },
-                {
-                  "type": "UIPressAnimation",
-                  "id": 3,
-                  "data": {
-                    "duration": 0.07999999821186066,
-                    "minScale": 0.949999988079071,
-                    "sound": "buttonPress_01"
                   }
                 }
               ]
@@ -471,6 +456,8 @@
             "type": "UIBox",
             "id": 1,
             "data": {
+              "hidden": false,
+              "enabled": true,
               "style": {
                 "width": 80.0,
                 "widthInv": "Grid",
@@ -496,8 +483,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 420.0,
-                "y": 393.0
+                "x": 410.0,
+                "y": 384.0
               },
               "image": "Images/block.png",
               "color": {
@@ -540,6 +527,8 @@
       "type": "UIView",
       "id": 1,
       "data": {
+        "hidden": false,
+        "enabled": true,
         "style": {
           "width": 1.0,
           "widthInv": "Relative",
@@ -571,25 +560,6 @@
           [
             1
           ]
-        ]
-      }
-    },
-    {
-      "type": "UIViewAppearAnimation",
-      "id": 4,
-      "data": {
-        "elements": [
-          {
-            "element": [
-              1
-            ],
-            "startDelay": 0.0,
-            "duration": 0.30000001192092896,
-            "xMoveOffset": 0.0,
-            "yMoveOffset": 30.0,
-            "startScale": 1.5,
-            "startAlpha": 0.0
-          }
         ]
       }
     },

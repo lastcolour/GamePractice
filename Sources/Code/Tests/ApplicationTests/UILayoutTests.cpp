@@ -452,3 +452,34 @@ TEST_F(UILayoutTests, CheckLayoutOnLayoutBox) {
         CheckUIBox(secondBox->getEntityId(), Vec2i(center.x, viewPort.y / 4), center);
     }
 }
+
+TEST_F(UILayoutTests, CheckHiddenElemOnLayout) {
+    auto rootEntity = createUIBox(1.f, 1.f);
+    auto rootLayout = addUILayout(rootEntity, UILayoutType::Horizontal, UIXAlign::Center, UIYAlign::Center);
+
+    auto childBox = createUIBox(0.5f, 0.5f);
+    ET_SendEvent(childBox->getEntityId(), &ETUIElement::ET_hide);
+
+    rootLayout->ET_addItem(childBox->getEntityId());
+
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+
+    {
+        auto box = rootLayout->ET_getCombinedBox();
+        auto size = box.getSize();
+
+        EXPECT_EQ(size.x, 0);
+        EXPECT_EQ(size.y, 0);
+    }
+
+    ET_SendEvent(childBox->getEntityId(), &ETUIElement::ET_show);
+
+    {
+        auto box = rootLayout->ET_getCombinedBox();
+        auto size = box.getSize();
+
+        EXPECT_EQ(size.x, viewPort.x / 2);
+        EXPECT_EQ(size.y, viewPort.y / 2);
+    }
+}

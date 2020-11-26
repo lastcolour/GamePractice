@@ -8,7 +8,7 @@
 class ReflectContext;
 
 class GameResultViewScript : public BaseViewScript,
-    public ETNode<ETUIViewAppearAnimationEvents> {
+    public ETNode<ETUIAnimationSequenceEvent> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,9 +26,8 @@ public:
     void ET_onViewClosed() override;
     void ET_onViewGetFocus() override;
 
-    // ETUIViewAppearAnimationEvents
-    void ET_onAppearPlayed(EntityId viewId) override;
-    void ET_onDisappearPlayed(EntityId viewId) override;
+    // ETUIAnimationSequenceEvent
+    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
 
 protected:
 

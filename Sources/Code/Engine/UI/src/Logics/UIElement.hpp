@@ -6,9 +6,15 @@
 #include "Core/ETPrimitives.hpp"
 #include "Entity/ETEntity.hpp"
 
+class ReflectContext;
+
 class UIElement : public EntityLogic,
     public ETNode<ETUIElement>,
     public ETNode<ETEntityEvents> {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
 public:
 
     UIElement();

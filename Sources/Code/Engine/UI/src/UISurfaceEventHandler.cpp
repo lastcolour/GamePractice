@@ -43,7 +43,6 @@ UISurfaceEventHandler::~UISurfaceEventHandler() {
 bool UISurfaceEventHandler::init() {
     ETNode<ETInputEvents>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
-    ETNode<ETUIButtonEventManager>::connect(getEntityId());
     return true;
 }
 
@@ -136,12 +135,4 @@ void UISurfaceEventHandler::ET_onSurfaceHidden() {
 void UISurfaceEventHandler::ET_onSurfaceShown() {
     UIEvent shownEvent{getEntityId(), UIEvent::EventType::OnSurfaceShown};
     ET_SendEvent(&ETUIViewScript::ET_onEvent, shownEvent);
-}
-
-EntityId UISurfaceEventHandler::ET_getActiveButton() const {
-    return activeButtonId;
-}
-
-void UISurfaceEventHandler::ET_setActiveButton(EntityId buttonId) {
-    activeButtonId = buttonId;
 }

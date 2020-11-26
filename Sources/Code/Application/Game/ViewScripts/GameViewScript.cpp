@@ -92,12 +92,14 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
         return;
     }
     getStarEvent.emit();
-    ET_SendEvent(starId, &ETUIViewAppearAnimation::ET_playAppear, getEntityId());
+    ET_SendEvent(starId, &ETUIAnimationSequence::ET_playAnimation,
+        getEntityId(), EAnimSequenceType::Appear);
 }
 
 void GameViewScript::ET_onGameEnterState(EGameState state) {
     if(state == EGameState::PostGame) {
-        ET_SendEvent(timeInfoBoxId, &ETUIViewAppearAnimation::ET_playDissapear, getEntityId());
+        ET_SendEvent(timeInfoBoxId, &ETUIAnimationSequence::ET_playAnimation,
+            getEntityId(), EAnimSequenceType::Disappear);
     }
 }
 

@@ -106,7 +106,7 @@ void LevelButton::ET_playChangeAnimation(ELevelButtonState newState, int prevSta
     }
 }
 
-void LevelButton::ET_onAnimationPlayed(EAnimSequenceType animType) {
+void LevelButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {
     if(animType != EAnimSequenceType::Highlight) {
         return;
     }

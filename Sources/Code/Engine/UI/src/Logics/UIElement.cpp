@@ -1,5 +1,13 @@
 #include "Logics/UIElement.hpp"
 #include "UI/ETUILayout.hpp"
+#include "Reflect/ReflectContext.hpp"
+
+void UIElement::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<UIElement>("UIElement")) {
+        classInfo->addField("hidden", &UIElement::isHidden);
+        classInfo->addField("enabled", &UIElement::isEnabled);
+    }
+}
 
 UIElement::UIElement() :
     alpha(1.f),
@@ -16,7 +24,18 @@ UIElement::~UIElement() {
 bool UIElement::init() {
     ETNode<ETUIElement>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
-    onZIndexChanged(zIndex);
+
+    zIndex -= 1;
+    ET_setZIndex(zIndex + 1);
+
+    if(isHidden) {
+        isHidden = false;
+        ET_hide();
+    } else {
+        isHidden = true;
+        ET_show();
+    }
+
     return true;
 }
 
@@ -62,8 +81,12 @@ void UIElement::ET_show() {
         return;
     }
     isHidden = false;
+    if(isParentHidden) {
+        return;
+    }
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
+    updateHostLayout();
 }
 
 void UIElement::ET_hide() {
@@ -71,8 +94,12 @@ void UIElement::ET_hide() {
         return;
     }
     isHidden = true;
+    if(isParentHidden) {
+        return;
+    }
     onHide(true);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
+    updateHostLayout();
 }
 
 bool UIElement::ET_isHidden() const {
@@ -120,11 +147,17 @@ void UIElement::ET_setParentHidden(bool flag) {
     if(isParentHidden == flag) {
         return;
     }
+    bool prevHidden = ET_isHidden();
     isParentHidden = flag;
-    if(isParentHidden) {
+    bool currHidden = ET_isHidden();
+    if(prevHidden == currHidden) {
+        return;
+    }
+    if(currHidden) {
         onHide(true);
-    } else if(!isHidden) {
+    } else {
         onHide(false);
     }
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, ET_isHidden());
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, currHidden);
+    updateHostLayout();
 }

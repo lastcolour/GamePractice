@@ -9,6 +9,7 @@
 
 void UIBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
+        classInfo->addBaseClass<UIElement>();
         classInfo->addField("style", &UIBox::style);
         classInfo->addField("render", &UIBox::boxRenderId);
     }

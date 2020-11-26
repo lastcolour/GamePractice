@@ -9,7 +9,7 @@
 #include <vector>
 
 class UIViewTransitionManager : public SystemLogic,
-    public ETNode<ETUIViewAppearAnimationEvents>,
+    public ETNode<ETUIAnimationSequenceEvent>,
     public ETNode<ETUIViewTransitionManager> {
 public:
 
@@ -20,9 +20,8 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETUIViewAppearAnimationEvents
-    void ET_onAppearPlayed(EntityId viewId) override;
-    void ET_onDisappearPlayed(EntityId viewId) override;
+    // ETUIAnimationSequenceEvent
+    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
 
     // ETUIViewTransitionManager
     bool ET_hasActiveTransition() const override;
