@@ -33,8 +33,8 @@ public:
     void ET_onUITick(float dt) override;
 
     // ETUIAnimationSequence
-    bool ET_playAnimation(EntityId animTriggerId, EAnimSequenceType filter) override;
-    void ET_stopAnimation(EAnimSequenceType filter) override;
+    void ET_playAnimation(EntityId animTriggerId) override;
+    void ET_stopAnimation() override;
     void ET_addAnimationFrame(const UIAnimationFrame& newFrame) override;
     EAnimSequenceType ET_getType() const override;
     void ET_setType(EAnimSequenceType newType) override;

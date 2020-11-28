@@ -54,6 +54,7 @@ public:
     Transform ET_getLocalTransform() const override;
     void ET_setLocalTransform(const Transform& localTm) override;
     std::vector<EntityId> ET_getChildren() const override;
+    std::vector<EntityLogic*> ET_getLogisByTypeId(TypeId logicTypeId) override;
 
 private:
 

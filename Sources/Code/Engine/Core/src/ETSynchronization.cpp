@@ -45,7 +45,6 @@ void ETSyncRoute::hardUnlock(int reqRouteId) {
 
 void ETSyncRoute::pushRoute(int reqRouteId) {
     auto& node = blockedRouteMap[reqRouteId];
-    bool isThreadIntersection = true;
     auto threadId = std::this_thread::get_id();
     {
         std::unique_lock<std::mutex> ulock(mutex);

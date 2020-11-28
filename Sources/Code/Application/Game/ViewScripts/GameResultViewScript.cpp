@@ -71,7 +71,6 @@ void GameResultViewScript::ET_onAnimationPlayed(EntityId sourceId, EAnimSequence
     waitingId = InvalidEntityId;
     if(state == State::ShowingStars) {
         state = State::ShowingContinueButton;
-        waitingId = continueButtonId;
         ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
         playAppearAnimation(continueButtonId);
     } else if(state == State::ShowingContinueButton) {
@@ -98,17 +97,14 @@ void GameResultViewScript::ET_onViewGetFocus() {
         ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
         playAppearAnimation(continueButtonId);
     } else {
-            if(starsCount > 0) {
+        if(starsCount > 0) {
             playAppearAnimation(progressStars.fristId);
-            waitingId = progressStars.fristId;
         }
         if(starsCount > 1) {
             playAppearAnimation(progressStars.secondId);
-            waitingId = progressStars.secondId;
         }
         if(starsCount > 2) {
             playAppearAnimation(progressStars.thirdId);
-            waitingId = progressStars.thirdId;
         }
     }
 }
@@ -117,12 +113,12 @@ void GameResultViewScript::playAppearAnimation(EntityId elemId) {
     if(!elemId.isValid()) {
         return;
     }
-    bool animStarted = false;
-    ET_SendEventReturn(animStarted, elemId, &ETUIAnimationSequence::ET_playAnimation,
-        getEntityId(), EAnimSequenceType::Appear);
+    waitingId = elemId;
+    bool animStarted = UI::PlayAnimation(elemId, EAnimSequenceType::Appear, getEntityId());
     if(!animStarted) {
         LogWarning("[GameResultViewScript::playAppearAnimation] Can't find play appear animation on entity: '%s'",
             EntityUtils::GetEntityName(elemId));
+        ET_SendEvent(elemId, &ETUIElement::ET_show);
         ET_onAnimationPlayed(elemId, EAnimSequenceType::Appear);
     }
 }

@@ -6,6 +6,7 @@
 #include "Entity/ETEntity.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Logics/UIAnimationSequence.hpp"
 
 #include <cassert>
 
@@ -233,6 +234,16 @@ bool IsRootViewHasFocus(EntityId elemId) {
         }
     }
     return false;
+}
+
+UIAnimationSequence* GetAnimation(EAnimSequenceType animType, EntityId entityId) {
+    auto animations = GetEntityLogics<UIAnimationSequence>(entityId);
+    for(auto anim : animations) {
+        if(anim->ET_getType() == animType) {
+            return anim;
+        }
+    }
+    return nullptr;
 }
 
 } // namespace UI

@@ -54,6 +54,8 @@ TEST_F(UIViewTests, CheckOnlyOneViewHasFocus) {
         ET_SendEventReturn(result, &ETUIViewManager::ET_openView, UIViewType::Background);
         EXPECT_TRUE(result);
 
+        WaitViewLoaded();
+
         ET_SendEventReturn(backgroundViewId, &ETUIViewManager::ET_getActiveViewId);
         EXPECT_TRUE(backgroundViewId.isValid());
     }
@@ -74,7 +76,7 @@ TEST_F(UIViewTests, CheckOnlyOneViewHasFocus) {
 
     {
         ET_SendEventReturn(mainViewId, &ETUIViewManager::ET_getActiveViewId);
-        EXPECT_TRUE(mainViewId.isValid());
+        ASSERT_TRUE(mainViewId.isValid());
     }
 
     EXPECT_FALSE(GetIsInFocus(mainViewId));

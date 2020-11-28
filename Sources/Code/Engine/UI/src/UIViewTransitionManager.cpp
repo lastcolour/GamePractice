@@ -2,6 +2,8 @@
 #include "UI/ETUIView.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Logics/UIAnimationSequence.hpp"
+#include "UIUtils.hpp"
 
 #include <cassert>
 
@@ -67,11 +69,9 @@ void UIViewTransitionManager::startNextTask() {
         bool animStarted = false;
         if(task.isAppearing) {
             ET_SendEvent(&ETUIViewManager::ET_onViewStartAppearing, task.viewId);
-            ET_SendEventReturn(animStarted, task.viewId, &ETUIAnimationSequence::ET_playAnimation,
-                getEntityId(), EAnimSequenceType::Appear);
+            animStarted = UI::PlayAnimation(task.viewId, EAnimSequenceType::Appear, getEntityId());
         } else {
-            ET_SendEventReturn(animStarted, task.viewId, &ETUIAnimationSequence::ET_playAnimation,
-                getEntityId(), EAnimSequenceType::Disappear);
+            animStarted = UI::PlayAnimation(task.viewId, EAnimSequenceType::Disappear, getEntityId());
         }
         if(!animStarted) {
             auto viewId = task.viewId;

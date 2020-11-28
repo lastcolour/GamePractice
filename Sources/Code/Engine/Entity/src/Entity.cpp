@@ -416,3 +416,14 @@ void Entity::purgeAllRelationships() {
     parent = nullptr;
     children.clear();
 }
+
+std::vector<EntityLogic*> Entity::ET_getLogisByTypeId(TypeId logicTypeId) {
+    std::vector<EntityLogic*> result;
+    for(auto& node : logics) {
+        if(node.logic.getInstanceTypeId() == logicTypeId) {
+            auto ptr = static_cast<EntityLogic*>(node.logic.get());
+            result.push_back(ptr);
+        }
+    }
+    return result;
+}

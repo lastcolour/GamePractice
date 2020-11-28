@@ -48,6 +48,7 @@ void GameViewScript::ET_onViewOpened() {
 void GameViewScript::ET_onViewClosed() {
     BaseViewScript::ET_onViewClosed();
     ET_SendEvent(&ETGameBoardSpawner::ET_unloadLevel);
+    ET_SendEvent(&ETGameStateManager::ET_finishGame);
 }
 
 void GameViewScript::ET_onViewLostFocus() {
@@ -92,14 +93,13 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
         return;
     }
     getStarEvent.emit();
-    ET_SendEvent(starId, &ETUIAnimationSequence::ET_playAnimation,
-        getEntityId(), EAnimSequenceType::Appear);
+
+    UI::PlayAnimation(starId, EAnimSequenceType::Appear, getEntityId());
 }
 
 void GameViewScript::ET_onGameEnterState(EGameState state) {
     if(state == EGameState::PostGame) {
-        ET_SendEvent(timeInfoBoxId, &ETUIAnimationSequence::ET_playAnimation,
-            getEntityId(), EAnimSequenceType::Disappear);
+        UI::PlayAnimation(timeInfoBoxId, EAnimSequenceType::Disappear, getEntityId());
     }
 }
 

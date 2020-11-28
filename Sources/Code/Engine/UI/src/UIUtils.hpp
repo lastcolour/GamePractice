@@ -8,10 +8,10 @@
 #include "UI/UILayoutStyle.hpp"
 
 class UILayoutStyle;
+class UIAnimationSequence;
+enum class EAnimSequenceType;
 
 namespace UI {
-
-const float ReturnAnimScaleFactor = 1.3f;
 
 UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin);
 
@@ -39,6 +39,8 @@ AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box);
 
 bool IsRootViewHasFocus(EntityId elemId);
 
-} // namespace
+UIAnimationSequence* GetAnimation(EAnimSequenceType animType, EntityId entityId);
+
+} // namespace UI
 
 #endif /* __UI_UTILS_HPPP__ */

@@ -9,8 +9,6 @@ public:
         OnMainViewStartGame,
         OnGameEndViewExit,
         OnBackButton,
-        OnSurfaceHidden,
-        OnSurfaceShown,
         OnPauseViewResume,
         OnPauseViewRestart,
         OnPauseViewExit,

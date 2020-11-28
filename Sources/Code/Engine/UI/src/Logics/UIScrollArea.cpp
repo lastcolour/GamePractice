@@ -253,11 +253,7 @@ void UIScrollArea::ET_onHidden(bool flag) {
 }
 
 void UIScrollArea::ET_onDisabled(bool flag) {
-    if(flag) {
-        ET_SendEvent(targetId, &ETUIElement::ET_disable);
-    } else {
-        ET_SendEvent(targetId, &ETUIElement::ET_enable);
-    }
+    ET_SendEvent(targetId, &ETUIElement::ET_setParentDisabled, flag);
 }
 
 void UIScrollArea::ET_onIngoreTransform(bool flag) {

@@ -98,7 +98,7 @@ void LevelButton::ET_setLevelStars(int count) {
 void LevelButton::ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) {
     if(newState != state) {
         ET_setLevelState(newState);
-        ET_SendEvent(getEntityId(), &ETUIAnimationSequence::ET_playAnimation, getEntityId(), EAnimSequenceType::Highlight);
+        UI::PlayAnimation(getEntityId(), EAnimSequenceType::Highlight, getEntityId());
         ET_SendEvent(senderId, &ETUIElement::ET_disable);
     }
     if(prevStarCount != newStarCount) {

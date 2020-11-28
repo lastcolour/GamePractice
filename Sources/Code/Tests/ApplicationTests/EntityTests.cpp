@@ -7,6 +7,7 @@
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Core/StringFormat.hpp"
+#include "Logics/UIAnimationSequence.hpp"
 
 #include <set>
 
@@ -431,50 +432,13 @@ TEST_F(EntityTests, CheckOnlyUniqueLogicsRegistered) {
     ASSERT_EQ(allLogics, uniqueLogics.size());
 }
 
-TEST_F(EntityTests, TestAddElementToUILayout) {
-    EntityId entityId;
-    ET_SendEventReturn(entityId, &ETEntityManager::ET_createEntity, "Game/Simple.json");
-    ASSERT_TRUE(entityId.isValid());
+TEST_F(EntityTests, CheckQueryLogicsByTypeId) {
+    auto entity = createVoidObject();
+    ET_SendEvent(&ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "UIAnimationSequence");
+    ET_SendEvent(&ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "UIAnimationSequence");
 
-    EntityLogicId logicId = InvalidEntityLogicId;
-    ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, entityId, "UILayout");
-    ASSERT_NE(logicId, InvalidEntityLogicId);
-
-    EntityLogicValueId valueId = 4;
-    bool res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
-    ASSERT_TRUE(res);
-
-    MemoryStream stream;
-    stream.openForWrite();
-
-    res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, valueId, stream);
-    ASSERT_TRUE(res);
-
-    stream.reopenForRead();
-    {
-        int size = 0;
-        stream.read(size);
-        ASSERT_EQ(size, 1);
-    }
-    {
-        int childrendCount = 0;
-        stream.read(childrendCount);
-        ASSERT_EQ(childrendCount, 0);
-    }
-
-    stream.reopenForWrite();
-
-    res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, AllEntityLogicValueId, stream);
-    ASSERT_TRUE(res);
-
-    stream.reopenForRead();
-
-    res = false;
-    ET_SendEventReturn(res, &ETEntityManager::ET_writeEntityLogicData, entityId, logicId, AllEntityLogicValueId, stream);
-    ASSERT_TRUE(res);
-
-    ET_SendEvent(&ETEntityManager::ET_destroyEntity, entityId);
+    auto logics = GetEntityLogics<UIAnimationSequence>(entity->getEntityId());
+    ASSERT_EQ(logics.size(), 2u);
+    ASSERT_TRUE(logics[0]);
+    ASSERT_TRUE(logics[1]);
 }

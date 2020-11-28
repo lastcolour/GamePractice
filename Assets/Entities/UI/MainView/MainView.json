@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 306.0,
+          "y": 313.0,
           "z": 0.0
         },
         "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 256.0,
-                            "y": 256.0
+                            "x": 262.0,
+                            "y": 262.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -169,8 +169,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 308.0,
-                      "y": 308.0
+                      "x": 315.0,
+                      "y": 315.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -231,7 +231,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -103.0,
+          "y": -106.0,
           "z": 0.0
         },
         "scale": {
@@ -321,7 +321,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -410.0,
+          "y": -420.0,
           "z": 0.0
         },
         "scale": {
@@ -344,7 +344,7 @@
           {
             "transform": {
               "pos": {
-                "x": -155.0,
+                "x": -158.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -398,8 +398,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 77.0,
-                            "y": 77.0
+                            "x": 79.0,
+                            "y": 79.0
                           },
                           "image": "Images/about.png",
                           "color": {
@@ -473,8 +473,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 103.0,
-                      "y": 103.0
+                      "x": 105.0,
+                      "y": 105.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -545,8 +545,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 77.0,
-                            "y": 77.0
+                            "x": 79.0,
+                            "y": 79.0
                           },
                           "image": "Images/options.png",
                           "color": {
@@ -620,8 +620,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 103.0,
-                      "y": 103.0
+                      "x": 105.0,
+                      "y": 105.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -638,7 +638,7 @@
           {
             "transform": {
               "pos": {
-                "x": 155.0,
+                "x": 158.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -692,8 +692,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 77.0,
-                            "y": 77.0
+                            "x": 79.0,
+                            "y": 79.0
                           },
                           "image": "Images/profile.png",
                           "color": {
@@ -767,8 +767,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 103.0,
-                      "y": 103.0
+                      "x": 105.0,
+                      "y": 105.0
                     },
                     "image": "Images/block.png",
                     "color": {
@@ -881,6 +881,75 @@
       "type": "MainViewScript",
       "id": 6,
       "data": {}
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 7,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Appear",
+        "startDelay": 0.0,
+        "subAnimations": [],
+        "startEvent": "Show",
+        "endEvent": "None",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 0.0,
+            "offset": {
+              "x": 0.0,
+              "y": 30.0
+            },
+            "scale": {
+              "x": 0.699999988079071,
+              "y": 0.699999988079071
+            },
+            "alpha": 0.0
+          },
+          {
+            "lerpMode": "Sin",
+            "duration": 0.5,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 8,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Disappear",
+        "startDelay": 0.0,
+        "subAnimations": [],
+        "startEvent": "None",
+        "endEvent": "Hide",
+        "frames": [
+          {
+            "lerpMode": "Sin",
+            "duration": 0.4000000059604645,
+            "offset": {
+              "x": 0.0,
+              "y": 30.0
+            },
+            "scale": {
+              "x": 0.699999988079071,
+              "y": 0.699999988079071
+            },
+            "alpha": 0.0
+          }
+        ]
+      }
     }
   ]
 }

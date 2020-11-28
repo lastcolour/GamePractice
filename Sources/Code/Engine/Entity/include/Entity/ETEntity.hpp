@@ -4,6 +4,8 @@
 #include "Core/Core.hpp"
 #include "Math/Transform.hpp"
 
+class EntityLogic;
+
 struct ETEntityEvents {
     virtual ~ETEntityEvents() = default;
     virtual void ET_onTransformChanged(const Transform& newTm) = 0;
@@ -24,12 +26,24 @@ struct ETEntity {
     virtual EntityChildId ET_getChildIdFromEntityId(EntityId childEntId) const = 0;
     virtual EntityId ET_getEntityIdFromChildId(EntityChildId childId) const = 0;
     virtual std::vector<EntityId> ET_getChildren() const = 0;
+    virtual std::vector<EntityLogic*> ET_getLogisByTypeId(TypeId logicTypeId) = 0;
 };
 
 namespace EntityUtils {
 
 const char* GetEntityName(EntityId entityId);
 
+std::vector<EntityLogic*> GetEntityLogicsByTypeId(TypeId logicTypeId, EntityId entityId);
+
 } // namespace EntityUtils
+
+template<typename T>
+std::vector<T*> GetEntityLogics(EntityId entityId) {
+    static_assert(std::is_base_of<EntityLogic, T>::value,
+        "Can't query non logic type");
+    auto logics = EntityUtils::GetEntityLogicsByTypeId(GetTypeId<T>(), entityId);
+    std::vector<T*> result = std::move(reinterpret_cast<std::vector<T*>&>(logics));
+    return result;
+}
 
 #endif /* __ET_ENTITY_HPP__ */

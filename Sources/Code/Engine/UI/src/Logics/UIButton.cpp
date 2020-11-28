@@ -6,6 +6,7 @@
 #include "Render/ETRenderNode.hpp"
 #include "UIUtils.hpp"
 #include "Core/ETLogger.hpp"
+#include "Logics/UIAnimationSequence.hpp"
 
 #include <cassert>
 
@@ -46,8 +47,6 @@ void UIButton::Reflect(ReflectContext& ctx) {
             {"OnMainViewStartGame", UIEvent::EventType::OnMainViewStartGame},
             {"OnGameEndViewExit", UIEvent::EventType::OnGameEndViewExit},
             {"OnBackButton", UIEvent::EventType::OnBackButton},
-            {"OnSurfaceHidden", UIEvent::EventType::OnSurfaceHidden},
-            {"OnSurfaceShown", UIEvent::EventType::OnSurfaceShown},
             {"OnPauseViewResume", UIEvent::EventType::OnPauseViewResume},
             {"OnPauseViewRestart", UIEvent::EventType::OnPauseViewRestart},
             {"OnPauseViewExit", UIEvent::EventType::OnPauseViewExit},
@@ -149,9 +148,7 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
     if(!canContinueEvent(pt)) {
         return EInputEventResult::Ignore;
     }
-    bool animStarted = false;
-    ET_SendEventReturn(animStarted, getEntityId(), &ETUIAnimationSequence::ET_playAnimation, getEntityId(), EAnimSequenceType::Press);
-    if(!animStarted) {
+    if(!UI::PlayAnimation(getEntityId(), EAnimSequenceType::Press, getEntityId())) {
         UIEvent buttonEvent{getEntityId(), eventType};
         ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
     }

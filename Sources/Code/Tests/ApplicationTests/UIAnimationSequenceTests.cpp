@@ -31,6 +31,8 @@ TEST_F(UIAnimationSequenceTests, CheckInOut) {
         animSeq = new UIAnimationSequence();
         entity->addCustomLogic(std::unique_ptr<EntityLogic>(animSeq));
 
+
+        animSeq->ET_setType(EAnimSequenceType::Idle);
         UIAnimationFrame inFrame;
         inFrame.duration = 1.f;
         inFrame.scale = Vec2(0.5f);
@@ -42,7 +44,7 @@ TEST_F(UIAnimationSequenceTests, CheckInOut) {
         animSeq->ET_addAnimationFrame(outFrame);
     }
 
-    EXPECT_TRUE(animSeq->ET_playAnimation(InvalidEntityId, EAnimSequenceType::Default));
+    animSeq->ET_playAnimation(InvalidEntityId);
 
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, 0.5f);
 
@@ -115,6 +117,7 @@ TEST_F(UIAnimationSequenceTests, CheckSubAnimation) {
     {
         parentAnimSeq = new UIAnimationSequence();
         parentEntity->addCustomLogic(std::unique_ptr<EntityLogic>(parentAnimSeq));
+        parentAnimSeq->ET_setType(EAnimSequenceType::Press);
 
         UIAnimationFrame frame;
         frame.duration = 1.f;
@@ -133,6 +136,7 @@ TEST_F(UIAnimationSequenceTests, CheckSubAnimation) {
     {
         childAnimSeq = new UIAnimationSequence();
         childEntity->addCustomLogic(std::unique_ptr<EntityLogic>(childAnimSeq));
+        childAnimSeq->ET_setType(EAnimSequenceType::Press);
 
         UIAnimationFrame frame;
         frame.duration = 1.f;
@@ -144,7 +148,7 @@ TEST_F(UIAnimationSequenceTests, CheckSubAnimation) {
     parentEntity->ET_addChild(childEntity->getEntityId());
     parentAnimSeq->ET_addSubAnimation(childEntity->getEntityId());
 
-    parentAnimSeq->ET_playAnimation(InvalidEntityId, EAnimSequenceType::Default);
+    parentAnimSeq->ET_playAnimation(InvalidEntityId);
 
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, 0.5f);
 

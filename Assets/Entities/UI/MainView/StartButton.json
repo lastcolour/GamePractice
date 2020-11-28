@@ -56,8 +56,8 @@
               "alpha": 0.30000001192092896,
               "drawPriority": 4,
               "size": {
-                "x": 359.0,
-                "y": 88.0
+                "x": 367.0,
+                "y": 90.0
               },
               "image": "Images/StartButton_BG.png",
               "color": {
@@ -201,8 +201,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 359.0,
-          "y": 88.0
+          "x": 367.0,
+          "y": 90.0
         },
         "image": "Images/StartButton_BG.png",
         "color": {
@@ -299,6 +299,47 @@
           [
             1
           ]
+        ]
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 7,
+      "data": {
+        "autoStart": true,
+        "cyclic": true,
+        "type": "Idle",
+        "startDelay": 0.0,
+        "subAnimations": [],
+        "startEvent": "None",
+        "endEvent": "None",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 2.0,
+            "offset": {
+              "x": 0.0,
+              "y": -2.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 1.0,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          }
         ]
       }
     }

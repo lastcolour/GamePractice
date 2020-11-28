@@ -15,7 +15,8 @@ UIElement::UIElement() :
     isIgnoringTransform(false),
     isHidden(false),
     isEnabled(true),
-    isParentHidden(false) {
+    isParentHidden(false),
+    isParentDisabled(false) {
 }
 
 UIElement::~UIElement() {
@@ -109,6 +110,7 @@ bool UIElement::ET_isHidden() const {
 float UIElement::ET_getAlpha() const {
     return alpha;
 }
+
 void UIElement::ET_setAlpha(float newAlpha) {
     alpha = newAlpha;
     onAlphaChanged(alpha);
@@ -116,19 +118,40 @@ void UIElement::ET_setAlpha(float newAlpha) {
 }
 
 void UIElement::ET_enable() {
+    bool prevEnabled = ET_isEnabled();
     isEnabled = true;
-    onDisabled(!isEnabled);
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, !isEnabled);
+    bool currEnabled = ET_isEnabled();
+    if(prevEnabled == currEnabled) {
+        return;
+    }
+    onDisabled(!currEnabled);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, !currEnabled);
 }
 
 void UIElement::ET_disable() {
+    bool prevEnabled = ET_isEnabled();
     isEnabled = false;
-    onDisabled(!isEnabled);
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, !isEnabled);
+    bool currEnabled = ET_isEnabled();
+    if(prevEnabled == currEnabled) {
+        return;
+    }
+    onDisabled(!currEnabled);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, !currEnabled);
+}
+
+void UIElement::ET_setParentDisabled(bool flag) {
+    bool prevEnabled = ET_isEnabled();
+    isParentDisabled = flag;
+    bool currEnabled = ET_isEnabled();
+    if(prevEnabled == currEnabled) {
+        return;
+    }
+    onDisabled(!currEnabled);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onDisabled, !currEnabled);
 }
 
 bool UIElement::ET_isEnabled() const {
-    return isEnabled;
+    return isEnabled && !isParentDisabled;
 }
 
 void UIElement::ET_setIgnoreTransform(bool flag) {
@@ -159,5 +182,7 @@ void UIElement::ET_setParentHidden(bool flag) {
         onHide(false);
     }
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, currHidden);
-    updateHostLayout();
+    if(!currHidden) {
+        updateHostLayout();
+    }
 }

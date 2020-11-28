@@ -248,14 +248,8 @@ void UILayout::ET_onHidden(bool flag) {
 }
 
 void UILayout::ET_onDisabled(bool flag) {
-    if(flag) {
-        for(auto childId : children) {
-            ET_SendEvent(childId, &ETUIElement::ET_disable);
-        }
-    } else {
-        for(auto childId : children) {
-            ET_SendEvent(childId, &ETUIElement::ET_enable);
-        }
+    for(auto childId : children) {
+        ET_SendEvent(childId, &ETUIElement::ET_setParentDisabled, flag);
     }
 }
 

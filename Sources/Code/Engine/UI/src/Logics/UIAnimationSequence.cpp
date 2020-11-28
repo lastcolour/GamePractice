@@ -84,7 +84,7 @@ float lerpByMode(float t, EAnimLerpMode mode) {
 void UIAnimationSequence::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<EAnimSequenceType>("EAnimSequenceType")) {
         enumInfo->addValues<EAnimSequenceType>({
-            {"Default", EAnimSequenceType::Default},
+            {"Idle", EAnimSequenceType::Idle},
             {"Appear", EAnimSequenceType::Appear},
             {"Disappear", EAnimSequenceType::Disappear},
             {"Press", EAnimSequenceType::Press},
@@ -114,7 +114,7 @@ UIAnimationSequence::UIAnimationSequence() :
     origAlpha(1.f),
     currDuration(0.f),
     startDelay(0.f),
-    seqType(EAnimSequenceType::Default),
+    seqType(EAnimSequenceType::Idle),
     onStartEvent(EShowEvent::None),
     onEndEvent(EShowEvent::None),
     cyclic(false),
@@ -155,12 +155,12 @@ void UIAnimationSequence::ET_onTransformChanged(const Transform& newTm) {
 
 void UIAnimationSequence::ET_onLoaded() {
     if(autoStart) {
-        ET_playAnimation(InvalidEntityId, seqType);
+        ET_playAnimation(InvalidEntityId);
     }
 }
 
 void UIAnimationSequence::deinit() {
-    ET_stopAnimation(seqType);
+    ET_stopAnimation();
 }
 
 EAnimSequenceType UIAnimationSequence::ET_getType() const {
@@ -209,10 +209,6 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         auto& frame = frames[i];
         if(i == 0 && frame.state == EAnimFrameState::Pending) {
             processShowEvent(getEntityId(), onStartEvent);
-            for(auto& subAnimId : subAnimations) {
-                ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_playAnimation, InvalidEntityId, seqType);
-                ET_SendEvent(subAnimId, &ETUITimerEvents::ET_onUITick, dt);
-            }
         }
         processFrame(animTime, frame);
         animTime -= frame.duration;
@@ -223,12 +219,15 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         ET_SendEvent(getEntityId(), &ETUIElement::ET_setAlpha, origAlpha);
         if(cyclic) {
             for(auto& subAnimId : subAnimations) {
-                ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_stopAnimation, seqType);
+                auto subAnim = UI::GetAnimation(seqType, subAnimId);
+                if(subAnim) {
+                    subAnim->ET_stopAnimation();
+                }
             }
             processShowEvent(getEntityId(), onEndEvent);
             reStartCycle();
         } else {
-            ET_stopAnimation(seqType);
+            ET_stopAnimation();
             ET_SendEvent(triggerId, &ETUIAnimationSequenceEvent::ET_onAnimationPlayed,
                 getEntityId(), seqType);
             triggerId = InvalidEntityId;
@@ -236,10 +235,7 @@ void UIAnimationSequence::ET_onUITick(float dt) {
     }
 }
 
-void UIAnimationSequence::ET_stopAnimation(EAnimSequenceType filter) {
-    if(seqType != filter && seqType != EAnimSequenceType::Default) {
-        return;
-    }
+void UIAnimationSequence::ET_stopAnimation() {
     if(!isPlaying) {
         return;
     }
@@ -252,7 +248,10 @@ void UIAnimationSequence::ET_stopAnimation(EAnimSequenceType filter) {
         frame.state = EAnimFrameState::Finished;
     }
     for(auto& subAnimId : subAnimations) {
-        ET_SendEvent(subAnimId, &ETUIAnimationSequence::ET_stopAnimation, filter);
+        auto subAnim = UI::GetAnimation(seqType, subAnimId);
+        if(subAnim) {
+            subAnim->ET_stopAnimation();
+        }
     }
 
     processShowEvent(getEntityId(), onEndEvent);
@@ -270,12 +269,9 @@ void UIAnimationSequence::reStartCycle() {
     }
 }
 
-bool UIAnimationSequence::ET_playAnimation(EntityId animTriggerId, EAnimSequenceType filter) {
-    if(seqType != filter && seqType != EAnimSequenceType::Default) {
-        return false;
-    }
+void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {
     if(isPlaying) {
-        return true;
+        return;
     }
 
     triggerId = animTriggerId;
@@ -286,9 +282,15 @@ bool UIAnimationSequence::ET_playAnimation(EntityId animTriggerId, EAnimSequence
     for(auto& frame : frames) {
         frame.state = EAnimFrameState::Pending;
     }
+    for(auto& subAnimId : subAnimations) {
+        auto subAnim = UI::GetAnimation(seqType, subAnimId);
+        if(subAnim) {
+            subAnim->ET_playAnimation(InvalidEntityId);
+        }
+    }
 
     ETNode<ETUITimerEvents>::connect(getEntityId());
-    return true;
+    return;
 }
 
 void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
@@ -326,3 +328,16 @@ void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
         frame.state = EAnimFrameState::Finished;
     }
 }
+
+namespace UI {
+
+bool PlayAnimation(EntityId entityId, EAnimSequenceType type, EntityId triggerId) {
+    auto anim = UI::GetAnimation(type, entityId);
+    if(!anim) {
+        return false;
+    }
+    anim->ET_playAnimation(triggerId);
+    return true;
+}
+
+} // namespace UI

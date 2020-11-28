@@ -28,6 +28,7 @@ struct ETUIElement {
     virtual bool ET_isEnabled() const = 0;
     virtual void ET_setIgnoreTransform(bool flag) = 0;
     virtual void ET_setParentHidden(bool flag) = 0;
+    virtual void ET_setParentDisabled(bool flag) = 0;
 };
 
 struct ETUIElementEvents {

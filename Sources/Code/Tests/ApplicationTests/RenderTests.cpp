@@ -132,14 +132,6 @@ void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEn
                 if(col != drawColor) {
                     ++failPixCount;
                 }
-            } else if(!((i == xStart && j >= yStart && j <= yEnd)
-                || (i == xEnd && j >= yStart && j <= yEnd)
-                || (j == yStart && i >= xStart && i <= xEnd)
-                || (j == yEnd && i >= xStart && i <= xEnd))) {
-
-                if(col != CLEAR_COLOR) {
-                    ++failPixCount;
-                }
             }
         }
     }

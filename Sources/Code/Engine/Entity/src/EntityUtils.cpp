@@ -9,4 +9,10 @@ const char* GetEntityName(EntityId entityId) {
     return name;
 }
 
+std::vector<EntityLogic*> GetEntityLogicsByTypeId(TypeId logicTypeId, EntityId entityId) {
+    std::vector<EntityLogic*> logics;
+    ET_SendEventReturn(logics, entityId, &ETEntity::ET_getLogisByTypeId, logicTypeId);
+    return logics;
+}
+
 } // namespace EntityUtils
