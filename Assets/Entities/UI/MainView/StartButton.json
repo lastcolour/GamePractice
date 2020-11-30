@@ -163,7 +163,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 47,
+              "fontSize": 48,
               "text": "Start"
             }
           },
@@ -206,9 +206,9 @@
         },
         "image": "Images/StartButton_BG.png",
         "color": {
-          "r": 138,
-          "g": 138,
-          "b": 138,
+          "r": 48,
+          "g": 154,
+          "b": 235,
           "a": 255
         }
       }

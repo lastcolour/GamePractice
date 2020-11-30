@@ -10,6 +10,8 @@ from utils.Managers import GetEventManager
 from menu.EntityLogicMenu import EntityLogicMenu
 
 def _isChildOfExternalEntity(entity):
+    if entity is None:
+        return False
     currParent = entity.getParent()
     while currParent != None:
         if not currParent.isInternal() and currParent.getParent() != None:

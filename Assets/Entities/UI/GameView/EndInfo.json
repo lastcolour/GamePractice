@@ -1,0 +1,325 @@
+{
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Background",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderColoredTexture",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 34,
+              "size": {
+                "x": 315.0,
+                "y": 105.0
+              },
+              "image": "Images/StartButton_BG.png",
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "UIBox",
+            "id": 2,
+            "data": {
+              "hidden": false,
+              "enabled": true,
+              "style": {
+                "width": 60.0,
+                "widthInv": "Grid",
+                "height": 20.0,
+                "heightInv": "Grid",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "render": [
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Label",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "UILabel",
+            "id": 1,
+            "data": {
+              "hidden": false,
+              "enabled": true,
+              "style": {
+                "fontSize": 10.0,
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "text": "DONE",
+              "render": [
+                0
+              ]
+            }
+          },
+          {
+            "type": "RenderText",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 35,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 255
+              },
+              "fontSize": 53,
+              "text": "DONE"
+            }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 3,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Appear",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.0,
+                  "offset": {
+                    "x": 15.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 0.699999988079071
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.5,
+                  "offset": {
+                    "x": 10.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 0.699999988079071
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.20000000298023224,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "UIBox",
+      "id": 1,
+      "data": {
+        "hidden": false,
+        "enabled": true,
+        "style": {
+          "width": 30.0,
+          "widthInv": "Grid",
+          "height": 30.0,
+          "heightInv": "Grid",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        },
+        "render": [
+          0
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 2,
+      "data": {
+        "extraZOffset": 0,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 3,
+      "data": {
+        "extraZOffset": 1,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 5,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Appear",
+        "startDelay": 0.0,
+        "subAnimations": [
+          [
+            2
+          ]
+        ],
+        "startEvent": "Show",
+        "endEvent": "Hide",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 0.0,
+            "offset": {
+              "x": 50.0,
+              "y": -10.0
+            },
+            "scale": {
+              "x": 0.699999988079071,
+              "y": 0.699999988079071
+            },
+            "alpha": 0.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 0.6000000238418579,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 1.5,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 0.6000000238418579,
+            "offset": {
+              "x": -50.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 0.699999988079071,
+              "y": 0.699999988079071
+            },
+            "alpha": 0.0
+          }
+        ]
+      }
+    }
+  ]
+}

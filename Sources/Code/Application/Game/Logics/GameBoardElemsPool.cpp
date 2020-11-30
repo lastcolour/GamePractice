@@ -3,7 +3,6 @@
 #include "Entity/ETEntityManger.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Core/ETLogger.hpp"
-#include "Render/ETRenderNode.hpp"
 
 #include <cassert>
 
@@ -63,13 +62,13 @@ EntityId GameBoardElemsPool::ET_spawnElem() {
     for(auto& elemNode : elements) {
         auto& elemInfo = elemNode.second;
         if(elemInfo.poolId == spawnPoolId && !elemInfo.isAlive) {
+            elemInfo.isAlive = true;
             elemId = elemNode.first;
             break;
         }
     }
 
     if(elemId.isValid()) {
-        ET_SendEvent(elemId, &ETRenderNode::ET_show);
         return elemId;
     }
 

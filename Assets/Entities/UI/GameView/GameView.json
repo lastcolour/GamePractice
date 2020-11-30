@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 471.0,
+          "y": 482.0,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -212.0,
+                "x": -205.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -58.0,
+                      "x": -59.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -104,8 +104,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 26.0,
-                            "y": 26.0
+                            "x": 27.0,
+                            "y": 27.0
                           },
                           "image": "Images/block.png",
                           "color": {
@@ -289,8 +289,8 @@
                     "alpha": 0.5,
                     "drawPriority": 4,
                     "size": {
-                      "x": 154.0,
-                      "y": 41.0
+                      "x": 158.0,
+                      "y": 42.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -330,7 +330,7 @@
           {
             "transform": {
               "pos": {
-                "x": 212.0,
+                "x": 205.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -355,7 +355,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -13.0,
+                      "y": -14.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -907,7 +907,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -15.0,
+                      "x": -16.0,
                       "y": 13.0,
                       "z": 0.0
                     },
@@ -931,7 +931,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 50.0,
+                            "x": 51.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1058,8 +1058,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 26.0,
-                                  "y": 26.0
+                                  "x": 27.0,
+                                  "y": 27.0
                                 },
                                 "image": "Images/block.png",
                                 "color": {
@@ -1076,7 +1076,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 5.0,
+                            "x": 6.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1215,8 +1215,8 @@
                     "alpha": 0.5,
                     "drawPriority": 4,
                     "size": {
-                      "x": 154.0,
-                      "y": 62.0
+                      "x": 158.0,
+                      "y": 63.0
                     },
                     "image": "Images/StartButton_BG.png",
                     "color": {
@@ -1435,7 +1435,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -478.0,
+          "y": -491.0,
           "z": 0.0
         },
         "scale": {
@@ -1465,7 +1465,7 @@
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
-                "height": 0.07500000298023224,
+                "height": 0.07999999821186066,
                 "heightInv": "Relative",
                 "margin": {
                   "top": 0.0,
@@ -1479,6 +1479,52 @@
           }
         ]
       }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "UI/GameView/StartInfo.json",
+      "id": 5,
+      "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "UI/GameView/EndInfo.json",
+      "id": 6,
+      "internal": false
     }
   ],
   "logics": [
@@ -1561,7 +1607,48 @@
           3,
           1
         ],
-        "getStartSound": "getProgressionStar_01"
+        "startInfo": [
+          5
+        ],
+        "endInfo": [
+          6
+        ],
+        "postGameTime": 1.0,
+        "getStartSound": ""
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 5,
+      "data": {
+        "extraZOffset": 30,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            5
+          ]
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 6,
+      "data": {
+        "extraZOffset": 30,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            6
+          ]
+        ]
       }
     }
   ]

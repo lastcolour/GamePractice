@@ -7,8 +7,7 @@
 #include "Game/ETLevelProgress.hpp"
 #include "Game/GameUtils.hpp"
 
-PostGameState::PostGameState() :
-    postGameTime(1.f) {
+PostGameState::PostGameState() {
 }
 
 PostGameState::~PostGameState() {
@@ -30,22 +29,14 @@ void PostGameState::onEnter(EntityId gameId) {
 }
 
 void PostGameState::ET_onAllElemsStatic() {
-    postGameTime = 1.f;
-    ETNode<ETGameTimerEvents>::connect(gameEntityId);
+    ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::None);
 }
 
 void PostGameState::onLeave() {
+    ETNode<ETGameBoardEvents>::disconnect();
     setupEndResult();
     gameEntityId = InvalidEntityId;
-    ETNode<ETGameTimerEvents>::disconnect();
     ET_SendEvent(&ETGameStateEvents::ET_onGameLeaveState, EGameState::PostGame);
-}
-
-void PostGameState::ET_onGameTick(float dt) {
-    postGameTime -= dt;
-    if(postGameTime < 0.f) {
-        ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::None);
-    }
 }
 
 void PostGameState::setupEndResult() {

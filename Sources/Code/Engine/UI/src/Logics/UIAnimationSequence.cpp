@@ -267,6 +267,13 @@ void UIAnimationSequence::reStartCycle() {
     for(auto& frame : frames) {
         frame.state = EAnimFrameState::Pending;
     }
+    for(auto& subAnimId : subAnimations) {
+        auto subAnim = UI::GetAnimation(seqType, subAnimId);
+        if(subAnim) {
+            subAnim->ET_stopAnimation();
+            subAnim->ET_playAnimation(InvalidEntityId);
+        }
+    }
 }
 
 void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {

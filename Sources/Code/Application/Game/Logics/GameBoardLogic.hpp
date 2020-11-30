@@ -4,7 +4,6 @@
 #include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
-#include "Math/Random.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Entity/ETEntity.hpp"
@@ -15,14 +14,12 @@
 #include <memory>
 
 struct BoardElement {
-    AABB2Di box;
     Vec2i movePt;
     Vec2i boardPt;
     EntityId entId;
     float vel;
 
     BoardElement() :
-        box(Vec2i(0), Vec2i(0)),
         movePt(-1),
         boardPt(-1),
         vel(0.f) {}
@@ -82,7 +79,7 @@ protected:
     void switchElements(int firstElem, int secondElem);
     void updateAfterRemoves();
     void matchElements();
-    bool createNewElement(const Vec2i& boardPt);
+    BoardElement createNewElement(const Vec2i& boardPt) const;
 
     void removeElem(BoardElement& elem);
     int getAllElemsBelow(const BoardElement& elem);
@@ -92,7 +89,6 @@ protected:
 
     std::vector<BoardElement> elements;
     AABB2Di boardBox;
-    Math::RandomIntGenerator elemTypeGenerator;
     Vec2i boardSize;
     Vec2 objectSize;
     EntityId uiBoxId;
@@ -101,6 +97,7 @@ protected:
     float moveSpeed;
     float moveAccel;
     int cellSize;
+    int zBackgroundIndex;
     bool doElemMathcing;
     bool isBoardStatic;
 };

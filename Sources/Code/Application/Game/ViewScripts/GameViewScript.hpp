@@ -5,13 +5,17 @@
 #include "Game/ViewScripts/ProgressionStars.hpp"
 #include "Game/ETGameScore.hpp"
 #include "Game/ETGame.hpp"
+#include "UI/ETUITimer.hpp"
 #include "Audio/SoundEvent.hpp"
+#include "UI/ETUIAnimation.hpp"
 
 class ReflectContext;
 
 class GameViewScript : public BaseViewScript,
     public ETNode<ETGameObjectiveEvents>,
-    public ETNode<ETGameStateEvents> {
+    public ETNode<ETGameStateEvents>,
+    public ETNode<ETUIAnimationSequenceEvent>,
+    public ETNode<ETUITimerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -34,8 +38,14 @@ public:
     void ET_onGameEnterState(EGameState state) override;
     void ET_onGameLeaveState(EGameState state) override;
 
+    // ETUIAnimationSequenceEvent
+    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
+
     // ETGameObjectiveEvents
     void ET_onObjectiveCompleted(ObjectiveProgress type) override;
+
+    // ETUITimerEvents
+    void ET_onUITick(float dt) override;
 
 protected:
 
@@ -48,10 +58,25 @@ private:
 
 private:
 
+    enum class State {
+        None = 0,
+        ShowStartInfo,
+        Game,
+        ShowEndInfo,
+        WaitPostGame
+    };
+
+private:
+
     ProgressionStars progressStars;
     SoundEvent getStarEvent;
     EntityId timeInfoBoxId;
     EntityId boardSpawnerId;
+    EntityId startInfoId;
+    EntityId endInfoId;
+    float postGameTime;
+    float currentPostGameTime;
+    State scriptState;
 };
 
 #endif /* __GAME_VIEW_SCRIPT_HPP__ */

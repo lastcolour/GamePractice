@@ -52,7 +52,7 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     }
 
     Transform tm;
-    ET_SendEventReturn(tm, activeElemId, &ETEntity::ET_getLocalTransform);
+    ET_SendEventReturn(tm, activeElemId, &ETEntity::ET_getTransform);
     Vec2 moveDir = Vec2(static_cast<float>(endPt.x), static_cast<float>(endPt.y)) - Vec2(tm.pt.x, tm.pt.y);
 
     Vec2i nextBoardPt = startPt;
