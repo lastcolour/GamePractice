@@ -30,13 +30,13 @@
             "id": 1,
             "data": {
               "isVisible": true,
-              "alpha": 0.0,
+              "alpha": 0.30000001192092896,
               "drawPriority": 0,
               "size": {
-                "x": 588.0,
-                "y": 588.0
+                "x": 520.0,
+                "y": 520.0
               },
-              "color": {
+              "tintColor": {
                 "r": 255,
                 "g": 255,
                 "b": 255,
@@ -50,25 +50,6 @@
             "data": {
               "mode": "Write",
               "refVal": 1
-            }
-          },
-          {
-            "type": "RenderSimple",
-            "id": 3,
-            "data": {
-              "isVisible": true,
-              "alpha": 0.30000001192092896,
-              "drawPriority": 0,
-              "size": {
-                "x": 588.0,
-                "y": 588.0
-              },
-              "color": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 255
-              }
             }
           }
         ]
@@ -107,7 +88,7 @@
           "minScore": 30
         },
         "threeStars": {
-          "minScore": 50
+          "minScore": 100
         }
       }
     },

@@ -9,10 +9,9 @@
 
 #include <algorithm>
 #include <cassert>
+#include <limits>
 
 namespace {
-
-const int INVALID_BOARD_ELEM_ID = -1;
 
 EBoardElemMoveState getElemMoveState(EntityId elemId) {
     EBoardElemMoveState state = EBoardElemMoveState::Static;
@@ -69,7 +68,7 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
         assert(false && "Try switch invalid board eleemts");
         return;
     }
-    std::swap(firstElem->boardPt, secondElem->boardPt);
+    std::swap(firstElem->entId, secondElem->entId);
     setElemBoardPos(*firstElem, firstElem->boardPt);
     setElemBoardPos(*secondElem, secondElem->boardPt);
 }
@@ -82,10 +81,8 @@ EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
     if(!boardBox.isInside(pt)) {
         return InvalidEntityId;
     }
-    Vec2i boardPt = pt -  boardBox.bot;
+    Vec2i boardPt(pt.x - boardBox.bot.x, pt.y - boardBox.bot.y);
     boardPt /= cellSize;
-    boardPt.x /= boardSize.x;
-    boardPt.y /= boardSize.y;
     return ET_getElemByBoardPos(boardPt);
 }
 
@@ -116,7 +113,6 @@ BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) const {
     }
 
     elem.boardPt = boardPt;
-    elem.movePt = boardPt;
     setElemBoardPos(elem, elem.boardPt);
     setElemMoveState(elem.entId, EBoardElemMoveState::Static);
     setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
@@ -140,14 +136,16 @@ bool GameBoardLogic::init() {
     ET_onZIndexChanged(0);
 
     for(int i = 0; i < boardSize.x; ++i) {
+        std::vector<BoardElement> column;
         for(int j = 0; j < boardSize.y; ++j) {
             auto elem = createNewElement(Vec2i(i, j));
             if(!elem.entId.isValid()) {
                 return false;
             } else {
-                elements.push_back(elem);
+                column.push_back(elem);
             }
         }
+        columns.push_back(std::move(column));
     }
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
@@ -159,26 +157,12 @@ void GameBoardLogic::deinit() {
 }
 
 const BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) const {
-    for(auto& elem : elements) {
-        if(elem.boardPt == boardPt) {
-            return &elem;
-        }
+    if(boardPt.x >= columns.size()) {
+        return nullptr;
     }
-    return nullptr;
-}
-
-const BoardElement* GameBoardLogic::getElem(EntityId entId) const {
-    for(auto& elem : elements) {
-        if(elem.entId == entId) {
-            return &elem;
-        }
-    }
-    return nullptr;
-}
-
-BoardElement* GameBoardLogic::getElem(EntityId entId) {
-    for(auto& elem : elements) {
-        if(elem.entId == entId) {
+    auto col = columns[boardPt.x];
+    for(auto& elem : col) {
+        if(elem.boardPt.y == boardPt.y) {
             return &elem;
         }
     }
@@ -186,9 +170,35 @@ BoardElement* GameBoardLogic::getElem(EntityId entId) {
 }
 
 BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) {
-    for(auto& elem : elements) {
-        if(elem.boardPt == boardPt) {
+    if(boardPt.x >= columns.size()) {
+        return nullptr;
+    }
+    auto col = columns[boardPt.x];
+    for(auto& elem : col) {
+        if(elem.boardPt.y == boardPt.y) {
             return &elem;
+        }
+    }
+    return nullptr;
+}
+
+const BoardElement* GameBoardLogic::getElem(EntityId entId) const {
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            if(elem.entId == entId) {
+                return &elem;
+            }
+        }
+    }
+    return nullptr;
+}
+
+BoardElement* GameBoardLogic::getElem(EntityId entId) {
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            if(elem.entId == entId) {
+                return &elem;
+            }
         }
     }
     return nullptr;
@@ -211,10 +221,42 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
 }
 
 void GameBoardLogic::updateAfterRemoves() {
-    for(auto& elem : elements) {
-        auto lifeState = getElemLifeState(elem.entId);
-        if(lifeState == EBoardElemLifeState::Void) {
-            removeElem(elem);
+    Transform tm;
+    auto pos = ET_getPosFromBoardPos(Vec2i(0, boardSize.y - 1));
+    float topPosY = pos.y;
+
+    for(auto& col : columns) {
+        auto it = col.begin();
+        while(it != col.end()) {
+            auto elem = *it;
+            auto lifeState = getElemLifeState(elem.entId);
+            if(lifeState != EBoardElemLifeState::Void) {
+                ++it;
+            } else {
+                it = col.erase(it);
+
+                ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
+                elem = createNewElement(elem.boardPt);
+                if(!elem.entId.isValid()) {
+                    LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");
+                    return;
+                }
+
+                auto& topElem = col.back();
+                ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
+                if(tm.pt.y > topPosY) {
+                    tm.pt.y += cellSize;
+                    ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
+                } else {
+                    setElemBoardPos(elem, Vec2i(elem.boardPt.x, boardSize.y));
+                }
+
+                elem.boardPt.y = -1;
+                setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
+                setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
+
+                col.push_back(elem);
+            }
         }
     }
 }
@@ -244,54 +286,52 @@ Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) c
     return resPt;
 }
 
-void GameBoardLogic::updateMovePosition(BoardElement& elem) {
-    auto moveSate = getElemMoveState(elem.entId);
-    auto elemCount = getAllElemsBelow(elem);
-
-    if(moveSate == EBoardElemMoveState::Static) {
-        if(elem.boardPt.y == elemCount) {
-            return;
-        } else {
-            setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
-            elem.boardPt.y = -1;
-        }
-    } else if(moveSate != EBoardElemMoveState::Falling) {
-        return;
-    }
-
-    elem.movePt.x = elem.boardPt.x;
-    elem.movePt.y = elemCount;
-}
-
-void GameBoardLogic::moveElem(BoardElement& elem, float dt) {
-    if(elem.boardPt.y != -1) {
-        return;
-    }
-
-    isBoardStatic = false;
-
-    Transform tm;
-    ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
-
-    elem.vel += dt * moveAccel;
-    tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
-    Vec3 desirePt = ET_getPosFromBoardPos(elem.movePt);
-    if(tm.pt.y > desirePt.y) {
-        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-    } else {
-        elem.vel = 0.f;
-        setElemMoveState(elem.entId, EBoardElemMoveState::Static);
-        setElemBoardPos(elem, elem.movePt);
-        doElemMathcing = true;
-    }
-}
-
 void GameBoardLogic::ET_onGameTick(float dt) {
-    for(auto& elem : elements) {
-        updateMovePosition(elem);
-    }
-    for(auto& elem : elements) {
-        moveElem(elem, dt);
+    for(auto& col : columns) {
+        float prevYPos = -std::numeric_limits<float>::max();
+        float prevVel = -1.f;
+        for(int i = 0, sz = col.size(); i < sz; ++i) {
+            int movePtY = i;
+            auto& elem = col[i];
+
+            auto moveState = getElemMoveState(elem.entId);
+            if(moveState == EBoardElemMoveState::Static) {
+                if(elem.boardPt.y != movePtY) {
+                    setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
+                } else {
+                    continue;
+                }
+            } else if(moveState != EBoardElemMoveState::Falling) {
+                continue;
+            }
+
+            Transform tm;
+            ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
+
+            elem.vel += dt * moveAccel;
+            tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
+
+            Vec3 desirePt = ET_getPosFromBoardPos(Vec2i(elem.boardPt.x, movePtY));
+            bool reachDestination = tm.pt.y <= desirePt.y;
+
+            if(tm.pt.y < (prevYPos + cellSize)) {
+                tm.pt.y = prevYPos + cellSize;
+                elem.vel = prevVel * 0.9f;
+            }
+
+            prevYPos = tm.pt.y;
+            prevVel = elem.vel;
+
+            if(!reachDestination) {
+                ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
+                isBoardStatic = false;
+            } else {
+                elem.vel = 0.f;
+                setElemMoveState(elem.entId, EBoardElemMoveState::Static);
+                setElemBoardPos(elem, Vec2i(elem.boardPt.x, movePtY));
+                doElemMathcing = true;
+            }
+        }
     }
 
     if(doElemMathcing) {
@@ -310,14 +350,16 @@ bool GameBoardLogic::ET_isAllElemStatic() const {
     if(doElemMathcing) {
         return false;
     }
-    for(auto& elem : elements) {
-        auto lifeState = getElemLifeState(elem.entId);
-        if(lifeState != EBoardElemLifeState::Alive) {
-            return false;
-        }
-        auto moveState = getElemMoveState(elem.entId);
-        if(moveState != EBoardElemMoveState::Static) {
-            return false;
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            auto lifeState = getElemLifeState(elem.entId);
+            if(lifeState != EBoardElemLifeState::Alive) {
+                return false;
+            }
+            auto moveState = getElemMoveState(elem.entId);
+            if(moveState != EBoardElemMoveState::Static) {
+                return false;
+            }
         }
     }
     return true;
@@ -349,35 +391,45 @@ void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
 
     ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, Vec2(boardBoxSize.x, boardBoxSize.y));
 
-    for(auto& elem : elements) {
-        setElemBoardPos(elem, elem.boardPt);
-        ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            setElemBoardPos(elem, elem.boardPt);
+            ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
+        }
     }
 }
 
 void GameBoardLogic::ET_onZIndexChanged(int newZIndex) {
     zBackgroundIndex = newZIndex;
     ET_SendEvent(backgroundId, &ETRenderNode::ET_setDrawPriority, zBackgroundIndex);
-    for(auto& elem : elements) {
-        ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, zBackgroundIndex + 1);
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, zBackgroundIndex + 1);
+        }
     }
 }
 
 void GameBoardLogic::ET_onAlphaChanged(float newAlpha) {
     ET_SendEvent(backgroundId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
-    for(auto& elem : elements) {
-        ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
+        }
     }
 }
 
 void GameBoardLogic::ET_onHidden(bool flag) {
     if(flag) {
-        for(auto& elem : elements) {
-            ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
+        for(auto& col : columns) {
+            for(auto& elem : col) {
+                ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
+            }
         }
     } else {
-        for(auto& elem : elements) {
-            ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
+        for(auto& col : columns) {
+            for(auto& elem : col) {
+                ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
+            }
         }
     }
 }
@@ -406,67 +458,4 @@ void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
     ET_onBoxChanged(aabb);
 
     ETNode<ETUIElementEvents>::connect(uiBoxId);
-}
-
-void GameBoardLogic::removeElem(BoardElement& elem) {
-    ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
-    elem = createNewElement(elem.boardPt);
-    if(!elem.entId.isValid()) {
-        LogError("[GameBoardLogic::removeElem] Can't respawn new element");
-        return;
-    }
-
-    auto topElem = getTopElemAbove(Vec2i(elem.boardPt.x, boardSize.y - 1));
-    if(topElem) {
-        Transform tm;
-        ET_SendEventReturn(tm, topElem->entId, &ETEntity::ET_getLocalTransform);
-
-        tm.pt.y += cellSize;
-        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-
-    } else {
-        setElemBoardPos(elem, Vec2i(elem.boardPt.x, boardSize.y));
-    }
-
-    elem.boardPt.y = -1;
-
-    setElemMoveState(elem.entId, EBoardElemMoveState::Falling);
-    setElemLifeState(elem.entId, EBoardElemLifeState::Alive);
-}
-
-int GameBoardLogic::getAllElemsBelow(const BoardElement& topElem) {
-    int count = 0;
-
-    Transform tm;
-    ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
-    float posY = tm.pt.y;
-
-    for(auto& elem : elements) {
-        if(elem.boardPt.x != topElem.boardPt.x) {
-            continue;
-        }
-        ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
-        if(tm.pt.y < posY) {
-            count += 1;
-        }
-    }
-    return count;
-}
-
-BoardElement* GameBoardLogic::getTopElemAbove(const Vec2i& boardPt) {
-    BoardElement* topElem = nullptr;
-    auto pos = ET_getPosFromBoardPos(boardPt);
-    float topPosY = pos.y;
-    for(auto& elem : elements) {
-        if(elem.boardPt.x != boardPt.x) {
-            continue;
-        }
-        Transform tm;
-        ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
-        if(tm.pt.y > topPosY) {
-            topPosY = tm.pt.y;
-            topElem = &elem;
-        }
-    }
-    return topElem;
 }

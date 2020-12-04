@@ -7,6 +7,8 @@ namespace ReflectUtils {
 
 ClassInfo* FindClassInfo(TypeId typeId);
 
+void AsyncWriteInstaceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
+
 bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
 
 bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
@@ -46,6 +48,12 @@ template<typename T>
 bool SaveObjectToLocalFile(T& object, const char* fileName) {
     auto classInfo = GetOrCreateClassInfo<T>();
     return WriteInstanceToLocalFile(&object, classInfo, fileName);
+}
+
+template<typename T>
+void AsyncSaveObjectToLocalFile(T& object, const char* fileName) {
+    auto classInfo = GetOrCreateClassInfo<T>();
+    return AsyncWriteInstaceToLocalFile(&object, classInfo, fileName);
 }
 
 } // namespace ReflectUtils

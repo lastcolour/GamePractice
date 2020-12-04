@@ -66,23 +66,25 @@ void LevelProgressionSystem::ET_setLevelProgress(const LevelProgress& newLevelPr
         levelsData.levels.push_back(newLevelProgress);
     }
 
-    bool newProgressIsBetter = false;
-    if(progressDelta->prev.completeTime > newLevelProgress.completeTime) {
-        newProgressIsBetter = true;
+    bool newProgHasMoreStars = false;
+    if(progressDelta->prev.stars <= newLevelProgress.stars) {
+        newProgHasMoreStars = true;
     }
-    if(progressDelta->prev.stars < newLevelProgress.stars) {
-        newProgressIsBetter = true;
+    bool newProgIsBetter = false;
+    if(newProgHasMoreStars) {
+        if(progressDelta->prev.completeTime > newLevelProgress.completeTime) {
+            newProgIsBetter = true;
+        }
+        if(progressDelta->prev.score < newLevelProgress.score) {
+            newProgIsBetter = true;
+        }
     }
-    if(progressDelta->prev.stars < newLevelProgress.score) {
-        newProgressIsBetter = true;
-    }
-    if(!newProgressIsBetter) {
+
+    if(!newProgIsBetter) {
         return;
     }
 
-    if(!ReflectUtils::SaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
-        LogError("[LevelProgressionSystem::ET_setLevelProgress] Can't update level progress file: '%s'", LEVEL_PROGRESS_FILE);
-    }
+    ReflectUtils::AsyncSaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE);
 }
 
 int LevelProgressionSystem::ET_getStarsDone() const {

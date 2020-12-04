@@ -134,7 +134,7 @@
         ],
         "logics": [
           {
-            "type": "RenderColoredTexture",
+            "type": "RenderImage",
             "id": 1,
             "data": {
               "isVisible": false,
@@ -145,7 +145,7 @@
                 "y": 105.0
               },
               "image": "Images/StartButton_BG.png",
-              "color": {
+              "tintColor": {
                 "r": 255,
                 "g": 255,
                 "b": 255,

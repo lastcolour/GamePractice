@@ -7,6 +7,7 @@ enum class VertexType {
     Vector3,
     Vector3_Tex,
     Vector4,
+    Vector2_Tex,
     Particle
 };
 
@@ -19,12 +20,14 @@ public:
     void draw();
     void drawChunk(const void* chunkBuffer, unsigned int chunkVertexCount);
     void drawInstanced(const void* instaceData, unsigned int instancesCount);
+    void drawNinePatch(float left, float right, float top, float down);
 
 public:
 
     AABB aabb;
     unsigned int vaoId;
     unsigned int vboId;
+    unsigned int eboId;
     unsigned int extraVboId;
     unsigned int vertCount;
     VertexType vertType;

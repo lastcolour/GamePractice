@@ -3,10 +3,6 @@
         "vert":"Shaders/geom_base.vert",
         "frag":"Shaders/geom_single_color.frag"
     },
-    "tex_solid_color":{
-        "vert":"Shaders/tex_base.vert",
-        "frag":"Shaders/tex_single_color.frag"
-    },
     "text_solid_color":{
         "vert":"Shaders/text_base.vert",
         "frag":"Shaders/text_single_color.frag"

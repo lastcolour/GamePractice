@@ -26,6 +26,7 @@ private:
     std::shared_ptr<RenderGeometry> createSquareTex();
     std::shared_ptr<RenderGeometry> createTextVertexChunks();
     std::shared_ptr<RenderGeometry> createParticles();
+    std::shared_ptr<RenderGeometry> createNinePatch();
 
 private:
 

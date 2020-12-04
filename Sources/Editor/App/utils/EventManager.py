@@ -2,7 +2,6 @@ from utils.Log import Log
 
 from dialog.LogicSelecDialog import LogicSelectDialog
 from dialog.SaveEntityChanges import SaveEntityChanges
-from dialog.RemoveEntityLogic import RemoveEntityLogic
 from dialog.OverrideFile import OverrideFile
 
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
@@ -84,14 +83,8 @@ class EventManager:
         self._app._entityLogicsView.addLogicView(entityLogic)
 
     def onRemoveEntityLogicBtClicked(self, editLogic):
-        retCode = RemoveEntityLogic(editLogic).exec_()
-        if retCode == QMessageBox.Ok:
-            editLogic.getEntity().removeLogic(editLogic.getNativeId())
-            self._app._entityLogicsView.removeLogicView(editLogic.getNativeId())
-        elif retCode == QMessageBox.Cancel:
-            pass
-        elif retCode == QMessageBox.No:
-            pass
+        editLogic.getEntity().removeLogic(editLogic.getNativeId())
+        self._app._entityLogicsView.removeLogicView(editLogic.getNativeId())
 
     def onChildEntityExtractToFile(self, childEntity):
         name = childEntity.getFullFilePath()
@@ -124,6 +117,10 @@ class EventManager:
         else:
             copyEntity = entity.addChildEntity(copyEntitydata._name)
         return copyEntity
+
+    def rebuildAssetsModel(self):
+        self._app._assetsModel.reload()
+        self._app._entityFileView.setFileTreeModel(self._app._assetsModel.getEntitiesTree())
 
     def getAssetsModel(self):
         return self._app._assetsModel

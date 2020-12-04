@@ -39,7 +39,8 @@ public:
     }
 
     std::vector<BoardElement>& getElements() {
-        return elements;
+        std::vector<BoardElement> res;
+        return res;
     }
 
     Vec2i getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) const {

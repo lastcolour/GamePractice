@@ -30,4 +30,9 @@ struct ETAssetsSetup {
     virtual void ET_getLocalDataRootPath(std::string& localDataRooPath) = 0;
 };
 
+struct ETAsyncAssets {
+    virtual ~ETAsyncAssets() = default;
+    virtual void ET_asyncSaveLocalFile(const char* fileName, Buffer& buff) = 0;
+};
+
 #endif /* __ET_ASSETS_HPP__ */

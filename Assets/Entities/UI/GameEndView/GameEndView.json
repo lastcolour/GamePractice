@@ -121,7 +121,7 @@
                               }
                             },
                             {
-                              "type": "RenderColoredTexture",
+                              "type": "RenderImage",
                               "id": 2,
                               "data": {
                                 "isVisible": true,
@@ -132,7 +132,7 @@
                                   "y": 103.0
                                 },
                                 "image": "Images/block.png",
-                                "color": {
+                                "tintColor": {
                                   "r": 206,
                                   "g": 206,
                                   "b": 18,
@@ -169,7 +169,7 @@
                         }
                       },
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 2,
                         "data": {
                           "isVisible": true,
@@ -180,7 +180,7 @@
                             "y": 98.0
                           },
                           "image": "Images/block.png",
-                          "color": {
+                          "tintColor": {
                             "r": 132,
                             "g": 132,
                             "b": 132,
@@ -281,7 +281,7 @@
                               }
                             },
                             {
-                              "type": "RenderColoredTexture",
+                              "type": "RenderImage",
                               "id": 2,
                               "data": {
                                 "isVisible": true,
@@ -292,7 +292,7 @@
                                   "y": 103.0
                                 },
                                 "image": "Images/block.png",
-                                "color": {
+                                "tintColor": {
                                   "r": 206,
                                   "g": 206,
                                   "b": 18,
@@ -329,7 +329,7 @@
                         }
                       },
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 2,
                         "data": {
                           "isVisible": true,
@@ -340,7 +340,7 @@
                             "y": 98.0
                           },
                           "image": "Images/block.png",
-                          "color": {
+                          "tintColor": {
                             "r": 132,
                             "g": 132,
                             "b": 132,
@@ -441,7 +441,7 @@
                               }
                             },
                             {
-                              "type": "RenderColoredTexture",
+                              "type": "RenderImage",
                               "id": 2,
                               "data": {
                                 "isVisible": true,
@@ -452,7 +452,7 @@
                                   "y": 103.0
                                 },
                                 "image": "Images/block.png",
-                                "color": {
+                                "tintColor": {
                                   "r": 206,
                                   "g": 206,
                                   "b": 18,
@@ -489,7 +489,7 @@
                         }
                       },
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 2,
                         "data": {
                           "isVisible": true,
@@ -500,7 +500,7 @@
                             "y": 98.0
                           },
                           "image": "Images/block.png",
-                          "color": {
+                          "tintColor": {
                             "r": 132,
                             "g": 132,
                             "b": 132,
@@ -654,7 +654,7 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 5,
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -697,7 +697,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 5,
                   "data": {
                     "isVisible": true,
@@ -708,7 +708,7 @@
                       "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 112,
                       "g": 112,
                       "b": 112,
@@ -796,7 +796,7 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "color": {
+                          "tintColor": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
@@ -835,7 +835,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 2,
                   "data": {
                     "isVisible": true,
@@ -846,7 +846,7 @@
                       "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
@@ -1017,7 +1017,7 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -1076,7 +1076,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 4,
                   "data": {
                     "isVisible": true,
@@ -1087,7 +1087,7 @@
                       "y": 41.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
@@ -1175,7 +1175,7 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -1241,7 +1241,7 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -1300,7 +1300,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 4,
                   "data": {
                     "isVisible": true,
@@ -1311,7 +1311,7 @@
                       "y": 41.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
@@ -1377,7 +1377,7 @@
             }
           },
           {
-            "type": "RenderColoredTexture",
+            "type": "RenderImage",
             "id": 4,
             "data": {
               "isVisible": true,
@@ -1388,7 +1388,7 @@
                 "y": 461.0
               },
               "image": "Images/block.png",
-              "color": {
+              "tintColor": {
                 "r": 220,
                 "g": 220,
                 "b": 220,
@@ -1452,7 +1452,7 @@
           "x": 600.0,
           "y": 1024.0
         },
-        "color": {
+        "tintColor": {
           "r": 0,
           "g": 0,
           "b": 0,

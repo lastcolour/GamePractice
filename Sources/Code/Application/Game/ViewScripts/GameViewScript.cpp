@@ -25,7 +25,8 @@ void GameViewScript::Reflect(ReflectContext& ctx) {
 GameViewScript::GameViewScript() :
     postGameTime(1.f),
     currentPostGameTime(0.f),
-    scriptState(State::None) {
+    scriptState(State::None),
+    gameLeftPostGame(false) {
 }
 
 GameViewScript::~GameViewScript() {
@@ -57,6 +58,7 @@ void GameViewScript::ET_onViewOpened() {
     ET_SendEvent(&ETGameBoardSpawner::ET_loadPendingLevel);
 
     scriptState = State::None;
+    gameLeftPostGame = false;
 }
 
 void GameViewScript::ET_onViewClosed() {
@@ -159,9 +161,11 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
 void GameViewScript::ET_onGameEnterState(EGameState state) {
     if(state == EGameState::PostGame) {
         assert(scriptState == State::Game && "Invalid script state");
-        UI::PlayAnimation(timeInfoBoxId, EAnimSequenceType::Disappear, InvalidEntityId);
+        if(!UI::PlayAnimation(timeInfoBoxId, EAnimSequenceType::Disappear, InvalidEntityId)) {
+            ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
+        }
         scriptState = State::ShowEndInfo;
-        ET_SendEvent(&ETGameTimer::ET_pause);
+        ET_SendEvent(&ETGameTimer::ET_setScale, 0.1f);
         if(!UI::PlayAnimation(endInfoId, EAnimSequenceType::Appear, getEntityId())) {
             ET_onAnimationPlayed(endInfoId, EAnimSequenceType::Appear);
         }
@@ -180,9 +184,11 @@ void GameViewScript::ET_onUITick(float dt) {
 
 void GameViewScript::ET_onGameLeaveState(EGameState gameState) {
     if(gameState == EGameState::PostGame) {
-        assert(scriptState == State::WaitPostGame && "Invalid script state");
-        currentPostGameTime = postGameTime;
-        ETNode<ETUITimerEvents>::connect(getEntityId());
+        gameLeftPostGame = true;
+        if(scriptState == State::WaitPostGame) {
+            currentPostGameTime = postGameTime;
+            ETNode<ETUITimerEvents>::connect(getEntityId());
+        }
     }
 }
 
@@ -201,7 +207,11 @@ void GameViewScript::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType a
         }
         case State::ShowEndInfo: {
             scriptState = State::WaitPostGame;
-            ET_SendEvent(&ETGameTimer::ET_resume);
+            ET_SendEvent(&ETGameTimer::ET_setScale, 1.f);
+            if(gameLeftPostGame) {
+                currentPostGameTime = postGameTime;
+                ETNode<ETUITimerEvents>::connect(getEntityId());
+            }
             break;
         }
         case State::WaitPostGame: {

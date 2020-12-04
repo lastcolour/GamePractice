@@ -31,7 +31,8 @@ enum class PrimitiveGeometryType {
     Square = 0,
     Sqaure_Tex,
     Text_Vert_Chunk,
-    Particles
+    Particles,
+    NinePatch
 };
 
 enum class EFramebufferType {

@@ -4,9 +4,11 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Core/ETAssets.hpp"
 
 class AsyncAssetsLoader : public SystemLogic,
-    public ETNode<ETAssetsUpdateTask> {
+    public ETNode<ETAssetsUpdateTask>,
+    public ETNode<ETAsyncAssets> {
 public:
 
     AsyncAssetsLoader();
@@ -15,6 +17,9 @@ public:
     // SystemLogic
     bool init() override;
     void deinit() override;
+
+    // ETAsyncAssets
+    void ET_asyncSaveLocalFile(const char* fileName, Buffer& buff) override;
 
     // ETAssetsUpdateTask
     void ET_updateAssets() override;

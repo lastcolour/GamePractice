@@ -135,7 +135,7 @@ void RenderGraph::render() {
             node->render(ctx);
         }
     }
-    ET_SendEvent(&ETDebugRender::ET_update);
+    ET_SendEvent(&ETDebugRender::ET_update, ctx);
     endFrame();
     drawFrameNode.draw(*mainFBO);
 }
@@ -150,7 +150,7 @@ void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter fil
         }
     }
     if(filter != DrawContentFilter::NoDebugInfo) {
-        ET_SendEvent(&ETDebugRender::ET_update);
+        ET_SendEvent(&ETDebugRender::ET_update, ctx);
     }
     endFrame();
     RenderUtils::ReadFramebufferToImage(*mainFBO, imageBuffer);

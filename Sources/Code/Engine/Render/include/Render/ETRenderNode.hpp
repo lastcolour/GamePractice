@@ -41,11 +41,7 @@ struct ETRenderTextLogic {
 struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
     virtual void ET_setImage(const char* imageName) = 0;
-};
-
-struct ETRenderColoredTexture {
-    virtual ~ETRenderColoredTexture() = default;
-    virtual void ET_setTextureColor(const ColorB& newColor) = 0;
+    virtual void ET_setTintColor(const ColorB& newTintColor) = 0;
 };
 
 #endif /* __ET_RENDER_NODE_HPP__ */

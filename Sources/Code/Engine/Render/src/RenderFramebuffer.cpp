@@ -25,6 +25,7 @@ void RenderFramebuffer::clear() {
     if(type == EFramebufferType::Color) {
         glClear(GL_COLOR_BUFFER_BIT);
     } else {
+        glStencilMask(0xFF);
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 }

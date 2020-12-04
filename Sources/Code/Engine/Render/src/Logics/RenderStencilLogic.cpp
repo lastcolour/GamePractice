@@ -38,6 +38,8 @@ bool RenderStencilLogic::init() {
 }
 
 void RenderStencilLogic::deinit() {
+    auto defaultData = StencilWirteReadData();
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_setStencilData, defaultData);
 }
 
 void RenderStencilLogic::ET_onLoaded() {

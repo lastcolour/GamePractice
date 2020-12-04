@@ -37,6 +37,8 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(Prim
         return createTextVertexChunks();
     case PrimitiveGeometryType::Particles:
         return createParticles();
+    case PrimitiveGeometryType::NinePatch:
+        return createNinePatch();
     default:
         break;
     }
@@ -72,16 +74,20 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquareTex() {
 
     GLuint vaoId = 0;
     GLuint vboId = 0;
+
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
-    glGenBuffers(1, &vboId);
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(squareTexVerts), squareTexVerts, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(0));
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    {
+        glGenBuffers(1, &vboId);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(squareTexVerts), squareTexVerts, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+    }
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
@@ -108,14 +114,17 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
 
     GLuint vaoId = 0;
     GLuint vboId = 0;
+
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
-    glGenBuffers(1, &vboId);
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(squareVerts), squareVerts, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), static_cast<void*>(0));
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    {
+        glGenBuffers(1, &vboId);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(squareVerts), squareVerts, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), static_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+    }
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
@@ -131,14 +140,17 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
 std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() {
     GLuint vaoId = 0;
     GLuint vboId = 0;
+
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
-    glGenBuffers(1, &vboId);
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * TEXT_CHUNK_VERTEX_COUNT, nullptr, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), static_cast<void*>(0));
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    {
+        glGenBuffers(1, &vboId);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * TEXT_CHUNK_VERTEX_COUNT, nullptr, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), static_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+    }
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
@@ -166,6 +178,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
     GLuint vaoId = 0;
     GLuint vboId = 0;
     GLuint extraVboId = 0;
+
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
     {
@@ -177,7 +190,6 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(2 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     {
         size_t stride = sizeof(Vec4) + sizeof(Mat3x2);
@@ -202,8 +214,6 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
         glVertexAttribDivisor(3, 1);
         glVertexAttribDivisor(4, 1);
         glVertexAttribDivisor(5, 1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     glBindVertexArray(0);
 
@@ -214,6 +224,56 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
     geometry->extraVboId = extraVboId;
     geometry->vertCount = 6u;
     geometry->vertType = VertexType::Particle;
+
+    return geometry;
+}
+
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
+    GLushort indicies[2 * 3 * 9];
+    int k = 0;
+    for(int i = 0; i < 9; ++i) {
+        int offset = i * 6;
+        indicies[offset] = i;
+        indicies[offset + 1] = i + 4;
+        indicies[offset + 2] = i + 1;
+
+        indicies[offset + 3] = i + 4;
+        indicies[offset + 4] = i + 5;
+        indicies[offset + 5] = i + 1;
+        k += 4;
+    }
+
+    GLuint vaoId = 0;
+    GLuint vboId = 0;
+    GLuint eboId = 0;
+
+    glGenVertexArrays(1, &vaoId);
+    glBindVertexArray(vaoId);
+    {
+        glGenBuffers(1, &eboId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * 9 * sizeof(GLushort), &indicies[0], GL_STATIC_DRAW);
+    }
+    {
+        glGenBuffers(1, &vboId);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * 16, nullptr, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(2 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+    }
+    glBindVertexArray(0);
+
+    std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
+    geometry->aabb = AABB(Vec3(-1.f, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
+    geometry->vaoId = vaoId;
+    geometry->vboId = vboId;
+    geometry->eboId = eboId;
+    geometry->vertCount = 16;
+    geometry->vertType = VertexType::Vector2_Tex;
 
     return geometry;
 }

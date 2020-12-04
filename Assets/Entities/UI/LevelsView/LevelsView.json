@@ -226,7 +226,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 4,
                   "data": {
                     "isVisible": true,
@@ -237,7 +237,7 @@
                       "y": 36.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
@@ -381,7 +381,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 3,
                   "data": {
                     "isVisible": true,
@@ -392,7 +392,7 @@
                       "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 0,
                       "g": 0,
                       "b": 0,

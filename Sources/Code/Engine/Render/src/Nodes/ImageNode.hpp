@@ -12,6 +12,7 @@ public:
 
     void setSize(const Vec2& newSize);
     void setImage(const std::string& newImage);
+    void setTintColor(const ColorB& newTintColor);
 
 protected:
 
@@ -20,10 +21,11 @@ protected:
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
 
-private:
+protected:
 
     std::shared_ptr<RenderTexture> tex;
     Vec2 size;
+    ColorB tintColor;
 };
 
 #endif /* __IMAGE_NODE_HPP__ */

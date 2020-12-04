@@ -23,6 +23,7 @@ public:
 
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
+    void ET_setTintColor(const ColorB& newTintColor) override;
 
     // ETRenderRect
     void ET_setSize(const Vec2& newSize) override;
@@ -36,8 +37,10 @@ protected:
 
     std::string image;
     Vec2 size;
+    ColorB tintColor;
     bool isImageChanged;
     bool isSizeChanged;
+    bool isTintColorChanged;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */

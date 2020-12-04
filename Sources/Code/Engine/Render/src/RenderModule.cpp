@@ -12,7 +12,7 @@
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
 #include "Logics/RenderImageLogic.hpp"
-#include "Logics/RenderColoredTextureLogic.hpp"
+#include "Logics/NinePatchImageLogic.hpp"
 #include "Logics/RenderLinearGradientRect.hpp"
 #include "Logics/RenderBlurLogic.hpp"
 #include "Logics/RenderStencilLogic.hpp"
@@ -46,7 +46,7 @@ void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) co
     logicsRegister.registerLogic<RenderSimpleLogic>();
     logicsRegister.registerLogic<RenderTextLogic>();
     logicsRegister.registerLogic<RenderImageLogic>();
-    logicsRegister.registerLogic<RenderColoredTextureLogic>();
+    logicsRegister.registerLogic<NinePatchImageLogic>();
     logicsRegister.registerLogic<RenderLinearGradientRect>();
     logicsRegister.registerLogic<ParticleEmitter>();
     logicsRegister.registerLogic<RenderBlurLogic>();

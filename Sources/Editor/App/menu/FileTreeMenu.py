@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMenu, QAction, QLineEdit, QMessageBox
 
 from dialog.RemoveFile import RemoveFile
 from utils.ViewUtils import OpenPlatformFileExplorer
+from utils.Managers import GetEventManager
 
 class FileNameEdit(QLineEdit):
     def __init__(self, parent):
@@ -52,6 +53,9 @@ class FileTreeMenu(QMenu):
         self._showInExplorerAct = QAction("Show in Explorer")
         self._showInExplorerAct.triggered.connect(self._onShowInExplorer)
 
+        self._reloadModelAct = QAction("Reload")
+        self._reloadModelAct.triggered.connect(self._onReloadModel)
+
         self.addAction(self._newDirectoryAct)
         self.addAction(self._newEntityAct)
         self.addAction(self._copyRelativePathAct)
@@ -61,6 +65,7 @@ class FileTreeMenu(QMenu):
         self.addAction(self._pasteAct)
         self.addAction(self._removeAct)
         self.addAction(self._showInExplorerAct)
+        self.addAction(self._reloadModelAct)
 
     def onMenuRequestedOnItem(self, item, pt):
         if item is None:
@@ -168,3 +173,6 @@ class FileTreeMenu(QMenu):
         parentItem.removeChild(self._editItem)
         self._editItem = None
         self._currentItem = None
+
+    def _onReloadModel(self):
+        GetEventManager().rebuildAssetsModel()

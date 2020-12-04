@@ -74,7 +74,7 @@
                     "children": [],
                     "logics": [
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 1,
                         "data": {
                           "isVisible": true,
@@ -85,7 +85,7 @@
                             "y": 262.0
                           },
                           "image": "Images/options.png",
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -162,7 +162,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 5,
                   "data": {
                     "isVisible": true,
@@ -173,7 +173,7 @@
                       "y": 315.0
                     },
                     "image": "Images/block.png",
-                    "color": {
+                    "tintColor": {
                       "r": 125,
                       "g": 125,
                       "b": 125,
@@ -391,7 +391,7 @@
                     "children": [],
                     "logics": [
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 1,
                         "data": {
                           "isVisible": true,
@@ -402,7 +402,7 @@
                             "y": 79.0
                           },
                           "image": "Images/about.png",
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -466,7 +466,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 5,
                   "data": {
                     "isVisible": true,
@@ -477,7 +477,7 @@
                       "y": 105.0
                     },
                     "image": "Images/block.png",
-                    "color": {
+                    "tintColor": {
                       "r": 143,
                       "g": 143,
                       "b": 143,
@@ -538,7 +538,7 @@
                     "children": [],
                     "logics": [
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 1,
                         "data": {
                           "isVisible": true,
@@ -549,7 +549,7 @@
                             "y": 79.0
                           },
                           "image": "Images/options.png",
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -613,7 +613,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 5,
                   "data": {
                     "isVisible": true,
@@ -624,7 +624,7 @@
                       "y": 105.0
                     },
                     "image": "Images/block.png",
-                    "color": {
+                    "tintColor": {
                       "r": 143,
                       "g": 143,
                       "b": 143,
@@ -685,7 +685,7 @@
                     "children": [],
                     "logics": [
                       {
-                        "type": "RenderColoredTexture",
+                        "type": "RenderImage",
                         "id": 1,
                         "data": {
                           "isVisible": true,
@@ -696,7 +696,7 @@
                             "y": 79.0
                           },
                           "image": "Images/profile.png",
-                          "color": {
+                          "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
@@ -760,7 +760,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 5,
                   "data": {
                     "isVisible": true,
@@ -771,7 +771,7 @@
                       "y": 105.0
                     },
                     "image": "Images/block.png",
-                    "color": {
+                    "tintColor": {
                       "r": 143,
                       "g": 143,
                       "b": 143,

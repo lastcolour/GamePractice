@@ -144,7 +144,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 2,
                   "data": {
                     "isVisible": true,
@@ -155,7 +155,7 @@
                       "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
@@ -286,7 +286,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 2,
                   "data": {
                     "isVisible": true,
@@ -297,7 +297,7 @@
                       "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
@@ -428,7 +428,7 @@
                   }
                 },
                 {
-                  "type": "RenderColoredTexture",
+                  "type": "RenderImage",
                   "id": 2,
                   "data": {
                     "isVisible": true,
@@ -439,7 +439,7 @@
                       "y": 77.0
                     },
                     "image": "Images/StartButton_BG.png",
-                    "color": {
+                    "tintColor": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
@@ -476,7 +476,7 @@
             }
           },
           {
-            "type": "RenderColoredTexture",
+            "type": "RenderImage",
             "id": 2,
             "data": {
               "isVisible": true,
@@ -487,7 +487,7 @@
                 "y": 384.0
               },
               "image": "Images/block.png",
-              "color": {
+              "tintColor": {
                 "r": 27,
                 "g": 27,
                 "b": 27,

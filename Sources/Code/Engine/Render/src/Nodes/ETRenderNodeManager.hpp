@@ -15,7 +15,8 @@ enum class RenderNodeType {
     Gradient,
     Text,
     ParticleEmmiter,
-    Blur
+    Blur,
+    NinePatchImage
 };
 
 struct RenderNodeCreateParams {

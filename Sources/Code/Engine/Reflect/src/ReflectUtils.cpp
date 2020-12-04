@@ -14,6 +14,25 @@ ClassInfo* FindClassInfo(TypeId typeId) {
     return classInfo;
 }
 
+void AsyncWriteInstaceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName) {
+    assert(object && "Invalid object");
+    if(!classInfo) {
+        LogError("[AsyncWriteInstaceToLocalFile] Can't find class info for an object");
+        return;
+    }
+    JSONNode node;
+    SerializeContext serCtx;
+    if(!classInfo->writeValueTo(serCtx, object, AllEntityLogicValueId, node)) {
+        return;
+    }
+    auto buffer = node.flushToBuffer();
+    if(!buffer) {
+        LogError("[AsyncWriteInstaceToLocalFile] Can't dump JSON to a buffer");
+        return;
+    }
+    ET_SendEvent(&ETAsyncAssets::ET_asyncSaveLocalFile, fileName, buffer);
+}
+
 bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName) {
     assert(object && "Invalid object");
     if(!classInfo) {

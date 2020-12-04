@@ -77,6 +77,7 @@ private:
     float postGameTime;
     float currentPostGameTime;
     State scriptState;
+    bool gameLeftPostGame;
 };
 
 #endif /* __GAME_VIEW_SCRIPT_HPP__ */

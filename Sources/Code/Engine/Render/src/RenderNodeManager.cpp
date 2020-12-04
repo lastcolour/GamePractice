@@ -1,7 +1,7 @@
 #include "RenderNodeManager.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Nodes/ImageNode.hpp"
-#include "Nodes/ColoredTextureNode.hpp"
+#include "Nodes/NinePatchNode.hpp"
 #include "Nodes/SimpleNode.hpp"
 #include "Nodes/TextNode.hpp"
 #include "Nodes/GradientNode.hpp"
@@ -44,8 +44,8 @@ void RenderNodeManager::ET_updateParticles(float dt) {
 Node* RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) {
     std::unique_ptr<Node> node;
     switch(params.type) {
-        case RenderNodeType::ColoredTexture: {
-            node.reset(new ColoredTextureNode());
+        case RenderNodeType::NinePatchImage: {
+            node.reset(new NinePatchNode());
             break;
         }
         case RenderNodeType::Gradient: {

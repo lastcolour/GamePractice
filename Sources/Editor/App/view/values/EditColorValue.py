@@ -47,7 +47,8 @@ class EditColorValue(QWidget):
 
     def _signal_colorSelectBt_clicked(self):
         r, g, b, a = self._val.getVal()
-        resColor = QColorDialog.getColor(QColor(r, g, b, a), self, "Select Color")
+        resColor = QColorDialog.getColor(QColor(r, g, b, a), self, "Select Color",
+            QColorDialog.ShowAlphaChannel)
         if not resColor.isValid():
             return
         self._push(resColor)

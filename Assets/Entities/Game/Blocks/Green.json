@@ -26,7 +26,7 @@
         "children": [],
         "logics": [
           {
-            "type": "RenderColoredTexture",
+            "type": "RenderImage",
             "id": 1,
             "data": {
               "isVisible": false,
@@ -37,7 +37,7 @@
                 "y": 100.0
               },
               "image": "Images/block.png",
-              "color": {
+              "tintColor": {
                 "r": 102,
                 "g": 213,
                 "b": 62,
@@ -66,7 +66,7 @@
       }
     },
     {
-      "type": "RenderColoredTexture",
+      "type": "RenderImage",
       "id": 2,
       "data": {
         "isVisible": true,
@@ -77,7 +77,7 @@
           "y": 100.0
         },
         "image": "Images/block.png",
-        "color": {
+        "tintColor": {
           "r": 102,
           "g": 213,
           "b": 62,

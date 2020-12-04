@@ -3,7 +3,8 @@
 #include "Render/ETRenderManager.hpp"
 
 ImageNode::ImageNode() :
-    size(100.f) {
+    size(100.f),
+    tintColor(255, 255, 255, 0) {
 }
 
 ImageNode::~ImageNode() {
@@ -15,6 +16,10 @@ void ImageNode::setSize(const Vec2& newSize) {
 
 void ImageNode::setImage(const std::string& newImage) {
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage, newImage.c_str(), ETextureType::RGBA);
+}
+
+void ImageNode::setTintColor(const ColorB& newTintColor) {
+    tintColor = newTintColor;
 }
 
 void ImageNode::onInit() {
@@ -29,6 +34,7 @@ void ImageNode::onRender(RenderContext& ctx) {
 
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
     shader->setTexture2D(UniformType::Texture, *tex);
+    shader->setUniform4f(UniformType::Color, tintColor);
     geom->draw();
 }
 

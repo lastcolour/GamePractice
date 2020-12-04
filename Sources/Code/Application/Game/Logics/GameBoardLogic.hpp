@@ -14,13 +14,11 @@
 #include <memory>
 
 struct BoardElement {
-    Vec2i movePt;
     Vec2i boardPt;
     EntityId entId;
     float vel;
 
     BoardElement() :
-        movePt(-1),
         boardPt(-1),
         vel(0.f) {}
 };
@@ -73,21 +71,16 @@ protected:
     BoardElement* getElem(EntityId entId);
     BoardElement* getElem(const Vec2i& boardPt);
     const BoardElement* getElem(const Vec2i& boardPt) const;
-    void updateMovePosition(BoardElement& elem);
-    void moveElem(BoardElement& elem, float dt);
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
     void updateAfterRemoves();
     void matchElements();
     BoardElement createNewElement(const Vec2i& boardPt) const;
-
     void removeElem(BoardElement& elem);
-    int getAllElemsBelow(const BoardElement& elem);
-    BoardElement* getTopElemAbove(const Vec2i& boardPt);
 
 protected:
 
-    std::vector<BoardElement> elements;
+    std::vector<std::vector<BoardElement>> columns;
     AABB2Di boardBox;
     Vec2i boardSize;
     Vec2 objectSize;

@@ -76,10 +76,7 @@ void DebugRender::ET_drawText(const Vec2& pt, float size, const ColorB& col, con
     }
 }
 
-void DebugRender::ET_update() {
-    RenderContext ctx;
-    ET_SendEventReturn(ctx.proj2dMat, &ETRenderCamera::ET_getProj2DMat4);
-
+void DebugRender::ET_update(RenderContext& ctx) {
     drawLines(ctx);
     drawQuads(ctx);
     drawTexts(ctx);

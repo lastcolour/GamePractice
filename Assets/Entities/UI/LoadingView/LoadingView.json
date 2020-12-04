@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -26.0,
+          "y": -29.0,
           "z": 0.0
         },
         "scale": {
@@ -34,7 +34,7 @@
               "style": {
                 "fontSize": 10.0,
                 "margin": {
-                  "top": 0.0,
+                  "top": 2.0,
                   "bot": 0.0,
                   "left": 0.0,
                   "right": 0.0
@@ -59,7 +59,7 @@
                 "b": 255,
                 "a": 255
               },
-              "fontSize": 52,
+              "fontSize": 47,
               "text": "Loading..."
             }
           }
@@ -70,7 +70,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 26.0,
+          "y": 8.0,
           "z": 0.0
         },
         "scale": {
@@ -115,23 +115,23 @@
             }
           },
           {
-            "type": "RenderColoredTexture",
+            "type": "RenderImage",
             "id": 2,
             "data": {
               "isVisible": true,
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 52.0,
-                "y": 52.0
+                "x": 14.0,
+                "y": 14.0
               },
-              "image": "Images/block.png",
-              "color": {
+              "tintColor": {
                 "r": 255,
                 "g": 255,
                 "b": 255,
-                "a": 255
-              }
+                "a": 0
+              },
+              "image": "Images/block.png"
             }
           }
         ]
@@ -170,8 +170,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 600.0,
-          "y": 1024.0
+          "x": 150.0,
+          "y": 266.0
         },
         "color": {
           "r": 0,

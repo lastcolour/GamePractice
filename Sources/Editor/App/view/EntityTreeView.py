@@ -58,7 +58,6 @@ class EntityTreeView(QWidget):
         if childEntity is None:
             return
         self._createTreeItem(treeItem, childEntity)
-        GetEventManager().onEntityClickedFromEntityTree(childEntity)
 
     def _onRemoveChild(self, treeItem):
         parentItem = treeItem.parent()

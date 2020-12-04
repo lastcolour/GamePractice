@@ -9,6 +9,7 @@ RenderImageLogic::RenderImageLogic() :
 RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
     RenderNode(nodeType),
     size(100.f),
+    tintColor(255, 255, 255, 0),
     isImageChanged(true),
     isSizeChanged(true) {
 }
@@ -20,6 +21,7 @@ void RenderImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImage")) {
         classInfo->addBaseClass<RenderNode>();
         classInfo->addField("size", &RenderImageLogic::size);
+        classInfo->addField("tintColor", &RenderImageLogic::tintColor);
         classInfo->addResourceField("image", ResourceType::Image, &RenderImageLogic::ET_setImage);
     }
 }
@@ -30,12 +32,19 @@ bool RenderImageLogic::init() {
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setImage(image.c_str());
     ET_setSize(size);
+    ET_setTintColor(tintColor);
     return true;
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {
     image = imageName;
     isImageChanged = true;
+    markForSyncWithRender();
+}
+
+void RenderImageLogic::ET_setTintColor(const ColorB& newTintColor) {
+    tintColor = newTintColor;
+    isTintColorChanged = true;
     markForSyncWithRender();
 }
 
@@ -58,5 +67,9 @@ void RenderImageLogic::onSyncWithRender() {
     if(isImageChanged) {
         isImageChanged = false;
         imageProxyNode->setImage(image);
+    }
+    if(isTintColorChanged) {
+        isTintColorChanged = false;
+        imageProxyNode->setTintColor(tintColor);
     }
 }
