@@ -11,7 +11,7 @@
 #include "Entity/ETEntityManger.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Logics/RenderImageLogic.hpp"
-#include "Logics/RenderColoredTextureLogic.hpp"
+#include "Nodes/NinePatchNode.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "RenderTexture.hpp"
@@ -403,37 +403,6 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     ASSERT_GT(changedPixels, 0);
 }
 
-TEST_F(RenderTests, CheckRenderColoredTexture) {
-    auto gameObj = createVoidObject();
-    RenderColoredTextureLogic* renderColorTex = new RenderColoredTextureLogic;
-    ColorB texColor(255, 255, 0);
-    renderColorTex->ET_setTextureColor(texColor);
-    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderColorTex));
-    ASSERT_TRUE(renderColorTex->init());
-
-    renderColorTex->ET_setImage("Images/block.png");
-    Vec2 imageSize(100.f);
-    renderColorTex->ET_setSize(imageSize);
-
-    Transform tm;
-    tm.pt = Vec3(imageSize.x / 2.f, imageSize.y / 2.f, 0.f);
-    gameObj->ET_setTransform(tm);
-
-    SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
-
-    int changedPixels = 0;
-    for(int i = 0; i < imageSize.x; ++i) {
-        for(int j = 0; j < imageSize.y; ++j) {
-            const ColorB& col = IMAGE_BUFFER->getColor(i, j);
-            if(col == texColor) {
-                ++changedPixels;
-            }
-        }
-    }
-
-    EXPECT_GT(changedPixels, imageSize.x * imageSize.y * 3 / 4);
-}
-
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
     Vec2i texSize(100);
     std::shared_ptr<RenderTexture> tex1;
@@ -666,4 +635,49 @@ TEST_F(RenderTests, CheckRenderWithMask) {
 
     checkSquare(ColorB(0, 0, 255), c.x, c.x + c.x / 2,
         c.y, c.y + c.y / 2);
+}
+
+TEST_F(RenderTests, CheckNinePatch) {
+    NinePatchNode ninePatch;
+    ninePatch.init();
+
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Transform tm;
+    tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
+    ninePatch.setTransform(tm);
+    ninePatch.setSize(Vec2(renderPort.x / 2.f, renderPort.y / 4.f));
+
+    std::shared_ptr<RenderTexture> tex;
+    {
+        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, ETextureType::RGBA);
+        ASSERT_TRUE(tex);
+
+        tex->bind();
+        tex->resize(Vec2i(3, 3));
+
+        ColorB texData[] = {
+            ColorB(255, 0, 0), ColorB(0, 255, 0), ColorB(255, 0, 0),
+            ColorB(0, 255, 0), ColorB(0, 0, 255), ColorB(0, 255, 0),
+            ColorB(255, 0, 0), ColorB(0, 255, 0), ColorB(255, 0, 0),
+        };
+
+        tex->writeRGBA(Vec2i(0), tex->getSize(), &texData[0]);
+        tex->unbind();
+
+        ninePatch.setTexture(tex);
+    }
+    ninePatch.setPatches(0.33f, 0.33f, 1.f);
+    {
+        RenderContext ctx;
+        ET_SendEventReturn(ctx.proj2dMat, &ETRenderCamera::ET_getProj2DMat4);
+
+        RENDER_FB->bind();
+        ninePatch.render(ctx);
+        RENDER_FB->unbind();
+        ASSERT_TRUE(RenderUtils::ReadFramebufferToImage(*RENDER_FB, *IMAGE_BUFFER));
+    }
+
+    dumpImageBuffer();
 }

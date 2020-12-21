@@ -29,6 +29,7 @@ RenderGeometry::RenderGeometry() :
     eboId(0),
     extraVboId(0),
     vertCount(0),
+    indciesCount(0),
     vertType(VertexType::Vector3) {
 }
 
@@ -61,23 +62,29 @@ void RenderGeometry::drawInstanced(const void* instacesData, unsigned int instan
     glBindVertexArray(0);
 }
 
-void RenderGeometry::drawNinePatch(float left, float right, float top, float down) {
-    Vec4 verticies[16];
+void RenderGeometry::drawNinePatch(const Vec2& patchPt, const Vec2& patchUV) {
+    float xLeft = Math::Lerp(-1.f, 0.f, patchPt.x);
+    float xRight = Math::Lerp(0.f, 1.f, 1.f - patchPt.x);
+    float yTop = Math::Lerp(0.f, 1.f, 1.f - patchPt.y);
+    float yBot = Math::Lerp(-1.f, 0.f, patchPt.y);
 
-    float pt[] = {-1.f, -0.5f, 0.5f, 1.f};
-    float uv[] = {0.f, 0.25f, 0.75f, 1.f};
+    float uLeft = patchUV.x;
+    float uRight = 1.f - patchUV.x;
+    float vTop = 1.f - patchUV.y;
+    float vBot = patchUV.y;
 
-    for(int i = 0; i < 4; ++i) {
-        for(int j = 0; j < 4; ++j) {
-            verticies[i * 4 + j] = Vec4(pt[i], pt[4 - j - 1], uv[i], uv[j]);
-        }
-    }
+    Vec4 verticies[] = {
+        Vec4(-1.f, -1.f, 0.f, 0.f),  Vec4(xLeft, -1.f, uLeft, 0.f),  Vec4(xRight, -1.f, uRight, 0.f),  Vec4(1.f, -1.f, 1.f, 0.f),
+        Vec4(-1.f, yBot, 0.f, vBot), Vec4(xLeft, yBot, uLeft, vBot), Vec4(xRight, yBot, uRight, vBot), Vec4(1.f, yBot, 1.f, vBot),
+        Vec4(-1.f, yTop, 0.f, vTop), Vec4(xLeft, yTop, uLeft, vTop), Vec4(xRight, yTop, uRight, vTop), Vec4(1.f, yTop, 1.f, vTop),
+        Vec4(-1.f, 1.f,  0.f, 1.f),  Vec4(xLeft, 1.f,  uLeft, 1.f),  Vec4(xRight, 1.f,  uRight, 1.f),  Vec4(1.f, 1.f,  1.f, 1.f),
+    };
 
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vec4) * 16, verticies[0].getPtr());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(vaoId);
-    glDrawElements(GL_TRIANGLES, vertCount, GL_UNSIGNED_SHORT, nullptr);
+    glDrawElements(GL_TRIANGLES, indciesCount, GL_UNSIGNED_SHORT, nullptr);
     glBindVertexArray(0);
 }

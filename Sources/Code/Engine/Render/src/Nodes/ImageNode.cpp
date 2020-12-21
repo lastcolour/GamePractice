@@ -44,3 +44,11 @@ bool ImageNode::isVisible() const {
     }
     return Node::isVisible();
 }
+
+void ImageNode::setTexture(std::shared_ptr<RenderTexture>& newTex) {
+    tex = newTex;
+}
+
+std::shared_ptr<RenderTexture> ImageNode::getTexture() {
+    return tex;
+}

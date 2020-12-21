@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 313.0,
+          "y": 306.0,
           "z": 0.0
         },
         "scale": {
@@ -81,16 +81,16 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 262.0,
-                            "y": 262.0
+                            "x": 256.0,
+                            "y": 256.0
                           },
-                          "image": "Images/options.png",
                           "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/options.png"
                         }
                       },
                       {
@@ -110,10 +110,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       }
                     ]
@@ -138,10 +135,7 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
+                    }
                   }
                 },
                 {
@@ -169,16 +163,16 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 315.0,
-                      "y": 315.0
+                      "x": 308.0,
+                      "y": 308.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 125,
                       "g": 125,
                       "b": 125,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -203,8 +197,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": []
+              }
             }
           },
           {
@@ -231,7 +224,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -106.0,
+          "y": -103.0,
           "z": 0.0
         },
         "scale": {
@@ -293,8 +286,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": []
+              }
             }
           },
           {
@@ -321,7 +313,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -420.0,
+          "y": -410.0,
           "z": 0.0
         },
         "scale": {
@@ -344,7 +336,7 @@
           {
             "transform": {
               "pos": {
-                "x": -158.0,
+                "x": -155.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -398,16 +390,16 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 79.0,
-                            "y": 79.0
+                            "x": 77.0,
+                            "y": 77.0
                           },
-                          "image": "Images/about.png",
                           "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/about.png"
                         }
                       },
                       {
@@ -427,10 +419,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       }
                     ]
@@ -456,9 +445,6 @@
                         "right": 10.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -473,16 +459,16 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 105.0,
-                      "y": 105.0
+                      "x": 103.0,
+                      "y": 103.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 143,
                       "g": 143,
                       "b": 143,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -545,16 +531,16 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 79.0,
-                            "y": 79.0
+                            "x": 77.0,
+                            "y": 77.0
                           },
-                          "image": "Images/options.png",
                           "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/options.png"
                         }
                       },
                       {
@@ -574,10 +560,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       }
                     ]
@@ -603,9 +586,6 @@
                         "right": 10.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -620,16 +600,16 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 105.0,
-                      "y": 105.0
+                      "x": 103.0,
+                      "y": 103.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 143,
                       "g": 143,
                       "b": 143,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -638,7 +618,7 @@
           {
             "transform": {
               "pos": {
-                "x": 158.0,
+                "x": 155.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -692,16 +672,16 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 79.0,
-                            "y": 79.0
+                            "x": 77.0,
+                            "y": 77.0
                           },
-                          "image": "Images/profile.png",
                           "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/profile.png"
                         }
                       },
                       {
@@ -721,10 +701,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       }
                     ]
@@ -750,9 +727,6 @@
                         "right": 0.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -767,16 +741,16 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 105.0,
-                      "y": 105.0
+                      "x": 103.0,
+                      "y": 103.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 143,
                       "g": 143,
                       "b": 143,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -801,8 +775,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": []
+              }
             }
           },
           {
@@ -873,8 +846,7 @@
             "left": 0.0,
             "right": 0.0
           }
-        },
-        "render": []
+        }
       }
     },
     {

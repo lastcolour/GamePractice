@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 482.0,
+          "y": 471.0,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -205.0,
+                "x": -212.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -59.0,
+                      "x": -58.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -90,10 +90,7 @@
                               "left": 1.0,
                               "right": 1.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       },
                       {
@@ -104,16 +101,16 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 27.0,
-                            "y": 27.0
+                            "x": 26.0,
+                            "y": 26.0
                           },
-                          "image": "Images/block.png",
                           "tintColor": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/block.png"
                         }
                       }
                     ]
@@ -159,10 +156,7 @@
                               "right": 2.0
                             }
                           },
-                          "text": "Time:",
-                          "render": [
-                            0
-                          ]
+                          "text": "Time:"
                         }
                       },
                       {
@@ -225,10 +219,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "0.0",
-                          "render": [
-                            0
-                          ]
+                          "text": "0.0"
                         }
                       },
                       {
@@ -275,29 +266,6 @@
                         "left": 2.0,
                         "right": 0.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
-                  }
-                },
-                {
-                  "type": "RenderImage",
-                  "id": 2,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.5,
-                    "drawPriority": 4,
-                    "size": {
-                      "x": 158.0,
-                      "y": 42.0
-                    },
-                    "image": "Images/StartButton_BG.png",
-                    "tintColor": {
-                      "r": 191,
-                      "g": 191,
-                      "b": 191,
-                      "a": 255
                     }
                   }
                 },
@@ -323,6 +291,29 @@
                       ]
                     ]
                   }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 4,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.699999988079071,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 154.0,
+                      "y": 41.0
+                    },
+                    "tintColor": {
+                      "r": 148,
+                      "g": 148,
+                      "b": 148,
+                      "a": 255
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
+                  }
                 }
               ]
             }
@@ -330,7 +321,7 @@
           {
             "transform": {
               "pos": {
-                "x": 205.0,
+                "x": 212.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -355,7 +346,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -14.0,
+                      "y": -13.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -441,10 +432,7 @@
                                           "left": 0.0,
                                           "right": 0.0
                                         }
-                                      },
-                                      "render": [
-                                        0
-                                      ]
+                                      }
                                     }
                                   },
                                   {
@@ -458,13 +446,13 @@
                                         "x": 24.0,
                                         "y": 24.0
                                       },
-                                      "image": "Images/block.png",
                                       "tintColor": {
                                         "r": 255,
                                         "g": 241,
                                         "b": 79,
                                         "a": 255
-                                      }
+                                      },
+                                      "image": "Images/block.png"
                                     }
                                   }
                                 ]
@@ -489,10 +477,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -506,13 +491,13 @@
                                   "x": 21.0,
                                   "y": 21.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 109,
                                   "g": 109,
                                   "b": 109,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             },
                             {
@@ -601,10 +586,7 @@
                                           "left": 0.0,
                                           "right": 0.0
                                         }
-                                      },
-                                      "render": [
-                                        0
-                                      ]
+                                      }
                                     }
                                   },
                                   {
@@ -618,13 +600,13 @@
                                         "x": 24.0,
                                         "y": 24.0
                                       },
-                                      "image": "Images/block.png",
                                       "tintColor": {
                                         "r": 255,
                                         "g": 241,
                                         "b": 79,
                                         "a": 255
-                                      }
+                                      },
+                                      "image": "Images/block.png"
                                     }
                                   }
                                 ]
@@ -649,10 +631,7 @@
                                     "left": 1.0,
                                     "right": 1.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -666,13 +645,13 @@
                                   "x": 21.0,
                                   "y": 21.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 109,
                                   "g": 109,
                                   "b": 109,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             },
                             {
@@ -761,10 +740,7 @@
                                           "left": 0.0,
                                           "right": 0.0
                                         }
-                                      },
-                                      "render": [
-                                        0
-                                      ]
+                                      }
                                     }
                                   },
                                   {
@@ -778,13 +754,13 @@
                                         "x": 24.0,
                                         "y": 24.0
                                       },
-                                      "image": "Images/block.png",
                                       "tintColor": {
                                         "r": 255,
                                         "g": 241,
                                         "b": 79,
                                         "a": 255
-                                      }
+                                      },
+                                      "image": "Images/block.png"
                                     }
                                   }
                                 ]
@@ -809,10 +785,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -826,13 +799,13 @@
                                   "x": 21.0,
                                   "y": 21.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 109,
                                   "g": 109,
                                   "b": 109,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             },
                             {
@@ -897,8 +870,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": []
+                          }
                         }
                       }
                     ]
@@ -907,7 +879,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -16.0,
+                      "x": -15.0,
                       "y": 13.0,
                       "z": 0.0
                     },
@@ -931,7 +903,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 51.0,
+                            "x": 50.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -968,10 +940,7 @@
                                     "right": 0.0
                                   }
                                 },
-                                "text": "0",
-                                "render": [
-                                  0
-                                ]
+                                "text": "0"
                               }
                             },
                             {
@@ -1044,10 +1013,7 @@
                                     "left": 1.0,
                                     "right": 1.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -1058,16 +1024,16 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 27.0,
-                                  "y": 27.0
+                                  "x": 26.0,
+                                  "y": 26.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 255,
                                   "g": 255,
                                   "b": 255,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -1076,7 +1042,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 6.0,
+                            "x": 5.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -1113,10 +1079,7 @@
                                     "right": 2.0
                                   }
                                 },
-                                "text": "Score:",
-                                "render": [
-                                  0
-                                ]
+                                "text": "Score:"
                               }
                             },
                             {
@@ -1152,8 +1115,7 @@
                             "bot": 0.0,
                             "left": 1.0,
                             "right": 0.0
-                          },
-                          "render": []
+                          }
                         }
                       },
                       {
@@ -1201,29 +1163,6 @@
                         "left": 0.0,
                         "right": 2.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
-                  }
-                },
-                {
-                  "type": "RenderImage",
-                  "id": 2,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.5,
-                    "drawPriority": 4,
-                    "size": {
-                      "x": 158.0,
-                      "y": 63.0
-                    },
-                    "image": "Images/StartButton_BG.png",
-                    "tintColor": {
-                      "r": 191,
-                      "g": 191,
-                      "b": 191,
-                      "a": 255
                     }
                   }
                 },
@@ -1245,6 +1184,29 @@
                         5
                       ]
                     ]
+                  }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 4,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.699999988079071,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 154.0,
+                      "y": 62.0
+                    },
+                    "tintColor": {
+                      "r": 148,
+                      "g": 148,
+                      "b": 148,
+                      "a": 255
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -1269,8 +1231,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": []
+              }
             }
           },
           {
@@ -1376,8 +1337,7 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": []
+                    }
                   }
                 },
                 {
@@ -1407,8 +1367,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": []
+              }
             }
           },
           {
@@ -1435,7 +1394,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -491.0,
+          "y": -480.0,
           "z": 0.0
         },
         "scale": {
@@ -1473,8 +1432,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": []
+              }
             }
           }
         ]
@@ -1545,8 +1503,7 @@
             "left": 0.0,
             "right": 0.0
           }
-        },
-        "render": []
+        }
       }
     },
     {

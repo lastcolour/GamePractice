@@ -9,7 +9,7 @@ public:
     NinePatchNode();
     virtual ~NinePatchNode();
 
-    void setPatches(float newLeft, float newRight, float newTop, float newDown);
+    void setPatches(float newHorizontal, float newVertical, float newPatchScale);
 
 protected:
 
@@ -17,12 +17,11 @@ protected:
     void onInit() override;
     void onRender(RenderContext& ctx) override;
 
-private:
+protected:
 
-    float left;
-    float right;
-    float top;
-    float down;
+    float horizontal;
+    float vertical;
+    float patchScale;
 };
 
 #endif /* __NINE_PATCH_NODE_HPP__ */

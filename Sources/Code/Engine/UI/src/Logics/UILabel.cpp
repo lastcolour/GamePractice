@@ -12,7 +12,6 @@ void UILabel::Reflect(ReflectContext& ctx) {
         classInfo->addBaseClass<UIElement>();
         classInfo->addField("style", &UILabel::style);
         classInfo->addField("text", &UILabel::text);
-        classInfo->addField("render", &UILabel::labelRenderId);
     }
 }
 
@@ -26,9 +25,8 @@ bool UILabel::init() {
     UIElement::init();
     ETNode<ETUILabel>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
-    if(ET_IsExistNode<ETRenderTextLogic>(labelRenderId)) {
-        ET_setTextRender(labelRenderId);
-    }
+
+    labelRenderId = getEntityId();
     return true;
 }
 
@@ -103,8 +101,5 @@ void UILabel::onAlphaChanged(float newAlpha) {
 }
 
 void UILabel::ET_onLoaded() {
-    if(labelRenderId != getEntityId()) {
-        return;
-    }
     ET_setTextRender(labelRenderId);
 }

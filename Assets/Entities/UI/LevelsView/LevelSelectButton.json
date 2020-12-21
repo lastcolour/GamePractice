@@ -60,13 +60,13 @@
                       "x": 141.0,
                       "y": 141.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 61,
                       "g": 167,
                       "b": 49,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -108,13 +108,13 @@
                       "x": 154.0,
                       "y": 154.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 161,
                       "g": 161,
                       "b": 161,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -156,13 +156,13 @@
                       "x": 141.0,
                       "y": 141.0
                     },
-                    "image": "Images/block.png",
                     "tintColor": {
                       "r": 202,
                       "g": 196,
                       "b": 0,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png"
                   }
                 }
               ]
@@ -232,10 +232,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "99",
-                          "render": [
-                            0
-                          ]
+                          "text": "99"
                         }
                       },
                       {
@@ -348,10 +345,7 @@
                                           "left": 0.0,
                                           "right": 0.0
                                         }
-                                      },
-                                      "render": [
-                                        0
-                                      ]
+                                      }
                                     }
                                   },
                                   {
@@ -365,13 +359,13 @@
                                         "x": 36.0,
                                         "y": 36.0
                                       },
-                                      "image": "Images/block.png",
                                       "tintColor": {
                                         "r": 245,
                                         "g": 224,
                                         "b": 57,
                                         "a": 255
-                                      }
+                                      },
+                                      "image": "Images/block.png"
                                     }
                                   }
                                 ]
@@ -396,10 +390,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -430,13 +421,13 @@
                                   "x": 31.0,
                                   "y": 31.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 195,
                                   "g": 195,
                                   "b": 195,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -508,10 +499,7 @@
                                           "left": 0.0,
                                           "right": 0.0
                                         }
-                                      },
-                                      "render": [
-                                        0
-                                      ]
+                                      }
                                     }
                                   },
                                   {
@@ -525,13 +513,13 @@
                                         "x": 36.0,
                                         "y": 36.0
                                       },
-                                      "image": "Images/block.png",
                                       "tintColor": {
                                         "r": 245,
                                         "g": 224,
                                         "b": 57,
                                         "a": 255
-                                      }
+                                      },
+                                      "image": "Images/block.png"
                                     }
                                   }
                                 ]
@@ -556,10 +544,7 @@
                                     "left": 2.0,
                                     "right": 2.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -590,13 +575,13 @@
                                   "x": 31.0,
                                   "y": 31.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 195,
                                   "g": 195,
                                   "b": 195,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -668,10 +653,7 @@
                                           "left": 0.0,
                                           "right": 0.0
                                         }
-                                      },
-                                      "render": [
-                                        0
-                                      ]
+                                      }
                                     }
                                   },
                                   {
@@ -685,13 +667,13 @@
                                         "x": 36.0,
                                         "y": 36.0
                                       },
-                                      "image": "Images/block.png",
                                       "tintColor": {
                                         "r": 245,
                                         "g": 224,
                                         "b": 57,
                                         "a": 255
-                                      }
+                                      },
+                                      "image": "Images/block.png"
                                     }
                                   }
                                 ]
@@ -716,10 +698,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -750,13 +729,13 @@
                                   "x": 31.0,
                                   "y": 31.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 195,
                                   "g": 195,
                                   "b": 195,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -775,8 +754,7 @@
                             "bot": 0.0,
                             "left": 0.0,
                             "right": 0.0
-                          },
-                          "render": []
+                          }
                         }
                       },
                       {
@@ -818,8 +796,7 @@
                       "bot": 0.0,
                       "left": 0.0,
                       "right": 0.0
-                    },
-                    "render": []
+                    }
                   }
                 },
                 {
@@ -865,9 +842,6 @@
                   "right": 0.0
                 }
               },
-              "render": [
-                2
-              ],
               "label": [],
               "event": "OnLevelsStartLevel"
             }
@@ -971,10 +945,7 @@
           "bot": 3.0,
           "left": 0.0,
           "right": 0.0
-        },
-        "render": [
-          0
-        ]
+        }
       }
     }
   ]

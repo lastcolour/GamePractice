@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 81.0,
+                "y": 41.0,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -119.0,
+                      "x": -109.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -114,10 +114,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -128,16 +125,16 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 103.0,
-                                  "y": 103.0
+                                  "x": 94.0,
+                                  "y": 94.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 206,
                                   "g": 206,
                                   "b": 18,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -162,10 +159,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       },
                       {
@@ -176,16 +170,16 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 98.0,
-                            "y": 98.0
+                            "x": 90.0,
+                            "y": 90.0
                           },
-                          "image": "Images/block.png",
                           "tintColor": {
                             "r": 132,
                             "g": 132,
                             "b": 132,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/block.png"
                         }
                       },
                       {
@@ -274,10 +268,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -288,16 +279,16 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 103.0,
-                                  "y": 103.0
+                                  "x": 94.0,
+                                  "y": 94.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 206,
                                   "g": 206,
                                   "b": 18,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -322,10 +313,7 @@
                               "left": 4.0,
                               "right": 4.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       },
                       {
@@ -336,16 +324,16 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 98.0,
-                            "y": 98.0
+                            "x": 90.0,
+                            "y": 90.0
                           },
-                          "image": "Images/block.png",
                           "tintColor": {
                             "r": 132,
                             "g": 132,
                             "b": 132,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/block.png"
                         }
                       },
                       {
@@ -371,7 +359,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 119.0,
+                      "x": 109.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -434,10 +422,7 @@
                                     "left": 0.0,
                                     "right": 0.0
                                   }
-                                },
-                                "render": [
-                                  0
-                                ]
+                                }
                               }
                             },
                             {
@@ -448,16 +433,16 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 103.0,
-                                  "y": 103.0
+                                  "x": 94.0,
+                                  "y": 94.0
                                 },
-                                "image": "Images/block.png",
                                 "tintColor": {
                                   "r": 206,
                                   "g": 206,
                                   "b": 18,
                                   "a": 255
-                                }
+                                },
+                                "image": "Images/block.png"
                               }
                             }
                           ]
@@ -482,10 +467,7 @@
                               "left": 0.0,
                               "right": 0.0
                             }
-                          },
-                          "render": [
-                            0
-                          ]
+                          }
                         }
                       },
                       {
@@ -496,16 +478,16 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 98.0,
-                            "y": 98.0
+                            "x": 90.0,
+                            "y": 90.0
                           },
-                          "image": "Images/block.png",
                           "tintColor": {
                             "r": 132,
                             "g": 132,
                             "b": 132,
                             "a": 255
-                          }
+                          },
+                          "image": "Images/block.png"
                         }
                       },
                       {
@@ -547,8 +529,7 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": []
+                    }
                   }
                 },
                 {
@@ -581,7 +562,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -153.0,
+                "y": -175.0,
                 "z": 0.0
               },
               "scale": {
@@ -641,10 +622,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Continue",
-                          "render": [
-                            0
-                          ]
+                          "text": "Continue"
                         }
                       },
                       {
@@ -654,13 +632,13 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 5,
-                          "tintColor": {
+                          "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 41,
+                          "fontSize": 38,
                           "text": "Continue"
                         }
                       }
@@ -687,9 +665,6 @@
                         "right": 0.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -697,23 +672,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
-                  "id": 5,
+                  "type": "NinePatchImageLogic",
+                  "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 308.0,
-                      "y": 77.0
+                      "x": 282.0,
+                      "y": 71.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
-                      "r": 112,
-                      "g": 112,
-                      "b": 112,
+                      "r": 72,
+                      "g": 72,
+                      "b": 72,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -723,7 +701,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 197.0,
+                "y": 177.0,
                 "z": 0.0
               },
               "scale": {
@@ -783,10 +761,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Level 01",
-                          "render": [
-                            0
-                          ]
+                          "text": "Level 01"
                         }
                       },
                       {
@@ -796,13 +771,13 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "tintColor": {
-                            "r": 0,
-                            "g": 0,
-                            "b": 0,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
                             "a": 255
                           },
-                          "fontSize": 36,
+                          "fontSize": 33,
                           "text": "Level 01"
                         }
                       }
@@ -818,9 +793,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 80.0,
+                      "width": 80.9000015258789,
                       "widthInv": "Grid",
-                      "height": 15.0,
+                      "height": 14.300000190734863,
                       "heightInv": "Grid",
                       "margin": {
                         "top": -1.0,
@@ -828,29 +803,6 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
-                  }
-                },
-                {
-                  "type": "RenderImage",
-                  "id": 2,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 1.0,
-                    "drawPriority": 4,
-                    "size": {
-                      "x": 410.0,
-                      "y": 77.0
-                    },
-                    "image": "Images/StartButton_BG.png",
-                    "tintColor": {
-                      "r": 255,
-                      "g": 255,
-                      "b": 255,
-                      "a": 255
                     }
                   }
                 },
@@ -870,6 +822,29 @@
                       ]
                     ]
                   }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 4,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 1.0,
+                    "drawPriority": 4,
+                    "size": {
+                      "x": 423.0,
+                      "y": 57.0
+                    },
+                    "tintColor": {
+                      "r": 209,
+                      "g": 209,
+                      "b": 209,
+                      "a": 255
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 0.8999999761581421
+                  }
                 }
               ]
             }
@@ -878,7 +853,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -16.0,
+                "y": -49.0,
                 "z": 0.0
               },
               "scale": {
@@ -901,7 +876,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -46.0,
+                      "x": -44.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -938,10 +913,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Score: ",
-                          "render": [
-                            0
-                          ]
+                          "text": "Score: "
                         }
                       },
                       {
@@ -957,7 +929,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 19,
                           "text": "Score: "
                         }
                       }
@@ -967,7 +939,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 7.0,
+                      "x": 3.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1004,10 +976,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "300",
-                          "render": [
-                            0
-                          ]
+                          "text": "300"
                         }
                       },
                       {
@@ -1017,13 +986,13 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "tintColor": {
+                          "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 19,
                           "text": "300"
                         }
                       }
@@ -1049,10 +1018,7 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
+                    }
                   }
                 },
                 {
@@ -1076,23 +1042,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 205.0,
-                      "y": 41.0
+                      "x": 188.0,
+                      "y": 38.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -1102,7 +1071,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -68.0,
+                "y": -97.0,
                 "z": 0.0
               },
               "scale": {
@@ -1125,7 +1094,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -46.0,
+                      "x": -44.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1162,10 +1131,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Time:  ",
-                          "render": [
-                            0
-                          ]
+                          "text": "Time:  "
                         }
                       },
                       {
@@ -1175,13 +1141,13 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "tintColor": {
+                          "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 19,
                           "text": "Time:  "
                         }
                       }
@@ -1191,7 +1157,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 5.0,
+                      "x": 2.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1228,10 +1194,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "60s",
-                          "render": [
-                            0
-                          ]
+                          "text": "60s"
                         }
                       },
                       {
@@ -1241,13 +1204,13 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 6,
-                          "tintColor": {
+                          "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 19,
                           "text": "60s"
                         }
                       }
@@ -1273,10 +1236,7 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
+                    }
                   }
                 },
                 {
@@ -1300,23 +1260,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 205.0,
-                      "y": 41.0
+                      "x": 188.0,
+                      "y": 38.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -1333,7 +1296,7 @@
               "style": {
                 "width": 80.0,
                 "widthInv": "Grid",
-                "height": 90.0,
+                "height": 86.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -1341,10 +1304,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": [
-                0
-              ]
+              }
             }
           },
           {
@@ -1377,23 +1337,26 @@
             }
           },
           {
-            "type": "RenderImage",
+            "type": "NinePatchImageLogic",
             "id": 4,
             "data": {
               "isVisible": true,
-              "alpha": 1.0,
+              "alpha": 0.699999988079071,
               "drawPriority": 2,
               "size": {
-                "x": 410.0,
-                "y": 461.0
+                "x": 376.0,
+                "y": 329.0
+              },
+              "tintColor": {
+                "r": 221,
+                "g": 221,
+                "b": 221,
+                "a": 255
               },
               "image": "Images/block.png",
-              "tintColor": {
-                "r": 220,
-                "g": 220,
-                "b": 220,
-                "a": 255
-              }
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 0.10000000149011612
             }
           }
         ]
@@ -1418,10 +1381,7 @@
             "left": 0.0,
             "right": 0.0
           }
-        },
-        "render": [
-          0
-        ]
+        }
       }
     },
     {
@@ -1449,13 +1409,13 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 600.0,
-          "y": 1024.0
+          "x": 528.0,
+          "y": 938.0
         },
-        "tintColor": {
-          "r": 0,
-          "g": 0,
-          "b": 0,
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255,
           "a": 255
         }
       }

@@ -116,7 +116,7 @@ void GameResultViewScript::playAppearAnimation(EntityId elemId) {
     waitingId = elemId;
     bool animStarted = UI::PlayAnimation(elemId, EAnimSequenceType::Appear, getEntityId());
     if(!animStarted) {
-        LogWarning("[GameResultViewScript::playAppearAnimation] Can't find play appear animation on entity: '%s'",
+        LogWarning("[GameResultViewScript::playAppearAnimation] Can't find appear animation to play on entity: '%s'",
             EntityUtils::GetEntityName(elemId));
         ET_SendEvent(elemId, &ETUIElement::ET_show);
         ET_onAnimationPlayed(elemId, EAnimSequenceType::Appear);

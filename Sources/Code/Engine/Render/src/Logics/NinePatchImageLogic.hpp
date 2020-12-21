@@ -13,16 +13,18 @@ public:
     NinePatchImageLogic();
     virtual ~NinePatchImageLogic();
 
+    // EntityLogic
+    bool init() override;
+
 protected:
 
     void onSyncWithRender() override;
 
 private:
 
-    float left;
-    float right;
-    float top;
-    float down;
+    float horizontal;
+    float vertical;
+    float patchScale;
     bool isPatchChanged;
 };
 

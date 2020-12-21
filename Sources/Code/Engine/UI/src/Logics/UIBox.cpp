@@ -11,7 +11,6 @@ void UIBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIBox>("UIBox")) {
         classInfo->addBaseClass<UIElement>();
         classInfo->addField("style", &UIBox::style);
-        classInfo->addField("render", &UIBox::boxRenderId);
     }
 }
 
@@ -27,6 +26,7 @@ bool UIBox::init() {
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 
+    boxRenderId = getEntityId();
     calculateBox();
 
     return true;

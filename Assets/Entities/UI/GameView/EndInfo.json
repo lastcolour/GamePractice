@@ -26,26 +26,6 @@
         "children": [],
         "logics": [
           {
-            "type": "RenderImage",
-            "id": 1,
-            "data": {
-              "isVisible": true,
-              "alpha": 1.0,
-              "drawPriority": 34,
-              "size": {
-                "x": 315.0,
-                "y": 105.0
-              },
-              "image": "Images/StartButton_BG.png",
-              "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 255
-              }
-            }
-          },
-          {
             "type": "UIBox",
             "id": 2,
             "data": {
@@ -62,10 +42,30 @@
                   "left": 0.0,
                   "right": 0.0
                 }
+              }
+            }
+          },
+          {
+            "type": "NinePatchImageLogic",
+            "id": 3,
+            "data": {
+              "isVisible": true,
+              "alpha": 0.8999999761581421,
+              "drawPriority": 2,
+              "size": {
+                "x": 308.0,
+                "y": 103.0
               },
-              "render": [
-                0
-              ]
+              "tintColor": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              },
+              "image": "Images/block.png",
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 1.0
             }
           }
         ]
@@ -111,10 +111,7 @@
                   "right": 0.0
                 }
               },
-              "text": "DONE",
-              "render": [
-                0
-              ]
+              "text": "DONE"
             }
           },
           {
@@ -123,14 +120,14 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 35,
+              "drawPriority": 3,
               "color": {
                 "r": 0,
                 "g": 0,
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 53,
+              "fontSize": 52,
               "text": "DONE"
             }
           },
@@ -210,10 +207,7 @@
             "left": 0.0,
             "right": 0.0
           }
-        },
-        "render": [
-          0
-        ]
+        }
       }
     },
     {

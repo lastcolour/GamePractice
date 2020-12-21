@@ -13,6 +13,8 @@ public:
     void setSize(const Vec2& newSize);
     void setImage(const std::string& newImage);
     void setTintColor(const ColorB& newTintColor);
+    void setTexture(std::shared_ptr<RenderTexture>& newTex);
+    std::shared_ptr<RenderTexture> getTexture();
 
 protected:
 

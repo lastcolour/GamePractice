@@ -48,11 +48,11 @@ public:
     void ET_removeChild(EntityId entId) override;
     EntityId ET_getParentId() const override;
     const Transform& ET_getTransform() const override;
-    void ET_setTransform(const Transform& transform) override;
+    void ET_setTransform(const Transform& newTm) override;
     EntityChildId ET_getChildIdFromEntityId(EntityId childEntId) const override;
     EntityId ET_getEntityIdFromChildId(EntityChildId childId) const override;
     Transform ET_getLocalTransform() const override;
-    void ET_setLocalTransform(const Transform& localTm) override;
+    void ET_setLocalTransform(const Transform& newLocalTm) override;
     std::vector<EntityId> ET_getChildren() const override;
     std::vector<EntityLogic*> ET_getLogisByTypeId(TypeId logicTypeId) override;
 

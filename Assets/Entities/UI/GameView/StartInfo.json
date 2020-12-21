@@ -64,10 +64,7 @@
                         "right": 0.0
                       }
                     },
-                    "text": "GO!",
-                    "render": [
-                      0
-                    ]
+                    "text": "GO!"
                   }
                 },
                 {
@@ -76,14 +73,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 7,
+                    "drawPriority": 39,
                     "color": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 69,
+                    "fontSize": 67,
                     "text": "GO!"
                   }
                 },
@@ -134,26 +131,6 @@
         ],
         "logics": [
           {
-            "type": "RenderImage",
-            "id": 1,
-            "data": {
-              "isVisible": false,
-              "alpha": 0.8999999761581421,
-              "drawPriority": 3,
-              "size": {
-                "x": 315.0,
-                "y": 105.0
-              },
-              "image": "Images/StartButton_BG.png",
-              "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 255
-              }
-            }
-          },
-          {
             "type": "UIBox",
             "id": 2,
             "data": {
@@ -170,10 +147,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": [
-                0
-              ]
+              }
             }
           },
           {
@@ -263,6 +237,29 @@
                 ]
               ]
             }
+          },
+          {
+            "type": "NinePatchImageLogic",
+            "id": 5,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 35,
+              "size": {
+                "x": 308.0,
+                "y": 103.0
+              },
+              "tintColor": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              },
+              "image": "Images/block.png",
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 1.0
+            }
           }
         ]
       }
@@ -329,8 +326,7 @@
           "bot": 0.0,
           "left": 0.0,
           "right": 0.0
-        },
-        "render": []
+        }
       }
     }
   ]

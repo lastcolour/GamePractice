@@ -26,30 +26,34 @@
         "children": [],
         "logics": [
           {
-            "type": "RenderSimple",
-            "id": 1,
-            "data": {
-              "isVisible": true,
-              "alpha": 0.30000001192092896,
-              "drawPriority": 0,
-              "size": {
-                "x": 520.0,
-                "y": 520.0
-              },
-              "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 255
-              }
-            }
-          },
-          {
             "type": "RenderStencilLogic",
             "id": 2,
             "data": {
               "mode": "Write",
               "refVal": 1
+            }
+          },
+          {
+            "type": "NinePatchImageLogic",
+            "id": 3,
+            "data": {
+              "isVisible": true,
+              "alpha": 0.20000000298023224,
+              "drawPriority": 0,
+              "size": {
+                "x": 600.0,
+                "y": 600.0
+              },
+              "tintColor": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 0
+              },
+              "image": "Images/block.png",
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 0.10000000149011612
             }
           }
         ]

@@ -146,7 +146,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     {
         glGenBuffers(1, &vboId);
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * TEXT_CHUNK_VERTEX_COUNT, nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * TEXT_CHUNK_VERTEX_COUNT, nullptr, GL_DYNAMIC_DRAW);
 
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), static_cast<void*>(0));
         glEnableVertexAttribArray(0);
@@ -229,18 +229,23 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
 }
 
 std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
-    GLushort indicies[2 * 3 * 9];
-    int k = 0;
-    for(int i = 0; i < 9; ++i) {
-        int offset = i * 6;
-        indicies[offset] = i;
-        indicies[offset + 1] = i + 4;
-        indicies[offset + 2] = i + 1;
+    const unsigned int indciesCount = 2 * 3 * 9;
+    GLushort indicies[indciesCount];
+    int offset = 0;
+    for(int i = 0; i < 3; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            int k = 4 * i + j;
 
-        indicies[offset + 3] = i + 4;
-        indicies[offset + 4] = i + 5;
-        indicies[offset + 5] = i + 1;
-        k += 4;
+            indicies[offset] = k;
+            indicies[offset + 1] = k + 4;
+            indicies[offset + 2] = k + 1;
+
+            indicies[offset + 3] = k + 4;
+            indicies[offset + 4] = k + 5;
+            indicies[offset + 5] = k + 1;
+
+            offset += 6;
+        }
     }
 
     GLuint vaoId = 0;
@@ -252,12 +257,12 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
     {
         glGenBuffers(1, &eboId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * 9 * sizeof(GLushort), &indicies[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indciesCount * sizeof(GLushort), &indicies[0], GL_STATIC_DRAW);
     }
     {
         glGenBuffers(1, &vboId);
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * 16, nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * 16, nullptr, GL_DYNAMIC_DRAW);
 
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(0);
@@ -273,6 +278,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
     geometry->vboId = vboId;
     geometry->eboId = eboId;
     geometry->vertCount = 16;
+    geometry->indciesCount = indciesCount;
     geometry->vertType = VertexType::Vector2_Tex;
 
     return geometry;

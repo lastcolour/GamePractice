@@ -35,8 +35,8 @@ RenderNode::~RenderNode() {
 
 bool RenderNode::init() {
     RenderNodeCreateParams params;
-
     ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
+
     params.alpha = std::min(1.f, std::max(0.f, alpha));
     params.drawPriority = drawPriority;
     params.type = type;

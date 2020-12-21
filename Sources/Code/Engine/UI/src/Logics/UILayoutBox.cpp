@@ -7,7 +7,6 @@ void UILayoutBox::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILayoutBox>("UILayoutBox")) {
         classInfo->addBaseClass<UIElement>();
         classInfo->addField("margin", &UILayoutBox::styleMargin);
-        classInfo->addField("render", &UILayoutBox::boxRenderId);
     }
 }
 
@@ -21,6 +20,8 @@ UILayoutBox::~UILayoutBox() {
 bool UILayoutBox::init() {
     UIElement::init();
     ETNode<ETUILayoutEvents>::connect(getEntityId());
+
+    boxRenderId = getEntityId();
     return true;
 }
 
@@ -30,14 +31,11 @@ void UILayoutBox::deinit() {
 
 void UILayoutBox::ET_onLoaded() {
     ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
-    auto combinedBox = AABB2Di(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(combinedBox, getEntityId(), &ETUILayout::ET_getCombinedBox);
-    if(boxRenderId.isValid()) {
-        auto box = ET_getBox();
-        Vec2i boxSize = box.getSize();
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
-        ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
-    }
+
+    auto box = ET_getBox();
+    Vec2i boxSize = box.getSize();
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
 }
 
 AABB2Di UILayoutBox::ET_getBox() const {

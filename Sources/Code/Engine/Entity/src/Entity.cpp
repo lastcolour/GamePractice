@@ -6,6 +6,7 @@
 #include "EntityRegistry.hpp"
 
 #include <cassert>
+#include <algorithm>
 
 namespace {
 
@@ -298,20 +299,28 @@ const Transform& Entity::ET_getTransform() const {
 }
 
 void Entity::ET_setTransform(const Transform& newTm) {
+    Vec3 newScale = newTm.scale;
+    newScale.x = std::max(0.0001f, newScale.x);
+    newScale.y = std::max(0.0001f, newScale.y);
+    newScale.z = std::max(0.0001f, newScale.z);
+
     for(auto& childNode : children) {
         auto childEntity = childNode.childEntity;
 
         Transform childTm = childEntity->ET_getLocalTransform();
-        Vec3 shift = childTm.pt.getScaled(newTm.scale);
+        Vec3 shift = childTm.pt.getScaled(newScale);
         shift = newTm.quat * shift;
         childTm.pt = newTm.pt + shift;
-        childTm.scale.scale(newTm.scale);
+        childTm.scale.scale(newScale);
         childTm.quat *= newTm.quat;
 
         childEntity->ET_setTransform(childTm);
     }
 
-    tm = newTm;
+    tm.pt = newTm.pt;
+    tm.scale = newScale;
+    tm.quat = newTm.quat;
+
     ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);
 }
 
@@ -338,23 +347,28 @@ Transform Entity::ET_getLocalTransform() const {
     return localTm;
 }
 
-void Entity::ET_setLocalTransform(const Transform& localTm) {
+void Entity::ET_setLocalTransform(const Transform& newLocalTm) {
     if(!parent) {
-        ET_setTransform(localTm);
+        ET_setTransform(newLocalTm);
         return;
     }
 
+    Vec3 newScale = newLocalTm.scale;
+    newScale.x = std::max(0.0001f, newScale.x);
+    newScale.y = std::max(0.0001f, newScale.y);
+    newScale.z = std::max(0.0001f, newScale.z);
+
     Transform parentTm = parent->ET_getTransform();
 
-    Vec3 shift = localTm.pt;
+    Vec3 shift = newLocalTm.pt;
     shift.x *= parentTm.scale.x;
     shift.y *= parentTm.scale.y;
     shift.z *= parentTm.scale.z;
 
     Transform newTm;
     newTm.pt = parentTm.pt + parentTm.quat * shift;
-    newTm.scale = localTm.scale.getScaled(parentTm.scale);
-    newTm.quat = localTm.quat * parentTm.quat;
+    newTm.scale = newScale.getScaled(parentTm.scale);
+    newTm.quat = newLocalTm.quat * parentTm.quat;
 
     ET_setTransform(newTm);
 }

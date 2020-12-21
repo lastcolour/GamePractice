@@ -20,7 +20,7 @@ public:
     void draw();
     void drawChunk(const void* chunkBuffer, unsigned int chunkVertexCount);
     void drawInstanced(const void* instaceData, unsigned int instancesCount);
-    void drawNinePatch(float left, float right, float top, float down);
+    void drawNinePatch(const Vec2& patch, const Vec2& uv);
 
 public:
 
@@ -30,6 +30,7 @@ public:
     unsigned int eboId;
     unsigned int extraVboId;
     unsigned int vertCount;
+    unsigned int indciesCount;
     VertexType vertType;
 
 private:

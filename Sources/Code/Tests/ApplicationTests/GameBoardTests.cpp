@@ -38,7 +38,7 @@ public:
         GameBoardLogic::updateAfterRemoves();
     }
 
-    std::vector<BoardElement>& getElements() {
+    std::vector<BoardElement> getElements() {
         std::vector<BoardElement> res;
         return res;
     }
@@ -143,8 +143,8 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
 
     for(auto& elem : elems) {
         EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
-        EXPECT_EQ(elem.boardPt.x, elem.movePt.x);
-        EXPECT_EQ(elem.movePt.y, 0);
+        // EXPECT_EQ(elem.boardPt.x, elem.movePt.x);
+        // EXPECT_EQ(elem.movePt.y, 0);
     }
 }
 
@@ -166,18 +166,19 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     bool hasFirst = false;
     bool hasSecond = false;
     bool hasThird = false;
-    for(auto& elem : elems) {
-        ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
-        if(elem.movePt == Vec2i(0)) {
-            hasFirst = true;
-        } else if(elem.movePt == Vec2i(0, 1)) {
-            hasSecond = true;
-        } else if(elem.movePt == Vec2i(0, 2)) {
-            hasThird = true;
-        } else {
-            FAIL();
-        }
-    }
+
+    // for(auto& elem : elems) {
+    //     ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
+    //     if(elem.movePt == Vec2i(0)) {
+    //         hasFirst = true;
+    //     } else if(elem.movePt == Vec2i(0, 1)) {
+    //         hasSecond = true;
+    //     } else if(elem.movePt == Vec2i(0, 2)) {
+    //         hasThird = true;
+    //     } else {
+    //         FAIL();
+    //     }
+    // }
 
     EXPECT_TRUE(hasFirst);
     EXPECT_TRUE(hasSecond);
@@ -205,11 +206,11 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     {
         ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
-        ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
+        // ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
-        ASSERT_EQ(elem2->movePt, Vec2i(0, 2));
+        // ASSERT_EQ(elem2->movePt, Vec2i(0, 2));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Static);
@@ -222,15 +223,15 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     {
         ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
-        ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
+        // ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
-        ASSERT_EQ(elem2->movePt, Vec2i(0, 1));
+        // ASSERT_EQ(elem2->movePt, Vec2i(0, 1));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Falling);
-        ASSERT_EQ(elem1->movePt, Vec2i(0, 2));
+        // ASSERT_EQ(elem1->movePt, Vec2i(0, 2));
     }
 
     board->ET_onGameTick(10.f);

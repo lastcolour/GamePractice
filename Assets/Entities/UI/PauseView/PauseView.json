@@ -88,10 +88,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Resume",
-                          "render": [
-                            0
-                          ]
+                          "text": "Resume"
                         }
                       },
                       {
@@ -134,9 +131,6 @@
                         "right": 0.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -144,23 +138,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 2,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
                       "x": 384.0,
                       "y": 77.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
-                      "r": 255,
-                      "g": 255,
-                      "b": 255,
+                      "r": 234,
+                      "g": 234,
+                      "b": 234,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -230,10 +227,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Exit",
-                          "render": [
-                            0
-                          ]
+                          "text": "Exit"
                         }
                       },
                       {
@@ -276,9 +270,6 @@
                         "right": 0.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -286,23 +277,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 2,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
                       "x": 384.0,
                       "y": 77.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
-                      "r": 255,
-                      "g": 255,
-                      "b": 255,
+                      "r": 234,
+                      "g": 234,
+                      "b": 234,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -372,10 +366,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Restart",
-                          "render": [
-                            0
-                          ]
+                          "text": "Restart"
                         }
                       },
                       {
@@ -418,9 +409,6 @@
                         "right": 0.0
                       }
                     },
-                    "render": [
-                      0
-                    ],
                     "label": [
                       1
                     ],
@@ -428,23 +416,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 2,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
                       "x": 384.0,
                       "y": 77.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
-                      "r": 255,
-                      "g": 255,
-                      "b": 255,
+                      "r": 234,
+                      "g": 234,
+                      "b": 234,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -469,29 +460,6 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": [
-                0
-              ]
-            }
-          },
-          {
-            "type": "RenderImage",
-            "id": 2,
-            "data": {
-              "isVisible": true,
-              "alpha": 0.8999999761581421,
-              "drawPriority": 2,
-              "size": {
-                "x": 410.0,
-                "y": 384.0
-              },
-              "image": "Images/block.png",
-              "tintColor": {
-                "r": 27,
-                "g": 27,
-                "b": 27,
-                "a": 255
               }
             }
           },
@@ -517,6 +485,29 @@
                 ]
               ]
             }
+          },
+          {
+            "type": "NinePatchImageLogic",
+            "id": 4,
+            "data": {
+              "isVisible": true,
+              "alpha": 0.800000011920929,
+              "drawPriority": 2,
+              "size": {
+                "x": 410.0,
+                "y": 384.0
+              },
+              "tintColor": {
+                "r": 17,
+                "g": 17,
+                "b": 17,
+                "a": 255
+              },
+              "image": "Images/block.png",
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 1.0
+            }
           }
         ]
       }
@@ -540,10 +531,7 @@
             "left": 0.0,
             "right": 0.0
           }
-        },
-        "render": [
-          0
-        ]
+        }
       }
     },
     {

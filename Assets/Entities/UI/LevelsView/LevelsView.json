@@ -88,10 +88,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Progress: ",
-                          "render": [
-                            0
-                          ]
+                          "text": "Progress: "
                         }
                       },
                       {
@@ -154,10 +151,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "50% (15/30)",
-                          "render": [
-                            0
-                          ]
+                          "text": "50% (15/30)"
                         }
                       },
                       {
@@ -199,10 +193,7 @@
                         "left": 2.0,
                         "right": 2.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
+                    }
                   }
                 },
                 {
@@ -226,23 +217,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.5,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 59,
                     "size": {
                       "x": 190.0,
                       "y": 36.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
-                      "r": 255,
-                      "g": 255,
-                      "b": 255,
+                      "r": 195,
+                      "g": 195,
+                      "b": 195,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -312,10 +306,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "Intro",
-                          "render": [
-                            0
-                          ]
+                          "text": "Intro"
                         }
                       },
                       {
@@ -357,10 +348,7 @@
                         "left": 0.0,
                         "right": 0.0
                       }
-                    },
-                    "render": [
-                      0
-                    ]
+                    }
                   }
                 },
                 {
@@ -381,23 +369,26 @@
                   }
                 },
                 {
-                  "type": "RenderImage",
+                  "type": "NinePatchImageLogic",
                   "id": 3,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.800000011920929,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 54,
                     "size": {
                       "x": 308.0,
                       "y": 77.0
                     },
-                    "image": "Images/StartButton_BG.png",
                     "tintColor": {
-                      "r": 0,
-                      "g": 0,
-                      "b": 0,
+                      "r": 21,
+                      "g": 21,
+                      "b": 21,
                       "a": 255
-                    }
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -422,10 +413,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": [
-                0
-              ]
+              }
             }
           },
           {
@@ -800,10 +788,7 @@
                       "bot": 0.0,
                       "left": 0.0,
                       "right": 0.0
-                    },
-                    "render": [
-                      0
-                    ]
+                    }
                   }
                 },
                 {
@@ -847,10 +832,7 @@
                   "left": 0.0,
                   "right": 0.0
                 }
-              },
-              "render": [
-                0
-              ]
+              }
             }
           },
           {
@@ -908,8 +890,7 @@
             "left": 0.0,
             "right": 0.0
           }
-        },
-        "render": []
+        }
       }
     },
     {
