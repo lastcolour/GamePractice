@@ -20,7 +20,7 @@ public:
     virtual ~RenderStencilLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETEntityEvents

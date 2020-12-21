@@ -1,8 +1,7 @@
 #include "MiscTests.hpp"
-
-#include <Core/TypeId.hpp>
-#include <Core/StringFormat.hpp>
-#include <Core/Utils.hpp>
+#include "Core/TypeId.hpp"
+#include "Core/StringFormat.hpp"
+#include "Core/Utils.hpp"
 
 TEST_F(MiscTests, CheckSameTypeID) {
     auto intTypeId1 = GetTypeId<int>();

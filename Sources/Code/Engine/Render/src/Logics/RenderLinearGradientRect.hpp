@@ -17,7 +17,7 @@ public:
     virtual ~RenderLinearGradientRect();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // ETRenderRect
     void ET_setSize(const Vec2& newSize) override;

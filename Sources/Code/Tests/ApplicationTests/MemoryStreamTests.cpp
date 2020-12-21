@@ -1,5 +1,5 @@
 #include "MemoryStreamTests.hpp"
-#include <Core/MemoryStream.hpp>
+#include "Core/MemoryStream.hpp"
 
 TEST_F(MemoryStreamTests, TestReadPrimitiveTypes) {
     MemoryStream stream;

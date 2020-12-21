@@ -18,10 +18,9 @@ ScoreObjective::ScoreObjective() {
 ScoreObjective::~ScoreObjective() {
 }
 
-bool ScoreObjective::init() {
+void ScoreObjective::init() {
     ETNode<ETGameBoardElemDestoryEvents>::connect(getEntityId());
     ETNode<ETGameScore>::connect(getEntityId());
-    return true;
 }
 
 void ScoreObjective::deinit() {

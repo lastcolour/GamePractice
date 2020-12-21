@@ -33,7 +33,7 @@ public:
     virtual ~LevelButtonList();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETLevelButtonList

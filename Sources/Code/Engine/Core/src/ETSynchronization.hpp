@@ -6,7 +6,6 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-#include <condition_variable>
 
 class ETSyncRoute {
 public:
@@ -46,7 +45,6 @@ private:
 private:
 
     std::mutex mutex;
-    std::condition_variable cond;
     std::vector<Node> blockedRouteMap;
 };
 

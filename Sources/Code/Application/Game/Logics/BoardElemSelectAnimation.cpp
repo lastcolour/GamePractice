@@ -27,9 +27,8 @@ BoardElemSelectAnimation::BoardElemSelectAnimation() :
 BoardElemSelectAnimation::~BoardElemSelectAnimation() {
 }
 
-bool BoardElemSelectAnimation::init() {
+void BoardElemSelectAnimation::init() {
     ETNode<ETGameBoardElemSelectAnimation>::connect(getEntityId());
-    return true;
 }
 
 void BoardElemSelectAnimation::deinit() {

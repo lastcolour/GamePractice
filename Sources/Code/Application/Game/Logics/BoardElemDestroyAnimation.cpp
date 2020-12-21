@@ -25,9 +25,8 @@ BoardElemDestroyAnimation::BoardElemDestroyAnimation() :
 BoardElemDestroyAnimation::~BoardElemDestroyAnimation() {
 }
 
-bool BoardElemDestroyAnimation::init() {
+void BoardElemDestroyAnimation::init() {
     ETNode<ETBoardElemDetroyAnimation>::connect(getEntityId());
-    return true;
 }
 
 void BoardElemDestroyAnimation::deinit() {

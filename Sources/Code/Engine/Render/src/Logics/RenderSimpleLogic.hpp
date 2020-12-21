@@ -18,7 +18,7 @@ public:
     virtual ~RenderSimpleLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // ETRenderSimpleLogic
     void ET_setColor(const ColorB& col) override;

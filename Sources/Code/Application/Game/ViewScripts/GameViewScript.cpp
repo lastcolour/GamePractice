@@ -32,12 +32,11 @@ GameViewScript::GameViewScript() :
 GameViewScript::~GameViewScript() {
 }
 
-bool GameViewScript::init() {
+void GameViewScript::init() {
     BaseViewScript::init();
     ETNode<ETGameObjectiveEvents>::connect(getEntityId());
     ETNode<ETGameStateEvents>::connect(getEntityId());
     ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
-    return true;
 }
 
 void GameViewScript::setGetStatSoundEvent(const char* eventName) {

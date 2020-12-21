@@ -33,7 +33,7 @@ bool UIView::ET_getFocus() const {
     return hasFocus;
 }
 
-bool UIView::init() {
+void UIView::init() {
     UIBox::init();
 
     ETNode<ETUIView>::connect(getEntityId());
@@ -41,8 +41,6 @@ bool UIView::init() {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     ET_onViewPortChanged(viewPort);
-
-    return true;
 }
 
 void UIView::ET_onViewPortChanged(const Vec2i& newSize) {

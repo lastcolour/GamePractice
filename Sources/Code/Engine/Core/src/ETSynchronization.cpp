@@ -15,18 +15,18 @@ bool ETSyncRoute::tryHardBlock(int reqRouteId) {
     auto threadId = std::this_thread::get_id();
     bool isBlocked = false;
     {
-        std::unique_lock<std::mutex> ulock(mutex);
-        if(!node.blocked && isUniqueThread(node, threadId)) {
-            assert(!node.blocked && "Node already blocked");
-            node.blocked = true;
-        } else {
-            cond.wait(ulock, [this, &node, &threadId](){
-                return !node.blocked && isUniqueThread(node, threadId);
-            });
-            assert(!node.blocked && "Node already blocked");
-            node.blocked = true;
+        while(true) {
+            mutex.lock();
+            if(!node.blocked && isUniqueThread(node, threadId)) {
+                node.blocked = true;
+                break;
+            } else {
+                mutex.unlock();
+                std::this_thread::yield();
+            }
         }
         isBlocked = isBlockable(node);
+        mutex.unlock();
     }
     return isBlocked;
 }
@@ -39,7 +39,6 @@ void ETSyncRoute::hardUnlock(int reqRouteId) {
         assert(isUniqueThread(node, threadId) && "This thread isn't unique");
         assert(node.blocked && "Node isn't blocked");
         node.blocked = false;
-        cond.notify_all();
     }
 }
 
@@ -47,14 +46,17 @@ void ETSyncRoute::pushRoute(int reqRouteId) {
     auto& node = blockedRouteMap[reqRouteId];
     auto threadId = std::this_thread::get_id();
     {
-        std::unique_lock<std::mutex> ulock(mutex);
-        if(node.blocked) {
-            cond.wait(ulock, [this, &node](){
-                return !node.blocked;
-            });
+        while(true) {
+            mutex.lock();
+            if(!node.blocked) {
+                break;
+            } else {
+                mutex.unlock();
+                std::this_thread::yield();
+            }
         }
-        assert(!node.blocked && "Node is blocked");
         addThread(node, threadId);
+        mutex.unlock();
     }
 }
 
@@ -64,7 +66,6 @@ void ETSyncRoute::popRoute(int reqRouteId) {
     {
         std::lock_guard<std::mutex> lock(mutex);
         removeThread(node, threadId);
-        cond.notify_all();
     }
 }
 
@@ -78,8 +79,6 @@ bool ETSyncRoute::popAndBlock(int reqRouteId) {
             addThread(node, threadId);
             node.blocked = true;
             return true;
-        } else {
-            cond.notify_all();
         }
     }
     return false;
@@ -107,7 +106,6 @@ void ETSyncRoute::unlockRoute(int reqRouteId) {
         assert(node.blocked && "Node isn't blocked");
         removeThread(node, threadId);
         node.blocked = false;
-        cond.notify_all();
     }
 }
 

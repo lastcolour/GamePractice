@@ -25,7 +25,7 @@ public:
     virtual ~RenderNode() = 0;
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETRenderNode

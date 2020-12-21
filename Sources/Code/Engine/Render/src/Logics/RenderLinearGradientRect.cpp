@@ -25,12 +25,11 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool RenderLinearGradientRect::init() {
+void RenderLinearGradientRect::init() {
     RenderNode::init();
     ETNode<ETRenderRect>::connect(getEntityId());
     isColorChanged = true;
     ET_setSize(size);
-    return true;
 }
 
 void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {

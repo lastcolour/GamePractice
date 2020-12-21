@@ -37,7 +37,7 @@ public:
     virtual ~GameBoardLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameBoard

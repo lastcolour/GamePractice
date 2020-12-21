@@ -18,12 +18,11 @@ void GameEndTimerLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool GameEndTimerLogic::init() {
+void GameEndTimerLogic::init() {
     remainingTime = endTime;
     ETNode<ETGameEndTimer>::connect(getEntityId());
 
     ET_SendEvent(&ETGameEndTimerUpdater::ET_setEndTime, std::max(remainingTime, 0.f));
-    return true;
 }
 
 void GameEndTimerLogic::deinit() {

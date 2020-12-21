@@ -14,9 +14,8 @@ void UIBoxTests::SetUp() {
 
 UIBox* UIBoxTests::createUIBox() {
     auto object = createVoidObject();
-    std::unique_ptr<UIBox> uiBoxPtr(new UIBox);
-    UIBox* uiBox = uiBoxPtr.get();
-    object->addCustomLogic(std::move(uiBoxPtr));
+    UIBox* uiBox = object->addCustomLogic<UIBox>();
+    HACK_ASSERT_TRUE(uiBox);
     return uiBox;
 }
 

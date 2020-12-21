@@ -23,10 +23,10 @@ RenderBlurLogic::RenderBlurLogic() :
 RenderBlurLogic::~RenderBlurLogic() {
 }
 
-bool RenderBlurLogic::init() {
+void RenderBlurLogic::init() {
+    RenderNode::init();
     isPassesChanged = true;
     isDownScaleChanged = true;
-    return RenderNode::init();
 }
 
 void RenderBlurLogic::onSyncWithRender() {

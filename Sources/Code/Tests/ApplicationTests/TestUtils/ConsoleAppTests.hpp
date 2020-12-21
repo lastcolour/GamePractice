@@ -1,10 +1,12 @@
 #ifndef __CONSOLE_APP_TESTS_HPP__
 #define __CONSOLE_APP_TESTS_HPP__
 
-#include <Entity.hpp>
+#include "Entity.hpp"
 
 #include <gtest/gtest.h>
 #include <memory>
+
+void HACK_ASSERT_TRUE(bool value);
 
 class Application;
 
@@ -19,15 +21,6 @@ protected:
 protected:
 
     Entity* createVoidObject();
-
-    template<typename LogicType>
-    LogicType* createObjectAndLogic() {
-        LogicType* logic = new LogicType;
-        std::unique_ptr<EntityLogic> logicPtr(logic);
-        auto object = createVoidObject();
-        object->addCustomLogic(std::move(logicPtr));
-        return logic;
-    }
 
 private:
 

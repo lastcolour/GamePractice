@@ -46,26 +46,6 @@
             }
           },
           {
-            "type": "RenderImage",
-            "id": 2,
-            "data": {
-              "isVisible": false,
-              "alpha": 0.30000001192092896,
-              "drawPriority": 4,
-              "size": {
-                "x": 359.0,
-                "y": 88.0
-              },
-              "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 255
-              },
-              "image": "Images/StartButton_BG.png"
-            }
-          },
-          {
             "type": "UIAnimationSequence",
             "id": 3,
             "data": {
@@ -118,6 +98,29 @@
                 }
               ]
             }
+          },
+          {
+            "type": "NinePatchImageLogic",
+            "id": 4,
+            "data": {
+              "isVisible": false,
+              "alpha": 0.20000000298023224,
+              "drawPriority": 4,
+              "size": {
+                "x": 329.0,
+                "y": 80.0
+              },
+              "tintColor": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              },
+              "image": "Images/block.png",
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 1.0
+            }
           }
         ]
       }
@@ -160,7 +163,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 47,
+              "fontSize": 43,
               "text": "Start"
             }
           },
@@ -322,8 +325,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 359.0,
-          "y": 88.0
+          "x": 329.0,
+          "y": 80.0
         },
         "tintColor": {
           "r": 100,

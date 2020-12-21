@@ -31,7 +31,7 @@ public:
     virtual ~UIScrollArea();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUIInteractionBox

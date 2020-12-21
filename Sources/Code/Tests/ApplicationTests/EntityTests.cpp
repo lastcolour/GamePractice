@@ -28,8 +28,8 @@ public:
     TestLogic() {}
     virtual ~TestLogic() {}
 
-    bool init() override { return true; }
-    void deinit() { }
+    void init() override {}
+    void deinit() override { }
 };
 
 } // namespace

@@ -16,7 +16,7 @@ public:
 
     // SystemLogic
     bool init() override;
-    virtual void deinit() override;
+    void deinit() override;
 
     // ETInputEvents
     void ET_onTouch(EActionType actionType, const Vec2i& pt) override;

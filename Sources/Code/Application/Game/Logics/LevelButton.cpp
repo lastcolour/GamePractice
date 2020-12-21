@@ -23,14 +23,13 @@ LevelButton::LevelButton() :
 LevelButton::~LevelButton() {
 }
 
-bool LevelButton::init() {
+void LevelButton::init() {
     ETNode<ETLevelButton>::connect(getEntityId());
     ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
     ET_SendEvent(stars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.thirdId, &ETUIElement::ET_hide);
     ET_setLevelState(ELevelButtonState::Locked);
-    return true;
 }
 
 void LevelButton::deinit() {

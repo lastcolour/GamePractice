@@ -52,7 +52,7 @@ void SoundEqualizerLogic::ET_disable() {
     ET_QueueEvent(&ETAudioSystem::ET_setEqualizer, soundGroup, defSetup);
 }
 
-bool SoundEqualizerLogic::init() {
+void SoundEqualizerLogic::init() {
     ETNode<ETEqualizer>::connect(getEntityId());
 
     eqSetup.low = Math::Clamp(eqSetup.low, -1.f, 1.f);
@@ -64,8 +64,6 @@ bool SoundEqualizerLogic::init() {
     if(autoEnable) {
         ET_enable();
     }
-
-    return true;
 }
 
 void SoundEqualizerLogic::deinit() {

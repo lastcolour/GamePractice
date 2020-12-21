@@ -14,7 +14,7 @@ public:
     virtual ~RenderBlurLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
 protected:
 

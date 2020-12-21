@@ -2,11 +2,12 @@
 #define __UI_ANIMATION_SEQUENCE_HPP__
 
 #include "Entity/EntityLogic.hpp"
+#include "Entity/ETEntity.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUITimer.hpp"
-#include "Logics/UIAnimationFrame.hpp"
+#include "UI/ETUIBox.hpp"
 #include "UI/ETUIAnimation.hpp"
-#include "Entity/ETEntity.hpp"
+#include "Logics/UIAnimationFrame.hpp"
 
 #include <vector>
 
@@ -15,7 +16,9 @@ class ReflectContext;
 class UIAnimationSequence : public EntityLogic,
     public ETNode<ETUITimerEvents>,
     public ETNode<ETUIAnimationSequence>,
-    public ETNode<ETEntityEvents> {
+    public ETNode<ETEntityEvents>,
+    public ETNode<ETUIElementEvents>,
+    public ETNode<ETUIAdditiveAnimationTarget> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,7 +29,7 @@ public:
     virtual ~UIAnimationSequence();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUITimerEvents
@@ -41,9 +44,20 @@ public:
     void ET_setLooped(bool flag) override;
     void ET_addSubAnimation(EntityId subAnimId) override;
 
+    // ETUIAdditiveAnimationTarget
+    void ET_applyAdditiveTranform() override;
+
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onLoaded() override;
+
+    // ETUIElementEvents
+    void ET_onBoxChanged(const AABB2Di& newAabb) override;
+    void ET_onZIndexChanged(int newZIndex) override;
+    void ET_onAlphaChanged(float newAlpha) override;
+    void ET_onHidden(bool flag) override;
+    void ET_onDisabled(bool flag) override;
+    void ET_onIngoreTransform(bool flag) override;
 
 private:
 
@@ -63,9 +77,9 @@ private:
     PrevState prevState;
     std::vector<EntityId> subAnimations;
     std::vector<UIAnimationFrame> frames;
-    Transform origTm;
+    Transform currAddTm;
     EntityId triggerId;
-    float origAlpha;
+    float currAddAlpha;
     float currDuration;
     float startDelay;
     EAnimSequenceType seqType;
@@ -74,7 +88,6 @@ private:
     bool cyclic;
     bool autoStart;
     bool isPlaying;
-    bool isOrigTmValid;
 };
 
 #endif /* __UI_ANIMATION_SEQUENCE_HPP__ */

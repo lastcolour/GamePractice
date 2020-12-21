@@ -90,13 +90,12 @@ UIScrollArea::UIScrollArea() :
 UIScrollArea::~UIScrollArea() {
 }
 
-bool UIScrollArea::init() {
+void UIScrollArea::init() {
     ETNode<ETUIScrollArea>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
     ETNode<ETUIElemAligner>::connect(getEntityId());
     initScrollElem();
-    return true;
 }
 
 void UIScrollArea::initScrollElem() {
@@ -250,6 +249,9 @@ void UIScrollArea::ET_onAlphaChanged(float newAlpha) {
 
 void UIScrollArea::ET_onHidden(bool flag) {
     ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
+    if(!flag) {
+        initScrollElem();
+    }
 }
 
 void UIScrollArea::ET_onDisabled(bool flag) {

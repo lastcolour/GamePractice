@@ -28,10 +28,9 @@ LevelButtonList::LevelButtonList() {
 LevelButtonList::~LevelButtonList() {
 }
 
-bool LevelButtonList::init() {
+void LevelButtonList::init() {
     ETNode<ETLevelButtonList>::connect(getEntityId());
     initLevelProress();
-    return true;
 }
 
 void LevelButtonList::deinit() {

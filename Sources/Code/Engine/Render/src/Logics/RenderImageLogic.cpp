@@ -26,14 +26,13 @@ void RenderImageLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool RenderImageLogic::init() {
+void RenderImageLogic::init() {
     RenderNode::init();
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setImage(image.c_str());
     ET_setSize(size);
     ET_setTintColor(tintColor);
-    return true;
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {

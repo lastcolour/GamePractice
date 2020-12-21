@@ -61,9 +61,8 @@ void GameBoardSpawner::ET_unloadLevel() {
     gameBoardId = InvalidEntityId;
 }
 
-bool GameBoardSpawner::init() {
+void GameBoardSpawner::init() {
     ETNode<ETGameBoardSpawner>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardSpawner::deinit() {

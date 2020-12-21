@@ -19,7 +19,7 @@ public:
     virtual ~SoundPlayLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETSoundPlayer

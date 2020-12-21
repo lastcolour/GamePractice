@@ -10,8 +10,8 @@ const char* TEST_OBJECT_2 = "Game/Blocks/Red.json";
 
 TEST_F(GameElemsPoolTests, CheckPoolDistribution) {
     auto object = createVoidObject();
-    auto pool = new GameBoardElemsPool();
-    object->addCustomLogic(std::unique_ptr<EntityLogic>(pool));
+    auto pool = object->addCustomLogic<GameBoardElemsPool>();
+    ASSERT_TRUE(pool);
     {
         ElementDescriptor elemDescr;
         elemDescr.weight = 1;
@@ -50,9 +50,8 @@ TEST_F(GameElemsPoolTests, CheckPoolDistribution) {
 
 TEST_F(GameElemsPoolTests, CheckPoolRespawn) {
     auto object = createVoidObject();
-    auto pool = new GameBoardElemsPool();
-    object->addCustomLogic(std::unique_ptr<EntityLogic>(pool));
-
+    auto pool = object->addCustomLogic<GameBoardElemsPool>();
+    ASSERT_TRUE(pool);
     {
         ElementDescriptor elemDescr;
         elemDescr.weight = 1;

@@ -17,12 +17,11 @@ UILayoutBox::UILayoutBox() :
 UILayoutBox::~UILayoutBox() {
 }
 
-bool UILayoutBox::init() {
+void UILayoutBox::init() {
     UIElement::init();
     ETNode<ETUILayoutEvents>::connect(getEntityId());
 
     boxRenderId = getEntityId();
-    return true;
 }
 
 void UILayoutBox::deinit() {

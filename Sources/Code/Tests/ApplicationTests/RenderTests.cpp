@@ -323,9 +323,8 @@ TEST_F(RenderTests, CheckCreateSameFontTwice) {
 
 TEST_F(RenderTests, CheckRenderSimpleText) {
     auto gameObj = createVoidObject();
-    RenderTextLogic* renderText = new RenderTextLogic;
-    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
-    ASSERT_TRUE(renderText->init());
+    auto renderText = gameObj->addCustomLogic<RenderTextLogic>();
+    ASSERT_TRUE(renderText);
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -373,9 +372,8 @@ TEST_F(RenderTests, CheckRenderSimpleText) {
 
 TEST_F(RenderTests, CheckRenderSimpleImage) {
     auto gameObj = createVoidObject();
-    RenderImageLogic* renderImage = new RenderImageLogic;
-    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderImage));
-    ASSERT_TRUE(renderImage->init());
+    auto renderImage = gameObj->addCustomLogic<RenderImageLogic>();
+    ASSERT_TRUE(renderImage);
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -501,10 +499,10 @@ TEST_F(RenderTests, CheckHideUnhide) {
 
 TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
     auto gameObj = createVoidObject();
-    RenderTextLogic* renderText = new RenderTextLogic;
-    gameObj->addCustomLogic(std::unique_ptr<EntityLogic>(renderText));
+    RenderTextLogic* renderText = gameObj->addCustomLogic<RenderTextLogic>();
+    ASSERT_TRUE(renderText);
+
     renderText->ET_setFontHeight(48);
-    ASSERT_TRUE(renderText->init());
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -564,8 +562,8 @@ TEST_F(RenderTests, CheckRenderWithMask) {
 
     auto firstEnt = createVoidObject();
     {
-        RenderSimpleLogic* logicPtr = new RenderSimpleLogic;
-        firstEnt->addCustomLogic(std::unique_ptr<EntityLogic>(logicPtr));
+        auto logicPtr = firstEnt->addCustomLogic<RenderSimpleLogic>();
+        ASSERT_TRUE(logicPtr);
 
         auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
         logicPtr->ET_setSize(halfSize);
@@ -584,8 +582,8 @@ TEST_F(RenderTests, CheckRenderWithMask) {
     Vec2 ptShift = Vec2(renderPort.x / 4.f, 0.f);
     auto secondEnt = createVoidObject();
     {
-        RenderSimpleLogic* logicPtr = new RenderSimpleLogic;
-        secondEnt->addCustomLogic(std::unique_ptr<EntityLogic>(logicPtr));
+        auto logicPtr = secondEnt->addCustomLogic<RenderSimpleLogic>();
+        ASSERT_TRUE(logicPtr);
 
         auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
         logicPtr->ET_setSize(halfSize);
@@ -605,8 +603,8 @@ TEST_F(RenderTests, CheckRenderWithMask) {
     ptShift = Vec2(renderPort.x / 4.f, renderPort.y / 4.f);
     auto thirdEnt = createVoidObject();
     {
-        RenderSimpleLogic* logicPtr = new RenderSimpleLogic;
-        thirdEnt->addCustomLogic(std::unique_ptr<EntityLogic>(logicPtr));
+        auto logicPtr = thirdEnt->addCustomLogic<RenderSimpleLogic>();
+        ASSERT_TRUE(logicPtr);
 
         auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
         logicPtr->ET_setSize(halfSize);

@@ -21,13 +21,12 @@ UILabel::UILabel() {
 UILabel::~UILabel() {
 }
 
-bool UILabel::init() {
+void UILabel::init() {
     UIElement::init();
     ETNode<ETUILabel>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 
     labelRenderId = getEntityId();
-    return true;
 }
 
 void UILabel::deinit() {

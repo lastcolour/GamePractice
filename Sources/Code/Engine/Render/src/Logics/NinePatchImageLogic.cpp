@@ -22,13 +22,12 @@ NinePatchImageLogic::NinePatchImageLogic() :
 NinePatchImageLogic::~NinePatchImageLogic() {
 }
 
-bool NinePatchImageLogic::init() {
+void NinePatchImageLogic::init() {
     RenderImageLogic::init();
     isPatchChanged = true;
     horizontal = Math::Clamp(horizontal, 0.f, 0.4999f);
     vertical = Math::Clamp(vertical, 0.f, 0.4999f);
     patchScale = Math::Clamp(patchScale, 0.f, 10.f);
-    return true;
 }
 
 void NinePatchImageLogic::onSyncWithRender() {

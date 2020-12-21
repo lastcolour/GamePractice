@@ -27,7 +27,7 @@ UILayout::UILayout() :
 UILayout::~UILayout() {
 }
 
-bool UILayout::init() {
+void UILayout::init() {
     for(auto elemId : children) {
         ET_SendEvent(elemId, &ETUIElement::ET_setHostLayout, getEntityId());
     }
@@ -35,7 +35,6 @@ bool UILayout::init() {
     ETNode<ETUILayout>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
     ETNode<ETUIElemAligner>::connect(getEntityId());
-    return true;
 }
 
 void UILayout::deinit() {
@@ -217,6 +216,7 @@ void UILayout::calculateLayout() {
         auto childBox = childBoxes[i];
         auto center = childBox.getCenter();
         UI::Set2DPositionDoNotUpdateLayout(childId, center);
+        ET_SendEvent(childId, &ETUIElement::ET_setLayoutPos, center);
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }
 

@@ -21,16 +21,14 @@ GameBoardAnimation::GameBoardAnimation() :
 GameBoardAnimation::~GameBoardAnimation() {
 }
 
-bool GameBoardAnimation::init() {
+void GameBoardAnimation::init() {
     ETNode<ETGameBoardAnimation>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardAnimation::deinit() {
 }
 
 void GameBoardAnimation::ET_onGameTick(float dt) {
-
     currDuration += dt;
     float prog = std::min(currDuration / scaleDuration, 1.f);
     float currScale = Math::Lerp(1.f, minScale, prog);

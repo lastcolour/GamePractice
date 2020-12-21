@@ -2,8 +2,9 @@
 #include "Entity/EntityLogic.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Core/ETLogger.hpp"
-#include "Reflect/ClassValue.hpp"
+#include "Reflect/ETReflectInterfaces.hpp"
 #include "EntityRegistry.hpp"
+#include "Reflect/ClassInfo.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -93,9 +94,7 @@ EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
     assert(logicInstance.get() && "Can't add null game logic");
     auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
     logicPtr->setEntity(this);
-    if(!logicPtr->init()) {
-        return InvalidEntityLogicId;
-    }
+    logicPtr->init();
     auto logicId = createNewLogicId();
     logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
     ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
@@ -107,21 +106,26 @@ bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance
     assert(IsValidLogicId(logicId, logics) && "Invalid entity logic id");
     auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
     logicPtr->setEntity(this);
-    if(!logicPtr->init()) {
-        return false;
-    }
+    logicPtr->init();
     logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
     return true;
 }
 
-EntityLogicId Entity::addCustomLogic(std::unique_ptr<EntityLogic>&& logic) {
-    assert(logic && "Can't add null custom game logic");
-    ClassInstance logicInstance = ClassInstance::CreateWithoutClassInfo(logic.release());
-    auto res = addLogic(std::move(logicInstance));
-    if(res) {
-        ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
+void* Entity::addLogicByTypeId(TypeId logicTypeId) {
+    ClassInfo* classInfo = nullptr;
+    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, logicTypeId);
+    if(!classInfo) {
+        LogWarning("[Entity::addLogicByTypeId] Can't find logic with type id: '%d'", logicTypeId);
+        return nullptr;
     }
-    return res;
+    auto instance = classInfo->createInstance();
+    auto logicPtr = instance.get();
+    if(!logicPtr) {
+        LogWarning("[Entity::addLogicByTypeId] Can't create instance of logic with type id: '%d'", logicTypeId);
+        return nullptr;
+    }
+    addLogic(std::move(instance));
+    return logicPtr;
 }
 
 bool Entity::removeLogic(EntityLogicId logicId) {
@@ -189,10 +193,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
              logicId, ET_getName()));
         res = false;
     }
-    if(!logicPtr->init()) {
-        LogWarning("[Entity::writeLogicData] Can't re-init logic after write");
-    }
-
+    logicPtr->init();
     ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
 
     return res;
@@ -210,10 +211,7 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     if(!logicInstance->addValueArrayElement(valueId)) {
         res = false;
     }
-    if(!logicPtr->init()) {
-        LogWarning("[Entity::addLogicValueArrayElemet] Can't re-init logic after element add");
-    }
-
+    logicPtr->init();
     ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
 
     return res;

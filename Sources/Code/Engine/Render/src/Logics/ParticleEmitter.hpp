@@ -17,7 +17,7 @@ public:
     virtual ~ParticleEmitter();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // ETParticleEmitter
     void ET_emit() override;

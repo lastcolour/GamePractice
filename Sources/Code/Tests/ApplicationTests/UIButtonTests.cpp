@@ -55,8 +55,8 @@ void UIButtonTests::TearDown() {
 
 Entity* UIButtonTests::createUIButton(const Vec2i& pos, const Vec2& size) {
     auto entity = createVoidObject();
-    entity->addCustomLogic(std::unique_ptr<EntityLogic>(new UIButton()));
-    entity->addCustomLogic(std::unique_ptr<EntityLogic>(new UIBox()));
+    HACK_ASSERT_TRUE(entity->addCustomLogic<UIButton>());
+    HACK_ASSERT_TRUE(entity->addCustomLogic<UIBox>());
 
     UIBoxStyle style;
     style.height = size.y;
@@ -163,8 +163,9 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
     auto button = createUIButton(center, Vec2(0.5f));
 
     {
-        auto pressAnimation = new UIAnimationSequence();
-        button->addCustomLogic(std::unique_ptr<EntityLogic>(pressAnimation));
+        auto pressAnimation = button->addCustomLogic<UIAnimationSequence>();
+        ASSERT_TRUE(pressAnimation);
+
         UIAnimationFrame frame;
         frame.duration = 1.f;
         pressAnimation->ET_addAnimationFrame(frame);
@@ -190,12 +191,12 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
 TEST_F(UIButtonTests, CheckButtonFromNonFocusedView) {
     auto parent = createVoidObject();
     {
-        parent->addCustomLogic(std::unique_ptr<EntityLogic>(new UIView));
-        parent->addCustomLogic(std::unique_ptr<EntityLogic>(new UILayout));
+        ASSERT_TRUE(parent->addCustomLogic<UIView>());
+        ASSERT_TRUE(parent->addCustomLogic<UILayout>());
     }
     auto child = createVoidObject();
     {
-        child->addCustomLogic(std::unique_ptr<EntityLogic>(new UIButton));
+        ASSERT_TRUE(child->addCustomLogic<UIButton>());
         
         UIBoxStyle boxStyle;
         boxStyle.widthInv = UIBoxSizeInvariant::Relative;

@@ -4,10 +4,8 @@
 
 UILabel* UILabelTests::createUILabel() {
     auto entity = createVoidObject();
-    auto uiLabelPtr = new UILabel;
-    entity->addCustomLogic(std::unique_ptr<EntityLogic>(uiLabelPtr));
-    entity->addCustomLogic(std::unique_ptr<EntityLogic>(new RenderTextLogic));
-    uiLabelPtr->ET_setTextRender(entity->getEntityId());
+    auto uiLabelPtr = entity->addCustomLogic<UILabel>();
+    HACK_ASSERT_TRUE(uiLabelPtr);
     return uiLabelPtr;
 }
 

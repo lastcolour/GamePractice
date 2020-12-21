@@ -24,7 +24,7 @@ public:
     virtual ~GameBoardMatchLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameBoardMatcher

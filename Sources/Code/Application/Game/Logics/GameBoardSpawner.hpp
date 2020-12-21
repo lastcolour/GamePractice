@@ -20,7 +20,7 @@ public:
     virtual ~GameBoardSpawner();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameBoardSpawner

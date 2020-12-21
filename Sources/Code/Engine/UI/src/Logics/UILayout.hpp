@@ -21,7 +21,7 @@ public:
     virtual ~UILayout();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUILayout

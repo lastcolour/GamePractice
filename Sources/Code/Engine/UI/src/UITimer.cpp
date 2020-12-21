@@ -2,6 +2,7 @@
 #include "UI/ETUITimer.hpp"
 #include "UI/ETUIViewCache.hpp"
 #include "UI/ETUIViewPort.hpp"
+#include "UI/ETUIBox.hpp"
 
 UITimer::UITimer() :
     scale(1.f),
@@ -39,6 +40,7 @@ void UITimer::ET_onTick() {
 
     dt *= scale;
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, dt);
+    ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_applyAdditiveTranform);
 }
 
 void UITimer::ET_setScale(float newScale) {

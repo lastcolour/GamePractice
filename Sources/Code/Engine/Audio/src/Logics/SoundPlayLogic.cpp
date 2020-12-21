@@ -19,12 +19,11 @@ SoundPlayLogic::SoundPlayLogic() :
 SoundPlayLogic::~SoundPlayLogic() {
 }
 
-bool SoundPlayLogic::init() {
+void SoundPlayLogic::init() {
     ETNode<ETSoundPlayer>::connect(getEntityId());
     if(autoStart) {
         ET_play();
     }
-    return true;
 }
 
 void SoundPlayLogic::deinit() {

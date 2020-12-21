@@ -14,7 +14,7 @@ public:
     virtual ~NinePatchImageLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
 protected:
 

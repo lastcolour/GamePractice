@@ -21,13 +21,12 @@ void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool RenderSimpleLogic::init() {
+void RenderSimpleLogic::init() {
     RenderNode::init();
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setColor(color);
     ET_setSize(size);
-    return true;
 }
 
 void RenderSimpleLogic::ET_setColor(const ColorB& col) {

@@ -28,14 +28,13 @@ void RenderTextLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool RenderTextLogic::init() {
+void RenderTextLogic::init() {
     RenderNode::init();
     ETNode<ETRenderTextLogic>::connect(getEntityId());
     ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
     ET_setColor(color);
     ET_setText(text.c_str());
     ET_setFontHeight(fontHeight);
-    return true;
 }
 
 void RenderTextLogic::ET_setFontHeight(int newFontHeight) {

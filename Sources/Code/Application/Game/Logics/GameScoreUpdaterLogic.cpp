@@ -23,11 +23,10 @@ void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool GameScoreUpdaterLogic::init() {
+void GameScoreUpdaterLogic::init() {
     ETNode<ETGameScoreUpdater>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, "0");
-    return true;
 }
 
 void GameScoreUpdaterLogic::deinit() {

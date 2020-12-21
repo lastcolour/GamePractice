@@ -22,7 +22,7 @@ public:
     virtual ~GameBoardAnimation();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameBoardAnimation

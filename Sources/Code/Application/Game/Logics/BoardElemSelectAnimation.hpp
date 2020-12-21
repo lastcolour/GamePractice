@@ -23,7 +23,7 @@ public:
     virtual ~BoardElemSelectAnimation();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameTimerEvents

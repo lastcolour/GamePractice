@@ -17,7 +17,7 @@ public:
     virtual ~UILayoutBox();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUIElement

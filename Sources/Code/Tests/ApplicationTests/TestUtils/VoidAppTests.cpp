@@ -1,6 +1,6 @@
 #include "TestUtils/VoidAppTests.hpp"
 
-#include <Application.hpp>
+#include "Application.hpp"
 
 std::unique_ptr<Application> VoidAppTests::APP;
 

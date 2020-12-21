@@ -18,7 +18,7 @@ public:
     virtual ~RenderTextLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // ETRenderTextLogic
     void ET_setColor(const ColorB& newColor) override;

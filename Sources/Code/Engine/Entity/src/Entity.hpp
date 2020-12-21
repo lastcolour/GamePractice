@@ -32,14 +32,27 @@ public:
     void addChildEntityWithId(EntityChildId childId, Entity& entity);
     bool addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance);
     EntityLogicId addLogic(ClassInstance&& logicInstance);
-    EntityLogicId addCustomLogic(std::unique_ptr<EntityLogic>&& logicPtr);
     bool removeLogic(EntityLogicId logicId);
     bool readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId);
     EntityId getEntityId() const { return entityId; }
     void setName(const char* newName);
+    void* addLogicByTypeId(TypeId logicTypeId);
     void purgeAllRelationships();
+
+    template<typename LogicType>
+    LogicType* addCustomLogic() {
+        static_assert(std::is_base_of<EntityLogic, LogicType>::value, "Invalid non-entity logic type");
+        static_assert(!std::is_abstract<LogicType>::value, "Can't add logic of abstract type");
+        void* res = addLogicByTypeId(GetTypeId<LogicType>());
+        if(!res) {
+            res = new LogicType();
+            auto instance = ClassInstance::CreateWithoutClassInfo(res);
+            addLogic(std::move(instance));
+        }
+        return reinterpret_cast<LogicType*>(res);
+    }
 
     // ETEntity
     const char* ET_getName() const override;

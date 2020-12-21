@@ -28,13 +28,12 @@ RenderStencilLogic::RenderStencilLogic() :
 RenderStencilLogic::~RenderStencilLogic() {
 }
 
-bool RenderStencilLogic::init() {
+void RenderStencilLogic::init() {
     ETNode<ETEntityEvents>::connect(getEntityId());
     if(refVal < 0 || refVal > 255) {
         LogWarning("[RenderStencilLogic::init] Ref val '%d' is out of range: [0, 255]", refVal);
         refVal = Math::Clamp(refVal, 0, 255);
     }
-    return true;
 }
 
 void RenderStencilLogic::deinit() {

@@ -1,15 +1,15 @@
 #include "ReflectTests.hpp"
-#include <Reflect/ClassInfo.hpp>
-#include <Reflect/ReflectContext.hpp>
-#include <Reflect/EnumInfo.hpp>
-#include <Core/JSONNode.hpp>
-#include <Core/StringFormat.hpp>
-#include <Core/ETPrimitives.hpp>
-#include <Core/MemoryStream.hpp>
-#include <Reflect/ETReflectInterfaces.hpp>
-#include <Entity.hpp>
-#include <Entity/EntityLogic.hpp>
-#include <EntityRegistry.hpp>
+#include "Reflect/ClassInfo.hpp"
+#include "Reflect/ReflectContext.hpp"
+#include "Reflect/EnumInfo.hpp"
+#include "Core/JSONNode.hpp"
+#include "Core/StringFormat.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Core/MemoryStream.hpp"
+#include "Reflect/ETReflectInterfaces.hpp"
+#include "Entity.hpp"
+#include "Entity/EntityLogic.hpp"
+#include "EntityRegistry.hpp"
 
 namespace {
 
@@ -191,7 +191,7 @@ public:
 public:
 
     // EntityLogic
-    bool init() override { return true; }
+    void init() override {}
     void deinit() override {}
 
 public:

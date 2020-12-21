@@ -1,15 +1,15 @@
 #include "TestUtils/ConsoleAppTests.hpp"
 
-#include <Application.hpp>
-#include <Render/RenderModule.hpp>
-#include <Entity.hpp>
-#include <Core/ETPrimitives.hpp>
-#include <Entity/EntityModule.hpp>
-#include <UI/UIModule.hpp>
-#include <Game/GameModule.hpp>
-#include <Platform/PlatformModule.hpp>
-#include <Core/ETLogger.hpp>
-#include <Entity/ETEntityManger.hpp>
+#include "Application.hpp"
+#include "Render/RenderModule.hpp"
+#include "Entity.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Entity/EntityModule.hpp"
+#include "UI/UIModule.hpp"
+#include "Game/GameModule.hpp"
+#include "Platform/PlatformModule.hpp"
+#include "Core/ETLogger.hpp"
+#include "Entity/ETEntityManger.hpp"
 
 namespace {
 
@@ -37,6 +37,10 @@ protected:
 };
 
 } // namespace
+
+void HACK_ASSERT_TRUE(bool value) {
+    ASSERT_TRUE(value);
+}
 
 void ConsoleAppTests::SetUpTestCase() {
     ConsoleAppTest* consoleApp = new ConsoleAppTest();

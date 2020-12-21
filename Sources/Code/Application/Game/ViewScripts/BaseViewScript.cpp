@@ -9,9 +9,8 @@ BaseViewScript::BaseViewScript() :
 BaseViewScript::~BaseViewScript() {
 }
 
-bool BaseViewScript::init() {
+void BaseViewScript::init() {
     ETNode<ETUIViewScript>::connect(getEntityId());
-    return true;
 }
 
 void BaseViewScript::deinit() {

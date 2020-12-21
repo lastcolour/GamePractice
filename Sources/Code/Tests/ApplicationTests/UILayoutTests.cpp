@@ -26,9 +26,9 @@ void CheckUIBox(EntityId entityId, Vec2i expCenter, Vec2i expSize) {
 
 Entity* UILayoutTests::createUIBox(float width, float height) {
     auto entity = createVoidObject();
-    std::unique_ptr<UIBox> rootBox(new UIBox);
-    auto rootBoxPtr = rootBox.get();
-    entity->addCustomLogic(std::move(rootBox));
+    auto rootBoxPtr = entity->addCustomLogic<UIBox>();
+    HACK_ASSERT_TRUE(rootBoxPtr);
+
     UIBoxStyle boxStyle;
     boxStyle.height = width;
     boxStyle.heightInv = UIBoxSizeInvariant::Relative;
@@ -48,7 +48,7 @@ Entity* UILayoutTests::createUIBox(float width, float height) {
 
 Entity* UILayoutTests::createUILayoutBox() {
     auto entity = createVoidObject();
-    entity->addCustomLogic(std::unique_ptr<EntityLogic>(new UILayoutBox));
+    HACK_ASSERT_TRUE(entity->addCustomLogic<UILayoutBox>());
 
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
@@ -61,9 +61,9 @@ Entity* UILayoutTests::createUILayoutBox() {
 }
 
 UILayout* UILayoutTests::addUILayout(Entity* entity, UILayoutType type, UIXAlign xAlign, UIYAlign yAlign) {
-    std::unique_ptr<UILayout> layout(new UILayout);
-    auto layoutPtr = layout.get();
-    entity->addCustomLogic(std::move(layout));
+    auto layoutPtr = entity->addCustomLogic<UILayout>();
+    HACK_ASSERT_TRUE(layoutPtr);
+
     UILayoutStyle layoutStyle;
     layoutStyle.type = type;
     layoutStyle.xAlign = xAlign;

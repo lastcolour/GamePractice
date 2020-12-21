@@ -19,7 +19,7 @@ public:
     virtual ~RenderImageLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;

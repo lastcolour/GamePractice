@@ -13,7 +13,7 @@ public:
     virtual ~BaseViewScript();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUIViewScript

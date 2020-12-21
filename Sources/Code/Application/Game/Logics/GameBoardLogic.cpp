@@ -123,7 +123,7 @@ BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) const {
     return elem;
 }
 
-bool GameBoardLogic::init() {
+void GameBoardLogic::init() {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     AABB2Di visualBox(Vec2i(0), viewPort);
@@ -140,7 +140,7 @@ bool GameBoardLogic::init() {
         for(int j = 0; j < boardSize.y; ++j) {
             auto elem = createNewElement(Vec2i(i, j));
             if(!elem.entId.isValid()) {
-                return false;
+                return;
             } else {
                 column.push_back(elem);
             }
@@ -150,7 +150,6 @@ bool GameBoardLogic::init() {
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardLogic::deinit() {

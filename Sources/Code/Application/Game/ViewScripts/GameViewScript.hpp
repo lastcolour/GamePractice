@@ -26,7 +26,7 @@ public:
     virtual ~GameViewScript();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // BaseViewScript
     void ET_onViewOpened() override;

@@ -29,10 +29,9 @@ void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool GameBoardElemLogic::init() {
+void GameBoardElemLogic::init() {
     ETNode<ETGameBoardElem>::connect(getEntityId());
     ETNode<ETBoardElemDetroyAnimationEvents>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardElemLogic::deinit() {

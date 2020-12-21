@@ -21,7 +21,7 @@ ParticleEmitter::ParticleEmitter() :
 ParticleEmitter::~ParticleEmitter() {
 }
 
-bool ParticleEmitter::init() {
+void ParticleEmitter::init() {
     RenderNode::init();
     ETNode<ETParticleEmitter>::connect(getEntityId());
 
@@ -39,8 +39,6 @@ bool ParticleEmitter::init() {
     }
 
     isConfigChanged = true;
-
-    return true;
 }
 
 void ParticleEmitter::ET_emit() {

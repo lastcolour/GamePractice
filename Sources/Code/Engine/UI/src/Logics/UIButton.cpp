@@ -69,14 +69,13 @@ UIButton::UIButton() :
 UIButton::~UIButton() {
 }
 
-bool UIButton::init() {
+void UIButton::init() {
     if(labelId == getEntityId()) {
         LogWarning("[UIButton::init] Label should be other entity than this: '%s'", EntityUtils::GetEntityName(getEntityId()));
         labelId = InvalidEntityId;
     }
     UIBox::init();
     ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
-    return true;
 }
 
 void UIButton::deinit() {

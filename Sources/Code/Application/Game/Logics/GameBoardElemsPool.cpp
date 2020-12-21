@@ -29,10 +29,9 @@ GameBoardElemsPool::GameBoardElemsPool() {
 GameBoardElemsPool::~GameBoardElemsPool() {
 }
 
-bool GameBoardElemsPool::init() {
+void GameBoardElemsPool::init() {
     initGenerator();
     ETNode<ETGameBoardElemsPool>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardElemsPool::deinit() {

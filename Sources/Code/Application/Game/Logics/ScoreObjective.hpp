@@ -23,7 +23,7 @@ public:
     virtual ~ScoreObjective();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameBoardElemDestoryEvents

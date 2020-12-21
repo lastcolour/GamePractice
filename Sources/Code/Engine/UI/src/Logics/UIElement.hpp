@@ -10,7 +10,8 @@ class ReflectContext;
 
 class UIElement : public EntityLogic,
     public ETNode<ETUIElement>,
-    public ETNode<ETEntityEvents> {
+    public ETNode<ETEntityEvents>,
+    public ETNode<ETUIAdditiveAnimationTarget> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -21,7 +22,7 @@ public:
     virtual ~UIElement();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUIElement
@@ -41,6 +42,11 @@ public:
     void ET_setIgnoreTransform(bool flag) override;
     void ET_setParentHidden(bool flag) override;
     void ET_setParentDisabled(bool flag) override;
+    void ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) override;
+    void ET_setLayoutPos(const Vec2i& layoutPt) override;
+
+    // ETUIAdditiveAnimationTarget
+    void ET_applyAdditiveTranform() override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
@@ -60,14 +66,18 @@ protected:
 
 protected:
 
+    Transform addTm;
+    Transform layoutTm;
     EntityId hostLayoutId;
     float alpha;
+    float addAlpha;
     int zIndex;
     bool isIgnoringTransform;
     bool isHidden;
     bool isEnabled;
     bool isParentHidden;
     bool isParentDisabled;
+    bool isAddTmChanged;
 };
 
 #endif /* __UI_ELEMENT_HPP__ */

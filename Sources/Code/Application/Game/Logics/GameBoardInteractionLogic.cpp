@@ -31,10 +31,9 @@ void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-bool GameBoardInteractionLogic::init() {
+void GameBoardInteractionLogic::init() {
     ETNode<ETGameBoardInteractionLogic>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardInteractionLogic::deinit() {

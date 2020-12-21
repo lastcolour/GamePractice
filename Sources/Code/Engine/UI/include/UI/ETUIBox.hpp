@@ -1,8 +1,9 @@
 #ifndef __ET_UI_BOX_HPP__
 #define __ET_UI_BOX_HPP__
 
-#include "Math/AABB.hpp"
 #include "Core/Core.hpp"
+#include "Math/AABB.hpp"
+#include "Math/Transform.hpp"
 
 #include <vector>
 
@@ -29,6 +30,13 @@ struct ETUIElement {
     virtual void ET_setIgnoreTransform(bool flag) = 0;
     virtual void ET_setParentHidden(bool flag) = 0;
     virtual void ET_setParentDisabled(bool flag) = 0;
+    virtual void ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) = 0;
+    virtual void ET_setLayoutPos(const Vec2i& layoutPt) = 0;
+};
+
+struct ETUIAdditiveAnimationTarget {
+    virtual ~ETUIAdditiveAnimationTarget() = default;
+    virtual void ET_applyAdditiveTranform() = 0;
 };
 
 struct ETUIElementEvents {

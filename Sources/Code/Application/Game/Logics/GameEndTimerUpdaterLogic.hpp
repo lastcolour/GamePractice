@@ -19,7 +19,7 @@ public:
     virtual ~GameEndTimerUpdaterLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETGameEndTimerUpdater

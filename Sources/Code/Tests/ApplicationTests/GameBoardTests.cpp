@@ -89,8 +89,8 @@ public:
 void GameBoardTests::SetUp() {
     entity = createVoidObject();
     {
-        auto pool = new GameBoardElemsPool;
-        EXPECT_TRUE(entity->addCustomLogic(std::unique_ptr<EntityLogic>(pool)));
+        auto pool = entity->addCustomLogic<GameBoardElemsPool>();
+        ASSERT_TRUE(pool);
 
         ElementDescriptor elemDescr;
         elemDescr.weight = 1;
@@ -98,8 +98,8 @@ void GameBoardTests::SetUp() {
         pool->ET_addElemsToSpawn(elemDescr);
     }
     {
-        board = new TestGameBoardLogic;
-        EXPECT_TRUE(entity->addCustomLogic(std::unique_ptr<EntityLogic>(board)));
+        auto board = entity->addCustomLogic<TestGameBoardLogic>();
+        ASSERT_TRUE(board);
     }
 }
 
@@ -107,7 +107,7 @@ TEST_F(GameBoardTests, CheckInit) {
     TestBoardParams params;
     params.boardSize = Vec2i(1);
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 1u);
@@ -119,7 +119,7 @@ TEST_F(GameBoardTests, CheckPosConverts) {
     TestBoardParams params;
     params.boardSize = Vec2i(1);
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     auto pt = board->getPosFromBoardPos(Vec2i(0));
     auto boardPt = board->getBoardPosFromPos(Vec2i(0), pt);
@@ -130,7 +130,7 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     TestBoardParams params;
     params.boardSize = Vec2i(3, 1);
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 3u);
@@ -152,7 +152,7 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     TestBoardParams params;
     params.boardSize = Vec2i(1, 3);
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 3u);
@@ -189,7 +189,7 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
     TestBoardParams params;
     params.boardSize = Vec2i(1, 3);
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     auto elem1 = board->getElem(Vec2i(0, 0));
     ASSERT_TRUE(elem1);
@@ -255,7 +255,7 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     params.boardSize = Vec2i(1, 3);
     params.moveSpeed = 1.f;
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     auto elem1 = board->getElem(Vec2i(0, 0));
     ASSERT_TRUE(elem1);
@@ -287,9 +287,9 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
 }
 
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
-    std::unique_ptr<UIBox> uiBoxLogicPtr(new UIBox);
-    auto uiBoxPtr = uiBoxLogicPtr.get();
-    entity->addCustomLogic(std::move(uiBoxLogicPtr));
+    auto uiBoxPtr = entity->addCustomLogic<UIBox>();
+    ASSERT_TRUE(uiBoxPtr);
+
     UIBoxStyle style;
     style.width = 0.5f;
     style.widthInv = UIBoxSizeInvariant::Relative;
@@ -301,7 +301,7 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     params.boardSize = Vec2i(1, 1);
     params.cellScale = 1.f;
     board->setParams(params);
-    ASSERT_TRUE(board->init());
+    board->init();
 
     const auto& uiBox = uiBoxPtr->ET_getBox();
     board->ET_onBoxChanged(uiBox);

@@ -21,7 +21,7 @@ public:
     virtual ~SoundEqualizerLogic();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETEqualizer

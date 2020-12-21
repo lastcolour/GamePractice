@@ -13,14 +13,12 @@ void GameEndTimerUpdaterLogic::Reflect(ReflectContext& ctx) {
     ctx.classInfo<GameEndTimerUpdaterLogic>("GameEndTimerUpdater");
 }
 
-bool GameEndTimerUpdaterLogic::init() {
+void GameEndTimerUpdaterLogic::init() {
     ETNode<ETGameEndTimerUpdater>::connect(getEntityId());
 
     float startTime = 0.f;
     ET_SendEventReturn(startTime, &ETGameEndTimer::ET_getInitialEndGameDuration);
     ET_setEndTime(startTime);
-
-    return true;
 }
 
 void GameEndTimerUpdaterLogic::deinit() {

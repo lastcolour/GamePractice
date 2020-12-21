@@ -50,8 +50,8 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
         auto parentEntity = createVoidObject();
         ctx.parentEntity = parentEntity;
 
-        UIBox* parentBox = new UIBox();
-        ctx.parentEntity->addCustomLogic(std::unique_ptr<EntityLogic>(parentBox));
+        UIBox* parentBox = ctx.parentEntity->addCustomLogic<UIBox>();
+        HACK_ASSERT_TRUE(parentBox);
 
         UIBoxStyle boxStyle;
         boxStyle.height = static_cast<float>(parentBoxSize.x);
@@ -69,8 +69,9 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
         auto childEntity = createVoidObject();
         ctx.childEntity =  childEntity;
 
-        UIBox* childBox = new UIBox();
-        childEntity->addCustomLogic(std::unique_ptr<EntityLogic>(childBox));
+        UIBox* childBox =  childEntity->addCustomLogic<UIBox>();
+        bool logicExists = childBox != nullptr;
+        HACK_ASSERT_TRUE(logicExists);
 
         UIBoxStyle boxStyle;
         boxStyle.height = static_cast<float>(childBoxSize.x);
@@ -84,13 +85,12 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
     }
 
     {
-        UIScrollArea* scrollArea = new UIScrollArea();
-        ctx.scrollArea = scrollArea;
+        ctx.scrollArea = ctx.parentEntity->addCustomLogic<UIScrollArea>();
+        bool logicExists = ctx.scrollArea != nullptr;
+        HACK_ASSERT_TRUE(logicExists);
 
-        ctx.parentEntity->addCustomLogic(std::unique_ptr<EntityLogic>(scrollArea));
-
-        scrollArea->ET_setStyle(scrollStyle);
-        scrollArea->ET_setTarget(ctx.childEntity->getEntityId());
+        ctx.scrollArea->ET_setStyle(scrollStyle);
+        ctx.scrollArea->ET_setTarget(ctx.childEntity->getEntityId());
     }
 
     return ctx;

@@ -27,10 +27,9 @@ GameResultViewScript::GameResultViewScript() :
 GameResultViewScript::~GameResultViewScript() {
 }
 
-bool GameResultViewScript::init() {
+void GameResultViewScript::init() {
     BaseViewScript::init();
     ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
-    return true;
 }
 
 void GameResultViewScript::onEvent(const UIEvent& event) {

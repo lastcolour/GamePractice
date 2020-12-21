@@ -14,9 +14,8 @@ void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
     ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher");
 }
 
-bool GameBoardMatchLogic::init() {
+void GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
-    return true;
 }
 
 void GameBoardMatchLogic::deinit() {

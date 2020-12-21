@@ -16,7 +16,7 @@ public:
     virtual ~UIView();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
 
     // ETViewPortEvents
     void ET_onViewPortChanged(const Vec2i& newSize) override;

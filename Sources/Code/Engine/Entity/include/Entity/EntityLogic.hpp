@@ -10,7 +10,7 @@ public:
 
     virtual ~EntityLogic();
 
-    virtual bool init() = 0;
+    virtual void init() = 0;
     virtual void deinit() = 0;
 
     void setEntity(const Entity* ownEntity);

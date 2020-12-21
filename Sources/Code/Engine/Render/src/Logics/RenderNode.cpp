@@ -33,7 +33,7 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
 RenderNode::~RenderNode() {
 }
 
-bool RenderNode::init() {
+void RenderNode::init() {
     RenderNodeCreateParams params;
     ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
 
@@ -44,13 +44,11 @@ bool RenderNode::init() {
     if(!proxyNode) {
         LogError("[RenderNode::init] Can't create proxy node an enity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
-        return false;
+        return;
     }
 
     ETNode<ETRenderNode>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
-
-    return true;
 }
 
 void RenderNode::deinit() {

@@ -20,7 +20,7 @@ public:
     virtual ~UIButton();
 
     // EntityLogic
-    bool init() override;
+    void init() override;
     void deinit() override;
 
     // ETUIElement
