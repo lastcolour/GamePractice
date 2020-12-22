@@ -455,3 +455,144 @@ TEST_F(UIAnimationSequenceTests, CheckTwoAnimationAtTheSameTime) {
         EXPECT_FLOAT_EQ(tm.scale.z, 1.f);
     }
 }
+
+TEST_F(UIAnimationSequenceTests, CheckAnimationRestartWithSubAnimation) {
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+
+    auto parentEntity = createVoidObject();
+    {
+        Transform tm;
+        tm.pt = Vec3(viewPort.x / 2.f, viewPort.y / 2.f, 0.f);
+        parentEntity->ET_setTransform(tm);
+
+        auto uiBox = parentEntity->addCustomLogic<UIBox>();
+        ASSERT_TRUE(uiBox);
+
+        UIBoxStyle style;
+        style.width = 0.5f;
+        style.height = 0.5f;
+        style.heightInv = UIBoxSizeInvariant::Relative;
+        style.widthInv = UIBoxSizeInvariant::Relative;
+        uiBox->ET_setStyle(style);
+
+        auto uiLayout = parentEntity->addCustomLogic<UILayout>();
+        ASSERT_TRUE(uiLayout);
+    }
+    UIAnimationSequence* parentAnim = nullptr;
+    {
+        parentAnim = parentEntity->addCustomLogic<UIAnimationSequence>();
+        ASSERT_TRUE(parentAnim);
+
+        parentAnim->ET_setType(EAnimSequenceType::Idle);
+
+        UIAnimationFrame frame;
+        frame.duration = 1.f;
+        frame.scale = Vec2(1.f);
+        parentAnim->ET_setStartEndEvents(EShowEvent::Show, EShowEvent::Hide);
+        parentAnim->ET_addAnimationFrame(frame);
+    }
+
+    auto childEntity = createVoidObject();
+    {
+        auto uiBox = childEntity->addCustomLogic<UIBox>();
+        ASSERT_TRUE(uiBox);
+
+        UIBoxStyle style;
+        style.width = 0.25f;
+        style.height = 0.25f;
+        style.heightInv = UIBoxSizeInvariant::Relative;
+        style.widthInv = UIBoxSizeInvariant::Relative;
+        uiBox->ET_setStyle(style);
+    }
+    UIAnimationSequence* childAnim = nullptr;
+    {
+        childAnim = childEntity->addCustomLogic<UIAnimationSequence>();
+        ASSERT_TRUE(childAnim);
+
+        childAnim->ET_setType(EAnimSequenceType::Idle);
+
+        UIAnimationFrame frame;
+        frame.duration = 1.f;
+        frame.scale = Vec2(0.5f);
+        childAnim->ET_addAnimationFrame(frame);
+    }
+
+    parentEntity->ET_addChild(childEntity->getEntityId());
+    ET_SendEvent(parentEntity->getEntityId(), &ETUILayout::ET_addItem, childEntity->getEntityId());
+    parentAnim->ET_addSubAnimation(childEntity->getEntityId());
+
+    parentAnim->ET_playAnimation(InvalidEntityId);
+    TickAndApplyAnimation(0.5f);
+
+    {
+        auto tm = childEntity->ET_getTransform();
+
+        EXPECT_FLOAT_EQ(tm.pt.x, viewPort.x / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.y, viewPort.y / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.z, 0.f);
+
+        EXPECT_FLOAT_EQ(tm.scale.x, 0.75f);
+        EXPECT_FLOAT_EQ(tm.scale.y, 0.75f);
+        EXPECT_FLOAT_EQ(tm.scale.z, 1.f);
+
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, childEntity->getEntityId(), &ETUIElement::ET_isHidden);
+        EXPECT_FALSE(isHidden);
+    }
+
+    TickAndApplyAnimation(0.5f);
+
+    {
+        auto tm = childEntity->ET_getTransform();
+
+        EXPECT_FLOAT_EQ(tm.pt.x, viewPort.x / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.y, viewPort.y / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.z, 0.f);
+
+        EXPECT_FLOAT_EQ(tm.scale.x, 1.f);
+        EXPECT_FLOAT_EQ(tm.scale.y, 1.f);
+        EXPECT_FLOAT_EQ(tm.scale.z, 1.f);
+
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, childEntity->getEntityId(), &ETUIElement::ET_isHidden);
+        EXPECT_TRUE(isHidden);
+    }
+
+    parentAnim->ET_playAnimation(InvalidEntityId);
+    TickAndApplyAnimation(0.5f);
+
+    {
+        auto tm = childEntity->ET_getTransform();
+
+        EXPECT_FLOAT_EQ(tm.pt.x, viewPort.x / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.y, viewPort.y / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.z, 0.f);
+
+        EXPECT_FLOAT_EQ(tm.scale.x, 0.75f);
+        EXPECT_FLOAT_EQ(tm.scale.y, 0.75f);
+        EXPECT_FLOAT_EQ(tm.scale.z, 1.f);
+
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, childEntity->getEntityId(), &ETUIElement::ET_isHidden);
+        EXPECT_FALSE(isHidden);
+    }
+
+    TickAndApplyAnimation(0.5f);
+
+    {
+        auto tm = childEntity->ET_getTransform();
+
+        EXPECT_FLOAT_EQ(tm.pt.x, viewPort.x / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.y, viewPort.y / 2.f);
+        EXPECT_FLOAT_EQ(tm.pt.z, 0.f);
+
+        EXPECT_FLOAT_EQ(tm.scale.x, 1.f);
+        EXPECT_FLOAT_EQ(tm.scale.y, 1.f);
+        EXPECT_FLOAT_EQ(tm.scale.z, 1.f);
+
+        bool isHidden = false;
+        ET_SendEventReturn(isHidden, childEntity->getEntityId(), &ETUIElement::ET_isHidden);
+        EXPECT_TRUE(isHidden);
+    }
+}

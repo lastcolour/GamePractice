@@ -51,10 +51,10 @@
             "data": {
               "isVisible": true,
               "alpha": 0.8999999761581421,
-              "drawPriority": 2,
+              "drawPriority": 34,
               "size": {
-                "x": 308.0,
-                "y": 103.0
+                "x": 282.0,
+                "y": 94.0
               },
               "tintColor": {
                 "r": 255,
@@ -120,14 +120,14 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 3,
+              "drawPriority": 35,
               "color": {
                 "r": 0,
                 "g": 0,
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 52,
+              "fontSize": 47,
               "text": "DONE"
             }
           },

@@ -27,30 +27,22 @@
         "logics": [
           {
             "type": "RenderImage",
-            "id": 1,
+            "id": 2,
             "data": {
               "isVisible": false,
-              "alpha": 0.20000000298023224,
+              "alpha": 0.699999988079071,
               "drawPriority": 0,
               "size": {
                 "x": 100.0,
                 "y": 100.0
               },
               "tintColor": {
-                "r": 102,
-                "g": 213,
-                "b": 62,
+                "r": 255,
+                "g": 255,
+                "b": 255,
                 "a": 255
               },
               "image": "Images/block.png"
-            }
-          },
-          {
-            "type": "RenderStencilLogic",
-            "id": 2,
-            "data": {
-              "mode": "Read",
-              "refVal": 1
             }
           }
         ]
@@ -77,9 +69,9 @@
           "y": 100.0
         },
         "tintColor": {
-          "r": 102,
-          "g": 213,
-          "b": 62,
+          "r": 112,
+          "g": 234,
+          "b": 68,
           "a": 255
         },
         "image": "Images/block.png"

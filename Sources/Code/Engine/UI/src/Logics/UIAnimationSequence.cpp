@@ -170,7 +170,7 @@ void UIAnimationSequence::ET_onLoaded() {
     }
     bool isHidden = false;
     ET_SendEventReturn(isHidden, getEntityId(), &ETUIElement::ET_isHidden);
-    if(isHidden) {
+    if(isHidden && !isAnimHasShowEvent()) {
         return;
     }
 
@@ -189,6 +189,11 @@ EAnimSequenceType UIAnimationSequence::ET_getType() const {
 
 void UIAnimationSequence::ET_setType(EAnimSequenceType newType) {
     seqType = newType;
+}
+
+void UIAnimationSequence::ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) {
+    onStartEvent = newStartEvent;
+    onEndEvent = newEndEvent;
 }
 
 void UIAnimationSequence::ET_setLooped(bool flag) {
@@ -344,6 +349,7 @@ void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
     currAddTm.pt = Vec3(pfOffset, 0.f);
     currAddTm.scale = Vec3(newScale, 1.f);
     currAddAlpha = Math::Lerp(prevState.alpha, frame.alpha, prog);
+    currAddAlpha = Math::Clamp(currAddAlpha, 0.001f, 1.f);
 
     ET_SendEvent(getEntityId(), &ETUIElement::ET_addAdditiveTransform, currAddTm, currAddAlpha);
 
@@ -365,12 +371,11 @@ void UIAnimationSequence::ET_onAlphaChanged(float newAlpha) {
 }
 
 void UIAnimationSequence::ET_onHidden(bool flag) {
-    if(flag) {
+    if(flag && !isAnimHasShowEvent()) {
         ET_stopAnimation();
-    } else {
-        if(autoStart) {
-            ET_playAnimation(InvalidEntityId);
-        }
+    }
+    if(!flag && autoStart) {
+        ET_playAnimation(InvalidEntityId);
     }
 }
 
@@ -378,6 +383,10 @@ void UIAnimationSequence::ET_onDisabled(bool flag) {
 }
 
 void UIAnimationSequence::ET_onIngoreTransform(bool flag) {
+}
+
+bool UIAnimationSequence::isAnimHasShowEvent() const {
+    return onStartEvent == EShowEvent::Show || onEndEvent == EShowEvent::Show;
 }
 
 namespace UI {

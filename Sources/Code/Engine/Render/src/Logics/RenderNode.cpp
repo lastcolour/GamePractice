@@ -18,6 +18,7 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     proxyNode(nullptr),
     alpha(1.f),
     alphaMult(1.f),
+    normScale(1.f),
     drawPriority(0),
     type(nodeType),
     isVisible(true),
@@ -49,6 +50,7 @@ void RenderNode::init() {
 
     ETNode<ETRenderNode>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
+    ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
 void RenderNode::deinit() {
@@ -112,6 +114,12 @@ void RenderNode::ET_onTransformChanged(const Transform& newTm) {
     markForSyncWithRender();
 }
 
+void RenderNode::ET_setNormalizationScale(float newNormScale) {
+    isTmChanged = true;
+    normScale = newNormScale;
+    markForSyncWithRender();
+}
+
 void RenderNode::ET_onLoaded() {
     isLoaded = true;
     if(ET_isVisible()) {
@@ -128,15 +136,18 @@ void RenderNode::markForSyncWithRender() {
         return;
     }
     isMarkedForSync = true;
-    ETNode<ETRenderProxyNodeEvents>::connect(getEntityId());
 }
 
 void RenderNode::ET_syncWithRender() {
+    if(!isMarkedForSync) {
+        return;
+    }
     onSyncWithRender();
     if(isTmChanged) {
         isTmChanged = false;
         Transform tm;
         ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+        tm.scale *= normScale;
         proxyNode->setTransform(tm);
     }
     if(isVisChanged) {
@@ -156,6 +167,5 @@ void RenderNode::ET_syncWithRender() {
         isStencilDataChanged = false;
         proxyNode->setStencilData(stencilData);
     }
-    ETNode<ETRenderProxyNodeEvents>::disconnect();
     isMarkedForSync = false;
 }

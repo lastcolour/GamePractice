@@ -25,18 +25,10 @@ void ParticleEmitter::init() {
     RenderNode::init();
     ETNode<ETParticleEmitter>::connect(getEntityId());
 
-    if(emissionConfig.lifetime <= 0.f) {
-        LogWarning("[ParticlesNode::ET_setConfig] Particle lifetime is negative or zero");
-        emissionConfig.lifetime = 0.01f;
-    }
-    if(emissionConfig.emissionRate <= 0.f) {
-        LogWarning("[ParticlesNode::ET_setConfig] Emitter emission rate is negative or zero");
-        emissionConfig.emissionRate = 1.f;
-    }
-    if(emissionConfig.startDelay < 0.f) {
-        LogWarning("[ParticlesNode::ET_setConfig] Emitter start delay is negative");
-        emissionConfig.startDelay = 0.f;
-    }
+    emissionConfig.lifetime = std::max(emissionConfig.lifetime, 0.01f);
+    emissionConfig.startEmissionRate = std::max(emissionConfig.startEmissionRate, 0.01f);
+    emissionConfig.endEmissionRate = std::max(emissionConfig.endEmissionRate, 0.01f);
+    emissionConfig.startDelay = std::max(emissionConfig.startDelay, 0.01f);
 
     isConfigChanged = true;
 }

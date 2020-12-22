@@ -192,8 +192,9 @@ void UIElement::ET_setParentHidden(bool flag) {
 }
 
 void UIElement::ET_setLayoutPos(const Vec2i& layoutPt) {
-    ET_SendEventReturn(layoutTm,
-        getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    layoutTm.pt = tm.pt;
 }
 
 void UIElement::ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) {
@@ -215,8 +216,10 @@ void UIElement::ET_applyAdditiveTranform() {
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, resTm);
     ET_setIgnoreTransform(false);
 
+    float prevAlpha = alpha;
     float resAlpha = alpha * addAlpha;
     ET_setAlpha(resAlpha);
+    alpha = prevAlpha;
 
     addAlpha = 1.f;
     addTm = Transform();

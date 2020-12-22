@@ -38,11 +38,11 @@
             "id": 3,
             "data": {
               "isVisible": true,
-              "alpha": 0.20000000298023224,
+              "alpha": 0.6000000238418579,
               "drawPriority": 0,
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 520.0,
+                "y": 520.0
               },
               "tintColor": {
                 "r": 255,

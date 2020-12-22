@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QStyle, QFrame
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QStyle, QFrame, QHeaderView
 from PyQt5.Qt import QSizePolicy
 from PyQt5.QtCore import Qt
 
@@ -107,6 +107,7 @@ class LogicView(QWidget):
         self._frameLayout.addWidget(self._logicTopBar)
 
         self._tree = QTreeWidget()
+        self._tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self._tree.setColumnCount(2)
         self._tree.setHeaderHidden(True)
         self._tree.setSelectionMode(QTreeWidget.NoSelection)

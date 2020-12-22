@@ -36,6 +36,7 @@ public:
     int ET_getDrawPriority() const override;
     void ET_setAlphaMultiplier(float newAlphaMult) override;
     void ET_setStencilData(const StencilWirteReadData& newSteniclData) override;
+    void ET_setNormalizationScale(float newNormScale) override;
 
     // ETRenderProxyNodeEvents
     void ET_syncWithRender() override;
@@ -58,6 +59,7 @@ protected:
     Node* proxyNode;
     float alpha;
     float alphaMult;
+    float normScale;
     int drawPriority;
     RenderNodeType type;
     bool isVisible;

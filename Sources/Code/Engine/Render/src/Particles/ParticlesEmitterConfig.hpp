@@ -14,6 +14,11 @@ enum class EmitterType {
     Box
 };
 
+enum class EmitterSpace {
+    Local = 0,
+    World
+};
+
 class ParticleEmitterEmissionConfig {
 public:
 
@@ -26,9 +31,11 @@ public:
 public:
 
     EmitterType emitterType;
+    EmitterSpace emitterSpace;
     Vec2 emitterVal;
     float duration;
-    float emissionRate;
+    float startEmissionRate;
+    float endEmissionRate;
     float lifetime;
     float startDelay;
     bool autoStart;
@@ -47,7 +54,9 @@ public:
 public:
 
     ColorB startCol;
+    Vec4 startColVar;
     ColorB endCol;
+    Vec4 endColVar;
 };
 
 class ParticleEmitterMovementConfig {
@@ -62,12 +71,19 @@ public:
 public:
 
     Vec2 startScale;
+    Vec2 startScaleVar;
     Vec2 endScale;
+    Vec2 endScaleVar;
     float startSpeed;
+    float startSpeedVar;
     float endSpeed;
+    float endSpeedVar;
     float startRotation;
-    float startRotationSpeed;
-    float endRotationSpeed;
+    float startRotationVar;
+    float startRotSpeed;
+    float startRotSpeedVar;
+    float endRotSpeed;
+    float endRotSpeedVar;
 };
 
 class ParticleEmitterRenderConfig {

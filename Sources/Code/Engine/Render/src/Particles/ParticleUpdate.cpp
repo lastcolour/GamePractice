@@ -5,6 +5,51 @@
 #include <algorithm>
 #include <cassert>
 
+namespace {
+
+float getRandomFloatInRange(Math::RandomFloatGenerator& gen, float start, float end) {
+    float val = gen.generate();
+    return Math::Lerp(start, end, val);
+}
+
+float getRandomSpeed(Math::RandomFloatGenerator& gen, float val, float var) {
+    val += val * getRandomFloatInRange(gen, -var, var);
+    val = std::max(0.f, val);
+    return val;
+}
+
+float getRandomRotation(Math::RandomFloatGenerator& gen, float val, float var) {
+    val += var * getRandomFloatInRange(gen, -var, var);
+    return val;
+}
+
+Vec2 getRandomScale(Math::RandomFloatGenerator& gen, const Vec2& scale, const Vec2& scaleVar) {
+    Vec2 resScale = scale;
+    resScale.x += resScale.x * getRandomFloatInRange(gen, -scaleVar.x, scaleVar.x);
+    resScale.y += resScale.y * getRandomFloatInRange(gen, -scaleVar.y, scaleVar.y);
+
+    resScale.x = std::max(0.001f, resScale.x);
+    resScale.y = std::max(0.001f, resScale.y);
+    return resScale;
+}
+
+ColorF getRandomColor(Math::RandomFloatGenerator& gen, const ColorF& col, const Vec4& colVar) {
+    ColorF resCol = col;
+
+    resCol.r += resCol.r * getRandomFloatInRange(gen, -colVar.x, colVar.x);
+    resCol.g += resCol.g * getRandomFloatInRange(gen, -colVar.y, colVar.y);
+    resCol.b += resCol.b * getRandomFloatInRange(gen, -colVar.z, colVar.z);
+    resCol.a += resCol.a * getRandomFloatInRange(gen, -colVar.w, colVar.w);
+
+    resCol.r = Math::Clamp(resCol.r, 0.f, 1.f);
+    resCol.g = Math::Clamp(resCol.g, 0.f, 1.f);
+    resCol.b = Math::Clamp(resCol.b, 0.f, 1.f);
+    resCol.a = Math::Clamp(resCol.a, 0.f, 1.f);
+    return resCol;
+}
+
+} // namespace
+
 EmitterState::EmitterState() :
     duration(0.f),
     emitFracTime(0.f),
@@ -37,22 +82,15 @@ void EmitterState::removeOld(float dt) {
     }
 }
 
-float EmitterState::getRandomFloatInRange(float start, float end) {
-    float val = floatGen.generate();
-    return Math::Lerp(start, end, val);
-}
-
 void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
     Vec2 moveDir(0.f);
     Vec2 startPt(0.f);
 
     switch(emissionConfig.emitterType) {
         case EmitterType::Sphere: {
-            startPt = Vec2(tm.pt.x, tm.pt.y);
-
             float shpereR = emissionConfig.emitterVal.x;
-            float radius = getRandomFloatInRange(0.f, shpereR);
-            float angel = getRandomFloatInRange(0.f, 2.f * Math::PI);
+            float radius = getRandomFloatInRange(floatGen, 0.f, shpereR);
+            float angel = getRandomFloatInRange(floatGen, 0.f, 2.f * Math::PI);
 
             Vec2 dir;
             dir.x = radius * cos(angel);
@@ -64,11 +102,9 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
             break;
         }
         case EmitterType::Box: {
-            startPt = Vec2(tm.pt.x, tm.pt.y);
-
             Vec2 ptInBox;
-            ptInBox.x = getRandomFloatInRange(-emissionConfig.emitterVal.x, emissionConfig.emitterVal.x) / 2.f;
-            ptInBox.y = getRandomFloatInRange(-emissionConfig.emitterVal.y, emissionConfig.emitterVal.y) / 2.f;
+            ptInBox.x = getRandomFloatInRange(floatGen, -emissionConfig.emitterVal.x, emissionConfig.emitterVal.x) / 2.f;
+            ptInBox.y = getRandomFloatInRange(floatGen, -emissionConfig.emitterVal.y, emissionConfig.emitterVal.y) / 2.f;
 
             Vec2 dir = ptInBox - startPt;
             moveDir = dir.getNormilized();
@@ -77,11 +113,9 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
             break;
         }
         case EmitterType::Cone: {
-            startPt = Vec2(tm.pt.x, tm.pt.y);
-
             float shpereR = emissionConfig.emitterVal.x;
-            float radius = getRandomFloatInRange(0.f, shpereR);
-            float angel = getRandomFloatInRange(0.f, Math::Deg2Rad(emissionConfig.emitterVal.y));
+            float radius = getRandomFloatInRange(floatGen, 0.f, shpereR);
+            float angel = getRandomFloatInRange(floatGen, 0.f, Math::Deg2Rad(emissionConfig.emitterVal.y));
 
             Vec2 dir;
             dir.x = radius * cos(angel);
@@ -97,31 +131,46 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
         }
     }
 
+    p.pt = startPt;
     p.lifetime = emissionConfig.lifetime;
     p.totalLifetime = p.lifetime;
 
-    p.pt = startPt;
-    p.startSpeed = moveDir * movementConifg.startSpeed;
-    p.endSpeed = moveDir * movementConifg.endSpeed;
+    p.startSpeed = moveDir * getRandomSpeed(floatGen, movementConifg.startSpeed, movementConifg.startSpeedVar);
+    p.endSpeed = moveDir * getRandomSpeed(floatGen, movementConifg.endSpeed, movementConifg.endSpeedVar);
 
-    p.startScale = movementConifg.startScale;
-    p.endScale = movementConifg.endScale;
+    p.startScale = getRandomScale(floatGen, movementConifg.startScale, movementConifg.startScaleVar);
+    p.endScale = getRandomScale(floatGen, movementConifg.endScale, movementConifg.endScaleVar);
 
-    p.rot = movementConifg.startRotation;
-    p.startRotSpeed = movementConifg.startRotationSpeed;
-    p.endRotSpeed = movementConifg.endRotationSpeed;
+    p.rot = getRandomRotation(floatGen, movementConifg.startRotation, movementConifg.startRotationVar);
+    p.startRotSpeed = getRandomRotation(floatGen, movementConifg.startRotSpeed, movementConifg.startRotSpeedVar);
+    p.endRotSpeed = getRandomRotation(floatGen, movementConifg.endRotSpeed, movementConifg.endRotSpeedVar);
 
-    p.startCol = colorConfig.startCol.getColorF();
-    p.endCol = colorConfig.endCol.getColorF();
+    p.startCol = getRandomColor(floatGen, colorConfig.startCol.getColorF(), colorConfig.startColVar);
+    p.endCol = getRandomColor(floatGen, colorConfig.endCol.getColorF(), colorConfig.endColVar);
+
+    if(emissionConfig.emitterSpace == EmitterSpace::World) {
+        p.pt.x *= tm.scale.x;
+        p.pt.y *= tm.scale.y;
+
+        p.pt += Vec2(tm.pt.x, tm.pt.y);
+        p.startScale.x *= tm.scale.x;
+        p.startScale.y *= tm.scale.y;
+
+        p.endScale.x *= tm.scale.x;
+        p.endScale.y *= tm.scale.y;
+    }
 }
 
 void EmitterState::emitNew(const Transform& tm, float dt) {
     emitFracTime += dt;
 
-    int emitCount = static_cast<int>(emissionConfig.emissionRate * emitFracTime);
+    auto prog = std::max(0.f, duration / emissionConfig.duration);
+    float emissionRate = Math::Lerp(emissionConfig.startEmissionRate, emissionConfig.endEmissionRate, prog);
+
+    int emitCount = static_cast<int>(emissionRate * emitFracTime);
     emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
 
-    emitFracTime -= emitCount / emissionConfig.emissionRate;
+    emitFracTime -= emitCount / emissionRate;
 
     int newCount = std::max(((activeCount + emitCount) - static_cast<int>(particles.size())), 0);
     for(int i = 0; i < newCount; ++i) {
@@ -135,7 +184,7 @@ void EmitterState::emitNew(const Transform& tm, float dt) {
     }
 
     activeCount += emitCount;
-    assert(activeCount < Render::MaxParticlessPerDraw && "Too Many Particles");
+    assert(activeCount <= Render::MaxParticlessPerDraw && "Too Many Particles");
 }
 
 void EmitterState::updateAlive(float dt) {

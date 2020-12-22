@@ -43,6 +43,7 @@ public:
     void ET_setType(EAnimSequenceType newType) override;
     void ET_setLooped(bool flag) override;
     void ET_addSubAnimation(EntityId subAnimId) override;
+    void ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) override;
 
     // ETUIAdditiveAnimationTarget
     void ET_applyAdditiveTranform() override;
@@ -63,6 +64,7 @@ private:
 
     void reStartCycle();
     void processFrame(float dt, UIAnimationFrame& task);
+    bool isAnimHasShowEvent() const;
 
 private:
 

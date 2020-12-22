@@ -1,7 +1,7 @@
 #include "Nodes/ParticlesNode.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Core/ETLogger.hpp"
+#include "Math/MatrixTransform.hpp"
 
 ParticlesNode::ParticlesNode() {
 }
@@ -42,6 +42,15 @@ void ParticlesNode::onInit() {
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {
+    Mat4 resMat = Mat4(1.f);
+
+    if(state.emissionConfig.emitterSpace == EmitterSpace::Local) {
+        Math::AddTranslate(resMat, tm.pt);
+        Math::AddRotate(resMat, tm.quat);
+        Math::AddScale(resMat, tm.scale);
+    }
+
     shader->setTexture2D(UniformType::Texture, *tex);
+    shader->setUniformMat4(UniformType::ModelMat, resMat);
     geom->drawInstanced(&state.instaceData[0], state.activeCount);
 }

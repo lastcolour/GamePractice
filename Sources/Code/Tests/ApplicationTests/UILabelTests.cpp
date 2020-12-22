@@ -4,6 +4,7 @@
 
 UILabel* UILabelTests::createUILabel() {
     auto entity = createVoidObject();
+    HACK_ASSERT_TRUE(entity->addCustomLogic<RenderTextLogic>());
     auto uiLabelPtr = entity->addCustomLogic<UILabel>();
     HACK_ASSERT_TRUE(uiLabelPtr);
     return uiLabelPtr;

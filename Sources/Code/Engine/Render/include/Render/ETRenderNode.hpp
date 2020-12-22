@@ -14,6 +14,7 @@ struct ETRenderNode {
     virtual void ET_show() = 0;
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
     virtual void ET_setAlphaMultiplier(float newAlphaMult) = 0;
+    virtual void ET_setNormalizationScale(float newNormScale) = 0;
     virtual int ET_getDrawPriority() const = 0;
     virtual void ET_setStencilData(const StencilWirteReadData& newSteniclData) = 0;
 };

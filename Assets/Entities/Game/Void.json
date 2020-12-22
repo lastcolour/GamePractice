@@ -1,4 +1,183 @@
 {
-  "children": [],
-  "logics": []
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Box",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "UIBox",
+            "id": 1,
+            "data": {
+              "hidden": false,
+              "enabled": true,
+              "style": {
+                "width": 30.0,
+                "widthInv": "Grid",
+                "height": 30.0,
+                "heightInv": "Grid",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              }
+            }
+          },
+          {
+            "type": "RenderSimple",
+            "id": 2,
+            "data": {
+              "isVisible": false,
+              "alpha": 1.0,
+              "drawPriority": 2,
+              "size": {
+                "x": 141.0,
+                "y": 141.0
+              },
+              "color": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+              }
+            }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 3,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Idle",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 1.0,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 1.0,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "UIView",
+      "id": 1,
+      "data": {
+        "hidden": true,
+        "enabled": true,
+        "style": {
+          "width": 30.0,
+          "widthInv": "Grid",
+          "height": 30.0,
+          "heightInv": "Grid",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        }
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 2,
+      "data": {
+        "extraZOffset": 0,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 3,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Idle",
+        "startDelay": 0.0,
+        "subAnimations": [
+          [
+            1
+          ]
+        ],
+        "startEvent": "Show",
+        "endEvent": "Hide",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 1.0,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          }
+        ]
+      }
+    }
+  ]
 }

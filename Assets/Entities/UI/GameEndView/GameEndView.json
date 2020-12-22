@@ -761,7 +761,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "--- Level 1--- "
+                          "text": "Level 1"
                         }
                       },
                       {
@@ -778,7 +778,7 @@
                             "a": 255
                           },
                           "fontSize": 38,
-                          "text": "Level 01"
+                          "text": "--- Level 1--- "
                         }
                       }
                     ]

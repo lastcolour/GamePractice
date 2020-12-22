@@ -3,6 +3,7 @@
 
 #include "Core/Core.hpp"
 #include "Math/Transform.hpp"
+#include "UI/ETUIAnimation.hpp"
 
 class ReflectContext;
 
@@ -15,12 +16,6 @@ enum class EAnimLerpMode {
     Sin,
     Sin_Sqr_2,
     InvSin_Sqr_2
-};
-
-enum class EShowEvent {
-    None = 0,
-    Show,
-    Hide
 };
 
 enum class EAnimFrameState {

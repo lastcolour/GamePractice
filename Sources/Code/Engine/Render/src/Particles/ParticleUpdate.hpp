@@ -31,8 +31,6 @@ private:
     void updateState(float dt);
     void spawnNewParticle(const Transform& tm, Particle& p);
 
-    float getRandomFloatInRange(float start, float end);
-
 public:
 
     ParticleEmitterEmissionConfig emissionConfig;

@@ -13,6 +13,12 @@ enum class EAnimSequenceType {
     Highlight
 };
 
+enum class EShowEvent {
+    None = 0,
+    Show,
+    Hide
+};
+
 struct ETUIAnimationSequence {
     virtual ~ETUIAnimationSequence() = default;
     virtual void ET_playAnimation(EntityId triggerId) = 0;
@@ -22,6 +28,7 @@ struct ETUIAnimationSequence {
     virtual EAnimSequenceType ET_getType() const = 0;
     virtual void ET_setType(EAnimSequenceType newType) = 0;
     virtual void ET_setLooped(bool flag) = 0;
+    virtual void ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) = 0;
 };
 
 struct ETUIAnimationSequenceEvent {

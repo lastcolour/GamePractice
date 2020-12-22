@@ -15,6 +15,7 @@
 #include "Logics/UIScrollArea.hpp"
 #include "Logics/UILayoutBox.hpp"
 #include "Logics/UIAnimationSequence.hpp"
+#include "Logics/UIRenderNormalizator.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -47,4 +48,5 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIScrollArea>();
     logicsRegister.registerLogic<UILayoutBox>();
     logicsRegister.registerLogic<UIAnimationSequence>();
+    logicsRegister.registerLogic<UIRenderNormalizator>();
 }
