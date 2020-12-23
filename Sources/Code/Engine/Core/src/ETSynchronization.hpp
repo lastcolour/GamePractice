@@ -6,6 +6,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <atomic>
 
 class ETSyncRoute {
 public:
@@ -32,7 +33,7 @@ private:
 
     struct Node {
         ThreadData data[4];
-        bool blocked {false};
+        std::atomic<bool> blocked;
     };
 
 private:
@@ -44,7 +45,6 @@ private:
 
 private:
 
-    std::mutex mutex;
     std::vector<Node> blockedRouteMap;
 };
 

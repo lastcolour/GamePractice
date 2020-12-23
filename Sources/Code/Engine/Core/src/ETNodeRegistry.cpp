@@ -86,7 +86,6 @@ void ETNodeRegistry::connectNode(int etId, EntityId addressId, ETNodeBase* ptr) 
     }
     if(syncRoute->tryHardBlock(etId)) {
         doConnect(etId, addressId, ptr);
-        processPendingConnections(etId);
     } else {
         std::lock_guard<std::mutex> lock(connMutex);
         bool isConnect = true;
@@ -99,7 +98,6 @@ void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {
     assert(ptr && "Invalid ptr");
     if(syncRoute->tryHardBlock(etId)) {
         doDisconnect(etId, ptr);
-        processPendingConnections(etId);
     } else {
         doSoftDisconnect(etId, ptr);
         bool isConnect = false;
