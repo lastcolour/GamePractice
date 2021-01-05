@@ -15,7 +15,7 @@ NinePatchNode::~NinePatchNode() {
 void NinePatchNode::onInit() {
     setShader("simple_image");
     setGeometry(PrimitiveGeometryType::NinePatch);
-    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+    setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
 }
 
 void NinePatchNode::setPatches(float newHorizontal, float newVertical, float newPatchScale) {

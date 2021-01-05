@@ -40,7 +40,7 @@ protected:
 
 protected:
 
-    void setBlendingMode(RenderBlendingType newBlending);
+    void setBlendingMode(const BlendMode& newBlendMode);
     void setShader(const char* shaderName);
     void setGeometry(PrimitiveGeometryType geomType);
 
@@ -54,7 +54,7 @@ private:
 
     RenderGraph* renderGraph;
     StencilWirteReadData stencilData;
-    RenderBlendingType blending;
+    BlendMode blendMode;
     RenderNodeType type;
     float alpha;
     int drawPriority;

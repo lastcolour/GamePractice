@@ -11,7 +11,7 @@ Node::Node() :
     renderGraph(nullptr),
     alpha(1.f),
     drawPriority(0),
-    blending(RenderBlendingType::NONE),
+    blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
     visible(false) {
 }
 
@@ -44,8 +44,8 @@ void Node::setVisible(bool flag) {
     visible = flag;
 }
 
-void Node::setBlendingMode(RenderBlendingType newBlending) {
-    blending = newBlending;
+void Node::setBlendingMode(const BlendMode& newBlendMode) {
+    blendMode = newBlendMode;
 }
 
 void Node::setShader(const char* shaderName) {
@@ -86,10 +86,10 @@ RenderNodeType Node::getType() const {
 }
 
 void Node::onRenderStart(RenderContext& ctx) {
-    if(alpha < 1.f && blending == RenderBlendingType::NONE) {
-        ctx.setBlending(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+    if(alpha < 1.f && blendMode.dstBlending == BlendType::NONE) {
+        ctx.setBlending(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     } else {
-        ctx.setBlending(blending);
+        ctx.setBlending(blendMode);
     }
 
     ctx.setStencilState(stencilData);

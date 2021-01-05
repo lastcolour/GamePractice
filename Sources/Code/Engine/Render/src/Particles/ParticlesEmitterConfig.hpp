@@ -2,6 +2,7 @@
 #define __PARTICLES_EMITTER_CONFIG_HPP__
 
 #include "Render/Color.hpp"
+#include "Render/RenderCommon.hpp"
 #include "Math/Vector.hpp"
 
 #include <string>
@@ -10,7 +11,6 @@ class ReflectContext;
 
 enum class EmitterType {
     Sphere = 0,
-    Cone,
     Box
 };
 
@@ -34,9 +34,11 @@ public:
     EmitterSpace emitterSpace;
     Vec2 emitterVal;
     float duration;
-    float startEmissionRate;
-    float endEmissionRate;
+    float direction;
+    float directionVar;
+    float emissionRate;
     float lifetime;
+    float lifetimeVar;
     float startDelay;
     bool autoStart;
     bool loop;
@@ -57,6 +59,8 @@ public:
     Vec4 startColVar;
     ColorB endCol;
     Vec4 endColVar;
+    float fadeIn;
+    float fadeOut;
 };
 
 class ParticleEmitterMovementConfig {

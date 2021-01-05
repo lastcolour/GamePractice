@@ -26,9 +26,8 @@ void ParticleEmitter::init() {
     ETNode<ETParticleEmitter>::connect(getEntityId());
 
     emissionConfig.lifetime = std::max(emissionConfig.lifetime, 0.01f);
-    emissionConfig.startEmissionRate = std::max(emissionConfig.startEmissionRate, 0.01f);
-    emissionConfig.endEmissionRate = std::max(emissionConfig.endEmissionRate, 0.01f);
-    emissionConfig.startDelay = std::max(emissionConfig.startDelay, 0.01f);
+    emissionConfig.emissionRate = std::max(emissionConfig.emissionRate, 0.01f);
+    emissionConfig.startDelay = std::max(emissionConfig.startDelay, 0.f);
 
     isConfigChanged = true;
 }

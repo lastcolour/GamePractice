@@ -5,6 +5,8 @@
 #include "RenderTexture.hpp"
 #include "Particles/ParticleUpdate.hpp"
 
+#include <atomic>
+
 class ParticlesNode : public Node {
 public:
 
@@ -30,6 +32,7 @@ private:
     std::shared_ptr<RenderTexture> tex;
     ParticleEmitterRenderConfig renderConfig;
     EmitterState state;
+    std::atomic<bool> needUpdate;
 };
 
 #endif /* __PARTICLES_NODE_HPP__ */

@@ -2,91 +2,95 @@
   "children": [],
   "logics": [
     {
+      "type": "UIRenderNormalizator",
+      "id": 2,
+      "data": {
+        "factor": 1.0
+      }
+    },
+    {
       "type": "ParticleEmitter",
-      "id": 1,
+      "id": 3,
       "data": {
         "isVisible": true,
-        "alpha": 0.30000001192092896,
+        "alpha": 0.5,
         "drawPriority": 1,
         "emission": {
           "emitterSpace": "Local",
-          "emitterType": "Sphere",
+          "emitterType": "Box",
           "emitterVal": {
-            "x": 200.0,
-            "y": 0.0
+            "x": 100.0,
+            "y": 200.0
           },
           "duration": -1.0,
-          "startEmissionRate": 16.0,
-          "endEmissionRate": 128.0,
-          "lifetime": 5.0,
-          "startDelay": 0.009999999776482582,
+          "direction": 90.0,
+          "directionVar": 0.0,
+          "emissionRate": 15.0,
+          "lifetime": 2.0,
+          "lifetimeVar": 0.10000000149011612,
+          "startDelay": 0.30000001192092896,
           "autoStart": true,
           "loop": true
         },
         "movement": {
           "startScale": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
-          },
-          "startScaleVar": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "endScale": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
-          },
-          "endScaleVar": {
             "x": 1.0,
             "y": 1.0
           },
+          "startScaleVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224
+          },
+          "endScale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "endScaleVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224
+          },
           "startSpeed": 5.0,
           "startSpeedVar": 0.10000000149011612,
-          "endSpeed": 10.0,
-          "endSpeedVar": 0.10000000149011612,
-          "startRotation": 50.0,
-          "startRotationVar": 50.0,
-          "startRotSpeed": 0.20000000298023224,
-          "startRotSpeedVar": 0.0,
-          "endRotSpeed": 0.20000000298023224,
+          "endSpeed": 1.0,
+          "endSpeedVar": 0.0,
+          "startRotation": 90.0,
+          "startRotationVar": 0.10000000149011612,
+          "startRotSpeed": 0.0,
+          "startRotSpeedVar": 0.10000000149011612,
+          "endRotSpeed": 0.0,
           "endRotSpeedVar": 0.0
         },
         "color": {
           "startCol": {
-            "r": 230,
-            "g": 85,
+            "r": 120,
+            "g": 215,
             "b": 255,
             "a": 255
           },
           "startColVar": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612,
-            "z": 0.10000000149011612,
-            "w": 5.0
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
+            "w": 1.0
           },
           "endCol": {
-            "r": 112,
-            "g": 236,
+            "r": 255,
+            "g": 48,
             "b": 255,
-            "a": 0
+            "a": 255
           },
           "endColVar": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612,
-            "z": 0.10000000149011612,
-            "w": 0.0
-          }
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
+            "w": 1.0
+          },
+          "fadeIn": 0.44999998807907104,
+          "fadeOut": 0.44999998807907104
         },
         "render": {
           "texture": "Images/block.png"
         }
-      }
-    },
-    {
-      "type": "UIRenderNormalizator",
-      "id": 2,
-      "data": {
-        "factor": 0.30000001192092896
       }
     }
   ]

@@ -19,8 +19,9 @@ float getRandomSpeed(Math::RandomFloatGenerator& gen, float val, float var) {
 }
 
 float getRandomRotation(Math::RandomFloatGenerator& gen, float val, float var) {
-    val += var * getRandomFloatInRange(gen, -var, var);
-    return val;
+    float rotSpeed = Math::Deg2Rad(val);
+    rotSpeed += rotSpeed * getRandomFloatInRange(gen, -var, var);
+    return rotSpeed;
 }
 
 Vec2 getRandomScale(Math::RandomFloatGenerator& gen, const Vec2& scale, const Vec2& scaleVar) {
@@ -48,6 +49,19 @@ ColorF getRandomColor(Math::RandomFloatGenerator& gen, const ColorF& col, const 
     return resCol;
 }
 
+Vec2 getRandomDir(Math::RandomFloatGenerator& gen, float dir, float dirVar) {
+    float radDir = Math::Deg2Rad(dir);
+    float radDirVar = Math::Deg2Rad(dirVar);
+    radDir += getRandomFloatInRange(gen, -radDirVar, radDirVar);
+    return Vec2(cos(radDir), sin(radDir));
+}
+
+float getRandomLifetime(Math::RandomFloatGenerator& gen, float val, float var) {
+    val += val * getRandomFloatInRange(gen, -var, var);
+    val = std::max(0.01f, val);
+    return val;
+}
+
 } // namespace
 
 EmitterState::EmitterState() :
@@ -66,64 +80,39 @@ void EmitterState::reset() {
 }
 
 void EmitterState::removeOld(float dt) {
-    size_t i = 0;
-    while(i < activeCount) {
+    int j = 0;
+    for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         assert(p.lifetime > 0.f && "Invalid alive particle");
         p.lifetime -= dt;
-        if(p.lifetime <= 0) {
-            p.lifetime = 0.f;
-            std::swap(particles[i], particles[activeCount - 1]);
-            std::swap(instaceData[i], instaceData[activeCount - 1]);
-            --activeCount;
-        } else {
-            ++i;
+        if(p.lifetime > 0.f) {
+            if(i != j) {
+                particles[j] = particles[i];
+                instaceData[j] = instaceData[i];
+            }
+            ++j;
         }
     }
+    activeCount = j;
 }
 
 void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
-    Vec2 moveDir(0.f);
     Vec2 startPt(0.f);
 
+    Vec2 emitterVal = emissionConfig.emitterVal;
     switch(emissionConfig.emitterType) {
         case EmitterType::Sphere: {
-            float shpereR = emissionConfig.emitterVal.x;
+            float shpereR = emitterVal.x;
             float radius = getRandomFloatInRange(floatGen, 0.f, shpereR);
             float angel = getRandomFloatInRange(floatGen, 0.f, 2.f * Math::PI);
 
-            Vec2 dir;
-            dir.x = radius * cos(angel);
-            dir.y = radius * sin(angel);
-
-            startPt += dir;
-
-            moveDir = dir.getNormilized();
+            startPt.x = radius * cos(angel);
+            startPt.y = radius * sin(angel);
             break;
         }
         case EmitterType::Box: {
-            Vec2 ptInBox;
-            ptInBox.x = getRandomFloatInRange(floatGen, -emissionConfig.emitterVal.x, emissionConfig.emitterVal.x) / 2.f;
-            ptInBox.y = getRandomFloatInRange(floatGen, -emissionConfig.emitterVal.y, emissionConfig.emitterVal.y) / 2.f;
-
-            Vec2 dir = ptInBox - startPt;
-            moveDir = dir.getNormilized();
-
-            startPt += ptInBox;
-            break;
-        }
-        case EmitterType::Cone: {
-            float shpereR = emissionConfig.emitterVal.x;
-            float radius = getRandomFloatInRange(floatGen, 0.f, shpereR);
-            float angel = getRandomFloatInRange(floatGen, 0.f, Math::Deg2Rad(emissionConfig.emitterVal.y));
-
-            Vec2 dir;
-            dir.x = radius * cos(angel);
-            dir.y = radius * sin(angel);
-
-            startPt += dir;
-
-            moveDir = dir.getNormilized();
+            startPt.x = getRandomFloatInRange(floatGen, -emitterVal.x, emitterVal.x) / 2.f;
+            startPt.y = getRandomFloatInRange(floatGen, -emitterVal.y, emitterVal.y) / 2.f;
             break;
         }
         default: {
@@ -132,8 +121,10 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
     }
 
     p.pt = startPt;
-    p.lifetime = emissionConfig.lifetime;
+    p.lifetime = getRandomLifetime(floatGen, emissionConfig.lifetime, emissionConfig.lifetimeVar);
     p.totalLifetime = p.lifetime;
+
+    Vec2 moveDir = getRandomDir(floatGen, emissionConfig.direction, emissionConfig.directionVar);
 
     p.startSpeed = moveDir * getRandomSpeed(floatGen, movementConifg.startSpeed, movementConifg.startSpeedVar);
     p.endSpeed = moveDir * getRandomSpeed(floatGen, movementConifg.endSpeed, movementConifg.endSpeedVar);
@@ -158,27 +149,37 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
 
         p.endScale.x *= tm.scale.x;
         p.endScale.y *= tm.scale.y;
+
+        Vec3 speed = tm.quat * Vec3(p.startSpeed, 0.f);
+        p.startSpeed = Vec2(speed.x, speed.y);
+
+        speed = tm.quat * Vec3(p.endSpeed, 0.f);
+        p.endSpeed = Vec2(speed.x, speed.y);
     }
 }
 
 void EmitterState::emitNew(const Transform& tm, float dt) {
     emitFracTime += dt;
 
-    auto prog = std::max(0.f, duration / emissionConfig.duration);
-    float emissionRate = Math::Lerp(emissionConfig.startEmissionRate, emissionConfig.endEmissionRate, prog);
-
-    int emitCount = static_cast<int>(emissionRate * emitFracTime);
+    int emitCount = static_cast<int>(emissionConfig.emissionRate * emitFracTime);
     emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
-
-    emitFracTime -= emitCount / emissionRate;
-
-    int newCount = std::max(((activeCount + emitCount) - static_cast<int>(particles.size())), 0);
-    for(int i = 0; i < newCount; ++i) {
-        particles.emplace_back();
-        instaceData.emplace_back();
+    if(emitCount == 0) {
+        return;
     }
 
-    for(int i = activeCount, sz = activeCount + emitCount; i < sz; ++i) {
+    emitFracTime -= emitCount / emissionConfig.emissionRate;
+
+    particles.resize(activeCount + emitCount);
+    instaceData.resize(activeCount + emitCount);
+
+    if(activeCount > 0) {
+        memmove(&particles[0] + emitCount, &particles[0],
+            activeCount * sizeof(Particle));
+        memmove(&instaceData[0] + emitCount, &instaceData[0],
+            activeCount * sizeof(ParticleInstanceData));
+    }
+
+    for(int i = 0; i < emitCount; ++i) {
         auto& p = particles[i];
         spawnNewParticle(tm, p);
     }
@@ -205,7 +206,7 @@ void EmitterState::updateAlive(float dt) {
         Mat3 mat(1.f);
         Math::AddTranslate2D(mat, p.pt);
         Math::AddRotate2D(mat, p.rot);
-        Math::AddScale2D(mat, 20.f * scale);
+        Math::AddScale2D(mat, scale);
 
         out.mat = mat.toMat3x2();
 
@@ -213,6 +214,13 @@ void EmitterState::updateAlive(float dt) {
         out.col.g = Math::Lerp(p.startCol.g, p.endCol.g, prog);
         out.col.b = Math::Lerp(p.startCol.b, p.endCol.b, prog);
         out.col.a = Math::Lerp(p.startCol.a, p.endCol.a, prog);
+
+        float fadeProg = std::min(p.lifetime / colorConfig.fadeOut, (p.totalLifetime - p.lifetime) / colorConfig.fadeIn);
+        fadeProg = std::min(fadeProg, 1.f);
+
+        assert(fadeProg >= 0.f && fadeProg <= 1.f && "Invalid fade prog");
+
+        out.col.a *= fadeProg;
     }
 }
 

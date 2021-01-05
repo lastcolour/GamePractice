@@ -6,7 +6,6 @@ void ParticleEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<EmitterType>("EmitterType")) {
         enumInfo->addValues<EmitterType>({
             {"Sphere", EmitterType::Sphere},
-            {"Cone", EmitterType::Cone},
             {"Box", EmitterType::Box}
         });
     }
@@ -21,9 +20,11 @@ void ParticleEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("emitterType", &ParticleEmitterEmissionConfig::emitterType);
         classInfo->addField("emitterVal", &ParticleEmitterEmissionConfig::emitterVal);
         classInfo->addField("duration", &ParticleEmitterEmissionConfig::duration);
-        classInfo->addField("startEmissionRate", &ParticleEmitterEmissionConfig::startEmissionRate);
-        classInfo->addField("endEmissionRate", &ParticleEmitterEmissionConfig::endEmissionRate);
+        classInfo->addField("direction", &ParticleEmitterEmissionConfig::direction);
+        classInfo->addField("directionVar", &ParticleEmitterEmissionConfig::directionVar);
+        classInfo->addField("emissionRate", &ParticleEmitterEmissionConfig::emissionRate);
         classInfo->addField("lifetime", &ParticleEmitterEmissionConfig::lifetime);
+        classInfo->addField("lifetimeVar", &ParticleEmitterEmissionConfig::lifetimeVar);
         classInfo->addField("startDelay", &ParticleEmitterEmissionConfig::startDelay);
         classInfo->addField("autoStart", &ParticleEmitterEmissionConfig::autoStart);
         classInfo->addField("loop", &ParticleEmitterEmissionConfig::loop);
@@ -35,9 +36,11 @@ ParticleEmitterEmissionConfig::ParticleEmitterEmissionConfig() :
     emitterSpace(EmitterSpace::World),
     emitterVal(1.f, 0.f),
     duration(4.f),
-    startEmissionRate(64.0f),
-    endEmissionRate(128.0f),
+    direction(0.f),
+    directionVar(0.1f),
+    emissionRate(64.0f),
     lifetime(1.f),
+    lifetimeVar(0.1f),
     startDelay(0.f),
     autoStart(true),
     loop(true) {
@@ -49,6 +52,8 @@ void ParticleEmitterColorConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("startColVar", &ParticleEmitterColorConfig::startColVar);
         classInfo->addField("endCol", &ParticleEmitterColorConfig::endCol);
         classInfo->addField("endColVar", &ParticleEmitterColorConfig::endColVar);
+        classInfo->addField("fadeIn", &ParticleEmitterColorConfig::fadeIn);
+        classInfo->addField("fadeOut", &ParticleEmitterColorConfig::fadeOut);
     }
 }
 
@@ -56,7 +61,9 @@ ParticleEmitterColorConfig::ParticleEmitterColorConfig() :
     startCol(255, 255, 255),
     startColVar(0.1f),
     endCol(255, 0, 0),
-    endColVar(0.1f) {
+    endColVar(0.1f),
+    fadeIn(0.1f),
+    fadeOut(0.1f) {
 }
 
 void ParticleEmitterMovementConfig::Reflect(ReflectContext& ctx) {

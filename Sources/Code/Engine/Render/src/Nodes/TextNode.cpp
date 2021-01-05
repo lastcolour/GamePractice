@@ -18,7 +18,7 @@ TextNode::~TextNode() {
 void TextNode::onInit() {
     setGeometry(PrimitiveGeometryType::Text_Vert_Chunk);
     setShader("text_solid_color");
-    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+    setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
 }
 

@@ -3,31 +3,103 @@
 #include "Render/ETRenderCamera.hpp"
 #include "Core/ETPrimitives.hpp"
 
+#include <cassert>
+
+namespace {
+
+GLenum getGLBlendType(BlendType blenType) {
+    GLenum resBlendMode = GL_ONE;
+    switch(blenType) {
+        case BlendType::NONE: {
+            assert(false && "Invalid blend mode");
+        }
+        case BlendType::ZERO: {
+            resBlendMode = GL_ZERO;
+            break;
+        }
+        case BlendType::ONE: {
+            resBlendMode = GL_ONE;
+            break;
+        }
+        case BlendType::SRC_COLOR: {
+            resBlendMode = GL_SRC_COLOR;
+            break;
+        }
+        case BlendType::ONE_MINUS_SRC_COLOR: {
+            resBlendMode = GL_ONE_MINUS_SRC_COLOR;
+            break;
+        }
+        case BlendType::DST_COLOR: {
+            resBlendMode = GL_DST_COLOR;
+            break;
+        }
+        case BlendType::ONE_MINUS_DST_COLOR: {
+            resBlendMode = GL_ONE_MINUS_DST_COLOR;
+            break;
+        }
+        case BlendType::SRC_ALPHA: {
+            resBlendMode = GL_SRC_ALPHA;
+            break;
+        }
+        case BlendType::ONE_MINUS_SRC_ALPHA: {
+            resBlendMode = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case BlendType::DST_ALPHA: {
+            resBlendMode = GL_DST_ALPHA;
+            break;
+        }
+        case BlendType::ONE_MINUS_DST_ALPHA: {
+            resBlendMode = GL_ONE_MINUS_DST_ALPHA;
+            break;
+        }
+        case BlendType::CONSTANT_COLOR: {
+            resBlendMode = GL_CONSTANT_COLOR;
+            break;
+        }
+        case BlendType::ONE_MINUS_CONSTANT_COLOR: {
+            resBlendMode = GL_ONE_MINUS_CONSTANT_COLOR;
+            break;
+        }
+        case BlendType::CONSTANT_ALPHA: {
+            resBlendMode = GL_CONSTANT_ALPHA;
+            break;
+        }
+        case BlendType::ONE_MINUS_CONSTANT_ALPHA: {
+            resBlendMode = GL_ONE_MINUS_CONSTANT_ALPHA;
+            break;
+        }
+        default: {
+            assert(false && "Invalid blend mode");
+        }
+    }
+    return resBlendMode;
+}
+
+} // namespace
+
 RenderContext::RenderContext() :
     dt(0.f),
-    blendingType(RenderBlendingType::NONE),
+    blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
     mainFBO(nullptr) {
 }
 
 RenderContext::~RenderContext() {
 }
 
-void RenderContext::setBlending(RenderBlendingType newBlendingType) {
-    if(newBlendingType == blendingType) {
-        return;
+void RenderContext::setBlending(const BlendMode& newBlendMode) {
+    if(blendMode.dstBlending == newBlendMode.dstBlending &&
+        blendMode.srcBlending == newBlendMode.srcBlending) {
+            return;
     }
-    blendingType = newBlendingType;
-    switch(blendingType)
-    {
-    case RenderBlendingType::NONE:
+    blendMode = newBlendMode;
+    if(blendMode.dstBlending == BlendType::NONE || blendMode.srcBlending == BlendType::NONE) {
         glDisable(GL_BLEND);
-        break;
-    case RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA:
+    } else {
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        break;
-    default:
-        break;
+        glBlendFunc(
+            getGLBlendType(blendMode.srcBlending),
+            getGLBlendType(blendMode.dstBlending));
     }
 }
 
@@ -71,8 +143,4 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             break;
         }
     }
-}
-
-RenderBlendingType RenderContext::getBlendingType() const {
-    return blendingType;
 }

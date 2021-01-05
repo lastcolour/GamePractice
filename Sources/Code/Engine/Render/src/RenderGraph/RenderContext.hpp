@@ -9,9 +9,9 @@
 
 class RenderFramebuffer;
 
-enum class RenderBlendingType {
-    NONE = 0,
-    ONE_MINUS_SRC_MINUS_ALPHA
+struct BlendMode {
+    BlendType srcBlending;
+    BlendType dstBlending;
 };
 
 class RenderContext {
@@ -21,8 +21,7 @@ public:
     ~RenderContext();
 
     void setStencilState(const StencilWirteReadData& newStencilState);
-    void setBlending(RenderBlendingType newBlendingType);
-    RenderBlendingType getBlendingType() const;
+    void setBlending(const BlendMode& newBlendMode);
 
 public:
 
@@ -34,7 +33,7 @@ public:
 private:
 
     StencilWirteReadData stencilState;
-    RenderBlendingType blendingType;
+    BlendMode blendMode;
 };
 
 #endif /* __RENDER_CONTEXT_HPP__ */

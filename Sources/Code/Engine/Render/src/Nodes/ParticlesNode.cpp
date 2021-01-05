@@ -3,6 +3,8 @@
 #include "Render/ETRenderManager.hpp"
 #include "Math/MatrixTransform.hpp"
 
+#include <cassert>
+
 ParticlesNode::ParticlesNode() {
 }
 
@@ -10,6 +12,10 @@ ParticlesNode::~ParticlesNode() {
 }
 
 void ParticlesNode::update(float dt) {
+    if(!needUpdate.load()) {
+        return;
+    }
+    needUpdate.store(false);
     state.update(tm, dt);
 }
 
@@ -21,12 +27,15 @@ void ParticlesNode::setConfig(const ParticleEmitterEmissionConfig& emissionConf,
     state.movementConifg = movementConf;
     state.colorConfig = colorConf;
 
+
     state.reset();
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage, renderConf.texture.c_str(), ETextureType::RGBA);
+
+    needUpdate.store(true);
 }
 
 bool ParticlesNode::isVisible() const {
-    if(state.activeCount == 0) {
+    if(state.lifeType == EmitterLifeType::Finished && !state.emissionConfig.loop) {
         return false;
     }
     if(!tex) {
@@ -36,12 +45,14 @@ bool ParticlesNode::isVisible() const {
 }
 
 void ParticlesNode::onInit() {
-    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+    setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     setGeometry(PrimitiveGeometryType::Particles);
     setShader("particle");
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {
+    needUpdate.store(true);
+
     Mat4 resMat = Mat4(1.f);
 
     if(state.emissionConfig.emitterSpace == EmitterSpace::Local) {

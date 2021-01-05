@@ -23,7 +23,7 @@ void ImageNode::setTintColor(const ColorB& newTintColor) {
 }
 
 void ImageNode::onInit() {
-    setBlendingMode(RenderBlendingType::ONE_MINUS_SRC_MINUS_ALPHA);
+    setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     setShader("simple_image");
 }

@@ -7,35 +7,51 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 0,
+        "drawPriority": 1,
         "emission": {
-          "emitterType": "Sphere",
+          "emitterSpace": "Local",
+          "emitterType": "Box",
           "emitterVal": {
             "x": 5.0,
-            "y": 0.0
+            "y": 5.0
           },
-          "duration": 0.10000000149011612,
-          "startEmissionRate": 64.0,
-          "endEmissionRate": 128.0,
-          "lifetime": 0.3100000023841858,
-          "startDelay": 0.009999999776482582,
+          "duration": 0.009999999776482582,
+          "direction": 90.0,
+          "directionVar": 360.0,
+          "emissionRate": 5000.0,
+          "lifetime": 0.10000000149011612,
+          "lifetimeVar": 0.10000000149011612,
+          "startDelay": 0.30000001192092896,
           "autoStart": true,
           "loop": true
         },
         "movement": {
           "startScale": {
-            "x": 0.10000000149011612,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "startScaleVar": {
+            "x": 0.20000000298023224,
             "y": 0.20000000298023224
           },
           "endScale": {
-            "x": 0.4000000059604645,
-            "y": 0.4000000059604645
+            "x": 0.5,
+            "y": 0.5
           },
-          "startSpeed": 600.0,
-          "endSpeed": 600.0,
+          "endScaleVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224
+          },
+          "startSpeed": 100.0,
+          "startSpeedVar": 0.10000000149011612,
+          "endSpeed": 100.0,
+          "endSpeedVar": 0.0,
           "startRotation": 0.0,
-          "startRotationSpeed": 3.0,
-          "endRotationSpeed": 3.0
+          "startRotationVar": 0.0,
+          "startRotSpeed": 300.0,
+          "startRotSpeedVar": 0.20000000298023224,
+          "endRotSpeed": 300.0,
+          "endRotSpeedVar": 0.20000000298023224
         },
         "color": {
           "startCol": {
@@ -45,27 +61,36 @@
             "a": 255
           },
           "startColVar": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612,
-            "z": 0.10000000149011612,
-            "w": 0.10000000149011612
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
+            "w": 0.0
           },
           "endCol": {
-            "r": 0,
-            "g": 76,
-            "b": 255,
+            "r": 255,
+            "g": 0,
+            "b": 4,
             "a": 255
           },
           "endColVar": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612,
-            "z": 0.10000000149011612,
-            "w": 0.10000000149011612
-          }
+            "x": 0.4000000059604645,
+            "y": 0.4000000059604645,
+            "z": 0.4000000059604645,
+            "w": 0.0
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.05000000074505806
         },
         "render": {
           "texture": "Images/block.png"
         }
+      }
+    },
+    {
+      "type": "UIRenderNormalizator",
+      "id": 3,
+      "data": {
+        "factor": 1.0
       }
     }
   ]

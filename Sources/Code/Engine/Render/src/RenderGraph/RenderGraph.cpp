@@ -25,9 +25,6 @@ RenderGraph::RenderGraph() :
 }
 
 RenderGraph::~RenderGraph() {
-    for(auto node : children) {
-        node->setRenderGraph(nullptr);
-    }
 }
 
 void RenderGraph::init() {
@@ -92,7 +89,7 @@ bool RenderGraph::startFrame() {
 }
 
 void RenderGraph::endFrame() {
-    ctx.setBlending(RenderBlendingType::NONE);
+    ctx.setBlending(BlendMode{BlendType::NONE, BlendType::NONE});
     mainFBO->unbind();
 }
 
