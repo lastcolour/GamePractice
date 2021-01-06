@@ -6,6 +6,7 @@ Particle::Particle() :
     endSpeed(0.f),
     startScale(1.f),
     endScale(1.f),
+    acc(0.f),
     rot(0.f),
     startRotSpeed(0.f),
     endRotSpeed(0.f),

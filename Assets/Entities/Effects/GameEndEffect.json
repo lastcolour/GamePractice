@@ -10,16 +10,17 @@
         "drawPriority": 1,
         "emission": {
           "emitterSpace": "Local",
-          "emitterType": "Box",
+          "emitterType": "Sphere",
           "emitterVal": {
-            "x": 5.0,
-            "y": 5.0
+            "x": 30.0,
+            "y": 30.0
           },
-          "duration": 0.009999999776482582,
+          "duration": -1.0,
+          "thickness": 1.0,
           "direction": 90.0,
           "directionVar": 360.0,
-          "emissionRate": 5000.0,
-          "lifetime": 0.10000000149011612,
+          "emissionRate": 500.0,
+          "lifetime": 0.5,
           "lifetimeVar": 0.10000000149011612,
           "startDelay": 0.30000001192092896,
           "autoStart": true,
@@ -27,8 +28,8 @@
         },
         "movement": {
           "startScale": {
-            "x": 0.5,
-            "y": 0.5
+            "x": 1.0,
+            "y": 1.0
           },
           "startScaleVar": {
             "x": 0.20000000298023224,
@@ -42,9 +43,9 @@
             "x": 0.20000000298023224,
             "y": 0.20000000298023224
           },
-          "startSpeed": 100.0,
+          "startSpeed": 0.0,
           "startSpeedVar": 0.10000000149011612,
-          "endSpeed": 100.0,
+          "endSpeed": 0.0,
           "endSpeedVar": 0.0,
           "startRotation": 0.0,
           "startRotationVar": 0.0,
@@ -61,21 +62,21 @@
             "a": 255
           },
           "startColVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224,
-            "z": 0.20000000298023224,
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
             "w": 0.0
           },
           "endCol": {
-            "r": 255,
-            "g": 0,
-            "b": 4,
+            "r": 0,
+            "g": 59,
+            "b": 255,
             "a": 255
           },
           "endColVar": {
-            "x": 0.4000000059604645,
-            "y": 0.4000000059604645,
-            "z": 0.4000000059604645,
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
             "w": 0.0
           },
           "fadeIn": 0.0,
@@ -83,6 +84,20 @@
         },
         "render": {
           "texture": "Images/block.png"
+        },
+        "gravity": {
+          "fields": [
+            {
+              "type": "Vortex",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": 50.0,
+              "value": 0.0,
+              "radius": -1.0
+            }
+          ]
         }
       }
     },
@@ -91,6 +106,106 @@
       "id": 3,
       "data": {
         "factor": 1.0
+      }
+    },
+    {
+      "type": "ParticleEmitter",
+      "id": 4,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 1,
+        "emission": {
+          "emitterSpace": "Local",
+          "emitterType": "Box",
+          "emitterVal": {
+            "x": 30.0,
+            "y": 30.0
+          },
+          "duration": -1.0,
+          "thickness": 1.0,
+          "direction": 90.0,
+          "directionVar": 360.0,
+          "emissionRate": 500.0,
+          "lifetime": 0.5,
+          "lifetimeVar": 0.10000000149011612,
+          "startDelay": 0.30000001192092896,
+          "autoStart": true,
+          "loop": true
+        },
+        "movement": {
+          "startScale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "startScaleVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224
+          },
+          "endScale": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "endScaleVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224
+          },
+          "startSpeed": 0.0,
+          "startSpeedVar": 0.10000000149011612,
+          "endSpeed": 0.0,
+          "endSpeedVar": 0.0,
+          "startRotation": 0.0,
+          "startRotationVar": 0.0,
+          "startRotSpeed": 300.0,
+          "startRotSpeedVar": 0.20000000298023224,
+          "endRotSpeed": 300.0,
+          "endRotSpeedVar": 0.20000000298023224
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 0,
+            "g": 59,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
+            "w": 0.0
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.05000000074505806
+        },
+        "render": {
+          "texture": "Images/block.png"
+        },
+        "gravity": {
+          "fields": [
+            {
+              "type": "Vortex",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": 50.0,
+              "value": 0.0,
+              "radius": -1.0
+            }
+          ]
+        }
       }
     }
   ]

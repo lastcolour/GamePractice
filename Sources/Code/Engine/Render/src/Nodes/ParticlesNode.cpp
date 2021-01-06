@@ -20,13 +20,13 @@ void ParticlesNode::update(float dt) {
 }
 
 void ParticlesNode::setConfig(const ParticleEmitterEmissionConfig& emissionConf, const ParticleEmitterMovementConfig& movementConf,
-    const ParticleEmitterColorConfig& colorConf, const ParticleEmitterRenderConfig& renderConf) {
+    const ParticleEmitterColorConfig& colorConf, const ParticleEmitterRenderConfig& renderConf, const ParticleEmitterGravityFields& gravityConf) {
 
     renderConfig = renderConf;
     state.emissionConfig = emissionConf;
     state.movementConifg = movementConf;
     state.colorConfig = colorConf;
-
+    state.gravityConfig = gravityConf;
 
     state.reset();
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage, renderConf.texture.c_str(), ETextureType::RGBA);

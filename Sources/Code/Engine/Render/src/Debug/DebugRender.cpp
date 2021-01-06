@@ -95,7 +95,7 @@ void DebugRender::drawLines(RenderContext& ctx) {
         tm.pt = Vec3(center.x, center.y, 0.f);
         tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), acos(dir.x));
 
-        simpleNode.setSize(Vec2(lineLen, cmd.width));
+        simpleNode.setSize(Vec2(lineLen, std::max(cmd.width, 1.1f)));
         simpleNode.setColor0(cmd.startCol);
         simpleNode.setTransform(tm);
         simpleNode.render(ctx);

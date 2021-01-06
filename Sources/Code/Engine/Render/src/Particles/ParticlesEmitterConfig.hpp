@@ -6,6 +6,7 @@
 #include "Math/Vector.hpp"
 
 #include <string>
+#include <vector>
 
 class ReflectContext;
 
@@ -34,6 +35,7 @@ public:
     EmitterSpace emitterSpace;
     Vec2 emitterVal;
     float duration;
+    float thickness;
     float direction;
     float directionVar;
     float emissionRate;
@@ -102,6 +104,40 @@ public:
 public:
 
     std::string texture;
+};
+
+enum class GravityType {
+    Simple = 0,
+    Circle,
+    Vortex
+};
+
+class GravityField {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    GravityField();
+
+public:
+
+    GravityType type;
+    Vec2 offset;
+    float dir;
+    float value;
+    float radius;
+};
+
+class ParticleEmitterGravityFields {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    std::vector<GravityField> fields;
 };
 
 #endif /* __PARTICLES_EMITTER_CONFIG_HPP__ */

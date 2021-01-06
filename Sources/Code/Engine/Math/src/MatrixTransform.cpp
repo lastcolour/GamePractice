@@ -97,4 +97,13 @@ void AddScale2D(Mat3& mat, const Vec2& scale) {
     mat[1] *= scale[1];
 }
 
+Vec2 RotateVec2D(const Vec2& v, float angle) {
+    Vec2 res;
+    float cosA = cos(angle);
+    float sinA = sin(angle);
+    res.x = v.x * cosA - v.y * sinA;
+    res.y = v.x * sinA + v.y * cosA;
+    return res;
+}
+
 } // namespace Math

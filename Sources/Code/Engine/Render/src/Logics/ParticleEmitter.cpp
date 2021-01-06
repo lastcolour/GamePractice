@@ -10,6 +10,7 @@ void ParticleEmitter::Reflect(ReflectContext& ctx) {
         classInfo->addField("movement", &ParticleEmitter::movementConfig);
         classInfo->addField("color", &ParticleEmitter::colorConfig);
         classInfo->addField("render", &ParticleEmitter::renderConfig);
+        classInfo->addField("gravity", &ParticleEmitter::gravityConfig);
     }
 }
 
@@ -39,6 +40,6 @@ void ParticleEmitter::onSyncWithRender() {
     auto emitterProxyNode = static_cast<ParticlesNode*>(proxyNode);
     if(isConfigChanged) {
         isConfigChanged = false;
-        emitterProxyNode->setConfig(emissionConfig, movementConfig, colorConfig, renderConfig);
+        emitterProxyNode->setConfig(emissionConfig, movementConfig, colorConfig, renderConfig, gravityConfig);
     }
 }

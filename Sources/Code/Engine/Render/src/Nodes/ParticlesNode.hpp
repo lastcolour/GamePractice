@@ -18,7 +18,8 @@ public:
     void setConfig(const ParticleEmitterEmissionConfig& emissionConf,
         const ParticleEmitterMovementConfig& movementConf,
         const ParticleEmitterColorConfig& colorConf,
-        const ParticleEmitterRenderConfig& renderConf);
+        const ParticleEmitterRenderConfig& renderConf,
+        const ParticleEmitterGravityFields& gravityConf);
 
 protected:
 

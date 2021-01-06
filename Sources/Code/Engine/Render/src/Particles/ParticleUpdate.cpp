@@ -62,6 +62,48 @@ float getRandomLifetime(Math::RandomFloatGenerator& gen, float val, float var) {
     return val;
 }
 
+void simulateSimpleField(GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+    float radSq = field.radius * field.radius;
+    float fieldAngle = Math::Deg2Rad(field.dir);
+    Vec2 dtAcc = Vec2(cos(fieldAngle), sin(fieldAngle)) * field.value * dt;
+    for(int i = 0; i < activeCount; ++i) {
+        auto& p = particles[i];
+        Vec2 dir = p.pt - field.offset;
+        if(field.radius > 0.f && dir.getLenghtSq() > radSq) {
+            continue;
+        }
+        p.acc += dtAcc;
+    }
+}
+
+void simulateCircleField(GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+    float radSq = field.radius * field.radius;
+    for(int i = 0; i < activeCount; ++i) {
+        auto& p = particles[i];
+        Vec2 dir = p.pt - field.offset;
+        if(field.radius > 0.f && dir.getLenghtSq() > radSq) {
+            continue;
+        }
+        dir.normalize();
+        p.acc += dir * field.value * dt;
+    }
+}
+
+void simulateVortexField(GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+    float radSq = field.radius * field.radius;
+    float fieldAngle = Math::Deg2Rad(field.dir);
+    for(int i = 0; i < activeCount; ++i) {
+        auto& p = particles[i];
+        Vec2 dir = field.offset - p.pt;
+        if(field.radius > 0.f && dir.getLenghtSq() > radSq) {
+            continue;
+        }
+        dir.normalize();
+        dir = Math::RotateVec2D(dir, fieldAngle);
+        p.acc += dir * field.value * dt;
+    }
+}
+
 } // namespace
 
 EmitterState::EmitterState() :
@@ -103,7 +145,8 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
     switch(emissionConfig.emitterType) {
         case EmitterType::Sphere: {
             float shpereR = emitterVal.x;
-            float radius = getRandomFloatInRange(floatGen, 0.f, shpereR);
+            float t = getRandomFloatInRange(floatGen, 0.f, 1.f);
+            float radius = Math::Lerp(shpereR * emissionConfig.thickness, shpereR, t);
             float angel = getRandomFloatInRange(floatGen, 0.f, 2.f * Math::PI);
 
             startPt.x = radius * cos(angel);
@@ -111,8 +154,26 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
             break;
         }
         case EmitterType::Box: {
-            startPt.x = getRandomFloatInRange(floatGen, -emitterVal.x, emitterVal.x) / 2.f;
-            startPt.y = getRandomFloatInRange(floatGen, -emitterVal.y, emitterVal.y) / 2.f;
+            float t = getRandomFloatInRange(floatGen, -1.f, 1.f);
+            if(t > 0.f) {
+                startPt.x = Math::Lerp(-emitterVal.x, emitterVal.x, t); 
+                t = getRandomFloatInRange(floatGen, -1.f, 1.f);
+                float tSign = 1.f;
+                if(t < 0.f) {
+                    tSign = -1.f;
+                    t = -t; 
+                }
+                startPt.y = tSign * Math::Lerp(emitterVal.y * emissionConfig.thickness, emitterVal.y, t);
+            } else {
+                startPt.y = Math::Lerp(-emitterVal.y, emitterVal.y, -t); 
+                t = getRandomFloatInRange(floatGen, -1.f, 1.f);
+                float tSign = 1.f;
+                if(t < 0.f) {
+                    tSign = -1.f;
+                    t = -t; 
+                }
+                startPt.x = tSign * Math::Lerp(emitterVal.x * emissionConfig.thickness, emitterVal.x, t);
+            }
             break;
         }
         default: {
@@ -138,6 +199,8 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
 
     p.startCol = getRandomColor(floatGen, colorConfig.startCol.getColorF(), colorConfig.startColVar);
     p.endCol = getRandomColor(floatGen, colorConfig.endCol.getColorF(), colorConfig.endColVar);
+
+    p.acc = Vec2(0.f);
 
     if(emissionConfig.emitterSpace == EmitterSpace::World) {
         p.pt.x *= tm.scale.x;
@@ -196,7 +259,7 @@ void EmitterState::updateAlive(float dt) {
         auto prog = 1.f - p.lifetime / p.totalLifetime;
     
         Vec2 speed = Math::Lerp(p.startSpeed, p.endSpeed, prog);
-        p.pt += speed * dt;
+        p.pt += speed * dt + p.acc * dt;
 
         Vec2 scale = Math::Lerp(p.startScale, p.endScale, prog);
 
@@ -221,6 +284,25 @@ void EmitterState::updateAlive(float dt) {
         assert(fadeProg >= 0.f && fadeProg <= 1.f && "Invalid fade prog");
 
         out.col.a *= fadeProg;
+    }
+}
+
+void EmitterState::simulateGravities(float dt) {
+    for(auto& field : gravityConfig.fields) {
+        switch(field.type) {
+            case GravityType::Simple: {
+                simulateSimpleField(field, activeCount, particles, dt);
+                break;
+            }
+            case GravityType::Circle: {
+                simulateCircleField(field, activeCount, particles, dt);
+                break;
+            }
+            case GravityType::Vortex: {
+                simulateVortexField(field, activeCount, particles, dt);
+                break;
+            }
+        }
     }
 }
 
@@ -277,6 +359,7 @@ void EmitterState::update(const Transform& tm, float dt) {
         emitNew(tm, dt);
     }
     if(activeCount > 0) {
+        simulateGravities(dt);
         updateAlive(dt);
     }
 }

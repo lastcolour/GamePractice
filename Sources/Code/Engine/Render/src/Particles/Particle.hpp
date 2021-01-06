@@ -16,6 +16,7 @@ public:
     Vec2 endSpeed;
     Vec2 startScale;
     Vec2 endScale;
+    Vec2 acc;
     float rot;
     float startRotSpeed;
     float endRotSpeed;

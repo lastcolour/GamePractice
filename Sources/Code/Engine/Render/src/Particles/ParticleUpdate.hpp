@@ -30,12 +30,14 @@ private:
     void updateAlive(float dt);
     void updateState(float dt);
     void spawnNewParticle(const Transform& tm, Particle& p);
+    void simulateGravities(float dt);
 
 public:
 
     ParticleEmitterEmissionConfig emissionConfig;
     ParticleEmitterColorConfig colorConfig;
     ParticleEmitterMovementConfig movementConifg;
+    ParticleEmitterGravityFields gravityConfig;
 
     std::vector<Particle> particles;
     std::vector<ParticleInstanceData> instaceData;

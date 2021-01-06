@@ -25,6 +25,8 @@ void AddRotate2D(Matrix3& mat, float angle);
 
 void AddScale2D(Matrix3& mat, const Vec2& scale);
 
+Vec2 RotateVec2D(const Vec2& v, float angle);
+
 } // namespace Math
 
 #endif /* __MATRIX_TRANSFORM_HPP__ */

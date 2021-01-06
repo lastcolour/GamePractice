@@ -32,6 +32,7 @@ private:
     ParticleEmitterMovementConfig movementConfig;
     ParticleEmitterColorConfig colorConfig;
     ParticleEmitterRenderConfig renderConfig;
+    ParticleEmitterGravityFields gravityConfig;
     bool isConfigChanged;
 };
 

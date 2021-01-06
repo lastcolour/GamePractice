@@ -20,6 +20,7 @@ void ParticleEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("emitterType", &ParticleEmitterEmissionConfig::emitterType);
         classInfo->addField("emitterVal", &ParticleEmitterEmissionConfig::emitterVal);
         classInfo->addField("duration", &ParticleEmitterEmissionConfig::duration);
+        classInfo->addField("thickness", &ParticleEmitterEmissionConfig::thickness);
         classInfo->addField("direction", &ParticleEmitterEmissionConfig::direction);
         classInfo->addField("directionVar", &ParticleEmitterEmissionConfig::directionVar);
         classInfo->addField("emissionRate", &ParticleEmitterEmissionConfig::emissionRate);
@@ -36,6 +37,7 @@ ParticleEmitterEmissionConfig::ParticleEmitterEmissionConfig() :
     emitterSpace(EmitterSpace::World),
     emitterVal(1.f, 0.f),
     duration(4.f),
+    thickness(0.f),
     direction(0.f),
     directionVar(0.1f),
     emissionRate(64.0f),
@@ -110,4 +112,35 @@ void ParticleEmitterRenderConfig::Reflect(ReflectContext& ctx) {
 
 ParticleEmitterRenderConfig::ParticleEmitterRenderConfig() :
     texture("") {
+}
+
+void GravityField::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<GravityType>("GravityType")) {
+        enumInfo->addValues<GravityType>({
+            {"Simple", GravityType::Simple},
+            {"Cicle", GravityType::Circle},
+            {"Vortex", GravityType::Vortex}
+        });
+    }
+    if(auto classInfo = ctx.classInfo<GravityField>("GravityField")) {
+        classInfo->addField("type", &GravityField::type);
+        classInfo->addField("offset", &GravityField::offset);
+        classInfo->addField("dir", &GravityField::dir);
+        classInfo->addField("value", &GravityField::value);
+        classInfo->addField("radius", &GravityField::radius);
+    }
+}
+
+GravityField::GravityField() :
+    type(GravityType::Simple),
+    offset(0.f),
+    dir(-90.f),
+    value(5.f),
+    radius(-1.f) {
+}
+
+void ParticleEmitterGravityFields::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticleEmitterGravityFields>("ParticleEmitterGravityFields")) {
+        classInfo->addField("fields", &ParticleEmitterGravityFields::fields);
+    }
 }
