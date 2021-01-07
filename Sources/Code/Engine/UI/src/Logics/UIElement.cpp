@@ -2,6 +2,7 @@
 #include "UI/ETUILayout.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "UIUtils.hpp"
+#include "Core/ETLogger.hpp"
 
 void UIElement::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIElement>("UIElement")) {
@@ -31,6 +32,7 @@ void UIElement::init() {
 
     zIndex -= 1;
     ET_setZIndex(zIndex + 1);
+    ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getLocalTransform);
 
     if(isHidden) {
         isHidden = false;
@@ -39,8 +41,6 @@ void UIElement::init() {
         isHidden = true;
         ET_show();
     }
-
-    ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getTransform);
 }
 
 void UIElement::deinit() {
@@ -80,6 +80,12 @@ int UIElement::ET_getZIndexDepth() const {
     return 1;
 }
 
+void UIElement::updateLayoutTm() {
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    layoutTm.pt = tm.pt;
+}
+
 void UIElement::ET_show() {
     if(!isHidden) {
         return;
@@ -91,6 +97,7 @@ void UIElement::ET_show() {
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
     updateHostLayout();
+    updateLayoutTm();
 }
 
 void UIElement::ET_hide() {
@@ -166,7 +173,6 @@ void UIElement::ET_onTransformChanged(const Transform& newTm) {
     if(isIgnoringTransform) {
         return;
     }
-    ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getLocalTransform);
     onTransformChanged(newTm);
 }
 
@@ -189,12 +195,6 @@ void UIElement::ET_setParentHidden(bool flag) {
     if(!currHidden) {
         updateHostLayout();
     }
-}
-
-void UIElement::ET_setLayoutPos(const Vec2i& layoutPt) {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
-    layoutTm.pt = tm.pt;
 }
 
 void UIElement::ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) {

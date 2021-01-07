@@ -117,15 +117,15 @@ TEST_F(UIAnimationSequenceTests, CheckSubAnimation) {
 
     auto parentEntity = createVoidObject();
     {
+        Transform tm;
+        tm.pt = Vec3(viewPort.x / 2.f, viewPort.y / 2.f, 0.f);
+        parentEntity->ET_setTransform(tm);
+
         auto uiBox = parentEntity->addCustomLogic<UIBox>();
         ASSERT_TRUE(uiBox);
 
         auto uiLayout = parentEntity->addCustomLogic<UILayout>();
         ASSERT_TRUE(uiLayout);
-
-        Transform tm;
-        tm.pt = Vec3(viewPort.x / 2.f, viewPort.y / 2.f, 0.f);
-        parentEntity->ET_setTransform(tm);
     }
     UIAnimationSequence* parentAnimSeq = nullptr;
     {

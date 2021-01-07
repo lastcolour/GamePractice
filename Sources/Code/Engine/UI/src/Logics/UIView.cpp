@@ -51,4 +51,6 @@ void UIView::ET_onViewPortChanged(const Vec2i& newSize) {
     tm.pt.x = newSize.x / 2.f;
     tm.pt.y = newSize.y / 2.f;
     ET_SendEvent(getEntityId(), &ETEntity::ET_setTransform, tm);
+
+    updateLayoutTm();
 }

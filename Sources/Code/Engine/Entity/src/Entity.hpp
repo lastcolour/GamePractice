@@ -45,13 +45,14 @@ public:
     LogicType* addCustomLogic() {
         static_assert(std::is_base_of<EntityLogic, LogicType>::value, "Invalid non-entity logic type");
         static_assert(!std::is_abstract<LogicType>::value, "Can't add logic of abstract type");
-        void* res = addLogicByTypeId(GetTypeId<LogicType>());
-        if(!res) {
-            res = new LogicType();
-            auto instance = ClassInstance::CreateWithoutClassInfo(res);
+        LogicType* logicPtr = reinterpret_cast<LogicType*>(
+            addLogicByTypeId(GetTypeId<LogicType>()));
+        if(logicPtr == nullptr) {
+            logicPtr = new LogicType();
+            ClassInstance instance = ClassInstance::CreateWithoutClassInfo<LogicType>(logicPtr);
             addLogic(std::move(instance));
         }
-        return reinterpret_cast<LogicType*>(res);
+        return logicPtr;
     }
 
     // ETEntity

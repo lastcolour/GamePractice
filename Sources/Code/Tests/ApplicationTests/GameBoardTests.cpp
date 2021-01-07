@@ -32,7 +32,8 @@ struct TestBoardParams {
 
 class TestGameBoardLogic : public GameBoardLogic {
 public:
-    virtual ~TestGameBoardLogic() = default;
+    virtual ~TestGameBoardLogic() {
+    }
 
     void updateAfterRemoves() {
         GameBoardLogic::updateAfterRemoves();
@@ -40,6 +41,11 @@ public:
 
     std::vector<BoardElement> getElements() {
         std::vector<BoardElement> res;
+        for(auto& col : columns) {
+            for(auto& elem : col) {
+                res.push_back(elem);
+            }
+        }
         return res;
     }
 
@@ -98,7 +104,7 @@ void GameBoardTests::SetUp() {
         pool->ET_addElemsToSpawn(elemDescr);
     }
     {
-        auto board = entity->addCustomLogic<TestGameBoardLogic>();
+        board = entity->addCustomLogic<TestGameBoardLogic>();
         ASSERT_TRUE(board);
     }
 }
@@ -136,16 +142,23 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     board->removeHorizontalLine(Vec2i(0, 0), 3);
-
     board->updateAfterRemoves();
 
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
         EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
-        // EXPECT_EQ(elem.boardPt.x, elem.movePt.x);
-        // EXPECT_EQ(elem.movePt.y, 0);
     }
+
+    board->ET_onGameTick(10.f);
+
+    for(auto& elem : elems) {
+        EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Static);
+    }
+
+    EXPECT_TRUE(board->getElem(Vec2i(0, 0)));
+    EXPECT_TRUE(board->getElem(Vec2i(1, 0)));
+    EXPECT_TRUE(board->getElem(Vec2i(2, 0)));
 }
 
 TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
@@ -163,26 +176,19 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
 
     ASSERT_EQ(elems.size(), 3u);
 
-    bool hasFirst = false;
-    bool hasSecond = false;
-    bool hasThird = false;
+    for(auto& elem : elems) {
+        EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
+    }
 
-    // for(auto& elem : elems) {
-    //     ASSERT_EQ(getElemMoveState(elem), EBoardElemMoveState::Falling);
-    //     if(elem.movePt == Vec2i(0)) {
-    //         hasFirst = true;
-    //     } else if(elem.movePt == Vec2i(0, 1)) {
-    //         hasSecond = true;
-    //     } else if(elem.movePt == Vec2i(0, 2)) {
-    //         hasThird = true;
-    //     } else {
-    //         FAIL();
-    //     }
-    // }
+    board->ET_onGameTick(10.f);
 
-    EXPECT_TRUE(hasFirst);
-    EXPECT_TRUE(hasSecond);
-    EXPECT_TRUE(hasThird);
+    for(auto& elem : elems) {
+        EXPECT_EQ(getElemMoveState(elem), EBoardElemMoveState::Static);
+    }
+
+    EXPECT_TRUE(board->getElem(Vec2i(0, 0)));
+    EXPECT_TRUE(board->getElem(Vec2i(0, 1)));
+    EXPECT_TRUE(board->getElem(Vec2i(0, 2)));
 }
 
 TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
@@ -206,11 +212,9 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     {
         ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
-        // ASSERT_EQ(elem3->movePt, Vec2i(0, 1));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
-        // ASSERT_EQ(elem2->movePt, Vec2i(0, 2));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Static);
@@ -223,22 +227,19 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
 
     {
         ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Falling);
-        // ASSERT_EQ(elem3->movePt, Vec2i(0, 0));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Falling);
-        // ASSERT_EQ(elem2->movePt, Vec2i(0, 1));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Falling);
-        // ASSERT_EQ(elem1->movePt, Vec2i(0, 2));
     }
 
     board->ET_onGameTick(10.f);
 
     {
         ASSERT_EQ(getElemMoveState(*elem3), EBoardElemMoveState::Static);
-        ASSERT_EQ(elem3->boardPt, Vec2i(0, 0));
+        ASSERT_EQ(elem3->boardPt, Vec2i(0, 2));
     }
     {
         ASSERT_EQ(getElemMoveState(*elem2), EBoardElemMoveState::Static);
@@ -246,7 +247,7 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
     }
     {
         ASSERT_EQ(getElemMoveState(*elem1), EBoardElemMoveState::Static);
-        ASSERT_EQ(elem1->boardPt, Vec2i(0, 2));
+        ASSERT_EQ(elem1->boardPt, Vec2i(0, 0));
     }
 }
 

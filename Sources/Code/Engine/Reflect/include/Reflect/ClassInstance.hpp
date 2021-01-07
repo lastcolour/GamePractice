@@ -20,6 +20,7 @@ public:
 
     template<typename T>
     static ClassInstance CreateWithoutClassInfo(T* ptr) {
+        static_assert(!std::is_same<T,void>::value, "Can't create instance of void*");
         auto deleteFunc = [](void* objectPtr){
             delete static_cast<T*>(objectPtr);
         };

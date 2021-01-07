@@ -232,6 +232,8 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         animTime -= frame.duration;
     }
 
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_addAdditiveTransform, currAddTm, currAddAlpha);
+
     if(frames.back().state == EAnimFrameState::Finished) {
         addInverseTmAndReset(getEntityId(), currAddTm, currAddAlpha);
         if(cyclic) {
@@ -264,8 +266,6 @@ void UIAnimationSequence::ET_stopAnimation() {
 
     isPlaying = false;
 
-    addInverseTmAndReset(getEntityId(), currAddTm, currAddAlpha);
-
     for(auto& frame : frames) {
         frame.state = EAnimFrameState::Finished;
     }
@@ -276,6 +276,7 @@ void UIAnimationSequence::ET_stopAnimation() {
         }
     }
 
+    addInverseTmAndReset(getEntityId(), currAddTm, currAddAlpha);
     processShowEvent(getEntityId(), onEndEvent);
 
     ETNode<ETUITimerEvents>::disconnect();
@@ -326,7 +327,7 @@ void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {
     return;
 }
 
-void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
+void UIAnimationSequence::processFrame(float frameTime, UIAnimationFrame& frame) {
     if(frame.state == EAnimFrameState::Finished) {
         return;
     }
@@ -334,7 +335,7 @@ void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
         frame.state = EAnimFrameState::InProgress;
     }
 
-    float prog = dt / frame.duration;
+    float prog = frameTime / frame.duration;
     prog = std::min(prog, 1.f);
     prog = lerpByMode(prog, frame.lerpMode);
 
@@ -351,9 +352,7 @@ void UIAnimationSequence::processFrame(float dt, UIAnimationFrame& frame) {
     currAddAlpha = Math::Lerp(prevState.alpha, frame.alpha, prog);
     currAddAlpha = Math::Clamp(currAddAlpha, 0.001f, 1.f);
 
-    ET_SendEvent(getEntityId(), &ETUIElement::ET_addAdditiveTransform, currAddTm, currAddAlpha);
-
-    if(dt >= frame.duration) {
+    if(frameTime >= frame.duration) {
         prevState.offset = frame.offset;
         prevState.scale = frame.scale;
         prevState.alpha = frame.alpha;
