@@ -2,6 +2,7 @@
 #define __ET_ENTITY_HPP__
 
 #include "Core/Core.hpp"
+#include "Core/TypeId.hpp"
 #include "Math/Transform.hpp"
 
 class EntityLogic;

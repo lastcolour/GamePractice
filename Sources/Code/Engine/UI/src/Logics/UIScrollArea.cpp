@@ -79,11 +79,11 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
 }
 
 UIScrollArea::UIScrollArea() :
+    scrollBox(Vec2i(0), Vec2i(0)),
     endScrollPt(0),
     extraZOffset(0),
     scrollSpeed(0.f),
     accumulativeDt(0.f),
-    scrollBox(Vec2i(0), Vec2i(0)),
     isPressed(false) {
 }
 

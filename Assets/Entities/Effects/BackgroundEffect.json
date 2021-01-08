@@ -23,9 +23,10 @@
             "y": 200.0
           },
           "duration": -1.0,
+          "thickness": 0.0,
           "direction": 90.0,
           "directionVar": 0.0,
-          "emissionRate": 15.0,
+          "emissionRate": 300.0,
           "lifetime": 2.0,
           "lifetimeVar": 0.10000000149011612,
           "startDelay": 0.30000001192092896,
@@ -90,6 +91,9 @@
         },
         "render": {
           "texture": "Images/block.png"
+        },
+        "gravity": {
+          "fields": []
         }
       }
     }

@@ -34,7 +34,7 @@ void processShowEvent(EntityId targetId, EShowEvent event) {
 
 float lerpByMode(float t, EAnimLerpMode mode) {
     assert((t >= 0.f && t <= 1.f) && "value of out range");
-    float res;
+    float res = t;
     switch(mode) {
         case EAnimLerpMode::Linear: {
             res = t;
@@ -42,6 +42,7 @@ float lerpByMode(float t, EAnimLerpMode mode) {
         }
         case EAnimLerpMode::Pow_2: {
             res = t * t;
+            break;
         }
         case EAnimLerpMode::Pow_4: {
             res = t * t;
