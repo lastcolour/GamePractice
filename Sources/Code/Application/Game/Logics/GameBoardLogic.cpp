@@ -159,7 +159,7 @@ const BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) const {
     if(boardPt.x >= columns.size()) {
         return nullptr;
     }
-    auto col = columns[boardPt.x];
+    auto& col = columns[boardPt.x];
     for(auto& elem : col) {
         if(elem.boardPt.y == boardPt.y) {
             return &elem;
@@ -172,7 +172,7 @@ BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) {
     if(boardPt.x >= columns.size()) {
         return nullptr;
     }
-    auto col = columns[boardPt.x];
+    auto& col = columns[boardPt.x];
     for(auto& elem : col) {
         if(elem.boardPt.y == boardPt.y) {
             return &elem;

@@ -54,26 +54,11 @@
             }
         },
         {
-            "name":"Copy GLFW Binaries Linux",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build GLFW", "Building Linux"],
-            "data":{
-                "type":"shared",
-                "platform":"${platform}",
-                "name":"glfw",
-                "from":"${libsBins}/GLFW/Release",
-                "to":"${gameBinsRoot}/${buildType}",
-                "force":true
-            }
-        },
-        {
             "name":"Copy GLFW Binaries",
-            "type":"CopyCompiledBinaries",
-            "dependOn":["Build GLFW", "Building Windows"],
+            "type":"CopyFiles",
+            "dependOn":["Build GLFW"],
             "data":{
-                "type":"shared",
-                "platform":"${platform}",
-                "name":"glfw3",
+                "targets": ["glfw*.*", "libglfw*.*"],
                 "from":"${libsBins}/GLFW/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true
@@ -104,12 +89,10 @@
         },
         {
             "name":"Copy GLAD Binaries",
-            "type":"CopyCompiledBinaries",
+            "type":"CopyFiles",
             "dependOn":["Build GLAD", "Building Linux"],
             "data":{
-                "type":"shared",
-                "platform":"${platform}",
-                "name":"glad",
+                "targets":["libglad.so"],
                 "from":"${libsBins}/GLAD/${buildType}",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true
@@ -133,12 +116,10 @@
         },
         {
             "name":"Copy FreeType2 Binaries",
-            "type":"CopyCompiledBinaries",
+            "type":"CopyFiles",
             "dependOn":["Build FreeType2", "Building Linux"],
             "data":{
-                "type":"shared",
-                "platform":"${platform}",
-                "name":"freetype",
+                "targets":["libfreetype.so"],
                 "from":"${libsBins}/FreeType2/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true
@@ -179,12 +160,10 @@
         },
         {
             "name":"Copy OpenAL-Soft Binaries",
-            "type":"CopyCompiledBinaries",
+            "type":"CopyFiles",
             "dependOn":["Build OpenAL-Soft"],
             "data":{
-                "type":"shared",
-                "platform":"${platform}",
-                "name":"openal",
+                "targets":["libopenal.so"],
                 "from":"${libsBins}/OpenAL-Soft/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true

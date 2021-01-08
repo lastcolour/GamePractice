@@ -283,7 +283,7 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
 
     Vec3 ptDiff = tm1.pt - tm2.pt;
     ASSERT_FLOAT_EQ(ptDiff.x, 0.f);
-    ASSERT_FLOAT_EQ(ptDiff.y, static_cast<float>(board->getCellSize()));
+    ASSERT_FLOAT_EQ(std::abs(ptDiff.y), static_cast<float>(board->getCellSize()));
     ASSERT_FLOAT_EQ(ptDiff.z, 0.f);
 }
 

@@ -189,8 +189,11 @@ TEST_F(ETSystemTests, CheckGetAll) {
     auto etNodes = ET_GetAll<TestETInterface>();
     ASSERT_EQ(etNodes.size(), 2u);
 
-    ASSERT_EQ(etNodes[0], entId_1);
-    ASSERT_EQ(etNodes[1], entId_2);
+    auto it = std::find(etNodes.begin(), etNodes.end(), entId_1);
+    ASSERT_TRUE(it != etNodes.end());
+
+    it = std::find(etNodes.begin(), etNodes.end(), entId_2);
+    ASSERT_TRUE(it != etNodes.end());
 }
 
 TEST_F(ETSystemTests, CheckSendEvent) {

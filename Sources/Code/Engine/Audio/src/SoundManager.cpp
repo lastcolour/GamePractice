@@ -57,6 +57,7 @@ void SoundManager::ET_initSoundNode(SoundNode* node, std::string soundName) {
 void SoundManager::ET_removeSoundNode(EntityId nodeId) {
     auto it = soundNodes.find(nodeId);
     if(it != soundNodes.end()) {
+        it->second->ET_stop();
         soundNodes.erase(it);
     }
 }

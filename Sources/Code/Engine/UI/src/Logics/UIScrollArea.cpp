@@ -278,13 +278,15 @@ void UIScrollArea::ET_onUITick(float dt) {
 
         ptShift = endEvent.pt - startEvent.pt;
         shiftTime = endEvent.timeP.getSecElapsedFrom(startEvent.timeP);
-        shiftTime = std::max(shiftTime, 0.016f);
+        shiftTime = Math::Clamp(shiftTime, 0.001f, 0.016f);
 
         endScrollPt = targetPt + ptShift;
         endScrollPt = clampToEdges(scrollBox, endScrollPt);
 
         path.clear();
         path.push_back(endEvent);
+    } else {
+        return;
     }
 
     auto remainingShift = endScrollPt - targetPt;

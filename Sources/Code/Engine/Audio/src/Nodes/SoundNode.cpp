@@ -19,7 +19,6 @@ SoundNode::SoundNode(EntityId soundNodeId) :
 }
 
 SoundNode::~SoundNode() {
-    ET_stop();
 }
 
 unsigned int SoundNode::getSamplesOffset() const {

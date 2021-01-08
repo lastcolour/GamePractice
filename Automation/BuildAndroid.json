@@ -56,12 +56,10 @@
         },
         {
             "name":"Copy 'arm64-v8a' Game Binaries",
-            "type":"CopyCompiledBinaries",
+            "type":"CopyFiles",
             "dependOn":["Build Game"],
             "data":{
-                "type":"shared",
-                "platform":"Linux",
-                "name":"Game01",
+                "targets":["libGame01.so"],
                 "from":"${androidOutDir}/arm64-v8a/Game/${buildType}",
                 "to":"${androidOutDir}/_jniLibs/${buildType}/arm64-v8a",
                 "force":true
@@ -69,12 +67,10 @@
         },
         {
             "name":"Copy 'x86' Game Binaries",
-            "type":"CopyCompiledBinaries",
+            "type":"CopyFiles",
             "dependOn":["Build Game"],
             "data":{
-                "type":"shared",
-                "platform":"Linux",
-                "name":"Game01",
+                "targets":["libGame01.so"],
                 "from":"${androidOutDir}/x86/Game/${buildType}",
                 "to":"${androidOutDir}/_jniLibs/${buildType}/x86",
                 "force":true
@@ -82,12 +78,10 @@
         },
         {
             "name":"Copy 'armeabi-v7a' Game Binaries",
-            "type":"CopyCompiledBinaries",
+            "type":"CopyFiles",
             "dependOn":["Build Game"],
             "data":{
-                "type":"shared",
-                "platform":"Linux",
-                "name":"Game01",
+                "targets":["libGame01.so"],
                 "from":"${androidOutDir}/armeabi-v7a/Game/${buildType}",
                 "to":"${androidOutDir}/_jniLibs/${buildType}/armeabi-v7a",
                 "force":true
