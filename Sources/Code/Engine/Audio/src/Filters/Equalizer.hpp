@@ -4,6 +4,13 @@
 #include "Filters/RecursiveFilter.hpp"
 #include "Filters/EqualizerSetup.hpp"
 
+struct EqualizerState {
+    RecursiveFilter lfilters[5];
+    RecursiveFilter rfilters[5];
+    float volume;
+    bool isUnit;
+};
+
 struct Equalizer {
 public:
 
@@ -14,10 +21,15 @@ public:
 
 private:
 
+    void lerpMono(float* samples, int samplesCount);
+    void lerpStereo(float* samples, int samplesCount);
+
+private:
+
     EqualizerSetup setup;
-    RecursiveFilter lfilters[5];
-    RecursiveFilter rfilters[5];
-    bool isUnit;
+    EqualizerState prevState;
+    EqualizerState currState;
+    bool performLerp;
 };
 
 #endif /* __EQUALIZER_HPP__ */
