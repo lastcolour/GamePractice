@@ -2,6 +2,7 @@
 #define __LEVELS_VIEW_SCRIPT_HPP__
 
 #include "Game/ViewScripts/BaseViewScript.hpp"
+#include "Game/ViewScripts/EventSequence.hpp"
 
 class ReflectContext;
 
@@ -19,6 +20,7 @@ public:
     void ET_onViewOpened() override;
     void ET_onViewClosed() override;
     void ET_onViewGetFocus() override;
+    void ET_onViewLostFocus() override;
 
 protected:
 
@@ -28,6 +30,7 @@ private:
 
     EntityId progressBoxId;
     EntityId progressLabelId;
+    EventSequence eventSeq;
 };
 
 #endif /* __LEVELS_VIEW_SCRIPT_HPP__ */

@@ -4,6 +4,9 @@
 #include "Render/ETRenderNode.hpp"
 #include "Core/ETLogger.hpp"
 #include "UI/ETUIAnimation.hpp"
+#include "Game/ViewScripts/EventSequence.hpp"
+
+#include <cassert>
 
 void LevelButton::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelButton>("LevelButton")) {
@@ -25,7 +28,6 @@ LevelButton::~LevelButton() {
 
 void LevelButton::init() {
     ETNode<ETLevelButton>::connect(getEntityId());
-    ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
     ET_SendEvent(stars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(stars.thirdId, &ETUIElement::ET_hide);
@@ -44,6 +46,7 @@ void LevelButton::ET_setLevelId(const char* levelId) {
 }
 
 void LevelButton::ET_setLevelState(ELevelButtonState newState) {
+    state = newState;
     switch(newState) {
         case ELevelButtonState::Locked: {
             ET_SendEvent(senderId, &ETUIElement::ET_disable);
@@ -94,20 +97,22 @@ void LevelButton::ET_setLevelStars(int count) {
     }
 }
 
-void LevelButton::ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) {
-    if(newState != state) {
-        ET_setLevelState(newState);
-        UI::PlayAnimation(getEntityId(), EAnimSequenceType::Highlight, getEntityId());
-        ET_SendEvent(senderId, &ETUIElement::ET_disable);
-    }
+void LevelButton::ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int prevStarCount, int newStarCount) {
     if(prevStarCount != newStarCount) {
-        ET_setLevelStars(newStarCount);
+        if(prevStarCount == 0 && newStarCount > 0) {
+            eventSeq.addEvent(stars.fristId, EAnimSequenceType::Appear);
+        }
+        if(prevStarCount <= 1 && newStarCount > 1) {
+            eventSeq.addEvent(stars.secondId, EAnimSequenceType::Appear);
+        }
+        if(prevStarCount <= 2 && newStarCount > 2) {
+            eventSeq.addEvent(stars.thirdId, EAnimSequenceType::Appear);
+        }
     }
-}
-
-void LevelButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {
-    if(animType != EAnimSequenceType::Highlight) {
-        return;
+    if(newState != state) {
+        eventSeq.addEventWithAfterCall(getEntityId(), EAnimSequenceType::Highlight, [newState](EntityId targetId){
+            ET_SendEvent(targetId, &ETLevelButton::ET_setLevelState, newState);
+            ET_SendEvent(targetId, &ETUIElement::ET_enable);
+        });
     }
-    ET_SendEvent(senderId, &ETUIElement::ET_enable);
 }

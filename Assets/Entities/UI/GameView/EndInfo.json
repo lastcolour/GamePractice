@@ -51,10 +51,10 @@
             "data": {
               "isVisible": true,
               "alpha": 0.8999999761581421,
-              "drawPriority": 34,
+              "drawPriority": 2,
               "size": {
-                "x": 282.0,
-                "y": 94.0
+                "x": 279.0,
+                "y": 93.0
               },
               "tintColor": {
                 "r": 255,
@@ -120,7 +120,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 35,
+              "drawPriority": 3,
               "color": {
                 "r": 0,
                 "g": 0,
@@ -194,7 +194,7 @@
       "type": "UIBox",
       "id": 1,
       "data": {
-        "hidden": false,
+        "hidden": true,
         "enabled": true,
         "style": {
           "width": 30.0,

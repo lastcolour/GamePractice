@@ -216,6 +216,7 @@ void UILayout::calculateLayout() {
         auto childBox = childBoxes[i];
         auto center = childBox.getCenter();
         UI::Set2DPositionDoNotUpdateLayout(childId, center);
+        ET_SendEvent(childId, &ETUIElement::ET_setLayoutPos, center);
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }
 

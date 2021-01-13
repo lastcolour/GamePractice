@@ -105,8 +105,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 154.0,
-                      "y": 154.0
+                      "x": 140.0,
+                      "y": 140.0
                     },
                     "tintColor": {
                       "r": 161,
@@ -196,7 +196,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 26.0,
+                      "y": 24.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -248,7 +248,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 52,
+                          "fontSize": 47,
                           "text": "99"
                         }
                       }
@@ -259,7 +259,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -29.0,
+                      "y": -26.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -282,7 +282,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -42.0,
+                            "x": -38.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -356,8 +356,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 36.0,
-                                        "y": 36.0
+                                        "x": 33.0,
+                                        "y": 33.0
                                       },
                                       "tintColor": {
                                         "r": 245,
@@ -366,6 +366,47 @@
                                         "a": 255
                                       },
                                       "image": "Images/block.png"
+                                    }
+                                  },
+                                  {
+                                    "type": "UIAnimationSequence",
+                                    "id": 3,
+                                    "data": {
+                                      "autoStart": false,
+                                      "cyclic": false,
+                                      "type": "Appear",
+                                      "startDelay": 0.0,
+                                      "subAnimations": [],
+                                      "startEvent": "Show",
+                                      "endEvent": "None",
+                                      "frames": [
+                                        {
+                                          "lerpMode": "Linear",
+                                          "duration": 0.0,
+                                          "offset": {
+                                            "x": 0.0,
+                                            "y": 3.0
+                                          },
+                                          "scale": {
+                                            "x": 1.2000000476837158,
+                                            "y": 1.2000000476837158
+                                          },
+                                          "alpha": 0.0
+                                        },
+                                        {
+                                          "lerpMode": "Linear",
+                                          "duration": 0.20000000298023224,
+                                          "offset": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                          },
+                                          "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                          },
+                                          "alpha": 1.0
+                                        }
+                                      ]
                                     }
                                   }
                                 ]
@@ -418,8 +459,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 31.0,
-                                  "y": 31.0
+                                  "x": 28.0,
+                                  "y": 28.0
                                 },
                                 "tintColor": {
                                   "r": 195,
@@ -510,8 +551,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 36.0,
-                                        "y": 36.0
+                                        "x": 33.0,
+                                        "y": 33.0
                                       },
                                       "tintColor": {
                                         "r": 245,
@@ -520,6 +561,47 @@
                                         "a": 255
                                       },
                                       "image": "Images/block.png"
+                                    }
+                                  },
+                                  {
+                                    "type": "UIAnimationSequence",
+                                    "id": 3,
+                                    "data": {
+                                      "autoStart": false,
+                                      "cyclic": false,
+                                      "type": "Appear",
+                                      "startDelay": 0.0,
+                                      "subAnimations": [],
+                                      "startEvent": "Show",
+                                      "endEvent": "None",
+                                      "frames": [
+                                        {
+                                          "lerpMode": "Linear",
+                                          "duration": 0.0,
+                                          "offset": {
+                                            "x": 0.0,
+                                            "y": 3.0
+                                          },
+                                          "scale": {
+                                            "x": 1.2000000476837158,
+                                            "y": 1.2000000476837158
+                                          },
+                                          "alpha": 0.0
+                                        },
+                                        {
+                                          "lerpMode": "Linear",
+                                          "duration": 0.20000000298023224,
+                                          "offset": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                          },
+                                          "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                          },
+                                          "alpha": 1.0
+                                        }
+                                      ]
                                     }
                                   }
                                 ]
@@ -572,8 +654,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 31.0,
-                                  "y": 31.0
+                                  "x": 28.0,
+                                  "y": 28.0
                                 },
                                 "tintColor": {
                                   "r": 195,
@@ -590,7 +672,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 42.0,
+                            "x": 38.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -664,8 +746,8 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 36.0,
-                                        "y": 36.0
+                                        "x": 33.0,
+                                        "y": 33.0
                                       },
                                       "tintColor": {
                                         "r": 245,
@@ -674,6 +756,47 @@
                                         "a": 255
                                       },
                                       "image": "Images/block.png"
+                                    }
+                                  },
+                                  {
+                                    "type": "UIAnimationSequence",
+                                    "id": 3,
+                                    "data": {
+                                      "autoStart": false,
+                                      "cyclic": false,
+                                      "type": "Appear",
+                                      "startDelay": 0.0,
+                                      "subAnimations": [],
+                                      "startEvent": "Show",
+                                      "endEvent": "None",
+                                      "frames": [
+                                        {
+                                          "lerpMode": "Linear",
+                                          "duration": 0.0,
+                                          "offset": {
+                                            "x": 0.0,
+                                            "y": 3.0
+                                          },
+                                          "scale": {
+                                            "x": 1.2000000476837158,
+                                            "y": 1.2000000476837158
+                                          },
+                                          "alpha": 0.0
+                                        },
+                                        {
+                                          "lerpMode": "Linear",
+                                          "duration": 0.20000000298023224,
+                                          "offset": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                          },
+                                          "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                          },
+                                          "alpha": 1.0
+                                        }
+                                      ]
                                     }
                                   }
                                 ]
@@ -726,8 +849,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 31.0,
-                                  "y": 31.0
+                                  "x": 28.0,
+                                  "y": 28.0
                                 },
                                 "tintColor": {
                                   "r": 195,
@@ -862,6 +985,47 @@
                 ]
               ]
             }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 5,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Press",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.07000000029802322,
+                  "offset": {
+                    "x": 0.0,
+                    "y": -1.0
+                  },
+                  "scale": {
+                    "x": 0.9700000286102295,
+                    "y": 0.9700000286102295
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
           }
         ]
       }
@@ -946,6 +1110,47 @@
           "left": 0.0,
           "right": 0.0
         }
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 5,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Highlight",
+        "startDelay": 0.0,
+        "subAnimations": [],
+        "startEvent": "None",
+        "endEvent": "None",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 0.20000000298023224,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.2000000476837158,
+              "y": 1.2000000476837158
+            },
+            "alpha": 1.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 0.20000000298023224,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          }
+        ]
       }
     }
   ]

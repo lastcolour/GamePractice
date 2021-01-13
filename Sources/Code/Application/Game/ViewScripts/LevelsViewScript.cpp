@@ -28,6 +28,7 @@ void LevelsViewScript::ET_onViewClosed() {
 
 void LevelsViewScript::ET_onViewOpened() {
     BaseViewScript::ET_onViewOpened();
+    eventSeq.init(getEntityId());
 
     int totalStars = 0;
     ET_SendEventReturn(totalStars, &ETLevelButtonList::ET_getTotalStars);
@@ -50,16 +51,22 @@ void LevelsViewScript::ET_onViewOpened() {
 void LevelsViewScript::ET_onViewGetFocus() {
     BaseViewScript::ET_onViewGetFocus();
 
+    ET_SendEvent(&ETLevelButtonList::ET_updateLevelProgress, eventSeq);
+
     const LevelProgressDelta* progressDelta = nullptr;
     ET_SendEventReturn(progressDelta, &ETLevelsProgression::ET_getProgressDelta);
     if(progressDelta) {
         auto starsDelta = progressDelta->current.stars - progressDelta->prev.stars;
         if(starsDelta > 0) {
-            UI::PlayAnimation(progressBoxId, EAnimSequenceType::Highlight, getEntityId());
+            eventSeq.addEvent(progressBoxId, EAnimSequenceType::Highlight);
         }
     }
 
-    ET_SendEvent(&ETLevelButtonList::ET_updateLevelProgress);
+    eventSeq.start();
+}
+
+void LevelsViewScript::ET_onViewLostFocus() {
+    eventSeq.forceFinish();
 }
 
 void LevelsViewScript::onEvent(const UIEvent& event) {

@@ -10,8 +10,7 @@
 class ReflectContext;
 
 class LevelButton : public EntityLogic,
-    public ETNode<ETLevelButton>,
-    public ETNode<ETUIAnimationSequenceEvent> {
+    public ETNode<ETLevelButton> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -30,10 +29,7 @@ public:
     void ET_setLevelStars(int count) override;
     EntityId ET_getSenderId() const override;
     void ET_setLevelState(ELevelButtonState newState) override;
-    void ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) override;
-
-    // ETUIAnimationSequenceEvent
-    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
+    void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int prevStarCount, int newStarCount) override;
 
 private:
 

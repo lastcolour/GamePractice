@@ -43,18 +43,18 @@ public:
     void ET_setParentHidden(bool flag) override;
     void ET_setParentDisabled(bool flag) override;
     void ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) override;
+    void ET_setLayoutPos(const Vec2i& layoutPt) override;
 
     // ETUIAdditiveAnimationTarget
     void ET_applyAdditiveTranform() override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
-    void ET_onLoaded() override {}
+    void ET_onLoaded() override;
 
 protected:
 
     void updateHostLayout();
-    void updateLayoutTm();
 
 protected:
 

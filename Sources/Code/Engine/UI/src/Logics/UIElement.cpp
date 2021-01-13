@@ -30,10 +30,15 @@ void UIElement::init() {
     ETNode<ETUIElement>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
 
+    ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getLocalTransform);
+}
+
+void UIElement::deinit() {
+}
+
+void UIElement::ET_onLoaded() {
     zIndex -= 1;
     ET_setZIndex(zIndex + 1);
-    ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getLocalTransform);
-
     if(isHidden) {
         isHidden = false;
         ET_hide();
@@ -41,9 +46,6 @@ void UIElement::init() {
         isHidden = true;
         ET_show();
     }
-}
-
-void UIElement::deinit() {
 }
 
 void UIElement::updateHostLayout() {
@@ -80,7 +82,7 @@ int UIElement::ET_getZIndexDepth() const {
     return 1;
 }
 
-void UIElement::updateLayoutTm() {
+void UIElement::ET_setLayoutPos(const Vec2i& layoutPt) {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
     layoutTm.pt = tm.pt;
@@ -97,7 +99,6 @@ void UIElement::ET_show() {
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
     updateHostLayout();
-    updateLayoutTm();
 }
 
 void UIElement::ET_hide() {

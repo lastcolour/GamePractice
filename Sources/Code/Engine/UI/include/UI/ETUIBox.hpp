@@ -31,6 +31,7 @@ struct ETUIElement {
     virtual void ET_setParentHidden(bool flag) = 0;
     virtual void ET_setParentDisabled(bool flag) = 0;
     virtual void ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) = 0;
+    virtual void ET_setLayoutPos(const Vec2i& layoutPt) = 0;
 };
 
 struct ETUIAdditiveAnimationTarget {

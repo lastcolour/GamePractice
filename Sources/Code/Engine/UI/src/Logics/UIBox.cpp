@@ -93,6 +93,7 @@ void UIBox::onZIndexChanged(int newZIndex) {
 }
 
 void UIBox::ET_onLoaded() {
+    UIElement::ET_onLoaded();
     Vec2i boxSize = aabb.getSize();
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());

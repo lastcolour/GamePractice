@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 400.0,
+          "y": 394.0,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -167.0,
+                "x": -165.0,
                 "y": -45.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -43.0,
+                      "x": -39.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -104,7 +104,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 15,
+                          "fontSize": 14,
                           "text": "Progress: "
                         }
                       }
@@ -114,7 +114,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 35.0,
+                      "x": 34.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -167,7 +167,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 15,
+                          "fontSize": 14,
                           "text": "50% (15/30)"
                         }
                       }
@@ -224,7 +224,7 @@
                     "alpha": 0.6000000238418579,
                     "drawPriority": 59,
                     "size": {
-                      "x": 174.0,
+                      "x": 172.0,
                       "y": 33.0
                     },
                     "tintColor": {
@@ -238,6 +238,47 @@
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
                   }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 5,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Highlight",
+                    "startDelay": 0.0,
+                    "subAnimations": [],
+                    "startEvent": "None",
+                    "endEvent": "None",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.20000000298023224,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.2000000476837158,
+                          "y": 1.2000000476837158
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.20000000298023224,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      }
+                    ]
+                  }
                 }
               ]
             }
@@ -246,7 +287,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 20.0,
+                "y": 21.0,
                 "z": 0.0
               },
               "scale": {
@@ -376,8 +417,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 54,
                     "size": {
-                      "x": 282.0,
-                      "y": 71.0
+                      "x": 279.0,
+                      "y": 70.0
                     },
                     "tintColor": {
                       "r": 21,
@@ -481,7 +522,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 351.0,
+                "y": 345.0,
                 "z": 0.0
               },
               "scale": {
@@ -505,7 +546,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -702.0,
+                      "y": -693.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -528,7 +569,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -546.0,
+                      "y": -539.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -551,7 +592,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -390.0,
+                      "y": -385.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -574,7 +615,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -234.0,
+                      "y": -231.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -597,7 +638,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -78.0,
+                      "y": -77.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -620,7 +661,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 78.0,
+                      "y": 77.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -643,7 +684,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 234.0,
+                      "y": 231.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -666,7 +707,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 390.0,
+                      "y": 385.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -689,7 +730,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 546.0,
+                      "y": 539.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -712,7 +753,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 702.0,
+                      "y": 693.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -799,8 +840,8 @@
                     "alpha": 0.30000001192092896,
                     "drawPriority": 4,
                     "size": {
-                      "x": 141.0,
-                      "y": 1546.0
+                      "x": 140.0,
+                      "y": 1526.0
                     },
                     "color": {
                       "r": 202,
@@ -857,8 +898,8 @@
               "alpha": 0.5,
               "drawPriority": 2,
               "size": {
-                "x": 423.0,
-                "y": 845.0
+                "x": 418.0,
+                "y": 836.0
               },
               "color": {
                 "r": 255,
@@ -1046,6 +1087,75 @@
               10
             ],
             "starsRequired": 27
+          }
+        ]
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 7,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Appear",
+        "startDelay": 0.0,
+        "subAnimations": [],
+        "startEvent": "Show",
+        "endEvent": "None",
+        "frames": [
+          {
+            "lerpMode": "Linear",
+            "duration": 0.0,
+            "offset": {
+              "x": 0.0,
+              "y": -1.0
+            },
+            "scale": {
+              "x": 0.8999999761581421,
+              "y": 0.8999999761581421
+            },
+            "alpha": 0.0
+          },
+          {
+            "lerpMode": "Linear",
+            "duration": 0.30000001192092896,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "alpha": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "type": "UIAnimationSequence",
+      "id": 8,
+      "data": {
+        "autoStart": false,
+        "cyclic": false,
+        "type": "Disappear",
+        "startDelay": 0.0,
+        "subAnimations": [],
+        "startEvent": "None",
+        "endEvent": "Hide",
+        "frames": [
+          {
+            "lerpMode": "Sin",
+            "duration": 0.10000000149011612,
+            "offset": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 0.8999999761581421,
+              "y": 0.8999999761581421
+            },
+            "alpha": 0.0
           }
         ]
       }

@@ -5,6 +5,7 @@
 
 class LevelProgress;
 struct LevelProgressDelta;
+class EventSequence;
 
 enum class ELevelButtonState {
     Locked = 0,
@@ -27,12 +28,12 @@ struct ETLevelButton {
     virtual void ET_setLevelId(const char* levelId) = 0;
     virtual void ET_setLevelState(ELevelButtonState newState) = 0;
     virtual void ET_setLevelStars(int count) = 0;
-    virtual void ET_playChangeAnimation(ELevelButtonState newState, int prevStarCount, int newStarCount) = 0;
+    virtual void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int prevStarCount, int newStarCount) = 0;
 };
 
 struct ETLevelButtonList {
     virtual ~ETLevelButtonList() = default;
-    virtual void ET_updateLevelProgress() = 0;
+    virtual void ET_updateLevelProgress(EventSequence& eventSeq) = 0;
     virtual const char* ET_getLevelNameForSender(EntityId senderId) const = 0;
     virtual int ET_getTotalStars() const = 0;
     virtual int ET_getDoneStars() const = 0;

@@ -75,7 +75,7 @@ void LevelButtonList::initLevelProress() {
     }
 }
 
-void LevelButtonList::ET_updateLevelProgress() {
+void LevelButtonList::ET_updateLevelProgress(EventSequence& eventSeq) {
     const LevelProgressDelta* progressDelta = nullptr;
     ET_SendEventReturn(progressDelta, &ETLevelsProgression::ET_getProgressDelta);
     if(!progressDelta) {
@@ -107,12 +107,13 @@ void LevelButtonList::ET_updateLevelProgress() {
         if(progressDelta->current.stars == 3) {
             newState = ELevelButtonState::Completed;
         }
-        ET_SendEvent(progressedLevelId, &ETLevelButton::ET_playChangeAnimation,
+
+        ET_SendEvent(progressedLevelId, &ETLevelButton::ET_scheduleChanges, eventSeq,
             newState, progressDelta->prev.stars, progressDelta->current.stars);
     }
 
     for(auto buttonId : newUnlockedLevels) {
-        ET_SendEvent(buttonId, &ETLevelButton::ET_playChangeAnimation,
+        ET_SendEvent(buttonId, &ETLevelButton::ET_scheduleChanges, eventSeq,
             ELevelButtonState::Unlocked, 0, 0);
     }
 }

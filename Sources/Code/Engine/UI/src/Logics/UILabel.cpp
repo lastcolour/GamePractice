@@ -100,5 +100,6 @@ void UILabel::onAlphaChanged(float newAlpha) {
 }
 
 void UILabel::ET_onLoaded() {
+    UIElement::ET_onLoaded();
     ET_setTextRender(labelRenderId);
 }
