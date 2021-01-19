@@ -9,63 +9,39 @@
 
 namespace {
 
-struct MoveResult {
-    int deltaShift;
-    float remainingDt;
-};
+AABB2Di calcScrollArea(UIScrollType scrollType, const AABB2Di& scrollBox, const AABB2Di& targetBox) {
+    auto targetSize = targetBox.getSize();
+    auto scrollSize = scrollBox.getSize();
+    auto scrollCenter = scrollBox.getCenter();
+
+    AABB2Di res;
+
+    if(scrollType == UIScrollType::Horizontal) {
+        if(scrollSize.x < targetSize.x) {
+            res.bot = UI::CalcAligmentCenter(UIXAlign::Right, UIYAlign::Center, scrollBox, targetBox);
+            res.top = UI::CalcAligmentCenter(UIXAlign::Left, UIYAlign::Center, scrollBox, targetBox);
+        } else {
+            res.bot = scrollCenter;
+            res.top = scrollCenter;
+        }
+    } else {
+        if(scrollSize.y < targetSize.y) {
+            res.bot = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, scrollBox, targetBox);
+            res.top = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, scrollBox, targetBox);
+        } else {
+            res.bot = scrollCenter;
+            res.top = scrollCenter;
+        }
+    }
+
+    return res;
+}
 
 Vec2i clampToEdges(const AABB2Di& box, const Vec2i& pt) {
     Vec2i resPt;
     resPt.x = Math::Clamp(pt.x, box.bot.x, box.top.x);
     resPt.y = Math::Clamp(pt.y, box.bot.y, box.top.y);
     return resPt;
-}
-
-float getScrollSpeed(float currentSpeed, float newSpeed) {
-    if(newSpeed > 0.f) {
-        if(currentSpeed > 0.f) {
-            currentSpeed = (currentSpeed + newSpeed) / 2.f;
-        } else {
-            currentSpeed = newSpeed;
-        }
-    } else {
-        if(currentSpeed < 0.f) {
-            currentSpeed = (currentSpeed + newSpeed) / 2.f;
-        } else {
-            currentSpeed = newSpeed;
-        }
-    }
-    return currentSpeed;
-}
-
-MoveResult moveScroll(float dt, float newSpeed, float currentSpeed, int reaminingShift) {
-    currentSpeed = getScrollSpeed(currentSpeed, newSpeed);
-    int deltaShift = static_cast<int>(currentSpeed * dt);
-    if(std::abs(deltaShift) > 0) {
-        dt -= deltaShift / currentSpeed;
-    }
-    if(currentSpeed > 0.f) {
-        deltaShift = std::min(deltaShift, reaminingShift);
-    } else {
-        deltaShift = std::max(deltaShift, reaminingShift);
-    }
-    MoveResult res;
-    res.deltaShift = deltaShift;
-    res.remainingDt = dt;
-    return res;
-}
-
-bool doesScrollSupported(UIScrollType scrollType, const AABB2Di& targetBox, const AABB2Di& box) {
-    if(scrollType == UIScrollType::Horizontal) {
-        if(targetBox.getSize().x <= box.getSize().x) {
-            return false;
-        }
-    } else {
-        if(targetBox.getSize().y <= box.getSize().y) {
-            return false;
-        }
-    }
-    return true;
 }
 
 } // namespace
@@ -79,11 +55,7 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
 }
 
 UIScrollArea::UIScrollArea() :
-    scrollBox(Vec2i(0), Vec2i(0)),
-    endScrollPt(0),
     extraZOffset(0),
-    scrollSpeed(0.f),
-    accumulativeDt(0.f),
     isPressed(false) {
 }
 
@@ -95,75 +67,30 @@ void UIScrollArea::init() {
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
     ETNode<ETUIElemAligner>::connect(getEntityId());
-    initScrollElem();
+    alignTarget();
 }
 
-void UIScrollArea::initScrollElem() {
+void UIScrollArea::alignTarget() {
     if(!targetId.isValid()) {
         return;
     }
     if(targetId == getEntityId()) {
-        LogWarning("[UIScrollArea::initScrollElem] Can't have host element '%s' as a scroll target",
+        LogWarning("[UIScrollArea::alignTarget] Can't have host element '%s' as a scroll target",
             EntityUtils::GetEntityName(targetId));
         targetId = InvalidEntityId;
         return;
     }
 
-    AABB2Di elemBox(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(elemBox, targetId, &ETUIElement::ET_getBox);
+    AABB2Di targetBox(Vec2i(0), Vec2i(0));
+    ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
 
-    elemBox.top = elemBox.getSize();
-    elemBox.bot = Vec2i(0);
+    AABB2Di scrollBox = ET_getHitBox();
+    AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
 
-    AABB2Di box = ET_getHitBox();
-    auto center = box.getCenter();
-
-    box.top = box.getSize();
-    box.bot = Vec2i(0);
-
-    auto size = box.getSize();
-
-    Vec2i botPt(0);
-    Vec2i topPt(0);
-    if(style.type == UIScrollType::Horizontal) {
-        botPt = UI::CalcAligmentCenter(UIXAlign::Right, UIYAlign::Center, box, elemBox);
-        topPt = UI::CalcAligmentCenter(UIXAlign::Left, UIYAlign::Center, box, elemBox);
+    if(style.origin == UIScrollOrigin::Start) {
+        UI::Set2DPositionDoNotUpdateLayout(targetId, scrollArea.bot);
     } else {
-        botPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Top, box, elemBox);
-        topPt = UI::CalcAligmentCenter(UIXAlign::Center, UIYAlign::Bot, box, elemBox);
-    }
-
-    scrollBox.bot = center + botPt - size / 2;
-    scrollBox.top = center + topPt - size / 2;
-
-    if(style.type == UIScrollType::Vertical) {
-        if(style.origin == UIScrollOrigin::Start) {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.bot);
-        } else {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.top);
-        }
-    } else {
-        if(style.origin == UIScrollOrigin::Start) {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.top);
-        } else {
-            UI::Set2DPositionDoNotUpdateLayout(targetId, scrollBox.bot);
-        }
-    }
-
-    if(!doesScrollSupported(style.type, elemBox, box)) {
-        if(style.type == UIScrollType::Vertical) {
-            if(style.origin == UIScrollOrigin::Start) {
-                scrollBox.top = scrollBox.bot;
-            } else {
-                scrollBox.bot = scrollBox.top;
-            }
-        } else {
-            if(style.origin == UIScrollOrigin::Start) {
-                scrollBox.bot = scrollBox.top;
-            } else {
-                scrollBox.top = scrollBox.bot;
-            }
-        }
+        UI::Set2DPositionDoNotUpdateLayout(targetId, scrollArea.top);
     }
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
@@ -201,15 +128,20 @@ AABB2Di UIScrollArea::ET_getHitBox() const {
 }
 
 void UIScrollArea::onPress(const Vec2i& pt) {
-    accumulativeDt = 0.f;
+    moveState.frameShift = 0;
+    moveState.accumDt = 0.f;
+    moveState.vel = 0.f;
+
     isPressed = true;
 
     Transform tm;
     ET_SendEventReturn(tm, targetId, &ETEntity::ET_getTransform);
-    endScrollPt.x = static_cast<int>(tm.pt.x);
-    endScrollPt.y = static_cast<int>(tm.pt.y);
+
+    moveState.destPt = Vec2i(static_cast<int>(tm.pt.x),
+        static_cast<int>(tm.pt.y));
 
     ETNode<ETUITimerEvents>::connect(getEntityId());
+
     path.clear();
     path.push_back({TimePoint::GetNowTime(), pt});
 }
@@ -224,8 +156,7 @@ void UIScrollArea::onRelease(const Vec2i& pt) {
 bool UIScrollArea::onMove(const Vec2i& pt) {
     auto box = ET_getHitBox();
     if(!box.isInside(pt)) {
-        auto clampPt = clampToEdges(box, pt);
-        onRelease(clampPt);
+        onRelease(pt);
         return false;
     } else {
         path.push_back({TimePoint::GetNowTime(), pt});
@@ -234,7 +165,7 @@ bool UIScrollArea::onMove(const Vec2i& pt) {
 }
 
 void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
-    initScrollElem();
+    alignTarget();
 }
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
@@ -250,7 +181,7 @@ void UIScrollArea::ET_onAlphaChanged(float newAlpha) {
 void UIScrollArea::ET_onHidden(bool flag) {
     ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
     if(!flag) {
-        initScrollElem();
+        alignTarget();
     }
 }
 
@@ -262,61 +193,98 @@ void UIScrollArea::ET_onIngoreTransform(bool flag) {
     ET_SendEvent(targetId, &ETUIElement::ET_setIgnoreTransform, flag);
 }
 
-void UIScrollArea::ET_onUITick(float dt) {
-    accumulativeDt += dt;
+void UIScrollArea::updateMoveState(float dt) {
+    moveState.accumDt += dt;
 
-    Transform tm;
-    ET_SendEventReturn(tm, targetId, &ETEntity::ET_getTransform);
-    Vec2i targetPt(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
-
-    Vec2i ptShift(0);
-    float shiftTime = 0.f;
+    Vec2i newPosDt(0);
 
     if(path.size() > 1) {
-        auto& startEvent = path.front();
-        auto endEvent = path.back();
+        auto& firstEvent = path.front();
+        auto lastEvent = path.back();
 
-        ptShift = endEvent.pt - startEvent.pt;
-        shiftTime = endEvent.timeP.getSecElapsedFrom(startEvent.timeP);
-        shiftTime = Math::Clamp(shiftTime, 0.001f, 0.016f);
+        newPosDt = lastEvent.pt - firstEvent.pt;
+        float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
+        dt = Math::Clamp(dt, 0.001f, 0.016f);
 
-        endScrollPt = targetPt + ptShift;
-        endScrollPt = clampToEdges(scrollBox, endScrollPt);
+        float newVel = 0.f;
+
+        if(style.type == UIScrollType::Horizontal) {
+            newVel = static_cast<float>(newPosDt.x) / dt;
+        } else {
+            newVel = static_cast<float>(newPosDt.y) / dt;
+        }
 
         path.clear();
-        path.push_back(endEvent);
-    } else {
-        return;
+        path.push_back(lastEvent);
+
+        if(newVel * moveState.vel < 0.f) {
+            moveState.vel = newVel;
+        } else {
+            if(newVel > 0.f) {
+                moveState.vel = std::max(moveState.vel, newVel);
+            } else {
+                moveState.vel = std::min(moveState.vel, newVel);
+            }
+        }
     }
 
-    auto remainingShift = endScrollPt - targetPt;
-    Vec2i deltaShift(0);
+    moveState.destPt += newPosDt;
+    moveState.frameShift = static_cast<int>(moveState.vel * moveState.accumDt);
+
+    if(std::abs(moveState.frameShift) > 0) {
+        moveState.accumDt -= static_cast<float>(moveState.frameShift) / moveState.vel;
+    }
+}
+
+void UIScrollArea::ET_onUITick(float dt) {
+    updateMoveState(dt);
+
+    AABB2Di targetBox(Vec2i(0), Vec2i(0));
+    ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
+    Vec2i resPt = targetBox.getCenter();
+
+    AABB2Di scrollBox = ET_getHitBox();
+    AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
+
+    moveState.destPt = clampToEdges(scrollArea, moveState.destPt);
 
     if(style.type == UIScrollType::Horizontal) {
-        auto newSpeed = ptShift.x / shiftTime;
-        auto state = moveScroll(accumulativeDt, newSpeed, scrollSpeed, remainingShift.x);
-        deltaShift.x = state.deltaShift;
-        accumulativeDt = state.remainingDt;
+        resPt.x += moveState.frameShift;
     } else {
-        auto newSpeed = ptShift.y / shiftTime;
-        auto state = moveScroll(accumulativeDt, newSpeed, scrollSpeed, remainingShift.y);
-        deltaShift.y = state.deltaShift;
-        accumulativeDt = state.remainingDt;
+        resPt.y += moveState.frameShift;
     }
 
-    targetPt += deltaShift;
-    targetPt = clampToEdges(scrollBox, targetPt);
+    bool reachedDest = false;
+    if(style.type == UIScrollType::Horizontal) {
+        if(moveState.vel > 0.f && resPt.x >= moveState.destPt.x) {
+            resPt.x = moveState.destPt.x;
+            reachedDest = true;
+        } else if(moveState.vel < 0.f && resPt.x <= moveState.destPt.x) {
+            resPt.x = moveState.destPt.x;
+            reachedDest = true;
+        }
+    } else {
+        if(moveState.vel > 0.f && resPt.y >= moveState.destPt.y) {
+            resPt.y = moveState.destPt.y;
+            reachedDest = true;
+        } else if(moveState.vel < 0.f && resPt.y <= moveState.destPt.y) {
+            resPt.y = moveState.destPt.y;
+            reachedDest = true;
+        }
+    }
 
-    UI::Set2DPositionDoNotUpdateLayout(targetId, targetPt);
+    UI::Set2DPositionDoNotUpdateLayout(targetId, resPt);
 
-    if(targetPt == endScrollPt && !isPressed) {
-        ETNode<ETUITimerEvents>::disconnect();
+    if(!isPressed) {
+        if(reachedDest || std::abs(moveState.vel) > 0.001f) {
+            ETNode<ETUITimerEvents>::disconnect();
+        }
     }
 }
 
 void UIScrollArea::ET_setTarget(EntityId newTargetId) {
     targetId = newTargetId;
-    initScrollElem();
+    alignTarget();
 }
 
 EntityId UIScrollArea::ET_getTarget() const {
@@ -325,7 +293,7 @@ EntityId UIScrollArea::ET_getTarget() const {
 
 void UIScrollArea::ET_setStyle(const UIScrollAreaStyle& newStyle) {
     style = newStyle;
-    initScrollElem();
+    alignTarget();
 }
 
 const UIScrollAreaStyle& UIScrollArea::ET_getStyle() const {
@@ -333,5 +301,5 @@ const UIScrollAreaStyle& UIScrollArea::ET_getStyle() const {
 }
 
 void UIScrollArea::ET_reAlign() {
-    initScrollElem();
+    alignTarget();
 }

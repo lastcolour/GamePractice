@@ -76,7 +76,7 @@ const char* GetViewTypeName(UIViewType viewType) {
     return viewTypeStr;
 }
 
-Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, AABB2Di& box) {
+Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parentBox, const AABB2Di& box) {
     Vec2i center(0);
     switch(xAlign) {
         case UIXAlign::Left: {

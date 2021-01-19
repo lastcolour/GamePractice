@@ -17,7 +17,7 @@ UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin)
 
 const char* GetViewTypeName(UIViewType viewType);
 
-Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, AABB2Di& parentBox, AABB2Di& box);
+Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parentBox, const AABB2Di& box);
 
 void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos);
 

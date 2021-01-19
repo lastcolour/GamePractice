@@ -21,7 +21,8 @@ void UILayout::Reflect(ReflectContext& ctx) {
 UILayout::UILayout() :
     combinedBox(Vec2i(0), Vec2i(0)),
     extraZOffset(0),
-    isCalculatingLayout(false) {
+    isCalculatingLayout(false),
+    isLayoutDirty(false) {
 }
 
 UILayout::~UILayout() {
@@ -168,6 +169,15 @@ void UILayout::ET_reAlign() {
 }
 
 void UILayout::calculateLayout() {
+    bool isHidden = false;
+    ET_SendEventReturn(isHidden, getEntityId(), &ETUIElement::ET_isHidden);
+    if(isHidden) {
+        isLayoutDirty = true;
+        return;
+    } else {
+        isLayoutDirty = false;
+    }
+
     if(children.empty()) {
         ET_SendEvent(getEntityId(), &ETUILayoutEvents::ET_onLayoutChanged, combinedBox);
         return;
@@ -242,6 +252,9 @@ void UILayout::ET_onAlphaChanged(float newAlpha) {
 }
 
 void UILayout::ET_onHidden(bool flag) {
+    if(isLayoutDirty && !flag) {
+        calculateLayout();
+    }
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setParentHidden, flag);
     }

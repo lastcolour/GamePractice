@@ -9,8 +9,6 @@ namespace {
 
 std::unique_ptr<Application> APP;
 
-const char* TEST_OBJECT_NAME = "TestObject";
-
 class SoundAppTest : public Application {
 public:
 

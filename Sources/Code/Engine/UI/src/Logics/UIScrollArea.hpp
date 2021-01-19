@@ -63,7 +63,8 @@ private:
     void onPress(const Vec2i& pt);
     bool onMove(const Vec2i& pt);
     void onRelease(const Vec2i& pt);
-    void initScrollElem();
+    void alignTarget();
+    void updateMoveState(float dt);
 
 private:
 
@@ -72,16 +73,20 @@ private:
         Vec2i pt;
     };
 
+    struct MoveState {
+        Vec2i destPt;
+        float vel;
+        float accumDt;
+        int frameShift;
+    };
+
 private:
 
     UIScrollAreaStyle style;
     std::vector<PathPoint> path;
     EntityId targetId;
-    AABB2Di scrollBox;
-    Vec2i endScrollPt;
+    MoveState moveState;
     int extraZOffset;
-    float scrollSpeed;
-    float accumulativeDt;
     bool isPressed;
 };
 

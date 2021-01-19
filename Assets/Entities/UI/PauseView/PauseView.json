@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 80.0,
+                "y": 90.0,
                 "z": 0.0
               },
               "scale": {
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28,
+                          "fontSize": 32,
                           "text": "Resume"
                         }
                       }
@@ -145,8 +145,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 348.0,
-                      "y": 70.0
+                      "x": 393.0,
+                      "y": 79.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -208,7 +208,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -80.0,
+                "y": -90.0,
                 "z": 0.0
               },
               "scale": {
@@ -284,7 +284,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28,
+                          "fontSize": 32,
                           "text": "Exit"
                         }
                       }
@@ -325,8 +325,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 348.0,
-                      "y": 70.0
+                      "x": 393.0,
+                      "y": 79.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -464,7 +464,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28,
+                          "fontSize": 32,
                           "text": "Restart"
                         }
                       }
@@ -505,8 +505,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 348.0,
-                      "y": 70.0
+                      "x": 393.0,
+                      "y": 79.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -617,8 +617,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 372.0,
-                "y": 325.0
+                "x": 420.0,
+                "y": 367.0
               },
               "tintColor": {
                 "r": 17,
@@ -691,22 +691,6 @@
       }
     },
     {
-      "type": "SoundEqualizerLogic",
-      "id": 9,
-      "data": {
-        "group": "Music",
-        "eqaulizer": {
-          "volume": 1.0,
-          "low": -1.0,
-          "lowMid": -1.0,
-          "mid": -1.0,
-          "highMid": 0.0,
-          "high": 0.0
-        },
-        "enabled": false
-      }
-    },
-    {
       "type": "UIAnimationSequence",
       "id": 10,
       "data": {
@@ -773,6 +757,22 @@
             "alpha": 0.0
           }
         ]
+      }
+    },
+    {
+      "type": "SoundEqualizerLogic",
+      "id": 12,
+      "data": {
+        "group": "Music",
+        "eqaulizer": {
+          "volume": 1.0,
+          "low": -0.800000011920929,
+          "lowMid": -0.699999988079071,
+          "mid": -0.800000011920929,
+          "highMid": 0.800000011920929,
+          "high": 0.800000011920929
+        },
+        "enabled": false
       }
     }
   ]

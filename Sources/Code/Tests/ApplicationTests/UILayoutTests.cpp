@@ -22,6 +22,27 @@ void CheckUIBox(EntityId entityId, Vec2i expCenter, Vec2i expSize) {
     EXPECT_EQ(size.y, expSize.y);
 }
 
+class TestLayoutEventListener : public ETNode<ETUILayoutEvents> {
+public:
+
+    TestLayoutEventListener() :
+        layoutChanged(false) {}
+    virtual ~TestLayoutEventListener() {}
+
+    void listerUpdated(EntityId layoutEntId) {
+        ETNode<ETUILayoutEvents>::connect(layoutEntId);
+    }
+
+    // ETUILayoutEvents
+    void ET_onLayoutChanged(const AABB2Di& newCombinedBox) override {
+        layoutChanged = true;
+    }
+
+public:
+
+    bool layoutChanged;
+};
+
 } // namespace
 
 Entity* UILayoutTests::createUIBox(float width, float height) {
@@ -482,4 +503,36 @@ TEST_F(UILayoutTests, CheckHiddenElemOnLayout) {
         EXPECT_EQ(size.x, viewPort.x / 2);
         EXPECT_EQ(size.y, viewPort.y / 2);
     }
+}
+
+TEST_F(UILayoutTests, CheckDoNotRebuildLayoutForHiddenHost) {
+    auto rootEntity = createUIBox(0.5f, 0.5f);
+    auto rootLayout = addUILayout(rootEntity, UILayoutType::Horizontal, UIXAlign::Center, UIYAlign::Center);
+
+    auto leftBox = createUIBox(0.5f, 0.5f);
+    rootLayout->ET_addItem(leftBox->getEntityId());
+
+    auto rightBox = createUIBox(0.5f, 0.5f);
+    rootLayout->ET_addItem(rightBox->getEntityId());
+
+    ET_SendEvent(rootEntity->getEntityId(), &ETUIElement::ET_hide);
+
+    TestLayoutEventListener layoutEventListener;
+    layoutEventListener.listerUpdated(rootLayout->getEntityId());
+
+    {
+        UIBoxStyle rootBoxStyle;
+        ET_SendEventReturn(rootBoxStyle, rootEntity->getEntityId(), &ETUIBox::ET_getStyle);
+
+        rootBoxStyle.height = 0.25f;
+        rootBoxStyle.width = 0.25f;
+
+        ET_SendEvent(rootEntity->getEntityId(), &ETUIBox::ET_setStyle, rootBoxStyle);
+    }
+
+    EXPECT_FALSE(layoutEventListener.layoutChanged);
+
+    ET_SendEvent(rootEntity->getEntityId(), &ETUIElement::ET_show);
+
+    EXPECT_TRUE(layoutEventListener.layoutChanged);
 }

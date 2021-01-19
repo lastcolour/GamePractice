@@ -116,7 +116,7 @@ TEST_F(UIScrollAreaTests, CheckInitialPosition) {
         ctx.scrollArea->ET_setStyle(scrollStyle);
 
         Vec2i excpetectPt(0);
-        excpetectPt.x = (childBox.x - parentBox.x) / 2;
+        excpetectPt.x = (parentBox.x - childBox.x) / 2;
         excpetectPt.y = 0;
 
         auto tm = ctx.childEntity->ET_getLocalTransform();
@@ -133,7 +133,7 @@ TEST_F(UIScrollAreaTests, CheckInitialPosition) {
         ctx.scrollArea->ET_setStyle(scrollStyle);
 
         Vec2i excpetectPt(0);
-        excpetectPt.x = (parentBox.x - childBox.x) / 2;
+        excpetectPt.x = (-parentBox.x + childBox.x) / 2;
         excpetectPt.y = 0;
 
         auto tm = ctx.childEntity->ET_getLocalTransform();
@@ -232,13 +232,13 @@ TEST_F(UIScrollAreaTests, CheckSimpleHorizontalScroll) {
 
     auto childOrigTm = ctx.childEntity->ET_getTransform();
 
-    SubmitEventSequence(ctx, {Vec2(0.25f, 0.f), Vec2(0.f, 0.f), Vec2(-0.25f, 0.f)});
+    SubmitEventSequence(ctx, {Vec2(-0.25f, 0.f), Vec2(0.f, 0.f), Vec2(0.25f, 0.f)});
 
     auto childCurrTm = ctx.childEntity->ET_getTransform();
 
     auto shift = childCurrTm.pt - childOrigTm.pt;
     Vec2 expectedShift(0.f);
-    expectedShift.x = -parentBox.y * 0.5f;
+    expectedShift.x = parentBox.y * 0.5f;
 
     EXPECT_FLOAT_EQ(shift.x, expectedShift.x);
     EXPECT_FLOAT_EQ(shift.y, expectedShift.y);

@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 394.0,
+          "y": 118.0,
           "z": 0.0
         },
         "scale": {
@@ -27,8 +27,8 @@
           {
             "transform": {
               "pos": {
-                "x": -165.0,
-                "y": -45.0,
+                "x": -47.0,
+                "y": -19.0,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -39.0,
+                      "x": -11.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -104,7 +104,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 14,
+                          "fontSize": 4,
                           "text": "Progress: "
                         }
                       }
@@ -114,7 +114,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 34.0,
+                      "x": 10.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -167,7 +167,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 14,
+                          "fontSize": 4,
                           "text": "50% (15/30)"
                         }
                       }
@@ -189,7 +189,7 @@
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
-                        "bot": 2.0,
+                        "bot": -7.0,
                         "left": 2.0,
                         "right": 2.0
                       }
@@ -224,8 +224,8 @@
                     "alpha": 0.6000000238418579,
                     "drawPriority": 59,
                     "size": {
-                      "x": 172.0,
-                      "y": 33.0
+                      "x": 50.0,
+                      "y": 10.0
                     },
                     "tintColor": {
                       "r": 0,
@@ -287,7 +287,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 21.0,
+                "y": 1.0,
                 "z": 0.0
               },
               "scale": {
@@ -363,7 +363,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 47,
+                          "fontSize": 14,
                           "text": "Intro"
                         }
                       }
@@ -417,8 +417,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 54,
                     "size": {
-                      "x": 279.0,
-                      "y": 70.0
+                      "x": 80.0,
+                      "y": 20.0
                     },
                     "tintColor": {
                       "r": 21,
@@ -446,7 +446,7 @@
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
-                "height": 30.0,
+                "height": 22.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -490,6 +490,47 @@
                 ]
               ]
             }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 5,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Appear",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.0,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 20.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.30000001192092896,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
           }
         ]
       }
@@ -498,7 +539,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 0.0,
+          "y": -37.0,
           "z": 0.0
         },
         "scale": {
@@ -522,7 +563,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 345.0,
+                "y": 0.0,
                 "z": 0.0
               },
               "scale": {
@@ -545,8 +586,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": -693.0,
+                      "x": 711.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -568,8 +609,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": -539.0,
+                      "x": 553.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -591,8 +632,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": -385.0,
+                      "x": 395.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -614,8 +655,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": -231.0,
+                      "x": 237.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -637,8 +678,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": -77.0,
+                      "x": 79.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -660,8 +701,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": 77.0,
+                      "x": -79.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -683,8 +724,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": 231.0,
+                      "x": -237.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -706,8 +747,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": 385.0,
+                      "x": -395.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -729,8 +770,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": 539.0,
+                      "x": -553.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -752,8 +793,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": 693.0,
+                      "x": -711.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -840,8 +881,8 @@
                     "alpha": 0.30000001192092896,
                     "drawPriority": 4,
                     "size": {
-                      "x": 140.0,
-                      "y": 1526.0
+                      "x": 1580.0,
+                      "y": 158.0
                     },
                     "color": {
                       "r": 202,
@@ -865,7 +906,7 @@
               "style": {
                 "width": 90.0,
                 "widthInv": "Grid",
-                "height": 180.0,
+                "height": 170.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -898,8 +939,8 @@
               "alpha": 0.5,
               "drawPriority": 2,
               "size": {
-                "x": 418.0,
-                "y": 836.0
+                "x": 472.0,
+                "y": 891.0
               },
               "color": {
                 "r": 255,
@@ -936,34 +977,20 @@
     },
     {
       "type": "UILayout",
-      "id": 2,
-      "data": {
-        "extraZOffset": 0,
-        "style": {
-          "type": "Horizontal",
-          "xAlign": "Center",
-          "yAlign": "Center"
-        },
-        "children": [
-          [
-            4
-          ]
-        ]
-      }
-    },
-    {
-      "type": "UILayout",
       "id": 3,
       "data": {
         "extraZOffset": 0,
         "style": {
-          "type": "Horizontal",
+          "type": "Vertical",
           "xAlign": "Center",
           "yAlign": "Top"
         },
         "children": [
           [
             3
+          ],
+          [
+            4
           ]
         ]
       }
@@ -1099,7 +1126,11 @@
         "cyclic": false,
         "type": "Appear",
         "startDelay": 0.0,
-        "subAnimations": [],
+        "subAnimations": [
+          [
+            3
+          ]
+        ],
         "startEvent": "Show",
         "endEvent": "None",
         "frames": [

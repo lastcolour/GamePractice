@@ -197,6 +197,9 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
                 break;
             }
             updateRunFlag(threadId);
+            if(threadId != 0) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
         }
     }
     return nextJob;
