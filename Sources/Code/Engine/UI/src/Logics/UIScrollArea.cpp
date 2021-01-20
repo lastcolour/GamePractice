@@ -51,12 +51,14 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
         classInfo->addField("extraZOffset", &UIScrollArea::extraZOffset);
         classInfo->addField("style", &UIScrollArea::style);
         classInfo->addField("target", &UIScrollArea::targetId);
+        classInfo->addField("kinematicScroll", &UIScrollArea::kinematicScrollEnabled);
     }
 }
 
 UIScrollArea::UIScrollArea() :
     extraZOffset(0),
-    isPressed(false) {
+    isPressed(false),
+    kinematicScrollEnabled(true) {
 }
 
 UIScrollArea::~UIScrollArea() {
@@ -67,6 +69,14 @@ void UIScrollArea::init() {
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
     ETNode<ETUIElemAligner>::connect(getEntityId());
+
+    isPressed = false;
+    moveState.vel = 0.f;
+    moveState.destPt = Vec2i(0);
+    moveState.frameShift = 0;
+    moveState.accumDt = 0.f;
+    moveState.acc = 0.f;
+
     alignTarget();
 }
 
@@ -131,6 +141,7 @@ void UIScrollArea::onPress(const Vec2i& pt) {
     moveState.frameShift = 0;
     moveState.accumDt = 0.f;
     moveState.vel = 0.f;
+    moveState.acc = 0.f;
 
     isPressed = true;
 
@@ -151,6 +162,41 @@ void UIScrollArea::onRelease(const Vec2i& pt) {
     auto box = ET_getHitBox();
     auto clampPt = clampToEdges(box, pt);
     path.push_back({TimePoint::GetNowTime(), clampPt});
+    if(kinematicScrollEnabled) {
+        addReleaseImpulse();
+    }
+}
+
+void UIScrollArea::addReleaseImpulse() {
+    assert(!path.empty() && "Empty path");
+
+    auto& firstEvent = path.front();
+    auto& lastEvent = path.back();
+
+    auto posDt = lastEvent.pt - firstEvent.pt;
+    float endVel = 0.f;
+
+    float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
+    dt = Math::Clamp(dt, 0.001f, 0.016f);
+
+    if(style.type == UIScrollType::Horizontal) {
+        endVel = posDt.x / dt;
+        moveState.destPt += Vec2i(static_cast<int>(endVel * 2048.f), 0);
+    } else {
+        endVel = posDt.y / dt;
+        moveState.destPt += Vec2i(0, static_cast<int>(endVel * 2048.f));
+    }
+
+    if(moveState.vel * endVel > 0.f) {
+        if(moveState.vel > 0.f) {
+            moveState.vel = std::max(moveState.vel, endVel);
+        } else {
+            moveState.vel = std::min(moveState.vel, endVel);
+        }
+    }
+    moveState.acc = -4.f * moveState.vel;
+
+    path.clear();
 }
 
 bool UIScrollArea::onMove(const Vec2i& pt) {
@@ -228,6 +274,16 @@ void UIScrollArea::updateMoveState(float dt) {
         }
     }
 
+    if(!isPressed) {
+        if(moveState.vel > 0.f) {
+            moveState.vel += moveState.acc * dt;
+            moveState.vel = std::max(moveState.vel, 0.001f);
+        } else {
+            moveState.vel += moveState.acc * dt;
+            moveState.vel = std::min(moveState.vel, -0.001f);
+        }
+    }
+
     moveState.destPt += newPosDt;
     moveState.frameShift = static_cast<int>(moveState.vel * moveState.accumDt);
 
@@ -275,10 +331,12 @@ void UIScrollArea::ET_onUITick(float dt) {
 
     UI::Set2DPositionDoNotUpdateLayout(targetId, resPt);
 
-    if(!isPressed) {
-        if(reachedDest || std::abs(moveState.vel) > 0.001f) {
-            ETNode<ETUITimerEvents>::disconnect();
-        }
+    if(reachedDest && isPressed) {
+        moveState.vel = 0.f;
+    }
+
+    if(!isPressed && std::abs(moveState.vel) < 0.01f) {
+        ETNode<ETUITimerEvents>::disconnect();
     }
 }
 
@@ -302,4 +360,8 @@ const UIScrollAreaStyle& UIScrollArea::ET_getStyle() const {
 
 void UIScrollArea::ET_reAlign() {
     alignTarget();
+}
+
+void UIScrollArea::ET_enableKinematicScroll(bool flag) {
+    kinematicScrollEnabled = flag;
 }

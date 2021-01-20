@@ -89,6 +89,7 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
         bool logicExists = ctx.scrollArea != nullptr;
         HACK_ASSERT_TRUE(logicExists);
 
+        ctx.scrollArea->ET_enableKinematicScroll(false);
         ctx.scrollArea->ET_setStyle(scrollStyle);
         ctx.scrollArea->ET_setTarget(ctx.childEntity->getEntityId());
     }

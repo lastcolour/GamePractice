@@ -40,7 +40,6 @@ RecursiveFilter CreateLowPass(float freq) {
 RecursiveFilter CreateHightPass(float freq) {
     RecursiveFilter filter;
 
-    // TODO: Check coefficients
     float x = 2.f * Math::PI * freq;
     float y = cos(x) / (1.f + sin(x));
 

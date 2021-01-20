@@ -3,6 +3,8 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/ETLogger.hpp"
 
+#include <cassert>
+
 #include <EGL/eglext.h>
 #include <android/native_activity.h>
 
@@ -55,95 +57,29 @@ const char* getEGLErrorStr() {
         }
     }
 }
-
 const EGLint EGLContexAttribs[] = {
-    EGL_CONTEXT_CLIENT_VERSION, 2,
+    EGL_CONTEXT_CLIENT_VERSION, 3,
     EGL_NONE
 };
 
 EGLConfig chooseEGLConfig(EGLDisplay eglDisplay) {
     EGLConfig config;
     int numConfigs = 0;
-    {
-        const EGLint es3_rgba_24[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT_KHR,
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_DEPTH_SIZE, 24,
-            EGL_NONE
-        };
 
-        if(eglChooseConfig(eglDisplay, es3_rgba_24, &config, 1, &numConfigs) == EGL_TRUE) {
-            LogInfo("[chooseEGLConfig] EGLConfig: es3_rgba_24");
-            return config;
-        }
+    const EGLint attribList[] = {
+        EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+        EGL_BLUE_SIZE, 8,
+        EGL_GREEN_SIZE, 8,
+        EGL_RED_SIZE, 8,
+        EGL_NONE
+    };
+
+    if(eglChooseConfig(eglDisplay, attribList, &config, 1, &numConfigs) == EGL_TRUE) {
+        return config;
+    } else {
+        LogError("[chooseEGLConfig] Can't choose EGL display attribs");
     }
 
-    {
-        const EGLint es3_rgba_16[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT_KHR,
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_DEPTH_SIZE, 16,
-            EGL_NONE
-        };
-
-        if(eglChooseConfig(eglDisplay, es3_rgba_16, &config, 1, &numConfigs) == EGL_TRUE) {
-            LogInfo("[chooseEGLConfig] EGLConfig: es3_rgba_16");
-            return config;
-        }
-    }
-
-    {
-        const EGLint es2_rgba_24[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_DEPTH_SIZE, 24,
-            EGL_NONE
-        };
-
-        if(eglChooseConfig(eglDisplay, es2_rgba_24, &config, 1, &numConfigs) == EGL_TRUE) {
-            LogInfo("[chooseEGLConfig] EGLConfig: es2_rgba_24");
-            return config;
-        }
-    }
-
-    {
-        const EGLint es2_rgba_16[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_DEPTH_SIZE, 16,
-            EGL_NONE
-        };
-
-        if(eglChooseConfig(eglDisplay, es2_rgba_16, &config, 1, &numConfigs) == EGL_TRUE) {
-            LogInfo("[chooseEGLConfig] EGLConfig: es2_rgba_16");
-            return config;
-        }
-    }
-
-    {
-        const EGLint es2[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_NONE
-        };
-
-        if(eglChooseConfig(eglDisplay, es2, &config, 1, &numConfigs) == EGL_TRUE) {
-            LogInfo("[chooseEGLConfig] EGLConfig: es2");
-            return config;
-        }
-    }
     return nullptr;
 }
 

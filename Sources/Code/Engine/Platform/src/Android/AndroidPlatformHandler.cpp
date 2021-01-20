@@ -5,6 +5,7 @@
 #include <thread>
 #include <cerrno>
 #include <unistd.h>
+#include <cassert>
 
 #include <android/looper.h>
 #include <android/configuration.h>

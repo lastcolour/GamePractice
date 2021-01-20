@@ -48,3 +48,6 @@ _cmake/
 *local.properties
 *.vscode
 .gradle
+
+# Local Confis
+*local_config

@@ -43,6 +43,7 @@ public:
     EntityId ET_getTarget() const override;
     void ET_setStyle(const UIScrollAreaStyle& newStyle) override;
     const UIScrollAreaStyle& ET_getStyle() const override;
+    void ET_enableKinematicScroll(bool flag) override;
 
     // ETUIElemAligner
     void ET_reAlign() override;
@@ -65,6 +66,7 @@ private:
     void onRelease(const Vec2i& pt);
     void alignTarget();
     void updateMoveState(float dt);
+    void addReleaseImpulse();
 
 private:
 
@@ -77,6 +79,7 @@ private:
         Vec2i destPt;
         float vel;
         float accumDt;
+        float acc;
         int frameShift;
     };
 
@@ -88,6 +91,7 @@ private:
     MoveState moveState;
     int extraZOffset;
     bool isPressed;
+    bool kinematicScrollEnabled;
 };
 
 #endif /* __UI_SCROLL_AREA_HPP__ */

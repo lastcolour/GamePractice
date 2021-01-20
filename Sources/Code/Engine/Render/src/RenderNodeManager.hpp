@@ -28,8 +28,8 @@ public:
     void ET_removeNode(Node* node) override;
     void ET_initRenderNode(Node* node) override;
     void ET_updateParticles(float dt) override;
-    void ET_drawFrame();
-    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter);
+    void ET_drawFrame() override;
+    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) override;
 
     // ETRenderContextEvents
     void ET_onContextCreated() override;

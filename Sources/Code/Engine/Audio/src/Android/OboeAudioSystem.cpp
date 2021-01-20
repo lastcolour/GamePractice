@@ -69,6 +69,9 @@ bool OboeAudioSystem::ET_play(SoundStream* soundStream) {
     return false;
 }
 
+void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
+}
+
 void OboeAudioSystem::ET_setMasterVolume(float newVolume) {
 }
 

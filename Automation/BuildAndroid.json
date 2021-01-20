@@ -11,7 +11,9 @@
                 "rootSources":"${currentDir}/../Sources",
                 "gameSources":"${rootSources}/Code",
                 "androidOutDir":"${currentDir}/../_build/Android",
-                "libSources":"${rootSources}/Libs"
+                "libSources":"${rootSources}/Libs",
+                "android_build_config":"${currentDir}/local_config/Android.json"
+
             }
         },
         {
@@ -19,6 +21,7 @@
             "type": "AndroidCmakeGenerate",
             "dependOn":[],
             "data": {
+                "android_config":"${android_build_config}",
                 "separate_bins":true,
                 "run_dir": "${libSources}/Oboe",
                 "project_out_dir": "Libs/Oboe",
@@ -32,6 +35,7 @@
             "name":"Build FreeType2",
             "type": "AndroidCmakeGenerate",
             "data": {
+                "android_config":"${android_build_config}",
                 "separate_bins":true,
                 "run_dir": "${libSources}/FreeType2",
                 "project_out_dir": "Libs/FreeType2",
@@ -46,6 +50,7 @@
             "type":"AndroidCmakeGenerate",
             "dependOn":["Build FreeType2", "Build Oboe"],
             "data":{
+                "android_config":"${android_build_config}",
                 "separate_bins":false,
                 "android_out_dir": "${androidOutDir}",
                 "run_dir":"${gameSources}",
