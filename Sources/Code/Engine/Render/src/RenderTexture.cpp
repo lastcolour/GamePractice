@@ -147,7 +147,7 @@ bool RenderTexture::resizeAndClear(const Vec2i& newSize) {
         }
     }
     if(auto errStr = RenderUtils::GetGLError()) {
-        LogError("[RenderTexture::resizeAndClear] Can't resize texture to a size %dx%d (Error: %s)", errStr);
+        LogError("[RenderTexture::resizeAndClear] Can't resize texture to a size %dx%d (Error: %s)", newSize.x, newSize.y, errStr);
         return false;
     }
     return true;

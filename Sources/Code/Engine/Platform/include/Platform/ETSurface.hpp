@@ -3,12 +3,6 @@
 
 #include "Math/Vector.hpp"
 
-enum GLContextType {
-    None = 0,
-    ES20,
-    ES30
-};
-
 struct ETSurface {
     virtual ~ETSurface() = default;
     virtual bool ET_show() = 0;
@@ -16,9 +10,8 @@ struct ETSurface {
     virtual void ET_close() = 0;
     virtual Vec2i ET_getSize() const = 0;
     virtual void ET_swapBuffers() = 0;
-    virtual GLContextType ET_getGLContextType() const = 0;
     virtual bool ET_isVisible() const = 0;
-    virtual bool ET_isValid() const = 0;
+    virtual bool ET_hasOpenGLContext() const = 0;
 };
 
 enum class EActionType {

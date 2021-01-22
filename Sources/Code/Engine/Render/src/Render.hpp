@@ -12,8 +12,7 @@
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
     public ETNode<ETRender>,
-    public ETNode<ETRenderUpdateTask>,
-    public ETNode<ETRenderContextEvents> {
+    public ETNode<ETRenderUpdateTask> {
 public:
 
     Render();
@@ -25,7 +24,6 @@ public:
 
     // ETRender
     void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) override;
-    bool ET_hasContext() const override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;
@@ -41,10 +39,6 @@ public:
     void ET_syncWithGame() override;
     void ET_updateParticles() override;
 
-    // ETRenderContextEvents
-    void ET_onContextCreated() override;
-    void ET_onContextDestroyed() override;
-
 private:
 
     bool canRenderToScreen() const;
@@ -53,7 +47,6 @@ private:
 private:
 
     FrameStatsTracker tracker;
-    bool hasContext;
     bool canOffscrenRender;
     bool canScreenRender;
 };

@@ -3,8 +3,10 @@
 #include "Core/ETAssets.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderShader.hpp"
+#include "RenderUtils.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 namespace {
 
@@ -31,6 +33,8 @@ void RenderShaderManager::deinit() {
 }
 
 std::shared_ptr<RenderShader> RenderShaderManager::ET_createShader(const char* shaderName) {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't create shader without OpenGL context");
+
     std::string reqShaderName = shaderName;
     if(reqShaderName.empty()) {
         LogWarning("[RenderShaderManager::createShader] Can't create shader with empty name");

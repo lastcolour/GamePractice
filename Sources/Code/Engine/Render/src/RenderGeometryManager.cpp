@@ -5,6 +5,9 @@
 #include "Math/Matrix.hpp"
 #include "Render/RenderCommon.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
+#include "RenderUtils.hpp"
+
+#include <cassert>
 
 namespace {
 
@@ -47,6 +50,8 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(Prim
 }
 
 std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(PrimitiveGeometryType geomType) {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't get geometry without OpenGL context");
+
     auto reqGeomType = geomType;
     auto it = geometris.find(reqGeomType);
     if(it != geometris.end() && it->second) {

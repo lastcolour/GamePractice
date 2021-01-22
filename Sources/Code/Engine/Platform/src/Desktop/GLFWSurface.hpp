@@ -30,9 +30,8 @@ public:
     void ET_close() override;
     void ET_swapBuffers() override;
     Vec2i ET_getSize() const override;
-    GLContextType ET_getGLContextType() const override;
     bool ET_isVisible() const override;
-    bool ET_isValid() const override;
+    bool ET_hasOpenGLContext() const override;
 
     // ETInputUpdateTask
     void ET_updateInput() override;

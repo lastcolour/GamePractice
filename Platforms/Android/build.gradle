@@ -27,7 +27,7 @@ buildscript {
     /**
      * The dependencies block configures the dependencies Gradle needs to use
      * to build your project. The following line adds Android plugin for Gradle
-     * version 4.1.2 as a classpath dependency.
+     * version 4.0.1 as a classpath dependency.
      */
 
     dependencies {

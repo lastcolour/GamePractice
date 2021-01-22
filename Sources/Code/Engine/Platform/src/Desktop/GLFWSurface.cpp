@@ -196,18 +196,11 @@ Vec2i GLFWSurface::ET_getSize() const {
     return size;
 }
 
-bool GLFWSurface::ET_isValid() const {
+bool GLFWSurface::ET_hasOpenGLContext() const {
     if(window) {
         return !glfwWindowShouldClose(window);
     }
     return false;
-}
-
-GLContextType GLFWSurface::ET_getGLContextType() const {
-    if(window) {
-        return GLContextType::ES30;
-    }
-    return GLContextType::None;
 }
 
 void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) {

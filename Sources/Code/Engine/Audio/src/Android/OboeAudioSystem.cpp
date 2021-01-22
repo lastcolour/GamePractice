@@ -15,40 +15,44 @@ OboeAudioSystem::OboeAudioSystem() :
 OboeAudioSystem::~OboeAudioSystem() {
 }
 
-bool OboeAudioSystem::initOboeMixer() {
+bool OboeAudioSystem::initOboeStream() {
     const DeviceAudioConfig* deviceConfig = nullptr;
     ET_SendEventReturn(deviceConfig, &ETDevice::ET_getAudioConfig);
     if(!deviceConfig) {
-        LogError("[OboeAudioSystem::initOboeMixer] Can't get config of audio device");
+        LogError("[OboeAudioSystem::initOboeStream] Can't get config of audio device");
         return false;
     }
-    return true;
-}
 
-bool OboeAudioSystem::initOboeStream() {
     oboe::AudioStreamBuilder builder;
     builder.setDirection(oboe::Direction::Output);
     builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
     builder.setSharingMode(oboe::SharingMode::Exclusive);
     builder.setCallback(this);
+    builder.setFormat(oboe::AudioFormat::Float);
+    builder.setSampleRate(deviceConfig->frameRate);
+    builder.setChannelCount(2);
+    builder.setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Fastest);
+    builder.setUsage(oboe::Usage::Game);
+
     auto res = builder.openStream(&oboeStream);
     if(res != oboe::Result::OK){
-        LogError("[OboeAudioSystem::init] Can't open oboe stream. Error: %s", oboe::convertToText(res));
+        LogError("[OboeAudioSystem::initOboeStream] Can't open oboe stream. Error: %s", oboe::convertToText(res));
         return false;
     }
-    res = oboeStream->setBufferSizeInFrames(oboeStream->getFramesPerBurst() * BUFFERS_SIZE_PER_BURST);
+    res = oboeStream->setBufferSizeInFrames(deviceConfig->framesPerBurst);
     if(res != oboe::Result::OK){
-        LogWarning("[OboeAudioSystem::init] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
+        LogWarning("[OboeAudioSystem::initOboeStream] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
     }
     res = oboeStream->start();
     if(res != oboe::Result::OK) {
-        LogWarning("[OboeAudioSystem::init] Can't start oboe stream. Error: %s", oboe::convertToText(res));
+        LogWarning("[OboeAudioSystem::initOboeStream] Can't start oboe stream. Error: %s", oboe::convertToText(res));
     }
     return true;
 }
 
 bool OboeAudioSystem::init() {
-    if(!initOboeMixer()) {
+    if(!mixGrap.init()) {
+        LogError("[ALAudioSystem::init] Can't init mix graph");
         return false;
     }
     if(!initOboeStream()) {
@@ -65,18 +69,20 @@ bool OboeAudioSystem::init() {
 void OboeAudioSystem::ET_updateSound() {
 }
 
-bool OboeAudioSystem::ET_play(SoundStream* soundStream) {
-    return false;
+void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
+    mixGrap.setEqualizer(soundGroup, eqSetup);
 }
 
-void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
+bool OboeAudioSystem::ET_play(SoundStream* soundStream) {
+    return mixGrap.playSound(soundStream);
 }
 
 void OboeAudioSystem::ET_setMasterVolume(float newVolume) {
+    mixGrap.setMasterVolume(newVolume);
 }
 
 float OboeAudioSystem::ET_getMasterVolume() const {
-    return 0.f;
+    return mixGrap.getMasterVolume();
 }
 
 void OboeAudioSystem::stopOboeStream() {
@@ -96,5 +102,10 @@ void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result 
 }
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) {
+    float* out = static_cast<float*>(audioData);
+    for(int i = 0; i < numFrames; ++i) {
+        out[2 * i] = 0.f;
+        out[2 * i + 1] = 0.f;
+    }
     return oboe::DataCallbackResult::Continue;
 }

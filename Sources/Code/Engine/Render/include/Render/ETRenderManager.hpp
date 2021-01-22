@@ -22,7 +22,6 @@ struct ETRenderGeometryManager {
 
 struct ETRenderFontManager {
     virtual ~ETRenderFontManager() = default;
-    virtual std::shared_ptr<RenderFont> ET_getFont(const char* fontName) = 0;
     virtual std::shared_ptr<RenderFont> ET_getDefaultFont() = 0;
 };
 

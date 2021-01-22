@@ -63,7 +63,7 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
 
     if(buff) {
         float msValue = -static_cast<int>(loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
-        LogDebug("[AndroidAssets::ET_loadAsset] Loaded file '%s' in %d ms", assetName, msValue);
+        LogDebug("[AndroidAssets::ET_loadAsset] Loaded file '%s' in %.1f ms", assetName, msValue);
     }
 
     return buff;

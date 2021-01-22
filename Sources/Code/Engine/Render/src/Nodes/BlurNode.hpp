@@ -23,13 +23,10 @@ protected:
 
 private:
 
-    void downSamplePass(RenderFramebuffer& mainFB0, RenderFramebuffer& targetFBO);
     void blurPass(RenderFramebuffer& first, RenderFramebuffer& second);
-    void upSamplePass(RenderFramebuffer& mainFB0, RenderFramebuffer& sourceFBO);
 
 private:
 
-    std::shared_ptr<RenderShader> drawShader;
     int passes;
     int downScale;
 };

@@ -55,11 +55,6 @@ void RenderGraph::init() {
         extraFBOs.push_back(extraFBO);
     }
 
-    if(!drawFrameNode.init()) {
-        LogError("[RenderGraph::init] Can't init draw frame node");
-        assert(false && "Can't init draw frame node");
-    }
-
     ctx.mainFBO = mainFBO.get();
     for(auto& fbo : extraFBOs) {
         ctx.exraFBOs.push_back(fbo.get());
@@ -134,7 +129,8 @@ void RenderGraph::render() {
     }
     ET_SendEvent(&ETDebugRender::ET_update, ctx);
     endFrame();
-    drawFrameNode.draw(*mainFBO);
+
+    RenderUtils::BlitFromFBOtoDefaultFBO(*mainFBO);
 }
 
 void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) {

@@ -243,7 +243,7 @@ void AndroidSurface::ET_onActivityEvent(ActivityEventType eventType) {
 }
 
 void AndroidSurface::ET_updateInput() {
-    if(!ET_isValid()) {
+    if(!ET_hasOpenGLContext()) {
         return;
     }
     Vec2i currSize(0);
@@ -276,33 +276,26 @@ void AndroidSurface::ET_close() {
 }
 
 Vec2i AndroidSurface::ET_getSize() const {
-    if(ET_isValid()) {
+    if(ET_hasOpenGLContext()) {
         return size;
     }
     return Vec2i(0);
 }
 
 void AndroidSurface::ET_swapBuffers() {
-    if(!ET_isValid()) {
-        assert(ET_isValid() && "Can't swap buffer in invalid surface");
+    if(!ET_hasOpenGLContext()) {
+        assert(false && "Can't swap buffer in invalid surface");
         LogError("[AndroidSurface::ET_swapBuffers] Can't swap buffer in invalid surface");
         return;
     }
     eglSwapBuffers(display, surface);
 }
 
-GLContextType AndroidSurface::ET_getGLContextType() const {
-    if(ET_isValid()) {
-        return GLContextType::ES30;
-    }
-    return GLContextType::None;
-}
-
 bool AndroidSurface::ET_isVisible() const {
-    return ET_isValid();
+    return ET_hasOpenGLContext();
 }
 
-bool AndroidSurface::ET_isValid() const {
+bool AndroidSurface::ET_hasOpenGLContext() const {
     return context != EGL_NO_CONTEXT
         && surface != EGL_NO_SURFACE
         && display != EGL_NO_DISPLAY;

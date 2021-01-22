@@ -3,7 +3,6 @@
 
 #include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "RenderGraph/DrawFrameNode.hpp"
 
 #include <vector>
 #include <memory>
@@ -35,7 +34,6 @@ private:
 private:
 
     RenderContext ctx;
-    DrawFrameNode drawFrameNode;
     std::vector<Node*> children;
     std::shared_ptr<RenderFramebuffer> mainFBO;
     std::vector<std::shared_ptr<RenderFramebuffer>> extraFBOs;

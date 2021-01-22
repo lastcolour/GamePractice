@@ -4,6 +4,7 @@
 #include "Core/ETLogger.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Platform/OpenGL.hpp"
+#include "RenderUtils.hpp"
 
 #include <cassert>
 
@@ -31,10 +32,6 @@ BlurNode::~BlurNode() {
 }
 
 void BlurNode::onInit() {
-    ET_SendEventReturn(drawShader, &ETRenderShaderManager::ET_createShader, "draw_framebuffer");
-    if(!drawShader) {
-        return;
-    }
     setShader("blur");
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
 }
@@ -49,19 +46,8 @@ void BlurNode::setPasses(int newPassesCount) {
     passes = newPassesCount;
 }
 
-void BlurNode::downSamplePass(RenderFramebuffer& mainFB0, RenderFramebuffer& targetFBO) {
-    drawShader->bind();
-    targetFBO.bind();
-    drawShader->setTexture2D(UniformType::Texture, mainFB0.color0);
-    geom->draw();
-    drawShader->unbind();
-}
-
 bool BlurNode::isVisible() const {
     if(passes == 0) {
-        return false;
-    }
-    if(!drawShader) {
         return false;
     }
     return Node::isVisible();
@@ -86,34 +72,23 @@ void BlurNode::blurPass(RenderFramebuffer& first, RenderFramebuffer& second) {
     }
 }
 
-void BlurNode::upSamplePass(RenderFramebuffer& mainFB0, RenderFramebuffer& sourceFBO) {
-    drawShader->bind();
-    mainFB0.bind();
-    drawShader->setTexture2D(UniformType::Texture, sourceFBO.color0);
-    geom->draw();
-    drawShader->unbind();
-}
-
 void BlurNode::onRender(RenderContext& ctx) {
-    Vec2i size = ctx.mainFBO->color0.getSize();
+    auto mainFBO = ctx.mainFBO;
+    Vec2i size = mainFBO->color0.getSize();
     Vec2i scaledSize = size / downScale;
 
-    auto fbo0 = ctx.exraFBOs[0];
-    resizeFBOTexture(*fbo0, scaledSize);
+    auto extraFBO = ctx.exraFBOs[0];
+    resizeFBOTexture(*extraFBO, scaledSize);
 
-    auto fbo1 = ctx.exraFBOs[1];
-    resizeFBOTexture(*fbo1, scaledSize);
+    RenderUtils::BlitFromFBOtoFBO(*mainFBO, *extraFBO);
 
     glViewport(0, 0, scaledSize.x, scaledSize.y);
-    downSamplePass(*ctx.mainFBO, *fbo0);
-
-    shader->bind();
     for(int i = 0; i < passes; ++i) {
-        blurPass(*fbo1, *fbo0);
+        // blurPass(*extraFBO, *mainFBO);
     }
-    shader->unbind();
+    glViewport(0, 0, size.x, size.y);
 
-    Vec2i origViewPort = ctx.mainFBO->color0.getSize();
-    glViewport(0, 0, origViewPort.x, origViewPort.y);
-    upSamplePass(*ctx.mainFBO, *fbo0);
+    RenderUtils::BlitFromFBOtoFBO(*extraFBO, *ctx.mainFBO);
+
+    ctx.mainFBO->bind();
 }

@@ -2,6 +2,7 @@
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "RenderUtils.hpp"
 
 #include <limits>
 #include <cmath>
@@ -17,9 +18,7 @@ bool DebugRender::init() {
     ETNode<ETDebugRender>::connect(getEntityId());
     ETNode<ETRenderContextEvents>::connect(getEntityId());
 
-    bool hasContext = false;
-    ET_SendEventReturn(hasContext, &ETRender::ET_hasContext);
-    if(hasContext) {
+    if(RenderUtils::IsOpenGLContextExists()) {
         ET_onContextCreated();
     }
 

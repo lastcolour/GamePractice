@@ -6,6 +6,7 @@
 #include "Core/ETTasks.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
 #include "Audio/ETAudioSystem.hpp"
+#include "MixGraph/MixGraph.hpp"
 
 #include <oboe/Oboe.h>
 
@@ -40,13 +41,13 @@ public:
 
 private:
 
-    bool initOboeMixer();
     bool initOboeStream();
     void stopOboeStream();
 
 private:
 
     oboe::AudioStream* oboeStream;
+    MixGraph mixGrap;
 };
 
 #endif /* __OBOE_AUDIO_SYSTEM_HPP__ */

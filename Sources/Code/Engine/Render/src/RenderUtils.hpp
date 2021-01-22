@@ -10,7 +10,13 @@ namespace RenderUtils {
 
 const char* GetGLError();
 
+bool IsOpenGLContextExists();
+
 bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer);
+
+void BlitFromFBOtoFBO(RenderFramebuffer& fromFBO, RenderFramebuffer& toFBO);
+
+void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO);
 
 } // namespace RenderUtils
 

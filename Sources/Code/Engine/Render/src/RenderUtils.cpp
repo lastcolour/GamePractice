@@ -5,6 +5,8 @@
 #include "Core/ETLogger.hpp"
 #include "Nodes/Node.hpp"
 #include "RenderGraph/RenderContext.hpp"
+#include "Render/ETRenderInterfaces.hpp"
+#include "Platform/ETSurface.hpp"
 
 #include <type_traits>
 #include <cassert>
@@ -68,6 +70,34 @@ bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBu
 
     framebuffer.unbind();
     return true;
+}
+
+void BlitFromFBOtoFBO(RenderFramebuffer& fromFBO, RenderFramebuffer& toFBO) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fromFBO.framebufferId);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, toFBO.framebufferId);
+
+    Vec2i fromSize = fromFBO.color0.getSize();
+    Vec2i toSize = toFBO.color0.getSize();
+    glBlitFramebuffer(0, 0, fromSize.x, fromSize.y, 0, 0, toSize.x, toSize.y, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fromFBO.framebufferId);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+    Vec2i size = fromFBO.color0.getSize();
+    glBlitFramebuffer(0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+}
+
+bool IsOpenGLContextExists() {
+    bool hasContext = false;
+    ET_SendEventReturn(hasContext, &ETSurface::ET_hasOpenGLContext);
+    return hasContext;
 }
 
 } // namespace RenderUtils

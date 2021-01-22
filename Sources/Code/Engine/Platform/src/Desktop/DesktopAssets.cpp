@@ -152,8 +152,8 @@ Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     }
 
     if(buff) {
-        int msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
-        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %d ms", normalAssetName, msValue);
+        float msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
+        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %.1f ms", normalAssetName, msValue);
     }
 
     return buff;

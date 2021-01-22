@@ -218,7 +218,7 @@ void AndroindPlatformHandler::pollActivityEvents() {
             AInputQueue_attachLooper(pendingInputQueue, looper, static_cast<int>(LooperQueueId::Input), nullptr, nullptr);
             inputQueue = pendingInputQueue;
         }
-    } else if (eventType == ActivityEventType::OnDestroy) {
+    } else if(eventType == ActivityEventType::OnDestroy) {
         onDestroyPolled = true;
     }
     ET_SendEvent(&ETAndroidActivityEvents::ET_onActivityEvent, eventType);

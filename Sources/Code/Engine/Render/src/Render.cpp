@@ -8,7 +8,6 @@
 #include "RenderUtils.hpp"
 
 Render::Render() :
-    hasContext(false),
     canOffscrenRender(false),
     canScreenRender(false) {
 }
@@ -17,20 +16,13 @@ Render::~Render() {
 }
 
 bool Render::init() {
-    GLContextType contextType = GLContextType::None;
-    ET_SendEventReturn(contextType, &ETSurface::ET_getGLContextType);
-    if(contextType != GLContextType::None) {
-        hasContext = true;
-        ET_SendEventReturn(canOffscrenRender, &ETSurface::ET_isValid);
-        if(canOffscrenRender) {
-            ET_onSurfaceCreated();
-        }
+    if(RenderUtils::IsOpenGLContextExists()) {
+        ET_onSurfaceCreated();
     }
 
     ETNode<ETRender>::connect(getEntityId());
     ETNode<ETSurfaceEvents>::connect(getEntityId());
     ETNode<ETRenderUpdateTask>::connect(getEntityId());
-    ETNode<ETRenderContextEvents>::connect(getEntityId());
 
     return true;
 }
@@ -39,7 +31,6 @@ void Render::deinit() {
     ETNode<ETRender>::disconnect();
     ETNode<ETSurfaceEvents>::disconnect();
     ETNode<ETRenderUpdateTask>::disconnect();
-    ETNode<ETRenderContextEvents>::disconnect();
 }
 
 void Render::ET_updateRender() {
@@ -53,9 +44,6 @@ void Render::ET_updateRender() {
 }
 
 bool Render::canRenderToScreen() const {
-    if(!hasContext) {
-        return false;
-    }
     if(!canScreenRender) {
         return false;
     }
@@ -63,9 +51,6 @@ bool Render::canRenderToScreen() const {
 }
 
 bool Render::canRenderToFramebuffer() const {
-    if(!hasContext) {
-        return false;
-    }
     if(!canOffscrenRender) {
         return false;
     }
@@ -94,10 +79,6 @@ void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSiz
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }
 
-bool Render::ET_hasContext() const {
-    return canOffscrenRender;
-}
-
 void Render::ET_onSurfaceDestroyed() {
     canOffscrenRender = false;
     canScreenRender = false;
@@ -121,14 +102,6 @@ void Render::ET_onSurfaceShown() {
 
 void Render::ET_onSurfaceResized(const Vec2i& size) {
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
-}
-
-void Render::ET_onContextCreated() {
-    hasContext = true;
-}
-
-void Render::ET_onContextDestroyed() {
-    hasContext = false;
 }
 
 void Render::ET_updateParticles() {

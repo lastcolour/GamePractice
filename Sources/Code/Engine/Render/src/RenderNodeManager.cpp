@@ -9,6 +9,7 @@
 #include "Nodes/BlurNode.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "RenderUtils.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -23,9 +24,7 @@ bool RenderNodeManager::init() {
     ETNode<ETRenderNodeManager>::connect(getEntityId());
     ETNode<ETRenderContextEvents>::connect(getEntityId());
 
-    bool hasContext = false;
-    ET_SendEventReturn(hasContext, &ETRender::ET_hasContext);
-    if(hasContext) {
+    if(RenderUtils::IsOpenGLContextExists()) {
         ET_onContextCreated();
     }
 

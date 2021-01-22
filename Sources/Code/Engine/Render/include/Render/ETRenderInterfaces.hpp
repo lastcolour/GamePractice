@@ -11,7 +11,6 @@ enum class DrawContentFilter {
 struct ETRender {
     virtual ~ETRender() = default;
     virtual void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) = 0;
-    virtual bool ET_hasContext() const = 0;
 };
 
 struct ETRenderContextEvents {

@@ -9,12 +9,18 @@
 #include "RenderUtils.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-RenderFontManager::RenderFontManager() :
-    padding(2) {
+namespace {
+
+const int TEX_SUB_PADDING = 2;
+
+} // namespace
+
+RenderFontManager::RenderFontManager() {
     characterSet = {
         'A', 'a',
         'B', 'b',
@@ -54,9 +60,12 @@ RenderFontManager::~RenderFontManager() {
 
 bool RenderFontManager::init() {
     ETNode<ETRenderFontManager>::connect(getEntityId());
-    if(!loadDefaultFont()) {
-        return false;
+    ETNode<ETRenderContextEvents>::connect(getEntityId());
+
+    if(RenderUtils::IsOpenGLContextExists()) {
+        ET_onContextCreated();
     }
+
     return true;
 }
 
@@ -64,14 +73,21 @@ void RenderFontManager::deinit() {
     ETNode<ETRenderFontManager>::disconnect();
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
+void RenderFontManager::ET_onContextCreated() {
     auto renderConfig = ET_getShared<RenderConfig>();
-    return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
+    auto res = createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
+    if(!res) {
+        LogError("[RenderFontManager::ET_onContextCreated] Can't create default font");
+    }
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::ET_getFont(const char* fontName) {
+void RenderFontManager::ET_onContextDestroyed() {
+}
+
+std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't get font without OpenGL context");
     auto renderConfig = ET_getShared<RenderConfig>();
-    return createFont(fontName, renderConfig->defaultFontSize);
+    return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontName, int fontSize) {
@@ -87,12 +103,6 @@ std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontNam
         return font;
     }
     return nullptr;
-}
-
-bool RenderFontManager::loadDefaultFont() {
-    auto renderConfig = ET_getShared<RenderConfig>();
-    auto res = createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
-    return res != nullptr;
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontName, int fontSize) {
@@ -125,11 +135,11 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
 
     FT_GlyphSlot glyph = fontFace->glyph;
     for(auto ch : characterSet) {
-        if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
+        if(FT_Load_Char(fontFace, ch, FT_LOAD_NO_BITMAP)) {
             LogWarning("[RenderFontManager::createFontImpl] Failed to load character '%c'", ch);
             continue;
         }
-        texWidth += glyph->bitmap.width + padding;
+        texWidth += glyph->bitmap.width + TEX_SUB_PADDING;
         texHeight = std::max(texHeight, glyph->bitmap.rows);
         fontHeight = std::max(fontHeight, static_cast<int>(glyph->bitmap.rows));
     }
@@ -180,7 +190,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
 
         font->addGlyph(ch, shift, glyphData);
 
-        shift += glyph->bitmap.width + padding;
+        shift += glyph->bitmap.width + TEX_SUB_PADDING;
     }
 
     fontAtlas->unbind();

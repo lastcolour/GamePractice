@@ -11,10 +11,6 @@ TEST_F(GLFWSurfaceTest, CheckNormalFlow) {
     ASSERT_GT(size.x, 0);
     ASSERT_GT(size.y, 0);
 
-    auto glCtxType = surface.ET_getGLContextType();
-
-    ASSERT_NE(glCtxType, GLContextType::None);
-
     auto isVisible = surface.ET_isVisible();
     ASSERT_FALSE(isVisible);
 
@@ -28,9 +24,9 @@ TEST_F(GLFWSurfaceTest, CheckNormalFlow) {
     isVisible = surface.ET_isVisible();
     ASSERT_FALSE(isVisible);
 
-    EXPECT_TRUE(surface.ET_isValid());
+    EXPECT_TRUE(surface.ET_hasOpenGLContext());
 
     surface.ET_close();
 
-    EXPECT_FALSE(surface.ET_isValid());
+    EXPECT_FALSE(surface.ET_hasOpenGLContext());
 }

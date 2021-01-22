@@ -55,6 +55,8 @@ void RenderTextureManager::deinit() {
 }
 
 std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromImage(const char* imageName, ETextureType texType) {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't create image without OpenGL context");
+
     std::string reqImageName = getLookupName(imageName, texType);
     auto it = images.find(reqImageName);
     if(it != images.end() && it->second) {
@@ -77,9 +79,17 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromImage(const ch
 }
 
 std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureType texType) {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't create textrure without OpenGL context");
+
     unsigned int textureId = 0;
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
+
+    if(textureId == 0) {
+        LogError("[RenderTextureManager::ET_createTexture] Can't create basic texture");
+        assert(false && "Invalid OpenGL context state");
+        return nullptr;
+    }
 
     if(auto errStr = RenderUtils::GetGLError()) {
         LogError("[RenderTextureManager::createEmptyTexture] Can't create texture (Error: %s)", errStr);
@@ -185,6 +195,8 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
 }
 
 std::shared_ptr<RenderFramebuffer> RenderTextureManager::ET_createFramebuffer(EFramebufferType type) {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't create framebuffer without OpenGL context");
+
     unsigned int framebufferId = 0;
     glGenFramebuffers(1, &framebufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
