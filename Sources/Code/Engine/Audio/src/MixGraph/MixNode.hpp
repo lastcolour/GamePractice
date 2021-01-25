@@ -3,19 +3,17 @@
 
 class CombineNode;
 class MixGraph;
-struct SourceNode;
 
 class MixNode {
 public:
 
-    MixNode();
+    MixNode(MixGraph* mixGraph);
     virtual ~MixNode();
 
     virtual void additiveMixTo(float* out, int channels, int samples) = 0;
 
     CombineNode* getParent();
     void setParent(CombineNode* newParent);
-    void setMixGraph(MixGraph* mixGraph);
     MixGraph* getMixGraph();
 
 private:

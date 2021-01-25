@@ -35,7 +35,6 @@ void GameLaucher::ET_onSurfaceCreated() {
 }
 
 void GameLaucher::ET_onSurfaceDestroyed() {
-    isViewExist = false;
 }
 
 void GameLaucher::openMainView() {

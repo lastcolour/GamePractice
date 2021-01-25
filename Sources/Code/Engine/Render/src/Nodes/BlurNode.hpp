@@ -16,9 +16,7 @@ protected:
 
     // Node
     void onInit() override;
-    void onRenderStart(RenderContext& ctx) override {}
     void onRender(RenderContext& ctx) override;
-    void onRenderEnd(RenderContext& ctx) override {}
     bool isVisible() const override;
 
 private:

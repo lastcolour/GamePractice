@@ -1,6 +1,5 @@
 #include "Audio/AudioModule.hpp"
 #include "SoundManager.hpp"
-#include "AudioConfig.hpp"
 #include "Logics/SoundPlayLogic.hpp"
 #include "Logics/SoundEqualizerLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
@@ -38,7 +37,6 @@ AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
 }
 
 void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
-    ctx.reflect<AudioConfig>();
 }
 
 void AudioModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

@@ -21,8 +21,8 @@ public:
     MixGraph();
     ~MixGraph();
 
-    bool init();
-    void mix(float* out, int channels, int samples);
+    bool init(const MixConfig& newMixConfig);
+    void mixBufferAndConvert(float* out);
 
     bool playSound(SoundStream* stream);
 
@@ -43,8 +43,8 @@ private:
 
 private:
 
-    Resampler resampler;
     MixConfig config;
+    Resampler resampler;
     CombineNode gameNode;
     CombineNode musicNode;
     CombineNode uiNode;

@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <cassert>
 
-CombineNode::CombineNode() :
+CombineNode::CombineNode(MixGraph* mixGraph) :
+    MixNode(mixGraph),
+    equalizer(&mixGraph->getMixConfig()),
     isMixing(false) {
 }
 

@@ -10,7 +10,8 @@
 
 #include <cassert>
 
-OggSourceNode::OggSourceNode() :
+OggSourceNode::OggSourceNode(MixGraph* mixGraph) :
+    MixNode(mixGraph),
     soundStream(nullptr),
     samplesOffset(0),
     volume(1.f) {

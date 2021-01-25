@@ -9,6 +9,9 @@
 
 namespace {
 
+const float SLOW_DOWN_ACC_MULT = 4.f;
+const float RESET_SPEED_STATIC_DUR = 0.05f;
+
 AABB2Di calcScrollArea(UIScrollType scrollType, const AABB2Di& scrollBox, const AABB2Di& targetBox) {
     auto targetSize = targetBox.getSize();
     auto scrollSize = scrollBox.getSize();
@@ -142,6 +145,7 @@ void UIScrollArea::onPress(const Vec2i& pt) {
     moveState.accumDt = 0.f;
     moveState.vel = 0.f;
     moveState.acc = 0.f;
+    moveState.staticT = 0.f;
 
     isPressed = true;
 
@@ -181,20 +185,23 @@ void UIScrollArea::addReleaseImpulse() {
 
     if(style.type == UIScrollType::Horizontal) {
         endVel = posDt.x / dt;
-        moveState.destPt += Vec2i(static_cast<int>(endVel * 2048.f), 0);
     } else {
         endVel = posDt.y / dt;
-        moveState.destPt += Vec2i(0, static_cast<int>(endVel * 2048.f));
     }
 
-    if(moveState.vel * endVel > 0.f) {
-        if(moveState.vel > 0.f) {
-            moveState.vel = std::max(moveState.vel, endVel);
-        } else {
-            moveState.vel = std::min(moveState.vel, endVel);
-        }
+    if(moveState.vel >= 0.f) {
+        moveState.vel = std::max(moveState.vel, endVel);
+    } else {
+        moveState.vel = std::min(moveState.vel, endVel);
     }
-    moveState.acc = -4.f * moveState.vel;
+
+    moveState.acc = -SLOW_DOWN_ACC_MULT * moveState.vel;
+
+    if(style.type == UIScrollType::Horizontal) {
+        moveState.destPt += Vec2i(static_cast<int>(moveState.vel * 2048.f), 0);
+    } else {
+        moveState.destPt += Vec2i(0, static_cast<int>(moveState.vel * 2048.f));
+    }
 
     path.clear();
 }
@@ -332,7 +339,11 @@ void UIScrollArea::ET_onUITick(float dt) {
     UI::Set2DPositionDoNotUpdateLayout(targetId, resPt);
 
     if(reachedDest && isPressed) {
-        moveState.vel = 0.f;
+        moveState.staticT += dt;
+        if(moveState.staticT > RESET_SPEED_STATIC_DUR) {
+            moveState.staticT = 0.f;
+            moveState.vel = 0.f;
+        }
     }
 
     if(!isPressed && std::abs(moveState.vel) < 0.01f) {

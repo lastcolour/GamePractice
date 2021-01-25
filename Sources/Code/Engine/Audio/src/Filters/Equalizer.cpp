@@ -1,14 +1,13 @@
 #include "Filters/Equalizer.hpp"
 #include "Math/Primitivies.hpp"
 #include "AudioUtils.hpp"
+#include "MixGraph/MixConfig.hpp"
 
 #include <cmath>
 #include <algorithm>
 #include <vector>
 
 namespace {
-
-const int SampleRate = 44100.f;
 
 const float EQLowFreq = 60.f;
 const float EQLowMidFreq = 250.f;
@@ -69,7 +68,8 @@ void applyStateStereo(float* from, float* to, int samplesCount, EqualizerState& 
 
 } // namespace
 
-Equalizer::Equalizer() :
+Equalizer::Equalizer(const MixConfig* config) :
+    mixConfig(config),
     performLerp(false) {
     setSetup(setup);
     performLerp = false;
@@ -80,31 +80,31 @@ void Equalizer::setSetup(const EqualizerSetup& newSetup) {
     currState.isUnit = true;
 
     float lowGain = convertToGain(newSetup.low);
-    currState.lfilters[0] = CreateLowShelf(lowGain, EQLowFreq / SampleRate);
+    currState.lfilters[0] = CreateLowShelf(lowGain, EQLowFreq / mixConfig->outSampleRate);
     if(abs(newSetup.low) > 0.01f) {
         currState.isUnit = false;
     }
 
     float lowMidGain = convertToGain(newSetup.lowMid);
-    currState.lfilters[1] = CreatePeaking(lowMidGain, Q_Factor, EQLowMidFreq / SampleRate);
+    currState.lfilters[1] = CreatePeaking(lowMidGain, Q_Factor, EQLowMidFreq / mixConfig->outSampleRate);
     if(abs(newSetup.lowMid) > 0.01f) {
         currState.isUnit = false;
     }
 
     float midGain = convertToGain(newSetup.mid);
-    currState.lfilters[2] = CreatePeaking(midGain, Q_Factor, EQMidFreq / SampleRate);
+    currState.lfilters[2] = CreatePeaking(midGain, Q_Factor, EQMidFreq / mixConfig->outSampleRate);
     if(abs(newSetup.mid) > 0.01f) {
         currState.isUnit = false;
     }
 
     float midHighGain = convertToGain(newSetup.highMid);
-    currState.lfilters[3] = CreatePeaking(midHighGain, Q_Factor, EQHighMidFreq / SampleRate);
+    currState.lfilters[3] = CreatePeaking(midHighGain, Q_Factor, EQHighMidFreq / mixConfig->outSampleRate);
     if(abs(newSetup.highMid) > 0.01f) {
         currState.isUnit = false;
     }
 
     float highGain = convertToGain(newSetup.high);
-    currState.lfilters[4] = CreateHighShelf(highGain, EQHighFreq / SampleRate);
+    currState.lfilters[4] = CreateHighShelf(highGain, EQHighFreq / mixConfig->outSampleRate);
     if(abs(newSetup.high) > 0.01f) {
         currState.isUnit = false;
     }

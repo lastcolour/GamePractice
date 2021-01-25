@@ -4,6 +4,8 @@
 #include "Filters/RecursiveFilter.hpp"
 #include "Filters/EqualizerSetup.hpp"
 
+class MixConfig;
+
 struct EqualizerState {
     RecursiveFilter lfilters[5];
     RecursiveFilter rfilters[5];
@@ -14,7 +16,7 @@ struct EqualizerState {
 struct Equalizer {
 public:
 
-    Equalizer();
+    Equalizer(const MixConfig* config);
 
     void setSetup(const EqualizerSetup& newSetup);
     void exclusiveTransform(float* samples, int channels, int samplesCount);
@@ -26,6 +28,7 @@ private:
 
 private:
 
+    const MixConfig* mixConfig;
     EqualizerSetup setup;
     EqualizerState prevState;
     EqualizerState currState;

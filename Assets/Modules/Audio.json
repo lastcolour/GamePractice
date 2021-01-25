@@ -1,6 +1,0 @@
-{
-    "AudioConfig":{
-        "max_sound_sources":16,
-        "buffer_time":0.1
-    }
-}

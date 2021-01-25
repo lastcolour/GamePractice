@@ -2,9 +2,11 @@
 
 #include <cassert>
 
-MixNode::MixNode() :
-    graph(nullptr),
+MixNode::MixNode(MixGraph* mixGraph) :
+    graph(mixGraph),
     parent(nullptr) {
+
+    assert(mixGraph && "Invalid mix graph");
 }
 
 MixNode::~MixNode() {
@@ -16,11 +18,6 @@ CombineNode* MixNode::getParent() {
 
 void MixNode::setParent(CombineNode* newParent) {
     parent = newParent;
-}
-
-void MixNode::setMixGraph(MixGraph* mixGraph) {
-    assert(mixGraph && "Invalid mix graph");
-    graph = mixGraph;
 }
 
 MixGraph* MixNode::getMixGraph() {

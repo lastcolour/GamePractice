@@ -146,5 +146,6 @@ void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter fil
         ET_SendEvent(&ETDebugRender::ET_update, ctx);
     }
     endFrame();
+
     RenderUtils::ReadFramebufferToImage(*mainFBO, imageBuffer);
 }

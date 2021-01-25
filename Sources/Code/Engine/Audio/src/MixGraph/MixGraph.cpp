@@ -3,18 +3,22 @@
 #include "MixGraph/OggSourceNode.hpp"
 #include "SoundStream.hpp"
 #include "Core/ETLogger.hpp"
+#include "AudioUtils.hpp"
 
 #include <algorithm>
 #include <cassert>
 
 namespace {
 
-const int MAX_SOURCES = 32;
+const float LOW_PASS_FREQ = 20000.f;
 
 } // namespace
 
 MixGraph::MixGraph() :
     resampler(this),
+    gameNode(this),
+    musicNode(this),
+    uiNode(this),
     masterVolume(1.f) {
 }
 
@@ -22,17 +26,18 @@ MixGraph::~MixGraph() {
     sources.clear();
 }
 
-bool MixGraph::init() {
-    gameNode.setMixGraph(this);
-    musicNode.setMixGraph(this);
-    uiNode.setMixGraph(this);
-    for(int i = 0; i < MAX_SOURCES; ++i) {
-        auto source = new OggSourceNode();
-        source->setMixGraph(this);
+bool MixGraph::init(const MixConfig& newMixConfig) {
+    if(!CheckMixConfig(newMixConfig)) {
+        return false;
+    }
+
+    config = newMixConfig;
+    for(int i = 0; i < config.maxSources; ++i) {
+        auto source = new OggSourceNode(this);
         sources.emplace_back(source);
     }
 
-    lLowPass = CreateLowPass(20000.0 / 44100.f);
+    lLowPass = CreateLowPass(LOW_PASS_FREQ / config.outSampleRate);
     rLowPass = lLowPass;
 
     return true;
@@ -48,20 +53,20 @@ void MixGraph::resizeBuffers(int channels, int samples) {
     }
 }
 
-void MixGraph::mix(float* out, int channels, int samples) {
-    std::fill_n(out, channels * samples, 0.f);
+void MixGraph::mixBufferAndConvert(float* out) {
+    std::fill_n(out, config.channels * config.samplesPerBuffer, 0.f);
 
-    resizeBuffers(channels, samples);
+    resizeBuffers(config.channels, config.samplesPerBuffer);
 
-    gameNode.additiveMixTo(out, channels, samples);
-    musicNode.additiveMixTo(out, channels, samples);
-    uiNode.additiveMixTo(out, channels, samples);
+    gameNode.additiveMixTo(out, config.channels, config.samplesPerBuffer);
+    musicNode.additiveMixTo(out, config.channels, config.samplesPerBuffer);
+    uiNode.additiveMixTo(out, config.channels, config.samplesPerBuffer);
 
-    applyLowPass(out, channels, samples);
+    applyLowPass(out, config.channels, config.samplesPerBuffer);
 
     int lowClipCount = 0;
     int highClipCount = 0;
-    for(int i = 0; i < samples * channels; ++i) {
+    for(int i = 0; i < config.channels * config.samplesPerBuffer; ++i) {
         out[i] *= masterVolume;
         if(out[i] > 1.f) {
             out[i] = 1.f;
@@ -75,6 +80,9 @@ void MixGraph::mix(float* out, int channels, int samples) {
     if(lowClipCount > 1 || highClipCount > 1) {
         LogWarning("[MixGraph::mix] Detected clipping: LOW = %d, HIGHT = %d", lowClipCount, highClipCount);
     }
+
+    Audio::ConverFloatToInt16(out, reinterpret_cast<int16_t*>(out),
+        config.channels * config.samplesPerBuffer);
 }
 
 MixNode* MixGraph::getFreeSource() {

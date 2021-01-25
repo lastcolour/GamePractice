@@ -27,7 +27,7 @@ void RenderShader::setTexture2D(UniformType varType, const RenderTexture& tex) {
     setUniform1i(varType, activeTexUnitId);
     glActiveTexture(GL_TEXTURE0 + activeTexUnitId);
     tex.bind();
-    ++activeTexUnitId;
+    //++activeTexUnitId;
 }
 
 void RenderShader::setUniform1i(UniformType varType, int val) {

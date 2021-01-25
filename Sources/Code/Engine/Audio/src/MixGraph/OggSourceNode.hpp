@@ -13,7 +13,7 @@ class OggDataStream;
 class OggSourceNode : public MixNode, public SourceNode {
 public:
 
-    OggSourceNode();
+    OggSourceNode(MixGraph* mixGraph);
     virtual ~OggSourceNode();
 
     // SourceNode

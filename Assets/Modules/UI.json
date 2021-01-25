@@ -9,7 +9,6 @@
             "loadingView":"UI/LoadingView/LoadingView.json",
             "pauseView":"UI/PauseView/PauseView.json",
             "levelsView":"UI/LevelsView/LevelsView.json"
-        },
-        "scroll":{}
+        }
     }
 }

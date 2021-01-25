@@ -1,39 +1,15 @@
 #include "Desktop/ALAudioSystem.hpp"
-#include "AudioConfig.hpp"
 #include "Core/ETLogger.hpp"
 #include "Core/ETApplication.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 #include "Nodes/ETSoundNode.hpp"
+#include "AudioUtils.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
 
 #include <cassert>
 #include <algorithm>
-
-namespace {
-
-const unsigned int DEVICE_FRAMERATE = 44100;
-const unsigned int DEVICE_CHANNELS = 2;
-const unsigned int DEVICE_FORMAT = AL_FORMAT_STEREO16;
-const unsigned int AL_BUFFERS = 4;
-const float BUFFER_TIME = 0.1f;
-const unsigned int SAMPLES_PER_BUFFER =
-    static_cast<unsigned int>((DEVICE_FRAMERATE * BUFFER_TIME) / AL_BUFFERS);
-
-void covertFloatToInt16(int16_t* out, float* source, int samples) {
-    for(int i = 0; i < samples; ++i) {
-        float fVal = source[i];
-        fVal += 1.0;
-        fVal *= 32768.0f;
-        auto iVal = static_cast<int32_t>(fVal);
-        iVal = std::min(65536, std::max(0, iVal));
-        iVal -= 32768;
-        out[i] = static_cast<int16_t>(iVal);
-    }
-}
-
-} // namespace
 
 ALAudioSystem::ALAudioSystem() :
     alcDevice(nullptr),
@@ -46,14 +22,16 @@ ALAudioSystem::~ALAudioSystem() {
 }
 
 bool ALAudioSystem::init() {
+    MixConfig defConfig;
+    defConfig.samplesPerBuffer = (defConfig.outSampleRate * defConfig.buffersTime) / defConfig.buffersCount;
+    if(!mixGrap.init(defConfig)) {
+        LogError("[ALAudioSystem::init] Can't init mix graph");
+        return false;
+    }
     if(!initSoundContext()) {
         return false;
     }
     if(!initAlSource()) {
-        return false;
-    }
-    if(!mixGrap.init()) {
-        LogError("[ALAudioSystem::init] Can't init mix graph");
         return false;
     }
     ETNode<ETSoundUpdateTask>::connect(getEntityId());
@@ -63,11 +41,12 @@ bool ALAudioSystem::init() {
 }
 
 void ALAudioSystem::deinit() {
+    auto& mixConfig = mixGrap.getMixConfig();
     if(alSourceId) {
         alSourceStop(alSourceId);
         alSourcei(alSourceId, AL_BUFFER, AL_NONE);
         alDeleteSources(1, &alSourceId);
-        alDeleteBuffers(AL_BUFFERS, alBufferIds.get());
+        alDeleteBuffers(mixConfig.buffersCount, alBufferIds.get());
         alSourceId = 0;
     }
     if(alcContext) {
@@ -113,25 +92,28 @@ bool ALAudioSystem::initAlSource() {
     alSource3f(alSourceId, AL_POSITION, 0.f, 0.f, 0.f);
     alSource3f(alSourceId, AL_VELOCITY, 0.f, 0.f, 0.f);
 
-    alBufferIds.reset(new ALuint[AL_BUFFERS]);
-    alGenBuffers(AL_BUFFERS, alBufferIds.get());
+    auto& config = mixGrap.getMixConfig();
+
+    alBufferIds.reset(new ALuint[config.buffersCount]);
+    alGenBuffers(config.buffersCount, alBufferIds.get());
     alError = alGetError();
     if(alError != AL_NO_ERROR) {
         LogWarning("[ALSoundSource::initAlSource] Can't generate AL buffers for a source (Error: %s)", alGetString(alError));
         return false;
     }
 
-    mixBuffer.reset(new float[SAMPLES_PER_BUFFER * DEVICE_CHANNELS]);
+    mixBuffer.reset(new float[config.samplesPerBuffer * config.channels]);
     if(!mixBuffer) {
         LogWarning("[ALSoundSource::initAlSource] Can't allocate mix buffer", alGetString(alError));
         return false;
     }
 
-    std::fill_n(reinterpret_cast<int16_t*>(mixBuffer.get()), SAMPLES_PER_BUFFER * DEVICE_CHANNELS, 0);
+    std::fill_n(reinterpret_cast<int16_t*>(mixBuffer.get()), config.samplesPerBuffer * config.channels, 0);
 
-    for(auto i = 0; i < AL_BUFFERS; ++i) {
+    for(auto i = 0; i < config.buffersCount; ++i) {
         auto bufferId = (alBufferIds.get())[i];
-        alBufferData(bufferId, DEVICE_FORMAT, mixBuffer.get(), 512, DEVICE_FRAMERATE);
+        alBufferData(bufferId, AL_FORMAT_STEREO16, mixBuffer.get(),
+            config.samplesPerBuffer * config.channels * sizeof(int16_t), config.outSampleRate);
         alSourceQueueBuffers(alSourceId, 1, &bufferId);
     }
 
@@ -150,34 +132,35 @@ void ALAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETSoundNode>();
     ET_PollAllEvents<ETSoundEventNode>();
 
+    auto& config = mixGrap.getMixConfig();
+
     if(!alSourcePlaying) {
         alSourcePlay(alSourceId);
         alSourcePlaying = true;
         return;
     }
 
-    ALuint bufferQueue[AL_BUFFERS];
+    std::unique_ptr<ALuint> bufferQueue(new ALuint[config.buffersCount]);
     ALint buffersProcessed = 0;
     alGetSourcei(alSourceId, AL_BUFFERS_PROCESSED, &buffersProcessed);
     if(buffersProcessed == 0) {
         return;
     }
-    if(buffersProcessed == AL_BUFFERS) {
+    if(buffersProcessed == config.buffersCount) {
         LogWarning("[ALAudioSystem::ET_onSystemTick] All buffers processed!");
     }
 
     for(ALint i = 0; i < buffersProcessed; ++i) {
         ALuint bufferId;
         alSourceUnqueueBuffers(alSourceId, 1, &bufferId);
-        bufferQueue[i] = bufferId;
+        (bufferQueue.get())[i] = bufferId;
     }
 
     for(ALint i = 0; i < buffersProcessed; ++i) {
-        auto bufferId = bufferQueue[i];
-        mixGrap.mix(mixBuffer.get(), DEVICE_CHANNELS, SAMPLES_PER_BUFFER);
-        covertFloatToInt16(reinterpret_cast<int16_t*>(mixBuffer.get()), mixBuffer.get(), SAMPLES_PER_BUFFER * DEVICE_CHANNELS);
-        alBufferData(bufferId, DEVICE_FORMAT, mixBuffer.get(),
-            SAMPLES_PER_BUFFER * sizeof(int16_t) * DEVICE_CHANNELS, DEVICE_FRAMERATE);
+        auto bufferId = (bufferQueue.get())[i];
+        mixGrap.mixBufferAndConvert(mixBuffer.get());
+        alBufferData(bufferId, AL_FORMAT_STEREO16, mixBuffer.get(),
+            config.samplesPerBuffer * config.channels * sizeof(int16_t), config.outSampleRate);
         alSourceQueueBuffers(alSourceId, 1, &bufferId);
     }
 

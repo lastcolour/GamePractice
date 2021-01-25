@@ -34,6 +34,14 @@ bool UIViewManager::ET_openView(UIViewType viewType) {
     if(isLoadingView) {
         LogError("[UIViewManager::ET_openView] Already loading another view");
     }
+    for(auto& view : stack) {
+        if(view.type == viewType) {
+            LogError("[UIViewManager::ET_openView] Can't open view that already on the stack: '%s'",
+                UI::GetViewTypeName(viewType));
+            assert(false && "Invalid view open request");
+            return false;
+        }
+    }
     if(!stack.empty()) {
         auto topViewId = stack.back().id;
         ET_SendEvent(topViewId, &ETUIView::ET_setFocus, false);

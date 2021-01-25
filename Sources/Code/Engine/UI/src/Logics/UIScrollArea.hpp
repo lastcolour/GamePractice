@@ -80,6 +80,7 @@ private:
         float vel;
         float accumDt;
         float acc;
+        float staticT;
         int frameShift;
     };
 

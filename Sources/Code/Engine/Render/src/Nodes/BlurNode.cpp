@@ -19,6 +19,10 @@ void resizeFBOTexture(RenderFramebuffer& fbo, const Vec2i& newSize) {
         LogError("[resizeFBOTexture] Can't resize fbo to a size: %dx%d", newSize.x, newSize.y);
     }
     fbo.color0.unbind();
+
+    fbo.bind();
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo.color0.texId, 0);
+    fbo.unbind();
 }
 
 } // namespace
@@ -54,7 +58,8 @@ bool BlurNode::isVisible() const {
 }
 
 void BlurNode::blurPass(RenderFramebuffer& first, RenderFramebuffer& second) {
-    Vec2i size = first.color0.getSize();
+    Vec2i size = second.color0.getSize();
+
     {
         first.bind();
         shader->setTexture2D(UniformType::Texture, second.color0);
@@ -77,18 +82,21 @@ void BlurNode::onRender(RenderContext& ctx) {
     Vec2i size = mainFBO->color0.getSize();
     Vec2i scaledSize = size / downScale;
 
-    auto extraFBO = ctx.exraFBOs[0];
-    resizeFBOTexture(*extraFBO, scaledSize);
+    auto firstFBO = ctx.exraFBOs[0];
+    auto secondFBO = ctx.exraFBOs[1];
 
-    RenderUtils::BlitFromFBOtoFBO(*mainFBO, *extraFBO);
+    resizeFBOTexture(*firstFBO, scaledSize);
+    resizeFBOTexture(*secondFBO, scaledSize);
+
+    RenderUtils::BlitFromFBOtoFBO(*mainFBO, *firstFBO);
 
     glViewport(0, 0, scaledSize.x, scaledSize.y);
-    for(int i = 0; i < passes; ++i) {
-        // blurPass(*extraFBO, *mainFBO);
+    for(int i = 0; i < 1; ++i) {
+        blurPass(*secondFBO, *firstFBO);
     }
+
+    RenderUtils::BlitFromFBOtoFBO(*firstFBO, *mainFBO);
+
     glViewport(0, 0, size.x, size.y);
-
-    RenderUtils::BlitFromFBOtoFBO(*extraFBO, *ctx.mainFBO);
-
-    ctx.mainFBO->bind();
+    mainFBO->bind();
 }

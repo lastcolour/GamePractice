@@ -9,7 +9,7 @@
 class CombineNode : public MixNode {
 public:
 
-    CombineNode();
+    CombineNode(MixGraph* mixGraph);
     virtual ~CombineNode();
 
     void addChild(MixNode* node);
