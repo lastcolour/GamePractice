@@ -37,7 +37,7 @@ bool MixGraph::init(const MixConfig& newMixConfig) {
         sources.emplace_back(source);
     }
 
-    lLowPass = CreateLowPass(LOW_PASS_FREQ / config.outSampleRate);
+    lLowPass = CreateLowPass(LOW_PASS_FREQ / static_cast<float>(config.outSampleRate));
     rLowPass = lLowPass;
 
     return true;
@@ -72,7 +72,7 @@ void MixGraph::mixBufferAndConvert(float* out) {
             out[i] = 1.f;
             ++highClipCount;
         } else if(out[i] < -1.f) {
-            out[i] = 1.f;
+            out[i] = -1.f;
             ++lowClipCount;
         }
     }

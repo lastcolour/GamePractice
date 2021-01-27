@@ -5,19 +5,16 @@
 AudioBuffer::AudioBuffer() :
     data(nullptr),
     offset(0),
-    size(0),
-    readSize(0) {
+    size(0) {
 }
 
 AudioBuffer::AudioBuffer(AudioBuffer&& other) :
     data(std::move(other.data)),
     offset(other.offset),
-    size(other.size),
-    readSize(other.readSize) {
+    size(other.size) {
 
     other.offset = 0;
     other.size = 0;
-    other.readSize = 0;
 }
 
 AudioBuffer& AudioBuffer::operator=(AudioBuffer&& other) {
@@ -25,11 +22,9 @@ AudioBuffer& AudioBuffer::operator=(AudioBuffer&& other) {
         data = std::move(other.data);
         offset = other.offset;
         size = other.size;
-        readSize = other.readSize;
 
         other.offset = 0;
         other.size = 0;
-        other.readSize = 0;
     }
     return *this;
 }
@@ -37,35 +32,34 @@ AudioBuffer& AudioBuffer::operator=(AudioBuffer&& other) {
 AudioBuffer::~AudioBuffer() {
 }
 
-void AudioBuffer::resize(int newSize) {
-    assert(newSize > 0 && "Invalid size");
-    if(newSize != size) {
-        data.reset(new char[newSize]);
+void AudioBuffer::write(void* from, int writeSize) {
+    assert(writeSize > 0 && "Invalid size");
+    if(writeSize != size) {
+        data.reset(new char[writeSize]);
     }
-    size = newSize;
+    memcpy(data.get(), from, writeSize);
+    size = writeSize;
     offset = 0;
-    readSize = 0;
 }
 
-void AudioBuffer::setReadSize(int newReadSize) {
-    readSize = newReadSize;
+int AudioBuffer::read(void* to, int readSize) {
+    assert(readSize >= 0 && "Invalid read size");
+    int resReadSize = std::min(getAvaibleForRead(), readSize);
+    memcpy(to, data.get() + offset, resReadSize);
+    offset += resReadSize;
+    return resReadSize;
 }
 
-void* AudioBuffer::getPtr() {
-    char* src = data.get();
-    return src + offset;
-}
-
-int AudioBuffer::getAvaibleSizeForRead() const {
-    return readSize - offset;
-}
-
-int AudioBuffer::getTotalSize() const {
+int AudioBuffer::getSize() const {
     return size;
 }
 
-void AudioBuffer::setReadDone(int newSize) {
-    offset += newSize;
+int AudioBuffer::getReadOffset() const {
+    return offset;
+}
+
+int AudioBuffer::getAvaibleForRead() const {
+    return size - offset;
 }
 
 AudioBufferQueue::AudioBufferQueue() {
@@ -79,63 +73,43 @@ void AudioBufferQueue::init(int numBuffers) {
     assert(numBuffers > 0 && "Invalid numBuffres");
 
     buffers.resize(numBuffers);
+    writeQueue.init(numBuffers);
+    readQueue.init(numBuffers);
     for(int i = 0; i < numBuffers; ++i) {
-        pendingWrite.push_back(i);
+        writeQueue.push(&buffers[i]);
     }
 }
 
-AudioBuffer* AudioBufferQueue::getNextRead() {
-    std::lock_guard<std::mutex> lock(mutex);
-    if(pendingRead.empty()) {
-        return nullptr;
-    }
-    int id = pendingRead.front();
-    pendingRead.erase(pendingRead.begin());
-    return &(buffers[id]);
+AudioBuffer* AudioBufferQueue::peekRead() {
+    auto ptr = readQueue.peek();
+    return static_cast<AudioBuffer*>(ptr);
 }
 
-void AudioBufferQueue::putReadDone(AudioBuffer* buffer) {
-    std::lock_guard<std::mutex> lock(mutex);
-    int buffId = -1;
-    for(int i = 0, sz = buffers.size(); i < sz; ++i) {
-        if(&(buffers[i]) == buffer) {
-            buffId = i;
-            break;
-        }
-    }
-    assert(buffId != -1 && "Can't find buffer");
-    if(buffer->getAvaibleSizeForRead() > 0) {
-        pendingRead.insert(pendingRead.begin(), buffId);
-    } else {
-        pendingWrite.push_back(buffId);
+void AudioBufferQueue::tryPopRead() {
+    auto buff = peekRead();
+    assert(buff && "Invalid buffer");
+    if(buff->getAvaibleForRead() == 0) {
+        readQueue.pop();
+        writeQueue.push(buff);
     }
 }
 
-std::vector<AudioBuffer*> AudioBufferQueue::getNextWrites() {
+std::vector<AudioBuffer*> AudioBufferQueue::peekWrites() {
     std::vector<AudioBuffer*> res;
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        for(auto& buffId : pendingWrite) {
-            res.push_back(&(buffers[buffId]));
-        }
-        pendingWrite.clear();
+    auto ptr = writeQueue.peek();
+    while(ptr) {
+        AudioBuffer* buff = static_cast<AudioBuffer*>(ptr);
+        assert(buff->getAvaibleForRead() == 0 && "Buffer should be finised");
+        res.push_back(buff);
+        writeQueue.pop();
+        ptr = writeQueue.peek();
+        break;
     }
     return res;
 }
 
-void AudioBufferQueue::putWritesDone(std::vector<AudioBuffer*>& writeBuffers) {
-    std::lock_guard<std::mutex> lock(mutex);
-    for(auto& writeBuffer : writeBuffers) {
-        assert(writeBuffer->getAvaibleSizeForRead() > 0 && "Empty read size");
-        assert(writeBuffer->getAvaibleSizeForRead() <= writeBuffer->getTotalSize() && "Read read size greater total size");
-        int buffId = -1;
-        for(int i = 0, sz = buffers.size(); i < sz; ++i) {
-            if(&(buffers[i]) == writeBuffer) {
-                buffId = i;
-                break;
-            }
-        }
-        assert(buffId != -1 && "Can't find buffer");
-        pendingRead.push_back(buffId);
+void AudioBufferQueue::submitWrites(std::vector<AudioBuffer*>& writes) {
+    for(auto ptr : writes) {
+        readQueue.push(ptr);
     }
 }

@@ -49,6 +49,7 @@ private:
 private:
 
     MixGraph mixGrap;
+    std::unique_ptr<float[]> mixBuffer;
     AudioBufferQueue bufferQueue;
     oboe::AudioStream* oboeStream;
 };

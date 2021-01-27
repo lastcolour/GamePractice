@@ -79,32 +79,28 @@ TEST_F(SoundTests, CheckBufferQueueSingle) {
 
     for(int i = 0; i < 10; ++i) {
         {
-            auto writeBuffs = bufferQueue.getNextWrites();
+            auto writeBuffs = bufferQueue.peekWrites();
             ASSERT_EQ(writeBuffs.size(), 1);
-            auto buff = writeBuffs[i];
+            auto buff = writeBuffs[0];
 
-            int writeSize = sizeof(int);
-            buff->resize(writeSize);
-            memcpy(buff->getPtr(), &i, writeSize);
-            buff->setReadSize(writeSize);
-            bufferQueue.putWritesDone(writeBuffs);
+            buff->write(&i, sizeof(int));
+            bufferQueue.submitWrites(writeBuffs);
         }
 
         {
-            auto readBuff = bufferQueue.getNextRead();
+            auto readBuff = bufferQueue.peekRead();
             ASSERT_TRUE(readBuff);
 
             int val = -1;
 
             int readSize = sizeof(int);
-            ASSERT_EQ(readSize, readBuff->getAvaibleSizeForRead());
-            memcpy(&val, readBuff->getPtr(), readSize);
-            readBuff->setReadDone(sizeof(int));
+            ASSERT_EQ(readSize, readBuff->getAvaibleForRead());
+            readBuff->read(&val, sizeof(int));
 
             EXPECT_EQ(val, i);
-            ASSERT_EQ(readBuff->getAvaibleSizeForRead(), 0);
+            ASSERT_EQ(readBuff->getAvaibleForRead(), 0);
 
-            bufferQueue.putReadDone(readBuff);
+            bufferQueue.tryPopRead();
         }
     }
 }
@@ -112,70 +108,65 @@ TEST_F(SoundTests, CheckBufferQueueSingle) {
 TEST_F(SoundTests, CheckBufferQueueParallel) {
     AudioBufferQueue bufferQueue;
 
-    const int MAX_ITERATION = 5000;
+    const int MAX_ITERATION = 10;
 
     bufferQueue.init(5);
 
     std::thread readThread([&bufferQueue, MAX_ITERATION](){
         int currIter = 0;
         while(currIter < MAX_ITERATION) {
-            auto readBuff = bufferQueue.getNextRead();
+            auto readBuff = bufferQueue.peekRead();
             if(!readBuff) {
                 continue;
             }
+
             {
-                void* ptr = readBuff->getPtr();
-                int size = readBuff->getAvaibleSizeForRead();
+                int size = readBuff->getAvaibleForRead();
                 ASSERT_EQ(size, 10 * sizeof(int));
-                int* intPtr = static_cast<int*>(ptr);
+
+                int data[5];
+                readBuff->read(&data, 5 * sizeof(int));
+
                 for(int i = 0; i < 5; ++i) {
-                    EXPECT_EQ(intPtr[i], currIter + i);
+                    EXPECT_EQ(data[i], currIter + i);
                 }
-                readBuff->setReadDone(5 * sizeof(int));
             }
 
-            bufferQueue.putReadDone(readBuff);
-            readBuff = bufferQueue.getNextRead();
+            bufferQueue.tryPopRead();
+            readBuff = bufferQueue.peekRead();
             ASSERT_TRUE(readBuff);
 
             {
-                void* ptr = readBuff->getPtr();
-                int size = readBuff->getAvaibleSizeForRead();
+                ASSERT_EQ(readBuff->getAvaibleForRead(), 5 * sizeof(int));
+                int data[5];
+                readBuff->read(&data, 5 * sizeof(int));
 
-                ASSERT_EQ(size, 5 * sizeof(int));
-
-                int* intPtr = static_cast<int*>(ptr);
                 for(int i = 0; i < 5; ++i) {
-                    EXPECT_EQ(intPtr[i], 5 + i + currIter);
+                    EXPECT_EQ(data[i], 5 + currIter + i);
                 }
-                readBuff->setReadDone(size);
-                bufferQueue.putReadDone(readBuff);
             }
+
+            bufferQueue.tryPopRead();
             ++currIter;
         }
     });
 
-    readThread.detach();
-
     int currIter = 0;
     while(currIter < MAX_ITERATION) {
-        auto writeBuffers = bufferQueue.getNextWrites();
+        auto writeBuffers = bufferQueue.peekWrites();
         if(writeBuffers.empty()) {
             continue;
         }
-
         int data[10];
-        int readSize = sizeof(int) * 10;
-
         for(auto& buffer : writeBuffers) {
-            buffer->resize(readSize);
-            buffer->setReadSize(readSize);
             for(int i = 0; i < 10; ++i) {
                 data[i] = i + currIter;
             }
-            memcpy(buffer->getPtr(), &data[0], readSize);
+            buffer->write(&data, sizeof(int) * 10);
             ++currIter;
         }
-        bufferQueue.putWritesDone(writeBuffers);
+        bufferQueue.submitWrites(writeBuffers);
     }
+
+    readThread.join();
 }

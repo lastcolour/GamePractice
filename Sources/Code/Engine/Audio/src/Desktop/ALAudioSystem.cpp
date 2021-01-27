@@ -3,7 +3,6 @@
 #include "Core/ETApplication.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 #include "Nodes/ETSoundNode.hpp"
-#include "AudioUtils.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -104,7 +103,7 @@ bool ALAudioSystem::initAlSource() {
 
     mixBuffer.reset(new float[config.samplesPerBuffer * config.channels]);
     if(!mixBuffer) {
-        LogWarning("[ALSoundSource::initAlSource] Can't allocate mix buffer", alGetString(alError));
+        LogWarning("[ALSoundSource::initAlSource] Can't allocate mix buffer");
         return false;
     }
 

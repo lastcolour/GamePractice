@@ -1,9 +1,9 @@
 #ifndef __AUDIO_BUFFER_QUEUE_HPP__
 #define __AUDIO_BUFFER_QUEUE_HPP__
 
-#include <vector>
+#include "LockFreeQueue.hpp"
+
 #include <memory>
-#include <mutex>
 
 class AudioBuffer {
 public:
@@ -13,13 +13,11 @@ public:
     AudioBuffer& operator=(AudioBuffer&& other);
     ~AudioBuffer();
 
-    void resize(int newSize);
-    void setReadSize(int newReadSize);
-
-    void* getPtr();
-    int getAvaibleSizeForRead() const;
-    int getTotalSize() const;
-    void setReadDone(int newSize);
+    void write(void* from, int writeSize);
+    int read(void* to, int readSize);
+    int getSize() const;
+    int getReadOffset() const;
+    int getAvaibleForRead() const;
 
 private:
 
@@ -31,7 +29,6 @@ private:
     std::unique_ptr<char[]> data;
     int offset;
     int size;
-    int readSize;
 };
 
 class AudioBufferQueue {
@@ -42,18 +39,17 @@ public:
 
     void init(int numBuffers);
 
-    AudioBuffer* getNextRead();
-    void putReadDone(AudioBuffer* buffer);
+    AudioBuffer* peekRead();
+    void tryPopRead();
 
-    std::vector<AudioBuffer*> getNextWrites();
-    void putWritesDone(std::vector<AudioBuffer*>& writeBuffers);
+    std::vector<AudioBuffer*> peekWrites();
+    void submitWrites(std::vector<AudioBuffer*>& writes);
 
 private:
 
-    std::mutex mutex;
     std::vector<AudioBuffer> buffers;
-    std::vector<int> pendingRead;
-    std::vector<int> pendingWrite;
+    LockFreeQueue readQueue;
+    LockFreeQueue writeQueue;
 };
 
 #endif /* __AUDIO_BUFFER_QUEUE_HPP__ */

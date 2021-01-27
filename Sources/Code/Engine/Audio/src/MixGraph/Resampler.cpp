@@ -24,7 +24,7 @@ StreamMixState Resampler::exclusiveResampleTo(float* out, int channels, int samp
         return mixState;
     }
 
-    auto inSamples = (outSampleRate * inSampleRate) / samples;
+    auto inSamples = (inSampleRate * samples) / outSampleRate;
     auto inBufferSize = inSamples * channels * sizeof(float);
     if(buffer.getSize() < inBufferSize) {
         buffer.resize(inBufferSize);

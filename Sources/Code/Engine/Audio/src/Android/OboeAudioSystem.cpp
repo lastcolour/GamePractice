@@ -1,6 +1,10 @@
 #include "Android/OboeAudioSystem.hpp"
 #include "Platform/ETDevice.hpp"
 #include "Core/ETLogger.hpp"
+#include "Nodes/ETSoundNodeManager.hpp"
+#include "Nodes/ETSoundNode.hpp"
+
+#include <cassert>
 
 OboeAudioSystem::OboeAudioSystem() :
     oboeStream(nullptr) {
@@ -23,7 +27,13 @@ bool OboeAudioSystem::initMixer() {
     mixConfig.samplesPerBuffer = (mixConfig.outSampleRate * mixConfig.buffersTime) / mixConfig.buffersCount;
 
     if(!mixGrap.init(mixConfig)) {
-        LogError("[ALAudioSystem::initMixer] Can't init mix graph");
+        LogError("[OboeAudioSystem::initMixer] Can't init mix graph");
+        return false;
+    }
+
+    mixBuffer.reset(new float[mixConfig.samplesPerBuffer * mixConfig.channels]);
+    if(!mixBuffer) {
+        LogWarning("[OboeAudioSystem::initAlSource] Can't allocate mix buffer");
         return false;
     }
 
@@ -54,6 +64,10 @@ bool OboeAudioSystem::initOboeStream() {
     if(res != oboe::Result::OK){
         LogWarning("[OboeAudioSystem::initOboeStream] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
     }
+
+    assert(oboeStream->getChannelCount() == 2);
+    assert(oboeStream->getFormat() == oboe::AudioFormat::I16);
+
     res = oboeStream->start();
     if(res != oboe::Result::OK) {
         LogWarning("[OboeAudioSystem::initOboeStream] Can't start oboe stream. Error: %s", oboe::convertToText(res));
@@ -69,23 +83,26 @@ bool OboeAudioSystem::init() {
         return false;
     }
 
-    ETNode<ETSoundPlayManager>::connect(getEntityId());
     ETNode<ETSoundUpdateTask>::connect(getEntityId());
     ETNode<ETAudioSystem>::connect(getEntityId());
+    ETNode<ETSoundPlayManager>::connect(getEntityId());
 
     return true;
 }
 
 void OboeAudioSystem::ET_updateSound() {
+    ET_PollAllEvents<ETAudioSystem>();
+    ET_PollAllEvents<ETSoundNodeManager>();
+    ET_PollAllEvents<ETSoundNode>();
+    ET_PollAllEvents<ETSoundEventNode>();
+
     auto& mixConfig = mixGrap.getMixConfig();
-    auto buffers = bufferQueue.getNextWrites();
+    auto buffers = bufferQueue.peekWrites();
     for(auto& buff : buffers) {
-        int buffReqSize = mixConfig.samplesPerBuffer * mixConfig.channels * sizeof(float);
-        buff->resize(buffReqSize);
-        mixGrap.mixBufferAndConvert(static_cast<float*>(buff->getPtr()));
-        buff->setReadSize(buffReqSize / 2);
+        mixGrap.mixBufferAndConvert(mixBuffer.get());
+        buff->write(mixBuffer.get(), mixConfig.samplesPerBuffer * mixConfig.channels * sizeof(int16_t));
     }
-    bufferQueue.putWritesDone(buffers);
+    bufferQueue.submitWrites(buffers);
 }
 
 void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
@@ -122,23 +139,19 @@ void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result 
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) {
     auto& mixConfig = mixGrap.getMixConfig();
-    int totalSizeToCopy = numFrames * mixConfig.channels * sizeof(int16_t);
-    int sizeToCopy = totalSizeToCopy;
-    while(sizeToCopy > 0) {
-        auto readBuff = bufferQueue.getNextRead();
-        if(readBuff) {
-            int canCopySize = std::min(readBuff->getAvaibleSizeForRead(), sizeToCopy);
-            memcpy(audioData, readBuff->getPtr(), canCopySize);
-
-            readBuff->setReadDone(canCopySize);
-            bufferQueue.putReadDone(readBuff);
-            sizeToCopy -= canCopySize;
+    int totalSize = numFrames * mixConfig.channels * sizeof(int16_t);
+    int currSize = totalSize;
+    char* out = static_cast<char*>(audioData);
+    int offset = 0;
+    while(currSize > 0) {
+        auto buff = bufferQueue.peekRead();
+        if(buff) {
+            currSize -= buff->read(out + offset, currSize);
+            offset = totalSize - currSize;
+            bufferQueue.tryPopRead();
         } else {
-            int zerosCount = sizeToCopy / 2;
-            int offset = totalSizeToCopy - sizeToCopy;
-            int16_t* ptr = reinterpret_cast<int16_t*>(
-                reinterpret_cast<char*>(audioData) + offset);
-            std::fill_n(ptr, zerosCount, 0);
+            char* ptr = reinterpret_cast<char*>(audioData) + offset;
+            std::fill_n(reinterpret_cast<int16_t*>(ptr), currSize / 2, 0);
             break;
         }
     }
