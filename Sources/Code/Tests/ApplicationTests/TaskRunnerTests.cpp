@@ -149,3 +149,47 @@ TEST_F(TaskRunnerTests, CheckManualMainThreadStepping) {
     EXPECT_EQ(value.load(), MAX_ITER);
     EXPECT_GE(auxValue.load(), MAX_ITER / 3);
 }
+
+TEST_F(TaskRunnerTests, CheckSuspendRunning) {
+    TasksRunner runner;
+
+    std::atomic<bool> runFlag(true);
+    std::atomic<int> val(0);
+
+    runner.createTask("Test", [&val](){
+        val.fetch_add(1);
+    });
+
+    std::thread runThread([&runner, &runFlag](){
+        runner.runUntil(1, [&runFlag](){
+            return runFlag.load();
+        });
+    });
+
+    while(val.load() == 0) {
+        std::this_thread::yield();
+    }
+
+    runner.suspend(true);
+
+    {
+        int first = val.load();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        int second = val.load();
+
+        EXPECT_EQ(first, second);
+    }
+
+    runner.suspend(false);
+
+    {
+        int first = val.load();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        int second = val.load();
+
+        EXPECT_NE(first, second);
+    }
+
+    runFlag.store(false);
+    runThread.join();
+}

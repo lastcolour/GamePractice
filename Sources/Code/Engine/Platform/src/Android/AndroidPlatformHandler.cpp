@@ -1,6 +1,8 @@
 #include "Android/AndroidPlatformHandler.hpp"
 #include "Application.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Core/GlobalEnvironment.hpp"
+#include "Parallel/TasksRunner.hpp"
 
 #include <thread>
 #include <cerrno>
@@ -249,6 +251,7 @@ void AndroindPlatformHandler::onPause(ANativeActivity* activity) {
 }
 
 void AndroindPlatformHandler::onStart(ANativeActivity* activity) {
+    GetEnv()->GetTasksRunner()->suspend(false);
     auto handler = static_cast<AndroindPlatformHandler*>(activity->instance);
     handler->onActivityEvent(ActivityEventType::OnStart);
 }
@@ -256,6 +259,7 @@ void AndroindPlatformHandler::onStart(ANativeActivity* activity) {
 void AndroindPlatformHandler::onStop(ANativeActivity* activity) {
     auto handler = static_cast<AndroindPlatformHandler*>(activity->instance);
     handler->onActivityEvent(ActivityEventType::OnStop);
+    GetEnv()->GetTasksRunner()->suspend(true);
 }
 
 void AndroindPlatformHandler::onResume(ANativeActivity* activity) {

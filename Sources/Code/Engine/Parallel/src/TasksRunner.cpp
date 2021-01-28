@@ -2,6 +2,7 @@
 #include "Parallel/RunTask.hpp"
 #include "ThreadsPool.hpp"
 #include "JobTree.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 #include <unordered_map>
@@ -65,7 +66,8 @@ void calculateParents(JobTree* tree) {
 
 TasksRunner::TasksRunner() :
     predicateFailed(false),
-    mode(RunMode::None) {
+    mode(RunMode::None),
+    suspended(false) {
 }
 
 TasksRunner::~TasksRunner() {
@@ -181,6 +183,13 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
         return nullptr;
     }
 
+    if(suspended.load()) {
+        std::unique_lock<std::mutex> lock(mutex);
+        cond.wait(lock, [this](){
+            return !suspended.load();
+        });
+    }
+
     ThreadJob* nextJob = nullptr;
     {
         if(prevJob) {
@@ -217,6 +226,22 @@ ThreadJob* TasksRunner::getNextJob(const TimePoint& currTime, int threadId) {
         }
     }
     return nullptr;
+}
+
+void TasksRunner::suspend(bool flag) {
+    bool isSuspended = suspended.load();
+    if(isSuspended == flag) {
+        return;
+    }
+    if(flag) {
+        LogInfo("[TasksRunner::suspend] Suspend tasks execution");
+    } else {
+        LogInfo("[TasksRunner::suspend] Resume tasks execution");
+    }
+    suspended.store(flag);
+    if(!flag) {
+        cond.notify_all();
+    }
 }
 
 std::vector<std::unique_ptr<RunTask>>& TasksRunner::getTasks() {

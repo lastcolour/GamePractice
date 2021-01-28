@@ -1,5 +1,6 @@
 #include "Core/GlobalEnvironment.hpp"
 #include "Core/ETSystem.hpp"
+#include "Parallel/TasksRunner.hpp"
 
 #include <cassert>
 
@@ -12,6 +13,7 @@ GlobalEnvironment::GlobalEnvironment() {
         ENV = this;
     }
     etSystem.reset(new ETSystem);
+    taskRunner.reset(new TasksRunner);
 }
 
 GlobalEnvironment::~GlobalEnvironment() {
@@ -22,6 +24,10 @@ GlobalEnvironment::~GlobalEnvironment() {
 
 ETSystem* GlobalEnvironment::GetETSystem() {
     return etSystem.get();
+}
+
+TasksRunner* GlobalEnvironment::GetTasksRunner() {
+    return taskRunner.get();
 }
 
 GlobalEnvironment* GetEnv() {

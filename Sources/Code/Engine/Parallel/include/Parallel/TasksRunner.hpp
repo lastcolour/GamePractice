@@ -6,6 +6,7 @@
 #include <memory>
 #include <mutex>
 #include <atomic>
+#include <condition_variable>
 
 class ThreadsPool;
 class ThreadJob;
@@ -24,6 +25,7 @@ public:
 
     RunTask* createTask(const char* name, RunTask::CallT func);
     void runUntil(int threadCount, PredicateT predicate);
+    void suspend(bool flag);
 
     void startOtherThreads(int threadCount);
     void stepMainTread();
@@ -58,6 +60,8 @@ private:
     std::vector<std::unique_ptr<ThreadJob>> jobs;
     std::vector<ThreadJob*> pendingJobs;
     std::atomic<bool> predicateFailed;
+    std::atomic<bool> suspended;
+    std::condition_variable cond;
     RunMode mode;
 };
 

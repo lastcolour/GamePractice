@@ -15,6 +15,8 @@
 #include "UI/ETUITimer.hpp"
 #include "Game/ETGameTimer.hpp"
 
+#include <cassert>
+
 Application::Application() :
     globalEnv(new GlobalEnvironment()) {
 }
@@ -63,37 +65,38 @@ void Application::deinit() {
 }
 
 void Application::mainLoop() {
-    TasksRunner runner;
+    auto runner = GetEnv()->GetTasksRunner();
+    assert(runner && "Invalid task runner");
     {
-        auto inputUpdate = runner.createTask("Input", []{
+        auto inputUpdate = runner->createTask("Input", []{
             ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
         });
         inputUpdate->setType(RunTaskType::MainThreadOnly);
         inputUpdate->setFrequency(120);
     }
     {
-        auto assetsUpdate = runner.createTask("Assets", [](){
+        auto assetsUpdate = runner->createTask("Assets", [](){
             ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
         });
         assetsUpdate->setType(RunTaskType::NoInMainThread);
         assetsUpdate->setFrequency(120);
     }
     {
-        auto entitiesUpdate = runner.createTask("Entities", [](){
+        auto entitiesUpdate = runner->createTask("Entities", [](){
             ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
         });
         entitiesUpdate->setFrequency(120);
     }
     {
-        auto uiUpdate = runner.createTask("UI", [](){
+        auto uiUpdate = runner->createTask("UI", [](){
             ET_SendEvent(&ETUITimer::ET_onTick);
         });
-        auto renderSync = runner.createTask("RenderSync", [](){
+        auto renderSync = runner->createTask("RenderSync", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
         });
         renderSync->setType(RunTaskType::MainThreadOnly);
     
-        auto gameUpdate = runner.createTask("Game", [](){
+        auto gameUpdate = runner->createTask("Game", [](){
             ET_SendEvent(&ETGameTimer::ET_onTick);
         });
 
@@ -103,26 +106,26 @@ void Application::mainLoop() {
         uiUpdate->addChild(renderSync);
     }
     {
-        auto soundUpdate = runner.createTask("Sound", [](){
+        auto soundUpdate = runner->createTask("Sound", [](){
             ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
         });
         soundUpdate->setTrackPerformance(true);
         soundUpdate->setFrequency(60);
     }
     {
-        auto renderUpdate = runner.createTask("Render", [](){
+        auto renderUpdate = runner->createTask("Render", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
         });
         renderUpdate->setTrackPerformance(true);
         renderUpdate->setType(RunTaskType::MainThreadOnly);
         renderUpdate->setFrequency(60);
 
-        auto particlesUpdate = runner.createTask("Particles", [](){
+        auto particlesUpdate = runner->createTask("Particles", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles);
         });
         particlesUpdate->addChild(renderUpdate);
     }
-    runner.runUntil(4, [](){
+    runner->runUntil(4, [](){
         bool needRun = false;
         ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);
         return needRun;

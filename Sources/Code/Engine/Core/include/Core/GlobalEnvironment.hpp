@@ -4,6 +4,7 @@
 #include <memory>
 
 class ETSystem;
+class TasksRunner;
 
 class GlobalEnvironment {
 public:
@@ -12,10 +13,12 @@ public:
     ~GlobalEnvironment();
 
     ETSystem* GetETSystem();
+    TasksRunner* GetTasksRunner();
 
 private:
 
     std::unique_ptr<ETSystem> etSystem;
+    std::unique_ptr<TasksRunner> taskRunner;
 };
 
 GlobalEnvironment* GetEnv();
