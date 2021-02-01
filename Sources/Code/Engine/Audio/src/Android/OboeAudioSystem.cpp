@@ -24,7 +24,6 @@ bool OboeAudioSystem::initMixer() {
     MixConfig mixConfig;
     mixConfig.outSampleRate = deviceConfig->frameRate;
     mixConfig.samplesPerBurst = deviceConfig->framesPerBurst;
-    mixConfig.samplesPerBuffer = (mixConfig.outSampleRate * mixConfig.buffersTime) / mixConfig.buffersCount;
 
     if(!mixGrap.init(mixConfig)) {
         LogError("[OboeAudioSystem::initMixer] Can't init mix graph");

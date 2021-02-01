@@ -3,6 +3,8 @@
 
 #include "Core/Buffer.hpp"
 
+class LinearResampler;
+
 struct stb_vorbis;
 
 class OggDataStream {
@@ -24,10 +26,14 @@ public:
     int getSampleRate() const;
     int getTotalSamples() const;
 
+    LinearResampler* getResampler();
+    void setResampler(LinearResampler* newResampler);
+
 private:
 
     Buffer oggBuffer;
     stb_vorbis* oggStream;
+    std::unique_ptr<LinearResampler> resampler;
     int oggChannels;
     int oggSampleRate;
     int oggSampleCount;

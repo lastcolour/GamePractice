@@ -27,9 +27,5 @@ bool CheckMixConfig(const MixConfig& config) {
         LogError("[CheckMixConfig] Invalid sample per burst: %d", config.samplesPerBurst);
         res = false;
     }
-    if(config.buffersTime <= 0.f) {
-        LogError("[CheckMixConfig] Invalid buffer time: %.1f", config.buffersTime);
-        res = false;
-    }
     return res;
 }

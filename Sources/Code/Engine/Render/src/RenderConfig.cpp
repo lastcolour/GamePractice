@@ -8,6 +8,6 @@ RenderConfig::RenderConfig() :
 void RenderConfig::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderConfig>("RenderConfig")) {
         classInfo->addField("defaultFont", &RenderConfig::defaultFont);
-        classInfo->addField("defualtFontSize", &RenderConfig::defaultFontSize);
+        classInfo->addField("defaultFontSize", &RenderConfig::defaultFontSize);
     }
 }

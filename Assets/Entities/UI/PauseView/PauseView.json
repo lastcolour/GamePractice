@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 90.0,
+                "y": 80.0,
                 "z": 0.0
               },
               "scale": {
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 32,
+                          "fontSize": 28,
                           "text": "Resume"
                         }
                       }
@@ -145,8 +145,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 393.0,
-                      "y": 79.0
+                      "x": 348.0,
+                      "y": 70.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -208,7 +208,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -90.0,
+                "y": -80.0,
                 "z": 0.0
               },
               "scale": {
@@ -284,7 +284,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 32,
+                          "fontSize": 28,
                           "text": "Exit"
                         }
                       }
@@ -325,8 +325,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 393.0,
-                      "y": 79.0
+                      "x": 348.0,
+                      "y": 70.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -464,7 +464,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 32,
+                          "fontSize": 28,
                           "text": "Restart"
                         }
                       }
@@ -505,8 +505,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 393.0,
-                      "y": 79.0
+                      "x": 348.0,
+                      "y": 70.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -617,8 +617,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 420.0,
-                "y": 367.0
+                "x": 372.0,
+                "y": 325.0
               },
               "tintColor": {
                 "r": 17,
@@ -687,7 +687,7 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "downScaleFactor": 3,
-        "passes": 2
+        "passes": 3
       }
     },
     {

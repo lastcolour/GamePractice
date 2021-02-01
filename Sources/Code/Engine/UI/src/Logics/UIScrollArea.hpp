@@ -44,6 +44,8 @@ public:
     void ET_setStyle(const UIScrollAreaStyle& newStyle) override;
     const UIScrollAreaStyle& ET_getStyle() const override;
     void ET_enableKinematicScroll(bool flag) override;
+    float ET_getScrollProgress() const override;
+    void ET_setScrollProgress(float newScrollProgress) override;
 
     // ETUIElemAligner
     void ET_reAlign() override;
@@ -67,6 +69,7 @@ private:
     void alignTarget();
     void updateMoveState(float dt);
     void addReleaseImpulse();
+    void setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt);
 
 private:
 
@@ -78,10 +81,10 @@ private:
     struct MoveState {
         Vec2i destPt;
         float vel;
-        float accumDt;
         float acc;
-        float staticT;
+        float force;
         int frameShift;
+        bool reachDest;
     };
 
 private:
@@ -90,6 +93,7 @@ private:
     std::vector<PathPoint> path;
     EntityId targetId;
     MoveState moveState;
+    float scrollProgress;
     int extraZOffset;
     bool isPressed;
     bool kinematicScrollEnabled;

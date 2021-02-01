@@ -22,7 +22,6 @@ ALAudioSystem::~ALAudioSystem() {
 
 bool ALAudioSystem::init() {
     MixConfig defConfig;
-    defConfig.samplesPerBuffer = (defConfig.outSampleRate * defConfig.buffersTime) / defConfig.buffersCount;
     if(!mixGrap.init(defConfig)) {
         LogError("[ALAudioSystem::init] Can't init mix graph");
         return false;

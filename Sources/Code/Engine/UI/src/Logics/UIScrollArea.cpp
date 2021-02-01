@@ -9,9 +9,6 @@
 
 namespace {
 
-const float SLOW_DOWN_ACC_MULT = 4.f;
-const float RESET_SPEED_STATIC_DUR = 0.05f;
-
 AABB2Di calcScrollArea(UIScrollType scrollType, const AABB2Di& scrollBox, const AABB2Di& targetBox) {
     auto targetSize = targetBox.getSize();
     auto scrollSize = scrollBox.getSize();
@@ -59,6 +56,7 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
 }
 
 UIScrollArea::UIScrollArea() :
+    scrollProgress(0.f),
     extraZOffset(0),
     isPressed(false),
     kinematicScrollEnabled(true) {
@@ -77,7 +75,6 @@ void UIScrollArea::init() {
     moveState.vel = 0.f;
     moveState.destPt = Vec2i(0);
     moveState.frameShift = 0;
-    moveState.accumDt = 0.f;
     moveState.acc = 0.f;
 
     alignTarget();
@@ -101,9 +98,9 @@ void UIScrollArea::alignTarget() {
     AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
 
     if(style.origin == UIScrollOrigin::Start) {
-        UI::Set2DPositionDoNotUpdateLayout(targetId, scrollArea.bot);
+        setPosUpdateProg(scrollArea, scrollArea.bot);
     } else {
-        UI::Set2DPositionDoNotUpdateLayout(targetId, scrollArea.top);
+        setPosUpdateProg(scrollArea, scrollArea.top);
     }
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
@@ -142,10 +139,9 @@ AABB2Di UIScrollArea::ET_getHitBox() const {
 
 void UIScrollArea::onPress(const Vec2i& pt) {
     moveState.frameShift = 0;
-    moveState.accumDt = 0.f;
     moveState.vel = 0.f;
     moveState.acc = 0.f;
-    moveState.staticT = 0.f;
+    moveState.force = 0.f;
 
     isPressed = true;
 
@@ -181,7 +177,7 @@ void UIScrollArea::addReleaseImpulse() {
     float endVel = 0.f;
 
     float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
-    dt = Math::Clamp(dt, 0.001f, 0.016f);
+    dt = Math::Clamp(dt, 0.001f, 0.008f);
 
     if(style.type == UIScrollType::Horizontal) {
         endVel = posDt.x / dt;
@@ -195,7 +191,8 @@ void UIScrollArea::addReleaseImpulse() {
         moveState.vel = std::min(moveState.vel, endVel);
     }
 
-    moveState.acc = -SLOW_DOWN_ACC_MULT * moveState.vel;
+    moveState.force = -moveState.vel * 16.f;
+    moveState.acc = 0.f;
 
     if(style.type == UIScrollType::Horizontal) {
         moveState.destPt += Vec2i(static_cast<int>(moveState.vel * 2048.f), 0);
@@ -247,8 +244,6 @@ void UIScrollArea::ET_onIngoreTransform(bool flag) {
 }
 
 void UIScrollArea::updateMoveState(float dt) {
-    moveState.accumDt += dt;
-
     Vec2i newPosDt(0);
 
     if(path.size() > 1) {
@@ -257,7 +252,7 @@ void UIScrollArea::updateMoveState(float dt) {
 
         newPosDt = lastEvent.pt - firstEvent.pt;
         float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
-        dt = Math::Clamp(dt, 0.001f, 0.016f);
+        dt = Math::Clamp(dt, 0.001f, 0.008f);
 
         float newVel = 0.f;
 
@@ -270,7 +265,7 @@ void UIScrollArea::updateMoveState(float dt) {
         path.clear();
         path.push_back(lastEvent);
 
-        if(newVel * moveState.vel < 0.f) {
+        if(moveState.reachDest) {
             moveState.vel = newVel;
         } else {
             if(newVel > 0.f) {
@@ -282,6 +277,7 @@ void UIScrollArea::updateMoveState(float dt) {
     }
 
     if(!isPressed) {
+        moveState.acc += moveState.force * dt;
         if(moveState.vel > 0.f) {
             moveState.vel += moveState.acc * dt;
             moveState.vel = std::max(moveState.vel, 0.001f);
@@ -292,11 +288,7 @@ void UIScrollArea::updateMoveState(float dt) {
     }
 
     moveState.destPt += newPosDt;
-    moveState.frameShift = static_cast<int>(moveState.vel * moveState.accumDt);
-
-    if(std::abs(moveState.frameShift) > 0) {
-        moveState.accumDt -= static_cast<float>(moveState.frameShift) / moveState.vel;
-    }
+    moveState.frameShift = static_cast<int>(moveState.vel * dt);
 }
 
 void UIScrollArea::ET_onUITick(float dt) {
@@ -311,40 +303,36 @@ void UIScrollArea::ET_onUITick(float dt) {
 
     moveState.destPt = clampToEdges(scrollArea, moveState.destPt);
 
+    if(moveState.destPt == resPt && isPressed) {
+        return;
+    }
+
     if(style.type == UIScrollType::Horizontal) {
         resPt.x += moveState.frameShift;
     } else {
         resPt.y += moveState.frameShift;
     }
 
-    bool reachedDest = false;
+    moveState.reachDest = false;
     if(style.type == UIScrollType::Horizontal) {
         if(moveState.vel > 0.f && resPt.x >= moveState.destPt.x) {
             resPt.x = moveState.destPt.x;
-            reachedDest = true;
+            moveState.reachDest = true;
         } else if(moveState.vel < 0.f && resPt.x <= moveState.destPt.x) {
             resPt.x = moveState.destPt.x;
-            reachedDest = true;
+            moveState.reachDest = true;
         }
     } else {
         if(moveState.vel > 0.f && resPt.y >= moveState.destPt.y) {
             resPt.y = moveState.destPt.y;
-            reachedDest = true;
+            moveState.reachDest = true;
         } else if(moveState.vel < 0.f && resPt.y <= moveState.destPt.y) {
             resPt.y = moveState.destPt.y;
-            reachedDest = true;
+            moveState.reachDest = true;
         }
     }
 
-    UI::Set2DPositionDoNotUpdateLayout(targetId, resPt);
-
-    if(reachedDest && isPressed) {
-        moveState.staticT += dt;
-        if(moveState.staticT > RESET_SPEED_STATIC_DUR) {
-            moveState.staticT = 0.f;
-            moveState.vel = 0.f;
-        }
-    }
+    setPosUpdateProg(scrollArea, resPt);
 
     if(!isPressed && std::abs(moveState.vel) < 0.01f) {
         ETNode<ETUITimerEvents>::disconnect();
@@ -375,4 +363,35 @@ void UIScrollArea::ET_reAlign() {
 
 void UIScrollArea::ET_enableKinematicScroll(bool flag) {
     kinematicScrollEnabled = flag;
+}
+
+void UIScrollArea::setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt) {
+    float prog = 0.f;
+    Vec2i size = scrollArea.getSize();
+    if(style.type == UIScrollType::Horizontal) {
+        if(size.x > 0) {
+            prog = (newPt.x - scrollArea.bot.x)  / static_cast<float>(size.x);
+        } else {
+            prog = 1.f;
+        }
+    } else {
+        if(size.y > 0) {
+            prog = (newPt.y - scrollArea.bot.y) / static_cast<float>(size.y);
+        } else {
+            prog = 1.f;
+        }
+    }
+    if(style.origin == UIScrollOrigin::End) {
+        prog = 1.f - prog;
+    }
+    scrollProgress = prog;
+    UI::Set2DPositionDoNotUpdateLayout(targetId, newPt);
+}
+
+float UIScrollArea::ET_getScrollProgress() const {
+    return scrollProgress;
+}
+
+void UIScrollArea::ET_setScrollProgress(float newScrollProgress) {
+    scrollProgress = newScrollProgress;
 }

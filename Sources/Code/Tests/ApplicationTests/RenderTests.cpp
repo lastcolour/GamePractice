@@ -645,7 +645,7 @@ TEST_F(RenderTests, CheckNinePatch) {
     Transform tm;
     tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
     ninePatch.setTransform(tm);
-    ninePatch.setSize(Vec2(renderPort.x / 2.f, renderPort.y / 4.f));
+    ninePatch.setSize(Vec2(renderPort.x / 2.f, renderPort.y / 2.f));
 
     std::shared_ptr<RenderTexture> tex;
     {
@@ -677,5 +677,58 @@ TEST_F(RenderTests, CheckNinePatch) {
         ASSERT_TRUE(RenderUtils::ReadFramebufferToImage(*RENDER_FB, *IMAGE_BUFFER));
     }
 
-    dumpImageBuffer();
+    Vec2i center = renderPort / 2;
+    Vec2i size = center;
+
+    {
+        AABB2Di texBox;
+        texBox.bot = center - size / 2 + Vec2i(1);
+        texBox.top = center + size / 2 - Vec2i(1);
+
+        ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, texBox.bot.y);
+        EXPECT_EQ(col, ColorB(255, 0, 0));
+
+        col = IMAGE_BUFFER->getColor(texBox.bot.x, texBox.top.y);
+        EXPECT_EQ(col, ColorB(255, 0, 0));
+
+        col = IMAGE_BUFFER->getColor(texBox.top.x, texBox.bot.y);
+        EXPECT_EQ(col, ColorB(255, 0, 0));
+
+        col = IMAGE_BUFFER->getColor(texBox.top.x, texBox.top.y);
+        EXPECT_EQ(col, ColorB(255, 0, 0));
+    }
+
+    {
+        AABB2Di texBox;
+        texBox.bot = center - size / 2;
+        texBox.top = center + size / 2;
+
+        for(int i = texBox.bot.x + 3; i < texBox.top.x - 3; ++i) {
+            ColorB col = IMAGE_BUFFER->getColor(i, texBox.bot.y);
+            EXPECT_EQ(col, ColorB(0, 255, 0));
+        }
+
+        for(int i = texBox.top.x + 3; i < texBox.top.x - 3; ++i) {
+            ColorB col = IMAGE_BUFFER->getColor(i, texBox.top.y);
+            EXPECT_EQ(col, ColorB(0, 255, 0));
+        }
+
+        for(int i = texBox.bot.y + 3; i < texBox.bot.y - 3; ++i) {
+            ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, i);
+            EXPECT_EQ(col, ColorB(0, 255, 0));
+        }
+
+        for(int i = texBox.bot.y + 3; i < texBox.bot.y - 3; ++i) {
+            ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, i);
+            EXPECT_EQ(col, ColorB(0, 255, 0));
+        }
+    }
+
+    {
+        AABB2Di texBox;
+        texBox.bot = center - size / 2 + Vec2i(3);
+        texBox.top = center + size / 2 - Vec2i(3);
+
+        checkSquare(ColorB(0, 0, 255), texBox.bot.x, texBox.top.x, texBox.bot.y, texBox.top.y);
+    }
 }

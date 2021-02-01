@@ -156,6 +156,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
     }
 
     fontAtlas->bind();
+    fontAtlas->setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
     if(!fontAtlas->resizeAndClear(Vec2i(texWidth, texHeight))) {
         return nullptr;
     }

@@ -1748,7 +1748,7 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "downScaleFactor": 3,
-        "passes": 2
+        "passes": 3
       }
     },
     {

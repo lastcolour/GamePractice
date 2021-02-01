@@ -1,5 +1,6 @@
 #include "OggDataStream.hpp"
 #include "Core/Buffer.hpp"
+#include "MixGraph/LinearResampler.hpp"
 
 #include <stb_vorbis.c>
 
@@ -101,4 +102,12 @@ int OggDataStream::readI16(void* out, int channels, int samples, bool looped) {
 
 int OggDataStream::getTotalSamples() const {
     return oggSampleCount;
+}
+
+LinearResampler* OggDataStream::getResampler() {
+    return resampler.get();
+}
+
+void OggDataStream::setResampler(LinearResampler* newResampler) {
+    resampler.reset(newResampler);
 }
