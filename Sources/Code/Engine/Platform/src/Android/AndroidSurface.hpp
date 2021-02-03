@@ -28,7 +28,7 @@ public:
     Vec2i ET_getSize() const override;
     void ET_swapBuffers() override;
     bool ET_isVisible() const override;
-    bool ET_hasOpenGLContext() const override;
+    bool ET_canRender() const override;
 
     // ETAndroidActivityEvents
     void ET_onActivityEvent(ActivityEventType eventType) override;
@@ -53,6 +53,7 @@ private:
     EGLSurface surface;
     EGLDisplay display;
     EGLConfig config;
+    bool hasFocus;
 };
 
 #endif /* __ANDROID_SURFACE_HPP__ */

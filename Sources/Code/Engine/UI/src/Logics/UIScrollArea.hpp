@@ -70,6 +70,7 @@ private:
     void updateMoveState(float dt);
     void addReleaseImpulse();
     void setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt);
+    void resetMoveState();
 
 private:
 
@@ -97,6 +98,7 @@ private:
     int extraZOffset;
     bool isPressed;
     bool kinematicScrollEnabled;
+    bool isLayoutDirty;
 };
 
 #endif /* __UI_SCROLL_AREA_HPP__ */

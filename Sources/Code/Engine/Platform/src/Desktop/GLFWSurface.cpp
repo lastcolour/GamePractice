@@ -196,7 +196,7 @@ Vec2i GLFWSurface::ET_getSize() const {
     return size;
 }
 
-bool GLFWSurface::ET_hasOpenGLContext() const {
+bool GLFWSurface::ET_canRender() const {
     if(window) {
         return !glfwWindowShouldClose(window);
     }

@@ -64,7 +64,6 @@ bool OboeAudioSystem::initOboeStream() {
         LogWarning("[OboeAudioSystem::initOboeStream] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
     }
 
-    assert(oboeStream->getChannelCount() == 2);
     assert(oboeStream->getFormat() == oboe::AudioFormat::I16);
 
     res = oboeStream->start();

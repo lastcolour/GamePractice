@@ -11,7 +11,7 @@ struct ETSurface {
     virtual Vec2i ET_getSize() const = 0;
     virtual void ET_swapBuffers() = 0;
     virtual bool ET_isVisible() const = 0;
-    virtual bool ET_hasOpenGLContext() const = 0;
+    virtual bool ET_canRender() const = 0;
 };
 
 enum class EActionType {

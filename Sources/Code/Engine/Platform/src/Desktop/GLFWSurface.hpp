@@ -31,7 +31,7 @@ public:
     void ET_swapBuffers() override;
     Vec2i ET_getSize() const override;
     bool ET_isVisible() const override;
-    bool ET_hasOpenGLContext() const override;
+    bool ET_canRender() const override;
 
     // ETInputUpdateTask
     void ET_updateInput() override;

@@ -15,9 +15,9 @@ GameLaucher::~GameLaucher() {
 }
 
 bool GameLaucher::init() {
-    bool hasGLContent = false;
-    ET_SendEventReturn(hasGLContent, &ETSurface::ET_hasOpenGLContext);
-    if(hasGLContent) {
+    bool canRender = false;
+    ET_SendEventReturn(canRender, &ETSurface::ET_canRender);
+    if(canRender) {
         openMainView();
     }
     ETNode<ETSurfaceEvents>::connect(getEntityId());

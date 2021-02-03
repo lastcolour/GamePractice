@@ -90,7 +90,8 @@ AndroidSurface::AndroidSurface() :
     context(EGL_NO_CONTEXT),
     surface(EGL_NO_SURFACE),
     nativeWindow(nullptr),
-    config(nullptr) {
+    config(nullptr),
+    hasFocus(false) {
 }
 
 AndroidSurface::~AndroidSurface() {
@@ -176,15 +177,12 @@ void AndroidSurface::onNativeWindowCreated() {
         if(createEGLSurface()) {
             if(eglMakeCurrent(display, surface, surface, context) == EGL_TRUE) {
                 LogInfo("[AndroidSurface::onNativeWindowCreated] Previous context was restored succssefully");
-                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
                 return;
             }
             LogWarning("[AndroidSurface::onNativeWindowCreated] Can't restore previous context: %s", getEGLErrorStr());
             if(createEGLContext()) {
                 LogInfo("[AndroidSurface::onNativeWindowCreated] Create new context using previous display & new surface");
                 ET_SendEvent(&ETRenderContextEvents::ET_onContextDestroyed);
-                ET_SendEvent(&ETRenderContextEvents::ET_onContextCreated);
-                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
                 return;
             }
             LogWarning("[AndroidSurface::onNativeWindowCreated] Can't create new context using previous surface & display");
@@ -197,8 +195,6 @@ void AndroidSurface::onNativeWindowCreated() {
     if(createEGLDisplay()) {
         if(createEGLContext()) {
             LogInfo("[AndroidSurface::onNativeWindowCreated] Create new context");
-            ET_SendEvent(&ETRenderContextEvents::ET_onContextCreated);
-            ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
             return;
         }
     }
@@ -215,35 +211,46 @@ void AndroidSurface::onNativeWindowDestoryed() {
 }
 
 void AndroidSurface::ET_onActivityEvent(ActivityEventType eventType) {
+    auto prevCanRender = ET_canRender();
     switch(eventType)
     {
-    case ActivityEventType::OnNativeWindowChanged:
-        {
+    case ActivityEventType::OnNativeWindowChanged: {
             ANativeWindow* newNativeWindow = GetAndroindPlatformHandler()->getWindow();
             if(nativeWindow) {
                 onNativeWindowDestoryed();
                 nativeWindow = nullptr;
-                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceDestroyed);
             }
             nativeWindow = newNativeWindow;
             if(nativeWindow) {
                 onNativeWindowCreated();
-                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceCreated);
-                ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, size);
             }
             break;
         }
-    case ActivityEventType::OnWindowFocusGet:
+    case ActivityEventType::OnWindowFocusGet: {
+            hasFocus = true;
+        }
         break;
-    case ActivityEventType::OnWindowFocusLost:
+    case ActivityEventType::OnWindowFocusLost: {
+            hasFocus = false;
+        }
         break;
     default:
         break;
     }
+    if(ET_canRender() && !prevCanRender) {
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceCreated);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, size);
+        ET_SendEvent(&ETRenderContextEvents::ET_onContextCreated);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceShown);
+    }
+    if(!ET_canRender() && prevCanRender) {
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
+        ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceDestroyed);
+    }
 }
 
 void AndroidSurface::ET_updateInput() {
-    if(!ET_hasOpenGLContext()) {
+    if(!ET_canRender()) {
         return;
     }
     Vec2i currSize(0);
@@ -276,14 +283,14 @@ void AndroidSurface::ET_close() {
 }
 
 Vec2i AndroidSurface::ET_getSize() const {
-    if(ET_hasOpenGLContext()) {
+    if(ET_canRender()) {
         return size;
     }
     return Vec2i(0);
 }
 
 void AndroidSurface::ET_swapBuffers() {
-    if(!ET_hasOpenGLContext()) {
+    if(!ET_canRender()) {
         assert(false && "Can't swap buffer in invalid surface");
         LogError("[AndroidSurface::ET_swapBuffers] Can't swap buffer in invalid surface");
         return;
@@ -292,11 +299,12 @@ void AndroidSurface::ET_swapBuffers() {
 }
 
 bool AndroidSurface::ET_isVisible() const {
-    return ET_hasOpenGLContext();
+    return ET_canRender();
 }
 
-bool AndroidSurface::ET_hasOpenGLContext() const {
+bool AndroidSurface::ET_canRender() const {
     return context != EGL_NO_CONTEXT
         && surface != EGL_NO_SURFACE
-        && display != EGL_NO_DISPLAY;
+        && display != EGL_NO_DISPLAY
+        && hasFocus;
 }

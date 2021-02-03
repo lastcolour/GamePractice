@@ -59,23 +59,30 @@ UIScrollArea::UIScrollArea() :
     scrollProgress(0.f),
     extraZOffset(0),
     isPressed(false),
-    kinematicScrollEnabled(true) {
+    kinematicScrollEnabled(true),
+    isLayoutDirty(false) {
 }
 
 UIScrollArea::~UIScrollArea() {
 }
 
 void UIScrollArea::init() {
+    if(targetId == getEntityId()) {
+        LogWarning("[UIScrollArea::init] Can't have host element '%s' as a scroll target",
+            EntityUtils::GetEntityName(targetId));
+        targetId = InvalidEntityId;
+    }
+
     ETNode<ETUIScrollArea>::connect(getEntityId());
     ETNode<ETUIInteractionBox>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
     ETNode<ETUIElemAligner>::connect(getEntityId());
 
     isPressed = false;
-    moveState.vel = 0.f;
-    moveState.destPt = Vec2i(0);
-    moveState.frameShift = 0;
-    moveState.acc = 0.f;
+
+    resetMoveState();
+
+    ET_SendEvent(targetId, &ETUIElement::ET_setHostLayout, getEntityId());
 
     alignTarget();
 }
@@ -84,11 +91,13 @@ void UIScrollArea::alignTarget() {
     if(!targetId.isValid()) {
         return;
     }
-    if(targetId == getEntityId()) {
-        LogWarning("[UIScrollArea::alignTarget] Can't have host element '%s' as a scroll target",
-            EntityUtils::GetEntityName(targetId));
-        targetId = InvalidEntityId;
+    bool isHidden = false;
+    ET_SendEventReturn(isHidden, getEntityId(), &ETUIElement::ET_isHidden);
+    if(isHidden) {
+        isLayoutDirty = true;
         return;
+    } else {
+        isLayoutDirty = false;
     }
 
     AABB2Di targetBox(Vec2i(0), Vec2i(0));
@@ -177,7 +186,7 @@ void UIScrollArea::addReleaseImpulse() {
     float endVel = 0.f;
 
     float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
-    dt = Math::Clamp(dt, 0.001f, 0.008f);
+    dt = std::max(dt, 0.008f);
 
     if(style.type == UIScrollType::Horizontal) {
         endVel = posDt.x / dt;
@@ -191,7 +200,7 @@ void UIScrollArea::addReleaseImpulse() {
         moveState.vel = std::min(moveState.vel, endVel);
     }
 
-    moveState.force = -moveState.vel * 16.f;
+    moveState.force = -moveState.vel * 32.f;
     moveState.acc = 0.f;
 
     if(style.type == UIScrollType::Horizontal) {
@@ -215,7 +224,6 @@ bool UIScrollArea::onMove(const Vec2i& pt) {
 }
 
 void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
-    alignTarget();
 }
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
@@ -229,13 +237,20 @@ void UIScrollArea::ET_onAlphaChanged(float newAlpha) {
 }
 
 void UIScrollArea::ET_onHidden(bool flag) {
-    ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
-    if(!flag) {
+    if(flag) {
+        resetMoveState();
+    }
+    if(isLayoutDirty && !flag) {
         alignTarget();
     }
+    ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
 }
 
 void UIScrollArea::ET_onDisabled(bool flag) {
+    if(flag) {
+        resetMoveState();
+    }
+
     ET_SendEvent(targetId, &ETUIElement::ET_setParentDisabled, flag);
 }
 
@@ -252,7 +267,7 @@ void UIScrollArea::updateMoveState(float dt) {
 
         newPosDt = lastEvent.pt - firstEvent.pt;
         float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
-        dt = Math::Clamp(dt, 0.001f, 0.008f);
+        dt = std::max(dt, 0.008f);
 
         float newVel = 0.f;
 
@@ -276,6 +291,9 @@ void UIScrollArea::updateMoveState(float dt) {
         }
     }
 
+    moveState.destPt += newPosDt;
+    moveState.frameShift = static_cast<int>(moveState.vel * dt);
+
     if(!isPressed) {
         moveState.acc += moveState.force * dt;
         if(moveState.vel > 0.f) {
@@ -286,9 +304,6 @@ void UIScrollArea::updateMoveState(float dt) {
             moveState.vel = std::min(moveState.vel, -0.001f);
         }
     }
-
-    moveState.destPt += newPosDt;
-    moveState.frameShift = static_cast<int>(moveState.vel * dt);
 }
 
 void UIScrollArea::ET_onUITick(float dt) {
@@ -340,6 +355,13 @@ void UIScrollArea::ET_onUITick(float dt) {
 }
 
 void UIScrollArea::ET_setTarget(EntityId newTargetId) {
+    if(newTargetId == getEntityId()) {
+        LogError("[UIScrollArea::ET_setTarget] Can't add host as a target for a scroll area: '%s'",
+            EntityUtils::GetEntityName(newTargetId));
+        targetId = InvalidEntityId;
+        return;
+    }
+    resetMoveState();
     targetId = newTargetId;
     alignTarget();
 }
@@ -349,6 +371,7 @@ EntityId UIScrollArea::ET_getTarget() const {
 }
 
 void UIScrollArea::ET_setStyle(const UIScrollAreaStyle& newStyle) {
+    resetMoveState();
     style = newStyle;
     alignTarget();
 }
@@ -393,5 +416,20 @@ float UIScrollArea::ET_getScrollProgress() const {
 }
 
 void UIScrollArea::ET_setScrollProgress(float newScrollProgress) {
+    resetMoveState();
     scrollProgress = newScrollProgress;
+}
+
+void UIScrollArea::resetMoveState() {
+    moveState.destPt = Vec2i(0);
+    moveState.vel = 0.f;
+    moveState.acc = 0.f;
+    moveState.force = 0.f;
+    moveState.frameShift = 0;
+    moveState.reachDest = true;
+
+    path.clear();
+    isPressed = false;
+
+    ETNode<ETUITimerEvents>::disconnect();
 }

@@ -24,9 +24,9 @@ TEST_F(GLFWSurfaceTest, CheckNormalFlow) {
     isVisible = surface.ET_isVisible();
     ASSERT_FALSE(isVisible);
 
-    EXPECT_TRUE(surface.ET_hasOpenGLContext());
+    EXPECT_TRUE(surface.ET_canRender());
 
     surface.ET_close();
 
-    EXPECT_FALSE(surface.ET_hasOpenGLContext());
+    EXPECT_FALSE(surface.ET_canRender());
 }

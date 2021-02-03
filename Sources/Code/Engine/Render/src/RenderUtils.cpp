@@ -160,7 +160,7 @@ void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO) {
 
 bool IsOpenGLContextExists() {
     bool hasContext = false;
-    ET_SendEventReturn(hasContext, &ETSurface::ET_hasOpenGLContext);
+    ET_SendEventReturn(hasContext, &ETSurface::ET_canRender);
     return hasContext;
 }
 

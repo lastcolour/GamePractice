@@ -108,9 +108,11 @@ bool ALAudioSystem::initAlSource() {
 
     std::fill_n(reinterpret_cast<int16_t*>(mixBuffer.get()), config.samplesPerBuffer * config.channels, 0);
 
+    auto alFormat = config.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+
     for(auto i = 0; i < config.buffersCount; ++i) {
         auto bufferId = (alBufferIds.get())[i];
-        alBufferData(bufferId, AL_FORMAT_STEREO16, mixBuffer.get(),
+        alBufferData(bufferId, alFormat, mixBuffer.get(),
             config.samplesPerBuffer * config.channels * sizeof(int16_t), config.outSampleRate);
         alSourceQueueBuffers(alSourceId, 1, &bufferId);
     }
@@ -154,10 +156,12 @@ void ALAudioSystem::ET_updateSound() {
         (bufferQueue.get())[i] = bufferId;
     }
 
+    auto alFormat = config.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+
     for(ALint i = 0; i < buffersProcessed; ++i) {
         auto bufferId = (bufferQueue.get())[i];
         mixGrap.mixBufferAndConvert(mixBuffer.get());
-        alBufferData(bufferId, AL_FORMAT_STEREO16, mixBuffer.get(),
+        alBufferData(bufferId, alFormat, mixBuffer.get(),
             config.samplesPerBuffer * config.channels * sizeof(int16_t), config.outSampleRate);
         alSourceQueueBuffers(alSourceId, 1, &bufferId);
     }

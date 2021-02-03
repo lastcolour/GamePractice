@@ -54,6 +54,11 @@ void UILayout::ET_setStyle(const UILayoutStyle& newStyle) {
 }
 
 void UILayout::ET_addItem(EntityId entityId) {
+    if(entityId == getEntityId()) {
+        LogError("[UILayout::ET_addItem] Can't add host as a item to a layout: '%s'",
+            EntityUtils::GetEntityName(entityId));
+        return;
+    }
     children.push_back(entityId);
     ET_SendEvent(entityId, &ETUIElement::ET_setHostLayout, getEntityId());
     calculateLayout();
