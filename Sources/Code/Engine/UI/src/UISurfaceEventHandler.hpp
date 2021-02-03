@@ -25,9 +25,9 @@ public:
     // ETSurfaceEvents
     void ET_onSurfaceCreated() override {}
     void ET_onSurfaceDestroyed() override {}
-    void ET_onSurfaceHidden() override;
-    void ET_onSurfaceShown() override;
-    void ET_onSurfaceLostFocus() override {}
+    void ET_onSurfaceHidden() override {}
+    void ET_onSurfaceShown() override {}
+    void ET_onSurfaceLostFocus() override;
     void ET_onSurfaceGainFocus() override {}
     void ET_onSurfaceResized(const Vec2i& size) override { (void)size; }
 
@@ -35,13 +35,14 @@ private:
 
     void onPress(const Vec2i& pt);
     void onMove(const Vec2i& pt);
-    void onRelease(const Vec2i& pt);
+    void onRelease(const Vec2i& pt, bool releaseIgnore);
 
     std::vector<EntityId> getHoveredEntities(const Vec2i& pt) const;
 
 private:
 
     std::vector<EntityId> eventHandlers;
+    Vec2i lastTouchPt;
 };
 
 #endif /* __UI_SURFACE_EVENT_HANDLER_HPP__ */

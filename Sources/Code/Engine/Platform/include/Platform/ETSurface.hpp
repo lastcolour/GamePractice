@@ -17,7 +17,8 @@ struct ETSurface {
 enum class EActionType {
     Press = 0,
     Move,
-    Release
+    Release,
+    ReleaseAndIgnore
 };
 
 enum class EButtonId {

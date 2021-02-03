@@ -104,6 +104,8 @@ EInputEventResult UIButton::ET_onInputEvent(EActionType type, const Vec2i& pt) {
         case EActionType::Release:
             res = onRelease(pt);
             break;
+        case EActionType::ReleaseAndIgnore:
+            break;
         default: {
             assert(false && "Invalid input event");
             break;
@@ -121,7 +123,7 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
         LogDebug("[UIButton::canContinueEvent] Cursor moved-away");
         return false;
     }
-    auto hitBox = ET_getHitBox();
+    auto hitBox = ET_getBox();
     if(!hitBox.isInside(pt)) {
         LogDebug("[UIButton::canContinueEvent] Cursor moved out of the hit box");
         return false;
@@ -130,7 +132,6 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
 }
 
 EInputEventResult UIButton::onPress(const Vec2i& pt) {
-    EntityId activeBtId;
     pressPt = pt;
     pressTime = TimePoint::GetNowTime();
     return EInputEventResult::Accept;
@@ -152,10 +153,6 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
         ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
     }
     return EInputEventResult::Accept;
-}
-
-AABB2Di UIButton::ET_getHitBox() const {
-    return ET_getBox();
 }
 
 void UIButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {

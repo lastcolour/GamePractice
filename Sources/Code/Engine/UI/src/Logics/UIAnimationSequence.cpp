@@ -160,10 +160,9 @@ void UIAnimationSequence::init() {
     ETNode<ETUIElementEvents>::connect(getEntityId());
 }
 
-void UIAnimationSequence::ET_onTransformChanged(const Transform& newTm) {
-}
-
 void UIAnimationSequence::ET_onLoaded() {
+    ETNode<ETEntityEvents>::disconnect();
+
     if(!ET_IsExistNode<ETUIElement>(getEntityId())) {
         LogWarning("[UIAnimationSequence::ET_onLoaded] Can't have animation without any UI element: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
@@ -361,15 +360,6 @@ void UIAnimationSequence::processFrame(float frameTime, UIAnimationFrame& frame)
     }
 }
 
-void UIAnimationSequence::ET_onBoxChanged(const AABB2Di& newAabb) {
-}
-
-void UIAnimationSequence::ET_onZIndexChanged(int newZIndex) {
-}
-
-void UIAnimationSequence::ET_onAlphaChanged(float newAlpha) {
-}
-
 void UIAnimationSequence::ET_onHidden(bool flag) {
     if(flag && !isAnimHasShowEvent()) {
         ET_stopAnimation();
@@ -377,12 +367,6 @@ void UIAnimationSequence::ET_onHidden(bool flag) {
     if(!flag && autoStart) {
         ET_playAnimation(InvalidEntityId);
     }
-}
-
-void UIAnimationSequence::ET_onDisabled(bool flag) {
-}
-
-void UIAnimationSequence::ET_onIngoreTransform(bool flag) {
 }
 
 bool UIAnimationSequence::isAnimHasShowEvent() const {

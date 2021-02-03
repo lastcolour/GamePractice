@@ -21,6 +21,13 @@
 #include "Game/ETGameTimer.hpp"
 #include "Audio/ETAudioSystem.hpp"
 #include "Render/ETRenderCamera.hpp"
+#include "Core/GlobalEnvironment.hpp"
+
+namespace {
+
+const int EDITOR_THREADS_COUNT = 3;
+
+} // namespace
 
 EditorApp::EditorApp() :
     Application(),
@@ -34,11 +41,9 @@ bool EditorApp::initialize() {
     if(!init()) {
         return false;
     }
-    runner = buildTasksRunner();
-    if(!runner) {
-        return false;
-    }
-    runner->startOtherThreads(3);
+
+    buildTasksRunner();
+    GetEnv()->GetTasksRunner()->startOtherThreads(EDITOR_THREADS_COUNT);
 
     enableGameUpdate(false);
 
@@ -46,15 +51,12 @@ bool EditorApp::initialize() {
 }
 
 void EditorApp::deinitiazlie() {
-    if(runner) {
-        runner->stopOtherTreads();
-        runner.reset();
-    }
+    GetEnv()->GetTasksRunner()->stopOtherTreads();
     deinit();
 }
 
-std::unique_ptr<TasksRunner> EditorApp::buildTasksRunner() {
-    std::unique_ptr<TasksRunner> taskRunner(new TasksRunner);
+void EditorApp::buildTasksRunner() {
+    auto taskRunner = GetEnv()->GetTasksRunner();
     {
         auto assetsUpdate = taskRunner->createTask("Assets", [](){
             ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
@@ -96,7 +98,6 @@ std::unique_ptr<TasksRunner> EditorApp::buildTasksRunner() {
         });
         soundUpdate->setFrequency(60);
     }
-    return taskRunner;
 }
 
 Buffer EditorApp::getReflectModel() {
@@ -176,7 +177,7 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
     Vec2i viewport = Vec2i(width, height);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, viewport);
 
-    runner->stepMainTread();
+    GetEnv()->GetTasksRunner()->stepMainTread();
 
     ET_SendEvent(&ETRender::ET_drawFrameToBuffer, imageBuffer, Vec2i(width, height), DrawContentFilter::None);
     memcpy(out, imageBuffer.getData().getReadData(), viewport.x * viewport.y * 4);

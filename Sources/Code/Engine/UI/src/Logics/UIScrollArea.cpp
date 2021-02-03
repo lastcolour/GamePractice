@@ -103,7 +103,7 @@ void UIScrollArea::alignTarget() {
     AABB2Di targetBox(Vec2i(0), Vec2i(0));
     ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
 
-    AABB2Di scrollBox = ET_getHitBox();
+    AABB2Di scrollBox = getScrollBox();
     AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
 
     if(style.origin == UIScrollOrigin::Start) {
@@ -136,11 +136,15 @@ EInputEventResult UIScrollArea::ET_onInputEvent(EActionType type, const Vec2i& p
             onRelease(pt);
             break;
         }
+        case EActionType::ReleaseAndIgnore: {
+            resetMoveState();
+            break;
+        }
     }
     return EInputEventResult::Accept;
 }
 
-AABB2Di UIScrollArea::ET_getHitBox() const {
+AABB2Di UIScrollArea::getScrollBox() const {
     AABB2Di box;
     ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
     return box;
@@ -168,7 +172,7 @@ void UIScrollArea::onPress(const Vec2i& pt) {
 
 void UIScrollArea::onRelease(const Vec2i& pt) {
     isPressed = false;
-    auto box = ET_getHitBox();
+    auto box = getScrollBox();
     auto clampPt = clampToEdges(box, pt);
     path.push_back({TimePoint::GetNowTime(), clampPt});
     if(kinematicScrollEnabled) {
@@ -213,7 +217,7 @@ void UIScrollArea::addReleaseImpulse() {
 }
 
 bool UIScrollArea::onMove(const Vec2i& pt) {
-    auto box = ET_getHitBox();
+    auto box = getScrollBox();
     if(!box.isInside(pt)) {
         onRelease(pt);
         return false;
@@ -221,9 +225,6 @@ bool UIScrollArea::onMove(const Vec2i& pt) {
         path.push_back({TimePoint::GetNowTime(), pt});
     }
     return true;
-}
-
-void UIScrollArea::ET_onBoxChanged(const AABB2Di& newAabb) {
 }
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
@@ -313,7 +314,7 @@ void UIScrollArea::ET_onUITick(float dt) {
     ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
     Vec2i resPt = targetBox.getCenter();
 
-    AABB2Di scrollBox = ET_getHitBox();
+    AABB2Di scrollBox = getScrollBox();
     AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
 
     moveState.destPt = clampToEdges(scrollArea, moveState.destPt);

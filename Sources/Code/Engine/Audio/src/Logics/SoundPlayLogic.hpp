@@ -4,11 +4,13 @@
 #include "Entity/EntityLogic.hpp"
 #include "Audio/ETSound.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Entity/ETEntity.hpp"
 
 class ReflectContext;
 
 class SoundPlayLogic : public EntityLogic,
-    public ETNode<ETSoundPlayer> {
+    public ETNode<ETSoundPlayer>,
+    public ETNode<ETEntityEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -25,6 +27,10 @@ public:
     // ETSoundPlayer
     void ET_play() override;
     void ET_stop() override;
+
+    // ETEntityEvents
+    void ET_onTransformChanged(const Transform& newTm) override {}
+    void ET_onLoaded() override;
 
 private:
 

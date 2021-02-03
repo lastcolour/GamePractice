@@ -433,9 +433,6 @@ void GameBoardLogic::ET_onHidden(bool flag) {
     }
 }
 
-void GameBoardLogic::ET_onDisabled(bool flag) {
-}
-
 void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
     ETNode<ETUIElementEvents>::disconnect();
     uiBoxId = rootUIElementId;

@@ -22,6 +22,13 @@ SoundPlayLogic::~SoundPlayLogic() {
 void SoundPlayLogic::init() {
     ETNode<ETSoundPlayer>::connect(getEntityId());
     if(autoStart) {
+        ETNode<ETEntityEvents>::connect(getEntityId());
+    }
+}
+
+void SoundPlayLogic::ET_onLoaded() {
+    ETNode<ETEntityEvents>::disconnect();
+    if(autoStart) {
         ET_play();
     }
 }

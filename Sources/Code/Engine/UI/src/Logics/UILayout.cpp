@@ -239,9 +239,6 @@ void UILayout::calculateLayout() {
     isCalculatingLayout = false;
 }
 
-void UILayout::ET_onBoxChanged(const AABB2Di& newAabb) {
-}
-
 void UILayout::ET_onZIndexChanged(int newZIndex) {
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
     childZIndex += extraZOffset;

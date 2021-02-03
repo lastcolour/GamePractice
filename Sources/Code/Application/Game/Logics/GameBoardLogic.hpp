@@ -58,7 +58,7 @@ public:
     void ET_onZIndexChanged(int newZIndex) override;
     void ET_onAlphaChanged(float newAlpha) override;
     void ET_onHidden(bool flag) override;
-    void ET_onDisabled(bool flag) override;
+    void ET_onDisabled(bool flag) override {}
     void ET_onIngoreTransform(bool flag) override {}
 
     // ETGameTimerEvents

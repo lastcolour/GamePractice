@@ -27,10 +27,9 @@ void UIRenderNormalizator::init() {
 void UIRenderNormalizator::deinit() {
 }
 
-void UIRenderNormalizator::ET_onTransformChanged(const Transform& newTm) {
-}
-
 void UIRenderNormalizator::ET_onLoaded() {
+    ETNode<ETEntityEvents>::disconnect();
+
     float normFactor = UI::GetValueOnGrind(factor);
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_setNormalizationScale, normFactor);
 }

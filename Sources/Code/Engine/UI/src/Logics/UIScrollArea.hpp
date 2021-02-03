@@ -36,7 +36,6 @@ public:
 
     // ETUIInteractionBox
     EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
-    AABB2Di ET_getHitBox() const override;
 
     // ETUIScrollArea
     void ET_setTarget(EntityId newTargetId) override;
@@ -51,7 +50,7 @@ public:
     void ET_reAlign() override;
 
     // ETUIElementEvents
-    void ET_onBoxChanged(const AABB2Di& newAabb) override;
+    void ET_onBoxChanged(const AABB2Di& newAabb) override {}
     void ET_onZIndexChanged(int newZIndex) override;
     void ET_onAlphaChanged(float newAlpha) override;
     void ET_onHidden(bool flag) override;
@@ -71,6 +70,7 @@ private:
     void addReleaseImpulse();
     void setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt);
     void resetMoveState();
+    AABB2Di getScrollBox() const;
 
 private:
 

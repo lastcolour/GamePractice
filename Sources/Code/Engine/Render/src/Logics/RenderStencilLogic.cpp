@@ -50,4 +50,6 @@ void RenderStencilLogic::ET_onLoaded() {
     }
     data.mode = mode;
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_setStencilData, data);
+
+    ETNode<ETEntityEvents>::disconnect();
 }

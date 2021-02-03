@@ -42,12 +42,11 @@ public:
 protected:
 
     void buildModules(ModuleListT& modules) override;
-    std::unique_ptr<TasksRunner> buildTasksRunner();
+    void buildTasksRunner();
 
 private:
 
     ImageBuffer imageBuffer;
-    std::unique_ptr<TasksRunner> runner;
     bool updateGame;
 };
 

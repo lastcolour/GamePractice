@@ -113,13 +113,13 @@ void AndroidSurface::deinit() {
 bool AndroidSurface::createEGLSurface() {
     surface = eglCreateWindowSurface(display, config, nativeWindow, nullptr);
     if(surface == EGL_NO_SURFACE) {
-        LogError("[AndroidSurface::createEGLSurface] Can't create window surface. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLSurface] Can't create window surface (Error: %s)", getEGLErrorStr());
         return false;
     }
     Vec2i currSize(0);
     if(EGL_TRUE != eglQuerySurface(display, surface, EGL_HEIGHT, &currSize.y) ||
         EGL_TRUE != eglQuerySurface(display, surface, EGL_WIDTH, &currSize.x)) {
-        LogError("[AndroidSurface::createEGLSurface] Can't query surface size. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLSurface] Can't query surface size (Error: %s)", getEGLErrorStr());
         return false;
     }
     size = currSize;
@@ -129,23 +129,23 @@ bool AndroidSurface::createEGLSurface() {
 bool AndroidSurface::createEGLDisplay() {
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if(display == EGL_NO_DISPLAY) {
-        LogError("[AndroidSurface::createEGLDisplay] Can't get default EGL display. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLDisplay] Can't get default EGL display (Error: %s)", getEGLErrorStr());
         return false;
     }
 
     if(eglInitialize(display, 0, 0) != EGL_TRUE) {
-        LogError("[AndroidSurface::createEGLDisplay] Can't initialize default display. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLDisplay] Can't initialize default display (Error: %s)", getEGLErrorStr());
         return false;
     }
 
     if(!(config = chooseEGLConfig(display))) {
-        LogError("[AndroidSurface::createEGLDisplay] Can't choose EGL config for display. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLDisplay] Can't choose EGL config for display (Error: %s)", getEGLErrorStr());
         return false;
     }
 
     EGLint nativeVisualId;
     if(!eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &nativeVisualId)) {
-        LogError("[AndroidSurface::createEGLDisplay] Can't queury EGL_NATIVE_VISUAL_ID from default display. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLDisplay] Can't queury EGL_NATIVE_VISUAL_ID from default display (Error: %s)", getEGLErrorStr());
         return false;
     }
 
@@ -161,11 +161,11 @@ bool AndroidSurface::createEGLDisplay() {
 bool AndroidSurface::createEGLContext() {
     context = eglCreateContext(display, config, EGL_NO_CONTEXT, EGLContexAttribs);
     if(context == EGL_NO_CONTEXT) {
-        LogError("[AndroidSurface::createEGLContext] Can't create context. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLContext] Can't create context (Error: %s)", getEGLErrorStr());
         return false;
     }
     if(eglMakeCurrent(display, surface, surface, context) != EGL_TRUE) {
-        LogError("[AndroidSurface::createEGLContext] Can't make context current. Error: %s", getEGLErrorStr());
+        LogError("[AndroidSurface::createEGLContext] Can't make context current (Error: %s)", getEGLErrorStr());
         return false;
     }
     LogInfo("[AndroidSurface::createEGLContext] EGL context created");
@@ -179,7 +179,7 @@ void AndroidSurface::onNativeWindowCreated() {
                 LogInfo("[AndroidSurface::onNativeWindowCreated] Previous context was restored succssefully");
                 return;
             }
-            LogWarning("[AndroidSurface::onNativeWindowCreated] Can't restore previous context: %s", getEGLErrorStr());
+            LogWarning("[AndroidSurface::onNativeWindowCreated] Can't restore previous context (Error %s)", getEGLErrorStr());
             if(createEGLContext()) {
                 LogInfo("[AndroidSurface::onNativeWindowCreated] Create new context using previous display & new surface");
                 ET_SendEvent(&ETRenderContextEvents::ET_onContextDestroyed);
@@ -256,7 +256,7 @@ void AndroidSurface::ET_updateInput() {
     Vec2i currSize(0);
     if(EGL_TRUE != eglQuerySurface(display, surface, EGL_HEIGHT, &currSize.y) ||
         EGL_TRUE != eglQuerySurface(display, surface, EGL_WIDTH, &currSize.x)) {
-        LogWarning("[AndroidSurface::ET_onSystemTick] Can't query surface size. Error: %s", getEGLErrorStr());
+        LogWarning("[AndroidSurface::ET_onSystemTick] Can't query surface size (Error: %s)", getEGLErrorStr());
         return;
     }
     if(currSize != size) {
@@ -291,11 +291,14 @@ Vec2i AndroidSurface::ET_getSize() const {
 
 void AndroidSurface::ET_swapBuffers() {
     if(!ET_canRender()) {
-        assert(false && "Can't swap buffer in invalid surface");
+        assert(false && "Can't swap buffers in invalid surface");
         LogError("[AndroidSurface::ET_swapBuffers] Can't swap buffer in invalid surface");
         return;
     }
-    eglSwapBuffers(display, surface);
+    EGLBoolean res = eglSwapBuffers(display, surface);
+    if(res != EGL_TRUE) {
+        LogFatal("[AndroidSurface::ET_swapBuffers] Can't swap buffers (Error: %s)", getEGLErrorStr());
+    }
 }
 
 bool AndroidSurface::ET_isVisible() const {

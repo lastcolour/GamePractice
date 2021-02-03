@@ -167,7 +167,6 @@ void AndroidEventManager::ET_onActivityEvent(ActivityEventType eventType) {
             ET_SendEvent(&ETAppRunStateEvents::ET_onResume);
             break;
         case ActivityEventType::OnPause:
-            ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceHidden);
             ET_SendEvent(&ETAppRunStateEvents::ET_onPause);
             break;
         case ActivityEventType::OnStop:

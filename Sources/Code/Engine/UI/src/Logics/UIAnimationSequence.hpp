@@ -49,16 +49,16 @@ public:
     void ET_applyAdditiveTranform() override;
 
     // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onTransformChanged(const Transform& newTm) override {}
     void ET_onLoaded() override;
 
     // ETUIElementEvents
-    void ET_onBoxChanged(const AABB2Di& newAabb) override;
-    void ET_onZIndexChanged(int newZIndex) override;
-    void ET_onAlphaChanged(float newAlpha) override;
+    void ET_onBoxChanged(const AABB2Di& newAabb) override {}
+    void ET_onZIndexChanged(int newZIndex) override {}
+    void ET_onAlphaChanged(float newAlpha) override {}
     void ET_onHidden(bool flag) override;
-    void ET_onDisabled(bool flag) override;
-    void ET_onIngoreTransform(bool flag) override;
+    void ET_onDisabled(bool flag) override {}
+    void ET_onIngoreTransform(bool flag) override {}
 
 private:
 

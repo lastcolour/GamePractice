@@ -28,7 +28,6 @@ public:
 
     // ETUIInteractionBox
     EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
-    AABB2Di ET_getHitBox() const override;
 
     // ETUIAnimationSequenceEvent
     void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;

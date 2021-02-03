@@ -9,10 +9,36 @@
 
 namespace {
 
-bool isHoverHitBox(const Vec2i& pt, EntityId entId) {
+bool isCulledByHostBoxes(EntityId entId, const Vec2i& checkPt, const AABB2Di& checkBox) {
+    EntityId currCheckEnt = entId;
+
+    while(true) {
+        EntityId hostId;
+        ET_SendEventReturn(hostId, currCheckEnt, &ETUIElement::ET_getHostLayout);
+        if(!hostId.isValid()) {
+            break;
+        }
+        AABB2Di hostBox(0);
+        ET_SendEventReturn(hostBox, hostId, &ETUIElement::ET_getBox);
+        if(!hostBox.isInside(checkPt)) {
+            return true;
+        }
+        currCheckEnt = hostId;
+    }
+
+    return false;
+}
+
+bool isHitBoxHovered(const Vec2i& pt, EntityId entId) {
     AABB2Di elemBox(0);
-    ET_SendEventReturn(elemBox, entId, &ETUIInteractionBox::ET_getHitBox);
-    return elemBox.isInside(pt);
+    ET_SendEventReturn(elemBox, entId, &ETUIElement::ET_getBox);
+    if(!elemBox.isInside(pt)) {
+        return false;
+    }
+    if(isCulledByHostBoxes(entId, pt, elemBox)) {
+        return false;
+    }
+    return true;
 }
 
 bool canAcceptEvent(EntityId entId) {
@@ -34,7 +60,8 @@ bool canAcceptEvent(EntityId entId) {
 
 } // namespace
 
-UISurfaceEventHandler::UISurfaceEventHandler() {
+UISurfaceEventHandler::UISurfaceEventHandler() :
+    lastTouchPt(0) {
 }
 
 UISurfaceEventHandler::~UISurfaceEventHandler() {
@@ -58,7 +85,7 @@ std::vector<EntityId> UISurfaceEventHandler::getHoveredEntities(const Vec2i& pt)
         if(!canAcceptEvent(elemId)) {
             continue;
         }
-        if(isHoverHitBox(pt, elemId)) {
+        if(isHitBoxHovered(pt, elemId)) {
             res.push_back(elemId);
         }
     }
@@ -92,17 +119,19 @@ void UISurfaceEventHandler::onMove(const Vec2i& pt) {
     }
 }
 
-void UISurfaceEventHandler::onRelease(const Vec2i& pt) {
+void UISurfaceEventHandler::onRelease(const Vec2i& pt, bool releaseIgnore) {
+    EActionType releaseType = releaseIgnore ? EActionType::ReleaseAndIgnore : EActionType::Release;
     for(auto& elemId : eventHandlers) {
         if(!elemId.isValid()) {
             continue;
         }
-        ET_SendEvent(elemId, &ETUIInteractionBox::ET_onInputEvent, EActionType::Release, pt);
+        ET_SendEvent(elemId, &ETUIInteractionBox::ET_onInputEvent, releaseType, pt);
     }
     eventHandlers.clear();
 }
 
 void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) {
+    lastTouchPt = pt;
     switch(actionType)
     {
     case EActionType::Press:
@@ -111,9 +140,11 @@ void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) 
     case EActionType::Move:
         onMove(pt);
         break;
-    case EActionType::Release:
-        onRelease(pt);
+    case EActionType::Release: {
+        bool releaseIgnore = false;
+        onRelease(pt, releaseIgnore);
         break;
+    }
     default:
         assert(false && "Invalid event type");
         break;
@@ -132,8 +163,7 @@ void UISurfaceEventHandler::ET_onButton(EActionType actionType, EButtonId button
     }
 }
 
-void UISurfaceEventHandler::ET_onSurfaceHidden() {
-}
-
-void UISurfaceEventHandler::ET_onSurfaceShown() {
+void UISurfaceEventHandler::ET_onSurfaceLostFocus() {
+    bool releaseIgnore = true;
+    onRelease(lastTouchPt, releaseIgnore);
 }

@@ -25,7 +25,7 @@ public:
     void deinit() override;
 
     // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onTransformChanged(const Transform& newTm) override {}
     void ET_onLoaded() override;
 
     // ETUIViewPortEvents

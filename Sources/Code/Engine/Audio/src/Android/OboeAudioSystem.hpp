@@ -8,6 +8,7 @@
 #include "Audio/ETAudioSystem.hpp"
 #include "MixGraph/MixGraph.hpp"
 #include "AudioBufferQueue.hpp"
+#include "Platform/ETSurface.hpp"
 
 #include <oboe/Oboe.h>
 

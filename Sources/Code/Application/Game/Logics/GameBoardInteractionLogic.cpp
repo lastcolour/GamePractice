@@ -116,6 +116,9 @@ void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& 
         setActiveElem(InvalidEntityId);
         break;
     }
+    case EActionType::ReleaseAndIgnore: {
+        setActiveElem(InvalidEntityId);
+    }
     default:
         break;
     }
