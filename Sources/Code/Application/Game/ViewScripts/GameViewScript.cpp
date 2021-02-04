@@ -7,6 +7,7 @@
 #include "UI/ETUIBox.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 
@@ -24,7 +25,6 @@ void GameViewScript::Reflect(ReflectContext& ctx) {
 
 GameViewScript::GameViewScript() :
     postGameTime(1.f),
-    currentPostGameTime(0.f),
     scriptState(State::None),
     gameLeftPostGame(false) {
 }
@@ -34,9 +34,13 @@ GameViewScript::~GameViewScript() {
 
 void GameViewScript::init() {
     BaseViewScript::init();
+
     ETNode<ETGameObjectiveEvents>::connect(getEntityId());
     ETNode<ETGameStateEvents>::connect(getEntityId());
-    ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
+    ETNode<ETSurfaceEvents>::connect(getEntityId());
+
+    eventSeq.init(getEntityId());
 }
 
 void GameViewScript::setGetStatSoundEvent(const char* eventName) {
@@ -76,27 +80,36 @@ void GameViewScript::ET_onViewGetFocus() {
     BaseViewScript::ET_onViewGetFocus();
     switch(scriptState) {
         case State::None: {
-            scriptState = State::ShowStartInfo;
-            if(!UI::PlayAnimation(startInfoId, EAnimSequenceType::Appear, getEntityId())) {
-                ET_onAnimationPlayed(startInfoId, EAnimSequenceType::Appear);
-            }
+            setScriptState(State::ShowingStartInfo);
+            EventSequence::Event event;
+            event.targetId = startInfoId;
+            event.animType = EAnimSequenceType::Appear;
+            event.onEndCallback = [this](){
+                setScriptState(State::Game);
+                ET_SendEvent(&ETGameStateManager::ET_startGame);
+            };
+            eventSeq.addEvent(event);
+            eventSeq.start();
             break;
         }
-        case State::ShowStartInfo: {
+        case State::ShowingStartInfo: {
             break;
         }
         case State::Game: {
             ET_SendEvent(&ETGameStateManager::ET_resumeGame);
             break;
         }
-        case State::ShowEndInfo: {
+        case State::ShowingEndInfo: {
             break;
         }
-        case State::WaitPostGame: {
+        case State::WaitingPostGame: {
+            break;
+        }
+        case State::WaitingEnd: {
             break;
         }
         default: {
-            assert(false && "Invalid script state");
+            assert(false && "invalid script state");
         }
     }
 }
@@ -109,24 +122,25 @@ void GameViewScript::onEvent(const UIEvent& event) {
         case State::None: {
             break;
         }
-        case State::ShowStartInfo: {
-            ET_SendEvent(startInfoId, &ETUITimerEvents::ET_onUITick, 64.f);
+        case State::ShowingStartInfo: {
+            eventSeq.forceFinish();
             break;
         }
         case State::Game: {
             ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::PauseGame);
             break;
         }
-        case State::ShowEndInfo: {
-            ET_SendEvent(endInfoId, &ETUITimerEvents::ET_onUITick, 64.f);
+        case State::ShowingEndInfo: {
+            eventSeq.forceFinish();
+        }
+        case State::WaitingPostGame: {
             break;
         }
-        case State::WaitPostGame: {
-            ET_onUITick(64.f);
+        case State::WaitingEnd: {
             break;
         }
         default: {
-            assert(false && "Invalid script state");
+            assert(false && "invalid script state");
         }
     }
 }
@@ -158,66 +172,121 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
 }
 
 void GameViewScript::ET_onGameEnterState(EGameState state) {
-    if(state == EGameState::PostGame) {
-        assert(scriptState == State::Game && "Invalid script state");
-        if(!UI::PlayAnimation(timeInfoBoxId, EAnimSequenceType::Disappear, InvalidEntityId)) {
-            ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
-        }
-        scriptState = State::ShowEndInfo;
-        ET_SendEvent(&ETGameTimer::ET_setScale, 0.1f);
-        if(!UI::PlayAnimation(endInfoId, EAnimSequenceType::Appear, getEntityId())) {
-            ET_onAnimationPlayed(endInfoId, EAnimSequenceType::Appear);
-        }
+    if(state != EGameState::PostGame) {
+        return;
     }
-}
+    setScriptState(State::ShowingEndInfo);
 
-void GameViewScript::ET_onUITick(float dt) {
-    currentPostGameTime -= dt;
-    if(currentPostGameTime < 0.f) {
-        assert(scriptState == State::WaitPostGame && "Invalid script state");
-        scriptState = State::None;
-        ETNode<ETUITimerEvents>::disconnect();
-        ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
+    if(!UI::PlayAnimation(timeInfoBoxId, EAnimSequenceType::Disappear, InvalidEntityId)) {
+        ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
     }
+    ET_SendEvent(&ETGameTimer::ET_setScale, 0.1f);
+
+    {
+        EventSequence::Event event;
+        event.animType = EAnimSequenceType::Appear;
+        event.targetId = endInfoId;
+        event.onEndCallback = [this](){
+            ET_SendEvent(&ETGameTimer::ET_setScale, 1.f);
+            setScriptState(State::WaitingPostGame);
+        };
+        eventSeq.addEvent(event);
+    }
+
+    eventSeq.start();
 }
 
 void GameViewScript::ET_onGameLeaveState(EGameState gameState) {
-    if(gameState == EGameState::PostGame) {
-        gameLeftPostGame = true;
-        if(scriptState == State::WaitPostGame) {
-            currentPostGameTime = postGameTime;
-            ETNode<ETUITimerEvents>::connect(getEntityId());
-        }
+    if(gameState != EGameState::PostGame) {
+        return;
     }
+    {
+        EventSequence::Event event;
+        event.onEndCallback = [this](){
+            setScriptState(State::WaitingEnd);
+        };
+        eventSeq.addEvent(event);
+    }
+    {
+        EventSequence::Event event;
+        event.startDelay = postGameTime;
+        event.onEndCallback = [this](){
+            setScriptState(State::None);
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
+        };
+        eventSeq.addEvent(event);
+    }
+    eventSeq.start();
 }
 
-void GameViewScript::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {
+void GameViewScript::ET_onSurfaceHidden() {
+    if(!hasFocus()) {
+        return;
+    }
     switch(scriptState) {
         case State::None: {
             break;
         }
-        case State::ShowStartInfo: {
-            scriptState = State::Game;
-            ET_SendEvent(&ETGameStateManager::ET_startGame);
+        case State::ShowingStartInfo: {
+            eventSeq.forceFinish();
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::PauseGame);
             break;
         }
         case State::Game: {
+            ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::PauseGame);
             break;
         }
-        case State::ShowEndInfo: {
-            scriptState = State::WaitPostGame;
-            ET_SendEvent(&ETGameTimer::ET_setScale, 1.f);
-            if(gameLeftPostGame) {
-                currentPostGameTime = postGameTime;
-                ETNode<ETUITimerEvents>::connect(getEntityId());
-            }
+        case State::ShowingEndInfo: {
             break;
         }
-        case State::WaitPostGame: {
+        case State::WaitingPostGame: {
+            break;
+        }
+        case State::WaitingEnd: {
+            eventSeq.forceFinish();
             break;
         }
         default: {
-            assert(false && "Invalid script state");
+            assert(false && "invalid script state");
         }
     }
+}
+
+void GameViewScript::setScriptState(State newState) {
+    switch(newState) {
+        case State::None: {
+            LogDebug("[GameViewScript::setScriptState] Set new state: 'None'");
+            break;
+        }
+        case State::ShowingStartInfo: {
+            assert(scriptState == State::None && "invalid prev state");
+            LogDebug("[GameViewScript::setScriptState] Set new state: 'ShowingStartInfo'");
+            break;
+        }
+        case State::Game: {
+            assert(scriptState == State::ShowingStartInfo && "invalid prev state");
+            LogDebug("[GameViewScript::setScriptState] Set new state: 'Game'");
+            break;
+        }
+        case State::ShowingEndInfo: {
+            assert(scriptState == State::Game && "invalid prev state");
+            LogDebug("[GameViewScript::setScriptState] Set new state: 'ShowingEndInfo'");
+            break;
+        }
+        case State::WaitingPostGame: {
+            assert(scriptState == State::ShowingEndInfo && "invalid prev state");
+            LogDebug("[GameViewScript::setScriptState] Set new state: 'WaitingPostGame'");
+            break;
+        };
+        case State::WaitingEnd: {
+            assert(scriptState == State::WaitingPostGame && "invalid prev state");
+            LogDebug("[GameViewScript::setScriptState] Set new state: 'WaitingEnd'");
+            break;
+        }
+        default: {
+            assert(false && "invalid script state");
+            break;
+        }
+    }
+    scriptState = newState;
 }

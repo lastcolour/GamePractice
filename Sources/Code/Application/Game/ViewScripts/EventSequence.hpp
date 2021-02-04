@@ -3,10 +3,28 @@
 
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUIAnimation.hpp"
+#include "UI/ETUITimer.hpp"
 
 #include <functional>
 
-class EventSequence : public ETNode<ETUIAnimationSequenceEvent> {
+class EventSequence : public ETNode<ETUIAnimationSequenceEvent>,
+    public ETNode<ETUITimerEvents> {
+public:
+
+    struct Event {
+    public:
+
+        Event() : startDelay(0.f),
+            animType(EAnimSequenceType::Appear) {}
+
+    public:
+
+        EntityId targetId;
+        float startDelay;
+        EAnimSequenceType animType;
+        std::function<void(void)> onEndCallback;
+    };
+
 public:
 
     EventSequence();
@@ -15,8 +33,7 @@ public:
     void init(EntityId newTriggerEntId);
     void deinit();
 
-    void addEvent(EntityId entityId, EAnimSequenceType animType);
-    void addEventWithAfterCall(EntityId entityId, EAnimSequenceType animType, std::function<void(EntityId)> afterCall);
+    void addEvent(const EventSequence::Event& newEvent);
 
     void start();
     void forceFinish();
@@ -24,13 +41,8 @@ public:
     // ETUIAnimationSequenceEvent
     void ET_onAnimationPlayed(EntityId targetId, EAnimSequenceType animType) override;
 
-private:
-
-    struct Event {
-        EntityId targetId;
-        EAnimSequenceType animType;
-        std::function<void(EntityId)> afterCall;
-    };
+    // ETUITimerEvents
+    void ET_onUITick(float dt) override;
 
 private:
 
@@ -40,6 +52,9 @@ private:
 
     EntityId triggerId;
     std::vector<Event> pendingEvents;
+    Event* waitDelayEvent;
+    bool isPlaying;
+    bool isTicking;
 };
 
 #endif /* __EVENT_SEQUENCE_HPP__ */

@@ -8,11 +8,13 @@
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Game/Progression/LevelsProgressData.hpp"
+#include "UI/ETUIScrollArea.hpp"
 
 void LevelsViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelsViewScript>("LevelsViewScript")) {
         classInfo->addField("progressLabelId", &LevelsViewScript::progressLabelId);
         classInfo->addField("progressBoxId", &LevelsViewScript::progressBoxId);
+        classInfo->addField("scrollAreaId", &LevelsViewScript::scrollAreaId);
     }
 }
 
@@ -58,10 +60,21 @@ void LevelsViewScript::ET_onViewGetFocus() {
     if(progressDelta) {
         auto starsDelta = progressDelta->current.stars - progressDelta->prev.stars;
         if(starsDelta > 0) {
-            eventSeq.addEvent(progressBoxId, EAnimSequenceType::Highlight);
+            EventSequence::Event event;
+            event.targetId = progressBoxId;
+            event.animType = EAnimSequenceType::Highlight;
+            eventSeq.addEvent(event);
         }
     }
+    {
+        EventSequence::Event event;
+        event.onEndCallback = [this](){
+            ET_SendEvent(scrollAreaId, &ETUIElement::ET_enable);
+        };
+        eventSeq.addEvent(event);
+    }
 
+    ET_SendEvent(scrollAreaId, &ETUIElement::ET_disable);
     eventSeq.start();
 }
 

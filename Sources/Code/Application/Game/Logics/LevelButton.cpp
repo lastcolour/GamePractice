@@ -100,19 +100,31 @@ void LevelButton::ET_setLevelStars(int count) {
 void LevelButton::ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int prevStarCount, int newStarCount) {
     if(prevStarCount != newStarCount) {
         if(prevStarCount == 0 && newStarCount > 0) {
-            eventSeq.addEvent(stars.fristId, EAnimSequenceType::Appear);
+            EventSequence::Event event;
+            event.targetId = stars.fristId;
+            event.animType = EAnimSequenceType::Appear;
+            eventSeq.addEvent(event);
         }
         if(prevStarCount <= 1 && newStarCount > 1) {
-            eventSeq.addEvent(stars.secondId, EAnimSequenceType::Appear);
+            EventSequence::Event event;
+            event.targetId = stars.secondId;
+            event.animType = EAnimSequenceType::Appear;
+            eventSeq.addEvent(event);
         }
         if(prevStarCount <= 2 && newStarCount > 2) {
-            eventSeq.addEvent(stars.thirdId, EAnimSequenceType::Appear);
+            EventSequence::Event event;
+            event.targetId = stars.thirdId;
+            event.animType = EAnimSequenceType::Appear;
+            eventSeq.addEvent(event);
         }
     }
     if(newState != state) {
-        eventSeq.addEventWithAfterCall(getEntityId(), EAnimSequenceType::Highlight, [newState](EntityId targetId){
-            ET_SendEvent(targetId, &ETLevelButton::ET_setLevelState, newState);
-            ET_SendEvent(targetId, &ETUIElement::ET_enable);
-        });
+        EventSequence::Event event;
+        event.targetId = getEntityId();
+        event.animType = EAnimSequenceType::Highlight;
+        event.onEndCallback = [this, newState](){
+            ET_SendEvent(getEntityId(), &ETLevelButton::ET_setLevelState, newState);
+            ET_SendEvent(getEntityId(), &ETUIElement::ET_enable);
+        };
     }
 }

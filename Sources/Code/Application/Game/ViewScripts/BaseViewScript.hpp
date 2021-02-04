@@ -27,9 +27,13 @@ protected:
 
     virtual void onEvent(const UIEvent& event) = 0;
 
+protected:
+
+    bool hasFocus() const;
+
 private:
 
-    bool hasFocus;
+    bool hasFocusFlag;
 };
 
 #endif /* __BASE_VIEW_SCRIPT_HPP__ */

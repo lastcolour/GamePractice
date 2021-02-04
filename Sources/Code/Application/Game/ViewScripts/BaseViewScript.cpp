@@ -3,7 +3,7 @@
 #include "Entity/ETEntity.hpp"
 
 BaseViewScript::BaseViewScript() :
-    hasFocus(false) {
+    hasFocusFlag(false) {
 }
 
 BaseViewScript::~BaseViewScript() {
@@ -24,16 +24,20 @@ void BaseViewScript::ET_onViewClosed() {
 }
 
 void BaseViewScript::ET_onViewGetFocus() {
-    hasFocus = true;
+    hasFocusFlag = true;
 }
 
 void BaseViewScript::ET_onViewLostFocus() {
-    hasFocus = false;
+    hasFocusFlag = false;
 }
 
 void BaseViewScript::ET_onEvent(const UIEvent& event) {
-    if(!hasFocus) {
+    if(!hasFocusFlag) {
         return;
     }
     onEvent(event);
+}
+
+bool BaseViewScript::hasFocus() const {
+    return hasFocusFlag;
 }

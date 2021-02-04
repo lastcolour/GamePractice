@@ -5,17 +5,16 @@
 #include "Game/ViewScripts/ProgressionStars.hpp"
 #include "Game/ETGameScore.hpp"
 #include "Game/ETGame.hpp"
-#include "UI/ETUITimer.hpp"
 #include "Audio/SoundEvent.hpp"
-#include "UI/ETUIAnimation.hpp"
+#include "Platform/ETSurface.hpp"
+#include "Game/ViewScripts/EventSequence.hpp"
 
 class ReflectContext;
 
 class GameViewScript : public BaseViewScript,
     public ETNode<ETGameObjectiveEvents>,
     public ETNode<ETGameStateEvents>,
-    public ETNode<ETUIAnimationSequenceEvent>,
-    public ETNode<ETUITimerEvents> {
+    public ETNode<ETSurfaceEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -38,14 +37,17 @@ public:
     void ET_onGameEnterState(EGameState state) override;
     void ET_onGameLeaveState(EGameState state) override;
 
-    // ETUIAnimationSequenceEvent
-    void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
-
     // ETGameObjectiveEvents
     void ET_onObjectiveCompleted(ObjectiveProgress type) override;
 
-    // ETUITimerEvents
-    void ET_onUITick(float dt) override;
+    // ETSurfaceEvents
+    void ET_onSurfaceCreated() override {}
+    void ET_onSurfaceDestroyed() override {}
+    void ET_onSurfaceHidden() override;
+    void ET_onSurfaceShown() override {}
+    void ET_onSurfaceLostFocus() override {}
+    void ET_onSurfaceGainFocus() override {}
+    void ET_onSurfaceResized(const Vec2i& size) override {}
 
 protected:
 
@@ -54,17 +56,19 @@ protected:
 
 private:
 
-    void setGetStatSoundEvent(const char* eventName);
+    enum class State {
+        None = 0,
+        ShowingStartInfo,
+        Game,
+        ShowingEndInfo,
+        WaitingPostGame,
+        WaitingEnd
+    };
 
 private:
 
-    enum class State {
-        None = 0,
-        ShowStartInfo,
-        Game,
-        ShowEndInfo,
-        WaitPostGame
-    };
+    void setGetStatSoundEvent(const char* eventName);
+    void setScriptState(State newState);
 
 private:
 
@@ -75,9 +79,9 @@ private:
     EntityId startInfoId;
     EntityId endInfoId;
     float postGameTime;
-    float currentPostGameTime;
     State scriptState;
     bool gameLeftPostGame;
+    EventSequence eventSeq;
 };
 
 #endif /* __GAME_VIEW_SCRIPT_HPP__ */

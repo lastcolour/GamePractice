@@ -30,6 +30,7 @@ private:
 
     EntityId progressBoxId;
     EntityId progressLabelId;
+    EntityId scrollAreaId;
     EventSequence eventSeq;
 };
 

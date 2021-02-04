@@ -249,6 +249,13 @@ void GLFWSurface::SetFramebufferSizeCallback(GLFWwindow* window, int w, int h) {
     if(!surface) {
         return;
     }
+    Vec2i newSize(w, h);
+    int iconified = glfwGetWindowAttrib(window, GLFW_ICONIFIED);
+    if(iconified) {
+        if(newSize == Vec2i(0) && surface->size != Vec2i(0)) {
+            return;
+        }
+    }
     surface->size = Vec2i(w, h);
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, surface->size);
 }

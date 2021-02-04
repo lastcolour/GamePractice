@@ -1,10 +1,37 @@
 #include "Game/ViewScripts/EventSequence.hpp"
 #include "Core/ETLogger.hpp"
 #include "Entity/ETEntity.hpp"
+#include "UI/ETUIBox.hpp"
 
 #include <cassert>
 
-EventSequence::EventSequence() {
+namespace {
+
+bool PlayAnimtionSafe(EntityId targetId, EAnimSequenceType animType, EntityId triggerId) {
+    if(!targetId.isValid()) {
+        return false;
+    }
+    if(UI::PlayAnimation(targetId, animType, triggerId)) {
+        return true;
+    }
+
+    LogWarning("[EventSequence::PlayAnimtionSafe] Can't start anim on target: '%s'",
+        EntityUtils::GetEntityName(targetId));
+
+    if(animType == EAnimSequenceType::Appear) {
+        ET_SendEvent(targetId, &ETUIElement::ET_show);
+    } else if(animType == EAnimSequenceType::Disappear) {
+        ET_SendEvent(targetId, &ETUIElement::ET_hide);
+    }
+    return false;
+}
+
+} // namespace
+
+EventSequence::EventSequence() :
+    waitDelayEvent(nullptr),
+    isPlaying(false),
+    isTicking(false) {
 }
 
 EventSequence::~EventSequence() {
@@ -15,27 +42,29 @@ void EventSequence::init(EntityId newTriggerEntId) {
     ETNode<ETUIAnimationSequenceEvent>::connect(triggerId);
 }
 
-void EventSequence::addEvent(EntityId targetId, EAnimSequenceType animType) {
-    assert(targetId.isValid() && "Invalid target id");
+void EventSequence::addEvent(const EventSequence::Event& newEvent) {
+    assert(triggerId.isValid() && "Event sequence not initted");
 
-    Event newEvent;
-    newEvent.animType = animType;
-    newEvent.targetId = targetId;
-    newEvent.afterCall = nullptr;
-    pendingEvents.push_back(newEvent);
-}
+    bool isVoidEvent = true;
+    if(newEvent.targetId.isValid()) {
+        isVoidEvent = false;
+    }
+    if(newEvent.onEndCallback) {
+        isVoidEvent = false;
+    }
+    if(isVoidEvent) {
+        assert(false && "Can't add void event to the sequence");
+        return;
+    }
 
-void EventSequence::addEventWithAfterCall(EntityId targetId, EAnimSequenceType animType, std::function<void(EntityId)> afterCall) {
-   assert(targetId.isValid() && "Invalid target id");
-
-    Event newEvent;
-    newEvent.animType = animType;
-    newEvent.targetId = targetId;
-    newEvent.afterCall = afterCall;
     pendingEvents.push_back(newEvent);
 }
 
 void EventSequence::start() {
+    if(isPlaying) {
+        return;
+    }
+    isPlaying = true;
     startNextEvent();
 }
 
@@ -45,29 +74,59 @@ void EventSequence::ET_onAnimationPlayed(EntityId targetId, EAnimSequenceType an
 
     assert(event.targetId == targetId && "Invalid target id");
 
-    if(event.afterCall) {
-        event.afterCall(event.targetId);
+    if(event.onEndCallback) {
+        event.onEndCallback();
     }
 
     pendingEvents.erase(pendingEvents.begin());
     startNextEvent();
 }
 
+void EventSequence::ET_onUITick(float dt) {
+    assert(!pendingEvents.empty() && "no pending events");
+    if(!waitDelayEvent) {
+        return;
+    }
+    assert(waitDelayEvent == &pendingEvents.front() && "invalid delayed event");
+    waitDelayEvent->startDelay -= dt;
+    if(waitDelayEvent->startDelay <= 0.f) {
+        waitDelayEvent = nullptr;
+        startNextEvent();
+    }
+}
+
 void EventSequence::forceFinish() {
+    if(!isPlaying) {
+        return;
+    }
 }
 
 void EventSequence::startNextEvent() {
     while(!pendingEvents.empty()) {
         auto& event = pendingEvents.front();
-        if(!UI::PlayAnimation(event.targetId, event.animType, triggerId)) {
-            LogWarning("[EventSequence::startNextEvent] Can't start anim on target: '%s'", EntityUtils::GetEntityName(
-                event.targetId));
-            if(event.afterCall) {
-               event.afterCall(event.targetId);
+        if(event.startDelay > 0.f) {
+            waitDelayEvent = &event;
+            if(!isTicking) {
+                isTicking = true;
+                ETNode<ETUITimerEvents>::connect(triggerId);
+            }
+            break;
+        }
+        if(!PlayAnimtionSafe(event.targetId, event.animType, triggerId)) {
+            if(event.onEndCallback) {
+                event.onEndCallback();
             }
             pendingEvents.erase(pendingEvents.begin());
         } else {
             break;
         }
+    }
+
+    if(pendingEvents.empty()) {
+        isPlaying = false;
+        if(isTicking) {
+            ETNode<ETUITimerEvents>::disconnect();
+        }
+        isTicking = false;
     }
 }
