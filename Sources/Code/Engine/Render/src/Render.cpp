@@ -33,7 +33,7 @@ void Render::deinit() {
     ETNode<ETRenderUpdateTask>::disconnect();
 }
 
-void Render::ET_updateRender() {
+void Render::ET_updateRender(float dt) {
     if(!canRenderToScreen()) {
         return;
     }
@@ -41,6 +41,10 @@ void Render::ET_updateRender() {
     ET_SendEvent(&ETRenderNodeManager::ET_drawFrame);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
     tracker.onFrameEnd();
+}
+
+void Render::ET_updateParticles(float dt) {
+    ET_SendEvent(&ETRenderNodeManager::ET_updateParticles, dt);
 }
 
 bool Render::canRenderToScreen() const {
@@ -102,10 +106,6 @@ void Render::ET_onSurfaceShown() {
 
 void Render::ET_onSurfaceResized(const Vec2i& size) {
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
-}
-
-void Render::ET_updateParticles() {
-    ET_SendEvent(&ETRenderNodeManager::ET_updateParticles, 0.016f);
 }
 
 void Render::ET_syncWithGame() {

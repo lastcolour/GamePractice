@@ -56,21 +56,34 @@ bool OboeAudioSystem::initOboeStream() {
 
     auto res = builder.openStream(&oboeStream);
     if(res != oboe::Result::OK){
-        LogError("[OboeAudioSystem::initOboeStream] Can't open oboe stream. Error: %s", oboe::convertToText(res));
+        LogError("[OboeAudioSystem::initOboeStream] Can't open oboe stream (Error: %s)", oboe::convertToText(res));
         return false;
     }
     res = oboeStream->setBufferSizeInFrames(mixConfig.samplesPerBurst);
     if(res != oboe::Result::OK){
-        LogWarning("[OboeAudioSystem::initOboeStream] Can't change stream's buffer size. Error: %s", oboe::convertToText(res));
+        LogWarning("[OboeAudioSystem::initOboeStream] Can't change stream's buffer size (Error: %s)", oboe::convertToText(res));
     }
 
     assert(oboeStream->getFormat() == oboe::AudioFormat::I16);
-
-    res = oboeStream->start();
-    if(res != oboe::Result::OK) {
-        LogWarning("[OboeAudioSystem::initOboeStream] Can't start oboe stream. Error: %s", oboe::convertToText(res));
-    }
     return true;
+}
+
+void OboeAudioSystem::ET_onActivityEvent(ActivityEventType eventType) {
+    if(eventType == ActivityEventType::OnWindowFocusGet) {
+        auto res = oboeStream->requestStart();
+        if(res != oboe::Result::OK) {
+            LogError("[OboeAudioSystem::ET_onActivityEvent] Can't start oboe stream (Error: %s)", oboe::convertToText(res));
+        } else {
+            LogInfo("[OboeAudioSystem::ET_onActivityEvent] Resume oboe stream");
+        }
+    } else if(eventType == ActivityEventType::OnWindowFocusLost) {
+        auto res = oboeStream->requestPause();
+        if(res != oboe::Result::OK) {
+            LogError("[OboeAudioSystem::ET_onActivityEvent] Can't pause oboe stream (Error: %s)", oboe::convertToText(res));
+        } else {
+            LogInfo("[OboeAudioSystem::ET_onActivityEvent] Pause oboe stream");
+        }
+    }
 }
 
 bool OboeAudioSystem::init() {
@@ -84,6 +97,7 @@ bool OboeAudioSystem::init() {
     ETNode<ETSoundUpdateTask>::connect(getEntityId());
     ETNode<ETAudioSystem>::connect(getEntityId());
     ETNode<ETSoundPlayManager>::connect(getEntityId());
+    ETNode<ETAndroidActivityEvents>::connect(getEntityId());
 
     return true;
 }
@@ -132,7 +146,7 @@ void OboeAudioSystem::deinit() {
 }
 
 void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) {
-    LogError("[OboeAudioSystem::onErrorAfterClose] Oboe stream error: %s", oboe::convertToText(res));
+    LogError("[OboeAudioSystem::onErrorAfterClose] Error: %s", oboe::convertToText(res));
 }
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) {

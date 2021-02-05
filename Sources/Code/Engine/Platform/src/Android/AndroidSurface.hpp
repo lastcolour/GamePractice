@@ -5,7 +5,7 @@
 #include "Core/ETTasks.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
-#include "Android/ETAndroidInterfaces.hpp"
+#include "Platform/Android/ETAndroidInterfaces.hpp"
 
 #include <EGL/egl.h>
 

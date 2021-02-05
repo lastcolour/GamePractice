@@ -30,6 +30,7 @@ public:
     std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
     std::chrono::microseconds getLastRunTime() const;
     std::chrono::microseconds getLastWaitTime() const;
+    void setCurrentStartTime(const TimePoint& currTime);
 
 private:
 
@@ -41,6 +42,7 @@ private:
     TimePoint prevScheduleT;
     TimePoint prevStartT;
     TimePoint prevEndT;
+    TimePoint currStartT;
     std::vector<ThreadJob*> childrenJobs;
     std::vector<ThreadJob*>* nextJobs;
     std::atomic<int> pendingParents;

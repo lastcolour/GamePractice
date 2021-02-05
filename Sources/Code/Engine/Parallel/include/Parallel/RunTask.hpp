@@ -14,7 +14,7 @@ enum class RunTaskType {
 class RunTask {
 public:
 
-    using CallT = std::function<void(void)>;
+    using CallT = std::function<void(float)>;
 
 public:
 
@@ -32,7 +32,7 @@ public:
     const char* getName() const;
     std::vector<RunTask*>& getChildren();
 
-    void execute();
+    void execute(float dt);
 
 private:
 

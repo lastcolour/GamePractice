@@ -22,10 +22,7 @@ public:
     void ET_asyncSaveLocalFile(const char* fileName, Buffer& buff) override;
 
     // ETAssetsUpdateTask
-    void ET_updateAssets() override;
-
-private:
-
+    void ET_updateAssets(float dt) override;
 };
 
 #endif /* __ASYNC_ASSETS_LOADER_HPP__ */

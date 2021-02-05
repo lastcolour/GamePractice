@@ -58,8 +58,8 @@ void EditorApp::deinitiazlie() {
 void EditorApp::buildTasksRunner() {
     auto taskRunner = GetEnv()->GetTasksRunner();
     {
-        auto assetsUpdate = taskRunner->createTask("Assets", [](){
-            ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
+        auto assetsUpdate = taskRunner->createTask("Assets", [](float dt){
+            ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, dt);
         });
         assetsUpdate->setType(RunTaskType::NoInMainThread);
         assetsUpdate->setFrequency(120);
@@ -71,23 +71,23 @@ void EditorApp::buildTasksRunner() {
         entitiesUpdate->setFrequency(120);
     }
     {
-        auto uiUpdate = taskRunner->createTask("UI", [](){
-            ET_SendEvent(&ETUITimer::ET_onTick);
+        auto uiUpdate = taskRunner->createTask("UI", [](float dt){
+            ET_SendEvent(&ETUITimer::ET_onTick, dt);
         });
         auto renderSync = taskRunner->createTask("RenderSync", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
         });
         renderSync->setType(RunTaskType::MainThreadOnly);
-        auto gameUpdate = taskRunner->createTask("Game", [](){
-            ET_SendEvent(&ETGameTimer::ET_onTick);
+        auto gameUpdate = taskRunner->createTask("Game", [](float dt){
+            ET_SendEvent(&ETGameTimer::ET_onTick, dt);
         });
         gameUpdate->setFrequency(120);
         gameUpdate->addChild(uiUpdate);
         uiUpdate->addChild(renderSync);
     }
     {
-        auto updateParticles = taskRunner->createTask("UpdateParticles", [](){
-            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles);
+        auto updateParticles = taskRunner->createTask("UpdateParticles", [](float dt){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles, dt);
         });
         updateParticles->setType(RunTaskType::MainThreadOnly);
         updateParticles->setFrequency(60);

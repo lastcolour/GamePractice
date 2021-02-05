@@ -4,7 +4,7 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
 #include "Core/ETPrimitives.hpp"
-#include "Android/ETAndroidInterfaces.hpp"
+#include "Platform/Android/ETAndroidInterfaces.hpp"
 
 class AndroidEventManager : public SystemLogic,
     public ETNode<ETInputUpdateTask>,

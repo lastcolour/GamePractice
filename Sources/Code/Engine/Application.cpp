@@ -68,15 +68,15 @@ void Application::mainLoop() {
     auto runner = GetEnv()->GetTasksRunner();
     assert(runner && "Invalid task runner");
     {
-        auto inputUpdate = runner->createTask("Input", []{
+        auto inputUpdate = runner->createTask("Input", [](){
             ET_SendEvent(&ETInputUpdateTask::ET_updateInput);
         });
         inputUpdate->setType(RunTaskType::MainThreadOnly);
         inputUpdate->setFrequency(120);
     }
     {
-        auto assetsUpdate = runner->createTask("Assets", [](){
-            ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
+        auto assetsUpdate = runner->createTask("Assets", [](float dt){
+            ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, dt);
         });
         assetsUpdate->setType(RunTaskType::NoInMainThread);
         assetsUpdate->setFrequency(120);
@@ -88,16 +88,16 @@ void Application::mainLoop() {
         entitiesUpdate->setFrequency(120);
     }
     {
-        auto uiUpdate = runner->createTask("UI", [](){
-            ET_SendEvent(&ETUITimer::ET_onTick);
+        auto uiUpdate = runner->createTask("UI", [](float dt){
+            ET_SendEvent(&ETUITimer::ET_onTick, dt);
         });
         auto renderSync = runner->createTask("RenderSync", [](){
             ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
         });
         renderSync->setType(RunTaskType::MainThreadOnly);
     
-        auto gameUpdate = runner->createTask("Game", [](){
-            ET_SendEvent(&ETGameTimer::ET_onTick);
+        auto gameUpdate = runner->createTask("Game", [](float dt){
+            ET_SendEvent(&ETGameTimer::ET_onTick, dt);
         });
 
         gameUpdate->setTrackPerformance(true);
@@ -113,21 +113,17 @@ void Application::mainLoop() {
         soundUpdate->setFrequency(60);
     }
     {
-        auto renderUpdate = runner->createTask("Render", [](){
-            ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
+        auto renderUpdate = runner->createTask("Render", [](float dt){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateRender, dt);
         });
         renderUpdate->setTrackPerformance(true);
         renderUpdate->setType(RunTaskType::MainThreadOnly);
         renderUpdate->setFrequency(60);
 
-        auto particlesUpdate = runner->createTask("Particles", [](){
-            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles);
+        auto particlesUpdate = runner->createTask("Particles", [](float dt){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles, dt);
         });
         particlesUpdate->addChild(renderUpdate);
     }
-    runner->runUntil(4, [](){
-        bool needRun = false;
-        ET_SendEventReturn(needRun, &ETAppRunStateEvents::ET_isNeedRun);
-        return needRun;
-    });
+    runner->start(4);
 }

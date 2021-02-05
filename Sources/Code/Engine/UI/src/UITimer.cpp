@@ -14,7 +14,6 @@ UITimer::~UITimer() {
 }
 
 bool UITimer::init() {
-    lastTickT = TimePoint::GetNowTime();
     ETNode<ETUITimer>::connect(getEntityId());
     return true;
 }
@@ -22,16 +21,13 @@ bool UITimer::init() {
 void UITimer::deinit() {
 }
 
-void UITimer::ET_onTick() {
+void UITimer::ET_onTick(float dt) {
     ET_PollAllEvents<ETUITimer>();
     ET_PollAllEvents<ETUIViewCache>();
 
     if(isPaused) {
         return;
     }
-    auto currTime = TimePoint::GetNowTime();
-    auto dt = currTime.getSecElapsedFrom(lastTickT);
-    lastTickT = currTime;
 
     if(skipUpdate) {
         dt = 0.f;

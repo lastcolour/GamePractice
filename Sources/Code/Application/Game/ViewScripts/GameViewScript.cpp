@@ -160,6 +160,12 @@ void GameViewScript::ET_onObjectiveCompleted(ObjectiveProgress type) {
             starId = progressStars.thirdId;
             break;
         }
+        case ObjectiveProgress::Fail: {
+            break;
+        }
+        default: {
+            break;
+        }
     }
     if(!starId.isValid()) {
         return;

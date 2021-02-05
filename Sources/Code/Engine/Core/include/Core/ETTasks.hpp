@@ -3,8 +3,8 @@
 
 struct ETRenderUpdateTask {
     virtual ~ETRenderUpdateTask() = default;
-    virtual void ET_updateRender() = 0;
-    virtual void ET_updateParticles() = 0;
+    virtual void ET_updateRender(float dt) = 0;
+    virtual void ET_updateParticles(float dt) = 0;
     virtual void ET_syncWithGame() = 0;
 };
 
@@ -20,7 +20,7 @@ struct ETSoundUpdateTask {
 
 struct ETAssetsUpdateTask {
     virtual ~ETAssetsUpdateTask() = default;
-    virtual void ET_updateAssets() = 0;
+    virtual void ET_updateAssets(float dt) = 0;
 };
 
 struct ETEntitiesUpdateTask {

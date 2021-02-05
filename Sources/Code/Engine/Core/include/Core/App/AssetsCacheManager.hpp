@@ -40,12 +40,11 @@ public:
     void ET_clear() override;
 
     // ETAssetsUpdateTask
-    void ET_updateAssets() override;
+    void ET_updateAssets(float dt) override;
 
 private:
 
     mutable std::mutex mutex;
-    TimePoint lastTickT;
     AssetsCacheMapT assetsCacheMap;
     float assetsLifetime;
 };

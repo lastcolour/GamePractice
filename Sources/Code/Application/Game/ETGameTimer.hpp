@@ -3,7 +3,7 @@
 
 struct ETGameTimer {
     virtual ~ETGameTimer() = default;
-    virtual void ET_onTick() = 0;
+    virtual void ET_onTick(float dt) = 0;
     virtual void ET_setScale(float newScale) = 0;
     virtual void ET_pause() = 0;
     virtual void ET_resume() = 0;

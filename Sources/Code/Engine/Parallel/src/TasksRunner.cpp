@@ -66,8 +66,8 @@ void calculateParents(JobTree* tree) {
 
 TasksRunner::TasksRunner() :
     predicateFailed(false),
-    mode(RunMode::None),
-    suspended(false) {
+    suspended(false),
+    mode(RunMode::None) {
 }
 
 TasksRunner::~TasksRunner() {
@@ -76,6 +76,14 @@ TasksRunner::~TasksRunner() {
 RunTask* TasksRunner::createTask(const char* name, RunTask::CallT func) {
     assert(mode == RunMode::None && "Invalid run mode");
     auto& task = tasks.emplace_back(new RunTask(name, func));
+    return task.get();
+}
+
+RunTask* TasksRunner::createTask(const char* name, std::function<void(void)> func) {
+    assert(mode == RunMode::None && "Invalid run mode");
+    auto& task = tasks.emplace_back(new RunTask(name, [func](float){
+        func();
+    }));
     return task.get();
 }
 
@@ -150,13 +158,20 @@ void TasksRunner::initJobTrees() {
 
 void TasksRunner::runUntil(int threadCount, TasksRunner::PredicateT predicate) {
     assert(mode == RunMode::None && "Invalid run mode");
+    predFunc = predicate;
+    start(threadCount);
+}
+
+void TasksRunner::start(int threadCount) {
     mode = RunMode::RunUntil;
+
     if(tasks.empty()) {
         return;
     }
-    predFunc = predicate;
-    if(!predFunc()) {
-        return;
+    if(predFunc) {
+        if(!predFunc()) {
+            return;
+        }
     }
     initJobs();
     initJobTrees();
@@ -165,12 +180,23 @@ void TasksRunner::runUntil(int threadCount, TasksRunner::PredicateT predicate) {
     threadsPool.reset();
 }
 
+void TasksRunner::stop() {
+    assert(predFunc == nullptr && "can't stop if predicated defined");
+    predicateFailed.store(true);
+}
+
 bool TasksRunner::canRun() const {
     return !predicateFailed.load();
 }
 
 void TasksRunner::updateRunFlag(int threadId) {
     if(threadId != 0) {
+        return;
+    }
+    if(!predFunc) {
+        return;
+    }
+    if(predicateFailed.load()) {
         return;
     }
     auto res = predFunc();
@@ -203,11 +229,14 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
                 nextJob = getNextJob(currTime, threadId);
             }
             if(nextJob) {
+                nextJob->setCurrentStartTime(currTime);
                 break;
             }
             updateRunFlag(threadId);
             if(threadId != 0) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            } else {
+                std::this_thread::yield();
             }
         }
     }
@@ -250,8 +279,6 @@ std::vector<std::unique_ptr<RunTask>>& TasksRunner::getTasks() {
 
 void TasksRunner::startOtherThreads(int threadCount) {
     assert(mode == RunMode::None && "Invlaid run mode");
-    assert(!predFunc && "Invalid run predicate");
-    predFunc = [](){ return true; };
     mode = RunMode::MainThreadManualStep;
     if(tasks.empty()) {
         return;

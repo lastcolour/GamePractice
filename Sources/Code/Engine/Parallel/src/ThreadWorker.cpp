@@ -22,7 +22,6 @@ void ThreadWorker::start() {
 
 void ThreadWorker::run() {
     ThreadJob* prevJob = nullptr;
-    TimePoint timePoint;
     while(true) {
         auto job = pool->getNextJobForThread(prevJob, id);
         if(job) {

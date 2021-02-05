@@ -16,8 +16,8 @@ RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
 RunTask::~RunTask() {
 }
 
-void RunTask::execute() {
-    func();
+void RunTask::execute(float dt) {
+    func(dt);
     ++runCount;
 }
 

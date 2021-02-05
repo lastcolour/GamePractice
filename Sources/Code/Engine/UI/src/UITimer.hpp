@@ -19,7 +19,7 @@ public:
     void deinit() override;
 
     // ETUITimer
-    void ET_onTick() override;
+    void ET_onTick(float dt) override;
     void ET_setScale(float newScale) override;
     void ET_pause() override;
     void ET_resume() override;
@@ -27,7 +27,6 @@ public:
 
 private:
 
-    TimePoint lastTickT;
     float scale;
     bool skipUpdate;
     bool isPaused;

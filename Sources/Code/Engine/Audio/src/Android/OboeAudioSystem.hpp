@@ -9,6 +9,7 @@
 #include "MixGraph/MixGraph.hpp"
 #include "AudioBufferQueue.hpp"
 #include "Platform/ETSurface.hpp"
+#include "Platform/Android/ETAndroidInterfaces.hpp"
 
 #include <oboe/Oboe.h>
 
@@ -16,6 +17,7 @@ class OboeAudioSystem : public SystemLogic,
     public ETNode<ETSoundPlayManager>,
     public ETNode<ETSoundUpdateTask>,
     public ETNode<ETAudioSystem>,
+    public ETNode<ETAndroidActivityEvents>,
     public oboe::AudioStreamCallback {
 public:
 
@@ -36,6 +38,9 @@ public:
     void ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) override;
     void ET_setMasterVolume(float newVolume) override;
     float ET_getMasterVolume() const override;
+
+    // ETAndroidActivityEvents
+    void ET_onActivityEvent(ActivityEventType eventType) override;
 
     // oboe::AudioStreamCallback
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) override;

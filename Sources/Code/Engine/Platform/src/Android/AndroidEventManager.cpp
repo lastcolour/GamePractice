@@ -1,6 +1,6 @@
 #include "Android/AndroidEventManager.hpp"
 #include "Android/AndroidPlatformHandler.hpp"
-#include "Android/ETAndroidInterfaces.hpp"
+#include "Platform/Android/ETAndroidInterfaces.hpp"
 #include "Core/ETApplication.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Math/Vector.hpp"

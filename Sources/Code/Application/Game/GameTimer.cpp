@@ -23,7 +23,7 @@ void GameTimer::deinit() {
     ETNode<ETGameTimer>::disconnect();
 }
 
-void GameTimer::ET_onTick() {
+void GameTimer::ET_onTick(float dt) {
     ET_SendEvent(&ETUIViewPort::ET_update);
     ET_PollAllEvents<ETInputEvents>();
     ET_PollAllEvents<ETGameTimer>();
@@ -32,9 +32,6 @@ void GameTimer::ET_onTick() {
         return;
     }
 
-    auto currTime = TimePoint::GetNowTime();
-    auto dt = currTime.getSecElapsedFrom(lastTickT);
-
     if(skipUpdate) {
         dt = 0.f;
         skipUpdate = false;
@@ -42,7 +39,6 @@ void GameTimer::ET_onTick() {
         assert(dt > 0.0001f && "Very fast game loop step");
     }
 
-    lastTickT = currTime;
     dt *= scale;
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
 }

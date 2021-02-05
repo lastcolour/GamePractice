@@ -39,6 +39,7 @@ endif()
 if(BUILD_PLATFORM STREQUAL "Android")
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Platform/include
         ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Platform/src)
 
     add_library(${PROJECT_NAME} SHARED

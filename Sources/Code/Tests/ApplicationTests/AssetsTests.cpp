@@ -106,7 +106,7 @@ TEST_F(AssetsTests, CheckAssetsCache) {
     ET_SendEventReturn(cacheLifetime, &ETAssetsCacheManager::ET_getCacheLifetime);
     cacheLifetime += 1.f;
 
-    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets);
+    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, cacheLifetime);
 
     Buffer buff3;
     ET_SendEventReturn(buff3, &ETAssets::ET_loadAsset, TEST_FILE_PATH);

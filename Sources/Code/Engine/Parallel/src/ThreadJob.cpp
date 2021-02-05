@@ -5,7 +5,7 @@
 #include <cassert>
 
 ThreadJob::ThreadJob(RunTask* runTask) :
-    nextJobs(nullptr),
+    pendingParents(0),
     task(runTask),
     tree(nullptr),
     parentsCount(0) {
@@ -35,9 +35,10 @@ int ThreadJob::getParentsCount() const {
 }
 
 void ThreadJob::execute() {
-    prevStartT = TimePoint::GetNowTime();
+    float dt = currStartT.getSecElapsedFrom(prevStartT);
+    prevStartT = currStartT;
     tree->tryRestartTree(prevStartT);
-    task->execute();
+    task->execute(dt);
     onFinished();
 }
 
@@ -124,4 +125,8 @@ std::chrono::microseconds ThreadJob::getLastWaitTime() const {
         return std::chrono::duration_cast<std::chrono::microseconds>(
             prevStartT.getStdTimePoint() - prevScheduleT.getStdTimePoint());
     }
+}
+
+void ThreadJob::setCurrentStartTime(const TimePoint& currTime) {
+    currStartT = currTime;
 }

@@ -15,7 +15,7 @@ bool AsyncAssetsLoader::init() {
 void AsyncAssetsLoader::deinit() {
 }
 
-void AsyncAssetsLoader::ET_updateAssets() {
+void AsyncAssetsLoader::ET_updateAssets(float dt) {
     ET_PollAllEvents<ETAssets>();
 }
 

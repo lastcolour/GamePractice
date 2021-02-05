@@ -1,7 +1,8 @@
 #include "Core/App/AppRunState.hpp"
+#include "Core/GlobalEnvironment.hpp"
+#include "Parallel/TasksRunner.hpp"
 
-AppRunState::AppRunState() :
-    needRun(true) {
+AppRunState::AppRunState() {
 }
 
 bool AppRunState::init() {
@@ -10,15 +11,12 @@ bool AppRunState::init() {
 }
 
 void AppRunState::deinit() {
+    GetEnv()->GetTasksRunner()->stop();
     ETNode<ETAppRunStateEvents>::disconnect();
 }
 
 void AppRunState::ET_onTerminate() {
-    needRun = false;
-}
-
-bool AppRunState::ET_isNeedRun() const {
-    return needRun;
+    GetEnv()->GetTasksRunner()->stop();
 }
 
 void AppRunState::ET_onPause() {

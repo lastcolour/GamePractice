@@ -24,8 +24,11 @@ public:
     ~TasksRunner();
 
     RunTask* createTask(const char* name, RunTask::CallT func);
+    RunTask* createTask(const char* name, std::function<void(void)> func);
     void runUntil(int threadCount, PredicateT predicate);
+    void start(int threadCount);
     void suspend(bool flag);
+    void stop();
 
     void startOtherThreads(int threadCount);
     void stepMainTread();

@@ -27,12 +27,8 @@ void AssetsCacheManager::deinit() {
     ETNode<ETAssetsUpdateTask>::disconnect();
 }
 
-void AssetsCacheManager::ET_updateAssets() {
+void AssetsCacheManager::ET_updateAssets(float dt) {
     std::lock_guard<std::mutex> lock(mutex);
-
-    auto nowT = TimePoint::GetNowTime();
-    auto dt = nowT.getSecElapsedFrom(lastTickT);
-    lastTickT = nowT;
 
     auto it = assetsCacheMap.begin();
     while(it != assetsCacheMap.end()) {

@@ -1,7 +1,7 @@
 #ifndef __ANDROID_PLATFORM_HANDLER_HPP__
 #define __ANDROID_PLATFORM_HANDLER_HPP__
 
-#include "Android/ETAndroidInterfaces.hpp"
+#include "Platform/Android/ETAndroidInterfaces.hpp"
 
 #include <memory>
 #include <mutex>
