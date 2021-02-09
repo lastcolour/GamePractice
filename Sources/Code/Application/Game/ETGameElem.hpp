@@ -56,4 +56,9 @@ struct ETGameBoardAnimation {
     virtual void ET_zoomOut() = 0;
 };
 
+struct ETGameBoardAnimationEvents {
+    virtual ~ETGameBoardAnimationEvents() = default;
+    virtual void ET_onZoomOutPlayed() = 0;
+};
+
 #endif /* __ET_GAME_ELEM_HPP__ */

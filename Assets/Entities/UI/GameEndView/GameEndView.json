@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 66.0,
+                "y": 76.0,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -108.0,
+                      "x": -121.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -125,8 +125,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 93.0,
-                                  "y": 93.0
+                                  "x": 105.0,
+                                  "y": 105.0
                                 },
                                 "tintColor": {
                                   "r": 206,
@@ -211,8 +211,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 89.0,
-                            "y": 89.0
+                            "x": 100.0,
+                            "y": 100.0
                           },
                           "tintColor": {
                             "r": 132,
@@ -320,8 +320,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 93.0,
-                                  "y": 93.0
+                                  "x": 105.0,
+                                  "y": 105.0
                                 },
                                 "tintColor": {
                                   "r": 206,
@@ -339,7 +339,7 @@
                                 "autoStart": false,
                                 "cyclic": false,
                                 "type": "Appear",
-                                "startDelay": 0.5,
+                                "startDelay": 0.0,
                                 "subAnimations": [],
                                 "startEvent": "Show",
                                 "endEvent": "None",
@@ -406,8 +406,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 89.0,
-                            "y": 89.0
+                            "x": 100.0,
+                            "y": 100.0
                           },
                           "tintColor": {
                             "r": 132,
@@ -441,7 +441,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 108.0,
+                      "x": 121.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -515,8 +515,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 93.0,
-                                  "y": 93.0
+                                  "x": 105.0,
+                                  "y": 105.0
                                 },
                                 "tintColor": {
                                   "r": 206,
@@ -534,7 +534,7 @@
                                 "autoStart": false,
                                 "cyclic": false,
                                 "type": "Appear",
-                                "startDelay": 0.699999988079071,
+                                "startDelay": 0.0,
                                 "subAnimations": [],
                                 "startEvent": "Show",
                                 "endEvent": "None",
@@ -601,8 +601,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 89.0,
-                            "y": 89.0
+                            "x": 100.0,
+                            "y": 100.0
                           },
                           "tintColor": {
                             "r": 132,
@@ -685,7 +685,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -149.0,
+                "y": -164.0,
                 "z": 0.0
               },
               "scale": {
@@ -761,7 +761,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 38,
+                          "fontSize": 42,
                           "text": "Continue"
                         }
                       }
@@ -802,8 +802,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 279.0,
-                      "y": 70.0
+                      "x": 315.0,
+                      "y": 79.0
                     },
                     "tintColor": {
                       "r": 143,
@@ -906,7 +906,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 170.0,
+                "y": 193.0,
                 "z": 0.0
               },
               "scale": {
@@ -982,7 +982,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 38,
+                          "fontSize": 42,
                           "text": "Level 1"
                         }
                       }
@@ -1036,8 +1036,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 376.0,
-                      "y": 67.0
+                      "x": 424.0,
+                      "y": 75.0
                     },
                     "tintColor": {
                       "r": 199,
@@ -1058,7 +1058,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -23.0,
+                "y": -24.0,
                 "z": 0.0
               },
               "scale": {
@@ -1081,7 +1081,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -42.0,
+                      "x": -48.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1134,7 +1134,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21,
                           "text": "Score: "
                         }
                       }
@@ -1197,7 +1197,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21,
                           "text": "300"
                         }
                       }
@@ -1254,8 +1254,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 186.0,
-                      "y": 38.0
+                      "x": 210.0,
+                      "y": 42.0
                     },
                     "tintColor": {
                       "r": 0,
@@ -1276,7 +1276,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -71.0,
+                "y": -77.0,
                 "z": 0.0
               },
               "scale": {
@@ -1299,7 +1299,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -42.0,
+                      "x": -48.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1352,7 +1352,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21,
                           "text": "Time:  "
                         }
                       }
@@ -1415,7 +1415,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21,
                           "text": "60s"
                         }
                       }
@@ -1472,8 +1472,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 186.0,
-                      "y": 38.0
+                      "x": 210.0,
+                      "y": 42.0
                     },
                     "tintColor": {
                       "r": 0,
@@ -1549,8 +1549,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 372.0,
-                "y": 400.0
+                "x": 420.0,
+                "y": 451.0
               },
               "tintColor": {
                 "r": 239,
@@ -1683,8 +1683,8 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 522.0,
-          "y": 928.0
+          "x": 590.0,
+          "y": 1048.0
         },
         "color": {
           "r": 255,

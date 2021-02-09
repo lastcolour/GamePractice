@@ -20,16 +20,10 @@ void GameResultViewScript::Reflect(ReflectContext& ctx) {
     }
 }
 
-GameResultViewScript::GameResultViewScript() :
-    state(State::None) {
+GameResultViewScript::GameResultViewScript() {
 }
 
 GameResultViewScript::~GameResultViewScript() {
-}
-
-void GameResultViewScript::init() {
-    BaseViewScript::init();
-    ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
 }
 
 void GameResultViewScript::onEvent(const UIEvent& event) {
@@ -41,8 +35,10 @@ void GameResultViewScript::onEvent(const UIEvent& event) {
 }
 
 void GameResultViewScript::ET_onViewOpened() {
+    eventSeq.init(getEntityId());
+
     BaseViewScript::ET_onViewOpened();
-    state = State::None;
+
     ET_SendEvent(continueButtonId, &ETUIElement::ET_hide);
 
     EndGameResult gameResult;
@@ -60,24 +56,6 @@ void GameResultViewScript::ET_onViewOpened() {
     ET_SendEvent(progressStars.thirdId, &ETUIElement::ET_hide);
 }
 
-void GameResultViewScript::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) {
-    if(waitingId != sourceId) {
-        return;
-    }
-    if(animType != EAnimSequenceType::Appear) {
-        return;
-    }
-    waitingId = InvalidEntityId;
-    if(state == State::ShowingStars) {
-        state = State::ShowingContinueButton;
-        ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
-        playAppearAnimation(continueButtonId);
-    } else if(state == State::ShowingContinueButton) {
-        ET_SendEvent(continueButtonId, &ETUIElement::ET_enable);
-        state = State::Waiting;
-    }
-}
-
 void GameResultViewScript::ET_onViewClosed() {
     BaseViewScript::ET_onViewClosed();
 }
@@ -85,39 +63,38 @@ void GameResultViewScript::ET_onViewClosed() {
 void GameResultViewScript::ET_onViewGetFocus() {
     BaseViewScript::ET_onViewGetFocus();
 
-    state = State::ShowingStars;
-
     EndGameResult gameResult;
     ET_SendEventReturn(gameResult, &ETGameEndResult::ET_getLastGameResult);
     auto starsCount = GameUtils::ConvertToStarsCount(gameResult.objectiveCompleted);
 
-    if(starsCount == 0) {
-        state = State::ShowingContinueButton;
-        ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
-        playAppearAnimation(continueButtonId);
-    } else {
-        if(starsCount > 0) {
-            playAppearAnimation(progressStars.fristId);
-        }
-        if(starsCount > 1) {
-            playAppearAnimation(progressStars.secondId);
-        }
-        if(starsCount > 2) {
-            playAppearAnimation(progressStars.thirdId);
-        }
-    }
-}
+    ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
 
-void GameResultViewScript::playAppearAnimation(EntityId elemId) {
-    if(!elemId.isValid()) {
-        return;
+    if(starsCount > 0) {
+        EventSequence::Event event;
+        event.targetId = progressStars.fristId;
+        event.animType = EAnimSequenceType::Appear;
+        eventSeq.addEvent(event);
     }
-    waitingId = elemId;
-    bool animStarted = UI::PlayAnimation(elemId, EAnimSequenceType::Appear, getEntityId());
-    if(!animStarted) {
-        LogWarning("[GameResultViewScript::playAppearAnimation] Can't find appear animation to play on entity: '%s'",
-            EntityUtils::GetEntityName(elemId));
-        ET_SendEvent(elemId, &ETUIElement::ET_show);
-        ET_onAnimationPlayed(elemId, EAnimSequenceType::Appear);
+    if(starsCount > 1) {
+        EventSequence::Event event;
+        event.targetId = progressStars.secondId;
+        event.animType = EAnimSequenceType::Appear;
+        eventSeq.addEvent(event);
     }
+    if(starsCount > 2) {
+        EventSequence::Event event;
+        event.targetId = progressStars.thirdId;
+        event.animType = EAnimSequenceType::Appear;
+        eventSeq.addEvent(event);
+    }
+    {
+        EventSequence::Event event;
+        event.targetId = continueButtonId;
+        event.animType = EAnimSequenceType::Appear;
+        event.onEndCallback = [this](){
+            ET_SendEvent(continueButtonId, &ETUIElement::ET_enable);
+        };
+        eventSeq.addEvent(event);
+    }
+    eventSeq.start();
 }

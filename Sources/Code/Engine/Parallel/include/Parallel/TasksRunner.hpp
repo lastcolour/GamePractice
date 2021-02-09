@@ -28,6 +28,7 @@ public:
     void runUntil(int threadCount, PredicateT predicate);
     void start(int threadCount);
     void suspend(bool flag);
+    bool isSuspended() const;
     void stop();
 
     void startOtherThreads(int threadCount);

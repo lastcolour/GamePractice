@@ -218,6 +218,26 @@ AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box) {
     return resBox;
 }
 
+AABB2Di ApplyEntityTmToBox(EntityId entityId, const AABB2Di& box) {
+    Transform tm;
+    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
+
+    const auto& scale = tm.scale;
+
+    AABB2Di resBox;
+
+    resBox.bot = Vec2i(0);
+    resBox.top = box.getSize();
+    resBox.top.x = static_cast<int>(resBox.top.x * scale.x);
+    resBox.top.y = static_cast<int>(resBox.top.y * scale.y);
+
+    Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
+        static_cast<int>(tm.pt.y));
+    resBox.setCenter(center);
+
+    return resBox;
+}
+
 bool IsRootViewHasFocus(EntityId elemId) {
     EntityId hostLayoutId;
     while(true) {

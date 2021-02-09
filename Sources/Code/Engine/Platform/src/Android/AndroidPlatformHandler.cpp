@@ -233,7 +233,15 @@ void AndroindPlatformHandler::onActivityEvent(ActivityEventType eventType) {
         LogAndroidError("[AndroindPlatformHandler::onActivityEvent] Can't write android event to pipe: %s", strerror(errno));
         return;
     }
+    auto tasksRunner = GetEnv()->GetTasksRunner();
+    bool wasSuspended = tasksRunner->isSuspended();
+    tasksRunner->suspend(false);
+
     waitUntilEventHandler(eventType);
+
+    if(wasSuspended) {
+        tasksRunner->suspend(wasSuspended);
+    }
 }
 
 void AndroindPlatformHandler::onDestroy(ANativeActivity* activity) {

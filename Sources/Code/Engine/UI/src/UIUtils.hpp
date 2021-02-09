@@ -37,6 +37,8 @@ AABB2Di GetTmScaledBox(EntityId entityId, const AABB2Di& box);
 
 AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box);
 
+AABB2Di ApplyEntityTmToBox(EntityId entityId, const AABB2Di& box);
+
 bool IsRootViewHasFocus(EntityId elemId);
 
 UIAnimationSequence* GetAnimation(EAnimSequenceType animType, EntityId entityId);

@@ -39,8 +39,7 @@ void UILayoutBox::ET_onLoaded() {
 }
 
 AABB2Di UILayoutBox::ET_getBox() const {
-    auto resBox = UI::GetTmScaledBox(getEntityId(), aabb);
-    return UI::SetTmCenterToBox(getEntityId(), resBox);
+    return UI::ApplyEntityTmToBox(getEntityId(), aabb);
 }
 
 UIBoxMargin UILayoutBox::ET_getMargin() const {
@@ -81,9 +80,15 @@ void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
         }
     }
 
+    AABB2Di prevAabb = aabb;
     aabb = newAabb;
-    updateHostLayout();
-    Vec2i boxSize = aabb.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxChanged, aabb);
+    Vec2i newSize = newAabb.getSize();
+
+    if(prevAabb.getSize() != newSize) {
+        updateHostLayout();
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(newSize.x, newSize.y));
+    }
+    if(prevAabb.bot != aabb.bot || prevAabb.top != aabb.top) {
+        ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxChanged, aabb);
+    }
 }

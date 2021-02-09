@@ -273,6 +273,10 @@ void TasksRunner::suspend(bool flag) {
     }
 }
 
+bool TasksRunner::isSuspended() const {
+    return suspended.load();
+}
+
 std::vector<std::unique_ptr<RunTask>>& TasksRunner::getTasks() {
     return tasks;
 }

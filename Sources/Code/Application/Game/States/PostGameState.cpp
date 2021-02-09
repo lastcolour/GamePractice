@@ -1,35 +1,55 @@
 #include "Game/States/PostGameState.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
-#include "Game/ETGameElem.hpp"
 #include "Game/Progression/LevelsProgressData.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETLevelProgress.hpp"
 #include "Game/GameUtils.hpp"
 
-PostGameState::PostGameState() {
+PostGameState::PostGameState() :
+    allElemStatic(false),
+    zoomOutPlayed(false) {
 }
 
 PostGameState::~PostGameState() {
 }
 
 void PostGameState::onEnter(EntityId gameId) {
+    allElemStatic = false;
+    zoomOutPlayed = false;
+
     ET_SendEvent(&ETGameStateEvents::ET_onGameEnterState, EGameState::PostGame);
 
     gameEntityId = gameId;
     ETNode<ETGameEndResult>::connect(gameId);
-    bool isAllElemStatic = false;
-    ET_SendEventReturn(isAllElemStatic, &ETGameBoard::ET_isAllElemStatic);
-    ET_SendEvent(&ETGameBoardAnimation::ET_zoomOut);
-    if(!isAllElemStatic) {
+
+    allElemStatic = true;
+    ET_SendEventReturn(allElemStatic, &ETGameBoard::ET_isAllElemStatic);
+    if(!allElemStatic) {
         ETNode<ETGameBoardEvents>::connect(gameId);
     } else {
         ET_onAllElemsStatic();
     }
+
+    if(ET_IsExistNode<ETGameBoardAnimation>()) {
+        ETNode<ETGameBoardAnimationEvents>::connect(gameId);
+        ET_SendEvent(&ETGameBoardAnimation::ET_zoomOut);
+    } else {
+        zoomOutPlayed = true;
+        ET_onZoomOutPlayed();
+    }
 }
 
 void PostGameState::ET_onAllElemsStatic() {
-    ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::None);
+    allElemStatic = true;
+    ETNode<ETGameBoardEvents>::disconnect();
+    tryEndPostGame();
+}
+
+void PostGameState::ET_onZoomOutPlayed() {
+    zoomOutPlayed = true;
+    ETNode<ETGameBoardAnimationEvents>::disconnect();
+    tryEndPostGame();
 }
 
 void PostGameState::onLeave() {
@@ -54,4 +74,10 @@ void PostGameState::setupEndResult() {
 
 const EndGameResult& PostGameState::ET_getLastGameResult() const {
     return endResult;
+}
+
+void PostGameState::tryEndPostGame() {
+    if(allElemStatic && zoomOutPlayed) {
+        ET_SendEvent(&ETGameStateManager::ET_changeState, EGameState::None);
+    }
 }

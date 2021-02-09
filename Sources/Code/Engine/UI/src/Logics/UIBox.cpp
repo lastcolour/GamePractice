@@ -35,8 +35,7 @@ void UIBox::deinit() {
 }
 
 AABB2Di UIBox::ET_getBox() const {
-    auto resBox = UI::SetTmCenterToBox(getEntityId(), aabb);
-    return UI::GetTmScaledBox(getEntityId(), resBox);
+    return UI::ApplyEntityTmToBox(getEntityId(), aabb);
 }
 
 void UIBox::calculateBox() {

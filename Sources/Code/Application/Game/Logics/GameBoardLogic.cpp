@@ -419,12 +419,14 @@ void GameBoardLogic::ET_onAlphaChanged(float newAlpha) {
 
 void GameBoardLogic::ET_onHidden(bool flag) {
     if(flag) {
+        ET_SendEvent(backgroundId, &ETRenderNode::ET_hide);
         for(auto& col : columns) {
             for(auto& elem : col) {
                 ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
             }
         }
     } else {
+        ET_SendEvent(backgroundId, &ETRenderNode::ET_show);
         for(auto& col : columns) {
             for(auto& elem : col) {
                 ET_SendEvent(elem.entId, &ETRenderNode::ET_show);

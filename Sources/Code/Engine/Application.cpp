@@ -17,6 +17,12 @@
 
 #include <cassert>
 
+namespace {
+
+const int APP_THREAD_COUNT = 4;
+
+} // namespace
+
 Application::Application() :
     globalEnv(new GlobalEnvironment()) {
 }
@@ -101,7 +107,7 @@ void Application::mainLoop() {
         });
 
         gameUpdate->setTrackPerformance(true);
-        gameUpdate->setFrequency(120);
+        gameUpdate->setFrequency(60);
         gameUpdate->addChild(uiUpdate);
         uiUpdate->addChild(renderSync);
     }
@@ -125,5 +131,5 @@ void Application::mainLoop() {
         });
         particlesUpdate->addChild(renderUpdate);
     }
-    runner->start(4);
+    runner->start(APP_THREAD_COUNT);
 }

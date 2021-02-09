@@ -34,6 +34,7 @@ void GameBoardAnimation::ET_onGameTick(float dt) {
     float currScale = Math::Lerp(1.f, minScale, prog);
 
     if(currDuration >= scaleDuration) {
+        ET_SendEvent(&ETGameBoardAnimationEvents::ET_onZoomOutPlayed);
         ETNode<ETGameTimerEvents>::disconnect();
     }
 
