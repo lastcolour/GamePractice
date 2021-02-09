@@ -4,6 +4,7 @@
 #include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "Render/ETRenderCamera.hpp"
+#include "Logics/UILayout.hpp"
 
 void UIBoxTests::SetUp() {
     ConsoleAppTests::SetUp();
@@ -142,5 +143,37 @@ TEST_F(UIBoxTests, CheckTransformPosChanged) {
         auto aabb = uiBox->ET_getBox();
         ASSERT_EQ(aabb.getCenter(), Vec2i(viewPort.x / 4, viewPort.y / 4));
         ASSERT_EQ(aabb.getSize(),  Vec2i(viewPort.x / 2, viewPort.y / 2));
+    }
+}
+
+TEST_F(UIBoxTests, CheckParentAlphaAffectChild) {
+    auto parentEntity = createVoidObject();
+    parentEntity->addCustomLogic<UIBox>();
+    parentEntity->addCustomLogic<UILayout>();
+
+    float parentAlpha = 0.7f;
+    ET_SendEvent(parentEntity->getEntityId(), &ETUIElement::ET_setAlpha, parentAlpha);
+
+    auto childEntity = createVoidObject();
+    childEntity->addCustomLogic<UIBox>();
+
+    float childAlpha = 0.7f;
+    ET_SendEvent(childEntity->getEntityId(), &ETUIElement::ET_setAlpha, childAlpha);
+
+    ET_SendEvent(parentEntity->getEntityId(), &ETUILayout::ET_addItem, childEntity->getEntityId());
+
+    {
+        float resChildAlpha = 0.f;
+        ET_SendEventReturn(resChildAlpha, childEntity->getEntityId(), &ETUIElement::ET_getAlpha);
+        EXPECT_FLOAT_EQ(resChildAlpha, parentAlpha * childAlpha);
+    }
+
+    parentAlpha = 0.1f;
+    ET_SendEvent(parentEntity->getEntityId(), &ETUIElement::ET_setAlpha, parentAlpha);
+
+    {
+        float resChildAlpha = 0.f;
+        ET_SendEventReturn(resChildAlpha, childEntity->getEntityId(), &ETUIElement::ET_getAlpha);
+        EXPECT_FLOAT_EQ(resChildAlpha, parentAlpha * childAlpha);
     }
 }

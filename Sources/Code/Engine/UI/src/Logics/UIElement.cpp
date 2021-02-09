@@ -3,6 +3,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "UIUtils.hpp"
 #include "Core/ETLogger.hpp"
+#include "UI/ETUIAnimation.hpp"
 
 void UIElement::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIElement>("UIElement")) {
@@ -13,7 +14,7 @@ void UIElement::Reflect(ReflectContext& ctx) {
 
 UIElement::UIElement() :
     alpha(1.f),
-    addAlpha(1.f),
+    parentAlpha(1.f),
     zIndex(0),
     isIgnoringTransform(false),
     isHidden(false),
@@ -29,6 +30,7 @@ UIElement::~UIElement() {
 void UIElement::init() {
     ETNode<ETUIElement>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
+    ETNode<ETUIAdditiveAnimationTarget>::connect(getEntityId());
 
     ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getLocalTransform);
 }
@@ -119,13 +121,14 @@ bool UIElement::ET_isHidden() const {
 }
 
 float UIElement::ET_getAlpha() const {
-    return alpha;
+    return alpha * parentAlpha;
 }
 
 void UIElement::ET_setAlpha(float newAlpha) {
     alpha = newAlpha;
-    onAlphaChanged(alpha);
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onAlphaChanged, newAlpha);
+    float resAlpha = alpha * parentAlpha * addTm.alpha;
+    onAlphaChanged(resAlpha);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onAlphaChanged, resAlpha);
 }
 
 void UIElement::ET_enable() {
@@ -198,33 +201,30 @@ void UIElement::ET_setParentHidden(bool flag) {
     }
 }
 
-void UIElement::ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) {
-    if(!isAddTmChanged) {
-        isAddTmChanged = true;
-        ETNode<ETUIAdditiveAnimationTarget>::connect(getEntityId());
-    }
-    addAlpha *= newAddAlpha;
-    addTm.pt += newAddTm.pt;
-    addTm.scale = addTm.scale.getScaled(newAddTm.scale);
+void UIElement::ET_setParentAlpha(float newParentAlpha) {
+    parentAlpha = newParentAlpha;
+    ET_setAlpha(alpha);
+}
+
+void UIElement::ET_addAdditiveTransform(const AddtiveUITransform& newAddTm) {
+    isAddTmChanged = true;
+    addTm.combine(newAddTm);
 }
 
 void UIElement::ET_applyAdditiveTranform() {
-    Transform resTm;
-    resTm.pt = layoutTm.pt + addTm.pt;
-    resTm.scale = layoutTm.scale.getScaled(addTm.scale);
+    if(!isAddTmChanged) {
+        return;
+    }
+    Transform resTm = addTm.applyTm(layoutTm);
 
     ET_setIgnoreTransform(true);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, resTm);
     ET_setIgnoreTransform(false);
 
-    float prevAlpha = alpha;
-    float resAlpha = alpha * addAlpha;
-    ET_setAlpha(resAlpha);
-    alpha = prevAlpha;
+    ET_setAlpha(alpha);
+}
 
-    addAlpha = 1.f;
-    addTm = Transform();
+void UIElement::ET_resetAdditiveTransform() {
+    addTm.reset();
     isAddTmChanged = false;
-
-    ETNode<ETUIAdditiveAnimationTarget>::disconnect();
 }

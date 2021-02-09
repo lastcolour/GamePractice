@@ -37,6 +37,7 @@ void UITimer::ET_onTick(float dt) {
     dt *= scale;
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, dt);
     ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_applyAdditiveTranform);
+    ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_resetAdditiveTransform);
 }
 
 void UITimer::ET_setScale(float newScale) {

@@ -5,6 +5,7 @@
 #include "UI/ETUIBox.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Entity/ETEntity.hpp"
+#include "Logics/AdditiveUITransform.hpp"
 
 class ReflectContext;
 
@@ -42,11 +43,13 @@ public:
     void ET_setIgnoreTransform(bool flag) override;
     void ET_setParentHidden(bool flag) override;
     void ET_setParentDisabled(bool flag) override;
-    void ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) override;
+    void ET_setParentAlpha(float newParentAlpha) override;
     void ET_setLayoutPos(const Vec2i& layoutPt) override;
 
     // ETUIAdditiveAnimationTarget
     void ET_applyAdditiveTranform() override;
+    void ET_addAdditiveTransform(const AddtiveUITransform& newAddTm) override;
+    void ET_resetAdditiveTransform() override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
@@ -66,11 +69,11 @@ protected:
 
 protected:
 
+    AddtiveUITransform addTm;
     Transform layoutTm;
-    Transform addTm;
     EntityId hostLayoutId;
     float alpha;
-    float addAlpha;
+    float parentAlpha;
     int zIndex;
     bool isIgnoringTransform;
     bool isHidden;

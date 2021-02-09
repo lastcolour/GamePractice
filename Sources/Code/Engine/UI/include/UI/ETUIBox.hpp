@@ -9,6 +9,7 @@
 
 class UIBoxStyle;
 class UIBoxMargin;
+struct AddtiveUITransform;
 
 struct ETUIElement {
     virtual ~ETUIElement() = default;
@@ -30,13 +31,15 @@ struct ETUIElement {
     virtual void ET_setIgnoreTransform(bool flag) = 0;
     virtual void ET_setParentHidden(bool flag) = 0;
     virtual void ET_setParentDisabled(bool flag) = 0;
-    virtual void ET_addAdditiveTransform(const Transform& newAddTm, float newAddAlpha) = 0;
+    virtual void ET_setParentAlpha(float newParentAlpha) = 0;
     virtual void ET_setLayoutPos(const Vec2i& layoutPt) = 0;
 };
 
 struct ETUIAdditiveAnimationTarget {
     virtual ~ETUIAdditiveAnimationTarget() = default;
+    virtual void ET_addAdditiveTransform(const AddtiveUITransform& newAddTm) = 0;
     virtual void ET_applyAdditiveTranform() = 0;
+    virtual void ET_resetAdditiveTransform() = 0;
 };
 
 struct ETUIElementEvents {

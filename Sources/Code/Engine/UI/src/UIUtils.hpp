@@ -41,6 +41,8 @@ bool IsRootViewHasFocus(EntityId elemId);
 
 UIAnimationSequence* GetAnimation(EAnimSequenceType animType, EntityId entityId);
 
+void CopyUIElemAttribsFromParent(EntityId fromId, EntityId toId);
+
 } // namespace UI
 
 #endif /* __UI_UTILS_HPPP__ */

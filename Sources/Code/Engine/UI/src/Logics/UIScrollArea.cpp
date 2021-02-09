@@ -234,7 +234,7 @@ void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
 }
 
 void UIScrollArea::ET_onAlphaChanged(float newAlpha) {
-    ET_SendEvent(targetId, &ETUIElement::ET_setAlpha, newAlpha);
+    ET_SendEvent(targetId, &ETUIElement::ET_setParentAlpha, newAlpha);
 }
 
 void UIScrollArea::ET_onHidden(bool flag) {
@@ -364,6 +364,7 @@ void UIScrollArea::ET_setTarget(EntityId newTargetId) {
     }
     resetMoveState();
     targetId = newTargetId;
+    UI::CopyUIElemAttribsFromParent(getEntityId(), targetId);
     alignTarget();
 }
 

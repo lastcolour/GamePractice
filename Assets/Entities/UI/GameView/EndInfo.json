@@ -50,11 +50,11 @@
             "id": 3,
             "data": {
               "isVisible": true,
-              "alpha": 0.8999999761581421,
+              "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 279.0,
-                "y": 93.0
+                "x": 315.0,
+                "y": 105.0
               },
               "tintColor": {
                 "r": 255,
@@ -127,7 +127,7 @@
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 47,
+              "fontSize": 53,
               "text": "DONE"
             }
           },
@@ -194,7 +194,7 @@
       "type": "UIBox",
       "id": 1,
       "data": {
-        "hidden": true,
+        "hidden": false,
         "enabled": true,
         "style": {
           "width": 30.0,

@@ -156,7 +156,7 @@ void RenderNode::ET_syncWithRender() {
     }
     if(isAlphaChanged) {
         isAlphaChanged = false;
-        auto newAlpha = std::min(1.f, std::max(0.f, alphaMult * alpha));
+        auto newAlpha = Math::Clamp(alphaMult * alpha, 0.f, 1.f);
         proxyNode->setAlpha(newAlpha);
     }
     if(isDrawPriorityChanged) {

@@ -246,4 +246,18 @@ UIAnimationSequence* GetAnimation(EAnimSequenceType animType, EntityId entityId)
     return nullptr;
 }
 
+void CopyUIElemAttribsFromParent(EntityId fromId, EntityId toId) {
+    bool isEnabled = false;
+    ET_SendEventReturn(isEnabled, fromId, &ETUIElement::ET_isEnabled);
+    ET_SendEvent(toId, &ETUIElement::ET_setParentDisabled, !isEnabled);
+
+    bool isHidden = false;
+    ET_SendEventReturn(isHidden, fromId, &ETUIElement::ET_isHidden);
+    ET_SendEvent(toId, &ETUIElement::ET_setParentHidden, isHidden);
+
+    float alpha = 1.f;
+    ET_SendEventReturn(alpha, fromId, &ETUIElement::ET_getAlpha);
+    ET_SendEvent(toId, &ETUIElement::ET_setParentAlpha, alpha);
+}
+
 } // namespace UI

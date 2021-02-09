@@ -53,7 +53,7 @@
                   "type": "UILabel",
                   "id": 1,
                   "data": {
-                    "hidden": true,
+                    "hidden": false,
                     "enabled": true,
                     "style": {
                       "fontSize": 13.0,
@@ -71,7 +71,7 @@
                   "type": "RenderText",
                   "id": 2,
                   "data": {
-                    "isVisible": false,
+                    "isVisible": true,
                     "alpha": 1.0,
                     "drawPriority": 7,
                     "color": {
@@ -107,7 +107,7 @@
                           "x": 1.0,
                           "y": 1.0
                         },
-                        "alpha": 0.699999988079071
+                        "alpha": 1.0
                       },
                       {
                         "lerpMode": "Linear",
@@ -120,7 +120,7 @@
                           "x": 1.0,
                           "y": 1.0
                         },
-                        "alpha": 0.699999988079071
+                        "alpha": 1.0
                       }
                     ]
                   }
@@ -134,7 +134,7 @@
             "type": "UIBox",
             "id": 2,
             "data": {
-              "hidden": true,
+              "hidden": false,
               "enabled": true,
               "style": {
                 "width": 60.0,
@@ -242,7 +242,7 @@
             "type": "NinePatchImageLogic",
             "id": 5,
             "data": {
-              "isVisible": false,
+              "isVisible": true,
               "alpha": 1.0,
               "drawPriority": 3,
               "size": {
@@ -319,7 +319,7 @@
       "type": "UILayoutBox",
       "id": 6,
       "data": {
-        "hidden": true,
+        "hidden": false,
         "enabled": true,
         "margin": {
           "top": 0.0,

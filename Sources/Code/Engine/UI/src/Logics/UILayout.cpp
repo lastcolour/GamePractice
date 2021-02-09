@@ -60,6 +60,7 @@ void UILayout::ET_addItem(EntityId entityId) {
         return;
     }
     children.push_back(entityId);
+    UI::CopyUIElemAttribsFromParent(getEntityId(), entityId);
     ET_SendEvent(entityId, &ETUIElement::ET_setHostLayout, getEntityId());
     calculateLayout();
 }
@@ -249,7 +250,7 @@ void UILayout::ET_onZIndexChanged(int newZIndex) {
 
 void UILayout::ET_onAlphaChanged(float newAlpha) {
     for(auto childId : children) {
-        ET_SendEvent(childId, &ETUIElement::ET_setAlpha, newAlpha);
+        ET_SendEvent(childId, &ETUIElement::ET_setParentAlpha, newAlpha);
     }
 }
 

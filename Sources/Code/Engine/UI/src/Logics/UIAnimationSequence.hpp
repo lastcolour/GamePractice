@@ -5,9 +5,10 @@
 #include "Entity/ETEntity.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "UI/ETUITimer.hpp"
-#include "UI/ETUIBox.hpp"
 #include "UI/ETUIAnimation.hpp"
+#include "UI/ETUIBox.hpp"
 #include "Logics/UIAnimationFrame.hpp"
+#include "Logics/AdditiveUITransform.hpp"
 
 #include <vector>
 
@@ -17,8 +18,7 @@ class UIAnimationSequence : public EntityLogic,
     public ETNode<ETUITimerEvents>,
     public ETNode<ETUIAnimationSequence>,
     public ETNode<ETEntityEvents>,
-    public ETNode<ETUIElementEvents>,
-    public ETNode<ETUIAdditiveAnimationTarget> {
+    public ETNode<ETUIElementEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -45,9 +45,6 @@ public:
     void ET_addSubAnimation(EntityId subAnimId) override;
     void ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) override;
 
-    // ETUIAdditiveAnimationTarget
-    void ET_applyAdditiveTranform() override;
-
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override {}
     void ET_onLoaded() override;
@@ -62,7 +59,8 @@ public:
 
 private:
 
-    void reStartCycle();
+    void restartCycle();
+    void resetAnimState();
     void processFrame(float dt, UIAnimationFrame& task);
     bool isAnimHasShowEvent() const;
 
@@ -79,9 +77,8 @@ private:
     PrevState prevState;
     std::vector<EntityId> subAnimations;
     std::vector<UIAnimationFrame> frames;
-    Transform currAddTm;
+    AddtiveUITransform currUIAddTm;
     EntityId triggerId;
-    float currAddAlpha;
     float currDuration;
     float startDelay;
     EAnimSequenceType seqType;
