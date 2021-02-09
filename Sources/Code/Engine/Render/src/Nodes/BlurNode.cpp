@@ -50,6 +50,10 @@ void BlurNode::setPasses(int newPassesCount) {
     passes = newPassesCount;
 }
 
+Mat4 BlurNode::calcModelMat(const Transform& newTm) {
+    return Mat4(1.f);
+}
+
 bool BlurNode::isVisible() const {
     if(passes == 0) {
         return false;
@@ -65,14 +69,14 @@ void BlurNode::blurPass(RenderFramebuffer& first, RenderFramebuffer& second) {
         shader->setTexture2D(UniformType::Texture, second.color0);
         shader->setUniform1i(UniformType::IsVerticalPass, 1);
         shader->setUniform2f(UniformType::TextureSize, size);
-        geom->draw();
+        geom->drawTriangles();
         first.unbind();
     }
     {
         second.bind();
         shader->setTexture2D(UniformType::Texture, first.color0);
         shader->setUniform1i(UniformType::IsVerticalPass, 0);
-        geom->draw();
+        geom->drawTriangles();
         second.unbind();
     }
 }

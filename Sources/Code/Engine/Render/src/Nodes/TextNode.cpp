@@ -7,6 +7,8 @@
 
 TextNode::TextNode() :
     color(255, 255, 255),
+    tmPt(0.f),
+    tmScale(1.f),
     fontHeight(24),
     alignAtCenter(true),
     doUpdate(true) {
@@ -35,15 +37,21 @@ void TextNode::setText(const std::string& newText) {
     doUpdate = true;
 }
 
+Mat4 TextNode::calcModelMat(const Transform& newTm) {
+    tmPt = Vec2(newTm.pt.x, newTm.pt.y);
+    tmScale = Vec2(newTm.scale.x, newTm.scale.y);
+    return Mat4(1.f);
+}
+
 void TextNode::drawLines() {
     auto fontScale = fontHeight / static_cast<float>(font->getHeight());
-    const auto scale = Vec2(tm.scale.x, tm.scale.y) * fontScale;
+    const auto scale = tmScale * fontScale;
 
     AABB2D textBox;
     textBox.bot = Vec2(0.f);
     textBox.top = Vec2(textMetric.size.x * scale.x, textMetric.size.y * scale.y);
 
-    Vec2 drawPt(tm.pt.x, tm.pt.y);
+    Vec2 drawPt = tmPt;
     if(alignAtCenter) {
         textBox.setCenter(drawPt);
     } else {

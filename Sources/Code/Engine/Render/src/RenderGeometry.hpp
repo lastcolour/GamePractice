@@ -8,7 +8,8 @@ enum class VertexType {
     Vector3_Tex,
     Vector4,
     Vector2_Tex,
-    Particle
+    Particle,
+    Vector2
 };
 
 class RenderGeometry {
@@ -17,10 +18,11 @@ public:
     RenderGeometry();
     ~RenderGeometry();
 
-    void draw();
+    void drawTriangles();
     void drawChunk(const void* chunkBuffer, unsigned int chunkVertexCount);
     void drawInstanced(const void* instaceData, unsigned int instancesCount);
     void drawNinePatch(const Vec2& patch, const Vec2& uv);
+    void drawLine(const void* vertexData);
 
 public:
 
@@ -32,10 +34,6 @@ public:
     unsigned int vertCount;
     unsigned int indciesCount;
     VertexType vertType;
-
-private:
-
-    int getVertSize() const;
 };
 
 #endif /* __RENDER_GEOMETRY_HPP_ */

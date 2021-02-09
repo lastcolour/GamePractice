@@ -24,6 +24,7 @@ protected:
     void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
+    Mat4 calcModelMat(const Transform& newTm) override;
 
 private:
 

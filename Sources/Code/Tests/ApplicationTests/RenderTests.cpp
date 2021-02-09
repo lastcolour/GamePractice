@@ -210,7 +210,7 @@ TEST_F(RenderTests, CheckRenderSquare) {
     shader->setUniformMat4(UniformType::CameraMat, Mat4(1.f));
     shader->setUniformMat4(UniformType::ModelMat, Mat4(1.f));
     shader->setUniform4f(UniformType::Color, DRAW_COLOR);
-    geom->draw();
+    geom->drawTriangles();
     shader->unbind();
 
     RENDER_FB->unbind();
@@ -262,7 +262,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     shader->setUniformMat4(UniformType::CameraMat, Mat4(1.f));
     shader->setUniformMat4(UniformType::ModelMat, tm);
     shader->setUniform4f(UniformType::Color, DRAW_COLOR);
-    geom->draw();
+    geom->drawTriangles();
     shader->unbind();
 
     RENDER_FB->unbind();

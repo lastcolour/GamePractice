@@ -26,8 +26,11 @@ bool DebugRender::init() {
 }
 
 void DebugRender::ET_onContextCreated() {
-    simpleNode.init();
-    simpleNode.setVisible(true);
+    lineNode.init();
+    lineNode.setVisible(true);
+
+    quadNode.init();
+    quadNode.setVisible(true);
 
     textNode.init();
     textNode.setVisible(true);
@@ -40,14 +43,13 @@ void DebugRender::ET_onContextDestroyed() {
 void DebugRender::deinit() {
 }
 
-void DebugRender::ET_drawLine(const Vec2& startPt, const ColorB& startCol, const Vec2& endPt, const ColorB& endCol, float width) {
+void DebugRender::ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col, float width) {
     std::lock_guard<std::mutex> lock(mutex);
     {
         DebugDrawLineCmd cmd;
         cmd.startPt = startPt;
-        cmd.startCol = startCol;
         cmd.endPt = endPt;
-        cmd.endCol = endCol;
+        cmd.col = col;
         cmd.width = width;
         drawLineCmds.push_back(cmd);
     }
@@ -84,20 +86,9 @@ void DebugRender::ET_update(RenderContext& ctx) {
 void DebugRender::drawLines(RenderContext& ctx) {
     std::lock_guard<std::mutex> lock(mutex);
 
-    Transform tm;
     for(auto& cmd : drawLineCmds) {
-        Vec2 center = (cmd.startPt + cmd.endPt) / 2.f;
-        Vec2 dir = cmd.endPt - cmd.startPt;
-        float lineLen = dir.getLenght();
-        dir.normalize();
-
-        tm.pt = Vec3(center.x, center.y, 0.f);
-        tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), acos(dir.x));
-
-        simpleNode.setSize(Vec2(lineLen, std::max(cmd.width, 1.1f)));
-        simpleNode.setColor0(cmd.startCol);
-        simpleNode.setTransform(tm);
-        simpleNode.render(ctx);
+        lineNode.setLine(cmd.startPt, cmd.endPt, cmd.col, cmd.width);
+        lineNode.render(ctx);
     }
     drawLineCmds.clear();
 }
@@ -108,11 +99,11 @@ void DebugRender::drawQuads(RenderContext& ctx) {
     Transform tm;
     for(auto& cmd : drawQuadCmds) {
         tm.pt = Vec3(cmd.box.getCenter(), 0.f);
-        simpleNode.setTransform(tm);
+        quadNode.setTransform(tm);
         Vec2 size = cmd.box.getSize();
-        simpleNode.setSize(Vec2(size.y, size.y));
-        simpleNode.setColor0(cmd.col);
-        simpleNode.render(ctx);
+        quadNode.setSize(Vec2(size.y, size.y));
+        quadNode.setColor0(cmd.col);
+        quadNode.render(ctx);
     }
     drawQuadCmds.clear();
 }

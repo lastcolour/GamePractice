@@ -22,5 +22,9 @@
     "blur":{
         "vert":"Shaders/blur.vert",
         "frag":"Shaders/blur.frag"
+    },
+    "line_solid_color": {
+        "vert":"Shaders/line_base.vert",
+        "frag":"Shaders/line_single_color.frag"
     }
 }

@@ -12,7 +12,8 @@ Node::Node() :
     alpha(1.f),
     drawPriority(0),
     blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
-    visible(false) {
+    visible(false),
+    modelMatDirty(true) {
 }
 
 Node::~Node() {
@@ -23,6 +24,7 @@ void Node::preInit(const RenderNodeCreateParams& params) {
     alpha = params.alpha;
     drawPriority = params.drawPriority;
     tm = params.tm;
+    setModelMatDirty();
 }
 
 void Node::init() {
@@ -58,6 +60,7 @@ void Node::setGeometry(PrimitiveGeometryType geomType) {
 
 void Node::setTransform(const Transform& newTm) {
     tm = newTm;
+    setModelMatDirty();
 }
 
 bool Node::isVisible() const {
@@ -91,6 +94,10 @@ void Node::onRenderStart(RenderContext& ctx) {
     } else {
         ctx.setBlending(blendMode);
     }
+    if(modelMatDirty) {
+        modelMatDirty = false;
+        modelMat = calcModelMat(tm);
+    }
 
     ctx.setStencilState(stencilData);
     shader->bind();
@@ -106,4 +113,8 @@ void Node::render(RenderContext& ctx) {
     onRenderStart(ctx);
     onRender(ctx);
     onRenderEnd(ctx);
+}
+
+void Node::setModelMatDirty() {
+    modelMatDirty = true;
 }

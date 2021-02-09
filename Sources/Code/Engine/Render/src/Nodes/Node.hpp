@@ -34,8 +34,10 @@ public:
 protected:
 
     virtual void onRenderStart(RenderContext& ctx);
-    virtual void onRender(RenderContext& ctx) = 0;
     virtual void onRenderEnd(RenderContext& ctx);
+
+    virtual Mat4 calcModelMat(const Transform& tm) = 0;
+    virtual void onRender(RenderContext& ctx) = 0;
     virtual void onInit() = 0;
 
 protected:
@@ -43,10 +45,12 @@ protected:
     void setBlendingMode(const BlendMode& newBlendMode);
     void setShader(const char* shaderName);
     void setGeometry(PrimitiveGeometryType geomType);
+    void setModelMatDirty();
 
 protected:
 
     Transform tm;
+    Mat4 modelMat;
     std::shared_ptr<RenderShader> shader;
     std::shared_ptr<RenderGeometry> geom;
 
@@ -59,6 +63,7 @@ private:
     float alpha;
     int drawPriority;
     bool visible;
+    bool modelMatDirty;
 };
 
 #endif /* __NODE_HPP__ */

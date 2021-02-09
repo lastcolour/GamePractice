@@ -39,12 +39,9 @@ void GradientNode::onRender(RenderContext& ctx) {
         updateTexData();
         tex->unbind();
     }
-    auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
-
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
     shader->setTexture2D(UniformType::Texture, *tex);
-    geom->draw();
+    geom->drawTriangles();
 }
 
 bool GradientNode::isVisible() const {
@@ -71,6 +68,11 @@ void GradientNode::setColor1(const ColorB& newColor) {
 
 void GradientNode::setSize(const Vec2& newSize) {
     size = newSize;
+    setModelMatDirty();
+}
+
+Mat4 GradientNode::calcModelMat(const Transform& newTm) {
+    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void GradientNode::updateTexData() {

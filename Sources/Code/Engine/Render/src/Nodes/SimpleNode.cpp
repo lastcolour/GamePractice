@@ -20,13 +20,15 @@ void SimpleNode::setColor0(const ColorB& newColor) {
 
 void SimpleNode::setSize(const Vec2& newSize) {
     size = newSize;
+    setModelMatDirty();
+}
+
+Mat4 SimpleNode::calcModelMat(const Transform& newTm) {
+    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void SimpleNode::onRender(RenderContext& ctx) {
-    auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
-
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
     shader->setUniform4f(UniformType::Color, color);
-    geom->draw();
+    geom->drawTriangles();
 }

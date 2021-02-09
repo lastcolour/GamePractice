@@ -27,12 +27,14 @@ protected:
     void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
+    Mat4 calcModelMat(const Transform& newTm) override;
 
 private:
 
     std::shared_ptr<RenderTexture> tex;
     ParticleEmitterRenderConfig renderConfig;
     EmitterState state;
+    Transform tm;
     std::atomic<bool> needUpdate;
 };
 

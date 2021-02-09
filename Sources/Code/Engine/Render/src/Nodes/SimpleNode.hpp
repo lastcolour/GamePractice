@@ -17,6 +17,7 @@ protected:
     // Node
     void onInit() override;
     void onRender(RenderContext& ctx) override;
+    Mat4 calcModelMat(const Transform& newTm) override;
 
 private:
 

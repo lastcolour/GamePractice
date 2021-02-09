@@ -42,6 +42,8 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(Prim
         return createParticles();
     case PrimitiveGeometryType::NinePatch:
         return createNinePatch();
+    case PrimitiveGeometryType::Line:
+        return createLine();
     default:
         break;
     }
@@ -61,6 +63,9 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(Primiti
     if(!geom) {
         return nullptr;
     }
+
+    assert(geom->aabb.getCenter() == Vec3(0.f) && "Invalid geometry center");
+
     geometris[reqGeomType] = geom;
     return geom;
 }
@@ -285,6 +290,32 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
     geometry->vertCount = 16;
     geometry->indciesCount = indciesCount;
     geometry->vertType = VertexType::Vector2_Tex;
+
+    return geometry;
+}
+
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createLine() {
+    GLuint vaoId = 0;
+    GLuint vboId = 0;
+
+    glGenVertexArrays(1, &vaoId);
+    glBindVertexArray(vaoId);
+    {
+        glGenBuffers(1, &vboId);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * 2, nullptr, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), static_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+    }
+    glBindVertexArray(0);
+
+    std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
+    geometry->aabb = AABB(Vec3(0.f));
+    geometry->vaoId = vaoId;
+    geometry->vboId = vboId;
+    geometry->vertCount = 2u;
+    geometry->vertType = VertexType::Vector2;
 
     return geometry;
 }

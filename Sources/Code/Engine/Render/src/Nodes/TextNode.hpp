@@ -21,6 +21,7 @@ protected:
     void onInit() override;
     void onRender(RenderContext& ctx) override;
     bool isVisible() const override;
+    Mat4 calcModelMat(const Transform& newTm) override;
 
 private:
 
@@ -33,6 +34,8 @@ private:
     std::string text;
     TextMetric textMetric;
     ColorB color;
+    Vec2 tmPt;
+    Vec2 tmScale;
     int fontHeight;
     bool alignAtCenter;
     bool doUpdate;

@@ -16,19 +16,19 @@ void DrawFPSChart(Vec2& pt, const Vec2& size, const CycleArray<float>& fpsValues
 
     startPt = pt;
     endPt = Vec2(startPt.x, startPt.y + size.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
 
     startPt = pt;
     endPt = Vec2(startPt.x + size.x, startPt.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
 
     startPt = pt + size;
     endPt = Vec2(startPt.x - size.x, startPt.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
 
     startPt = pt + size;
     endPt = Vec2(startPt.x, startPt.y - size.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255), endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
 
     if(fpsValues.size() <= 1) {
         return;
@@ -50,7 +50,7 @@ void DrawFPSChart(Vec2& pt, const Vec2& size, const CycleArray<float>& fpsValues
         yVal = std::min(size.y * 0.99f, yVal);
         startPt.x = endPt.x - step;
         startPt.y = pt.y + yVal;
-        ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, ColorB(255, 255, 0), endPt, ColorB(255, 255, 0), 1.f);
+        ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255, 255, 0), 1.f);
         endPt = startPt;
     }
 }

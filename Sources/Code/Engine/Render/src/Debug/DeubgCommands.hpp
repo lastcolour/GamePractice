@@ -9,8 +9,7 @@
 struct DebugDrawLineCmd {
     Vec2 startPt;
     Vec2 endPt;
-    ColorB startCol;
-    ColorB endCol;
+    ColorB col;
     float width;
 };
 

@@ -12,6 +12,7 @@ ImageNode::~ImageNode() {
 
 void ImageNode::setSize(const Vec2& newSize) {
     size = newSize;
+    setModelMatDirty();
 }
 
 void ImageNode::setImage(const std::string& newImage) {
@@ -29,13 +30,10 @@ void ImageNode::onInit() {
 }
 
 void ImageNode::onRender(RenderContext& ctx) {
-    auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
-
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
     shader->setTexture2D(UniformType::Texture, *tex);
     shader->setUniform4f(UniformType::Color, tintColor);
-    geom->draw();
+    geom->drawTriangles();
 }
 
 bool ImageNode::isVisible() const {
@@ -43,6 +41,10 @@ bool ImageNode::isVisible() const {
         return false;
     }
     return Node::isVisible();
+}
+
+Mat4 ImageNode::calcModelMat(const Transform& newTm) {
+    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void ImageNode::setTexture(std::shared_ptr<RenderTexture>& newTex) {

@@ -2,6 +2,8 @@
 #include "Platform/OpenGL.hpp"
 #include "Math/Matrix.hpp"
 
+#include <cassert>
+
 namespace {
 
 int getVertexSize(VertexType vertType) {
@@ -15,7 +17,10 @@ int getVertexSize(VertexType vertType) {
         return sizeof(Vec4) + sizeof(Mat3x2);
     case VertexType::Vector2_Tex:
         return sizeof(Vec4);
+    case VertexType::Vector2:
+        return sizeof(Vec2);
     default:
+        assert(false && "Invalid vertex type");
         return 0;
     }
 }
@@ -36,9 +41,19 @@ RenderGeometry::RenderGeometry() :
 RenderGeometry::~RenderGeometry() {
 }
 
-void RenderGeometry::draw() {
+void RenderGeometry::drawTriangles() {
     glBindVertexArray(vaoId);
     glDrawArrays(GL_TRIANGLES, 0, vertCount);
+    glBindVertexArray(0);
+}
+
+void RenderGeometry::drawLine(const void* vertexData) {
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, getVertexSize(vertType) * vertCount, vertexData);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(vaoId);
+    glDrawArrays(GL_LINES, 0, vertCount);
     glBindVertexArray(0);
 }
 

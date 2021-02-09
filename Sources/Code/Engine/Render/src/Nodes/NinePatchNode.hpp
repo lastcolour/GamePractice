@@ -16,9 +16,11 @@ protected:
     // ImageNode
     void onInit() override;
     void onRender(RenderContext& ctx) override;
+    Mat4 calcModelMat(const Transform& newTm) override;
 
 protected:
 
+    Vec2 tmScale;
     float horizontal;
     float vertical;
     float patchScale;

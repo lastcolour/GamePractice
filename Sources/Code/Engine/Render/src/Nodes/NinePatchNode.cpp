@@ -4,6 +4,7 @@
 #include <algorithm>
 
 NinePatchNode::NinePatchNode() :
+    tmScale(1.f),
     horizontal(0.3f),
     vertical(0.3f),
     patchScale(1.f) {
@@ -24,12 +25,14 @@ void NinePatchNode::setPatches(float newHorizontal, float newVertical, float new
     patchScale = newPatchScale;
 }
 
-void NinePatchNode::onRender(RenderContext& ctx) {
-    auto scale = Render::CalcGeomScaleForSize(size, *geom);
-    Mat4 modelMat = Render::CalcModelMat(tm, Vec3(scale, 1.f), *geom);
+Mat4 NinePatchNode::calcModelMat(const Transform& newTm) {
+    tmScale = Vec2(newTm.scale.x, newTm.scale.y);
+    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
+}
 
+void NinePatchNode::onRender(RenderContext& ctx) {
     Vec2i origSize = tex->getSize();
-    Vec2 texScale = Vec2((size.x * tm.scale.x) / origSize.x, (size.y * tm.scale.y) / origSize.y);
+    Vec2 texScale = Vec2((size.x * tmScale.x) / origSize.x, (size.y * tmScale.y) / origSize.y);
     float minScale = std::min(texScale.x, texScale.y);
     if(minScale >= 1.f) {
         minScale = 1.f;

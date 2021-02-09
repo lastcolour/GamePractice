@@ -8,6 +8,7 @@
 #include "Debug/DeubgCommands.hpp"
 #include "Nodes/SimpleNode.hpp"
 #include "Nodes/TextNode.hpp"
+#include "Nodes/LineNode.hpp"
 
 #include <vector>
 #include <mutex>
@@ -25,7 +26,7 @@ public:
     void deinit() override;
 
     // ETDebugRender
-    void ET_drawLine(const Vec2& startPt, const ColorB& startCol, const Vec2& endPt, const ColorB& endCol, float width) override;
+    void ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col, float width) override;
     void ET_drawQuad(const AABB2D& box, const ColorB& col) override;
     void ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) override;
     void ET_update(RenderContext& ctx) override;
@@ -46,7 +47,8 @@ private:
     std::vector<DebugDrawLineCmd> drawLineCmds;
     std::vector<DebugDrawQuadCmd> drawQuadCmds;
     std::vector<DebugDrawTextCmd> drawTextCmds;
-    SimpleNode simpleNode;
+    LineNode lineNode;
+    SimpleNode quadNode;
     TextNode textNode;
 };
 
