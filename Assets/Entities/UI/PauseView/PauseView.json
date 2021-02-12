@@ -134,6 +134,7 @@
                     "label": [
                       1
                     ],
+                    "pressSound": "buttonPress_01",
                     "event": "OnPauseViewResume"
                   }
                 },
@@ -314,6 +315,7 @@
                     "label": [
                       1
                     ],
+                    "pressSound": "buttonPress_01",
                     "event": "OnPauseViewExit"
                   }
                 },
@@ -494,6 +496,7 @@
                     "label": [
                       1
                     ],
+                    "pressSound": "buttonPress_01",
                     "event": "OnPauseViewRestart"
                   }
                 },

@@ -1,4 +1,4 @@
-#include "Game/Logics/LevelButtonList.hpp"
+#include "Game/Progression/LevelButtonList.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Core/ETLogger.hpp"
 #include "Game/Progression/LevelsProgressData.hpp"
@@ -12,7 +12,6 @@ void LevelButtonItem::Reflect(ReflectContext& ctx) {
         classInfo->addField("id", &LevelButtonItem::levelId);
         classInfo->addResourceField("levelName", ResourceType::Entity, &LevelButtonItem::levelName);
         classInfo->addField("buttonId", &LevelButtonItem::buttonId);
-        classInfo->addField("starsRequired", &LevelButtonItem::startsRequired);
     }
 }
 
@@ -47,31 +46,29 @@ int LevelButtonList::ET_getDoneStars() const {
 }
 
 void LevelButtonList::initLevelProress() {
-    int currStarDone = ET_getDoneStars();
+    bool prevLevelHasStars = true;
     for(auto& button : levelButtons) {
         if(!button.buttonId.isValid()) {
             LogWarning("[LevelButtonList::init] Invalid button id");
             continue;
         }
-        ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelId, button.levelId.c_str());
-        if(button.startsRequired > currStarDone) {
-            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Locked);
-            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelStars, 0);
-        } else {
-            const LevelProgress* lvlProgress = nullptr;
-            ET_SendEventReturn(lvlProgress, &ETLevelsProgression::ET_getLevelProgress, button.levelName.c_str());
-            int levelStars = 0;
-            if(lvlProgress) {
-                levelStars = lvlProgress->stars;
-            }
-            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelStars, levelStars);
-            if(levelStars == 3) {
-                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Completed);
-            } else {
-                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Unlocked);
-            }
-        }
         ET_SendEventReturn(button.senderId, button.buttonId, &ETLevelButton::ET_getSenderId);
+        ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelId, button.levelId.c_str());
+
+        const LevelProgress* lvlProgress = nullptr;
+        ET_SendEventReturn(lvlProgress, &ETLevelsProgression::ET_getLevelProgress, button.levelName.c_str());
+        if(lvlProgress) {
+            assert(lvlProgress->stars > 0 && "Invalid stars amount");
+            prevLevelHasStars = true;
+            ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Unlocked, lvlProgress->stars);
+        } else {
+            if(prevLevelHasStars) {
+                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Unlocked, 0);
+            } else {
+                ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Locked, 0);
+            }
+            prevLevelHasStars = false;
+        }
     }
 }
 
@@ -86,35 +83,30 @@ void LevelButtonList::ET_updateLevelProgress(EventSequence& eventSeq) {
     if(starsDelta == 0) {
         return;
     }
+
     EntityId progressedLevelId;
-    std::vector<EntityId> newUnlockedLevels;
+    EntityId newUnlockedLevelId;
+
+    bool nextLevelUnlocked = false;
     for(auto& lvlButton : levelButtons) {
         if(lvlButton.levelName == progressDelta->current.name) {
             progressedLevelId = lvlButton.buttonId;
-        }
-        if(lvlButton.startsRequired < currStarsDone - starsDelta) {
+            nextLevelUnlocked = true;
             continue;
         }
-        if(lvlButton.startsRequired >= currStarsDone) {
-            continue;
+        if(nextLevelUnlocked) {
+            newUnlockedLevelId = lvlButton.buttonId;
+            break;
         }
-        newUnlockedLevels.push_back(lvlButton.buttonId);
     }
 
-    {
-        assert(progressedLevelId.isValid() && "Invalid progressed level");
-        auto newState = ELevelButtonState::Unlocked;
-        if(progressDelta->current.stars == 3) {
-            newState = ELevelButtonState::Completed;
-        }
+    assert(progressedLevelId.isValid() && "Invalid progressed level");
+    ET_SendEvent(progressedLevelId, &ETLevelButton::ET_scheduleChanges, eventSeq,
+        ELevelButtonState::Unlocked, progressDelta->current.stars);
 
-        ET_SendEvent(progressedLevelId, &ETLevelButton::ET_scheduleChanges, eventSeq,
-            newState, progressDelta->prev.stars, progressDelta->current.stars);
-    }
-
-    for(auto buttonId : newUnlockedLevels) {
-        ET_SendEvent(buttonId, &ETLevelButton::ET_scheduleChanges, eventSeq,
-            ELevelButtonState::Unlocked, 0, 0);
+    if(newUnlockedLevelId.isValid()) {
+        ET_SendEvent(newUnlockedLevelId, &ETLevelButton::ET_scheduleChanges, eventSeq,
+            ELevelButtonState::Unlocked, 0);
     }
 }
 

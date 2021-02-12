@@ -53,8 +53,6 @@ void ParticlesNode::onInit() {
 }
 
 Mat4 ParticlesNode::calcModelMat(const Transform& newTm) {
-    tm = newTm;
-
     Mat4 resMat = Mat4(1.f);
 
     if(state.emissionConfig.emitterSpace == EmitterSpace::Local) {
@@ -70,5 +68,6 @@ void ParticlesNode::onRender(RenderContext& ctx) {
     needUpdate.store(true);
 
     shader->setTexture2D(UniformType::Texture, *tex);
+    shader->setUniformMat4(UniformType::ModelMat, modelMat);
     geom->drawInstanced(&state.instaceData[0], state.activeCount);
 }

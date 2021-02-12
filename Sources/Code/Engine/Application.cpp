@@ -116,7 +116,7 @@ void Application::mainLoop() {
             ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
         });
         soundUpdate->setTrackPerformance(true);
-        soundUpdate->setFrequency(60);
+        soundUpdate->setFrequency(120);
     }
     {
         auto renderUpdate = runner->createTask("Render", [](float dt){

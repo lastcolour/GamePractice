@@ -52,6 +52,9 @@ void EventSequence::addEvent(const EventSequence::Event& newEvent) {
     if(newEvent.onEndCallback) {
         isVoidEvent = false;
     }
+    if(newEvent.onStartCallback) {
+        isVoidEvent = false;
+    }
     if(isVoidEvent) {
         assert(false && "Can't add void event to the sequence");
         return;
@@ -111,6 +114,9 @@ void EventSequence::startNextEvent() {
                 ETNode<ETUITimerEvents>::connect(triggerId);
             }
             break;
+        }
+        if(event.onStartCallback) {
+            event.onStartCallback();
         }
         if(!PlayAnimtionSafe(event.targetId, event.animType, triggerId)) {
             if(event.onEndCallback) {

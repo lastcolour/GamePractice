@@ -243,23 +243,22 @@ ClassValue* ClassInfo::findValueById(void*& instance, int valueId) {
 
 ClassValue* ClassInfo::findValueByPrimitiveValueId(void*& instance, int valueId) {
     assert(valueId >= 0 && "Invalid value id");
-    if(valueId >= primitiveValueCount) {
-        return nullptr;
-    }
+
     std::vector<ClassInfo*> allClasses;
     getAllClasses(allClasses);
 
+    int prevValueCount = 0;
+
     for(auto classInfo : allClasses) {
-        if(valueId >= classInfo->primitiveValueCount) {
-            valueId -= classInfo->primitiveValueCount;
+        if(valueId >= classInfo->primitiveValueCount || valueId < prevValueCount) {
+            prevValueCount = classInfo->primitiveValueCount;
             continue;
         }
-        if(classInfo->primitiveValueCount == static_cast<int>(classInfo->values.size())) {
-            return &classInfo->values[valueId];
-        }
+        valueId -= prevValueCount;
         for(auto& value : classInfo->values) {
             if(valueId >= value.primitiveValueCount) {
                 valueId -= value.primitiveValueCount;
+                assert(valueId >= 0 && "Invalid value id");
                 continue;
             }
             if(value.type == ClassValueType::Object) {

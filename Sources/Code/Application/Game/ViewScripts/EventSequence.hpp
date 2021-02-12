@@ -22,6 +22,7 @@ public:
         EntityId targetId;
         float startDelay;
         EAnimSequenceType animType;
+        std::function<void(void)> onStartCallback;
         std::function<void(void)> onEndCallback;
     };
 

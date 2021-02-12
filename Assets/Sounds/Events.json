@@ -8,6 +8,13 @@
             "group":"UI"
         },
         {
+            "name":"buttonReject_01",
+            "sound":"UI/switch_003.ogg",
+            "volume":0.7,
+            "nextDelay":0,
+            "group":"UI"
+        },
+        {
             "name":"elemSwitch_01",
             "sound":"Game/switchSuccess.ogg",
             "volume":0.4,

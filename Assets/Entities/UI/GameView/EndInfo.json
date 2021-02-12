@@ -53,8 +53,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 315.0,
-                "y": 105.0
+                "x": 308.0,
+                "y": 103.0
               },
               "tintColor": {
                 "r": 255,
@@ -127,7 +127,7 @@
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 53,
+              "fontSize": 52,
               "text": "DONE"
             }
           },

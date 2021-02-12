@@ -18,7 +18,6 @@ public:
     std::string levelName;
     EntityId buttonId;
     EntityId senderId;
-    int startsRequired;
 };
 
 class LevelButtonList : public EntityLogic,

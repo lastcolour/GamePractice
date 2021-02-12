@@ -9,8 +9,7 @@ class EventSequence;
 
 enum class ELevelButtonState {
     Locked = 0,
-    Unlocked,
-    Completed
+    Unlocked
 };
 
 struct ETLevelsProgression {
@@ -26,9 +25,8 @@ struct ETLevelButton {
     virtual ~ETLevelButton() = default;
     virtual EntityId ET_getSenderId() const = 0;
     virtual void ET_setLevelId(const char* levelId) = 0;
-    virtual void ET_setLevelState(ELevelButtonState newState) = 0;
-    virtual void ET_setLevelStars(int count) = 0;
-    virtual void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int prevStarCount, int newStarCount) = 0;
+    virtual void ET_setLevelState(ELevelButtonState newState, int newStarsCount) = 0;
+    virtual void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int newStarCount) = 0;
 };
 
 struct ETLevelButtonList {

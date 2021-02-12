@@ -56,6 +56,7 @@ void UIButton::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
         classInfo->addBaseClass<UIBox>();
         classInfo->addField("label", &UIButton::labelId);
+        classInfo->addResourceField("pressSound", ResourceType::SoundEvent, &UIButton::setPressSound);
         classInfo->addField("event", &UIButton::eventType);
     }
 }
@@ -149,8 +150,7 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
         return EInputEventResult::Ignore;
     }
     if(!UI::PlayAnimation(getEntityId(), EAnimSequenceType::Press, getEntityId())) {
-        UIEvent buttonEvent{getEntityId(), eventType};
-        ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
+        ET_onAnimationPlayed(getEntityId(), EAnimSequenceType::Press);
     }
     return EInputEventResult::Accept;
 }
@@ -163,6 +163,7 @@ void UIButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animTyp
         return;
     }
     UIEvent buttonEvent{getEntityId(), eventType};
+    pressSound.emit();
     ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
 }
 
@@ -199,4 +200,8 @@ void UIButton::onDisabled(bool flag) {
             ETNode<ETUIInteractionBox>::connect(getEntityId());
         }
     }
+}
+
+void UIButton::setPressSound(const char* eventName) {
+    ET_SendEventReturn(pressSound, &ETSoundManager::ET_createEvent, eventName);
 }

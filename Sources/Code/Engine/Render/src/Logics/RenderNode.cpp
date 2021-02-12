@@ -38,6 +38,7 @@ void RenderNode::init() {
     RenderNodeCreateParams params;
     ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
 
+    params.tm.scale *= normScale;
     params.alpha = std::min(1.f, std::max(0.f, alpha));
     params.drawPriority = drawPriority;
     params.type = type;
@@ -61,7 +62,7 @@ void RenderNode::deinit() {
 void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
     alphaMult = newAlphaMult;
     if(alphaMult < 0.f || alphaMult > 1.f) {
-        LogWarning("[RenderNode::ET_setAlphaMultiplier] alpha-multiplier '%.1f' is out of range [0..1] (Entity: '%s'",
+        LogWarning("[RenderNode::ET_setAlphaMultiplier] alpha-multiplier '%.1f' is out of range [0..1] (Entity: '%s')",
             alphaMult, EntityUtils::GetEntityName(getEntityId()));
         alphaMult = Math::Clamp(alphaMult, 0.f, 1.f);
     }

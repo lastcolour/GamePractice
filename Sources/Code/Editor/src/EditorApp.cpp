@@ -81,7 +81,7 @@ void EditorApp::buildTasksRunner() {
         auto gameUpdate = taskRunner->createTask("Game", [](float dt){
             ET_SendEvent(&ETGameTimer::ET_onTick, dt);
         });
-        gameUpdate->setFrequency(120);
+        gameUpdate->setFrequency(60);
         gameUpdate->addChild(uiUpdate);
         uiUpdate->addChild(renderSync);
     }
@@ -96,7 +96,7 @@ void EditorApp::buildTasksRunner() {
         auto soundUpdate = taskRunner->createTask("Sound", [](){
             ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
         });
-        soundUpdate->setFrequency(60);
+        soundUpdate->setFrequency(120);
     }
 }
 

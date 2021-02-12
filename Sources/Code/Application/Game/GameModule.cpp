@@ -14,14 +14,14 @@
 #include "Game/Logics/BoardElemSelectAnimation.hpp"
 #include "Game/Logics/ScoreObjective.hpp"
 #include "Game/Logics/GameBoardAnimation.hpp"
-#include "Game/Logics/LevelButtonList.hpp"
-#include "Game/Logics/LevelButton.hpp"
 #include "Game/Logics/GameBoardElemsPool.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
 #include "Game/ViewScripts/MainViewScript.hpp"
 #include "Game/ViewScripts/PauseViewScript.hpp"
+#include "Game/Progression/LevelButtonList.hpp"
+#include "Game/Progression/LevelButton.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {

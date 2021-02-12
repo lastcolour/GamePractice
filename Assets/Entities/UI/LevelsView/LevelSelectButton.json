@@ -19,7 +19,7 @@
           "w": 1.0
         }
       },
-      "name": "Button",
+      "name": "UnlockedButton",
       "id": 1,
       "internal": true,
       "data": {
@@ -55,63 +55,15 @@
                   "data": {
                     "isVisible": false,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 0,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 141.0,
-                      "y": 141.0
+                      "x": 158.0,
+                      "y": 158.0
                     },
                     "tintColor": {
                       "r": 61,
                       "g": 167,
                       "b": 49,
-                      "a": 255
-                    },
-                    "image": "Images/block.png"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "transform": {
-              "pos": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              },
-              "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-              },
-              "rot": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0,
-                "w": 1.0
-              }
-            },
-            "name": "LockedBackground",
-            "id": 2,
-            "internal": true,
-            "data": {
-              "children": [],
-              "logics": [
-                {
-                  "type": "RenderImage",
-                  "id": 1,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
-                    "size": {
-                      "x": 140.0,
-                      "y": 140.0
-                    },
-                    "tintColor": {
-                      "r": 161,
-                      "g": 161,
-                      "b": 161,
                       "a": 255
                     },
                     "image": "Images/block.png"
@@ -196,7 +148,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 24.0,
+                      "y": 23.999969482421875,
                       "z": 0.0
                     },
                     "scale": {
@@ -259,7 +211,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -26.0,
+                      "y": -26.99981689453125,
                       "z": 0.0
                     },
                     "scale": {
@@ -672,7 +624,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 38.0,
+                            "x": 38.00018310546875,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -944,6 +896,131 @@
                 }
               ]
             }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Hover",
+            "id": 6,
+            "internal": true,
+            "data": {
+              "children": [],
+              "logics": [
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 1,
+                  "data": {
+                    "isVisible": false,
+                    "alpha": 1.0,
+                    "drawPriority": 9,
+                    "size": {
+                      "x": 139.0,
+                      "y": 139.0
+                    },
+                    "tintColor": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 0
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
+                  }
+                },
+                {
+                  "type": "UIBox",
+                  "id": 2,
+                  "data": {
+                    "hidden": true,
+                    "enabled": true,
+                    "style": {
+                      "width": 30.0,
+                      "widthInv": "Grid",
+                      "height": 30.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 3,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Press",
+                    "startDelay": 0.0,
+                    "subAnimations": [],
+                    "startEvent": "Show",
+                    "endEvent": "Hide",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.0,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 0.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.05000000074505806,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.05000000074505806,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 0.0
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
           }
         ],
         "logics": [
@@ -951,8 +1028,8 @@
             "type": "UIButton",
             "id": 1,
             "data": {
-              "hidden": false,
-              "enabled": false,
+              "hidden": true,
+              "enabled": true,
               "style": {
                 "width": 30.0,
                 "widthInv": "Grid",
@@ -966,6 +1043,7 @@
                 }
               },
               "label": [],
+              "pressSound": "buttonPress_01",
               "event": "OnLevelsStartLevel"
             }
           },
@@ -994,7 +1072,11 @@
               "cyclic": false,
               "type": "Press",
               "startDelay": 0.0,
-              "subAnimations": [],
+              "subAnimations": [
+                [
+                  6
+                ]
+              ],
               "startEvent": "None",
               "endEvent": "None",
               "frames": [
@@ -1026,6 +1108,547 @@
                 }
               ]
             }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 6,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Highlight",
+              "startDelay": 0.0,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.20000000298023224,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.2000000476837158,
+                    "y": 1.2000000476837158
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.20000000298023224,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 7,
+            "data": {
+              "extraZOffset": 4,
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                [
+                  6
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "LockedButton",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Label",
+            "id": 2,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 18.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "LevelId",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "hidden": false,
+                          "enabled": false,
+                          "style": {
+                            "fontSize": 10.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 4.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "99"
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 7,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 47,
+                          "text": "99"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": -27.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "LockedLabel",
+                  "id": 2,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "hidden": false,
+                          "enabled": true,
+                          "style": {
+                            "fontSize": 4.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "(Locked)"
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 7,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 19,
+                          "text": "(Locked)"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UILayoutBox",
+                  "id": 1,
+                  "data": {
+                    "hidden": false,
+                    "enabled": false,
+                    "margin": {
+                      "top": 0.0,
+                      "bot": 0.0,
+                      "left": 0.0,
+                      "right": 0.0
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 2,
+                  "data": {
+                    "extraZOffset": 0,
+                    "style": {
+                      "type": "Vertical",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ],
+                      [
+                        2
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Hover",
+            "id": 3,
+            "internal": true,
+            "data": {
+              "children": [],
+              "logics": [
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 1,
+                  "data": {
+                    "isVisible": false,
+                    "alpha": 1.0,
+                    "drawPriority": 9,
+                    "size": {
+                      "x": 139.0,
+                      "y": 139.0
+                    },
+                    "tintColor": {
+                      "r": 255,
+                      "g": 89,
+                      "b": 89,
+                      "a": 255
+                    },
+                    "image": "Images/block.png",
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 1.0
+                  }
+                },
+                {
+                  "type": "UIBox",
+                  "id": 2,
+                  "data": {
+                    "hidden": true,
+                    "enabled": true,
+                    "style": {
+                      "width": 30.0,
+                      "widthInv": "Grid",
+                      "height": 30.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 3,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Press",
+                    "startDelay": 0.0,
+                    "subAnimations": [],
+                    "startEvent": "Show",
+                    "endEvent": "Hide",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.0,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 0.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.05000000074505806,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.5,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 0.0
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "logics": [
+          {
+            "type": "UIButton",
+            "id": 1,
+            "data": {
+              "hidden": false,
+              "enabled": true,
+              "style": {
+                "width": 30.0,
+                "widthInv": "Grid",
+                "height": 30.0,
+                "heightInv": "Grid",
+                "margin": {
+                  "top": 0.0,
+                  "bot": 0.0,
+                  "left": 0.0,
+                  "right": 0.0
+                }
+              },
+              "label": [
+                2
+              ],
+              "pressSound": "buttonReject_01",
+              "event": "None"
+            }
+          },
+          {
+            "type": "NinePatchImageLogic",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 2,
+              "size": {
+                "x": 139.0,
+                "y": 139.0
+              },
+              "tintColor": {
+                "r": 117,
+                "g": 117,
+                "b": 117,
+                "a": 255
+              },
+              "image": "Images/block.png",
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 1.0
+            }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 3,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Press",
+              "startDelay": 0.0,
+              "subAnimations": [
+                [
+                  3
+                ]
+              ],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.10000000149011612,
+                  "offset": {
+                    "x": 2.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.10000000149011612,
+                  "offset": {
+                    "x": -2.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.10000000149011612,
+                  "offset": {
+                    "x": 2.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 4,
+            "data": {
+              "extraZOffset": 0,
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                [
+                  2
+                ]
+              ]
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 5,
+            "data": {
+              "extraZOffset": 4,
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                [
+                  3
+                ]
+              ]
+            }
           }
         ]
       }
@@ -1036,49 +1659,58 @@
       "type": "LevelButton",
       "id": 1,
       "data": {
-        "levelIdLabel": [
-          1,
-          5,
-          1
-        ],
-        "senderId": [
-          1
-        ],
-        "lockedBackgroundId": [
-          1,
-          2
-        ],
-        "unlockedBackgroundId": [
-          1,
-          1
-        ],
-        "completedBackgroundId": [
-          1,
-          4
-        ],
-        "stars": {
-          "first": [
-            1,
-            5,
-            2,
-            1,
-            1
-          ],
-          "second": [
-            1,
-            5,
+        "lockedButton": {
+          "labelId": [
             2,
             2,
             1
           ],
-          "third": [
-            1,
-            5,
-            2,
-            3,
-            1
+          "buttonId": [
+            2
           ]
-        }
+        },
+        "unlockedButton": {
+          "labelId": [
+            1,
+            5,
+            1
+          ],
+          "buttonId": [
+            1
+          ],
+          "unlockedRenderId": [
+            1,
+            1
+          ],
+          "completedRenderId": [
+            1,
+            4
+          ],
+          "stars": {
+            "first": [
+              1,
+              5,
+              2,
+              1,
+              1
+            ],
+            "second": [
+              1,
+              5,
+              2,
+              2,
+              1
+            ],
+            "third": [
+              1,
+              5,
+              2,
+              3,
+              1
+            ]
+          }
+        },
+        "unlockSound": "getProgressionStar_01"
       }
     },
     {
@@ -1094,6 +1726,9 @@
         "children": [
           [
             1
+          ],
+          [
+            2
           ]
         ]
       }
@@ -1110,47 +1745,6 @@
           "left": 0.0,
           "right": 0.0
         }
-      }
-    },
-    {
-      "type": "UIAnimationSequence",
-      "id": 5,
-      "data": {
-        "autoStart": false,
-        "cyclic": false,
-        "type": "Highlight",
-        "startDelay": 0.0,
-        "subAnimations": [],
-        "startEvent": "None",
-        "endEvent": "None",
-        "frames": [
-          {
-            "lerpMode": "Linear",
-            "duration": 0.20000000298023224,
-            "offset": {
-              "x": 0.0,
-              "y": 0.0
-            },
-            "scale": {
-              "x": 1.2000000476837158,
-              "y": 1.2000000476837158
-            },
-            "alpha": 1.0
-          },
-          {
-            "lerpMode": "Linear",
-            "duration": 0.20000000298023224,
-            "offset": {
-              "x": 0.0,
-              "y": 0.0
-            },
-            "scale": {
-              "x": 1.0,
-              "y": 1.0
-            },
-            "alpha": 1.0
-          }
-        ]
       }
     }
   ]

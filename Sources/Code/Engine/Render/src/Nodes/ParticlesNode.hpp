@@ -34,7 +34,6 @@ private:
     std::shared_ptr<RenderTexture> tex;
     ParticleEmitterRenderConfig renderConfig;
     EmitterState state;
-    Transform tm;
     std::atomic<bool> needUpdate;
 };
 

@@ -107,8 +107,8 @@
               "alpha": 1.0,
               "drawPriority": 4,
               "size": {
-                "x": 367.0,
-                "y": 90.0
+                "x": 325.0,
+                "y": 79.0
               },
               "tintColor": {
                 "r": 255,
@@ -163,7 +163,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 48,
+              "fontSize": 42,
               "text": "Start"
             }
           },
@@ -211,6 +211,7 @@
         "label": [
           2
         ],
+        "pressSound": "buttonPress_01",
         "event": "OnMainViewStartGame"
       }
     },
@@ -277,47 +278,6 @@
       }
     },
     {
-      "type": "UIAnimationSequence",
-      "id": 7,
-      "data": {
-        "autoStart": true,
-        "cyclic": true,
-        "type": "Idle",
-        "startDelay": 0.0,
-        "subAnimations": [],
-        "startEvent": "None",
-        "endEvent": "None",
-        "frames": [
-          {
-            "lerpMode": "Linear",
-            "duration": 2.0,
-            "offset": {
-              "x": 0.0,
-              "y": -2.0
-            },
-            "scale": {
-              "x": 1.100000023841858,
-              "y": 1.0
-            },
-            "alpha": 1.0
-          },
-          {
-            "lerpMode": "Linear",
-            "duration": 1.0,
-            "offset": {
-              "x": 0.0,
-              "y": 0.0
-            },
-            "scale": {
-              "x": 1.0,
-              "y": 1.0
-            },
-            "alpha": 1.0
-          }
-        ]
-      }
-    },
-    {
       "type": "NinePatchImageLogic",
       "id": 8,
       "data": {
@@ -325,8 +285,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 367.0,
-          "y": 90.0
+          "x": 325.0,
+          "y": 79.0
         },
         "tintColor": {
           "r": 100,
