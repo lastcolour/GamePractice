@@ -14,7 +14,6 @@
 namespace {
 
 const char* TEST_OBJECT_NAME = "Game/Simple.json";
-const char* EXTEND_OBJECT_NAME = "Game/GameBoardElem.json";
 
 class TestLogic : public EntityLogic {
 public:

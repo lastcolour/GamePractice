@@ -52,8 +52,8 @@ GLenum getGLWrapType(TexWrapType wrapType) {
 } // namespace
 
 RenderTexture::RenderTexture() :
-    texId(0),
-    size(0) {
+    size(0),
+    texId(0) {
 }
 
 RenderTexture::~RenderTexture() {

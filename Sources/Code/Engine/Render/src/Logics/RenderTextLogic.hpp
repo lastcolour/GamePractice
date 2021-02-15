@@ -38,9 +38,9 @@ private:
 private:
 
     std::shared_ptr<RenderFont> font;
-    int fontHeight;
     std::string text;
     ColorB color;
+    int fontHeight;
     bool isTextChanged;
     bool isColorChanged;
 };

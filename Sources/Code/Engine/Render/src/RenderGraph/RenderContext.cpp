@@ -80,8 +80,8 @@ GLenum getGLBlendType(BlendType blenType) {
 
 RenderContext::RenderContext() :
     dt(0.f),
-    blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
-    mainFBO(nullptr) {
+    mainFBO(nullptr),
+    blendMode(BlendMode{BlendType::NONE, BlendType::NONE}) {
 }
 
 RenderContext::~RenderContext() {

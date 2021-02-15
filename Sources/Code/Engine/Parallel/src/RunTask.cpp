@@ -7,9 +7,9 @@
 RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
     name(taskName),
     func(callFunc),
-    type(RunTaskType::Default),
     runCount(0),
     frequency(std::numeric_limits<int>::max()),
+    type(RunTaskType::Default),
     trackPerformance(false) {
 }
 

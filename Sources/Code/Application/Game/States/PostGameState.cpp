@@ -60,7 +60,6 @@ void PostGameState::onLeave() {
 }
 
 void PostGameState::setupEndResult() {
-    ObjectiveProgress objectiveProgress = ObjectiveProgress::Fail;
     ET_SendEventReturn(endResult, &ETGameScore::ET_getGameResult);
 
     LevelProgress newProgress;

@@ -9,9 +9,9 @@
 
 Node::Node() :
     renderGraph(nullptr),
+    blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
     alpha(1.f),
     drawPriority(0),
-    blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
     visible(false),
     modelMatDirty(true) {
 }

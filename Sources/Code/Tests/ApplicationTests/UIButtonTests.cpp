@@ -97,7 +97,7 @@ TEST_F(UIButtonTests, CheckTouchMoveRelease) {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     Vec2i center = viewPort / 2;
 
-    auto button = createUIButton(center, Vec2(0.5f));
+    createUIButton(center, Vec2(0.5f));
 
     Vec2i pt = center;
 

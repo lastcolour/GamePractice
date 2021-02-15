@@ -3,7 +3,7 @@
     "InputVariables":{
         "buildType":"RelWithDebInfo",
         "platform":"${currentPlatform}",
-        "skipLibsBuild":"True",
+        "skipLibsBuild":"False",
         "skipGameTests":"True",
         "skipEditorTests":"True"
     },

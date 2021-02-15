@@ -1,12 +1,6 @@
 #include "LoggerTests.hpp"
 #include "Platform/PlatformLogger.hpp"
 
-namespace {
-
-const char* TEST_LOG_MSG = "TestMessage";
-
-} // namespace
-
 class TestLogger : public PlatformLogger {
 public:
     virtual ~TestLogger() = default;

@@ -78,7 +78,6 @@ void LevelButtonList::ET_updateLevelProgress(EventSequence& eventSeq) {
     if(!progressDelta) {
         return;
     }
-    int currStarsDone = ET_getDoneStars();
     int starsDelta = std::max(0, progressDelta->current.stars - progressDelta->prev.stars);
     if(starsDelta == 0) {
         return;
