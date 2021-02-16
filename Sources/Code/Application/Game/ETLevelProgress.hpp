@@ -27,6 +27,7 @@ struct ETLevelButton {
     virtual void ET_setLevelId(const char* levelId) = 0;
     virtual void ET_setLevelState(ELevelButtonState newState, int newStarsCount) = 0;
     virtual void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int newStarCount) = 0;
+    virtual ELevelButtonState ET_getState() const = 0;
 };
 
 struct ETLevelButtonList {
@@ -35,6 +36,7 @@ struct ETLevelButtonList {
     virtual const char* ET_getLevelNameForSender(EntityId senderId) const = 0;
     virtual int ET_getTotalStars() const = 0;
     virtual int ET_getDoneStars() const = 0;
+    virtual EntityId ET_getLastUnlockedLevelButton() const = 0;
 };
 
 #endif /* __ET_LEVEL_PROGRESS_HPP__ */

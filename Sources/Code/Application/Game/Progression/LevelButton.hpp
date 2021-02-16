@@ -55,6 +55,7 @@ public:
     EntityId ET_getSenderId() const override;
     void ET_setLevelState(ELevelButtonState newState, int newStarsCount) override;
     void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int newStarCount) override;
+    ELevelButtonState ET_getState() const override;
 
 private:
 

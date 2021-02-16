@@ -333,3 +333,36 @@ TEST_F(UIScrollAreaTests, CheckIgnoreScrollForSmallerChild) {
     EXPECT_FLOAT_EQ(shift.x, expectedShift.x);
     EXPECT_FLOAT_EQ(shift.y, expectedShift.y);
 }
+
+TEST_F(UIScrollAreaTests, CheckScrollProgress) {
+    auto parentBox = Vec2i(50);
+    auto childBox = Vec2i(100);
+
+    UIScrollAreaStyle style;
+    style.origin = UIScrollOrigin::Start;
+    style.type = UIScrollType::Vertical;
+    auto ctx = createTestContext(parentBox, childBox, style);
+
+    {
+        auto scrollProg = ctx.scrollArea->ET_getScrollProgress();
+        EXPECT_FLOAT_EQ(scrollProg, 0.f);
+    }
+
+    Transform tm = ctx.childEntity->ET_getTransform();
+    Vec2i center(tm.pt.x, tm.pt.y);
+    center += childBox / 4;
+    ctx.scrollArea->ET_setTargetPosClamped(center);
+
+    {
+        auto scrollProg = ctx.scrollArea->ET_getScrollProgress();
+        EXPECT_FLOAT_EQ(scrollProg, 0.5f);
+    }
+
+    Vec2i topPt = center + childBox / 4;
+    ctx.scrollArea->ET_setTargetPosClamped(topPt);
+
+    {
+        auto scrollProg = ctx.scrollArea->ET_getScrollProgress();
+        EXPECT_FLOAT_EQ(scrollProg, 1.f);
+    }
+}

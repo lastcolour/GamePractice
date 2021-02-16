@@ -4,11 +4,13 @@
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUITimer.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "UI/ETUIScrollArea.hpp"
 
 class ReflectContext;
 
 class UIScrollFocus : public EntityLogic,
-    public ETNode<ETUITimerEvents> {
+    public ETNode<ETUITimerEvents>,
+    public ETNode<ETUIScrollFocus> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -25,8 +27,8 @@ public:
     // ETUITimerEvents
     void ET_onUITick(float dt) override;
 
-private:
-
+    // ETUIScrollFocus
+    void ET_setFocusToEntity(EntityId focusEntId) override;
 };
 
 #endif /* __UI_SCROLL_FOCUS_HPP__ */

@@ -45,6 +45,8 @@ public:
     void ET_enableKinematicScroll(bool flag) override;
     float ET_getScrollProgress() const override;
     void ET_setScrollProgress(float newScrollProgress) override;
+    void ET_setTargetPosClamped(const Vec2i& newScrollPt) override;
+    AABB2Di ET_getScrollArea() const override;
 
     // ETUIElemAligner
     void ET_reAlign() override;
@@ -70,7 +72,6 @@ private:
     void addReleaseImpulse();
     void setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt);
     void resetMoveState();
-    AABB2Di getScrollBox() const;
 
 private:
 
@@ -98,7 +99,6 @@ private:
     int extraZOffset;
     bool isPressed;
     bool kinematicScrollEnabled;
-    bool isLayoutDirty;
 };
 
 #endif /* __UI_SCROLL_AREA_HPP__ */

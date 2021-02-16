@@ -117,3 +117,15 @@ const char* LevelButtonList::ET_getLevelNameForSender(EntityId senderId) const {
     }
     return "";
 }
+
+EntityId LevelButtonList::ET_getLastUnlockedLevelButton() const {
+    EntityId lastUnlockedBtId;
+    for(auto& button : levelButtons) {
+        ELevelButtonState btState = ELevelButtonState::Locked;
+        ET_SendEventReturn(btState, button.buttonId, &ETLevelButton::ET_getState);
+        if(btState == ELevelButtonState::Unlocked) {
+            lastUnlockedBtId = button.buttonId;
+        }
+    }
+    return lastUnlockedBtId;
+}

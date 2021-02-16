@@ -79,6 +79,10 @@ void LevelButton::ET_setLevelId(const char* levelId) {
     ET_SendEvent(unlockedBt.labelId, &ETUILabel::ET_setText, levelId);
 }
 
+ELevelButtonState LevelButton::ET_getState() const {
+    return state;
+}
+
 void LevelButton::ET_setLevelState(ELevelButtonState newState, int newStarsCount) {
     state = newState;
     starsCount = newStarsCount;

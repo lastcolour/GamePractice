@@ -48,6 +48,10 @@ void LevelsViewScript::ET_onViewOpened() {
     }
 
     ET_SendEvent(progressLabelId, &ETUILabel::ET_setText, progressStr.c_str());
+
+    EntityId lastUnlockedBtId;
+    ET_SendEventReturn(lastUnlockedBtId, &ETLevelButtonList::ET_getLastUnlockedLevelButton);
+    ET_SendEvent(scrollAreaId, &ETUIScrollFocus::ET_setFocusToEntity, lastUnlockedBtId);
 }
 
 void LevelsViewScript::ET_onViewGetFocus() {

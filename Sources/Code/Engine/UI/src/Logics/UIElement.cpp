@@ -21,7 +21,8 @@ UIElement::UIElement() :
     isEnabled(true),
     isParentHidden(false),
     isParentDisabled(false),
-    isAddTmChanged(false) {
+    isAddTmChanged(false),
+    isLayoutDirty(false) {
 }
 
 UIElement::~UIElement() {
@@ -51,6 +52,11 @@ void UIElement::ET_onLoaded() {
 }
 
 void UIElement::updateHostLayout() {
+    if(ET_isHidden()) {
+        isLayoutDirty = true;
+        return;
+    }
+    isLayoutDirty = false;
     if(hostLayoutId.isValid()) {
         ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
     }
@@ -98,9 +104,9 @@ void UIElement::ET_show() {
     if(isParentHidden) {
         return;
     }
+    updateHostLayout();
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
-    updateHostLayout();
 }
 
 void UIElement::ET_hide() {
@@ -111,9 +117,9 @@ void UIElement::ET_hide() {
     if(isParentHidden) {
         return;
     }
+    updateHostLayout();
     onHide(true);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
-    updateHostLayout();
 }
 
 bool UIElement::ET_isHidden() const {
@@ -195,10 +201,10 @@ void UIElement::ET_setParentHidden(bool flag) {
     } else {
         onHide(false);
     }
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, currHidden);
-    if(!currHidden) {
+    if(isLayoutDirty) {
         updateHostLayout();
     }
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, currHidden);
 }
 
 void UIElement::ET_setParentAlpha(float newParentAlpha) {
@@ -208,7 +214,7 @@ void UIElement::ET_setParentAlpha(float newParentAlpha) {
 
 void UIElement::ET_addAdditiveTransform(const AddtiveUITransform& newAddTm) {
     isAddTmChanged = true;
-    addTm.combine(newAddTm);
+    addTm.combine(newAddTm); 
 }
 
 void UIElement::ET_applyAdditiveTranform() {

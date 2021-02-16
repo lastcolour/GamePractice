@@ -258,10 +258,9 @@ void UIAnimationSequence::ET_stopAnimation() {
         }
     }
 
-    currUIAddTm.inverse();
+    currUIAddTm.reset();
     ET_SendEvent(getEntityId(), &ETUIAdditiveAnimationTarget::ET_addAdditiveTransform,
         currUIAddTm);
-    currUIAddTm.reset();
 
     processShowEvent(getEntityId(), onEndEvent);
 

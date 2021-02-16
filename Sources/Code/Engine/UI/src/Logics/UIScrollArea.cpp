@@ -44,6 +44,19 @@ Vec2i clampToEdges(const AABB2Di& box, const Vec2i& pt) {
     return resPt;
 }
 
+AABB2Di getUIBox(EntityId targetId) {
+    AABB2Di resBox(0);
+    ET_SendEventReturn(resBox, targetId, &ETUIElement::ET_getBox);
+    return resBox;
+}
+
+Vec2i lerpPos(const Vec2i& from, const Vec2i& to, float t) {
+    Vec2 v1(from.x, from.y);
+    Vec2 v2(to.x, to.y);
+    Vec2 res = Math::Lerp(v1, v2, t);
+    return Vec2i(res.x, res.y);
+}
+
 } // namespace
 
 void UIScrollArea::Reflect(ReflectContext& ctx) {
@@ -59,8 +72,7 @@ UIScrollArea::UIScrollArea() :
     scrollProgress(0.f),
     extraZOffset(0),
     isPressed(false),
-    kinematicScrollEnabled(true),
-    isLayoutDirty(false) {
+    kinematicScrollEnabled(true) {
 }
 
 UIScrollArea::~UIScrollArea() {
@@ -80,37 +92,17 @@ void UIScrollArea::init() {
 
     isPressed = false;
 
-    resetMoveState();
-
     ET_SendEvent(targetId, &ETUIElement::ET_setHostLayout, getEntityId());
-
     alignTarget();
 }
 
 void UIScrollArea::alignTarget() {
+    resetMoveState();
+
     if(!targetId.isValid()) {
         return;
     }
-    bool isHidden = false;
-    ET_SendEventReturn(isHidden, getEntityId(), &ETUIElement::ET_isHidden);
-    if(isHidden) {
-        isLayoutDirty = true;
-        return;
-    } else {
-        isLayoutDirty = false;
-    }
-
-    AABB2Di targetBox(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
-
-    AABB2Di scrollBox = getScrollBox();
-    AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
-
-    if(style.origin == UIScrollOrigin::Start) {
-        setPosUpdateProg(scrollArea, scrollArea.bot);
-    } else {
-        setPosUpdateProg(scrollArea, scrollArea.top);
-    }
+    ET_setScrollProgress(0.f);
 
     auto childZIndex = UI::GetZIndexForChild(getEntityId());
     childZIndex += extraZOffset;
@@ -144,12 +136,6 @@ EInputEventResult UIScrollArea::ET_onInputEvent(EActionType type, const Vec2i& p
     return EInputEventResult::Accept;
 }
 
-AABB2Di UIScrollArea::getScrollBox() const {
-    AABB2Di box;
-    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
-    return box;
-}
-
 void UIScrollArea::onPress(const Vec2i& pt) {
     moveState.frameShift = 0;
     moveState.vel = 0.f;
@@ -172,7 +158,7 @@ void UIScrollArea::onPress(const Vec2i& pt) {
 
 void UIScrollArea::onRelease(const Vec2i& pt) {
     isPressed = false;
-    auto box = getScrollBox();
+    auto box = getUIBox(getEntityId());
     auto clampPt = clampToEdges(box, pt);
     path.push_back({TimePoint::GetNowTime(), clampPt});
     if(kinematicScrollEnabled) {
@@ -217,7 +203,7 @@ void UIScrollArea::addReleaseImpulse() {
 }
 
 bool UIScrollArea::onMove(const Vec2i& pt) {
-    auto box = getScrollBox();
+    auto box = getUIBox(getEntityId());
     if(!box.isInside(pt)) {
         onRelease(pt);
         return false;
@@ -241,9 +227,6 @@ void UIScrollArea::ET_onHidden(bool flag) {
     if(flag) {
         resetMoveState();
     }
-    if(isLayoutDirty && !flag) {
-        alignTarget();
-    }
     ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
 }
 
@@ -251,7 +234,6 @@ void UIScrollArea::ET_onDisabled(bool flag) {
     if(flag) {
         resetMoveState();
     }
-
     ET_SendEvent(targetId, &ETUIElement::ET_setParentDisabled, flag);
 }
 
@@ -310,14 +292,12 @@ void UIScrollArea::updateMoveState(float dt) {
 void UIScrollArea::ET_onUITick(float dt) {
     updateMoveState(dt);
 
-    AABB2Di targetBox(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
-    Vec2i resPt = targetBox.getCenter();
-
-    AABB2Di scrollBox = getScrollBox();
-    AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
+    auto targetBox = getUIBox(targetId);
+    AABB2Di scrollArea = ET_getScrollArea();
 
     moveState.destPt = clampToEdges(scrollArea, moveState.destPt);
+
+    Vec2i resPt = targetBox.getCenter();
 
     if(moveState.destPt == resPt && isPressed) {
         return;
@@ -362,7 +342,6 @@ void UIScrollArea::ET_setTarget(EntityId newTargetId) {
         targetId = InvalidEntityId;
         return;
     }
-    resetMoveState();
     targetId = newTargetId;
     UI::CopyUIElemAttribsFromParent(getEntityId(), targetId);
     alignTarget();
@@ -373,7 +352,6 @@ EntityId UIScrollArea::ET_getTarget() const {
 }
 
 void UIScrollArea::ET_setStyle(const UIScrollAreaStyle& newStyle) {
-    resetMoveState();
     style = newStyle;
     alignTarget();
 }
@@ -383,7 +361,7 @@ const UIScrollAreaStyle& UIScrollArea::ET_getStyle() const {
 }
 
 void UIScrollArea::ET_reAlign() {
-    alignTarget();
+    ET_setScrollProgress(scrollProgress);
 }
 
 void UIScrollArea::ET_enableKinematicScroll(bool flag) {
@@ -406,20 +384,50 @@ void UIScrollArea::setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newP
             prog = 1.f;
         }
     }
-    if(style.origin == UIScrollOrigin::End) {
-        prog = 1.f - prog;
-    }
+
     scrollProgress = prog;
     UI::Set2DPositionDoNotUpdateLayout(targetId, newPt);
 }
 
 float UIScrollArea::ET_getScrollProgress() const {
-    return scrollProgress;
+    float resProg = scrollProgress;
+    if(style.origin == UIScrollOrigin::End) {
+        resProg = 1.f - scrollProgress;
+    }
+    return resProg;
 }
 
 void UIScrollArea::ET_setScrollProgress(float newScrollProgress) {
     resetMoveState();
+
     scrollProgress = newScrollProgress;
+    auto scrollArea = ET_getScrollArea();
+
+    float resProg = scrollProgress;
+    if(style.origin == UIScrollOrigin::End) {
+        resProg = 1.f - scrollProgress;
+    }
+
+    Vec2i resPt = lerpPos(scrollArea.bot, scrollArea.top, resProg);
+    setPosUpdateProg(scrollArea, resPt);
+}
+
+void UIScrollArea::ET_setTargetPosClamped(const Vec2i& newScrollPt) {
+    resetMoveState();
+
+    auto scrollArea = ET_getScrollArea();
+    auto resPt = clampToEdges(scrollArea, newScrollPt);
+    setPosUpdateProg(scrollArea, resPt);
+}
+
+AABB2Di UIScrollArea::ET_getScrollArea() const {
+    AABB2Di targetBox(Vec2i(0), Vec2i(0));
+    ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
+
+    AABB2Di scrollBox = getUIBox(getEntityId());
+    AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
+
+    return scrollArea;
 }
 
 void UIScrollArea::resetMoveState() {

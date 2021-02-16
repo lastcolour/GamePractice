@@ -13,7 +13,7 @@
       "id": 3,
       "data": {
         "isVisible": true,
-        "alpha": 0.5,
+        "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
           "emitterSpace": "Local",
@@ -25,7 +25,7 @@
           "duration": -1.0,
           "thickness": 0.0,
           "direction": 90.0,
-          "directionVar": 0.0,
+          "directionVar": 360.0,
           "emissionRate": 300.0,
           "lifetime": 2.0,
           "lifetimeVar": 0.10000000149011612,
@@ -35,24 +35,24 @@
         },
         "movement": {
           "startScale": {
-            "x": 1.0,
-            "y": 1.0
+            "x": 0.0,
+            "y": 0.0
           },
           "startScaleVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
+            "x": 0.0,
+            "y": 0.0
           },
           "endScale": {
-            "x": 1.0,
-            "y": 1.0
+            "x": 0.5,
+            "y": 0.5
           },
           "endScaleVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
+            "x": 0.0,
+            "y": 0.0
           },
-          "startSpeed": 5.0,
+          "startSpeed": 2.0,
           "startSpeedVar": 0.10000000149011612,
-          "endSpeed": 1.0,
+          "endSpeed": 0.0,
           "endSpeedVar": 0.0,
           "startRotation": 90.0,
           "startRotationVar": 0.10000000149011612,
@@ -63,31 +63,31 @@
         },
         "color": {
           "startCol": {
-            "r": 120,
-            "g": 215,
+            "r": 255,
+            "g": 255,
             "b": 255,
             "a": 255
           },
           "startColVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224,
-            "z": 0.20000000298023224,
-            "w": 1.0
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
           },
           "endCol": {
             "r": 255,
-            "g": 48,
+            "g": 255,
             "b": 255,
             "a": 255
           },
           "endColVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224,
-            "z": 0.20000000298023224,
-            "w": 1.0
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
           },
-          "fadeIn": 0.44999998807907104,
-          "fadeOut": 0.44999998807907104
+          "fadeIn": 0.0,
+          "fadeOut": 0.5
         },
         "render": {
           "texture": "Images/block.png"

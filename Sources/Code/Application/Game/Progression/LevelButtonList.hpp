@@ -40,6 +40,7 @@ public:
     const char* ET_getLevelNameForSender(EntityId senderId) const override;
     int ET_getTotalStars() const override;
     int ET_getDoneStars() const override;
+    EntityId ET_getLastUnlockedLevelButton() const override;
 
 private:
 
