@@ -1,0 +1,101 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "ParticleEmitter",
+      "id": 1,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
+        "emission": {
+          "emitterSpace": "World",
+          "emitterType": "Sphere",
+          "emitterVal": {
+            "x": 2.0,
+            "y": 0.0
+          },
+          "duration": 0.009999999776482582,
+          "thickness": 1.0,
+          "direction": 0.0,
+          "directionVar": 360.0,
+          "emissionRate": 200.0,
+          "lifetime": 0.5,
+          "lifetimeVar": 0.10000000149011612,
+          "startDelay": 1.0,
+          "autoStart": false,
+          "loop": false
+        },
+        "movement": {
+          "startScale": {
+            "x": 10.0,
+            "y": 10.0
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 2.0,
+            "y": 2.0
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "startSpeed": 300.0,
+          "startSpeedVar": 0.0,
+          "endSpeed": 2.0,
+          "endSpeedVar": 0.10000000149011612,
+          "startRotation": 0.0,
+          "startRotationVar": 0.10000000149011612,
+          "startRotSpeed": 30.0,
+          "startRotSpeedVar": 0.10000000149011612,
+          "endRotSpeed": 30.0,
+          "endRotSpeedVar": 0.10000000149011612
+        },
+        "color": {
+          "startCol": {
+            "r": 21,
+            "g": 181,
+            "b": 255,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.10000000149011612
+          },
+          "endCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.10000000149011612
+          },
+          "fadeIn": 0.10000000149011612,
+          "fadeOut": 0.30000001192092896
+        },
+        "render": {
+          "texture": "Images/block.png"
+        },
+        "gravity": {
+          "fields": []
+        }
+      }
+    },
+    {
+      "type": "UIRenderNormalizator",
+      "id": 2,
+      "data": {
+        "factor": 1.0
+      }
+    }
+  ]
+}

@@ -1,6 +1,9 @@
 #include "UIScrollAreaTests.hpp"
 #include "Logics/UIScrollArea.hpp"
 #include "Logics/UIBox.hpp"
+#include "Logics/UILayout.hpp"
+#include "Logics/UILayoutBox.hpp"
+#include "Logics/UIScrollFocus.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "Config/UIConfig.hpp"
 #include "Render/ETRenderCamera.hpp"
@@ -364,5 +367,89 @@ TEST_F(UIScrollAreaTests, CheckScrollProgress) {
     {
         auto scrollProg = ctx.scrollArea->ET_getScrollProgress();
         EXPECT_FLOAT_EQ(scrollProg, 1.f);
+    }
+}
+
+TEST_F(UIScrollAreaTests, CheckSetFocusToEntity) {
+    EntityId firstId;
+    EntityId secondId;
+    std::vector<EntityId> childIds;
+    const int childCount = 3;
+
+    {
+        auto first = createVoidObject();
+        firstId = first->getEntityId();
+
+        auto uiBox = first->addCustomLogic<UIBox>();
+
+        UIBoxStyle boxStyle;
+        boxStyle.widthInv = UIBoxSizeInvariant::Grid;
+        boxStyle.width = 50.f;
+        boxStyle.heightInv = UIBoxSizeInvariant::Grid;
+        boxStyle.height = 50.f;
+        uiBox->ET_setStyle(boxStyle);
+
+        auto uiScrollArea = first->addCustomLogic<UIScrollArea>();
+
+        UIScrollAreaStyle scrollStyle;
+        scrollStyle.type = UIScrollType::Vertical;
+        scrollStyle.origin = UIScrollOrigin::Start;
+        uiScrollArea->ET_setStyle(scrollStyle);
+
+        first->addCustomLogic<UIScrollFocus>();
+    }
+    {
+        auto second = createVoidObject();
+        secondId = second->getEntityId();
+
+        second->addCustomLogic<UILayoutBox>();
+
+        auto uiLayout = second->addCustomLogic<UILayout>();
+
+        UILayoutStyle style;
+        style.type = UILayoutType::Vertical;
+        style.xAlign = UIXAlign::Center;
+        style.yAlign = UIYAlign::Center;
+
+        uiLayout->ET_setStyle(style);
+    }
+
+    {
+        for(int i = 0; i < childCount; ++i) {
+            auto child = createVoidObject();
+            childIds.push_back(child->getEntityId());
+
+            auto uiBox = child->addCustomLogic<UIBox>();
+
+            UIBoxStyle boxStyle;
+            boxStyle.widthInv = UIBoxSizeInvariant::Grid;
+            boxStyle.width = 50.f;
+            boxStyle.heightInv = UIBoxSizeInvariant::Grid;
+            boxStyle.height = 50.f;
+            uiBox->ET_setStyle(boxStyle);
+        }
+    }
+
+    {
+        for(auto childId : childIds) {
+            ET_SendEvent(secondId, &ETEntity::ET_addChild, childId);
+            ET_SendEvent(secondId, &ETUILayout::ET_addItem, childId);
+        }
+        ET_SendEvent(firstId, &ETEntity::ET_addChild, secondId);
+        ET_SendEvent(firstId, &ETUIScrollArea::ET_setTarget, secondId);
+    }
+
+    for(int i = 0; i < childCount; ++i) {
+        auto childId = childIds[i];
+        ET_SendEvent(firstId, &ETUIScrollFocus::ET_setFocusToEntity, childId);
+
+        Transform childTm;
+        ET_SendEventReturn(childTm, childId, &ETEntity::ET_getTransform);
+
+        Transform firstTm;
+        ET_SendEventReturn(firstTm, firstId, &ETEntity::ET_getTransform);
+
+        EXPECT_FLOAT_EQ(childTm.pt.x, firstTm.pt.x);
+        EXPECT_FLOAT_EQ(childTm.pt.y, firstTm.pt.y);
     }
 }

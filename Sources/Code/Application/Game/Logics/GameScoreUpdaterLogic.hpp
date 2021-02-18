@@ -27,6 +27,8 @@ public:
 
     // ETGameScoreUpdater
     void ET_reset() override;
+    void ET_pause() override;
+    void ET_resume() override;
     void ET_setGameScore(int score) override;
 
     // ETGameTimerEvents
@@ -39,6 +41,8 @@ private:
 private:
 
     SoundEvent increaseSound;
+    EntityId amountLabelId;
+    EntityId progressBardId;
     float currentStepDelay;
     int increaseSpeed;
     int currentValue;

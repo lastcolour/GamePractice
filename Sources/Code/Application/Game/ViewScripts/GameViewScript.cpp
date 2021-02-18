@@ -187,12 +187,14 @@ void GameViewScript::ET_onGameEnterState(EGameState state) {
         ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
     }
     ET_SendEvent(&ETGameTimer::ET_setScale, 0.1f);
+    ET_SendEvent(&ETGameScoreUpdater::ET_pause);
 
     {
         EventSequence::Event event;
         event.animType = EAnimSequenceType::Appear;
         event.targetId = endInfoId;
         event.onEndCallback = [this](){
+            ET_SendEvent(&ETGameScoreUpdater::ET_resume);
             ET_SendEvent(&ETGameTimer::ET_setScale, 1.f);
             setScriptState(State::WaitingPostGame);
         };

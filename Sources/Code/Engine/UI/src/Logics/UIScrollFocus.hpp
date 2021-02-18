@@ -28,7 +28,16 @@ public:
     void ET_onUITick(float dt) override;
 
     // ETUIScrollFocus
-    void ET_setFocusToEntity(EntityId focusEntId) override;
+    void ET_setFocusToEntity(EntityId newFocusEntId) override;
+    void ET_setPendingFocus() override;
+
+private:
+
+    void applyFocusToEntity();
+
+private:
+
+    EntityId focusEntId;
 };
 
 #endif /* __UI_SCROLL_FOCUS_HPP__ */

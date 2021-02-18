@@ -22,6 +22,7 @@ struct ETUIScrollArea {
 struct ETUIScrollFocus {
     virtual ~ETUIScrollFocus() = default;
     virtual void ET_setFocusToEntity(EntityId focusEntId) = 0;
+    virtual void ET_setPendingFocus() = 0;
 };
 
 #endif /* __ET_UI_SCROLL_AREA_HPP__ */

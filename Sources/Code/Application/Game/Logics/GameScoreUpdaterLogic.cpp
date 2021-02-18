@@ -1,7 +1,9 @@
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "UI/ETUIBox.hpp"
+#include "UI/ETUIProgressBar.hpp"
 #include "Core/StringFormat.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Game/ETGameScore.hpp"
 #include "Audio/ETSound.hpp"
 
 #include <algorithm>
@@ -19,14 +21,16 @@ GameScoreUpdaterLogic::~GameScoreUpdaterLogic() {
 void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameScoreUpdaterLogic>("GameScoreUpdater")) {
         classInfo->addField("increaseSpeed", &GameScoreUpdaterLogic::increaseSpeed);
+        classInfo->addField("amountLabelId", &GameScoreUpdaterLogic::amountLabelId);
+        classInfo->addField("progressBardId", &GameScoreUpdaterLogic::progressBardId);
         classInfo->addResourceField("increseSound", ResourceType::SoundEvent, &GameScoreUpdaterLogic::setIncreaseSoundEvent);
     }
 }
 
 void GameScoreUpdaterLogic::init() {
     ETNode<ETGameScoreUpdater>::connect(getEntityId());
-    ETNode<ETGameTimerEvents>::connect(getEntityId());
-    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, "0");
+    ET_reset();
+    ET_resume();
 }
 
 void GameScoreUpdaterLogic::deinit() {
@@ -35,7 +39,16 @@ void GameScoreUpdaterLogic::deinit() {
 void GameScoreUpdaterLogic::ET_reset() {
     currentValue = 0;
     targetValue = 0;
-    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, "0");
+    ET_SendEvent(amountLabelId, &ETUILabel::ET_setText, "0");
+    ET_SendEvent(progressBardId, &ETUIProgressBar::ET_setProgress, 0.f);
+}
+
+void GameScoreUpdaterLogic::ET_pause() {
+    ETNode<ETGameTimerEvents>::disconnect();
+}
+
+void GameScoreUpdaterLogic::ET_resume() {
+    ETNode<ETGameTimerEvents>::connect(getEntityId());
 }
 
 void GameScoreUpdaterLogic::ET_setGameScore(int score) {
@@ -61,7 +74,16 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
     currentValue = std::min(currentValue + increaseStep, targetValue);
 
     std::string text = StringFormat("%d", currentValue);
-    ET_SendEvent(getEntityId(), &ETUILabel::ET_setText, text.c_str());
+    ET_SendEvent(amountLabelId, &ETUILabel::ET_setText, text.c_str());
+
+    int threeStarsScore = 0;
+    ET_SendEventReturn(threeStarsScore, &ETGameScore::ET_getMixScoreToAchieve, ObjectiveProgress::ThreeStars);
+    float prog = 0.f;
+
+    if(threeStarsScore > 0) {
+        prog = currentValue / static_cast<float>(threeStarsScore);
+    }
+    ET_SendEvent(progressBardId, &ETUIProgressBar::ET_setProgress, prog);
 }
 
 void GameScoreUpdaterLogic::setIncreaseSoundEvent(const char* soundName) {

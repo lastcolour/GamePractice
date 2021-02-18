@@ -3,8 +3,8 @@
     {
       "transform": {
         "pos": {
-          "x": 0.0,
-          "y": 0.0,
+          "x": -95.0,
+          "y": -133.0,
           "z": 0.0
         },
         "scale": {
@@ -54,16 +54,16 @@
                   "id": 1,
                   "data": {
                     "isVisible": false,
-                    "alpha": 0.8999999761581421,
+                    "alpha": 1.0,
                     "drawPriority": 2,
                     "size": {
                       "x": 158.0,
                       "y": 158.0
                     },
                     "tintColor": {
-                      "r": 61,
-                      "g": 167,
-                      "b": 49,
+                      "r": 76,
+                      "g": 176,
+                      "b": 79,
                       "a": 255
                     },
                     "image": "Images/block.png"
@@ -102,16 +102,16 @@
                   "id": 1,
                   "data": {
                     "isVisible": false,
-                    "alpha": 0.8999999761581421,
+                    "alpha": 1.0,
                     "drawPriority": 0,
                     "size": {
                       "x": 141.0,
                       "y": 141.0
                     },
                     "tintColor": {
-                      "r": 202,
-                      "g": 196,
-                      "b": 0,
+                      "r": 216,
+                      "g": 203,
+                      "b": 11,
                       "a": 255
                     },
                     "image": "Images/block.png"
@@ -148,7 +148,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 23.999969482421875,
+                      "y": 7.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -191,7 +191,7 @@
                         "type": "RenderText",
                         "id": 2,
                         "data": {
-                          "isVisible": true,
+                          "isVisible": false,
                           "alpha": 1.0,
                           "drawPriority": 7,
                           "color": {
@@ -200,7 +200,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 47,
+                          "fontSize": 14,
                           "text": "99"
                         }
                       }
@@ -211,7 +211,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -26.99981689453125,
+                      "y": -9.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -234,7 +234,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": -38.0,
+                            "x": -11.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -308,13 +308,13 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 33.0,
-                                        "y": 33.0
+                                        "x": 10.0,
+                                        "y": 10.0
                                       },
                                       "tintColor": {
-                                        "r": 245,
-                                        "g": 224,
-                                        "b": 57,
+                                        "r": 252,
+                                        "g": 252,
+                                        "b": 252,
                                         "a": 255
                                       },
                                       "image": "Images/block.png"
@@ -407,12 +407,12 @@
                               "type": "RenderImage",
                               "id": 3,
                               "data": {
-                                "isVisible": true,
+                                "isVisible": false,
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 28.0,
-                                  "y": 28.0
+                                  "x": 8.0,
+                                  "y": 8.0
                                 },
                                 "tintColor": {
                                   "r": 195,
@@ -503,13 +503,13 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 33.0,
-                                        "y": 33.0
+                                        "x": 10.0,
+                                        "y": 10.0
                                       },
                                       "tintColor": {
-                                        "r": 245,
-                                        "g": 224,
-                                        "b": 57,
+                                        "r": 252,
+                                        "g": 252,
+                                        "b": 252,
                                         "a": 255
                                       },
                                       "image": "Images/block.png"
@@ -602,12 +602,12 @@
                               "type": "RenderImage",
                               "id": 3,
                               "data": {
-                                "isVisible": true,
+                                "isVisible": false,
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 28.0,
-                                  "y": 28.0
+                                  "x": 8.0,
+                                  "y": 8.0
                                 },
                                 "tintColor": {
                                   "r": 195,
@@ -624,7 +624,7 @@
                       {
                         "transform": {
                           "pos": {
-                            "x": 38.00018310546875,
+                            "x": 11.0,
                             "y": 0.0,
                             "z": 0.0
                           },
@@ -698,13 +698,13 @@
                                       "alpha": 1.0,
                                       "drawPriority": 11,
                                       "size": {
-                                        "x": 33.0,
-                                        "y": 33.0
+                                        "x": 10.0,
+                                        "y": 10.0
                                       },
                                       "tintColor": {
-                                        "r": 245,
-                                        "g": 224,
-                                        "b": 57,
+                                        "r": 252,
+                                        "g": 252,
+                                        "b": 252,
                                         "a": 255
                                       },
                                       "image": "Images/block.png"
@@ -797,12 +797,12 @@
                               "type": "RenderImage",
                               "id": 3,
                               "data": {
-                                "isVisible": true,
+                                "isVisible": false,
                                 "alpha": 1.0,
                                 "drawPriority": 9,
                                 "size": {
-                                  "x": 28.0,
-                                  "y": 28.0
+                                  "x": 8.0,
+                                  "y": 8.0
                                 },
                                 "tintColor": {
                                   "r": 195,
@@ -930,8 +930,8 @@
                     "alpha": 1.0,
                     "drawPriority": 9,
                     "size": {
-                      "x": 139.0,
-                      "y": 139.0
+                      "x": 40.0,
+                      "y": 40.0
                     },
                     "tintColor": {
                       "r": 255,
@@ -1173,8 +1173,8 @@
     {
       "transform": {
         "pos": {
-          "x": 0.0,
-          "y": 0.0,
+          "x": -75.0,
+          "y": -133.0,
           "z": 0.0
         },
         "scale": {
@@ -1197,8 +1197,8 @@
           {
             "transform": {
               "pos": {
-                "x": 0.0,
-                "y": 0.0,
+                "x": -75.0,
+                "y": -133.0,
                 "z": 0.0
               },
               "scale": {
@@ -1221,8 +1221,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": 18.0,
+                      "x": -75.0,
+                      "y": -128.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -1274,7 +1274,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 47,
+                          "fontSize": 14,
                           "text": "99"
                         }
                       }
@@ -1284,8 +1284,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
-                      "y": -27.0,
+                      "x": -75.0,
+                      "y": -141.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -1337,7 +1337,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 6,
                           "text": "(Locked)"
                         }
                       }
@@ -1416,8 +1416,8 @@
                     "alpha": 1.0,
                     "drawPriority": 9,
                     "size": {
-                      "x": 139.0,
-                      "y": 139.0
+                      "x": 40.0,
+                      "y": 40.0
                     },
                     "tintColor": {
                       "r": 255,
@@ -1543,8 +1543,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 139.0,
-                "y": 139.0
+                "x": 40.0,
+                "y": 40.0
               },
               "tintColor": {
                 "r": 117,

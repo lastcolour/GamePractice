@@ -3,9 +3,9 @@
     "InputVariables":{
         "buildType":"RelWithDebInfo",
         "platform":"${currentPlatform}",
-        "skipLibsBuild":"False",
+        "skipLibsBuild":"True",
         "skipGameTests":"False",
-        "skipEditorTests":"False"
+        "skipEditorTests":"True"
     },
     "Steps":[
         {
@@ -67,7 +67,7 @@
                 "cwd":"${gameBinsRoot}/${buildType}",
                 "createCwd":false,
                 "args":[
-                    "--gtest_filter=*"
+                    "--gtest_filter=*UI*"
                 ]
             }
         },

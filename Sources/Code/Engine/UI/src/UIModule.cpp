@@ -17,6 +17,7 @@
 #include "Logics/UIAnimationSequence.hpp"
 #include "Logics/UIRenderNormalizator.hpp"
 #include "Logics/UIScrollFocus.hpp"
+#include "Logics/UIProgressBar.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 
 UIModule::UIModule() :
@@ -51,4 +52,5 @@ void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const 
     logicsRegister.registerLogic<UIAnimationSequence>();
     logicsRegister.registerLogic<UIRenderNormalizator>();
     logicsRegister.registerLogic<UIScrollFocus>();
+    logicsRegister.registerLogic<UIProgressBar>();
 }

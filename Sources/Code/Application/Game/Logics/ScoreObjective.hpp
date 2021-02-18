@@ -32,6 +32,7 @@ public:
     // ETGameScore
     void ET_setGameTime(float gameTime) override;
     const EndGameResult& ET_getGameResult() const override;
+    int ET_getMixScoreToAchieve(ObjectiveProgress progressTarget) const override;
 
 private:
 

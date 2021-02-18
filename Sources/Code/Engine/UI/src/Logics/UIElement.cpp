@@ -28,6 +28,7 @@ UIElement::~UIElement() {
 }
 
 void UIElement::init() {
+    isIgnoringTransform = true;
     ETNode<ETUIElement>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETUIAdditiveAnimationTarget>::connect(getEntityId());
@@ -39,6 +40,7 @@ void UIElement::deinit() {
 }
 
 void UIElement::ET_onLoaded() {
+    isIgnoringTransform = false;
     zIndex -= 1;
     ET_setZIndex(zIndex + 1);
     if(isHidden) {
@@ -201,6 +203,7 @@ void UIElement::ET_onTransformChanged(const Transform& newTm) {
         return;
     }
     onTransformChanged(newTm);
+    updateHostLayout();
 }
 
 void UIElement::ET_setParentAlpha(float newParentAlpha) {

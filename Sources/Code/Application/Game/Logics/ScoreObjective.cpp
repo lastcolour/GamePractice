@@ -81,3 +81,21 @@ void ScoreObjective::ET_onElemsDestroyed(EntityId elemId) {
         }
     }
 }
+
+int ScoreObjective::ET_getMixScoreToAchieve(ObjectiveProgress progressTarget) const {
+    switch(progressTarget) {
+        case ObjectiveProgress::OneStar: {
+            return oneStarTarget.minScore;
+        }
+        case ObjectiveProgress::TwoStars: {
+            return twoStarsTarget.minScore;
+        }
+        case ObjectiveProgress::ThreeStars: {
+            return threeStarsTarget.minScore;
+        }
+        default: {
+            break;
+        }
+    }
+    return 0;
+}
