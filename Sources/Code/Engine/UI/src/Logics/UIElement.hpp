@@ -58,6 +58,7 @@ public:
 protected:
 
     void updateHostLayout();
+    void updateSelfLayout();
 
 protected:
 
@@ -81,7 +82,6 @@ protected:
     bool isParentHidden;
     bool isParentDisabled;
     bool isAddTmChanged;
-    bool isLayoutDirty;
 };
 
 #endif /* __UI_ELEMENT_HPP__ */

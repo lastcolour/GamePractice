@@ -22,7 +22,7 @@ ALAudioSystem::~ALAudioSystem() {
 
 bool ALAudioSystem::init() {
     MixConfig defConfig;
-    if(!mixGrap.init(defConfig)) {
+    if(!mixGraph.init(defConfig)) {
         LogError("[ALAudioSystem::init] Can't init mix graph");
         return false;
     }
@@ -39,7 +39,7 @@ bool ALAudioSystem::init() {
 }
 
 void ALAudioSystem::deinit() {
-    auto& mixConfig = mixGrap.getMixConfig();
+    auto& mixConfig = mixGraph.getMixConfig();
     if(alSourceId) {
         alSourceStop(alSourceId);
         alSourcei(alSourceId, AL_BUFFER, AL_NONE);
@@ -90,7 +90,7 @@ bool ALAudioSystem::initAlSource() {
     alSource3f(alSourceId, AL_POSITION, 0.f, 0.f, 0.f);
     alSource3f(alSourceId, AL_VELOCITY, 0.f, 0.f, 0.f);
 
-    auto& config = mixGrap.getMixConfig();
+    auto& config = mixGraph.getMixConfig();
 
     alBufferIds.reset(new ALuint[config.buffersCount]);
     alGenBuffers(config.buffersCount, alBufferIds.get());
@@ -132,7 +132,7 @@ void ALAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETSoundNode>();
     ET_PollAllEvents<ETSoundEventNode>();
 
-    auto& config = mixGrap.getMixConfig();
+    auto& config = mixGraph.getMixConfig();
 
     if(!alSourcePlaying) {
         alSourcePlay(alSourceId);
@@ -160,7 +160,7 @@ void ALAudioSystem::ET_updateSound() {
 
     for(ALint i = 0; i < buffersProcessed; ++i) {
         auto bufferId = (bufferQueue.get())[i];
-        mixGrap.mixBufferAndConvert(mixBuffer.get());
+        mixGraph.mixBufferAndConvert(mixBuffer.get());
         alBufferData(bufferId, alFormat, mixBuffer.get(),
             config.samplesPerBuffer * config.channels * sizeof(int16_t), config.outSampleRate);
         alSourceQueueBuffers(alSourceId, 1, &bufferId);
@@ -179,17 +179,17 @@ void ALAudioSystem::ET_updateSound() {
 }
 
 void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
-    mixGrap.setEqualizer(soundGroup, eqSetup);
+    mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
 bool ALAudioSystem::ET_play(SoundStream* soundStream) {
-    return mixGrap.playSound(soundStream);
+    return mixGraph.playSound(soundStream);
 }
 
 void ALAudioSystem::ET_setMasterVolume(float newVolume) {
-    mixGrap.setMasterVolume(newVolume);
+    mixGraph.setMasterVolume(newVolume);
 }
 
 float ALAudioSystem::ET_getMasterVolume() const {
-    return mixGrap.getMasterVolume();
+    return mixGraph.getMasterVolume();
 }

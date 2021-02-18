@@ -228,6 +228,9 @@ void UIScrollArea::ET_onHidden(bool flag) {
         resetMoveState();
     }
     ET_SendEvent(targetId, &ETUIElement::ET_setParentHidden, flag);
+    if(!flag) {
+        ET_setScrollProgress(scrollProgress);
+    }
 }
 
 void UIScrollArea::ET_onDisabled(bool flag) {
@@ -369,6 +372,9 @@ void UIScrollArea::ET_enableKinematicScroll(bool flag) {
 }
 
 void UIScrollArea::setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt) {
+    LogError("[tmpLog] scrollArea: (%d, %d) x (%d, %d)",
+        scrollArea.bot.x, scrollArea.bot.y, scrollArea.top.x, scrollArea.top.y);
+
     float prog = 0.f;
     Vec2i size = scrollArea.getSize();
     if(style.type == UIScrollType::Horizontal) {

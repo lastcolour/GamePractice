@@ -60,10 +60,11 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
 
 AABB2Di RenderTextLogic::ET_getTextAABBi() const {
     auto box = ET_getTextAABB();
-
     AABB2Di resBox;
-    resBox.bot = Vec2i(static_cast<int>(box.bot.x), static_cast<int>(box.bot.y));
-    resBox.top = Vec2i(static_cast<int>(box.top.x), static_cast<int>(box.top.y));
+    resBox.bot.x = static_cast<int>(ceil(box.bot.x));
+    resBox.bot.y = static_cast<int>(ceil(box.bot.y));
+    resBox.top.x = static_cast<int>(ceil(box.top.x));
+    resBox.top.y = static_cast<int>(ceil(box.top.y));
     return resBox;
 }
 

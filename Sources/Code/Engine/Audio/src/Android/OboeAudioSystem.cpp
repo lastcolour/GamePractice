@@ -25,7 +25,7 @@ bool OboeAudioSystem::initMixer() {
     mixConfig.outSampleRate = deviceConfig->frameRate;
     mixConfig.samplesPerBurst = deviceConfig->framesPerBurst;
 
-    if(!mixGrap.init(mixConfig)) {
+    if(!mixGraph.init(mixConfig)) {
         LogError("[OboeAudioSystem::initMixer] Can't init mix graph");
         return false;
     }
@@ -41,7 +41,7 @@ bool OboeAudioSystem::initMixer() {
 }
 
 bool OboeAudioSystem::initOboeStream() {
-    auto& mixConfig = mixGrap.getMixConfig();
+    auto& mixConfig = mixGraph.getMixConfig();
 
     oboe::AudioStreamBuilder builder;
     builder.setDirection(oboe::Direction::Output);
@@ -108,29 +108,29 @@ void OboeAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETSoundNode>();
     ET_PollAllEvents<ETSoundEventNode>();
 
-    auto& mixConfig = mixGrap.getMixConfig();
+    auto& mixConfig = mixGraph.getMixConfig();
     auto buffers = bufferQueue.peekWrites();
     for(auto& buff : buffers) {
-        mixGrap.mixBufferAndConvert(mixBuffer.get());
+        mixGraph.mixBufferAndConvert(mixBuffer.get());
         buff->write(mixBuffer.get(), mixConfig.samplesPerBuffer * mixConfig.channels * sizeof(int16_t));
     }
     bufferQueue.submitWrites(buffers);
 }
 
 void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
-    mixGrap.setEqualizer(soundGroup, eqSetup);
+    mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
 bool OboeAudioSystem::ET_play(SoundStream* soundStream) {
-    return mixGrap.playSound(soundStream);
+    return mixGraph.playSound(soundStream);
 }
 
 void OboeAudioSystem::ET_setMasterVolume(float newVolume) {
-    mixGrap.setMasterVolume(newVolume);
+    mixGraph.setMasterVolume(newVolume);
 }
 
 float OboeAudioSystem::ET_getMasterVolume() const {
-    return mixGrap.getMasterVolume();
+    return mixGraph.getMasterVolume();
 }
 
 void OboeAudioSystem::stopOboeStream() {
@@ -150,7 +150,7 @@ void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result 
 }
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) {
-    auto& mixConfig = mixGrap.getMixConfig();
+    auto& mixConfig = mixGraph.getMixConfig();
     int totalSize = numFrames * mixConfig.channels * sizeof(int16_t);
     int currSize = totalSize;
     char* out = static_cast<char*>(audioData);

@@ -536,3 +536,111 @@ TEST_F(UILayoutTests, CheckDoNotRebuildLayoutForHiddenHost) {
 
     EXPECT_TRUE(layoutEventListener.layoutChanged);
 }
+
+TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
+
+    EntityId firstId;
+    EntityId secondId;
+    EntityId thirdId;
+    {
+        auto first = createVoidObject();
+        firstId = first->getEntityId();
+
+        auto uiBox = first->addCustomLogic<UIBox>();
+
+        UIBoxStyle boxStyle;
+        boxStyle.heightInv = UIBoxSizeInvariant::Relative;
+        boxStyle.height = 0.5f;
+        boxStyle.widthInv = UIBoxSizeInvariant::Relative;
+        boxStyle.width = 0.5f;
+        uiBox->ET_setStyle(boxStyle);
+
+        auto uiLayout = first->addCustomLogic<UILayout>();
+
+        UILayoutStyle layoutStyle;
+        layoutStyle.xAlign = UIXAlign::Left;
+        layoutStyle.yAlign = UIYAlign::Top;
+        uiLayout->ET_setStyle(layoutStyle);
+    }
+    {
+        auto second = createVoidObject();
+        secondId = second->getEntityId();
+
+        auto uiBox = second->addCustomLogic<UILayoutBox>();
+        second->addCustomLogic<UILayout>();
+    }
+    {
+        auto third = createVoidObject();
+        thirdId = third->getEntityId();
+
+        auto uiBox = third->addCustomLogic<UIBox>();
+
+        UIBoxStyle style;
+        style.heightInv = UIBoxSizeInvariant::Relative;
+        style.height = 0.25f;
+        style.widthInv = UIBoxSizeInvariant::Relative;
+        style.width = 0.25f;
+        uiBox->ET_setStyle(style);
+    }
+
+    {
+        ET_SendEvent(secondId, &ETEntity::ET_addChild, thirdId);
+        ET_SendEvent(secondId, &ETUILayout::ET_addItem, thirdId);
+    }
+
+    {
+        ET_SendEvent(firstId, &ETEntity::ET_addChild, secondId);
+        ET_SendEvent(firstId, &ETUILayout::ET_addItem, secondId);
+    }
+
+    Vec2i viewport(0);
+    ET_SendEventReturn(viewport, &ETUIViewPort::ET_getViewport);
+    Vec2i center = viewport / 2;
+
+    {
+        Transform tm;
+        tm.pt = Vec3(center.x, center.y, 0.f);
+        ET_SendEvent(firstId, &ETEntity::ET_setTransform, tm);
+    }
+
+    {
+        AABB2Di box(0);
+        ET_SendEventReturn(box, secondId, &ETUIElement::ET_getBox);
+        auto boxSize = box.getSize();
+        EXPECT_EQ(boxSize.x, center.x / 2);
+        EXPECT_EQ(boxSize.y, center.y / 2);
+    }
+
+    ET_SendEvent(firstId, &ETUIElement::ET_hide);
+    ET_SendEvent(secondId, &ETUIElement::ET_hide);
+    ET_SendEvent(thirdId, &ETUIElement::ET_hide);
+
+    {
+        UIBoxStyle boxStyle;
+        ET_SendEventReturn(boxStyle, firstId, &ETUIBox::ET_getStyle);
+        ET_SendEvent(thirdId, &ETUIBox::ET_setStyle, boxStyle);
+    }
+
+    ET_SendEvent(firstId, &ETUIElement::ET_show);
+    ET_SendEvent(secondId, &ETUIElement::ET_show);
+    ET_SendEvent(thirdId, &ETUIElement::ET_show);
+
+    {
+        AABB2Di firstBox(0);
+        ET_SendEventReturn(firstBox, firstId, &ETUIElement::ET_getBox);
+
+        AABB2Di secondBox(0);
+        ET_SendEventReturn(secondBox, secondId, &ETUIElement::ET_getBox);
+
+        Vec2i firstSize = firstBox.getSize();
+        Vec2i secondSize = secondBox.getSize();
+
+        EXPECT_EQ(firstSize.x, secondSize.x);
+        EXPECT_EQ(firstSize.y, secondSize.y);
+
+        EXPECT_EQ(firstBox.bot.x, secondBox.bot.x);
+        EXPECT_EQ(firstBox.bot.y, secondBox.bot.y);
+        EXPECT_EQ(firstBox.top.x, secondBox.top.x);
+        EXPECT_EQ(firstBox.top.y, secondBox.top.y);
+    }
+}

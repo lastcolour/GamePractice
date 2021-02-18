@@ -201,14 +201,11 @@ void UIAnimationSequence::ET_addSubAnimation(EntityId subAnimId) {
 
 void UIAnimationSequence::ET_onUITick(float dt) {
     currDuration += dt;
-    currUIAddTm.reset();
 
     float animTime = currDuration - startDelay;
     if(animTime < 0.f) {
         return;
     }
-
-    bool hasActiveFrame = false;
 
     for(int i = 0, sz = frames.size(); i < sz; ++i) {
         if(animTime <= 0.f) {
@@ -218,17 +215,19 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         if(i == 0 && frame.state == EAnimFrameState::Pending) {
             processShowEvent(getEntityId(), onStartEvent);
         }
-        if(frame.state != EAnimFrameState::Finished) {
-            hasActiveFrame = true;
-        }
         processFrame(animTime, frame);
         animTime -= frame.duration;
+    }
+
+    bool animFinished = false;
+    if(frames.back().state == EAnimFrameState::Finished) {
+        animFinished = true;
     }
 
     ET_SendEvent(getEntityId(), &ETUIAdditiveAnimationTarget::ET_addAdditiveTransform,
         currUIAddTm);
 
-    if(!hasActiveFrame) {
+    if(animFinished) {
         auto prevTriggerId = triggerId;
         if(cyclic) {
             restartCycle();
@@ -239,6 +238,8 @@ void UIAnimationSequence::ET_onUITick(float dt) {
                 getEntityId(), seqType);
         }
     }
+
+    currUIAddTm.reset();
 }
 
 void UIAnimationSequence::ET_stopAnimation() {
@@ -258,9 +259,10 @@ void UIAnimationSequence::ET_stopAnimation() {
         }
     }
 
-    currUIAddTm.reset();
+    currUIAddTm.inverse();
     ET_SendEvent(getEntityId(), &ETUIAdditiveAnimationTarget::ET_addAdditiveTransform,
         currUIAddTm);
+    currUIAddTm.reset();
 
     processShowEvent(getEntityId(), onEndEvent);
 

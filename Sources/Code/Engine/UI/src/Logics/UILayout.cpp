@@ -174,6 +174,8 @@ void UILayout::ET_reAlign() {
 }
 
 void UILayout::calculateLayout() {
+    combinedBox = AABB2Di(0);
+
     if(children.empty()) {
         ET_SendEvent(getEntityId(), &ETUILayoutEvents::ET_onLayoutChanged, combinedBox);
         return;
@@ -247,6 +249,9 @@ void UILayout::ET_onAlphaChanged(float newAlpha) {
 void UILayout::ET_onHidden(bool flag) {
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setParentHidden, flag);
+    }
+    if(!flag) {
+        calculateLayout();
     }
 }
 

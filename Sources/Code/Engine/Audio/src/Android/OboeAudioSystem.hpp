@@ -54,7 +54,7 @@ private:
 
 private:
 
-    MixGraph mixGrap;
+    MixGraph mixGraph;
     std::unique_ptr<float[]> mixBuffer;
     AudioBufferQueue bufferQueue;
     oboe::AudioStream* oboeStream;

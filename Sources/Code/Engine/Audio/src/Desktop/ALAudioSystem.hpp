@@ -45,7 +45,7 @@ private:
 
     ALCdevice* alcDevice;
     ALCcontext* alcContext;
-    MixGraph mixGrap;
+    MixGraph mixGraph;
     std::unique_ptr<float[]> mixBuffer;
     std::unique_ptr<unsigned int[]> alBufferIds;
     unsigned int alSourceId;

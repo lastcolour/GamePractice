@@ -30,7 +30,7 @@ void UILayoutBox::deinit() {
 
 void UILayoutBox::ET_onLoaded() {
     UIElement::ET_onLoaded();
-    ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
+    updateSelfLayout();
 
     auto box = ET_getBox();
     Vec2i boxSize = box.getSize();

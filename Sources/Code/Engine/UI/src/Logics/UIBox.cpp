@@ -48,7 +48,7 @@ void UIBox::calculateBox() {
     if(prevBox.getSize() != aabb.getSize()) {
         Vec2i boxSize = aabb.getSize();
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
-        ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
+        updateSelfLayout();
     }
 
     if(prevBox.bot != aabb.bot || prevBox.top != aabb.top) {
@@ -96,7 +96,7 @@ void UIBox::ET_onLoaded() {
     Vec2i boxSize = aabb.getSize();
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
-    ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
+    updateSelfLayout();
 }
 
 void UIBox::onTransformChanged(const Transform& newTm) {
