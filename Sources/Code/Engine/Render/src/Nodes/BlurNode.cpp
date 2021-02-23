@@ -54,11 +54,11 @@ Mat4 BlurNode::calcModelMat(const Transform& newTm) {
     return Mat4(1.f);
 }
 
-bool BlurNode::isVisible() const {
+bool BlurNode::canRender() const {
     if(passes == 0) {
         return false;
     }
-    return Node::isVisible();
+    return Node::canRender();
 }
 
 void BlurNode::blurPass(RenderFramebuffer& first, RenderFramebuffer& second) {

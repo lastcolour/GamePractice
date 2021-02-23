@@ -18,12 +18,14 @@ public:
     void setSize(const Vec2& newSize);
     void setVertical(bool flag);
 
+    // Node
+    bool canRender() const override;
+
 protected:
 
     // Node
     void onInit() override;
     void onRender(RenderContext& ctx) override;
-    bool isVisible() const override;
     Mat4 calcModelMat(const Transform& newTm) override;
 
 private:

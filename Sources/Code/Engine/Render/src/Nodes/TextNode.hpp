@@ -15,12 +15,14 @@ public:
     void setText(const std::string& newText);
     void setAlignAtCenter(bool flag);
 
+    // Node
+    bool canRender() const override;
+
 protected:
 
     // Node
     void onInit() override;
     void onRender(RenderContext& ctx) override;
-    bool isVisible() const override;
     Mat4 calcModelMat(const Transform& newTm) override;
 
 private:

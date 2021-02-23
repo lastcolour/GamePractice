@@ -40,20 +40,24 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
     if(currDuration < startDelay) {
         return;
     }
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+
     auto animDuration = currDuration - startDelay;
     if(animDuration >= duration) {
         currDuration = -1.f;
         ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
-        ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, startTm);
+        tm.scale = Vec3(1.f);
         ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimationEvents::ET_onDestroyAnimEnded);
         ETNode<ETGameTimerEvents>::disconnect();
     } else {
         float prog = std::min(1.f, animDuration / duration);
         auto scale = Math::Lerp(1.f, 0.f, prog);
-        auto resTm = startTm;
-        resTm.scale *= scale;
-        ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, resTm);
+        tm.scale = Vec3(scale);
     }
+
+    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
 }
 
 void BoardElemDestroyAnimation::setDestroySoundEvent(const char* eventName) {
@@ -67,6 +71,5 @@ void BoardElemDestroyAnimation::ET_playDestroy() {
     }
     currDuration = 0.f;
     ETNode<ETGameTimerEvents>::connect(getEntityId());
-    ET_SendEventReturn(startTm, getEntityId(), &ETEntity::ET_getLocalTransform);
     destroySound.emit();
 }

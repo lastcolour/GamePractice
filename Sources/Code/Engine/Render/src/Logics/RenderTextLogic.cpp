@@ -30,6 +30,11 @@ void RenderTextLogic::Reflect(ReflectContext& ctx) {
 
 void RenderTextLogic::init() {
     RenderNode::init();
+
+    if(!proxyNode) {
+        return;
+    }
+
     ETNode<ETRenderTextLogic>::connect(getEntityId());
     ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
     ET_setColor(color);

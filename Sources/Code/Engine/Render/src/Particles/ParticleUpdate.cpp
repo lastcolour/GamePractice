@@ -107,22 +107,15 @@ void simulateVortexField(GravityField& field, int activeCount, std::vector<Parti
 
 } // namespace
 
-EmitterState::EmitterState() :
+EmitterParticles::EmitterParticles() :
     duration(0.f),
     emitFracTime(0.f),
     activeCount(0),
-    lifeType(EmitterLifeType::StartDelay),
+    emissionState(EmissionState::Finished),
     floatGen(0.f, 1.f) {
 }
 
-void EmitterState::reset() {
-    duration = 0.f;
-    emitFracTime = 0.f;
-    activeCount = 0;
-    lifeType = EmitterLifeType::StartDelay;
-}
-
-void EmitterState::removeOld(float dt) {
+void EmitterParticles::removeOld(float dt) {
     int j = 0;
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
@@ -139,7 +132,7 @@ void EmitterState::removeOld(float dt) {
     activeCount = j;
 }
 
-void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
+void EmitterParticles::spawnNewParticle(const Transform& tm, Particle& p) {
     Vec2 startPt(0.f);
 
     Vec2 emitterVal = emissionConfig.emitterVal;
@@ -188,15 +181,15 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
 
     Vec2 moveDir = getRandomDir(floatGen, emissionConfig.direction, emissionConfig.directionVar);
 
-    p.startSpeed = moveDir * getRandomSpeed(floatGen, movementConifg.startSpeed, movementConifg.startSpeedVar);
-    p.endSpeed = moveDir * getRandomSpeed(floatGen, movementConifg.endSpeed, movementConifg.endSpeedVar);
+    p.startSpeed = moveDir * getRandomSpeed(floatGen, movementConfig.startSpeed, movementConfig.startSpeedVar);
+    p.endSpeed = moveDir * getRandomSpeed(floatGen, movementConfig.endSpeed, movementConfig.endSpeedVar);
 
-    p.startScale = getRandomScale(floatGen, movementConifg.startScale, movementConifg.startScaleVar);
-    p.endScale = getRandomScale(floatGen, movementConifg.endScale, movementConifg.endScaleVar);
+    p.startScale = getRandomScale(floatGen, movementConfig.startScale, movementConfig.startScaleVar);
+    p.endScale = getRandomScale(floatGen, movementConfig.endScale, movementConfig.endScaleVar);
 
-    p.rot = getRandomRotation(floatGen, movementConifg.startRotation, movementConifg.startRotationVar);
-    p.startRotSpeed = getRandomRotation(floatGen, movementConifg.startRotSpeed, movementConifg.startRotSpeedVar);
-    p.endRotSpeed = getRandomRotation(floatGen, movementConifg.endRotSpeed, movementConifg.endRotSpeedVar);
+    p.rot = getRandomRotation(floatGen, movementConfig.startRotation, movementConfig.startRotationVar);
+    p.startRotSpeed = getRandomRotation(floatGen, movementConfig.startRotSpeed, movementConfig.startRotSpeedVar);
+    p.endRotSpeed = getRandomRotation(floatGen, movementConfig.endRotSpeed, movementConfig.endRotSpeedVar);
 
     p.startCol = getRandomColor(floatGen, colorConfig.startCol.getColorF(), colorConfig.startColVar);
     p.endCol = getRandomColor(floatGen, colorConfig.endCol.getColorF(), colorConfig.endColVar);
@@ -222,7 +215,7 @@ void EmitterState::spawnNewParticle(const Transform& tm, Particle& p) {
     }
 }
 
-void EmitterState::emitNew(const Transform& tm, float dt) {
+void EmitterParticles::emitNew(const Transform& tm, float dt) {
     emitFracTime += dt;
 
     int emitCount = static_cast<int>(emissionConfig.emissionRate * emitFracTime);
@@ -252,7 +245,7 @@ void EmitterState::emitNew(const Transform& tm, float dt) {
     assert(activeCount <= Render::MaxParticlessPerDraw && "Too Many Particles");
 }
 
-void EmitterState::updateAlive(float dt) {
+void EmitterParticles::updateAlive(float dt) {
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         auto& out = instaceData[i];
@@ -288,7 +281,7 @@ void EmitterState::updateAlive(float dt) {
     }
 }
 
-void EmitterState::simulateGravities(float dt) {
+void EmitterParticles::simulateGravities(float dt) {
     for(auto& field : gravityConfig.fields) {
         switch(field.type) {
             case GravityType::Simple: {
@@ -307,18 +300,20 @@ void EmitterState::simulateGravities(float dt) {
     }
 }
 
-void EmitterState::updateState(float dt) {
-    switch(lifeType) {
-        case EmitterLifeType::StartDelay: {
+void EmitterParticles::updateState(float dt) {
+    switch(emissionState) {
+        case EmissionState::StartDelay: {
             duration += dt;
-            if(duration > emissionConfig.startDelay) {
-                lifeType = EmitterLifeType::Alive;
-                duration = 0.f;
-                emitFracTime = 0.f;
+            if(duration < emissionConfig.startDelay) {
+                break;
             }
-            break;
+            emissionState = EmissionState::Alive;
+            duration = 0.f;
+            emitFracTime = 0.f;
+            duration -= emissionConfig.startDelay;
+            [[fallthrough]];
         }
-        case EmitterLifeType::Alive: {
+        case EmissionState::Alive: {
             if(emissionConfig.duration < 0.f) {
                 break;
             }
@@ -326,20 +321,18 @@ void EmitterState::updateState(float dt) {
             if(duration > emissionConfig.duration) {
                 duration = 0.f;
                 emitFracTime = 0.f;
-                lifeType = EmitterLifeType::WaitingAlive;
+                emissionState = EmissionState::WaitingAlive;
             }
             break;
         }
-        case EmitterLifeType::WaitingAlive: {
+        case EmissionState::WaitingAlive: {
             if(activeCount == 0) {
-                lifeType = EmitterLifeType::Finished;
+                emissionState = EmissionState::Finished;
             }
             break;
         }
-        case EmitterLifeType::Finished: {
-            if(emissionConfig.loop) {
-                lifeType = EmitterLifeType::StartDelay;
-            }
+        case EmissionState::Finished: {
+            assert(false && "Can't update finished emitter");
             break;
         }
         default: {
@@ -348,19 +341,46 @@ void EmitterState::updateState(float dt) {
     }
 }
 
-void EmitterState::update(const Transform& tm, float dt) {
+void EmitterParticles::update(const Transform& tm, float dt) {
     updateState(dt);
-    if(lifeType == EmitterLifeType::Finished) {
+    if(emissionState == EmissionState::Finished) {
         return;
     }
     if(activeCount > 0) {
         removeOld(dt);
     }
-    if(lifeType == EmitterLifeType::Alive) {
+    if(emissionState == EmissionState::Alive) {
         emitNew(tm, dt);
     }
     if(activeCount > 0) {
         simulateGravities(dt);
         updateAlive(dt);
     }
+}
+
+void EmitterParticles::start() {
+    emissionState = EmissionState::StartDelay;
+}
+
+void EmitterParticles::stop() {
+    duration = 0.f;
+    emitFracTime = 0.f;
+    activeCount = 0;
+    emissionState = EmissionState::Finished;
+}
+
+void EmitterParticles::stopEmitting() {
+    emissionState = EmissionState::WaitingAlive;
+}
+
+bool EmitterParticles::isEmitting() const {
+    return emissionState == EmissionState::Alive;
+}
+
+bool EmitterParticles::hasAlive() const {
+    return activeCount > 0;
+}
+
+bool EmitterParticles::isFinished() const {
+    return emissionState == EmissionState::Finished;
 }

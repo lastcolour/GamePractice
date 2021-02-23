@@ -16,12 +16,14 @@ public:
     void setTexture(std::shared_ptr<RenderTexture>& newTex);
     std::shared_ptr<RenderTexture> getTexture();
 
+    // Node
+    bool canRender() const override;
+
 protected:
 
     // Node
     void onInit() override;
     void onRender(RenderContext& ctx) override;
-    bool isVisible() const override;
     Mat4 calcModelMat(const Transform& newTm) override;
 
 protected:

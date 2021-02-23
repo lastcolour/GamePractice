@@ -6,7 +6,7 @@
 #include "Render/ETRenderCamera.hpp"
 
 class RenderCamera : public SystemLogic,
-    ETNode<ETRenderCamera> {
+    public ETNode<ETRenderCamera> {
 public:
 
     RenderCamera();

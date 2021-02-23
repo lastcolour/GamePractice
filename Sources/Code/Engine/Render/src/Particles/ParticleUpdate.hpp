@@ -2,25 +2,30 @@
 #define __PARTICLE_UPDATE_HPP__
 
 #include "Particles/Particle.hpp"
-#include "Particles/ParticlesEmitterConfig.hpp"
+#include "Render/ParticlesEmitterConfig.hpp"
 #include "Math/Transform.hpp"
 #include "Math/Random.hpp"
 
 #include <vector>
 
-enum class EmitterLifeType {
+enum class EmissionState {
     StartDelay = 0,
     Alive,
     WaitingAlive,
     Finished
 };
 
-struct EmitterState {
+struct EmitterParticles {
 public:
 
-    EmitterState();
+    EmitterParticles();
 
-    void reset();
+    void start();
+    void stop();
+    void stopEmitting();
+    bool isEmitting() const;
+    bool isFinished() const;
+    bool hasAlive() const;
     void update(const Transform& tm, float dt);
 
 private:
@@ -36,7 +41,7 @@ public:
 
     ParticleEmitterEmissionConfig emissionConfig;
     ParticleEmitterColorConfig colorConfig;
-    ParticleEmitterMovementConfig movementConifg;
+    ParticleEmitterMovementConfig movementConfig;
     ParticleEmitterGravityFields gravityConfig;
 
     std::vector<Particle> particles;
@@ -45,7 +50,7 @@ public:
     float duration;
     float emitFracTime;
     int activeCount;
-    EmitterLifeType lifeType;
+    EmissionState emissionState;
 
     Math::RandomFloatGenerator floatGen;
 };

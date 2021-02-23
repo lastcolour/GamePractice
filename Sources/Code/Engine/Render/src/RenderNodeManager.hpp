@@ -24,10 +24,9 @@ public:
     void deinit() override;
 
     // ETRenderNodeManager
-    Node* ET_createNode(const RenderNodeCreateParams& params) override;
+    Node* ET_createNode(RenderNodeType nodeType) override;
     void ET_removeNode(Node* node) override;
     void ET_initRenderNode(Node* node) override;
-    void ET_updateParticles(float dt) override;
     void ET_drawFrame() override;
     void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) override;
 
@@ -38,7 +37,6 @@ public:
 private:
 
     RenderGraph renderGraph;
-    std::vector<ParticlesNode*> particles;
     std::unordered_map<Node*, std::unique_ptr<Node>> nodes;
 };
 

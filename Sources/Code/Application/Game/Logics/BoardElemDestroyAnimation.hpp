@@ -43,7 +43,6 @@ private:
     float startDelay;
     float duration;
     float currDuration;
-    Transform startTm;
 };
 
 #endif /* __BOARD_ELEM_DESTROY_ANIMATION_HPP__ */

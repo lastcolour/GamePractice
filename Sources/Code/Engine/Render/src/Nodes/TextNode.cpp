@@ -145,14 +145,14 @@ void TextNode::onRender(RenderContext& ctx) {
     drawLines();
 }
 
-bool TextNode::isVisible() const {
+bool TextNode::canRender() const {
     if(text.empty()) {
         return false;
     }
     if(!font || !font->getFontAtlas()) {
         return false;
     }
-    return Node::isVisible();
+    return Node::canRender();
 }
 
 void TextNode::setAlignAtCenter(bool flag) {

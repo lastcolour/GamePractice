@@ -23,6 +23,11 @@ void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
 
 void RenderSimpleLogic::init() {
     RenderNode::init();
+
+    if(!proxyNode) {
+        return;
+    }
+
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setColor(color);

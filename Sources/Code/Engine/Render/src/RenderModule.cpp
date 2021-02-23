@@ -6,7 +6,6 @@
 #include "RenderCamera.hpp"
 #include "RenderTextureManager.hpp"
 #include "RenderNodeManager.hpp"
-#include "ParticleSystem.hpp"
 #include "Debug/DebugRender.hpp"
 #include "Logics/ParticleEmitter.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
@@ -32,7 +31,6 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             RenderTextureManager,
             RenderNodeManager,
             RenderFontManager,
-            ParticleSystem,
             DebugRender>()
         );
     return container;

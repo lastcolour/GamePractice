@@ -5,36 +5,31 @@
 #include "RenderTexture.hpp"
 #include "Particles/ParticleUpdate.hpp"
 
-#include <atomic>
-
 class ParticlesNode : public Node {
 public:
 
     ParticlesNode();
     virtual ~ParticlesNode();
 
-    void update(float dt);
+    void setConfig(const ParticleEmitterRenderConfig& newRenderConf);
 
-    void setConfig(const ParticleEmitterEmissionConfig& emissionConf,
-        const ParticleEmitterMovementConfig& movementConf,
-        const ParticleEmitterColorConfig& colorConf,
-        const ParticleEmitterRenderConfig& renderConf,
-        const ParticleEmitterGravityFields& gravityConf);
+    EmitterParticles& getParticles();
+
+    // Node
+    bool canRender() const override;
 
 protected:
 
     // Node
     void onInit() override;
     void onRender(RenderContext& ctx) override;
-    bool isVisible() const override;
     Mat4 calcModelMat(const Transform& newTm) override;
 
 private:
 
     std::shared_ptr<RenderTexture> tex;
     ParticleEmitterRenderConfig renderConfig;
-    EmitterState state;
-    std::atomic<bool> needUpdate;
+    EmitterParticles particles;
 };
 
 #endif /* __PARTICLES_NODE_HPP__ */

@@ -12,7 +12,6 @@ void GameBoardAnimation::Reflect(ReflectContext& ctx) {
 }
 
 GameBoardAnimation::GameBoardAnimation() :
-    startScale(1.f),
     scaleDuration(0.3f),
     minScale(0.8f),
     currDuration(0.f) {
@@ -41,16 +40,11 @@ void GameBoardAnimation::ET_onGameTick(float dt) {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
 
-    tm.scale = startScale * currScale;
+    tm.scale = Vec3(1.f);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
 }
 
 void GameBoardAnimation::ET_zoomOut() {
     currDuration = 0.f;
-
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
-    startScale = tm.scale;
-
     ETNode<ETGameTimerEvents>::connect(getEntityId());
 }

@@ -35,19 +35,21 @@ RenderNode::~RenderNode() {
 }
 
 void RenderNode::init() {
-    RenderNodeCreateParams params;
-    ET_SendEventReturn(params.tm, getEntityId(), &ETEntity::ET_getTransform);
-
-    params.tm.scale *= normScale;
-    params.alpha = std::min(1.f, std::max(0.f, alpha));
-    params.drawPriority = drawPriority;
-    params.type = type;
-    ET_SendEventReturn(proxyNode, &ETRenderNodeManager::ET_createNode, params);
+    ET_SendEventReturn(proxyNode, &ETRenderNodeManager::ET_createNode, type);
     if(!proxyNode) {
         LogError("[RenderNode::init] Can't create proxy node an enity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
         return;
     }
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    tm.scale *= normScale;
+    alpha = Math::Clamp(alpha, 0.f, 1.f);
+
+    proxyNode->setTransform(tm);
+    proxyNode->setAlpha(alpha);
+    proxyNode->setDrawPriority(drawPriority);
 
     ETNode<ETRenderNode>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());

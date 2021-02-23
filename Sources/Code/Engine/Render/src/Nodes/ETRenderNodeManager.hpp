@@ -28,10 +28,9 @@ struct RenderNodeCreateParams {
 
 struct ETRenderNodeManager {
     virtual ~ETRenderNodeManager() = default;
-    virtual Node* ET_createNode(const RenderNodeCreateParams& params) = 0;
+    virtual Node* ET_createNode(RenderNodeType nodeType) = 0;
     virtual void ET_removeNode(Node* node) = 0;
     virtual void ET_initRenderNode(Node* node) = 0;
-    virtual void ET_updateParticles(float dt) = 0;
     virtual void ET_drawFrame() = 0;
     virtual void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) = 0;
 };
@@ -39,6 +38,11 @@ struct ETRenderNodeManager {
 struct ETRenderProxyNodeEvents {
     virtual ~ETRenderProxyNodeEvents() = default;
     virtual void ET_syncWithRender() = 0;
+};
+
+struct ETParticleUpdate {
+    virtual ~ETParticleUpdate() = default;
+    virtual void ET_updateEmitter(float dt) = 0;
 };
 
 #endif /* __ET_RENDER_NODE_MANAGER_HPP__ */

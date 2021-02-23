@@ -19,14 +19,6 @@ Node::Node() :
 Node::~Node() {
 }
 
-void Node::preInit(const RenderNodeCreateParams& params) {
-    type = params.type;
-    alpha = params.alpha;
-    drawPriority = params.drawPriority;
-    tm = params.tm;
-    setModelMatDirty();
-}
-
 void Node::init() {
     onInit();
 }
@@ -63,7 +55,7 @@ void Node::setTransform(const Transform& newTm) {
     setModelMatDirty();
 }
 
-bool Node::isVisible() const {
+bool Node::canRender() const {
     if(!shader) {
         return false;
     }
@@ -83,9 +75,6 @@ void Node::setStencilData(const StencilWirteReadData& newStencilData) {
 
 int Node::getDrawPriority() const {
     return drawPriority;
-}
-RenderNodeType Node::getType() const {
-    return type;
 }
 
 void Node::onRenderStart(RenderContext& ctx) {

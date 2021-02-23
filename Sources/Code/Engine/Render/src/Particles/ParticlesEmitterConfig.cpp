@@ -1,4 +1,4 @@
-#include "Particles/ParticlesEmitterConfig.hpp"
+#include "Render/ParticlesEmitterConfig.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 

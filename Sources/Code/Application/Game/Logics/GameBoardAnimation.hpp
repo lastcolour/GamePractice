@@ -33,7 +33,6 @@ public:
 
 private:
 
-    Vec3 startScale;
     float scaleDuration;
     float minScale;
     float currDuration;

@@ -44,11 +44,11 @@ void GradientNode::onRender(RenderContext& ctx) {
     geom->drawTriangles();
 }
 
-bool GradientNode::isVisible() const {
+bool GradientNode::canRender() const {
     if(!tex) {
         return false;
     }
-    return Node::isVisible();
+    return Node::canRender();
 }
 
 void GradientNode::setVertical(bool flag) {

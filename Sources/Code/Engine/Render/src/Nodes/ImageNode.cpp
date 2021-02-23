@@ -36,11 +36,11 @@ void ImageNode::onRender(RenderContext& ctx) {
     geom->drawTriangles();
 }
 
-bool ImageNode::isVisible() const {
+bool ImageNode::canRender() const {
     if(!tex) {
         return false;
     }
-    return Node::isVisible();
+    return Node::canRender();
 }
 
 Mat4 ImageNode::calcModelMat(const Transform& newTm) {

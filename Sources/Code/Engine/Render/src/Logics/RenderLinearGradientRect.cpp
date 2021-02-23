@@ -27,6 +27,11 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
 
 void RenderLinearGradientRect::init() {
     RenderNode::init();
+
+    if(!proxyNode) {
+        return;
+    }
+
     ETNode<ETRenderRect>::connect(getEntityId());
     isColorChanged = true;
     ET_setSize(size);

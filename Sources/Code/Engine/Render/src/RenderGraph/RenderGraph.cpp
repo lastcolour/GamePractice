@@ -123,7 +123,7 @@ void RenderGraph::render() {
         return;
     }
     for(auto node : children) {
-        if(node->isVisible()) {
+        if(node->canRender()) {
             node->render(ctx);
         }
     }
@@ -138,7 +138,7 @@ void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter fil
         return;
     }
     for(auto node : children) {
-        if(node->isVisible()) {
+        if(node->canRender()) {
             node->render(ctx);
         }
     }

@@ -12,12 +12,14 @@ public:
     void setDownScale(int newDownScale);
     void setPasses(int newPassesCount);
 
+    // Node
+    bool canRender() const override;
+
 protected:
 
     // Node
     void onInit() override;
     void onRender(RenderContext& ctx) override;
-    bool isVisible() const override;
     Mat4 calcModelMat(const Transform& newTm) override;
 
 private:

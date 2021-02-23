@@ -28,6 +28,11 @@ void RenderImageLogic::Reflect(ReflectContext& ctx) {
 
 void RenderImageLogic::init() {
     RenderNode::init();
+
+    if(!proxyNode) {
+        return;
+    }
+
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
     ET_setImage(image.c_str());

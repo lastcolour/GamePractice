@@ -16,12 +16,10 @@ public:
     Node();
     virtual ~Node();
 
-    void preInit(const RenderNodeCreateParams& params);
     void init();
     void setRenderGraph(RenderGraph* graph);
     void render(RenderContext& ctx);
     int getDrawPriority() const;
-    RenderNodeType getType() const;
 
     void setAlpha(float newAlpha);
     void setDrawPriority(int newDrawPriority);
@@ -29,7 +27,7 @@ public:
     void setTransform(const Transform& newTm);
     void setStencilData(const StencilWirteReadData& newStencilData);
 
-    virtual bool isVisible() const;
+    virtual bool canRender() const;
 
 protected:
 
@@ -59,7 +57,6 @@ private:
     RenderGraph* renderGraph;
     StencilWirteReadData stencilData;
     BlendMode blendMode;
-    RenderNodeType type;
     float alpha;
     int drawPriority;
     bool visible;

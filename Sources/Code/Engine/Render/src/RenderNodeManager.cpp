@@ -34,15 +34,9 @@ bool RenderNodeManager::init() {
 void RenderNodeManager::deinit() {
 }
 
-void RenderNodeManager::ET_updateParticles(float dt) {
-    for(auto node : particles) {
-        node->update(dt);
-    }
-}
-
-Node* RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) {
+Node* RenderNodeManager::ET_createNode(RenderNodeType nodeType) {
     std::unique_ptr<Node> node;
-    switch(params.type) {
+    switch(nodeType) {
         case RenderNodeType::NinePatchImage: {
             node.reset(new NinePatchNode());
             break;
@@ -75,7 +69,6 @@ Node* RenderNodeManager::ET_createNode(const RenderNodeCreateParams& params) {
             return nullptr;
         }
     }
-    node->preInit(params);
     auto resNode = node.get();
     ET_QueueEvent(&ETRenderNodeManager::ET_initRenderNode, node.release());
     return resNode;
@@ -85,9 +78,6 @@ void RenderNodeManager::ET_initRenderNode(Node* node) {
     nodes.insert({node, std::unique_ptr<Node>(node)});
     node->init();
     renderGraph.addChild(node);
-    if(node->getType() == RenderNodeType::ParticleEmmiter) {
-        particles.push_back(static_cast<ParticlesNode*>(node));
-    }
 }
 
 void RenderNodeManager::ET_removeNode(Node* node) {
@@ -96,10 +86,6 @@ void RenderNodeManager::ET_removeNode(Node* node) {
         return;
     }
     renderGraph.removeChild(it->second.get());
-    if(node->getType() == RenderNodeType::ParticleEmmiter) {
-        auto it = std::find(particles.begin(), particles.end(), node);
-        particles.erase(it);
-    }
     nodes.erase(it);
 }
 
