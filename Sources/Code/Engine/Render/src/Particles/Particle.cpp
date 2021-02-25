@@ -13,7 +13,8 @@ Particle::Particle() :
     lifetime(0.f),
     totalLifetime(0.f),
     startCol(1.f),
-    endCol(1.f) {
+    endCol(1.f),
+    id(-1) {
 }
 
 ParticleInstanceData::ParticleInstanceData() :

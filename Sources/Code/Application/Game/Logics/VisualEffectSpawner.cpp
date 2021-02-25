@@ -1,7 +1,7 @@
 #include "Game/Logics/VisualEffectSpawner.hpp"
-#include "Render/ETPatricle.hpp"
 #include "Entity/ETEntity.hpp"
 #include "Entity/ETEntityManger.hpp"
+#include "Render/ETParticlesSystem.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Core/ETLogger.hpp"
 
@@ -32,6 +32,6 @@ void VisualEffectSpawner::ET_spawn(const VisualEffectSpawnConfig& spawnConfig) {
         return;
     }
     ET_SendEvent(effectId, &ETEntity::ET_setTransform, spawnConfig.tm);
-    ET_SendEvent(effectId, &ETParticleEmitter::ET_emit);
+    ET_SendEvent(effectId, &ETParticlesSystem::ET_emit);
     activeEffects.push_back(effectId);
 }

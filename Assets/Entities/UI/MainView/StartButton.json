@@ -107,8 +107,8 @@
               "alpha": 1.0,
               "drawPriority": 4,
               "size": {
-                "x": 325.0,
-                "y": 79.0
+                "x": 359.0,
+                "y": 88.0
               },
               "tintColor": {
                 "r": 255,
@@ -163,7 +163,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 42,
+              "fontSize": 47,
               "text": "Start"
             }
           },
@@ -285,8 +285,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 325.0,
-          "y": 79.0
+          "x": 359.0,
+          "y": 88.0
         },
         "tintColor": {
           "r": 100,

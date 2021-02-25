@@ -2,7 +2,7 @@
   "children": [],
   "logics": [
     {
-      "type": "ParticleEmitter",
+      "type": "ParticlesSystem",
       "id": 1,
       "data": {
         "isVisible": true,
@@ -83,7 +83,10 @@
           "fadeOut": 0.05000000074505806
         },
         "render": {
-          "texture": "Images/block.png"
+          "texture": ""
+        },
+        "subEmitters": {
+          "subEmitters": []
         },
         "gravity": {
           "fields": [
@@ -109,7 +112,7 @@
       }
     },
     {
-      "type": "ParticleEmitter",
+      "type": "ParticlesSystem",
       "id": 4,
       "data": {
         "isVisible": true,
@@ -191,6 +194,9 @@
         },
         "render": {
           "texture": "Images/block.png"
+        },
+        "subEmitters": {
+          "subEmitters": []
         },
         "gravity": {
           "fields": [

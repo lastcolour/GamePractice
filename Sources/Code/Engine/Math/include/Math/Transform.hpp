@@ -21,6 +21,8 @@ public:
 
     Transform& operator=(const Transform& tm);
 
+    Mat4 toMat4() const;
+
 public:
 
     Vec3 pt;

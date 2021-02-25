@@ -9,7 +9,7 @@
       }
     },
     {
-      "type": "ParticleEmitter",
+      "type": "ParticlesSystem",
       "id": 3,
       "data": {
         "isVisible": true,
@@ -91,6 +91,9 @@
         },
         "render": {
           "texture": "Images/block.png"
+        },
+        "subEmitters": {
+          "subEmitters": []
         },
         "gravity": {
           "fields": []

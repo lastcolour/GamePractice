@@ -44,7 +44,7 @@ void Render::ET_updateRender(float dt) {
 }
 
 void Render::ET_updateParticles(float dt) {
-    ET_SendEvent(&ETParticleUpdate::ET_updateEmitter, dt);
+    ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
 }
 
 bool Render::canRenderToScreen() const {

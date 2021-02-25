@@ -7,10 +7,8 @@
 namespace Render {
 
 Mat4 CalcModelMat(const Transform& tm, const Vec3& scale) {
-    Mat4 resMat(1.f);
-    Math::AddTranslate(resMat, tm.pt);
-    Math::AddRotate(resMat, tm.quat);
-    Math::AddScale(resMat, tm.scale.getScaled(scale / 2.f));
+    auto resMat = tm.toMat4();
+    Math::AddScale(resMat, scale / 2.f);
     return resMat;
 }
 

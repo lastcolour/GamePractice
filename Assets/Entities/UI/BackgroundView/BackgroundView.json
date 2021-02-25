@@ -63,8 +63,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 150.0,
-          "y": 266.0
+          "x": 600.0,
+          "y": 1024.0
         },
         "startColor": {
           "r": 9,

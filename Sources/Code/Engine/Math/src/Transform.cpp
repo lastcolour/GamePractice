@@ -1,5 +1,6 @@
 #include "Math/Transform.hpp"
 #include "Reflect/ReflectContext.hpp"
+#include "Math/MatrixTransform.hpp"
 
 namespace Math {
 
@@ -33,6 +34,14 @@ Transform& Transform::operator=(const Transform& tm) {
         quat = tm.quat;
     }
     return *this;
+}
+
+Mat4 Transform::toMat4() const {
+    Mat4 resMat(1.f);
+    AddTranslate(resMat, pt);
+    AddRotate(resMat, quat);
+    AddScale(resMat, scale);
+    return resMat;
 }
 
 } // namespace Math

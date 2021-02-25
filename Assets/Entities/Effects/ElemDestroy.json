@@ -1,8 +1,137 @@
 {
-  "children": [],
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "SubEmitter",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "ParticlesSystem",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 0,
+              "emission": {
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 1.0,
+                  "y": 0.0
+                },
+                "duration": 0.10000000149011612,
+                "heating": false,
+                "thickness": 0.0,
+                "direction": 0.0,
+                "directionVar": 350.0,
+                "emissionRate": 300.0,
+                "lifetime": 0.30000001192092896,
+                "lifetimeVar": 0.10000000149011612,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false
+              },
+              "movement": {
+                "startScale": {
+                  "x": 1.0,
+                  "y": 1.0
+                },
+                "startScaleVar": {
+                  "x": 0.0,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 1.0,
+                  "y": 1.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "startSpeed": 300.0,
+                "startSpeedVar": 0.10000000149011612,
+                "endSpeed": 2.0,
+                "endSpeedVar": 0.10000000149011612,
+                "startRotation": 0.0,
+                "startRotationVar": 0.10000000149011612,
+                "startRotSpeed": 30.0,
+                "startRotSpeedVar": 0.10000000149011612,
+                "endRotSpeed": 30.0,
+                "endRotSpeedVar": 0.10000000149011612
+              },
+              "color": {
+                "startCol": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.10000000149011612
+                },
+                "endCol": {
+                  "r": 255,
+                  "g": 0,
+                  "b": 0,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.10000000149011612
+                },
+                "fadeIn": 0.10000000149011612,
+                "fadeOut": 0.10000000149011612
+              },
+              "render": {
+                "texture": "Images/block.png"
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          },
+          {
+            "type": "UIRenderNormalizator",
+            "id": 2,
+            "data": {
+              "factor": 1.0
+            }
+          }
+        ]
+      }
+    }
+  ],
   "logics": [
     {
-      "type": "ParticleEmitter",
+      "type": "ParticlesSystem",
       "id": 1,
       "data": {
         "isVisible": true,
@@ -15,29 +144,30 @@
             "x": 2.0,
             "y": 0.0
           },
-          "duration": 0.009999999776482582,
+          "duration": -1.0,
+          "heating": false,
           "thickness": 1.0,
-          "direction": 0.0,
-          "directionVar": 360.0,
-          "emissionRate": 200.0,
+          "direction": 90.0,
+          "directionVar": 0.0,
+          "emissionRate": 2.0,
           "lifetime": 0.5,
-          "lifetimeVar": 0.10000000149011612,
+          "lifetimeVar": 0.30000001192092896,
           "startDelay": 1.0,
-          "autoStart": false,
-          "loop": false
+          "autoStart": true,
+          "loop": true
         },
         "movement": {
           "startScale": {
-            "x": 10.0,
-            "y": 10.0
+            "x": 1.0,
+            "y": 1.0
           },
           "startScaleVar": {
             "x": 0.10000000149011612,
             "y": 0.10000000149011612
           },
           "endScale": {
-            "x": 2.0,
-            "y": 2.0
+            "x": 1.0,
+            "y": 1.0
           },
           "endScaleVar": {
             "x": 0.10000000149011612,
@@ -79,11 +209,21 @@
             "z": 0.10000000149011612,
             "w": 0.10000000149011612
           },
-          "fadeIn": 0.10000000149011612,
-          "fadeOut": 0.30000001192092896
+          "fadeIn": 0.0,
+          "fadeOut": 0.0
         },
         "render": {
           "texture": "Images/block.png"
+        },
+        "subEmitters": {
+          "subEmitters": [
+            {
+              "event": "OnParticleDeath",
+              "entityId": [
+                1
+              ]
+            }
+          ]
         },
         "gravity": {
           "fields": []
@@ -95,6 +235,26 @@
       "id": 2,
       "data": {
         "factor": 1.0
+      }
+    },
+    {
+      "type": "UIView",
+      "id": 3,
+      "data": {
+        "hidden": false,
+        "enabled": true,
+        "style": {
+          "width": 30.0,
+          "widthInv": "Grid",
+          "height": 30.0,
+          "heightInv": "Grid",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        }
       }
     }
   ]

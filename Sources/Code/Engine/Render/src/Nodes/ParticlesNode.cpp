@@ -11,19 +11,19 @@ ParticlesNode::ParticlesNode() {
 ParticlesNode::~ParticlesNode() {
 }
 
-void ParticlesNode::setConfig(const ParticleEmitterRenderConfig& newRenderConf) {
+void ParticlesNode::setConfig(const ParticlesEmitterRenderConfig& newRenderConf) {
     renderConfig = newRenderConf;
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage,
         renderConfig.texture.c_str(), ETextureType::RGBA);
     setModelMatDirty();
 }
 
-EmitterParticles& ParticlesNode::getParticles() {
-    return particles;
+ParticlesEmittersPool& ParticlesNode::getEmittersPool() {
+    return emittersPool;
 }
 
 bool ParticlesNode::canRender() const {
-    if(!particles.hasAlive()) {
+    if(!emittersPool.hasAlive()) {
         return false;
     }
     if(!tex) {
@@ -39,19 +39,23 @@ void ParticlesNode::onInit() {
 }
 
 Mat4 ParticlesNode::calcModelMat(const Transform& newTm) {
-    Mat4 resMat = Mat4(1.f);
+    return Mat4(1.f);
+}
 
-    if(particles.emissionConfig.emitterSpace == EmitterSpace::Local) {
-        Math::AddTranslate(resMat, newTm.pt);
-        Math::AddRotate(resMat, newTm.quat);
-        Math::AddScale(resMat, newTm.scale);
-    }
-
-    return resMat;
+const Transform& ParticlesNode::getTransform() const {
+    return tm;
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {
     shader->setTexture2D(UniformType::Texture, *tex);
-    shader->setUniformMat4(UniformType::ModelMat, modelMat);
-    geom->drawInstanced(&particles.instaceData[0], particles.activeCount);
+    for(auto& emitter : emittersPool.getEmitters()) {
+        if(emitter->activeCount <= 0) {
+            continue;
+        }
+        Mat4 resMat = emitter->getTransformMat();
+        shader->setUniformMat4(UniformType::ModelMat, resMat);
+
+        auto& particles = emitter->particles;
+        geom->drawInstanced(&emitter->instaceData[0], emitter->activeCount);
+    }
 }

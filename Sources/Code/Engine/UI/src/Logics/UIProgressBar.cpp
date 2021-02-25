@@ -2,6 +2,8 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Math/Primitivies.hpp"
 #include "Entity/ETEntity.hpp"
+#include "UI/ETUIBox.hpp"
+#include "UI/ETUILayout.hpp"
 
 #include <algorithm>
 
@@ -32,6 +34,12 @@ void UIProgressBar::ET_setProgress(float newProgress) {
 
     tm.scale.x = Math::Lerp(0.f, 1.f, currProgress);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+
+    EntityId hostLayoutId;
+    ET_SendEventReturn(hostLayoutId, getEntityId(), &ETUIElement::ET_getHostLayout);
+    if(hostLayoutId.isValid()) {
+        ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
+    }
 }
 
 float UIProgressBar::ET_getProgress() const {

@@ -24,6 +24,7 @@ public:
     float totalLifetime;
     ColorF startCol;
     ColorF endCol;
+    int id;
 };
 
 struct ParticleInstanceData {

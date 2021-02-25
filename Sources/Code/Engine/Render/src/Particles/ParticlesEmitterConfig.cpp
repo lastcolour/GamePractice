@@ -2,7 +2,7 @@
 #include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 
-void ParticleEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
+void ParticlesEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<EmitterType>("EmitterType")) {
         enumInfo->addValues<EmitterType>({
             {"Sphere", EmitterType::Sphere},
@@ -15,24 +15,24 @@ void ParticleEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
             {"World", EmitterSpace::World}
         });
     }
-    if(auto classInfo = ctx.classInfo<ParticleEmitterEmissionConfig>("ParticleEmitterEmissionConfig")) {
-        classInfo->addField("emitterSpace", &ParticleEmitterEmissionConfig::emitterSpace);
-        classInfo->addField("emitterType", &ParticleEmitterEmissionConfig::emitterType);
-        classInfo->addField("emitterVal", &ParticleEmitterEmissionConfig::emitterVal);
-        classInfo->addField("duration", &ParticleEmitterEmissionConfig::duration);
-        classInfo->addField("thickness", &ParticleEmitterEmissionConfig::thickness);
-        classInfo->addField("direction", &ParticleEmitterEmissionConfig::direction);
-        classInfo->addField("directionVar", &ParticleEmitterEmissionConfig::directionVar);
-        classInfo->addField("emissionRate", &ParticleEmitterEmissionConfig::emissionRate);
-        classInfo->addField("lifetime", &ParticleEmitterEmissionConfig::lifetime);
-        classInfo->addField("lifetimeVar", &ParticleEmitterEmissionConfig::lifetimeVar);
-        classInfo->addField("startDelay", &ParticleEmitterEmissionConfig::startDelay);
-        classInfo->addField("autoStart", &ParticleEmitterEmissionConfig::autoStart);
-        classInfo->addField("loop", &ParticleEmitterEmissionConfig::loop);
+    if(auto classInfo = ctx.classInfo<ParticlesEmitterEmissionConfig>("ParticlesEmitterEmissionConfig")) {
+        classInfo->addField("duration", &ParticlesEmitterEmissionConfig::duration);
+        classInfo->addField("autoStart", &ParticlesEmitterEmissionConfig::autoStart);
+        classInfo->addField("loop", &ParticlesEmitterEmissionConfig::loop);
+        classInfo->addField("startDelay", &ParticlesEmitterEmissionConfig::startDelay);
+        classInfo->addField("emitterSpace", &ParticlesEmitterEmissionConfig::emitterSpace);
+        classInfo->addField("emitterType", &ParticlesEmitterEmissionConfig::emitterType);
+        classInfo->addField("emitterVal", &ParticlesEmitterEmissionConfig::emitterVal);
+        classInfo->addField("thickness", &ParticlesEmitterEmissionConfig::thickness);
+        classInfo->addField("emissionRate", &ParticlesEmitterEmissionConfig::emissionRate);
+        classInfo->addField("direction", &ParticlesEmitterEmissionConfig::direction);
+        classInfo->addField("directionVar", &ParticlesEmitterEmissionConfig::directionVar);
+        classInfo->addField("lifetime", &ParticlesEmitterEmissionConfig::lifetime);
+        classInfo->addField("lifetimeVar", &ParticlesEmitterEmissionConfig::lifetimeVar);
     }
 }
 
-ParticleEmitterEmissionConfig::ParticleEmitterEmissionConfig() :
+ParticlesEmitterEmissionConfig::ParticlesEmitterEmissionConfig() :
     emitterType(EmitterType::Sphere),
     emitterSpace(EmitterSpace::World),
     emitterVal(1.f, 0.f),
@@ -48,18 +48,18 @@ ParticleEmitterEmissionConfig::ParticleEmitterEmissionConfig() :
     loop(true) {
 }
 
-void ParticleEmitterColorConfig::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<ParticleEmitterColorConfig>("ParticleEmitterColorConfig")) {
-        classInfo->addField("startCol", &ParticleEmitterColorConfig::startCol);
-        classInfo->addField("startColVar", &ParticleEmitterColorConfig::startColVar);
-        classInfo->addField("endCol", &ParticleEmitterColorConfig::endCol);
-        classInfo->addField("endColVar", &ParticleEmitterColorConfig::endColVar);
-        classInfo->addField("fadeIn", &ParticleEmitterColorConfig::fadeIn);
-        classInfo->addField("fadeOut", &ParticleEmitterColorConfig::fadeOut);
+void ParticlesEmitterColorConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesEmitterColorConfig>("ParticlesEmitterColorConfig")) {
+        classInfo->addField("startCol", &ParticlesEmitterColorConfig::startCol);
+        classInfo->addField("startColVar", &ParticlesEmitterColorConfig::startColVar);
+        classInfo->addField("endCol", &ParticlesEmitterColorConfig::endCol);
+        classInfo->addField("endColVar", &ParticlesEmitterColorConfig::endColVar);
+        classInfo->addField("fadeIn", &ParticlesEmitterColorConfig::fadeIn);
+        classInfo->addField("fadeOut", &ParticlesEmitterColorConfig::fadeOut);
     }
 }
 
-ParticleEmitterColorConfig::ParticleEmitterColorConfig() :
+ParticlesEmitterColorConfig::ParticlesEmitterColorConfig() :
     startCol(255, 255, 255),
     startColVar(0.1f),
     endCol(255, 0, 0),
@@ -68,26 +68,26 @@ ParticleEmitterColorConfig::ParticleEmitterColorConfig() :
     fadeOut(0.1f) {
 }
 
-void ParticleEmitterMovementConfig::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<ParticleEmitterMovementConfig>("ParticleEmitterMovementConfig")) {
-        classInfo->addField("startScale", &ParticleEmitterMovementConfig::startScale);
-        classInfo->addField("startScaleVar", &ParticleEmitterMovementConfig::startScaleVar);
-        classInfo->addField("endScale", &ParticleEmitterMovementConfig::endScale);
-        classInfo->addField("endScaleVar", &ParticleEmitterMovementConfig::endScaleVar);
-        classInfo->addField("startSpeed", &ParticleEmitterMovementConfig::startSpeed);
-        classInfo->addField("startSpeedVar", &ParticleEmitterMovementConfig::startSpeedVar);
-        classInfo->addField("endSpeed", &ParticleEmitterMovementConfig::endSpeed);
-        classInfo->addField("endSpeedVar", &ParticleEmitterMovementConfig::endSpeedVar);
-        classInfo->addField("startRotation", &ParticleEmitterMovementConfig::startRotation);
-        classInfo->addField("startRotationVar", &ParticleEmitterMovementConfig::startRotationVar);
-        classInfo->addField("startRotSpeed", &ParticleEmitterMovementConfig::startRotSpeed);
-        classInfo->addField("startRotSpeedVar", &ParticleEmitterMovementConfig::startRotSpeedVar);
-        classInfo->addField("endRotSpeed", &ParticleEmitterMovementConfig::endRotSpeed);
-        classInfo->addField("endRotSpeedVar", &ParticleEmitterMovementConfig::endRotSpeedVar);
+void ParticlesEmitterMovementConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesEmitterMovementConfig>("ParticlesEmitterMovementConfig")) {
+        classInfo->addField("startScale", &ParticlesEmitterMovementConfig::startScale);
+        classInfo->addField("startScaleVar", &ParticlesEmitterMovementConfig::startScaleVar);
+        classInfo->addField("endScale", &ParticlesEmitterMovementConfig::endScale);
+        classInfo->addField("endScaleVar", &ParticlesEmitterMovementConfig::endScaleVar);
+        classInfo->addField("startSpeed", &ParticlesEmitterMovementConfig::startSpeed);
+        classInfo->addField("startSpeedVar", &ParticlesEmitterMovementConfig::startSpeedVar);
+        classInfo->addField("endSpeed", &ParticlesEmitterMovementConfig::endSpeed);
+        classInfo->addField("endSpeedVar", &ParticlesEmitterMovementConfig::endSpeedVar);
+        classInfo->addField("startRotation", &ParticlesEmitterMovementConfig::startRotation);
+        classInfo->addField("startRotationVar", &ParticlesEmitterMovementConfig::startRotationVar);
+        classInfo->addField("startRotSpeed", &ParticlesEmitterMovementConfig::startRotSpeed);
+        classInfo->addField("startRotSpeedVar", &ParticlesEmitterMovementConfig::startRotSpeedVar);
+        classInfo->addField("endRotSpeed", &ParticlesEmitterMovementConfig::endRotSpeed);
+        classInfo->addField("endRotSpeedVar", &ParticlesEmitterMovementConfig::endRotSpeedVar);
     }
 }
 
-ParticleEmitterMovementConfig::ParticleEmitterMovementConfig() :
+ParticlesEmitterMovementConfig::ParticlesEmitterMovementConfig() :
     startScale(1.f),
     startScaleVar(0.1f),
     endScale(1.5f),
@@ -104,13 +104,13 @@ ParticleEmitterMovementConfig::ParticleEmitterMovementConfig() :
     endRotSpeedVar(0.1f) {
 }
 
-void ParticleEmitterRenderConfig::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<ParticleEmitterRenderConfig>("ParticleEmitterRenderConfig")) {
-        classInfo->addResourceField("texture", ResourceType::Image, &ParticleEmitterRenderConfig::texture);
+void ParticlesEmitterRenderConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesEmitterRenderConfig>("ParticlesEmitterRenderConfig")) {
+        classInfo->addResourceField("texture", ResourceType::Image, &ParticlesEmitterRenderConfig::texture);
     }
 }
 
-ParticleEmitterRenderConfig::ParticleEmitterRenderConfig() :
+ParticlesEmitterRenderConfig::ParticlesEmitterRenderConfig() :
     texture("") {
 }
 
@@ -139,8 +139,42 @@ GravityField::GravityField() :
     radius(-1.f) {
 }
 
-void ParticleEmitterGravityFields::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<ParticleEmitterGravityFields>("ParticleEmitterGravityFields")) {
-        classInfo->addField("fields", &ParticleEmitterGravityFields::fields);
+void ParticlesEmitterGravityConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesEmitterGravityConfig>("ParticlesEmitterGravityConfig")) {
+        classInfo->addField("fields", &ParticlesEmitterGravityConfig::fields);
     }
+}
+
+void SubEmitter::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<SubEmitterTriggerEvent>("SubEmitterTriggerEvent")) {
+        enumInfo->addValues<SubEmitterTriggerEvent>({
+            {"OnStart", SubEmitterTriggerEvent::OnStart},
+            {"OnEnd", SubEmitterTriggerEvent::OnEnd},
+            {"OnParticleSpawn", SubEmitterTriggerEvent::OnParticleSpawn},
+            {"OnParticleLive", SubEmitterTriggerEvent::OnParticleLive},
+            {"OnParticleDeath", SubEmitterTriggerEvent::OnParticleDeath}
+        });
+    }
+    if(auto classInfo = ctx.classInfo<SubEmitter>("SubEmitter")) {
+        classInfo->addField("event", &SubEmitter::event);
+        classInfo->addField("entityId", &SubEmitter::entId);
+    }
+}
+
+SubEmitter::SubEmitter() :
+    event(SubEmitterTriggerEvent::OnParticleDeath) {
+}
+
+SubEmitter::SubEmitter(SubEmitterTriggerEvent triggerEvent, EntityId entityId) :
+    event(triggerEvent),
+    entId(entityId) {
+}
+
+void ParticlesSubEmittersConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesSubEmittersConfig>("ParticlesSubEmittersConfig")) {
+        classInfo->addField("subEmitters", &ParticlesSubEmittersConfig::subEmitters);
+    }
+}
+
+ParticlesSubEmittersConfig::ParticlesSubEmittersConfig() {
 }

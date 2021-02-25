@@ -40,8 +40,8 @@ struct ETRenderProxyNodeEvents {
     virtual void ET_syncWithRender() = 0;
 };
 
-struct ETParticleUpdate {
-    virtual ~ETParticleUpdate() = default;
+struct ETParticlesUpdate {
+    virtual ~ETParticlesUpdate() = default;
     virtual void ET_updateEmitter(float dt) = 0;
 };
 

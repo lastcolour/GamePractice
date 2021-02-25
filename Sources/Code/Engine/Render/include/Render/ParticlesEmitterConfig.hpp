@@ -4,6 +4,7 @@
 #include "Render/Color.hpp"
 #include "Render/RenderCommon.hpp"
 #include "Math/Vector.hpp"
+#include "Core/Core.hpp"
 
 #include <string>
 #include <vector>
@@ -20,14 +21,14 @@ enum class EmitterSpace {
     World
 };
 
-class ParticleEmitterEmissionConfig {
+class ParticlesEmitterEmissionConfig {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    ParticleEmitterEmissionConfig();
+    ParticlesEmitterEmissionConfig();
 
 public:
 
@@ -46,14 +47,14 @@ public:
     bool loop;
 };
 
-class ParticleEmitterColorConfig {
+class ParticlesEmitterColorConfig {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    ParticleEmitterColorConfig();
+    ParticlesEmitterColorConfig();
 
 public:
 
@@ -65,14 +66,14 @@ public:
     float fadeOut;
 };
 
-class ParticleEmitterMovementConfig {
+class ParticlesEmitterMovementConfig {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    ParticleEmitterMovementConfig();
+    ParticlesEmitterMovementConfig();
 
 public:
 
@@ -92,14 +93,14 @@ public:
     float endRotSpeedVar;
 };
 
-class ParticleEmitterRenderConfig {
+class ParticlesEmitterRenderConfig {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    ParticleEmitterRenderConfig();
+    ParticlesEmitterRenderConfig();
 
 public:
 
@@ -130,7 +131,7 @@ public:
     float radius;
 };
 
-class ParticleEmitterGravityFields {
+class ParticlesEmitterGravityConfig {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -138,6 +139,44 @@ public:
 public:
 
     std::vector<GravityField> fields;
+};
+
+enum class SubEmitterTriggerEvent {
+    OnStart = 0,
+    OnParticleSpawn,
+    OnParticleDeath,
+    OnParticleLive,
+    OnEnd
+};
+
+class SubEmitter {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    SubEmitter();
+    SubEmitter(SubEmitterTriggerEvent triggerEvent, EntityId entityId);
+
+public:
+
+    EntityId entId;
+    SubEmitterTriggerEvent event;
+};
+
+class ParticlesSubEmittersConfig {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    ParticlesSubEmittersConfig();
+
+public:
+
+    std::vector<SubEmitter> subEmitters;
 };
 
 #endif /* __PARTICLES_EMITTER_CONFIG_HPP__ */

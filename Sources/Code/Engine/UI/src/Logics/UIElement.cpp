@@ -203,7 +203,6 @@ void UIElement::ET_onTransformChanged(const Transform& newTm) {
         return;
     }
     onTransformChanged(newTm);
-    updateHostLayout();
 }
 
 void UIElement::ET_setParentAlpha(float newParentAlpha) {

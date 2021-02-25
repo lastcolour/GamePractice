@@ -1,6 +1,8 @@
-#include "Particles/ParticleUpdate.hpp"
+#include "Particles/EmitterParticles.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Core/ETPrimitives.hpp"
+#include "Render/ETParticlesSystem.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -63,7 +65,7 @@ float getRandomLifetime(Math::RandomFloatGenerator& gen, float val, float var) {
     return val;
 }
 
-void simulateSimpleField(GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+void simulateSimpleField(const GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
     float radSq = field.radius * field.radius;
     float fieldAngle = Math::Deg2Rad(field.dir);
     Vec2 dtAcc = Vec2(cos(fieldAngle), sin(fieldAngle)) * field.value * dt;
@@ -77,7 +79,7 @@ void simulateSimpleField(GravityField& field, int activeCount, std::vector<Parti
     }
 }
 
-void simulateCircleField(GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+void simulateCircleField(const GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
     float radSq = field.radius * field.radius;
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
@@ -90,7 +92,7 @@ void simulateCircleField(GravityField& field, int activeCount, std::vector<Parti
     }
 }
 
-void simulateVortexField(GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+void simulateVortexField(const GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
     float radSq = field.radius * field.radius;
     float fieldAngle = Math::Deg2Rad(field.dir);
     for(int i = 0; i < activeCount; ++i) {
@@ -105,6 +107,23 @@ void simulateVortexField(GravityField& field, int activeCount, std::vector<Parti
     }
 }
 
+void triggerSubEmitters(int particleId, const Vec2& pt, SubEmitterTriggerEvent event, const SimulationConfig& simConfig) {
+    for(auto& sub : simConfig.subEmittorsConfig.subEmitters) {
+        if(!sub.entId.isValid()) {
+            continue;
+        }
+        if(sub.event == SubEmitterTriggerEvent::OnParticleLive) {
+            if(event == SubEmitterTriggerEvent::OnParticleSpawn) {
+                ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, particleId, pt);
+            } else {
+                ET_SendEvent(sub.entId, &ETParticlesSystem::ET_updateSubEmitter, particleId, pt);
+            }
+        } else if(sub.event == event) {
+            ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, particleId, pt);
+        }
+    }
+}
+
 } // namespace
 
 EmitterParticles::EmitterParticles() :
@@ -112,10 +131,12 @@ EmitterParticles::EmitterParticles() :
     emitFracTime(0.f),
     activeCount(0),
     emissionState(EmissionState::Finished),
-    floatGen(0.f, 1.f) {
+    floatGen(0.f, 1.f),
+    rootParticleId(-1),
+    wroldTmSpace(false) {
 }
 
-void EmitterParticles::removeOld(float dt) {
+void EmitterParticles::removeOld(const SimulationConfig& simConfig, float dt) {
     int j = 0;
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
@@ -127,20 +148,22 @@ void EmitterParticles::removeOld(float dt) {
                 instaceData[j] = instaceData[i];
             }
             ++j;
+        } else {
+            triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleDeath, simConfig);
         }
     }
     activeCount = j;
 }
 
-void EmitterParticles::spawnNewParticle(const Transform& tm, Particle& p) {
+void EmitterParticles::spawnNewParticle(const SimulationConfig& simConfig, Particle& p) {
     Vec2 startPt(0.f);
 
-    Vec2 emitterVal = emissionConfig.emitterVal;
-    switch(emissionConfig.emitterType) {
+    Vec2 emitterVal = simConfig.emission.emitterVal;
+    switch(simConfig.emission.emitterType) {
         case EmitterType::Sphere: {
             float shpereR = emitterVal.x;
             float t = getRandomFloatInRange(floatGen, 0.f, 1.f);
-            float radius = Math::Lerp(shpereR * emissionConfig.thickness, shpereR, t);
+            float radius = Math::Lerp(shpereR * simConfig.emission.thickness, shpereR, t);
             float angel = getRandomFloatInRange(floatGen, 0.f, 2.f * Math::PI);
 
             startPt.x = radius * cos(angel);
@@ -150,14 +173,14 @@ void EmitterParticles::spawnNewParticle(const Transform& tm, Particle& p) {
         case EmitterType::Box: {
             float t = getRandomFloatInRange(floatGen, -1.f, 1.f);
             if(t > 0.f) {
-                startPt.x = Math::Lerp(-emitterVal.x, emitterVal.x, t); 
+                startPt.x = Math::Lerp(-emitterVal.x, emitterVal.x, t);
                 t = getRandomFloatInRange(floatGen, -1.f, 1.f);
                 float tSign = 1.f;
                 if(t < 0.f) {
                     tSign = -1.f;
                     t = -t; 
                 }
-                startPt.y = tSign * Math::Lerp(emitterVal.y * emissionConfig.thickness, emitterVal.y, t);
+                startPt.y = tSign * Math::Lerp(emitterVal.y * simConfig.emission.thickness, emitterVal.y, t);
             } else {
                 startPt.y = Math::Lerp(-emitterVal.y, emitterVal.y, -t); 
                 t = getRandomFloatInRange(floatGen, -1.f, 1.f);
@@ -166,7 +189,7 @@ void EmitterParticles::spawnNewParticle(const Transform& tm, Particle& p) {
                     tSign = -1.f;
                     t = -t; 
                 }
-                startPt.x = tSign * Math::Lerp(emitterVal.x * emissionConfig.thickness, emitterVal.x, t);
+                startPt.x = tSign * Math::Lerp(emitterVal.x * simConfig.emission.thickness, emitterVal.x, t);
             }
             break;
         }
@@ -176,27 +199,27 @@ void EmitterParticles::spawnNewParticle(const Transform& tm, Particle& p) {
     }
 
     p.pt = startPt;
-    p.lifetime = getRandomLifetime(floatGen, emissionConfig.lifetime, emissionConfig.lifetimeVar);
+    p.lifetime = getRandomLifetime(floatGen, simConfig.emission.lifetime, simConfig.emission.lifetimeVar);
     p.totalLifetime = p.lifetime;
 
-    Vec2 moveDir = getRandomDir(floatGen, emissionConfig.direction, emissionConfig.directionVar);
+    Vec2 moveDir = getRandomDir(floatGen, simConfig.emission.direction, simConfig.emission.directionVar);
 
-    p.startSpeed = moveDir * getRandomSpeed(floatGen, movementConfig.startSpeed, movementConfig.startSpeedVar);
-    p.endSpeed = moveDir * getRandomSpeed(floatGen, movementConfig.endSpeed, movementConfig.endSpeedVar);
+    p.startSpeed = moveDir * getRandomSpeed(floatGen, simConfig.movement.startSpeed, simConfig.movement.startSpeedVar);
+    p.endSpeed = moveDir * getRandomSpeed(floatGen, simConfig.movement.endSpeed, simConfig.movement.endSpeedVar);
 
-    p.startScale = getRandomScale(floatGen, movementConfig.startScale, movementConfig.startScaleVar);
-    p.endScale = getRandomScale(floatGen, movementConfig.endScale, movementConfig.endScaleVar);
+    p.startScale = getRandomScale(floatGen, simConfig.movement.startScale, simConfig.movement.startScaleVar);
+    p.endScale = getRandomScale(floatGen, simConfig.movement.endScale, simConfig.movement.endScaleVar);
 
-    p.rot = getRandomRotation(floatGen, movementConfig.startRotation, movementConfig.startRotationVar);
-    p.startRotSpeed = getRandomRotation(floatGen, movementConfig.startRotSpeed, movementConfig.startRotSpeedVar);
-    p.endRotSpeed = getRandomRotation(floatGen, movementConfig.endRotSpeed, movementConfig.endRotSpeedVar);
+    p.rot = getRandomRotation(floatGen, simConfig.movement.startRotation, simConfig.movement.startRotationVar);
+    p.startRotSpeed = getRandomRotation(floatGen, simConfig.movement.startRotSpeed, simConfig.movement.startRotSpeedVar);
+    p.endRotSpeed = getRandomRotation(floatGen, simConfig.movement.endRotSpeed, simConfig.movement.endRotSpeedVar);
 
-    p.startCol = getRandomColor(floatGen, colorConfig.startCol.getColorF(), colorConfig.startColVar);
-    p.endCol = getRandomColor(floatGen, colorConfig.endCol.getColorF(), colorConfig.endColVar);
+    p.startCol = getRandomColor(floatGen, simConfig.color.startCol.getColorF(), simConfig.color.startColVar);
+    p.endCol = getRandomColor(floatGen, simConfig.color.endCol.getColorF(), simConfig.color.endColVar);
 
     p.acc = Vec2(0.f);
 
-    if(emissionConfig.emitterSpace == EmitterSpace::World) {
+    if(wroldTmSpace) {
         p.pt.x *= tm.scale.x;
         p.pt.y *= tm.scale.y;
 
@@ -215,16 +238,16 @@ void EmitterParticles::spawnNewParticle(const Transform& tm, Particle& p) {
     }
 }
 
-void EmitterParticles::emitNew(const Transform& tm, float dt) {
+void EmitterParticles::emitNew(const SimulationConfig& simConfig, float dt) {
     emitFracTime += dt;
 
-    int emitCount = static_cast<int>(emissionConfig.emissionRate * emitFracTime);
+    int emitCount = static_cast<int>(simConfig.emission.emissionRate * emitFracTime);
     emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
     if(emitCount == 0) {
         return;
     }
 
-    emitFracTime -= emitCount / emissionConfig.emissionRate;
+    emitFracTime -= emitCount / simConfig.emission.emissionRate;
 
     particles.resize(activeCount + emitCount);
     instaceData.resize(activeCount + emitCount);
@@ -238,14 +261,15 @@ void EmitterParticles::emitNew(const Transform& tm, float dt) {
 
     for(int i = 0; i < emitCount; ++i) {
         auto& p = particles[i];
-        spawnNewParticle(tm, p);
+        spawnNewParticle(simConfig, p);
+        triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleSpawn, simConfig);
     }
 
     activeCount += emitCount;
     assert(activeCount <= Render::MaxParticlessPerDraw && "Too Many Particles");
 }
 
-void EmitterParticles::updateAlive(float dt) {
+void EmitterParticles::updateAlive(const SimulationConfig& simConfig, float dt) {
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         auto& out = instaceData[i];
@@ -254,6 +278,7 @@ void EmitterParticles::updateAlive(float dt) {
     
         Vec2 speed = Math::Lerp(p.startSpeed, p.endSpeed, prog);
         p.pt += speed * dt + p.acc * dt;
+        p.acc = Vec2(0.f);
 
         Vec2 scale = Math::Lerp(p.startScale, p.endScale, prog);
 
@@ -272,17 +297,19 @@ void EmitterParticles::updateAlive(float dt) {
         out.col.b = Math::Lerp(p.startCol.b, p.endCol.b, prog);
         out.col.a = Math::Lerp(p.startCol.a, p.endCol.a, prog);
 
-        float fadeProg = std::min(p.lifetime / colorConfig.fadeOut, (p.totalLifetime - p.lifetime) / colorConfig.fadeIn);
+        float fadeProg = std::min(p.lifetime / simConfig.color.fadeOut, (p.totalLifetime - p.lifetime) / simConfig.color.fadeIn);
         fadeProg = std::min(fadeProg, 1.f);
 
         assert(fadeProg >= 0.f && fadeProg <= 1.f && "Invalid fade prog");
 
         out.col.a *= fadeProg;
+
+        triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleLive, simConfig);
     }
 }
 
-void EmitterParticles::simulateGravities(float dt) {
-    for(auto& field : gravityConfig.fields) {
+void EmitterParticles::simulateGravities(const SimulationConfig& simConfig, float dt) {
+    for(auto& field : simConfig.gravity.fields) {
         switch(field.type) {
             case GravityType::Simple: {
                 simulateSimpleField(field, activeCount, particles, dt);
@@ -300,25 +327,26 @@ void EmitterParticles::simulateGravities(float dt) {
     }
 }
 
-void EmitterParticles::updateState(float dt) {
+void EmitterParticles::updateState(const SimulationConfig& simConfig, float dt) {
     switch(emissionState) {
         case EmissionState::StartDelay: {
             duration += dt;
-            if(duration < emissionConfig.startDelay) {
+            if(duration < simConfig.emission.startDelay) {
                 break;
             }
             emissionState = EmissionState::Alive;
+            triggerSubEmitters(-1, Vec2(tm.pt.x, tm.pt.y), SubEmitterTriggerEvent::OnStart, simConfig);
             duration = 0.f;
             emitFracTime = 0.f;
-            duration -= emissionConfig.startDelay;
-            [[fallthrough]];
+            duration -= simConfig.emission.startDelay;
+            break;
         }
         case EmissionState::Alive: {
-            if(emissionConfig.duration < 0.f) {
+            if(simConfig.emission.duration < 0.f) {
                 break;
             }
             duration += dt;
-            if(duration > emissionConfig.duration) {
+            if(duration > simConfig.emission.duration) {
                 duration = 0.f;
                 emitFracTime = 0.f;
                 emissionState = EmissionState::WaitingAlive;
@@ -328,6 +356,7 @@ void EmitterParticles::updateState(float dt) {
         case EmissionState::WaitingAlive: {
             if(activeCount == 0) {
                 emissionState = EmissionState::Finished;
+                triggerSubEmitters(-1, Vec2(tm.pt.x, tm.pt.y), SubEmitterTriggerEvent::OnEnd, simConfig);
             }
             break;
         }
@@ -341,24 +370,27 @@ void EmitterParticles::updateState(float dt) {
     }
 }
 
-void EmitterParticles::update(const Transform& tm, float dt) {
-    updateState(dt);
+void EmitterParticles::simulate(const SimulationConfig& simConfig, const Transform& systemTm, float dt) {
+    updateState(simConfig, dt);
     if(emissionState == EmissionState::Finished) {
         return;
     }
+    wroldTmSpace = simConfig.emission.emitterSpace == EmitterSpace::World;
+    tm = systemTm;
     if(activeCount > 0) {
-        removeOld(dt);
+        removeOld(simConfig, dt);
     }
     if(emissionState == EmissionState::Alive) {
-        emitNew(tm, dt);
+        emitNew(simConfig, dt);
     }
     if(activeCount > 0) {
-        simulateGravities(dt);
-        updateAlive(dt);
+        simulateGravities(simConfig, dt);
+        updateAlive(simConfig, dt);
     }
 }
 
-void EmitterParticles::start() {
+void EmitterParticles::start(const Transform& emitTm) {
+    tm = emitTm;
     emissionState = EmissionState::StartDelay;
 }
 
@@ -383,4 +415,20 @@ bool EmitterParticles::hasAlive() const {
 
 bool EmitterParticles::isFinished() const {
     return emissionState == EmissionState::Finished;
+}
+
+Mat4 EmitterParticles::getTransformMat() const {
+    Mat4 resMat(1.f);
+    if(!wroldTmSpace) {
+        resMat = tm.toMat4();
+    }
+    return resMat;
+}
+
+int EmitterParticles::getRootParticleId() const {
+    return rootParticleId;
+}
+
+void EmitterParticles::setRootParticleId(int newRootParticleId) {
+    rootParticleId = newRootParticleId;
 }

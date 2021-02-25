@@ -3,7 +3,7 @@
 
 #include "Nodes/Node.hpp"
 #include "RenderTexture.hpp"
-#include "Particles/ParticleUpdate.hpp"
+#include "Particles/ParticlesEmittersPool.hpp"
 
 class ParticlesNode : public Node {
 public:
@@ -11,9 +11,10 @@ public:
     ParticlesNode();
     virtual ~ParticlesNode();
 
-    void setConfig(const ParticleEmitterRenderConfig& newRenderConf);
+    void setConfig(const ParticlesEmitterRenderConfig& newRenderConf);
 
-    EmitterParticles& getParticles();
+    ParticlesEmittersPool& getEmittersPool();
+    const Transform& getTransform() const;
 
     // Node
     bool canRender() const override;
@@ -28,8 +29,8 @@ protected:
 private:
 
     std::shared_ptr<RenderTexture> tex;
-    ParticleEmitterRenderConfig renderConfig;
-    EmitterParticles particles;
+    ParticlesEmitterRenderConfig renderConfig;
+    ParticlesEmittersPool emittersPool;
 };
 
 #endif /* __PARTICLES_NODE_HPP__ */

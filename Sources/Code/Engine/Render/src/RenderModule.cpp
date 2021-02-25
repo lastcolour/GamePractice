@@ -7,7 +7,7 @@
 #include "RenderTextureManager.hpp"
 #include "RenderNodeManager.hpp"
 #include "Debug/DebugRender.hpp"
-#include "Logics/ParticleEmitter.hpp"
+#include "Logics/ParticlesSystem.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
 #include "Logics/RenderImageLogic.hpp"
@@ -46,7 +46,7 @@ void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) co
     logicsRegister.registerLogic<RenderImageLogic>();
     logicsRegister.registerLogic<NinePatchImageLogic>();
     logicsRegister.registerLogic<RenderLinearGradientRect>();
-    logicsRegister.registerLogic<ParticleEmitter>();
+    logicsRegister.registerLogic<ParticlesSystem>();
     logicsRegister.registerLogic<RenderBlurLogic>();
     logicsRegister.registerLogic<RenderStencilLogic>();
 }
