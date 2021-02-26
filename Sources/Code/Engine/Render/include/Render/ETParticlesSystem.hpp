@@ -1,6 +1,7 @@
 #ifndef __ET_PARTICLES_SYSTEM_HPP__
 #define __ET_PARTICLES_SYSTEM_HPP__
 
+#include "Math/Transform.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 
 struct ETParticlesSystem {
@@ -15,12 +16,16 @@ struct ETParticlesSystem {
     virtual const ParticlesEmitterRenderConfig& ET_getRenderConfig() const = 0;
     virtual void ET_setSubEmittersConfig(const ParticlesSubEmittersConfig& newSubEmittersConf) = 0;
     virtual const ParticlesSubEmittersConfig& ET_getSubEmittersConfig() const = 0;
+    virtual void ET_setSizeConfig(const ParticlesEmitterSizeConfig& newSizeConf) = 0;
+    virtual const ParticlesEmitterSizeConfig& ET_getSizeConfig() const = 0;
+
     virtual void ET_emit() = 0;
     virtual void ET_emitWithTm(const Transform& emitTm) = 0;
     virtual void ET_stopEmitting() = 0;
     virtual void ET_destoryAll() = 0;
     virtual void ET_spawnSubEmitter(int rootParticleId, const Vec2& pt) = 0;
     virtual void ET_updateSubEmitter(int rootParticleId, const Vec2& pt) = 0;
+    virtual void ET_stopSubEmitter(int rootParticleId) = 0;
     virtual bool ET_hasAliveParticles() const = 0;
 };
 

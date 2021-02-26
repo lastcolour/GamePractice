@@ -45,6 +45,7 @@ public:
     float startDelay;
     bool autoStart;
     bool loop;
+    bool heating;
 };
 
 class ParticlesEmitterColorConfig {
@@ -66,6 +67,24 @@ public:
     float fadeOut;
 };
 
+class ParticlesEmitterSizeConfig {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    ParticlesEmitterSizeConfig();
+
+public:
+
+    Vec2 startScale;
+    Vec2 startScaleVar;
+    Vec2 endScale;
+    Vec2 endScaleVar;
+    bool fixedRatio;
+};
+
 class ParticlesEmitterMovementConfig {
 public:
 
@@ -77,20 +96,18 @@ public:
 
 public:
 
-    Vec2 startScale;
-    Vec2 startScaleVar;
-    Vec2 endScale;
-    Vec2 endScaleVar;
-    float startSpeed;
-    float startSpeedVar;
-    float endSpeed;
-    float endSpeedVar;
-    float startRotation;
-    float startRotationVar;
-    float startRotSpeed;
-    float startRotSpeedVar;
-    float endRotSpeed;
-    float endRotSpeedVar;
+    float speed;
+    float speedVar;
+    float initRotation;
+    float initRotationVar;
+    float rotationSpeed;
+    float rotationSpeedVar;
+    float rotationAcc;
+};
+
+enum class BlendingConfig {
+    Normal = 0,
+    Additive,
 };
 
 class ParticlesEmitterRenderConfig {
@@ -105,11 +122,11 @@ public:
 public:
 
     std::string texture;
+    BlendingConfig blending;
 };
 
 enum class GravityType {
     Simple = 0,
-    Circle,
     Vortex
 };
 

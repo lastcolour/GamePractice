@@ -64,7 +64,9 @@
     {
       "type": "GameBoardMatcher",
       "id": 3,
-      "data": {}
+      "data": {
+        "destroyEffectId": []
+      }
     },
     {
       "type": "GameBoardInteraction",

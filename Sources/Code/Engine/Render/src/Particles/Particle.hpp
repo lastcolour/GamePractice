@@ -12,14 +12,12 @@ public:
 public:
 
     Vec2 pt;
-    Vec2 startSpeed;
-    Vec2 endSpeed;
+    Vec2 speed;
     Vec2 startScale;
     Vec2 endScale;
     Vec2 acc;
     float rot;
-    float startRotSpeed;
-    float endRotSpeed;
+    float rotSpeed;
     float lifetime;
     float totalLifetime;
     ColorF startCol;

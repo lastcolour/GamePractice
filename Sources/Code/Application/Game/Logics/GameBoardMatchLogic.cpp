@@ -1,6 +1,9 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
 #include "Game/ETGameElem.hpp"
+#include "Render/ETParticlesSystem.hpp"
+#include "Entity/ETEntity.hpp"
+#include "Render/ETRenderNode.hpp"
 
 GameBoardMatchLogic::GameBoardMatchLogic() :
     minLineLen(3),
@@ -11,11 +14,15 @@ GameBoardMatchLogic::~GameBoardMatchLogic() {
 }
 
 void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
-    ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher");
+    if(auto classInfo = ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher")) {
+        classInfo->addField("destroyEffectId", &GameBoardMatchLogic::destroyEffectId);
+    }
 }
 
 void GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
+
+    ET_SendEvent(destroyEffectId, &ETRenderNode::ET_setDrawPriority, 100000);
 }
 
 void GameBoardMatchLogic::deinit() {
@@ -80,7 +87,7 @@ bool GameBoardMatchLogic::findMatchLine(const Vec2i& startPt, int lineLen, bool 
     return true;
 }
 
-std::vector<EntityId> GameBoardMatchLogic::ET_getMatchedElements() {
+void GameBoardMatchLogic::ET_destoryMatchedElems() {
     Vec2i boardSize(0);
     ET_SendEventReturn(boardSize, getEntityId(), &ETGameBoard::ET_getBoardSize);
 
@@ -100,6 +107,11 @@ std::vector<EntityId> GameBoardMatchLogic::ET_getMatchedElements() {
         }
     }
 
-    std::vector<EntityId> result(mathElems.begin(), mathElems.end());
-    return result;
+    for(auto& elemId : mathElems) {
+        ET_SendEvent(elemId, &ETGameBoardElem::ET_triggerDestroy);
+
+        Transform tm;
+        ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
+        ET_SendEvent(destroyEffectId, &ETParticlesSystem::ET_emitWithTm, tm);
+    }
 }

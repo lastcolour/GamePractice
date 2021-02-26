@@ -9,50 +9,51 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
+          "duration": -1.0,
+          "startDelay": 0.30000001192092896,
+          "autoStart": true,
+          "loop": true,
+          "heating": true,
           "emitterSpace": "Local",
           "emitterType": "Sphere",
           "emitterVal": {
             "x": 30.0,
             "y": 30.0
           },
-          "duration": -1.0,
           "thickness": 1.0,
+          "emissionRate": 500.0,
           "direction": 90.0,
           "directionVar": 360.0,
-          "emissionRate": 500.0,
           "lifetime": 0.5,
-          "lifetimeVar": 0.10000000149011612,
-          "startDelay": 0.30000001192092896,
-          "autoStart": true,
-          "loop": true
+          "lifetimeVar": 0.10000000149011612
         },
         "movement": {
+          "speed": 5.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
           "startScale": {
             "x": 1.0,
             "y": 1.0
           },
           "startScaleVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
           },
           "endScale": {
             "x": 0.5,
             "y": 0.5
           },
           "endScaleVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
           },
-          "startSpeed": 0.0,
-          "startSpeedVar": 0.10000000149011612,
-          "endSpeed": 0.0,
-          "endSpeedVar": 0.0,
-          "startRotation": 0.0,
-          "startRotationVar": 0.0,
-          "startRotSpeed": 300.0,
-          "startRotSpeedVar": 0.20000000298023224,
-          "endRotSpeed": 300.0,
-          "endRotSpeedVar": 0.20000000298023224
+          "fixedRatio": true
         },
         "color": {
           "startCol": {
@@ -83,7 +84,8 @@
           "fadeOut": 0.05000000074505806
         },
         "render": {
-          "texture": ""
+          "blending": "Additive",
+          "texture": "Images/block.png"
         },
         "subEmitters": {
           "subEmitters": []
@@ -97,7 +99,7 @@
                 "y": 0.0
               },
               "dir": 50.0,
-              "value": 0.0,
+              "value": 300.0,
               "radius": -1.0
             }
           ]
@@ -119,50 +121,51 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
+          "duration": -1.0,
+          "startDelay": 0.30000001192092896,
+          "autoStart": true,
+          "loop": true,
+          "heating": true,
           "emitterSpace": "Local",
           "emitterType": "Box",
           "emitterVal": {
             "x": 30.0,
             "y": 30.0
           },
-          "duration": -1.0,
           "thickness": 1.0,
+          "emissionRate": 500.0,
           "direction": 90.0,
           "directionVar": 360.0,
-          "emissionRate": 500.0,
           "lifetime": 0.5,
-          "lifetimeVar": 0.10000000149011612,
-          "startDelay": 0.30000001192092896,
-          "autoStart": true,
-          "loop": true
+          "lifetimeVar": 0.10000000149011612
         },
         "movement": {
+          "speed": 5.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
           "startScale": {
             "x": 1.0,
             "y": 1.0
           },
           "startScaleVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
           },
           "endScale": {
             "x": 0.5,
             "y": 0.5
           },
           "endScaleVar": {
-            "x": 0.20000000298023224,
-            "y": 0.20000000298023224
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
           },
-          "startSpeed": 0.0,
-          "startSpeedVar": 0.10000000149011612,
-          "endSpeed": 0.0,
-          "endSpeedVar": 0.0,
-          "startRotation": 0.0,
-          "startRotationVar": 0.0,
-          "startRotSpeed": 300.0,
-          "startRotSpeedVar": 0.20000000298023224,
-          "endRotSpeed": 300.0,
-          "endRotSpeedVar": 0.20000000298023224
+          "fixedRatio": true
         },
         "color": {
           "startCol": {
@@ -193,6 +196,7 @@
           "fadeOut": 0.05000000074505806
         },
         "render": {
+          "blending": "Additive",
           "texture": "Images/block.png"
         },
         "subEmitters": {
@@ -206,8 +210,8 @@
                 "x": 0.0,
                 "y": 0.0
               },
-              "dir": 50.0,
-              "value": 0.0,
+              "dir": -90.0,
+              "value": 300.0,
               "radius": -1.0
             }
           ]

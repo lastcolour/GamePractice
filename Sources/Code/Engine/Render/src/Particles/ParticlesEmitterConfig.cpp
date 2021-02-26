@@ -17,9 +17,10 @@ void ParticlesEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
     }
     if(auto classInfo = ctx.classInfo<ParticlesEmitterEmissionConfig>("ParticlesEmitterEmissionConfig")) {
         classInfo->addField("duration", &ParticlesEmitterEmissionConfig::duration);
+        classInfo->addField("startDelay", &ParticlesEmitterEmissionConfig::startDelay);
         classInfo->addField("autoStart", &ParticlesEmitterEmissionConfig::autoStart);
         classInfo->addField("loop", &ParticlesEmitterEmissionConfig::loop);
-        classInfo->addField("startDelay", &ParticlesEmitterEmissionConfig::startDelay);
+        classInfo->addField("heating", &ParticlesEmitterEmissionConfig::heating);
         classInfo->addField("emitterSpace", &ParticlesEmitterEmissionConfig::emitterSpace);
         classInfo->addField("emitterType", &ParticlesEmitterEmissionConfig::emitterType);
         classInfo->addField("emitterVal", &ParticlesEmitterEmissionConfig::emitterVal);
@@ -45,7 +46,8 @@ ParticlesEmitterEmissionConfig::ParticlesEmitterEmissionConfig() :
     lifetimeVar(0.1f),
     startDelay(0.f),
     autoStart(true),
-    loop(true) {
+    loop(true),
+    heating(true) {
 }
 
 void ParticlesEmitterColorConfig::Reflect(ReflectContext& ctx) {
@@ -68,57 +70,68 @@ ParticlesEmitterColorConfig::ParticlesEmitterColorConfig() :
     fadeOut(0.1f) {
 }
 
+void ParticlesEmitterSizeConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesEmitterSizeConfig>("ParticlesEmitterSizeConfig")) {
+        classInfo->addField("startScale", &ParticlesEmitterSizeConfig::startScale);
+        classInfo->addField("startScaleVar", &ParticlesEmitterSizeConfig::startScaleVar);
+        classInfo->addField("endScale", &ParticlesEmitterSizeConfig::endScale);
+        classInfo->addField("endScaleVar", &ParticlesEmitterSizeConfig::endScaleVar);
+        classInfo->addField("fixedRatio", &ParticlesEmitterSizeConfig::fixedRatio);
+    }
+}
+
+ParticlesEmitterSizeConfig::ParticlesEmitterSizeConfig() :
+    startScale(5.f),
+    startScaleVar(0.1f),
+    endScale(5.f),
+    endScaleVar(0.1f),
+    fixedRatio(true) {
+}
+
 void ParticlesEmitterMovementConfig::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<ParticlesEmitterMovementConfig>("ParticlesEmitterMovementConfig")) {
-        classInfo->addField("startScale", &ParticlesEmitterMovementConfig::startScale);
-        classInfo->addField("startScaleVar", &ParticlesEmitterMovementConfig::startScaleVar);
-        classInfo->addField("endScale", &ParticlesEmitterMovementConfig::endScale);
-        classInfo->addField("endScaleVar", &ParticlesEmitterMovementConfig::endScaleVar);
-        classInfo->addField("startSpeed", &ParticlesEmitterMovementConfig::startSpeed);
-        classInfo->addField("startSpeedVar", &ParticlesEmitterMovementConfig::startSpeedVar);
-        classInfo->addField("endSpeed", &ParticlesEmitterMovementConfig::endSpeed);
-        classInfo->addField("endSpeedVar", &ParticlesEmitterMovementConfig::endSpeedVar);
-        classInfo->addField("startRotation", &ParticlesEmitterMovementConfig::startRotation);
-        classInfo->addField("startRotationVar", &ParticlesEmitterMovementConfig::startRotationVar);
-        classInfo->addField("startRotSpeed", &ParticlesEmitterMovementConfig::startRotSpeed);
-        classInfo->addField("startRotSpeedVar", &ParticlesEmitterMovementConfig::startRotSpeedVar);
-        classInfo->addField("endRotSpeed", &ParticlesEmitterMovementConfig::endRotSpeed);
-        classInfo->addField("endRotSpeedVar", &ParticlesEmitterMovementConfig::endRotSpeedVar);
+        classInfo->addField("speed", &ParticlesEmitterMovementConfig::speed);
+        classInfo->addField("speedVar", &ParticlesEmitterMovementConfig::speedVar);
+        classInfo->addField("initRotation", &ParticlesEmitterMovementConfig::initRotation);
+        classInfo->addField("initRotationVar", &ParticlesEmitterMovementConfig::initRotationVar);
+        classInfo->addField("rotationSpeed", &ParticlesEmitterMovementConfig::rotationSpeed);
+        classInfo->addField("rotationSpeedVar", &ParticlesEmitterMovementConfig::rotationSpeedVar);
+        classInfo->addField("rotationAcc", &ParticlesEmitterMovementConfig::rotationAcc);
     }
 }
 
 ParticlesEmitterMovementConfig::ParticlesEmitterMovementConfig() :
-    startScale(1.f),
-    startScaleVar(0.1f),
-    endScale(1.5f),
-    endScaleVar(0.1f),
-    startSpeed(1.f),
-    startSpeedVar(0.1f),
-    endSpeed(2.f),
-    endSpeedVar(0.1f),
-    startRotation(0.f),
-    startRotationVar(0.1f),
-    startRotSpeed(30.f),
-    startRotSpeedVar(0.1f),
-    endRotSpeed(30.f),
-    endRotSpeedVar(0.1f) {
+    speed(100.f),
+    speedVar(0.1),
+    initRotation(30.f),
+    initRotationVar(0.1),
+    rotationSpeed(10.f),
+    rotationSpeedVar(0.1),
+    rotationAcc(0.f) {
 }
 
 void ParticlesEmitterRenderConfig::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<BlendingConfig>("BlendingConfig")) {
+        enumInfo->addValues<BlendingConfig>({
+            {"Normal", BlendingConfig::Normal},
+            {"Additive", BlendingConfig::Additive}
+        });
+    }
     if(auto classInfo = ctx.classInfo<ParticlesEmitterRenderConfig>("ParticlesEmitterRenderConfig")) {
+        classInfo->addField("blending", &ParticlesEmitterRenderConfig::blending);
         classInfo->addResourceField("texture", ResourceType::Image, &ParticlesEmitterRenderConfig::texture);
     }
 }
 
 ParticlesEmitterRenderConfig::ParticlesEmitterRenderConfig() :
-    texture("") {
+    texture(""),
+    blending(BlendingConfig::Normal) {
 }
 
 void GravityField::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<GravityType>("GravityType")) {
         enumInfo->addValues<GravityType>({
             {"Simple", GravityType::Simple},
-            {"Cicle", GravityType::Circle},
             {"Vortex", GravityType::Vortex}
         });
     }

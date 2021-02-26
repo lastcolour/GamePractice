@@ -1,4 +1,4 @@
-#include "ParticlesEmitterTests.hpp"
+#include "ParticlesSystemTests.hpp"
 #include "Logics/ParticlesSystem.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
@@ -43,7 +43,7 @@ void checkParticlePosition(const Vec2& expectedPt, int id, const EmitterParticle
 
 } // namespace
 
-TEST_F(ParticlesEmitterTests, CheckParticlesEmitterPlaying) {
+TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
     auto entity = createVoidObject();
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
 
@@ -96,7 +96,7 @@ TEST_F(ParticlesEmitterTests, CheckParticlesEmitterPlaying) {
     }
 }
 
-TEST_F(ParticlesEmitterTests, CheckWorldTM) {
+TEST_F(ParticlesSystemTests, CheckWorldTM) {
     Vec2 emitPt(100, 200);
 
     auto entity = createVoidObject();
@@ -117,10 +117,8 @@ TEST_F(ParticlesEmitterTests, CheckWorldTM) {
     emissionConfig.emitterSpace = EmitterSpace::World;
 
     auto movementConfig = system->ET_getMovementConfig();
-    movementConfig.startSpeed = 0.f;
-    movementConfig.startSpeedVar = 0.f;
-    movementConfig.endSpeed = 0.f;
-    movementConfig.endSpeedVar = 0.f;
+    movementConfig.speed = 0.f;
+    movementConfig.speedVar = 0.f;
 
     system->ET_setEmissionConfig(emissionConfig);
     system->ET_setMovementConfig(movementConfig);
@@ -163,7 +161,7 @@ TEST_F(ParticlesEmitterTests, CheckWorldTM) {
     }
 }
 
-TEST_F(ParticlesEmitterTests, CheckLocalTm) {
+TEST_F(ParticlesSystemTests, CheckLocalTm) {
     Vec2 emitPt(100, 200);
 
     auto entity = createVoidObject();
@@ -184,10 +182,8 @@ TEST_F(ParticlesEmitterTests, CheckLocalTm) {
     emissionConfig.emitterSpace = EmitterSpace::Local;
 
     auto movementConfig = system->ET_getMovementConfig();
-    movementConfig.startSpeed = 0.f;
-    movementConfig.startSpeedVar = 0.f;
-    movementConfig.endSpeed = 0.f;
-    movementConfig.endSpeedVar = 0.f;
+    movementConfig.speed = 0.f;
+    movementConfig.speedVar = 0.f;
 
     system->ET_setEmissionConfig(emissionConfig);
     system->ET_setMovementConfig(movementConfig);
@@ -230,7 +226,7 @@ TEST_F(ParticlesEmitterTests, CheckLocalTm) {
     }
 }
 
-TEST_F(ParticlesEmitterTests, CheckSubEmitters) {
+TEST_F(ParticlesSystemTests, CheckSubEmitters) {
     EntityId parentId;
     EntityId childId;
     {

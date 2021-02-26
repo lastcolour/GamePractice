@@ -36,7 +36,7 @@ struct ETGameBoardInteractionLogic {
 
 struct ETGameBoardMatcher {
     virtual ~ETGameBoardMatcher() = default;
-    virtual std::vector<EntityId> ET_getMatchedElements() = 0;
+    virtual void ET_destoryMatchedElems() = 0;
 };
 
 struct ETGameBoardEvents {

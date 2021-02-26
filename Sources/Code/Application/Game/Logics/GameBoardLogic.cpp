@@ -261,13 +261,7 @@ void GameBoardLogic::updateAfterRemoves() {
 }
 
 void GameBoardLogic::matchElements() {
-    std::vector<EntityId> elemToRemove;
-    ET_SendEventReturn(elemToRemove, getEntityId(), &ETGameBoardMatcher::ET_getMatchedElements);
-    for(auto& elemEntId : elemToRemove) {
-        auto boardElem = getElem(elemEntId);
-        assert(boardElem && "Try to remove invalid board elem");
-        ET_SendEvent(boardElem->entId, &ETGameBoardElem::ET_triggerDestroy);
-    }
+    ET_SendEvent(getEntityId(), &ETGameBoardMatcher::ET_destoryMatchedElems);
     updateAfterRemoves();
 }
 

@@ -78,7 +78,7 @@ int Node::getDrawPriority() const {
 }
 
 void Node::onRenderStart(RenderContext& ctx) {
-    if(alpha < 1.f && blendMode.dstBlending == BlendType::NONE) {
+    if(alpha < 1.f && blendMode.dst == BlendType::NONE) {
         ctx.setBlending(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     } else {
         ctx.setBlending(blendMode);

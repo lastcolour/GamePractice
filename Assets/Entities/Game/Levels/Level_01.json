@@ -58,13 +58,40 @@
           }
         ]
       }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Effects/ElemDestroy.json",
+      "id": 1003,
+      "internal": false
     }
   ],
   "logics": [
     {
       "type": "GameBoardMatcher",
       "id": 3,
-      "data": {}
+      "data": {
+        "destroyEffectId": [
+          1003
+        ]
+      }
     },
     {
       "type": "GameBoardInteraction",
@@ -78,7 +105,7 @@
       "type": "GameEndTimer",
       "id": 6,
       "data": {
-        "gameDuration": 10.0
+        "gameDuration": 300.0
       }
     },
     {
@@ -86,13 +113,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 5
+          "minScore": 30
         },
         "twoStars": {
-          "minScore": 10
+          "minScore": 50
         },
         "threeStars": {
-          "minScore": 15
+          "minScore": 100
         }
       }
     },

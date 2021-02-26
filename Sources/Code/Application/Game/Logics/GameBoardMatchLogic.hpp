@@ -28,7 +28,7 @@ public:
     void deinit() override;
 
     // ETGameBoardMatcher
-    std::vector<EntityId> ET_getMatchedElements() override;
+    void ET_destoryMatchedElems() override;
 
 private:
 
@@ -37,6 +37,7 @@ private:
 
 private:
 
+    EntityId destroyEffectId;
     int minLineLen;
     int maxLineLen;
 };

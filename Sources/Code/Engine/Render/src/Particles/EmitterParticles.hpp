@@ -12,9 +12,16 @@
 struct SimulationConfig {
     ParticlesEmitterEmissionConfig emission;
     ParticlesEmitterColorConfig color;
+    ParticlesEmitterSizeConfig sizeConfig;
     ParticlesEmitterMovementConfig movement;
     ParticlesEmitterGravityConfig gravity;
     ParticlesSubEmittersConfig subEmittorsConfig;
+};
+
+struct EmitRequest {
+    Transform tm;
+    int rootParticleId;
+    bool syncWithSystemTm;
 };
 
 enum class EmissionState {
@@ -29,7 +36,7 @@ public:
 
     EmitterParticles();
 
-    void start(const Transform& emitTm);
+    void start(const EmitRequest& emitRequest);
     void stop();
     void stopEmitting();
     bool isEmitting() const;
@@ -38,31 +45,33 @@ public:
     void simulate(const SimulationConfig& simConfig, const Transform& systemTm, float dt);
     Mat4 getTransformMat() const;
     int getRootParticleId() const;
-    void setRootParticleId(int newRootParticleId);
+    void updateEmitPos(const Vec2& newEmitPt);
 
 private:
 
     void removeOld(const SimulationConfig& simConfig, float dt);
     void emitNew(const SimulationConfig& simConfig, float dt);
-    void updateAlive(const SimulationConfig& simConfig, float dt);
+    void moveAlive(const SimulationConfig& simConfig, float dt);
     void updateState(const SimulationConfig& simConfig, float dt);
     void spawnNewParticle(const SimulationConfig& simConfig, Particle& p);
     void simulateGravities(const SimulationConfig& simConfig, float dt);
+    void updateIntacesData(const SimulationConfig& simConfig, float dt);
+    int generateParticleId();
 
 public:
 
-    Transform tm;
     std::vector<Particle> particles;
     std::vector<ParticleInstanceData> instaceData;
     int activeCount;
 
 private:
 
+    EmitRequest emitReq;
     float duration;
     float emitFracTime;
-    std::atomic<EmissionState> emissionState;
     Math::RandomFloatGenerator floatGen;
-    int rootParticleId;
+    int spawnedCount;
+    std::atomic<EmissionState> emissionState;
     bool wroldTmSpace;
 };
 

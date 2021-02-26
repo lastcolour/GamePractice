@@ -88,18 +88,18 @@ RenderContext::~RenderContext() {
 }
 
 void RenderContext::setBlending(const BlendMode& newBlendMode) {
-    if(blendMode.dstBlending == newBlendMode.dstBlending &&
-        blendMode.srcBlending == newBlendMode.srcBlending) {
+    if(blendMode.dst == newBlendMode.dst &&
+        blendMode.src == newBlendMode.src) {
             return;
     }
     blendMode = newBlendMode;
-    if(blendMode.dstBlending == BlendType::NONE || blendMode.srcBlending == BlendType::NONE) {
+    if(blendMode.dst == BlendType::NONE || blendMode.src == BlendType::NONE) {
         glDisable(GL_BLEND);
     } else {
         glEnable(GL_BLEND);
         glBlendFunc(
-            getGLBlendType(blendMode.srcBlending),
-            getGLBlendType(blendMode.dstBlending));
+            getGLBlendType(blendMode.src),
+            getGLBlendType(blendMode.dst));
     }
 }
 

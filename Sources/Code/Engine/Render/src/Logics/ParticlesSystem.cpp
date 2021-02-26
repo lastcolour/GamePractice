@@ -10,6 +10,7 @@ void ParticlesSystem::Reflect(ReflectContext& ctx) {
         classInfo->addBaseClass<RenderNode>();
         classInfo->addField("emission", &ParticlesSystem::emissionConfig);
         classInfo->addField("movement", &ParticlesSystem::movementConfig);
+        classInfo->addField("size", &ParticlesSystem::sizeConfig);
         classInfo->addField("color", &ParticlesSystem::colorConfig);
         classInfo->addField("render", &ParticlesSystem::renderConfig);
         classInfo->addField("subEmitters", &ParticlesSystem::subEmittersConfig);
@@ -50,6 +51,7 @@ void ParticlesSystem::init() {
     isRenderConfigChanged = true;
     isGravityConfigChanged = true;
     isSubEmittersConfigChanged = true;
+    isSizeConfigChanged = true;
 
     canUpdate = false;
 
@@ -61,6 +63,7 @@ void ParticlesSystem::init() {
 void ParticlesSystem::ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) {
     colorConfig = newColorConf;
     isColorConfigChanged = true;
+    markForSyncWithRender();
 }
 
 const ParticlesEmitterColorConfig& ParticlesSystem::ET_getColorConfig() const {
@@ -70,6 +73,7 @@ const ParticlesEmitterColorConfig& ParticlesSystem::ET_getColorConfig() const {
 void ParticlesSystem::ET_setMovementConfig(const ParticlesEmitterMovementConfig& newMovementConf) {
     movementConfig = newMovementConf;
     isMovementConfigChanged = true;
+    markForSyncWithRender();
 }
 
 const ParticlesEmitterMovementConfig& ParticlesSystem::ET_getMovementConfig() const {
@@ -79,6 +83,7 @@ const ParticlesEmitterMovementConfig& ParticlesSystem::ET_getMovementConfig() co
 void ParticlesSystem::ET_setEmissionConfig(const ParticlesEmitterEmissionConfig& newEmissionConf) {
     emissionConfig = newEmissionConf;
     isEmissionConfigChanged = true;
+    markForSyncWithRender();
 }
 
 const ParticlesEmitterEmissionConfig& ParticlesSystem::ET_getEmissionConfig() const {
@@ -88,6 +93,7 @@ const ParticlesEmitterEmissionConfig& ParticlesSystem::ET_getEmissionConfig() co
 void ParticlesSystem::ET_setRenderConfig(const ParticlesEmitterRenderConfig& newRenerConf) {
     renderConfig = newRenerConf;
     isRenderConfigChanged = true;
+    markForSyncWithRender();
 }
 
 const ParticlesEmitterRenderConfig& ParticlesSystem::ET_getRenderConfig() const {
@@ -96,6 +102,18 @@ const ParticlesEmitterRenderConfig& ParticlesSystem::ET_getRenderConfig() const 
 
 void ParticlesSystem::ET_setSubEmittersConfig(const ParticlesSubEmittersConfig& newSubEmittersConf) {
     subEmittersConfig = newSubEmittersConf;
+    isSubEmittersConfigChanged = true;
+    markForSyncWithRender();
+}
+
+void ParticlesSystem::ET_setSizeConfig(const ParticlesEmitterSizeConfig& newSizeConf) {
+    sizeConfig = newSizeConf;
+    isSizeConfigChanged = true;
+    markForSyncWithRender();
+}
+
+const ParticlesEmitterSizeConfig& ParticlesSystem::ET_getSizeConfig() const {
+    return sizeConfig;
 }
 
 const ParticlesSubEmittersConfig& ParticlesSystem::ET_getSubEmittersConfig() const {
@@ -139,6 +157,10 @@ void ParticlesSystem::onSyncWithRender() {
         isSubEmittersConfigChanged = false;
         simConfig.subEmittorsConfig = subEmittersConfig;
     }
+    if(isSizeConfigChanged) {
+        isSizeConfigChanged = false;
+        simConfig.sizeConfig = sizeConfig;
+    }
     if(!canUpdate) {
         canUpdate = true;
         ETNode<ETParticlesUpdate>::connect(getEntityId());
@@ -146,7 +168,7 @@ void ParticlesSystem::onSyncWithRender() {
 
     if(!pendingEmits.empty()) {
         for(auto& emitReq : pendingEmits) {
-            pool.createEmitter(-1, emitReq.tm);
+            pool.createEmitter(emitReq);
         }
         pendingEmits.clear();
     }
@@ -160,6 +182,14 @@ void ParticlesSystem::ET_updateEmitter(float dt) {
     auto& emittersPool = particlesNode->getEmittersPool();
     auto& tm = particlesNode->getTransform();
     emittersPool.simulate(simConfig, tm, dt);
+    if(!emittersPool.hasAlive()) {
+        if(simConfig.emission.loop) {
+            EmitRequest emitReq;
+            emitReq.rootParticleId = InvalidRootParticleId;
+            emitReq.syncWithSystemTm = true;
+            emittersPool.createEmitter(emitReq);
+        }
+    }
 }
 
 void ParticlesSystem::ET_emit() {
@@ -169,10 +199,11 @@ void ParticlesSystem::ET_emit() {
         return;
     }
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    EmitRequest emitReq;
+    emitReq.syncWithSystemTm = true;
+    emitReq.rootParticleId = InvalidRootParticleId;
 
-    pendingEmits.emplace_back(EmitRequest{tm, InvalidRootParticleId});
+    pendingEmits.emplace_back(emitReq);
     markForSyncWithRender();
 }
 
@@ -183,7 +214,13 @@ void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
         return;
     }
 
-    pendingEmits.emplace_back(EmitRequest{emitTm, InvalidRootParticleId});
+    EmitRequest emitReq;
+    emitReq.rootParticleId = InvalidRootParticleId;
+    emitReq.syncWithSystemTm = false;
+    emitReq.tm = emitTm;
+    emitReq.tm.scale *= normScale;
+
+    pendingEmits.emplace_back(emitReq);
     markForSyncWithRender();
 }
 
@@ -213,9 +250,14 @@ void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Vec2& pt) {
     }
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
     auto& emittersPool = particlesNode->getEmittersPool();
-    Transform tm;
-    tm.pt = Vec3(pt, 0.f);
-    emittersPool.createEmitter(rootParticleId, tm);
+
+    EmitRequest emitReq;
+    emitReq.rootParticleId = rootParticleId;
+    emitReq.syncWithSystemTm = false;
+    emitReq.tm.pt = Vec3(pt, 0.f);
+    emitReq.tm.scale *= normScale;
+
+    emittersPool.createEmitter(emitReq);
 }
 
 void ParticlesSystem::ET_updateSubEmitter(int rootParticleId, const Vec2& pt) {
@@ -225,4 +267,13 @@ void ParticlesSystem::ET_updateSubEmitter(int rootParticleId, const Vec2& pt) {
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
     auto& emittersPool = particlesNode->getEmittersPool();
     emittersPool.updateEmitterPos(rootParticleId, pt);
+}
+
+void ParticlesSystem::ET_stopSubEmitter(int rootParticleId) {
+    if(!proxyNode) {
+        return;
+    }
+    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
+    auto& emittersPool = particlesNode->getEmittersPool();
+    emittersPool.stopEmitter(rootParticleId);
 }

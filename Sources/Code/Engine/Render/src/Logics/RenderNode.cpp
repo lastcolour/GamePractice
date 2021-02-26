@@ -48,7 +48,7 @@ void RenderNode::init() {
     alpha = Math::Clamp(alpha, 0.f, 1.f);
 
     proxyNode->setTransform(tm);
-    proxyNode->setAlpha(alpha);
+    proxyNode->setAlpha(alpha * alphaMult);
     proxyNode->setDrawPriority(drawPriority);
 
     ETNode<ETRenderNode>::connect(getEntityId());

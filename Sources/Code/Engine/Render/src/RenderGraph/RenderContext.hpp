@@ -10,10 +10,9 @@
 class RenderFramebuffer;
 
 struct BlendMode {
-    BlendType srcBlending;
-    BlendType dstBlending;
+    BlendType src;
+    BlendType dst;
 };
-
 class RenderContext {
 public:
 

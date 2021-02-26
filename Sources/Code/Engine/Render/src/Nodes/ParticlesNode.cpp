@@ -2,6 +2,7 @@
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <cassert>
 
@@ -15,7 +16,24 @@ void ParticlesNode::setConfig(const ParticlesEmitterRenderConfig& newRenderConf)
     renderConfig = newRenderConf;
     ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage,
         renderConfig.texture.c_str(), ETextureType::RGBA);
-    setModelMatDirty();
+
+    BlendMode mode;
+    switch(renderConfig.blending) {
+        case BlendingConfig::Normal: {
+            mode.src = BlendType::SRC_ALPHA;
+            mode.dst = BlendType::ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case BlendingConfig::Additive: {
+            mode.src = BlendType::SRC_ALPHA;
+            mode.dst = BlendType::ONE;
+            break;
+        }
+        default: {
+            assert(false && "Invalid blend mode");
+        }
+    }
+    setBlendingMode(mode);
 }
 
 ParticlesEmittersPool& ParticlesNode::getEmittersPool() {

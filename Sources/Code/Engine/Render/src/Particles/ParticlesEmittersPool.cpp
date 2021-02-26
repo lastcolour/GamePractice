@@ -1,8 +1,11 @@
 #include "Particles/ParticlesEmittersPool.hpp"
 
+#include "Core/ETLogger.hpp"
+
 #include <cassert>
 
-ParticlesEmittersPool::ParticlesEmittersPool() {
+ParticlesEmittersPool::ParticlesEmittersPool() :
+    asyncState(AsynState::Stopped) {
 }
 
 ParticlesEmittersPool::~ParticlesEmittersPool() {
@@ -12,7 +15,7 @@ const std::vector<std::unique_ptr<EmitterParticles>>& ParticlesEmittersPool::get
     return pool;
 }
 
-void ParticlesEmittersPool::createEmitter(int rootParticleId, const Transform& tm) {
+void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
     EmitterParticles* stoppedEmitter = nullptr;
     for(auto& emitter : pool) {
         if(emitter->isFinished()) {
@@ -20,18 +23,27 @@ void ParticlesEmittersPool::createEmitter(int rootParticleId, const Transform& t
         }
     }
     if(!stoppedEmitter) {
-        stoppedEmitter = pool.emplace_back(new EmitterParticles).get();
+        pool.emplace_back(new EmitterParticles);
+        stoppedEmitter = pool.back().get();
     }
     asyncState.store(AsynState::Playing);
-    stoppedEmitter->setRootParticleId(rootParticleId);
-    stoppedEmitter->start(tm);
+    stoppedEmitter->start(emitReq);
 }
 
 void ParticlesEmittersPool::updateEmitterPos(int rootParticleId, const Vec2& newPt) {
     assert(rootParticleId != InvalidRootParticleId && "Invalid root particle id");
     for(auto& emitter : pool) {
         if(emitter->getRootParticleId() == rootParticleId) {
-            
+            emitter->updateEmitPos(newPt);
+        }
+    }
+}
+
+void ParticlesEmittersPool::stopEmitter(int rootParticleId) {
+    assert(rootParticleId != InvalidRootParticleId && "Invalid root particle id");
+    for(auto& emitter : pool) {
+        if(emitter->getRootParticleId() == rootParticleId) {
+            emitter->stopEmitting();
         }
     }
 }
@@ -82,7 +94,6 @@ void ParticlesEmittersPool::simulate(const SimulationConfig& simConfig, const Tr
 
     for(auto& emitter : pool) {
         if(!emitter->isFinished()) {
-            Transform tm;
             emitter->simulate(simConfig, systemTm, dt);
         }
         if(emitter->isEmitting()) {
