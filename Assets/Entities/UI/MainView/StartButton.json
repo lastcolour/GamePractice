@@ -32,9 +32,9 @@
               "hidden": true,
               "enabled": true,
               "style": {
-                "width": 70.0,
+                "width": 110.0,
                 "widthInv": "Grid",
-                "height": 17.0,
+                "height": 25.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -107,8 +107,8 @@
               "alpha": 1.0,
               "drawPriority": 4,
               "size": {
-                "x": 359.0,
-                "y": 88.0
+                "x": 183.0,
+                "y": 45.0
               },
               "tintColor": {
                 "r": 255,
@@ -163,7 +163,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 47,
+              "fontSize": 24,
               "text": "Start"
             }
           },
@@ -174,7 +174,7 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "fontSize": 9.0,
+                "fontSize": 12.0,
                 "margin": {
                   "top": 0.0,
                   "bot": 0.0,
@@ -197,9 +197,9 @@
         "hidden": false,
         "enabled": true,
         "style": {
-          "width": 70.0,
+          "width": 110.0,
           "widthInv": "Grid",
-          "height": 17.0,
+          "height": 25.0,
           "heightInv": "Grid",
           "margin": {
             "top": 0.0,
@@ -285,8 +285,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 359.0,
-          "y": 88.0
+          "x": 288.0,
+          "y": 66.0
         },
         "tintColor": {
           "r": 100,

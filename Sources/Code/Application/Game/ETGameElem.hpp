@@ -35,13 +35,13 @@ struct ETGameBoardElem {
     virtual bool ET_canSwitch() const = 0;
 };
 
-struct ETBoardElemDetroyAnimation {
-    virtual ~ETBoardElemDetroyAnimation() = default;
+struct ETBoardElemDestroyAnimation {
+    virtual ~ETBoardElemDestroyAnimation() = default;
     virtual void ET_playDestroy() = 0;
 };
 
-struct ETBoardElemDetroyAnimationEvents {
-    virtual ~ETBoardElemDetroyAnimationEvents() = default;
+struct ETBoardElemDestroyAnimationEvents {
+    virtual ~ETBoardElemDestroyAnimationEvents() = default;
     virtual void ET_onDestroyAnimEnded() = 0;
 };
 

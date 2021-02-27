@@ -40,7 +40,7 @@ void GameBoardAnimation::ET_onGameTick(float dt) {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
 
-    tm.scale = Vec3(1.f);
+    tm.scale = Vec3(currScale);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
 }
 

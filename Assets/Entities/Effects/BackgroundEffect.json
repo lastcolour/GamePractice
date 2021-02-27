@@ -13,7 +13,7 @@
       "id": 3,
       "data": {
         "isVisible": true,
-        "alpha": 1.0,
+        "alpha": 0.800000011920929,
         "drawPriority": 1,
         "emission": {
           "duration": -1.0,
@@ -28,10 +28,10 @@
             "y": 200.0
           },
           "thickness": 0.0,
-          "emissionRate": 300.0,
+          "emissionRate": 30.0,
           "direction": 90.0,
           "directionVar": 360.0,
-          "lifetime": 2.0,
+          "lifetime": 4.0,
           "lifetimeVar": 0.10000000149011612
         },
         "movement": {
@@ -53,8 +53,8 @@
             "y": 0.10000000149011612
           },
           "endScale": {
-            "x": 0.4000000059604645,
-            "y": 0.4000000059604645
+            "x": 0.800000011920929,
+            "y": 0.699999988079071
           },
           "endScaleVar": {
             "x": 0.10000000149011612,
@@ -65,8 +65,8 @@
         "color": {
           "startCol": {
             "r": 255,
-            "g": 255,
-            "b": 255,
+            "g": 249,
+            "b": 235,
             "a": 255
           },
           "startColVar": {
@@ -91,14 +91,130 @@
           "fadeOut": 0.5
         },
         "render": {
-          "blending": "Normal",
+          "blending": "Additive",
           "texture": "Images/block.png"
         },
         "subEmitters": {
           "subEmitters": []
         },
         "gravity": {
-          "fields": []
+          "fields": [
+            {
+              "type": "Vortex",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": 0.0,
+              "value": 10.0,
+              "radius": -1.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "ParticlesSystem",
+      "id": 4,
+      "data": {
+        "isVisible": true,
+        "alpha": 0.800000011920929,
+        "drawPriority": 1,
+        "emission": {
+          "duration": -1.0,
+          "startDelay": 0.0,
+          "autoStart": true,
+          "loop": true,
+          "heating": true,
+          "emitterSpace": "Local",
+          "emitterType": "Box",
+          "emitterVal": {
+            "x": 100.0,
+            "y": 200.0
+          },
+          "thickness": 0.0,
+          "emissionRate": 10.0,
+          "direction": 90.0,
+          "directionVar": 360.0,
+          "lifetime": 4.0,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 1.0,
+          "speedVar": 2.0,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 0.800000011920929,
+            "y": 0.699999988079071
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "fixedRatio": false
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 248,
+            "b": 44,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.5
+        },
+        "render": {
+          "blending": "Additive",
+          "texture": "Images/block.png"
+        },
+        "subEmitters": {
+          "subEmitters": []
+        },
+        "gravity": {
+          "fields": [
+            {
+              "type": "Vortex",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": 0.0,
+              "value": 10.0,
+              "radius": -1.0
+            }
+          ]
         }
       }
     }

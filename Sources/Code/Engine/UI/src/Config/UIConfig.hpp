@@ -19,7 +19,7 @@ public:
 
 public:
 
-    int verticalGrid;
+    int horizontalGrid;
     UIViewConfig views;
 };
 

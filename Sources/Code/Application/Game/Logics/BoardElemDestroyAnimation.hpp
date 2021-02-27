@@ -12,7 +12,7 @@
 class ReflectContext;
 
 class BoardElemDestroyAnimation : public EntityLogic,
-    public ETNode<ETBoardElemDetroyAnimation>,
+    public ETNode<ETBoardElemDestroyAnimation>,
     public ETNode<ETGameTimerEvents> {
 public:
 
@@ -30,7 +30,7 @@ public:
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
 
-    // ETBoardElemDetroyAnimation
+    // ETBoardElemDestroyAnimation
     void ET_playDestroy() override;
 
 private:
@@ -39,10 +39,21 @@ private:
 
 private:
 
+    enum class State {
+        Starting,
+        Animating,
+        Finishing,
+        Ended
+    };
+
+private:
+
     SoundEvent destroySound;
     float startDelay;
     float duration;
+    float endDelay;
     float currDuration;
+    State currState;
 };
 
 #endif /* __BOARD_ELEM_DESTROY_ANIMATION_HPP__ */

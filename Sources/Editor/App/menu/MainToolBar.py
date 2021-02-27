@@ -56,9 +56,10 @@ class MainToolBar(QToolBar):
             "16x9",
             "16x10",
             "18x9",
+            "21x9",
             "None"
         ])
-        self._aspectRationBox.setCurrentIndex(self._aspectRationBox.findText("16x9"))
+        self._aspectRationBox.setCurrentIndex(self._aspectRationBox.findText("None"))
         self._aspectRationBox.currentTextChanged.connect(self._singnal_aspectRationBox_changed)
         self.addWidget(self._aspectRationBox)
 
@@ -96,6 +97,8 @@ class MainToolBar(QToolBar):
             aspectRation = AspecRatio.Ratio_16x10
         elif text == "18x9":
             aspectRation = AspecRatio.Ratio_18x9
+        elif text == "21x9":
+            aspectRation = AspecRatio.Ratio_21x9
         elif text == "None":
             aspectRation = AspecRatio.Ratio_None
         else:

@@ -62,16 +62,16 @@
               },
               "size": {
                 "startScale": {
-                  "x": 4.0,
-                  "y": 4.0
+                  "x": 5.0,
+                  "y": 5.0
                 },
                 "startScaleVar": {
                   "x": 0.10000000149011612,
                   "y": 0.10000000149011612
                 },
                 "endScale": {
-                  "x": 4.0,
-                  "y": 4.0
+                  "x": 5.0,
+                  "y": 5.0
                 },
                 "endScaleVar": {
                   "x": 0.10000000149011612,
@@ -118,13 +118,6 @@
                 "fields": []
               }
             }
-          },
-          {
-            "type": "UIRenderNormalizator",
-            "id": 2,
-            "data": {
-              "factor": 1.0
-            }
           }
         ]
       }
@@ -168,10 +161,10 @@
                 "loop": false,
                 "heating": false,
                 "emitterSpace": "World",
-                "emitterType": "Box",
+                "emitterType": "Sphere",
                 "emitterVal": {
-                  "x": 3.0,
-                  "y": 3.0
+                  "x": 0.0,
+                  "y": 0.0
                 },
                 "thickness": 0.0,
                 "emissionRate": 100.0,
@@ -199,8 +192,8 @@
                   "y": 0.10000000149011612
                 },
                 "endScale": {
-                  "x": 0.20000000298023224,
-                  "y": 0.20000000298023224
+                  "x": 0.0,
+                  "y": 0.0
                 },
                 "endScaleVar": {
                   "x": 0.10000000149011612,
@@ -256,26 +249,12 @@
                 "fields": []
               }
             }
-          },
-          {
-            "type": "UIRenderNormalizator",
-            "id": 2,
-            "data": {
-              "factor": 1.0
-            }
           }
         ]
       }
     }
   ],
   "logics": [
-    {
-      "type": "UIRenderNormalizator",
-      "id": 2,
-      "data": {
-        "factor": 1.0
-      }
-    },
     {
       "type": "ParticlesSystem",
       "id": 4,
@@ -292,11 +271,11 @@
           "emitterSpace": "World",
           "emitterType": "Box",
           "emitterVal": {
-            "x": 3.0,
-            "y": 3.0
+            "x": 4.0,
+            "y": 4.0
           },
-          "thickness": 0.0,
-          "emissionRate": 100.0,
+          "thickness": 0.5,
+          "emissionRate": 50.0,
           "direction": 0.0,
           "directionVar": 360.0,
           "lifetime": 0.4000000059604645,
@@ -313,8 +292,8 @@
         },
         "size": {
           "startScale": {
-            "x": 1.0,
-            "y": 1.0
+            "x": 0.800000011920929,
+            "y": 0.800000011920929
           },
           "startScaleVar": {
             "x": 0.10000000149011612,

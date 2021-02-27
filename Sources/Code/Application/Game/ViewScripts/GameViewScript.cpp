@@ -7,6 +7,7 @@
 #include "UI/ETUIBox.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "Core/ETLogger.hpp"
 
 #include <cassert>
@@ -188,6 +189,7 @@ void GameViewScript::ET_onGameEnterState(EGameState state) {
     }
     ET_SendEvent(&ETGameTimer::ET_setScale, 0.1f);
     ET_SendEvent(&ETGameScoreUpdater::ET_pause);
+    ET_SendEvent(&ETGameBoard::ET_setBlockElemMatching, true);
 
     {
         EventSequence::Event event;
@@ -195,6 +197,7 @@ void GameViewScript::ET_onGameEnterState(EGameState state) {
         event.targetId = endInfoId;
         event.onEndCallback = [this](){
             ET_SendEvent(&ETGameScoreUpdater::ET_resume);
+            ET_SendEvent(&ETGameBoard::ET_setBlockElemMatching, false);
             ET_SendEvent(&ETGameTimer::ET_setScale, 1.f);
             setScriptState(State::WaitingPostGame);
         };

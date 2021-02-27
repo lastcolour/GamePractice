@@ -102,7 +102,7 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
 
 void UIScrollAreaTests::SetUp() {
     ConsoleAppTests::SetUp();
-    auto gridSize = ET_getShared<UIConfig>()->verticalGrid;
+    auto gridSize = ET_getShared<UIConfig>()->horizontalGrid;
     Vec2i portSize(gridSize, gridSize);
     ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized, portSize);
 }

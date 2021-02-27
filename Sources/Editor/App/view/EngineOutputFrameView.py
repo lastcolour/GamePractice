@@ -12,7 +12,8 @@ class AspecRatio:
     Ratio_16x10 = 2
     Ratio_5x3 = 3
     Ratio_18x9 = 4
-    Ratio_None = 5
+    Ratio_21x9 = 5
+    Ratio_None = 6
 
 _MIN_WIDTH = 150
 
@@ -20,7 +21,7 @@ class EngineOutputFrameView(QWidget):
 
     def __init__(self):
         super().__init__()
-        self._ratio = AspecRatio.Ratio_16x9
+        self._ratio = AspecRatio.Ratio_None
         self._isHorizontal = False
         self._isMousePressed = False
         self._lastMousePt = (0, 0)
@@ -51,6 +52,9 @@ class EngineOutputFrameView(QWidget):
             y = 3
         elif self._ratio == AspecRatio.Ratio_18x9:
             x = 18
+            y = 9
+        elif self._ratio == AspecRatio.Ratio_21x9:
+            x = 21
             y = 9
         elif self._ratio == AspecRatio.Ratio_None:
             return self.size().height()

@@ -43,7 +43,7 @@ void UIButtonTests::SetUp() {
     ConsoleAppTests::SetUp();
     buttonListener.reset(new TestButtonEventListener);
 
-    auto gridSize = ET_getShared<UIConfig>()->verticalGrid;
+    auto gridSize = ET_getShared<UIConfig>()->horizontalGrid;
     Vec2i portSize(gridSize, gridSize);
     ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
 }

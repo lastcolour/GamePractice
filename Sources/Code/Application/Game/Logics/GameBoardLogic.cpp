@@ -44,8 +44,9 @@ GameBoardLogic::GameBoardLogic() :
     moveAccel(4.f),
     cellSize(0),
     zBackgroundIndex(0),
-    doElemMathcing(false),
-    isBoardStatic(true) {
+    isElemMatchRequested(false),
+    isBoardStatic(true),
+    isElemMatchingBlocked(false) {
 }
 
 GameBoardLogic::~GameBoardLogic() {
@@ -74,7 +75,7 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
 }
 
 void GameBoardLogic::ET_matchElements() {
-    doElemMathcing = true;
+    isElemMatchRequested = true;
 }
 
 EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
@@ -322,13 +323,13 @@ void GameBoardLogic::ET_onGameTick(float dt) {
                 elem.vel = 0.f;
                 setElemMoveState(elem.entId, EBoardElemMoveState::Static);
                 setElemBoardPos(elem, Vec2i(elem.boardPt.x, movePtY));
-                doElemMathcing = true;
+                isElemMatchRequested = true;
             }
         }
     }
 
-    if(doElemMathcing) {
-        doElemMathcing = false;
+    if(isElemMatchRequested && !isElemMatchingBlocked) {
+        isElemMatchRequested = false;
         matchElements();
     }
     if(!isBoardStatic) {
@@ -340,7 +341,7 @@ void GameBoardLogic::ET_onGameTick(float dt) {
 }
 
 bool GameBoardLogic::ET_isAllElemStatic() const {
-    if(doElemMathcing) {
+    if(isElemMatchRequested) {
         return false;
     }
     for(auto& col : columns) {
@@ -364,6 +365,10 @@ const Vec2i& GameBoardLogic::ET_getBoardSize() const {
 
 const AABB2Di& GameBoardLogic::ET_getBoardBox() const {
     return boardBox;
+}
+
+void GameBoardLogic::ET_setBlockElemMatching(bool flag) {
+    isElemMatchingBlocked = flag;
 }
 
 void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {

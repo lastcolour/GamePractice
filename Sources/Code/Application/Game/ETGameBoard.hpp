@@ -21,6 +21,7 @@ struct ETGameBoard {
     virtual Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const = 0;
     virtual void ET_setUIElement(EntityId rootUIElementId) = 0;
     virtual bool ET_isAllElemStatic() const = 0;
+    virtual void ET_setBlockElemMatching(bool flag) = 0;
 };
 
 struct ETGameBoardElemDestoryEvents {

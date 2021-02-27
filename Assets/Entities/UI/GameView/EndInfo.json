@@ -32,9 +32,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 60.0,
+                "width": 100.0,
                 "widthInv": "Grid",
-                "height": 20.0,
+                "height": 30.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -51,10 +51,10 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 34,
               "size": {
-                "x": 308.0,
-                "y": 103.0
+                "x": 198.0,
+                "y": 60.0
               },
               "tintColor": {
                 "r": 255,
@@ -103,7 +103,7 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "fontSize": 10.0,
+                "fontSize": 16.0,
                 "margin": {
                   "top": 0.0,
                   "bot": 0.0,
@@ -111,7 +111,7 @@
                   "right": 0.0
                 }
               },
-              "text": "DONE"
+              "text": "DONE!"
             }
           },
           {
@@ -120,15 +120,15 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 3,
+              "drawPriority": 35,
               "color": {
                 "r": 0,
                 "g": 0,
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 52,
-              "text": "DONE"
+              "fontSize": 32,
+              "text": "DONE!"
             }
           },
           {

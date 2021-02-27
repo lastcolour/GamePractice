@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 455.0,
+          "y": 424.0,
           "z": 0.0
         },
         "scale": {
@@ -27,8 +27,8 @@
           {
             "transform": {
               "pos": {
-                "x": -194.0,
-                "y": -73.0,
+                "x": -163.0,
+                "y": -61.0,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -46.0,
+                      "x": -42.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -80,7 +80,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 3.0,
+                            "fontSize": 5.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -99,12 +99,12 @@
                           "alpha": 1.0,
                           "drawPriority": 61,
                           "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
                             "a": 255
                           },
-                          "fontSize": 16,
+                          "fontSize": 14,
                           "text": "Progress: "
                         }
                       }
@@ -114,7 +114,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 38.0,
+                      "x": 34.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -143,11 +143,11 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 3.0,
+                            "fontSize": 5.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
-                              "left": 1.0,
+                              "left": 3.0,
                               "right": 0.0
                             }
                           },
@@ -162,12 +162,12 @@
                           "alpha": 1.0,
                           "drawPriority": 61,
                           "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
                             "a": 255
                           },
-                          "fontSize": 16,
+                          "fontSize": 14,
                           "text": "50% (15/30)"
                         }
                       }
@@ -183,13 +183,13 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 37.0,
+                      "width": 70.0,
                       "widthInv": "Grid",
-                      "height": 7.0,
+                      "height": 13.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
-                        "bot": -7.0,
+                        "bot": -15.0,
                         "left": 2.0,
                         "right": 2.0
                       }
@@ -221,16 +221,16 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.6000000238418579,
+                    "alpha": 0.8500000238418579,
                     "drawPriority": 59,
                     "size": {
-                      "x": 190.0,
-                      "y": 36.0
+                      "x": 183.0,
+                      "y": 34.0
                     },
                     "tintColor": {
-                      "r": 0,
-                      "g": 0,
-                      "b": 0,
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
                       "a": 255
                     },
                     "image": "Images/block.png",
@@ -287,7 +287,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 2.0,
+                "y": 5.0,
                 "z": 0.0
               },
               "scale": {
@@ -339,7 +339,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 10.0,
+                            "fontSize": 15.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -358,12 +358,12 @@
                           "alpha": 1.0,
                           "drawPriority": 56,
                           "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
                             "a": 255
                           },
-                          "fontSize": 52,
+                          "fontSize": 40,
                           "text": "Intro"
                         }
                       }
@@ -379,9 +379,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 60.0,
+                      "width": 100.0,
                       "widthInv": "Grid",
-                      "height": 15.0,
+                      "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 3.0,
@@ -414,16 +414,16 @@
                   "id": 3,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.8999999761581421,
+                    "alpha": 0.949999988079071,
                     "drawPriority": 54,
                     "size": {
-                      "x": 308.0,
-                      "y": 77.0
+                      "x": 261.0,
+                      "y": 53.0
                     },
                     "tintColor": {
-                      "r": 21,
-                      "g": 21,
-                      "b": 21,
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
                       "a": 255
                     },
                     "image": "Images/block.png",
@@ -446,7 +446,7 @@
               "style": {
                 "width": 1.0,
                 "widthInv": "Relative",
-                "height": 22.0,
+                "height": 30.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -539,7 +539,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -37.0,
+          "y": -33.0,
           "z": 0.0
         },
         "scale": {
@@ -563,7 +563,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 407.0,
+                "y": 274.0,
                 "z": 0.0
               },
               "scale": {
@@ -587,7 +587,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -765.0,
+                      "y": -625.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -610,7 +610,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -595.0,
+                      "y": -486.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -633,7 +633,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -425.0,
+                      "y": -347.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -656,7 +656,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -255.0,
+                      "y": -208.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -679,7 +679,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -85.0,
+                      "y": -69.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -702,7 +702,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 85.0,
+                      "y": 70.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -725,7 +725,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 255.0,
+                      "y": 209.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -748,7 +748,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 425.0,
+                      "y": 348.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -771,7 +771,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 595.0,
+                      "y": 487.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -794,7 +794,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 765.0,
+                      "y": 626.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -885,10 +885,10 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 90.0,
+                "width": 100.0,
                 "widthInv": "Grid",
-                "height": 170.0,
-                "heightInv": "Grid",
+                "height": 0.8999999761581421,
+                "heightInv": "Relative",
                 "margin": {
                   "top": 0.0,
                   "bot": 0.0,

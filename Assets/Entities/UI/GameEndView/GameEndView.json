@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 66.0,
+                "y": 71.0,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -108.0,
+                      "x": -78.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -104,9 +104,9 @@
                                 "hidden": false,
                                 "enabled": true,
                                 "style": {
-                                  "width": 20.0,
+                                  "width": 35.0,
                                   "widthInv": "Grid",
-                                  "height": 20.0,
+                                  "height": 35.0,
                                   "heightInv": "Grid",
                                   "margin": {
                                     "top": 0.0,
@@ -125,8 +125,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 93.0,
-                                  "y": 93.0
+                                  "x": 40.0,
+                                  "y": 40.0
                                 },
                                 "tintColor": {
                                   "r": 206,
@@ -190,9 +190,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 19.0,
+                            "width": 33.0,
                             "widthInv": "Grid",
-                            "height": 19.0,
+                            "height": 33.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -211,8 +211,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 89.0,
-                            "y": 89.0
+                            "x": 80.0,
+                            "y": 80.0
                           },
                           "tintColor": {
                             "r": 132,
@@ -246,7 +246,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
+                      "x": -2.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -299,9 +299,9 @@
                                 "hidden": true,
                                 "enabled": true,
                                 "style": {
-                                  "width": 20.0,
+                                  "width": 35.0,
                                   "widthInv": "Grid",
-                                  "height": 20.0,
+                                  "height": 35.0,
                                   "heightInv": "Grid",
                                   "margin": {
                                     "top": 0.0,
@@ -320,8 +320,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 93.0,
-                                  "y": 93.0
+                                  "x": 40.0,
+                                  "y": 40.0
                                 },
                                 "tintColor": {
                                   "r": 206,
@@ -385,9 +385,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 19.0,
+                            "width": 33.0,
                             "widthInv": "Grid",
-                            "height": 19.0,
+                            "height": 33.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -406,8 +406,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 89.0,
-                            "y": 89.0
+                            "x": 70.0,
+                            "y": 70.0
                           },
                           "tintColor": {
                             "r": 132,
@@ -441,7 +441,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 108.0,
+                      "x": 74.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -494,9 +494,9 @@
                                 "hidden": true,
                                 "enabled": true,
                                 "style": {
-                                  "width": 20.0,
+                                  "width": 35.0,
                                   "widthInv": "Grid",
-                                  "height": 20.0,
+                                  "height": 35.0,
                                   "heightInv": "Grid",
                                   "margin": {
                                     "top": 0.0,
@@ -515,8 +515,8 @@
                                 "alpha": 1.0,
                                 "drawPriority": 8,
                                 "size": {
-                                  "x": 93.0,
-                                  "y": 93.0
+                                  "x": 40.0,
+                                  "y": 40.0
                                 },
                                 "tintColor": {
                                   "r": 206,
@@ -580,9 +580,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 19.0,
+                            "width": 33.0,
                             "widthInv": "Grid",
-                            "height": 19.0,
+                            "height": 33.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -601,8 +601,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 89.0,
-                            "y": 89.0
+                            "x": 70.0,
+                            "y": 70.0
                           },
                           "tintColor": {
                             "r": 132,
@@ -642,9 +642,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 70.0,
+                      "width": 140.0,
                       "widthInv": "Grid",
-                      "height": 30.0,
+                      "height": 60.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -685,7 +685,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -149.0,
+                "y": -92.0,
                 "z": 0.0
               },
               "scale": {
@@ -737,7 +737,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 8.0,
+                            "fontSize": 10.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -761,7 +761,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 38,
+                          "fontSize": 20,
                           "text": "Continue"
                         }
                       }
@@ -777,12 +777,12 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 60.0,
+                      "width": 120.0,
                       "widthInv": "Grid",
-                      "height": 15.0,
+                      "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 5.0,
+                        "top": 15.0,
                         "bot": 0.0,
                         "left": 0.0,
                         "right": 0.0
@@ -803,8 +803,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 279.0,
-                      "y": 70.0
+                      "x": 238.0,
+                      "y": 40.0
                     },
                     "tintColor": {
                       "r": 143,
@@ -907,7 +907,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 170.0,
+                "y": 121.0,
                 "z": 0.0
               },
               "scale": {
@@ -978,12 +978,12 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "color": {
-                            "r": 0,
-                            "g": 0,
-                            "b": 0,
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
                             "a": 255
                           },
-                          "fontSize": 38,
+                          "fontSize": 16,
                           "text": "Level 1"
                         }
                       }
@@ -999,12 +999,12 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 80.9000015258789,
+                      "width": 140.0,
                       "widthInv": "Grid",
-                      "height": 14.300000190734863,
+                      "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": -1.0,
+                        "top": 4.0,
                         "bot": 0.0,
                         "left": 0.0,
                         "right": 0.0
@@ -1034,16 +1034,16 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 1.0,
+                    "alpha": 0.20000000298023224,
                     "drawPriority": 4,
                     "size": {
-                      "x": 376.0,
-                      "y": 67.0
+                      "x": 278.0,
+                      "y": 40.0
                     },
                     "tintColor": {
-                      "r": 199,
-                      "g": 199,
-                      "b": 199,
+                      "r": 0,
+                      "g": 0,
+                      "b": 0,
                       "a": 255
                     },
                     "image": "Images/block.png",
@@ -1059,7 +1059,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -23.0,
+                "y": 33.0,
                 "z": 0.0
               },
               "scale": {
@@ -1082,7 +1082,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -43.0,
+                      "x": -38.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1111,7 +1111,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 4.0,
+                            "fontSize": 5.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -1135,7 +1135,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 8,
                           "text": "Score: "
                         }
                       }
@@ -1145,7 +1145,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 4.0,
+                      "x": -12.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1174,7 +1174,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 4.0,
+                            "fontSize": 5.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -1198,7 +1198,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 8,
                           "text": "300"
                         }
                       }
@@ -1214,9 +1214,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 40.0,
+                      "width": 60.0,
                       "widthInv": "Grid",
-                      "height": 8.0,
+                      "height": 10.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -1255,8 +1255,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 186.0,
-                      "y": 38.0
+                      "x": 80.0,
+                      "y": 16.0
                     },
                     "tintColor": {
                       "r": 0,
@@ -1277,7 +1277,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -71.0,
+                "y": 9.0,
                 "z": 0.0
               },
               "scale": {
@@ -1300,7 +1300,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -43.0,
+                      "x": -38.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1329,7 +1329,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 4.0,
+                            "fontSize": 5.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -1353,7 +1353,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 8,
                           "text": "Time:  "
                         }
                       }
@@ -1363,7 +1363,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 3.0,
+                      "x": -12.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1392,7 +1392,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 4.0,
+                            "fontSize": 5.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -1416,7 +1416,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 8,
                           "text": "60s"
                         }
                       }
@@ -1432,9 +1432,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 40.0,
+                      "width": 60.0,
                       "widthInv": "Grid",
-                      "height": 8.0,
+                      "height": 10.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -1473,8 +1473,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 186.0,
-                      "y": 38.0
+                      "x": 80.0,
+                      "y": 16.0
                     },
                     "tintColor": {
                       "r": 0,
@@ -1500,9 +1500,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 80.0,
+                "width": 150.0,
                 "widthInv": "Grid",
-                "height": 86.0,
+                "height": 150.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -1550,8 +1550,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 372.0,
-                "y": 400.0
+                "x": 297.0,
+                "y": 297.0
               },
               "tintColor": {
                 "r": 239,
@@ -1562,7 +1562,7 @@
               "image": "Images/block.png",
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
-              "patchScale": 0.6000000238418579
+              "patchScale": 0.4000000059604645
             }
           },
           {
@@ -1684,7 +1684,7 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 522.0,
+          "x": 396.0,
           "y": 928.0
         },
         "color": {

@@ -6,6 +6,7 @@
 #include "Render/ETRenderNode.hpp"
 
 GameBoardMatchLogic::GameBoardMatchLogic() :
+    destroyEffectScale(1.f),
     minLineLen(3),
     maxLineLen(5) {
 }
@@ -16,6 +17,7 @@ GameBoardMatchLogic::~GameBoardMatchLogic() {
 void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher")) {
         classInfo->addField("destroyEffectId", &GameBoardMatchLogic::destroyEffectId);
+        classInfo->addField("destroyEffectScale", &GameBoardMatchLogic::destroyEffectScale);
     }
 }
 
@@ -110,8 +112,13 @@ void GameBoardMatchLogic::ET_destoryMatchedElems() {
     for(auto& elemId : mathElems) {
         ET_SendEvent(elemId, &ETGameBoardElem::ET_triggerDestroy);
 
+        int cellSize = 0;
+        ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
+
         Transform tm;
         ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
+
+        tm.scale *= destroyEffectScale / cellSize;
         ET_SendEvent(destroyEffectId, &ETParticlesSystem::ET_emitWithTm, tm);
     }
 }

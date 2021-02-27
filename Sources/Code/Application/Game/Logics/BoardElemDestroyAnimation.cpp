@@ -7,26 +7,31 @@
 #include "Render/ETRenderNode.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 void BoardElemDestroyAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<BoardElemDestroyAnimation>("BoardElemDestroyAnimation")) {
         classInfo->addField("startDelay", &BoardElemDestroyAnimation::startDelay);
         classInfo->addField("duration", &BoardElemDestroyAnimation::duration);
-        classInfo->addResourceField("soundEvent", ResourceType::SoundEvent, &BoardElemDestroyAnimation::setDestroySoundEvent);
+        classInfo->addField("endDelay", &BoardElemDestroyAnimation::endDelay);
+        classInfo->addResourceField("soundEvent", ResourceType::SoundEvent,
+            &BoardElemDestroyAnimation::setDestroySoundEvent);
     }
 }
 
 BoardElemDestroyAnimation::BoardElemDestroyAnimation() :
     startDelay(0.1f),
     duration(0.1f),
-    currDuration(-1.f) {
+    endDelay(0.1f),
+    currDuration(-1.f),
+    currState(State::Ended) {
 }
 
 BoardElemDestroyAnimation::~BoardElemDestroyAnimation() {
 }
 
 void BoardElemDestroyAnimation::init() {
-    ETNode<ETBoardElemDetroyAnimation>::connect(getEntityId());
+    ETNode<ETBoardElemDestroyAnimation>::connect(getEntityId());
 }
 
 void BoardElemDestroyAnimation::deinit() {
@@ -36,25 +41,47 @@ void BoardElemDestroyAnimation::deinit() {
 }
 
 void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
-    currDuration += dt;
-    if(currDuration < startDelay) {
-        return;
-    }
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
 
-    auto animDuration = currDuration - startDelay;
-    if(animDuration >= duration) {
-        currDuration = -1.f;
-        ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
-        tm.scale = Vec3(1.f);
-        ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimationEvents::ET_onDestroyAnimEnded);
-        ETNode<ETGameTimerEvents>::disconnect();
-    } else {
-        float prog = std::min(1.f, animDuration / duration);
-        auto scale = Math::Lerp(1.f, 0.f, prog);
-        tm.scale = Vec3(scale);
+    currDuration += dt;
+    switch(currState) {
+        case State::Starting: {
+            if(currDuration < startDelay) {
+                break;
+            }
+            currState = State::Animating;
+            [[fallthrough]];
+        }
+        case State::Animating: {
+            float animTime = currDuration - startDelay;
+            float prog = std::min(animTime / duration, 1.f);
+            float scale = Math::Lerp(1.f, 0.f, prog);
+            tm.scale = Vec3(scale);
+            if(animTime < duration) {
+                break;
+            }
+            currState = State::Finishing;
+            ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
+            [[fallthrough]];
+        }
+        case State::Finishing: {
+            if(currDuration < startDelay + duration + endDelay) {
+                return;
+            }
+            currState = State::Ended;
+            [[fallthrough]];
+        }
+        case State::Ended: {
+            tm.scale = Vec3(1.f);
+            ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimationEvents::ET_onDestroyAnimEnded);
+            ETNode<ETGameTimerEvents>::disconnect();
+            break;
+        }
+        default: {
+            assert(false && "Invalid anim state");
+        }
     }
 
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
@@ -65,11 +92,11 @@ void BoardElemDestroyAnimation::setDestroySoundEvent(const char* eventName) {
 }
 
 void BoardElemDestroyAnimation::ET_playDestroy() {
-    if(currDuration >= 0.f) {
-        LogWarning("[BoardElemDestroyAnimation::ET_playDestroy] Destroy animation already playing");
-        return;
-    }
+    assert(currState == State::Ended && "Invalid anim state");
+
+    currState = State::Starting;
     currDuration = 0.f;
+
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     destroySound.emit();
 }

@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 88.0,
+                "y": 63.0,
                 "z": 0.0
               },
               "scale": {
@@ -80,7 +80,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 6.0,
+                            "fontSize": 8.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 31,
+                          "fontSize": 21,
                           "text": "Resume"
                         }
                       }
@@ -120,13 +120,13 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 75.0,
+                      "width": 120.0,
                       "widthInv": "Grid",
-                      "height": 15.0,
+                      "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 2.0,
-                        "bot": 2.0,
+                        "top": 4.0,
+                        "bot": 4.0,
                         "left": 0.0,
                         "right": 0.0
                       }
@@ -146,8 +146,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 384.0,
-                      "y": 77.0
+                      "x": 314.0,
+                      "y": 53.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -209,7 +209,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -88.0,
+                "y": -65.0,
                 "z": 0.0
               },
               "scale": {
@@ -261,7 +261,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 6.0,
+                            "fontSize": 8.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -285,7 +285,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 31,
+                          "fontSize": 21,
                           "text": "Exit"
                         }
                       }
@@ -301,13 +301,13 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 75.0,
+                      "width": 120.0,
                       "widthInv": "Grid",
-                      "height": 15.0,
+                      "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 2.0,
-                        "bot": 2.0,
+                        "top": 4.0,
+                        "bot": 4.0,
                         "left": 0.0,
                         "right": 0.0
                       }
@@ -327,8 +327,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 384.0,
-                      "y": 77.0
+                      "x": 314.0,
+                      "y": 53.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -390,7 +390,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 0.0,
+                "y": -1.0,
                 "z": 0.0
               },
               "scale": {
@@ -442,7 +442,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 6.0,
+                            "fontSize": 8.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -466,7 +466,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 31,
+                          "fontSize": 21,
                           "text": "Restart"
                         }
                       }
@@ -482,13 +482,13 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 75.0,
+                      "width": 120.0,
                       "widthInv": "Grid",
-                      "height": 15.0,
+                      "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 2.0,
-                        "bot": 2.0,
+                        "top": 4.0,
+                        "bot": 4.0,
                         "left": 0.0,
                         "right": 0.0
                       }
@@ -508,8 +508,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 4,
                     "size": {
-                      "x": 384.0,
-                      "y": 77.0
+                      "x": 314.0,
+                      "y": 53.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -576,9 +576,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 80.0,
+                "width": 130.0,
                 "widthInv": "Grid",
-                "height": 70.0,
+                "height": 110.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -620,13 +620,13 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 2,
               "size": {
-                "x": 410.0,
-                "y": 359.0
+                "x": 366.0,
+                "y": 288.0
               },
               "tintColor": {
-                "r": 17,
-                "g": 17,
-                "b": 17,
+                "r": 35,
+                "g": 35,
+                "b": 35,
                 "a": 255
               },
               "image": "Images/block.png",

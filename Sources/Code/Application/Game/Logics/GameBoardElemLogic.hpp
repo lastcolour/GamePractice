@@ -10,7 +10,7 @@ class ReflectContext;
 
 class GameBoardElemLogic : public EntityLogic,
     public ETNode<ETGameBoardElem>,
-    public ETNode<ETBoardElemDetroyAnimationEvents> {
+    public ETNode<ETBoardElemDestroyAnimationEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -35,8 +35,8 @@ public:
     bool ET_canMatch() const override;
     bool ET_canSwitch() const override;
 
-    // ETBoardElemDetroyAnimationEvents
-    void ET_onDestroyAnimEnded() override; 
+    // ETBoardElemDestroyAnimationEvents
+    void ET_onDestroyAnimEnded() override;
 
 private:
 

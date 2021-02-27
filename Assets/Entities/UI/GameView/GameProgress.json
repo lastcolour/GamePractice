@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -16.0,
+          "y": -7.0,
           "z": 0.0
         },
         "scale": {
@@ -51,8 +51,8 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -102.0,
-                      "y": -1.0,
+                      "x": -59.0,
+                      "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 195.0,
-                            "y": 5.0
+                            "x": 115.0,
+                            "y": 2.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -103,13 +103,13 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 38.0,
+                            "width": 58.0,
                             "widthInv": "Grid",
-                            "height": 0.800000011920929,
+                            "height": 1.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
-                              "bot": 0.4000000059604645,
+                              "bot": 0.0,
                               "left": 1.0,
                               "right": 0.0
                             }
@@ -133,7 +133,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 40.0,
+                      "width": 60.0,
                       "widthInv": "Grid",
                       "height": 2.0,
                       "heightInv": "Grid",
@@ -151,11 +151,11 @@
                   "id": 2,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.5,
+                    "alpha": 0.30000001192092896,
                     "drawPriority": 4,
                     "size": {
-                      "x": 205.0,
-                      "y": 11.0
+                      "x": 119.0,
+                      "y": 4.0
                     },
                     "tintColor": {
                       "r": 255,
@@ -177,7 +177,7 @@
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Left",
-                      "yAlign": "Bot"
+                      "yAlign": "Center"
                     },
                     "children": [
                       [
@@ -229,7 +229,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 5.0,
+          "y": 3.0,
           "z": 0.0
         },
         "scale": {
@@ -252,7 +252,7 @@
           {
             "transform": {
               "pos": {
-                "x": 69.0,
+                "x": 29.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -281,12 +281,12 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "fontSize": 3.0,
+                      "fontSize": 7.0,
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
                         "left": 0.0,
-                        "right": 1.0
+                        "right": 2.0
                       }
                     },
                     "text": "Score:"
@@ -305,7 +305,7 @@
                       "b": 255,
                       "a": 255
                     },
-                    "fontSize": 16,
+                    "fontSize": 14,
                     "text": "Score:"
                   }
                 }
@@ -315,7 +315,7 @@
           {
             "transform": {
               "pos": {
-                "x": 100.0,
+                "x": 56.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -344,7 +344,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "fontSize": 3.0,
+                      "fontSize": 7.0,
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
@@ -368,7 +368,7 @@
                       "b": 255,
                       "a": 255
                     },
-                    "fontSize": 16,
+                    "fontSize": 14,
                     "text": "0"
                   }
                 }
@@ -404,13 +404,13 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 40.0,
+                "width": 60.0,
                 "widthInv": "Grid",
                 "height": 6.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
-                  "bot": 0.0,
+                  "bot": 1.0,
                   "left": 0.0,
                   "right": 0.0
                 }

@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 306.0,
+          "y": 277.0,
           "z": 0.0
         },
         "scale": {
@@ -81,8 +81,8 @@
                           "alpha": 1.0,
                           "drawPriority": 6,
                           "size": {
-                            "x": 256.0,
-                            "y": 256.0
+                            "x": 131.0,
+                            "y": 131.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -100,9 +100,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 50.0,
+                            "width": 60.0,
                             "widthInv": "Grid",
-                            "height": 50.0,
+                            "height": 60.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -125,9 +125,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 60.0,
+                      "width": 90.0,
                       "widthInv": "Grid",
-                      "height": 60.0,
+                      "height": 90.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -163,8 +163,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 308.0,
-                      "y": 308.0
+                      "x": 157.0,
+                      "y": 157.0
                     },
                     "tintColor": {
                       "r": 125,
@@ -224,7 +224,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -103.0,
+          "y": -94.0,
           "z": 0.0
         },
         "scale": {
@@ -313,7 +313,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -410.0,
+          "y": -372.0,
           "z": 0.0
         },
         "scale": {
@@ -336,7 +336,7 @@
           {
             "transform": {
               "pos": {
-                "x": -155.0,
+                "x": -106.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -390,8 +390,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 77.0,
-                            "y": 77.0
+                            "x": 40.0,
+                            "y": 40.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -434,9 +434,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 20.0,
+                      "width": 30.0,
                       "widthInv": "Grid",
-                      "height": 20.0,
+                      "height": 30.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -460,8 +460,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 103.0,
-                      "y": 103.0
+                      "x": 105.0,
+                      "y": 105.0
                     },
                     "tintColor": {
                       "r": 143,
@@ -478,7 +478,7 @@
           {
             "transform": {
               "pos": {
-                "x": 0.0,
+                "x": 13.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -532,8 +532,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 77.0,
-                            "y": 77.0
+                            "x": 40.0,
+                            "y": 40.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -576,9 +576,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 20.0,
+                      "width": 30.0,
                       "widthInv": "Grid",
-                      "height": 20.0,
+                      "height": 30.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -602,8 +602,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 103.0,
-                      "y": 103.0
+                      "x": 105.0,
+                      "y": 105.0
                     },
                     "tintColor": {
                       "r": 143,
@@ -620,7 +620,7 @@
           {
             "transform": {
               "pos": {
-                "x": 155.0,
+                "x": 132.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -674,8 +674,8 @@
                           "alpha": 1.0,
                           "drawPriority": 5,
                           "size": {
-                            "x": 77.0,
-                            "y": 77.0
+                            "x": 40.0,
+                            "y": 40.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -718,9 +718,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 20.0,
+                      "width": 30.0,
                       "widthInv": "Grid",
-                      "height": 20.0,
+                      "height": 30.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -744,8 +744,8 @@
                     "alpha": 1.0,
                     "drawPriority": 4,
                     "size": {
-                      "x": 103.0,
-                      "y": 103.0
+                      "x": 53.0,
+                      "y": 53.0
                     },
                     "tintColor": {
                       "r": 143,

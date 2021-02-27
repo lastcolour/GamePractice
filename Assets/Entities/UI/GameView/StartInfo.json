@@ -56,7 +56,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "fontSize": 13.0,
+                      "fontSize": 16.0,
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
@@ -80,7 +80,7 @@
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 67,
+                    "fontSize": 32,
                     "text": "GO!"
                   }
                 },
@@ -137,9 +137,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 60.0,
+                "width": 100.0,
                 "widthInv": "Grid",
-                "height": 20.0,
+                "height": 30.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -246,8 +246,8 @@
               "alpha": 1.0,
               "drawPriority": 35,
               "size": {
-                "x": 308.0,
-                "y": 103.0
+                "x": 198.0,
+                "y": 60.0
               },
               "tintColor": {
                 "r": 255,

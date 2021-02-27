@@ -1,6 +1,6 @@
 {
     "UIConfig":{
-        "verticalGrid":200,
+        "horizontalGrid":200,
         "views":{
             "backgroundView":"UI/BackgroundView/BackgroundView.json",
             "mainView":"UI/MainView/MainView.json",

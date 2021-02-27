@@ -96,21 +96,28 @@ void simulateVortexField(const GravityField& field, int activeCount, std::vector
     }
 }
 
-void triggerSubEmitters(int particleId, const Vec2& pt, SubEmitterTriggerEvent event, const SimulationConfig& simConfig) {
+void triggerSubEmitters(int particleId, const Vec2& pt, SubEmitterTriggerEvent event,
+    const SimulationConfig& simConfig, const EmitRequest& emitReq) {
     for(auto& sub : simConfig.subEmittorsConfig.subEmitters) {
         if(!sub.entId.isValid()) {
             continue;
         }
         if(sub.event == SubEmitterTriggerEvent::OnParticleLive) {
             if(event == SubEmitterTriggerEvent::OnParticleSpawn) {
-                ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, particleId, pt);
+                Transform spawnTm;
+                spawnTm.pt = Vec3(pt.x, pt.y, 0.f);
+                spawnTm.scale = emitReq.tm.scale;
+                ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, particleId, spawnTm);
             } else if(event == SubEmitterTriggerEvent::OnParticleLive) {
                 ET_SendEvent(sub.entId, &ETParticlesSystem::ET_updateSubEmitter, particleId, pt);
             } else if(event == SubEmitterTriggerEvent::OnParticleDeath) {
                 ET_SendEvent(sub.entId, &ETParticlesSystem::ET_stopSubEmitter, particleId);
             }
         } else if(sub.event == event) {
-            ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, particleId, pt);
+            Transform spawnTm;
+            spawnTm.pt = Vec3(pt.x, pt.y, 0.f);
+            spawnTm.scale = emitReq.tm.scale;
+            ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, particleId, spawnTm);
         }
     }
 }
@@ -140,7 +147,8 @@ void EmitterParticles::removeOld(const SimulationConfig& simConfig, float dt) {
             }
             ++j;
         } else {
-            triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleDeath, simConfig);
+            triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleDeath,
+                simConfig, emitReq);
         }
     }
     activeCount = j;
@@ -268,7 +276,8 @@ void EmitterParticles::emitNew(const SimulationConfig& simConfig, float dt) {
     for(int i = 0; i < emitCount; ++i) {
         auto& p = particles[i];
         spawnNewParticle(simConfig, p);
-        triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleSpawn, simConfig);
+        triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleSpawn,
+            simConfig, emitReq);
     }
 
     activeCount += emitCount;
@@ -287,7 +296,8 @@ void EmitterParticles::moveAlive(const SimulationConfig& simConfig, float dt) {
         p.rot += p.rotSpeed * dt;
         p.rotSpeed += simConfig.movement.rotationAcc * dt;
 
-        triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleLive, simConfig);
+        triggerSubEmitters(p.id, p.pt, SubEmitterTriggerEvent::OnParticleLive,
+            simConfig, emitReq);
     }
 }
 
@@ -344,7 +354,8 @@ void EmitterParticles::updateState(const SimulationConfig& simConfig, float dt) 
                 break;
             }
             emissionState = EmissionState::Alive;
-            triggerSubEmitters(-1, Vec2(emitReq.tm.pt.x, emitReq.tm.pt.y), SubEmitterTriggerEvent::OnStart, simConfig);
+            triggerSubEmitters(-1, Vec2(emitReq.tm.pt.x, emitReq.tm.pt.y), SubEmitterTriggerEvent::OnStart,
+                simConfig, emitReq);
             spawnedCount = 0;
             duration = 0.f;
             emitFracTime = 0.f;
@@ -367,7 +378,8 @@ void EmitterParticles::updateState(const SimulationConfig& simConfig, float dt) 
             if(activeCount == 0) {
                 emissionState = EmissionState::Finished;
                 activeCount = 0;
-                triggerSubEmitters(-1, Vec2(emitReq.tm.pt.x, emitReq.tm.pt.y), SubEmitterTriggerEvent::OnEnd, simConfig);
+                triggerSubEmitters(-1, Vec2(emitReq.tm.pt.x, emitReq.tm.pt.y), SubEmitterTriggerEvent::OnEnd,
+                    simConfig, emitReq);
             }
             break;
         }

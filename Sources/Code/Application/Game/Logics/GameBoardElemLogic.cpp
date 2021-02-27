@@ -31,7 +31,7 @@ void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
 
 void GameBoardElemLogic::init() {
     ETNode<ETGameBoardElem>::connect(getEntityId());
-    ETNode<ETBoardElemDetroyAnimationEvents>::connect(getEntityId());
+    ETNode<ETBoardElemDestroyAnimationEvents>::connect(getEntityId());
 }
 
 void GameBoardElemLogic::deinit() {
@@ -65,9 +65,9 @@ void GameBoardElemLogic::ET_triggerDestroy() {
         LogError("[GameBoardElemLogic::ET_triggerDestroy] The element already destroying");
         return;
     }
-    if(ET_IsExistNode<ETBoardElemDetroyAnimation>(getEntityId())) {
+    if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
         lifeState = EBoardElemLifeState::Destroying;
-        ET_SendEvent(getEntityId(), &ETBoardElemDetroyAnimation::ET_playDestroy);
+        ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimation::ET_playDestroy);
     } else {
         ET_onDestroyAnimEnded();
     }

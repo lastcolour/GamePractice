@@ -38,6 +38,7 @@ private:
 private:
 
     EntityId destroyEffectId;
+    float destroyEffectScale;
     int minLineLen;
     int maxLineLen;
 };

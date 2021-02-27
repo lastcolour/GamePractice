@@ -218,7 +218,6 @@ void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
     emitReq.rootParticleId = InvalidRootParticleId;
     emitReq.syncWithSystemTm = false;
     emitReq.tm = emitTm;
-    emitReq.tm.scale *= normScale;
 
     pendingEmits.emplace_back(emitReq);
     markForSyncWithRender();
@@ -244,7 +243,7 @@ void ParticlesSystem::ET_destoryAll() {
     emittersPool.asyncDestroyAll();
 }
 
-void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Vec2& pt) {
+void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) {
     if(!proxyNode) {
         return;
     }
@@ -254,8 +253,7 @@ void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Vec2& pt) {
     EmitRequest emitReq;
     emitReq.rootParticleId = rootParticleId;
     emitReq.syncWithSystemTm = false;
-    emitReq.tm.pt = Vec3(pt, 0.f);
-    emitReq.tm.scale *= normScale;
+    emitReq.tm = spawnTm;
 
     emittersPool.createEmitter(emitReq);
 }
