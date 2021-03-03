@@ -58,7 +58,7 @@ void SoundEventTable::load() {
         return;
     }
     for(auto& info : eventsInfo) {
-        info.volume = Audio::CovertToExpVolume(info.volume);
+        info.volume = Audio::ConvertToExpVolume(info.volume);
         std::unique_ptr<SoundEventNode> eventNode(
             new SoundEventNode(GetETSystem()->createNewEntityId(), &info));
         eventNodes[info.name] = std::move(eventNode);

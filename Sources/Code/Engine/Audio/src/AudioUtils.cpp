@@ -14,7 +14,7 @@ const float EXP_VOLUME_B = log(EXP_VOLUME_POWER);
 
 namespace Audio {
 
-float CovertToExpVolume(float value) {
+float ConvertToExpVolume(float value) {
     if(value <= 0.001) {
         return 0.f;
     }

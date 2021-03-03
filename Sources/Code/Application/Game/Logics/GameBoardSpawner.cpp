@@ -45,6 +45,9 @@ void GameBoardSpawner::ET_loadPendingLevel() {
     }
 
     Transform tm;
+
+    ET_SendEvent(&ETGameBoardAnimation::ET_resetZoom);
+
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     ET_SendEvent(gameBoardId, &ETEntity::ET_setTransform, tm);
     ET_SendEvent(gameBoardId, &ETEntity::ET_setParent, getEntityId());

@@ -146,7 +146,7 @@ int GetValueOnGrind(float val) {
     return uiConfig->getSizeOnGrind(val);
 }
 
-float CovertValueFromGrid(int val) {
+float ConvertValueFromGrid(int val) {
     auto uiConfig = ET_getShared<UIConfig>();
     return uiConfig->convertFromGrid(val);
 }

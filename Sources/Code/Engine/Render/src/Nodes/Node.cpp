@@ -24,6 +24,7 @@ void Node::init() {
 }
 
 void Node::setAlpha(float newAlpha) {
+    assert(alpha <= 1.f && "Invalid alpha");
     alpha = newAlpha;
 }
 

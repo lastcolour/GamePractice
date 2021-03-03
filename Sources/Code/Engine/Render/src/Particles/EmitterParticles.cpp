@@ -67,10 +67,10 @@ float getRandomLifetime(Math::RandomFloatGenerator& gen, float val, float var) {
     return val;
 }
 
-void simulateSimpleField(const GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+void simulateSimpleField(const GravityField& field, int activeCount, std::vector<Particle>& particles) {
     float radSq = field.radius * field.radius;
     float fieldAngle = Math::Deg2Rad(field.dir);
-    Vec2 dtAcc = Vec2(cos(fieldAngle), sin(fieldAngle)) * field.value * dt;
+    Vec2 dtAcc = Vec2(cos(fieldAngle), sin(fieldAngle)) * field.value;
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         Vec2 dir = p.pt - field.offset;
@@ -81,7 +81,7 @@ void simulateSimpleField(const GravityField& field, int activeCount, std::vector
     }
 }
 
-void simulateVortexField(const GravityField& field, int activeCount, std::vector<Particle>& particles, float dt) {
+void simulateVortexField(const GravityField& field, int activeCount, std::vector<Particle>& particles) {
     float radSq = field.radius * field.radius;
     float fieldAngle = Math::Deg2Rad(field.dir);
     for(int i = 0; i < activeCount; ++i) {
@@ -92,7 +92,7 @@ void simulateVortexField(const GravityField& field, int activeCount, std::vector
         }
         dir.normalize();
         dir = Math::RotateVec2D(dir, fieldAngle);
-        p.acc += dir * field.value * dt;
+        p.acc += dir * field.value;
     }
 }
 
@@ -335,11 +335,11 @@ void EmitterParticles::simulateGravities(const SimulationConfig& simConfig, floa
     for(auto& field : simConfig.gravity.fields) {
         switch(field.type) {
             case GravityType::Simple: {
-                simulateSimpleField(field, activeCount, particles, dt);
+                simulateSimpleField(field, activeCount, particles);
                 break;
             }
             case GravityType::Vortex: {
-                simulateVortexField(field, activeCount, particles, dt);
+                simulateVortexField(field, activeCount, particles);
                 break;
             }
         }

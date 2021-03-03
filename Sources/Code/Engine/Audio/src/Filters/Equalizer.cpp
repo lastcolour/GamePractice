@@ -114,7 +114,7 @@ void Equalizer::setSetup(const EqualizerSetup& newSetup) {
     currState.rfilters[2] = currState.lfilters[2];
     currState.rfilters[3] = currState.lfilters[3];
     currState.rfilters[4] = currState.lfilters[4];
-    currState.volume = Audio::CovertToExpVolume(newSetup.volume);
+    currState.volume = Audio::ConvertToExpVolume(newSetup.volume);
 
     setup = newSetup;
     performLerp = true;

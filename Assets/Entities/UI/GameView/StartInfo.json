@@ -80,7 +80,7 @@
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 32,
+                    "fontSize": 42,
                     "text": "GO!"
                   }
                 },
@@ -246,8 +246,8 @@
               "alpha": 1.0,
               "drawPriority": 35,
               "size": {
-                "x": 198.0,
-                "y": 60.0
+                "x": 261.0,
+                "y": 79.0
               },
               "tintColor": {
                 "r": 255,

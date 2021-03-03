@@ -797,7 +797,8 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         auto entityId = getRef<EntityId>(valuePtr);
         auto childIdSequence = getChildIdSequenceFromEntityId(ctx, entityId);
         JSONNode valNode;
-        assert(valNode.setArray() && "Can't set node to array type");
+        auto setRes = valNode.setArray();
+        assert(setRes && "Can't set node to array type");
         for(auto& val : childIdSequence) {
             valNode.write(val);
         }

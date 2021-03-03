@@ -52,4 +52,15 @@ struct ETGameBoardElemsPool {
     virtual void ET_addElemsToSpawn(const ElementDescriptor& newElemDescr) = 0;
 };
 
+struct ETGameBoardAnimation {
+    virtual ~ETGameBoardAnimation() = default;
+    virtual void ET_zoomOut() = 0;
+    virtual void ET_resetZoom() = 0;
+};
+
+struct ETGameBoardAnimationEvents {
+    virtual ~ETGameBoardAnimationEvents() = default;
+    virtual void ET_onZoomOutPlayed() = 0;
+};
+
 #endif /* __ET_GAME_BOARD_HPP__ */

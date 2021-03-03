@@ -38,17 +38,17 @@
             "id": 3,
             "data": {
               "isVisible": true,
-              "alpha": 0.6000000238418579,
+              "alpha": 0.800000011920929,
               "drawPriority": 0,
               "size": {
                 "x": 150.0,
                 "y": 150.0
               },
               "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 0
+                "r": 245,
+                "g": 245,
+                "b": 245,
+                "a": 255
               },
               "image": "Images/block.png",
               "horizontal": 0.30000001192092896,
@@ -58,50 +58,9 @@
           }
         ]
       }
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Effects/ElemDestroy.json",
-      "id": 1003,
-      "internal": false
     }
   ],
   "logics": [
-    {
-      "type": "GameBoardMatcher",
-      "id": 3,
-      "data": {
-        "destroyEffectId": [
-          1003
-        ],
-        "destroyEffectScale": 250.0
-      }
-    },
-    {
-      "type": "GameBoardInteraction",
-      "id": 5,
-      "data": {
-        "switchDuration": 0.20000000298023224,
-        "switchSound": "elemSwitch_01"
-      }
-    },
     {
       "type": "GameEndTimer",
       "id": 6,
@@ -122,14 +81,6 @@
         "threeStars": {
           "minScore": 100
         }
-      }
-    },
-    {
-      "type": "GameBoardAnimation",
-      "id": 9,
-      "data": {
-        "minScale": 0.8999999761581421,
-        "scaleDuration": 0.5
       }
     },
     {
@@ -164,8 +115,8 @@
       "type": "GameBoard",
       "id": 11,
       "data": {
-        "fallSpeed": 4.0,
-        "fallAcceleration": 15.0,
+        "fallSpeed": 0.0,
+        "fallAcceleration": 30.0,
         "size": {
           "x": 10,
           "y": 10

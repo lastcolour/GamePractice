@@ -70,12 +70,12 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     }
 
     int cellSize = 0;
-    ET_SendEventReturn(cellSize, getEntityId(), &ETGameBoard::ET_getCellSize);
+    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
     if(moveDir.getLenght() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
         return;
     }
     EntityId nextElemId;
-    ET_SendEventReturn(nextElemId, getEntityId(), &ETGameBoard::ET_getElemByBoardPos, nextBoardPt);
+    ET_SendEventReturn(nextElemId, &ETGameBoard::ET_getElemByBoardPos, nextBoardPt);
     if(!nextElemId.isValid()) {
         return;
     }
@@ -95,7 +95,7 @@ void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& 
     {
     case EActionType::Press: {
         EntityId elemId;
-        ET_SendEventReturn(elemId, getEntityId(), &ETGameBoard::ET_getElemByPos, pt);
+        ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByPos, pt);
         if(!elemId.isValid()) {
             break;
         }
@@ -144,15 +144,15 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
     while(it != switchTasks.end()) {
         auto& task = *it;
         if(task.duration > switchDuration) {
-            ET_SendEvent(getEntityId(), &ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
+            ET_SendEvent(&ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
 
             int drawPriority = 0;
             ET_SendEventReturn(drawPriority, task.firstId, &ETRenderNode::ET_getDrawPriority);
             drawPriority -= 1;
             ET_SendEvent(task.firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
 
-            ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Static);
-            ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Static);
+            ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Static);
+            ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Static);
             isNeedUpdateBoard = true;
             it = switchTasks.erase(it);
         } else {
@@ -161,7 +161,7 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
     }
 
     if(isNeedUpdateBoard) {
-        ET_SendEvent(getEntityId(), &ETGameBoard::ET_matchElements);
+        ET_SendEvent(&ETGameBoard::ET_matchElements);
     }
 }
 
@@ -180,11 +180,11 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
 
     task.firstId = firstId;
     ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getLocalTransform);
-    ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Switching);
+    ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Switching);
 
     task.secondId = secondId;
     ET_SendEventReturn(task.secondTm, secondId, &ETEntity::ET_getLocalTransform);
-    ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setMoveState, EBoardElemMoveState::Switching);
+    ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Switching);
 
     switchTasks.push_back(task);
 }
@@ -203,7 +203,7 @@ void GameBoardInteractionLogic::setActiveElem(EntityId elemId) {
         return;
     }
     if(elemId.isValid()) {
-        ET_SendEventReturn(startPt, getEntityId(), &ETGameBoard::ET_getElemBoardPos, elemId);
+        ET_SendEventReturn(startPt, &ETGameBoard::ET_getElemBoardPos, elemId);
         ET_SendEvent(elemId, &ETGameBoardElem::ET_setSelected, true);
     } else {
         startPt = Vec2i(-1);

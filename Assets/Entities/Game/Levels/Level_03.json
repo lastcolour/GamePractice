@@ -35,20 +35,20 @@
           },
           {
             "type": "NinePatchImageLogic",
-            "id": 3,
+            "id": 4,
             "data": {
               "isVisible": true,
-              "alpha": 0.6000000238418579,
+              "alpha": 0.800000011920929,
               "drawPriority": 0,
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 1040.0,
+                "y": 1040.0
               },
               "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 0
+                "r": 245,
+                "g": 245,
+                "b": 245,
+                "a": 255
               },
               "image": "Images/block.png",
               "horizontal": 0.30000001192092896,
@@ -62,25 +62,10 @@
   ],
   "logics": [
     {
-      "type": "GameBoardMatcher",
-      "id": 3,
-      "data": {
-        "destroyEffectId": []
-      }
-    },
-    {
-      "type": "GameBoardInteraction",
-      "id": 5,
-      "data": {
-        "switchDuration": 0.20000000298023224,
-        "switchSound": "elemSwitch_01"
-      }
-    },
-    {
       "type": "GameEndTimer",
       "id": 6,
       "data": {
-        "gameDuration": 10.0
+        "gameDuration": 300.0
       }
     },
     {
@@ -88,22 +73,14 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 5
+          "minScore": 30
         },
         "twoStars": {
-          "minScore": 10
+          "minScore": 50
         },
         "threeStars": {
-          "minScore": 15
+          "minScore": 100
         }
-      }
-    },
-    {
-      "type": "GameBoardAnimation",
-      "id": 9,
-      "data": {
-        "minScale": 0.8999999761581421,
-        "scaleDuration": 0.5
       }
     },
     {

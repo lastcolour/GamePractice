@@ -92,7 +92,7 @@ void SoundNode::ET_setLooped(bool flag) {
 }
 
 void SoundNode::ET_setVolume(float newVolume) {
-    volume = Audio::CovertToExpVolume(newVolume);
+    volume = Audio::ConvertToExpVolume(newVolume);
 }
 
 bool SoundNode::ET_isPlaying() const {

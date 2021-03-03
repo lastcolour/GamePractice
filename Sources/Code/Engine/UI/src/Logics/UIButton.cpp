@@ -19,8 +19,8 @@ bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
     auto diff = currPt - pressPt;
 
     Vec2 shift(0);
-    shift.x = UI::CovertValueFromGrid(diff.y);
-    shift.y = UI::CovertValueFromGrid(diff.x);
+    shift.x = UI::ConvertValueFromGrid(diff.y);
+    shift.y = UI::ConvertValueFromGrid(diff.x);
 
     if(shift.getLenght() > MOVE_AWAY_GRID_LEN) {
         return true;

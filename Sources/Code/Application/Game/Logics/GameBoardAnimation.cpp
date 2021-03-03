@@ -48,3 +48,11 @@ void GameBoardAnimation::ET_zoomOut() {
     currDuration = 0.f;
     ETNode<ETGameTimerEvents>::connect(getEntityId());
 }
+
+void GameBoardAnimation::ET_resetZoom() {
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    tm.scale = Vec3(1.f);
+
+    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+}

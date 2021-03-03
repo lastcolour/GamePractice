@@ -75,7 +75,8 @@ bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, Memor
 
 bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, JSONNode& node) {
     int sz = static_cast<int>(sizeFunc(valuePtr));
-    assert(node.setArray() && "Can't set node to array");
+    auto setRes = node.setArray();
+    assert(setRes && "Can't set node to array");
     for(int i = 0; i < sz; ++i) {
         auto elem = getElemFunc(i, valuePtr);
         if(!elemValue.writeValueTo(ctx, elem, elem, node)) {

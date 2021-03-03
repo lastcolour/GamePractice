@@ -1,0 +1,80 @@
+{
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Effects/ElemDestroy.json",
+      "id": 1,
+      "internal": false
+    }
+  ],
+  "logics": [
+    {
+      "type": "UIBox",
+      "id": 1,
+      "data": {
+        "hidden": false,
+        "enabled": true,
+        "style": {
+          "width": 0.949999988079071,
+          "widthInv": "Relative",
+          "height": 0.800000011920929,
+          "heightInv": "Relative",
+          "margin": {
+            "top": 0.0,
+            "bot": 0.0,
+            "left": 0.0,
+            "right": 0.0
+          }
+        }
+      }
+    },
+    {
+      "type": "GameBoardSpawner",
+      "id": 2,
+      "data": {}
+    },
+    {
+      "type": "GameBoardMatcher",
+      "id": 3,
+      "data": {
+        "destroyEffectId": [
+          1
+        ],
+        "destroyEffectScale": 250.0
+      }
+    },
+    {
+      "type": "GameBoardInteraction",
+      "id": 4,
+      "data": {
+        "switchDuration": 0.30000001192092896,
+        "switchSound": "elemSwitch_01"
+      }
+    },
+    {
+      "type": "GameBoardAnimation",
+      "id": 5,
+      "data": {
+        "minScale": 0.800000011920929,
+        "scaleDuration": 0.30000001192092896
+      }
+    }
+  ]
+}

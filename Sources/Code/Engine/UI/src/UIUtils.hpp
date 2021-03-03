@@ -27,7 +27,7 @@ void SetLocalTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
 
 int GetValueOnGrind(float val);
 
-float CovertValueFromGrid(int val);
+float ConvertValueFromGrid(int val);
 
 Vec2i CalculateBoxSize(const UIBoxStyle& style);
 

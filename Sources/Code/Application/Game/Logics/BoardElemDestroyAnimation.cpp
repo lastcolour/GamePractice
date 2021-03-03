@@ -35,7 +35,7 @@ void BoardElemDestroyAnimation::init() {
 }
 
 void BoardElemDestroyAnimation::deinit() {
-    if(currDuration >= 0.f) {
+    if(currState != State::Ended) {
         ET_onGameTick(1024.f);
     }
 }
@@ -75,7 +75,7 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
         }
         case State::Ended: {
             tm.scale = Vec3(1.f);
-            ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimationEvents::ET_onDestroyAnimEnded);
+            ET_SendEvent(getEntityId(), &ETGameBoardElem::ET_onDestroyPlayed);
             ETNode<ETGameTimerEvents>::disconnect();
             break;
         }

@@ -5,9 +5,10 @@
 #include "Core/ETLogger.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
+#include <cassert>
+
 GameBoardElemLogic::GameBoardElemLogic() :
-    lifeState(EBoardElemLifeState::Void),
-    moveState(EBoardElemMoveState::Static),
+    state(EBoardElemState::Static),
     type(EBoardElemType::Yellow) {
 }
 
@@ -31,29 +32,17 @@ void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
 
 void GameBoardElemLogic::init() {
     ETNode<ETGameBoardElem>::connect(getEntityId());
-    ETNode<ETBoardElemDestroyAnimationEvents>::connect(getEntityId());
 }
 
 void GameBoardElemLogic::deinit() {
 }
 
-void GameBoardElemLogic::ET_setMoveState(EBoardElemMoveState newState) {
-    moveState = newState;
+void GameBoardElemLogic::ET_setElemState(EBoardElemState newState) {
+    state = newState;
 }
 
-EBoardElemMoveState GameBoardElemLogic::ET_getMoveState() const {
-    return moveState;
-}
-
-void GameBoardElemLogic::ET_setLifeState(EBoardElemLifeState newState) {
-    lifeState = newState;
-    if(lifeState == EBoardElemLifeState::Alive) {
-        ET_SendEvent(getEntityId(), &ETRenderNode::ET_show);
-    }
-}
-
-EBoardElemLifeState GameBoardElemLogic::ET_getLifeState() const {
-    return lifeState;
+EBoardElemState GameBoardElemLogic::ET_getElemState() const {
+    return state;
 }
 
 EBoardElemType GameBoardElemLogic::ET_getType() const {
@@ -61,19 +50,19 @@ EBoardElemType GameBoardElemLogic::ET_getType() const {
 }
 
 void GameBoardElemLogic::ET_triggerDestroy() {
-    if(lifeState == EBoardElemLifeState::Destroying) {
-        LogError("[GameBoardElemLogic::ET_triggerDestroy] The element already destroying");
-        return;
-    }
+    assert(state == EBoardElemState::Static && "Invalid elem state");
+
+    state = EBoardElemState::Destroying;
     if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
-        lifeState = EBoardElemLifeState::Destroying;
         ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimation::ET_playDestroy);
     } else {
-        ET_onDestroyAnimEnded();
+        ET_onDestroyPlayed();
     }
 }
 
 void GameBoardElemLogic::ET_setSelected(bool flag) {
+    assert((state == EBoardElemState::Static || state == EBoardElemState::Switching) && "Invalid elem state");
+
     if(flag) {
         ET_SendEvent(getEntityId(), &ETGameBoardElemSelectAnimation::ET_playSelect);
     } else {
@@ -81,15 +70,36 @@ void GameBoardElemLogic::ET_setSelected(bool flag) {
     }
 }
 
-void GameBoardElemLogic::ET_onDestroyAnimEnded() {
-    lifeState = EBoardElemLifeState::Void;
-    ET_SendEvent(&ETGameBoard::ET_matchElements);
-    ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
+bool GameBoardElemLogic::ET_canMatch() const {
+    return state == EBoardElemState::Static;
 }
 
-bool GameBoardElemLogic::ET_canMatch() const {
-    return moveState == EBoardElemMoveState::Static && lifeState == EBoardElemLifeState::Alive;
-}
 bool GameBoardElemLogic::ET_canSwitch() const {
-    return moveState == EBoardElemMoveState::Static && lifeState == EBoardElemLifeState::Alive;
+    return state == EBoardElemState::Static;
+}
+
+void GameBoardElemLogic::ET_triggerLand() {
+    assert(state == EBoardElemState::Falling && "Invalid elem state");
+
+    state = EBoardElemState::Landing;
+    if(ET_IsExistNode<ETGameBoardElemLandAnimation>(getEntityId())) {
+        ET_SendEvent(getEntityId(), &ETGameBoardElemLandAnimation::ET_playLand);
+    } else {
+        ET_onLandPlayed();
+    }
+}
+
+void GameBoardElemLogic::ET_onLandPlayed() {
+    assert(state == EBoardElemState::Landing && "Invalid elem state");
+
+    state = EBoardElemState::Static;
+    ET_SendEvent(&ETGameBoard::ET_matchElements);
+}
+
+void GameBoardElemLogic::ET_onDestroyPlayed() {
+    assert(state == EBoardElemState::Destroying && "Invalid elem state");
+
+    state = EBoardElemState::Destroyed;
+    ET_SendEvent(&ETGameBoard::ET_matchElements);
+    ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
 }

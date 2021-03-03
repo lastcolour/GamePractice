@@ -4,7 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Core/ETPrimitives.hpp"
 #include "Game/ETGameTimer.hpp"
-#include "Game/ETGameElem.hpp"
+#include "Game/ETGameBoard.hpp"
 #include "Math/Vector.hpp"
 
 class ReflectContext;
@@ -27,6 +27,7 @@ public:
 
     // ETGameBoardAnimation
     void ET_zoomOut() override;
+    void ET_resetZoom() override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;

@@ -37,7 +37,8 @@ void JobTreeRunTimeTracker::collectData() {
             tasksData.push_back(record);
         } else {
             auto& record = tasksData[i - 1];
-            assert(record.task == job->getTask() && "Invalid run task");
+            record.task = job->getTask();
+            assert(record.task && "Invalid run task");
             record.times.push_back({jobRunTime, jobQueueTime});
         }
         jobs.pop_back();

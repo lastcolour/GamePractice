@@ -1,16 +1,13 @@
 #ifndef __ET_GAME_ELEM_HPP__
 #define __ET_GAME_ELEM_HPP__
 
-enum class EBoardElemMoveState {
-    Falling,
+enum class EBoardElemState {
+    Static = 0,
+    Falling = 0,
     Switching,
-    Static,
-};
-
-enum class EBoardElemLifeState {
-    Void = 0,
-    Alive,
-    Destroying
+    Landing,
+    Destroying,
+    Destroyed
 };
 
 enum class EBoardElemType {
@@ -24,25 +21,21 @@ enum class EBoardElemType {
 
 struct ETGameBoardElem {
     virtual ~ETGameBoardElem() = default;
-    virtual void ET_setMoveState(EBoardElemMoveState newState) = 0;
-    virtual EBoardElemMoveState ET_getMoveState() const = 0;
-    virtual void ET_setLifeState(EBoardElemLifeState newState) = 0;
-    virtual EBoardElemLifeState ET_getLifeState() const = 0;
+    virtual void ET_setElemState(EBoardElemState newState) = 0;
+    virtual EBoardElemState ET_getElemState() const = 0;
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy() = 0;
+    virtual void ET_triggerLand() = 0;
     virtual void ET_setSelected(bool flag) = 0;
     virtual bool ET_canMatch() const = 0;
     virtual bool ET_canSwitch() const = 0;
+    virtual void ET_onLandPlayed() = 0;
+    virtual void ET_onDestroyPlayed() = 0;
 };
 
 struct ETBoardElemDestroyAnimation {
     virtual ~ETBoardElemDestroyAnimation() = default;
     virtual void ET_playDestroy() = 0;
-};
-
-struct ETBoardElemDestroyAnimationEvents {
-    virtual ~ETBoardElemDestroyAnimationEvents() = default;
-    virtual void ET_onDestroyAnimEnded() = 0;
 };
 
 struct ETGameBoardElemSelectAnimation {
@@ -51,14 +44,9 @@ struct ETGameBoardElemSelectAnimation {
     virtual void ET_playDeselect() = 0;
 };
 
-struct ETGameBoardAnimation {
-    virtual ~ETGameBoardAnimation() = default;
-    virtual void ET_zoomOut() = 0;
-};
-
-struct ETGameBoardAnimationEvents {
-    virtual ~ETGameBoardAnimationEvents() = default;
-    virtual void ET_onZoomOutPlayed() = 0;
+struct ETGameBoardElemLandAnimation {
+    virtual ~ETGameBoardElemLandAnimation() = default;
+    virtual void ET_playLand() = 0;
 };
 
 #endif /* __ET_GAME_ELEM_HPP__ */

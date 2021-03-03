@@ -9,8 +9,7 @@
 class ReflectContext;
 
 class GameBoardElemLogic : public EntityLogic,
-    public ETNode<ETGameBoardElem>,
-    public ETNode<ETBoardElemDestroyAnimationEvents> {
+    public ETNode<ETGameBoardElem> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -25,23 +24,20 @@ public:
     void deinit() override;
 
     // ETGameBoardElem
-    void ET_setMoveState(EBoardElemMoveState newState) override;
-    EBoardElemMoveState ET_getMoveState() const override;
-    void ET_setLifeState(EBoardElemLifeState newState) override;
-    EBoardElemLifeState ET_getLifeState() const override;
+    void ET_setElemState(EBoardElemState newState) override;
+    EBoardElemState ET_getElemState() const override;
     EBoardElemType ET_getType() const override;
     void ET_triggerDestroy() override;
+    void ET_triggerLand() override;
     void ET_setSelected(bool flag) override;
     bool ET_canMatch() const override;
     bool ET_canSwitch() const override;
-
-    // ETBoardElemDestroyAnimationEvents
-    void ET_onDestroyAnimEnded() override;
+    void ET_onLandPlayed() override;
+    void ET_onDestroyPlayed() override;
 
 private:
 
-    EBoardElemLifeState lifeState;
-    EBoardElemMoveState moveState;
+    EBoardElemState state;
     EBoardElemType type;
 };
 

@@ -61,7 +61,7 @@ bool GameBoardMatchLogic::isElementsMatch(EntityId firstId, EntityId secondId) c
 
 bool GameBoardMatchLogic::findMatchLine(const Vec2i& startPt, int lineLen, bool isHorizontal, MatchElemCollectionT& result) {
     EntityId firstElemId = InvalidEntityId;
-    ET_SendEventReturn(firstElemId, getEntityId(), &ETGameBoard::ET_getElemByBoardPos, startPt);
+    ET_SendEventReturn(firstElemId, &ETGameBoard::ET_getElemByBoardPos, startPt);
     if(!firstElemId.isValid()) {
         return false;
     }
@@ -76,7 +76,7 @@ bool GameBoardMatchLogic::findMatchLine(const Vec2i& startPt, int lineLen, bool 
         } else {
             nextPt.y += i;
         }
-        ET_SendEventReturn(nextElemId, getEntityId(), &ETGameBoard::ET_getElemByBoardPos, nextPt);
+        ET_SendEventReturn(nextElemId, &ETGameBoard::ET_getElemByBoardPos, nextPt);
         if(!nextElemId.isValid()) {
             return false;
         }
@@ -91,7 +91,7 @@ bool GameBoardMatchLogic::findMatchLine(const Vec2i& startPt, int lineLen, bool 
 
 void GameBoardMatchLogic::ET_destoryMatchedElems() {
     Vec2i boardSize(0);
-    ET_SendEventReturn(boardSize, getEntityId(), &ETGameBoard::ET_getBoardSize);
+    ET_SendEventReturn(boardSize, &ETGameBoard::ET_getBoardSize);
 
     MatchElemCollectionT mathElems;
     for(int i = 0; i < boardSize.x;  ++i) {
@@ -118,7 +118,7 @@ void GameBoardMatchLogic::ET_destoryMatchedElems() {
         Transform tm;
         ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
 
-        tm.scale *= destroyEffectScale / cellSize;
+        tm.scale *= destroyEffectScale / static_cast<float>(cellSize);
         ET_SendEvent(destroyEffectId, &ETParticlesSystem::ET_emitWithTm, tm);
     }
 }
