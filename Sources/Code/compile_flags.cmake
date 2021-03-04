@@ -8,8 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
+    set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W4 /EHsc /WX /wd4100")
+
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /EHsc /GR- /WX")
         set(CMAKE_CXX_FLAGS_DEBUG "/MD /Zi /Ob0 /Od /RTC1")
     endif()
 

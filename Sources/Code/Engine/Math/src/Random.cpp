@@ -47,7 +47,7 @@ void RandomFloatGenerator::setRange(float minVal, float maxVal) {
 }
 
 float RandomFloatGenerator::generate() {
-    return distribution(generator);
+    return static_cast<float>(distribution(generator));
 }
 
 } // Math

@@ -14,8 +14,8 @@ public:
     ~UIConfig();
 
 
-    int getSizeOnGrind(float value) const;
-    float convertFromGrid(int value) const;
+    float getSizeOnGrid(float value) const;
+    float convertFromGrid(float value) const;
 
 public:
 

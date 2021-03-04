@@ -25,15 +25,13 @@ void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
 
 void SetLocalTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
 
-int GetValueOnGrind(float val);
+float GetValueOnGrind(float val);
 
-float ConvertValueFromGrid(int val);
+float ConvertValueFromGrid(float val);
 
 Vec2i CalculateBoxSize(const UIBoxStyle& style);
 
 int GetZIndexForChild(EntityId entityId);
-
-AABB2Di GetTmScaledBox(EntityId entityId, const AABB2Di& box);
 
 AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box);
 

@@ -85,7 +85,7 @@ void JobTreeRunTimeTracker::onTreeFinished() {
         }
         avgRunTime /= record.times.size();
         avgQueueTime /= record.times.size();
-        LogWarning("[JobTree::checkRunTime]  * <%d> Task '%s' - avg run: '%.1f ms'; avg queue: '%.1f ms'",
+        LogWarning("[JobTreeRunTimeTracker::onTreeFinished]  * <%d> Task '%s' - avg run: '%.1f ms'; avg queue: '%.1f ms'",
             jobTree->getId(), record.task->getName(), avgRunTime, avgQueueTime);
     }
 

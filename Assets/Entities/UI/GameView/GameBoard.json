@@ -19,8 +19,100 @@
           "w": 1.0
         }
       },
-      "name": "Effects/ElemDestroy.json",
+      "name": "Effects/ElemDestroy/BlueDestroy.json",
       "id": 1,
+      "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Effects/ElemDestroy/GreenDestroy.json",
+      "id": 2,
+      "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Effects/ElemDestroy/PurpleDestroy.json",
+      "id": 3,
+      "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Effects/ElemDestroy/RedDestroy.json",
+      "id": 4,
+      "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Effects/ElemDestroy/YellowDestroy.json",
+      "id": 5,
       "internal": false
     }
   ],
@@ -54,8 +146,20 @@
       "type": "GameBoardMatcher",
       "id": 3,
       "data": {
-        "destroyEffectId": [
+        "redDestroyEffectId": [
+          4
+        ],
+        "blueDestroyEffectId": [
           1
+        ],
+        "yellowDestroyEffectId": [
+          5
+        ],
+        "greenDestroyEffectId": [
+          2
+        ],
+        "purpleDestroyEffectId": [
+          3
         ],
         "destroyEffectScale": 250.0
       }
@@ -74,6 +178,15 @@
       "data": {
         "minScale": 0.800000011920929,
         "scaleDuration": 0.30000001192092896
+      }
+    },
+    {
+      "type": "GameBoardElemHighlighter",
+      "id": 6,
+      "data": {
+        "hightlightEntity": "Game/CellHighlighter.json",
+        "fadeOutDuration": 2.0,
+        "cellScale": 0.949999988079071
       }
     }
   ]

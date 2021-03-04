@@ -44,9 +44,9 @@ TEST_F(MiscTests, CheckApplyTuple) {
     });
 
     ASSERT_EQ(order.size(), 3u);
-    ASSERT_EQ(order[0], 1u);
-    ASSERT_EQ(order[1], 2u);
-    ASSERT_EQ(order[2], 3u);
+    ASSERT_EQ(order[0], 1);
+    ASSERT_EQ(order[1], 2);
+    ASSERT_EQ(order[2], 3);
 
     order.clear();
 
@@ -55,7 +55,7 @@ TEST_F(MiscTests, CheckApplyTuple) {
     });
 
     ASSERT_EQ(order.size(), 3u);
-    ASSERT_EQ(order[0], 3u);
-    ASSERT_EQ(order[1], 2u);
-    ASSERT_EQ(order[2], 1u);
+    ASSERT_EQ(order[0], 3);
+    ASSERT_EQ(order[1], 2);
+    ASSERT_EQ(order[2], 1);
 }

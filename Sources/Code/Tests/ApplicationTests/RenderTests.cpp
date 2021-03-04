@@ -111,7 +111,7 @@ void RenderTests::TearDown() {
     ConsoleAppTests::TearDown();
 
     auto errCode = glGetError();
-    ASSERT_EQ(errCode, GL_NO_ERROR);
+    ASSERT_EQ(errCode, static_cast<GLenum>(GL_NO_ERROR));
 
     auto renderNodes = ET_GetAll<ETRenderNode>();
     ASSERT_TRUE(renderNodes.empty());
@@ -290,7 +290,8 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     ET_SendEvent(objId, &ETEntity::ET_setTransform, tm);
 
     ET_SendEvent(objId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-    ET_SendEvent(objId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
+    ET_SendEvent(objId, &ETRenderRect::ET_setSize,
+        Vec2(static_cast<float>(size.x), static_cast<float>(size.y)) * SCALE_FACTOR);
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
@@ -422,7 +423,8 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(firstSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(firstSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
+        ET_SendEvent(firstSquareId, &ETRenderRect::ET_setSize,
+            Vec2(static_cast<float>(size.x), static_cast<float>(size.y)) * SCALE_FACTOR);
         Transform tm;
         tm.pt = center;
         ET_SendEvent(firstSquareId, &ETEntity::ET_setTransform, tm);
@@ -432,7 +434,8 @@ TEST_F(RenderTests, CheckRenderPriority) {
     {
         ET_SendEventReturn(secondSquareId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(secondSquareId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR_B);
-        ET_SendEvent(secondSquareId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y) * SCALE_FACTOR);
+        ET_SendEvent(secondSquareId, &ETRenderRect::ET_setSize,
+            Vec2(static_cast<float>(size.x), static_cast<float>(size.y)) * SCALE_FACTOR);
         Transform tm;
         tm.pt = center;
         ET_SendEvent(secondSquareId, &ETEntity::ET_setTransform, tm);
@@ -469,7 +472,8 @@ TEST_F(RenderTests, CheckHideUnhide) {
     {
         ET_SendEventReturn(boxId, &ETEntityManager::ET_createEntity, SIMPLE_OBJECT);
         ET_SendEvent(boxId, &ETRenderSimpleLogic::ET_setColor, DRAW_COLOR);
-        ET_SendEvent(boxId, &ETRenderRect::ET_setSize, Vec2(size.x, size.y));
+        ET_SendEvent(boxId, &ETRenderRect::ET_setSize,
+            Vec2(static_cast<float>(size.x), static_cast<float>(size.y)));
         Transform tm;
         tm.pt = center;
         ET_SendEvent(boxId, &ETEntity::ET_setTransform, tm);

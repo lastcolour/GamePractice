@@ -139,6 +139,7 @@ TEST_F(JSONNodeTests, CheckAccessToInvalidElements) {
 
     size_t iterCount = 0;
     for(const auto& elem : objNode) {
+        (void)elem;
         ++iterCount;
     }
 

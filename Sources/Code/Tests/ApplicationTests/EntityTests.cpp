@@ -19,7 +19,7 @@ class TestLogic : public EntityLogic {
 public:
 
     static void Reflect(ReflectContext& ctx) {
-        auto classInfo = ctx.classInfo<TestLogic>("TestLogic");
+        ctx.classInfo<TestLogic>("TestLogic");
     }
 
 public:

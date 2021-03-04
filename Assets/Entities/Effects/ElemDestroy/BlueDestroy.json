@@ -1,0 +1,368 @@
+{
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Flash",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "ParticlesSystem",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 10000,
+              "emission": {
+                "duration": 0.05000000074505806,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false,
+                "heating": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 0.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 20.0,
+                "direction": 0.0,
+                "directionVar": 0.10000000149011612,
+                "lifetime": 0.009999999776482582,
+                "lifetimeVar": 0.0
+              },
+              "movement": {
+                "speed": 100.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 0.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 5.0,
+                  "y": 5.0
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 5.0,
+                  "y": 5.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "fixedRatio": true
+              },
+              "color": {
+                "startCol": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.0,
+                  "w": 0.10000000149011612
+                },
+                "endCol": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.0,
+                  "w": 0.10000000149011612
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.0
+              },
+              "render": {
+                "blending": "Normal",
+                "texture": "Images/block.png"
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Sparks",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "ParticlesSystem",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 100000,
+              "emission": {
+                "duration": 0.05000000074505806,
+                "startDelay": 0.05000000074505806,
+                "autoStart": false,
+                "loop": false,
+                "heating": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 0.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 100.0,
+                "direction": 0.0,
+                "directionVar": 360.0,
+                "lifetime": 0.5,
+                "lifetimeVar": 0.10000000149011612
+              },
+              "movement": {
+                "speed": 50.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 30.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 0.800000011920929,
+                  "y": 0.800000011920929
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 0.0,
+                  "y": 0.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "fixedRatio": true
+              },
+              "color": {
+                "startCol": {
+                  "r": 33,
+                  "g": 203,
+                  "b": 249,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.0,
+                  "w": 0.0
+                },
+                "endCol": {
+                  "r": 33,
+                  "g": 203,
+                  "b": 249,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.0,
+                  "w": 0.10000000149011612
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.10000000149011612
+              },
+              "render": {
+                "blending": "Normal",
+                "texture": "Images/block.png"
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": [
+                  {
+                    "type": "Simple",
+                    "offset": {
+                      "x": 0.0,
+                      "y": 0.0
+                    },
+                    "dir": -90.0,
+                    "value": 50.0,
+                    "radius": -1.0
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "ParticlesSystem",
+      "id": 4,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 100000,
+        "emission": {
+          "duration": 0.05000000074505806,
+          "startDelay": 0.05000000074505806,
+          "autoStart": false,
+          "loop": false,
+          "heating": false,
+          "emitterSpace": "World",
+          "emitterType": "Box",
+          "emitterVal": {
+            "x": 4.0,
+            "y": 4.0
+          },
+          "thickness": 0.5,
+          "emissionRate": 50.0,
+          "direction": 0.0,
+          "directionVar": 360.0,
+          "lifetime": 0.4000000059604645,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 30.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 0.800000011920929,
+            "y": 0.800000011920929
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "fixedRatio": true
+        },
+        "color": {
+          "startCol": {
+            "r": 33,
+            "g": 203,
+            "b": 249,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 33,
+            "g": 203,
+            "b": 249,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.10000000149011612
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.10000000149011612
+        },
+        "render": {
+          "blending": "Normal",
+          "texture": "Images/block.png"
+        },
+        "subEmitters": {
+          "subEmitters": [
+            {
+              "event": "OnStart",
+              "entityId": [
+                1
+              ]
+            },
+            {
+              "event": "OnStart",
+              "entityId": [
+                2
+              ]
+            }
+          ]
+        },
+        "gravity": {
+          "fields": []
+        }
+      }
+    }
+  ]
+}

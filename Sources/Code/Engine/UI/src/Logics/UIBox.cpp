@@ -47,7 +47,8 @@ void UIBox::calculateBox() {
 
     if(prevBox.getSize() != aabb.getSize()) {
         Vec2i boxSize = aabb.getSize();
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize,
+            Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
         updateSelfLayout();
     }
 
@@ -94,7 +95,8 @@ void UIBox::onZIndexChanged(int newZIndex) {
 void UIBox::ET_onLoaded() {
     UIElement::ET_onLoaded();
     Vec2i boxSize = aabb.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize,
+        Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     updateSelfLayout();
 }
@@ -109,7 +111,8 @@ void UIBox::ET_setRenderId(EntityId newRenderId) {
         return;
     }
     Vec2i boxSize = aabb.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize,
+        Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     if(ET_isHidden()) {
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);

@@ -7,7 +7,7 @@
 
 namespace {
 
-const int BASE_X_RATIO = 9.f;
+const float BASE_X_RATIO = 9.f;
 const float BASE_Y_RATIO = 16.f;
 
 } // namespace
@@ -26,17 +26,17 @@ UIConfig::UIConfig() :
 UIConfig::~UIConfig() {
 }
 
-int UIConfig::getSizeOnGrind(float value) const {
+float UIConfig::getSizeOnGrid(float value) const {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
     float xSize = std::min(static_cast<float>(viewPort.x), viewPort.y * BASE_X_RATIO / BASE_Y_RATIO);
     float pixelsPerValue = xSize / static_cast<float>(horizontalGrid);
 
-    return static_cast<int>(ceil(pixelsPerValue * value));
+    return pixelsPerValue * value;
 }
 
-float UIConfig::convertFromGrid(int value) const {
+float UIConfig::convertFromGrid(float value) const {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 

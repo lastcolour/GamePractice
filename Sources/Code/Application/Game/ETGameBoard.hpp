@@ -63,4 +63,9 @@ struct ETGameBoardAnimationEvents {
     virtual void ET_onZoomOutPlayed() = 0;
 };
 
+struct ETGameBoardElemHighlighter {
+    virtual ~ETGameBoardElemHighlighter() = default;
+    virtual void ET_hightlightCell(const Vec2i& cellPt) = 0;
+};
+
 #endif /* __ET_GAME_BOARD_HPP__ */

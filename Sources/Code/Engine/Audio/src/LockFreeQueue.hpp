@@ -10,12 +10,12 @@ public:
     LockFreeQueue();
     ~LockFreeQueue();
 
-    void init(unsigned int capacity);
+    void init(size_t capacity);
     void* peek();
     void pop();
     void push(void* elem);
-    unsigned int capacity() const;
-    unsigned int size() const;
+    size_t capacity() const;
+    size_t size() const;
     bool empty() const;
     bool full() const;
 
@@ -26,8 +26,8 @@ private:
 
 private:
 
-    std::atomic<unsigned int> head;
-    std::atomic<unsigned int> tail;
+    std::atomic<size_t> head;
+    std::atomic<size_t> tail;
     std::vector<void*> elems;
 };
 

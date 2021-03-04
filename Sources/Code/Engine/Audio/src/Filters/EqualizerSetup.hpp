@@ -3,7 +3,7 @@
 
 class ReflectContext;
 
-struct EqualizerSetup {
+class EqualizerSetup {
 public:
 
     static void Reflect(ReflectContext& ctx);

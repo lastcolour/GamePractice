@@ -287,7 +287,6 @@ void EmitterParticles::emitNew(const SimulationConfig& simConfig, float dt) {
 void EmitterParticles::moveAlive(const SimulationConfig& simConfig, float dt) {
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
-        auto& out = instaceData[i];
 
         p.speed += p.acc * dt;
         p.pt += p.speed * dt;

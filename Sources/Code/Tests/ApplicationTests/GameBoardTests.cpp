@@ -36,7 +36,7 @@ public:
     }
 
     void updateAfterRemoves() {
-        GameBoardLogic::updateAfterRemoves();
+        // GameBoardLogic::updateAfterRemoves();
     }
 
     std::vector<BoardElement> getElements() {

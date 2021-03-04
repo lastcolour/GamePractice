@@ -84,7 +84,7 @@
                   "r": 255,
                   "g": 255,
                   "b": 255,
-                  "a": 128
+                  "a": 255
                 },
                 "startColVar": {
                   "x": 0.0,
@@ -108,7 +108,7 @@
                 "fadeOut": 0.0
               },
               "render": {
-                "blending": "Additive",
+                "blending": "Normal",
                 "texture": "Images/block.png"
               },
               "subEmitters": {
@@ -174,7 +174,7 @@
                 "lifetimeVar": 0.10000000149011612
               },
               "movement": {
-                "speed": 200.0,
+                "speed": 50.0,
                 "speedVar": 0.10000000149011612,
                 "initRotation": 30.0,
                 "initRotationVar": 0.10000000149011612,
@@ -184,8 +184,8 @@
               },
               "size": {
                 "startScale": {
-                  "x": 0.20000000298023224,
-                  "y": 0.20000000298023224
+                  "x": 0.800000011920929,
+                  "y": 0.800000011920929
                 },
                 "startScaleVar": {
                   "x": 0.10000000149011612,
@@ -203,9 +203,9 @@
               },
               "color": {
                 "startCol": {
-                  "r": 255,
-                  "g": 255,
-                  "b": 255,
+                  "r": 112,
+                  "g": 234,
+                  "b": 68,
                   "a": 255
                 },
                 "startColVar": {
@@ -215,9 +215,9 @@
                   "w": 0.0
                 },
                 "endCol": {
-                  "r": 255,
-                  "g": 255,
-                  "b": 255,
+                  "r": 112,
+                  "g": 234,
+                  "b": 68,
                   "a": 255
                 },
                 "endColVar": {
@@ -230,23 +230,25 @@
                 "fadeOut": 0.10000000149011612
               },
               "render": {
-                "blending": "Additive",
+                "blending": "Normal",
                 "texture": "Images/block.png"
               },
               "subEmitters": {
-                "subEmitters": [
-                  {
-                    "event": "OnStart",
-                    "entityId": []
-                  },
-                  {
-                    "event": "OnStart",
-                    "entityId": []
-                  }
-                ]
+                "subEmitters": []
               },
               "gravity": {
-                "fields": []
+                "fields": [
+                  {
+                    "type": "Simple",
+                    "offset": {
+                      "x": 0.0,
+                      "y": 0.0
+                    },
+                    "dir": -90.0,
+                    "value": 50.0,
+                    "radius": -1.0
+                  }
+                ]
               }
             }
           }
@@ -311,9 +313,9 @@
         },
         "color": {
           "startCol": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
+            "r": 112,
+            "g": 234,
+            "b": 68,
             "a": 255
           },
           "startColVar": {
@@ -323,9 +325,9 @@
             "w": 0.0
           },
           "endCol": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
+            "r": 112,
+            "g": 234,
+            "b": 68,
             "a": 255
           },
           "endColVar": {
@@ -338,7 +340,7 @@
           "fadeOut": 0.10000000149011612
         },
         "render": {
-          "blending": "Additive",
+          "blending": "Normal",
           "texture": "Images/block.png"
         },
         "subEmitters": {

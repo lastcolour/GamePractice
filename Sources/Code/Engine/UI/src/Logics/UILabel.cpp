@@ -49,7 +49,7 @@ float UILabel::ET_getFontSize() const {
 
 void UILabel::ET_setFontSize(float newFontSize) {
     style.fontSize = newFontSize;
-    auto fontHeight = ET_getShared<UIConfig>()->getSizeOnGrind(style.fontSize);
+    auto fontHeight = ET_getShared<UIConfig>()->getSizeOnGrid(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setFontHeight, fontHeight);
     updateHostLayout();
 }

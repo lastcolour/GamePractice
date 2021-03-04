@@ -15,7 +15,7 @@ namespace {
 
 const char* GAME_ENTITIES = "Entities";
 const EntityLogicId TransformLogicId = 0;
-const int ENTITY_LOADING_TIME_LOG_THRESHOLD = 5;
+const float ENTITY_LOADING_TIME_LOG_THRESHOLD = 5.f;
 
 bool CheckEntity(const char* errStr, EntityId entityId, Entity* entity) {
     if(entityId == InvalidEntityId) {
@@ -156,8 +156,8 @@ bool EntityManager::ET_renameEntity(EntityId entId, const char* newName) {
     return true;
 }
 
-void EntityManager::ET_destroyEntity(EntityId entityId) {
-    registry.removeEntity(entityId);
+void EntityManager::ET_destroyEntity(EntityId targetEntId) {
+    registry.removeEntity(targetEntId);
 }
 
 void EntityManager::ET_destroyAllEntities() {
@@ -196,18 +196,18 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
         return InvalidEntityId;
     }
 
-    int msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
+    float msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
     if(msValue > ENTITY_LOADING_TIME_LOG_THRESHOLD) {
-        LogDebug("[EntityManager::ET_createEntityFromJSON] Create entity: '%s' (%d ms)", entityName, msValue);
+        LogDebug("[EntityManager::ET_createEntityFromJSON] Create entity: '%s' (%.1f ms)", entityName, msValue);
     }
 
     return entity->getEntityId();
 }
 
-EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* logicName) {
+EntityLogicId EntityManager::ET_addLogicToEntity(EntityId targetEntId, const char* logicName) {
     const char* errStr = "[EntityManager::ET_addLogicToEntity] Can't add logic (Error: %s)";
-    auto entity = registry.findEntity(entityId);
-    if(!CheckEntity(errStr, entityId, entity)) {
+    auto entity = registry.findEntity(targetEntId);
+    if(!CheckEntity(errStr, targetEntId, entity)) {
         return InvalidEntityLogicId;
     }
     if(!logicName || !logicName[0]) {
@@ -233,10 +233,10 @@ EntityLogicId EntityManager::ET_addLogicToEntity(EntityId entityId, const char* 
     return logicId;
 }
 
-void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
+void EntityManager::ET_removeLogicFromEntity(EntityId targetEntId, EntityLogicId logicId) {
     const char* errStr = "[EntityManager::ET_removeLogicFromEntity] Can't remove logic (Error: %s)";
-    auto entity = registry.findEntity(entityId);
-    if(!CheckEntityLogic(errStr, entityId, entity, logicId)) {
+    auto entity = registry.findEntity(targetEntId);
+    if(!CheckEntityLogic(errStr, targetEntId, entity, logicId)) {
         return;
     }
     if(!entity->removeLogic(logicId)) {
@@ -247,11 +247,11 @@ void EntityManager::ET_removeLogicFromEntity(EntityId entityId, EntityLogicId lo
         logicId, entity->ET_getName());
 }
 
-bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
+bool EntityManager::ET_readEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
     const char* errStr = "[EntityManager::ET_readEntityLogicData] Can't read logic data (Error: %s)";
-    auto entity = registry.findEntity(entityId);
-    if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
+    auto entity = registry.findEntity(targetEntId);
+    if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
         return false;
     }
     if(logicId == TransformLogicId) {
@@ -269,17 +269,17 @@ bool EntityManager::ET_readEntityLogicData(EntityId entityId, EntityLogicId logi
     return entity->readLogicData(logicId, valueId, stream);
 }
 
-bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
+bool EntityManager::ET_writeEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
     EntityLogicValueId valueId, MemoryStream& stream) {
     const char* errStr = "[EntityManager::ET_writeEntityLogicData] Can't write logic data (Error: %s)";
-    auto entity = registry.findEntity(entityId);
-    if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
+    auto entity = registry.findEntity(targetEntId);
+    if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
         return false;
     }
     if(logicId == TransformLogicId) {
         Transform localTm = entity->ET_getLocalTransform();
         SerializeContext serCtx;
-        serCtx.entityId = entityId;
+        serCtx.entityId = targetEntId;
         if(!tmClassInfo->readValueFrom(serCtx, &localTm, valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data for entity: '%s'", entity->ET_getName()));
             return false;
@@ -290,11 +290,11 @@ bool EntityManager::ET_writeEntityLogicData(EntityId entityId, EntityLogicId log
     return entity->writeLogicData(logicId, valueId, stream);
 }
 
-bool EntityManager::ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
+bool EntityManager::ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLogicId logicId,
     EntityLogicValueId valueId) {
     const char* errStr = "[EntityManager::ET_addEntityLogicArrayElement] Can't add entity logic array element (Error: %s)";
-    auto entity = registry.findEntity(entityId);
-    if(!CheckEntityLogicValue(errStr, entityId, entity, logicId, valueId)) {
+    auto entity = registry.findEntity(targetEntId);
+    if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
         return false;
     }
     if(logicId == TransformLogicId) {
@@ -527,9 +527,9 @@ EntityId EntityManager::ET_createUnfinishedEntity(const char* entityName) {
     return entity->getEntityId();
 }
 
-bool EntityManager::ET_finishEntity(EntityId entityId) {
+bool EntityManager::ET_finishEntity(EntityId targetEntId) {
     std::vector<EntityId> entityTree;
-    auto entity = registry.findEntity(entityId);
+    auto entity = registry.findEntity(targetEntId);
     if(!entity) {
         assert(false && "Invalid entity to finish load");
         return false;

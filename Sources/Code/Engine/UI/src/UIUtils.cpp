@@ -19,10 +19,10 @@ UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin)
     UIBoxMargin resMargin;
 
     auto uiConfig = ET_getShared<UIConfig>();
-    resMargin.left = uiConfig->getSizeOnGrind(margin.left);
-    resMargin.right = uiConfig->getSizeOnGrind(margin.right);
-    resMargin.bot = uiConfig->getSizeOnGrind(margin.bot);
-    resMargin.top = uiConfig->getSizeOnGrind(margin.top);
+    resMargin.left = uiConfig->getSizeOnGrid(margin.left);
+    resMargin.right = uiConfig->getSizeOnGrid(margin.right);
+    resMargin.bot = uiConfig->getSizeOnGrid(margin.bot);
+    resMargin.top = uiConfig->getSizeOnGrid(margin.top);
 
     const auto& scale = tm.scale;
     resMargin.bot = static_cast<int>(resMargin.bot * scale.y);
@@ -141,12 +141,12 @@ void SetLocalTMDoNotUpdateLayout(EntityId elemId, const Transform& tm) {
     ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
 }
 
-int GetValueOnGrind(float val) {
+float GetValueOnGrind(float val) {
     auto uiConfig = ET_getShared<UIConfig>();
-    return uiConfig->getSizeOnGrind(val);
+    return uiConfig->getSizeOnGrid(val);
 }
 
-float ConvertValueFromGrid(int val) {
+float ConvertValueFromGrid(float val) {
     auto uiConfig = ET_getShared<UIConfig>();
     return uiConfig->convertFromGrid(val);
 }
@@ -154,15 +154,15 @@ float ConvertValueFromGrid(int val) {
 Vec2i CalculateBoxSize(const UIBoxStyle& style) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
-    Vec2i resSize(0);
 
+    Vec2 resSize(0.f);
     switch (style.widthInv)
     {
     case UIBoxSizeInvariant::Grid:
         resSize.x = UI::GetValueOnGrind(style.width);
         break;
     case UIBoxSizeInvariant::Relative:
-        resSize.x = static_cast<int>(viewPort.x * style.width);
+        resSize.x = viewPort.x * style.width;
         break;
     default:
         assert(false && "Invalid size invariant");
@@ -173,12 +173,12 @@ Vec2i CalculateBoxSize(const UIBoxStyle& style) {
         resSize.y = UI::GetValueOnGrind(style.height);
         break;
     case UIBoxSizeInvariant::Relative:
-        resSize.y = static_cast<int>(viewPort.y * style.height);
+        resSize.y = viewPort.y * style.height;
         break;
     default:
         assert(false && "Invalid size invariant");
     }
-    return resSize;
+    return Vec2i(std::ceil(resSize.x), std::ceil(resSize.y));
 }
 
 int GetZIndexForChild(EntityId entityId) {
@@ -188,21 +188,6 @@ int GetZIndexForChild(EntityId entityId) {
     ET_SendEventReturn(zIndexDepth, entityId, &ETUIElement::ET_getZIndexDepth);
     int childZIndex = zIndex + zIndexDepth + 1;
     return childZIndex;
-}
-
-AABB2Di GetTmScaledBox(EntityId entityId, const AABB2Di& box) {
-    Transform tm;
-    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
-    const auto& scale = tm.scale;
-
-    AABB2Di resBox;
-    resBox.bot = Vec2i(0);
-    resBox.top = box.getSize();
-    resBox.top.x = static_cast<int>(resBox.top.x * scale.x);
-    resBox.top.y = static_cast<int>(resBox.top.y * scale.y);
-    resBox.setCenter(box.getCenter());
-
-    return resBox;
 }
 
 AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box) {

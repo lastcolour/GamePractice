@@ -28,22 +28,22 @@ public:
     EntityId ET_createEntityFromData(const char* entityName, const char* entityData) override;
     Entity* ET_createRawEntity(const char* entityName) override;
     EntityChildId ET_createChildEntity(EntityId parentId, const char* entityName) override;
-    void ET_destroyEntity(EntityId entityId) override;
+    void ET_destroyEntity(EntityId targetEntId) override;
     bool ET_renameEntity(EntityId entId, const char* newName) override;
     void ET_destroyAllEntities() override;
     bool ET_registerLogics(EntityLogicsRegister& logicsRegister) override;
     EntityId ET_createEntityFromJSON(const JSONNode& node, const char* entityName) override;
-    EntityLogicId ET_addLogicToEntity(EntityId entityId, const char* logicName) override;
-    void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) override;
+    EntityLogicId ET_addLogicToEntity(EntityId targetEntId, const char* logicName) override;
+    void ET_removeLogicFromEntity(EntityId targetEntId, EntityLogicId logicId) override;
     JSONNode ET_getRegisteredLogics() const override;
-    bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
+    bool ET_readEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) override;
-    bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
+    bool ET_writeEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
         EntityLogicValueId valueId, MemoryStream& stream) override;
-    bool ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
+    bool ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLogicId logicId,
         EntityLogicValueId valueId) override;
     EntityId ET_createUnfinishedEntity(const char* entityName) override;
-    bool ET_finishEntity(EntityId entityId) override;
+    bool ET_finishEntity(EntityId targetEntId) override;
 
 private:
 

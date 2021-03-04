@@ -4,7 +4,7 @@
 #include "Filters/RecursiveFilter.hpp"
 #include "Filters/EqualizerSetup.hpp"
 
-class MixConfig;
+struct MixConfig;
 
 struct EqualizerState {
     RecursiveFilter lfilters[5];

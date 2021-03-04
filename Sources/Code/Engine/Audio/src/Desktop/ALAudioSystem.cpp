@@ -106,7 +106,8 @@ bool ALAudioSystem::initAlSource() {
         return false;
     }
 
-    std::fill_n(reinterpret_cast<int16_t*>(mixBuffer.get()), config.samplesPerBuffer * config.channels, 0);
+    std::fill_n(reinterpret_cast<int16_t*>(mixBuffer.get()), config.samplesPerBuffer * config.channels,
+        static_cast<int16_t>(0));
 
     auto alFormat = config.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 

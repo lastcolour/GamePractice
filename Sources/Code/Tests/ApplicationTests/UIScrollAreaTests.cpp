@@ -352,7 +352,7 @@ TEST_F(UIScrollAreaTests, CheckScrollProgress) {
     }
 
     Transform tm = ctx.childEntity->ET_getTransform();
-    Vec2i center(tm.pt.x, tm.pt.y);
+    Vec2i center(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
     center += childBox / 4;
     ctx.scrollArea->ET_setTargetPosClamped(center);
 

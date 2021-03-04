@@ -324,7 +324,7 @@ TEST_F(UILayoutTests, CheckMargin) {
     const auto boxSize = viewPort / 4;
     const auto center = viewPort / 2;
     const float margin = 10.f;
-    auto halfShift = ET_getShared<UIConfig>()->getSizeOnGrind(10.f) / 2;
+    auto halfShift = ET_getShared<UIConfig>()->getSizeOnGrid(10.f) / 2;
 
     rootLayout->ET_addItem(first->getEntityId());
     rootLayout->ET_addItem(second->getEntityId());
@@ -402,7 +402,7 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    auto shift = ET_getShared<UIConfig>()->getSizeOnGrind(2.f);
+    auto shift = ET_getShared<UIConfig>()->getSizeOnGrid(2.f);
     const auto center = viewPort / 2;
     const auto boxSize = center;
 

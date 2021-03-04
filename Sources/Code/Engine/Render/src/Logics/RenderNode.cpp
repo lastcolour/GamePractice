@@ -63,7 +63,7 @@ void RenderNode::deinit() {
 
 void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
     alphaMult = newAlphaMult;
-    if(alphaMult < 0.f || alphaMult > 1.f) {
+    if(alphaMult < -0.f || alphaMult > 1.f) {
         LogWarning("[RenderNode::ET_setAlphaMultiplier] alpha-multiplier '%.1f' is out of range [0..1] (Entity: '%s')",
             alphaMult, EntityUtils::GetEntityName(getEntityId()));
         alphaMult = Math::Clamp(alphaMult, 0.f, 1.f);

@@ -33,9 +33,9 @@ bool AsyncEntityManager::ET_isInsideAsyncLoad() const {
     return std::this_thread::get_id() == asyncLoadThreadId;
 }
 
-void AsyncEntityManager::ET_addEntityToFinishLater(EntityId entityId) {
+void AsyncEntityManager::ET_addEntityToFinishLater(EntityId loadEntId) {
     assert(activeLoadResult && "Invalid active load result");
-    activeLoadResult->addEntityToFinish(entityId);
+    activeLoadResult->addEntityToFinish(loadEntId);
 }
 
 void AsyncEntityManager::ET_updateEntities() {

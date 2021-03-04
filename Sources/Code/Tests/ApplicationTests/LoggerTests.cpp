@@ -11,11 +11,11 @@ public:
 
 protected:
 
-    void printMessasge(LogLevel logLevel, const std::string& msg) override {
+    void printMessasge(LogLevel level, const std::string& msg) override {
         loggedMsg += msg;
     }
 
-    std::string formatMessage(LogLevel logLevel, const std::string& msg) override {
+    std::string formatMessage(LogLevel level, const std::string& msg) override {
         return msg;
     }
 

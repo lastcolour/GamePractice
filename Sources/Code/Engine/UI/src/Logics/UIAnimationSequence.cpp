@@ -207,7 +207,7 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         return;
     }
 
-    for(int i = 0, sz = frames.size(); i < sz; ++i) {
+    for(size_t i = 0, sz = frames.size(); i < sz; ++i) {
         if(animTime <= 0.f) {
             break;
         }
@@ -232,7 +232,7 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         if(cyclic) {
             restartCycle();
         } else {
-            auto prevTriggerId = triggerId;
+            prevTriggerId = triggerId;
             ET_stopAnimation();
             ET_SendEvent(prevTriggerId, &ETUIAnimationSequenceEvent::ET_onAnimationPlayed,
                 getEntityId(), seqType);

@@ -315,7 +315,7 @@ TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
     TestObject inObj;
     etSystem->sendEvent(entId, &TestETInterface::ET_DoSomething, inObj);
 
-    ASSERT_EQ(inObj.doSomethingCount, 2);
+    ASSERT_EQ(inObj.doSomethingCount, 2u);
 }
 
 TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {

@@ -76,7 +76,7 @@ void OggSourceNode::detachFromStream() {
     samplesOffset = 0;
     volume = 1.f;
     oggData.close();
-    if(auto parent = getParent()) {
-        parent->removeChild(this);
+    if(auto currParent = getParent()) {
+        currParent->removeChild(this);
     }
 }

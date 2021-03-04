@@ -74,8 +74,7 @@ protected:
     const BoardElement* getElem(const Vec2i& boardPt) const;
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
-    void updateAfterRemoves();
-    void matchElements();
+    void respawnDestroyedElems();
     BoardElement createNewElement(const Vec2i& boardPt) const;
     void removeElem(BoardElement& elem);
 

@@ -110,7 +110,7 @@ void GameBoardElemLandAnimation::ET_onGameTick(float dt) {
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
 
-    int newYCellSize = tm.scale.y * cellSize;
+    float newYCellSize = tm.scale.y * cellSize;
     tm.pt.y -= (cellSize - newYCellSize) / 2.f;
 
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);

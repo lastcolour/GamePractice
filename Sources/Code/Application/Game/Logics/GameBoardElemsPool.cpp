@@ -45,7 +45,7 @@ void GameBoardElemsPool::deinit() {
 EntityId GameBoardElemsPool::ET_spawnElem() {
     int currWeight = intGenerator.generate();
     int spawnPoolId = -1;
-    for(int i = 0, sz = poolsInfo.size(); i < sz; ++i) {
+    for(int i = 0, sz = static_cast<int>(poolsInfo.size()); i < sz; ++i) {
         auto& poolInfo = poolsInfo[i];
         if((poolInfo.weight - currWeight) > 0) {
             spawnPoolId = i;

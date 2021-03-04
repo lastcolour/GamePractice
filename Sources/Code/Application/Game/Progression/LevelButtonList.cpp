@@ -36,7 +36,7 @@ void LevelButtonList::deinit() {
 }
 
 int LevelButtonList::ET_getTotalStars() const {
-    return levelButtons.size() * 3;
+    return static_cast<int>(levelButtons.size() * 3);
 }
 
 int LevelButtonList::ET_getDoneStars() const {

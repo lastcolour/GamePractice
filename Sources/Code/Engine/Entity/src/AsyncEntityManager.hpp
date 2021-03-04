@@ -25,7 +25,7 @@ public:
     // ETAsyncEntityManager
     void ET_createAsyncEntity(const char* entityName, std::function<void(std::shared_ptr<EntityLoadResult>)> callback) override;
     bool ET_isInsideAsyncLoad() const override;
-    void ET_addEntityToFinishLater(EntityId entityId) override;
+    void ET_addEntityToFinishLater(EntityId loadEntId) override;
 
     // ETEntitiesUpdateTask
     void ET_updateEntities() override;

@@ -4,6 +4,8 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Core/ETPrimitives.hpp"
+#include "Game/ETGameElem.hpp"
+#include "Entity/ETEntity.hpp"
 
 #include <unordered_set>
 
@@ -34,10 +36,15 @@ private:
 
     bool isElementsMatch(EntityId firstId, EntityId secondId) const;
     bool findMatchLine(const Vec2i& startPt, int lineLen, bool isHorizontal, MatchElemCollectionT& result);
+    void triggerDestroyEffect(EntityId elemId, const Transform& emiTm);
 
 private:
 
-    EntityId destroyEffectId;
+    EntityId redDestroyEffectId;
+    EntityId blueDestroyEffectId;
+    EntityId yellowDestroyEffectId;
+    EntityId greenDestroyEffectId;
+    EntityId purpleDestroyEffectId;
     float destroyEffectScale;
     int minLineLen;
     int maxLineLen;

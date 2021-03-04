@@ -3,7 +3,7 @@
 
 enum class EBoardElemState {
     Static = 0,
-    Falling = 0,
+    Falling,
     Switching,
     Landing,
     Destroying,

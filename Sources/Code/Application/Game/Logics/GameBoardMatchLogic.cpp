@@ -1,9 +1,9 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
-#include "Game/ETGameElem.hpp"
 #include "Render/ETParticlesSystem.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Render/ETRenderNode.hpp"
+
+#include <cassert>
 
 GameBoardMatchLogic::GameBoardMatchLogic() :
     destroyEffectScale(1.f),
@@ -16,15 +16,17 @@ GameBoardMatchLogic::~GameBoardMatchLogic() {
 
 void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher")) {
-        classInfo->addField("destroyEffectId", &GameBoardMatchLogic::destroyEffectId);
+        classInfo->addField("redDestroyEffectId", &GameBoardMatchLogic::redDestroyEffectId);
+        classInfo->addField("blueDestroyEffectId", &GameBoardMatchLogic::blueDestroyEffectId);
+        classInfo->addField("yellowDestroyEffectId", &GameBoardMatchLogic::yellowDestroyEffectId);
+        classInfo->addField("greenDestroyEffectId", &GameBoardMatchLogic::greenDestroyEffectId);
+        classInfo->addField("purpleDestroyEffectId", &GameBoardMatchLogic::purpleDestroyEffectId);
         classInfo->addField("destroyEffectScale", &GameBoardMatchLogic::destroyEffectScale);
     }
 }
 
 void GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
-
-    ET_SendEvent(destroyEffectId, &ETRenderNode::ET_setDrawPriority, 100000);
 }
 
 void GameBoardMatchLogic::deinit() {
@@ -119,6 +121,52 @@ void GameBoardMatchLogic::ET_destoryMatchedElems() {
         ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
 
         tm.scale *= destroyEffectScale / static_cast<float>(cellSize);
-        ET_SendEvent(destroyEffectId, &ETParticlesSystem::ET_emitWithTm, tm);
+
+        triggerDestroyEffect(elemId, tm);
     }
+}
+
+void GameBoardMatchLogic::triggerDestroyEffect(EntityId elemId, const Transform& emiTm) {
+    EBoardElemType elemType = EBoardElemType::None;
+    ET_SendEventReturn(elemType, elemId, &ETGameBoardElem::ET_getType);
+
+    Vec2i elemCellPt(-1);
+    ET_SendEventReturn(elemCellPt, &ETGameBoard::ET_getElemBoardPos, elemId);
+    ET_SendEvent(&ETGameBoardElemHighlighter::ET_hightlightCell, elemCellPt);
+
+    EntityId effectId;
+    switch(elemType) {
+        case EBoardElemType::Red: {
+            effectId = redDestroyEffectId;
+            break;
+        }
+        case EBoardElemType::Blue: {
+            effectId = blueDestroyEffectId;
+            break;
+        }
+        case EBoardElemType::Yellow: {
+            effectId = yellowDestroyEffectId;
+            break;
+        }
+        case EBoardElemType::Purple: {
+            effectId = purpleDestroyEffectId;
+            break;
+        }
+        case EBoardElemType::Green: {
+            effectId = greenDestroyEffectId;
+            break;
+        }
+        case EBoardElemType::None: {
+            [[fallthrough]];
+        }
+        default: {
+            assert(false && "Invalid elem type");
+        }
+    }
+
+    if(!effectId.isValid()) {
+        return;
+    }
+
+    ET_SendEvent(effectId, &ETParticlesSystem::ET_emitWithTm, emiTm);
 }
