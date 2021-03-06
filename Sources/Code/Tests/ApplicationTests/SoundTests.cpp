@@ -94,11 +94,11 @@ TEST_F(SoundTests, CheckBufferQueueSingle) {
             int val = -1;
 
             int readSize = sizeof(int);
-            ASSERT_EQ(readSize, readBuff->getAvaibleForRead());
+            ASSERT_EQ(readSize, readBuff->getReadSize());
             readBuff->read(&val, sizeof(int));
 
             EXPECT_EQ(val, i);
-            ASSERT_EQ(readBuff->getAvaibleForRead(), 0);
+            ASSERT_EQ(readBuff->getReadSize(), 0);
 
             bufferQueue.tryPopRead();
         }
@@ -121,7 +121,7 @@ TEST_F(SoundTests, CheckBufferQueueParallel) {
             }
 
             {
-                int size = readBuff->getAvaibleForRead();
+                int size = readBuff->getReadSize();
                 ASSERT_EQ(size, 10 * sizeof(int));
 
                 int data[5];
@@ -137,7 +137,7 @@ TEST_F(SoundTests, CheckBufferQueueParallel) {
             ASSERT_TRUE(readBuff);
 
             {
-                ASSERT_EQ(readBuff->getAvaibleForRead(), 5 * sizeof(int));
+                ASSERT_EQ(readBuff->getReadSize(), 5 * sizeof(int));
                 int data[5];
                 readBuff->read(&data, 5 * sizeof(int));
 

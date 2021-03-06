@@ -13,11 +13,10 @@ public:
     AudioBuffer& operator=(AudioBuffer&& other);
     ~AudioBuffer();
 
-    void write(void* from, int writeSize);
-    int read(void* to, int readSize);
-    int getSize() const;
-    int getReadOffset() const;
-    int getAvaibleForRead() const;
+    void write(void* from, int bytesCount);
+    int read(void* to, int bytesCount);
+    bool isDone() const;
+    int getReadSize() const;
 
 private:
 

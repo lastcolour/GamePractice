@@ -6,8 +6,16 @@
 
 #include <cassert>
 
+namespace {
+
+const int FADE_IN_SAMPLES = 256;
+const int FADE_OUT_SAMPLES = 256;
+
+} // namespace
+
 OboeAudioSystem::OboeAudioSystem() :
-    oboeStream(nullptr) {
+    oboeStream(nullptr),
+    canMix(false) {
 }
 
 OboeAudioSystem::~OboeAudioSystem() {
@@ -74,12 +82,15 @@ void OboeAudioSystem::ET_onActivityEvent(ActivityEventType eventType) {
         if(res != oboe::Result::OK) {
             LogError("[OboeAudioSystem::ET_onActivityEvent] Can't start oboe stream (Error: %s)", oboe::convertToText(res));
         } else {
+            canMix.store(true);
             LogInfo("[OboeAudioSystem::ET_onActivityEvent] Resume oboe stream");
         }
     } else if(eventType == ActivityEventType::OnWindowFocusLost) {
+        canMix.store(false);
         auto res = oboeStream->requestPause();
         if(res != oboe::Result::OK) {
-            LogError("[OboeAudioSystem::ET_onActivityEvent] Can't pause oboe stream (Error: %s)", oboe::convertToText(res));
+            LogError("[OboeAudioSystem::ET_onActivityEvent] Can't pause oboe stream (Error: %s)",
+                oboe::convertToText(res));
         } else {
             LogInfo("[OboeAudioSystem::ET_onActivityEvent] Pause oboe stream");
         }
@@ -108,8 +119,17 @@ void OboeAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETSoundNode>();
     ET_PollAllEvents<ETSoundEventNode>();
 
+    if(!canMix.load()) {
+        return;
+    }
+
     auto& mixConfig = mixGraph.getMixConfig();
     auto buffers = bufferQueue.peekWrites();
+
+    if(buffers.size() == mixConfig.buffersCount) {
+        LogError("[OboeAudioSystem::ET_updateSound] Very slow mixing");
+    }
+
     for(auto& buff : buffers) {
         mixGraph.mixBufferAndConvert(mixBuffer.get());
         buff->write(mixBuffer.get(), mixConfig.samplesPerBuffer * mixConfig.channels * sizeof(int16_t));
@@ -151,21 +171,36 @@ void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result 
 
 oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStream, void* audioData, int32_t numFrames) {
     auto& mixConfig = mixGraph.getMixConfig();
-    int totalSize = numFrames * mixConfig.channels * sizeof(int16_t);
-    int currSize = totalSize;
+
+    assert(outStream->getChannelCount() == mixConfig.channels && "Invalid channles count");
+
+    int totalBytes = numFrames * mixConfig.channels * sizeof(int16_t);
+    int bytesLeft = totalBytes;
     char* out = static_cast<char*>(audioData);
     int offset = 0;
-    while(currSize > 0) {
+    while(bytesLeft != 0) {
         auto buff = bufferQueue.peekRead();
-        if(buff) {
-            currSize -= buff->read(out + offset, currSize);
-            offset = totalSize - currSize;
-            bufferQueue.tryPopRead();
-        } else {
-            char* ptr = reinterpret_cast<char*>(audioData) + offset;
-            std::fill_n(reinterpret_cast<int16_t*>(ptr), currSize / 2, 0);
+        if(!buff) {
             break;
         }
+        bytesLeft -= buff->read(out + offset, bytesLeft);
+        offset = totalBytes - bytesLeft;
+        bufferQueue.tryPopRead();
     }
+
+    if(bytesLeft > 0) {
+        LogError("[OboeAudioSystem::onAudioReady] Not enough data: %d", bytesLeft);
+        std::fill_n(reinterpret_cast<int16_t*>(out + offset), bytesLeft / sizeof(int16_t), 0);
+    }
+
+    if(canMix.load()) {
+        if(!fader.isFadeInState()) {
+            fader.setFadeIn(std::min(mixConfig.samplesPerBurst, FADE_IN_SAMPLES));
+        }
+    }
+
+    fader.exclusiveTransformInt16(static_cast<int16_t*>(audioData),
+        mixConfig.channels, numFrames);
+
     return oboe::DataCallbackResult::Continue;
 }

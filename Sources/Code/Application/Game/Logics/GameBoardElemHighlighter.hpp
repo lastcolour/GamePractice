@@ -28,7 +28,7 @@ public:
     void ET_onGameTick(float dt) override;
 
     // ETGameBoardElemHighlighter
-    void ET_hightlightCell(const Vec2i& cellPt);
+    void ET_highlightCell(const Vec2i& cellPt) override;
 
 private:
 
@@ -52,7 +52,7 @@ private:
 
 private:
 
-    std::string hightlightEntityName;
+    std::string highlightEntityName;
     std::vector<HighlightElem> elements;
     float fadeOutDuration;
     float cellScale;

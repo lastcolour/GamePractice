@@ -25,6 +25,7 @@ void* LockFreeQueue::peek() {
 
 void LockFreeQueue::pop() {
     assert(!empty() && "Queue empty");
+
     auto h = head.load();
     h = h + 1;
     head.store(h);

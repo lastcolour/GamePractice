@@ -85,7 +85,6 @@ void RenderFontManager::ET_onContextDestroyed() {
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
-    assert(RenderUtils::IsOpenGLContextExists() && "Can't get font without OpenGL context");
     auto renderConfig = ET_getShared<RenderConfig>();
     return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
 }
@@ -106,6 +105,8 @@ std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontNam
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontName, int fontSize) {
+    assert(RenderUtils::IsOpenGLContextExists() && "Can't create font without OpenGL context");
+
     FT_Library ftLib;
     if(FT_Init_FreeType(&ftLib)) {
         LogError("[RenderFontManager::createFontImpl] Can't init FreeType library");

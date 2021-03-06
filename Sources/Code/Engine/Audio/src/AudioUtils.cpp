@@ -21,7 +21,7 @@ float ConvertToExpVolume(float value) {
     return EXP_VOLUME_A * exp(value * EXP_VOLUME_B);
 }
 
-void ConverFloatToInt16(float* from, int16_t* to, int samples) {
+void ConverFloatsToInt16(float* from, int16_t* to, int samples) {
     for(int i = 0; i < samples; ++i) {
         float fVal = from[i];
         fVal += 1.0;

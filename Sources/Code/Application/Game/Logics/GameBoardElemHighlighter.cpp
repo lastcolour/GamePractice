@@ -9,8 +9,8 @@
 
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {
-        classInfo->addResourceField("hightlightEntity", ResourceType::Entity,
-            &GameBoardElemHighlighter::hightlightEntityName);
+        classInfo->addResourceField("highlightEntity", ResourceType::Entity,
+            &GameBoardElemHighlighter::highlightEntityName);
         classInfo->addField("fadeOutDuration", &GameBoardElemHighlighter::fadeOutDuration);
         classInfo->addField("cellScale", &GameBoardElemHighlighter::cellScale);
     }
@@ -42,7 +42,7 @@ void GameBoardElemHighlighter::ET_onGameTick(float dt) {
     }
 }
 
-void GameBoardElemHighlighter::ET_hightlightCell(const Vec2i& cellPt) {
+void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     HighlightElem* freeElem = nullptr;
     for(auto& elem : elements) {
         if(elem.boardPt == cellPt) {
@@ -59,7 +59,7 @@ void GameBoardElemHighlighter::ET_hightlightCell(const Vec2i& cellPt) {
         }
     }
     if(!freeElem) {
-        LogError("[GameBoardElemHighlighter::ET_hightlightCell] Can't find free elem to hightlight cell: (%d, %d)",
+        LogError("[GameBoardElemHighlighter::ET_highlightCell] Can't find free elem to highlight cell: (%d, %d)",
             cellPt.x, cellPt.y);
         return;
     }
@@ -86,9 +86,9 @@ bool GameBoardElemHighlighter::createElemsPool() {
     int poolSize = 10 * 10;
     for(int i = 0; i < poolSize; ++i) {
         HighlightElem elem;
-        ET_SendEventReturn(elem.entId, &ETEntityManager::ET_createEntity, hightlightEntityName.c_str());
+        ET_SendEventReturn(elem.entId, &ETEntityManager::ET_createEntity, highlightEntityName.c_str());
         if(!elem.entId.isValid()) {
-            LogError("[GameBoardElemHighlighter::init] Can't create entity: '%s'", hightlightEntityName);
+            LogError("[GameBoardElemHighlighter::init] Can't create entity: '%s'", highlightEntityName);
             destroyAllElems();
             return false;
         }

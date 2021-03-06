@@ -122,12 +122,12 @@ void LevelButton::ET_setLevelState(ELevelButtonState newState, int newStarsCount
 }
 
 void LevelButton::ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int newStarCount) {
-    bool playHightlight = false;
+    bool playHighlight = false;
     if(state == ELevelButtonState::Locked) {
         if(newState != ELevelButtonState::Unlocked) {
             return;
         }
-        playHightlight = true;
+        playHighlight = true;
         state = newState;
         {
             EventSequence::Event event;
@@ -154,7 +154,7 @@ void LevelButton::ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState 
             eventSeq.addEvent(event);
         }
         if(newStarCount > 2 && starsCount <= 2) {
-            playHightlight = true;
+            playHighlight = true;
             EventSequence::Event event;
             event.animType = EAnimSequenceType::Appear;
             event.targetId = unlockedBt.stars.thirdId;
@@ -165,7 +165,7 @@ void LevelButton::ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState 
         }
     }
     starsCount = newStarCount;
-    if(playHightlight) {
+    if(playHighlight) {
         EventSequence::Event event;
         event.startDelay = HIGHLIGHT_DELAY;
         event.onStartCallback = [this](){

@@ -65,7 +65,7 @@ struct ETGameBoardAnimationEvents {
 
 struct ETGameBoardElemHighlighter {
     virtual ~ETGameBoardElemHighlighter() = default;
-    virtual void ET_hightlightCell(const Vec2i& cellPt) = 0;
+    virtual void ET_highlightCell(const Vec2i& cellPt) = 0;
 };
 
 #endif /* __ET_GAME_BOARD_HPP__ */

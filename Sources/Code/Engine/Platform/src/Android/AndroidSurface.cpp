@@ -91,7 +91,8 @@ AndroidSurface::AndroidSurface() :
     surface(EGL_NO_SURFACE),
     nativeWindow(nullptr),
     config(nullptr),
-    hasFocus(false) {
+    hasFocus(false),
+    canRenderFlag(false) {
 }
 
 AndroidSurface::~AndroidSurface() {
@@ -224,14 +225,17 @@ void AndroidSurface::ET_onActivityEvent(ActivityEventType eventType) {
             if(nativeWindow) {
                 onNativeWindowCreated();
             }
+            updateCanRenderFlag();
             break;
         }
     case ActivityEventType::OnWindowFocusGet: {
             hasFocus = true;
+            updateCanRenderFlag();
         }
         break;
     case ActivityEventType::OnWindowFocusLost: {
             hasFocus = false;
+            updateCanRenderFlag();
         }
         break;
     default:
@@ -305,9 +309,17 @@ bool AndroidSurface::ET_isVisible() const {
     return ET_canRender();
 }
 
-bool AndroidSurface::ET_canRender() const {
-    return context != EGL_NO_CONTEXT
+void AndroidSurface::updateCanRenderFlag() {
+    if(context != EGL_NO_CONTEXT
         && surface != EGL_NO_SURFACE
         && display != EGL_NO_DISPLAY
-        && hasFocus;
+        && hasFocus) {
+        canRenderFlag.store(true);
+    } else {
+        canRenderFlag.store(false);
+    }
+}
+
+bool AndroidSurface::ET_canRender() const {
+    return canRenderFlag.load();
 }

@@ -10,6 +10,9 @@
 #include "AudioBufferQueue.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Platform/Android/ETAndroidInterfaces.hpp"
+#include "Fader.hpp"
+
+#include <atomic>
 
 #include <oboe/Oboe.h>
 
@@ -57,7 +60,9 @@ private:
     MixGraph mixGraph;
     std::unique_ptr<float[]> mixBuffer;
     AudioBufferQueue bufferQueue;
+    Fader fader;
     oboe::AudioStream* oboeStream;
+    std::atomic<bool> canMix;
 };
 
 #endif /* __OBOE_AUDIO_SYSTEM_HPP__ */

@@ -1,7 +1,18 @@
 #include "AsyncEntityManager.hpp"
 #include "Entity/EntityLoadResult.hpp"
+#include "Platform/ETSurface.hpp"
 
 #include <cassert>
+
+namespace {
+
+bool canCreateEntities() {
+    bool canRender = true;
+    ET_SendEventReturn(canRender, &ETSurface::ET_canRender);
+    return canRender;
+}
+
+} // namespace
 
 AsyncEntityManager::AsyncEntityManager() :
     activeLoadResult(nullptr) {
@@ -39,6 +50,9 @@ void AsyncEntityManager::ET_addEntityToFinishLater(EntityId loadEntId) {
 }
 
 void AsyncEntityManager::ET_updateEntities() {
+    if(!canCreateEntities()) {
+        return;
+    }
     std::vector<CreateRequest> requests;
     {
         std::lock_guard<std::mutex> lock(mutex);

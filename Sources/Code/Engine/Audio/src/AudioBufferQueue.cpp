@@ -33,34 +33,31 @@ AudioBuffer& AudioBuffer::operator=(AudioBuffer&& other) {
 AudioBuffer::~AudioBuffer() {
 }
 
-void AudioBuffer::write(void* from, int writeSize) {
-    assert(writeSize > 0 && "Invalid size");
-    if(writeSize != size) {
-        data.reset(new char[writeSize]);
+void AudioBuffer::write(void* from, int bytesCount) {
+    assert(bytesCount > 0 && "Invalid size");
+    if(bytesCount > size) {
+        data.reset(new char[bytesCount]);
     }
-    memcpy(data.get(), from, writeSize);
-    size = writeSize;
+    memcpy(data.get(), from, bytesCount);
+    size = bytesCount;
     offset = 0;
 }
 
-int AudioBuffer::read(void* to, int readSize) {
-    assert(readSize >= 0 && "Invalid read size");
-    int resReadSize = std::min(getAvaibleForRead(), readSize);
-    memcpy(to, data.get() + offset, resReadSize);
-    offset += resReadSize;
-    return resReadSize;
+int AudioBuffer::read(void* to, int bytesCount) {
+    assert(bytesCount >= 0 && "Invalid read size");
+    bytesCount = std::min(size - offset, bytesCount);
+    memcpy(to, data.get() + offset, bytesCount);
+    offset += bytesCount;
+    return bytesCount;
 }
 
-int AudioBuffer::getSize() const {
-    return size;
-}
-
-int AudioBuffer::getReadOffset() const {
-    return offset;
-}
-
-int AudioBuffer::getAvaibleForRead() const {
+int AudioBuffer::getReadSize() const {
     return size - offset;
+}
+
+bool AudioBuffer::isDone() const {
+    assert(offset <= size && "Invalid offset");
+    return size == offset;
 }
 
 AudioBufferQueue::AudioBufferQueue() {
@@ -89,7 +86,7 @@ AudioBuffer* AudioBufferQueue::peekRead() {
 void AudioBufferQueue::tryPopRead() {
     auto buff = peekRead();
     assert(buff && "Invalid buffer");
-    if(buff->getAvaibleForRead() == 0) {
+    if(buff->isDone()) {
         readQueue.pop();
         writeQueue.push(buff);
     }
@@ -100,11 +97,10 @@ std::vector<AudioBuffer*> AudioBufferQueue::peekWrites() {
     auto ptr = writeQueue.peek();
     while(ptr) {
         AudioBuffer* buff = static_cast<AudioBuffer*>(ptr);
-        assert(buff->getAvaibleForRead() == 0 && "Buffer should be finised");
+        assert(buff->isDone() && "Buffer should be finised");
         res.push_back(buff);
         writeQueue.pop();
         ptr = writeQueue.peek();
-        break;
     }
     return res;
 }

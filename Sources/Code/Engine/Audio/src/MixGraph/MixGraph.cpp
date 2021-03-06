@@ -81,7 +81,7 @@ void MixGraph::mixBufferAndConvert(float* out) {
         LogWarning("[MixGraph::mix] Detected clipping: LOW = %d, HIGHT = %d", lowClipCount, highClipCount);
     }
 
-    Audio::ConverFloatToInt16(out, reinterpret_cast<int16_t*>(out),
+    Audio::ConverFloatsToInt16(out, reinterpret_cast<int16_t*>(out),
         config.channels * config.samplesPerBuffer);
 }
 

@@ -132,7 +132,7 @@ void GameBoardMatchLogic::triggerDestroyEffect(EntityId elemId, const Transform&
 
     Vec2i elemCellPt(-1);
     ET_SendEventReturn(elemCellPt, &ETGameBoard::ET_getElemBoardPos, elemId);
-    ET_SendEvent(&ETGameBoardElemHighlighter::ET_hightlightCell, elemCellPt);
+    ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, elemCellPt);
 
     EntityId effectId;
     switch(elemType) {

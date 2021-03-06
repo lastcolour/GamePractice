@@ -7,6 +7,8 @@
 #include "Platform/ETSurface.hpp"
 #include "Platform/Android/ETAndroidInterfaces.hpp"
 
+#include <atomic>
+
 #include <EGL/egl.h>
 
 class AndroidSurface : public SystemLogic,
@@ -45,6 +47,8 @@ private:
     bool createEGLDisplay();
     bool createEGLContext();
 
+    void updateCanRenderFlag();
+
 private:
 
     Vec2i size;
@@ -54,6 +58,7 @@ private:
     EGLDisplay display;
     EGLConfig config;
     bool hasFocus;
+    std::atomic<bool> canRenderFlag;
 };
 
 #endif /* __ANDROID_SURFACE_HPP__ */
