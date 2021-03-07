@@ -2,6 +2,7 @@
 #define __CYCLE_ARRAY_HPP__
 
 #include <vector>
+#include <cassert>
 
 template<typename T>
 class CycleArray {
@@ -28,16 +29,20 @@ public:
     }
 
     T& operator[](size_t idx) {
-        return data[idx];
+        assert(idx >= 0 && idx < count  && "Invalid elem access");
+        auto i = (idx + pos + data.size() - 1) % data.size();
+        return data[i];
     }
 
     const T& operator[](size_t idx) const {
-        return data[idx];
+        assert(idx >= 0 && idx < count  && "Invalid elem access");
+        auto i = (idx + pos + data.size() - 1) % data.size();
+        return data[i];
     }
 
     void insert(T& elem) {
         pos += 1;
-        count = std::max(count, pos);
+        count = std::min(count + 1, data.size());
         pos %= data.size();
         data[pos] = elem;
     }

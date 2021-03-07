@@ -7,6 +7,7 @@
 
 #include <atomic>
 #include <vector>
+#include <memory>
 
 const int InvalidRootParticleId = -1;
 

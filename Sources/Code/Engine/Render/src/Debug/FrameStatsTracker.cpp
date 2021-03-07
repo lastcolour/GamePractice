@@ -39,14 +39,13 @@ void DrawFPSChart(Vec2& pt, const Vec2& size, const CycleArray<float>& fpsValues
     float maxFps = 60.f;
     float maxY = size.y * 0.8f;
 
-    float yVal = Math::Lerp(0.f, maxY, fpsValues[fpsValues.getPos() - 1] / maxFps);
+    float yVal = Math::Lerp(0.f, maxY, fpsValues[0] / maxFps);
     yVal = std::min(size.y * 0.99f, yVal);
     endPt.y = pt.y + yVal;
     endPt.x = pt.x + size.x;
 
     for(size_t i = 1, sz = fpsValues.size(); i < sz; ++i) {
-        size_t valIdx = (i + fpsValues.getPos() - 1) % fpsValues.maxSize();
-        yVal = Math::Lerp(0.f, maxY, fpsValues[valIdx] / maxFps);
+        yVal = Math::Lerp(0.f, maxY, fpsValues[i] / maxFps);
         yVal = std::min(size.y * 0.99f, yVal);
         startPt.x = endPt.x - step;
         startPt.y = pt.y + yVal;

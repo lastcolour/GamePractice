@@ -47,6 +47,7 @@ private:
     ALCcontext* alcContext;
     MixGraph mixGraph;
     std::unique_ptr<float[]> mixBuffer;
+    std::unique_ptr<unsigned int[]> queueBufferIds;
     std::unique_ptr<unsigned int[]> alBufferIds;
     unsigned int alSourceId;
     bool alSourcePlaying;

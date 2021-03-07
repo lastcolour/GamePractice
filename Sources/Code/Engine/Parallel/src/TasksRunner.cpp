@@ -247,8 +247,7 @@ ThreadJob* TasksRunner::getNextJob(const TimePoint& currTime, int threadId) {
     for(auto it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it) {
         auto job = *it;
         if(job->canStartInThread(threadId)) {
-            auto jobRemainingWaitTime = job->getRemainingWaitTime(currTime);
-            if(jobRemainingWaitTime.count() == 0) {
+            if(job->canStartAt(currTime)) {
                 pendingJobs.erase(it);
                 return job;
             }

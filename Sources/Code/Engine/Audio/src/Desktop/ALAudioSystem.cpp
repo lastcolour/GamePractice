@@ -93,6 +93,7 @@ bool ALAudioSystem::initAlSource() {
     auto& config = mixGraph.getMixConfig();
 
     alBufferIds.reset(new ALuint[config.buffersCount]);
+    queueBufferIds.reset(new ALuint[config.buffersCount]);
     alGenBuffers(config.buffersCount, alBufferIds.get());
     alError = alGetError();
     if(alError != AL_NO_ERROR) {
@@ -141,7 +142,6 @@ void ALAudioSystem::ET_updateSound() {
         return;
     }
 
-    std::unique_ptr<ALuint> bufferQueue(new ALuint[config.buffersCount]);
     ALint buffersProcessed = 0;
     alGetSourcei(alSourceId, AL_BUFFERS_PROCESSED, &buffersProcessed);
     if(buffersProcessed == 0) {
@@ -151,26 +151,17 @@ void ALAudioSystem::ET_updateSound() {
         LogWarning("[ALAudioSystem::ET_onSystemTick] All buffers processed!");
     }
 
-    for(ALint i = 0; i < buffersProcessed; ++i) {
-        ALuint bufferId;
-        alSourceUnqueueBuffers(alSourceId, 1, &bufferId);
-        (bufferQueue.get())[i] = bufferId;
-    }
+    alSourceUnqueueBuffers(alSourceId, buffersProcessed, &queueBufferIds[0]);
 
     auto alFormat = config.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-
     for(ALint i = 0; i < buffersProcessed; ++i) {
-        auto bufferId = (bufferQueue.get())[i];
+        auto bufferId = (queueBufferIds.get())[i];
         mixGraph.mixBufferAndConvert(mixBuffer.get());
         alBufferData(bufferId, alFormat, mixBuffer.get(),
             config.samplesPerBuffer * config.channels * sizeof(int16_t), config.outSampleRate);
-        alSourceQueueBuffers(alSourceId, 1, &bufferId);
     }
 
-    alGetSourcei(alSourceId, AL_BUFFERS_PROCESSED, &buffersProcessed);
-    if(buffersProcessed > 0) {
-        LogWarning("[ALAudioSystem::ET_onSystemTick] Very slow mixing!");
-    }
+    alSourceQueueBuffers(alSourceId, buffersProcessed, &queueBufferIds[0]);
 
     ALenum alSourceState;
     alGetSourcei(alSourceId, AL_SOURCE_STATE, &alSourceState);

@@ -40,7 +40,7 @@ void JobTree::tryRestartTree(const TimePoint& currTime) {
     if(!isRunning.compare_exchange_strong(falseVal, true)) {
         return;
     }
-    assert(getRemainingWaitTime(currTime).count() == 0 && "Restart tree too early");
+    assert(canStartAt(currTime) && "Restart tree too early");
     prevStartT = currTime;
 }
 
@@ -66,19 +66,18 @@ void JobTree::setTrackPerformance(bool flag) {
     trackPerformance = flag;
 }
 
-std::chrono::microseconds JobTree::getRemainingWaitTime(const TimePoint& currTime) const {
+bool JobTree::canStartAt(const TimePoint& currTime) const {
     if(prevStartT.getStdTimePoint().time_since_epoch().count() == 0) {
-        return std::chrono::microseconds(0);
+        return true;
     }
     if(isRunning.load()) {
-        return std::chrono::microseconds(0);
+        return true;
     }
     auto delta = currTime.getStdTimePoint() - prevStartT.getStdTimePoint();
-    auto waitTime = std::chrono::duration_cast<std::chrono::microseconds>(runDelay - delta);
-    if(waitTime.count() < 0) {
-        return std::chrono::microseconds(0);
+    if(delta >= runDelay) {
+        return true;
     }
-    return waitTime;
+    return false;
 }
 
 const TimePoint& JobTree::getStartTime() const {

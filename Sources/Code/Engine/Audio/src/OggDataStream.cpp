@@ -1,10 +1,110 @@
 #include "OggDataStream.hpp"
-#include "Core/Buffer.hpp"
 #include "MixGraph/LinearResampler.hpp"
+#include "Core/ETLogger.hpp"
 
 #include <stb_vorbis.c>
 
 #include <cassert>
+
+namespace {
+
+const size_t STB_INNER_BUFFER_SIZE = 1 << 18;
+
+const char* getVorbisErrorText(int error) {
+    const char* errorText = "Unknown";
+    switch(error) {
+        case VORBIS__no_error: {
+            errorText = "no_error";
+            break;
+        }
+        case VORBIS_need_more_data: {
+            errorText = "need_more_data";
+            break;
+        }
+        case VORBIS_invalid_api_mixing: {
+            errorText = "invalid_api_mixing";
+            break;
+        }
+        case VORBIS_outofmem: {
+            errorText = "outofmem";
+            break;
+        }
+        case VORBIS_feature_not_supported: {
+            errorText = "feature_not_supported";
+            break;
+        }
+        case VORBIS_too_many_channels: {
+            errorText = "no_error";
+            break;
+        }
+        case VORBIS_file_open_failure: {
+            errorText = "file_open_failure";
+            break;
+        }
+        case VORBIS_seek_without_length: {
+            errorText = "seek_without_length";
+            break;
+        }
+        case VORBIS_unexpected_eof: {
+            errorText = "unexpected_eof";
+            break;
+        }
+        case VORBIS_seek_invalid: {
+            errorText = "seek_invalid";
+            break;
+        }
+        case VORBIS_invalid_setup: {
+            errorText = "invalid_setup";
+            break;
+        }
+        case VORBIS_invalid_stream: {
+            errorText = "invalid_stream";
+            break;
+        }
+        case VORBIS_missing_capture_pattern: {
+            errorText = "missing_capture_pattern";
+            break;
+        }
+        case VORBIS_invalid_stream_structure_version: {
+            errorText = "invalid_stream_structure_version";
+            break;
+        }
+        case VORBIS_continued_packet_flag_invalid: {
+            errorText = "continued_packet_flag_invalid";
+            break;
+        }
+        case VORBIS_incorrect_stream_serial_number: {
+            errorText = "incorrect_stream_serial_number";
+            break;
+        }
+        case VORBIS_invalid_first_page: {
+            errorText = "invalid_first_page";
+            break;
+        }
+        case VORBIS_bad_packet_type: {
+            errorText = "bad_packet_type";
+            break;
+        }
+        case VORBIS_cant_find_last_page: {
+            errorText = "cant_find_last_page";
+            break;
+        }
+        case VORBIS_seek_failed: {
+            errorText = "seek_failed";
+            break;
+        }
+        case VORBIS_ogg_skeleton_not_supported: {
+            errorText = "ogg_skeleton_not_supported";
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    return errorText;
+}
+
+} // namespace
 
 OggDataStream::OggDataStream() :
     oggBuffer(),
@@ -12,6 +112,10 @@ OggDataStream::OggDataStream() :
     oggChannels(0),
     oggSampleRate(0),
     oggSampleCount(0) {
+
+    sbtAllocData.resize(STB_INNER_BUFFER_SIZE);
+    allocDataDescr.ptr = reinterpret_cast<char*>(sbtAllocData.getWriteData());
+    allocDataDescr.size = sbtAllocData.getSize(); 
 }
 
 OggDataStream::~OggDataStream() {
@@ -21,9 +125,17 @@ OggDataStream::~OggDataStream() {
 bool OggDataStream::open(Buffer& buffer) {
     assert(oggStream == nullptr && "Reopen OGG data stream");
     oggBuffer = buffer;
+
+    int error = VORBIS__no_error;
+
     oggStream = stb_vorbis_open_memory(
         static_cast<const unsigned char*>(oggBuffer.getReadData()),
-            static_cast<int>(oggBuffer.getSize()), nullptr, nullptr);
+            static_cast<int>(oggBuffer.getSize()), &error,
+                reinterpret_cast<stb_vorbis_alloc*>(&allocDataDescr));
+
+    if(error != VORBIS__no_error) {
+        LogError("[OggDataStream::open] Open ended with error: '%s'", getVorbisErrorText(error));
+    }
 
     if(!oggStream) {
         return false;

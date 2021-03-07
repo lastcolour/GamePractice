@@ -27,7 +27,7 @@ public:
     void addChildJob(ThreadJob* childJob);
     RunTask* getTask();
     void execute();
-    std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
+    bool canStartAt(const TimePoint& currTime) const;
     std::chrono::microseconds getLastRunTime() const;
     std::chrono::microseconds getLastWaitTime() const;
     void setCurrentStartTime(const TimePoint& currTime);

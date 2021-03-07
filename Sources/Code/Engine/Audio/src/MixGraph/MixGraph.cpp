@@ -27,7 +27,7 @@ MixGraph::~MixGraph() {
 }
 
 bool MixGraph::init(const MixConfig& newMixConfig) {
-    if(!CheckMixConfig(newMixConfig)) {
+    if(!CheckAndPrintMixConfig(newMixConfig)) {
         return false;
     }
 

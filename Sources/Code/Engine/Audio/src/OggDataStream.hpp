@@ -31,7 +31,16 @@ public:
 
 private:
 
+    struct ProxyStbAllocData {
+        char* ptr;
+        int size;
+    };
+
+private:
+
     Buffer oggBuffer;
+    Buffer sbtAllocData;
+    ProxyStbAllocData allocDataDescr;
     stb_vorbis* oggStream;
     std::unique_ptr<LinearResampler> resampler;
     int oggChannels;

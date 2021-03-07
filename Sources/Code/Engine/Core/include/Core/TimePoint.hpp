@@ -22,7 +22,7 @@ public:
     float getSecElapsedFrom(const TimePoint& other) const;
     float getMiliSecElapsedFrom(const TimePoint& other) const;
 
-    ClockT::time_point getStdTimePoint() const;
+    const ClockT::time_point& getStdTimePoint() const;
     ClockT::time_point getStdFutureTimePoint(int msOffset) const;
 
 private:

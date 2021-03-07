@@ -34,7 +34,7 @@ float TimePoint::getMiliSecElapsedFrom(const TimePoint& other) const {
     return msValue;
 }
 
-typename TimePoint::ClockT::time_point TimePoint::getStdTimePoint() const {
+const typename TimePoint::ClockT::time_point& TimePoint::getStdTimePoint() const {
     return value;
 }
 

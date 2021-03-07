@@ -109,8 +109,8 @@ RunTask* ThreadJob::getTask() {
     return task;
 }
 
-std::chrono::microseconds ThreadJob::getRemainingWaitTime(const TimePoint& currTime) const {
-    return tree->getRemainingWaitTime(currTime);
+bool ThreadJob::canStartAt(const TimePoint& currTime) const {
+    return tree->canStartAt(currTime);
 }
 
 std::chrono::microseconds ThreadJob::getLastRunTime() const {

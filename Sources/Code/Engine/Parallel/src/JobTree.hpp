@@ -23,7 +23,7 @@ public:
     void setJobsCount(int newJobsCount);
     void setRunFrequency(int frequency);
     void setTrackPerformance(bool flag);
-    std::chrono::microseconds getRemainingWaitTime(const TimePoint& currTime) const;
+    bool canStartAt(const TimePoint& currTime) const;
 
     const TimePoint& getStartTime() const;
     const TimePoint& getEndTime() const;

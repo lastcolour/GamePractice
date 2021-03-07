@@ -1,7 +1,7 @@
 #include "MixGraph/MixConfig.hpp"
 #include "Core/ETLogger.hpp"
 
-bool CheckMixConfig(const MixConfig& config) {
+bool CheckAndPrintMixConfig(const MixConfig& config) {
     bool res = true;
     if(config.outSampleRate <= 0) {
         LogError("[CheckMixConfig] Invalid sample rate: %d", config.outSampleRate);
@@ -27,5 +27,14 @@ bool CheckMixConfig(const MixConfig& config) {
         LogError("[CheckMixConfig] Invalid sample per burst: %d", config.samplesPerBurst);
         res = false;
     }
+
+    LogInfo("[CheckAndPrintMixConfig] MixConfig:");
+    LogInfo("[CheckAndPrintMixConfig] - outSampleRate: %d", config.outSampleRate);
+    LogInfo("[CheckAndPrintMixConfig] - maxSources: %d", config.maxSources);
+    LogInfo("[CheckAndPrintMixConfig] - channels: %d", config.channels);
+    LogInfo("[CheckAndPrintMixConfig] - buffersCount: %d", config.buffersCount);
+    LogInfo("[CheckAndPrintMixConfig] - samplesPerBuffer: %d", config.samplesPerBuffer);
+    LogInfo("[CheckAndPrintMixConfig] - samplesPerBurst: %d", config.samplesPerBurst);
+
     return res;
 }
