@@ -51,10 +51,10 @@ AABB2Di getUIBox(EntityId targetId) {
 }
 
 Vec2i lerpPos(const Vec2i& from, const Vec2i& to, float t) {
-    Vec2 v1(from.x, from.y);
-    Vec2 v2(to.x, to.y);
+    Vec2 v1(static_cast<float>(from.x), static_cast<float>(from.y));
+    Vec2 v2(static_cast<float>(to.x), static_cast<float>(to.y));
     Vec2 res = Math::Lerp(v1, v2, t);
-    return Vec2i(res.x, res.y);
+    return Vec2i(static_cast<int>(res.x), static_cast<int>(res.y));
 }
 
 } // namespace
@@ -253,15 +253,15 @@ void UIScrollArea::updateMoveState(float dt) {
         auto lastEvent = path.back();
 
         newPosDt = lastEvent.pt - firstEvent.pt;
-        float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
-        dt = std::max(dt, 0.008f);
+        float eventDt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
+        eventDt = std::max(eventDt, 0.008f);
 
         float newVel = 0.f;
 
         if(style.type == UIScrollType::Horizontal) {
-            newVel = static_cast<float>(newPosDt.x) / dt;
+            newVel = static_cast<float>(newPosDt.x) / eventDt;
         } else {
-            newVel = static_cast<float>(newPosDt.y) / dt;
+            newVel = static_cast<float>(newPosDt.y) / eventDt;
         }
 
         path.clear();

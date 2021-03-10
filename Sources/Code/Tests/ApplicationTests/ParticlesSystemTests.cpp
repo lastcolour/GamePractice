@@ -209,7 +209,7 @@ TEST_F(ParticlesSystemTests, CheckLocalTm) {
 
     {
         Transform tm;
-        tm.pt = Vec3(emitPt.x, emitPt.y, 0.f);
+        tm.pt = Vec3(newEmitPt.x, newEmitPt.y, 0.f);
         entity->ET_setTransform(tm);
     }
 

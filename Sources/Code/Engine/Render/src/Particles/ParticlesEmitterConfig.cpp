@@ -76,7 +76,6 @@ void ParticlesEmitterSizeConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("startScaleVar", &ParticlesEmitterSizeConfig::startScaleVar);
         classInfo->addField("endScale", &ParticlesEmitterSizeConfig::endScale);
         classInfo->addField("endScaleVar", &ParticlesEmitterSizeConfig::endScaleVar);
-        classInfo->addField("fixedRatio", &ParticlesEmitterSizeConfig::fixedRatio);
     }
 }
 
@@ -84,8 +83,7 @@ ParticlesEmitterSizeConfig::ParticlesEmitterSizeConfig() :
     startScale(5.f),
     startScaleVar(0.1f),
     endScale(5.f),
-    endScaleVar(0.1f),
-    fixedRatio(true) {
+    endScaleVar(0.1f) {
 }
 
 void ParticlesEmitterMovementConfig::Reflect(ReflectContext& ctx) {
@@ -102,11 +100,11 @@ void ParticlesEmitterMovementConfig::Reflect(ReflectContext& ctx) {
 
 ParticlesEmitterMovementConfig::ParticlesEmitterMovementConfig() :
     speed(100.f),
-    speedVar(0.1),
+    speedVar(0.1f),
     initRotation(30.f),
-    initRotationVar(0.1),
+    initRotationVar(0.1f),
     rotationSpeed(10.f),
-    rotationSpeedVar(0.1),
+    rotationSpeedVar(0.1f),
     rotationAcc(0.f) {
 }
 

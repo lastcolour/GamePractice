@@ -132,6 +132,7 @@ bool ParticlesSystem::ET_hasAliveParticles() const {
 void ParticlesSystem::onSyncWithRender() {
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
     auto& pool = particlesNode->getEmittersPool();
+    auto& simConfig = pool.getSimConfig();
 
     if(isEmissionConfigChanged) {
         simConfig.emission = emissionConfig;
@@ -179,15 +180,16 @@ void ParticlesSystem::ET_updateEmitter(float dt) {
         return;
     }
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& emittersPool = particlesNode->getEmittersPool();
+    auto& pool = particlesNode->getEmittersPool();
     auto& tm = particlesNode->getTransform();
-    emittersPool.simulate(simConfig, tm, dt);
-    if(!emittersPool.hasAlive()) {
+    pool.simulate(tm, dt);
+    if(!pool.hasAlive()) {
+        auto& simConfig = pool.getSimConfig();
         if(simConfig.emission.loop) {
             EmitRequest emitReq;
             emitReq.rootParticleId = InvalidRootParticleId;
             emitReq.syncWithSystemTm = true;
-            emittersPool.createEmitter(emitReq);
+            pool.createEmitter(emitReq);
         }
     }
 }

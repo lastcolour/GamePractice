@@ -43,6 +43,7 @@ private:
 
     bool canRenderToScreen() const;
     bool canRenderToFramebuffer() const;
+    bool canCreateRenderNodes() const;
 
 private:
 

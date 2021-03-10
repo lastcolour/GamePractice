@@ -34,7 +34,8 @@ enum class EmissionState {
 struct EmitterParticles {
 public:
 
-    EmitterParticles();
+    EmitterParticles(const SimulationConfig& config);
+    ~EmitterParticles();
 
     void start(const EmitRequest& emitRequest);
     void stop();
@@ -42,20 +43,20 @@ public:
     bool isEmitting() const;
     bool isFinished() const;
     bool hasAlive() const;
-    void simulate(const SimulationConfig& simConfig, const Transform& systemTm, float dt);
+    void simulate(const Transform& systemTm, float dt);
     Mat4 getTransformMat() const;
     int getRootParticleId() const;
     void updateEmitPos(const Vec2& newEmitPt);
 
 private:
 
-    void removeOld(const SimulationConfig& simConfig, float dt);
-    void emitNew(const SimulationConfig& simConfig, float dt);
-    void moveAlive(const SimulationConfig& simConfig, float dt);
-    void updateState(const SimulationConfig& simConfig, float dt);
-    void spawnNewParticle(const SimulationConfig& simConfig, Particle& p);
-    void simulateGravities(const SimulationConfig& simConfig, float dt);
-    void updateIntacesData(const SimulationConfig& simConfig, float dt);
+    void removeOld(float dt);
+    void emitNew(float dt);
+    void moveAlive(float dt);
+    void updateState(float dt);
+    void spawnNewParticle(Particle& p);
+    void simulateGravities(float dt);
+    void updateIntacesData(float dt);
     int generateParticleId();
 
 public:
@@ -67,10 +68,11 @@ public:
 private:
 
     EmitRequest emitReq;
+    const SimulationConfig& simConfig;
     float duration;
     float emitFracTime;
     Math::RandomFloatGenerator floatGen;
-    int spawnedCount;
+    unsigned int spawnedCount;
     std::atomic<EmissionState> emissionState;
     bool wroldTmSpace;
 };

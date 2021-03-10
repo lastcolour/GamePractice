@@ -23,7 +23,7 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
         }
     }
     if(!stoppedEmitter) {
-        pool.emplace_back(new EmitterParticles);
+        pool.emplace_back(new EmitterParticles(simConfig));
         stoppedEmitter = pool.back().get();
     }
     asyncState.store(AsynState::Playing);
@@ -48,7 +48,7 @@ void ParticlesEmittersPool::stopEmitter(int rootParticleId) {
     }
 }
 
-void ParticlesEmittersPool::simulate(const SimulationConfig& simConfig, const Transform& systemTm, float dt) {
+void ParticlesEmittersPool::simulate(const Transform& systemTm, float dt) {
     auto currState = asyncState.load();
     switch(currState) {
         case AsynState::Playing: {
@@ -94,7 +94,7 @@ void ParticlesEmittersPool::simulate(const SimulationConfig& simConfig, const Tr
 
     for(auto& emitter : pool) {
         if(!emitter->isFinished()) {
-            emitter->simulate(simConfig, systemTm, dt);
+            emitter->simulate(systemTm, dt);
         }
         if(emitter->isEmitting()) {
             hasEmitting = true;
@@ -141,4 +141,8 @@ void ParticlesEmittersPool::asyncDestroyAll() {
 bool ParticlesEmittersPool::asyncHasAlive() const {
     auto currState = asyncState.load();
     return currState != AsynState::Stopped;
+}
+
+SimulationConfig& ParticlesEmittersPool::getSimConfig() {
+    return simConfig;
 }

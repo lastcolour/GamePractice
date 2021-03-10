@@ -115,7 +115,7 @@ OggDataStream::OggDataStream() :
 
     sbtAllocData.resize(STB_INNER_BUFFER_SIZE);
     allocDataDescr.ptr = reinterpret_cast<char*>(sbtAllocData.getWriteData());
-    allocDataDescr.size = sbtAllocData.getSize(); 
+    allocDataDescr.size = static_cast<int>(sbtAllocData.getSize());
 }
 
 OggDataStream::~OggDataStream() {

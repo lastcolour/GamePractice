@@ -566,7 +566,7 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
         auto second = createVoidObject();
         secondId = second->getEntityId();
 
-        auto uiBox = second->addCustomLogic<UILayoutBox>();
+        second->addCustomLogic<UILayoutBox>();
         second->addCustomLogic<UILayout>();
     }
     {
@@ -599,7 +599,7 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
 
     {
         Transform tm;
-        tm.pt = Vec3(center.x, center.y, 0.f);
+        tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
         ET_SendEvent(firstId, &ETEntity::ET_setTransform, tm);
     }
 

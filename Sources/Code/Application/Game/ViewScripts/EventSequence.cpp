@@ -102,6 +102,9 @@ void EventSequence::forceFinish() {
     if(!isPlaying) {
         return;
     }
+    while(!pendingEvents.empty()) {
+        ET_SendEvent(&ETUITimerEvents::ET_onUITick, 32.f);
+    }
 }
 
 void EventSequence::startNextEvent() {

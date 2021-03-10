@@ -72,8 +72,6 @@ void ParticlesNode::onRender(RenderContext& ctx) {
         }
         Mat4 resMat = emitter->getTransformMat();
         shader->setUniformMat4(UniformType::ModelMat, resMat);
-
-        auto& particles = emitter->particles;
         geom->drawInstanced(&emitter->instaceData[0], emitter->activeCount);
     }
 }

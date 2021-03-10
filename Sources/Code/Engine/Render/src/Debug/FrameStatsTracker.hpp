@@ -2,7 +2,7 @@
 #define __FRAME_STATS_HPP__
 
 #include "Core/TimePoint.hpp"
-#include "Debug/CycleArray.hpp"
+#include "Core/CycleArray.hpp"
 
 #include <vector>
 

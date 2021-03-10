@@ -104,11 +104,17 @@ void Render::ET_onSurfaceShown() {
     canScreenRender = true;
 }
 
+bool Render::canCreateRenderNodes() const {
+    return canOffscrenRender;
+}
+
 void Render::ET_onSurfaceResized(const Vec2i& size) {
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
 }
 
 void Render::ET_syncWithGame() {
-    ET_PollAllEvents<ETRenderNodeManager>();
+    if(canCreateRenderNodes()) {
+        ET_PollAllEvents<ETRenderNodeManager>();
+    }
     ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncWithRender);
 }

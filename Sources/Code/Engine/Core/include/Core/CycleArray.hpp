@@ -24,27 +24,23 @@ public:
         return data.size();
     }
 
-    size_t getPos() const {
-        return pos;
-    }
-
     T& operator[](size_t idx) {
         assert(idx >= 0 && idx < count  && "Invalid elem access");
-        auto i = (idx + pos + data.size() - 1) % data.size();
+        auto i = (pos + idx) % count;
         return data[i];
     }
 
     const T& operator[](size_t idx) const {
         assert(idx >= 0 && idx < count  && "Invalid elem access");
-        auto i = (idx + pos + data.size() - 1) % data.size();
+        auto i = (pos + idx) % count;
         return data[i];
     }
 
-    void insert(T& elem) {
-        pos += 1;
+    void insert(const T& elem) {
+        data[pos] = elem;
+        pos = pos + 1;
         count = std::min(count + 1, data.size());
         pos %= data.size();
-        data[pos] = elem;
     }
 
 private:

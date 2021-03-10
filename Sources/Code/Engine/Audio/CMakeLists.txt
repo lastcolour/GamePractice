@@ -56,5 +56,14 @@ file(GLOB AUDIO_HEADERS
 add_library(${PROJECT_NAME} STATIC ${AUDIO_SOURCES} ${AUDIO_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+
+    set_source_files_properties(
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/OggDataStream.cpp
+            PROPERTIES COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /wd4244 /wd4245 /wd4456 /wd4457 /wd4701")
+
+endif()
+
+
 target_link_libraries(${PROJECT_NAME}
     ${AUDIO_LIB_DEPENDICIES})

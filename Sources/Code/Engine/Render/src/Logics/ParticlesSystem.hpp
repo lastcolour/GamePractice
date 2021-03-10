@@ -61,7 +61,6 @@ private:
     ParticlesEmitterGravityConfig gravityConfig;
     ParticlesSubEmittersConfig subEmittersConfig;
     ParticlesEmitterSizeConfig sizeConfig;
-    SimulationConfig simConfig;
     std::vector<EmitRequest> pendingEmits;
     bool canUpdate;
     bool isEmissionConfigChanged;

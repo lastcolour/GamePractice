@@ -71,6 +71,7 @@ void applyStateStereo(float* from, float* to, int samplesCount, EqualizerState& 
 Equalizer::Equalizer(const MixConfig* config) :
     mixConfig(config),
     performLerp(false) {
+
     setSetup(setup);
     performLerp = false;
 }

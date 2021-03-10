@@ -82,7 +82,6 @@ public:
     Vec2 startScaleVar;
     Vec2 endScale;
     Vec2 endScaleVar;
-    bool fixedRatio;
 };
 
 class ParticlesEmitterMovementConfig {

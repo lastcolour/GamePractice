@@ -20,8 +20,9 @@ public:
     void createEmitter(const EmitRequest& emitReq);
     void updateEmitterPos(int rootParticleId, const Vec2& newPt);
     void stopEmitter(int rootParticleId);
-    void simulate(const SimulationConfig& simConfig, const Transform& systemTm, float dt);
+    void simulate(const Transform& systemTm, float dt);
     bool hasAlive() const;
+    SimulationConfig& getSimConfig();
 
     void asyncStopEmitting();
     void asyncDestroyAll();
@@ -43,6 +44,7 @@ private:
 
     std::atomic<AsynState> asyncState;
     std::vector<std::unique_ptr<EmitterParticles>> pool;
+    SimulationConfig simConfig;
 };
 
 #endif /* __PARTICLES_EMITTERS_POOL_HPP__ */
