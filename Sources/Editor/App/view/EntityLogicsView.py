@@ -5,24 +5,18 @@ from .LogicView import LogicView
 from .values.EditTransformValue import EditTransformValue
 
 from utils.ViewUtils import ClearLayout
-from utils.Managers import GetEventManager
 
 from menu.EntityLogicMenu import EntityLogicMenu
 
-def _isChildOfExternalEntity(entity):
-    if entity is None:
-        return False
-    currParent = entity.getParent()
-    while currParent != None:
-        if not currParent.isInternal() and currParent.getParent() != None:
-            return True
-        currParent = currParent.getParent()
-    return False
+from msg.Messages import MsgSetEditEntity, MsgChangeEditEntity, MsgOnAddLogicBtPressed, \
+    MsgAddLogicToEntity
+from msg.MessageSystem import RegisterForMessage, SendMessage
 
 class EntityLogicsView(QWidget):
     def __init__(self):
         super().__init__()
         self._editEntity = None
+        self._canEditLogics = False
 
         self._logicMenu = EntityLogicMenu(self)
 
@@ -53,43 +47,37 @@ class EntityLogicsView(QWidget):
         self._rootLayout.addWidget(self._scroll)
 
         self.setLayout(self._rootLayout)
+        self.setMinimumWidth(360)
 
-    def _canEditCurrentEntity(self):
-        currEntity = self._editEntity
-        canEdit = True
-        while currEntity != None:
-            if not currEntity.isInternal() and currEntity.getParent() != None:
-                canEdit = False
-                break
-            currEntity = currEntity.getParent()
-        return canEdit
+        RegisterForMessage(MsgSetEditEntity, self._onSetEditEntity)
+        RegisterForMessage(MsgChangeEditEntity, self._onSetEditEntity)
+        RegisterForMessage(MsgAddLogicToEntity, self._onAddLogicView)
 
     def _buildLogicsList(self):
         ClearLayout(self._logicsLayout)
         if self._editEntity is None:
             return
-        enableLogicView = self._canEditCurrentEntity()
         for logic in self._editEntity.getLogics():
             logicView = LogicView(logic)
-            logicView.setEnabled(enableLogicView)
+            logicView.setEnabled(self._canEditLogics)
             self._logicsLayout.addWidget(logicView)
 
-    def setEditEntity(self, entity):
-        self._editEntity = entity
-        canEdit = False
+    def _onSetEditEntity(self, msg):
+        self._editEntity = msg.entity
+        self._canEditLogics = msg.canEditLogics
         if self._editEntity is not None:
-            if self._canEditCurrentEntity():
+            if self._canEditLogics:
                 self._addLogicBt.setEnabled(True)
             else:
                 self._addLogicBt.setEnabled(False)
         else:
             self._addLogicBt.setEnabled(False)
-        canEditTransform = not _isChildOfExternalEntity(self._editEntity)
-        self._transformView.setEditEntity(entity, canEditTransform)
         self._buildLogicsList()
 
-    def addLogicView(self, entityLogic):
-        logicView = LogicView(entityLogic)
+    def _onAddLogicView(self, msg):
+        if self._editEntity != msg.entity:
+            raise RuntimeError("Edit entity is not target entity for a new logic")
+        logicView = LogicView(msg.logic)
         self._logicsLayout.addWidget(logicView)
 
     def removeLogicView(self, entityLogicId):
@@ -103,7 +91,7 @@ class EntityLogicsView(QWidget):
                     return
 
     def _signal_addLogicBt_clicked(self):
-        GetEventManager().onAddLogicBtClicked(self._editEntity)
+        SendMessage(MsgOnAddLogicBtPressed(self._editEntity))
 
     def _signal_frame_contexMenuRequested(self, pt):
         for i in range(self._logicsLayout.count()):

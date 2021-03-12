@@ -6,12 +6,10 @@ import collections
 def _getReflectModel():
     return NativeObject._NATIVE_API.getReflectModel()
 
-def _syncValueWithNative(val):
+def _writeValueToNative(val):
     stream = MemoryStream()
     val.writeToStream(stream)
     NativeObject._NATIVE_API.getLibrary().setEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId, stream)
-    stream = NativeObject._NATIVE_API.getLibrary().getEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId)
-    val.readFromStream(stream)
 
 class ValueType:
     Bool = 0
@@ -73,10 +71,16 @@ class ValueNative(NativeObject):
         return self._isModified
 
     def getEntity(self):
+        logic = self.getLogic()
+        if logic is not None:
+            return logic.getEntity()
+        return None
+
+    def getLogic(self):
         if self._logic is not None:
-            return self._logic.getEntity()
+            return self._logic
         if self._arrayVal is not None:
-            return self._arrayVal.getEntity()
+            return self._arrayVal.getLogic()
         return None
 
     def getLogicId(self):
@@ -108,10 +112,11 @@ class ValueNative(NativeObject):
             raise RuntimeError("Can't write to native non-primitive values")
         if not self._isLoadedToNative():
             return
-        if self._arrayVal is None:
-            _syncValueWithNative(self)
-        else:
-            _syncValueWithNative(self._arrayVal)
+        self.getLogic().writeToNative()
+        #if self._arrayVal is None:
+        #    _writeValueToNative(self)
+        #else:
+        #    _writeValueToNative(self._arrayVal)
         self._isModified = True
 
 class BoolValue(ValueNative):

@@ -3,6 +3,9 @@ from PyQt5.QtCore import Qt
 
 from dialog.SelectFromEntityChild import SelectFromEntityChild
 
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
+
 def _getChildPath(thisEntity, childEntity):
     if childEntity.isInternal():
         resPath = childEntity.getName()
@@ -45,7 +48,7 @@ class EditEntityValue(QWidget):
 
     def _signal_clearBt_clicked(self):
         self._push(None)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_selectBt_clicked(self):
         dialog = SelectFromEntityChild(self._val.getEntity())
@@ -54,7 +57,7 @@ class EditEntityValue(QWidget):
         if res is None:
             return
         self._push(res)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, entity):
         self._val.setEntityValue(entity)

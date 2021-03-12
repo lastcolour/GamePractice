@@ -1,6 +1,9 @@
 from PyQt5.QtWidgets import QCheckBox, QWidget, QHBoxLayout
 from PyQt5.QtCore import Qt
 
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
+
 class EditBoolValue(QWidget):
     def __init__(self, value):
         super().__init__()
@@ -24,7 +27,7 @@ class EditBoolValue(QWidget):
             self._push(True)
         else:
             self._push(False)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, data):
         self._val.setVal(data)

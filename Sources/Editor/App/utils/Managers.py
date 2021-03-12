@@ -3,6 +3,7 @@ from utils.EngineViewManager import EngineViewManager
 from utils.MainViewManager import MainViewManager
 from utils.CopyPasteManager import CopyPasteManager
 from utils.GameManager import GameManager
+from msg.MessageSystem import MessageSystem
 
 class _Managers:
 
@@ -10,6 +11,7 @@ class _Managers:
 
     def __init__(self, app):
         self._app = app
+        self._msgSystem = MessageSystem()
         self._eventMgr = EventManager(self)
         self._engineViewMgr = EngineViewManager(self)
         self._mainViewMgr = MainViewManager(self)

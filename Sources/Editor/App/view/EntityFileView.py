@@ -6,6 +6,9 @@ from utils.Managers import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
 from view.base.FileTreeView import FileTreeView
 
+from msg.Messages import MsgOpenEntityForEdit
+from msg.MessageSystem import SendMessage
+
 class EntityFileView(QWidget):
     def __init__(self):
         super().__init__()
@@ -44,7 +47,8 @@ class EntityFileView(QWidget):
     def _signal_tree_itemDoublecClicked(self, item):
         if item._node.isDir():
             return
-        GetEventManager().onEntityDoubleClickFromFileTree(item._node.getRelativePath())
+        entityName = item._node.getRelativePath()
+        SendMessage(MsgOpenEntityForEdit(entityName))
 
     def _getRootItemForEditItem(self, treeItem):
         if treeItem is None:

@@ -3,6 +3,9 @@ from PyQt5.QtCore import Qt
 
 from dialog.SelectResourcFile import SelectResourceFile
 
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
+
 class EditResourceValue(QWidget):
     def __init__(self, value):
         super().__init__()
@@ -31,7 +34,7 @@ class EditResourceValue(QWidget):
 
     def _signal_clearBt_clicked(self):
         self._push("")
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_selectBt_clicked(self):
         dialog = SelectResourceFile(self._val.getResourceType())
@@ -40,7 +43,7 @@ class EditResourceValue(QWidget):
         if res is None:
             return
         self._push(res)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, resource):
         self._val.setVal(resource)

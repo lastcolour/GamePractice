@@ -1,7 +1,12 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QDoubleSpinBox
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PyQt5.QtCore import Qt
 
+from view.values.EditWidgets import EditFloatSpinBox
+
 import math
+
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
 
 def _convertToEualerAngles(x, y, z, w):
     sinY = 2 * (w * z + x * y)
@@ -53,33 +58,30 @@ class EditQuatValue(QWidget):
         self._xLabel = QLabel("<b>X:</>")
         self._rootLayout.addWidget(self._xLabel)
 
-        self._xSpinBox = QDoubleSpinBox()
+        self._xSpinBox = EditFloatSpinBox()
         self._xSpinBox.setSingleStep(1)
         self._xSpinBox.setMinimum(-180)
         self._xSpinBox.setMaximum(180)
-        self._xSpinBox.setAlignment(Qt.AlignRight)
         self._xSpinBox.valueChanged.connect(self._signal_xSpinBox_valueChanged)
         self._rootLayout.addWidget(self._xSpinBox)
 
         self._yLabel = QLabel("<b>Y:</>")
         self._rootLayout.addWidget(self._yLabel)
 
-        self._ySpinBox = QDoubleSpinBox()
+        self._ySpinBox = EditFloatSpinBox()
         self._ySpinBox.setSingleStep(1)
         self._ySpinBox.setMinimum(-180)
         self._ySpinBox.setMaximum(180)
-        self._ySpinBox.setAlignment(Qt.AlignRight)
         self._ySpinBox.valueChanged.connect(self._signal_ySpinBox_valueChanged)
         self._rootLayout.addWidget(self._ySpinBox)
 
         self._zLabel = QLabel("<b>Z:</>")
         self._rootLayout.addWidget(self._zLabel)
 
-        self._zSpinBox = QDoubleSpinBox()
+        self._zSpinBox = EditFloatSpinBox()
         self._zSpinBox.setSingleStep(1)
         self._zSpinBox.setMinimum(-180)
         self._zSpinBox.setMaximum(180)
-        self._zSpinBox.setAlignment(Qt.AlignRight)
         self._zSpinBox.valueChanged.connect(self._signal_zSpinBox_valueChanged)
         self._rootLayout.addWidget(self._zSpinBox)
 
@@ -92,19 +94,19 @@ class EditQuatValue(QWidget):
         yAngle = self._ySpinBox.value()
         zAngle = self._zSpinBox.value()
         self._push(newXVal, yAngle, zAngle)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_ySpinBox_valueChanged(self, newYVal):
         xAngle = self._xSpinBox.value()
         zAngle = self._zSpinBox.value()
         self._push(xAngle, newYVal, zAngle)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_zSpinBox_valueChanged(self, newZVal):
         xAngle = self._xSpinBox.value()
         yAngle = self._ySpinBox.value()
         self._push(xAngle, yAngle, newZVal)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _pull(self):
         x, y, z, w = self._val.getVal()

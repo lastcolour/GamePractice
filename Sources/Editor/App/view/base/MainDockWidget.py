@@ -32,8 +32,8 @@ class _MainDock(QDockWidget):
         self.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
 
     def closeEvent(self, event):
-        super().closeEvent(event)
         GetMainViewManager().onMainViewClosed(self.widget()._mainWidget)
+        super().closeEvent(event)
 
 def WrapMainDockWidget(widget, title):
     mainFrame = _MainFrameWidget(widget)

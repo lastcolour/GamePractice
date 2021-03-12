@@ -6,6 +6,10 @@ from dialog.OverrideFile import OverrideFile
 
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
+from msg.Messages import MsgOpenEntityForEdit, MsgSetEditEntity, \
+    MsgOnAddLogicBtPressed, MsgAddLogicToEntity
+from msg.MessageSystem import RegisterForMessage, SendMessage
+
 import os
 
 class EventManager:
@@ -14,6 +18,8 @@ class EventManager:
         self._mgr = mgr
         self._app = mgr._app
         self._currentEntity = None
+        RegisterForMessage(MsgOpenEntityForEdit, self._onOpenNewEditEntity)
+        RegisterForMessage(MsgOnAddLogicBtPressed, self._onAddLogicToEntity)
 
     def _askToSaveEntity(self):
         if not self._currentEntity.isModified():
@@ -25,51 +31,46 @@ class EventManager:
             return False
         return True
 
-    def onEntityDoubleClickFromFileTree(self, entityName):
+    def _onOpenNewEditEntity(self, msg):
         if self._currentEntity is not None:
-            if self._currentEntity.getName() == entityName:
+            if self._currentEntity.getName() == msg.entityName:
                 return
             if not self._askToSaveEntity():
                 return
         loader = self._app._editorNative.getEntityLoader()
         try:
-            newEntity = loader.loadEntity(entityName)
+            newEntity = loader.loadEntity(msg.entityName)
         except Exception as e:
-            Log.error("[_EventManager:onEntityDoubleClickFromFileTree] Can't load entity '{0}' (Exception: {1})".format(
-                entityName, e))
+            Log.error("[_EventManager:_onOpenNewEditEntity] Can't load entity '{0}' (Exception: {1})".format(
+                msg.entityName, e))
             return
         if newEntity is None:
             return
         if not newEntity.loadToNative():
-            Log.error("[_EventManager:onEntityDoubleClickFromFileTree] Can't load entity '{0}' to native".format(
-                entityName))
+            Log.error("[_EventManager:_onOpenNewEditEntity] Can't load entity '{0}' to native".format(
+                msg.entityName))
             return
         if self._currentEntity is not None:
             self._currentEntity.unloadFromNative()
         self._currentEntity = newEntity
-        self._currentEntity._syncWithNative()
-        self._mgr._mainViewMgr.onEntityDoubleClickFromFileTree(self._currentEntity)
+        SendMessage(MsgSetEditEntity(self._currentEntity))
 
-    def onEntityClickedFromEntityTree(self, entity):
-        if entity is not None:
-            entity._syncWithNative()
-        self._mgr._mainViewMgr.onEntityClickedFromEntityTree(entity)
-
-    def onAddLogicBtClicked(self, editEntity):
-        if editEntity is None:
+    def _onAddLogicToEntity(self, msg):
+        entity = msg.entity
+        if entity is None:
             raise RuntimeError("Can't add logic to invalid entity")
-        if not editEntity.isLoadedToNative():
+        if not entity.isLoadedToNative():
             raise RuntimeError("Can't add logic to entity '{0}' that is not loaded to native".format(
-                editEntity.getName()))
+                entity.getName()))
         selectDialog = LogicSelectDialog(self._app._logicsModel)
         selectDialog.exec_()
         logic = selectDialog.getResultLogic()
         if logic is None:
             return
-        entityLogic = editEntity.addLogic(logic.getName())
+        entityLogic = entity.addLogic(logic.getName())
         if entityLogic is None:
-            raise RuntimeError("Can't add logic '{0}' to  entity '{1}'".format(logic.getName(), editEntity.getName()))
-        self._app._entityLogicsView.addLogicView(entityLogic)
+            raise RuntimeError("Can't add logic '{0}' to  entity '{1}'".format(logic.getName(), entity.getName()))
+        SendMessage(MsgAddLogicToEntity(entity, entityLogic))
 
     def onAddCopyLogic(self, editEntity, logicName, logicData):
         if editEntity is None:
@@ -80,7 +81,7 @@ class EventManager:
         entityLogic = editEntity.addCopyLogic(logicName, logicData)
         if entityLogic is None:
             raise RuntimeError("Can't add logic '{0}' to entity '{1}'".format(logicName, editEntity.getName()))
-        self._app._entityLogicsView.addLogicView(entityLogic)
+        SendMessage(MsgAddLogicToEntity(editEntity, entityLogic))
 
     def onRemoveEntityLogicBtClicked(self, editLogic):
         editLogic.getEntity().removeLogic(editLogic.getNativeId())
@@ -122,12 +123,6 @@ class EventManager:
         self._app._assetsModel.reload()
         self._app._entityFileView.setFileTreeModel(self._app._assetsModel.getEntitiesTree())
 
-    def getAssetsModel(self):
-        return self._app._assetsModel
-
-    def getSoundEventsModel(self):
-        return self._app._soundEventsModel
-
     def hasEditEntity(self):
         return self._currentEntity is not None
 
@@ -137,7 +132,13 @@ class EventManager:
                 return
             self._currentEntity.unloadFromNative()
         self._currentEntity = None
-        self._mgr._mainViewMgr.closeEditEntity()
+        SendMessage(MsgSetEditEntity(self._currentEntity))
 
     def saveEditEntity(self):
         self._currentEntity.save()
+
+    def getAssetsModel(self):
+        return self._app._assetsModel
+
+    def getSoundEventsModel(self):
+        return self._app._soundEventsModel

@@ -2,6 +2,9 @@ from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton, QColor
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QPalette, QColor
 
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
+
 class EditColorValue(QWidget):
     def __init__(self, value):
         super().__init__()
@@ -52,7 +55,7 @@ class EditColorValue(QWidget):
         if not resColor.isValid():
             return
         self._push(resColor)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, col):
         self._val.setVal(col.red(), col.green(), col.blue(), col.alpha())

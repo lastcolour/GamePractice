@@ -1,10 +1,11 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QStyle, QFrame, QHeaderView
 from PyQt5.Qt import QSizePolicy
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 
 from native.ValueNative import ValueType
 from utils.ViewUtils import GetMinimunWidgetTreeHeight
 from utils.Managers import GetEventManager
+from utils.Log import Log
 
 from menu.EntityLogicMenu import EntityLogicMenu
 
@@ -19,9 +20,12 @@ from .values.EditVec4Value import EditVec4Value
 from .values.EditQuatValue import EditQuatValue
 from .values.EditColorValue import EditColorValue
 from .values.EditEnumValue import EditEnumValue
-from .values.EditArrayValue import EditArrayValue
 from .values.EditEntityValue import EditEntityValue
 from .values.EditResourceValue import EditResourceValue
+from .values.EditArrayValue import EditArrayValue
+
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import RegisterForMessage, UnregisterFromAllMessages
 
 def _removeAllItemChildren(item):
     for i in reversed(range(item.childCount())):
@@ -92,6 +96,10 @@ class LogicView(QWidget):
     def __init__(self, entityLogic):
         super().__init__()
 
+        self._tickTimer = QTimer()
+        self._tickTimer.timeout.connect(self._onUpdateView)
+        self._tickTimer.setSingleShot(True)
+
         self._entityLogic = entityLogic
 
         self._frame = QFrame()
@@ -128,6 +136,12 @@ class LogicView(QWidget):
         self.setLayout(self._rootLayout)
 
         self._setupLogic(self._entityLogic)
+
+        RegisterForMessage(MsgOnLogicDataEdited, self._onMarkValuesDirty)
+
+    def closeEvent(self, event):
+        UnregisterFromAllMessages(self)
+        super().closeEvent(event)
 
     def _setCanCopy(self, copyFlag):
         self._logicTopBar._setCanCopy(copyFlag)
@@ -226,3 +240,23 @@ class LogicView(QWidget):
             raise RuntimeError("Object does not have edit widget")
         else:
             raise RuntimeError("Unknown Value Type '{0}'".format(valType))
+
+    def _onUpdateView(self):
+        if not hasattr(self._entityLogic, "readFromNative"):
+            return
+        self._entityLogic.readFromNative()
+        q = []
+        q.append(self._tree.invisibleRootItem())
+        while q:
+            currElem = q.pop()
+            editWidget = self._tree.itemWidget(currElem, 1)
+            if editWidget is not None and hasattr(editWidget, "_pull"):
+                editWidget._pull()
+            for i in range(currElem.childCount()):
+                treeItem = currElem.child(i)
+                q.append(treeItem)
+
+    def _onMarkValuesDirty(self, msg):
+        if not self._tickTimer.isActive():
+            self._tickTimer.stop()
+            self._tickTimer.start()

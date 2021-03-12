@@ -8,6 +8,9 @@ from utils.ViewUtils import GetMinimunWidgetTreeHeight
 from native.ValueNative import ValueType
 from view.LogicView import LogicView
 
+from msg.Messages import MsgSetEditEntity, MsgChangeEditEntity
+from msg.MessageSystem import RegisterForMessage
+
 class EmptyValue:
     def __init__(self, name):
         self._name = name
@@ -55,10 +58,14 @@ class EditTransformValue(LogicView):
         self._tree.setEnabled(False)
         self._setCanCopy(False)
 
-    def setEditEntity(self, entity, canEdit):
+        RegisterForMessage(MsgSetEditEntity, self._onSetEditEntity)
+        RegisterForMessage(MsgChangeEditEntity, self._onSetEditEntity)
+
+    def _onSetEditEntity(self, msg):
+        entity = msg.entity
         if entity is None:
             self._setupLogic(EmptyTransformLogic())
             self._tree.setEnabled(False)
         else:
             self._setupLogic(entity.getTransformLogic())
-            self._tree.setEnabled(canEdit)
+            self._tree.setEnabled(msg.canEditTransform)

@@ -1,5 +1,10 @@
-from PyQt5.QtWidgets import QSpinBox, QWidget, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PyQt5.QtCore import Qt
+
+from view.values.EditWidgets import EditIntSpinBox
+
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
 
 class EditVec2iValue(QWidget):
     def __init__(self, value):
@@ -12,20 +17,14 @@ class EditVec2iValue(QWidget):
         self._xLabel = QLabel("<b>X:</>")
         self._rootLayout.addWidget(self._xLabel)
 
-        self._xSpinBox = QSpinBox()
-        self._xSpinBox.setMinimum(-1000000)
-        self._xSpinBox.setMaximum(1000000)
-        self._xSpinBox.setAlignment(Qt.AlignRight)
+        self._xSpinBox = EditIntSpinBox()
         self._xSpinBox.valueChanged.connect(self._signal_xSpinBox_valueChanged)
         self._rootLayout.addWidget(self._xSpinBox)
 
         self._yLabel = QLabel("<b>Y:</>")
         self._rootLayout.addWidget(self._yLabel)
 
-        self._ySpinBox = QSpinBox()
-        self._ySpinBox.setMinimum(-1000000)
-        self._ySpinBox.setMaximum(1000000)
-        self._ySpinBox.setAlignment(Qt.AlignRight)
+        self._ySpinBox = EditIntSpinBox()
         self._ySpinBox.valueChanged.connect(self._signal_ySpinBox_valueChanged)
         self._rootLayout.addWidget(self._ySpinBox)
 
@@ -37,12 +36,12 @@ class EditVec2iValue(QWidget):
     def _signal_xSpinBox_valueChanged(self, newXValue):
         x, y = self._val.getVal()
         self._push(newXValue, y)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_ySpinBox_valueChanged(self, newYValue):
         x, y = self._val.getVal()
         self._push(x, newYValue)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _pull(self):
         x, y = self._val.getVal()

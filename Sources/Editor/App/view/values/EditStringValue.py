@@ -1,6 +1,9 @@
 from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout
 from PyQt5.QtCore import Qt
 
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
+
 class EditStringValue(QWidget):
     def __init__(self, value):
         super().__init__()
@@ -21,7 +24,7 @@ class EditStringValue(QWidget):
 
     def _signal_lineEdit_textEdited(self, text):
         self._push(text)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, data):
         self._val.setVal(data)

@@ -1,5 +1,5 @@
 from .Native import NativeObject
-from .ValueNative import ObjectValue, AssignValueIdx, AssignValueLogic, CreateObjectValue, _syncValueWithNative
+from .ValueNative import ObjectValue, AssignValueIdx, AssignValueLogic, CreateObjectValue
 from .MemoryStream import MemoryStream
 
 class LogicNative(NativeObject):

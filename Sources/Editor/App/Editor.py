@@ -50,11 +50,11 @@ class EditorView(QMainWindow):
         if not self._init():
             sys.exit(1)
 
+        CreateManagers(self)
+
         self._openEntityTreeView()
         self._openFileTreeView()
         self._openEntityLogicsView()
-
-        CreateManagers(self)
 
     def _openEntityTreeView(self):
         self._entityTreeView = EntityTreeView()

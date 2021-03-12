@@ -5,6 +5,9 @@ from menu.EntityTreeMenu import EntityTreeMenu
 from utils.Managers import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
 
+from msg.Messages import MsgSetEditEntity, MsgChangeEditEntity
+from msg.MessageSystem import RegisterForMessage, SendMessage
+
 class EntityTreeView(QWidget):
     def __init__(self):
         super().__init__()
@@ -31,8 +34,10 @@ class EntityTreeView(QWidget):
 
         self.setLayout(self._rootLayout)
 
-    def setEditEntity(self, editEntity):
-        self._editEntity = editEntity
+        RegisterForMessage(MsgSetEditEntity, self._onSetEditEntity)
+
+    def _onSetEditEntity(self, msg):
+        self._editEntity = msg.entity
         self._buildTree()
 
     def _createTreeItem(self, parentItem, entity):
@@ -71,7 +76,7 @@ class EntityTreeView(QWidget):
 
     def _signal_tree_currentItemChanged(self, currItem, prevItem):
         if currItem is not None and hasattr(currItem, "_entity"):
-            GetEventManager().onEntityClickedFromEntityTree(currItem._entity)
+            SendMessage(MsgChangeEditEntity(currItem._entity))
 
     def _signal_tree_contextMenuRequested(self, pt):
         item = self._tree.itemAt(pt)
@@ -91,7 +96,7 @@ class EntityTreeView(QWidget):
         treeItem._entity = newEntity
         treeItem.setText(0, newEntity.getName())
         self._tree.setItemWidget(treeItem, 0, None)
-        GetEventManager().onEntityClickedFromEntityTree(treeItem._entity)
+        SendMessage(MsgChangeEditEntity(treeItem._entity))
         return True
 
     def _renameChildEntity(self, treeItem, childName):

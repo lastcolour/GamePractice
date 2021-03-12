@@ -1,4 +1,9 @@
-from PyQt5.QtWidgets import QComboBox, QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QHBoxLayout
+
+from view.values.EditWidgets import EditComboBox
+
+from msg.Messages import MsgOnLogicDataEdited
+from msg.MessageSystem import SendMessage
 
 class EditEnumValue(QWidget):
     def __init__(self, value):
@@ -9,12 +14,12 @@ class EditEnumValue(QWidget):
         self._rootLayout = QHBoxLayout()
         self._rootLayout.addStretch()
 
-        self._comboBox = QComboBox()
+        self._comboBox = EditComboBox()
         enumItems = [x for x in self._val.getTable()]
         enumItems.sort()
         for item in enumItems:
             self._comboBox.addItem(item)
-        self._comboBox.currentTextChanged.connect(self._signal_comboBox_textChanged)
+        self._comboBox.currentIndexChanged.connect(self._signal_comboBox_indexChanged)
         self._rootLayout.addWidget(self._comboBox)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)
@@ -22,9 +27,10 @@ class EditEnumValue(QWidget):
 
         self._pull()
 
-    def _signal_comboBox_textChanged(self, text):
+    def _signal_comboBox_indexChanged(self, idx):
+        text = self._comboBox.currentText()
         self._push(text)
-        self._pull()
+        SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, text):
         self._val.setVal(text)
@@ -33,4 +39,5 @@ class EditEnumValue(QWidget):
         idx = self._comboBox.findText(self._val.getVal())
         if idx == -1:
             raise RuntimeError("Can't find value '{0}' in combo box".format(self._val.getVal()))
-        self._comboBox.setCurrentIndex(idx)
+        if idx != self._comboBox.currentIndex():
+            self._comboBox.setCurrentIndex(idx)
