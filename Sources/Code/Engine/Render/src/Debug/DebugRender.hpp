@@ -11,7 +11,6 @@
 #include "Nodes/LineNode.hpp"
 
 #include <vector>
-#include <mutex>
 
 class DebugRender : public SystemLogic,
     public ETNode<ETDebugRender>,
@@ -27,7 +26,8 @@ public:
 
     // ETDebugRender
     void ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col, float width) override;
-    void ET_drawQuad(const AABB2D& box, const ColorB& col) override;
+    void ET_drawQuadSolid(const AABB2D& box, const ColorB& col) override;
+    void ET_drawQuadBorder(const AABB2D& box, const ColorB& col, float width) override;
     void ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) override;
     void ET_update(RenderContext& ctx) override;
 
@@ -43,7 +43,6 @@ private:
 
 private:
 
-    std::mutex mutex;
     std::vector<DebugDrawLineCmd> drawLineCmds;
     std::vector<DebugDrawQuadCmd> drawQuadCmds;
     std::vector<DebugDrawTextCmd> drawTextCmds;

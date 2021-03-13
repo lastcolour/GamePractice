@@ -1,6 +1,6 @@
 #include "EditorModule.hpp"
 #include "EditorAssetsSetup.hpp"
-#include "EditEntityTracker.hpp"
+#include "EntityEditorHelper.hpp"
 
 EditorModule::EditorModule() :
     SystemModule("Editor") {
@@ -13,7 +13,7 @@ EditorModule::LogicsContainerPtrT EditorModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             EditorAssetsSetup,
-            EditEntityTracker>()
+            EntityEditorHelper>()
         );
     return container;
 }

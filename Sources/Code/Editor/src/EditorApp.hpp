@@ -38,6 +38,7 @@ public:
     void enableGameUpdate(bool flag);
     void unloadAll();
     bool renameEntity(EntityId entityId, const char* newName);
+    void setFocusEntity(EntityId entityId);
 
 protected:
 

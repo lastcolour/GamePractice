@@ -27,6 +27,7 @@ class MsgSetEditEntity:
         self.canEditLogics = _canEditEntityLogics(entity)
         if entity is not None:
             entity._syncWithNative()
+            entity.setInFocus()
 
 class MsgChangeEditEntity(MsgSetEditEntity):
     def __init__(self, entity):

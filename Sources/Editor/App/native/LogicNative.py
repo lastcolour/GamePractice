@@ -44,8 +44,8 @@ class LogicNative(NativeObject):
         self._rootValue.writeToStream(stream)
 
     def readFromNative(self):
-        stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
         try:
+            stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
             self._rootValue.readFromStream(stream)
         except:
             print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(

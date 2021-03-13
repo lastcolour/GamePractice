@@ -135,7 +135,13 @@ EntityId EditorApp::loadEntityFromFile(const char* entityName) {
     if(!entId.isValid()) {
         return InvalidEntityId;
     }
-    ET_SendEvent(&ETEditEntityTracker::ET_startTrackingEntity, entId);
+    Vec2i renderPort(0);
+    ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
+
+    Transform tm;
+    tm.pt.x = renderPort.x / 2.f;
+    tm.pt.y = renderPort.y / 2.f;
+    ET_SendEvent(entId, &ETEntity::ET_setTransform, tm);
     return entId;
 }
 
@@ -150,7 +156,6 @@ void EditorApp::unloadEntity(EntityId entityId) {
         LogError("[EditorApp::unloadEntity] Can't unload entity with invalid id");
         return;
     }
-    ET_SendEvent(&ETEditEntityTracker::ET_stopTrackingEntity, entityId);
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, entityId);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);
 }
@@ -293,4 +298,8 @@ bool EditorApp::renameEntity(EntityId entityId, const char* newName) {
     bool res = false;
     ET_SendEventReturn(res, &ETEntityManager::ET_renameEntity, entityId, newName);
     return res;
+}
+
+void EditorApp::setFocusEntity(EntityId entityId) {
+    ET_SendEvent(&ETEntityEditorHelper::ET_setFocusEntity, entityId);
 }

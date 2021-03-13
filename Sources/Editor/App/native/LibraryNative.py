@@ -105,6 +105,10 @@ class LibraryNative:
         self._drawFrameFunc.argstype = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_uint32]
         self._drawFrameFunc.restype = None
 
+        self._setFocusEntityFunc = self._editorLib.SetFocusEntity
+        self._setFocusEntityFunc.argstype = [ctypes.c_uint32, ]
+        self._setFocusEntityFunc.restype = None
+
         return self._initializeFunc()
 
     def deinitialize(self):
@@ -219,3 +223,7 @@ class LibraryNative:
         cName = ctypes.c_char_p(newName.encode('ascii') + b'\x00')
         res = self._renameEntityFunc(cEntId, cName)
         return res == 0
+
+    def setFocusEntity(self, entityId):
+        cEntId = ctypes.c_uint32(entityId)
+        self._setFocusEntityFunc(cEntId)

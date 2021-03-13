@@ -51,6 +51,8 @@ LIB_EXPORT void MouseInputEvent(uint32_t eventType, uint32_t xPos, uint32_t yPos
 
 LIB_EXPORT void SetGameTimeScale(float timeScale);
 
+LIB_EXPORT void SetFocusEntity(uint32_t entityId);
+
 LIB_EXPORT void EnableGameUpdate(bool flag);
 
 LIB_EXPORT int32_t RenameEntity(uint32_t entityId, const char* newName);

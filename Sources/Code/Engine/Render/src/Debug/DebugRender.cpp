@@ -44,48 +44,65 @@ void DebugRender::deinit() {
 }
 
 void DebugRender::ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col, float width) {
-    std::lock_guard<std::mutex> lock(mutex);
+    DebugDrawLineCmd cmd;
+    cmd.startPt = startPt;
+    cmd.endPt = endPt;
+    cmd.col = col;
+    cmd.width = width;
+    drawLineCmds.push_back(cmd);
+}
+
+void DebugRender::ET_drawQuadSolid(const AABB2D& box, const ColorB& col) {
+    DebugDrawQuadCmd cmd;
+    cmd.box = box;
+    cmd.col = col;
+    drawQuadCmds.push_back(cmd);
+}
+
+void DebugRender::ET_drawQuadBorder(const AABB2D& box, const ColorB& col, float width) {
+    DebugDrawLineCmd cmd;
+    cmd.col = col;
+    cmd.width = width;
     {
-        DebugDrawLineCmd cmd;
-        cmd.startPt = startPt;
-        cmd.endPt = endPt;
-        cmd.col = col;
-        cmd.width = width;
+        cmd.startPt = Vec2(box.bot.x, box.bot.y);
+        cmd.endPt = Vec2(box.bot.x, box.top.y);
+        drawLineCmds.push_back(cmd);
+    }
+    {
+        cmd.startPt = Vec2(box.bot.x, box.top.y);
+        cmd.endPt = Vec2(box.top.x, box.top.y);
+        drawLineCmds.push_back(cmd);
+    }
+    {
+        cmd.startPt = Vec2(box.top.x, box.top.y);
+        cmd.endPt = Vec2(box.top.x, box.bot.y);
+        drawLineCmds.push_back(cmd);
+    }
+    {
+        cmd.startPt = Vec2(box.top.x, box.bot.y);
+        cmd.endPt = Vec2(box.bot.x, box.bot.y);
         drawLineCmds.push_back(cmd);
     }
 }
 
-void DebugRender::ET_drawQuad(const AABB2D& box, const ColorB& col) {
-    std::lock_guard<std::mutex> lock(mutex);
-    {
-        DebugDrawQuadCmd cmd;
-        cmd.box = box;
-        cmd.col = col;
-        drawQuadCmds.push_back(cmd);
-    }
-}
-
 void DebugRender::ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) {
-    std::lock_guard<std::mutex> lock(mutex);
-    {
-        DebugDrawTextCmd cmd;
-        cmd.text = text;
-        cmd.pt = pt;
-        cmd.col = col;
-        cmd.size = size;
-        drawTextCmds.push_back(cmd);
-    }
+    DebugDrawTextCmd cmd;
+    cmd.text = text;
+    cmd.pt = pt;
+    cmd.col = col;
+    cmd.size = size;
+    drawTextCmds.push_back(cmd);
 }
 
 void DebugRender::ET_update(RenderContext& ctx) {
+    ET_SendEvent(&ETDebugInfoProvider::ET_drawDebugInfo);
+
     drawLines(ctx);
     drawQuads(ctx);
     drawTexts(ctx);
 }
 
 void DebugRender::drawLines(RenderContext& ctx) {
-    std::lock_guard<std::mutex> lock(mutex);
-
     for(auto& cmd : drawLineCmds) {
         lineNode.setLine(cmd.startPt, cmd.endPt, cmd.col, cmd.width);
         lineNode.render(ctx);
@@ -94,14 +111,12 @@ void DebugRender::drawLines(RenderContext& ctx) {
 }
 
 void DebugRender::drawQuads(RenderContext& ctx) {
-    std::lock_guard<std::mutex> lock(mutex);
-
     Transform tm;
     for(auto& cmd : drawQuadCmds) {
         tm.pt = Vec3(cmd.box.getCenter(), 0.f);
         quadNode.setTransform(tm);
         Vec2 size = cmd.box.getSize();
-        quadNode.setSize(Vec2(size.y, size.y));
+        quadNode.setSize(Vec2(size.x, size.y));
         quadNode.setColor0(cmd.col);
         quadNode.render(ctx);
     }
@@ -109,8 +124,6 @@ void DebugRender::drawQuads(RenderContext& ctx) {
 }
 
 void DebugRender::drawTexts(RenderContext& ctx) {
-    std::lock_guard<std::mutex> lock(mutex);
-
     Transform tm;
     for(auto& cmd : drawTextCmds) {
         tm.pt = Vec3(static_cast<float>(cmd.pt.x), static_cast<float>(cmd.pt.y), 0.f);

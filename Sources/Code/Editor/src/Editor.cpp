@@ -224,3 +224,12 @@ int32_t RenameEntity(uint32_t entityId, const char* newName) {
     }
     return -1;
 }
+
+void SetFocusEntity(uint32_t entityId) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    EDITOR_APP->setFocusEntity(entId);
+}

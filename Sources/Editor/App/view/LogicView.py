@@ -140,6 +140,7 @@ class LogicView(QWidget):
         RegisterForMessage(MsgOnLogicDataEdited, self._onMarkValuesDirty)
 
     def closeEvent(self, event):
+        self._tickTimer.stop()
         UnregisterFromAllMessages(self)
         super().closeEvent(event)
 
@@ -257,6 +258,7 @@ class LogicView(QWidget):
                 q.append(treeItem)
 
     def _onMarkValuesDirty(self, msg):
+        if self._entityLogic.getEntity() != msg.value.getEntity():
+            return
         if not self._tickTimer.isActive():
-            self._tickTimer.stop()
             self._tickTimer.start()

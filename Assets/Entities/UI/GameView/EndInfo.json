@@ -51,7 +51,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 34,
+              "drawPriority": 2,
               "size": {
                 "x": 261.0,
                 "y": 79.0
@@ -120,14 +120,14 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 35,
+              "drawPriority": 3,
               "color": {
                 "r": 0,
                 "g": 0,
                 "b": 0,
                 "a": 255
               },
-              "fontSize": 42,
+              "fontSize": 41,
               "text": "DONE!"
             }
           },
@@ -197,7 +197,7 @@
         "hidden": false,
         "enabled": true,
         "style": {
-          "width": 30.0,
+          "width": 100.0,
           "widthInv": "Grid",
           "height": 30.0,
           "heightInv": "Grid",
@@ -268,14 +268,14 @@
               "y": -10.0
             },
             "scale": {
-              "x": 0.699999988079071,
-              "y": 0.699999988079071
+              "x": 0.7,
+              "y": 0.7
             },
             "alpha": 0.0
           },
           {
             "lerpMode": "Linear",
-            "duration": 0.6000000238418579,
+            "duration": 0.6,
             "offset": {
               "x": 0.0,
               "y": 0.0
@@ -301,14 +301,14 @@
           },
           {
             "lerpMode": "Linear",
-            "duration": 0.6000000238418579,
+            "duration": 0.6,
             "offset": {
               "x": -50.0,
               "y": 0.0
             },
             "scale": {
-              "x": 0.699999988079071,
-              "y": 0.699999988079071
+              "x": 0.7,
+              "y": 0.7
             },
             "alpha": 0.0
           }

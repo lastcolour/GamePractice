@@ -80,6 +80,9 @@ class EntityNative(NativeObject):
         self._getAPI().getLibrary().unloadEntity(self._entityId)
         self._desyncWithNative()
 
+    def setInFocus(self):
+        self._getAPI().getLibrary().setFocusEntity(self._entityId)
+
     def addLogic(self, logicName):
         if not self.isLoadedToNative():
             raise RuntimeError("Can't add logic '{0}' to entity that is not loaded to edit: '{1}'".format(
