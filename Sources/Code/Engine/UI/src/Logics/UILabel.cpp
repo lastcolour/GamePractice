@@ -54,9 +54,9 @@ void UILabel::ET_setFontSize(float newFontSize) {
     updateHostLayout();
 }
 
-AABB2Di UILabel::ET_getBox() const {
-    AABB2Di textBox(Vec2i(0), Vec2i(0));
-    ET_SendEventReturn(textBox, labelRenderId, &ETRenderTextLogic::ET_getTextAABBi);
+AABB2D UILabel::ET_getBox() const {
+    AABB2D textBox(0.f);
+    ET_SendEventReturn(textBox, labelRenderId, &ETRenderTextLogic::ET_getTextAABB);
     return textBox;
 }
 

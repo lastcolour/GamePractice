@@ -26,7 +26,6 @@ class MsgSetEditEntity:
         self.canEditTransform = _canEditEntityTransform(entity)
         self.canEditLogics = _canEditEntityLogics(entity)
         if entity is not None:
-            entity._syncWithNative()
             entity.setInFocus()
 
 class MsgChangeEditEntity(MsgSetEditEntity):

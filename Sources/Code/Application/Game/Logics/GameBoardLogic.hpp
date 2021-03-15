@@ -55,7 +55,7 @@ public:
     bool ET_isAllElemStatic() const override;
 
     // ETUIElementEvents
-    void ET_onBoxChanged(const AABB2Di& newAabb) override;
+    void ET_onBoxChanged(const AABB2D& newAabb) override;
     void ET_onZIndexChanged(int newZIndex) override;
     void ET_onAlphaChanged(float newAlpha) override;
     void ET_onHidden(bool flag) override;

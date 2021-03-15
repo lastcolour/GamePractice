@@ -9,7 +9,7 @@ TextNode::TextNode() :
     color(255, 255, 255),
     tmPt(0.f),
     tmScale(1.f),
-    fontHeight(24),
+    fontHeight(24.f),
     alignAtCenter(true),
     doUpdate(true) {
 }
@@ -24,8 +24,8 @@ void TextNode::onInit() {
     ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
 }
 
-void TextNode::setFontHeight(int newHeight) {
-    fontHeight = newHeight;
+void TextNode::setFontHeight(float newFontHeight) {
+    fontHeight = newFontHeight;
 }
 
 void TextNode::setColor0(const ColorB& newColor) {
@@ -120,8 +120,8 @@ unsigned int TextNode::drawLine(const Vec2& pt, const Vec2& scale, unsigned int 
                 vertShift = 0;
             } else {
                 geom->drawChunk(&vertChunk[0], vertShift - 6);
-                for(int i = 0; i < 6; ++i) {
-                    vertChunk[i] = vertChunk[vertShift - 6 + i];
+                for(int j = 0; j < 6; ++i) {
+                    vertChunk[j] = vertChunk[vertShift - 6 + i];
                 }
                 vertShift = 6;
             }

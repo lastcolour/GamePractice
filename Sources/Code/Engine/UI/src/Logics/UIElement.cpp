@@ -80,7 +80,7 @@ int UIElement::ET_getZIndexDepth() const {
     return 1;
 }
 
-void UIElement::ET_setLayoutPos(const Vec2i& layoutPt) {
+void UIElement::ET_setLayoutPos(const Vec2& layoutPt) {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
     layoutTm.pt = tm.pt;

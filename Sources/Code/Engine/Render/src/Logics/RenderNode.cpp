@@ -123,6 +123,10 @@ void RenderNode::ET_setNormalizationScale(float newNormScale) {
     markForSyncWithRender();
 }
 
+float RenderNode::ET_getNormalizationScale() const {
+    return normScale;
+}
+
 void RenderNode::ET_onLoaded() {
     isLoaded = true;
     if(ET_isVisible()) {

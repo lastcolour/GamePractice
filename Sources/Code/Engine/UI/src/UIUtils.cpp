@@ -25,10 +25,10 @@ UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin)
     resMargin.top = uiConfig->getSizeOnGrid(margin.top);
 
     const auto& scale = tm.scale;
-    resMargin.bot = static_cast<int>(resMargin.bot * scale.y);
-    resMargin.top = static_cast<int>(resMargin.top * scale.y);
-    resMargin.left = static_cast<int>(resMargin.left * scale.x);
-    resMargin.right = static_cast<int>(resMargin.right * scale.x);
+    resMargin.bot *= scale.y;
+    resMargin.top *= scale.y;
+    resMargin.left *= scale.x;
+    resMargin.right *= scale.x;
 
     return resMargin;
 }
@@ -76,11 +76,11 @@ const char* GetViewTypeName(UIViewType viewType) {
     return viewTypeStr;
 }
 
-Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parentBox, const AABB2Di& box) {
-    Vec2i center(0);
+Vec2 CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2D& parentBox, const AABB2D& box) {
+    Vec2 center(0.f);
     switch(xAlign) {
         case UIXAlign::Left: {
-            center.x = parentBox.bot.x + box.getSize().x / 2;
+            center.x = parentBox.bot.x + box.getSize().x / 2.f;
             break;
         }
         case UIXAlign::Center: {
@@ -88,7 +88,7 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parent
             break;
         }
         case UIXAlign::Right: {
-            center.x = parentBox.top.x - box.getSize().x / 2;
+            center.x = parentBox.top.x - box.getSize().x / 2.f;
             break;
         }
         default: {
@@ -97,7 +97,7 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parent
     }
     switch(yAlign) {
         case UIYAlign::Bot: {
-            center.y = parentBox.bot.y + box.getSize().y / 2;
+            center.y = parentBox.bot.y + box.getSize().y / 2.f;
             break;
         }
         case UIYAlign::Center: {
@@ -105,7 +105,7 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parent
             break;
         }
         case UIYAlign::Top: {
-            center.y = parentBox.top.y - box.getSize().y / 2;
+            center.y = parentBox.top.y - box.getSize().y / 2.f;
             break;
         }
         default: {
@@ -115,14 +115,14 @@ Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parent
     return center;
 }
 
-void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos) {
+void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2& pos) {
     ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, true);
 
     Transform tm;
     ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
 
-    tm.pt.x = static_cast<float>(pos.x);
-    tm.pt.y = static_cast<float>(pos.y);
+    tm.pt.x = pos.x;
+    tm.pt.y = pos.y;
 
     ET_SendEvent(elemId, &ETEntity::ET_setTransform, tm);
 
@@ -151,7 +151,7 @@ float ConvertValueFromGrid(float val) {
     return uiConfig->convertFromGrid(val);
 }
 
-Vec2i CalculateBoxSize(const UIBoxStyle& style) {
+Vec2 CalculateBoxSize(const UIBoxStyle& style) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
@@ -178,7 +178,7 @@ Vec2i CalculateBoxSize(const UIBoxStyle& style) {
     default:
         assert(false && "Invalid size invariant");
     }
-    return Vec2i(std::ceil(resSize.x), std::ceil(resSize.y));
+    return resSize;
 }
 
 int GetZIndexForChild(EntityId entityId) {
@@ -190,35 +190,30 @@ int GetZIndexForChild(EntityId entityId) {
     return childZIndex;
 }
 
-AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box) {
+AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box) {
     Transform tm;
     ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
 
     auto resBox = box;
-
-    Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
-        static_cast<int>(tm.pt.y));
-    resBox.setCenter(center);
+    resBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
 
     return resBox;
 }
 
-AABB2Di ApplyEntityTmToBox(EntityId entityId, const AABB2Di& box) {
+AABB2D ApplyEntityTmToBox(EntityId entityId, const AABB2D& box) {
     Transform tm;
     ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
 
     const auto& scale = tm.scale;
 
-    AABB2Di resBox;
+    AABB2D resBox;
 
-    resBox.bot = Vec2i(0);
+    resBox.bot = Vec2(0.f);
     resBox.top = box.getSize();
-    resBox.top.x = static_cast<int>(resBox.top.x * scale.x);
-    resBox.top.y = static_cast<int>(resBox.top.y * scale.y);
+    resBox.top.x *= scale.x;
+    resBox.top.y *= scale.y;
 
-    Vec2i center = Vec2i(static_cast<int>(tm.pt.x),
-        static_cast<int>(tm.pt.y));
-    resBox.setCenter(center);
+    resBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
 
     return resBox;
 }

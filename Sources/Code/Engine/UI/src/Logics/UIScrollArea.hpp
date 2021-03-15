@@ -45,14 +45,14 @@ public:
     void ET_enableKinematicScroll(bool flag) override;
     float ET_getScrollProgress() const override;
     void ET_setScrollProgress(float newScrollProgress) override;
-    void ET_setTargetPosClamped(const Vec2i& newScrollPt) override;
-    AABB2Di ET_getScrollArea() const override;
+    void ET_setTargetPosClamped(const Vec2& newScrollPt) override;
+    AABB2D ET_getScrollArea() const override;
 
     // ETUIElemAligner
     void ET_reAlign() override;
 
     // ETUIElementEvents
-    void ET_onBoxChanged(const AABB2Di& newAabb) override {}
+    void ET_onBoxChanged(const AABB2D& newAabb) override {}
     void ET_onZIndexChanged(int newZIndex) override;
     void ET_onAlphaChanged(float newAlpha) override;
     void ET_onHidden(bool flag) override;
@@ -64,28 +64,28 @@ public:
 
 private:
 
-    void onPress(const Vec2i& pt);
-    bool onMove(const Vec2i& pt);
-    void onRelease(const Vec2i& pt);
+    void onPress(const Vec2& pt);
+    bool onMove(const Vec2& pt);
+    void onRelease(const Vec2& pt);
     void alignTarget();
     void updateMoveState(float dt);
     void addReleaseImpulse();
-    void setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt);
+    void setPosUpdateProg(const AABB2D& scrollArea, const Vec2& newPt);
     void resetMoveState();
 
 private:
 
     struct PathPoint {
         TimePoint timeP;
-        Vec2i pt;
+        Vec2 pt;
     };
 
     struct MoveState {
-        Vec2i destPt;
+        Vec2 destPt;
         float vel;
         float acc;
         float force;
-        int frameShift;
+        float frameShift;
         bool reachDest;
     };
 

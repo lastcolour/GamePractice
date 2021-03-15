@@ -9,7 +9,7 @@
 
 namespace {
 
-bool isCulledByHostBoxes(EntityId entId, const Vec2i& checkPt, const AABB2Di& checkBox) {
+bool isCulledByHostBoxes(EntityId entId, const Vec2i& pt, const AABB2D& checkBox) {
     EntityId currCheckEnt = entId;
 
     while(true) {
@@ -18,9 +18,9 @@ bool isCulledByHostBoxes(EntityId entId, const Vec2i& checkPt, const AABB2Di& ch
         if(!hostId.isValid()) {
             break;
         }
-        AABB2Di hostBox(0);
+        AABB2D hostBox(0.f);
         ET_SendEventReturn(hostBox, hostId, &ETUIElement::ET_getBox);
-        if(!hostBox.isInside(checkPt)) {
+        if(!hostBox.isInside(Vec2(static_cast<float>(pt.x), static_cast<float>(pt.y)))) {
             return true;
         }
         currCheckEnt = hostId;
@@ -30,9 +30,9 @@ bool isCulledByHostBoxes(EntityId entId, const Vec2i& checkPt, const AABB2Di& ch
 }
 
 bool isHitBoxHovered(const Vec2i& pt, EntityId entId) {
-    AABB2Di elemBox(0);
+    AABB2D elemBox(0.f);
     ET_SendEventReturn(elemBox, entId, &ETUIElement::ET_getBox);
-    if(!elemBox.isInside(pt)) {
+    if(!elemBox.isInside(Vec2(static_cast<float>(pt.x), static_cast<float>(pt.y)))) {
         return false;
     }
     if(isCulledByHostBoxes(entId, pt, elemBox)) {

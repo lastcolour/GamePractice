@@ -31,7 +31,7 @@ public:
     void ET_setTextRender(EntityId newRenderId) override;
 
     // ETUIElement
-    AABB2Di ET_getBox() const override;
+    AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 
     // ETUIViewPortEvents

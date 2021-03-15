@@ -19,7 +19,7 @@ void UILayout::Reflect(ReflectContext& ctx) {
 }
 
 UILayout::UILayout() :
-    combinedBox(Vec2i(0), Vec2i(0)),
+    combinedBox(0.f),
     extraZOffset(0),
     isCalculatingLayout(false) {
 }
@@ -64,10 +64,10 @@ void UILayout::ET_addItem(EntityId entityId) {
     calculateLayout();
 }
 
-AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
-    AABB2Di layoutBox;
-    layoutBox.top = Vec2i(std::numeric_limits<int>::min());
-    layoutBox.bot = Vec2i(std::numeric_limits<int>::max());
+AABB2D UILayout::calculateAligment(std::vector<AABB2D>& childrenBoxes) {
+    AABB2D layoutBox;
+    layoutBox.top = Vec2(std::numeric_limits<float>::min());
+    layoutBox.bot = Vec2(std::numeric_limits<float>::max());
 
     for(auto& childBox : childrenBoxes) {
         layoutBox.bot.x = std::min(layoutBox.bot.x, childBox.bot.x);
@@ -76,7 +76,7 @@ AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
         layoutBox.top.x = std::max(layoutBox.top.x, childBox.top.x);
     }
 
-    Vec2i currentCenter = layoutBox.getCenter();
+    Vec2 currentCenter = layoutBox.getCenter();
 
     for(auto& childBox : childrenBoxes) {
         auto aligmentCenter = UI::CalcAligmentCenter(style.xAlign, style.yAlign, layoutBox, childBox);
@@ -99,12 +99,12 @@ AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
         }
     }
 
-    AABB2Di box(Vec2i(0), Vec2i(0));
+    AABB2D box(0.f);
     ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
 
     auto center = UI::CalcAligmentCenter(style.xAlign, style.yAlign, box, layoutBox);
 
-    Vec2i centerShift = center - layoutBox.getCenter();
+    Vec2 centerShift = center - layoutBox.getCenter();
     for(auto& childBox : childrenBoxes) {
         childBox.setCenter(childBox.getCenter() + centerShift);
     }
@@ -113,8 +113,8 @@ AABB2Di UILayout::calculateAligment(std::vector<AABB2Di>& childrenBoxes) {
     return layoutBox;
 }
 
-AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
-    AABB2Di itemBox(Vec2i(0), Vec2i(0));
+AABB2D UILayout::calculateItem(float& offset, float& prevMargin, EntityId itemId) {
+    AABB2D itemBox(0.f);
     UIBoxMargin itemMargin;
     {
         bool isHidden = false;
@@ -125,14 +125,14 @@ AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
         }
     }
 
-    Vec2i center(0);
+    Vec2 center(0.f);
 
     switch(style.type)
     {
     case UILayoutType::Horizontal: {
         auto marginOffset = std::max(prevMargin, itemMargin.left);
         auto xBoxSize = itemBox.getSize().x;
-        center.x = offset + xBoxSize / 2 + marginOffset;
+        center.x = offset + xBoxSize / 2.f + marginOffset;
         prevMargin = itemMargin.right;
         offset += xBoxSize + marginOffset;
         break;
@@ -140,7 +140,7 @@ AABB2Di UILayout::calculateItem(int& offset, int& prevMargin, EntityId itemId) {
     case UILayoutType::Vertical: {
         auto marginOffset = std::max(prevMargin, itemMargin.top);
         auto yBoxSize = itemBox.getSize().y;
-        center.y = offset - yBoxSize / 2 - marginOffset;
+        center.y = offset - yBoxSize / 2.f - marginOffset;
         prevMargin = itemMargin.bot;
         offset -= yBoxSize + marginOffset;
         break;
@@ -174,7 +174,7 @@ void UILayout::ET_reAlign() {
 }
 
 void UILayout::calculateLayout() {
-    combinedBox = AABB2Di(0);
+    combinedBox = AABB2D(0.f);
 
     if(children.empty()) {
         ET_SendEvent(getEntityId(), &ETUILayoutEvents::ET_onLayoutChanged, combinedBox);
@@ -190,14 +190,12 @@ void UILayout::calculateLayout() {
 
     isCalculatingLayout = true;
 
-    std::vector<AABB2Di> childBoxes;
+    std::vector<AABB2D> childBoxes;
     childBoxes.reserve(children.size());
-    int offset = 0;
-    int prevMargin = 0;
+    float offset = 0.f;
+    float prevMargin = 0.f;
     for(auto& childId : children) {
-        AABB2Di childBox;
-        childBox.bot = Vec2i(0);
-        childBox.top = Vec2i(0);
+        AABB2D childBox(0.f);
         if(childId == getEntityId()) {
             LogWarning("[UILayout::calculateLayout] Can't have an host entity '%s' on layout", EntityUtils::GetEntityName(childId));
             childId = InvalidEntityId;
@@ -267,7 +265,7 @@ void UILayout::ET_onIngoreTransform(bool flag) {
     }
 }
 
-const AABB2Di& UILayout::ET_getCombinedBox() const {
+const AABB2D& UILayout::ET_getCombinedBox() const {
     return combinedBox;
 }
 

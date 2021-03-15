@@ -116,12 +116,12 @@ BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) const {
 void GameBoardLogic::init() {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
-    AABB2Di visualBox(Vec2i(0), viewPort);
+    AABB2D visualBox(Vec2(0.f), Vec2(static_cast<float>(viewPort.x), static_cast<float>(viewPort.y)));
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
-    visualBox.setCenter(Vec2i(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y)));
+    visualBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
     ET_onBoxChanged(visualBox);
     ET_onZIndexChanged(0);
 
@@ -352,7 +352,7 @@ void GameBoardLogic::ET_setBlockElemMatching(bool flag) {
     isElemMatchingBlocked = flag;
 }
 
-void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
+void GameBoardLogic::ET_onBoxChanged(const AABB2D& newAabb) {
     auto aabbSize = newAabb.getSize();
 
     assert(aabbSize.x > 0 && "Invalid size of game board box");
@@ -366,7 +366,8 @@ void GameBoardLogic::ET_onBoxChanged(const AABB2Di& newAabb) {
 
     boardBox.bot = Vec2i(0);
     boardBox.top = boardBoxSize;
-    boardBox.setCenter(newAabb.getCenter());
+    Vec2 center = newAabb.getCenter();
+    boardBox.setCenter(Vec2i(static_cast<int>(center.x), static_cast<int>(center.y)));
 
     ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, Vec2(
         static_cast<float>(boardBoxSize.x), static_cast<float>(boardBoxSize.y)));
@@ -432,7 +433,7 @@ void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
     ET_SendEventReturn(alpha, uiBoxId, &ETUIElement::ET_getAlpha);
     ET_onAlphaChanged(alpha);
 
-    AABB2Di aabb;
+    AABB2D aabb;
     ET_SendEventReturn(aabb, uiBoxId, &ETUIElement::ET_getBox);
     ET_onBoxChanged(aabb);
 

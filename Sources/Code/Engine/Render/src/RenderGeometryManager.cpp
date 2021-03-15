@@ -202,7 +202,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
         glEnableVertexAttribArray(1);
     }
     {
-        size_t stride = sizeof(Vec4) + sizeof(Mat3x2);
+        GLsizei stride = sizeof(Vec4) + sizeof(Mat3x2);
 
         glGenBuffers(1, &extraVboId);
         glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
@@ -216,7 +216,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
 
         glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(Vec4) + sizeof(Vec2)));
         glEnableVertexAttribArray(4);
-        
+
         glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(Vec4) + 2 * sizeof(Vec2)));
         glEnableVertexAttribArray(5);
 
@@ -244,7 +244,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
     int offset = 0;
     for(int i = 0; i < 3; ++i) {
         for(int j = 0; j < 3; ++j) {
-            int k = 4 * i + j;
+            GLushort k = static_cast<GLushort>(4 * i + j);
 
             indicies[offset] = k;
             indicies[offset + 1] = k + 4;

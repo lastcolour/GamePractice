@@ -37,6 +37,7 @@ public:
     void ET_setAlphaMultiplier(float newAlphaMult) override;
     void ET_setStencilData(const StencilWirteReadData& newSteniclData) override;
     void ET_setNormalizationScale(float newNormScale) override;
+    float ET_getNormalizationScale() const override;
 
     // ETRenderProxyNodeEvents
     void ET_syncWithRender() override;

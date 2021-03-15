@@ -11,7 +11,7 @@
 RenderTextLogic::RenderTextLogic() :
     RenderNode(RenderNodeType::Text),
     color(255, 255, 255),
-    fontHeight(24),
+    fontHeight(24.f),
     isTextChanged(true),
     isColorChanged(true) {
 }
@@ -42,7 +42,9 @@ void RenderTextLogic::init() {
     ET_setFontHeight(fontHeight);
 }
 
-void RenderTextLogic::ET_setFontHeight(int newFontHeight) {
+void RenderTextLogic::ET_setFontHeight(float newFontHeight) {
+    assert(newFontHeight >= 0.f && "Invalid font height");
+
     fontHeight = newFontHeight;
     isTextChanged = true;
     markForSyncWithRender();
@@ -61,16 +63,6 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
     aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
 
     return aabb;
-}
-
-AABB2Di RenderTextLogic::ET_getTextAABBi() const {
-    auto box = ET_getTextAABB();
-    AABB2Di resBox;
-    resBox.bot.x = static_cast<int>(ceil(box.bot.x));
-    resBox.bot.y = static_cast<int>(ceil(box.bot.y));
-    resBox.top.x = static_cast<int>(ceil(box.top.x));
-    resBox.top.y = static_cast<int>(ceil(box.top.y));
-    return resBox;
 }
 
 void RenderTextLogic::ET_setColor(const ColorB& newColor) {

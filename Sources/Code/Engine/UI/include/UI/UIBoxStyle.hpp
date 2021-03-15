@@ -56,10 +56,10 @@ public:
 
 public:
 
-    int top;
-    int bot;
-    int left;
-    int right;
+    float top;
+    float bot;
+    float left;
+    float right;
 };
 
 #endif /* __UI_BOX_STYLE_HPP__ */

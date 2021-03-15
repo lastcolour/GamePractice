@@ -23,9 +23,8 @@ public:
     // ETRenderTextLogic
     void ET_setColor(const ColorB& newColor) override;
     void ET_setText(const char* str) override;
-    void ET_setFontHeight(int fontHeight) override;
+    void ET_setFontHeight(float newFontHeight) override;
     AABB2D ET_getTextAABB() const override;
-    AABB2Di ET_getTextAABBi() const override;
 
 protected:
 
@@ -40,7 +39,7 @@ private:
     std::shared_ptr<RenderFont> font;
     std::string text;
     ColorB color;
-    int fontHeight;
+    float fontHeight;
     bool isTextChanged;
     bool isColorChanged;
 };

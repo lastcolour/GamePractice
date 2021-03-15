@@ -34,21 +34,20 @@ void UIBox::deinit() {
     UIElement::deinit();
 }
 
-AABB2Di UIBox::ET_getBox() const {
+AABB2D UIBox::ET_getBox() const {
     return UI::ApplyEntityTmToBox(getEntityId(), aabb);
 }
 
 void UIBox::calculateBox() {
     auto prevBox = aabb;
 
-    aabb.bot = Vec2i(0);
+    aabb.bot = Vec2(0.f);
     aabb.top = UI::CalculateBoxSize(style);
     aabb = UI::SetTmCenterToBox(getEntityId(), aabb);
 
     if(prevBox.getSize() != aabb.getSize()) {
-        Vec2i boxSize = aabb.getSize();
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize,
-            Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
+        Vec2 boxSize = aabb.getSize();
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
         updateSelfLayout();
     }
 
@@ -94,9 +93,8 @@ void UIBox::onZIndexChanged(int newZIndex) {
 
 void UIBox::ET_onLoaded() {
     UIElement::ET_onLoaded();
-    Vec2i boxSize = aabb.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize,
-        Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
+    Vec2 boxSize = aabb.getSize();
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     updateSelfLayout();
 }
@@ -110,9 +108,8 @@ void UIBox::ET_setRenderId(EntityId newRenderId) {
     if(!boxRenderId.isValid()) {
         return;
     }
-    Vec2i boxSize = aabb.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize,
-        Vec2(static_cast<float>(boxSize.x), static_cast<float>(boxSize.y)));
+    Vec2 boxSize = aabb.getSize();
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
     if(ET_isHidden()) {
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);

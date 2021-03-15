@@ -15,6 +15,7 @@ struct ETRenderNode {
     virtual void ET_setDrawPriority(int newDrawPriority) = 0;
     virtual void ET_setAlphaMultiplier(float newAlphaMult) = 0;
     virtual void ET_setNormalizationScale(float newNormScale) = 0;
+    virtual float ET_getNormalizationScale() const = 0;
     virtual int ET_getDrawPriority() const = 0;
     virtual void ET_setStencilData(const StencilWirteReadData& newSteniclData) = 0;
 };
@@ -34,9 +35,8 @@ struct ETRenderTextLogic {
     virtual ~ETRenderTextLogic() = default;
     virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
-    virtual void ET_setFontHeight(int fontHeight) = 0;
+    virtual void ET_setFontHeight(float newFontHeight) = 0;
     virtual AABB2D ET_getTextAABB() const = 0;
-    virtual AABB2Di ET_getTextAABBi() const = 0;
 };
 
 struct ETRenderImageLogic {

@@ -506,7 +506,7 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
     RenderTextLogic* renderText = gameObj->addCustomLogic<RenderTextLogic>();
     ASSERT_TRUE(renderText);
 
-    renderText->ET_setFontHeight(48);
+    renderText->ET_setFontHeight(48.f);
 
     Vec2i renderPort(0);
     ET_SendEventReturn(renderPort, &ETRenderCamera::ET_getRenderPort);
@@ -524,7 +524,7 @@ TEST_F(RenderTests, CheckTextBoxCorrespondDrawBox) {
     std::vector<std::string> words = {"a", "A", "aA", "1", "1 1", "p", "pP", "Yy", "a\na", "a\nPp"};
     for(const auto& word : words) {
         renderText->ET_setText(word.c_str());
-        AABB2Di box = renderText->ET_getTextAABBi();
+        auto box = renderText->ET_getTextAABB();
 
         auto dirtyBox = DrawAndGetDirtyBoxFromImageBuffer(*IMAGE_BUFFER);
 

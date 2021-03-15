@@ -26,6 +26,7 @@ public:
     void setVisible(bool flag);
     void setTransform(const Transform& newTm);
     void setStencilData(const StencilWirteReadData& newStencilData);
+    void setBlendingMode(const BlendMode& newBlendMode);
 
     virtual bool canRender() const;
 
@@ -40,7 +41,6 @@ protected:
 
 protected:
 
-    void setBlendingMode(const BlendMode& newBlendMode);
     void setShader(const char* shaderName);
     void setGeometry(PrimitiveGeometryType geomType);
     void setModelMatDirty();

@@ -7,6 +7,7 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <cassert>
 
 DebugRender::DebugRender() {
 }
@@ -28,13 +29,16 @@ bool DebugRender::init() {
 void DebugRender::ET_onContextCreated() {
     lineNode.init();
     lineNode.setVisible(true);
+    lineNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
 
     quadNode.init();
     quadNode.setVisible(true);
+    quadNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
 
     textNode.init();
     textNode.setVisible(true);
     textNode.setAlignAtCenter(false);
+    textNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
 }
 
 void DebugRender::ET_onContextDestroyed() {
@@ -130,8 +134,28 @@ void DebugRender::drawTexts(RenderContext& ctx) {
         textNode.setTransform(tm);
         textNode.setText(cmd.text);
         textNode.setColor0(cmd.col);
-        textNode.setFontHeight(static_cast<int>(cmd.size));
+        textNode.setFontHeight(cmd.size);
         textNode.render(ctx);
     }
     drawTextCmds.clear();
+}
+
+void DebugRender::ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col, float width) {
+    DebugDrawLineCmd cmd;
+    cmd.col = col;
+    cmd.width = width;
+    const int N = 64;
+    for(int i = 0; i < N; ++i) {
+        cmd.startPt = pt;
+        float t1 = i * 2.f * Math::PI / static_cast<float>(N);
+        cmd.startPt += r * Vec2(cos(t1), sin(t1));
+        cmd.endPt = pt;
+        float t2 = (i + 1) * 2.f * Math::PI / static_cast<float>(N);
+        cmd.endPt += r * Vec2(cos(t2), sin(t2));
+        drawLineCmds.push_back(cmd);
+    }
+}
+
+void DebugRender::ET_drawCicleSolid(const Vec2& pt, float r, const ColorB& col) {
+    assert(false && "Not implemented");
 }

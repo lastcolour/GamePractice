@@ -9,12 +9,12 @@
 
 namespace {
 
-AABB2Di calcScrollArea(UIScrollType scrollType, const AABB2Di& scrollBox, const AABB2Di& targetBox) {
+AABB2D calcScrollArea(UIScrollType scrollType, const AABB2D& scrollBox, const AABB2D& targetBox) {
     auto targetSize = targetBox.getSize();
     auto scrollSize = scrollBox.getSize();
     auto scrollCenter = scrollBox.getCenter();
 
-    AABB2Di res;
+    AABB2D res(0.f);
 
     if(scrollType == UIScrollType::Horizontal) {
         if(scrollSize.x < targetSize.x) {
@@ -37,24 +37,17 @@ AABB2Di calcScrollArea(UIScrollType scrollType, const AABB2Di& scrollBox, const 
     return res;
 }
 
-Vec2i clampToEdges(const AABB2Di& box, const Vec2i& pt) {
-    Vec2i resPt;
+Vec2 clampToEdges(const AABB2D& box, const Vec2& pt) {
+    Vec2 resPt;
     resPt.x = Math::Clamp(pt.x, box.bot.x, box.top.x);
     resPt.y = Math::Clamp(pt.y, box.bot.y, box.top.y);
     return resPt;
 }
 
-AABB2Di getUIBox(EntityId targetId) {
-    AABB2Di resBox(0);
+AABB2D getUIBox(EntityId targetId) {
+    AABB2D resBox(0.f);
     ET_SendEventReturn(resBox, targetId, &ETUIElement::ET_getBox);
     return resBox;
-}
-
-Vec2i lerpPos(const Vec2i& from, const Vec2i& to, float t) {
-    Vec2 v1(static_cast<float>(from.x), static_cast<float>(from.y));
-    Vec2 v2(static_cast<float>(to.x), static_cast<float>(to.y));
-    Vec2 res = Math::Lerp(v1, v2, t);
-    return Vec2i(static_cast<int>(res.x), static_cast<int>(res.y));
 }
 
 } // namespace
@@ -113,19 +106,20 @@ void UIScrollArea::deinit() {
 }
 
 EInputEventResult UIScrollArea::ET_onInputEvent(EActionType type, const Vec2i& pt) {
+    Vec2 eventPt = Vec2(static_cast<float>(pt.x), static_cast<float>(pt.y));
     switch(type) {
         case EActionType::Press: {
-            onPress(pt);
+            onPress(eventPt);
             break;
         }
         case EActionType::Move: {
-            if(!onMove(pt)) {
+            if(!onMove(eventPt)) {
                 return EInputEventResult::Ignore;
             }
             break;
         }
         case EActionType::Release: {
-            onRelease(pt);
+            onRelease(eventPt);
             break;
         }
         case EActionType::ReleaseAndIgnore: {
@@ -136,7 +130,7 @@ EInputEventResult UIScrollArea::ET_onInputEvent(EActionType type, const Vec2i& p
     return EInputEventResult::Accept;
 }
 
-void UIScrollArea::onPress(const Vec2i& pt) {
+void UIScrollArea::onPress(const Vec2& pt) {
     moveState.frameShift = 0;
     moveState.vel = 0.f;
     moveState.acc = 0.f;
@@ -147,8 +141,7 @@ void UIScrollArea::onPress(const Vec2i& pt) {
     Transform tm;
     ET_SendEventReturn(tm, targetId, &ETEntity::ET_getTransform);
 
-    moveState.destPt = Vec2i(static_cast<int>(tm.pt.x),
-        static_cast<int>(tm.pt.y));
+    moveState.destPt = Vec2(tm.pt.x, tm.pt.y);
 
     ETNode<ETUITimerEvents>::connect(getEntityId());
 
@@ -156,7 +149,7 @@ void UIScrollArea::onPress(const Vec2i& pt) {
     path.push_back({TimePoint::GetNowTime(), pt});
 }
 
-void UIScrollArea::onRelease(const Vec2i& pt) {
+void UIScrollArea::onRelease(const Vec2& pt) {
     isPressed = false;
     auto box = getUIBox(getEntityId());
     auto clampPt = clampToEdges(box, pt);
@@ -194,15 +187,15 @@ void UIScrollArea::addReleaseImpulse() {
     moveState.acc = 0.f;
 
     if(style.type == UIScrollType::Horizontal) {
-        moveState.destPt += Vec2i(static_cast<int>(moveState.vel * 2048.f), 0);
+        moveState.destPt += Vec2(moveState.vel * 2048.f, 0.f);
     } else {
-        moveState.destPt += Vec2i(0, static_cast<int>(moveState.vel * 2048.f));
+        moveState.destPt += Vec2(0.f, moveState.vel * 2048.f);
     }
 
     path.clear();
 }
 
-bool UIScrollArea::onMove(const Vec2i& pt) {
+bool UIScrollArea::onMove(const Vec2& pt) {
     auto box = getUIBox(getEntityId());
     if(!box.isInside(pt)) {
         onRelease(pt);
@@ -246,7 +239,7 @@ void UIScrollArea::ET_onIngoreTransform(bool flag) {
 }
 
 void UIScrollArea::updateMoveState(float dt) {
-    Vec2i newPosDt(0);
+    Vec2 newPosDt(0.f);
 
     if(path.size() > 1) {
         auto& firstEvent = path.front();
@@ -279,7 +272,7 @@ void UIScrollArea::updateMoveState(float dt) {
     }
 
     moveState.destPt += newPosDt;
-    moveState.frameShift = static_cast<int>(moveState.vel * dt);
+    moveState.frameShift = moveState.vel * dt;
 
     if(!isPressed) {
         moveState.acc += moveState.force * dt;
@@ -297,11 +290,11 @@ void UIScrollArea::ET_onUITick(float dt) {
     updateMoveState(dt);
 
     auto targetBox = getUIBox(targetId);
-    AABB2Di scrollArea = ET_getScrollArea();
+    AABB2D scrollArea = ET_getScrollArea();
 
     moveState.destPt = clampToEdges(scrollArea, moveState.destPt);
 
-    Vec2i resPt = targetBox.getCenter();
+    Vec2 resPt = targetBox.getCenter();
 
     if(moveState.destPt == resPt && isPressed) {
         return;
@@ -372,18 +365,18 @@ void UIScrollArea::ET_enableKinematicScroll(bool flag) {
     kinematicScrollEnabled = flag;
 }
 
-void UIScrollArea::setPosUpdateProg(const AABB2Di& scrollArea, const Vec2i& newPt) {
+void UIScrollArea::setPosUpdateProg(const AABB2D& scrollArea, const Vec2& newPt) {
     float prog = 0.f;
-    Vec2i size = scrollArea.getSize();
+    Vec2 size = scrollArea.getSize();
     if(style.type == UIScrollType::Horizontal) {
-        if(size.x > 0) {
-            prog = (newPt.x - scrollArea.bot.x)  / static_cast<float>(size.x);
+        if(size.x > 0.f) {
+            prog = (newPt.x - scrollArea.bot.x)  / size.x;
         } else {
             prog = 1.f;
         }
     } else {
-        if(size.y > 0) {
-            prog = (newPt.y - scrollArea.bot.y) / static_cast<float>(size.y);
+        if(size.y > 0.f) {
+            prog = (newPt.y - scrollArea.bot.y) / size.y;
         } else {
             prog = 1.f;
         }
@@ -412,11 +405,11 @@ void UIScrollArea::ET_setScrollProgress(float newScrollProgress) {
         resProg = 1.f - scrollProgress;
     }
 
-    Vec2i resPt = lerpPos(scrollArea.bot, scrollArea.top, resProg);
+    Vec2 resPt =  Math::Lerp(scrollArea.bot, scrollArea.top, resProg);
     setPosUpdateProg(scrollArea, resPt);
 }
 
-void UIScrollArea::ET_setTargetPosClamped(const Vec2i& newScrollPt) {
+void UIScrollArea::ET_setTargetPosClamped(const Vec2& newScrollPt) {
     resetMoveState();
 
     auto scrollArea = ET_getScrollArea();
@@ -424,18 +417,18 @@ void UIScrollArea::ET_setTargetPosClamped(const Vec2i& newScrollPt) {
     setPosUpdateProg(scrollArea, resPt);
 }
 
-AABB2Di UIScrollArea::ET_getScrollArea() const {
-    AABB2Di targetBox(Vec2i(0), Vec2i(0));
+AABB2D UIScrollArea::ET_getScrollArea() const {
+    AABB2D targetBox(0.f);
     ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
 
-    AABB2Di scrollBox = getUIBox(getEntityId());
-    AABB2Di scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
+    AABB2D scrollBox = getUIBox(getEntityId());
+    AABB2D scrollArea = calcScrollArea(style.type, scrollBox, targetBox);
 
     return scrollArea;
 }
 
 void UIScrollArea::resetMoveState() {
-    moveState.destPt = Vec2i(0);
+    moveState.destPt = Vec2(0.f);
     moveState.vel = 0.f;
     moveState.acc = 0.f;
     moveState.force = 0.f;

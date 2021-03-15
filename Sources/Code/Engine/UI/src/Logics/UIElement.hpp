@@ -44,7 +44,7 @@ public:
     void ET_setParentHidden(bool flag) override;
     void ET_setParentDisabled(bool flag) override;
     void ET_setParentAlpha(float newParentAlpha) override;
-    void ET_setLayoutPos(const Vec2i& layoutPt) override;
+    void ET_setLayoutPos(const Vec2& layoutPt) override;
 
     // ETUIAdditiveAnimationTarget
     void ET_applyAdditiveTranform() override;

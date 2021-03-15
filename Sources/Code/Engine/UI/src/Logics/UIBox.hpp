@@ -23,7 +23,7 @@ public:
     void deinit() override;
 
     // ETUIElement
-    AABB2Di ET_getBox() const override;
+    AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 
     // ETUIBox
@@ -52,7 +52,7 @@ private:
 
 private:
 
-    AABB2Di aabb;
+    AABB2D aabb;
     UIBoxStyle style;
     EntityId boxRenderId;
 };

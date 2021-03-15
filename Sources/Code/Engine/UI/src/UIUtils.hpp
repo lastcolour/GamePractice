@@ -17,9 +17,9 @@ UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin)
 
 const char* GetViewTypeName(UIViewType viewType);
 
-Vec2i CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2Di& parentBox, const AABB2Di& box);
+Vec2 CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2D& parentBox, const AABB2D& box);
 
-void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2i& pos);
+void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2& pos);
 
 void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
 
@@ -29,13 +29,13 @@ float GetValueOnGrind(float val);
 
 float ConvertValueFromGrid(float val);
 
-Vec2i CalculateBoxSize(const UIBoxStyle& style);
+Vec2 CalculateBoxSize(const UIBoxStyle& style);
 
 int GetZIndexForChild(EntityId entityId);
 
-AABB2Di SetTmCenterToBox(EntityId entityId, const AABB2Di& box);
+AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box);
 
-AABB2Di ApplyEntityTmToBox(EntityId entityId, const AABB2Di& box);
+AABB2D ApplyEntityTmToBox(EntityId entityId, const AABB2D& box);
 
 bool IsRootViewHasFocus(EntityId elemId);
 

@@ -28,14 +28,14 @@ public:
     const UILayoutStyle& ET_getStyle() const override;
     void ET_setStyle(const UILayoutStyle& newStyle) override;
     void ET_addItem(EntityId entityId) override;
-    const AABB2Di& ET_getCombinedBox() const override;
+    const AABB2D& ET_getCombinedBox() const override;
     std::vector<EntityId> ET_getItems() const override;
 
     // ETUIElemAligner
     void ET_reAlign() override;
 
     // ETUIElementEvents
-    void ET_onBoxChanged(const AABB2Di& newAabb) override {}
+    void ET_onBoxChanged(const AABB2D& newAabb) override {}
     void ET_onZIndexChanged(int newZIndex) override;
     void ET_onAlphaChanged(float newAlpha) override;
     void ET_onHidden(bool flag) override;
@@ -44,13 +44,13 @@ public:
 
 private:
 
-    AABB2Di calculateItem(int& offset, int& prevMargin, EntityId itemId);
-    AABB2Di calculateAligment(std::vector<AABB2Di>& boxes);
+    AABB2D calculateItem(float& offset, float& prevMargin, EntityId itemId);
+    AABB2D calculateAligment(std::vector<AABB2D>& boxes);
     void calculateLayout();
 
 private:
 
-    AABB2Di combinedBox;
+    AABB2D combinedBox;
     int extraZOffset;
     UILayoutStyle style;
     std::vector<EntityId> children;

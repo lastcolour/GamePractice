@@ -10,7 +10,7 @@ public:
     TextNode();
     virtual ~TextNode();
 
-    void setFontHeight(int newHeight);
+    void setFontHeight(float newFontHeight);
     void setColor0(const ColorB& newColor);
     void setText(const std::string& newText);
     void setAlignAtCenter(bool flag);
@@ -38,7 +38,7 @@ private:
     ColorB color;
     Vec2 tmPt;
     Vec2 tmScale;
-    int fontHeight;
+    float fontHeight;
     bool alignAtCenter;
     bool doUpdate;
 };

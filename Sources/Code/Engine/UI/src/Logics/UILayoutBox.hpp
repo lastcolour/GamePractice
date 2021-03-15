@@ -21,11 +21,11 @@ public:
     void deinit() override;
 
     // ETUIElement
-    AABB2Di ET_getBox() const override;
+    AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 
     // ETUILayoutEvents
-    void ET_onLayoutChanged(const AABB2Di& newCombinedBox) override;
+    void ET_onLayoutChanged(const AABB2D& newCombinedBox) override;
 
     // ETEntityEvents
     void ET_onLoaded() override;
@@ -40,7 +40,7 @@ protected:
 
 private:
 
-    AABB2Di aabb;
+    AABB2D aabb;
     UIBoxStyle::Margin styleMargin;
     EntityId boxRenderId;
 };

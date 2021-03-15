@@ -15,8 +15,8 @@ struct ETUIScrollArea {
     virtual void ET_enableKinematicScroll(bool flag) = 0;
     virtual float ET_getScrollProgress() const = 0;
     virtual void ET_setScrollProgress(float newScrollProgress) = 0;
-    virtual void ET_setTargetPosClamped(const Vec2i& newScrollPt) = 0;
-    virtual AABB2Di ET_getScrollArea() const = 0;
+    virtual void ET_setTargetPosClamped(const Vec2& newScrollPt) = 0;
+    virtual AABB2D ET_getScrollArea() const = 0;
 };
 
 struct ETUIScrollFocus {

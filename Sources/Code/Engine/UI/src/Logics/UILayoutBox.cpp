@@ -11,7 +11,7 @@ void UILayoutBox::Reflect(ReflectContext& ctx) {
 }
 
 UILayoutBox::UILayoutBox() :
-    aabb(Vec2i(0), Vec2i(0)) {
+    aabb(0.f) {
 }
 
 UILayoutBox::~UILayoutBox() {
@@ -33,12 +33,12 @@ void UILayoutBox::ET_onLoaded() {
     updateSelfLayout();
 
     auto box = ET_getBox();
-    Vec2i boxSize = box.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(boxSize.x, boxSize.y));
+    Vec2 boxSize = box.getSize();
+    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
 }
 
-AABB2Di UILayoutBox::ET_getBox() const {
+AABB2D UILayoutBox::ET_getBox() const {
     return UI::ApplyEntityTmToBox(getEntityId(), aabb);
 }
 
@@ -62,7 +62,7 @@ void UILayoutBox::onAlphaChanged(float newAlpha) {
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
-void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
+void UILayoutBox::ET_onLayoutChanged(const AABB2D& newCombinedBox) {
     auto newAabb = UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
     auto shiftPt = newAabb.getCenter() - newCombinedBox.getCenter();
 
@@ -80,13 +80,13 @@ void UILayoutBox::ET_onLayoutChanged(const AABB2Di& newCombinedBox) {
         }
     }
 
-    AABB2Di prevAabb = aabb;
+    AABB2D prevAabb = aabb;
     aabb = newAabb;
-    Vec2i newSize = newAabb.getSize();
+    Vec2 newSize = newAabb.getSize();
 
     if(prevAabb.getSize() != newSize) {
         updateHostLayout();
-        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, Vec2(newSize.x, newSize.y));
+        ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, newSize);
     }
     if(prevAabb.bot != aabb.bot || prevAabb.top != aabb.top) {
         ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onBoxChanged, aabb);
