@@ -263,7 +263,7 @@
                 "w": 1.0
               }
             },
-            "name": "UI/MainView/StartButton.json",
+            "name": "Entities/UI/MainView/StartButton.json",
             "id": 1,
             "internal": false
           }

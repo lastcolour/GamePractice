@@ -112,12 +112,8 @@ class ValueNative(NativeObject):
             raise RuntimeError("Can't write to native non-primitive values")
         if not self._isLoadedToNative():
             return
-        self.getLogic().writeToNative()
-        #if self._arrayVal is None:
-        #    _writeValueToNative(self)
-        #else:
-        #    _writeValueToNative(self._arrayVal)
         self._isModified = True
+        self.getLogic()._onValueChanged()
 
 class BoolValue(ValueNative):
     def __init__(self):
@@ -743,15 +739,14 @@ class EntityValue(ValueNative):
         self._onValueChanged()
 
     def getEntityValue(self):
-        hostEntity = self.getEntity()
-        res = None
+        if not self._vals:
+            return None
+        currEntity = self.getEntity()
         for refEntId in self._vals:
-            res = hostEntity.getChildWithId(refEntId)
-            if res is None:
-                raise RuntimeError("Can't find child with id: {0}".format(refEntId))
-            else:
-                hostEntity = res
-        return res
+            currEntity = currEntity.getChildWithId(refEntId)
+            if currEntity is None:
+                return None
+        return currEntity
 
 def _createValue(valueName, valueType):
     val = None

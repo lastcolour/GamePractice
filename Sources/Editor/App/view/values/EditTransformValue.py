@@ -45,6 +45,12 @@ class EmptyTransformLogic:
     def __init_(self):
         pass
 
+    def setAutoWriteToNative(self, flag):
+        pass
+
+    def getEntity(self):
+        return None
+
     def getName(self):
         return "Transform"
 

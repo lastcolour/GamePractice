@@ -19,7 +19,7 @@
           "w": 1.0
         }
       },
-      "name": "Effects/ElemDestroy/BlueDestroy.json",
+      "name": "Entities/Effects/ElemDestroy/BlueDestroy.json",
       "id": 1,
       "internal": false
     },
@@ -42,7 +42,7 @@
           "w": 1.0
         }
       },
-      "name": "Effects/ElemDestroy/GreenDestroy.json",
+      "name": "Entities/Effects/ElemDestroy/GreenDestroy.json",
       "id": 2,
       "internal": false
     },
@@ -65,7 +65,7 @@
           "w": 1.0
         }
       },
-      "name": "Effects/ElemDestroy/PurpleDestroy.json",
+      "name": "Entities/Effects/ElemDestroy/PurpleDestroy.json",
       "id": 3,
       "internal": false
     },
@@ -88,7 +88,7 @@
           "w": 1.0
         }
       },
-      "name": "Effects/ElemDestroy/RedDestroy.json",
+      "name": "Entities/Effects/ElemDestroy/RedDestroy.json",
       "id": 4,
       "internal": false
     },
@@ -111,7 +111,7 @@
           "w": 1.0
         }
       },
-      "name": "Effects/ElemDestroy/YellowDestroy.json",
+      "name": "Entities/Effects/ElemDestroy/YellowDestroy.json",
       "id": 5,
       "internal": false
     }
@@ -184,7 +184,7 @@
       "type": "GameBoardElemHighlighter",
       "id": 6,
       "data": {
-        "hightlightEntity": "Game/CellHighlighter.json",
+        "hightlightEntity": "Entities/Game/CellHighlighter.json",
         "fadeOutDuration": 2.0,
         "cellScale": 0.949999988079071
       }

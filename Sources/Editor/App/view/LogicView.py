@@ -101,6 +101,7 @@ class LogicView(QWidget):
         self._tickTimer.setSingleShot(True)
 
         self._entityLogic = entityLogic
+        self._entityLogic.setAutoWriteToNative(False)
 
         self._frame = QFrame()
         self._frame.setFrameStyle(QFrame.WinPanel)
@@ -245,6 +246,8 @@ class LogicView(QWidget):
     def _onUpdateView(self):
         if not hasattr(self._entityLogic, "readFromNative"):
             return
+        if self._entityLogic.isEditorDataDiffer():
+            self._entityLogic.writeToNative()
         self._entityLogic.readFromNative()
         q = []
         q.append(self._tree.invisibleRootItem())

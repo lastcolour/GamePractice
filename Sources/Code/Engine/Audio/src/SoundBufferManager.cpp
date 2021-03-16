@@ -3,12 +3,6 @@
 #include "Core/ETLogger.hpp"
 #include "SoundEventTable.hpp"
 
-namespace {
-
-const char* SOUNDS_ROOT_DIR = "Sounds";
-
-} // namespace
-
 SoundBufferManager::SoundBufferManager() {
 }
 
@@ -34,8 +28,7 @@ Buffer SoundBufferManager::loadSound(const std::string& fileName) {
     }
 
     Buffer buff;
-    std::string reqSoundName = StringFormat("%s/%s", SOUNDS_ROOT_DIR, fileName);
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, reqSoundName.c_str());
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fileName.c_str());
 
     if(buff) {
         buffers[fileName.c_str()] = buff;

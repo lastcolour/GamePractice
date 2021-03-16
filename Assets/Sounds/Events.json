@@ -2,42 +2,42 @@
     "events":[
         {
             "name":"buttonPress_01",
-            "sound":"UI/buttonPress_01.ogg",
+            "sound":"Sounds/UI/buttonPress_01.ogg",
             "volume":0.7,
             "nextDelay":0,
             "group":"UI"
         },
         {
             "name":"buttonReject_01",
-            "sound":"UI/switch_003.ogg",
+            "sound":"Sounds/UI/switch_003.ogg",
             "volume":0.7,
             "nextDelay":0,
             "group":"UI"
         },
         {
             "name":"elemSwitch_01",
-            "sound":"Game/switchSuccess.ogg",
+            "sound":"Sounds/Game/switchSuccess.ogg",
             "volume":0.4,
             "nextDelay":0,
             "group":"Game"
         },
         {
             "name":"elemDestroy_01",
-            "sound":"Game/elemDestroy_01.ogg",
+            "sound":"Sounds/Game/elemDestroy_01.ogg",
             "volume":0.5,
             "nextDelay":0.1,
             "group":"Game"
         },
         {
             "name":"scoreIncrease_01",
-            "sound":"Game/scoreIncrease.ogg",
+            "sound":"Sounds/Game/scoreIncrease.ogg",
             "volume":0.4,
             "nextDelay":0.05,
             "group":"Game"
         },
         {
             "name":"getProgressionStar_01",
-            "sound":"Game/bleep.ogg",
+            "sound":"Sounds/Game/bleep.ogg",
             "volume":0.6,
             "nextDelay":0.0,
             "group":"UI"

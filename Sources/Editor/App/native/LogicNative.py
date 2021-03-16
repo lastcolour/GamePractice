@@ -11,6 +11,8 @@ class LogicNative(NativeObject):
         self._logicId = None
         self._name = None
         self._isModified = False
+        self._isEditorDataDiffer = False
+        self._autoWriteToNative = True
         self._rootValue = ObjectValue()
 
     def isModified(self):
@@ -27,6 +29,9 @@ class LogicNative(NativeObject):
 
     def getNativeId(self):
         return self._logicId
+
+    def setAutoWriteToNative(self, flag):
+        self._autoWriteToNative = flag
 
     def writeToDict(self, data):
         data["type"] = self._name
@@ -51,6 +56,14 @@ class LogicNative(NativeObject):
             print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(
                 self._name, stream._data))
             pass
+
+    def isEditorDataDiffer(self):
+        return self._isEditorDataDiffer
+
+    def _onValueChanged(self):
+        self._isEditorDataDiffer = True
+        if self._autoWriteToNative:
+            self.writeToNative()
 
     def writeToNative(self):
         stream = MemoryStream()

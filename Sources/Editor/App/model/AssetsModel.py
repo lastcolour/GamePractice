@@ -36,16 +36,6 @@ class FileNode:
         while currParent._parent is not None:
             resPath = "{0}/{1}".format(currParent._name, resPath)
             currParent = currParent._parent
-        if self._type == FileNodeType.Entity:
-            resPath = resPath[len('Entities/'):]
-        elif self._type == FileNodeType.Image:
-            pass
-        elif self._type == FileNodeType.Sound:
-            resPath = resPath[len('Sounds/'):]
-        elif self._type == FileNodeType.Dir:
-            pass
-        else:
-            raise Exception("Unknown file type")
         return resPath
 
     def getFullPath(self):
@@ -187,13 +177,6 @@ class AssetsModel:
         node._name = newName
         return True
 
-    def _setTypeRecursive(self, item, fileType):
-        for child in item._children:
-            if child.isDir():
-                self._setTypeRecursive(child, fileType)
-            else:
-                child._type = fileType
-
     def init(self):
         assetsRootDir = self._appConfig.getAssetsRootPath()
         if not os.path.exists(assetsRootDir):
@@ -202,12 +185,10 @@ class AssetsModel:
         self._resourceRootDir = DirNode()
         self._resourceRootDir._name = assetsRootDir
         self._scanDir(self._resourceRootDir)
-        self._setTypeRecursive(self._resourceRootDir.findChild("Entities"), FileNodeType.Entity)
-        self._setTypeRecursive(self._resourceRootDir.findChild("Images"), FileNodeType.Image)
-        self._setTypeRecursive(self._resourceRootDir.findChild("Sounds"), FileNodeType.Sound)
         return True
 
     def reload(self):
+        Log.debug("[AssetsModel:reload] Trigger Reload")
         self._resourceRootDir = DirNode()
         if not self.init():
             raise RuntimeError("Can't reload assets model")

@@ -21,10 +21,10 @@ class EntityNativeLoader(NativeObject):
         return True
 
     def getEntityFullPath(self, filePath):
-        return "{0}/Entities/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
+        return "{0}/{1}".format(self._getAPI().getAssetsRootPath(), filePath)
 
     def extractEntity(self, entity, filePath):
-        entitiesRoot = "{0}/Entities".format(self._getAPI().getAssetsRootPath())
+        entitiesRoot = "{0}".format(self._getAPI().getAssetsRootPath())
         if len(filePath) + 1 < len(entitiesRoot) or filePath[:len(entitiesRoot)] != entitiesRoot:
             print("[EntityNativeLoader:extractEntity] Can't extract entity '{0}' to file out of assets root dir '{1}'".format(
                 entity.getName(), filePath))
@@ -74,7 +74,7 @@ class EntityNativeLoader(NativeObject):
             if childEntity is None:
                 print("[EntityNativeLoader:_loadChildren] Can't load children: '{0}' for entity: '{1}'".format(
                     childName, entity._name))
-                return False
+                continue
             self._setupTransform(childEntity, childTm)
             childEntity._childId = childId
             childEntity._parent = entity
@@ -112,7 +112,10 @@ class EntityNativeLoader(NativeObject):
         self._entitiesStack.append(entityName)
         try:
             resEntity = self._loadEntityImpl(entityName)
-            self.setupDefaultTransform(resEntity)
+            if resEntity:
+                self.setupDefaultTransform(resEntity)
+            else:
+                return None
         except:
             self._entitiesStack.pop()
             raise

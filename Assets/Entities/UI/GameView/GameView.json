@@ -361,7 +361,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/GameView/GameProgress.json",
+                  "name": "Entities/UI/GameView/GameProgress.json",
                   "id": 1,
                   "internal": false
                 }
@@ -503,7 +503,7 @@
                 "w": 1.0
               }
             },
-            "name": "UI/GameView/GameBoard.json",
+            "name": "Entities/UI/GameView/GameBoard.json",
             "id": 2,
             "internal": false
           }
@@ -616,7 +616,7 @@
           "w": 1.0
         }
       },
-      "name": "UI/GameView/StartInfo.json",
+      "name": "Entities/UI/GameView/StartInfo.json",
       "id": 5,
       "internal": false
     },
@@ -639,7 +639,7 @@
           "w": 1.0
         }
       },
-      "name": "UI/GameView/EndInfo.json",
+      "name": "Entities/UI/GameView/EndInfo.json",
       "id": 6,
       "internal": false
     }

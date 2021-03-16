@@ -19,7 +19,7 @@
           "w": 1.0
         }
       },
-      "name": "Effects/BackgroundEffect.json",
+      "name": "Entities/Effects/BackgroundEffect.json",
       "id": 1,
       "internal": false
     }
@@ -31,7 +31,7 @@
       "data": {
         "looped": true,
         "volume": 0.4000000059604645,
-        "sound": "UI/Chad_Crouch_-_Moonrise.ogg",
+        "sound": "Sounds/UI/Chad_Crouch_-_Moonrise.ogg",
         "autoStart": true
       }
     },

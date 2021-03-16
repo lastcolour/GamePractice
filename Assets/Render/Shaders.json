@@ -1,30 +1,30 @@
 {
     "geom_solid_color":{
-        "vert":"Shaders/geom_base.vert",
-        "frag":"Shaders/geom_single_color.frag"
+        "vert":"Render/Shaders/geom_base.vert",
+        "frag":"Render/Shaders/geom_single_color.frag"
     },
     "text_solid_color":{
-        "vert":"Shaders/text_base.vert",
-        "frag":"Shaders/text_single_color.frag"
+        "vert":"Render/Shaders/text_base.vert",
+        "frag":"Render/Shaders/text_single_color.frag"
     },
     "simple_image":{
-        "vert":"Shaders/image_base.vert",
-        "frag":"Shaders/image_tex.frag"
+        "vert":"Render/Shaders/image_base.vert",
+        "frag":"Render/Shaders/image_tex.frag"
     },
     "tex_vert_color":{
-        "vert":"Shaders/tex_vert_color.vert",
-        "frag":"Shaders/tex_vert_color.frag"
+        "vert":"Render/Shaders/tex_vert_color.vert",
+        "frag":"Render/Shaders/tex_vert_color.frag"
     },
     "particle":{
-        "vert":"Shaders/particle.vert",
-        "frag":"Shaders/particle.frag"
+        "vert":"Render/Shaders/particle.vert",
+        "frag":"Render/Shaders/particle.frag"
     },
     "blur":{
-        "vert":"Shaders/blur.vert",
-        "frag":"Shaders/blur.frag"
+        "vert":"Render/Shaders/blur.vert",
+        "frag":"Render/Shaders/blur.frag"
     },
     "line_solid_color": {
-        "vert":"Shaders/line_base.vert",
-        "frag":"Shaders/line_single_color.frag"
+        "vert":"Render/Shaders/line_base.vert",
+        "frag":"Render/Shaders/line_single_color.frag"
     }
 }

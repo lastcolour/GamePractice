@@ -2,13 +2,13 @@
     "UIConfig":{
         "horizontalGrid":200,
         "views":{
-            "backgroundView":"UI/BackgroundView/BackgroundView.json",
-            "mainView":"UI/MainView/MainView.json",
-            "gameView":"UI/GameView/GameView.json",
-            "endGameView":"UI/GameEndView/GameEndView.json",
-            "loadingView":"UI/LoadingView/LoadingView.json",
-            "pauseView":"UI/PauseView/PauseView.json",
-            "levelsView":"UI/LevelsView/LevelsView.json"
+            "backgroundView":"Entities/UI/BackgroundView/BackgroundView.json",
+            "mainView":"Entities/UI/MainView/MainView.json",
+            "gameView":"Entities/UI/GameView/GameView.json",
+            "endGameView":"Entities/UI/GameEndView/GameEndView.json",
+            "loadingView":"Entities/UI/LoadingView/LoadingView.json",
+            "pauseView":"Entities/UI/PauseView/PauseView.json",
+            "levelsView":"Entities/UI/LevelsView/LevelsView.json"
         }
     }
 }

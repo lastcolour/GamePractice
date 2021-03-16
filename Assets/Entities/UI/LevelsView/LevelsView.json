@@ -602,7 +602,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 1,
                   "internal": false
                 },
@@ -625,7 +625,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 2,
                   "internal": false
                 },
@@ -648,7 +648,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 3,
                   "internal": false
                 },
@@ -671,7 +671,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 4,
                   "internal": false
                 },
@@ -694,7 +694,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 5,
                   "internal": false
                 },
@@ -717,7 +717,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 6,
                   "internal": false
                 },
@@ -740,7 +740,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 7,
                   "internal": false
                 },
@@ -763,7 +763,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 8,
                   "internal": false
                 },
@@ -786,7 +786,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 9,
                   "internal": false
                 },
@@ -809,7 +809,7 @@
                       "w": 1.0
                     }
                   },
-                  "name": "UI/LevelsView/LevelSelectButton.json",
+                  "name": "Entities/UI/LevelsView/LevelSelectButton.json",
                   "id": 10,
                   "internal": false
                 }
@@ -988,7 +988,7 @@
         "buttons": [
           {
             "id": "1",
-            "levelName": "Game/Levels/Level_01.json",
+            "levelName": "Entities/Game/Levels/Level_01.json",
             "buttonId": [
               4,
               1,
@@ -997,7 +997,7 @@
           },
           {
             "id": "2",
-            "levelName": "Game/Levels/Level_02.json",
+            "levelName": "Entities/Game/Levels/Level_02.json",
             "buttonId": [
               4,
               1,
@@ -1006,7 +1006,7 @@
           },
           {
             "id": "3",
-            "levelName": "Game/Levels/Level_03.json",
+            "levelName": "Entities/Game/Levels/Level_03.json",
             "buttonId": [
               4,
               1,
@@ -1015,7 +1015,7 @@
           },
           {
             "id": "4",
-            "levelName": "Game/Levels/Level_04.json",
+            "levelName": "Entities/Game/Levels/Level_04.json",
             "buttonId": [
               4,
               1,
@@ -1024,7 +1024,7 @@
           },
           {
             "id": "5",
-            "levelName": "Game/Levels/Level_05.json",
+            "levelName": "Entities/Game/Levels/Level_05.json",
             "buttonId": [
               4,
               1,
@@ -1033,7 +1033,7 @@
           },
           {
             "id": "6",
-            "levelName": "Game/Levels/Level_06.json",
+            "levelName": "Entities/Game/Levels/Level_06.json",
             "buttonId": [
               4,
               1,
@@ -1042,7 +1042,7 @@
           },
           {
             "id": "7",
-            "levelName": "Game/Levels/Level_07.json",
+            "levelName": "Entities/Game/Levels/Level_07.json",
             "buttonId": [
               4,
               1,
@@ -1051,7 +1051,7 @@
           },
           {
             "id": "8",
-            "levelName": "Game/Levels/Level_08.json",
+            "levelName": "Entities/Game/Levels/Level_08.json",
             "buttonId": [
               4,
               1,
@@ -1060,7 +1060,7 @@
           },
           {
             "id": "9",
-            "levelName": "Game/Levels/Level_09.json",
+            "levelName": "Entities/Game/Levels/Level_09.json",
             "buttonId": [
               4,
               1,
@@ -1069,7 +1069,7 @@
           },
           {
             "id": "10",
-            "levelName": "Game/Levels/Level_10.json",
+            "levelName": "Entities/Game/Levels/Level_10.json",
             "buttonId": [
               4,
               1,

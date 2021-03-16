@@ -23,7 +23,9 @@ class SelectResourceFile(QDialog):
 
         self._tree = FileTreeView()
         if resType != ResourceType.SoundEvent:
-            self._tree._setFileTreeModel(GetEventManager().getAssetsModel().getResourcesTree())
+            assetsModel = GetEventManager().getAssetsModel()
+            assetsModel.reload()
+            self._tree._setFileTreeModel(assetsModel.getResourcesTree())
         else:
             self._tree._setFileTreeModel(GetEventManager().getSoundEventsModel().getResourceTree())
 

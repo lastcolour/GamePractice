@@ -10,9 +10,8 @@
 
 namespace {
 
-const int MAX_INFO_BUFF_SIZE = 512u;
 const char* SHADERS = "Render/Shaders.json";
-const char* SHADERS_ROOT_DIR = "Render/";
+const int MAX_INFO_BUFF_SIZE = 512u;
 const int INVALID_PROGRAM_ID = 0;
 
 } // namespace
@@ -160,8 +159,6 @@ int RenderShaderManager::createShaderProgram(const std::string& shaderName) {
             LogError("[RenderShaderManager::createShaderProgram] Empty frag shader path in shader: %s", shaderName);
             continue;
         }
-        vertShaderPath = SHADERS_ROOT_DIR + vertShaderPath;
-        fragShaderPath = SHADERS_ROOT_DIR + fragShaderPath;
         auto programId = createProgram(vertShaderPath, fragShaderPath);
         if(!programId) {
             LogError("[RenderShaderManager::createShaderProgram] Can't create render shader '%s' from vert: '%s' and frag: '%s' shaders",

@@ -89,23 +89,23 @@
       "data": {
         "elems": [
           {
-            "object": "Game/Blocks/Blue.json",
+            "object": "Entities/Game/Blocks/Blue.json",
             "weight": 1
           },
           {
-            "object": "Game/Blocks/Green.json",
+            "object": "Entities/Game/Blocks/Green.json",
             "weight": 1
           },
           {
-            "object": "Game/Blocks/Yellow.json",
+            "object": "Entities/Game/Blocks/Yellow.json",
             "weight": 1
           },
           {
-            "object": "Game/Blocks/Red.json",
+            "object": "Entities/Game/Blocks/Red.json",
             "weight": 1
           },
           {
-            "object": "Game/Blocks/Purple.json",
+            "object": "Entities/Game/Blocks/Purple.json",
             "weight": 1
           }
         ]

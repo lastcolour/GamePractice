@@ -13,7 +13,6 @@
 
 namespace {
 
-const char* GAME_ENTITIES = "Entities";
 const EntityLogicId TransformLogicId = 0;
 const float ENTITY_LOADING_TIME_LOG_THRESHOLD = 5.f;
 
@@ -349,16 +348,16 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
         auto logicData = logicNode.object("data");
         if(!logicData) {
             LogWarning("[EntityManager::setupEntityLogics] Can't find logic data object for '%s' for entity '%s'", logicType, entity->ET_getName());
-            return false;
+            continue;
         }
         auto logicInstance = logicClassInfo.createInstance();
         if(!logicInstance.get()) {
             LogWarning("[EntityManager::setupEntityLogics] Can't create instance of logic type '%s' for entity '%s'", logicType, entity->ET_getName());
-            return false;
+            continue;
         }
         if(!logicInstance.readAllValuesFrom(serCtx, logicData)) {
             LogWarning("[EntityManager::setupEntityLogics] Can't read logic data of type '%s' for entity '%s'", logicType, entity->ET_getName());
-            return false;
+            continue;
         }
         if(!entity->addLogicWithId(logicId, std::move(logicInstance))) {
             LogWarning("[EntityManager::setupEntityLogics] Can't init logic '%s' for entity '%s'", logicType, entity->ET_getName());
@@ -377,20 +376,20 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
     for(const auto& childNode : childrenNode) {
         if(!childNode.hasKey("id")) {
             LogWarning("[EntityManager::setupEntityChildren] Can't find required 'id' value in entity '%s'", entity->ET_getName());
-            return false;
+            continue;
         }
         if(!childNode.hasKey("name")) {
             LogWarning("[EntityManager::setupEntityChildren] Can't find required 'name' value in entity '%s'", entity->ET_getName());
-            return false;
+            continue;
         }
         auto tmNode = childNode.object("transform");
         if(!tmNode) {
             LogWarning("[EntityManager::setupEntityChildren] Can't find required 'transform' node in entity '%s'", entity->ET_getName());
-            return false;
+            continue;
         }
         if(!childNode.hasKey("internal")) {
             LogWarning("[EntityManager::setupEntityChildren] Can't find required 'internal' node in entity '%s'", entity->ET_getName());
-            return false;
+            continue;
         }
         std::string childEntName;
         childNode.read("name", childEntName);
@@ -402,7 +401,7 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
         childNode.read("id", childId);
         if(childId == InvalidEntityChildId) {
             LogWarning("[EntityManager::setupEntityChildren] Invalid child id of child '%s' for an entity '%s'", childEntName, entity->ET_getName());
-            return false;
+            continue;
         }
 
         Entity* childEntity = nullptr;
@@ -411,7 +410,7 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
             if(!childData) {
                 LogWarning("[EntityManager::setupEntityChildren] Can't find required 'data' node for internal entity in entity '%s'",
                     entity->ET_getName());
-                return false;
+                continue;
             }
             childEntity = createEntityImpl(childData, childEntName.c_str(), finishLoad);
         } else {
@@ -420,7 +419,7 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
         if(!childEntity) {
             LogWarning("[EntityManager::setupEntityChildren] Can't create child entity '%s' for an entity: '%s'",
                 childEntName, entity->ET_getName());
-            return false;
+            continue;
         }
 
         SerializeContext serCtx;
@@ -429,7 +428,7 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
         Transform localTm;
         if(!tmClassInfo->readValueFrom(serCtx, &localTm, AllEntityLogicValueId, tmNode)) {
             LogWarning("[EntityManager::setupEntityTranform] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
-            return false;
+            continue;
         }
         entity->addChildEntityWithId(childId, *childEntity);
         childEntity->ET_setLocalTransform(localTm);
@@ -442,11 +441,10 @@ JSONNode EntityManager::loadEntityRootNode(const char* entityName) const {
         LogWarning("[EntityManager::loadEntityRootNode] Can't load entity with empty name");
         return JSONNode();
     }
-    std::string entityFilePath = StringFormat("%s/%s", GAME_ENTITIES, entityName);
     JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, entityFilePath.c_str());
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, entityName);
     if(!rootNode) {
-        LogWarning("[EntityManager::loadEntityRootNode] Can't load entity from: '%s'", entityFilePath);
+        LogWarning("[EntityManager::loadEntityRootNode] Can't load entity from: '%s'", entityName);
         return JSONNode();
     }
     return rootNode;
