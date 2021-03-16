@@ -1,11 +1,6 @@
 #include "Game/Logics/GameBoardElemHighlighter.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Entity/ETEntityManger.hpp"
-#include "Core/ETLogger.hpp"
-#include "Entity/ETEntity.hpp"
-
-#include <algorithm>
 
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {

@@ -2,11 +2,8 @@
 #define __GAME_BOARD_ELEM_HIGHLIGHTER_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
-
-class ReflectContext;
 
 class GameBoardElemHighlighter : public EntityLogic,
     public ETNode<ETGameTimerEvents>,

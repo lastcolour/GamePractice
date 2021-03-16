@@ -2,18 +2,16 @@
 #include "Entity.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
-#include "Core/StringFormat.hpp"
 #include "Logics/UIAnimationSequence.hpp"
 
 #include <set>
 
 namespace {
 
-const char* TEST_OBJECT_NAME = "Game/Simple.json";
+const char* TEST_OBJECT_NAME = "Entities/Game/Simple.json";
 
 class TestLogic : public EntityLogic {
 public:

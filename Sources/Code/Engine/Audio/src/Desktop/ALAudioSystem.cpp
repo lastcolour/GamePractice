@@ -1,5 +1,4 @@
 #include "Desktop/ALAudioSystem.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETApplication.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 #include "Nodes/ETSoundNode.hpp"
@@ -8,7 +7,6 @@
 #include <AL/alc.h>
 
 #include <cassert>
-#include <algorithm>
 
 ALAudioSystem::ALAudioSystem() :
     alcDevice(nullptr),

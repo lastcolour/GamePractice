@@ -1,13 +1,9 @@
 #ifndef __GLFWS_SURFACE_HPP__
 #define __GLFWS_SURFACE_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
-
-#include <memory>
-#include <vector>
 
 class GlfwLibInitData;
 struct GLFWwindow;

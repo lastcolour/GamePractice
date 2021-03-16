@@ -1,6 +1,5 @@
 
 #include "Core/SystemModule.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Core/ETApplication.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
@@ -31,6 +30,7 @@ SystemModule::~SystemModule() {
     }
 }
 
+/*
 JSONNode SystemModule::loadModuleConfigs() {
     JSONNode node;
     if(!ET_IsExistNode<ETAssets>()) {
@@ -43,9 +43,10 @@ JSONNode SystemModule::loadModuleConfigs() {
     return node;
 }
 
+
 bool SystemModule::serializeConfigs() {
     ReflectContext ctx;
-    reflectSystemConfigs(ctx);
+    //reflectSystemConfigs(ctx);
     auto configClass = ctx.getRegisteredClassInfo();
     if(!configClass) {
         return true;
@@ -81,15 +82,18 @@ bool SystemModule::serializeConfigs() {
     ET_SendEvent(&ETModuleSharedManager::ET_registerShared, configInstance);
     return true;
 }
+*/
 
 bool SystemModule::init() {
     assert(!isInitialized && "Dobule module initializetion");
 
     auto initStarT = TimePoint::GetNowTime();
 
+    /*
     if(!serializeConfigs()) {
         return false;
     }
+    */
 
     if(logicsContainer) {
         LogError("[SystemModule::init] Double init of module: '%s'", name);

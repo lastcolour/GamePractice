@@ -1,11 +1,6 @@
 #include "Logics/UIProgressBar.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Math/Primitivies.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUILayout.hpp"
-
-#include <algorithm>
 
 void UIProgressBar::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIProgressBar>("UIProgressBar")) {

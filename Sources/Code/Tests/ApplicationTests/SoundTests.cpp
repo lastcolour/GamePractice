@@ -7,7 +7,7 @@
 
 namespace {
 
-const char* TEST_SOUND_NAME = "UI/buttonPress_01.ogg";
+const char* TEST_SOUND_NAME = "Sounds/UI/buttonPress_01.ogg";
 const int MAX_PARALLEL_SOUNDS = 16;
 
 } // namespace

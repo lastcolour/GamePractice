@@ -1,7 +1,6 @@
 #ifndef __LOADING_SCREEN_MANAGER_HPP__
 #define __LOADING_SCREEN_MANAGER_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "UI/ETLoadingScreen.hpp"
 

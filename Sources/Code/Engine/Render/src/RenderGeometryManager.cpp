@@ -1,5 +1,4 @@
 #include "RenderGeometryManager.hpp"
-#include "Core/ETLogger.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/Matrix.hpp"

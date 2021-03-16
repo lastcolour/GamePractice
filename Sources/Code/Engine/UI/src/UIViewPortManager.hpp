@@ -2,7 +2,6 @@
 #define __UI_VIEW_PORT_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "Render/ETRenderCamera.hpp"
 

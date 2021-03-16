@@ -4,8 +4,6 @@
 #include "MixGraph/MixNode.hpp"
 #include "Filters/Equalizer.hpp"
 
-#include <vector>
-
 class CombineNode : public MixNode {
 public:
 

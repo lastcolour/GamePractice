@@ -2,7 +2,6 @@
 #define __LOCK_FREE_QUEUE_HPP__
 
 #include <atomic>
-#include <vector>
 
 class LockFreeQueue {
 public:

@@ -1,6 +1,4 @@
 #include "SoundEventTable.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Core/ETLogger.hpp"
 #include "Reflect/ReflectUtils.hpp"
 #include "AudioUtils.hpp"
 

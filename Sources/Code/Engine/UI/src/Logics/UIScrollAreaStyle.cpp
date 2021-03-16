@@ -1,5 +1,4 @@
 #include "UI/UIScrollAreaStyle.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 
 void UIScrollAreaStyle::Reflect(ReflectContext& ctx) {

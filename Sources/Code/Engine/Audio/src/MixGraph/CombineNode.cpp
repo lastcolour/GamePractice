@@ -1,7 +1,6 @@
 #include "MixGraph/CombineNode.hpp"
 #include "MixGraph/MixGraph.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 CombineNode::CombineNode(MixGraph* mixGraph) :

@@ -2,15 +2,12 @@
 #define __DEBUG_RENDER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Render/ETDebugRender.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Debug/DeubgCommands.hpp"
 #include "Nodes/SimpleNode.hpp"
 #include "Nodes/TextNode.hpp"
 #include "Nodes/LineNode.hpp"
-
-#include <vector>
 
 class DebugRender : public SystemLogic,
     public ETNode<ETDebugRender>,

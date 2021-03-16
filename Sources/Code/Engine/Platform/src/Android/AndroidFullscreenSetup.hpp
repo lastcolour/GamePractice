@@ -2,7 +2,6 @@
 #define __ANDROID_FULLSCREEN_SETUP_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Platform/Android/ETAndroidInterfaces.hpp"
 
 class AndroidFullscreenSetup : public SystemLogic,

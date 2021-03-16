@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 project(Entity CXX)
 
@@ -20,3 +20,16 @@ file(GLOB ENTITY_HEADERS
 
 add_library(${PROJECT_NAME} STATIC ${ENTITY_SOURCES} ${ENTITY_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <string>
+    <vector>
+    <memory>
+    <algorithm>
+    <functional>
+    <unordered_map>
+    <limits>
+    [["Reflect/ReflectContext.hpp"]]
+    [["Core/ETLogger.hpp"]]
+    [["Entity/ETEntity.hpp"]]
+)

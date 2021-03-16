@@ -2,12 +2,8 @@
 #define __GAME_BOARD_ANIMATION_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "Math/Vector.hpp"
-
-class ReflectContext;
 
 class GameBoardAnimation : public EntityLogic,
     public ETNode<ETGameTimerEvents>,

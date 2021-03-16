@@ -4,7 +4,6 @@
 #include "UI/ETUIViewScript.hpp"
 #include "UIUtils.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {

@@ -1,6 +1,4 @@
 #include "Game/ViewScripts/BaseViewScript.hpp"
-#include "Core/ETLogger.hpp"
-#include "Entity/ETEntity.hpp"
 
 BaseViewScript::BaseViewScript() :
     hasFocusFlag(false) {

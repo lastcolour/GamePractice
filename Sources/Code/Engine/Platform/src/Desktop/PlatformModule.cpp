@@ -15,7 +15,7 @@ PlatformModule::LogicsContainerPtrT PlatformModule::createSystemLogics() const {
     return container;
 }
 
-void PlatformModule::reflectSystemConfigs(ReflectContext& ctx) const {
+void PlatformModule::createSystemConfigs() const {
 }
 
 void PlatformModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

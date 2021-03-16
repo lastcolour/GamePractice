@@ -1,10 +1,6 @@
 #include "UIScrollArea.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UIUtils.hpp"
-#include "Core/ETLogger.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {
@@ -252,9 +248,9 @@ void UIScrollArea::updateMoveState(float dt) {
         float newVel = 0.f;
 
         if(style.type == UIScrollType::Horizontal) {
-            newVel = static_cast<float>(newPosDt.x) / eventDt;
+            newVel = newPosDt.x / eventDt;
         } else {
-            newVel = static_cast<float>(newPosDt.y) / eventDt;
+            newVel = newPosDt.y / eventDt;
         }
 
         path.clear();

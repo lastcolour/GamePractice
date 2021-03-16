@@ -4,9 +4,6 @@
 #include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
-#include <vector>
-#include <memory>
-
 class Node;
 class RenderFramebuffer;
 

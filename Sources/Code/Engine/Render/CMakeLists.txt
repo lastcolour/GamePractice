@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 project(Render CXX)
 
@@ -62,3 +62,16 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${RENDER_LIB_DEPENDICIES})
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <string>
+    <vector>
+    <memory>
+    <algorithm>
+    <functional>
+    <unordered_map>
+    <limits>
+    [["Reflect/ReflectContext.hpp"]]
+    [["Core/ETLogger.hpp"]]
+    [["Entity/ETEntity.hpp"]]
+)

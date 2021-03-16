@@ -1,10 +1,6 @@
 #ifndef __RUN_TASK_HPP__
 #define __RUN_TASK_HPP__
 
-#include <vector>
-#include <functional>
-#include <string>
-
 enum class RunTaskType {
     Default = 0,
     MainThreadOnly,

@@ -3,8 +3,6 @@
 #include "Platform/Android/ETAndroidInterfaces.hpp"
 #include "Core/ETApplication.hpp"
 #include "Platform/ETSurface.hpp"
-#include "Math/Vector.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

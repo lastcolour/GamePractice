@@ -1,5 +1,4 @@
 #include "UI/UILayoutStyle.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 
 void UILayoutStyle::Reflect(ReflectContext& ctx) {

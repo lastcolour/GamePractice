@@ -1,7 +1,6 @@
 #ifndef __ET_PARTICLES_SYSTEM_HPP__
 #define __ET_PARTICLES_SYSTEM_HPP__
 
-#include "Math/Transform.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 
 struct ETParticlesSystem {

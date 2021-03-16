@@ -1,16 +1,13 @@
 #ifndef __REFLECT_CORE_HPP__
 #define __REFLECT_CORE_HPP__
 
+#include "Render/Color.hpp"
 #include "Core/Core.hpp"
 #include "Core/TypeId.hpp"
 #include "Math/Vector.hpp"
 #include "Math/Quaternion.hpp"
-#include "Render/Color.hpp"
 
-#include <vector>
 #include <type_traits>
-#include <functional>
-#include <string>
 
 class ReflectContext;
 

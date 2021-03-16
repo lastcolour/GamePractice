@@ -4,11 +4,8 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETLevelProgress.hpp"
 #include "Game/ViewScripts/ProgressionStars.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Audio/SoundEvent.hpp"
-
-class ReflectContext;
 
 struct UnlockedLevelButtonData {
 public:

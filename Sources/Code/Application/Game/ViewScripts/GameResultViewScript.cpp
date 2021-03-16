@@ -1,11 +1,8 @@
 #include "Game/ViewScripts/GameResultViewScript.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Game/ETGameScore.hpp"
 #include "UI/ETUIView.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIAnimation.hpp"
-#include "Core/ETLogger.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Game/GameUtils.hpp"
 #include "Game/ETLevelProgress.hpp"
 

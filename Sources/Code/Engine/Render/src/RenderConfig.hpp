@@ -1,10 +1,6 @@
 #ifndef __RENDER_CONFIG_HPP__
 #define __RENDER_CONFIG_HPP__
 
-#include <string>
-
-class ReflectContext;
-
 class RenderConfig {
 public:
 

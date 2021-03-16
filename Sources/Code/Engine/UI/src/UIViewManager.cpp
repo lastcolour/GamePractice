@@ -3,11 +3,9 @@
 #include "UI/ETUIViewCache.hpp"
 #include "UI/ETLoadingScreen.hpp"
 #include "UI/ETUIViewScript.hpp"
-#include "Core/ETLogger.hpp"
 #include "UIUtils.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 namespace {
 

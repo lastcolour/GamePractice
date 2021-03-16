@@ -1,11 +1,9 @@
 #include "Desktop/DesktopAssets.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/TimePoint.hpp"
 #include "FileUtils.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 #ifdef PLATFORM_WINDOWS
   #include <direct.h>

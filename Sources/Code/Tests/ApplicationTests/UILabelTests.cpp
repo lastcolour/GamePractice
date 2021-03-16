@@ -17,8 +17,8 @@ TEST_F(UILabelTests, CheckTextSize) {
     {
         auto box = label->ET_getBox();
         auto size = box.getSize();
-        ASSERT_EQ(size.x, 0);
-        ASSERT_EQ(size.y, 0);
+        ASSERT_FLOAT_EQ(size.x, 0.f);
+        ASSERT_FLOAT_EQ(size.y, 0.f);
     }
 
     label->ET_setText("YyPpQq");
@@ -28,8 +28,8 @@ TEST_F(UILabelTests, CheckTextSize) {
     auto smallBox = label->ET_getBox();
     auto smallSize = smallBox.getSize();
     {
-        ASSERT_GT(smallSize.x, 0);
-        ASSERT_GT(smallSize.y, 0);
+        ASSERT_GT(smallSize.x, 0.f);
+        ASSERT_GT(smallSize.y, 0.f);
     }
 
     label->ET_setFontSize(30.f);
@@ -37,8 +37,8 @@ TEST_F(UILabelTests, CheckTextSize) {
     auto bigBox = label->ET_getBox();
     auto bigSize = bigBox.getSize();
     {
-        ASSERT_GE(bigSize.x, smallSize.x * 2);
-        ASSERT_GE(bigSize.y, smallSize.y * 2);
+        ASSERT_GE(bigSize.x, smallSize.x * 2.f);
+        ASSERT_GE(bigSize.y, smallSize.y * 2.f);
     }
 }
 
@@ -61,11 +61,11 @@ TEST_F(UILabelTests, CheckTextScaling) {
         auto origSize = origBox.getSize();
         auto scaledSize = scaledBox.getSize();
 
-        EXPECT_EQ(origSize.x, scaledSize.x * 2 + origSize.x % 2);
-        EXPECT_EQ(origSize.y, scaledSize.y * 2 + origSize.y % 2);
+        EXPECT_FLOAT_EQ(origSize.x, 2.f * scaledSize.x);
+        EXPECT_FLOAT_EQ(origSize.y, 2.f * scaledSize.y);
     }
 
-    tm.scale *= 2;
+    tm.scale *= 2.f;
 
     ET_SendEvent(label->getEntityId(), &ETEntity::ET_setTransform, tm);
     auto rescaledBox = label->ET_getBox();
@@ -74,7 +74,7 @@ TEST_F(UILabelTests, CheckTextScaling) {
         auto origSize = origBox.getSize();
         auto rescaledSize = rescaledBox.getSize();
 
-        EXPECT_EQ(origSize.x, rescaledSize.x);
-        EXPECT_EQ(origSize.y, rescaledSize.y);
+        EXPECT_FLOAT_EQ(origSize.x, rescaledSize.x);
+        EXPECT_FLOAT_EQ(origSize.y, rescaledSize.y);
     }
 }

@@ -1,9 +1,7 @@
 #ifndef __SOUND_NODE_HPP__
 #define __SOUND_NODE_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Nodes/ETSoundNode.hpp"
-#include "Core/Buffer.hpp"
 #include "SoundStream.hpp"
 
 class SoundNode : public ETNode<ETSoundNode>,

@@ -1,8 +1,8 @@
 #ifndef __ET_LOGGER_HPP__
 #define __ET_LOGGER_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Core/StringFormat.hpp"
+#include "Core/ETPrimitives.hpp"
 
 enum class LogLevel {
     Debug = 0,

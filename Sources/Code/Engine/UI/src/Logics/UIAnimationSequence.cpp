@@ -1,14 +1,8 @@
 #include "Logics/UIAnimationSequence.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
-#include "Math/Primitivies.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UIUtils.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
-#include <cmath>
-#include <algorithm>
 
 namespace {
 

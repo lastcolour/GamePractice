@@ -1,10 +1,8 @@
 #ifndef __IN_GAME_STATE_HPP__
 #define __IN_GAME_STATE_HPP__
 
-#include "Core/Core.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGame.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameScore.hpp"
 #include "Game/ETGameTimer.hpp"
 

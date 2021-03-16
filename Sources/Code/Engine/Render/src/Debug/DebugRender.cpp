@@ -4,9 +4,6 @@
 #include "Render/ETRenderInterfaces.hpp"
 #include "RenderUtils.hpp"
 
-#include <limits>
-#include <cmath>
-#include <algorithm>
 #include <cassert>
 
 DebugRender::DebugRender() {

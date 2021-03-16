@@ -1,5 +1,4 @@
 #include "MixGraph/MixConfig.hpp"
-#include "Core/ETLogger.hpp"
 
 bool CheckAndPrintMixConfig(const MixConfig& config) {
     bool res = true;

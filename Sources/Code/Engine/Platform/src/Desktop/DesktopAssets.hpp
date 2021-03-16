@@ -2,7 +2,6 @@
 #define __DESKTOP_ASSETS_HPP__
 
 #include "Core/ETAssets.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
 

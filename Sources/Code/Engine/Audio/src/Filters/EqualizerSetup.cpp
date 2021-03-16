@@ -1,5 +1,4 @@
 #include "Filters/EqualizerSetup.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 void EqualizerSetup::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<EqualizerSetup>("EqualizerSetup")) {

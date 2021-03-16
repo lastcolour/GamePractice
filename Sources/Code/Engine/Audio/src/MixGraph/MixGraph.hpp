@@ -5,13 +5,9 @@
 #include "MixGraph/SourceNode.hpp"
 #include "MixGraph/MixConfig.hpp"
 #include "MixGraph/Resampler.hpp"
-#include "Core/Buffer.hpp"
 #include "Filters/Equalizer.hpp"
 #include "Audio/ETAudioSystem.hpp"
 #include "Filters/RecursiveFilter.hpp"
-
-#include <vector>
-#include <memory>
 
 class SoundStream;
 

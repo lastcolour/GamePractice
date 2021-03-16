@@ -1,8 +1,6 @@
 #ifndef __JNI_HELPERS_HPP__
 #define __JNI_HELPERS_HPP__
 
-#include "Core/ETLogger.hpp"
-
 #include <jni.h>
 #include <cassert>
 

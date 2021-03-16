@@ -3,10 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUITimer.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIScrollArea.hpp"
-
-class ReflectContext;
 
 class UIScrollFocus : public EntityLogic,
     public ETNode<ETUITimerEvents>,

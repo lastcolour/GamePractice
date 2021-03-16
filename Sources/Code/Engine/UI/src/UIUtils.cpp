@@ -2,11 +2,10 @@
 #include "Core/ETApplication.hpp"
 #include "Config/UIConfig.hpp"
 #include "UI/UILayoutStyle.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Logics/UIAnimationSequence.hpp"
+#include "Core/GlobalData.hpp"
 
 #include <cassert>
 
@@ -18,7 +17,7 @@ UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin)
 
     UIBoxMargin resMargin;
 
-    auto uiConfig = ET_getShared<UIConfig>();
+    auto uiConfig = GetGlobal<UIConfig>();
     resMargin.left = uiConfig->getSizeOnGrid(margin.left);
     resMargin.right = uiConfig->getSizeOnGrid(margin.right);
     resMargin.bot = uiConfig->getSizeOnGrid(margin.bot);
@@ -135,19 +134,13 @@ void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm) {
     ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
 }
 
-void SetLocalTMDoNotUpdateLayout(EntityId elemId, const Transform& tm) {
-    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, true);
-    ET_SendEvent(elemId, &ETEntity::ET_setLocalTransform, tm);
-    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
-}
-
 float GetValueOnGrind(float val) {
-    auto uiConfig = ET_getShared<UIConfig>();
+    auto uiConfig = GetGlobal<UIConfig>();
     return uiConfig->getSizeOnGrid(val);
 }
 
 float ConvertValueFromGrid(float val) {
-    auto uiConfig = ET_getShared<UIConfig>();
+    auto uiConfig = GetGlobal<UIConfig>();
     return uiConfig->convertFromGrid(val);
 }
 

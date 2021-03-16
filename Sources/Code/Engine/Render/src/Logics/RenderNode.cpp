@@ -1,10 +1,5 @@
 #include "Logics/RenderNode.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETLogger.hpp"
-
-#include <algorithm>
 
 void RenderNode::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderNode>("RenderNode")) {

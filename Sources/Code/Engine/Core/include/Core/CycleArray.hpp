@@ -1,7 +1,6 @@
 #ifndef __CYCLE_ARRAY_HPP__
 #define __CYCLE_ARRAY_HPP__
 
-#include <vector>
 #include <cassert>
 
 template<typename T>

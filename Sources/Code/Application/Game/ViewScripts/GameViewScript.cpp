@@ -1,5 +1,4 @@
 #include "Game/ViewScripts/GameViewScript.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Game/ETGame.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "UI/ETUIView.hpp"
@@ -8,7 +7,6 @@
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

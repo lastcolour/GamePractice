@@ -3,10 +3,6 @@
 
 #include "Math/AABB.hpp"
 
-#include <unordered_map>
-#include <memory>
-#include <vector>
-
 class RenderTexture;
 
 struct RenderGlyph {

@@ -2,7 +2,6 @@
 #define __UI_SCROLL_AREA_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIButton.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/UIScrollAreaStyle.hpp"
@@ -10,10 +9,6 @@
 #include "UI/ETUIScrollArea.hpp"
 #include "UI/ETUILayout.hpp"
 #include "Core/TimePoint.hpp"
-
-#include <vector>
-
-class ReflectContext;
 
 class UIScrollArea : public EntityLogic,
     public ETNode<ETUIInteractionBox>,

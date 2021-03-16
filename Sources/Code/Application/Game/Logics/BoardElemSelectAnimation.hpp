@@ -3,12 +3,8 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameElem.hpp"
-#include "Math/Vector.hpp"
 #include "Game/ETGameTimer.hpp"
-
-class ReflectContext;
 
 class BoardElemSelectAnimation : public EntityLogic, 
     public ETNode<ETGameTimerEvents>,

@@ -3,7 +3,6 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETAssets.hpp"
-#include "Core/ETPrimitives.hpp"
 
 class AndroidAssets : public SystemLogic,
     public ETNode<ETAssets> {

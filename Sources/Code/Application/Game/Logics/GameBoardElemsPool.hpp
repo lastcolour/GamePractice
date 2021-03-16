@@ -2,13 +2,8 @@
 #define __GAME_BOARD_ELEMS_POOL_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Math/Random.hpp"
-
-#include <unordered_map>
-
-class ReflectContext;
 
 class ElementDescriptor {
 public:

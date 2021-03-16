@@ -1,7 +1,4 @@
-#include "Core/Buffer.hpp"
-
 #include <cassert>
-#include <cstring>
 
 struct BufferImpl {
     size_t size;

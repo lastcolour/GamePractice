@@ -1,9 +1,8 @@
 #ifndef __ET_ENTITY_HPP__
 #define __ET_ENTITY_HPP__
 
-#include "Core/Core.hpp"
-#include "Core/TypeId.hpp"
 #include "Math/Transform.hpp"
+#include "Core/TypeId.hpp"
 
 class EntityLogic;
 

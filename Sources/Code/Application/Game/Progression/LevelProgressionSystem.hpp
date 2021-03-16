@@ -2,7 +2,6 @@
 #define __LEVEL_PROGRESSION_SYSTEM_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/Progression/LevelsProgressData.hpp"
 #include "Game/ETLevelProgress.hpp"
 

@@ -1,8 +1,6 @@
 #ifndef __MEMORY_STREAM_HPP__
 #define __MEMORY_STREAM_HPP__
 
-#include "Core/Buffer.hpp"
-
 class MemoryStream {
 public:
 

@@ -1,5 +1,4 @@
 #include "Game/Progression/LevelsProgressData.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 LevelProgress::LevelProgress() :
     completeTime(-1.f),

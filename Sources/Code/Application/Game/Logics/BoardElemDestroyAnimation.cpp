@@ -1,12 +1,7 @@
 #include "Game/Logics/BoardElemDestroyAnimation.hpp"
-#include "Core/ETLogger.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Audio/ETSound.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Math/Primitivies.hpp"
 #include "Render/ETRenderNode.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 void BoardElemDestroyAnimation::Reflect(ReflectContext& ctx) {

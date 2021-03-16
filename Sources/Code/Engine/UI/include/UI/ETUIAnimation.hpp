@@ -1,8 +1,6 @@
 #ifndef __ET_UI_ANIMATION_HPP__
 #define __ET_UI_ANIMATION_HPP__
 
-#include "Core/Core.hpp"
-
 class UIAnimationFrame;
 
 enum class EAnimSequenceType {

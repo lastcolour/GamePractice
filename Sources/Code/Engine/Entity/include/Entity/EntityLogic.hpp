@@ -1,8 +1,6 @@
 #ifndef __ENTITY_LOGIC_HPP__
 #define __ENTITY_LOGIC_HPP__
 
-#include "Core/Core.hpp"
-
 class Entity;
 
 class EntityLogic {

@@ -1,7 +1,6 @@
 #include "Nodes/BlurNode.hpp"
 #include "RenderFramebuffer.hpp"
 #include "RenderTexture.hpp"
-#include "Core/ETLogger.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderUtils.hpp"

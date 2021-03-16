@@ -3,7 +3,6 @@
 
 #include "UI/UIBoxStyle.hpp"
 #include "UI/ETUIView.hpp"
-#include "Math/Transform.hpp"
 #include "Math/AABB.hpp"
 #include "UI/UILayoutStyle.hpp"
 
@@ -22,8 +21,6 @@ Vec2 CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2D& parentBo
 void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2& pos);
 
 void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
-
-void SetLocalTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
 
 float GetValueOnGrind(float val);
 

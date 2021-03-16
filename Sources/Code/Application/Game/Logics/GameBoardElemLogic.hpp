@@ -3,10 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameBoard.hpp"
-
-class ReflectContext;
 
 class GameBoardElemLogic : public EntityLogic,
     public ETNode<ETGameBoardElem> {

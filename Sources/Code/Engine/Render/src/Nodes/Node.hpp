@@ -4,8 +4,6 @@
 #include "RenderGraph/RenderContext.hpp"
 #include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Math/Transform.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 
 class RenderGraph;

@@ -1,6 +1,5 @@
 #include "Android/OboeAudioSystem.hpp"
 #include "Platform/ETDevice.hpp"
-#include "Core/ETLogger.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 #include "Nodes/ETSoundNode.hpp"
 

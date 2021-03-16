@@ -1,7 +1,6 @@
 #ifndef __PRE_GAME_STATE_HPP__
 #define __PRE_GAME_STATE_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 class PreGameState {

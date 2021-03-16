@@ -2,12 +2,8 @@
 #define __UI_VIEW_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIView.hpp"
 #include "LoadingScreenManager.hpp"
-
-#include <vector>
-#include <unordered_map>
 
 class UIViewManager : public SystemLogic,
     public ETNode<ETUIViewManager> {

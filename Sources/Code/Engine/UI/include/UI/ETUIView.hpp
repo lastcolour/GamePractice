@@ -1,8 +1,6 @@
 #ifndef __ET_UI_VIEW_HPP__
 #define __ET_UI_VIEW_HPP__
 
-#include "Core/Core.hpp"
-
 enum class UIViewType {
     None = 0,
     Main,

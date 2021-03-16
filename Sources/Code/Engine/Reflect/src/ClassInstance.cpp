@@ -1,6 +1,5 @@
 #include "Reflect/ClassInstance.hpp"
 #include "Reflect/ClassInfo.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

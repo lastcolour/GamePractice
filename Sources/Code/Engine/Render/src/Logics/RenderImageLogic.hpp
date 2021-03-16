@@ -3,8 +3,6 @@
 
 #include "Logics/RenderNode.hpp"
 
-class ReflectContext;
-
 class RenderImageLogic : public RenderNode,
     public ETNode<ETRenderImageLogic>,
     public ETNode<ETRenderRect> {

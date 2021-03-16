@@ -1,11 +1,9 @@
 #include "RenderShaderManager.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderShader.hpp"
 #include "RenderUtils.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {

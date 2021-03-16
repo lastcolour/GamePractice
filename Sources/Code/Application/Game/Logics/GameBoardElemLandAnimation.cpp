@@ -1,11 +1,8 @@
 #include "Game/Logics/GameBoardElemLandAnimation.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Audio/ETSound.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 namespace {
 

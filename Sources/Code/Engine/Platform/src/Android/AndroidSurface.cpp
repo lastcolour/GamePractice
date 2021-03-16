@@ -1,7 +1,6 @@
 #include "Android/AndroidSurface.hpp"
 #include "Android/AndroidPlatformHandler.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

@@ -1,6 +1,5 @@
 #include "SoundBufferManager.hpp"
 #include "Core/ETAssets.hpp"
-#include "Core/ETLogger.hpp"
 #include "SoundEventTable.hpp"
 
 SoundBufferManager::SoundBufferManager() {

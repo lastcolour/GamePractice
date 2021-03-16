@@ -1,7 +1,6 @@
 #ifndef __RENDER_TEXTURE_HPP__
 #define __RENDER_TEXTURE_HPP__
 
-#include "Math/Vector.hpp"
 #include "Render/Color.hpp"
 #include "Render/RenderCommon.hpp"
 

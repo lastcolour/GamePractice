@@ -3,10 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameTimer.hpp"
-
-class ReflectContext;
 
 class GameEndTimerLogic : public EntityLogic,
     public ETNode<ETGameEndTimer>,

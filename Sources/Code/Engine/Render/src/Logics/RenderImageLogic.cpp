@@ -1,5 +1,4 @@
 #include "Logics/RenderImageLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Nodes/ImageNode.hpp"
 
 RenderImageLogic::RenderImageLogic() :

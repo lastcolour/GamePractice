@@ -1,13 +1,10 @@
 #include "Entity.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Entity/ETEntityManger.hpp"
-#include "Core/ETLogger.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "EntityRegistry.hpp"
-#include "Reflect/ClassInfo.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 namespace {
 

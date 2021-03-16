@@ -1,8 +1,6 @@
 #include "Fader.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 namespace {
 

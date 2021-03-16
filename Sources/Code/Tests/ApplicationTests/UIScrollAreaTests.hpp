@@ -18,7 +18,7 @@ public:
 protected:
 
     void SetUp();
-    TestContext createTestContext(const Vec2i& parentBoxSize, const Vec2i& childBoxSize, const UIScrollAreaStyle& scrollStyle);
+    TestContext createTestContext(const Vec2& parentBoxSize, const Vec2& childBoxSize, const UIScrollAreaStyle& scrollStyle);
 };
 
 #endif /* __UI_SCROLL_AREA_TESTS_HPP__ */

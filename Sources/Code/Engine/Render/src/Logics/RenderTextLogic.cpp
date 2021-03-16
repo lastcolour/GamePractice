@@ -1,11 +1,8 @@
 #include "Logics/RenderTextLogic.hpp"
 #include "RenderFont.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Nodes/TextNode.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 RenderTextLogic::RenderTextLogic() :

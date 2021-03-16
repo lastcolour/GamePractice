@@ -1,6 +1,3 @@
-#include "Entity/ETEntity.hpp"
-#include "Core/ETPrimitives.hpp"
-
 namespace EntityUtils {
 
 const char* GetEntityName(EntityId entityId) {

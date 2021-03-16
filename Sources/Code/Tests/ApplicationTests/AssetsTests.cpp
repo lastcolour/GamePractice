@@ -3,8 +3,6 @@
 #include "Core/JSONNode.hpp"
 #include "Core/ETTasks.hpp"
 
-#include <algorithm>
-
 namespace {
 
 const char* TEST_FILE_PATH = "Render/Shaders.json";

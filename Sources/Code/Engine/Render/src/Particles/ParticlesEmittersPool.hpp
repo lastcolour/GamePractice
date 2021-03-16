@@ -1,13 +1,10 @@
 #ifndef __PARTICLES_EMITTERS_POOL_HPP__
 #define __PARTICLES_EMITTERS_POOL_HPP__
 
-#include "Math/Transform.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 #include "Particles/EmitterParticles.hpp"
 
 #include <atomic>
-#include <vector>
-#include <memory>
 
 const int InvalidRootParticleId = -1;
 

@@ -1,5 +1,4 @@
 #include "Game/ViewScripts/ProgressionStars.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 void ProgressionStars::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<ProgressionStars>("ProgressionStars")) {

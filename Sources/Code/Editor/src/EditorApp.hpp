@@ -2,8 +2,6 @@
 #define __EDITOR_APP__
 
 #include "Application.hpp"
-#include "Core/Buffer.hpp"
-#include "Core/Core.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Render/ImageBuffer.hpp"
 

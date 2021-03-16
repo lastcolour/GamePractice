@@ -2,13 +2,9 @@
 #include "Parallel/RunTask.hpp"
 #include "ThreadsPool.hpp"
 #include "JobTree.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
-#include <unordered_map>
-#include <limits>
 #include <thread>
-#include <algorithm>
 #include <cstdlib>
 
 namespace {

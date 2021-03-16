@@ -2,11 +2,8 @@
 #define __UI_VIEW_TRANSITION_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "UI/ETUIView.hpp"
-
-#include <vector>
 
 class UIViewTransitionManager : public SystemLogic,
     public ETNode<ETUIAnimationSequenceEvent>,

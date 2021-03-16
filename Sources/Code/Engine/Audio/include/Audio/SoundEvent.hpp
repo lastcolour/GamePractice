@@ -1,8 +1,6 @@
 #ifndef __SOUND_EVENT_HPP__
 #define __SOUND_EVENT_HPP__
 
-#include "Core/Core.hpp"
-
 class SoundEvent {
 public:
 

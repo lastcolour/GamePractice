@@ -1,8 +1,6 @@
 #ifndef __UI_ADDITIVE_TRANSFORM_HPP__
 #define __UI_ADDITIVE_TRANSFORM_HPP__
 
-#include "Math/Transform.hpp"
-
 struct AddtiveUITransform {
 public:
 

@@ -1,5 +1,4 @@
 #include "Game/Logics/ObjectiveTarget.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 void ObjectiveTarget::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<ObjectiveTarget>("ObjectiveTarget")) {

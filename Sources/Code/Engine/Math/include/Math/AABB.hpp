@@ -1,8 +1,6 @@
 #ifndef __AABB_HPP__
 #define __AABB_HPP__
 
-#include "Math/Vector.hpp"
-
 namespace Math {
 
 template<typename T>

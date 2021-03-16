@@ -1,5 +1,4 @@
 #include "UIViewPortManager.hpp"
-#include "Core/ETLogger.hpp"
 
 UIViewPortManager::UIViewPortManager() :
     viewPort(0),

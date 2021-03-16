@@ -1,12 +1,9 @@
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Audio/ETSound.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Render/ETRenderNode.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {

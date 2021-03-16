@@ -1,11 +1,8 @@
 #ifndef __UI_PROGRESS_BAR_HPP__
 #define __UI_PROGRESS_BAR_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUIProgressBar.hpp"
-
-class ReflectContext;
 
 class UIProgressBar : public EntityLogic,
     public ETNode<ETUIProgressBar> {

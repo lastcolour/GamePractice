@@ -1,9 +1,6 @@
 #ifndef __ET_RENDER_NODE_MANAGER_HPP__
 #define __ET_RENDER_NODE_MANAGER_HPP__
 
-#include "Core/Core.hpp"
-#include "Math/Transform.hpp"
-
 class Node;
 class ImageBuffer;
 enum class DrawContentFilter;

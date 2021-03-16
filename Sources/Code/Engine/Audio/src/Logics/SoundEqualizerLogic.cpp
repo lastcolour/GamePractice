@@ -1,8 +1,5 @@
 #include "Logics/SoundEqualizerLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
-#include "Core/ETLogger.hpp"
-#include "Entity/ETEntity.hpp"
 
 void SoundEqualizerLogic::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<ESoundGroup>("ESoundGroup")) {

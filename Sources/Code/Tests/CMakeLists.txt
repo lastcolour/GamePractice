@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 project(${MAIN_PROJECT_NAME}Tests CXX)
 
@@ -47,3 +47,16 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GTEST_LIB_STATIC_BIN}
     ${THREADS_LIB_SHARED_BIN}
     Engine)
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <string>
+    <vector>
+    <memory>
+    <algorithm>
+    <functional>
+    <unordered_map>
+    <limits>
+    [["Reflect/ReflectContext.hpp"]]
+    [["Core/ETLogger.hpp"]]
+    [["Entity/ETEntity.hpp"]]
+)

@@ -1,9 +1,5 @@
 #include "Config/UIConfig.hpp"
 #include "UI/ETUIViewPort.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Core/ETPrimitives.hpp"
-
-#include <cmath>
 
 namespace {
 

@@ -1,25 +1,26 @@
 #include "UILayoutTests.hpp"
 #include "Logics/UILayout.hpp"
 #include "Logics/UIBox.hpp"
+#include "UIUtils.hpp"
 #include "Config/UIConfig.hpp"
 #include "Logics/UILayoutBox.hpp"
 #include "Core/ETApplication.hpp"
 
 namespace {
 
-void CheckUIBox(EntityId entityId, Vec2i expCenter, Vec2i expSize) {
-    AABB2Di box;
+void CheckUIBox(EntityId entityId, const Vec2& expCenter, const Vec2& expSize) {
+    AABB2D box(0.f);
     ET_SendEventReturn(box, entityId, &ETUIElement::ET_getBox);
 
     auto center = box.getCenter();
 
-    EXPECT_EQ(center.x, expCenter.x);
-    EXPECT_EQ(center.y, expCenter.y);
+    EXPECT_FLOAT_EQ(center.x, expCenter.x);
+    EXPECT_FLOAT_EQ(center.y, expCenter.y);
 
     auto size = box.getSize();
 
-    EXPECT_EQ(size.x, expSize.x);
-    EXPECT_EQ(size.y, expSize.y);
+    EXPECT_FLOAT_EQ(size.x, expSize.x);
+    EXPECT_FLOAT_EQ(size.y, expSize.y);
 }
 
 class TestLayoutEventListener : public ETNode<ETUILayoutEvents> {
@@ -34,7 +35,7 @@ public:
     }
 
     // ETUILayoutEvents
-    void ET_onLayoutChanged(const AABB2Di& newCombinedBox) override {
+    void ET_onLayoutChanged(const AABB2D& newCombinedBox) override {
         layoutChanged = true;
     }
 
@@ -107,24 +108,12 @@ TEST_F(UILayoutTests, CheckVerticalLayout) {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
     {
-        AABB2Di box;
-        ET_SendEventReturn(box, firstChild->getEntityId(), &ETUIElement::ET_getBox);
-        Vec2i expCenter = Vec2i(viewPort.x / 2, 5 * viewPort.y / 8);
-        Vec2i resCenter = box.getCenter();
-        EXPECT_EQ(resCenter, expCenter);
-        Vec2i expSize = viewPort / 4;
-        Vec2i resSize = box.getSize();
-        EXPECT_EQ(resSize, expSize);
+        CheckUIBox(firstChild->getEntityId(), Vec2(viewPort.x / 2.f, 5.f * viewPort.y / 8.f),
+            Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
     {
-        AABB2Di box;
-        ET_SendEventReturn(box, secondChild->getEntityId(), &ETUIElement::ET_getBox);
-        Vec2i expCenter = Vec2i(viewPort.x / 2, 3 * viewPort.y / 8);
-        Vec2i resCenter = box.getCenter();
-        EXPECT_EQ(resCenter, expCenter);
-        Vec2i expSize = viewPort / 4;
-        Vec2i resSize = box.getSize();
-        EXPECT_EQ(resSize, expSize);
+        CheckUIBox(firstChild->getEntityId(), Vec2(viewPort.x / 2.f, 3.f * viewPort.y / 8.f),
+            Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
 }
 
@@ -142,24 +131,12 @@ TEST_F(UILayoutTests, CheckHorizontalLayout) {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
     {
-        AABB2Di box;
-        ET_SendEventReturn(box, firstChild->getEntityId(), &ETUIElement::ET_getBox);
-        Vec2i expCenter = Vec2i(3 * viewPort.x / 8, viewPort.y / 2);
-        Vec2i resCenter = box.getCenter();
-        EXPECT_EQ(resCenter, expCenter);
-        Vec2i expSize = viewPort / 4;
-        Vec2i resSize = box.getSize();
-        EXPECT_EQ(resSize, expSize);
+        CheckUIBox(firstChild->getEntityId(), Vec2(3.f * viewPort.x / 8.f, viewPort.y / 2.f),
+            Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
     {
-        AABB2Di box;
-        ET_SendEventReturn(box, secondChild->getEntityId(), &ETUIElement::ET_getBox);
-        Vec2i expCenter = Vec2i(5 * viewPort.x / 8, viewPort.y / 2);
-        Vec2i resCenter = box.getCenter();
-        EXPECT_EQ(resCenter, expCenter);
-        Vec2i expSize = viewPort / 4;
-        Vec2i resSize = box.getSize();
-        EXPECT_EQ(resSize, expSize);
+        CheckUIBox(firstChild->getEntityId(), Vec2(5.f * viewPort.x / 8.f, viewPort.y / 2.f),
+            Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
 }
 
@@ -180,14 +157,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(viewPort.x / 2, viewPort.y / 4);
+        auto expCenter = Vec2(viewPort.x / 2.f, viewPort.y / 4.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -195,14 +172,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(viewPort.x / 2, viewPort.y / 2);
+        auto expCenter = Vec2(viewPort.x / 2.f, viewPort.y / 2.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -210,14 +187,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(viewPort.x / 2, 3 * viewPort.y / 4);
+        auto expCenter = Vec2(viewPort.x / 2.f, 3.f * viewPort.y / 4.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -225,14 +202,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(viewPort.x / 4, viewPort.y / 4);
+        auto expCenter = Vec2(viewPort.x / 4.f, viewPort.y / 4.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -240,14 +217,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(viewPort.x / 4, viewPort.y / 2);
+        auto expCenter = Vec2(viewPort.x / 4.f, viewPort.y / 2.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -255,14 +232,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(viewPort.x / 4, 3 * viewPort.y / 4);
+        auto expCenter = Vec2(viewPort.x / 4.f, 3.f * viewPort.y / 4.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -270,14 +247,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(3 * viewPort.x / 4, viewPort.y / 4);
+        auto expCenter = Vec2(3.f * viewPort.x / 4.f, viewPort.y / 4.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -285,14 +262,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(3 * viewPort.x / 4, viewPort.y / 2);
+        auto expCenter = Vec2(3.f * viewPort.x / 4.f, viewPort.y / 2.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -300,14 +277,14 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
 
-        AABB2Di box;
+        AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElement::ET_getBox);
 
         auto center = box.getCenter();
-        auto expCenter = Vec2i(3 * viewPort.x / 4, 3 * viewPort.y / 4);
+        auto expCenter = Vec2(3.f * viewPort.x / 4.f, 3.f * viewPort.y / 4.f);
 
-        EXPECT_EQ(center.x, expCenter.x);
-        EXPECT_EQ(center.y, expCenter.y);
+        EXPECT_FLOAT_EQ(center.x, expCenter.x);
+        EXPECT_FLOAT_EQ(center.y, expCenter.y);
     }
 }
 
@@ -321,10 +298,10 @@ TEST_F(UILayoutTests, CheckMargin) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    const auto boxSize = viewPort / 4;
-    const auto center = viewPort / 2;
+    const Vec2 boxSize = Vec2(viewPort.x / 4.f, viewPort.y / 4.f);
+    const Vec2 center = Vec2(viewPort.x / 2.f, viewPort.y / 2.f);
     const float margin = 10.f;
-    auto halfShift = ET_getShared<UIConfig>()->getSizeOnGrid(10.f) / 2;
+    auto halfShift = UI::GetValueOnGrind(10.f) / 2.f;
 
     rootLayout->ET_addItem(first->getEntityId());
     rootLayout->ET_addItem(second->getEntityId());
@@ -336,8 +313,8 @@ TEST_F(UILayoutTests, CheckMargin) {
         boxStyle.margin.right = margin;
         ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
-        CheckUIBox(first->getEntityId(), Vec2i(center.x - halfShift - boxSize.x / 2, center.y), boxSize);
-        CheckUIBox(second->getEntityId(), Vec2i(center.x + halfShift + boxSize.x / 2, center.y), boxSize);
+        CheckUIBox(first->getEntityId(), Vec2(center.x - halfShift - boxSize.x / 2.f, center.y), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2(center.x + halfShift + boxSize.x / 2.f, center.y), boxSize);
     }
 
     {
@@ -347,8 +324,8 @@ TEST_F(UILayoutTests, CheckMargin) {
         boxStyle.margin.left = margin;
         ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
-        CheckUIBox(first->getEntityId(), Vec2i(center.x - halfShift - boxSize.x / 2, center.y), boxSize);
-        CheckUIBox(second->getEntityId(), Vec2i(center.x + halfShift + boxSize.x / 2, center.y), boxSize);
+        CheckUIBox(first->getEntityId(), Vec2(center.x - halfShift - boxSize.x / 2.f, center.y), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2(center.x + halfShift + boxSize.x / 2.f, center.y), boxSize);
     }
 
     {
@@ -365,8 +342,8 @@ TEST_F(UILayoutTests, CheckMargin) {
         boxStyle.margin.left = 0.f;
         ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
-        CheckUIBox(first->getEntityId(), Vec2i(center.x, center.y + halfShift + boxSize.y / 2), boxSize);
-        CheckUIBox(second->getEntityId(), Vec2i(center.x, center.y - halfShift - boxSize.y / 2), boxSize);
+        CheckUIBox(first->getEntityId(), Vec2(center.x, center.y + halfShift + boxSize.y / 2.f), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2(center.x, center.y - halfShift - boxSize.y / 2.f), boxSize);
     }
 
     {
@@ -376,8 +353,8 @@ TEST_F(UILayoutTests, CheckMargin) {
         boxStyle.margin.top = margin;
         ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
-        CheckUIBox(first->getEntityId(), Vec2i(center.x, center.y + halfShift + boxSize.y / 2), boxSize);
-        CheckUIBox(second->getEntityId(), Vec2i(center.x, center.y - halfShift - boxSize.y / 2), boxSize);
+        CheckUIBox(first->getEntityId(), Vec2(center.x, center.y + halfShift + boxSize.y / 2.f), boxSize);
+        CheckUIBox(second->getEntityId(), Vec2(center.x, center.y - halfShift - boxSize.y / 2.f), boxSize);
     }
 }
 
@@ -402,9 +379,9 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    auto shift = ET_getShared<UIConfig>()->getSizeOnGrid(2.f);
-    const auto center = viewPort / 2;
-    const auto boxSize = center;
+    auto shift =  UI::GetValueOnGrind(2.f);
+    const Vec2 center = Vec2(viewPort.x / 2.f, viewPort.y / 2.f);
+    const Vec2 boxSize = center;
 
     {
         UILayoutStyle style = rootLayout->ET_getStyle();
@@ -412,7 +389,7 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
-        CheckUIBox(childEntity->getEntityId(), Vec2i(shift + boxSize.x / 2, center.y), boxSize);
+        CheckUIBox(childEntity->getEntityId(), Vec2(shift + boxSize.x / 2.f, center.y), boxSize);
     }
 
     {
@@ -421,7 +398,7 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
-        CheckUIBox(childEntity->getEntityId(), Vec2i(viewPort.x - boxSize.x / 2 - shift, center.y), boxSize);
+        CheckUIBox(childEntity->getEntityId(), Vec2(viewPort.x - boxSize.x / 2.f - shift, center.y), boxSize);
     }
 
     {
@@ -430,7 +407,7 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
 
-        CheckUIBox(childEntity->getEntityId(), Vec2i(center.x, viewPort.y - boxSize.y / 2 - shift), boxSize);
+        CheckUIBox(childEntity->getEntityId(), Vec2(center.x, viewPort.y - boxSize.y / 2 - shift), boxSize);
     }
 
     {
@@ -439,7 +416,7 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
 
-        CheckUIBox(childEntity->getEntityId(), Vec2i(center.x, shift + boxSize.y / 2), boxSize);
+        CheckUIBox(childEntity->getEntityId(), Vec2(center.x, shift + boxSize.y / 2), boxSize);
     }
 }
 
@@ -450,10 +427,10 @@ TEST_F(UILayoutTests, CheckLayoutOnLayoutBox) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    Vec2i center = viewPort / 2;
+    const Vec2 center = Vec2(viewPort.x / 2.f, viewPort.y / 2.f);
 
     {
-        CheckUIBox(layoutBox->getEntityId(), center, Vec2i(0));
+        CheckUIBox(layoutBox->getEntityId(), center, Vec2(0.f));
     }
 
     auto firstBox = createUIBox(0.5f, 0.5f);
@@ -468,9 +445,9 @@ TEST_F(UILayoutTests, CheckLayoutOnLayoutBox) {
     rootLayout->ET_addItem(secondBox->getEntityId());
 
     {
-        CheckUIBox(layoutBox->getEntityId(), center, Vec2i(center.x, viewPort.y));
-        CheckUIBox(firstBox->getEntityId(), Vec2i(center.x, 3 * viewPort.y / 4), center);
-        CheckUIBox(secondBox->getEntityId(), Vec2i(center.x, viewPort.y / 4), center);
+        CheckUIBox(layoutBox->getEntityId(), center, Vec2(center.x, static_cast<float>(viewPort.y)));
+        CheckUIBox(firstBox->getEntityId(), Vec2(center.x, 3.f * viewPort.y / 4.f), center);
+        CheckUIBox(secondBox->getEntityId(), Vec2(center.x, viewPort.y / 4.f), center);
     }
 }
 
@@ -490,8 +467,8 @@ TEST_F(UILayoutTests, CheckHiddenElemOnLayout) {
         auto box = rootLayout->ET_getCombinedBox();
         auto size = box.getSize();
 
-        EXPECT_EQ(size.x, 0);
-        EXPECT_EQ(size.y, 0);
+        EXPECT_FLOAT_EQ(size.x, 0.f);
+        EXPECT_FLOAT_EQ(size.y, 0.f);
     }
 
     ET_SendEvent(childBox->getEntityId(), &ETUIElement::ET_show);
@@ -500,8 +477,8 @@ TEST_F(UILayoutTests, CheckHiddenElemOnLayout) {
         auto box = rootLayout->ET_getCombinedBox();
         auto size = box.getSize();
 
-        EXPECT_EQ(size.x, viewPort.x / 2);
-        EXPECT_EQ(size.y, viewPort.y / 2);
+        EXPECT_FLOAT_EQ(size.x, viewPort.x / 2.f);
+        EXPECT_FLOAT_EQ(size.y, viewPort.y / 2.f);
     }
 }
 
@@ -595,20 +572,22 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
 
     Vec2i viewport(0);
     ET_SendEventReturn(viewport, &ETUIViewPort::ET_getViewport);
-    Vec2i center = viewport / 2;
+    
+    Vec2 center = Vec2(viewport.x / 2.f, viewport.y / 2.f);
 
     {
         Transform tm;
-        tm.pt = Vec3(static_cast<float>(center.x), static_cast<float>(center.y), 0.f);
+        tm.pt = Vec3(center.x, center.y, 0.f);
         ET_SendEvent(firstId, &ETEntity::ET_setTransform, tm);
     }
 
     {
-        AABB2Di box(0);
+        AABB2D box(0.f);
         ET_SendEventReturn(box, secondId, &ETUIElement::ET_getBox);
+
         auto boxSize = box.getSize();
-        EXPECT_EQ(boxSize.x, center.x / 2);
-        EXPECT_EQ(boxSize.y, center.y / 2);
+        EXPECT_FLOAT_EQ(boxSize.x, center.x / 2.f);
+        EXPECT_FLOAT_EQ(boxSize.y, center.y / 2.f);
     }
 
     ET_SendEvent(firstId, &ETUIElement::ET_hide);
@@ -626,21 +605,21 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
     ET_SendEvent(thirdId, &ETUIElement::ET_show);
 
     {
-        AABB2Di firstBox(0);
+        AABB2D firstBox(0.f);
         ET_SendEventReturn(firstBox, firstId, &ETUIElement::ET_getBox);
 
-        AABB2Di secondBox(0);
+        AABB2D secondBox(0.f);
         ET_SendEventReturn(secondBox, secondId, &ETUIElement::ET_getBox);
 
-        Vec2i firstSize = firstBox.getSize();
-        Vec2i secondSize = secondBox.getSize();
+        Vec2 firstSize = firstBox.getSize();
+        Vec2 secondSize = secondBox.getSize();
 
-        EXPECT_EQ(firstSize.x, secondSize.x);
-        EXPECT_EQ(firstSize.y, secondSize.y);
+        EXPECT_FLOAT_EQ(firstSize.x, secondSize.x);
+        EXPECT_FLOAT_EQ(firstSize.y, secondSize.y);
 
-        EXPECT_EQ(firstBox.bot.x, secondBox.bot.x);
-        EXPECT_EQ(firstBox.bot.y, secondBox.bot.y);
-        EXPECT_EQ(firstBox.top.x, secondBox.top.x);
-        EXPECT_EQ(firstBox.top.y, secondBox.top.y);
+        EXPECT_FLOAT_EQ(firstBox.bot.x, secondBox.bot.x);
+        EXPECT_FLOAT_EQ(firstBox.bot.y, secondBox.bot.y);
+        EXPECT_FLOAT_EQ(firstBox.top.x, secondBox.top.x);
+        EXPECT_FLOAT_EQ(firstBox.top.y, secondBox.top.y);
     }
 }

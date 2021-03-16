@@ -1,10 +1,7 @@
 #include "Game/Logics/GameBoardSpawner.hpp"
 #include "Entity/ETEntityManger.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Core/ETLogger.hpp"
 
 void GameBoardSpawner::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardSpawner>("GameBoardSpawner")) {

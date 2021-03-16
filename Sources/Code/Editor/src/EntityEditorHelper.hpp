@@ -2,7 +2,6 @@
 #define __EDIT_ENTITY_TRACKER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "ETEditorInterfaces.hpp"
 #include "Render/ETDebugRender.hpp"
 

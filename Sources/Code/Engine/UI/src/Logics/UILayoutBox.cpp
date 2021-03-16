@@ -1,5 +1,4 @@
 #include "Logics/UILayoutBox.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "UIUtils.hpp"
 
@@ -66,18 +65,17 @@ void UILayoutBox::ET_onLayoutChanged(const AABB2D& newCombinedBox) {
     auto newAabb = UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
     auto shiftPt = newAabb.getCenter() - newCombinedBox.getCenter();
 
-    if(shiftPt.x != 0 || shiftPt.y != 0) {
-        std::vector<EntityId> children;
-        ET_SendEventReturn(children, getEntityId(), &ETUILayout::ET_getItems);
-        for(auto childId : children) {
-            Transform tm;
-            ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
+    std::vector<EntityId> children;
+    ET_SendEventReturn(children, getEntityId(), &ETUILayout::ET_getItems);
+    for(auto childId : children) {
 
-            tm.pt.x += static_cast<float>(shiftPt.x);
-            tm.pt.y += static_cast<float>(shiftPt.y);
+        Transform tm;
+        ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
 
-            UI::SetTMDoNotUpdateLayout(childId, tm);
-        }
+        tm.pt.x += shiftPt.x;
+        tm.pt.y += shiftPt.y;
+
+        UI::SetTMDoNotUpdateLayout(childId, tm);
     }
 
     AABB2D prevAabb = aabb;

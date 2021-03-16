@@ -3,8 +3,6 @@
 
 #include "LockFreeQueue.hpp"
 
-#include <memory>
-
 class AudioBuffer {
 public:
 

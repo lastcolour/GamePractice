@@ -1,8 +1,6 @@
 #include "Editor.hpp"
 #include "EditorApp.hpp"
-#include "Core/Core.hpp"
 #include "Core/MemoryStream.hpp"
-#include "Core/Buffer.hpp"
 
 EditorApp* EDITOR_APP = nullptr;
 Buffer INTERNAL_BUFFER;

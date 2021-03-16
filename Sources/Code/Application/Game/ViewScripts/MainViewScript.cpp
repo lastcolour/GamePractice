@@ -1,5 +1,4 @@
 #include "Game/ViewScripts/MainViewScript.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "UI/ETUIView.hpp"
 
 void MainViewScript::Reflect(ReflectContext& ctx) {

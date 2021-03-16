@@ -1,7 +1,6 @@
 #include "AudioBufferQueue.hpp"
 
 #include <cassert>
-#include <cstring>
 
 AudioBuffer::AudioBuffer() :
     data(nullptr),

@@ -1,12 +1,8 @@
 #ifndef __UI_RENDER_NORMALIZATOR_HPP__
 #define __UI_RENDER_NORMALIZATOR_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/ETUIViewPort.hpp"
-
-class ReflectContext;
 
 class UIRenderNormalizator : public EntityLogic,
     public ETNode<ETEntityEvents>,

@@ -2,10 +2,8 @@
 #include "MixGraph/MixNode.hpp"
 #include "MixGraph/OggSourceNode.hpp"
 #include "SoundStream.hpp"
-#include "Core/ETLogger.hpp"
 #include "AudioUtils.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {

@@ -1,11 +1,7 @@
 #ifndef __UI_ANIMATION_FRAME_HPP__
 #define __UI_ANIMATION_FRAME_HPP__
 
-#include "Core/Core.hpp"
-#include "Math/Transform.hpp"
 #include "UI/ETUIAnimation.hpp"
-
-class ReflectContext;
 
 enum class EAnimLerpMode {
     Linear = 0,

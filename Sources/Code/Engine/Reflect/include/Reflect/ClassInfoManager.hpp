@@ -1,7 +1,6 @@
 #ifndef __CLASS_INFO_MANAGER_HPP__
 #define __CLASS_INFO_MANAGER_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 

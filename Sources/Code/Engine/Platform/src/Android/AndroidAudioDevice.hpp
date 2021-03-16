@@ -2,7 +2,6 @@
 #define __ANDROID_AUDIO_DEVICE_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Platform/ETDevice.hpp"
 
 class AndroidAudioDevice : public SystemLogic,

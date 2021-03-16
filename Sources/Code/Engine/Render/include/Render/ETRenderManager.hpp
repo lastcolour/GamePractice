@@ -1,10 +1,6 @@
 #ifndef __ET_RENDER_MANAGER_HPP__
 #define __ET_RENDER_MANAGER_HPP__
 
-#include "Math/Vector.hpp"
-
-#include <memory>
-
 class RenderShader;
 class RenderFont;
 class RenderTexture;

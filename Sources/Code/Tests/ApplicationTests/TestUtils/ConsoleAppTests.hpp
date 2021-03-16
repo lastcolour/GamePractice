@@ -4,7 +4,6 @@
 #include "Entity.hpp"
 
 #include <gtest/gtest.h>
-#include <memory>
 
 void HACK_ASSERT_TRUE(bool value);
 

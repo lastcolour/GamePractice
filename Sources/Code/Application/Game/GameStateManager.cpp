@@ -1,5 +1,4 @@
 #include "Game/GameStateManager.hpp"
-#include "Core/ETLogger.hpp"
 #include "UI/ETUIViewScript.hpp"
 #include "Game/ETGameBoard.hpp"
 

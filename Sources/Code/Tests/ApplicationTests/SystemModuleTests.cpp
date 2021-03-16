@@ -2,11 +2,10 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/SystemModule.hpp"
 #include "Core/Utils.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/ETApplication.hpp"
+#include "Core/GlobalData.hpp"
 
-#include <memory>
 #include <tuple>
 #include <iostream>
 
@@ -57,8 +56,8 @@ public:
 
 protected:
 
-    void reflectSystemConfigs(ReflectContext& ctx) const override {
-        ctx.reflect<TestSystemConfigs>();
+    void createSystemConfigs() const override {
+        CreateGlobal<TestSystemConfigs>();
     }
 
     LogicsContainerPtrT createSystemLogics() const override {
@@ -71,9 +70,11 @@ protected:
 
 protected:
 
+    /*
     JSONNode loadModuleConfigs() override {
         return JSONNode::ParseString("{ \"TestSystemConfigs\": { \"configVal\" : 1 } }");
     }
+    */
 };
 
 } // namespace
@@ -90,7 +91,7 @@ TEST_F(SystemModuleTests, TestSystemModuleInitSuccess) {
     TestSystemModule module;
     ASSERT_TRUE(module.init());
 
-    auto config = ET_getShared<TestSystemConfigs>();
+    auto config = GetGlobal<TestSystemConfigs>();
     ASSERT_TRUE(config);
     ASSERT_EQ(config->configVal, 1);
 }

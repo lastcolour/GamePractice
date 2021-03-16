@@ -1,11 +1,6 @@
 #ifndef __SOUND_BUFFER_MANAGER_HPP__
 #define __SOUND_BUFFER_MANAGER_HPP__
 
-#include "Core/Buffer.hpp"
-
-#include <unordered_map>
-#include <string>
-
 class SoundEventTable;
 
 class SoundBufferManager {

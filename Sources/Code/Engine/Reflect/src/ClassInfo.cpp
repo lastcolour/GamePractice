@@ -1,7 +1,6 @@
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/MemoryStream.hpp"
 
 #include <cassert>

@@ -1,8 +1,6 @@
 #ifndef __ET_SURFACE_HPP__
 #define __ET_SURFACE_HPP__
 
-#include "Math/Vector.hpp"
-
 struct ETSurface {
     virtual ~ETSurface() = default;
     virtual bool ET_show() = 0;

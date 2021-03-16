@@ -3,10 +3,8 @@
 
 #include "Particles/Particle.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
-#include "Math/Transform.hpp"
 #include "Math/Random.hpp"
 
-#include <vector>
 #include <atomic>
 
 struct SimulationConfig {

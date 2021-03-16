@@ -1,10 +1,6 @@
 #ifndef __UI_BOX_STYLE_HPP__
 #define __UI_BOX_STYLE_HPP__
 
-#include "Math/Vector.hpp"
-
-class ReflectContext;
-
 enum class UIBoxSizeInvariant {
     Grid = 0,
     Relative

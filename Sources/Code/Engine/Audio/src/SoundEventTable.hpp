@@ -4,12 +4,6 @@
 #include "Audio/ETAudioSystem.hpp"
 #include "Nodes/SoundEventNode.hpp"
 
-#include <vector>
-#include <string>
-#include <unordered_map>
-
-class ReflectContext;
-
 class SoundEventInfo {
 public:
 

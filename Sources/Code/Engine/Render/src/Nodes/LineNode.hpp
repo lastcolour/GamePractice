@@ -3,8 +3,6 @@
 
 #include "Nodes/Node.hpp"
 
-#include <vector>
-
 class LineNode : public Node {
 public:
 

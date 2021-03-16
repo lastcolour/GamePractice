@@ -1,7 +1,6 @@
 #ifndef __UI_TIMER_HPP__
 #define __UI_TIMER_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Core/TimePoint.hpp"
 #include "Core/ETTasks.hpp"

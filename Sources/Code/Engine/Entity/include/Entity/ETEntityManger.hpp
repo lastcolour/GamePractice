@@ -1,10 +1,6 @@
 #ifndef __ET_ENTITY_MANAGER_HPP__
 #define __ET_ENTITY_MANAGER_HPP__
 
-#include "Core/Core.hpp"
-
-#include <memory>
-
 class EntityLogicsRegister;
 class JSONNode;
 class MemoryStream;

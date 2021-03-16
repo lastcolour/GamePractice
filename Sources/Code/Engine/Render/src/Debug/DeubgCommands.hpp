@@ -4,8 +4,6 @@
 #include "Math/AABB.hpp"
 #include "Render/Color.hpp"
 
-#include <string>
-
 struct DebugDrawLineCmd {
     Vec2 startPt;
     Vec2 endPt;

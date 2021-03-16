@@ -1,15 +1,11 @@
 #include "Game/Logics/GameBoardLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "Game/ETGameElem.hpp"
 #include "UI/ETUIViewPort.hpp"
 
-#include <algorithm>
 #include <cassert>
-#include <limits>
 
 namespace {
 

@@ -2,7 +2,6 @@
 #define __UI_BOX_HPP__
 
 #include "Logics/UIElement.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/UIBoxStyle.hpp"
 #include "UI/ETUIViewPort.hpp"
 

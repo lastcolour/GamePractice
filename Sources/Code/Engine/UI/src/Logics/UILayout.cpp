@@ -1,13 +1,9 @@
 #include "Logics/UILayout.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "UI/UIBoxStyle.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Core/ETLogger.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "UIUtils.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 void UILayout::Reflect(ReflectContext& ctx) {

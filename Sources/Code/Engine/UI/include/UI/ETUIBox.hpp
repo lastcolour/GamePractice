@@ -1,11 +1,7 @@
 #ifndef __ET_UI_BOX_HPP__
 #define __ET_UI_BOX_HPP__
 
-#include "Core/Core.hpp"
 #include "Math/AABB.hpp"
-#include "Math/Transform.hpp"
-
-#include <vector>
 
 class UIBoxStyle;
 class UIBoxMargin;

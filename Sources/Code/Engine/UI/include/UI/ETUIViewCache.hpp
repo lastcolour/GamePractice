@@ -1,7 +1,6 @@
 #ifndef __ET_UI_VIEW_CACHE_HPP__
 #define __ET_UI_VIEW_CACHE_HPP__
 
-#include "Core/Core.hpp"
 #include "UI/ETUIView.hpp"
 
 class EntityLoadResult;

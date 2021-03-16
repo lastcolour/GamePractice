@@ -1,10 +1,12 @@
 #ifndef __ENTITY_LOGICS_REGISTER_HPP__
 #define __ENTITY_LOGICS_REGISTER_HPP__
 
-#include "Reflect/ReflectContext.hpp"
 #include "Entity/EntityLogic.hpp"
+#include "Reflect/ReflectContext.hpp"
 
 #include <type_traits>
+
+class ClassInfo;
 
 class EntityLogicsRegister {
 public:

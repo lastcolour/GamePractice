@@ -2,10 +2,6 @@
 #define __CLASS_INSTANCE_HPP__
 
 #include "Core/TypeId.hpp"
-#include "Core/Buffer.hpp"
-
-#include <functional>
-#include <memory>
 
 class ClassInfo;
 class MemoryStream;

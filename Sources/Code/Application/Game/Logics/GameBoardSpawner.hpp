@@ -2,11 +2,8 @@
 #define __GAME_BOARD_SPAWNER_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "UI/ETUIBox.hpp"
-
-class ReflectContext;
 
 class GameBoardSpawner : public EntityLogic,
     public ETNode<ETGameBoardSpawner> {

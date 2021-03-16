@@ -1,6 +1,5 @@
 #include "OggDataStream.hpp"
 #include "MixGraph/LinearResampler.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <stb_vorbis.c>
 

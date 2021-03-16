@@ -1,8 +1,5 @@
 #include "Game/Logics/GameEndTimerLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Reflect/ReflectContext.hpp"
-
-#include <algorithm>
 
 GameEndTimerLogic::GameEndTimerLogic() :
     endTime(120.f),

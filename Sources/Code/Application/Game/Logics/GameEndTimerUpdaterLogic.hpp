@@ -3,9 +3,6 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETPrimitives.hpp"
-
-class ReflectContext;
 
 class GameEndTimerUpdaterLogic : public EntityLogic,
     public ETNode<ETGameEndTimerUpdater> {

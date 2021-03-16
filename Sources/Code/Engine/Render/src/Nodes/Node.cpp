@@ -1,7 +1,6 @@
 #include "Nodes/Node.hpp"
 #include "RenderGraph/RenderGraph.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Platform/OpenGL.hpp"
 

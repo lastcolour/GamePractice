@@ -4,7 +4,6 @@
 #include "Core/TimePoint.hpp"
 #include "JobTreeRunTimeTracker.hpp"
 
-#include <vector>
 #include <atomic>
 
 class ThreadJob;

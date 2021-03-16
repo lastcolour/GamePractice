@@ -1,7 +1,5 @@
 #include "Particles/ParticlesEmittersPool.hpp"
 
-#include "Core/ETLogger.hpp"
-
 #include <cassert>
 
 ParticlesEmittersPool::ParticlesEmittersPool() :

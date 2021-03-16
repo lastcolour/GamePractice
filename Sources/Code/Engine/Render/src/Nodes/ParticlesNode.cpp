@@ -2,7 +2,6 @@
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

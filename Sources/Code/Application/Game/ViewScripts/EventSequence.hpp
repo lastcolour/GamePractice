@@ -1,11 +1,8 @@
 #ifndef __EVENT_SEQUENCE_HPP__
 #define __EVENT_SEQUENCE_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "UI/ETUITimer.hpp"
-
-#include <functional>
 
 class EventSequence : public ETNode<ETUIAnimationSequenceEvent>,
     public ETNode<ETUITimerEvents> {

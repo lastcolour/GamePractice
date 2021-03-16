@@ -1,8 +1,6 @@
 #ifndef __CORE_HPP__
 #define __CORE_HPP__
 
-#include <functional>
-
 class EntityId {
 
     static const uint32_t INVALID_ID = 0u;
@@ -36,9 +34,6 @@ namespace std {
 }
 
 const EntityId InvalidEntityId;
-
-using TypeId = int;
-const TypeId InvalidTypeId = 0;
 
 using EntityLogicId = int;
 const EntityLogicId InvalidEntityLogicId = -1;

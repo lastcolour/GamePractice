@@ -1,8 +1,6 @@
 #ifndef __RESAMPLER_HPP__
 #define __RESAMPLER_HPP__
 
-#include "Core/Buffer.hpp"
-
 class OggDataStream;
 class MixGraph;
 

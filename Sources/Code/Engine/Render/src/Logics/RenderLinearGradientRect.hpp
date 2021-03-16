@@ -3,8 +3,6 @@
 
 #include "Logics/RenderNode.hpp"
 
-class ReflectContext;
-
 class RenderLinearGradientRect : public RenderNode,
     public ETNode<ETRenderRect> {
 public:

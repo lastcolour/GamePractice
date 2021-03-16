@@ -1,6 +1,4 @@
 #include "Entity/EntityLoadResult.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 
@@ -9,7 +7,8 @@ EntityLoadResult::EntityLoadResult() {
 
 EntityLoadResult::~EntityLoadResult() {
     if(entityId.isValid()) {
-        LogError("[EntityLoadResult::~EntityLoadResult] No-one handles load result of entity: '%s'", EntityUtils::GetEntityName(entityId));
+        LogError("[EntityLoadResult::~EntityLoadResult] No-one handles load result of entity: '%s'",
+            EntityUtils::GetEntityName(entityId));
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, entityId);
         for(auto finishEntId : waitFinishEntities) {
             ET_SendEvent(&ETEntityManager::ET_destroyEntity, finishEntId);

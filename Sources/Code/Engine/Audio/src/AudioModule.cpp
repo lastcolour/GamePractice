@@ -36,7 +36,7 @@ AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
     return container;
 }
 
-void AudioModule::reflectSystemConfigs(ReflectContext& ctx) const {
+void AudioModule::createSystemConfigs() const {
 }
 
 void AudioModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

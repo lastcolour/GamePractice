@@ -1,5 +1,4 @@
 #include "Logics/NinePatchImageLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Nodes/NinePatchNode.hpp"
 
 void NinePatchImageLogic::Reflect(ReflectContext& ctx) {

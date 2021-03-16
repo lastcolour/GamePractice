@@ -2,12 +2,8 @@
 #define __RENDER_NODE_MANAGER_HPP__
 
 #include "Nodes/ETRenderNodeManager.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "RenderGraph/RenderGraph.hpp"
-
-#include <unordered_map>
-#include <memory>
 
 class ParticlesNode;
 

@@ -1,7 +1,6 @@
 #include "Laucher/GameLaucher.hpp"
 #include "Laucher/GameLaucherConfig.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETApplication.hpp"
 #include "UI/ETUIView.hpp"
 

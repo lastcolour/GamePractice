@@ -12,7 +12,6 @@
 #include "RenderUtils.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 RenderNodeManager::RenderNodeManager() {
 }

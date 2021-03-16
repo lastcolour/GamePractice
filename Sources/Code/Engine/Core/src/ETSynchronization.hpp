@@ -3,7 +3,6 @@
 
 #include "Core/TypeId.hpp"
 
-#include <vector>
 #include <thread>
 #include <mutex>
 #include <atomic>

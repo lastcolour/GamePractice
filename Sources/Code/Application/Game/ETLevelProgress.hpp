@@ -1,8 +1,6 @@
 #ifndef __ET_LEVEL_PROGRESS_HPP__
 #define __ET_LEVEL_PROGRESS_HPP__
 
-#include "Core/Core.hpp"
-
 class LevelProgress;
 struct LevelProgressDelta;
 class EventSequence;

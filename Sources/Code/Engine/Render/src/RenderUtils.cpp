@@ -2,7 +2,6 @@
 #include "RenderFramebuffer.hpp"
 #include "Render/ImageBuffer.hpp"
 #include "Platform/OpenGL.hpp"
-#include "Core/ETLogger.hpp"
 #include "Nodes/Node.hpp"
 #include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"

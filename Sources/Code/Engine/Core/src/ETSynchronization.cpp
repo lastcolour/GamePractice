@@ -1,7 +1,6 @@
 #include "ETSynchronization.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 ETSyncRoute::ETSyncRoute(int etNodesCount) :
     blockedRouteMap(etNodesCount) {

@@ -1,5 +1,4 @@
 #include "Render/ParticlesEmitterConfig.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 
 void ParticlesEmitterEmissionConfig::Reflect(ReflectContext& ctx) {

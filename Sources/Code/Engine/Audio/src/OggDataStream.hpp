@@ -1,8 +1,6 @@
 #ifndef __OGG_DATA_STREAM_HPP__
 #define __OGG_DATA_STREAM_HPP__
 
-#include "Core/Buffer.hpp"
-
 class LinearResampler;
 
 struct stb_vorbis;

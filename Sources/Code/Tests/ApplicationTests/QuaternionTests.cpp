@@ -1,5 +1,4 @@
 #include "QuaternionTests.hpp"
-#include "Math/Quaternion.hpp"
 #include "Math/MatrixTransform.hpp"
 
 TEST_F(QuaternionTests, CheckIndenity) {

@@ -1,8 +1,6 @@
 #ifndef __ET_GAME_BOARD_SPAWNER_HPP__
 #define __ET_GAME_BOARD_SPAWNER_HPP__
 
-#include <string>
-
 struct ETGameBoardSpawner {
     virtual ~ETGameBoardSpawner() = default;
     virtual void ET_setPendingLevel(const std::string& levelName) = 0;

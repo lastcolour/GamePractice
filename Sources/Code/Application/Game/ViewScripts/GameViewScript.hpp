@@ -9,8 +9,6 @@
 #include "Platform/ETSurface.hpp"
 #include "Game/ViewScripts/EventSequence.hpp"
 
-class ReflectContext;
-
 class GameViewScript : public BaseViewScript,
     public ETNode<ETGameObjectiveEvents>,
     public ETNode<ETGameStateEvents>,

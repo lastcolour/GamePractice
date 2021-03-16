@@ -1,11 +1,9 @@
 #include "Logics/UIButton.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "UIUtils.hpp"
-#include "Core/ETLogger.hpp"
 #include "Logics/UIAnimationSequence.hpp"
 
 #include <cassert>
@@ -18,7 +16,7 @@ const float TIME_OUT_SEC_DUR = 2.f;
 bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
     auto diff = currPt - pressPt;
 
-    Vec2 shift(0);
+    Vec2 shift(0.f);
     shift.x = UI::ConvertValueFromGrid(static_cast<float>(diff.y));
     shift.y = UI::ConvertValueFromGrid(static_cast<float>(diff.x));
 

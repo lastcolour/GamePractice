@@ -5,8 +5,6 @@
 #include "Render/Color.hpp"
 #include "Render/RenderCommon.hpp"
 
-#include <vector>
-
 class RenderFramebuffer;
 
 struct BlendMode {

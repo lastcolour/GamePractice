@@ -3,8 +3,6 @@
 
 #include "Game/ViewScripts/BaseViewScript.hpp"
 
-class ReflectContext;
-
 class PauseViewScript : public BaseViewScript {
 public:
 

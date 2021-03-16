@@ -2,13 +2,11 @@
 #include "Entity.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/TimePoint.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {

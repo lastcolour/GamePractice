@@ -1,14 +1,13 @@
 #include "RenderFontManager.hpp"
 #include "RenderFont.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
 #include "Platform/OpenGL.hpp"
 #include "Core/ETApplication.hpp"
 #include "RenderConfig.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
+#include "Core/GlobalData.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 #include <ft2build.h>
@@ -74,7 +73,7 @@ void RenderFontManager::deinit() {
 }
 
 void RenderFontManager::ET_onContextCreated() {
-    auto renderConfig = ET_getShared<RenderConfig>();
+    auto renderConfig = GetGlobal<RenderConfig>();
     auto res = createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
     if(!res) {
         LogError("[RenderFontManager::ET_onContextCreated] Can't create default font");
@@ -85,7 +84,7 @@ void RenderFontManager::ET_onContextDestroyed() {
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
-    auto renderConfig = ET_getShared<RenderConfig>();
+    auto renderConfig = GetGlobal<RenderConfig>();
     return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
 }
 

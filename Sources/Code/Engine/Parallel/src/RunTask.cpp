@@ -1,8 +1,6 @@
 #include "Parallel/RunTask.hpp"
 
-#include <algorithm>
 #include <cassert>
-#include <limits>
 
 RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
     name(taskName),

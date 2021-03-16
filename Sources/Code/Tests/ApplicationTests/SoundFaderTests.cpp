@@ -1,8 +1,6 @@
 #include "SoundFaderTests.hpp"
 #include "Fader.hpp"
 
-#include <vector>
-
 TEST_F(SoundFaderTests, CheckFadeInMono) {
     const size_t SAMPLES_COUNT = 20;
     const size_t FADE_IN_SAMPLES_COUNT = 10;

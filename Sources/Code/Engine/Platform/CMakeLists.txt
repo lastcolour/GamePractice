@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 project(Platform CXX)
 
@@ -62,3 +62,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${PLATFORM_LIB_DEPENDICIES}
     Engine)
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <string>
+    <vector>
+    <memory>
+    <algorithm>
+    <functional>
+    <unordered_map>
+    <limits>
+    [["Core/ETLogger.hpp"]]
+    [["Math/Transform.hpp"]]
+)

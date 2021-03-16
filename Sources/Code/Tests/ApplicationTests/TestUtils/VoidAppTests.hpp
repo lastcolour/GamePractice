@@ -2,7 +2,6 @@
 #define __VOID_TEST_APP_HPP__
 
 #include <gtest/gtest.h>
-#include <memory>
 
 class Application;
 

@@ -1,6 +1,5 @@
 #include "Math/Primitivies.hpp"
 
-#include <cmath>
 #include <cassert>
 
 namespace Math {

@@ -4,8 +4,6 @@
 #include "Core/TimePoint.hpp"
 #include "Core/CycleArray.hpp"
 
-#include <vector>
-
 class FrameStatsTracker {
 public:
 

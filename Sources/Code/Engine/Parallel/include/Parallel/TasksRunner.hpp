@@ -3,7 +3,6 @@
 
 #include "Parallel/RunTask.hpp"
 
-#include <memory>
 #include <mutex>
 #include <atomic>
 #include <condition_variable>

@@ -2,9 +2,6 @@
 #define __ET_UI_LAYOUT_HPP__
 
 #include "Math/AABB.hpp"
-#include "Core/Core.hpp"
-
-#include <vector>
 
 class UILayoutStyle;
 

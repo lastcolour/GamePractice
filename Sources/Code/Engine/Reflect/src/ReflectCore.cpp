@@ -1,10 +1,7 @@
 #include "Reflect/ReflectCore.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "ArrayInfo.hpp"
-#include "Core/ETLogger.hpp"
 
-#include <memory>
 #include <cassert>
 
 namespace ReflectCore {

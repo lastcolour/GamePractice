@@ -1,12 +1,9 @@
 #include "Particles/EmitterParticles.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Render/ETParticlesSystem.hpp"
 
-#include <algorithm>
 #include <cassert>
-#include <cstring>
 
 namespace {
 

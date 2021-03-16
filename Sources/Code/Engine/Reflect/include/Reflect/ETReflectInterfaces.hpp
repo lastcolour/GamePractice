@@ -3,8 +3,6 @@
 
 #include "Core/TypeId.hpp"
 
-#include <memory>
-
 class ClassInfo;
 class EnumInfo;
 class ArrayInfo;

@@ -3,11 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Logics/AdditiveUITransform.hpp"
-
-class ReflectContext;
 
 class UIElement : public EntityLogic,
     public ETNode<ETUIElement>,

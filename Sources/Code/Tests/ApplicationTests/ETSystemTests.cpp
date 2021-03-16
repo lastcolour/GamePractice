@@ -1,6 +1,4 @@
 #include "ETSystemTests.hpp"
-#include "Core/ETSystem.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/GlobalEnvironment.hpp"
 
 namespace {

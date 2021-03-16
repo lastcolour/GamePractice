@@ -1,5 +1,4 @@
 #include "Core/App/AssetsCacheManager.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

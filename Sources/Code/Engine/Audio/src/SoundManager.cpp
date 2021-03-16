@@ -1,5 +1,4 @@
 #include "SoundManager.hpp"
-#include "Core/ETLogger.hpp"
 #include "Nodes/SoundNode.hpp"
 
 #include <cassert>

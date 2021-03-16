@@ -1,11 +1,6 @@
 #ifndef __LEVELS_PROGRESS_DATA_HPP__
 #define __LEVELS_PROGRESS_DATA_HPP__
 
-#include <vector>
-#include <string>
-
-class ReflectContext;
-
 class LevelProgress {
 public:
 

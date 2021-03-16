@@ -1,8 +1,6 @@
 #ifndef __UI_LAYOUT_STYLE_HPP__
 #define __UI_LAYOUT_STYLE_HPP__
 
-class ReflectContext;
-
 enum class UIXAlign {
     Left = 0,
     Center,

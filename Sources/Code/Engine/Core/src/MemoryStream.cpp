@@ -1,9 +1,6 @@
 #include "Core/MemoryStream.hpp"
 
 #include <cassert>
-#include <algorithm>
-#include <memory>
-#include <cstring>
 
 namespace {
 

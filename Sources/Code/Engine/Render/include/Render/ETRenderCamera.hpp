@@ -1,7 +1,6 @@
 #ifndef __ET_RENDER_CAMERA_HPP__
 #define __ET_RENDER_CAMERA_HPP__
 
-#include "Math/Vector.hpp"
 #include "Math/Matrix.hpp"
 
 struct ETRenderCameraEvents {

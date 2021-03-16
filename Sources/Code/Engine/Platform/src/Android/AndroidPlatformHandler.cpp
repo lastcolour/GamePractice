@@ -1,6 +1,5 @@
 #include "Android/AndroidPlatformHandler.hpp"
 #include "Application.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/GlobalEnvironment.hpp"
 #include "Parallel/TasksRunner.hpp"
 

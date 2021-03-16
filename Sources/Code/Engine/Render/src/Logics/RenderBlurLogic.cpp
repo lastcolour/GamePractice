@@ -1,8 +1,5 @@
 #include "Logics/RenderBlurLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Nodes/BlurNode.hpp"
-
-#include <algorithm>
 
 void RenderBlurLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderBlurLogic>("RenderBlurLogic")) {

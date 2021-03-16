@@ -1,7 +1,6 @@
 #ifndef __ET_RENDER_NODE_HPP__
 #define __ET_RENDER_NODE_HPP__
 
-#include "Math/Vector.hpp"
 #include "Math/AABB.hpp"
 #include "Render/Color.hpp"
 

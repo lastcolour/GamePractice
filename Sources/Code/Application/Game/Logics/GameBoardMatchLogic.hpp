@@ -3,13 +3,9 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameElem.hpp"
-#include "Entity/ETEntity.hpp"
 
 #include <unordered_set>
-
-class ReflectContext;
 
 class GameBoardMatchLogic : public EntityLogic,
     public ETNode<ETGameBoardMatcher> {

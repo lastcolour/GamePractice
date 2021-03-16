@@ -1,5 +1,4 @@
 #include "UIViewConfig.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 UIViewConfig::UIViewConfig() {
 }

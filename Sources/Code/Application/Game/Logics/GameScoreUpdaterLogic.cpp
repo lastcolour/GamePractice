@@ -1,12 +1,8 @@
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIProgressBar.hpp"
-#include "Core/StringFormat.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Game/ETGameScore.hpp"
 #include "Audio/ETSound.hpp"
-
-#include <algorithm>
 
 GameScoreUpdaterLogic::GameScoreUpdaterLogic() :
     currentStepDelay(0.f),

@@ -1,6 +1,5 @@
 #include "Audio/SoundEvent.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Nodes/ETSoundNode.hpp"
 
 #include <cassert>

@@ -2,7 +2,6 @@
 #include "Application.hpp"
 #include "Entity/EntityModule.hpp"
 #include "Audio/AudioModule.hpp"
-#include "Core/ETLogger.hpp"
 #include "Platform/PlatformModule.hpp"
 
 namespace {

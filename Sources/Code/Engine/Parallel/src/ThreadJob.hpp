@@ -2,7 +2,6 @@
 #define __THREAD_JOB_HPP__
 
 #include <atomic>
-#include <vector>
 
 #include "Core/TimePoint.hpp"
 

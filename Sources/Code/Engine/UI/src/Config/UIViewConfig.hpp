@@ -1,10 +1,6 @@
 #ifndef __UI_VIEW_CONFIG_HPP__
 #define __UI_VIEW_CONFIG_HPP__
 
-#include <string>
-
-class ReflectContext;
-
 class UIViewConfig {
 public:
 

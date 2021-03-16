@@ -1,8 +1,5 @@
 #include "Game/Logics/GameBoardElemsPool.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Entity/ETEntityManger.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

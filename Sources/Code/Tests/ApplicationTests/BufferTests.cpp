@@ -1,6 +1,4 @@
 #include "BufferTests.hpp"
-#include "Core/Buffer.hpp"
-#include "Core/StringFormat.hpp"
 
 namespace {
 

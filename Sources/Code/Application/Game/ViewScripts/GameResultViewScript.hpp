@@ -5,8 +5,6 @@
 #include "Game/ViewScripts/ProgressionStars.hpp"
 #include "Game/ViewScripts/EventSequence.hpp"
 
-class ReflectContext;
-
 class GameResultViewScript : public BaseViewScript {
 public:
 

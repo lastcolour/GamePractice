@@ -8,11 +8,12 @@
 #include "Config/UIConfig.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Core/ETApplication.hpp"
+#include "Core/GlobalData.hpp"
 
 namespace {
 
 void SubmitEventSequence(UIScrollAreaTests::TestContext& ctx, const std::vector<Vec2>& sequence) {
-    AABB2Di box;
+    AABB2D box(0.f);
     ET_SendEventReturn(box, ctx.parentEntity->getEntityId(), &ETUIElement::ET_getBox);
     auto boxSize = box.getSize();
 
@@ -46,7 +47,7 @@ void SubmitEventSequence(UIScrollAreaTests::TestContext& ctx, const std::vector<
 } // namespace
 
 UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
-    const Vec2i& parentBoxSize, const Vec2i& childBoxSize, const UIScrollAreaStyle& scrollStyle) {
+    const Vec2& parentBoxSize, const Vec2& childBoxSize, const UIScrollAreaStyle& scrollStyle) {
 
     TestContext ctx;
     {
@@ -57,9 +58,9 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
         HACK_ASSERT_TRUE(parentBox);
 
         UIBoxStyle boxStyle;
-        boxStyle.height = static_cast<float>(parentBoxSize.x);
+        boxStyle.height = parentBoxSize.x;
         boxStyle.heightInv = UIBoxSizeInvariant::Grid;
-        boxStyle.width = static_cast<float>(parentBoxSize.y);
+        boxStyle.width = parentBoxSize.y;
         boxStyle.widthInv = UIBoxSizeInvariant::Grid;
         parentBox->ET_setStyle(boxStyle);
 
@@ -77,9 +78,9 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
         HACK_ASSERT_TRUE(logicExists);
 
         UIBoxStyle boxStyle;
-        boxStyle.height = static_cast<float>(childBoxSize.x);
+        boxStyle.height = childBoxSize.x;
         boxStyle.heightInv = UIBoxSizeInvariant::Grid;
-        boxStyle.width = static_cast<float>(childBoxSize.y);
+        boxStyle.width = childBoxSize.y;
         boxStyle.widthInv = UIBoxSizeInvariant::Grid;
 
         childBox->ET_setStyle(boxStyle);
@@ -102,14 +103,14 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
 
 void UIScrollAreaTests::SetUp() {
     ConsoleAppTests::SetUp();
-    auto gridSize = ET_getShared<UIConfig>()->horizontalGrid;
+    auto gridSize = GetGlobal<UIConfig>()->horizontalGrid;
     Vec2i portSize(gridSize, gridSize);
     ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized, portSize);
 }
 
 TEST_F(UIScrollAreaTests, CheckInitialPosition) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(300);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(300.f);
     auto ctx = createTestContext(parentBox, childBox, UIScrollAreaStyle{});
 
     {
@@ -119,14 +120,14 @@ TEST_F(UIScrollAreaTests, CheckInitialPosition) {
 
         ctx.scrollArea->ET_setStyle(scrollStyle);
 
-        Vec2i excpetectPt(0);
-        excpetectPt.x = (parentBox.x - childBox.x) / 2;
-        excpetectPt.y = 0;
+        Vec2 excpetectPt(0.f);
+        excpetectPt.x = (parentBox.x - childBox.x) / 2.f;
+        excpetectPt.y = 0.f;
 
         auto tm = ctx.childEntity->ET_getLocalTransform();
 
-        EXPECT_FLOAT_EQ(tm.pt.x, static_cast<float>(excpetectPt.x));
-        EXPECT_FLOAT_EQ(tm.pt.y, static_cast<float>(excpetectPt.y));
+        EXPECT_FLOAT_EQ(tm.pt.x, excpetectPt.x);
+        EXPECT_FLOAT_EQ(tm.pt.y, excpetectPt.y);
     }
 
     {
@@ -136,14 +137,14 @@ TEST_F(UIScrollAreaTests, CheckInitialPosition) {
 
         ctx.scrollArea->ET_setStyle(scrollStyle);
 
-        Vec2i excpetectPt(0);
-        excpetectPt.x = (-parentBox.x + childBox.x) / 2;
-        excpetectPt.y = 0;
+        Vec2 excpetectPt(0.f);
+        excpetectPt.x = (-parentBox.x + childBox.x) / 2.f;
+        excpetectPt.y = 0.f;
 
         auto tm = ctx.childEntity->ET_getLocalTransform();
 
-        EXPECT_FLOAT_EQ(tm.pt.x, static_cast<float>(excpetectPt.x));
-        EXPECT_FLOAT_EQ(tm.pt.y, static_cast<float>(excpetectPt.y));
+        EXPECT_FLOAT_EQ(tm.pt.x, excpetectPt.x);
+        EXPECT_FLOAT_EQ(tm.pt.y, excpetectPt.y);
     }
 
     {
@@ -153,14 +154,14 @@ TEST_F(UIScrollAreaTests, CheckInitialPosition) {
 
         ctx.scrollArea->ET_setStyle(scrollStyle);
 
-        Vec2i excpetectPt(0);
-        excpetectPt.x = 0;
-        excpetectPt.y = (parentBox.y - childBox.y) / 2;
+        Vec2 excpetectPt(0);
+        excpetectPt.x = 0.f;
+        excpetectPt.y = (parentBox.y - childBox.y) / 2.f;
 
         auto tm = ctx.childEntity->ET_getLocalTransform();
 
-        EXPECT_FLOAT_EQ(tm.pt.x, static_cast<float>(excpetectPt.x));
-        EXPECT_FLOAT_EQ(tm.pt.y, static_cast<float>(excpetectPt.y));
+        EXPECT_FLOAT_EQ(tm.pt.x, excpetectPt.x);
+        EXPECT_FLOAT_EQ(tm.pt.y, excpetectPt.y);
     }
 
     {
@@ -170,20 +171,20 @@ TEST_F(UIScrollAreaTests, CheckInitialPosition) {
 
         ctx.scrollArea->ET_setStyle(scrollStyle);
 
-        Vec2i excpetectPt(0);
-        excpetectPt.x = 0;
-        excpetectPt.y = (childBox.y - parentBox.y) / 2;
+        Vec2 excpetectPt(0.f);
+        excpetectPt.x = 0.f;
+        excpetectPt.y = (childBox.y - parentBox.y) / 2.f;
 
         auto tm = ctx.childEntity->ET_getLocalTransform();
 
-        EXPECT_FLOAT_EQ(tm.pt.x, static_cast<float>(excpetectPt.x));
-        EXPECT_FLOAT_EQ(tm.pt.y, static_cast<float>(excpetectPt.y));
+        EXPECT_FLOAT_EQ(tm.pt.x, excpetectPt.x);
+        EXPECT_FLOAT_EQ(tm.pt.y, excpetectPt.y);
     }
 }
 
 TEST_F(UIScrollAreaTests, CheckZeroScroll) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(200);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(200.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -203,8 +204,8 @@ TEST_F(UIScrollAreaTests, CheckZeroScroll) {
 }
 
 TEST_F(UIScrollAreaTests, CheckSimpleVerticalScroll) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(200);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(200.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -226,8 +227,8 @@ TEST_F(UIScrollAreaTests, CheckSimpleVerticalScroll) {
 }
 
 TEST_F(UIScrollAreaTests, CheckSimpleHorizontalScroll) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(200);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(200.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -249,8 +250,8 @@ TEST_F(UIScrollAreaTests, CheckSimpleHorizontalScroll) {
 }
 
 TEST_F(UIScrollAreaTests, CheckIngoreVerticalOnHorizontal) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(200);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(200.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -271,8 +272,8 @@ TEST_F(UIScrollAreaTests, CheckIngoreVerticalOnHorizontal) {
 }
 
 TEST_F(UIScrollAreaTests, CheckIngoreHorizontalOnVertical) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(200);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(200.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -293,8 +294,8 @@ TEST_F(UIScrollAreaTests, CheckIngoreHorizontalOnVertical) {
 }
 
 TEST_F(UIScrollAreaTests, CheckScrollLimits) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(110);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(110.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -306,7 +307,7 @@ TEST_F(UIScrollAreaTests, CheckScrollLimits) {
     SubmitEventSequence(ctx, {Vec2(0.f, -0.75f), Vec2(0.f, 0.f), Vec2(0.f, 0.75f)});
 
     Vec2 expectedShift(0.f);
-    expectedShift.y = static_cast<float>(childBox.y - parentBox.y);
+    expectedShift.y = childBox.y - parentBox.y;
 
     auto childCurrTm = ctx.childEntity->ET_getTransform();
     auto shift = childCurrTm.pt - childOrigTm.pt;
@@ -316,8 +317,8 @@ TEST_F(UIScrollAreaTests, CheckScrollLimits) {
 }
 
 TEST_F(UIScrollAreaTests, CheckIgnoreScrollForSmallerChild) {
-    auto parentBox = Vec2i(100);
-    auto childBox = Vec2i(50);
+    auto parentBox = Vec2(100.f);
+    auto childBox = Vec2(50.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -338,8 +339,8 @@ TEST_F(UIScrollAreaTests, CheckIgnoreScrollForSmallerChild) {
 }
 
 TEST_F(UIScrollAreaTests, CheckScrollProgress) {
-    auto parentBox = Vec2i(50);
-    auto childBox = Vec2i(100);
+    auto parentBox = Vec2(50.f);
+    auto childBox = Vec2(100.f);
 
     UIScrollAreaStyle style;
     style.origin = UIScrollOrigin::Start;
@@ -352,8 +353,8 @@ TEST_F(UIScrollAreaTests, CheckScrollProgress) {
     }
 
     Transform tm = ctx.childEntity->ET_getTransform();
-    Vec2i center(static_cast<int>(tm.pt.x), static_cast<int>(tm.pt.y));
-    center += childBox / 4;
+    Vec2 center(tm.pt.x, tm.pt.y);
+    center += childBox / 4.f;
     ctx.scrollArea->ET_setTargetPosClamped(center);
 
     {
@@ -361,7 +362,7 @@ TEST_F(UIScrollAreaTests, CheckScrollProgress) {
         EXPECT_FLOAT_EQ(scrollProg, 0.5f);
     }
 
-    Vec2i topPt = center + childBox / 4;
+    Vec2 topPt = center + childBox / 4.f;
     ctx.scrollArea->ET_setTargetPosClamped(topPt);
 
     {

@@ -1,7 +1,6 @@
 #ifndef __ET_UI_SCROLL_AREA_HPP__
 #define __ET_UI_SCROLL_AREA_HPP__
 
-#include "Core/Core.hpp"
 #include "Math/AABB.hpp"
 
 class UIScrollAreaStyle;

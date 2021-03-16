@@ -1,13 +1,6 @@
 #ifndef __ENTITY_HPP__
 #define __ENTITY_HPP__
 
-#include "Entity/ETEntity.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Reflect/ClassInstance.hpp"
-
-#include <string>
-#include <memory>
-
 class EntityLogic;
 class EntityRegistry;
 

@@ -3,13 +3,9 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Math/Transform.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Audio/SoundEvent.hpp"
-
-class ReflectContext;
 
 class BoardElemDestroyAnimation : public EntityLogic,
     public ETNode<ETBoardElemDestroyAnimation>,

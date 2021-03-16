@@ -12,7 +12,7 @@ public:
 protected:
 
     LogicsContainerPtrT createSystemLogics() const override;
-    void reflectSystemConfigs(ReflectContext& ctx) const override;
+    void createSystemConfigs() const override;
     void registerEntityLogics(EntityLogicsRegister& logicsRegister) const override;
 };
 

@@ -1,8 +1,6 @@
 #ifndef __REFLECT_UTILS_HPP__
 #define __REFLECT_UTILS_HPP__
 
-#include "Reflect/ReflectContext.hpp"
-
 namespace ReflectUtils {
 
 ClassInfo* FindClassInfo(TypeId typeId);

@@ -1,11 +1,6 @@
 #include "Filters/Equalizer.hpp"
-#include "Math/Primitivies.hpp"
 #include "AudioUtils.hpp"
 #include "MixGraph/MixConfig.hpp"
-
-#include <cmath>
-#include <algorithm>
-#include <vector>
 
 namespace {
 

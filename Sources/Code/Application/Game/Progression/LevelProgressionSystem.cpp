@@ -1,7 +1,5 @@
 #include "Game/Progression/LevelProgressionSystem.hpp"
 #include "Core/ETAssets.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Core/ETLogger.hpp"
 #include "Reflect/ReflectUtils.hpp"
 
 namespace {

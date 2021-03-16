@@ -1,6 +1,4 @@
 #include "Game/Logics/ScoreObjective.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

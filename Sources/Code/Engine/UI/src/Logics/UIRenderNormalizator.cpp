@@ -1,9 +1,6 @@
 #include "Logics/UIRenderNormalizator.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "UIUtils.hpp"
-
-#include <algorithm>
 
 void UIRenderNormalizator::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIRenderNormalizator>("UIRenderNormalizator")) {

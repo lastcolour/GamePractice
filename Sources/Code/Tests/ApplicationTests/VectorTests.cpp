@@ -1,5 +1,4 @@
 #include "VectorTests.hpp"
-#include "Math/Vector.hpp"
 
 TEST_F(VectorTests, Vec2_CheckConstructors) {
     {

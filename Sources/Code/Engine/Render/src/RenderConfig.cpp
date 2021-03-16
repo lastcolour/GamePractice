@@ -1,5 +1,4 @@
 #include "RenderConfig.hpp"
-#include "Reflect/ReflectContext.hpp"
 
 RenderConfig::RenderConfig() :
     defaultFontSize(38) {

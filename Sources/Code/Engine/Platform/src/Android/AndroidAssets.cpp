@@ -1,7 +1,6 @@
 #include "Android/AndroidAssets.hpp"
 #include "Android/AndroidPlatformHandler.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/TimePoint.hpp"
 #include "FileUtils.hpp"
 

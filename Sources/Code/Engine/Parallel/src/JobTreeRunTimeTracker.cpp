@@ -3,8 +3,6 @@
 #include "ThreadJob.hpp"
 #include "Parallel/RunTask.hpp"
 
-#include "Core/ETLogger.hpp"
-
 #include <cassert>
 
 namespace {

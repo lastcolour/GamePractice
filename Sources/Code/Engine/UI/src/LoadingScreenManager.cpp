@@ -1,9 +1,6 @@
 #include "LoadingScreenManager.hpp"
 #include "UI/ETUIViewCache.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Core/ETLogger.hpp"
-
-#include <limits>
 
 LoadingScreenManager::LoadingScreenManager() :
     loadingScreenActive(false) {

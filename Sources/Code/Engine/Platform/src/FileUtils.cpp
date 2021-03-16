@@ -1,5 +1,4 @@
 #include "FileUtils.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <fstream>
 

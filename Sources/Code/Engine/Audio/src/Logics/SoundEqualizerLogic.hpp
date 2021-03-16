@@ -4,10 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Audio/ETEqualizer.hpp"
 #include "Audio/ETAudioSystem.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Filters/EqualizerSetup.hpp"
-
-class ReflectContext;
 
 class SoundEqualizerLogic : public EntityLogic,
     public ETNode<ETEqualizer> {

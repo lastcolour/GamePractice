@@ -1,16 +1,12 @@
 #ifndef __GAME_BOARD_INTERACTION_LOGIC_HPP__
 #define __GAME_BOARD_INTERACTION_LOGIC_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameTimer.hpp"
-#include "Math/Transform.hpp"
 #include "Audio/SoundEvent.hpp"
-
-class ReflectContext;
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,

@@ -17,6 +17,7 @@
 #include "Logics/RenderStencilLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "RenderConfig.hpp"
+#include "Core/GlobalData.hpp"
 
 RenderModule::RenderModule() :
     SystemModule("Render") {}
@@ -36,8 +37,8 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
     return container;
 }
 
-void RenderModule::reflectSystemConfigs(ReflectContext& ctx) const {
-    ctx.reflect<RenderConfig>();
+void RenderModule::createSystemConfigs() const {
+    CreateGlobal<RenderConfig>("Modules/Render.json");
 }
 
 void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

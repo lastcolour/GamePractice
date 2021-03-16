@@ -1,5 +1,4 @@
 #include "EntityEditorHelper.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/UIBoxStyle.hpp"
 #include "Render/ETParticlesSystem.hpp"

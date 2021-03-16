@@ -1,9 +1,7 @@
 #ifndef __ET_GAME_BOARD_HPP__
 #define __ET_GAME_BOARD_HPP__
 
-#include "Core/Core.hpp"
 #include "Render/Color.hpp"
-#include "Math/Vector.hpp"
 #include "Math/AABB.hpp"
 
 class ElementDescriptor;

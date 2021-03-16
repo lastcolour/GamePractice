@@ -1,10 +1,8 @@
 #ifndef __SOUND_EVENT_NODE_HPP__
 #define __SOUND_EVENT_NODE_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Nodes/ETSoundNode.hpp"
 #include "Core/TimePoint.hpp"
-#include "Core/Buffer.hpp"
 #include "SoundStream.hpp"
 
 class SoundEventInfo;

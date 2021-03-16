@@ -2,7 +2,6 @@
 #define __RENDER_FONT_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 

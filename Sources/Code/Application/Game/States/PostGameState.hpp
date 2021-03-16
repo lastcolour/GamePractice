@@ -1,13 +1,10 @@
 #ifndef __POST_GAME_STATE_HPP__
 #define __POST_GAME_STATE_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameScore.hpp"
 #include "Game/ETGameElem.hpp"
-
-#include <memory>
 
 class PostGameState : public ETNode<ETGameEndResult>,
     public ETNode<ETGameBoardEvents>,

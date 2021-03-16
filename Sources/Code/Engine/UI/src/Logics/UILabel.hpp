@@ -5,8 +5,6 @@
 #include "Logics/UIElement.hpp"
 #include "Logics/UILabelStyle.hpp"
 
-class ReflectContext;
-
 class UILabel : public UIElement,
     public ETNode<ETUILabel>,
     public ETNode<ETUIViewPortEvents> {

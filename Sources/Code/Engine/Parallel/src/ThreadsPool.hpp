@@ -3,9 +3,6 @@
 
 #include "ThreadJob.hpp"
 
-#include <memory>
-#include <vector>
-
 class TasksRunner;
 class ThreadWorker;
 

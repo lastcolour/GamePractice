@@ -1,6 +1,5 @@
 #include "ArrayInfo.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/StringFormat.hpp"
 #include "Core/MemoryStream.hpp"
 
 #include <cassert>

@@ -5,10 +5,27 @@
 #include "Core/ETApplication.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Logics/UILayout.hpp"
+#include "Core/GlobalData.hpp"
+
+namespace {
+
+void CheckBoxSize(const AABB2D& box, const Vec2i& exSize) {
+    auto size = box.getSize();
+    EXPECT_FLOAT_EQ(size.x, static_cast<float>(exSize.x));
+    EXPECT_FLOAT_EQ(size.y, static_cast<float>(exSize.y));
+}
+
+void CheckBoxCenter(const AABB2D box, const Vec2i& exCenter) {
+    auto center = box.getSize();
+    EXPECT_FLOAT_EQ(center.x, static_cast<float>(exCenter.x));
+    EXPECT_FLOAT_EQ(center.y, static_cast<float>(exCenter.y));
+}
+
+} // namespace
 
 void UIBoxTests::SetUp() {
     ConsoleAppTests::SetUp();
-    auto gridSize = ET_getShared<UIConfig>()->horizontalGrid;
+    auto gridSize = GetGlobal<UIConfig>()->horizontalGrid;
     Vec2i portSize(gridSize, gridSize);
     ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized, portSize);
 }
@@ -34,25 +51,25 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
         UIBoxStyle style;
         style.width = 0.25f;
         style.widthInv = UIBoxSizeInvariant::Relative;
-        style.height = ET_getShared<UIConfig>()->horizontalGrid / 2.f;
+        style.height = GetGlobal<UIConfig>()->horizontalGrid / 2.f;
         style.heightInv = UIBoxSizeInvariant::Grid;
         uiBox->ET_setStyle(style);
 
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 4, viewPort.y / 2));
-        ASSERT_EQ(aabb.getCenter(), viewPort / 2);
+        CheckBoxSize(aabb, Vec2i(viewPort.x / 4, viewPort.y / 2));
+        CheckBoxCenter(aabb, viewPort / 2);
     }
     {
         UIBoxStyle style;
-        style.width = ET_getShared<UIConfig>()->horizontalGrid / 2.f;
+        style.width = GetGlobal<UIConfig>()->horizontalGrid / 2.f;
         style.widthInv = UIBoxSizeInvariant::Grid;
         style.height = 0.25f;
         style.heightInv = UIBoxSizeInvariant::Relative;
         uiBox->ET_setStyle(style);
 
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 2, viewPort.y / 4));
-        ASSERT_EQ(aabb.getCenter(), viewPort / 2);
+        CheckBoxSize(aabb, Vec2i(viewPort.x / 2, viewPort.y / 4));
+        CheckBoxCenter(aabb, viewPort / 2);
     }
 }
 
@@ -76,7 +93,7 @@ TEST_F(UIBoxTests, CheckViewPortResized) {
 
     {
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 2, viewPort.y / 2));
+        CheckBoxSize(aabb, Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
 }
 
@@ -102,7 +119,7 @@ TEST_F(UIBoxTests, CheckTransformScaleChanged) {
         ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getSize(), Vec2i(viewPort.x / 2, viewPort.y / 2));
+        CheckBoxSize(aabb, Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
 }
 
@@ -128,8 +145,8 @@ TEST_F(UIBoxTests, CheckTransformPosChanged) {
     }
     {
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getCenter(), Vec2i(viewPort.x / 2, viewPort.y / 2));
-        ASSERT_EQ(aabb.getSize(),  Vec2i(viewPort.x / 2, viewPort.y / 2));
+        CheckBoxSize(aabb, Vec2i(viewPort.x / 2, viewPort.y / 2));
+        CheckBoxCenter(aabb, Vec2i(viewPort.x / 2, viewPort.y / 2));
     }
     {
         Transform tm;
@@ -141,8 +158,8 @@ TEST_F(UIBoxTests, CheckTransformPosChanged) {
     }
     {
         auto aabb = uiBox->ET_getBox();
-        ASSERT_EQ(aabb.getCenter(), Vec2i(viewPort.x / 4, viewPort.y / 4));
-        ASSERT_EQ(aabb.getSize(),  Vec2i(viewPort.x / 2, viewPort.y / 2));
+        CheckBoxSize(aabb, Vec2i(viewPort.x / 2, viewPort.y / 2));
+        CheckBoxCenter(aabb, Vec2i(viewPort.x / 4, viewPort.y / 4));
     }
 }
 

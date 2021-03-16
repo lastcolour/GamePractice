@@ -1,5 +1,4 @@
 #include "MathTests.hpp"
-#include "Math/Vector.hpp"
 #include "Math/Matrix.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Math/AABB.hpp"

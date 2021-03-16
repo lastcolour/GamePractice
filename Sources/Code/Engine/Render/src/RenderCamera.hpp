@@ -2,7 +2,6 @@
 #define __RENDER_CAMERA_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Render/ETRenderCamera.hpp"
 
 class RenderCamera : public SystemLogic,

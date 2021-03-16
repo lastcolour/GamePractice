@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 project(Audio CXX)
 
@@ -60,10 +60,22 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
     set_source_files_properties(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/OggDataStream.cpp
-            PROPERTIES COMPILE_FLAGS  "${CMAKE_CXX_FLAGS} /wd4244 /wd4245 /wd4456 /wd4457 /wd4701")
+            PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4245 /wd4456 /wd4457 /wd4701")
 
 endif()
 
-
 target_link_libraries(${PROJECT_NAME}
     ${AUDIO_LIB_DEPENDICIES})
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <string>
+    <vector>
+    <memory>
+    <algorithm>
+    <functional>
+    <unordered_map>
+    <limits>
+    [["Reflect/ReflectContext.hpp"]]
+    [["Core/ETLogger.hpp"]]
+    [["Entity/ETEntity.hpp"]]
+)

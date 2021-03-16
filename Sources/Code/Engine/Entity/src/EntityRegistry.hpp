@@ -1,12 +1,7 @@
 #ifndef __ENTITY_CONTEXT_HPP__
 #define __ENTITY_CONTEXT_HPP__
 
-#include "Core/Core.hpp"
-#include "Math/Transform.hpp"
-
 #include <mutex>
-#include <memory>
-#include <unordered_map>
 
 class Entity;
 

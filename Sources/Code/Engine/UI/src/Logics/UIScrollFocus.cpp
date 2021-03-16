@@ -1,9 +1,6 @@
 #include "Logics/UIScrollFocus.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Math/AABB.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETLogger.hpp"
 
 void UIScrollFocus::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIScrollFocus>("UIScrollFocus")) {

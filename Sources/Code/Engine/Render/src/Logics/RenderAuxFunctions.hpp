@@ -2,9 +2,7 @@
 #define __RENDER_AUX_FUNCTIONS_HPP__
 
 #include "Math/Matrix.hpp"
-#include "Core/Core.hpp"
 #include "Render/Color.hpp"
-#include "Math/Transform.hpp"
 
 class RenderGeometry;
 

@@ -1,5 +1,3 @@
-#include "Core/StringFormat.hpp"
-
 namespace Core {
 
 char* StringCopyUnsafe(char *dest, const char *src) {

@@ -18,8 +18,6 @@
 #include "RenderUtils.hpp"
 #include "RenderFramebuffer.hpp"
 
-#include <algorithm>
-
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
@@ -30,7 +28,7 @@ const size_t RENDER_HEIGHT = 300;
 
 const char* TEST_SHADER_1 = "geom_solid_color";
 
-const char* SIMPLE_OBJECT = "Game/Simple.json";
+const char* SIMPLE_OBJECT = "Entities/Game/Simple.json";
 
 const float SCALE_FACTOR = 0.8f;
 

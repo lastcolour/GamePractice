@@ -1,9 +1,7 @@
 #include "Resampler.hpp"
 #include "SoundStream.hpp"
 #include "MixGraph/MixGraph.hpp"
-#include "Math/Primitivies.hpp"
 #include "OggDataStream.hpp"
-#include "Core/ETLogger.hpp"
 #include "MixGraph/LinearResampler.hpp"
 
 #include <cassert>

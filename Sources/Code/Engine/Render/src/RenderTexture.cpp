@@ -1,8 +1,6 @@
 #include "RenderTexture.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderUtils.hpp"
-#include "Core/ETLogger.hpp"
-#include "Core/Buffer.hpp"
 
 #include <cassert>
 

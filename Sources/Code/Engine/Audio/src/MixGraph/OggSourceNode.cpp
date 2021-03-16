@@ -4,9 +4,6 @@
 #include "MixGraph/MixGraph.hpp"
 #include "Resampler.hpp"
 #include "SoundStream.hpp"
-#include "Core/Buffer.hpp"
-#include "OggDataStream.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 

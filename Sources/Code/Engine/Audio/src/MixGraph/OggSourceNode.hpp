@@ -5,10 +5,7 @@
 #include "OggDataStream.hpp"
 #include "MixGraph/SourceNode.hpp"
 
-#include <memory>
-
 class SoundStream;
-class OggDataStream;
 
 class OggSourceNode : public MixNode, public SourceNode {
 public:

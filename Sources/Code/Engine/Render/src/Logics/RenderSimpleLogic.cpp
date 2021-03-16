@@ -1,5 +1,4 @@
 #include "Logics/RenderSimpleLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Nodes/SimpleNode.hpp"
 
 RenderSimpleLogic::RenderSimpleLogic() :

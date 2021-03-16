@@ -1,7 +1,4 @@
 #include "Filters/RecursiveFilter.hpp"
-#include "Math/Primitivies.hpp"
-
-#include <cmath>
 
 RecursiveFilter::RecursiveFilter() :
     x1(0.f),

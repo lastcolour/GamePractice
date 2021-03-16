@@ -14,7 +14,7 @@ EntityModule::LogicsContainerPtrT EntityModule::createSystemLogics() const {
     return container;
 }
 
-void EntityModule::reflectSystemConfigs(ReflectContext& ctx) const {
+void EntityModule::createSystemConfigs() const {
 }
 
 void EntityModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

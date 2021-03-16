@@ -1,8 +1,6 @@
 #include "Logics/UIElement.hpp"
 #include "UI/ETUILayout.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "UIUtils.hpp"
-#include "Core/ETLogger.hpp"
 #include "UI/ETUIAnimation.hpp"
 
 void UIElement::Reflect(ReflectContext& ctx) {

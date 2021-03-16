@@ -1,8 +1,6 @@
 #ifndef __EQUALIZER_SETUP_HPP__
 #define __EQUALIZER_SETUP_HPP__
 
-class ReflectContext;
-
 class EqualizerSetup {
 public:
 

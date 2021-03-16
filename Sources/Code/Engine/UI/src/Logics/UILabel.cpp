@@ -1,10 +1,9 @@
 #include "Logics/UILabel.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "UI/UIBoxStyle.hpp"
-#include "Core/ETLogger.hpp"
+#include "Core/GlobalData.hpp"
 #include "UIUtils.hpp"
 
 void UILabel::Reflect(ReflectContext& ctx) {
@@ -49,7 +48,7 @@ float UILabel::ET_getFontSize() const {
 
 void UILabel::ET_setFontSize(float newFontSize) {
     style.fontSize = newFontSize;
-    auto fontHeight = ET_getShared<UIConfig>()->getSizeOnGrid(style.fontSize);
+    auto fontHeight = GetGlobal<UIConfig>()->getSizeOnGrid(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setFontHeight, fontHeight);
     updateHostLayout();
 }

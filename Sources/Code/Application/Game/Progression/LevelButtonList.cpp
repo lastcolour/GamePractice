@@ -1,10 +1,7 @@
 #include "Game/Progression/LevelButtonList.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Core/ETLogger.hpp"
 #include "Game/Progression/LevelsProgressData.hpp"
 #include "UI/ETUIAnimation.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 void LevelButtonItem::Reflect(ReflectContext& ctx) {

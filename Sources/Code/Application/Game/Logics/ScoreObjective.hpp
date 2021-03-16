@@ -2,13 +2,10 @@
 #define __SCORE_OBJECTIVE_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/Logics/ObjectiveTarget.hpp"
 #include "Game/ETGameScore.hpp"
-
-class ReflectContext;
 
 class ScoreObjective : public EntityLogic,
     public ETNode<ETGameBoardElemDestoryEvents>,

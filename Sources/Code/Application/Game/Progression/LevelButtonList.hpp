@@ -2,10 +2,7 @@
 #define __LEVEL_BUTTON_LIST_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETLevelProgress.hpp"
-
-class ReflectContext;
 
 class LevelButtonItem {
 public:

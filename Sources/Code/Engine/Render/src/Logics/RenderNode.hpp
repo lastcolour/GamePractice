@@ -4,12 +4,8 @@
 #include "Render/ETRenderNode.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Nodes/Node.hpp"
-
-class ReflectContext;
 
 class RenderNode : public EntityLogic,
     public ETNode<ETRenderNode>,

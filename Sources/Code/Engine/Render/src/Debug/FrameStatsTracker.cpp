@@ -1,12 +1,6 @@
 #include "Debug/FrameStatsTracker.hpp"
 #include "Render/ETDebugRender.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Core/StringFormat.hpp"
 #include "Render/ETRenderCamera.hpp"
-#include "Core/ETLogger.hpp"
-
-#include <algorithm>
-#include <limits>
 
 namespace {
 

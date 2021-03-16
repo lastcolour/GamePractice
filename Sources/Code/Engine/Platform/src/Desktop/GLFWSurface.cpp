@@ -1,5 +1,4 @@
 #include "Desktop/GLFWSurface.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETApplication.hpp"
 #include "Platform/OpenGL.hpp"
 

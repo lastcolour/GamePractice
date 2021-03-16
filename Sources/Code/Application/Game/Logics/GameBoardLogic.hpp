@@ -1,17 +1,11 @@
 #ifndef __GAME_BOARD_LOGIC_HPP__
 #define __GAME_BOARD_LOGIC_HPP__
 
-#include "Core/ETPrimitives.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
-#include "Entity/ETEntity.hpp"
 #include "Game/ETGameTimer.hpp"
-#include "Core/ETPrimitives.hpp"
-
-#include <vector>
-#include <memory>
 
 struct BoardElement {
     Vec2i boardPt;

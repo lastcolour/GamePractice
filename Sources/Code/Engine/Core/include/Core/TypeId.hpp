@@ -1,7 +1,8 @@
 #ifndef __TYPE_ID_HPP__
 #define __TYPE_ID_HPP__
 
-#include "Core/Core.hpp"
+using TypeId = int;
+const TypeId InvalidTypeId = 0;
 
 namespace Core {
 

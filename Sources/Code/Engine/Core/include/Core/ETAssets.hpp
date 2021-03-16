@@ -1,7 +1,6 @@
 #ifndef __ET_ASSETS_HPP__
 #define __ET_ASSETS_HPP__
 
-#include "Core/Buffer.hpp"
 #include "Core/JSONNode.hpp"
 
 struct ETAssets {

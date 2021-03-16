@@ -1,5 +1,4 @@
 #include "Logics/RenderLinearGradientRect.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Nodes/GradientNode.hpp"
 
 RenderLinearGradientRect::RenderLinearGradientRect() :

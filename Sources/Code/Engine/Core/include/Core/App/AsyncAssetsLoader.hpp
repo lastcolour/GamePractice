@@ -3,7 +3,6 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/ETAssets.hpp"
 
 class AsyncAssetsLoader : public SystemLogic,

@@ -5,7 +5,6 @@
 #include "UI/ETUILayout.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/UILayoutStyle.hpp"
-#include "Core/ETPrimitives.hpp"
 
 class UILayout : public EntityLogic,
     public ETNode<ETUILayout>,

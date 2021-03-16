@@ -1,5 +1,5 @@
 #include "UIButtonTests.hpp"
-#include "Core/ETPrimitives.hpp"
+#include "Core/GlobalData.hpp"
 #include "UI/ETUIButton.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Logics/UIButton.hpp"
@@ -43,7 +43,7 @@ void UIButtonTests::SetUp() {
     ConsoleAppTests::SetUp();
     buttonListener.reset(new TestButtonEventListener);
 
-    auto gridSize = ET_getShared<UIConfig>()->horizontalGrid;
+    auto gridSize = GetGlobal<UIConfig>()->horizontalGrid;
     Vec2i portSize(gridSize, gridSize);
     ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
 }

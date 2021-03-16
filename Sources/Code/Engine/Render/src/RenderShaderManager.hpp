@@ -2,7 +2,6 @@
 #define __RENDER_SHADER_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Render/ETRenderManager.hpp"
 
 class RenderShaderManager : public SystemLogic,

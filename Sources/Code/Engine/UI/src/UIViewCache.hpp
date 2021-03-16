@@ -2,7 +2,6 @@
 #define __UI_VIEW_CACHE_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIViewCache.hpp"
 
 class UIViewCache : public SystemLogic,

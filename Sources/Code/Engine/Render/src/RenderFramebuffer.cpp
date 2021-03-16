@@ -2,7 +2,6 @@
 #include "Platform/OpenGL.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "RenderUtils.hpp"
-#include "Core/ETLogger.hpp"
 
 RenderFramebuffer::RenderFramebuffer() :
     type(EFramebufferType::Color),

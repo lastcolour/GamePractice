@@ -1,8 +1,6 @@
 #ifndef __SYSTEM_LOGIC_HPP__
 #define __SYSTEM_LOGIC_HPP__
 
-#include "Core/Core.hpp"
-
 class SystemLogic {
 public:
 

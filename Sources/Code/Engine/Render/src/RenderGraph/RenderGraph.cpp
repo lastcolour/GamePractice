@@ -5,12 +5,10 @@
 #include "RenderFramebuffer.hpp"
 #include "Render/ETDebugRender.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Core/ETLogger.hpp"
 #include "RenderUtils.hpp"
 #include "Platform/OpenGL.hpp"
 #include "Render/ETRenderCamera.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 namespace {

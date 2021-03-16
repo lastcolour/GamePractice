@@ -1,8 +1,6 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
-#include "Core/Core.hpp"
-
 class Sound {
 public:
 

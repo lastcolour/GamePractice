@@ -1,8 +1,6 @@
 #include "Math/MatrixTransform.hpp"
-#include "Math/Primitivies.hpp"
+#include "Math/Matrix.hpp"
 #include "Math/Quaternion.hpp"
-
-#include <cmath>
 
 namespace {
 

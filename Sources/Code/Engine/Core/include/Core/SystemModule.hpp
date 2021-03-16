@@ -1,12 +1,10 @@
 #ifndef __SYSTEM_MODULE_HPP__
 #define __SYSTEM_MODULE_HPP__
 
-#include "Core/Core.hpp"
 #include "Core/SystemLogicContainer.hpp"
 #include "Core/JSONNode.hpp"
 
 class EntityLogicsRegister;
-class ReflectContext;
 
 class SystemModule {
 public:
@@ -23,13 +21,13 @@ public:
 protected:
 
     virtual LogicsContainerPtrT createSystemLogics() const = 0;
-    virtual void reflectSystemConfigs(ReflectContext& ctx) const = 0;
+    virtual void createSystemConfigs() const = 0;
     virtual void registerEntityLogics(EntityLogicsRegister& logicsRegister) const = 0;
 
 protected:
 
-    virtual bool serializeConfigs();
-    virtual JSONNode loadModuleConfigs();
+    //virtual bool serializeConfigs();
+    //virtual JSONNode loadModuleConfigs();
 
 private:
 

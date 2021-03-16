@@ -2,17 +2,11 @@
 #define __UI_ANIMATION_SEQUENCE_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUITimer.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Logics/UIAnimationFrame.hpp"
 #include "Logics/AdditiveUITransform.hpp"
-
-#include <vector>
-
-class ReflectContext;
 
 class UIAnimationSequence : public EntityLogic,
     public ETNode<ETUITimerEvents>,

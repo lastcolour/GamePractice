@@ -1,9 +1,6 @@
 #ifndef __BUFFER_HPP__
 #define __BUFFER_HPP__
 
-#include <memory>
-#include <string>
-
 struct BufferImpl;
 
 class Buffer {

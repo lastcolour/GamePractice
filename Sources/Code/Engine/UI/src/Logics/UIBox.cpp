@@ -1,6 +1,4 @@
 #include "Logics/UIBox.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Core/ETLogger.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "UI/ETUILayout.hpp"
 #include "UIUtils.hpp"

@@ -4,9 +4,6 @@
 #include "Math/Matrix.hpp"
 #include "Render/Color.hpp"
 
-#include <string>
-#include <vector>
-
 class RenderTexture;
 
 enum class UniformType {

@@ -1,9 +1,7 @@
 #ifndef __IMAGE_BUFFER_HPP__
 #define __IMAGE_BUFFER_HPP__
 
-#include "Core/Buffer.hpp"
 #include "Render/Color.hpp"
-#include "Math/Vector.hpp"
 
 class ImageBuffer {
 public:

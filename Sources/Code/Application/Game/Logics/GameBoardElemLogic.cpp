@@ -1,8 +1,6 @@
 #include "Game/Logics/GameBoardElemLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Core/ETLogger.hpp"
 #include "Game/ETGameInterfaces.hpp"
 
 #include <cassert>

@@ -2,10 +2,10 @@
 #include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "Entity/ETEntityManger.hpp"
-#include "Core/ETLogger.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "Entity/EntityLoadResult.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Core/GlobalData.hpp"
 
 #include <cassert>
 
@@ -13,7 +13,7 @@ namespace {
 
 const char* getViewName(UIViewType viewType) {
     const char* viewName = nullptr;
-    const auto& viewsConfig = ET_getShared<UIConfig>()->views;
+    const auto& viewsConfig = GetGlobal<UIConfig>()->views;
     switch(viewType) {
         case UIViewType::Main: {
             viewName = viewsConfig.mainView.c_str();

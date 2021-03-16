@@ -1,8 +1,6 @@
 #ifndef __JSON_NODE_HPP__
 #define __JSON_NODE_HPP__
 
-#include "Core/Buffer.hpp"
-
 class JSONNode;
 struct JSONNodeImpl;
 struct JSONNodeIteratorImpl;

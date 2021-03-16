@@ -3,11 +3,8 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Audio/SoundEvent.hpp"
-
-class ReflectContext;
 
 class GameScoreUpdaterLogic : public EntityLogic,
     public ETNode<ETGameScoreUpdater>,

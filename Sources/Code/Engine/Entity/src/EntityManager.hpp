@@ -2,13 +2,8 @@
 #define __ENTITY_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Entity/ETEntityManger.hpp"
 #include "EntityRegistry.hpp"
-
-#include <memory>
-#include <string>
-#include <unordered_map>
 
 class ClassInfo;
 

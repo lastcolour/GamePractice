@@ -6,8 +6,6 @@
 #include "Game/ETGameElem.hpp"
 #include "Game/Logics/GameBoardElemsPool.hpp"
 
-#include <algorithm>
-
 namespace {
 
 const char* TEST_OBJECT_1 = "Game/Blocks/Blue.json";

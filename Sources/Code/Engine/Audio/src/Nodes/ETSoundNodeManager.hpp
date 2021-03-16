@@ -1,8 +1,6 @@
 #ifndef __SOUND_NODE_MANAGER_HPP__
 #define __SOUND_NODE_MANAGER_HPP__
 
-#include "Core/Buffer.hpp"
-
 class SoundNode;
 
 struct ETSoundNodeManager {

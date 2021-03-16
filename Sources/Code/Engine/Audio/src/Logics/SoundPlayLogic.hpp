@@ -3,10 +3,6 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Audio/ETSound.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Entity/ETEntity.hpp"
-
-class ReflectContext;
 
 class SoundPlayLogic : public EntityLogic,
     public ETNode<ETSoundPlayer>,

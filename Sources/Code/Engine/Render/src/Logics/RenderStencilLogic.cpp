@@ -1,7 +1,4 @@
 #include "Logics/RenderStencilLogic.hpp"
-#include "Reflect/ReflectContext.hpp"
-#include "Core/ETLogger.hpp"
-#include "Math/Primitivies.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Reflect/EnumInfo.hpp"
 

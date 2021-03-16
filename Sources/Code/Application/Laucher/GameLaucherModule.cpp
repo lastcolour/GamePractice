@@ -1,7 +1,7 @@
 #include "Laucher/GameLaucherModule.hpp"
 #include "Laucher/GameLaucherConfig.hpp"
 #include "Laucher/GameLaucher.hpp"
-#include "Reflect/ReflectContext.hpp"
+#include "Core/GlobalData.hpp"
 
 GameLaucherModule::GameLaucherModule() :
     SystemModule("GameLaucher") {}
@@ -17,8 +17,8 @@ GameLaucherModule::LogicsContainerPtrT GameLaucherModule::createSystemLogics() c
     return container;
 }
 
-void GameLaucherModule::reflectSystemConfigs(ReflectContext& ctx) const {
-    ctx.reflect<GameLaucherConfig>();
+void GameLaucherModule::createSystemConfigs() const {
+    CreateGlobal<GameLaucherConfig>("Modules/GameLaucher.json");
 }
 
 void GameLaucherModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

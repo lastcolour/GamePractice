@@ -2,11 +2,7 @@
 #define __RENDER_STENCIL_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Render/RenderCommon.hpp"
-
-class ReflectContext;
 
 class RenderStencilLogic : public EntityLogic,
     public ETNode<ETEntityEvents> {

@@ -3,11 +3,7 @@
 #include "RenderFramebuffer.hpp"
 #include "RenderUtils.hpp"
 #include "Platform/OpenGL.hpp"
-#include "Core/Buffer.hpp"
-#include "Core/ETLogger.hpp"
 #include "Core/ETAssets.hpp"
-
-#include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_STDIO

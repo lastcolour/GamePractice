@@ -2,6 +2,7 @@
 #include "UISurfaceEventHandler.hpp"
 #include "UIViewManager.hpp"
 #include "Config/UIConfig.hpp"
+#include "Core/GlobalData.hpp"
 #include "UITimer.hpp"
 #include "UIViewTransitionManager.hpp"
 #include "UIViewPortManager.hpp"
@@ -37,8 +38,8 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
     return container;
 }
 
-void UIModule::reflectSystemConfigs(ReflectContext& ctx) const {
-    ctx.reflect<UIConfig>();
+void UIModule::createSystemConfigs() const {
+    CreateGlobal<UIConfig>("Modules/UI.json");
 }
 
 void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

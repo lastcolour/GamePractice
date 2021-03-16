@@ -1,11 +1,5 @@
 #include "Game/Logics/BoardElemSelectAnimation.hpp"
-#include "Reflect/ReflectContext.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Math/Primitivies.hpp"
-#include "Entity/ETEntity.hpp"
-#include "Core/ETLogger.hpp"
-
-#include <algorithm>
 
 void BoardElemSelectAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<BoardElemSelectAnimation>("BoardElemSelectAnimation")) {

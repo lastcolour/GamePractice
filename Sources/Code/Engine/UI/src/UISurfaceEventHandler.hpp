@@ -2,7 +2,6 @@
 #define __UI_SURFACE_EVENT_HANDLER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Platform/ETSurface.hpp"
 #include "UI/ETUIButton.hpp"
 

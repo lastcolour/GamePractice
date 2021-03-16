@@ -3,7 +3,6 @@
 #include "ThreadJob.hpp"
 
 #include <cassert>
-#include <algorithm>
 
 JobTree::JobTree(int jobTreeId) :
     tracker(this),

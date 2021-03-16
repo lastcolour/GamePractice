@@ -2,12 +2,10 @@
 #define __ASYNC_ENTITY_MANAGER_HPP__
 
 #include "Core/ETTasks.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Entity/ETEntityManger.hpp"
 
 #include <mutex>
-#include <vector>
 #include <thread>
 
 class AsyncEntityManager : public SystemLogic,

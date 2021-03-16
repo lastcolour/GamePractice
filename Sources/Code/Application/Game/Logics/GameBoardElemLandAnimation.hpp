@@ -2,13 +2,9 @@
 #define __GAME_BOARD_ELEM_LAND_ANIMATION_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Audio/SoundEvent.hpp"
-#include "Math/Vector.hpp"
-
-class ReflectContext;
 
 class GameBoardElemLandAnimation : public EntityLogic,
     public ETNode<ETGameTimerEvents>,

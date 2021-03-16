@@ -36,7 +36,7 @@ GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
     return container;
 }
 
-void GameModule::reflectSystemConfigs(ReflectContext& ctx) const {
+void GameModule::createSystemConfigs() const {
 }
 
 void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

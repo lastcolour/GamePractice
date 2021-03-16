@@ -1,8 +1,6 @@
 #ifndef __UI_SCROLL_AREA_STYLE_HPP__
 #define __UI_SCROLL_AREA_STYLE_HPP__
 
-class ReflectContext;
-
 enum class UIScrollType {
     Vertical = 0,
     Horizontal

@@ -1,6 +1,5 @@
 #include "UIViewTransitionManager.hpp"
 #include "UI/ETUIView.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Logics/UIAnimationSequence.hpp"
 #include "UIUtils.hpp"

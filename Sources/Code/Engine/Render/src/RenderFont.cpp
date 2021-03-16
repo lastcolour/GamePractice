@@ -1,12 +1,10 @@
 #include "RenderFont.hpp"
 #include "Platform/OpenGL.hpp"
-#include "Core/ETLogger.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 
-#include <algorithm>
 #include <cassert>
 
 RenderFont::RenderFont(int fontMaxHeight) :

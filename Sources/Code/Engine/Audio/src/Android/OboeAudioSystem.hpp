@@ -2,7 +2,6 @@
 #define __OBOE_AUDIO_SYSTEM_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Core/ETTasks.hpp"
 #include "Audio/ETSoundPlayManager.hpp"
 #include "Audio/ETAudioSystem.hpp"

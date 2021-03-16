@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 project(Engine CXX)
 
@@ -58,3 +58,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Reflect
     Math
     Core)
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    <string>
+    <vector>
+    <memory>
+    <algorithm>
+    <functional>
+    <unordered_map>
+    <limits>
+    [["Core/ETLogger.hpp"]]
+)

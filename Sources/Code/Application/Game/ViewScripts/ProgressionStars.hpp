@@ -1,10 +1,6 @@
 #ifndef __PROGRESSION_STARS_HPP__
 #define __PROGRESSION_STARS_HPP__
 
-#include "Core/Core.hpp"
-
-class ReflectContext;
-
 class ProgressionStars {
 public:
 

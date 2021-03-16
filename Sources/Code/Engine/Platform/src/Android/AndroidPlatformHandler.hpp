@@ -3,10 +3,9 @@
 
 #include "Platform/Android/ETAndroidInterfaces.hpp"
 
-#include <memory>
 #include <mutex>
-#include <condition_variable>
 #include <vector>
+#include <condition_variable>
 
 class Application;
 

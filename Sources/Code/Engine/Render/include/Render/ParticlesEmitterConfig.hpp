@@ -3,13 +3,6 @@
 
 #include "Render/Color.hpp"
 #include "Render/RenderCommon.hpp"
-#include "Math/Vector.hpp"
-#include "Core/Core.hpp"
-
-#include <string>
-#include <vector>
-
-class ReflectContext;
 
 enum class EmitterType {
     Sphere = 0,

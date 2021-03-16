@@ -2,7 +2,6 @@
 #define __BASE_VIEW_SCRIPT_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "UI/ETUIViewScript.hpp"
 
 class BaseViewScript : public EntityLogic,

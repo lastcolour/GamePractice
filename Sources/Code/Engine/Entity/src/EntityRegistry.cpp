@@ -1,5 +1,4 @@
 #include "EntityRegistry.hpp"
-#include "Core/ETLogger.hpp"
 #include "Entity.hpp"
 
 #include <cassert>

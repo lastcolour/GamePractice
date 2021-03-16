@@ -1,10 +1,7 @@
 #ifndef __FILE_UTILS_HPP__
 #define __FILE_UTILS_HPP__
 
-#include "Core/Buffer.hpp"
-
 #include <filesystem>
-#include <string>
 
 namespace FileUtils {
 

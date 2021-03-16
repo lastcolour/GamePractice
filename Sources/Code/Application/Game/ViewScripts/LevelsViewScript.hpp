@@ -4,8 +4,6 @@
 #include "Game/ViewScripts/BaseViewScript.hpp"
 #include "Game/ViewScripts/EventSequence.hpp"
 
-class ReflectContext;
-
 class LevelsViewScript : public BaseViewScript {
 public:
 

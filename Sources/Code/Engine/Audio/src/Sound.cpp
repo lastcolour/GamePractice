@@ -1,5 +1,4 @@
 #include "Audio/Sound.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Nodes/ETSoundNode.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 

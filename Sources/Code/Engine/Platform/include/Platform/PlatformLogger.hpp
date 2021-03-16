@@ -1,7 +1,6 @@
 #ifndef __PLATFORM_LOGGER_HPP__
 #define __PLATFORM_LOGGER_HPP__
 
-#include "Core/ETLogger.hpp"
 #include "Core/SystemLogic.hpp"
 
 #include <mutex>

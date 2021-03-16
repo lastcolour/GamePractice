@@ -1,8 +1,6 @@
 #ifndef __OBJECTIVE_TARGET_HPP__
 #define __OBJECTIVE_TARGET_HPP__
 
-class ReflectContext;
-
 class ObjectiveTarget {
 public:
 

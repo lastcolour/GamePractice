@@ -3,8 +3,6 @@
 
 #include "Core/Buffer.hpp"
 
-#include <cstring>
-
 namespace Core {
 
 char* StringCopyUnsafe(char *dest, const char *src);

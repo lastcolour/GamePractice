@@ -1,6 +1,4 @@
 #include "Game/ViewScripts/EventSequence.hpp"
-#include "Core/ETLogger.hpp"
-#include "Entity/ETEntity.hpp"
 #include "UI/ETUIBox.hpp"
 
 #include <cassert>

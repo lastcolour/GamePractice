@@ -1,8 +1,6 @@
 #include "Nodes/NinePatchNode.hpp"
 #include "Logics/RenderAuxFunctions.hpp"
 
-#include <algorithm>
-
 NinePatchNode::NinePatchNode() :
     tmScale(1.f),
     horizontal(0.3f),

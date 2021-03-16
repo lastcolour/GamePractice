@@ -3,10 +3,7 @@
 
 #include "Core/Core.hpp"
 
-#include <vector>
 #include <mutex>
-#include <memory>
-#include <unordered_map>
 
 class ETNodeBase;
 class ETSyncRoute;

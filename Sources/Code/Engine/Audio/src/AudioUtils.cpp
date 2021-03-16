@@ -1,8 +1,5 @@
 #include "AudioUtils.hpp"
 
-#include <cmath>
-#include <algorithm>
-
 namespace {
 
 const float EXP_VOLUME_DYNAMIC_RANGE = 40.f;

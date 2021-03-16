@@ -3,13 +3,9 @@
 
 #include "Core/SystemLogic.hpp"
 #include "Audio/ETSound.hpp"
-#include "Core/ETPrimitives.hpp"
 #include "Nodes/ETSoundNodeManager.hpp"
 #include "SoundBufferManager.hpp"
 #include "SoundEventTable.hpp"
-
-#include <unordered_map>
-#include <vector>
 
 class SoundManager : public SystemLogic,
     public ETNode<ETSoundManager>,

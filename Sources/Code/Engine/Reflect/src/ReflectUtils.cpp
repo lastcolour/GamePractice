@@ -1,8 +1,6 @@
 #include "Reflect/ReflectUtils.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Core/ETAssets.hpp"
-#include "Core/ETPrimitives.hpp"
-#include "Core/ETLogger.hpp"
 
 #include <cassert>
 
