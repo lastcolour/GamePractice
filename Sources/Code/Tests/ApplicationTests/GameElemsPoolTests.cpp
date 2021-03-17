@@ -3,8 +3,8 @@
 
 namespace {
 
-const char* TEST_OBJECT_1 = "Game/Blocks/Blue.json";
-const char* TEST_OBJECT_2 = "Game/Blocks/Red.json";
+const char* TEST_OBJECT_1 = "Entities/Game/Blocks/Blue.json";
+const char* TEST_OBJECT_2 = "Entities/Game/Blocks/Red.json";
 
 } // namespace
 

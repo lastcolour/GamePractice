@@ -207,8 +207,9 @@ void UILayout::calculateLayout() {
 
     combinedBox = calculateAligment(childBoxes);
 
-    auto childZIndex = UI::GetZIndexForChild(getEntityId());
-    childZIndex += extraZOffset;
+    int childZIndex = 0;
+    ET_SendEventReturn(childZIndex, getEntityId(), &ETUIElement::ET_getZIndex);
+    childZIndex += extraZOffset + 1;
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
@@ -227,8 +228,7 @@ void UILayout::calculateLayout() {
 }
 
 void UILayout::ET_onZIndexChanged(int newZIndex) {
-    auto childZIndex = UI::GetZIndexForChild(getEntityId());
-    childZIndex += extraZOffset;
+    int childZIndex = newZIndex + extraZOffset + 1;
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }

@@ -93,8 +93,10 @@ void UIScrollArea::alignTarget() {
     }
     ET_setScrollProgress(0.f);
 
-    auto childZIndex = UI::GetZIndexForChild(getEntityId());
-    childZIndex += extraZOffset;
+    int childZIndex = 0;
+    ET_SendEventReturn(childZIndex, getEntityId(), &ETUIElement::ET_getZIndex);
+    childZIndex += extraZOffset + 1;
+
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 
@@ -203,8 +205,7 @@ bool UIScrollArea::onMove(const Vec2& pt) {
 }
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
-    auto childZIndex = UI::GetZIndexForChild(getEntityId());
-    childZIndex += extraZOffset;
+    int childZIndex = newZIndex + extraZOffset + 1;
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 

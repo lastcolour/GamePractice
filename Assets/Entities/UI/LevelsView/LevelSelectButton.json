@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -65.0,
+                "x": -49.5,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -172,7 +172,7 @@
                         "transform": {
                           "pos": {
                             "x": 0.0,
-                            "y": 17.0,
+                            "y": 12.8699951171875,
                             "z": 0.0
                           },
                           "scale": {
@@ -217,14 +217,14 @@
                               "data": {
                                 "isVisible": false,
                                 "alpha": 1.0,
-                                "drawPriority": 9,
+                                "drawPriority": 4,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 42,
+                                "fontSize": 31.68000030517578,
                                 "text": "99"
                               }
                             }
@@ -235,7 +235,7 @@
                         "transform": {
                           "pos": {
                             "x": 0.0,
-                            "y": -26.0,
+                            "y": -18.5625,
                             "z": 0.0
                           },
                           "scale": {
@@ -258,7 +258,7 @@
                             {
                               "transform": {
                                 "pos": {
-                                  "x": -27.0,
+                                  "x": -19.800003051757812,
                                   "y": 0.0,
                                   "z": 0.0
                                 },
@@ -330,10 +330,10 @@
                                           "data": {
                                             "isVisible": false,
                                             "alpha": 1.0,
-                                            "drawPriority": 13,
+                                            "drawPriority": 6,
                                             "size": {
-                                              "x": 19.0,
-                                              "y": 19.0
+                                              "x": 13.860000610351562,
+                                              "y": 13.860000610351562
                                             },
                                             "tintColor": {
                                               "r": 252,
@@ -433,10 +433,10 @@
                                     "data": {
                                       "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 11,
+                                      "drawPriority": 5,
                                       "size": {
-                                        "x": 16.0,
-                                        "y": 16.0
+                                        "x": 11.880000114440918,
+                                        "y": 11.880000114440918
                                       },
                                       "tintColor": {
                                         "r": 195,
@@ -525,10 +525,10 @@
                                           "data": {
                                             "isVisible": false,
                                             "alpha": 1.0,
-                                            "drawPriority": 13,
+                                            "drawPriority": 6,
                                             "size": {
-                                              "x": 19.0,
-                                              "y": 19.0
+                                              "x": 13.860000610351562,
+                                              "y": 13.860000610351562
                                             },
                                             "tintColor": {
                                               "r": 252,
@@ -628,10 +628,10 @@
                                     "data": {
                                       "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 11,
+                                      "drawPriority": 5,
                                       "size": {
-                                        "x": 16.0,
-                                        "y": 16.0
+                                        "x": 11.880000114440918,
+                                        "y": 11.880000114440918
                                       },
                                       "tintColor": {
                                         "r": 195,
@@ -648,7 +648,7 @@
                             {
                               "transform": {
                                 "pos": {
-                                  "x": 27.0,
+                                  "x": 19.800003051757812,
                                   "y": 0.0,
                                   "z": 0.0
                                 },
@@ -720,10 +720,10 @@
                                           "data": {
                                             "isVisible": false,
                                             "alpha": 1.0,
-                                            "drawPriority": 13,
+                                            "drawPriority": 6,
                                             "size": {
-                                              "x": 19.0,
-                                              "y": 19.0
+                                              "x": 13.860000610351562,
+                                              "y": 13.860000610351562
                                             },
                                             "tintColor": {
                                               "r": 252,
@@ -823,10 +823,10 @@
                                     "data": {
                                       "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 11,
+                                      "drawPriority": 5,
                                       "size": {
-                                        "x": 16.0,
-                                        "y": 16.0
+                                        "x": 11.880000114440918,
+                                        "y": 11.880000114440918
                                       },
                                       "tintColor": {
                                         "r": 195,
@@ -952,10 +952,10 @@
                         "data": {
                           "isVisible": false,
                           "alpha": 1.0,
-                          "drawPriority": 11,
+                          "drawPriority": 7,
                           "size": {
-                            "x": 131.0,
-                            "y": 131.0
+                            "x": 99.0,
+                            "y": 99.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -1066,7 +1066,6 @@
                         "right": 0.0
                       }
                     },
-                    "label": [],
                     "pressSound": "buttonPress_01",
                     "event": "OnLevelsStartLevel"
                   }
@@ -1246,7 +1245,7 @@
                         "transform": {
                           "pos": {
                             "x": 0.0,
-                            "y": 14.0,
+                            "y": 10.348602294921875,
                             "z": 0.0
                           },
                           "scale": {
@@ -1291,14 +1290,14 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 9,
+                                "drawPriority": 4,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 42,
+                                "fontSize": 31.68000030517578,
                                 "text": "99"
                               }
                             }
@@ -1309,7 +1308,7 @@
                         "transform": {
                           "pos": {
                             "x": 0.0,
-                            "y": -21.0,
+                            "y": -15.592498779296875,
                             "z": 0.0
                           },
                           "scale": {
@@ -1354,14 +1353,14 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 9,
+                                "drawPriority": 4,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
                                   "b": 255,
                                   "a": 255
                                 },
-                                "fontSize": 19,
+                                "fontSize": 13.860000610351562,
                                 "text": "(Locked)"
                               }
                             }
@@ -1438,10 +1437,10 @@
                         "data": {
                           "isVisible": false,
                           "alpha": 1.0,
-                          "drawPriority": 11,
+                          "drawPriority": 7,
                           "size": {
-                            "x": 131.0,
-                            "y": 131.0
+                            "x": 99.0,
+                            "y": 99.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -1552,9 +1551,6 @@
                         "right": 0.0
                       }
                     },
-                    "label": [
-                      2
-                    ],
                     "pressSound": "buttonReject_01",
                     "event": "None"
                   }
@@ -1565,10 +1561,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 131.0,
-                      "y": 131.0
+                      "x": 99.0,
+                      "y": 99.0
                     },
                     "tintColor": {
                       "r": 117,
@@ -1809,8 +1805,8 @@
         "hidden": false,
         "enabled": true,
         "margin": {
-          "top": 4.0,
-          "bot": 4.0,
+          "top": 10.0,
+          "bot": 10.0,
           "left": 0.0,
           "right": 0.0
         }

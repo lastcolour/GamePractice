@@ -56,7 +56,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "fontSize": 16.0,
+                      "fontSize": 20.0,
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
@@ -73,14 +73,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 39,
+                    "drawPriority": 5,
                     "color": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 42,
+                    "fontSize": 125.4000015258789,
                     "text": "GO!"
                   }
                 },
@@ -100,8 +100,8 @@
                         "lerpMode": "Linear",
                         "duration": 0.0,
                         "offset": {
-                          "x": 20.0,
-                          "y": 0.0
+                          "x": 30.0,
+                          "y": -5.0
                         },
                         "scale": {
                           "x": 1.0,
@@ -137,9 +137,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 100.0,
+                "width": 120.0,
                 "widthInv": "Grid",
-                "height": 30.0,
+                "height": 35.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -170,7 +170,7 @@
                   "lerpMode": "Linear",
                   "duration": 0.0,
                   "offset": {
-                    "x": 50.0,
+                    "x": 70.0,
                     "y": -10.0
                   },
                   "scale": {
@@ -194,7 +194,7 @@
                 },
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.5,
+                  "duration": 0.699999988079071,
                   "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -209,8 +209,8 @@
                   "lerpMode": "Linear",
                   "duration": 0.30000001192092896,
                   "offset": {
-                    "x": -50.0,
-                    "y": 0.0
+                    "x": -70.0,
+                    "y": -10.0
                   },
                   "scale": {
                     "x": 0.699999988079071,
@@ -244,10 +244,10 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 35,
+              "drawPriority": 2,
               "size": {
-                "x": 261.0,
-                "y": 79.0
+                "x": 752.4000244140625,
+                "y": 219.44998168945312
               },
               "tintColor": {
                 "r": 255,

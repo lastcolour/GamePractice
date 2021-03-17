@@ -28,8 +28,6 @@ float ConvertValueFromGrid(float val);
 
 Vec2 CalculateBoxSize(const UIBoxStyle& style);
 
-int GetZIndexForChild(EntityId entityId);
-
 AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box);
 
 AABB2D ApplyEntityTmToBox(EntityId entityId, const AABB2D& box);

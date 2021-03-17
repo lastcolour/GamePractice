@@ -188,8 +188,10 @@ oboe::DataCallbackResult OboeAudioSystem::onAudioReady(oboe::AudioStream* outStr
     }
 
     if(bytesLeft > 0) {
-        LogError("[OboeAudioSystem::onAudioReady] Not enough data: %d", bytesLeft);
         std::fill_n(reinterpret_cast<int16_t*>(out + offset), bytesLeft / sizeof(int16_t), 0);
+        if(canMix.load()) {
+            LogError("[OboeAudioSystem::onAudioReady] Not enough data: %d", bytesLeft);
+        }
     }
 
     if(canMix.load()) {

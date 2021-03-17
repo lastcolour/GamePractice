@@ -24,11 +24,6 @@ protected:
     virtual void createSystemConfigs() const = 0;
     virtual void registerEntityLogics(EntityLogicsRegister& logicsRegister) const = 0;
 
-protected:
-
-    //virtual bool serializeConfigs();
-    //virtual JSONNode loadModuleConfigs();
-
 private:
 
     SystemModule() = delete;

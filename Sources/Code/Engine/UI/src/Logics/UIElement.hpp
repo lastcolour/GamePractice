@@ -27,7 +27,6 @@ public:
     EntityId ET_getHostLayout() const override;
     void ET_setZIndex(int newZIndex) override;
     int ET_getZIndex() const override;
-    int ET_getZIndexDepth() const override;
     void ET_show() override;
     void ET_hide() override;
     bool ET_isHidden() const override;

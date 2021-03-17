@@ -13,12 +13,12 @@ public:
     UIConfig();
     ~UIConfig();
 
-
     float getSizeOnGrid(float value) const;
     float convertFromGrid(float value) const;
 
 public:
 
+    Vec2i baseRatio;
     int horizontalGrid;
     UIViewConfig views;
 };

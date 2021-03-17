@@ -40,6 +40,9 @@ public:
         }
     }
 
+    TestSystemConfigs() :
+        configVal(1) {}
+
 public:
 
     int configVal;
@@ -67,14 +70,6 @@ protected:
     }
 
     void registerEntityLogics(EntityLogicsRegister& logicsRegister) const {}
-
-protected:
-
-    /*
-    JSONNode loadModuleConfigs() override {
-        return JSONNode::ParseString("{ \"TestSystemConfigs\": { \"configVal\" : 1 } }");
-    }
-    */
 };
 
 } // namespace
@@ -85,6 +80,7 @@ void SystemModuleTests::SetUp() {
 }
 
 void SystemModuleTests::TearDown() {
+    RemoveGlobal<TestSystemConfigs>();
 }
 
 TEST_F(SystemModuleTests, TestSystemModuleInitSuccess) {

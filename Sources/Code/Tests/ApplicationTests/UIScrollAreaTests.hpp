@@ -17,7 +17,10 @@ public:
 
 protected:
 
-    void SetUp();
+    static void SetUpTestCase();
+
+protected:
+
     TestContext createTestContext(const Vec2& parentBoxSize, const Vec2& childBoxSize, const UIScrollAreaStyle& scrollStyle);
 };
 

@@ -7,6 +7,10 @@
 class UILayoutTests : public ConsoleAppTests {
 protected:
 
+    static void SetUpTestCase();
+
+protected:
+
     Entity* createUILayoutBox();
     Entity* createUIBox(float width, float height);
     UILayout* addUILayout(Entity* entity, UILayoutType type, UIXAlign xAlign, UIYAlign yAlign);

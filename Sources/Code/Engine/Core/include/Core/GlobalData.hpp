@@ -2,6 +2,8 @@
 #define __GLOBAL_DATA_HPP__
 
 #include "Core/GlobalEnvironment.hpp"
+#include "Core/TypeId.hpp"
+#include "Reflect/ReflectUtils.hpp"
 #include "Reflect/ReflectContext.hpp"
 
 class GlobalData {
@@ -12,16 +14,18 @@ public:
 
     template<typename T>
     void create() {
-        ReflectContext ctx;
-        ctx.reflect<T>();
-        create(ctx.getRegisteredClassInfo());
+        create(ReflectUtils::GetOrCreateClassInfo<T>());
     }
 
     template<typename T>
     void createAndLoad(const char* fileName) {
-        ReflectContext ctx;
-        ctx.reflect<T>();
-        createAndLoad(ctx.getRegisteredClassInfo(), fileName);
+        createAndLoad(ReflectUtils::GetOrCreateClassInfo<T>(), fileName);
+    }
+
+    template<typename T>
+    void remove() {
+        auto typeId = GetTypeId<T>();
+        removeByTypeId(typeId);
     }
 
     template<typename T>
@@ -35,6 +39,7 @@ private:
     void createAndLoad(ClassInfo* classInfo, const char* fileName);
     void create(ClassInfo* classInfo);
     void* getByTypeId(TypeId typeId);
+    void removeByTypeId(TypeId typeId);
 
 private:
 
@@ -49,6 +54,11 @@ void CreateGlobal() {
 template<typename T>
 void CreateGlobal(const char* configFile) {
     GetEnv()->GetGlobalData()->createAndLoad<T>(configFile);
+}
+
+template<typename T>
+void RemoveGlobal() {
+    GetEnv()->GetGlobalData()->remove<T>();
 }
 
 template<typename T>

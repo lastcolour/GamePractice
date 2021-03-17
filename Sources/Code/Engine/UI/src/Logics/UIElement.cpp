@@ -74,10 +74,6 @@ int UIElement::ET_getZIndex() const {
     return zIndex;
 }
 
-int UIElement::ET_getZIndexDepth() const {
-    return 1;
-}
-
 void UIElement::ET_setLayoutPos(const Vec2& layoutPt) {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);

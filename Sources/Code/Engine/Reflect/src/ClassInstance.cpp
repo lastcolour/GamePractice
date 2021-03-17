@@ -55,6 +55,10 @@ bool ClassInstance::isInstanceOfType(TypeId typeId) const {
     return classInfo->getIntanceTypeId() == typeId;
 }
 
+ClassInfo* ClassInstance::getClassInfo() {
+    return classInfo;
+}
+
 TypeId ClassInstance::getInstanceTypeId() const {
     if(!classInfo) {
         return InvalidTypeId;

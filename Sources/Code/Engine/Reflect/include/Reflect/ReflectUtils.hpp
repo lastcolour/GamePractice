@@ -1,6 +1,8 @@
 #ifndef __REFLECT_UTILS_HPP__
 #define __REFLECT_UTILS_HPP__
 
+#include "Reflect/ReflectContext.hpp"
+
 namespace ReflectUtils {
 
 ClassInfo* FindClassInfo(TypeId typeId);
@@ -35,6 +37,8 @@ bool LoadObjectFromAsset(T& object, const char* assetName) {
     auto classInfo = GetOrCreateClassInfo<T>();
     return ReadInstanceFromAsset(&object, classInfo, assetName);
 }
+
+bool LoadObjectFromAsset(ClassInstance& instance, const char* assetName);
 
 template<typename T>
 bool LoadObjectFromLocalFile(T& object, const char* fileName) {

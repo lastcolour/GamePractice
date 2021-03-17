@@ -32,9 +32,9 @@
               "hidden": true,
               "enabled": true,
               "style": {
-                "width": 110.0,
+                "width": 140.0,
                 "widthInv": "Grid",
-                "height": 25.0,
+                "height": 30.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -105,10 +105,10 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "drawPriority": 4,
+              "drawPriority": 2,
               "size": {
-                "x": 183.0,
-                "y": 45.0
+                "x": 105.0,
+                "y": 22.5
               },
               "tintColor": {
                 "r": 255,
@@ -163,7 +163,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 24,
+              "fontSize": 10.5,
               "text": "Start"
             }
           },
@@ -174,7 +174,7 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "fontSize": 12.0,
+                "fontSize": 14.0,
                 "margin": {
                   "top": 0.0,
                   "bot": 0.0,
@@ -197,9 +197,9 @@
         "hidden": false,
         "enabled": true,
         "style": {
-          "width": 110.0,
+          "width": 140.0,
           "widthInv": "Grid",
-          "height": 25.0,
+          "height": 30.0,
           "heightInv": "Grid",
           "margin": {
             "top": 0.0,
@@ -208,9 +208,6 @@
             "right": 0.0
           }
         },
-        "label": [
-          2
-        ],
         "pressSound": "buttonPress_01",
         "event": "OnMainViewStartGame"
       }
@@ -285,8 +282,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 288.0,
-          "y": 66.0
+          "x": 105.0,
+          "y": 22.5
         },
         "tintColor": {
           "r": 100,
@@ -298,6 +295,23 @@
         "horizontal": 0.30000001192092896,
         "vertical": 0.30000001192092896,
         "patchScale": 1.0
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 9,
+      "data": {
+        "extraZOffset": 0,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            2
+          ]
+        ]
       }
     }
   ]

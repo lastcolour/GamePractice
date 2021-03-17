@@ -101,11 +101,14 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
     return ctx;
 }
 
-void UIScrollAreaTests::SetUp() {
-    ConsoleAppTests::SetUp();
-    auto gridSize = GetGlobal<UIConfig>()->horizontalGrid;
-    Vec2i portSize(gridSize, gridSize);
-    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized, portSize);
+void UIScrollAreaTests::SetUpTestCase() {
+    ConsoleAppTests::SetUpTestCase();
+    auto uiConfig = GetGlobal<UIConfig>();
+
+    uiConfig->baseRatio = Vec2i(1);
+    Vec2i portSize(uiConfig->horizontalGrid);
+
+    ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
 }
 
 TEST_F(UIScrollAreaTests, CheckInitialPosition) {

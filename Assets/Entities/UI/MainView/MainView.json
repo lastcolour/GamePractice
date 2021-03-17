@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 277.0,
+          "y": 277.79998779296875,
           "z": 0.0
         },
         "scale": {
@@ -79,10 +79,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 6,
+                          "drawPriority": 3,
                           "size": {
-                            "x": 131.0,
-                            "y": 131.0
+                            "x": 118.80000305175781,
+                            "y": 118.80000305175781
                           },
                           "tintColor": {
                             "r": 255,
@@ -161,10 +161,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 157.0,
-                      "y": 157.0
+                      "x": 178.1999969482422,
+                      "y": 178.1999969482422
                     },
                     "tintColor": {
                       "r": 125,
@@ -224,7 +224,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -94.0,
+          "y": -92.60000610351562,
           "z": 0.0
         },
         "scale": {
@@ -313,7 +313,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -372.0,
+          "y": -370.3999938964844,
           "z": 0.0
         },
         "scale": {
@@ -336,7 +336,7 @@
           {
             "transform": {
               "pos": {
-                "x": -106.0,
+                "x": -79.19999694824219,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -388,10 +388,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 4,
                           "size": {
-                            "x": 40.0,
-                            "y": 40.0
+                            "x": 39.600006103515625,
+                            "y": 39.599998474121094
                           },
                           "tintColor": {
                             "r": 255,
@@ -409,9 +409,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 15.0,
+                            "width": 20.0,
                             "widthInv": "Grid",
-                            "height": 15.0,
+                            "height": 20.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -434,20 +434,17 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 30.0,
+                      "width": 40.0,
                       "widthInv": "Grid",
-                      "height": 30.0,
+                      "height": 40.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
                         "left": 0.0,
-                        "right": 10.0
+                        "right": 0.0
                       }
                     },
-                    "label": [
-                      1
-                    ],
                     "pressSound": "",
                     "event": "None"
                   }
@@ -458,10 +455,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 105.0
+                      "x": 79.19998931884766,
+                      "y": 79.20000457763672
                     },
                     "tintColor": {
                       "r": 143,
@@ -471,6 +468,23 @@
                     },
                     "image": "Images/block.png"
                   }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 6,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
                 }
               ]
             }
@@ -478,7 +492,7 @@
           {
             "transform": {
               "pos": {
-                "x": 13.0,
+                "x": 0.0,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -530,10 +544,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 4,
                           "size": {
-                            "x": 40.0,
-                            "y": 40.0
+                            "x": 39.59999084472656,
+                            "y": 39.599998474121094
                           },
                           "tintColor": {
                             "r": 255,
@@ -551,9 +565,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 15.0,
+                            "width": 20.0,
                             "widthInv": "Grid",
-                            "height": 15.0,
+                            "height": 20.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -576,20 +590,17 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 30.0,
+                      "width": 40.0,
                       "widthInv": "Grid",
-                      "height": 30.0,
+                      "height": 40.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
-                        "left": 0.0,
-                        "right": 10.0
+                        "left": 15.0,
+                        "right": 15.0
                       }
                     },
-                    "label": [
-                      1
-                    ],
                     "pressSound": "",
                     "event": "None"
                   }
@@ -600,10 +611,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 105.0
+                      "x": 79.19999694824219,
+                      "y": 79.20000457763672
                     },
                     "tintColor": {
                       "r": 143,
@@ -613,6 +624,23 @@
                     },
                     "image": "Images/block.png"
                   }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 6,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
                 }
               ]
             }
@@ -620,7 +648,7 @@
           {
             "transform": {
               "pos": {
-                "x": 132.0,
+                "x": 79.20001220703125,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -672,10 +700,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 4,
                           "size": {
-                            "x": 40.0,
-                            "y": 40.0
+                            "x": 39.600006103515625,
+                            "y": 39.599998474121094
                           },
                           "tintColor": {
                             "r": 255,
@@ -693,9 +721,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 15.0,
+                            "width": 20.0,
                             "widthInv": "Grid",
-                            "height": 15.0,
+                            "height": 20.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -718,9 +746,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 30.0,
+                      "width": 40.0,
                       "widthInv": "Grid",
-                      "height": 30.0,
+                      "height": 40.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 0.0,
@@ -729,9 +757,6 @@
                         "right": 0.0
                       }
                     },
-                    "label": [
-                      1
-                    ],
                     "pressSound": "",
                     "event": "None"
                   }
@@ -742,10 +767,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 53.0,
-                      "y": 53.0
+                      "x": 79.19998168945312,
+                      "y": 79.20000457763672
                     },
                     "tintColor": {
                       "r": 143,
@@ -754,6 +779,23 @@
                       "a": 255
                     },
                     "image": "Images/block.png"
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 6,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
                   }
                 }
               ]

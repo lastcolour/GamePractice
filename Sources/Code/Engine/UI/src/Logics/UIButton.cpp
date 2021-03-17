@@ -53,7 +53,6 @@ void UIButton::Reflect(ReflectContext& ctx) {
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
         classInfo->addBaseClass<UIBox>();
-        classInfo->addField("label", &UIButton::labelId);
         classInfo->addResourceField("pressSound", ResourceType::SoundEvent, &UIButton::setPressSound);
         classInfo->addField("event", &UIButton::eventType);
     }
@@ -69,10 +68,6 @@ UIButton::~UIButton() {
 }
 
 void UIButton::init() {
-    if(labelId == getEntityId()) {
-        LogWarning("[UIButton::init] Label should be other entity than this: '%s'", EntityUtils::GetEntityName(getEntityId()));
-        labelId = InvalidEntityId;
-    }
     UIBox::init();
     ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
 }
@@ -165,32 +160,8 @@ void UIButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animTyp
     ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
 }
 
-void UIButton::onZIndexChanged(int newZIndex) {
-    UIBox::onZIndexChanged(newZIndex);
-    auto labelZIndex = newZIndex + 1;
-    ET_SendEvent(labelId, &ETUIElement::ET_setZIndex, labelZIndex);
-    ET_SendEvent(labelId, &ETRenderNode::ET_setDrawPriority, labelZIndex);
-}
-
-int UIButton::ET_getZIndexDepth() const {
-    return 2;
-}
-
-void UIButton::onHide(bool flag) {
-    UIBox::onHide(flag);
-    if(flag) {
-        ET_SendEvent(labelId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(labelId, &ETRenderNode::ET_show);
-    }
-}
-
-void UIButton::onAlphaChanged(float newAlpha) {
-    UIBox::onAlphaChanged(newAlpha);
-    ET_SendEvent(labelId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
-}
-
 void UIButton::onDisabled(bool flag) {
+    UIBox::onDisabled(flag);
     if(flag) {
         ETNode<ETUIInteractionBox>::disconnect();
     } else {

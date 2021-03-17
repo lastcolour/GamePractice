@@ -30,70 +30,12 @@ SystemModule::~SystemModule() {
     }
 }
 
-/*
-JSONNode SystemModule::loadModuleConfigs() {
-    JSONNode node;
-    if(!ET_IsExistNode<ETAssets>()) {
-        LogError("[SystemModule::loadModuleConfigs] Can't load config for a module '%s' because ETAssets node does not exist",
-            name);
-        return node;
-    }
-    std::string configFile = StringFormat("%s/%s.json", MODULE_CONFIGS_DIR, name);
-    ET_SendEventReturn(node, &ETAssets::ET_loadJSONAsset, configFile.c_str());
-    return node;
-}
-
-
-bool SystemModule::serializeConfigs() {
-    ReflectContext ctx;
-    //reflectSystemConfigs(ctx);
-    auto configClass = ctx.getRegisteredClassInfo();
-    if(!configClass) {
-        return true;
-    }
-    auto node = loadModuleConfigs();
-    if(!node) {
-        LogError("[SystemModule::serializeConfigs] Can't init module without configs: %s", name);
-        return false;
-    }
-
-    if(!node.hasKey(configClass->getName())) {
-        LogError("[SystemModule::serializeConfigs] Can't get required field from config file: '%s'", configClass->getName());
-        return false;
-    }
-    auto classNode = node.object(configClass->getName());
-    if(!classNode) {
-        LogError("[SystemModule::serializeConfigs] Config field has non-object type: '%s'", configClass->getName());
-        return false;
-    }
-    auto configInstance = configClass->createInstance();
-    if(!configInstance.get()) {
-        LogError("[SystemModule::serializeConfigs] Can't create instance of module configs '%s' for module: '%s'",
-            configClass->getName(), name);
-        return false;
-    }
-    SerializeContext serCtx;
-    serCtx.entityId = InvalidEntityId;
-    if(!configInstance.readAllValuesFrom(serCtx, classNode)) {
-        LogError("[SystemModule::serializeConfigs] Can't read values of instance of module configs '%s' for module: '%s'",
-            configClass->getName(), name);
-        return false;
-    }
-    ET_SendEvent(&ETModuleSharedManager::ET_registerShared, configInstance);
-    return true;
-}
-*/
-
 bool SystemModule::init() {
     assert(!isInitialized && "Dobule module initializetion");
 
     auto initStarT = TimePoint::GetNowTime();
 
-    /*
-    if(!serializeConfigs()) {
-        return false;
-    }
-    */
+    createSystemConfigs();
 
     if(logicsContainer) {
         LogError("[SystemModule::init] Double init of module: '%s'", name);

@@ -50,6 +50,7 @@ public:
 
     void* get();
 
+    ClassInfo* getClassInfo();
     TypeId getInstanceTypeId() const;
     bool readAllValuesFrom(const SerializeContext& ctx, const JSONNode& node);
     bool readAllValuesFrom(const SerializeContext& ctx, MemoryStream& stream);

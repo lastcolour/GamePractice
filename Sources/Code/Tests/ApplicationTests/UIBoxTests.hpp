@@ -8,7 +8,7 @@ class UIBox;
 class UIBoxTests : public ConsoleAppTests {
 protected:
 
-    void SetUp() override;
+    static void SetUpTestCase();
 
 protected:
 

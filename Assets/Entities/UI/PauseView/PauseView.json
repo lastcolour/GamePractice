@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 63.0,
+                "y": 23.25,
                 "z": 0.0
               },
               "scale": {
@@ -80,7 +80,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 8.0,
+                            "fontSize": 10.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -97,14 +97,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 4,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 7.5,
                           "text": "Resume"
                         }
                       }
@@ -120,9 +120,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 120.0,
+                      "width": 140.0,
                       "widthInv": "Grid",
-                      "height": 20.0,
+                      "height": 25.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 4.0,
@@ -131,9 +131,6 @@
                         "right": 0.0
                       }
                     },
-                    "label": [
-                      1
-                    ],
                     "pressSound": "buttonPress_01",
                     "event": "OnPauseViewResume"
                   }
@@ -144,10 +141,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 314.0,
-                      "y": 53.0
+                      "x": 105.0,
+                      "y": 18.75
                     },
                     "tintColor": {
                       "r": 234,
@@ -201,6 +198,23 @@
                       }
                     ]
                   }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 4,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
                 }
               ]
             }
@@ -209,7 +223,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -65.0,
+                "y": -26.25,
                 "z": 0.0
               },
               "scale": {
@@ -261,7 +275,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 8.0,
+                            "fontSize": 10.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -278,14 +292,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 4,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 7.5,
                           "text": "Exit"
                         }
                       }
@@ -301,9 +315,9 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 120.0,
+                      "width": 140.0,
                       "widthInv": "Grid",
-                      "height": 20.0,
+                      "height": 25.0,
                       "heightInv": "Grid",
                       "margin": {
                         "top": 4.0,
@@ -312,9 +326,6 @@
                         "right": 0.0
                       }
                     },
-                    "label": [
-                      1
-                    ],
                     "pressSound": "buttonPress_01",
                     "event": "OnPauseViewExit"
                   }
@@ -325,10 +336,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 314.0,
-                      "y": 53.0
+                      "x": 105.0,
+                      "y": 18.75
                     },
                     "tintColor": {
                       "r": 234,
@@ -382,6 +393,23 @@
                       }
                     ]
                   }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 4,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
                 }
               ]
             }
@@ -390,7 +418,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -1.0,
+                "y": -1.5,
                 "z": 0.0
               },
               "scale": {
@@ -442,7 +470,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 8.0,
+                            "fontSize": 10.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -459,14 +487,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 5,
+                          "drawPriority": 4,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 21,
+                          "fontSize": 9.0,
                           "text": "Restart"
                         }
                       }
@@ -482,20 +510,17 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 120.0,
+                      "width": 140.0,
                       "widthInv": "Grid",
-                      "height": 20.0,
+                      "height": 25.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 4.0,
-                        "bot": 4.0,
+                        "top": 8.0,
+                        "bot": 8.0,
                         "left": 0.0,
                         "right": 0.0
                       }
                     },
-                    "label": [
-                      1
-                    ],
                     "pressSound": "buttonPress_01",
                     "event": "OnPauseViewRestart"
                   }
@@ -506,10 +531,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 314.0,
-                      "y": 53.0
+                      "x": 105.0,
+                      "y": 18.75
                     },
                     "tintColor": {
                       "r": 234,
@@ -563,6 +588,23 @@
                       }
                     ]
                   }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 4,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
                 }
               ]
             }
@@ -576,9 +618,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 130.0,
+                "width": 160.0,
                 "widthInv": "Grid",
-                "height": 110.0,
+                "height": 120.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -617,11 +659,11 @@
             "id": 4,
             "data": {
               "isVisible": true,
-              "alpha": 0.8999999761581421,
-              "drawPriority": 2,
+              "alpha": 0.9,
+              "drawPriority": 1,
               "size": {
-                "x": 366.0,
-                "y": 288.0
+                "x": 120.0,
+                "y": 90.0
               },
               "tintColor": {
                 "r": 35,
@@ -630,9 +672,9 @@
                 "a": 255
               },
               "image": "Images/block.png",
-              "horizontal": 0.30000001192092896,
-              "vertical": 0.30000001192092896,
-              "patchScale": 0.699999988079071
+              "horizontal": 0.3,
+              "vertical": 0.3,
+              "patchScale": 0.7
             }
           }
         ]

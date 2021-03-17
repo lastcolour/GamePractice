@@ -16,18 +16,21 @@ void CheckBoxSize(const AABB2D& box, const Vec2i& exSize) {
 }
 
 void CheckBoxCenter(const AABB2D box, const Vec2i& exCenter) {
-    auto center = box.getSize();
+    auto center = box.getCenter();
     EXPECT_FLOAT_EQ(center.x, static_cast<float>(exCenter.x));
     EXPECT_FLOAT_EQ(center.y, static_cast<float>(exCenter.y));
 }
 
 } // namespace
 
-void UIBoxTests::SetUp() {
-    ConsoleAppTests::SetUp();
-    auto gridSize = GetGlobal<UIConfig>()->horizontalGrid;
-    Vec2i portSize(gridSize, gridSize);
-    ET_SendEvent(&ETRenderCameraEvents::ET_onRenderPortResized, portSize);
+void UIBoxTests::SetUpTestCase() {
+    ConsoleAppTests::SetUpTestCase();
+    auto uiConfig = GetGlobal<UIConfig>();
+
+    uiConfig->baseRatio = Vec2i(1);
+    Vec2i portSize(uiConfig->horizontalGrid);
+
+    ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
 }
 
 UIBox* UIBoxTests::createUIBox() {

@@ -24,9 +24,6 @@ public:
     void init() override;
     void deinit() override;
 
-    // ETUIElement
-    int ET_getZIndexDepth() const override;
-
     // ETUIInteractionBox
     EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
 
@@ -38,9 +35,6 @@ public:
 
 protected:
 
-    void onZIndexChanged(int newZIndex) override;
-    void onHide(bool flag) override;
-    void onAlphaChanged(float newAlpha) override;
     void onDisabled(bool flag) override;
 
 private:
@@ -53,7 +47,6 @@ private:
 
 private:
 
-    EntityId labelId;
     Vec2i pressPt;
     TimePoint pressTime;
     UIEvent::EventType eventType;

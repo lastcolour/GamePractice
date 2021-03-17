@@ -88,4 +88,8 @@ bool ReadInstanceFromAsset(void* object, ClassInfo* classInfo, const char* asset
     return true;
 }
 
+bool LoadObjectFromAsset(ClassInstance& instance, const char* assetName) {
+    return ReadInstanceFromAsset(instance.get(), instance.getClassInfo(), assetName);
+}
+
 } // namespace ReflectUtils

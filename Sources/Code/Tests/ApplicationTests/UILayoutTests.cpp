@@ -5,6 +5,7 @@
 #include "Config/UIConfig.hpp"
 #include "Logics/UILayoutBox.hpp"
 #include "Core/ETApplication.hpp"
+#include "Core/GlobalData.hpp"
 
 namespace {
 
@@ -45,6 +46,16 @@ public:
 };
 
 } // namespace
+
+void UILayoutTests::SetUpTestCase() {
+    ConsoleAppTests::SetUpTestCase();
+    auto uiConfig = GetGlobal<UIConfig>();
+
+    uiConfig->baseRatio = Vec2i(1);
+    Vec2i portSize(uiConfig->horizontalGrid);
+
+    ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
+}
 
 Entity* UILayoutTests::createUIBox(float width, float height) {
     auto entity = createVoidObject();
@@ -112,7 +123,7 @@ TEST_F(UILayoutTests, CheckVerticalLayout) {
             Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
     {
-        CheckUIBox(firstChild->getEntityId(), Vec2(viewPort.x / 2.f, 3.f * viewPort.y / 8.f),
+        CheckUIBox(secondChild->getEntityId(), Vec2(viewPort.x / 2.f, 3.f * viewPort.y / 8.f),
             Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
 }
@@ -135,7 +146,7 @@ TEST_F(UILayoutTests, CheckHorizontalLayout) {
             Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
     {
-        CheckUIBox(firstChild->getEntityId(), Vec2(5.f * viewPort.x / 8.f, viewPort.y / 2.f),
+        CheckUIBox(secondChild->getEntityId(), Vec2(5.f * viewPort.x / 8.f, viewPort.y / 2.f),
             Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
     }
 }

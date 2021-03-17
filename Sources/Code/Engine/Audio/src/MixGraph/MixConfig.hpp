@@ -6,7 +6,7 @@ struct MixConfig {
     int maxSources {32};
     int channels {2};
     int buffersCount {4};
-    int samplesPerBuffer {720};
+    int samplesPerBuffer {800};
     int samplesPerBurst {0};
 };
 

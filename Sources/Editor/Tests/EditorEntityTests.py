@@ -37,7 +37,7 @@ class EditorEntityTest(unittest.TestCase):
         return self._getEditor().getEntityLoader()
 
     def testAllLogicMemoryLayout(self):
-        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Simple.json")
         self.assertTrue(entity.loadToNative())
         self.assertTrue(entity.isLoadedToNative())
         moduleLogics = self._getEditor().getReflectModel().getAllRegisteredLogics()
@@ -56,7 +56,7 @@ class EditorEntityTest(unittest.TestCase):
             entity.removeLogic(logic.getNativeId())
 
     def testIfModifiedAfterAddRemoveLogic(self):
-        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Simple.json")
         self.assertTrue(entity.loadToNative())
         self.assertFalse(entity.isModified())
         logic = entity.addLogic("RenderSimple")
@@ -65,15 +65,15 @@ class EditorEntityTest(unittest.TestCase):
         self.assertTrue(entity.isModified())
 
     def testIfModifiedAfterAddRemoveChild(self):
-        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Simple.json")
         self.assertTrue(entity.loadToNative())
-        childEntity = entity.addChildEntity("Game/Void.json")
+        childEntity = entity.addChildEntity("Entities/Game/Void.json")
         self.assertTrue(entity.isModified())
         entity.removeChildEntity(childEntity)
         self.assertTrue(entity.isModified())
 
     def testSaveEntity(self):
-        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Simple.json")
         res = entity.dumpToDict()
         self.assertIsNotNone(res)
         self.assertIn("children", res)
@@ -110,27 +110,8 @@ class EditorEntityTest(unittest.TestCase):
 
         self.assertEqual(res, fileData)
 
-    def testLogicWithArray(self):
-        entity = self._getEntityLoader().loadEntity("Game/Simple.json")
-        self.assertTrue(entity.loadToNative())
-        logic = entity.addLogic("UILayout")
-        self.assertIsNotNone(logic)
-        values = logic.getValues()
-        self.assertTrue(len(values) > 1)
-        arrayVal = values[1]
-        self.assertEqual(arrayVal.getType(), ValueType.Array)
-        elemCount = arrayVal.getValues()
-        self.assertEqual(len(elemCount), 0)
-        newElemVal = arrayVal.addNewElement()
-        self.assertIsNotNone(newElemVal)
-        self.assertEqual(newElemVal.getType(), ValueType.Entity)
-        self.assertEqual(newElemVal.getName(), "[0]")
-        arrayVal.removeElement(newElemVal)
-        elemCount = arrayVal.getValues()
-        self.assertEqual(len(elemCount), 0)
-
     def testCreateInternalChild(self):
-        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Void.json")
         self.assertTrue(entity.loadToNative())
         childEntity = entity.createNewInternalChild("Test")
         tmLogic = childEntity.getTransformLogic()
@@ -143,7 +124,7 @@ class EditorEntityTest(unittest.TestCase):
         self.assertEqual(childEntity.getName(), "NewTest")
 
     def testCreateChildFromData(self):
-        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Void.json")
         self.assertTrue(entity.loadToNative())
         voidData = entity.dumpToDict()
 
@@ -159,7 +140,7 @@ class EditorEntityTest(unittest.TestCase):
         self.assertEqual(len(res['children']), 2)
 
     def testChangeEntityRotation(self):
-        entity = self._getEntityLoader().loadEntity("Game/Void.json")
+        entity = self._getEntityLoader().loadEntity("Entities/Game/Void.json")
         self.assertTrue(entity.loadToNative())
         rotValue = None
         for v in entity._tmLogic.getValues():

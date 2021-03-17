@@ -39,13 +39,19 @@ public:
     std::vector<UIEvent> eventQueue;
 };
 
+void UIButtonTests::SetUpTestCase() {
+    ConsoleAppTests::SetUpTestCase();
+    auto uiConfig = GetGlobal<UIConfig>();
+
+    uiConfig->baseRatio = Vec2i(1);
+    Vec2i portSize(uiConfig->horizontalGrid);
+
+    ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
+}
+
 void UIButtonTests::SetUp() {
     ConsoleAppTests::SetUp();
     buttonListener.reset(new TestButtonEventListener);
-
-    auto gridSize = GetGlobal<UIConfig>()->horizontalGrid;
-    Vec2i portSize(gridSize, gridSize);
-    ET_SendEvent(&ETUIViewPort::ET_setViewPort, portSize);
 }
 
 void UIButtonTests::TearDown() {

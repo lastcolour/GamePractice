@@ -15,7 +15,6 @@ struct ETUIElement {
     virtual EntityId ET_getHostLayout() const = 0;
     virtual void ET_setZIndex(int newZIndex) = 0;
     virtual int ET_getZIndex() const = 0;
-    virtual int ET_getZIndexDepth() const = 0;
     virtual void ET_setAlpha(float newAlpha) = 0;
     virtual float ET_getAlpha() const = 0;
     virtual void ET_show() = 0;

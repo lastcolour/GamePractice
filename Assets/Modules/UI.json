@@ -1,14 +1,13 @@
 {
-    "UIConfig":{
-        "horizontalGrid":200,
-        "views":{
-            "backgroundView":"Entities/UI/BackgroundView/BackgroundView.json",
-            "mainView":"Entities/UI/MainView/MainView.json",
-            "gameView":"Entities/UI/GameView/GameView.json",
-            "endGameView":"Entities/UI/GameEndView/GameEndView.json",
-            "loadingView":"Entities/UI/LoadingView/LoadingView.json",
-            "pauseView":"Entities/UI/PauseView/PauseView.json",
-            "levelsView":"Entities/UI/LevelsView/LevelsView.json"
-        }
+    "horizontalGrid":200,
+    "baseRatio":{"x":16, "y":9},
+    "views":{
+        "backgroundView":"Entities/UI/BackgroundView/BackgroundView.json",
+        "mainView":"Entities/UI/MainView/MainView.json",
+        "gameView":"Entities/UI/GameView/GameView.json",
+        "endGameView":"Entities/UI/GameEndView/GameEndView.json",
+        "loadingView":"Entities/UI/LoadingView/LoadingView.json",
+        "pauseView":"Entities/UI/PauseView/PauseView.json",
+        "levelsView":"Entities/UI/LevelsView/LevelsView.json"
     }
 }

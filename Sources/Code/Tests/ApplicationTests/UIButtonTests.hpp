@@ -9,6 +9,10 @@ class TestButtonEventListener;
 class UIButtonTests : public ConsoleAppTests {
 protected:
 
+    static void SetUpTestCase();
+
+protected:
+
     void SetUp();
     void TearDown();
 

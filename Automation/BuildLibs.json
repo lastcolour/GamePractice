@@ -163,7 +163,7 @@
             "type":"CopyFiles",
             "dependOn":["Build OpenAL-Soft"],
             "data":{
-                "targets":["libopenal.so"],
+                "targets":["libopenal.so", "OpenAL*.dll"],
                 "from":"${libsBins}/OpenAL-Soft/Release",
                 "to":"${gameBinsRoot}/${buildType}",
                 "force":true

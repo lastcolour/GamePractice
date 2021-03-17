@@ -174,15 +174,6 @@ Vec2 CalculateBoxSize(const UIBoxStyle& style) {
     return resSize;
 }
 
-int GetZIndexForChild(EntityId entityId) {
-    int zIndex = 0;
-    int zIndexDepth = 0;
-    ET_SendEventReturn(zIndex, entityId, &ETUIElement::ET_getZIndex);
-    ET_SendEventReturn(zIndexDepth, entityId, &ETUIElement::ET_getZIndexDepth);
-    int childZIndex = zIndex + zIndexDepth + 1;
-    return childZIndex;
-}
-
 AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box) {
     Transform tm;
     ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);

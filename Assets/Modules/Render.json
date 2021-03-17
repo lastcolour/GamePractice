@@ -1,6 +1,4 @@
 {
-    "RenderConfig":{
-        "defaultFont":"Render/Fonts/OpenSans-Regular.ttf",
-        "defaultFontSize":64
-    }
+    "defaultFont":"Render/Fonts/OpenSans-Regular.ttf",
+    "defaultFontSize":64
 }
