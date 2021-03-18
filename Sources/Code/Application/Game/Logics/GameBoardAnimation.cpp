@@ -18,6 +18,7 @@ GameBoardAnimation::~GameBoardAnimation() {
 
 void GameBoardAnimation::init() {
     ETNode<ETGameBoardAnimation>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
 }
 
 void GameBoardAnimation::deinit() {
@@ -45,7 +46,7 @@ void GameBoardAnimation::ET_zoomOut() {
     ETNode<ETGameTimerEvents>::connect(getEntityId());
 }
 
-void GameBoardAnimation::ET_resetZoom() {
+void GameBoardAnimation::ET_onStartLoading() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
     tm.scale = Vec3(1.f);

@@ -19,17 +19,19 @@ void setElemState(EntityId elemId, EBoardElemState state) {
     ET_SendEvent(elemId, &ETGameBoardElem::ET_setElemState, state);
 }
 
+const int BACKGROUND_Z_INDEX = 0;
+const int ELEMENT_Z_INDEX = 2;
+
 } // namespace
 
 GameBoardLogic::GameBoardLogic() :
-    boardBox(Vec2i(0), Vec2i(0)),
+    boardBox(0),
     boardSize(0),
     objectSize(0.f),
     cellScale(0.9f),
     moveSpeed(1.f),
     moveAccel(4.f),
     cellSize(0),
-    zBackgroundIndex(0),
     isElemMatchRequested(false),
     isBoardStatic(true),
     isElemMatchingBlocked(false) {
@@ -102,7 +104,6 @@ BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) const {
     elem.boardPt = boardPt;
     setElemBoardPos(elem, elem.boardPt);
     setElemState(elem.entId, EBoardElemState::Static);
-    ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, zBackgroundIndex + 1);
     ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
     ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
 
@@ -118,9 +119,9 @@ void GameBoardLogic::init() {
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
     visualBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
-    ET_onBoxChanged(visualBox);
-    ET_onZIndexChanged(0);
+    ET_resize(visualBox);
 
+    uiProxies.addItem(backgroundId, BACKGROUND_Z_INDEX);
     for(int i = 0; i < boardSize.x; ++i) {
         std::vector<BoardElement> column;
         for(int j = 0; j < boardSize.y; ++j) {
@@ -128,6 +129,7 @@ void GameBoardLogic::init() {
             if(!elem.entId.isValid()) {
                 return;
             } else {
+                uiProxies.addItem(elem.entId, ELEMENT_Z_INDEX);
                 column.push_back(elem);
             }
         }
@@ -218,6 +220,7 @@ void GameBoardLogic::respawnDestroyedElems() {
             if(elemState != EBoardElemState::Destroyed) {
                 ++it;
             } else {
+                uiProxies.removeItem(it->entId);
                 it = col.erase(it);
 
                 ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
@@ -226,6 +229,7 @@ void GameBoardLogic::respawnDestroyedElems() {
                     LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");
                     return;
                 }
+                uiProxies.addItem(elem.entId, ELEMENT_Z_INDEX);
 
                 auto& topElem = col.back();
                 ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
@@ -348,7 +352,7 @@ void GameBoardLogic::ET_setBlockElemMatching(bool flag) {
     isElemMatchingBlocked = flag;
 }
 
-void GameBoardLogic::ET_onBoxChanged(const AABB2D& newAabb) {
+void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
     auto aabbSize = newAabb.getSize();
 
     assert(aabbSize.x > 0 && "Invalid size of game board box");
@@ -376,62 +380,6 @@ void GameBoardLogic::ET_onBoxChanged(const AABB2D& newAabb) {
     }
 }
 
-void GameBoardLogic::ET_onZIndexChanged(int newZIndex) {
-    zBackgroundIndex = newZIndex;
-    ET_SendEvent(backgroundId, &ETRenderNode::ET_setDrawPriority, zBackgroundIndex);
-    for(auto& col : columns) {
-        for(auto& elem : col) {
-            ET_SendEvent(elem.entId, &ETRenderNode::ET_setDrawPriority, zBackgroundIndex + 1);
-        }
-    }
-}
-
-void GameBoardLogic::ET_onAlphaChanged(float newAlpha) {
-    ET_SendEvent(backgroundId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
-    for(auto& col : columns) {
-        for(auto& elem : col) {
-            ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
-        }
-    }
-}
-
-void GameBoardLogic::ET_onHidden(bool flag) {
-    if(flag) {
-        ET_SendEvent(backgroundId, &ETRenderNode::ET_hide);
-        for(auto& col : columns) {
-            for(auto& elem : col) {
-                ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
-            }
-        }
-    } else {
-        ET_SendEvent(backgroundId, &ETRenderNode::ET_show);
-        for(auto& col : columns) {
-            for(auto& elem : col) {
-                ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
-            }
-        }
-    }
-}
-
 void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
-    ETNode<ETUIElementEvents>::disconnect();
-    uiBoxId = rootUIElementId;
-
-    int zIndex = 0;
-    ET_SendEventReturn(zIndex, uiBoxId, &ETUIElement::ET_getZIndex);
-    ET_onZIndexChanged(zIndex);
-
-    bool isHidden = false;
-    ET_SendEventReturn(isHidden, uiBoxId, &ETUIElement::ET_isHidden);
-    ET_onHidden(isHidden);
-
-    float alpha = 1.f;
-    ET_SendEventReturn(alpha, uiBoxId, &ETUIElement::ET_getAlpha);
-    ET_onAlphaChanged(alpha);
-
-    AABB2D aabb;
-    ET_SendEventReturn(aabb, uiBoxId, &ETUIElement::ET_getBox);
-    ET_onBoxChanged(aabb);
-
-    ETNode<ETUIElementEvents>::connect(uiBoxId);
+    uiProxies.setUIParent(rootUIElementId);
 }

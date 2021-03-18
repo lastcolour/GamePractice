@@ -35,6 +35,8 @@ void GameBoardSpawner::ET_loadPendingLevel() {
         return;
     }
 
+    ET_SendEvent(&ETGameBoardSpawnerEvents::ET_onStartLoading);
+
     ET_SendEventReturn(gameBoardId, &ETEntityManager::ET_createEntity, gameBoardName.c_str());
     if(!gameBoardId.isValid()) {
         LogWarning("[GameBoardSpawner::ET_loadPendingLevel] Can't load pending level: '%s'", gameBoardName);
@@ -42,14 +44,22 @@ void GameBoardSpawner::ET_loadPendingLevel() {
     }
 
     Transform tm;
-
-    ET_SendEvent(&ETGameBoardAnimation::ET_resetZoom);
-
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
     ET_SendEvent(gameBoardId, &ETEntity::ET_setTransform, tm);
     ET_SendEvent(gameBoardId, &ETEntity::ET_setParent, getEntityId());
 
+    AABB2D box(0.f);
+    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
+    ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, box);
+
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());
+}
+
+void GameBoardSpawner::ET_onBoxChanged(const AABB2D& newAabb) {
+    if(!gameBoardId.isValid()) {
+        return;
+    }
+    ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, newAabb);
 }
 
 void GameBoardSpawner::ET_unloadLevel() {
@@ -63,6 +73,7 @@ void GameBoardSpawner::ET_unloadLevel() {
 
 void GameBoardSpawner::init() {
     ETNode<ETGameBoardSpawner>::connect(getEntityId());
+    ETNode<ETUIElementEvents>::connect(getEntityId());
 }
 
 void GameBoardSpawner::deinit() {

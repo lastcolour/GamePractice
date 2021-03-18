@@ -161,14 +161,14 @@
         "purpleDestroyEffectId": [
           3
         ],
-        "destroyEffectScale": 250.0
+        "destroyEffectScale": 0.07999999821186066
       }
     },
     {
       "type": "GameBoardInteraction",
       "id": 4,
       "data": {
-        "switchDuration": 0.30000001192092896,
+        "switchDuration": 0.20000000298023224,
         "switchSound": "elemSwitch_01"
       }
     },
@@ -176,8 +176,8 @@
       "type": "GameBoardAnimation",
       "id": 5,
       "data": {
-        "minScale": 0.800000011920929,
-        "scaleDuration": 0.30000001192092896
+        "minScale": 0.699999988079071,
+        "scaleDuration": 0.4000000059604645
       }
     },
     {
@@ -185,8 +185,8 @@
       "id": 6,
       "data": {
         "highlightEntity": "Entities/Game/CellHighlighter.json",
-        "fadeOutDuration": 2.0,
-        "cellScale": 0.949999988079071
+        "fadeOutDuration": 1.0,
+        "cellScale": 0.800000011920929
       }
     }
   ]

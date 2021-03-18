@@ -11,6 +11,10 @@ template<typename T>
 class Vector2 {
 public:
 
+    using ValueType = T;
+
+public:
+
     Vector2() = default;
     Vector2(T valX, T valY) : x(valX), y(valY) {}
     explicit Vector2(T val) : x(val), y(val) {}
@@ -96,6 +100,10 @@ public:
 
 template<typename T>
 class Vector3 {
+public:
+
+    using ValueType = T;
+
 public:
 
     Vector3() = default;
@@ -204,6 +212,10 @@ public:
 
 template<typename T>
 class Vector4 {
+public:
+
+    using ValueType = T;
+
 public:
 
     Vector4() = default;

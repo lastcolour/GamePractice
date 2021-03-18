@@ -17,12 +17,14 @@ include_directories(
 file(GLOB UI_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Helpers/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Config/*.cpp)
 
 file(GLOB UI_HEADERS
     ${UI_INCLUDE_DIR}/UI/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Helpers/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Config/*.hpp)
 
 add_library(${PROJECT_NAME} STATIC ${UI_SOURCES} ${UI_HEADERS})

@@ -261,7 +261,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 100000,
+        "drawPriority": 4,
         "emission": {
           "duration": 0.05000000074505806,
           "startDelay": 0.05000000074505806,

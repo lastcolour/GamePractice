@@ -14,7 +14,6 @@ const float MIN_MOVE_LEN_FOR_SWITCH = 0.6f;
 
 GameBoardInteractionLogic::GameBoardInteractionLogic() :
     startPt(0),
-    lastPt(0),
     switchDuration(0.3f) {
 }
 
@@ -87,10 +86,15 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
 }
 
 void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& pt) {
-    lastPt = pt;
+    bool isBoardStatic = false;
+    ET_SendEventReturn(isBoardStatic, &ETGameBoard::ET_isAllElemStatic);
+
     switch(actionType)
     {
     case EActionType::Press: {
+        if(!isBoardStatic) {
+            return;
+        }
         EntityId elemId;
         ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByPos, pt);
         if(!elemId.isValid()) {
@@ -105,11 +109,17 @@ void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& 
         break;
     }
     case EActionType::Move: {
-        tryFinishElemMove(pt);
+        if(!isBoardStatic) {
+            setActiveElem(InvalidEntityId);
+        } else {
+            tryFinishElemMove(pt);
+        }
         break;
     }
     case EActionType::Release: {
-        tryFinishElemMove(pt);
+        if(isBoardStatic) {
+            tryFinishElemMove(pt);
+        }
         setActiveElem(InvalidEntityId);
         break;
     }

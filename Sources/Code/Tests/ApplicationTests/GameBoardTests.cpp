@@ -308,7 +308,7 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     board->init();
 
     const auto& uiBox = uiBoxPtr->ET_getBox();
-    board->ET_onBoxChanged(uiBox);
+    board->ET_resize(uiBox);
 
     auto cellSize = board->getCellSize();
 

@@ -4,6 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameElem.hpp"
+#include "UI/UIProxyContainer.hpp"
 
 #include <unordered_set>
 
@@ -36,6 +37,7 @@ private:
 
 private:
 
+    UIProxyContainer uiProxies;
     EntityId redDestroyEffectId;
     EntityId blueDestroyEffectId;
     EntityId yellowDestroyEffectId;

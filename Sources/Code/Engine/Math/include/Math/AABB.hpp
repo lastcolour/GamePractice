@@ -31,13 +31,13 @@ public:
     }
 
     T getCenter() const {
-        return (top + bot) / static_cast<T>(2);
+        return (top + bot) / static_cast<typename T::ValueType>(2);
     }
 
     void setCenter(const T& pt) {
         T shift = pt - getCenter();
-        bot = bot + shift;
-        top = top + shift;
+        bot += shift;
+        top += shift;
     }
 
 public:

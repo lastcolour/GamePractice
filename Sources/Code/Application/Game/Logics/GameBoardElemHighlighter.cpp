@@ -2,6 +2,12 @@
 #include "Render/ETRenderNode.hpp"
 #include "Entity/ETEntityManger.hpp"
 
+namespace {
+
+const int HIGHLIGHT_ELEM_Z_INDEX = 1;
+
+} // namespace
+
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {
         classInfo->addResourceField("highlightEntity", ResourceType::Entity,
@@ -25,6 +31,7 @@ void GameBoardElemHighlighter::init() {
     }
     ETNode<ETGameBoardElemHighlighter>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
 }
 
 void GameBoardElemHighlighter::deinit() {
@@ -63,6 +70,8 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     freeElem->duration = 0.f;
     freeElem->state = State::FadeOut;
 
+    uiProxies.addItem(freeElem->entId, HIGHLIGHT_ELEM_Z_INDEX);
+
     Transform tm;
     ET_SendEventReturn(tm.pt, &ETGameBoard::ET_getPosFromBoardPos, cellPt);
     ET_SendEvent(freeElem->entId, &ETEntity::ET_setLocalTransform, tm);
@@ -71,12 +80,12 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
 
     float elemSize = cellSize * cellScale;
-    ET_SendEvent(freeElem->entId, &ETRenderNode::ET_setDrawPriority, 100000);
     ET_SendEvent(freeElem->entId, &ETRenderRect::ET_setSize, Vec2(elemSize));
     ET_SendEvent(freeElem->entId, &ETRenderNode::ET_show);
 }
 
 bool GameBoardElemHighlighter::createElemsPool() {
+    uiProxies.setUIParent(getEntityId());
     destroyAllElems();
     int poolSize = 10 * 10;
     for(int i = 0; i < poolSize; ++i) {
@@ -93,9 +102,10 @@ bool GameBoardElemHighlighter::createElemsPool() {
         elem.state = State::Finished;
         elem.duration = 0.f;
         elem.boardPt = Vec2i(-1);
+        elements.emplace_back(elem);
+
         ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
 
-        elements.emplace_back(elem);
     }
     return true;
 }
@@ -103,6 +113,7 @@ bool GameBoardElemHighlighter::createElemsPool() {
 void GameBoardElemHighlighter::destroyAllElems() {
     for(auto& elem : elements) {
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, elem.entId);
+        uiProxies.removeItem(elem.entId);
     }
     elements.clear();
 }
@@ -120,6 +131,11 @@ void GameBoardElemHighlighter::updateElem(HighlightElem& elem, float dt) {
     if(elem.duration > fadeOutDuration) {
         elem.state = State::Finished;
         elem.boardPt = Vec2i(-1);
+        uiProxies.removeItem(elem.entId);
         ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
     }
+}
+
+void GameBoardElemHighlighter::ET_onStartLoading() {
+    ET_onGameTick(1024.f);
 }

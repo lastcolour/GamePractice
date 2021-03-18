@@ -4,10 +4,12 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
+#include "UI/UIProxyContainer.hpp"
 
 class GameBoardElemHighlighter : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
-    public ETNode<ETGameBoardElemHighlighter> {
+    public ETNode<ETGameBoardElemHighlighter>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -26,6 +28,9 @@ public:
 
     // ETGameBoardElemHighlighter
     void ET_highlightCell(const Vec2i& cellPt) override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override;
 
 private:
 
@@ -49,6 +54,7 @@ private:
 
 private:
 
+    UIProxyContainer uiProxies;
     std::string highlightEntityName;
     std::vector<HighlightElem> elements;
     float fadeOutDuration;

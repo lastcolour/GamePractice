@@ -6,7 +6,7 @@
       "id": 1,
       "data": {
         "isVisible": true,
-        "alpha": 0.8999999761581421,
+        "alpha": 0.5,
         "drawPriority": 0,
         "size": {
           "x": 100.0,

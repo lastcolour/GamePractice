@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 3,
+              "drawPriority": 2,
               "emission": {
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
@@ -134,11 +134,11 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 2,
+        "drawPriority": 1,
         "emission": {
           "duration": -1.0,
           "startDelay": 0.0,
-          "autoStart": false,
+          "autoStart": true,
           "loop": false,
           "heating": true,
           "emitterSpace": "World",
@@ -151,11 +151,11 @@
           "emissionRate": 5.0,
           "direction": 90.0,
           "directionVar": 30.0,
-          "lifetime": 2.0,
+          "lifetime": 1.5,
           "lifetimeVar": 0.10000000149011612
         },
         "movement": {
-          "speed": 60.0,
+          "speed": 40.0,
           "speedVar": 0.10000000149011612,
           "initRotation": 30.0,
           "initRotationVar": 0.10000000149011612,
@@ -232,7 +232,7 @@
                 "y": 0.0
               },
               "dir": -90.0,
-              "value": 140.0,
+              "value": 30.0,
               "radius": -1.0
             }
           ]

@@ -57,7 +57,6 @@ private:
 private:
 
     Vec2i startPt;
-    Vec2i lastPt;
     EntityId activeElemId;
     float switchDuration;
     std::vector<SwitchTask> switchTasks;

@@ -4,8 +4,8 @@
 #include "Entity/EntityLogic.hpp"
 #include "Math/AABB.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "UI/ETUIBox.hpp"
 #include "Game/ETGameTimer.hpp"
+#include "UI/UIProxyContainer.hpp"
 
 struct BoardElement {
     Vec2i boardPt;
@@ -19,8 +19,7 @@ struct BoardElement {
 
 class GameBoardLogic : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
-    public ETNode<ETGameBoard>,
-    public ETNode<ETUIElementEvents> {
+    public ETNode<ETGameBoard> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -47,14 +46,7 @@ public:
     Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const override;
     void ET_setUIElement(EntityId rootUIElementId) override;
     bool ET_isAllElemStatic() const override;
-
-    // ETUIElementEvents
-    void ET_onBoxChanged(const AABB2D& newAabb) override;
-    void ET_onZIndexChanged(int newZIndex) override;
-    void ET_onAlphaChanged(float newAlpha) override;
-    void ET_onHidden(bool flag) override;
-    void ET_onDisabled(bool flag) override {}
-    void ET_onIngoreTransform(bool flag) override {}
+    void ET_resize(const AABB2D& newAabb) override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -74,17 +66,16 @@ protected:
 
 protected:
 
+    UIProxyContainer uiProxies;
     std::vector<std::vector<BoardElement>> columns;
     AABB2Di boardBox;
     Vec2i boardSize;
     Vec2 objectSize;
-    EntityId uiBoxId;
     EntityId backgroundId;
     float cellScale;
     float moveSpeed;
     float moveAccel;
     int cellSize;
-    int zBackgroundIndex;
     bool isElemMatchRequested;
     bool isBoardStatic;
     bool isElemMatchingBlocked;

@@ -7,7 +7,8 @@
 
 class GameBoardAnimation : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
-    public ETNode<ETGameBoardAnimation> {
+    public ETNode<ETGameBoardAnimation>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -23,7 +24,9 @@ public:
 
     // ETGameBoardAnimation
     void ET_zoomOut() override;
-    void ET_resetZoom() override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;

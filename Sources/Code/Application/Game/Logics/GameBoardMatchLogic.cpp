@@ -4,6 +4,12 @@
 
 #include <cassert>
 
+namespace {
+
+const int DESTROY_EFFECT_Z_INDEX = 3;
+
+} // namespace
+
 GameBoardMatchLogic::GameBoardMatchLogic() :
     destroyEffectScale(1.f),
     minLineLen(3),
@@ -26,6 +32,13 @@ void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
 
 void GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
+
+    uiProxies.addItem(redDestroyEffectId, DESTROY_EFFECT_Z_INDEX);
+    uiProxies.addItem(blueDestroyEffectId, DESTROY_EFFECT_Z_INDEX);
+    uiProxies.addItem(yellowDestroyEffectId, DESTROY_EFFECT_Z_INDEX);
+    uiProxies.addItem(greenDestroyEffectId, DESTROY_EFFECT_Z_INDEX);
+    uiProxies.addItem(purpleDestroyEffectId, DESTROY_EFFECT_Z_INDEX);
+    uiProxies.setUIParent(getEntityId());
 }
 
 void GameBoardMatchLogic::deinit() {
@@ -119,7 +132,7 @@ void GameBoardMatchLogic::ET_destoryMatchedElems() {
         Transform tm;
         ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
 
-        tm.scale *= destroyEffectScale / static_cast<float>(cellSize);
+        tm.scale = Vec3(cellSize * destroyEffectScale);
 
         triggerDestroyEffect(elemId, tm);
     }
