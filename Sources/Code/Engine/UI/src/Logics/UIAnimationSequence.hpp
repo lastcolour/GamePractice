@@ -38,6 +38,7 @@ public:
     void ET_setLooped(bool flag) override;
     void ET_addSubAnimation(EntityId subAnimId) override;
     void ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) override;
+    bool ET_isPlaying() const override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override {}
@@ -57,6 +58,7 @@ private:
     void resetAnimState();
     void processFrame(float dt, UIAnimationFrame& task);
     bool isAnimHasShowEvent() const;
+    bool canFinishAnim() const;
 
 private:
 
@@ -81,6 +83,9 @@ private:
     bool cyclic;
     bool autoStart;
     bool isPlaying;
+    bool disablePlaying;
+    bool waitChildren;
+    bool enableOnStop;
 };
 
 #endif /* __UI_ANIMATION_SEQUENCE_HPP__ */

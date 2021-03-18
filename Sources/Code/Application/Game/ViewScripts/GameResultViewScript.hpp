@@ -19,6 +19,7 @@ public:
     void ET_onViewOpened() override;
     void ET_onViewClosed() override;
     void ET_onViewGetFocus() override;
+    void ET_onViewLostFocus() override;
 
 protected:
 
@@ -31,7 +32,9 @@ private:
     ProgressionStars progressStars;
     EntityId continueButtonId;
     EntityId timeValueId;
+    EntityId timeBoxId;
     EntityId scoreValueId;
+    EntityId scoreBoxId;
     EntityId levelNameId;
     EntityId emitterId;
 };

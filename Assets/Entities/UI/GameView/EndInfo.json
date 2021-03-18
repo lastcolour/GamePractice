@@ -80,7 +80,7 @@
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 112.86000061035156,
+                    "fontSize": 46.97999954223633,
                     "text": "Success!"
                   }
                 },
@@ -92,6 +92,8 @@
                     "cyclic": false,
                     "type": "Appear",
                     "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "Show",
                     "endEvent": "None",
@@ -158,6 +160,8 @@
               "cyclic": false,
               "type": "Appear",
               "startDelay": 0.0,
+              "disablePlaying": false,
+              "waitChildren": false,
               "subAnimations": [
                 [
                   1
@@ -246,8 +250,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 752.4000244140625,
-                "y": 219.44998168945312
+                "x": 313.199951171875,
+                "y": 91.35000610351562
               },
               "tintColor": {
                 "r": 255,
@@ -291,6 +295,8 @@
         "cyclic": false,
         "type": "Appear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": true,
         "subAnimations": [
           [
             3
@@ -301,7 +307,7 @@
         "frames": [
           {
             "lerpMode": "Linear",
-            "duration": 1.600000023841858,
+            "duration": 0.0,
             "offset": {
               "x": 0.0,
               "y": 0.0

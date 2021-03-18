@@ -41,8 +41,8 @@
               "alpha": 0.800000011920929,
               "drawPriority": 0,
               "size": {
-                "x": 150.0,
-                "y": 150.0
+                "x": 600.0,
+                "y": 600.0
               },
               "tintColor": {
                 "r": 245,
@@ -73,13 +73,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 30
+          "minScore": 20
         },
         "twoStars": {
-          "minScore": 50
+          "minScore": 30
         },
         "threeStars": {
-          "minScore": 100
+          "minScore": 50
         }
       }
     },

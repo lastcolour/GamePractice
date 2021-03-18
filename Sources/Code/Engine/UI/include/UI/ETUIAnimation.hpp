@@ -27,6 +27,7 @@ struct ETUIAnimationSequence {
     virtual void ET_setType(EAnimSequenceType newType) = 0;
     virtual void ET_setLooped(bool flag) = 0;
     virtual void ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) = 0;
+    virtual bool ET_isPlaying() const = 0;
 };
 
 struct ETUIAnimationSequenceEvent {

@@ -145,6 +145,8 @@
                                 "cyclic": false,
                                 "type": "Appear",
                                 "startDelay": 0.30000001192092896,
+                                "disablePlaying": false,
+                                "waitChildren": false,
                                 "subAnimations": [],
                                 "startEvent": "Show",
                                 "endEvent": "None",
@@ -340,6 +342,8 @@
                                 "cyclic": false,
                                 "type": "Appear",
                                 "startDelay": 0.0,
+                                "disablePlaying": false,
+                                "waitChildren": false,
                                 "subAnimations": [],
                                 "startEvent": "Show",
                                 "endEvent": "None",
@@ -535,6 +539,8 @@
                                 "cyclic": false,
                                 "type": "Appear",
                                 "startDelay": 0.0,
+                                "disablePlaying": false,
+                                "waitChildren": false,
                                 "subAnimations": [],
                                 "startEvent": "Show",
                                 "endEvent": "None",
@@ -800,8 +806,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 277.20001220703125,
-                      "y": 49.5
+                      "x": 365.4000244140625,
+                      "y": 65.25
                     },
                     "tintColor": {
                       "r": 143,
@@ -823,6 +829,8 @@
                     "cyclic": false,
                     "type": "Press",
                     "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "None",
                     "endEvent": "None",
@@ -863,7 +871,9 @@
                     "autoStart": false,
                     "cyclic": false,
                     "type": "Appear",
-                    "startDelay": 0.30000001192092896,
+                    "startDelay": 0.0,
+                    "disablePlaying": true,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "Show",
                     "endEvent": "None",
@@ -1048,11 +1058,11 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.8,
+                    "alpha": 0.800000011920929,
                     "drawPriority": 2,
                     "size": {
-                      "x": 277.2,
-                      "y": 39.6
+                      "x": 105.0,
+                      "y": 15.0
                     },
                     "tintColor": {
                       "r": 255,
@@ -1061,9 +1071,9 @@
                       "a": 255
                     },
                     "image": "Images/block.png",
-                    "horizontal": 0.3,
-                    "vertical": 0.3,
-                    "patchScale": 0.9
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 0.8999999761581421
                   }
                 }
               ]
@@ -1073,7 +1083,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -5.6300048828125,
+                "y": -5.625,
                 "z": 0.0
               },
               "scale": {
@@ -1096,7 +1106,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -10.30999755859375,
+                      "x": -10.3125,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1159,7 +1169,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 3.839996337890625,
+                      "x": 3.84375,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1212,7 +1222,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 15.84000015258789,
+                          "fontSize": 6.0,
                           "text": "300"
                         }
                       }
@@ -1269,8 +1279,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 118.80001831054688,
-                      "y": 25.739990234375
+                      "x": 45.0,
+                      "y": 9.75
                     },
                     "tintColor": {
                       "r": 0,
@@ -1283,6 +1293,49 @@
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
                   }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 5,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Highlight",
+                    "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
+                    "subAnimations": [],
+                    "startEvent": "None",
+                    "endEvent": "None",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.15000000596046448,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.2000000476837158,
+                          "y": 1.2000000476837158
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.15000000596046448,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      }
+                    ]
+                  }
                 }
               ]
             }
@@ -1291,7 +1344,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -16.8800048828125,
+                "y": -16.875,
                 "z": 0.0
               },
               "scale": {
@@ -1487,8 +1540,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 118.80001831054688,
-                      "y": 25.739990234375
+                      "x": 45.0,
+                      "y": 9.75
                     },
                     "tintColor": {
                       "r": 0,
@@ -1500,6 +1553,49 @@
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
+                  }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 5,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Highlight",
+                    "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
+                    "subAnimations": [],
+                    "startEvent": "None",
+                    "endEvent": "None",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.15000000596046448,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.2000000476837158,
+                          "y": 1.2000000476837158
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.15000000596046448,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      }
+                    ]
                   }
                 }
               ]
@@ -1564,8 +1660,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 1,
               "size": {
-                "x": 297.0,
-                "y": 297.0
+                "x": 112.5,
+                "y": 112.5
               },
               "tintColor": {
                 "r": 239,
@@ -1587,6 +1683,8 @@
               "cyclic": false,
               "type": "Appear",
               "startDelay": 0.0,
+              "disablePlaying": false,
+              "waitChildren": false,
               "subAnimations": [],
               "startEvent": "Show",
               "endEvent": "None",
@@ -1628,6 +1726,8 @@
               "cyclic": false,
               "type": "Disappear",
               "startDelay": 0.0,
+              "disablePlaying": false,
+              "waitChildren": false,
               "subAnimations": [],
               "startEvent": "None",
               "endEvent": "Hide",
@@ -1650,6 +1750,29 @@
           }
         ]
       }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 2.0,
+          "y": 2.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/GameEndEffect.json",
+      "id": 2,
+      "internal": false
     }
   ],
   "logics": [
@@ -1698,13 +1821,13 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 396.0,
-          "y": 928.0
+          "x": 150.0,
+          "y": 504.0
         },
         "color": {
-          "r": 255,
-          "g": 255,
-          "b": 255,
+          "r": 0,
+          "g": 0,
+          "b": 0,
           "a": 255
         }
       }
@@ -1727,12 +1850,22 @@
           6,
           2
         ],
+        "timeBox": [
+          1,
+          6
+        ],
         "scoreValue": [
           1,
           5,
           2
         ],
-        "effect": [],
+        "scoreBox": [
+          1,
+          5
+        ],
+        "effect": [
+          2
+        ],
         "stars": {
           "first": [
             1,
@@ -1774,6 +1907,8 @@
         "cyclic": false,
         "type": "Appear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [
           [
             1
@@ -1819,6 +1954,8 @@
         "cyclic": false,
         "type": "Disappear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [
           [
             1
@@ -1840,6 +1977,23 @@
             },
             "alpha": 0.0
           }
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 9,
+      "data": {
+        "extraZOffset": 0,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            2
+          ]
         ]
       }
     }

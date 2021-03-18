@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 424.0,
+          "y": 467.0,
           "z": 0.0
         },
         "scale": {
@@ -27,8 +27,8 @@
           {
             "transform": {
               "pos": {
-                "x": -163.0,
-                "y": -61.0,
+                "x": -189.0,
+                "y": -70.5,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -42.0,
+                      "x": -45.28125,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -97,14 +97,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 61,
+                          "drawPriority": 58,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 14,
+                          "fontSize": 15.0,
                           "text": "Progress: "
                         }
                       }
@@ -114,7 +114,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 34.0,
+                      "x": 36.609375,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -160,14 +160,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 61,
+                          "drawPriority": 58,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 14,
+                          "fontSize": 15.0,
                           "text": "50% (15/30)"
                         }
                       }
@@ -222,10 +222,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8500000238418579,
-                    "drawPriority": 59,
+                    "drawPriority": 57,
                     "size": {
-                      "x": 183.0,
-                      "y": 34.0
+                      "x": 210.0,
+                      "y": 39.0
                     },
                     "tintColor": {
                       "r": 255,
@@ -247,6 +247,8 @@
                     "cyclic": false,
                     "type": "Highlight",
                     "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "None",
                     "endEvent": "None",
@@ -287,7 +289,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 5.0,
+                "y": 6.0,
                 "z": 0.0
               },
               "scale": {
@@ -356,14 +358,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 56,
+                          "drawPriority": 53,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 40,
+                          "fontSize": 45.0,
                           "text": "Intro"
                         }
                       }
@@ -415,10 +417,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.949999988079071,
-                    "drawPriority": 54,
+                    "drawPriority": 52,
                     "size": {
-                      "x": 261.0,
-                      "y": 53.0
+                      "x": 300.0,
+                      "y": 60.0
                     },
                     "tintColor": {
                       "r": 255,
@@ -499,6 +501,8 @@
               "cyclic": false,
               "type": "Appear",
               "startDelay": 0.0,
+              "disablePlaying": false,
+              "waitChildren": false,
               "subAnimations": [],
               "startEvent": "None",
               "endEvent": "None",
@@ -539,7 +543,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -33.0,
+          "y": -38.79998779296875,
           "z": 0.0
         },
         "scale": {
@@ -563,7 +567,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 274.0,
+                "y": 439.20001220703125,
                 "z": 0.0
               },
               "scale": {
@@ -587,7 +591,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -625.0,
+                      "y": -825.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -610,7 +614,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -486.0,
+                      "y": -645.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -633,7 +637,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -347.0,
+                      "y": -465.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -656,7 +660,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -208.0,
+                      "y": -285.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -679,7 +683,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": -69.0,
+                      "y": -105.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -702,7 +706,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 70.0,
+                      "y": 75.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -725,7 +729,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 209.0,
+                      "y": 255.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -748,7 +752,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 348.0,
+                      "y": 435.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -771,7 +775,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 487.0,
+                      "y": 615.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -794,7 +798,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 626.0,
+                      "y": 795.0,
                       "z": 0.0
                     },
                     "scale": {
@@ -1087,6 +1091,8 @@
         "cyclic": false,
         "type": "Appear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [
           [
             3
@@ -1132,6 +1138,8 @@
         "cyclic": false,
         "type": "Disappear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [],
         "startEvent": "None",
         "endEvent": "Hide",

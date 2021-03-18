@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -32.0,
+          "y": -18.0,
           "z": 0.0
         },
         "scale": {
@@ -49,14 +49,14 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 1,
               "color": {
                 "r": 255,
                 "g": 255,
                 "b": 255,
                 "a": 255
               },
-              "fontSize": 52,
+              "fontSize": 30.0,
               "text": "Loading..."
             }
           }
@@ -67,7 +67,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 31.0,
+          "y": 18.0,
           "z": 0.0
         },
         "scale": {
@@ -114,10 +114,10 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 1,
               "size": {
-                "x": 52.0,
-                "y": 52.0
+                "x": 30.0,
+                "y": 30.0
               },
               "tintColor": {
                 "r": 255,

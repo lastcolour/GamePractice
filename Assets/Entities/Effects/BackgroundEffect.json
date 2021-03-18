@@ -2,13 +2,6 @@
   "children": [],
   "logics": [
     {
-      "type": "UIRenderNormalizator",
-      "id": 2,
-      "data": {
-        "factor": 1.0
-      }
-    },
-    {
       "type": "ParticlesSystem",
       "id": 3,
       "data": {
@@ -214,6 +207,21 @@
             }
           ]
         }
+      }
+    },
+    {
+      "type": "UIElementProxy",
+      "id": 5,
+      "data": {
+        "proxies": [
+          {
+            "target": [
+              0
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 0
+          }
+        ]
       }
     }
   ]

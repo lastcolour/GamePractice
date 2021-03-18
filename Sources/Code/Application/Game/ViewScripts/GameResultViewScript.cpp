@@ -5,13 +5,16 @@
 #include "UI/ETUIAnimation.hpp"
 #include "Game/GameUtils.hpp"
 #include "Game/ETLevelProgress.hpp"
+#include "Render/ETParticlesSystem.hpp"
 
 void GameResultViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameResultViewScript>("GameResultViewScript")) {
         classInfo->addField("levelName", &GameResultViewScript::levelNameId);
         classInfo->addField("continueButton", &GameResultViewScript::continueButtonId);
         classInfo->addField("timeValue", &GameResultViewScript::timeValueId);
+        classInfo->addField("timeBox", &GameResultViewScript::timeBoxId);
         classInfo->addField("scoreValue", &GameResultViewScript::scoreValueId);
+        classInfo->addField("scoreBox", &GameResultViewScript::scoreBoxId);
         classInfo->addField("effect", &GameResultViewScript::emitterId);
         classInfo->addField("stars", &GameResultViewScript::progressStars);
     }
@@ -55,6 +58,10 @@ void GameResultViewScript::ET_onViewOpened() {
 
 void GameResultViewScript::ET_onViewClosed() {
     BaseViewScript::ET_onViewClosed();
+
+    eventSeq.forceFinish();
+
+    ET_SendEvent(emitterId, &ETParticlesSystem::ET_removeAll);
 }
 
 void GameResultViewScript::ET_onViewGetFocus() {
@@ -64,7 +71,7 @@ void GameResultViewScript::ET_onViewGetFocus() {
     ET_SendEventReturn(gameResult, &ETGameEndResult::ET_getLastGameResult);
     auto starsCount = GameUtils::ConvertToStarsCount(gameResult.objectiveCompleted);
 
-    ET_SendEvent(continueButtonId, &ETUIElement::ET_disable);
+    ET_SendEvent(emitterId, &ETParticlesSystem::ET_emit);
 
     if(starsCount > 0) {
         EventSequence::Event event;
@@ -86,12 +93,27 @@ void GameResultViewScript::ET_onViewGetFocus() {
     }
     {
         EventSequence::Event event;
+        event.targetId = scoreBoxId;
+        event.animType = EAnimSequenceType::Highlight;
+        eventSeq.addEvent(event);
+    }
+    {
+        EventSequence::Event event;
+        event.targetId = timeBoxId;
+        event.animType = EAnimSequenceType::Highlight;
+        eventSeq.addEvent(event);
+    }
+    {
+        EventSequence::Event event;
         event.targetId = continueButtonId;
         event.animType = EAnimSequenceType::Appear;
-        event.onEndCallback = [this](){
-            ET_SendEvent(continueButtonId, &ETUIElement::ET_enable);
-        };
         eventSeq.addEvent(event);
     }
     eventSeq.start();
+}
+
+void GameResultViewScript::ET_onViewLostFocus() {
+    BaseViewScript::ET_onViewLostFocus();
+
+    ET_SendEvent(emitterId, &ETParticlesSystem::ET_stopEmitting);
 }

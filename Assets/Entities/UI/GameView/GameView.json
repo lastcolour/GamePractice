@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 427.0,
+          "y": 471.0400390625,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": 475.0,
+                "x": 202.5,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -58.0,
+                      "x": -67.5,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -99,10 +99,10 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 6,
+                          "drawPriority": 3,
                           "size": {
-                            "x": 16.0,
-                            "y": 16.0
+                            "x": 18.0,
+                            "y": 18.0
                           },
                           "tintColor": {
                             "r": 255,
@@ -119,7 +119,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -21.0,
+                      "x": -26.25,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -165,14 +165,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 6,
+                          "drawPriority": 3,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
+                          "fontSize": 21.0,
                           "text": "Time:"
                         }
                       }
@@ -182,7 +182,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 32.0,
+                      "x": 19.9453125,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -219,7 +219,7 @@
                               "right": 0.0
                             }
                           },
-                          "text": "300.0"
+                          "text": "0.0"
                         }
                       },
                       {
@@ -228,15 +228,15 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 6,
+                          "drawPriority": 3,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 19,
-                          "text": "300.0"
+                          "fontSize": 21.0,
+                          "text": "0.0"
                         }
                       },
                       {
@@ -298,10 +298,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.30000001192092896,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 144.0,
-                      "y": 32.0
+                      "x": 165.0,
+                      "y": 36.0
                     },
                     "tintColor": {
                       "r": 0,
@@ -464,7 +464,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -4.0,
+          "y": -5.11993408203125,
           "z": 0.0
         },
         "scale": {
@@ -553,7 +553,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -435.0,
+          "y": -481.2799987792969,
           "z": 0.0
         },
         "scale": {
@@ -701,10 +701,7 @@
           2,
           3
         ],
-        "boardSpawner": [
-          3,
-          1
-        ],
+        "boardSpawner": [],
         "startInfo": [
           5
         ],
@@ -757,6 +754,8 @@
         "cyclic": false,
         "type": "Appear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [],
         "startEvent": "Show",
         "endEvent": "None",
@@ -798,6 +797,8 @@
         "cyclic": false,
         "type": "Disappear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [],
         "startEvent": "None",
         "endEvent": "Hide",

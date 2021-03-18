@@ -233,7 +233,7 @@ void ParticlesSystem::ET_stopEmitting() {
     emittersPool.asyncStopEmitting();
 }
 
-void ParticlesSystem::ET_destoryAll() {
+void ParticlesSystem::ET_removeAll() {
     pendingEmits.clear();
     if(!proxyNode) {
         return;

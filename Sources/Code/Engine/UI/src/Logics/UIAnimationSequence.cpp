@@ -97,6 +97,8 @@ void UIAnimationSequence::Reflect(ReflectContext& ctx) {
         classInfo->addField("cyclic", &UIAnimationSequence::cyclic);
         classInfo->addField("type", &UIAnimationSequence::seqType);
         classInfo->addField("startDelay", &UIAnimationSequence::startDelay);
+        classInfo->addField("disablePlaying", &UIAnimationSequence::disablePlaying);
+        classInfo->addField("waitChildren", &UIAnimationSequence::waitChildren);
         classInfo->addField("subAnimations", &UIAnimationSequence::subAnimations);
         classInfo->addField("startEvent", &UIAnimationSequence::onStartEvent),
         classInfo->addField("endEvent", &UIAnimationSequence::onEndEvent),
@@ -112,7 +114,10 @@ UIAnimationSequence::UIAnimationSequence() :
     onEndEvent(EShowEvent::None),
     cyclic(false),
     autoStart(false),
-    isPlaying(false) {
+    isPlaying(false),
+    disablePlaying(false),
+    waitChildren(false),
+    enableOnStop(false) {
 }
 
 UIAnimationSequence::~UIAnimationSequence() {
@@ -193,6 +198,10 @@ void UIAnimationSequence::ET_addSubAnimation(EntityId subAnimId) {
     subAnimations.push_back(subAnimId);
 }
 
+bool UIAnimationSequence::ET_isPlaying() const {
+    return isPlaying;
+}
+
 void UIAnimationSequence::ET_onUITick(float dt) {
     currDuration += dt;
 
@@ -215,7 +224,11 @@ void UIAnimationSequence::ET_onUITick(float dt) {
 
     bool animFinished = false;
     if(frames.back().state == EAnimFrameState::Finished) {
-        animFinished = true;
+        if(canFinishAnim()) {
+            animFinished = true;
+        } else {
+            frames.back().state = EAnimFrameState::InProgress;
+        }
     }
 
     ET_SendEvent(getEntityId(), &ETUIAdditiveAnimationTarget::ET_addAdditiveTransform,
@@ -234,6 +247,21 @@ void UIAnimationSequence::ET_onUITick(float dt) {
     }
 
     currUIAddTm.reset();
+}
+
+bool UIAnimationSequence::canFinishAnim() const {
+    if(!waitChildren) {
+        return true;
+    }
+
+    for(auto& subAnimId : subAnimations) {
+        auto subAnim = UI::GetAnimation(seqType, subAnimId);
+        if(subAnim && subAnim->ET_isPlaying()) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void UIAnimationSequence::ET_stopAnimation() {
@@ -258,6 +286,10 @@ void UIAnimationSequence::ET_stopAnimation() {
         currUIAddTm);
     currUIAddTm.reset();
 
+    if(enableOnStop) {
+        ET_SendEvent(getEntityId(), &ETUIElement::ET_enable);
+    }
+
     processShowEvent(getEntityId(), onEndEvent);
 
     ETNode<ETUITimerEvents>::disconnect();
@@ -276,6 +308,16 @@ void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {
     triggerId = animTriggerId;
     isPlaying = true;
 
+    enableOnStop = false;
+    if(disablePlaying) {
+        bool isEnabled = false;
+        ET_SendEventReturn(isEnabled, getEntityId(), &ETUIElement::ET_isEnabled);
+        if(isEnabled) {
+            enableOnStop = true;
+            ET_SendEvent(getEntityId(), &ETUIElement::ET_disable);
+        }
+    }
+
     resetAnimState();
 
     for(auto& subAnimId : subAnimations) {
@@ -286,7 +328,6 @@ void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {
     }
 
     ETNode<ETUITimerEvents>::connect(getEntityId());
-    return;
 }
 
 void UIAnimationSequence::restartCycle() {

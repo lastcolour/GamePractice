@@ -53,6 +53,8 @@
               "cyclic": false,
               "type": "Press",
               "startDelay": 0.0,
+              "disablePlaying": false,
+              "waitChildren": false,
               "subAnimations": [],
               "startEvent": "Show",
               "endEvent": "Hide",
@@ -107,8 +109,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 105.0,
-                "y": 22.5
+                "x": 420.0,
+                "y": 90.0
               },
               "tintColor": {
                 "r": 255,
@@ -163,7 +165,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 10.5,
+              "fontSize": 42.0,
               "text": "Start"
             }
           },
@@ -220,6 +222,8 @@
         "cyclic": false,
         "type": "Press",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [
           [
             1
@@ -282,8 +286,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 105.0,
-          "y": 22.5
+          "x": 420.0,
+          "y": 90.0
         },
         "tintColor": {
           "r": 100,

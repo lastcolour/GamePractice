@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -3.0,
+          "y": -10.5,
           "z": 0.0
         },
         "scale": {
@@ -51,12 +51,12 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -1.0,
+                      "x": -92.99070739746094,
                       "y": 0.0,
                       "z": 0.0
                     },
                     "scale": {
-                      "x": 1.0,
+                      "x": 9.999999747378752e-05,
                       "y": 1.0,
                       "z": 1.0
                     },
@@ -104,9 +104,9 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 6,
+                          "drawPriority": 3,
                           "size": {
-                            "x": 177.0,
+                            "x": 180.0,
                             "y": 3.0
                           },
                           "color": {
@@ -165,9 +165,9 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.5,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "size": {
-                      "x": 183.0,
+                      "x": 186.0,
                       "y": 9.0
                     },
                     "color": {
@@ -221,7 +221,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 0.0,
+          "y": 6.0,
           "z": 0.0
         },
         "scale": {
@@ -244,7 +244,7 @@
           {
             "transform": {
               "pos": {
-                "x": 12.0,
+                "x": 44.953125,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -290,14 +290,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "color": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
                       "a": 255
                     },
-                    "fontSize": 5,
+                    "fontSize": 21.0,
                     "text": "Score:"
                   }
                 }
@@ -307,7 +307,7 @@
           {
             "transform": {
               "pos": {
-                "x": 21.0,
+                "x": 84.9140625,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -353,14 +353,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 4,
+                    "drawPriority": 2,
                     "color": {
                       "r": 255,
                       "g": 255,
                       "b": 255,
                       "a": 255
                     },
-                    "fontSize": 5,
+                    "fontSize": 21.0,
                     "text": "0"
                   }
                 }

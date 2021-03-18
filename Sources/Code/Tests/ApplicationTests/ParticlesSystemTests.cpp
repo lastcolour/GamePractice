@@ -55,7 +55,7 @@ TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
     emissionConfig.loop = false;
 
     system->ET_setEmissionConfig(emissionConfig);
-    system->ET_destoryAll();
+    system->ET_removeAll();
     system->ET_emit();
 
     TickParticlesEmitter(1.f);
@@ -122,7 +122,7 @@ TEST_F(ParticlesSystemTests, CheckWorldTM) {
 
     system->ET_setEmissionConfig(emissionConfig);
     system->ET_setMovementConfig(movementConfig);
-    system->ET_destoryAll();
+    system->ET_removeAll();
     system->ET_emit();
 
     TickParticlesEmitter(1.f);
@@ -187,7 +187,7 @@ TEST_F(ParticlesSystemTests, CheckLocalTm) {
 
     system->ET_setEmissionConfig(emissionConfig);
     system->ET_setMovementConfig(movementConfig);
-    system->ET_destoryAll();
+    system->ET_removeAll();
     system->ET_emit();
 
     TickParticlesEmitter(1.f);

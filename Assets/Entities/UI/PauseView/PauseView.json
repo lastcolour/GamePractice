@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 23.25,
+                "y": 81.0,
                 "z": 0.0
               },
               "scale": {
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 7.5,
+                          "fontSize": 30.0,
                           "text": "Resume"
                         }
                       }
@@ -143,8 +143,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 18.75
+                      "x": 420.0,
+                      "y": 75.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -166,6 +166,8 @@
                     "cyclic": false,
                     "type": "Press",
                     "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "None",
                     "endEvent": "None",
@@ -223,7 +225,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -26.25,
+                "y": -93.0,
                 "z": 0.0
               },
               "scale": {
@@ -299,7 +301,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 7.5,
+                          "fontSize": 30.0,
                           "text": "Exit"
                         }
                       }
@@ -338,8 +340,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 18.75
+                      "x": 420.0,
+                      "y": 75.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -361,6 +363,8 @@
                     "cyclic": false,
                     "type": "Press",
                     "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "None",
                     "endEvent": "None",
@@ -418,7 +422,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -1.5,
+                "y": -6.0,
                 "z": 0.0
               },
               "scale": {
@@ -494,7 +498,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 9.0,
+                          "fontSize": 30.0,
                           "text": "Restart"
                         }
                       }
@@ -515,8 +519,8 @@
                       "height": 25.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 8.0,
-                        "bot": 8.0,
+                        "top": 4.0,
+                        "bot": 4.0,
                         "left": 0.0,
                         "right": 0.0
                       }
@@ -533,8 +537,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 18.75
+                      "x": 420.0,
+                      "y": 75.0
                     },
                     "tintColor": {
                       "r": 234,
@@ -556,6 +560,8 @@
                     "cyclic": false,
                     "type": "Press",
                     "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
                     "subAnimations": [],
                     "startEvent": "None",
                     "endEvent": "None",
@@ -618,9 +624,9 @@
               "hidden": false,
               "enabled": true,
               "style": {
-                "width": 160.0,
+                "width": 150.0,
                 "widthInv": "Grid",
-                "height": 120.0,
+                "height": 110.0,
                 "heightInv": "Grid",
                 "margin": {
                   "top": 0.0,
@@ -659,11 +665,11 @@
             "id": 4,
             "data": {
               "isVisible": true,
-              "alpha": 0.9,
+              "alpha": 0.8999999761581421,
               "drawPriority": 1,
               "size": {
-                "x": 120.0,
-                "y": 90.0
+                "x": 450.0,
+                "y": 330.0
               },
               "tintColor": {
                 "r": 35,
@@ -672,9 +678,9 @@
                 "a": 255
               },
               "image": "Images/block.png",
-              "horizontal": 0.3,
-              "vertical": 0.3,
-              "patchScale": 0.7
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 0.699999988079071
             }
           }
         ]
@@ -743,6 +749,8 @@
         "cyclic": false,
         "type": "Appear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [],
         "startEvent": "Show",
         "endEvent": "None",
@@ -784,6 +792,8 @@
         "cyclic": false,
         "type": "Disappear",
         "startDelay": 0.0,
+        "disablePlaying": false,
+        "waitChildren": false,
         "subAnimations": [],
         "startEvent": "None",
         "endEvent": "Hide",
@@ -818,6 +828,25 @@
           "high": 0.800000011920929
         },
         "enabled": false
+      }
+    },
+    {
+      "type": "RenderSimple",
+      "id": 13,
+      "data": {
+        "isVisible": true,
+        "alpha": 0.20000000298023224,
+        "drawPriority": 0,
+        "size": {
+          "x": 600.0,
+          "y": 1024.0
+        },
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 255
+        }
       }
     }
   ]

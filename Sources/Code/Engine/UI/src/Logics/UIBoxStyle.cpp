@@ -37,10 +37,10 @@ UIBoxStyle::~UIBoxStyle() {
 }
 
 UIBoxMargin::UIBoxMargin() :
-    top(0),
-    bot(0),
-    left(0),
-    right(0) {
+    top(0.f),
+    bot(0.f),
+    left(0.f),
+    right(0.f) {
 }
 
 UIBoxMargin::~UIBoxMargin() {
