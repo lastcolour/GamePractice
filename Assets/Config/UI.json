@@ -1,6 +1,6 @@
 {
     "horizontalGrid":200,
-    "baseRatio":{"x":16, "y":9},
+    "baseRatio":{"x":9, "y":16},
     "views":{
         "backgroundView":"Entities/UI/BackgroundView/BackgroundView.json",
         "mainView":"Entities/UI/MainView/MainView.json",

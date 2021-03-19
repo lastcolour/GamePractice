@@ -31,10 +31,6 @@ public:
 
 private:
 
-    void setDestroySoundEvent(const char* eventName);
-
-private:
-
     enum class State {
         Starting,
         Animating,

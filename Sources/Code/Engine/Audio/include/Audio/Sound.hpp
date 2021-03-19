@@ -1,27 +1,43 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
+class SoundData;
+class SoundProxy;
+
+enum class ESoundGroup {
+    Music = 0,
+    Game,
+    UI
+};
+
 class Sound {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     Sound();
-    Sound(EntityId soundNodeId);
     Sound(Sound&& other);
     Sound& operator=(Sound&& other);
     ~Sound();
 
-    // Sound
     void play();
     void stop();
     void pause();
     void resume();
     void setLooped(bool flag);
+    bool getLooped() const;
     void setVolume(float newVolume);
     float getVolume() const;
     bool isPlaying() const;
     bool isPaused() const;
     bool isLooped() const;
     bool isValid() const;
+    ESoundGroup getGroup() const;
+    void setGroup(ESoundGroup newGroup);
+    void setFile(const char* fileName);
+    const char* getFile() const;
 
 private:
 
@@ -30,8 +46,10 @@ private:
 
 private:
 
-    EntityId nodeId;
+    SoundProxy* proxy;
+    std::shared_ptr<SoundData> data;
     float volume;
+    ESoundGroup group;
     bool looped;
 };
 

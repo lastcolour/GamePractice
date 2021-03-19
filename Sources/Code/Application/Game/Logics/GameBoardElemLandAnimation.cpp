@@ -1,6 +1,5 @@
 #include "Game/Logics/GameBoardElemLandAnimation.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "Audio/ETSound.hpp"
 
 #include <cassert>
 
@@ -18,7 +17,7 @@ const float Y_SCALE_FACTOR = 0.1f;
 void GameBoardElemLandAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemLandAnimation>("GameBoardElemLandAnimation")) {
         classInfo->addField("totalDuration", &GameBoardElemLandAnimation::totalDuration);
-        classInfo->addResourceField("landSound", ResourceType::SoundEvent, &GameBoardElemLandAnimation::setLandSound);
+        classInfo->addField("landSound", &GameBoardElemLandAnimation::landSound);
     }
 }
 
@@ -111,8 +110,4 @@ void GameBoardElemLandAnimation::ET_onGameTick(float dt) {
     tm.pt.y -= (cellSize - newYCellSize) / 2.f;
 
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
-}
-
-void GameBoardElemLandAnimation::setLandSound(const char* soundEventName) {
-    ET_SendEventReturn(landSound, &ETSoundManager::ET_createEvent, soundEventName);
 }

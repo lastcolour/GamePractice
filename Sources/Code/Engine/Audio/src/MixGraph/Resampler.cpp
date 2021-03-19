@@ -1,5 +1,4 @@
 #include "Resampler.hpp"
-#include "SoundStream.hpp"
 #include "MixGraph/MixGraph.hpp"
 #include "OggDataStream.hpp"
 #include "MixGraph/LinearResampler.hpp"

@@ -1,4 +1,4 @@
-#include "OggDataStream.hpp"
+#include "MixGraph/OggDataStream.hpp"
 #include "MixGraph/LinearResampler.hpp"
 
 #include <stb_vorbis.c>

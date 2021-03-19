@@ -2,7 +2,6 @@
 #include "Game/ETGame.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "UI/ETUIView.hpp"
-#include "Audio/ETSound.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETGameInterfaces.hpp"
@@ -18,7 +17,7 @@ void GameViewScript::Reflect(ReflectContext& ctx) {
         classInfo->addField("startInfo", &GameViewScript::startInfoId);
         classInfo->addField("endInfo", &GameViewScript::endInfoId);
         classInfo->addField("postGameTime", &GameViewScript::postGameTime);
-        classInfo->addResourceField("getStartSound", ResourceType::SoundEvent, &GameViewScript::setGetStatSoundEvent);
+        classInfo->addField("getStartSound", &GameViewScript::getStarEvent);
     }
 }
 
@@ -40,10 +39,6 @@ void GameViewScript::init() {
     ETNode<ETSurfaceEvents>::connect(getEntityId());
 
     eventSeq.init(getEntityId());
-}
-
-void GameViewScript::setGetStatSoundEvent(const char* eventName) {
-    ET_SendEventReturn(getStarEvent, &ETSoundManager::ET_createEvent, eventName);
 }
 
 void GameViewScript::ET_onViewOpened() {

@@ -33,10 +33,6 @@ public:
 
 private:
 
-    void setIncreaseSoundEvent(const char* soundName);
-
-private:
-
     SoundEvent increaseSound;
     EntityId amountLabelId;
     EntityId progressBardId;

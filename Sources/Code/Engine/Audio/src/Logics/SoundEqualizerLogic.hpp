@@ -5,6 +5,7 @@
 #include "Audio/ETEqualizer.hpp"
 #include "Audio/ETAudioSystem.hpp"
 #include "Filters/EqualizerSetup.hpp"
+#include "Audio/Sound.hpp"
 
 class SoundEqualizerLogic : public EntityLogic,
     public ETNode<ETEqualizer> {

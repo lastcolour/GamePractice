@@ -1,6 +1,5 @@
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Audio/ETSound.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Render/ETRenderNode.hpp"
 
@@ -23,7 +22,7 @@ GameBoardInteractionLogic::~GameBoardInteractionLogic() {
 void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardInteractionLogic>("GameBoardInteraction")) {
         classInfo->addField("switchDuration", &GameBoardInteractionLogic::switchDuration);
-        classInfo->addResourceField("switchSound", ResourceType::SoundEvent, &GameBoardInteractionLogic::setSwitchSoundEvent);
+        classInfo->addField("switchSound", &GameBoardInteractionLogic::switchSoundEvent);
     }
 }
 
@@ -223,8 +222,4 @@ void GameBoardInteractionLogic::setActiveElem(EntityId elemId) {
 
 bool GameBoardInteractionLogic::ET_canInteract() const {
     return ET_IsExistNode<ETInputEvents>(getEntityId());
-}
-
-void GameBoardInteractionLogic::setSwitchSoundEvent(const char* soundName) {
-    ET_SendEventReturn(switchSoundEvent, &ETSoundManager::ET_createEvent, soundName);
 }

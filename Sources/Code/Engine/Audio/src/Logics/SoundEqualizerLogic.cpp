@@ -1,14 +1,6 @@
 #include "Logics/SoundEqualizerLogic.hpp"
-#include "Reflect/EnumInfo.hpp"
 
 void SoundEqualizerLogic::Reflect(ReflectContext& ctx) {
-    if(auto enumInfo = ctx.enumInfo<ESoundGroup>("ESoundGroup")) {
-        enumInfo->addValues<ESoundGroup>({
-            {"Game", ESoundGroup::Game},
-            {"Music", ESoundGroup::Music},
-            {"UI", ESoundGroup::UI}
-        });
-    }
     if(auto classInfo = ctx.classInfo<SoundEqualizerLogic>("SoundEqualizerLogic")) {
         classInfo->addField("group", &SoundEqualizerLogic::soundGroup);
         classInfo->addField("eqaulizer", &SoundEqualizerLogic::eqSetup);

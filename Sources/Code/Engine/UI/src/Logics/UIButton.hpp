@@ -6,7 +6,7 @@
 #include "UI/ETUIViewScript.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Core/TimePoint.hpp"
-#include "Audio/ETSound.hpp"
+#include "Audio/SoundEvent.hpp"
 
 class UIButton : public UIBox,
     public ETNode<ETUIInteractionBox>,
@@ -43,7 +43,6 @@ private:
     EInputEventResult onMove(const Vec2i& pt);
     EInputEventResult onRelease(const Vec2i& pt);
     bool canContinueEvent(const Vec2i& pt) const;
-    void setPressSound(const char* eventName);
 
 private:
 

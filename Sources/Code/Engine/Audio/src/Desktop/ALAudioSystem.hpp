@@ -4,7 +4,7 @@
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
 #include "MixGraph/MixGraph.hpp"
-#include "Audio/ETSoundPlayManager.hpp"
+#include "Audio/ETSoundManagers.hpp"
 #include "Audio/ETAudioSystem.hpp"
 
 struct ALCdevice;
@@ -28,7 +28,7 @@ public:
     void ET_updateSound() override;
 
     // ETSoundPlayManager
-    bool ET_play(SoundStream* soundStream) override;
+    bool ET_attachToMixNode(SoundProxy& proxyNode) override;
 
     // ETAudioSystem
     void ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) override;

@@ -1,23 +1,21 @@
 #include "Audio/SoundEvent.hpp"
-#include "Audio/ETSoundPlayManager.hpp"
-#include "Nodes/ETSoundNode.hpp"
+#include "Audio/ETSoundManagers.hpp"
 
-#include <cassert>
-
-SoundEvent::SoundEvent() :
-    SoundEvent(InvalidEntityId) {
+void SoundEvent::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<SoundEvent>("SoundEvent")) {
+        classInfo->addResourceField("event", ResourceType::SoundEvent, &SoundEvent::eventName);
+    }
 }
 
-SoundEvent::SoundEvent(EntityId soundNodeId) :
-    nodeId(soundNodeId) {
+SoundEvent::SoundEvent() {
 }
 
 SoundEvent::SoundEvent(const SoundEvent& other) :
-    nodeId(other.nodeId) {
+    eventName(other.eventName) {
 }
 
 SoundEvent& SoundEvent::operator=(const SoundEvent& other) {
-    nodeId = other.nodeId;
+    eventName = other.eventName;
     return *this;
 }
 
@@ -25,9 +23,12 @@ SoundEvent::~SoundEvent() {
 }
 
 void SoundEvent::emit() {
-    ET_QueueEvent(nodeId, &ETSoundEventNode::ET_emit);
+    if(eventName.empty()) {
+        return;
+    }
+    ET_SendEvent(&ETSoundEventManager::ET_emitEvent, eventName.c_str());
 }
 
 bool SoundEvent::isValid() const {
-    return nodeId.isValid();
+    return false;
 }

@@ -39,7 +39,7 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
 }
 
 void UIModule::createSystemConfigs() const {
-    CreateGlobal<UIConfig>("Modules/UI.json");
+    CreateGlobal<UIConfig>("Config/UI.json");
 }
 
 void UIModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

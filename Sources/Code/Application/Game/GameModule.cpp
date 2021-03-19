@@ -1,6 +1,7 @@
 #include "Game/GameModule.hpp"
 #include "Game/GameTimer.hpp"
 #include "Game/GameStateManager.hpp"
+#include "Game/GameMusicManager.hpp"
 #include "Game/Progression/LevelProgressionSystem.hpp"
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
@@ -31,6 +32,7 @@ GameModule::LogicsContainerPtrT GameModule::createSystemLogics() const {
         new SystemLogicContainer<
             GameTimer,
             GameStateManager,
+            GameMusicManager,
             LevelProgressionSystem>()
         );
     return container;

@@ -1,8 +1,8 @@
 #include "MixGraph/MixGraph.hpp"
 #include "MixGraph/MixNode.hpp"
 #include "MixGraph/OggSourceNode.hpp"
-#include "SoundStream.hpp"
 #include "AudioUtils.hpp"
+#include "SoundProxy.hpp"
 
 #include <cassert>
 
@@ -94,14 +94,14 @@ MixNode* MixGraph::getFreeSource() {
     return freeSource;
 }
 
-bool MixGraph::playSound(SoundStream* stream) {
+bool MixGraph::attachToMixNode(SoundProxy& soundProxy) {
     auto freeSourceNode = getFreeSource();
     if(!freeSourceNode) {
         LogWarning("[MixGraph::playSound] Can't find free source");
         return false;
     }
     CombineNode* combineNode = nullptr;
-    auto soundGroup = stream->getGroup();
+    auto soundGroup = soundProxy.readGroup();
     switch(soundGroup) {
         case ESoundGroup::Game: {
             combineNode = &gameNode;
@@ -121,7 +121,7 @@ bool MixGraph::playSound(SoundStream* stream) {
         }
     }
     auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
-    if(sourceNode->attachToStream(stream)) {
+    if(sourceNode->setSound(soundProxy)) {
         combineNode->addChild(sourceNode);
     }
     return true;

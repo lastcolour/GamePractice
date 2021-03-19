@@ -3,7 +3,6 @@
 #include "Render/ETRenderNode.hpp"
 #include "UI/ETUIAnimation.hpp"
 #include "Game/ViewScripts/EventSequence.hpp"
-#include "Audio/ETSound.hpp"
 
 #include <cassert>
 
@@ -44,7 +43,7 @@ void LevelButton::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelButton>("LevelButton")) {
         classInfo->addField("lockedButton", &LevelButton::lockedBt);
         classInfo->addField("unlockedButton", &LevelButton::unlockedBt);
-        classInfo->addResourceField("unlockSound", ResourceType::SoundEvent, &LevelButton::setUnlockSound);
+        classInfo->addField("unlockSound", &LevelButton::unlockSound);
     }
 }
 
@@ -54,10 +53,6 @@ LevelButton::LevelButton() :
 }
 
 LevelButton::~LevelButton() {
-}
-
-void LevelButton::setUnlockSound(const char* eventName) {
-    ET_SendEventReturn(unlockSound, &ETSoundManager::ET_createEvent, eventName);
 }
 
 void LevelButton::init() {

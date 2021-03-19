@@ -8,12 +8,6 @@
 
 #include <cassert>
 
-namespace {
-
-const char* MODULE_CONFIGS_DIR = "Modules";
-
-} // namespace
-
 SystemModule::SystemModule(const char* moduleName) :
     name(moduleName),
     isInitialized(false) {
@@ -72,7 +66,6 @@ bool SystemModule::init() {
         LogError("[SystemModule::init] Init fail of module: '%s'", name);
         return false;
     }
-
 
     int msValue = -static_cast<int>(initStarT.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
     LogDebug("[SystemModule::init] Init module: '%s' in %d ms", name, msValue);

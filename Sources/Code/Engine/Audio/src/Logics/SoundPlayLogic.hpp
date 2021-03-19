@@ -2,7 +2,8 @@
 #define __SOUND_PLAY_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Audio/ETSound.hpp"
+#include "Audio/ETSoundPlayer.hpp"
+#include "Audio/Sound.hpp"
 
 class SoundPlayLogic : public EntityLogic,
     public ETNode<ETSoundPlayer>,
@@ -30,13 +31,7 @@ public:
 
 private:
 
-    void setSound(const char* soundName);
-
-private:
-
     Sound sound;
-    float volume;
-    bool looped;
     bool autoStart;
 };
 

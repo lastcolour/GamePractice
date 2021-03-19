@@ -1,5 +1,4 @@
 #include "Game/Logics/BoardElemDestroyAnimation.hpp"
-#include "Audio/ETSound.hpp"
 #include "Render/ETRenderNode.hpp"
 
 #include <cassert>
@@ -9,8 +8,7 @@ void BoardElemDestroyAnimation::Reflect(ReflectContext& ctx) {
         classInfo->addField("startDelay", &BoardElemDestroyAnimation::startDelay);
         classInfo->addField("duration", &BoardElemDestroyAnimation::duration);
         classInfo->addField("endDelay", &BoardElemDestroyAnimation::endDelay);
-        classInfo->addResourceField("soundEvent", ResourceType::SoundEvent,
-            &BoardElemDestroyAnimation::setDestroySoundEvent);
+        classInfo->addField("soundEvent", &BoardElemDestroyAnimation::destroySound);
     }
 }
 
@@ -80,10 +78,6 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
     }
 
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
-}
-
-void BoardElemDestroyAnimation::setDestroySoundEvent(const char* eventName) {
-    ET_SendEventReturn(destroySound, &ETSoundManager::ET_createEvent, eventName);
 }
 
 void BoardElemDestroyAnimation::ET_playDestroy() {

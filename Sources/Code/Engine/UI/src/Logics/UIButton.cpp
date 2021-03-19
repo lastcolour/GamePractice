@@ -53,7 +53,7 @@ void UIButton::Reflect(ReflectContext& ctx) {
     }
     if(auto classInfo = ctx.classInfo<UIButton>("UIButton")) {
         classInfo->addBaseClass<UIBox>();
-        classInfo->addResourceField("pressSound", ResourceType::SoundEvent, &UIButton::setPressSound);
+        classInfo->addField("pressSound", &UIButton::pressSound);
         classInfo->addField("event", &UIButton::eventType);
     }
 }
@@ -169,8 +169,4 @@ void UIButton::onDisabled(bool flag) {
             ETNode<ETUIInteractionBox>::connect(getEntityId());
         }
     }
-}
-
-void UIButton::setPressSound(const char* eventName) {
-    ET_SendEventReturn(pressSound, &ETSoundManager::ET_createEvent, eventName);
 }

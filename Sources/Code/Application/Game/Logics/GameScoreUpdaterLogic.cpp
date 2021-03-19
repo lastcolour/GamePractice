@@ -2,7 +2,6 @@
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIProgressBar.hpp"
 #include "Game/ETGameScore.hpp"
-#include "Audio/ETSound.hpp"
 
 GameScoreUpdaterLogic::GameScoreUpdaterLogic() :
     currentStepDelay(0.f),
@@ -19,7 +18,7 @@ void GameScoreUpdaterLogic::Reflect(ReflectContext& ctx) {
         classInfo->addField("increaseSpeed", &GameScoreUpdaterLogic::increaseSpeed);
         classInfo->addField("amountLabelId", &GameScoreUpdaterLogic::amountLabelId);
         classInfo->addField("progressBardId", &GameScoreUpdaterLogic::progressBardId);
-        classInfo->addResourceField("increseSound", ResourceType::SoundEvent, &GameScoreUpdaterLogic::setIncreaseSoundEvent);
+        classInfo->addField("increseSound", &GameScoreUpdaterLogic::increaseSound);
     }
 }
 
@@ -80,8 +79,4 @@ void GameScoreUpdaterLogic::ET_onGameTick(float dt) {
         prog = currentValue / static_cast<float>(threeStarsScore);
     }
     ET_SendEvent(progressBardId, &ETUIProgressBar::ET_setProgress, prog);
-}
-
-void GameScoreUpdaterLogic::setIncreaseSoundEvent(const char* soundName) {
-    ET_SendEventReturn(increaseSound, &ETSoundManager::ET_createEvent, soundName);
 }

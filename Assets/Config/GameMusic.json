@@ -1,0 +1,23 @@
+{
+    "mainSongs":[
+        {
+            "sound":"Sounds/Game/Music/Chad_Crouch_-_Moonrise.ogg",
+            "volume":1,
+            "weight":1
+        }
+    ],
+    "gameSongs":[
+        {
+            "sound":"Sounds/Game/Music/Chad_Crouch_-_Moonrise.ogg",
+            "volume":1,
+            "weight":1
+        }
+    ],
+    "levelsSongs":[
+        {
+            "sound":"Sounds/Game/Music/Chad_Crouch_-_Moonrise.ogg",
+            "volume":1,
+            "weight":1
+        }
+    ]
+}

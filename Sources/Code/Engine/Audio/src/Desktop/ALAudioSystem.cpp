@@ -1,7 +1,5 @@
 #include "Desktop/ALAudioSystem.hpp"
 #include "Core/ETApplication.hpp"
-#include "Nodes/ETSoundNodeManager.hpp"
-#include "Nodes/ETSoundNode.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -128,9 +126,6 @@ bool ALAudioSystem::initAlSource() {
 
 void ALAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETAudioSystem>();
-    ET_PollAllEvents<ETSoundNodeManager>();
-    ET_PollAllEvents<ETSoundNode>();
-    ET_PollAllEvents<ETSoundEventNode>();
 
     auto& config = mixGraph.getMixConfig();
 
@@ -172,8 +167,8 @@ void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool ALAudioSystem::ET_play(SoundStream* soundStream) {
-    return mixGraph.playSound(soundStream);
+bool ALAudioSystem::ET_attachToMixNode(SoundProxy& proxyNode) {
+    return mixGraph.attachToMixNode(proxyNode);
 }
 
 void ALAudioSystem::ET_setMasterVolume(float newVolume) {

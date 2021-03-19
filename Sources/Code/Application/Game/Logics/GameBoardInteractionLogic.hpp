@@ -41,7 +41,6 @@ private:
     void tryFinishElemMove(const Vec2i& pt);
     void createSwitchElemsTask(EntityId firstId, EntityId secondId);
     void switchElements(EntityId firstId, EntityId secondId);
-    void setSwitchSoundEvent(const char* soundName);
     void setActiveElem(EntityId elemId);
 
 private:

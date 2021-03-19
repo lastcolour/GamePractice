@@ -2,12 +2,7 @@
 #define __ET_AUDIO_SYSTEM_HPP__
 
 class EqualizerSetup;
-
-enum class ESoundGroup {
-    Music = 0,
-    Game,
-    UI
-};
+enum class ESoundGroup;
 
 struct ETAudioSystem {
     virtual ~ETAudioSystem() = default;

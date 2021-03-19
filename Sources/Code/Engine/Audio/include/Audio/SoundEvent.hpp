@@ -4,19 +4,21 @@
 class SoundEvent {
 public:
 
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
     SoundEvent();
-    SoundEvent(EntityId soundNodeId);
     SoundEvent(const SoundEvent& other);
     SoundEvent& operator=(const SoundEvent& other);
     ~SoundEvent();
 
-    // Sound
     void emit();
     bool isValid() const;
 
 private:
 
-    EntityId nodeId;
+    std::string eventName;
 };
 
 #endif /* __SOUND_EVENT_HPP__ */

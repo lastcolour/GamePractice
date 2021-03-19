@@ -2,14 +2,13 @@
 #define __MIX_GRAPH_HPP__
 
 #include "MixGraph/CombineNode.hpp"
-#include "MixGraph/SourceNode.hpp"
 #include "MixGraph/MixConfig.hpp"
 #include "MixGraph/Resampler.hpp"
 #include "Filters/Equalizer.hpp"
 #include "Audio/ETAudioSystem.hpp"
 #include "Filters/RecursiveFilter.hpp"
 
-class SoundStream;
+class SoundProxy;
 
 class MixGraph {
 public:
@@ -20,7 +19,7 @@ public:
     bool init(const MixConfig& newMixConfig);
     void mixBufferAndConvert(float* out);
 
-    bool playSound(SoundStream* stream);
+    bool attachToMixNode(SoundProxy& soundProxy);
 
     const MixConfig& getMixConfig() const;
     Resampler& getResampler();

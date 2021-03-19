@@ -65,7 +65,6 @@ private:
 
 private:
 
-    void setGetStatSoundEvent(const char* eventName);
     void setScriptState(State newState);
 
 private:

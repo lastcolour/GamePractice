@@ -38,7 +38,7 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
 }
 
 void RenderModule::createSystemConfigs() const {
-    CreateGlobal<RenderConfig>("Modules/Render.json");
+    CreateGlobal<RenderConfig>("Config/Render.json");
 }
 
 void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

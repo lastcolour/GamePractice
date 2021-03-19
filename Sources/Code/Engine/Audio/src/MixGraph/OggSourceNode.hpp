@@ -2,30 +2,29 @@
 #define __OGG_SOURCE_NODE_HPP__
 
 #include "MixGraph/MixNode.hpp"
-#include "OggDataStream.hpp"
-#include "MixGraph/SourceNode.hpp"
+#include "MixGraph/OggDataStream.hpp"
 
-class SoundStream;
+class SoundProxy;
 
-class OggSourceNode : public MixNode, public SourceNode {
+class OggSourceNode : public MixNode {
 public:
 
     OggSourceNode(MixGraph* mixGraph);
     virtual ~OggSourceNode();
 
-    // SourceNode
-    bool attachToStream(SoundStream* stream) override;
-    void detachFromStream() override;
+    bool setSound(SoundProxy& proxy);
 
     // MixNode
     void additiveMixTo(float* out, int channels, int samples) override;
 
 private:
 
+    void resetState();
+
+private:
+
     OggDataStream oggData;
-    SoundStream* soundStream;
-    unsigned int samplesOffset;
-    float volume;
+    SoundProxy* soundProxy;
 };
 
 #endif /* __OGG_SOURCE_NODE_HPP__ */

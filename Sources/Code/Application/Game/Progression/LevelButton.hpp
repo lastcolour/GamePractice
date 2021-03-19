@@ -56,10 +56,6 @@ public:
 
 private:
 
-    void setUnlockSound(const char* soundName);
-
-private:
-
     UnlockedLevelButtonData unlockedBt;
     LockedLevelButtonData lockedBt;
     SoundEvent unlockSound;

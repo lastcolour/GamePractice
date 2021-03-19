@@ -39,10 +39,6 @@ private:
 
 private:
 
-    void setLandSound(const char* soundEventName);
-
-private:
-
     Vec2 elemLandPt;
     SoundEvent landSound;
     float totalDuration;
