@@ -73,14 +73,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 5,
+                    "drawPriority": 36,
                     "color": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 52.19999694824219,
+                    "fontSize": 60.0,
                     "text": "GO!"
                   }
                 },
@@ -248,10 +248,10 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 33,
               "size": {
-                "x": 313.1999816894531,
-                "y": 91.3499984741211
+                "x": 360.0,
+                "y": 105.0
               },
               "tintColor": {
                 "r": 255,

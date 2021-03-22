@@ -31,7 +31,6 @@ public:
     void setVolume(float newVolume);
     float getVolume() const;
     bool isPlaying() const;
-    bool isPaused() const;
     bool isLooped() const;
     bool isValid() const;
     ESoundGroup getGroup() const;
@@ -47,7 +46,6 @@ private:
 private:
 
     SoundProxy* proxy;
-    std::shared_ptr<SoundData> data;
     float volume;
     ESoundGroup group;
     bool looped;

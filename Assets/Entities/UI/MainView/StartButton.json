@@ -210,7 +210,9 @@
             "right": 0.0
           }
         },
-        "pressSound": "buttonPress_01",
+        "pressSound": {
+          "event": "buttonPress_01"
+        },
         "event": "OnMainViewStartGame"
       }
     },

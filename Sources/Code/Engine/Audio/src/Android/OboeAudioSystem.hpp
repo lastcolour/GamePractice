@@ -34,7 +34,7 @@ public:
     void ET_updateSound() override;
 
     // ETSoundPlayManager
-    bool ET_attachToMixNode(SoundProxy& proxyNode) override;
+    bool ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd) override;
 
     // ETAudioSystem
     void ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) override;

@@ -3,6 +3,8 @@
 
 #include "Core/JSONNode.hpp"
 
+struct AsyncLoadRequest;
+
 struct ETAssets {
     virtual ~ETAssets() = default;
     virtual Buffer ET_loadAsset(const char* assetName) = 0;
@@ -32,6 +34,9 @@ struct ETAssetsSetup {
 struct ETAsyncAssets {
     virtual ~ETAsyncAssets() = default;
     virtual void ET_asyncSaveLocalFile(const char* fileName, Buffer& buff) = 0;
+    virtual void ET_asyncLoadLocalFile(const char* fileName, std::function<void(Buffer&)> callback) = 0;
+    virtual void ET_asyncLoadAsset(const char* fileName, std::function<void(Buffer&)> callback) = 0;
+    virtual void ET_processAsyncLoadRequest(const AsyncLoadRequest& req) = 0;
 };
 
 #endif /* __ET_ASSETS_HPP__ */

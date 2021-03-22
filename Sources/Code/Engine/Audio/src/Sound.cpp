@@ -2,6 +2,7 @@
 #include "Audio/ETSoundManagers.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "SoundDataManager.hpp"
+#include "SoundProxy.hpp"
 
 #include <cassert>
 
@@ -28,12 +29,11 @@ Sound::Sound() :
     looped(false) {
 
     ET_SendEventReturn(proxy, &ETSoundDataManager::ET_createSoundProxy);
-    //assert(proxy && "Can't create sound proxy");
+    assert(proxy && "Can't create sound proxy");
 }
 
 Sound::Sound(Sound&& other) :
     proxy(other.proxy),
-    data(std::move(other.data)),
     volume(other.volume),
     group(other.group),
     looped(other.looped) {
@@ -43,12 +43,10 @@ Sound::Sound(Sound&& other) :
 
 Sound& Sound::operator=(Sound&& other) {
     if(this != &other) {
-        stop();
         volume = other.volume;
         looped = other.looped;
         group = other.group;
-        data = std::move(other.data);
-        ET_SendEvent(&ETSoundDataManager::ET_removeSoundProxy, proxy);
+        proxy->setNoSound();
         proxy = other.proxy;
         other.proxy = nullptr;
     }
@@ -57,29 +55,30 @@ Sound& Sound::operator=(Sound&& other) {
 
 Sound::~Sound() {
     if(proxy) {
-        ET_SendEvent(&ETSoundDataManager::ET_removeSoundProxy, proxy);
+        proxy->setNoSound();
         proxy = nullptr;
     }
-    stop();
 }
 
 void Sound::play() {
-    if(!data) {
-        return;
-    }
+    proxy->play(*this);
 }
 
 void Sound::stop() {
+    proxy->stop();
 }
 
 void Sound::pause() {
+    proxy->pause();
 }
 
 void Sound::resume() {
+    proxy->resume(*this);
 }
 
 void Sound::setLooped(bool flag) {
     looped = flag;
+    proxy->writeLooped(flag);
 }
 
 bool Sound::isLooped() const {
@@ -88,6 +87,7 @@ bool Sound::isLooped() const {
 
 void Sound::setVolume(float newVolume) {
     volume = newVolume;
+    proxy->writeVolume(volume);
 }
 
 float Sound::getVolume() const {
@@ -95,15 +95,11 @@ float Sound::getVolume() const {
 }
 
 bool Sound::isPlaying() const {
-    return false;
-}
-
-bool Sound::isPaused() const {
-    return false;
+    return proxy->isPlaying();
 }
 
 bool Sound::isValid() const {
-    return false;
+    return proxy->isValid();
 }
 
 ESoundGroup Sound::getGroup() const {
@@ -115,19 +111,13 @@ void Sound::setGroup(ESoundGroup newGroup) {
         return;
     }
     group = newGroup;
-    if(isPlaying()) {
-        pause();
-        resume();
-    }
+    proxy->writeGroup(group);
 }
 
 void Sound::setFile(const char* fileName) {
-    ET_SendEventReturn(data, &ETSoundDataManager::ET_loadSoundData, fileName);
+    proxy->writeFile(fileName);
 }
 
 const char* Sound::getFile() const {
-    if(data) {
-        return data->fileName;
-    }
-    return nullptr;
+    return proxy->readFile();
 }

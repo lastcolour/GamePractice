@@ -52,6 +52,8 @@ void MixGraph::resizeBuffers(int channels, int samples) {
 }
 
 void MixGraph::mixBufferAndConvert(float* out) {
+    updatePendingStarts();
+
     std::fill_n(out, config.channels * config.samplesPerBuffer, 0.f);
 
     resizeBuffers(config.channels, config.samplesPerBuffer);
@@ -94,35 +96,28 @@ MixNode* MixGraph::getFreeSource() {
     return freeSource;
 }
 
-bool MixGraph::attachToMixNode(SoundProxy& soundProxy) {
-    auto freeSourceNode = getFreeSource();
-    if(!freeSourceNode) {
-        LogWarning("[MixGraph::playSound] Can't find free source");
-        return false;
-    }
-    CombineNode* combineNode = nullptr;
-    auto soundGroup = soundProxy.readGroup();
-    switch(soundGroup) {
-        case ESoundGroup::Game: {
-            combineNode = &gameNode;
+bool MixGraph::setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd) {
+    assert(soundProxy && "Invalid proxy node");
+    switch(cmd) {
+        case ESoundCommand::Start: {
+            startSound(*soundProxy);
             break;
         }
-        case ESoundGroup::Music: {
-            combineNode = &musicNode;
+        case ESoundCommand::Pause: {
+            pauseSound(*soundProxy);
             break;
         }
-        case ESoundGroup::UI: {
-            combineNode = &uiNode;
+        case ESoundCommand::Resume: {
+            resumeSound(*soundProxy);
+            break;
+        }
+        case ESoundCommand::Stop: {
+            stopSound(*soundProxy);
             break;
         }
         default: {
-            assert(false && "Invalid sound group");
-            return false;
+            assert(false && "Invalid sound command type");
         }
-    }
-    auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
-    if(sourceNode->setSound(soundProxy)) {
-        combineNode->addChild(sourceNode);
     }
     return true;
 }
@@ -182,5 +177,89 @@ void MixGraph::applyLowPass(float* out, int channels, int samples) {
             out[2 * i] = lLowPass.apply(out[2 * i]);
             out[2 * i + 1] = rLowPass.apply(out[2 * i + 1]);
         }
+    }
+}
+
+void MixGraph::startSound(SoundProxy& soundProxy) {
+    auto& data = soundProxy.readData();
+    if(!data->isLoaded.load()) {
+        pendingStarts.insert(&soundProxy);
+        return;
+    }
+    if(soundProxy.getMixNode()) {
+        return;
+    }
+    auto freeSourceNode = getFreeSource();
+    if(!freeSourceNode) {
+        LogWarning("[MixGraph::startSound] Can't find free source");
+        return;
+    }
+    CombineNode* combineNode = nullptr;
+    auto soundGroup = soundProxy.readGroup();
+    switch(soundGroup) {
+        case ESoundGroup::Game: {
+            combineNode = &gameNode;
+            break;
+        }
+        case ESoundGroup::Music: {
+            combineNode = &musicNode;
+            break;
+        }
+        case ESoundGroup::UI: {
+            combineNode = &uiNode;
+            break;
+        }
+        default: {
+            assert(false && "Invalid sound group");
+            return;
+        }
+    }
+    auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
+    if(sourceNode->setSound(&soundProxy)) {
+        combineNode->addChild(sourceNode);
+    }
+}
+
+void MixGraph::stopSound(SoundProxy& soundProxy) {
+    soundProxy.setOffset(0);
+    pauseSound(soundProxy);
+}
+
+void MixGraph::pauseSound(SoundProxy& soundProxy) {
+    auto mixNode = soundProxy.getMixNode();
+    if(!mixNode) {
+        auto it = pendingStarts.find(&soundProxy);
+        if(it != pendingStarts.end()) {
+            pendingStarts.erase(it);
+        }
+        return;
+    }
+    auto oggSource = static_cast<OggSourceNode*>(mixNode);
+    oggSource->setSound(nullptr);
+    oggSource->getParent()->removeChild(oggSource);
+}
+
+void MixGraph::resumeSound(SoundProxy& soundProxy) {
+    startSound(soundProxy);
+}
+
+void MixGraph::updatePendingStarts() {
+    auto it = pendingStarts.begin();
+    while(it != pendingStarts.end()) {
+        auto& soundProxy = **it;
+        if((soundProxy.canRemove())) {
+            it = pendingStarts.erase(it);
+            continue;
+        } else {
+            auto& soundData = soundProxy.readData();
+            if(soundData->isLoaded.load()) {
+                if(soundData->data) {
+                    startSound(soundProxy);
+                }
+                it = pendingStarts.erase(it);
+                continue;
+            }
+        }
+        ++it;
     }
 }

@@ -18,7 +18,7 @@ OggSourceNode::~OggSourceNode() {
 void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
    auto volume = soundProxy->readVolume();
    auto looped = soundProxy->readLooped();
-   auto samplesOffset = soundProxy->readOffset();
+   auto samplesOffset = soundProxy->getOffset();
 
     auto& resampleBuffer = getMixGraph()->getResampleBuffer();
     assert(resampleBuffer.getSize() >= channels * samples * sizeof(float) && "Very small temp buffer");
@@ -34,37 +34,41 @@ void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
         out[i] += resamplerOutData[i] * volume;
     }
 
-    soundProxy->writeOffset(samplesOffset);
+    soundProxy->setOffset(samplesOffset);
 
     if(mixState.isEnded && !looped) {
-        resetState();
+        setSound(nullptr);
+        if(auto currParent = getParent()) {
+            currParent->removeChild(this);
+        }
     }
 }
 
-bool OggSourceNode::setSound(SoundProxy& proxy) {
-    assert(!soundProxy && "Invalid proxy");
-    assert(!oggData.isOpened() && "Already opened another OGG data");
+bool OggSourceNode::setSound(SoundProxy* proxy) {
+    if(soundProxy == proxy) {
+        return false;
+    }
+    if(soundProxy) {
+        oggData.close();
+        soundProxy->setMixNode(nullptr);
+        soundProxy = nullptr;
+    }
 
-    soundProxy = &proxy;
+    soundProxy = proxy;
+    if(!soundProxy) {
+        return false;
+    }
 
-    auto soundData = soundProxy->readData();
-    assert(soundData && "Invalid stream sound data");
+    assert(!soundProxy->getMixNode() && "Sound already has another mix node");
+    soundProxy->setMixNode(this);
 
-    if(!oggData.open(soundData->data)) {
+    if(!oggData.open(soundProxy->readData())) {
         LogError("[OggSourceNode::attachToStream] Can't open OGG data");
         return false;
     }
-    auto samplesOffset = soundProxy->readOffset();
+    auto samplesOffset = soundProxy->getOffset();
     if(samplesOffset != 0) {
         oggData.setSampleOffset(samplesOffset);
     }
     return true;
-}
-
-void OggSourceNode::resetState() {
-    oggData.close();
-    soundProxy = nullptr;
-    if(auto currParent = getParent()) {
-        currParent->removeChild(this);
-    }
 }

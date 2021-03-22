@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 81.0,
+                "y": 87.0,
                 "z": 0.0
               },
               "scale": {
@@ -125,13 +125,15 @@
                       "height": 25.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 4.0,
-                        "bot": 4.0,
+                        "top": 0.0,
+                        "bot": 0.0,
                         "left": 0.0,
                         "right": 0.0
                       }
                     },
-                    "pressSound": "buttonPress_01",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "OnPauseViewResume"
                   }
                 },
@@ -225,7 +227,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -93.0,
+                "y": -87.0,
                 "z": 0.0
               },
               "scale": {
@@ -322,13 +324,15 @@
                       "height": 25.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 4.0,
-                        "bot": 4.0,
+                        "top": 0.0,
+                        "bot": 0.0,
                         "left": 0.0,
                         "right": 0.0
                       }
                     },
-                    "pressSound": "buttonPress_01",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "OnPauseViewExit"
                   }
                 },
@@ -422,7 +426,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -6.0,
+                "y": 0.0,
                 "z": 0.0
               },
               "scale": {
@@ -525,7 +529,9 @@
                         "right": 0.0
                       }
                     },
-                    "pressSound": "buttonPress_01",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "OnPauseViewRestart"
                   }
                 },

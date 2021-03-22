@@ -462,7 +462,9 @@
           1,
           1
         ],
-        "increseSound": ""
+        "increseSound": {
+          "event": ""
+        }
       }
     }
   ]

@@ -113,6 +113,8 @@ bool OboeAudioSystem::init() {
 
 void OboeAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETAudioSystem>();
+    ET_PollAllEvents<ETSoundPlayManager>();
+    ET_PollAllEvents<ETSoundDataManager>();
 
     if(!canMix.load()) {
         return;
@@ -130,14 +132,16 @@ void OboeAudioSystem::ET_updateSound() {
         buff->write(mixBuffer.get(), mixConfig.samplesPerBuffer * mixConfig.channels * sizeof(int16_t));
     }
     bufferQueue.submitWrites(buffers);
+
+    ET_SendEvent(&ETSoundDataManager::ET_cleanUpData);
 }
 
 void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool OboeAudioSystem::ET_attachToMixNode(SoundProxy& proxyNode) {
-    return mixGraph.attachToMixNode(proxyNode);
+bool OboeAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd) {
+    return mixGraph.setSoundCmd(proxyNode, cmd);
 }
 
 void OboeAudioSystem::ET_setMasterVolume(float newVolume) {

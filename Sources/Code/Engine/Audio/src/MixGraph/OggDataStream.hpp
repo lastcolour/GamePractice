@@ -2,6 +2,7 @@
 #define __OGG_DATA_STREAM_HPP__
 
 class LinearResampler;
+class SoundData;
 
 struct stb_vorbis;
 
@@ -13,7 +14,7 @@ public:
 
     void setSampleOffset(int sampleOffset);
 
-    bool open(Buffer& buffer);
+    bool open(std::shared_ptr<SoundData>& newSoundData);
     void close();
     bool isOpened() const;
 
@@ -36,7 +37,7 @@ private:
 
 private:
 
-    Buffer oggBuffer;
+    std::shared_ptr<SoundData> soundData;
     Buffer sbtAllocData;
     ProxyStbAllocData allocDataDescr;
     stb_vorbis* oggStream;

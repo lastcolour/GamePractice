@@ -445,7 +445,9 @@
                         "right": 0.0
                       }
                     },
-                    "pressSound": "",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "None"
                   }
                 },
@@ -483,6 +485,49 @@
                       [
                         1
                       ]
+                    ]
+                  }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 7,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Press",
+                    "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
+                    "subAnimations": [],
+                    "startEvent": "None",
+                    "endEvent": "None",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.07000000029802322,
+                        "offset": {
+                          "x": 0.0,
+                          "y": -1.0
+                        },
+                        "scale": {
+                          "x": 0.9700000286102295,
+                          "y": 0.9700000286102295
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.05000000074505806,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      }
                     ]
                   }
                 }
@@ -601,7 +646,9 @@
                         "right": 15.0
                       }
                     },
-                    "pressSound": "",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "None"
                   }
                 },
@@ -639,6 +686,49 @@
                       [
                         1
                       ]
+                    ]
+                  }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 7,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Press",
+                    "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
+                    "subAnimations": [],
+                    "startEvent": "None",
+                    "endEvent": "None",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.07000000029802322,
+                        "offset": {
+                          "x": 0.0,
+                          "y": -1.0
+                        },
+                        "scale": {
+                          "x": 0.9700000286102295,
+                          "y": 0.9700000286102295
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.05000000074505806,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      }
                     ]
                   }
                 }
@@ -757,7 +847,9 @@
                         "right": 0.0
                       }
                     },
-                    "pressSound": "",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "None"
                   }
                 },
@@ -795,6 +887,49 @@
                       [
                         1
                       ]
+                    ]
+                  }
+                },
+                {
+                  "type": "UIAnimationSequence",
+                  "id": 7,
+                  "data": {
+                    "autoStart": false,
+                    "cyclic": false,
+                    "type": "Press",
+                    "startDelay": 0.0,
+                    "disablePlaying": false,
+                    "waitChildren": false,
+                    "subAnimations": [],
+                    "startEvent": "None",
+                    "endEvent": "None",
+                    "frames": [
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.07000000029802322,
+                        "offset": {
+                          "x": 0.0,
+                          "y": -1.0
+                        },
+                        "scale": {
+                          "x": 0.9700000286102295,
+                          "y": 0.9700000286102295
+                        },
+                        "alpha": 1.0
+                      },
+                      {
+                        "lerpMode": "Linear",
+                        "duration": 0.05000000074505806,
+                        "offset": {
+                          "x": 0.0,
+                          "y": 0.0
+                        },
+                        "scale": {
+                          "x": 1.0,
+                          "y": 1.0
+                        },
+                        "alpha": 1.0
+                      }
                     ]
                   }
                 }

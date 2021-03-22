@@ -5,8 +5,6 @@
 #include "Audio/ETSoundManagers.hpp"
 #include "SoundProxy.hpp"
 
-#include <unordered_set>
-
 class SoundDataManager : public SystemLogic,
     public ETNode<ETSoundDataManager> {
 public:
@@ -20,12 +18,12 @@ public:
 
     // ETSoundDataManager
     SoundProxy* ET_createSoundProxy() override;
-    void ET_removeSoundProxy(SoundProxy* state) override;
-    std::shared_ptr<SoundData> ET_loadSoundData(const char* fileName) override;
+    void ET_cleanUpData() override;
+    void ET_loadSoundData(SoundProxy* soundProxy, const std::string& fileName) override;
 
 private:
 
-    std::unordered_set<std::unique_ptr<SoundProxy>> soundProxies;
+    std::vector<std::unique_ptr<SoundProxy>> soundProxies;
     std::unordered_map<std::string, std::shared_ptr<SoundData>> sounds;
 };
 

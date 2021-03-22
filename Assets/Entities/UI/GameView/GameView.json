@@ -709,7 +709,9 @@
           6
         ],
         "postGameTime": 1.0,
-        "getStartSound": ""
+        "getStartSound": {
+          "event": ""
+        }
       }
     },
     {

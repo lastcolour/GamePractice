@@ -126,6 +126,8 @@ bool ALAudioSystem::initAlSource() {
 
 void ALAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETAudioSystem>();
+    ET_PollAllEvents<ETSoundPlayManager>();
+    ET_PollAllEvents<ETSoundDataManager>();
 
     auto& config = mixGraph.getMixConfig();
 
@@ -161,14 +163,16 @@ void ALAudioSystem::ET_updateSound() {
     if(alSourceState != AL_PLAYING) {
         alSourcePlay(alSourceId);
     }
+
+    ET_SendEvent(&ETSoundDataManager::ET_cleanUpData);
 }
 
 void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool ALAudioSystem::ET_attachToMixNode(SoundProxy& proxyNode) {
-    return mixGraph.attachToMixNode(proxyNode);
+bool ALAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd) {
+    return mixGraph.setSoundCmd(proxyNode, cmd);
 }
 
 void ALAudioSystem::ET_setMasterVolume(float newVolume) {

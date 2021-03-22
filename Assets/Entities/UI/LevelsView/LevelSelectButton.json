@@ -1074,7 +1074,9 @@
                         "right": 0.0
                       }
                     },
-                    "pressSound": "buttonPress_01",
+                    "pressSound": {
+                      "event": "buttonPress_01"
+                    },
                     "event": "OnLevelsStartLevel"
                   }
                 },
@@ -1565,7 +1567,9 @@
                         "right": 0.0
                       }
                     },
-                    "pressSound": "buttonReject_01",
+                    "pressSound": {
+                      "event": "buttonReject_01"
+                    },
                     "event": "None"
                   }
                 },
@@ -1794,7 +1798,9 @@
             ]
           }
         },
-        "unlockSound": "getProgressionStar_01"
+        "unlockSound": {
+          "event": ""
+        }
       }
     },
     {

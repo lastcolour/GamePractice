@@ -37,9 +37,9 @@
             "type": "NinePatchImageLogic",
             "id": 4,
             "data": {
-              "isVisible": true,
+              "isVisible": false,
               "alpha": 0.800000011920929,
-              "drawPriority": 0,
+              "drawPriority": 1,
               "size": {
                 "x": 600.0,
                 "y": 600.0

@@ -17,7 +17,6 @@ public:
 
     void setRawId(uint32_t entId) { id = entId; }
     uint32_t getRawId() const { return id; }
-    void setInvalidId() { id = INVALID_ID; }
 
 private:
 

@@ -12,14 +12,10 @@ public:
     OggSourceNode(MixGraph* mixGraph);
     virtual ~OggSourceNode();
 
-    bool setSound(SoundProxy& proxy);
+    bool setSound(SoundProxy* proxy);
 
     // MixNode
     void additiveMixTo(float* out, int channels, int samples) override;
-
-private:
-
-    void resetState();
 
 private:
 

@@ -16,32 +16,44 @@ void SoundDataManager::deinit() {
 }
 
 SoundProxy* SoundDataManager::ET_createSoundProxy() {
-    return nullptr;
+    soundProxies.emplace_back(new SoundProxy);
+    return soundProxies.back().get();
 }
 
-void SoundDataManager::ET_removeSoundProxy(SoundProxy* state) {
+void SoundDataManager::ET_cleanUpData() {
+    auto it = soundProxies.begin();
+    while(it != soundProxies.end()) {
+        if((*it)->canRemove()) {
+            it = soundProxies.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }
 
-std::shared_ptr<SoundData> SoundDataManager::ET_loadSoundData(const char* fileName) {
-    if(!fileName || !fileName[0]) {
-        return nullptr;
+void SoundDataManager::ET_loadSoundData(SoundProxy* soundProxy, const std::string& fileName) {
+    if(fileName.empty()) {
+        return;
+    }
+    if(soundProxy->canRemove()) {
+        return;
     }
 
     auto it = sounds.find(fileName);
     if(it != sounds.end()) {
-        return it->second;
-    }
-
-    Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fileName);
-    if(!buff) {
-        return nullptr;
+        soundProxy->writeData(it->second);
+        return;
     }
 
     auto& soundData = sounds[fileName];
     soundData.reset(new SoundData());
-    soundData->data = std::move(buff);
-    soundData->fileName = fileName;
+    soundData->fileName = fileName.c_str();
+    soundData->isLoaded.store(false);
 
-    return soundData;
+    soundProxy->writeData(soundData);
+
+    ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, fileName.c_str(), [soundData](Buffer& buff){
+        soundData->data = std::move(buff);
+        soundData->isLoaded.store(true);
+    });
 }

@@ -26,16 +26,6 @@
   ],
   "logics": [
     {
-      "type": "SoundPlayer",
-      "id": 1,
-      "data": {
-        "looped": true,
-        "volume": 0.4000000059604645,
-        "sound": "Sounds/UI/Chad_Crouch_-_Moonrise.ogg",
-        "autoStart": true
-      }
-    },
-    {
       "type": "UIView",
       "id": 2,
       "data": {

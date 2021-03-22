@@ -5,6 +5,12 @@
 #include "Core/ETTasks.hpp"
 #include "Core/ETAssets.hpp"
 
+struct AsyncLoadRequest {
+    std::function<void(Buffer&)> callback;
+    std::string filename;
+    bool local;
+};
+
 class AsyncAssetsLoader : public SystemLogic,
     public ETNode<ETAssetsUpdateTask>,
     public ETNode<ETAsyncAssets> {
@@ -19,6 +25,9 @@ public:
 
     // ETAsyncAssets
     void ET_asyncSaveLocalFile(const char* fileName, Buffer& buff) override;
+    void ET_asyncLoadLocalFile(const char* fileName, std::function<void(Buffer&)> callback) override;
+    void ET_asyncLoadAsset(const char* fileName, std::function<void(Buffer&)> callback) override;
+    void ET_processAsyncLoadRequest(const AsyncLoadRequest& req) override;
 
     // ETAssetsUpdateTask
     void ET_updateAssets(float dt) override;

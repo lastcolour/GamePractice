@@ -1,5 +1,6 @@
 #include "MixGraph/OggDataStream.hpp"
 #include "MixGraph/LinearResampler.hpp"
+#include "SoundData.hpp"
 
 #include <stb_vorbis.c>
 
@@ -106,7 +107,7 @@ const char* getVorbisErrorText(int error) {
 } // namespace
 
 OggDataStream::OggDataStream() :
-    oggBuffer(),
+    soundData(nullptr),
     oggStream(nullptr),
     oggChannels(0),
     oggSampleRate(0),
@@ -121,9 +122,21 @@ OggDataStream::~OggDataStream() {
     close();
 }
 
-bool OggDataStream::open(Buffer& buffer) {
+bool OggDataStream::open(std::shared_ptr<SoundData>& newSoundData) {
     assert(oggStream == nullptr && "Reopen OGG data stream");
-    oggBuffer = buffer;
+    assert(!soundData && "Invalid sound data");
+
+    if(!newSoundData) {
+        return false;
+    }
+    assert(newSoundData->isLoaded.load() && "Not loaded sound data");
+
+    auto& oggBuffer = newSoundData->data;
+    if(!oggBuffer) {
+        return false;
+    }
+
+    soundData = newSoundData;
 
     int error = VORBIS__no_error;
 
@@ -153,7 +166,7 @@ void OggDataStream::close() {
     }
     stb_vorbis_close(oggStream);
     oggStream = nullptr;
-    oggBuffer.reset();
+    soundData.reset();
     oggChannels = 0;
     oggSampleRate = 0;
     oggSampleCount = 0;

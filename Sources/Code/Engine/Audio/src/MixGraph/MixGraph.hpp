@@ -4,9 +4,12 @@
 #include "MixGraph/CombineNode.hpp"
 #include "MixGraph/MixConfig.hpp"
 #include "MixGraph/Resampler.hpp"
-#include "Filters/Equalizer.hpp"
 #include "Audio/ETAudioSystem.hpp"
+#include "Audio/ETSoundManagers.hpp"
 #include "Filters/RecursiveFilter.hpp"
+#include "Filters/Equalizer.hpp"
+
+#include <unordered_set>
 
 class SoundProxy;
 
@@ -19,7 +22,7 @@ public:
     bool init(const MixConfig& newMixConfig);
     void mixBufferAndConvert(float* out);
 
-    bool attachToMixNode(SoundProxy& soundProxy);
+    bool setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd);
 
     const MixConfig& getMixConfig() const;
     Resampler& getResampler();
@@ -32,6 +35,12 @@ public:
 
 private:
 
+    void startSound(SoundProxy& soundProxy);
+    void stopSound(SoundProxy& soundProxy);
+    void pauseSound(SoundProxy& soundProxy);
+    void resumeSound(SoundProxy& soundProxy);
+
+    void updatePendingStarts();
     void applyLowPass(float* out, int channels, int samples);
     void resizeBuffers(int channels, int samples);
     MixNode* getFreeSource();
@@ -48,6 +57,7 @@ private:
     RecursiveFilter lLowPass;
     RecursiveFilter rLowPass;
     std::vector<std::unique_ptr<MixNode>> sources;
+    std::unordered_set<SoundProxy*> pendingStarts;
     float masterVolume;
 };
 
