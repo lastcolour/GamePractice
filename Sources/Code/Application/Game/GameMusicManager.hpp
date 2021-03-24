@@ -36,12 +36,15 @@ public:
     void deinit() override;
 
     // ETGameMusic
-    void ET_setTheme(EMusicTheme newTheme);
+    void ET_setTheme(EMusicTheme newTheme) override;
 
 private:
 
-    std::vector<GameSongNode> mainSongs;
-    std::vector<GameSongNode> levelsSongs;
+    Sound* currSound;
+    EMusicTheme currTheme;
+    float fadeInDuration;
+    float fadeOutDuration;
+    std::vector<GameSongNode> menuSongs;
     std::vector<GameSongNode> gameSongs;
 };
 

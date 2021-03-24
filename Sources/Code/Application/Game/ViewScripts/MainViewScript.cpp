@@ -1,4 +1,5 @@
 #include "Game/ViewScripts/MainViewScript.hpp"
+#include "Game/ETGameMusic.hpp"
 #include "UI/ETUIView.hpp"
 
 void MainViewScript::Reflect(ReflectContext& ctx) {
@@ -10,6 +11,11 @@ MainViewScript::MainViewScript() {
 }
 
 MainViewScript::~MainViewScript() {
+}
+
+void MainViewScript::ET_onViewGetFocus() {
+    BaseViewScript::ET_onViewGetFocus();
+    ET_SendEvent(&ETGameMusic::ET_setTheme, EMusicTheme::Menu);
 }
 
 void MainViewScript::onEvent(const UIEvent& event) {

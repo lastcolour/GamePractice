@@ -1,5 +1,6 @@
 #include "Math/Random.hpp"
 
+#include <cstdlib>
 #include <cassert>
 
 namespace Math {
@@ -9,6 +10,8 @@ RandomIntGenerator::RandomIntGenerator(int minVal, int maxVal) :
     distribution(minVal, maxVal) {
 
     assert((minVal <= maxVal) && "Invalid min val");
+
+    generator.seed(rand());
 }
 
 RandomIntGenerator::RandomIntGenerator() :
@@ -32,6 +35,8 @@ RandomFloatGenerator::RandomFloatGenerator(float minVal, float maxVal) :
     distribution(minVal, maxVal) {
 
     assert((minVal <= maxVal) && "Invalid min val");
+
+    generator.seed(rand());
 }
 
 RandomFloatGenerator::RandomFloatGenerator() :

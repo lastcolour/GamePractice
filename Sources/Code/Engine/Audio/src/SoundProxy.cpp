@@ -3,6 +3,12 @@
 
 #include <cassert>
 
+namespace {
+
+const float INSTANT_DURATION = -1.f;
+
+} // namespace
+
 SoundProxy::SoundProxy() :
     data(nullptr),
     mixNode(nullptr),
@@ -18,11 +24,7 @@ SoundProxy::~SoundProxy() {
 }
 
 ESoundGroup SoundProxy::readGroup() const {
-    return ESoundGroup::Game;
-}
-
-std::shared_ptr<SoundData>& SoundProxy::readData() {
-    return data;
+    return group.load();
 }
 
 float SoundProxy::readVolume() const {
@@ -41,8 +43,8 @@ void SoundProxy::writeFile(const char* fileName) {
     if(isPlaying()) {
         stop();
     }
-    std::string loadFileName = fileName;
-    ET_QueueEvent(&ETSoundDataManager::ET_loadSoundData, this, loadFileName);
+    std::string soundDataFile = fileName;
+    ET_QueueEvent(&ETSoundDataManager::ET_setupSoundData, this, soundDataFile);
 }
 
 const char* SoundProxy::readFile() const {
@@ -52,7 +54,11 @@ const char* SoundProxy::readFile() const {
     return "";
 }
 
-void SoundProxy::writeData(std::shared_ptr<SoundData>& newData) {
+std::shared_ptr<SoundData>& SoundProxy::getData() {
+    return data;
+}
+
+void SoundProxy::setData(std::shared_ptr<SoundData>& newData) {
     data = newData;
 }
 
@@ -60,7 +66,8 @@ void SoundProxy::writeGroup(ESoundGroup newGroup) {
     group.store(newGroup);
     if(isPlaying()) {
         pause();
-        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Resume);
+        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+            ESoundCommand::Resume, INSTANT_DURATION);
     }
 }
 
@@ -101,6 +108,23 @@ MixNode* SoundProxy::getMixNode() {
     return mixNode;
 }
 
+void SoundProxy::fadeInPlay(const Sound& sound, float duration) {
+    if(!isValid()) {
+        LogWarning("[SoundProxy::fadeInPlay] Can't play source with invalid data: '%s'", readFile());
+    } else {
+        volume.store(sound.getVolume());
+        looped.store(sound.isLooped());
+        group.store(sound.getGroup());
+        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+            ESoundCommand::Start, duration);
+    }
+}
+
+void SoundProxy::fadeOutStop(float duration) {
+    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+        ESoundCommand::Stop, duration);
+}
+
 void SoundProxy::play(const Sound& sound) {
     if(!isValid()) {
         LogWarning("[SoundProxy::play] Can't play source with invalid data: '%s'", readFile());
@@ -108,7 +132,8 @@ void SoundProxy::play(const Sound& sound) {
         volume.store(sound.getVolume());
         looped.store(sound.isLooped());
         group.store(sound.getGroup());
-        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Start);
+        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+            ESoundCommand::Start, INSTANT_DURATION);
     }
 }
 
@@ -119,16 +144,19 @@ void SoundProxy::resume(const Sound& sound) {
         volume.store(sound.getVolume());
         looped.store(sound.isLooped());
         group.store(sound.getGroup());
-        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Resume);
+        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+            ESoundCommand::Resume, INSTANT_DURATION);
     }
 }
 
 void SoundProxy::pause() {
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Pause);
+    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+        ESoundCommand::Pause, INSTANT_DURATION);
 }
 
 void SoundProxy::stop() {
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Stop);
+    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Stop,
+        INSTANT_DURATION);
 }
 
 bool SoundProxy::isPlaying() const {

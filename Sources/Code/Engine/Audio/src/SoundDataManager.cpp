@@ -8,6 +8,9 @@ SoundDataManager::~SoundDataManager() {
 }
 
 bool SoundDataManager::init() {
+    nullSoundData.reset(new SoundData);
+    nullSoundData->isLoaded.store(true);
+
     ETNode<ETSoundDataManager>::connect(getEntityId());
     return true;
 }
@@ -31,26 +34,29 @@ void SoundDataManager::ET_cleanUpData() {
     }
 }
 
-void SoundDataManager::ET_loadSoundData(SoundProxy* soundProxy, const std::string& fileName) {
-    if(fileName.empty()) {
+void SoundDataManager::ET_setupSoundData(SoundProxy* soundProxy, const std::string& fileName) {
+    if(soundProxy->canRemove()) {
         return;
     }
-    if(soundProxy->canRemove()) {
+    if(fileName.empty()) {
+        soundProxy->setData(nullSoundData);
         return;
     }
 
     auto it = sounds.find(fileName);
     if(it != sounds.end()) {
-        soundProxy->writeData(it->second);
+        soundProxy->setData(it->second);
         return;
     }
 
-    auto& soundData = sounds[fileName];
-    soundData.reset(new SoundData());
-    soundData->fileName = fileName.c_str();
+    auto res = sounds.emplace(fileName, new SoundData);
+
+    it = res.first;
+    auto& soundData = it->second;
+    soundData->fileName = it->first.c_str();
     soundData->isLoaded.store(false);
 
-    soundProxy->writeData(soundData);
+    soundProxy->setData(soundData);
 
     ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, fileName.c_str(), [soundData](Buffer& buff){
         soundData->data = std::move(buff);

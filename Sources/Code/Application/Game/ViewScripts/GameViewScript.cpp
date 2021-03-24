@@ -6,6 +6,7 @@
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameBoard.hpp"
+#include "Game/ETGameMusic.hpp"
 
 #include <cassert>
 
@@ -59,10 +60,11 @@ void GameViewScript::ET_onViewOpened() {
 }
 
 void GameViewScript::ET_onViewClosed() {
-    scriptState = State::None;
     BaseViewScript::ET_onViewClosed();
+    scriptState = State::None;
     ET_SendEvent(&ETGameBoardSpawner::ET_unloadLevel);
     ET_SendEvent(&ETGameStateManager::ET_finishGame);
+    ET_SendEvent(&ETGameMusic::ET_setTheme, EMusicTheme::None);
 }
 
 void GameViewScript::ET_onViewLostFocus() {
@@ -72,6 +74,9 @@ void GameViewScript::ET_onViewLostFocus() {
 
 void GameViewScript::ET_onViewGetFocus() {
     BaseViewScript::ET_onViewGetFocus();
+
+    ET_SendEvent(&ETGameMusic::ET_setTheme, EMusicTheme::Game);
+
     switch(scriptState) {
         case State::None: {
             setScriptState(State::ShowingStartInfo);

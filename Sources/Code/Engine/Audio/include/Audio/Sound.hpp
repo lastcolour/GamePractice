@@ -22,6 +22,8 @@ public:
     Sound& operator=(Sound&& other);
     ~Sound();
 
+    void fadeInPlay(float duration);
+    void fadeOutStop(float duration);
     void play();
     void stop();
     void pause();

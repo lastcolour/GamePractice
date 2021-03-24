@@ -13,6 +13,9 @@ public:
     MainViewScript();
     virtual ~MainViewScript();
 
+    // BaseViewScript
+    void ET_onViewGetFocus() override;
+
 protected:
 
     // BaseViewScript

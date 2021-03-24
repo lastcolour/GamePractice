@@ -1,11 +1,12 @@
 #include "Game/ViewScripts/LevelsViewScript.hpp"
 #include "Game/ETGame.hpp"
-#include "UI/ETUIView.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Game/ETLevelProgress.hpp"
+#include "Game/Progression/LevelsProgressData.hpp"
+#include "Game/ETGameMusic.hpp"
+#include "UI/ETUIView.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUIAnimation.hpp"
-#include "Game/Progression/LevelsProgressData.hpp"
 #include "UI/ETUIScrollArea.hpp"
 
 void LevelsViewScript::Reflect(ReflectContext& ctx) {
@@ -54,6 +55,8 @@ void LevelsViewScript::ET_onViewOpened() {
 
 void LevelsViewScript::ET_onViewGetFocus() {
     BaseViewScript::ET_onViewGetFocus();
+
+    ET_SendEvent(&ETGameMusic::ET_setTheme, EMusicTheme::Menu);
 
     ET_SendEvent(&ETLevelButtonList::ET_updateLevelProgress, eventSeq);
 

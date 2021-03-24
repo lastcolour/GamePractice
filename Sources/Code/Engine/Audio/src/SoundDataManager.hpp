@@ -19,10 +19,11 @@ public:
     // ETSoundDataManager
     SoundProxy* ET_createSoundProxy() override;
     void ET_cleanUpData() override;
-    void ET_loadSoundData(SoundProxy* soundProxy, const std::string& fileName) override;
+    void ET_setupSoundData(SoundProxy* soundProxy, const std::string& fileName) override;
 
 private:
 
+    std::shared_ptr<SoundData> nullSoundData;
     std::vector<std::unique_ptr<SoundProxy>> soundProxies;
     std::unordered_map<std::string, std::shared_ptr<SoundData>> sounds;
 };

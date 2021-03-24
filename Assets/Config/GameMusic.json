@@ -1,22 +1,52 @@
 {
-    "mainSongs":[
+    "fadeInDuration":1,
+    "fadeOutDuration":0.1,
+    "menuSongs":[
         {
-            "sound":"Sounds/Game/Music/Chad_Crouch_-_Moonrise.ogg",
-            "volume":1,
+            "sound": {
+                "file":"Sounds/Game/Music/8bit_Bossa.ogg",
+                "group":"Music",
+                "loop":false,
+                "volume":0.4
+            },
+            "weight":1
+        },
+        {
+            "sound": {
+                "file":"Sounds/Game/Music/happy_adveture.ogg",
+                "group":"Music",
+                "loop":false,
+                "volume":0.4
+            },
             "weight":1
         }
     ],
     "gameSongs":[
         {
-            "sound":"Sounds/Game/Music/Chad_Crouch_-_Moonrise.ogg",
-            "volume":1,
+            "sound": {
+                "file":"Sounds/Game/Music/Christmas_synths.ogg",
+                "group":"Music",
+                "loop":false,
+                "volume":0.3
+            },
             "weight":1
-        }
-    ],
-    "levelsSongs":[
+        },
         {
-            "sound":"Sounds/Game/Music/Chad_Crouch_-_Moonrise.ogg",
-            "volume":1,
+            "sound": {
+                "file":"Sounds/Game/Music/enchanted_tiki_86.ogg",
+                "group":"Music",
+                "loop":false,
+                "volume":0.4
+            },
+            "weight":1
+        },
+        {
+            "sound": {
+                "file":"Sounds/Game/Music/music_jewels.ogg",
+                "group":"Music",
+                "loop":false,
+                "volume":0.4
+            },
             "weight":1
         }
     ]

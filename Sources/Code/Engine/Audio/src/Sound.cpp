@@ -60,6 +60,14 @@ Sound::~Sound() {
     }
 }
 
+void Sound::fadeInPlay(float duration) {
+    proxy->fadeInPlay(*this, duration);
+}
+
+void Sound::fadeOutStop(float duration) {
+    proxy->fadeOutStop(duration);
+}
+
 void Sound::play() {
     proxy->play(*this);
 }

@@ -171,8 +171,8 @@ void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool ALAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd) {
-    return mixGraph.setSoundCmd(proxyNode, cmd);
+bool ALAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) {
+    return mixGraph.setSoundCmd(proxyNode, cmd, duration);
 }
 
 void ALAudioSystem::ET_setMasterVolume(float newVolume) {

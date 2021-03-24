@@ -108,6 +108,10 @@ bool Fader::isFadeOutState() const {
     return state == State::FadeOut || state == State::FadeOutDone;
 }
 
+bool Fader::isFadeOutDone() const {
+    return state == State::FadeOutDone;
+}
+
 void Fader::exclusiveTransformFloat(float* data, int channels, int samples) {
     int fadeOutOffset = 0;
     switch(state) {
@@ -246,4 +250,10 @@ void Fader::exclusiveTransformInt16(int16_t* data, int channels, int samples) {
             assert(false && "Invalid state");
         }
     }
+}
+
+void Fader::reset() {
+    state = State::FadeInDone;
+    samplesDone = 0;
+    totalSamples = 0;
 }

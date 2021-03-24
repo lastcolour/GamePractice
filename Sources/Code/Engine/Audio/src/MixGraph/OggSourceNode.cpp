@@ -9,16 +9,16 @@
 
 OggSourceNode::OggSourceNode(MixGraph* mixGraph) :
     MixNode(mixGraph),
-    soundProxy(nullptr) {
+    soundProxy(nullptr),
+    resetOffsetOnStop(false) {
 }
 
 OggSourceNode::~OggSourceNode() {
 }
 
 void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
-   auto volume = soundProxy->readVolume();
-   auto looped = soundProxy->readLooped();
-   auto samplesOffset = soundProxy->getOffset();
+    auto volume = soundProxy->readVolume();
+    auto looped = soundProxy->readLooped();
 
     auto& resampleBuffer = getMixGraph()->getResampleBuffer();
     assert(resampleBuffer.getSize() >= channels * samples * sizeof(float) && "Very small temp buffer");
@@ -27,16 +27,25 @@ void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
     std::fill_n(resamplerOutData, channels * samples, 0.f);
 
     auto mixState = getMixGraph()->getResampler().exclusiveResampleTo(resamplerOutData, channels, samples, looped, &oggData);
-    samplesOffset += mixState.samplesRead;
-    samplesOffset %= oggData.getTotalSamples();
+
+    fader.exclusiveTransformFloat(resamplerOutData, channels, samples);
 
     for(int i = 0; i < channels * samples; ++i) {
         out[i] += resamplerOutData[i] * volume;
     }
 
+    auto samplesOffset = soundProxy->getOffset();
+    samplesOffset += mixState.samplesRead;
+    samplesOffset %= oggData.getTotalSamples();
     soundProxy->setOffset(samplesOffset);
 
+    bool stopMixing = false;
     if(mixState.isEnded && !looped) {
+        stopMixing = true;
+    } else if(fader.isFadeOutDone()) {
+        stopMixing = true;
+    }
+    if(stopMixing) {
         setSound(nullptr);
         if(auto currParent = getParent()) {
             currParent->removeChild(this);
@@ -49,7 +58,12 @@ bool OggSourceNode::setSound(SoundProxy* proxy) {
         return false;
     }
     if(soundProxy) {
+        fader.reset();
         oggData.close();
+        if(resetOffsetOnStop) {
+            resetOffsetOnStop = false;
+            soundProxy->setOffset(0);
+        }
         soundProxy->setMixNode(nullptr);
         soundProxy = nullptr;
     }
@@ -62,7 +76,7 @@ bool OggSourceNode::setSound(SoundProxy* proxy) {
     assert(!soundProxy->getMixNode() && "Sound already has another mix node");
     soundProxy->setMixNode(this);
 
-    if(!oggData.open(soundProxy->readData())) {
+    if(!oggData.open(soundProxy->getData())) {
         LogError("[OggSourceNode::attachToStream] Can't open OGG data");
         return false;
     }
@@ -71,4 +85,12 @@ bool OggSourceNode::setSound(SoundProxy* proxy) {
         oggData.setSampleOffset(samplesOffset);
     }
     return true;
+}
+
+void OggSourceNode::setResetOffsetOnStop(bool flag) {
+    resetOffsetOnStop = flag;
+}
+
+Fader& OggSourceNode::getFader() {
+    return fader;
 }

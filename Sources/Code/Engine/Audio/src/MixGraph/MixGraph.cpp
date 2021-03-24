@@ -3,6 +3,7 @@
 #include "MixGraph/OggSourceNode.hpp"
 #include "AudioUtils.hpp"
 #include "SoundProxy.hpp"
+#include "Fader.hpp"
 
 #include <cassert>
 
@@ -96,23 +97,24 @@ MixNode* MixGraph::getFreeSource() {
     return freeSource;
 }
 
-bool MixGraph::setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd) {
+bool MixGraph::setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd, float duration) {
     assert(soundProxy && "Invalid proxy node");
     switch(cmd) {
         case ESoundCommand::Start: {
-            startSound(*soundProxy);
+            startSound(*soundProxy, duration);
             break;
         }
         case ESoundCommand::Pause: {
-            pauseSound(*soundProxy);
+            bool resetOffset = false;
+            pauseSound(*soundProxy, duration, resetOffset);
             break;
         }
         case ESoundCommand::Resume: {
-            resumeSound(*soundProxy);
+            resumeSound(*soundProxy, duration);
             break;
         }
         case ESoundCommand::Stop: {
-            stopSound(*soundProxy);
+            stopSound(*soundProxy, duration);
             break;
         }
         default: {
@@ -180,10 +182,16 @@ void MixGraph::applyLowPass(float* out, int channels, int samples) {
     }
 }
 
-void MixGraph::startSound(SoundProxy& soundProxy) {
-    auto& data = soundProxy.readData();
+void MixGraph::startSound(SoundProxy& soundProxy, float duration) {
+    auto& data = soundProxy.getData();
     if(!data->isLoaded.load()) {
-        pendingStarts.insert(&soundProxy);
+        for(auto& node : pendingStarts) {
+            if(node.proxy == &soundProxy) {
+                node.duration = duration;
+                return;
+            }
+        }
+        pendingStarts.emplace_back(PendingStart{&soundProxy, duration});
         return;
     }
     if(soundProxy.getMixNode()) {
@@ -215,46 +223,60 @@ void MixGraph::startSound(SoundProxy& soundProxy) {
         }
     }
     auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
+    if(duration > 0.f) {
+        auto& fader = sourceNode->getFader();
+        int samples = static_cast<int>(config.outSampleRate * duration);
+        fader.setFadeIn(samples);
+    }
     if(sourceNode->setSound(&soundProxy)) {
         combineNode->addChild(sourceNode);
     }
 }
 
-void MixGraph::stopSound(SoundProxy& soundProxy) {
-    soundProxy.setOffset(0);
-    pauseSound(soundProxy);
+void MixGraph::stopSound(SoundProxy& soundProxy, float duration) {
+    bool resetOffset = true;
+    pauseSound(soundProxy, duration, resetOffset);
 }
 
-void MixGraph::pauseSound(SoundProxy& soundProxy) {
+void MixGraph::pauseSound(SoundProxy& soundProxy, float duration, bool resetOffset) {
     auto mixNode = soundProxy.getMixNode();
     if(!mixNode) {
-        auto it = pendingStarts.find(&soundProxy);
-        if(it != pendingStarts.end()) {
-            pendingStarts.erase(it);
+        for(auto it = pendingStarts.begin(); it != pendingStarts.end(); ++it) {
+            if(it->proxy == &soundProxy) {
+                pendingStarts.erase(it);
+                break;
+            }
         }
         return;
     }
     auto oggSource = static_cast<OggSourceNode*>(mixNode);
-    oggSource->setSound(nullptr);
-    oggSource->getParent()->removeChild(oggSource);
+    oggSource->setResetOffsetOnStop(resetOffset);
+    if(duration < 0.f) {
+        oggSource->setSound(nullptr);
+        oggSource->getParent()->removeChild(oggSource);
+    } else {
+        auto& fader = oggSource->getFader();
+        int samples = static_cast<int>(config.outSampleRate * duration);
+        fader.setFadeOut(samples);
+    }
 }
 
-void MixGraph::resumeSound(SoundProxy& soundProxy) {
-    startSound(soundProxy);
+void MixGraph::resumeSound(SoundProxy& soundProxy, float duration) {
+    startSound(soundProxy, duration);
 }
 
 void MixGraph::updatePendingStarts() {
     auto it = pendingStarts.begin();
     while(it != pendingStarts.end()) {
-        auto& soundProxy = **it;
+        auto& soundProxy = *(it->proxy);
         if((soundProxy.canRemove())) {
             it = pendingStarts.erase(it);
             continue;
         } else {
-            auto& soundData = soundProxy.readData();
+            auto& soundData = soundProxy.getData();
             if(soundData->isLoaded.load()) {
                 if(soundData->data) {
-                    startSound(soundProxy);
+                    startSound(soundProxy, it->duration);
                 }
                 it = pendingStarts.erase(it);
                 continue;

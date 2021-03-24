@@ -12,7 +12,7 @@ enum class ESoundCommand {
 
 struct ETSoundPlayManager {
     virtual ~ETSoundPlayManager() = default;
-    virtual bool ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd) = 0;
+    virtual bool ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) = 0;
 };
 
 struct ETSoundEventManager {
@@ -24,7 +24,7 @@ struct ETSoundDataManager {
     virtual ~ETSoundDataManager() = default;
     virtual SoundProxy* ET_createSoundProxy() = 0;
     virtual void ET_cleanUpData() = 0;
-    virtual void ET_loadSoundData(SoundProxy* soundProxy, const std::string& fileName) = 0;
+    virtual void ET_setupSoundData(SoundProxy* soundProxy, const std::string& fileName) = 0;
 };
 
 #endif /* __ET_SOUND_PLAY_MANAGER_HPP__ */

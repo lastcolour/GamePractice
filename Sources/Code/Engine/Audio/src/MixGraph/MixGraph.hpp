@@ -9,8 +9,6 @@
 #include "Filters/RecursiveFilter.hpp"
 #include "Filters/Equalizer.hpp"
 
-#include <unordered_set>
-
 class SoundProxy;
 
 class MixGraph {
@@ -22,7 +20,7 @@ public:
     bool init(const MixConfig& newMixConfig);
     void mixBufferAndConvert(float* out);
 
-    bool setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd);
+    bool setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd, float duration);
 
     const MixConfig& getMixConfig() const;
     Resampler& getResampler();
@@ -35,15 +33,22 @@ public:
 
 private:
 
-    void startSound(SoundProxy& soundProxy);
-    void stopSound(SoundProxy& soundProxy);
-    void pauseSound(SoundProxy& soundProxy);
-    void resumeSound(SoundProxy& soundProxy);
+    void startSound(SoundProxy& soundProxy, float duration);
+    void stopSound(SoundProxy& soundProxy, float duration);
+    void pauseSound(SoundProxy& soundProxy, float duration, bool resetOffset);
+    void resumeSound(SoundProxy& soundProxy, float duration);
 
     void updatePendingStarts();
     void applyLowPass(float* out, int channels, int samples);
     void resizeBuffers(int channels, int samples);
     MixNode* getFreeSource();
+
+private:
+
+    struct PendingStart {
+        SoundProxy* proxy;
+        float duration;
+    };
 
 private:
 
@@ -57,7 +62,7 @@ private:
     RecursiveFilter lLowPass;
     RecursiveFilter rLowPass;
     std::vector<std::unique_ptr<MixNode>> sources;
-    std::unordered_set<SoundProxy*> pendingStarts;
+    std::vector<PendingStart> pendingStarts;
     float masterVolume;
 };
 

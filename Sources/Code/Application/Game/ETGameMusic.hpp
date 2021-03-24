@@ -2,8 +2,7 @@
 #define __ET_GAME_MUSIC_HPP__
 
 enum class EMusicTheme {
-    MainMenu = 0,
-    LevelsMenu,
+    Menu = 0,
     Game,
     None
 };

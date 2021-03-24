@@ -1,6 +1,5 @@
 #include "Android/OboeAudioSystem.hpp"
 #include "Platform/ETDevice.hpp"
-#include "Nodes/ETSoundNode.hpp"
 
 #include <cassert>
 
@@ -140,8 +139,8 @@ void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSet
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool OboeAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd) {
-    return mixGraph.setSoundCmd(proxyNode, cmd);
+bool OboeAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) {
+    return mixGraph.setSoundCmd(proxyNode, cmd, duration);
 }
 
 void OboeAudioSystem::ET_setMasterVolume(float newVolume) {

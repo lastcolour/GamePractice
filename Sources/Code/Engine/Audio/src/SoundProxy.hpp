@@ -15,18 +15,18 @@ public:
     SoundProxy();
     ~SoundProxy();
 
-    std::shared_ptr<SoundData>& readData();
     ESoundGroup readGroup() const;
     float readVolume() const;
     bool readLooped() const;
     const char* readFile() const;
 
-    void writeData(std::shared_ptr<SoundData>& newData);
     void writeFile(const char* fileName);
     void writeGroup(ESoundGroup newGroup);
     void writeVolume(float newVolume);
     void writeLooped(bool flag);
 
+    void setData(std::shared_ptr<SoundData>& newData);
+    std::shared_ptr<SoundData>& getData();
     void setOffset(int newOffset);
     int getOffset() const;
     void setMixNode(MixNode* node);
@@ -34,6 +34,8 @@ public:
 
     void setNoSound();
 
+    void fadeInPlay(const Sound&, float duration);
+    void fadeOutStop(float duration);
     void play(const Sound& sound);
     void pause();
     void resume(const Sound& sound);

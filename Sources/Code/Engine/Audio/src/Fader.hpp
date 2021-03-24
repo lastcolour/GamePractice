@@ -11,9 +11,11 @@ public:
 
     void setFadeIn(int samplesDuration);
     void setFadeOut(int samplesDuration);
+    void reset();
 
     bool isFadeInState() const;
     bool isFadeOutState() const;
+    bool isFadeOutDone() const;
 
     void exclusiveTransformFloat(float* data, int channels, int samples);
     void exclusiveTransformInt16(int16_t* data, int channels, int samples);
