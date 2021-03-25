@@ -39,6 +39,7 @@ public:
     void setGroup(ESoundGroup newGroup);
     void setFile(const char* fileName);
     const char* getFile() const;
+    void setKeepLoaded(bool flag);
 
 private:
 

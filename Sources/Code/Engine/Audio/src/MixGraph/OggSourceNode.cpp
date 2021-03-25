@@ -74,10 +74,12 @@ bool OggSourceNode::setSound(SoundProxy* proxy) {
     }
 
     assert(!soundProxy->getMixNode() && "Sound already has another mix node");
-    soundProxy->setMixNode(this);
 
-    if(!oggData.open(soundProxy->getData())) {
-        LogError("[OggSourceNode::attachToStream] Can't open OGG data");
+    if(oggData.open(soundProxy->getData())) {
+        soundProxy->setMixNode(this);
+    } else {
+        LogError("[OggSourceNode::setSound] Can't open OGG data");
+        soundProxy = nullptr;
         return false;
     }
     auto samplesOffset = soundProxy->getOffset();

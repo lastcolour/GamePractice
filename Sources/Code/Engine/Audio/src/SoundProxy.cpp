@@ -10,14 +10,15 @@ const float INSTANT_DURATION = -1.f;
 } // namespace
 
 SoundProxy::SoundProxy() :
-    data(nullptr),
+    soundData(nullptr),
     mixNode(nullptr),
     offset(0),
     volume(1.f),
     group(ESoundGroup::Music),
     looped(false),
     hasSound(true),
-    hasMixNode(false) {
+    hasMixNode(false),
+    isQueuedToStartMix(false) {
 }
 
 SoundProxy::~SoundProxy() {
@@ -35,31 +36,30 @@ bool SoundProxy::readLooped() const {
     return looped.load();
 }
 
-void SoundProxy::writeFile(const char* fileName) {
-    std::string currFile = readFile();
+void SoundProxy::setFile(const char* fileName) {
+    std::string currFile = getFile();
     if(currFile == fileName) {
         return;
     }
     if(isPlaying()) {
         stop();
     }
-    std::string soundDataFile = fileName;
-    ET_QueueEvent(&ETSoundDataManager::ET_setupSoundData, this, soundDataFile);
+    ET_SendEventReturn(soundData, &ETSoundDataManager::ET_createSoundData, fileName);
 }
 
-const char* SoundProxy::readFile() const {
-    if(data) {
-        return data->fileName;
+const char* SoundProxy::getFile() const {
+    if(soundData) {
+        return soundData->fileName;
     }
     return "";
 }
 
 std::shared_ptr<SoundData>& SoundProxy::getData() {
-    return data;
+    return soundData;
 }
 
-void SoundProxy::setData(std::shared_ptr<SoundData>& newData) {
-    data = newData;
+void SoundProxy::setData(std::shared_ptr<SoundData>& newSoundData) {
+    soundData = newSoundData;
 }
 
 void SoundProxy::writeGroup(ESoundGroup newGroup) {
@@ -110,7 +110,7 @@ MixNode* SoundProxy::getMixNode() {
 
 void SoundProxy::fadeInPlay(const Sound& sound, float duration) {
     if(!isValid()) {
-        LogWarning("[SoundProxy::fadeInPlay] Can't play source with invalid data: '%s'", readFile());
+        LogWarning("[SoundProxy::fadeInPlay] Can't play source with invalid data: '%s'", getFile());
     } else {
         volume.store(sound.getVolume());
         looped.store(sound.isLooped());
@@ -127,7 +127,7 @@ void SoundProxy::fadeOutStop(float duration) {
 
 void SoundProxy::play(const Sound& sound) {
     if(!isValid()) {
-        LogWarning("[SoundProxy::play] Can't play source with invalid data: '%s'", readFile());
+        LogWarning("[SoundProxy::play] Can't play source with invalid data: '%s'", getFile());
     } else {
         volume.store(sound.getVolume());
         looped.store(sound.isLooped());
@@ -139,7 +139,7 @@ void SoundProxy::play(const Sound& sound) {
 
 void SoundProxy::resume(const Sound& sound) {
     if(!isValid()) {
-        LogWarning("[SoundProxy::play] Can't play source with invalid data: '%s'", readFile());
+        LogWarning("[SoundProxy::play] Can't play source with invalid data: '%s'", getFile());
     } else {
         volume.store(sound.getVolume());
         looped.store(sound.isLooped());
@@ -163,14 +163,28 @@ bool SoundProxy::isPlaying() const {
     return hasMixNode.load();
 }
 
-bool SoundProxy::isValid() const {
-    if(!data) {
+bool SoundProxy::shouldStartMix() const {
+    return hasSound.load();
+}
+
+bool SoundProxy::isLoaded() const {
+    if(soundData && soundData->isLoaded()) {
         return true;
     }
-    if(data->isLoaded.load()) {
-        if(!data->data) {
-            return false;
-        }
+    return false;
+}
+
+void SoundProxy::setPendingStart(bool flag) {
+    isQueuedToStartMix = flag;
+}
+
+bool SoundProxy::isPendingStart() const {
+    return isQueuedToStartMix;
+}
+
+bool SoundProxy::isValid() const {
+    if(!soundData) {
+        return false;
     }
     return true;
 }
@@ -179,7 +193,7 @@ bool SoundProxy::canRemove() const {
     if(hasSound.load()) {
         return false;
     }
-    if(mixNode) {
+    if(isQueuedToStartMix || mixNode) {
         return false;
     }
     return true;

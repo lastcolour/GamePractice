@@ -132,7 +132,7 @@ void OboeAudioSystem::ET_updateSound() {
     }
     bufferQueue.submitWrites(buffers);
 
-    ET_SendEvent(&ETSoundDataManager::ET_cleanUpData);
+    ET_SendEvent(&ETSoundDataManager::ET_updateData);
 }
 
 void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {

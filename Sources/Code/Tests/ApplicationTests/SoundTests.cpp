@@ -1,5 +1,5 @@
 #include "SoundTests.hpp"
-#include "Audio/ETSound.hpp"
+#include "Audio/Sound.hpp"
 #include "Core/ETTasks.hpp"
 #include "AudioBufferQueue.hpp"
 
@@ -10,39 +10,51 @@ namespace {
 const char* TEST_SOUND_NAME = "Sounds/UI/buttonPress_01.ogg";
 const int MAX_PARALLEL_SOUNDS = 16;
 
+void DoAudioSystemStep() {
+    ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, 0.f);
+
+    ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, 0.f);
+}
+
 } // namespace
 
 TEST_F(SoundTests, CheckCreateSound) {
     Sound sound;
-    ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, TEST_SOUND_NAME);
+    sound.setFile(TEST_SOUND_NAME);
 
     ASSERT_TRUE(sound.isValid());
     ASSERT_FALSE(sound.isPlaying());
 
     {
         sound.play();
-        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+
+        DoAudioSystemStep();
 
         ASSERT_TRUE(sound.isPlaying());
     }
 
     {
         sound.pause();
-        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+
+        DoAudioSystemStep();
 
         ASSERT_FALSE(sound.isPlaying());
     }
 
     {
         sound.resume();
-        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+
+        DoAudioSystemStep();
 
         ASSERT_TRUE(sound.isPlaying());
     }
 
     {
         sound.stop();
-        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+
+        DoAudioSystemStep();
 
         ASSERT_FALSE(sound.isPlaying());
     }
@@ -52,7 +64,7 @@ TEST_F(SoundTests, CheckCreateManySound) {
     std::vector<Sound> sounds;
     for(int i = 0; i < MAX_PARALLEL_SOUNDS; ++i) {
         Sound sound;
-        ET_SendEventReturn(sound, &ETSoundManager::ET_createSound, TEST_SOUND_NAME);
+        sound.setFile(TEST_SOUND_NAME);
         EXPECT_TRUE(sound.isValid());
         sounds.emplace_back(std::move(sound));
     }
@@ -64,11 +76,41 @@ TEST_F(SoundTests, CheckCreateManySound) {
         sound.play();
     }
 
-    ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+    DoAudioSystemStep();
 
     for(size_t i = 0, sz = sounds.size(); i < sz; ++i) {
         auto& sound = sounds[i];
         EXPECT_TRUE(sound.isPlaying());
+    }
+}
+
+TEST_F(SoundTests, CheckInvalidSound) {
+    Sound sound;
+
+    ASSERT_TRUE(sound.isValid());
+
+    {
+        sound.play();
+
+        DoAudioSystemStep();
+
+        ASSERT_FALSE(sound.isPlaying());
+    }
+
+    {
+        sound.fadeInPlay(1.f);
+
+        DoAudioSystemStep();
+
+        ASSERT_FALSE(sound.isPlaying());
+    }
+
+    {
+        sound.resume();
+
+        DoAudioSystemStep();
+
+        ASSERT_FALSE(sound.isPlaying());
     }
 }
 

@@ -104,6 +104,19 @@ const char* getVorbisErrorText(int error) {
     return errorText;
 }
 
+bool isSoundDataValid(std::shared_ptr<SoundData>& newSoundData) {
+    if(!newSoundData) {
+        return false;
+    }
+    if(!newSoundData->isLoaded()) {
+        return false;
+    }
+    if(!newSoundData->data) {
+        return false;
+    }
+    return true;
+}
+
 } // namespace
 
 OggDataStream::OggDataStream() :
@@ -123,23 +136,21 @@ OggDataStream::~OggDataStream() {
 }
 
 bool OggDataStream::open(std::shared_ptr<SoundData>& newSoundData) {
-    assert(oggStream == nullptr && "Reopen OGG data stream");
-    assert(!soundData && "Invalid sound data");
-
-    if(!newSoundData) {
+    if(isOpened()) {
+        assert(false && "Already open another sound data");
         return false;
     }
-    assert(newSoundData->isLoaded.load() && "Not loaded sound data");
-
-    auto& oggBuffer = newSoundData->data;
-    if(!oggBuffer) {
+    if(!isSoundDataValid(newSoundData)) {
+        assert(false && "Invalid sound data");
         return false;
     }
 
     soundData = newSoundData;
+    soundData->addMixNodeRef();
 
     int error = VORBIS__no_error;
 
+    auto& oggBuffer = newSoundData->data;
     oggStream = stb_vorbis_open_memory(
         static_cast<const unsigned char*>(oggBuffer.getReadData()),
             static_cast<int>(oggBuffer.getSize()), &error,
@@ -150,6 +161,7 @@ bool OggDataStream::open(std::shared_ptr<SoundData>& newSoundData) {
     }
 
     if(!oggStream) {
+        close();
         return false;
     }
 
@@ -161,12 +173,14 @@ bool OggDataStream::open(std::shared_ptr<SoundData>& newSoundData) {
 }
 
 void OggDataStream::close() {
-    if(!oggStream) {
-        return;
+    if(oggStream) {
+        stb_vorbis_close(oggStream);
+        oggStream = nullptr;
     }
-    stb_vorbis_close(oggStream);
-    oggStream = nullptr;
-    soundData.reset();
+    if(soundData) {
+        soundData->removeMixNodeRef();
+        soundData.reset();
+    }
     oggChannels = 0;
     oggSampleRate = 0;
     oggSampleCount = 0;

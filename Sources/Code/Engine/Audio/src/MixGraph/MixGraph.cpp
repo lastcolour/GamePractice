@@ -183,14 +183,14 @@ void MixGraph::applyLowPass(float* out, int channels, int samples) {
 }
 
 void MixGraph::startSound(SoundProxy& soundProxy, float duration) {
-    auto& data = soundProxy.getData();
-    if(!data->isLoaded.load()) {
+    if(!soundProxy.isLoaded()) {
         for(auto& node : pendingStarts) {
             if(node.proxy == &soundProxy) {
                 node.duration = duration;
                 return;
             }
         }
+        soundProxy.setPendingStart(true);
         pendingStarts.emplace_back(PendingStart{&soundProxy, duration});
         return;
     }
@@ -268,20 +268,18 @@ void MixGraph::resumeSound(SoundProxy& soundProxy, float duration) {
 void MixGraph::updatePendingStarts() {
     auto it = pendingStarts.begin();
     while(it != pendingStarts.end()) {
-        auto& soundProxy = *(it->proxy);
-        if((soundProxy.canRemove())) {
-            it = pendingStarts.erase(it);
-            continue;
-        } else {
-            auto& soundData = soundProxy.getData();
-            if(soundData->isLoaded.load()) {
+        auto& soundProxy = *it->proxy;
+        if(soundProxy.isLoaded()) {
+            if(soundProxy.shouldStartMix()) {
+                auto& soundData = soundProxy.getData();
                 if(soundData->data) {
                     startSound(soundProxy, it->duration);
                 }
-                it = pendingStarts.erase(it);
-                continue;
             }
+            soundProxy.setPendingStart(false);
+            it = pendingStarts.erase(it);
+        } else {
+            ++it;
         }
-        ++it;
     }
 }

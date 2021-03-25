@@ -52,6 +52,8 @@ bool SoundEventManager::init() {
             continue;
         }
         auto& data = eventNodes[info.name];
+        info.sound.setLooped(false);
+        info.sound.setKeepLoaded(true);
         data.info = &info;
     }
 

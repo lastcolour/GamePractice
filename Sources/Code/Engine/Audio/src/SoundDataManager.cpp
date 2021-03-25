@@ -8,9 +8,6 @@ SoundDataManager::~SoundDataManager() {
 }
 
 bool SoundDataManager::init() {
-    nullSoundData.reset(new SoundData);
-    nullSoundData->isLoaded.store(true);
-
     ETNode<ETSoundDataManager>::connect(getEntityId());
     return true;
 }
@@ -19,34 +16,65 @@ void SoundDataManager::deinit() {
 }
 
 SoundProxy* SoundDataManager::ET_createSoundProxy() {
+    std::lock_guard<std::mutex> lock(mutex);
     soundProxies.emplace_back(new SoundProxy);
     return soundProxies.back().get();
 }
 
-void SoundDataManager::ET_cleanUpData() {
+void SoundDataManager::ET_updateData() {
+    std::lock_guard<std::mutex> lock(mutex);
+    updateProxies();
+    updateSoundData();
+}
+
+void SoundDataManager::updateProxies() {
     auto it = soundProxies.begin();
     while(it != soundProxies.end()) {
-        if((*it)->canRemove()) {
+        auto& soundProxy = *it;
+        if(soundProxy->canRemove()) {
             it = soundProxies.erase(it);
-        } else {
-            ++it;
+            continue;
         }
+        if(soundProxy->isPendingStart()) {
+            auto& soundData = soundProxy->getData();
+            if(!soundData->isLoaded() && !soundData->isLoading()) {
+                soundData->requestLoad();
+            }
+        }
+        ++it;
     }
 }
 
-void SoundDataManager::ET_setupSoundData(SoundProxy* soundProxy, const std::string& fileName) {
-    if(soundProxy->canRemove()) {
-        return;
+void SoundDataManager::updateSoundData() {
+    auto it = sounds.begin();
+    while(it != sounds.end()) {
+        auto& soundData = it->second;
+        if(soundData.use_count() == 1) {
+            it = sounds.erase(it);
+            continue;
+        }
+        if(soundData->isLoadRequired()) {
+            soundData->setLoading();
+            ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, soundData->fileName, [soundDataPtr = soundData.get()](Buffer& buff){
+                soundDataPtr->setLoaded(buff);
+            });
+        } else {
+            soundData->tryFree();
+        }
+        ++it;
     }
+}
+
+std::shared_ptr<SoundData> SoundDataManager::ET_createSoundData(const std::string& fileName) {
     if(fileName.empty()) {
-        soundProxy->setData(nullSoundData);
-        return;
+        return nullptr;
     }
+
+    std::lock_guard<std::mutex> lock(mutex);
 
     auto it = sounds.find(fileName);
     if(it != sounds.end()) {
-        soundProxy->setData(it->second);
-        return;
+        return it->second;
     }
 
     auto res = sounds.emplace(fileName, new SoundData);
@@ -54,12 +82,6 @@ void SoundDataManager::ET_setupSoundData(SoundProxy* soundProxy, const std::stri
     it = res.first;
     auto& soundData = it->second;
     soundData->fileName = it->first.c_str();
-    soundData->isLoaded.store(false);
 
-    soundProxy->setData(soundData);
-
-    ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, fileName.c_str(), [soundData](Buffer& buff){
-        soundData->data = std::move(buff);
-        soundData->isLoaded.store(true);
-    });
+    return soundData;
 }

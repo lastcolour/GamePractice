@@ -164,7 +164,7 @@ void ALAudioSystem::ET_updateSound() {
         alSourcePlay(alSourceId);
     }
 
-    ET_SendEvent(&ETSoundDataManager::ET_cleanUpData);
+    ET_SendEvent(&ETSoundDataManager::ET_updateData);
 }
 
 void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {

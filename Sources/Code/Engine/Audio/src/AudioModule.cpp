@@ -31,9 +31,9 @@ AudioModule::~AudioModule() {
 AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
-            AudioSystem,
             SoundDataManager,
-            SoundEventManager>()
+            SoundEventManager,
+            AudioSystem>()
         );
     return container;
 }

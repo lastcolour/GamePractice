@@ -23,8 +23,8 @@ struct ETSoundEventManager {
 struct ETSoundDataManager {
     virtual ~ETSoundDataManager() = default;
     virtual SoundProxy* ET_createSoundProxy() = 0;
-    virtual void ET_cleanUpData() = 0;
-    virtual void ET_setupSoundData(SoundProxy* soundProxy, const std::string& fileName) = 0;
+    virtual std::shared_ptr<SoundData> ET_createSoundData(const std::string& fileName) = 0;
+    virtual void ET_updateData() = 0;
 };
 
 #endif /* __ET_SOUND_PLAY_MANAGER_HPP__ */

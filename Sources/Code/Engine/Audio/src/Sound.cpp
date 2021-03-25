@@ -123,9 +123,12 @@ void Sound::setGroup(ESoundGroup newGroup) {
 }
 
 void Sound::setFile(const char* fileName) {
-    proxy->writeFile(fileName);
+    proxy->setFile(fileName);
 }
 
 const char* Sound::getFile() const {
-    return proxy->readFile();
+    return proxy->getFile();
+}
+
+void Sound::setKeepLoaded(bool flag) {
 }

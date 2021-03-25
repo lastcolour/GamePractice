@@ -18,19 +18,24 @@ public:
     ESoundGroup readGroup() const;
     float readVolume() const;
     bool readLooped() const;
-    const char* readFile() const;
 
-    void writeFile(const char* fileName);
     void writeGroup(ESoundGroup newGroup);
     void writeVolume(float newVolume);
     void writeLooped(bool flag);
 
+    void setFile(const char* fileName);
+    const char* getFile() const;
     void setData(std::shared_ptr<SoundData>& newData);
     std::shared_ptr<SoundData>& getData();
     void setOffset(int newOffset);
     int getOffset() const;
     void setMixNode(MixNode* node);
     MixNode* getMixNode();
+
+    bool shouldStartMix() const;
+    bool isLoaded() const;
+    void setPendingStart(bool flag);
+    bool isPendingStart() const;
 
     void setNoSound();
 
@@ -51,7 +56,7 @@ private:
 
 private:
 
-    std::shared_ptr<SoundData> data;
+    std::shared_ptr<SoundData> soundData;
     MixNode* mixNode;
     int offset;
     std::atomic<float> volume;
@@ -59,6 +64,7 @@ private:
     std::atomic<bool> looped;
     std::atomic<bool> hasSound;
     std::atomic<bool> hasMixNode;
+    bool isQueuedToStartMix;
 };
 
 #endif /* __SOUND_PROXY_HPP__ */
