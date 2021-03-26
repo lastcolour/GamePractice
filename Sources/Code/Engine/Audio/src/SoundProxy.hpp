@@ -31,14 +31,16 @@ public:
     int getOffset() const;
     void setMixNode(MixNode* node);
     MixNode* getMixNode();
+    void setKeepLoaded(bool flag);
 
     bool shouldStartMix() const;
     bool isLoaded() const;
     void setPendingStart(bool flag);
-    bool isPendingStart() const;
-
     void setNoSound();
 
+    void updateDataLoadState();
+
+    void emit();
     void fadeInPlay(const Sound&, float duration);
     void fadeOutStop(float duration);
     void play(const Sound& sound);
@@ -46,7 +48,6 @@ public:
     void resume(const Sound& sound);
     void stop();
     bool isPlaying() const;
-    bool isValid() const;
     bool canRemove() const;
 
 private:
@@ -64,6 +65,7 @@ private:
     std::atomic<bool> looped;
     std::atomic<bool> hasSound;
     std::atomic<bool> hasMixNode;
+    std::atomic<bool> keepInMemory;
     bool isQueuedToStartMix;
 };
 

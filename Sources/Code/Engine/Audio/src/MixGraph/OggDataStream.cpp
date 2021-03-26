@@ -146,7 +146,7 @@ bool OggDataStream::open(std::shared_ptr<SoundData>& newSoundData) {
     }
 
     soundData = newSoundData;
-    soundData->addMixNodeRef();
+    soundData->addUseRef();
 
     int error = VORBIS__no_error;
 
@@ -178,7 +178,7 @@ void OggDataStream::close() {
         oggStream = nullptr;
     }
     if(soundData) {
-        soundData->removeMixNodeRef();
+        soundData->removeUseRef();
         soundData.reset();
     }
     oggChannels = 0;

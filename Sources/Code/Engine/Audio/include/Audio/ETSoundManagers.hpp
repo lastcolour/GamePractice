@@ -7,7 +7,8 @@ enum class ESoundCommand {
     Start = 0,
     Pause,
     Resume,
-    Stop
+    Stop,
+    Emit
 };
 
 struct ETSoundPlayManager {

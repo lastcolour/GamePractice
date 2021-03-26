@@ -129,6 +129,12 @@ void ALAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETSoundPlayManager>();
     ET_PollAllEvents<ETSoundDataManager>();
 
+    updateMixGraph();
+
+    ET_SendEvent(&ETSoundDataManager::ET_updateData);
+}
+
+void ALAudioSystem::updateMixGraph() {
     auto& config = mixGraph.getMixConfig();
 
     if(!alSourcePlaying) {
@@ -143,7 +149,7 @@ void ALAudioSystem::ET_updateSound() {
         return;
     }
     if(buffersProcessed == config.buffersCount) {
-        LogWarning("[ALAudioSystem::ET_onSystemTick] All buffers processed!");
+        LogWarning("[ALAudioSystem::updateMixGraph] All buffers processed!");
     }
 
     alSourceUnqueueBuffers(alSourceId, buffersProcessed, &queueBufferIds[0]);
@@ -163,8 +169,6 @@ void ALAudioSystem::ET_updateSound() {
     if(alSourceState != AL_PLAYING) {
         alSourcePlay(alSourceId);
     }
-
-    ET_SendEvent(&ETSoundDataManager::ET_updateData);
 }
 
 void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {

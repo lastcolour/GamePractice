@@ -37,6 +37,7 @@ public:
 
 private:
 
+    void updateMixGraph();
     bool initSoundContext();
     bool initAlSource();
 

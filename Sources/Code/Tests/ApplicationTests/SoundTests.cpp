@@ -7,15 +7,14 @@
 
 namespace {
 
-const char* TEST_SOUND_NAME = "Sounds/UI/buttonPress_01.ogg";
+const char* TEST_SOUND_NAME = "Sounds/Game/Music/8bit_Bossa.ogg";
 const int MAX_PARALLEL_SOUNDS = 16;
 
 void DoAudioSystemStep() {
-    ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
-    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, 0.f);
-
-    ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
-    ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, 0.f);
+    for(int i = 0; i < 3; ++i) {
+        ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
+        ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, 0.f);
+    }
 }
 
 } // namespace
@@ -24,7 +23,6 @@ TEST_F(SoundTests, CheckCreateSound) {
     Sound sound;
     sound.setFile(TEST_SOUND_NAME);
 
-    ASSERT_TRUE(sound.isValid());
     ASSERT_FALSE(sound.isPlaying());
 
     {
@@ -32,7 +30,7 @@ TEST_F(SoundTests, CheckCreateSound) {
 
         DoAudioSystemStep();
 
-        ASSERT_TRUE(sound.isPlaying());
+        EXPECT_TRUE(sound.isPlaying());
     }
 
     {
@@ -40,7 +38,7 @@ TEST_F(SoundTests, CheckCreateSound) {
 
         DoAudioSystemStep();
 
-        ASSERT_FALSE(sound.isPlaying());
+        EXPECT_FALSE(sound.isPlaying());
     }
 
     {
@@ -48,7 +46,7 @@ TEST_F(SoundTests, CheckCreateSound) {
 
         DoAudioSystemStep();
 
-        ASSERT_TRUE(sound.isPlaying());
+        EXPECT_TRUE(sound.isPlaying());
     }
 
     {
@@ -56,7 +54,7 @@ TEST_F(SoundTests, CheckCreateSound) {
 
         DoAudioSystemStep();
 
-        ASSERT_FALSE(sound.isPlaying());
+        EXPECT_FALSE(sound.isPlaying());
     }
 }
 
@@ -65,7 +63,6 @@ TEST_F(SoundTests, CheckCreateManySound) {
     for(int i = 0; i < MAX_PARALLEL_SOUNDS; ++i) {
         Sound sound;
         sound.setFile(TEST_SOUND_NAME);
-        EXPECT_TRUE(sound.isValid());
         sounds.emplace_back(std::move(sound));
     }
 
@@ -86,8 +83,6 @@ TEST_F(SoundTests, CheckCreateManySound) {
 
 TEST_F(SoundTests, CheckInvalidSound) {
     Sound sound;
-
-    ASSERT_TRUE(sound.isValid());
 
     {
         sound.play();

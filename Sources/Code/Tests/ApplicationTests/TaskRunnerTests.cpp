@@ -171,6 +171,7 @@ TEST_F(TaskRunnerTests, CheckSuspendRunning) {
     }
 
     runner.suspend(true);
+    std::this_thread::yield();
 
     {
         int first = val.load();

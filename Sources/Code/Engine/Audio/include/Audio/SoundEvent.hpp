@@ -14,7 +14,6 @@ public:
     ~SoundEvent();
 
     void emit();
-    bool isValid() const;
 
 private:
 

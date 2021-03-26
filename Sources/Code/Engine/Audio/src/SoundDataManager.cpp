@@ -33,15 +33,10 @@ void SoundDataManager::updateProxies() {
         auto& soundProxy = *it;
         if(soundProxy->canRemove()) {
             it = soundProxies.erase(it);
-            continue;
+        } else {
+            soundProxy->updateDataLoadState();
+            ++it;
         }
-        if(soundProxy->isPendingStart()) {
-            auto& soundData = soundProxy->getData();
-            if(!soundData->isLoaded() && !soundData->isLoading()) {
-                soundData->requestLoad();
-            }
-        }
-        ++it;
     }
 }
 
@@ -53,13 +48,14 @@ void SoundDataManager::updateSoundData() {
             it = sounds.erase(it);
             continue;
         }
-        if(soundData->isLoadRequired()) {
-            soundData->setLoading();
+        if(soundData->canStartLoading()) {
             ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, soundData->fileName, [soundDataPtr = soundData.get()](Buffer& buff){
                 soundDataPtr->setLoaded(buff);
             });
         } else {
-            soundData->tryFree();
+            if(soundData->tryFree()) {
+                LogDebug("[SoundDataManager::updateSoundData] Unload sound data: '%s'", soundData->fileName);
+            }
         }
         ++it;
     }

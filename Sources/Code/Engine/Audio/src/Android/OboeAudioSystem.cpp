@@ -115,6 +115,12 @@ void OboeAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETSoundPlayManager>();
     ET_PollAllEvents<ETSoundDataManager>();
 
+    updateMixGraph();
+
+    ET_SendEvent(&ETSoundDataManager::ET_updateData);
+}
+
+void OboeAudioSystem::updateMixGraph() {
     if(!canMix.load()) {
         return;
     }
@@ -123,7 +129,7 @@ void OboeAudioSystem::ET_updateSound() {
     auto buffers = bufferQueue.peekWrites();
 
     if(buffers.size() == mixConfig.buffersCount) {
-        LogError("[OboeAudioSystem::ET_updateSound] Very slow mixing");
+        LogError("[OboeAudioSystem::updateMixGraph] Very slow mixing");
     }
 
     for(auto& buff : buffers) {
@@ -131,8 +137,6 @@ void OboeAudioSystem::ET_updateSound() {
         buff->write(mixBuffer.get(), mixConfig.samplesPerBuffer * mixConfig.channels * sizeof(int16_t));
     }
     bufferQueue.submitWrites(buffers);
-
-    ET_SendEvent(&ETSoundDataManager::ET_updateData);
 }
 
 void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {

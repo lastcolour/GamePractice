@@ -28,7 +28,3 @@ void SoundEvent::emit() {
     }
     ET_SendEvent(&ETSoundEventManager::ET_emitEvent, eventName.c_str());
 }
-
-bool SoundEvent::isValid() const {
-    return false;
-}

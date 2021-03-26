@@ -92,10 +92,6 @@ void GameMusicManager::ET_setTheme(EMusicTheme newTheme) {
         return;
     }
 
-    if(!newSound->isValid()) {
-        return;
-    }
-
     currSound = newSound;
     currSound->setLooped(true);
     currSound->fadeInPlay(fadeInDuration);

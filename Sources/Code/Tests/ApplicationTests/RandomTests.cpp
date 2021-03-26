@@ -2,7 +2,7 @@
 #include "Math/Random.hpp"
 
 TEST_F(RandomTests, CheckIntGenerator) {
-    const int N = 1000;
+    const int N = 5000;
     const int MinVal = 0;
     const int MaxVal = 10;
 

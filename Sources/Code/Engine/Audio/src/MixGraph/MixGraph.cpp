@@ -97,6 +97,28 @@ MixNode* MixGraph::getFreeSource() {
     return freeSource;
 }
 
+CombineNode* MixGraph::getCombineNode(ESoundGroup soundGroup) {
+    CombineNode* combineNode = nullptr;
+    switch(soundGroup) {
+        case ESoundGroup::Game: {
+            combineNode = &gameNode;
+            break;
+        }
+        case ESoundGroup::Music: {
+            combineNode = &musicNode;
+            break;
+        }
+        case ESoundGroup::UI: {
+            combineNode = &uiNode;
+            break;
+        }
+        default: {
+            assert(false && "Invalid sound group");
+        }
+    }
+    return combineNode;
+}
+
 bool MixGraph::setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd, float duration) {
     assert(soundProxy && "Invalid proxy node");
     switch(cmd) {
@@ -115,6 +137,10 @@ bool MixGraph::setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd, float dura
         }
         case ESoundCommand::Stop: {
             stopSound(*soundProxy, duration);
+            break;
+        }
+        case ESoundCommand::Emit: {
+            startEvent(*soundProxy);
             break;
         }
         default: {
@@ -141,23 +167,11 @@ Buffer& MixGraph::getCombineBuffer() {
 }
 
 void MixGraph::setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) {
-    switch(soundGroup) {
-        case ESoundGroup::Game: {
-            gameNode.setEqualizerSetup(eqSetup);
-            break;
-        }
-        case ESoundGroup::Music: {
-            musicNode.setEqualizerSetup(eqSetup);
-            break;
-        }
-        case ESoundGroup::UI: {
-            uiNode.setEqualizerSetup(eqSetup);
-            break;
-        }
-        default: {
-            assert(false && "Invalid sound group");
-        }
+    auto combineNode = getCombineNode(soundGroup);
+    if(!combineNode) {
+        return;
     }
+    combineNode->setEqualizerSetup(eqSetup);
 }
 
 void MixGraph::setMasterVolume(float newVolume) {
@@ -202,33 +216,45 @@ void MixGraph::startSound(SoundProxy& soundProxy, float duration) {
         LogWarning("[MixGraph::startSound] Can't find free source");
         return;
     }
-    CombineNode* combineNode = nullptr;
     auto soundGroup = soundProxy.readGroup();
-    switch(soundGroup) {
-        case ESoundGroup::Game: {
-            combineNode = &gameNode;
-            break;
-        }
-        case ESoundGroup::Music: {
-            combineNode = &musicNode;
-            break;
-        }
-        case ESoundGroup::UI: {
-            combineNode = &uiNode;
-            break;
-        }
-        default: {
-            assert(false && "Invalid sound group");
-            return;
-        }
+    auto combineNode = getCombineNode(soundGroup);
+    if(!combineNode) {
+        return;
     }
+
     auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
     if(duration > 0.f) {
         auto& fader = sourceNode->getFader();
         int samples = static_cast<int>(config.outSampleRate * duration);
         fader.setFadeIn(samples);
     }
-    if(sourceNode->setSound(&soundProxy)) {
+    bool isEvent = false;
+    if(sourceNode->setSound(&soundProxy, isEvent)) {
+        combineNode->addChild(sourceNode);
+    }
+}
+
+void MixGraph::startEvent(SoundProxy& soundProxy) {
+    if(!soundProxy.isLoaded()) {
+        return;
+    }
+    if(soundProxy.getMixNode()) {
+        assert(false && "Sound event should not have mix node");
+        return;
+    }
+    auto freeSourceNode = getFreeSource();
+    if(!freeSourceNode) {
+        LogWarning("[MixGraph::startEvent] Can't find free source");
+        return;
+    }
+    auto soundGroup = soundProxy.readGroup();
+    auto combineNode = getCombineNode(soundGroup);
+    if(!combineNode) {
+        return;
+    }
+    bool isEvent = true;
+    auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
+    if(sourceNode->setSound(&soundProxy, isEvent)) {
         combineNode->addChild(sourceNode);
     }
 }
@@ -243,6 +269,7 @@ void MixGraph::pauseSound(SoundProxy& soundProxy, float duration, bool resetOffs
     if(!mixNode) {
         for(auto it = pendingStarts.begin(); it != pendingStarts.end(); ++it) {
             if(it->proxy == &soundProxy) {
+                soundProxy.setPendingStart(false);
                 pendingStarts.erase(it);
                 break;
             }
@@ -252,7 +279,7 @@ void MixGraph::pauseSound(SoundProxy& soundProxy, float duration, bool resetOffs
     auto oggSource = static_cast<OggSourceNode*>(mixNode);
     oggSource->setResetOffsetOnStop(resetOffset);
     if(duration < 0.f) {
-        oggSource->setSound(nullptr);
+        oggSource->setSound(nullptr, false);
         oggSource->getParent()->removeChild(oggSource);
     } else {
         auto& fader = oggSource->getFader();

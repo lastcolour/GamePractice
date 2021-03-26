@@ -34,12 +34,12 @@ public:
     float getVolume() const;
     bool isPlaying() const;
     bool isLooped() const;
-    bool isValid() const;
     ESoundGroup getGroup() const;
     void setGroup(ESoundGroup newGroup);
     void setFile(const char* fileName);
     const char* getFile() const;
     void setKeepLoaded(bool flag);
+    SoundProxy* getProxy();
 
 private:
 

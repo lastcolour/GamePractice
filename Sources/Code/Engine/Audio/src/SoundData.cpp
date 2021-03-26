@@ -5,62 +5,52 @@
 SoundData::SoundData() :
     fileName(""),
     loadState(LoadState::Released),
-    mixNodesRefCount(0),
-    keepInMemory(false) {
+    useRefCount(0) {
 }
 
 SoundData::~SoundData() {
 }
 
 void SoundData::requestLoad() {
-    assert(loadState == LoadState::Released && "Invalid load state");
-    loadState = LoadState::LoadRequested;
+    auto tReleaseState = LoadState::Released;
+    loadState.compare_exchange_strong(tReleaseState, LoadState::LoadRequested);
 }
 
 bool SoundData::isLoaded() const {
-    return loadState == LoadState::Loaded;
+    return loadState.load() == LoadState::Loaded;
 }
 
-bool SoundData::isLoading() const {
-    return loadState == LoadState::Loading;
-}
-
-bool SoundData::isLoadRequired() {
-    return loadState == LoadState::LoadRequested;
-}
-
-void SoundData::setLoading() {
-    assert(loadState == LoadState::LoadRequested && "Invalid load state");
-    loadState = LoadState::Loading;
+bool SoundData::canStartLoading() {
+    auto tRequestState = LoadState::LoadRequested;
+    return loadState.compare_exchange_strong(tRequestState, LoadState::Loading);
 }
 
 void SoundData::setLoaded(Buffer& buff) {
-    assert(loadState == LoadState::Loading || loadState == LoadState::Released && "Invalid load state");
+    auto tLoadingState = LoadState::Loading;
+    if(!loadState.compare_exchange_strong(tLoadingState, LoadState::Loaded)) {
+        assert(false && "Invalid state");
+        return;
+    }
     data = std::move(buff);
-    loadState = LoadState::Loaded;
 }
 
 bool SoundData::tryFree() {
-    if(loadState != LoadState::Loaded) {
+    if(useRefCount.load() > 0) {
         return false;
     }
-    if(mixNodesRefCount > 0 || keepInMemory) {
+    auto tLoadedState = LoadState::Loaded;
+    if(!loadState.compare_exchange_strong(tLoadedState, LoadState::Released)) {
         return false;
     }
-    loadState = LoadState::Released;
     data.reset();
     return true;
 }
 
-void SoundData::setKeepInMemory(bool flag) {
-    keepInMemory = flag;
+void SoundData::addUseRef() {
+    useRefCount.fetch_add(1);
 }
 
-void SoundData::addMixNodeRef() {
-    ++mixNodesRefCount;
-}
-
-void SoundData::removeMixNodeRef() {
-    --mixNodesRefCount;
-    assert(mixNodesRefCount >= 0 && "Invalid mix node ref count");
+void SoundData::removeUseRef() {
+    useRefCount.fetch_sub(1);
+    assert(useRefCount.load() >= 0 && "Invalid use ref count");
 }

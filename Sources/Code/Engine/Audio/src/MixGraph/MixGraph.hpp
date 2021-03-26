@@ -37,11 +37,13 @@ private:
     void stopSound(SoundProxy& soundProxy, float duration);
     void pauseSound(SoundProxy& soundProxy, float duration, bool resetOffset);
     void resumeSound(SoundProxy& soundProxy, float duration);
+    void startEvent(SoundProxy& soundProxy);
 
     void updatePendingStarts();
     void applyLowPass(float* out, int channels, int samples);
     void resizeBuffers(int channels, int samples);
     MixNode* getFreeSource();
+    CombineNode* getCombineNode(ESoundGroup soundGroup);
 
 private:
 

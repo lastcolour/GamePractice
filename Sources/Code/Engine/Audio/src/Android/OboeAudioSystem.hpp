@@ -50,6 +50,7 @@ public:
 
 private:
 
+    void updateMixGraph();
     bool initMixer();
     bool initOboeStream();
     void stopOboeStream();

@@ -3,6 +3,7 @@
 
 #include "MixGraph/MixNode.hpp"
 #include "MixGraph/OggDataStream.hpp"
+#include "MixGraph/SoundSource.hpp"
 #include "Fader.hpp"
 
 class SoundProxy;
@@ -13,7 +14,7 @@ public:
     OggSourceNode(MixGraph* mixGraph);
     virtual ~OggSourceNode();
 
-    bool setSound(SoundProxy* proxy);
+    bool setSound(SoundProxy* newSoundProxy, bool isEvent);
     Fader& getFader();
     void setResetOffsetOnStop(bool flag);
 
@@ -24,8 +25,7 @@ private:
 
     Fader fader;
     OggDataStream oggData;
-    SoundProxy* soundProxy;
-    bool resetOffsetOnStop;
+    SoundSource soundSource;
 };
 
 #endif /* __OGG_SOURCE_NODE_HPP__ */

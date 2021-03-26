@@ -29,7 +29,6 @@ Sound::Sound() :
     looped(false) {
 
     ET_SendEventReturn(proxy, &ETSoundDataManager::ET_createSoundProxy);
-    assert(proxy && "Can't create sound proxy");
 }
 
 Sound::Sound(Sound&& other) :
@@ -46,7 +45,9 @@ Sound& Sound::operator=(Sound&& other) {
         volume = other.volume;
         looped = other.looped;
         group = other.group;
-        proxy->setNoSound();
+        if(proxy) {
+            proxy->setNoSound();
+        }
         proxy = other.proxy;
         other.proxy = nullptr;
     }
@@ -61,31 +62,52 @@ Sound::~Sound() {
 }
 
 void Sound::fadeInPlay(float duration) {
+    if(!proxy) {
+        return;
+    }
     proxy->fadeInPlay(*this, duration);
 }
 
 void Sound::fadeOutStop(float duration) {
+    if(!proxy) {
+        return;
+    }
     proxy->fadeOutStop(duration);
 }
 
 void Sound::play() {
+    if(!proxy) {
+        return;
+    }
     proxy->play(*this);
 }
 
 void Sound::stop() {
+    if(!proxy) {
+        return;
+    }
     proxy->stop();
 }
 
 void Sound::pause() {
+    if(!proxy) {
+        return;
+    }
     proxy->pause();
 }
 
 void Sound::resume() {
+    if(!proxy) {
+        return;
+    }
     proxy->resume(*this);
 }
 
 void Sound::setLooped(bool flag) {
     looped = flag;
+    if(!proxy) {
+        return;
+    }
     proxy->writeLooped(flag);
 }
 
@@ -95,6 +117,9 @@ bool Sound::isLooped() const {
 
 void Sound::setVolume(float newVolume) {
     volume = newVolume;
+    if(!proxy) {
+        return;
+    }
     proxy->writeVolume(volume);
 }
 
@@ -103,11 +128,10 @@ float Sound::getVolume() const {
 }
 
 bool Sound::isPlaying() const {
+    if(!proxy) {
+        return false;
+    }
     return proxy->isPlaying();
-}
-
-bool Sound::isValid() const {
-    return proxy->isValid();
 }
 
 ESoundGroup Sound::getGroup() const {
@@ -119,16 +143,33 @@ void Sound::setGroup(ESoundGroup newGroup) {
         return;
     }
     group = newGroup;
+    if(!proxy) {
+        return;
+    }
     proxy->writeGroup(group);
 }
 
 void Sound::setFile(const char* fileName) {
+    if(!proxy) {
+        return;
+    }
     proxy->setFile(fileName);
 }
 
 const char* Sound::getFile() const {
+    if(!proxy) {
+        return "";
+    }
     return proxy->getFile();
 }
 
 void Sound::setKeepLoaded(bool flag) {
+    if(!proxy) {
+        return;
+    }
+    proxy->setKeepLoaded(flag);
+}
+
+SoundProxy* Sound::getProxy() {
+    return proxy;
 }

@@ -1,5 +1,6 @@
 #include "SoundEventManager.hpp"
 #include "Reflect/ReflectUtils.hpp"
+#include "SoundProxy.hpp"
 
 namespace {
 
@@ -42,10 +43,6 @@ bool SoundEventManager::init() {
             LogWarning("[SoundEventManager::init] Empty event name");
             continue;
         }
-        if(!info.sound.isValid()) {
-            LogWarning("[SoundEventManager::init] Invalid sound for event: '%s'", info.name);
-            continue;
-        }
         auto it = eventNodes.find(info.name);
         if(it != eventNodes.end()) {
             LogWarning("[SoundEventManager::init] Duplicate event: '%s'", info.name);
@@ -75,5 +72,7 @@ void SoundEventManager::ET_emitEvent(const char* eventName) {
     if(currTime.getSecElapsedFrom(data.lastPlayT) < (data.info->nextDelay + 0.001f)) {
         return;
     }
-    data.info->sound.play();
+    data.lastPlayT = currTime;
+    auto proxy = data.info->sound.getProxy();
+    proxy->emit();
 }

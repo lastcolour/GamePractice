@@ -9,14 +9,11 @@ public:
 
     void requestLoad();
     bool isLoaded() const;
-    bool isLoading() const;
-    bool isLoadRequired();
-    void setLoading();
+    bool canStartLoading();
     void setLoaded(Buffer& data);
     bool tryFree();
-    void setKeepInMemory(bool flag);
-    void addMixNodeRef();
-    void removeMixNodeRef();
+    void addUseRef();
+    void removeUseRef();
 
 public:
 
@@ -39,9 +36,8 @@ private:
 
 private:
 
-    LoadState loadState;
-    int mixNodesRefCount;
-    bool keepInMemory;
+    std::atomic<LoadState> loadState;
+    std::atomic<int> useRefCount;
 };
 
 #endif /* __SOUND_DATA_HPP__ */
