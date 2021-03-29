@@ -69,6 +69,7 @@ target_link_libraries(${PROJECT_NAME}
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
     <string>
+    <cstring>
     <vector>
     <memory>
     <algorithm>

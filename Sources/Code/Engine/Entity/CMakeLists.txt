@@ -23,6 +23,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
     <string>
+    <cstring>
     <vector>
     <memory>
     <algorithm>

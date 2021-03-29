@@ -8,7 +8,7 @@ const float PI = 3.14159265f;
 
 template<>
 bool IsEqual<float>(float a, float b) {
-    return fabs(a - b) <= 0.0001f;
+    return abs(a - b) <= 0.0001f;
 }
 
 float Deg2Rad(float degrees) {

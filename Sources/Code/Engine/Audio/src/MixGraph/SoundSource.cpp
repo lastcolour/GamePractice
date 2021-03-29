@@ -76,14 +76,14 @@ bool SoundSource::isNull() const {
 }
 
 void SoundSource::reset() {
-    if(isEvent) {
-        return;
+    if(!isEvent) {
+        proxy->setMixNode(nullptr);
+        if(isRestOffset) {
+            proxy->setOffset(0);
+        }
     }
-    proxy->setMixNode(nullptr);
-    if(isRestOffset) {
-        isRestOffset = false;
-        proxy->setOffset(0);
-    }
+    proxy = nullptr;
+    isRestOffset = false;
 }
 
 void SoundSource::setResetOffset(bool flag) {

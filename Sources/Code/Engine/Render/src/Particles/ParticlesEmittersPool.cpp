@@ -7,6 +7,7 @@ ParticlesEmittersPool::ParticlesEmittersPool() :
 }
 
 ParticlesEmittersPool::~ParticlesEmittersPool() {
+    pool.clear();
 }
 
 const std::vector<std::unique_ptr<EmitterParticles>>& ParticlesEmittersPool::getEmitters() const {

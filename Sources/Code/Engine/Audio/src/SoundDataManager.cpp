@@ -39,7 +39,7 @@ SoundProxy* SoundDataManager::ET_createSoundProxy() {
 }
 
 void SoundDataManager::ET_removeSoundProxy(SoundProxy* proxy) {
-    ET_addSoundCmd(proxy, ESoundCommand::Stop, -1.f);
+    tryStopSound(*proxy, -1.f, true);
 
     std::lock_guard<std::mutex> lock(mutex);
     for(auto it = soundProxies.begin(); it != soundProxies.end(); ++it) {
@@ -50,6 +50,16 @@ void SoundDataManager::ET_removeSoundProxy(SoundProxy* proxy) {
     }
 
     assert(false && "Can't find proxy to remove");
+}
+
+bool SoundDataManager::isSoundProxyExists(const SoundProxy* proxy) {
+    std::lock_guard<std::mutex> lock(mutex);
+    for(auto it = soundProxies.begin(); it != soundProxies.end(); ++it) {
+        if((*it).get() == proxy) {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::shared_ptr<SoundData> SoundDataManager::ET_createSoundData(const std::string& fileName) {
@@ -78,6 +88,9 @@ void SoundDataManager::ET_addSoundUpdate(std::function<void(void)> func) {
 }
 
 void SoundDataManager::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) {
+    if(!isSoundProxyExists(proxyNode)) {
+        return;
+    }
     switch(cmd) {
         case ESoundCommand::Start: {
             bool isEvent = false;

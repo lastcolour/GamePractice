@@ -31,6 +31,7 @@ bool RenderNodeManager::init() {
 }
 
 void RenderNodeManager::deinit() {
+    ET_PollAllEvents<ETRenderNodeManager>();
 }
 
 Node* RenderNodeManager::ET_createNode(RenderNodeType nodeType) {

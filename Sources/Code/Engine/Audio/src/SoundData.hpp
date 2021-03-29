@@ -1,6 +1,8 @@
 #ifndef __SOUND_DATA_HPP__
 #define __SOUND_DATA_HPP__
 
+#include <atomic>
+
 class SoundData {
 public:
 

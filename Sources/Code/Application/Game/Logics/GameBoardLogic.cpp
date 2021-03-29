@@ -231,12 +231,18 @@ void GameBoardLogic::respawnDestroyedElems() {
                 }
                 uiProxies.addItem(elem.entId, ELEMENT_Z_INDEX);
 
-                auto& topElem = col.back();
-                ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
-                if(tm.pt.y > topPosY) {
-                    tm.pt.y += cellSize;
-                    ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-                } else {
+                bool hasTopElem = false;
+                if(!col.empty()) {
+                    auto& topElem = col.back();
+                    ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
+                    if(tm.pt.y > topPosY) {
+                        hasTopElem = true;
+                        tm.pt.y += cellSize;
+                        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
+                    }
+                }
+
+                if(!hasTopElem) {
                     setElemBoardPos(elem, Vec2i(elem.boardPt.x, boardSize.y));
                 }
 

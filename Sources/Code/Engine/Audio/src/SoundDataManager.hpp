@@ -35,6 +35,7 @@ private:
 
 private:
 
+    bool isSoundProxyExists(const SoundProxy* proxy);
     void createPendingStart(SoundProxy& soundProxy, float duration);
     void removePendingStart(SoundProxy& soundProxy);
     void tryStartSound(SoundProxy& soundProxy, float duration, bool isEvent);
