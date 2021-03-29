@@ -113,41 +113,84 @@ TEST_F(MathTests, CheckScale) {
 }
 
 TEST_F(MathTests, AABBCheckConstructor) {
-    AABB aabb1(Vec3(0.f), Vec3(1.f));
-    ASSERT_EQ(aabb1.bot, Vec3(0.f));
-    ASSERT_EQ(aabb1.top, Vec3(1.f));
+    AABB2D aabb1(Vec2(0.f), Vec2(1.f));
+    ASSERT_EQ(aabb1.bot, Vec2(0.f));
+    ASSERT_EQ(aabb1.top, Vec2(1.f));
 
-    AABB aabb2;
-    AABB aabb3(Vec3(0.f), Vec3(1.f));
+    AABB2D aabb2;
+    AABB2D aabb3(Vec2(0.f), Vec2(1.f));
     aabb2 = aabb3;
-    ASSERT_EQ(aabb2.bot, Vec3(0.f));
-    ASSERT_EQ(aabb2.top, Vec3(1.f));
+    ASSERT_EQ(aabb2.bot, Vec2(0.f));
+    ASSERT_EQ(aabb2.top, Vec2(1.f));
 
-    AABB aabb4(Vec3(0.f), Vec3(1.f));
-    AABB aabb5(aabb4);
-    ASSERT_EQ(aabb5.bot, Vec3(0.f));
-    ASSERT_EQ(aabb5.top, Vec3(1.f));
+    AABB2D aabb4(Vec2(0.f), Vec2(1.f));
+    AABB2D aabb5(aabb4);
+    ASSERT_EQ(aabb5.bot, Vec2(0.f));
+    ASSERT_EQ(aabb5.top, Vec2(1.f));
 }
 
 TEST_F(MathTests, AABBCheckOperators) {
-    AABB aabb;
-    aabb.bot = Vec3(0.f);
-    aabb.top = Vec3(2.f);
+    AABB2D aabb;
+    aabb.bot = Vec2(0.f);
+    aabb.top = Vec2(2.f);
 
-    Vec3 center = aabb.getCenter();
-    ASSERT_EQ(center, Vec3(1.f));
+    Vec2 center = aabb.getCenter();
+    ASSERT_EQ(center, Vec2(1.f));
 
-    Vec3 size = aabb.getSize();
-    ASSERT_EQ(size, Vec3(2.f));
+    Vec2 size = aabb.getSize();
+    ASSERT_EQ(size, Vec2(2.f));
 
-    aabb = aabb + Vec3(2.f);
-    ASSERT_EQ(aabb.getCenter(), Vec3(3.f));
-    ASSERT_EQ(aabb.getSize(), Vec3(2.f));
+    aabb = aabb + Vec2(2.f);
+    ASSERT_EQ(aabb.getCenter(), Vec2(3.f));
+    ASSERT_EQ(aabb.getSize(), Vec2(2.f));
 
-    AABB aabb1(Vec3(0.f), Vec3(2.f));
-    aabb1.setCenter(Vec3(2.f));
-    ASSERT_EQ(aabb1.bot, Vec3(1.f));
-    ASSERT_EQ(aabb1.top, Vec3(3.f));
+    AABB2D aabb1(Vec2(0.f), Vec2(2.f));
+    aabb1.setCenter(Vec2(2.f));
+    ASSERT_EQ(aabb1.bot, Vec2(1.f));
+    ASSERT_EQ(aabb1.top, Vec2(3.f));
+}
+
+TEST_F(MathTests, AABBCheckInside) {
+    AABB2D aabb;
+    aabb.bot = Vec2(0.f);
+    aabb.top = Vec2(1.f);
+
+    {
+        Vec2 pt = aabb.getCenter();
+        EXPECT_TRUE(aabb.isInside(pt));
+    }
+
+    {
+        Vec2 pt = aabb.getCenter() + aabb.getSize();
+        EXPECT_FALSE(aabb.isInside(pt));
+    }
+}
+
+TEST_F(MathTests, AABBCheckClamp) {
+    AABB2D aabb;
+    aabb.bot = Vec2(0.f);
+    aabb.top = Vec2(1.f);
+
+    {
+        Vec2 pt = Vec2(3.f);
+        pt = aabb.clamp(pt);
+        EXPECT_FLOAT_EQ(pt.x, 1.f);
+        EXPECT_FLOAT_EQ(pt.y, 1.f);
+    }
+
+    {
+        Vec2 pt = aabb.getCenter();
+        pt = aabb.clamp(pt);
+        EXPECT_FLOAT_EQ(pt.x, 0.5f);
+        EXPECT_FLOAT_EQ(pt.y, 0.5f);
+    }
+
+    {
+        Vec2 pt = Vec2(-3.f);
+        pt = aabb.clamp(pt);
+        EXPECT_FLOAT_EQ(pt.x, 0.f);
+        EXPECT_FLOAT_EQ(pt.y, 0.f);
+    }
 }
 
 TEST_F(MathTests, CheckLerpVec) {

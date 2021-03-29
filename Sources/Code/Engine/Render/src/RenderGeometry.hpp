@@ -26,7 +26,7 @@ public:
 
 public:
 
-    AABB aabb;
+    AABB2D aabb;
     unsigned int vaoId;
     unsigned int vboId;
     unsigned int eboId;

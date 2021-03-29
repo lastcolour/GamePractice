@@ -16,10 +16,7 @@ SoundProxy::SoundProxy() :
     volume(1.f),
     group(ESoundGroup::Music),
     looped(false),
-    hasSound(true),
-    hasMixNode(false),
-    keepInMemory(false),
-    isQueuedToStartMix(false) {
+    keepInMemory(false) {
 }
 
 SoundProxy::~SoundProxy() {
@@ -27,15 +24,15 @@ SoundProxy::~SoundProxy() {
 }
 
 ESoundGroup SoundProxy::readGroup() const {
-    return group.load();
+    return group;
 }
 
 float SoundProxy::readVolume() const {
-    return volume.load();
+    return volume;
 }
 
 bool SoundProxy::readLooped() const {
-    return looped.load();
+    return looped;
 }
 
 void SoundProxy::setFile(const char* fileName) {
@@ -66,28 +63,31 @@ void SoundProxy::setData(std::shared_ptr<SoundData>& newSoundData) {
 }
 
 void SoundProxy::writeGroup(ESoundGroup newGroup) {
-    group.store(newGroup);
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundUpdate, [this, newGroup](){
+        group = newGroup;
+    });
+
     if(isPlaying()) {
         pause();
-        ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+        ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
             ESoundCommand::Resume, INSTANT_DURATION);
     }
 }
 
 void SoundProxy::writeVolume(float newVolume) {
-    volume.store(newVolume);
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundUpdate, [this, newVolume](){
+        volume = newVolume;
+    });
 }
 
 void SoundProxy::writeLooped(bool flag) {
-    looped.store(flag);
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundUpdate, [this, flag](){
+        looped = flag;
+    });
 }
 
 void SoundProxy::setNoSound() {
-    assert(hasSound.load() && "Already has no sound");
-    if(isPlaying()) {
-        stop();
-    }
-    hasSound.store(false);
+    ET_QueueEvent(&ETSoundDataManager::ET_removeSoundProxy, this);
 }
 
 void SoundProxy::setOffset(int newOffset) {
@@ -99,99 +99,56 @@ int SoundProxy::getOffset() const {
 }
 
 void SoundProxy::setMixNode(MixNode* node) {
-    mixNode = node;
-    if(mixNode) {
-        hasMixNode.store(true);
-    } else {
-        hasMixNode.store(false);
-    }
+    mixNode.store(node);
 }
 
 MixNode* SoundProxy::getMixNode() {
-    return mixNode;
+    return mixNode.load();
 }
 
 void SoundProxy::fadeInPlay(const Sound& sound, float duration) {
-    if(!soundData) {
-        return;
-    }
-    volume.store(sound.getVolume());
-    looped.store(sound.isLooped());
-    group.store(sound.getGroup());
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+    syncPlayParams(sound);
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
         ESoundCommand::Start, duration);
 }
 
 void SoundProxy::fadeOutStop(float duration) {
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
         ESoundCommand::Stop, duration);
 }
 
 void SoundProxy::play(const Sound& sound) {
-    if(!soundData) {
-        return;
-    }
-    volume.store(sound.getVolume());
-    looped.store(sound.isLooped());
-    group.store(sound.getGroup());
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+    syncPlayParams(sound);
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
         ESoundCommand::Start, INSTANT_DURATION);
 }
 
 void SoundProxy::resume(const Sound& sound) {
-    if(!soundData) {
-        return;
-    }
-    volume.store(sound.getVolume());
-    looped.store(sound.isLooped());
-    group.store(sound.getGroup());
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+    syncPlayParams(sound);
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
         ESoundCommand::Resume, INSTANT_DURATION);
 }
 
 void SoundProxy::pause() {
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
         ESoundCommand::Pause, INSTANT_DURATION);
 }
 
 void SoundProxy::stop() {
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this, ESoundCommand::Stop,
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this, ESoundCommand::Stop,
         INSTANT_DURATION);
 }
 
 bool SoundProxy::isPlaying() const {
-    return hasMixNode.load();
-}
-
-bool SoundProxy::shouldStartMix() const {
-    return hasSound.load();
-}
-
-bool SoundProxy::isLoaded() const {
-    if(soundData && soundData->isLoaded()) {
-        return true;
-    }
-    return false;
-}
-
-void SoundProxy::setPendingStart(bool flag) {
-    isQueuedToStartMix = flag;
-    soundData->addUseRef();
-}
-
-bool SoundProxy::canRemove() const {
-    if(hasSound.load()) {
-        return false;
-    }
-    if(isQueuedToStartMix || mixNode) {
-        return false;
-    }
-    return true;
+    return mixNode.load() != nullptr;
 }
 
 void SoundProxy::setKeepLoaded(bool flag) {
     auto revFlag = !flag;
     if(!keepInMemory.compare_exchange_strong(revFlag, flag)) {
+        return;
+    }
+    if(!soundData) {
         return;
     }
     if(flag) {
@@ -201,13 +158,18 @@ void SoundProxy::setKeepLoaded(bool flag) {
     }
 }
 
-void SoundProxy::updateDataLoadState() {
-    if(isQueuedToStartMix || keepInMemory.load()) {
-        soundData->requestLoad();
-    }
+void SoundProxy::syncPlayParams(const Sound& sound) {
+    auto newVolume = sound.getVolume();
+    auto newLooped = sound.isLooped();
+    auto newGroup = sound.getGroup();
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundUpdate, [this, newVolume, newLooped, newGroup](){
+        volume = newVolume;
+        looped = newLooped;
+        group = newGroup;
+    });
 }
 
 void SoundProxy::emit() {
-    ET_QueueEvent(&ETSoundPlayManager::ET_addSoundCmd, this,
+    ET_QueueEvent(&ETSoundDataManager::ET_addSoundCmd, this,
         ESoundCommand::Emit, INSTANT_DURATION);
 }

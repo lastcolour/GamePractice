@@ -57,7 +57,7 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
     AABB2D aabb;
     aabb.bot = Vec2(0.f);
     aabb.top = Vec2(textSize.x * tm.scale.x * fontScale, textSize.y * tm.scale.y * fontScale);
-    aabb.setCenter(Vec2(tm.pt.x, tm.pt.y));
+    aabb.setCenter(tm.pt.x, tm.pt.y);
 
     return aabb;
 }

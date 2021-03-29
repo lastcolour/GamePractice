@@ -179,7 +179,7 @@ AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box) {
     ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
 
     auto resBox = box;
-    resBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
+    resBox.setCenter(tm.pt.x, tm.pt.y);
 
     return resBox;
 }
@@ -197,7 +197,7 @@ AABB2D ApplyEntityTmToBox(EntityId entityId, const AABB2D& box) {
     resBox.top.x *= scale.x;
     resBox.top.y *= scale.y;
 
-    resBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
+    resBox.setCenter(tm.pt.x, tm.pt.y);
 
     return resBox;
 }

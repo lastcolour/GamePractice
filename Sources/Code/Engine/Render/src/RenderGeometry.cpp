@@ -28,7 +28,7 @@ int getVertexSize(VertexType vertType) {
 } // namespace
 
 RenderGeometry::RenderGeometry() :
-    aabb(Vec3(0.f), Vec3(0.f)),
+    aabb(0.f),
     vaoId(0),
     vboId(0),
     eboId(0),

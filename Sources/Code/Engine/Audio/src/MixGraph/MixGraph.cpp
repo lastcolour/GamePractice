@@ -53,8 +53,6 @@ void MixGraph::resizeBuffers(int channels, int samples) {
 }
 
 void MixGraph::mixBufferAndConvert(float* out) {
-    updatePendingStarts();
-
     std::fill_n(out, config.channels * config.samplesPerBuffer, 0.f);
 
     resizeBuffers(config.channels, config.samplesPerBuffer);
@@ -119,37 +117,6 @@ CombineNode* MixGraph::getCombineNode(ESoundGroup soundGroup) {
     return combineNode;
 }
 
-bool MixGraph::setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd, float duration) {
-    assert(soundProxy && "Invalid proxy node");
-    switch(cmd) {
-        case ESoundCommand::Start: {
-            startSound(*soundProxy, duration);
-            break;
-        }
-        case ESoundCommand::Pause: {
-            bool resetOffset = false;
-            pauseSound(*soundProxy, duration, resetOffset);
-            break;
-        }
-        case ESoundCommand::Resume: {
-            resumeSound(*soundProxy, duration);
-            break;
-        }
-        case ESoundCommand::Stop: {
-            stopSound(*soundProxy, duration);
-            break;
-        }
-        case ESoundCommand::Emit: {
-            startEvent(*soundProxy);
-            break;
-        }
-        default: {
-            assert(false && "Invalid sound command type");
-        }
-    }
-    return true;
-}
-
 const MixConfig& MixGraph::getMixConfig() const {
     return config;
 }
@@ -196,30 +163,20 @@ void MixGraph::applyLowPass(float* out, int channels, int samples) {
     }
 }
 
-void MixGraph::startSound(SoundProxy& soundProxy, float duration) {
-    if(!soundProxy.isLoaded()) {
-        for(auto& node : pendingStarts) {
-            if(node.proxy == &soundProxy) {
-                node.duration = duration;
-                return;
-            }
-        }
-        soundProxy.setPendingStart(true);
-        pendingStarts.emplace_back(PendingStart{&soundProxy, duration});
-        return;
-    }
+bool MixGraph::startSound(SoundProxy& soundProxy, float duration, bool isEvent) {
     if(soundProxy.getMixNode()) {
-        return;
+        assert(false && "Invalid mix node");
+        return false;
     }
     auto freeSourceNode = getFreeSource();
     if(!freeSourceNode) {
         LogWarning("[MixGraph::startSound] Can't find free source");
-        return;
+        return false;
     }
     auto soundGroup = soundProxy.readGroup();
     auto combineNode = getCombineNode(soundGroup);
     if(!combineNode) {
-        return;
+        return false;
     }
 
     auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
@@ -228,52 +185,17 @@ void MixGraph::startSound(SoundProxy& soundProxy, float duration) {
         int samples = static_cast<int>(config.outSampleRate * duration);
         fader.setFadeIn(samples);
     }
-    bool isEvent = false;
     if(sourceNode->setSound(&soundProxy, isEvent)) {
         combineNode->addChild(sourceNode);
+        return true;
     }
+    return false;
 }
 
-void MixGraph::startEvent(SoundProxy& soundProxy) {
-    if(!soundProxy.isLoaded()) {
-        return;
-    }
-    if(soundProxy.getMixNode()) {
-        assert(false && "Sound event should not have mix node");
-        return;
-    }
-    auto freeSourceNode = getFreeSource();
-    if(!freeSourceNode) {
-        LogWarning("[MixGraph::startEvent] Can't find free source");
-        return;
-    }
-    auto soundGroup = soundProxy.readGroup();
-    auto combineNode = getCombineNode(soundGroup);
-    if(!combineNode) {
-        return;
-    }
-    bool isEvent = true;
-    auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
-    if(sourceNode->setSound(&soundProxy, isEvent)) {
-        combineNode->addChild(sourceNode);
-    }
-}
-
-void MixGraph::stopSound(SoundProxy& soundProxy, float duration) {
-    bool resetOffset = true;
-    pauseSound(soundProxy, duration, resetOffset);
-}
-
-void MixGraph::pauseSound(SoundProxy& soundProxy, float duration, bool resetOffset) {
+void MixGraph::stopSound(SoundProxy& soundProxy, float duration, bool resetOffset) {
     auto mixNode = soundProxy.getMixNode();
     if(!mixNode) {
-        for(auto it = pendingStarts.begin(); it != pendingStarts.end(); ++it) {
-            if(it->proxy == &soundProxy) {
-                soundProxy.setPendingStart(false);
-                pendingStarts.erase(it);
-                break;
-            }
-        }
+        assert(false && "Invalid mix node");
         return;
     }
     auto oggSource = static_cast<OggSourceNode*>(mixNode);
@@ -285,28 +207,5 @@ void MixGraph::pauseSound(SoundProxy& soundProxy, float duration, bool resetOffs
         auto& fader = oggSource->getFader();
         int samples = static_cast<int>(config.outSampleRate * duration);
         fader.setFadeOut(samples);
-    }
-}
-
-void MixGraph::resumeSound(SoundProxy& soundProxy, float duration) {
-    startSound(soundProxy, duration);
-}
-
-void MixGraph::updatePendingStarts() {
-    auto it = pendingStarts.begin();
-    while(it != pendingStarts.end()) {
-        auto& soundProxy = *it->proxy;
-        if(soundProxy.isLoaded()) {
-            if(soundProxy.shouldStartMix()) {
-                auto& soundData = soundProxy.getData();
-                if(soundData->data) {
-                    startSound(soundProxy, it->duration);
-                }
-            }
-            soundProxy.setPendingStart(false);
-            it = pendingStarts.erase(it);
-        } else {
-            ++it;
-        }
     }
 }

@@ -112,12 +112,11 @@ bool OboeAudioSystem::init() {
 
 void OboeAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETAudioSystem>();
-    ET_PollAllEvents<ETSoundPlayManager>();
     ET_PollAllEvents<ETSoundDataManager>();
 
-    updateMixGraph();
+    ET_SendEvent(&ETSoundDataManager::ET_updateSoundData);
 
-    ET_SendEvent(&ETSoundDataManager::ET_updateData);
+    updateMixGraph();
 }
 
 void OboeAudioSystem::updateMixGraph() {

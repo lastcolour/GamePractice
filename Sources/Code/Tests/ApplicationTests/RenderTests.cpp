@@ -183,11 +183,11 @@ TEST_F(RenderTests, CheckCreateSquareGeom) {
     std::shared_ptr<RenderGeometry> geom;
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, PrimitiveGeometryType::Square);
 
-    const Vec3 size = geom->aabb.getSize();
-    ASSERT_EQ(size, Vec3(2.f, 2.f, 0.f));
+    const Vec2 size = geom->aabb.getSize();
+    ASSERT_EQ(size, Vec2(2.f, 2.f));
 
-    const Vec3 center = geom->aabb.getCenter();
-    ASSERT_EQ(center, Vec3(0.f));
+    const Vec2 center = geom->aabb.getCenter();
+    ASSERT_EQ(center, Vec2(0.f));
 
     ASSERT_TRUE(geom);
 }
@@ -239,7 +239,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, PrimitiveGeometryType::Square);
     ASSERT_TRUE(geom);
 
-    const Vec3 size = geom->aabb.getSize();
+    const Vec2 size = geom->aabb.getSize();
     const Vec3 scale = SCALE_FACTOR * Vec3(w / size.x, h / size.y, 1.f);
 
     Mat4 proj;

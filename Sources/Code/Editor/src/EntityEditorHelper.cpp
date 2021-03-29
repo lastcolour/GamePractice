@@ -47,7 +47,7 @@ void drawParticlesHelp(const Transform& tm, EntityId entId) {
         AABB2D box(0.f);
         box.top = 2.f * normScale * emissionConfig.emitterVal;
         box.top.scale(Vec2(tm.scale.x, tm.scale.y));
-        box.setCenter(Vec2(tm.pt.x, tm.pt.y));
+        box.setCenter(tm.pt.x, tm.pt.y);
         ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 255, 245, DRAW_ALPHA), 1.f);
     } else {
         float r = normScale * emissionConfig.emitterVal.x;
@@ -69,7 +69,7 @@ void drawRenderRectHelp(const Transform& tm, EntityId entId) {
     AABB2D box(0.f);
     ET_SendEventReturn(box.top, entId, &ETRenderRect::ET_getSize);
     box.top *= normScale;
-    box.setCenter(Vec2(tm.pt.x, tm.pt.y));
+    box.setCenter(tm.pt.x, tm.pt.y);
 
     ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA), 1.f);
 }

@@ -4,7 +4,7 @@
             "name":"buttonPress_01",
             "sound":{
                 "file":"Sounds/UI/buttonPress_01.ogg",
-                "volume":0.7,
+                "volume":0.3,
                 "group":"UI",
                 "loop":false
             },
@@ -14,7 +14,7 @@
             "name":"buttonReject_01",
             "sound":{
                 "file":"Sounds/UI/switch_003.ogg",
-                "volume":0.7,
+                "volume":0.3,
                 "group":"UI",
                 "loop":false
             },
@@ -24,7 +24,7 @@
             "name":"elemSwitch_01",
             "sound":{
                 "file":"Sounds/Game/Effects/switchSuccess.ogg",
-                "volume":0.4,
+                "volume":0.3,
                 "group":"Game",
                 "loop":false
             },
@@ -34,7 +34,7 @@
             "name":"elemDestroy_01",
             "sound":{
                 "file":"Sounds/Game/Effects/elemDestroy_01.ogg",
-                "volume":0.5,
+                "volume":0.3,
                 "group":"Game",
                 "loop":false
             },
@@ -44,7 +44,7 @@
             "name":"scoreIncrease_01",
             "sound":{
                 "file":"Sounds/Game/Effects/scoreIncrease.ogg",
-                "volume":0.4,
+                "volume":0.3,
                 "group":"Game",
                 "loop":false
             },
@@ -54,7 +54,7 @@
             "name":"getProgressionStar_01",
             "sound":{
                 "file":"Sounds/Game/Effects/bleep.ogg",
-                "volume":0.6,
+                "volume":0.3,
                 "group":"UI",
                 "loop":false
             },

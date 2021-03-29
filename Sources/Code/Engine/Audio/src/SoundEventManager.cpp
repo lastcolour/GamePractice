@@ -52,6 +52,9 @@ bool SoundEventManager::init() {
         info.sound.setLooped(false);
         info.sound.setKeepLoaded(true);
         data.info = &info;
+
+        auto proxy = data.info->sound.getProxy();
+        proxy->syncPlayParams(info.sound);
     }
 
     ETNode<ETSoundEventManager>::connect(getEntityId());

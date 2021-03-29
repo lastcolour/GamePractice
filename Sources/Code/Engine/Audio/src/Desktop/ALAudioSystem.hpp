@@ -28,7 +28,8 @@ public:
     void ET_updateSound() override;
 
     // ETSoundPlayManager
-    bool ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) override;
+    bool ET_startSound(SoundProxy& proxyNode, float duration, bool isEvent) override;
+    void ET_stopSound(SoundProxy& proxyNode, float duration, bool resetOffset) override;
 
     // ETAudioSystem
     void ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup) override;

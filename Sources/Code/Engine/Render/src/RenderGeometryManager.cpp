@@ -63,7 +63,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(Primiti
         return nullptr;
     }
 
-    assert(geom->aabb.getCenter() == Vec3(0.f) && "Invalid geometry center");
+    assert(geom->aabb.getCenter() == Vec2(0.f) && "Invalid geometry center");
 
     geometris[reqGeomType] = geom;
     return geom;
@@ -100,7 +100,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquareTex() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB(Vec3(-1, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
+    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = 6u;
@@ -137,7 +137,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB(Vec3(-1, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
+    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = 6u;
@@ -163,7 +163,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB(0.f);
+    geometry->aabb = AABB2D(0.f);
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = TEXT_CHUNK_VERTEX_COUNT;
@@ -227,7 +227,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB(Vec3(-1, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
+    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->extraVboId = extraVboId;
@@ -282,7 +282,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB(Vec3(-1.f, -1.f, 0.f), Vec3(1.f, 1.f, 0.f));
+    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->eboId = eboId;
@@ -310,7 +310,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createLine() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB(Vec3(0.f));
+    geometry->aabb = AABB2D(0.f);
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = 2u;

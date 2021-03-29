@@ -118,7 +118,7 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
         return false;
     }
     auto hitBox = ET_getBox();
-    if(!hitBox.isInside(Vec2(static_cast<float>(pt.x), static_cast<float>(pt.y)))) {
+    if(!hitBox.isInside(static_cast<float>(pt.x), static_cast<float>(pt.y))) {
         LogDebug("[UIButton::canContinueEvent] Cursor moved out of the hit box");
         return false;
     }

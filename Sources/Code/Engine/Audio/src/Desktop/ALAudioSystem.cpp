@@ -126,12 +126,11 @@ bool ALAudioSystem::initAlSource() {
 
 void ALAudioSystem::ET_updateSound() {
     ET_PollAllEvents<ETAudioSystem>();
-    ET_PollAllEvents<ETSoundPlayManager>();
     ET_PollAllEvents<ETSoundDataManager>();
 
-    updateMixGraph();
+    ET_SendEvent(&ETSoundDataManager::ET_updateSoundData);
 
-    ET_SendEvent(&ETSoundDataManager::ET_updateData);
+    updateMixGraph();
 }
 
 void ALAudioSystem::updateMixGraph() {
@@ -175,8 +174,12 @@ void ALAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSetup
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool ALAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) {
-    return mixGraph.setSoundCmd(proxyNode, cmd, duration);
+bool ALAudioSystem::ET_startSound(SoundProxy& proxyNode, float duration, bool isEvent) {
+    return mixGraph.startSound(proxyNode, duration, isEvent);
+}
+
+void ALAudioSystem::ET_stopSound(SoundProxy& proxyNode, float duration, bool resetOffset) {
+    return mixGraph.stopSound(proxyNode, duration, resetOffset);
 }
 
 void ALAudioSystem::ET_setMasterVolume(float newVolume) {

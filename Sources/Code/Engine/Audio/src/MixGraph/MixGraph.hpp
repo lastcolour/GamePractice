@@ -20,7 +20,8 @@ public:
     bool init(const MixConfig& newMixConfig);
     void mixBufferAndConvert(float* out);
 
-    bool setSoundCmd(SoundProxy* soundProxy, ESoundCommand cmd, float duration);
+    bool startSound(SoundProxy& soundProxy, float duration, bool isEvent);
+    void stopSound(SoundProxy& soundProxy, float duration, bool resetOffset);
 
     const MixConfig& getMixConfig() const;
     Resampler& getResampler();
@@ -31,26 +32,10 @@ public:
     void setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup);
     float getMasterVolume() const;
 
-private:
-
-    void startSound(SoundProxy& soundProxy, float duration);
-    void stopSound(SoundProxy& soundProxy, float duration);
-    void pauseSound(SoundProxy& soundProxy, float duration, bool resetOffset);
-    void resumeSound(SoundProxy& soundProxy, float duration);
-    void startEvent(SoundProxy& soundProxy);
-
-    void updatePendingStarts();
     void applyLowPass(float* out, int channels, int samples);
     void resizeBuffers(int channels, int samples);
     MixNode* getFreeSource();
     CombineNode* getCombineNode(ESoundGroup soundGroup);
-
-private:
-
-    struct PendingStart {
-        SoundProxy* proxy;
-        float duration;
-    };
 
 private:
 
@@ -64,7 +49,6 @@ private:
     RecursiveFilter lLowPass;
     RecursiveFilter rLowPass;
     std::vector<std::unique_ptr<MixNode>> sources;
-    std::vector<PendingStart> pendingStarts;
     float masterVolume;
 };
 

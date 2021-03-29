@@ -7,13 +7,14 @@ public:
     SoundData();
     ~SoundData();
 
-    void requestLoad();
     bool isLoaded() const;
-    bool canStartLoading();
+    bool isLoading() const;
+    void setLoading();
     void setLoaded(Buffer& data);
     bool tryFree();
     void addUseRef();
     void removeUseRef();
+    bool hasUseRef() const;
 
 public:
 
@@ -28,7 +29,6 @@ private:
 private:
 
     enum LoadState {
-        LoadRequested = 0,
         Loading,
         Loaded,
         Released

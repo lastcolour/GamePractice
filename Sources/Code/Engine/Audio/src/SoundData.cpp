@@ -11,18 +11,20 @@ SoundData::SoundData() :
 SoundData::~SoundData() {
 }
 
-void SoundData::requestLoad() {
-    auto tReleaseState = LoadState::Released;
-    loadState.compare_exchange_strong(tReleaseState, LoadState::LoadRequested);
-}
-
 bool SoundData::isLoaded() const {
     return loadState.load() == LoadState::Loaded;
 }
 
-bool SoundData::canStartLoading() {
-    auto tRequestState = LoadState::LoadRequested;
-    return loadState.compare_exchange_strong(tRequestState, LoadState::Loading);
+bool SoundData::isLoading() const {
+    return loadState.load() == LoadState::Loading;
+}
+
+void SoundData::setLoading() {
+    auto tReleasedState = LoadState::Released;
+    if(!loadState.compare_exchange_strong(tReleasedState, LoadState::Loading)) {
+        assert(false && "Invalid state");
+        return;
+    }
 }
 
 void SoundData::setLoaded(Buffer& buff) {
@@ -53,4 +55,8 @@ void SoundData::addUseRef() {
 void SoundData::removeUseRef() {
     useRefCount.fetch_sub(1);
     assert(useRefCount.load() >= 0 && "Invalid use ref count");
+}
+
+bool SoundData::hasUseRef() const {
+    return useRefCount.load() > 0;
 }

@@ -5,8 +5,6 @@
 
 namespace Audio {
 
-float ConvertToExpVolume(float value);
-
 void ConverFloatsToInt16(float* from, int16_t* to, int samples);
 
 } // namespace Audio

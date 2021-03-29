@@ -21,22 +21,12 @@ float UIConfig::getSizeOnGrid(float value) const {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    float ratio = baseRatio.y / static_cast<float>(baseRatio.x);
+    float r = baseRatio.x / static_cast<float>(baseRatio.y);
+    float s = std::min(viewPort.y * r, static_cast<float>(viewPort.x)) / static_cast<float>(viewPort.x);
 
-    float xSize = std::min(static_cast<float>(viewPort.x), viewPort.y * ratio);
-    float pixelsPerValue = xSize / static_cast<float>(horizontalGrid);
-
-    return pixelsPerValue * value;
+    return (viewPort.x * s * value) / horizontalGrid;
 }
 
 float UIConfig::convertFromGrid(float value) const {
-    Vec2i viewPort(0);
-    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
-
-    float ratio = baseRatio.y / static_cast<float>(baseRatio.x);
-
-    float xSize = std::min(static_cast<float>(viewPort.x), viewPort.y * ratio);
-    float pixelsPerValue = xSize / static_cast<float>(horizontalGrid);
-
-    return value / pixelsPerValue;
+    return value / getSizeOnGrid(1.f);
 }

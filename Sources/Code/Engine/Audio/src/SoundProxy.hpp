@@ -33,22 +33,17 @@ public:
     MixNode* getMixNode();
     void setKeepLoaded(bool flag);
 
-    bool shouldStartMix() const;
-    bool isLoaded() const;
-    void setPendingStart(bool flag);
     void setNoSound();
 
-    void updateDataLoadState();
-
     void emit();
-    void fadeInPlay(const Sound&, float duration);
+    void fadeInPlay(const Sound& sound, float duration);
     void fadeOutStop(float duration);
     void play(const Sound& sound);
     void pause();
     void resume(const Sound& sound);
     void stop();
     bool isPlaying() const;
-    bool canRemove() const;
+    void syncPlayParams(const Sound& sound);
 
 private:
 
@@ -58,15 +53,12 @@ private:
 private:
 
     std::shared_ptr<SoundData> soundData;
-    MixNode* mixNode;
+    std::atomic<MixNode*> mixNode;
     int offset;
-    std::atomic<float> volume;
-    std::atomic<ESoundGroup> group;
-    std::atomic<bool> looped;
-    std::atomic<bool> hasSound;
-    std::atomic<bool> hasMixNode;
+    float volume;
+    ESoundGroup group;
+    bool looped;
     std::atomic<bool> keepInMemory;
-    bool isQueuedToStartMix;
 };
 
 #endif /* __SOUND_PROXY_HPP__ */

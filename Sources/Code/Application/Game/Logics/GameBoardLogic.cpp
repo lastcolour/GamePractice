@@ -118,7 +118,7 @@ void GameBoardLogic::init() {
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
-    visualBox.setCenter(Vec2(tm.pt.x, tm.pt.y));
+    visualBox.setCenter(tm.pt.x, tm.pt.y);
     ET_resize(visualBox);
 
     uiProxies.addItem(backgroundId, BACKGROUND_Z_INDEX);
@@ -367,7 +367,7 @@ void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
     boardBox.bot = Vec2i(0);
     boardBox.top = boardBoxSize;
     Vec2 center = newAabb.getCenter();
-    boardBox.setCenter(Vec2i(static_cast<int>(center.x), static_cast<int>(center.y)));
+    boardBox.setCenter(static_cast<int>(center.x), static_cast<int>(center.y));
 
     ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, Vec2(
         static_cast<float>(boardBoxSize.x), static_cast<float>(boardBoxSize.y)));

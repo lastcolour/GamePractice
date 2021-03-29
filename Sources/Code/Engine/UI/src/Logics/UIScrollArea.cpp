@@ -33,13 +33,6 @@ AABB2D calcScrollArea(UIScrollType scrollType, const AABB2D& scrollBox, const AA
     return res;
 }
 
-Vec2 clampToEdges(const AABB2D& box, const Vec2& pt) {
-    Vec2 resPt;
-    resPt.x = Math::Clamp(pt.x, box.bot.x, box.top.x);
-    resPt.y = Math::Clamp(pt.y, box.bot.y, box.top.y);
-    return resPt;
-}
-
 AABB2D getUIBox(EntityId targetId) {
     AABB2D resBox(0.f);
     ET_SendEventReturn(resBox, targetId, &ETUIElement::ET_getBox);
@@ -150,7 +143,7 @@ void UIScrollArea::onPress(const Vec2& pt) {
 void UIScrollArea::onRelease(const Vec2& pt) {
     isPressed = false;
     auto box = getUIBox(getEntityId());
-    auto clampPt = clampToEdges(box, pt);
+    auto clampPt = box.clamp(pt);
     path.push_back({TimePoint::GetNowTime(), clampPt});
     if(kinematicScrollEnabled) {
         addReleaseImpulse();
@@ -289,7 +282,7 @@ void UIScrollArea::ET_onUITick(float dt) {
     auto targetBox = getUIBox(targetId);
     AABB2D scrollArea = ET_getScrollArea();
 
-    moveState.destPt = clampToEdges(scrollArea, moveState.destPt);
+    moveState.destPt = scrollArea.clamp(moveState.destPt);
 
     Vec2 resPt = targetBox.getCenter();
 
@@ -410,7 +403,8 @@ void UIScrollArea::ET_setTargetPosClamped(const Vec2& newScrollPt) {
     resetMoveState();
 
     auto scrollArea = ET_getScrollArea();
-    auto resPt = clampToEdges(scrollArea, newScrollPt);
+    auto resPt = scrollArea.clamp(newScrollPt);
+
     setPosUpdateProg(scrollArea, resPt);
 }
 
