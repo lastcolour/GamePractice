@@ -57,13 +57,13 @@ void RenderGeometry::drawLine(const void* vertexData) {
     glBindVertexArray(0);
 }
 
-void RenderGeometry::drawChunk(const void* chunkBuffer, unsigned int chunkVertexCount) {
+void RenderGeometry::drawText(const void* textData, unsigned int textVertCount) {
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, getVertexSize(vertType) * chunkVertexCount, chunkBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, getVertexSize(vertType) * textVertCount, textData);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(vaoId);
-    glDrawArrays(GL_TRIANGLES, 0, chunkVertexCount);
+    glDrawArrays(GL_TRIANGLES, 0, textVertCount);
     glBindVertexArray(0);
 }
 

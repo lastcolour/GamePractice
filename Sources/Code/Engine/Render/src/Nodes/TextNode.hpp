@@ -29,19 +29,17 @@ protected:
 private:
 
     void drawLines();
-    unsigned int drawLine(const Vec2& pt, const Vec2& scale, unsigned int vertShift, Vec4* vertChunk, size_t startIdx, size_t endIdx);
+    unsigned int drawLine(const Vec2& pt, unsigned int vertShift, size_t startIdx, size_t endIdx);
 
 private:
 
     std::shared_ptr<RenderFont> font;
+    std::vector<Vec4> vertData;
     std::string text;
     TextMetric textMetric;
     ColorB color;
-    Vec2 tmPt;
-    Vec2 tmScale;
     float fontHeight;
     bool alignAtCenter;
-    bool doUpdate;
 };
 
 #endif /* __TEXT_NODE_HPP__ */

@@ -44,8 +44,8 @@ ParticlesEmitterEmissionConfig::ParticlesEmitterEmissionConfig() :
     lifetime(1.f),
     lifetimeVar(0.1f),
     startDelay(0.f),
-    autoStart(true),
-    loop(true),
+    autoStart(false),
+    loop(false),
     heating(true) {
 }
 

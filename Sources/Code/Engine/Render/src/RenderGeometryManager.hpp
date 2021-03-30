@@ -23,7 +23,7 @@ private:
     std::shared_ptr<RenderGeometry> createGeometryOfType(PrimitiveGeometryType geomType);
     std::shared_ptr<RenderGeometry> createSquare();
     std::shared_ptr<RenderGeometry> createSquareTex();
-    std::shared_ptr<RenderGeometry> createTextVertexChunks();
+    std::shared_ptr<RenderGeometry> createText();
     std::shared_ptr<RenderGeometry> createParticles();
     std::shared_ptr<RenderGeometry> createNinePatch();
     std::shared_ptr<RenderGeometry> createLine();

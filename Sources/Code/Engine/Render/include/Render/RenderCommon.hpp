@@ -30,7 +30,7 @@ enum class ETextureType {
 enum class PrimitiveGeometryType {
     Square = 0,
     Sqaure_Tex,
-    Text_Vert_Chunk,
+    Text,
     Particles,
     NinePatch,
     Line

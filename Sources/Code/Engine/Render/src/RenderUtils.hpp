@@ -26,6 +26,8 @@ const float TextNewLineOffset = 1.f;
 
 const int MaxParticlessPerDraw = 1024;
 
+const int MaxCharsPerDraw = 512;
+
 const char* GetGLError();
 
 bool IsOpenGLContextExists();

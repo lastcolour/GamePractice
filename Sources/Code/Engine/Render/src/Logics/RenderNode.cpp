@@ -123,15 +123,17 @@ void RenderNode::ET_setStencilData(const StencilWirteReadData& newStencilData) {
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newTm](){
-        node->setTransform(newTm);
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, nScale=normScale, tm=newTm]()mutable{
+        tm.scale *= nScale;
+        node->setTransform(tm);
     });
 }
 
 void RenderNode::ET_setNormalizationScale(float newNormScale) {
     normScale = newNormScale;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newNormScale](){
-        node->setNormScale(std::max(0.001f, newNormScale));
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newS=newNormScale, oldS=normScale](){
+        float nScale = std::max(0.001f, newS / oldS);
+        node->setNormScale(nScale);
     });
 }
 

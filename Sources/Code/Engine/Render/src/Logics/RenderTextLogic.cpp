@@ -49,11 +49,12 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
 
     auto textSize = font->getTextSize(text);
-    auto fontScale = fontHeight / static_cast<float>(font->getHeight());
+    auto scale = fontHeight / static_cast<float>(font->getHeight());
+    scale *= normScale;
 
     AABB2D aabb;
     aabb.bot = Vec2(0.f);
-    aabb.top = Vec2(textSize.x * tm.scale.x * fontScale, textSize.y * tm.scale.y * fontScale);
+    aabb.top = Vec2(textSize.x * tm.scale.x * scale, textSize.y * tm.scale.y * scale);
     aabb.setCenter(tm.pt.x, tm.pt.y);
 
     return aabb;

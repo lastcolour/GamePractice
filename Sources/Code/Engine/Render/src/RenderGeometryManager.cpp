@@ -7,12 +7,6 @@
 
 #include <cassert>
 
-namespace {
-
-const int TEXT_CHUNK_VERTEX_COUNT = 6 * 32;
-
-} // namespace
-
 RenderGeometryManager::RenderGeometryManager() {
 }
 
@@ -34,8 +28,8 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(Prim
         return createSquare();
     case PrimitiveGeometryType::Sqaure_Tex:
         return createSquareTex();
-    case PrimitiveGeometryType::Text_Vert_Chunk:
-        return createTextVertexChunks();
+    case PrimitiveGeometryType::Text:
+        return createText();
     case PrimitiveGeometryType::Particles:
         return createParticles();
     case PrimitiveGeometryType::NinePatch:
@@ -43,9 +37,9 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(Prim
     case PrimitiveGeometryType::Line:
         return createLine();
     default:
+        assert(false && "Invalid geometry type");
         break;
     }
-    LogError("[RenderGeometryManager::createGeometryOfType] Can't create unknown type of geometry: '%d'", geomType);
     return nullptr;
 }
 
@@ -57,7 +51,15 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(Primiti
     if(it != geometris.end() && it->second) {
         return it->second;
     }
+
     auto geom = createGeometryOfType(reqGeomType);
+
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[RenderFont::ET_createGeometry] Cant create geometry of type: %d (Error: %s)",
+            geomType, errStr);
+        return nullptr;
+    }
+
     if(!geom) {
         return nullptr;
     }
@@ -145,7 +147,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
     return geometry;
 }
 
-std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() {
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createText() {
     GLuint vaoId = 0;
     GLuint vboId = 0;
 
@@ -154,7 +156,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     {
         glGenBuffers(1, &vboId);
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * TEXT_CHUNK_VERTEX_COUNT, nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vec4) * RenderUtils::MaxCharsPerDraw, nullptr, GL_DYNAMIC_DRAW);
 
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), static_cast<void*>(0));
         glEnableVertexAttribArray(0);
@@ -165,7 +167,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createTextVertexChunks() 
     geometry->aabb = AABB2D(0.f);
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
-    geometry->vertCount = TEXT_CHUNK_VERTEX_COUNT;
+    geometry->vertCount = RenderUtils::MaxCharsPerDraw;
     geometry->vertType = VertexType::Vector4;
 
     return geometry;
