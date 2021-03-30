@@ -4,9 +4,7 @@
 RenderSimpleLogic::RenderSimpleLogic() :
     RenderNode(RenderNodeType::Simple),
     size(20.f),
-    color(255, 255, 255),
-    isSizeChanged(true),
-    isColorChanged(true) {
+    color(255, 255, 255) {
 }
 
 RenderSimpleLogic::~RenderSimpleLogic() {
@@ -20,43 +18,31 @@ void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
     }
 }
 
-void RenderSimpleLogic::init() {
-    RenderNode::init();
-
-    if(!proxyNode) {
-        return;
-    }
+void RenderSimpleLogic::onInit() {
+    auto simpleProxyNode = static_cast<SimpleNode*>(proxyNode);
+    simpleProxyNode->setSize(size);
+    simpleProxyNode->setColor(color);
 
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
-    ET_setColor(color);
-    ET_setSize(size);
 }
 
-void RenderSimpleLogic::ET_setColor(const ColorB& col) {
-    color = col;
-    isColorChanged = true;
-    markForSyncWithRender();
+void RenderSimpleLogic::ET_setColor(const ColorB& newColor) {
+    color = newColor;
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newColor](){
+        auto simpleProxyNode = static_cast<SimpleNode*>(node);
+        simpleProxyNode->setColor(newColor);
+    });
 }
 
 void RenderSimpleLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    isSizeChanged = true;
-    markForSyncWithRender();
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSize](){
+        auto simpleProxyNode = static_cast<SimpleNode*>(node);
+        simpleProxyNode->setSize(newSize);
+    });
 }
 
 Vec2 RenderSimpleLogic::ET_getSize() const {
     return size;
-}
-
-void RenderSimpleLogic::onSyncWithRender() {
-    auto simpleProxyNode = static_cast<SimpleNode*>(proxyNode);
-    if(isSizeChanged) {
-        isSizeChanged = false;
-        simpleProxyNode->setSize(size);
-    }
-    if(isColorChanged) {
-        isColorChanged = false;
-        simpleProxyNode->setColor0(color);
-    }
 }

@@ -1,5 +1,4 @@
 #include "Nodes/ImageNode.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 #include "Render/ETRenderManager.hpp"
 
 ImageNode::ImageNode() :
@@ -44,7 +43,7 @@ bool ImageNode::canRender() const {
 }
 
 Mat4 ImageNode::calcModelMat(const Transform& newTm) {
-    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
+    return RenderUtils::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void ImageNode::setTexture(std::shared_ptr<RenderTexture>& newTex) {

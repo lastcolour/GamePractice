@@ -3,7 +3,7 @@
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
+#include "RenderUtils.hpp"
 
 #include <cassert>
 
@@ -108,7 +108,7 @@ TextMetric RenderFont::getTextMetric(const std::string& text) const {
     for(size_t i = 1, sz = res.lineMetrics.size(); i < sz; ++i) {
         auto& lineMetric = res.lineMetrics[i];
         res.size.x = std::max(res.size.x, lineMetric.lineLen);
-        res.size.y += static_cast<int>(fontHeight * Render::TextNewLineOffset);
+        res.size.y += static_cast<int>(fontHeight * RenderUtils::TextNewLineOffset);
     }
 
     res.size.y -= fontHeight - res.firstLineOffset;

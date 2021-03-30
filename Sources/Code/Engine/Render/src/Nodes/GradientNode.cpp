@@ -1,7 +1,6 @@
 #include "Nodes/GradientNode.hpp"
 #include "RenderTexture.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 
 #include <cassert>
 
@@ -72,7 +71,7 @@ void GradientNode::setSize(const Vec2& newSize) {
 }
 
 Mat4 GradientNode::calcModelMat(const Transform& newTm) {
-    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
+    return RenderUtils::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void GradientNode::updateTexData() {

@@ -8,9 +8,7 @@ RenderImageLogic::RenderImageLogic() :
 RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
     RenderNode(nodeType),
     size(100.f),
-    tintColor(255, 255, 255, 0),
-    isImageChanged(true),
-    isSizeChanged(true) {
+    tintColor(255, 255, 255, 0) {
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -21,58 +19,45 @@ void RenderImageLogic::Reflect(ReflectContext& ctx) {
         classInfo->addBaseClass<RenderNode>();
         classInfo->addField("size", &RenderImageLogic::size);
         classInfo->addField("tintColor", &RenderImageLogic::tintColor);
-        classInfo->addResourceField("image", ResourceType::Image, &RenderImageLogic::ET_setImage);
+        classInfo->addResourceField("image", ResourceType::Image, &RenderImageLogic::image);
     }
 }
 
-void RenderImageLogic::init() {
-    RenderNode::init();
+void RenderImageLogic::onInit() {
+    auto imageProxyNode = static_cast<ImageNode*>(proxyNode);
+    imageProxyNode->setTintColor(tintColor);
+    imageProxyNode->setSize(size);
 
-    if(!proxyNode) {
-        return;
-    }
+    ET_setImage(image.c_str());
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
-    ET_setImage(image.c_str());
-    ET_setSize(size);
-    ET_setTintColor(tintColor);
 }
 
 void RenderImageLogic::ET_setImage(const char* imageName) {
     image = imageName;
-    isImageChanged = true;
-    markForSyncWithRender();
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, img=image](){
+        auto imageProxyNode = static_cast<ImageNode*>(node);
+        imageProxyNode->setImage(img);
+    });
 }
 
 void RenderImageLogic::ET_setTintColor(const ColorB& newTintColor) {
     tintColor = newTintColor;
-    isTintColorChanged = true;
-    markForSyncWithRender();
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newTintColor](){
+        auto imageProxyNode = static_cast<ImageNode*>(node);
+        imageProxyNode->setTintColor(newTintColor);
+    });
 }
 
 void RenderImageLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    isSizeChanged = true;
-    markForSyncWithRender();
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSize](){
+        auto imageProxyNode = static_cast<ImageNode*>(node);
+        imageProxyNode->setSize(newSize);
+    });
 }
 
 Vec2 RenderImageLogic::ET_getSize() const {
     return size;
-}
-
-void RenderImageLogic::onSyncWithRender() {
-    auto imageProxyNode = static_cast<ImageNode*>(proxyNode);
-    if(isSizeChanged) {
-        isSizeChanged = false;
-        imageProxyNode->setSize(size);
-    }
-    if(isImageChanged) {
-        isImageChanged = false;
-        imageProxyNode->setImage(image);
-    }
-    if(isTintColorChanged) {
-        isTintColorChanged = false;
-        imageProxyNode->setTintColor(tintColor);
-    }
 }

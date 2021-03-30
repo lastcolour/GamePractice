@@ -115,5 +115,4 @@ void Render::ET_syncWithGame() {
     if(canCreateRenderNodes()) {
         ET_PollAllEvents<ETRenderNodeManager>();
     }
-    ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncWithRender);
 }

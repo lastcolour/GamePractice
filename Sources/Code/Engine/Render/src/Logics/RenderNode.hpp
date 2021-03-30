@@ -1,16 +1,15 @@
 #ifndef __RENDER_NODE_HPP__
 #define __RENDER_NODE_HPP__
 
-#include "Render/ETRenderNode.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "Render/ETRenderInterfaces.hpp"
+#include "Render/RenderCommon.hpp"
+#include "Render/ETRenderNode.hpp"
+#include "RenderUtils.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
-#include "Nodes/Node.hpp"
 
 class RenderNode : public EntityLogic,
     public ETNode<ETRenderNode>,
-    public ETNode<ETEntityEvents>,
-    public ETNode<ETRenderProxyNodeEvents> {
+    public ETNode<ETEntityEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -35,20 +34,13 @@ public:
     void ET_setNormalizationScale(float newNormScale) override;
     float ET_getNormalizationScale() const override;
 
-    // ETRenderProxyNodeEvents
-    void ET_syncWithRender() override;
-
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
     void ET_onLoaded() override;
 
 protected:
 
-    virtual void onSyncWithRender() = 0;
-
-protected:
-
-    void markForSyncWithRender();
+    virtual void onInit() = 0;
 
 protected:
 
@@ -61,12 +53,6 @@ protected:
     RenderNodeType type;
     bool isVisible;
     bool isLoaded;
-    bool isTmChanged;
-    bool isVisChanged;
-    bool isDrawPriorityChanged;
-    bool isAlphaChanged;
-    bool isStencilDataChanged;
-    bool isMarkedForSync;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

@@ -1,5 +1,4 @@
 #include "Nodes/SimpleNode.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 
 SimpleNode::SimpleNode() :
     size(100.f),
@@ -14,7 +13,7 @@ void SimpleNode::onInit() {
     setShader("geom_solid_color");
 }
 
-void SimpleNode::setColor0(const ColorB& newColor) {
+void SimpleNode::setColor(const ColorB& newColor) {
     color = newColor;
 }
 
@@ -24,7 +23,7 @@ void SimpleNode::setSize(const Vec2& newSize) {
 }
 
 Mat4 SimpleNode::calcModelMat(const Transform& newTm) {
-    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
+    return RenderUtils::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void SimpleNode::onRender(RenderContext& ctx) {

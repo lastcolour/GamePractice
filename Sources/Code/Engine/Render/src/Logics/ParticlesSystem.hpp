@@ -4,7 +4,6 @@
 #include "Logics/RenderNode.hpp"
 #include "Render/ETParticlesSystem.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
-#include "Nodes/ETRenderNodeManager.hpp"
 #include "Particles/EmitterParticles.hpp"
 
 class ParticlesSystem : public RenderNode,
@@ -18,9 +17,6 @@ public:
 
     ParticlesSystem();
     virtual ~ParticlesSystem();
-
-    // EntityLogic
-    void init() override;
 
     // ETParticlesSystem
     void ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) override;
@@ -50,7 +46,8 @@ public:
 
 protected:
 
-    void onSyncWithRender() override;
+    // RenderNode
+    void onInit() override;
 
 private:
 
@@ -61,15 +58,6 @@ private:
     ParticlesEmitterGravityConfig gravityConfig;
     ParticlesSubEmittersConfig subEmittersConfig;
     ParticlesEmitterSizeConfig sizeConfig;
-    std::vector<EmitRequest> pendingEmits;
-    bool canUpdate;
-    bool isEmissionConfigChanged;
-    bool isMovementConfigChanged;
-    bool isColorConfigChanged;
-    bool isRenderConfigChanged;
-    bool isGravityConfigChanged;
-    bool isSubEmittersConfigChanged;
-    bool isSizeConfigChanged;
 };
 
 #endif /* __PARTICLES_EMITTER_HPP__ */

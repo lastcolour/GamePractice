@@ -1,7 +1,7 @@
 #include "Particles/EmitterParticles.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Render/ETParticlesSystem.hpp"
+#include "RenderUtils.hpp"
 
 #include <cassert>
 
@@ -276,7 +276,7 @@ void EmitterParticles::emitNew(float dt) {
     }
 
     int emitCount = static_cast<int>(simConfig.emission.emissionRate * emitFracTime);
-    emitCount = std::min(Render::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
+    emitCount = std::min(RenderUtils::MaxParticlessPerDraw, activeCount + emitCount) - activeCount;
     if(emitCount == 0) {
         return;
     }
@@ -301,7 +301,7 @@ void EmitterParticles::emitNew(float dt) {
     }
 
     activeCount += emitCount;
-    assert(activeCount <= Render::MaxParticlessPerDraw && "Too Many Particles");
+    assert(activeCount <= RenderUtils::MaxParticlessPerDraw && "Too Many Particles");
 }
 
 void EmitterParticles::moveAlive(float dt) {

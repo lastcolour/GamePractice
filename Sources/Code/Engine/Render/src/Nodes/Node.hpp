@@ -4,7 +4,7 @@
 #include "RenderGraph/RenderContext.hpp"
 #include "RenderShader.hpp"
 #include "RenderGeometry.hpp"
-#include "Nodes/ETRenderNodeManager.hpp"
+#include "RenderUtils.hpp"
 
 class RenderGraph;
 
@@ -25,6 +25,7 @@ public:
     void setTransform(const Transform& newTm);
     void setStencilData(const StencilWirteReadData& newStencilData);
     void setBlendingMode(const BlendMode& newBlendMode);
+    void setNormScale(float scale);
 
     virtual bool canRender() const;
 

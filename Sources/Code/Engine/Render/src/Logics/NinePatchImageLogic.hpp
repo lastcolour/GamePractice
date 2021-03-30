@@ -13,19 +13,16 @@ public:
     NinePatchImageLogic();
     virtual ~NinePatchImageLogic();
 
-    // EntityLogic
-    void init() override;
-
 protected:
 
-    void onSyncWithRender() override;
+    // RenderNode
+    void onInit() override;
 
 private:
 
     float horizontal;
     float vertical;
     float patchScale;
-    bool isPatchChanged;
 };
 
 #endif /* __NINE_PATCH_IMAGE_LOGIC_HPP__ */

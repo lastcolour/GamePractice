@@ -1,8 +1,6 @@
 #include "Nodes/Node.hpp"
 #include "RenderGraph/RenderGraph.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
-#include "Platform/OpenGL.hpp"
 
 #include <cassert>
 
@@ -106,4 +104,9 @@ void Node::render(RenderContext& ctx) {
 
 void Node::setModelMatDirty() {
     modelMatDirty = true;
+}
+
+void Node::setNormScale(float scale) {
+    tm.scale *= scale;
+    setModelMatDirty();
 }

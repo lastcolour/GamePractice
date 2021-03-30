@@ -8,7 +8,7 @@
 namespace {
 
 void TickParticlesEmitter(float dt) {
-    ET_SendEvent(&ETRenderProxyNodeEvents::ET_syncWithRender);
+    ET_PollAllEvents<ETRenderNodeManager>();
     ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
     ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, 0.f);
 }

@@ -2,10 +2,18 @@
 #include "RenderFramebuffer.hpp"
 #include "Render/ImageBuffer.hpp"
 #include "Platform/OpenGL.hpp"
-#include "Nodes/Node.hpp"
 #include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Platform/ETSurface.hpp"
+#include "RenderGeometry.hpp"
+#include "Math/MatrixTransform.hpp"
+#include "Nodes/ImageNode.hpp"
+#include "Nodes/NinePatchNode.hpp"
+#include "Nodes/SimpleNode.hpp"
+#include "Nodes/TextNode.hpp"
+#include "Nodes/GradientNode.hpp"
+#include "Nodes/ParticlesNode.hpp"
+#include "Nodes/BlurNode.hpp"
 
 #include <type_traits>
 #include <cassert>
@@ -161,6 +169,50 @@ bool IsOpenGLContextExists() {
     bool hasContext = false;
     ET_SendEventReturn(hasContext, &ETSurface::ET_canRender);
     return hasContext;
+}
+
+Mat4 CalcModelMat(const Transform& tm, const Vec3& scale) {
+    auto resMat = tm.toMat4();
+    Math::AddScale(resMat, scale / 2.f);
+    return resMat;
+}
+
+std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType) {
+    std::unique_ptr<Node> node;
+    switch(nodeType) {
+        case RenderNodeType::NinePatchImage: {
+            node.reset(new NinePatchNode());
+            break;
+        }
+        case RenderNodeType::Gradient: {
+            node.reset(new GradientNode());
+            break;
+        }
+        case RenderNodeType::Image: {
+            node.reset(new ImageNode());
+            break;
+        }
+        case RenderNodeType::Simple: {
+            node.reset(new SimpleNode());
+            break;
+        }
+        case RenderNodeType::Text: {
+            node.reset(new TextNode());
+            break;
+        }
+        case RenderNodeType::ParticleEmmiter: {
+            node.reset(new ParticlesNode());
+            break;
+        }
+        case RenderNodeType::Blur:
+            node.reset(new BlurNode());
+            break;
+        default: {
+            assert(false && "Invalid node type");
+            return nullptr;
+        }
+    }
+    return node;
 }
 
 } // namespace RenderUtils

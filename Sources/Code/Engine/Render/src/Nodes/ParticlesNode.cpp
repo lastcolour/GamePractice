@@ -1,5 +1,4 @@
 #include "Nodes/ParticlesNode.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Math/MatrixTransform.hpp"
 

@@ -12,6 +12,7 @@ public:
 
     void setFontHeight(float newFontHeight);
     void setColor0(const ColorB& newColor);
+    void setText(std::string&& newText);
     void setText(const std::string& newText);
     void setAlignAtCenter(bool flag);
 

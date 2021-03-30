@@ -16,9 +16,6 @@ public:
     RenderImageLogic(RenderNodeType nodeType);
     virtual ~RenderImageLogic();
 
-    // EntityLogic
-    void init() override;
-
     // ETRenderImageLogic
     void ET_setImage(const char* imageName) override;
     void ET_setTintColor(const ColorB& newTintColor) override;
@@ -29,16 +26,14 @@ public:
 
 protected:
 
-    void onSyncWithRender() override;
+    // RenderNode
+    void onInit() override;
 
 protected:
 
     std::string image;
     Vec2 size;
     ColorB tintColor;
-    bool isImageChanged;
-    bool isSizeChanged;
-    bool isTintColorChanged;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */

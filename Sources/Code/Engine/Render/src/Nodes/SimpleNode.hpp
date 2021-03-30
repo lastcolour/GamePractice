@@ -9,7 +9,7 @@ public:
     SimpleNode();
     virtual ~SimpleNode();
 
-    void setColor0(const ColorB& newColor);
+    void setColor(const ColorB& newColor);
     void setSize(const Vec2& newSize);
 
 protected:

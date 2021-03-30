@@ -15,11 +15,8 @@ public:
     RenderSimpleLogic();
     virtual ~RenderSimpleLogic();
 
-    // EntityLogic
-    void init() override;
-
     // ETRenderSimpleLogic
-    void ET_setColor(const ColorB& col) override;
+    void ET_setColor(const ColorB& newColor) override;
 
     // ETRenderRect
     void ET_setSize(const Vec2& newSize) override;
@@ -27,14 +24,13 @@ public:
 
 protected:
 
-    void onSyncWithRender() override;
+    // RenderNode
+    void onInit() override;
 
 private:
 
     Vec2 size;
     ColorB color;
-    bool isSizeChanged;
-    bool isColorChanged;
 };
 
 #endif /* __RENDER_SIMPLE_LOGIC_HPP__ */

@@ -12,30 +12,18 @@ void RenderBlurLogic::Reflect(ReflectContext& ctx) {
 RenderBlurLogic::RenderBlurLogic() :
     RenderNode(RenderNodeType::Blur),
     passes(1),
-    downScaleFactor(2),
-    isPassesChanged(true),
-    isDownScaleChanged(true) {
+    downScaleFactor(2) {
 }
 
 RenderBlurLogic::~RenderBlurLogic() {
 }
 
-void RenderBlurLogic::init() {
-    RenderNode::init();
-    isPassesChanged = true;
-    isDownScaleChanged = true;
-}
-
-void RenderBlurLogic::onSyncWithRender() {
+void RenderBlurLogic::onInit() {
     auto blurProxyNode = static_cast<BlurNode*>(proxyNode);
-    if(isPassesChanged) {
-        isPassesChanged = false;
-        int val = std::max(downScaleFactor, 0);
-        blurProxyNode->setPasses(val);
-    }
-    if(isDownScaleChanged) {
-        isDownScaleChanged = false;
-        int val = std::max(downScaleFactor, 1);
-        blurProxyNode->setDownScale(val);
-    }
+
+    passes = std::max(passes, 1);
+    blurProxyNode->setPasses(passes);
+
+    downScaleFactor = std::max(downScaleFactor, 0);
+    blurProxyNode->setDownScale(downScaleFactor);
 }

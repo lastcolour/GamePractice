@@ -118,7 +118,7 @@ void DebugRender::drawQuads(RenderContext& ctx) {
         quadNode.setTransform(tm);
         Vec2 size = cmd.box.getSize();
         quadNode.setSize(Vec2(size.x, size.y));
-        quadNode.setColor0(cmd.col);
+        quadNode.setColor(cmd.col);
         quadNode.render(ctx);
     }
     drawQuadCmds.clear();
@@ -129,7 +129,7 @@ void DebugRender::drawTexts(RenderContext& ctx) {
     for(auto& cmd : drawTextCmds) {
         tm.pt = Vec3(static_cast<float>(cmd.pt.x), static_cast<float>(cmd.pt.y), 0.f);
         textNode.setTransform(tm);
-        textNode.setText(cmd.text);
+        textNode.setText(std::move(cmd.text));
         textNode.setColor0(cmd.col);
         textNode.setFontHeight(cmd.size);
         textNode.render(ctx);

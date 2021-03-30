@@ -1,7 +1,6 @@
 #include "Nodes/TextNode.hpp"
 #include "RenderTexture.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 
 #include <cassert>
 
@@ -30,6 +29,11 @@ void TextNode::setFontHeight(float newFontHeight) {
 
 void TextNode::setColor0(const ColorB& newColor) {
     color = newColor;
+}
+
+void TextNode::setText(std::string&& newText) {
+    text = std::move(newText);
+    doUpdate = true;
 }
 
 void TextNode::setText(const std::string& newText) {
@@ -69,7 +73,7 @@ void TextNode::drawLines() {
         if(i == 0) {
             drawPt.y -= textMetric.firstLineOffset * scale.y;
         } else {
-            drawPt.y -= font->getHeight() * Render::TextNewLineOffset * scale.y;
+            drawPt.y -= font->getHeight() * RenderUtils::TextNewLineOffset * scale.y;
         }
         drawPt.x = textBox.bot.x;
         vertShift = drawLine(drawPt, scale, vertShift, &vertChunk[0], lineMetric.startIdx, lineMetric.endIdx);

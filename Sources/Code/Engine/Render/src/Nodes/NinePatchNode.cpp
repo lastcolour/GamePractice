@@ -1,5 +1,4 @@
 #include "Nodes/NinePatchNode.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 
 NinePatchNode::NinePatchNode() :
     tmScale(1.f),
@@ -25,7 +24,7 @@ void NinePatchNode::setPatches(float newHorizontal, float newVertical, float new
 
 Mat4 NinePatchNode::calcModelMat(const Transform& newTm) {
     tmScale = Vec2(newTm.scale.x, newTm.scale.y);
-    return Render::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
+    return RenderUtils::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
 void NinePatchNode::onRender(RenderContext& ctx) {

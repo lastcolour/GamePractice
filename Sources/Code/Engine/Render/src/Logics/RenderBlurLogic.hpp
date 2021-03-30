@@ -13,19 +13,15 @@ public:
     RenderBlurLogic();
     virtual ~RenderBlurLogic();
 
-    // EntityLogic
-    void init() override;
-
 protected:
 
-    void onSyncWithRender() override;
+    // RenderNode
+    void onInit() override;
 
 private:
 
     int passes;
     int downScaleFactor;
-    bool isPassesChanged;
-    bool isDownScaleChanged;
 };
 
 #endif /* __RENDER_BLUR_LOGIC_HPP__ */

@@ -3,7 +3,6 @@
 #include "RenderGeometry.hpp"
 #include "Math/Matrix.hpp"
 #include "Render/RenderCommon.hpp"
-#include "Logics/RenderAuxFunctions.hpp"
 #include "RenderUtils.hpp"
 
 #include <cassert>
@@ -205,7 +204,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
 
         glGenBuffers(1, &extraVboId);
         glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
-        glBufferData(GL_ARRAY_BUFFER, Render::MaxParticlessPerDraw * stride, nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, RenderUtils::MaxParticlessPerDraw * stride, nullptr, GL_DYNAMIC_DRAW);
 
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(2);

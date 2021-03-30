@@ -16,9 +16,6 @@ public:
     RenderTextLogic();
     virtual ~RenderTextLogic();
 
-    // EntityLogic
-    void init() override;
-
     // ETRenderTextLogic
     void ET_setColor(const ColorB& newColor) override;
     void ET_setText(const char* str) override;
@@ -27,7 +24,8 @@ public:
 
 protected:
 
-    void onSyncWithRender() override;
+    // RenderNode
+    void onInit() override;
 
 private:
 
@@ -39,8 +37,6 @@ private:
     std::string text;
     ColorB color;
     float fontHeight;
-    bool isTextChanged;
-    bool isColorChanged;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */

@@ -20,7 +20,7 @@ public:
     void deinit() override;
 
     // ETRenderNodeManager
-    Node* ET_createNode(RenderNodeType nodeType) override;
+    void ET_addUpdateEvent(std::function<void(void)> func) override;
     void ET_removeNode(Node* node) override;
     void ET_initRenderNode(Node* node) override;
     void ET_drawFrame() override;
