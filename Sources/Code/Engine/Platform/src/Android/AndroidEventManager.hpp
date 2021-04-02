@@ -1,5 +1,5 @@
-#ifndef __ANDROIND_EVENT_MANGER_HPP__
-#define __ANDROIND_EVENT_MANGER_HPP__
+#ifndef __ANDROIND_EVENT_MANAGER_HPP__
+#define __ANDROIND_EVENT_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "Core/ETTasks.hpp"
@@ -33,4 +33,4 @@ private:
     bool handleKeyEvent(AInputEvent* inputEvent);
 };
 
-#endif /* __ANDROIND_EVENT_MANGER_HPP__ */
+#endif /* __ANDROIND_EVENT_MANAGER_HPP__ */

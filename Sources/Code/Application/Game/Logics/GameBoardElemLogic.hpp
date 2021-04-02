@@ -22,7 +22,7 @@ public:
 
     // ETGameBoardElem
     void ET_setElemState(EBoardElemState newState) override;
-    EBoardElemState ET_getElemState() const override;
+    EBoardElemState ET_getState() const override;
     EBoardElemType ET_getType() const override;
     void ET_triggerDestroy() override;
     void ET_triggerLand() override;

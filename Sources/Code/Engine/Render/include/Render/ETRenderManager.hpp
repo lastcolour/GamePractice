@@ -21,8 +21,8 @@ struct ETRenderFontManager {
     virtual std::shared_ptr<RenderFont> ET_getDefaultFont() = 0;
 };
 
-struct ETRenderTextureManger {
-    virtual ~ETRenderTextureManger() = default;
+struct ETRenderTextureManager {
+    virtual ~ETRenderTextureManager() = default;
     virtual std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) = 0;
     virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) = 0;
     virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) = 0;

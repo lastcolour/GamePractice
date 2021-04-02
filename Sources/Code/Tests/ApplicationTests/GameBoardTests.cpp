@@ -3,22 +3,12 @@
 #include "Core/JSONNode.hpp"
 #include "Entity.hpp"
 #include "Logics/UIBox.hpp"
-#include "Game/ETGameElem.hpp"
 #include "Game/Logics/GameBoardElemsPool.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 namespace {
 
 const char* TEST_OBJECT_1 = "Entities/Game/Blocks/Blue.json";
-
-EBoardElemState getElemState(const BoardElement& elem) {
-    EBoardElemState state = EBoardElemState::Static;
-    ET_SendEventReturn(state, elem.entId, &ETGameBoardElem::ET_getElemState);
-    return state;
-}
-
-void setElemState(const BoardElement& elem, EBoardElemState state) {
-    ET_SendEvent(elem.entId, &ETGameBoardElem::ET_setElemState, state);
-}
 
 } // namespace
 
@@ -66,7 +56,7 @@ public:
         for(int i = 0; i < lineLen; ++i) {
             auto elem = getElem(elemPt);
             assert(elem && "Try remove invalid elem");
-            setElemState(*elem, EBoardElemState::Destroyed);
+            GameUtils::SetElemState(elem->entId, EBoardElemState::Destroyed);
             ++elemPt.y;
         }
         updateAfterRemoves();
@@ -77,7 +67,7 @@ public:
         for(int i = 0; i < lineLen; ++i) {
             auto elem = getElem(elemPt);
             assert(elem && "Try remove invalid elem");
-            setElemState(*elem, EBoardElemState::Destroyed);
+            GameUtils::SetElemState(elem->entId, EBoardElemState::Destroyed);
             ++elemPt.x;
         }
         updateAfterRemoves();
@@ -123,7 +113,7 @@ TEST_F(GameBoardTests, CheckInit) {
 
     const auto& elems = board->getElements();
     ASSERT_EQ(elems.size(), 1u);
-    ASSERT_EQ(getElemState(elems[0]), EBoardElemState::Static);
+    ASSERT_EQ(GameUtils::GetElemState(elems[0].entId), EBoardElemState::Static);
     ASSERT_EQ(elems[0].boardPt, Vec2i(0));
 }
 
@@ -152,13 +142,13 @@ TEST_F(GameBoardTests, CheckRemoveHorizontalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        EXPECT_EQ(getElemState(elem), EBoardElemState::Falling);
+        EXPECT_EQ(GameUtils::GetElemState(elem.entId), EBoardElemState::Falling);
     }
 
     board->finishElemsFailling();
 
     for(auto& elem : elems) {
-        EXPECT_EQ(getElemState(elem), EBoardElemState::Landing);
+        EXPECT_EQ(GameUtils::GetElemState(elem.entId), EBoardElemState::Landing);
     }
 
     EXPECT_TRUE(board->getElem(Vec2i(0, 0)));
@@ -180,13 +170,13 @@ TEST_F(GameBoardTests, CheckRemoveVerticalLine) {
     ASSERT_EQ(elems.size(), 3u);
 
     for(auto& elem : elems) {
-        EXPECT_EQ(getElemState(elem), EBoardElemState::Falling);
+        EXPECT_EQ(GameUtils::GetElemState(elem.entId), EBoardElemState::Falling);
     }
 
     board->finishElemsFailling();
 
     for(auto& elem : elems) {
-        EXPECT_EQ(getElemState(elem), EBoardElemState::Landing);
+        EXPECT_EQ(GameUtils::GetElemState(elem.entId), EBoardElemState::Landing);
     }
 
     EXPECT_TRUE(board->getElem(Vec2i(0, 0)));
@@ -209,47 +199,47 @@ TEST_F(GameBoardTests, CheckRetargetAfterRemove) {
     auto elem3 = board->getElem(Vec2i(0, 2));
     ASSERT_TRUE(elem3);
 
-    setElemState(*elem2, EBoardElemState::Destroyed);
+    GameUtils::SetElemState(elem2->entId, EBoardElemState::Destroyed);
 
     board->updateAfterRemoves();
 
     {
-        ASSERT_EQ(getElemState(*elem3), EBoardElemState::Falling);
+        ASSERT_EQ(GameUtils::GetElemState(elem3->entId), EBoardElemState::Falling);
     }
     {
-        ASSERT_EQ(getElemState(*elem2), EBoardElemState::Falling);
+        ASSERT_EQ(GameUtils::GetElemState(elem2->entId), EBoardElemState::Falling);
     }
     {
-        ASSERT_EQ(getElemState(*elem1), EBoardElemState::Static);
+        ASSERT_EQ(GameUtils::GetElemState(elem1->entId), EBoardElemState::Static);
         ASSERT_EQ(elem1->boardPt, Vec2i(0, 0));
     }
 
-    setElemState(*elem1, EBoardElemState::Destroyed);
+    GameUtils::SetElemState(elem1->entId, EBoardElemState::Destroyed);
 
     board->updateAfterRemoves();
 
     {
-        ASSERT_EQ(getElemState(*elem3), EBoardElemState::Falling);
+        ASSERT_EQ(GameUtils::GetElemState(elem3->entId), EBoardElemState::Falling);
     }
     {
-        ASSERT_EQ(getElemState(*elem2), EBoardElemState::Falling);
+        ASSERT_EQ(GameUtils::GetElemState(elem2->entId), EBoardElemState::Falling);
     }
     {
-        ASSERT_EQ(getElemState(*elem1), EBoardElemState::Falling);
+        ASSERT_EQ(GameUtils::GetElemState(elem1->entId), EBoardElemState::Falling);
     }
 
     board->finishElemsFailling();
 
     {
-        ASSERT_EQ(getElemState(*elem3), EBoardElemState::Landing);
+        ASSERT_EQ(GameUtils::GetElemState(elem3->entId), EBoardElemState::Landing);
         ASSERT_EQ(elem3->boardPt, Vec2i(0, 2));
     }
     {
-        ASSERT_EQ(getElemState(*elem2), EBoardElemState::Landing);
+        ASSERT_EQ(GameUtils::GetElemState(elem2->entId), EBoardElemState::Landing);
         ASSERT_EQ(elem2->boardPt, Vec2i(0, 1));
     }
     {
-        ASSERT_EQ(getElemState(*elem1), EBoardElemState::Landing);
+        ASSERT_EQ(GameUtils::GetElemState(elem1->entId), EBoardElemState::Landing);
         ASSERT_EQ(elem1->boardPt, Vec2i(0, 0));
     }
 }
@@ -270,12 +260,12 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     auto elem3 = board->getElem(Vec2i(0, 2));
     ASSERT_TRUE(elem3);
 
-    setElemState(*elem2, EBoardElemState::Destroyed);
+    GameUtils::SetElemState(elem2->entId, EBoardElemState::Destroyed);
     board->updateAfterRemoves();
 
     board->ET_onGameTick(0.5f);
 
-    setElemState(*elem1, EBoardElemState::Destroyed);
+    GameUtils::SetElemState(elem1->entId, EBoardElemState::Destroyed);
     board->updateAfterRemoves();
 
     Transform tm2;

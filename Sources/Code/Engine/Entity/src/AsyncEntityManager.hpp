@@ -3,7 +3,7 @@
 
 #include "Core/ETTasks.hpp"
 #include "Core/SystemLogic.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 
 #include <mutex>
 #include <thread>

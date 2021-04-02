@@ -147,7 +147,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
     std::shared_ptr<RenderFont> font(new RenderFont(fontHeight));
 
     std::shared_ptr<RenderTexture> fontAtlas;
-    ET_SendEventReturn(fontAtlas, &ETRenderTextureManger::ET_createTexture, ETextureType::R8);
+    ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureType::R8);
     if(!fontAtlas) {
         LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: %s", fontName);
         FT_Done_Face(fontFace);

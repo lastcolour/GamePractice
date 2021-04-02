@@ -18,7 +18,7 @@ GradientNode::~GradientNode() {
 void GradientNode::onInit() {
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     setShader("tex_vert_color");
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, ETextureType::RGBA);
+    ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createTexture, ETextureType::RGBA);
     if(tex) {
         tex->bind();
         tex->resize(Vec2i(2));

@@ -1,5 +1,5 @@
 #include "Game/Logics/GameBoardElemsPool.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 
 #include <cassert>
 

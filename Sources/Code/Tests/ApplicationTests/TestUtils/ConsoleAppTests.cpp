@@ -7,7 +7,7 @@
 #include "UI/UIModule.hpp"
 #include "Game/GameModule.hpp"
 #include "Platform/PlatformModule.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 
 namespace {
 

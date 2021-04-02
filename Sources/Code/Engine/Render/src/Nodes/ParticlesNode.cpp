@@ -12,7 +12,7 @@ ParticlesNode::~ParticlesNode() {
 
 void ParticlesNode::setConfig(const ParticlesEmitterRenderConfig& newRenderConf) {
     renderConfig = newRenderConf;
-    ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createFromImage,
+    ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createFromImage,
         renderConfig.texture.c_str(), ETextureType::RGBA);
 
     BlendMode mode;

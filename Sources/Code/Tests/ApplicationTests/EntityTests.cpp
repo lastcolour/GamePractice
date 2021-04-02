@@ -2,7 +2,7 @@
 #include "Entity.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Logics/UIAnimationSequence.hpp"

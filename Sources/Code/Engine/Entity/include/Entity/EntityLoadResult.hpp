@@ -1,7 +1,7 @@
 #ifndef __ENTITY_LOAD_RESULT_HPP__
 #define __ENTITY_LOAD_RESULT_HPP__
 
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 
 class EntityLoadResult {
 public:

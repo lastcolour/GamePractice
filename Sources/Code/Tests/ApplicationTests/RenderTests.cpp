@@ -8,7 +8,7 @@
 #include "RenderFont.hpp"
 #include "Platform/OpenGL.hpp"
 #include "Entity.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Logics/RenderImageLogic.hpp"
 #include "Nodes/NinePatchNode.hpp"
@@ -80,7 +80,7 @@ void RenderTests::SetUpTestCase() {
     IMAGE_BUFFER.reset(new ImageBuffer());
     IMAGE_BUFFER->setSizeAndClear(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
 
-    ET_SendEventReturn(RENDER_FB, &ETRenderTextureManger::ET_createFramebuffer, EFramebufferType::Color);
+    ET_SendEventReturn(RENDER_FB, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color);
     ASSERT_TRUE(RENDER_FB);
     ASSERT_TRUE(RENDER_FB->resize(IMAGE_BUFFER->getSize()));
 
@@ -403,11 +403,11 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
     Vec2i texSize(100);
     std::shared_ptr<RenderTexture> tex1;
-    ET_SendEventReturn(tex1, &ETRenderTextureManger::ET_createTexture, ETextureType::R8);
+    ET_SendEventReturn(tex1, &ETRenderTextureManager::ET_createTexture, ETextureType::R8);
     EXPECT_TRUE(tex1);
 
     std::shared_ptr<RenderTexture> tex2;
-    ET_SendEventReturn(tex2, &ETRenderTextureManger::ET_createTexture, ETextureType::R8);
+    ET_SendEventReturn(tex2, &ETRenderTextureManager::ET_createTexture, ETextureType::R8);
     EXPECT_TRUE(tex2);
 
     EXPECT_NE(tex1.get(), tex2.get());
@@ -651,7 +651,7 @@ TEST_F(RenderTests, CheckNinePatch) {
 
     std::shared_ptr<RenderTexture> tex;
     {
-        ET_SendEventReturn(tex, &ETRenderTextureManger::ET_createTexture, ETextureType::RGBA);
+        ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createTexture, ETextureType::RGBA);
         ASSERT_TRUE(tex);
 
         tex->bind();

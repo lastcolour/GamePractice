@@ -47,9 +47,14 @@ public:
     void ET_setUIElement(EntityId rootUIElementId) override;
     bool ET_isAllElemStatic() const override;
     void ET_resize(const AABB2D& newAabb) override;
+    void ET_updateBoardMatchState(BoardMatchState& boardMatchState) const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
+
+protected:
+
+    virtual BoardElement createNewElement(const Vec2i& boardPt) const;
 
 protected:
 
@@ -61,7 +66,6 @@ protected:
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
     void respawnDestroyedElems();
-    BoardElement createNewElement(const Vec2i& boardPt) const;
     void removeElem(BoardElement& elem);
 
 protected:

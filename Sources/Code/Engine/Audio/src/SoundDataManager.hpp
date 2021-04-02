@@ -1,5 +1,5 @@
-#ifndef __SOUND_DATA_MANGER_HPP__
-#define __SOUND_DATA_MANGER_HPP__
+#ifndef __SOUND_DATA_MANAGER_HPP__
+#define __SOUND_DATA_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
 #include "Audio/ETSoundManagers.hpp"
@@ -49,4 +49,4 @@ private:
     std::unordered_map<SoundProxy*, PendingStartInfo> pendingStarts;
 };
 
-#endif /* __SOUND_DATA_MANGER_HPP__ */
+#endif /* __SOUND_DATA_MANAGER_HPP__ */

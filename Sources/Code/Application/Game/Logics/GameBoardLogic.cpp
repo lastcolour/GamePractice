@@ -1,28 +1,11 @@
 #include "Game/Logics/GameBoardLogic.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
+#include "Game/Logics/MatchAlgorithm.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Entity/ETEntityManger.hpp"
-#include "Game/ETGameElem.hpp"
 #include "UI/ETUIViewPort.hpp"
 
 #include <cassert>
-
-namespace {
-
-EBoardElemState getElemState(EntityId elemId) {
-    EBoardElemState state = EBoardElemState::Destroyed;
-    ET_SendEventReturn(state, elemId, &ETGameBoardElem::ET_getElemState);
-    return state;
-}
-
-void setElemState(EntityId elemId, EBoardElemState state) {
-    ET_SendEvent(elemId, &ETGameBoardElem::ET_setElemState, state);
-}
-
-const int BACKGROUND_Z_INDEX = 0;
-const int ELEMENT_Z_INDEX = 2;
-
-} // namespace
 
 GameBoardLogic::GameBoardLogic() :
     boardBox(0),
@@ -101,9 +84,8 @@ BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) const {
         return elem;
     }
 
-    elem.boardPt = boardPt;
-    setElemBoardPos(elem, elem.boardPt);
-    setElemState(elem.entId, EBoardElemState::Static);
+    setElemBoardPos(elem, boardPt);
+    GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
     ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
     ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
 
@@ -121,7 +103,7 @@ void GameBoardLogic::init() {
     visualBox.setCenter(tm.pt.x, tm.pt.y);
     ET_resize(visualBox);
 
-    uiProxies.addItem(backgroundId, BACKGROUND_Z_INDEX);
+    uiProxies.addItem(backgroundId, GameUtils::BACKGROUND_Z_INDEX);
     for(int i = 0; i < boardSize.x; ++i) {
         std::vector<BoardElement> column;
         for(int j = 0; j < boardSize.y; ++j) {
@@ -129,7 +111,7 @@ void GameBoardLogic::init() {
             if(!elem.entId.isValid()) {
                 return;
             } else {
-                uiProxies.addItem(elem.entId, ELEMENT_Z_INDEX);
+                uiProxies.addItem(elem.entId, GameUtils::ELEMENT_Z_INDEX);
                 column.push_back(elem);
             }
         }
@@ -216,7 +198,7 @@ void GameBoardLogic::respawnDestroyedElems() {
         auto it = col.begin();
         while(it != col.end()) {
             auto elem = *it;
-            auto elemState = getElemState(elem.entId);
+            auto elemState = GameUtils::GetElemState(elem.entId);
             if(elemState != EBoardElemState::Destroyed) {
                 ++it;
             } else {
@@ -229,7 +211,7 @@ void GameBoardLogic::respawnDestroyedElems() {
                     LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");
                     return;
                 }
-                uiProxies.addItem(elem.entId, ELEMENT_Z_INDEX);
+                uiProxies.addItem(elem.entId, GameUtils::ELEMENT_Z_INDEX);
 
                 bool hasTopElem = false;
                 if(!col.empty()) {
@@ -247,7 +229,7 @@ void GameBoardLogic::respawnDestroyedElems() {
                 }
 
                 elem.boardPt.y = -1;
-                setElemState(elem.entId, EBoardElemState::Falling);
+                GameUtils::SetElemState(elem.entId, EBoardElemState::Falling);
                 col.push_back(elem);
             }
         }
@@ -281,11 +263,11 @@ void GameBoardLogic::ET_onGameTick(float dt) {
             int movePtY = i;
             auto& elem = col[i];
 
-            auto elemState = getElemState(elem.entId);
+            auto elemState = GameUtils::GetElemState(elem.entId);
             if(elemState == EBoardElemState::Static) {
                 if(elem.boardPt.y != movePtY) {
                     elemState = EBoardElemState::Falling;
-                    setElemState(elem.entId, elemState);
+                    GameUtils::SetElemState(elem.entId, elemState);
                 }
             }
             if(elemState != EBoardElemState::Static) {
@@ -318,7 +300,7 @@ void GameBoardLogic::ET_onGameTick(float dt) {
                 elem.vel = 0.f;
                 setElemBoardPos(elem, Vec2i(elem.boardPt.x, movePtY));
                 ET_SendEvent(elem.entId, &ETGameBoardElem::ET_triggerLand);
-                if(getElemState(elem.entId) == EBoardElemState::Static) {
+                if(GameUtils::GetElemState(elem.entId) == EBoardElemState::Static) {
                     --nonStaticElemCount;
                     isElemMatchRequested = true;
                 }
@@ -344,6 +326,18 @@ bool GameBoardLogic::ET_isAllElemStatic() const {
         return false;
     }
     return isBoardStatic;
+}
+
+void GameBoardLogic::ET_updateBoardMatchState(BoardMatchState& boardMatchState) const {
+    boardMatchState.setSize(boardSize);
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            auto elemState = GameUtils::GetElemState(elem.entId);
+            if(elemState == EBoardElemState::Static) {
+                boardMatchState.setElem(elem.boardPt, elem.entId);
+            }
+        }
+    }
 }
 
 const Vec2i& GameBoardLogic::ET_getBoardSize() const {

@@ -7,7 +7,7 @@
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "Platform/PlatformModule.hpp"
 #include "EditorModule.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Core/MemoryStream.hpp"
 #include "Core/ETAssets.hpp"

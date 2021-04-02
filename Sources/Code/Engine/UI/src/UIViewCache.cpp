@@ -1,7 +1,7 @@
 #include "UIViewCache.hpp"
 #include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "Entity/EntityLoadResult.hpp"
 #include "UI/ETUIBox.hpp"

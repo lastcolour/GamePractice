@@ -3,7 +3,7 @@
 #include "Core/ETAssets.hpp"
 #include "Core/ETApplication.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "Core/TimePoint.hpp"
 
 #include <cassert>

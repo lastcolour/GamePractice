@@ -39,7 +39,7 @@ void GameBoardElemLogic::ET_setElemState(EBoardElemState newState) {
     state = newState;
 }
 
-EBoardElemState GameBoardElemLogic::ET_getElemState() const {
+EBoardElemState GameBoardElemLogic::ET_getState() const {
     return state;
 }
 

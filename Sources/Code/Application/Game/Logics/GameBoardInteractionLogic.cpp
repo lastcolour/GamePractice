@@ -1,7 +1,7 @@
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/ETGameInterfaces.hpp"
-#include "Game/ETGameElem.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 #include <cassert>
 
@@ -157,8 +157,9 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
             drawPriority -= 1;
             ET_SendEvent(task.firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
 
-            ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Static);
-            ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Static);
+            GameUtils::SetElemState(task.firstId, EBoardElemState::Static);
+            GameUtils::SetElemState(task.secondId, EBoardElemState::Static);
+
             isNeedUpdateBoard = true;
             it = switchTasks.erase(it);
         } else {
@@ -186,11 +187,11 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
 
     task.firstId = firstId;
     ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getLocalTransform);
-    ET_SendEvent(task.firstId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Switching);
+    GameUtils::SetElemState(task.firstId, EBoardElemState::Switching);
 
     task.secondId = secondId;
     ET_SendEventReturn(task.secondTm, secondId, &ETEntity::ET_getLocalTransform);
-    ET_SendEvent(task.secondId, &ETGameBoardElem::ET_setElemState, EBoardElemState::Switching);
+    GameUtils::SetElemState(task.secondId, EBoardElemState::Switching);
 
     switchTasks.push_back(task);
 }

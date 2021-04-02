@@ -1,5 +1,5 @@
 #include "Game/Logics/GameBoardSpawner.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
 

@@ -1,6 +1,6 @@
 #include "Entity.hpp"
 #include "Entity/EntityLogic.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "Reflect/ETReflectInterfaces.hpp"
 #include "EntityRegistry.hpp"
 

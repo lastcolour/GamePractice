@@ -26,7 +26,7 @@ RenderGraph::~RenderGraph() {
 }
 
 void RenderGraph::init() {
-    ET_SendEventReturn(mainFBO, &ETRenderTextureManger::ET_createFramebuffer, EFramebufferType::Color_Depth_Stencil);
+    ET_SendEventReturn(mainFBO, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color_Depth_Stencil);
     if(!mainFBO) {
         LogError("[RenderGraph::init] Can't create main framebuffer");
         assert(false && "Can't create framebuffer");
@@ -39,7 +39,7 @@ void RenderGraph::init() {
 
     for(int i = 0; i < EXTRA_FBOS_COUNT; ++i) {
         std::shared_ptr<RenderFramebuffer> extraFBO;
-        ET_SendEventReturn(extraFBO, &ETRenderTextureManger::ET_createFramebuffer, EFramebufferType::Color);
+        ET_SendEventReturn(extraFBO, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color);
         if(!extraFBO) {
             LogError("[RenderGraph::init] Can't create extra framebuffer");
             assert(false && "Can't create extra framebuffer");

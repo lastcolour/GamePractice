@@ -7,7 +7,7 @@
 class Buffer;
 
 class RenderTextureManager : public SystemLogic,
-    public ETNode<ETRenderTextureManger> {
+    public ETNode<ETRenderTextureManager> {
 public:
 
     RenderTextureManager();
@@ -17,7 +17,7 @@ public:
     bool init() override;
     void deinit() override;
 
-    // ETRenderTextureManger
+    // ETRenderTextureManager
     std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) override;
     std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) override;
     std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) override;

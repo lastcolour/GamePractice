@@ -142,8 +142,12 @@ void OboeAudioSystem::ET_setEqualizer(ESoundGroup soundGroup, const EqualizerSet
     mixGraph.setEqualizer(soundGroup, eqSetup);
 }
 
-bool OboeAudioSystem::ET_addSoundCmd(SoundProxy* proxyNode, ESoundCommand cmd, float duration) {
-    return mixGraph.setSoundCmd(proxyNode, cmd, duration);
+bool OboeAudioSystem::ET_startSound(SoundProxy& proxyNode, float duration, bool isEvent) {
+    return mixGraph.startSound(proxyNode, duration, isEvent);
+}
+
+void OboeAudioSystem::ET_stopSound(SoundProxy& proxyNode, float duration, bool resetOffset) {
+    return mixGraph.stopSound(proxyNode, duration, resetOffset);
 }
 
 void OboeAudioSystem::ET_setMasterVolume(float newVolume) {

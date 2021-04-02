@@ -20,6 +20,9 @@ UIConfig::~UIConfig() {
 float UIConfig::getSizeOnGrid(float value) const {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+    if(viewPort.y == 0 || viewPort.x == 0) {
+        return value;
+    } 
 
     float r = baseRatio.x / static_cast<float>(baseRatio.y);
     float s = std::min(viewPort.y * r, static_cast<float>(viewPort.x)) / static_cast<float>(viewPort.x);

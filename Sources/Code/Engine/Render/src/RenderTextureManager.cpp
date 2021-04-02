@@ -42,12 +42,12 @@ RenderTextureManager::~RenderTextureManager() {
 }
 
 bool RenderTextureManager::init() {
-    ETNode<ETRenderTextureManger>::connect(getEntityId());
+    ETNode<ETRenderTextureManager>::connect(getEntityId());
     return true;
 }
 
 void RenderTextureManager::deinit() {
-    ETNode<ETRenderTextureManger>::disconnect();
+    ETNode<ETRenderTextureManager>::disconnect();
 }
 
 std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromImage(const char* imageName, ETextureType texType) {

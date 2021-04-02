@@ -5,11 +5,13 @@
 #include "Math/AABB.hpp"
 
 class ElementDescriptor;
+class BoardMatchState;
 
 struct ETGameBoard {
     virtual ~ETGameBoard() = default;
     virtual void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) = 0;
     virtual void ET_matchElements() = 0;
+    virtual void ET_updateBoardMatchState(BoardMatchState& boardMatchState) const = 0;
     virtual EntityId ET_getElemByPos(const Vec2i& pt) const = 0;
     virtual EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const = 0;
     virtual Vec2i ET_getElemBoardPos(EntityId elemEntId) const = 0;

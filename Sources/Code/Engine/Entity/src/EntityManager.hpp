@@ -2,7 +2,7 @@
 #define __ENTITY_MANAGER_HPP__
 
 #include "Core/SystemLogic.hpp"
-#include "Entity/ETEntityManger.hpp"
+#include "Entity/ETEntityManager.hpp"
 #include "EntityRegistry.hpp"
 
 class ClassInfo;

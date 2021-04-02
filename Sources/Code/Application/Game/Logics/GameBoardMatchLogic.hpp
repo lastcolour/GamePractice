@@ -5,14 +5,10 @@
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameElem.hpp"
 #include "UI/UIProxyContainer.hpp"
-
-#include <unordered_set>
+#include "Game/Logics/MatchAlgorithm.hpp"
 
 class GameBoardMatchLogic : public EntityLogic,
     public ETNode<ETGameBoardMatcher> {
-
-    using MatchElemCollectionT = std::unordered_set<EntityId>;
-
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -31,12 +27,11 @@ public:
 
 private:
 
-    bool isElementsMatch(EntityId firstId, EntityId secondId) const;
-    bool findMatchLine(const Vec2i& startPt, int lineLen, bool isHorizontal, MatchElemCollectionT& result);
     void triggerDestroyEffect(EntityId elemId, const Transform& emiTm);
 
 private:
 
+    BoardMatchState boardMatchState;
     UIProxyContainer uiProxies;
     EntityId redDestroyEffectId;
     EntityId blueDestroyEffectId;
@@ -44,8 +39,6 @@ private:
     EntityId greenDestroyEffectId;
     EntityId purpleDestroyEffectId;
     float destroyEffectScale;
-    int minLineLen;
-    int maxLineLen;
 };
 
 #endif /* __GAME_BOARD_MATCH_LOGIC_HPP__ */

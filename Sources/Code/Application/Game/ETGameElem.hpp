@@ -22,7 +22,7 @@ enum class EBoardElemType {
 struct ETGameBoardElem {
     virtual ~ETGameBoardElem() = default;
     virtual void ET_setElemState(EBoardElemState newState) = 0;
-    virtual EBoardElemState ET_getElemState() const = 0;
+    virtual EBoardElemState ET_getState() const = 0;
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy() = 0;
     virtual void ET_triggerLand() = 0;

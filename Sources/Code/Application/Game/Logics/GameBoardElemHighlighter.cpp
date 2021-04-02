@@ -1,12 +1,7 @@
 #include "Game/Logics/GameBoardElemHighlighter.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Entity/ETEntityManger.hpp"
-
-namespace {
-
-const int HIGHLIGHT_ELEM_Z_INDEX = 1;
-
-} // namespace
+#include "Entity/ETEntityManager.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {
@@ -70,7 +65,7 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     freeElem->duration = 0.f;
     freeElem->state = State::FadeOut;
 
-    uiProxies.addItem(freeElem->entId, HIGHLIGHT_ELEM_Z_INDEX);
+    uiProxies.addItem(freeElem->entId, GameUtils::HIGHLIGHT_ELEM_Z_INDEX);
 
     Transform tm;
     ET_SendEventReturn(tm.pt, &ETGameBoard::ET_getPosFromBoardPos, cellPt);
