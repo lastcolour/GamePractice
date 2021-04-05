@@ -27,7 +27,8 @@ public:
 
 private:
 
-    void triggerDestroyEffect(EntityId elemId, const Transform& emiTm);
+    void matchPattern(const PatternMatch& p, int cellSize);
+    void playDestroyEffect(EntityId elemId, int cellSize);
 
 private:
 

@@ -2,12 +2,15 @@
 #include "Reflect/EnumInfo.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/Logics/MatchAlgorithm.hpp"
 
 #include <cassert>
 
 GameBoardElemLogic::GameBoardElemLogic() :
     state(EBoardElemState::Static),
-    type(EBoardElemType::Yellow) {
+    type(EBoardElemType::Yellow),
+    mutateTo(EPatternType::None),
+    mutateAfterMergeCount(0) {
 }
 
 GameBoardElemLogic::~GameBoardElemLogic() {
@@ -91,13 +94,43 @@ void GameBoardElemLogic::ET_onLandPlayed() {
     assert(state == EBoardElemState::Landing && "Invalid elem state");
 
     state = EBoardElemState::Static;
-    ET_SendEvent(&ETGameBoard::ET_matchElements);
 }
 
 void GameBoardElemLogic::ET_onDestroyPlayed() {
     assert(state == EBoardElemState::Destroying && "Invalid elem state");
 
     state = EBoardElemState::Destroyed;
-    ET_SendEvent(&ETGameBoard::ET_matchElements);
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
     ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
+}
+
+void GameBoardElemLogic::ET_setMutateAfterMerge(EPatternType pattern, int waitMergeCount) {
+    assert(state == EBoardElemState::Static && "Invalid elem state");
+
+    state = EBoardElemState::Mutating;
+    mutateAfterMergeCount = waitMergeCount;
+}
+
+void GameBoardElemLogic::ET_triggerMergeTo(EntityId mergeTargetId) {
+    assert(state == EBoardElemState::Static && "Invalid elem state");
+
+    state = EBoardElemState::Merging;
+    ET_SendEvent(&ETGameBoardElemMergeAnimationManager::ET_createMergeTask,
+        getEntityId(), mergeTargetId);
+}
+
+void GameBoardElemLogic::ET_onMergeDone(EntityId elemId) {
+    if(state == EBoardElemState::Mutating) {
+        mutateAfterMergeCount -= 1;
+        if(mutateAfterMergeCount == 0) {
+            state = EBoardElemState::Destroying;
+            ET_onDestroyPlayed();
+        }
+    } else if(state == EBoardElemState::Merging) {
+        state = EBoardElemState::Destroying;
+        ET_onDestroyPlayed();
+        ET_SendEvent(elemId, &ETGameBoardElem::ET_onMergeDone, elemId);
+    } else {
+        assert(false && "Invalid elem state");
+    }
 }

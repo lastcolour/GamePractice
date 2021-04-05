@@ -20,7 +20,7 @@ bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
     shift.x = UI::ConvertValueFromGrid(static_cast<float>(diff.y));
     shift.y = UI::ConvertValueFromGrid(static_cast<float>(diff.x));
 
-    if(shift.getLenght() > MOVE_AWAY_GRID_LEN) {
+    if(shift.lenght() > MOVE_AWAY_GRID_LEN) {
         return true;
     }
 

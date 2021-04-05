@@ -73,7 +73,7 @@ void simulateSimpleField(const GravityField& field, const Transform& tm, int act
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         Vec2 dir = p.pt - fieldCenter;
-        if(field.radius > 0.f && dir.getLenghtSq() > radSq) {
+        if(field.radius > 0.f && dir.lenghtSq() > radSq) {
             continue;
         }
         p.acc += dtAcc;
@@ -88,7 +88,7 @@ void simulateVortexField(const GravityField& field, const Transform& tm, int act
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         Vec2 dir = fieldCenter - p.pt;
-        if(field.radius > 0.f && dir.getLenghtSq() > radSq) {
+        if(field.radius > 0.f && dir.lenghtSq() > radSq) {
             continue;
         }
         dir.normalize();

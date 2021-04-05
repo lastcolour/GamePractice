@@ -7,6 +7,16 @@
 
 #include <cassert>
 
+void GameBoardLogic::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
+        classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
+        classInfo->addField("fallAcceleration", &GameBoardLogic::moveAccel);
+        classInfo->addField("size", &GameBoardLogic::boardSize);
+        classInfo->addField("cellScale", &GameBoardLogic::cellScale);
+        classInfo->addField("backgroundId", &GameBoardLogic::backgroundId);
+    }
+}
+
 GameBoardLogic::GameBoardLogic() :
     boardBox(0),
     boardSize(0),
@@ -23,16 +33,6 @@ GameBoardLogic::GameBoardLogic() :
 GameBoardLogic::~GameBoardLogic() {
 }
 
-void GameBoardLogic::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
-        classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
-        classInfo->addField("fallAcceleration", &GameBoardLogic::moveAccel);
-        classInfo->addField("size", &GameBoardLogic::boardSize);
-        classInfo->addField("cellScale", &GameBoardLogic::cellScale);
-        classInfo->addField("backgroundId", &GameBoardLogic::backgroundId);
-    }
-}
-
 void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) {
     auto firstElem = getElem(firstId);
     auto secondElem = getElem(secondId);
@@ -43,10 +43,6 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
     std::swap(firstElem->entId, secondElem->entId);
     setElemBoardPos(*firstElem, firstElem->boardPt);
     setElemBoardPos(*secondElem, secondElem->boardPt);
-}
-
-void GameBoardLogic::ET_matchElements() {
-    isElemMatchRequested = true;
 }
 
 EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
@@ -273,12 +269,15 @@ void GameBoardLogic::ET_onGameTick(float dt) {
             if(elemState != EBoardElemState::Static) {
                 ++nonStaticElemCount;
             }
-            if(elemState != EBoardElemState::Falling) {
-                continue;
-            }
 
             Transform tm;
             ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
+
+            if(elemState != EBoardElemState::Falling) {
+                prevVel = 0.f;
+                prevYPos = tm.pt.y;
+                continue;
+            }
 
             elem.vel += dt * moveAccel;
             tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;

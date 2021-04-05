@@ -3,14 +3,14 @@
 
 #include "Game/ETGameElem.hpp"
 
-enum class EPatterType {
-    HLine = 0,
+enum class EPatternType {
+    None = 0,
+    HLine,
     VLine,
     HRocket,
     VRocket,
     Bomb,
-    Star,
-    Remained
+    Star
 };
 
 struct MatchPoints {
@@ -20,7 +20,7 @@ struct MatchPoints {
 };
 
 struct PatternMatch {
-    EPatterType patterType;
+    EPatternType patternType;
     EBoardElemType elemsType;
     std::vector<const MatchPoints*> points;
 };

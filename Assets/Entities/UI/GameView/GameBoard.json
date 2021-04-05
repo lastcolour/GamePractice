@@ -190,6 +190,17 @@
         "fadeOutDuration": 1.0,
         "cellScale": 0.800000011920929
       }
+    },
+    {
+      "type": "BoardElemMergeAnimation",
+      "id": 7,
+      "data": {
+        "mergeSound": {
+          "event": "getProgressionStar_01"
+        },
+        "startVel": 0.10000000149011612,
+        "acc": 0.0010000000474974513
+      }
     }
   ]
 }

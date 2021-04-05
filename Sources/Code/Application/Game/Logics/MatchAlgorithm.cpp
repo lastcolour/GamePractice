@@ -156,28 +156,28 @@ PatternMatch findLrightDownBomb(int x, int y, const BoardMatchState& board) {
 
 int calcPatternScore(const PatternMatch& p) {
     int score = 0;
-    switch(p.patterType) {
-        case EPatterType::HLine: {
+    switch(p.patternType) {
+        case EPatternType::HLine: {
             score = 1;
             break;
         }
-        case EPatterType::VLine: {
+        case EPatternType::VLine: {
             score = 1;
             break;
         }
-        case EPatterType::HRocket: {
+        case EPatternType::HRocket: {
             score = 10;
             break;
         }
-        case EPatterType::VRocket: {
+        case EPatternType::VRocket: {
             score = 10;
             break;
         }
-        case EPatterType::Bomb: {
+        case EPatternType::Bomb: {
             score = 100;
             break;
         }
-        case EPatterType::Star: {
+        case EPatternType::Star: {
             score = 1000;
             break;
         }
@@ -280,7 +280,7 @@ std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>&
 
     if(!remainingPoints.empty()) {
         PatternMatch p;
-        p.patterType = EPatterType::Remained;
+        p.patternType = EPatternType::None;
         p.elemsType = EBoardElemType::None;
         for(auto& elem : remainingPoints) {
             p.points.push_back(elem);
@@ -353,7 +353,7 @@ std::vector<PatternMatch> FindAllMatchPatterns(const BoardMatchState& board) {
                 auto p = findHLine(i, j, 3, board);
                 if(!p.points.empty()) {
                     hasSimpleLine = true;
-                    p.patterType = EPatterType::HLine;
+                    p.patternType = EPatternType::HLine;
                     allMatches.emplace_back(p);
                 }
             }
@@ -361,7 +361,7 @@ std::vector<PatternMatch> FindAllMatchPatterns(const BoardMatchState& board) {
                 auto p = findVLine(i, j, 3, board);
                 if(!p.points.empty()) {
                     hasSimpleLine = true;
-                    p.patterType = EPatterType::VLine;
+                    p.patternType = EPatternType::VLine;
                     allMatches.emplace_back(p);
                 }
             }
@@ -371,70 +371,70 @@ std::vector<PatternMatch> FindAllMatchPatterns(const BoardMatchState& board) {
             {
                 auto p = findHLine(i, j, 4, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::HRocket;
+                    p.patternType = EPatternType::HRocket;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findVLine(i, j, 4, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::VRocket;
+                    p.patternType = EPatternType::VRocket;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findTupBomb(i, j, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Bomb;
+                    p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findTdownBomb(i, j, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Bomb;
+                    p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findLleftUpBomb(i, j, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Bomb;
+                    p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findLrightUpBomb(i, j, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Bomb;
+                    p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findLleftDownBomb(i, j, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Bomb;
+                    p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findLrightDownBomb(i, j, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Bomb;
+                    p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findHLine(i, j, 5, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Star;
+                    p.patternType = EPatternType::Star;
                     allMatches.emplace_back(p);
                 }
             }
             {
                 auto p = findVLine(i, j, 5, board);
                 if(!p.points.empty()) {
-                    p.patterType = EPatterType::Star;
+                    p.patternType = EPatternType::Star;
                     allMatches.emplace_back(p);
                 }
             }

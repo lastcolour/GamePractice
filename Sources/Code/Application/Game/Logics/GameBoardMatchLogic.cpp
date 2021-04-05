@@ -45,20 +45,33 @@ void GameBoardMatchLogic::ET_destoryMatchedElems() {
 
     auto patterns = FindAllMatchPatterns(boardMatchState);
     for(auto& p : patterns) {
-        for(auto& elem : p.points) {
-            ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy);
-
-            Transform tm;
-            ET_SendEventReturn(tm, elem->entId, &ETEntity::ET_getTransform);
-
-            tm.scale = Vec3(cellSize * destroyEffectScale);
-
-            triggerDestroyEffect(elem->entId, tm);
-        }
+        matchPattern(p, cellSize);
     }
 }
 
-void GameBoardMatchLogic::triggerDestroyEffect(EntityId elemId, const Transform& emiTm) {
+void GameBoardMatchLogic::matchPattern(const PatternMatch& p, int cellSize) {
+    if(p.patternType == EPatternType::HLine || p.patternType == EPatternType::VLine || p.patternType == EPatternType::None) {
+        for(auto& elem : p.points) {
+            ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy);
+            playDestroyEffect(elem->entId, cellSize);
+        }
+    } else {
+        auto midElem = p.points[1];
+        for(auto& elem : p.points) {
+            if(elem != midElem) {
+                ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerMergeTo, midElem->entId);
+            }
+        }
+        ET_SendEvent(midElem->entId, &ETGameBoardElem::ET_setMutateAfterMerge, p.patternType,
+            static_cast<int>(p.points.size() - 1));
+    }
+}
+
+void GameBoardMatchLogic::playDestroyEffect(EntityId elemId, int cellSize) {
+    Transform tm;
+    ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
+    tm.scale = Vec3(cellSize * destroyEffectScale);
+
     EBoardElemType elemType = EBoardElemType::None;
     ET_SendEventReturn(elemType, elemId, &ETGameBoardElem::ET_getType);
 
@@ -100,5 +113,5 @@ void GameBoardMatchLogic::triggerDestroyEffect(EntityId elemId, const Transform&
         return;
     }
 
-    ET_SendEvent(effectId, &ETParticlesSystem::ET_emitWithTm, emiTm);
+    ET_SendEvent(effectId, &ETParticlesSystem::ET_emitWithTm, tm);
 }

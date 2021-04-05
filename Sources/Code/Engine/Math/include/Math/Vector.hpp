@@ -61,17 +61,17 @@ public:
 
     const T* getPtr() const { return &x; }
 
-    T getLenghtSq() const { return x * x + y * y; }
+    T lenghtSq() const { return x * x + y * y; }
 
-    T getLenght() const { return static_cast<T>(static_cast<float>(sqrt(getLenghtSq()))); }
+    T lenght() const { return static_cast<T>(static_cast<float>(sqrt(lenghtSq()))); }
 
-    Vector2<T> getNormilized() const {
-        const auto len = getLenght();
+    Vector2<T> getNormalized() const {
+        const auto len = lenght();
         return Vector2<T>(x / len, y / len);
     }
 
     void normalize() {
-        *this = getNormilized();
+        *this = getNormalized();
     }
 
     void scale(const Vector2& v) {
@@ -159,17 +159,17 @@ public:
 
     const T* getPtr() const { return &x; }
 
-    T getLenghtSq() const { return x * x + y * y + z * z; }
+    T lenghtSq() const { return x * x + y * y + z * z; }
 
-    T getLenght() const { return static_cast<T>(static_cast<float>(sqrt(getLenghtSq()))); }
+    T lenght() const { return static_cast<T>(static_cast<float>(sqrt(lenghtSq()))); }
 
-    Vector3<T> getNormilized() const {
-        const auto len = getLenght();
+    Vector3<T> getNormalized() const {
+        const auto len = lenght();
         return Vector3<T>(x / len, y / len, z / len);
     }
 
     void normalize() {
-        *this = getNormilized();
+        *this = getNormalized();
     }
 
     void scale(const Vector3& v) {
@@ -276,17 +276,17 @@ public:
 
     const T* getPtr() const { return &x; }
 
-    T getLenghtSq() const { return x * x + y * y + z * z + w * w; }
+    T lenghtSq() const { return x * x + y * y + z * z + w * w; }
 
-    T getLenght() const { return static_cast<T>(static_cast<float>(sqrt(getLenghtSq()))); }
+    T lenght() const { return static_cast<T>(static_cast<float>(sqrt(lenghtSq()))); }
 
-    Vector4<T> getNormilized() const {
-        const auto len = getLenght();
+    Vector4<T> getNormalized() const {
+        const auto len = lenght();
         return Vector4(x / len, y / len, z / len, w / len);
     }
 
     void normalize() {
-        *this = getNormilized();
+        *this = getNormalized();
     }
 
     void scale(const Vector4& v) {

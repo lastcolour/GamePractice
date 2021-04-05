@@ -26,16 +26,21 @@ public:
     EBoardElemType ET_getType() const override;
     void ET_triggerDestroy() override;
     void ET_triggerLand() override;
+    void ET_setMutateAfterMerge(EPatternType pattern, int waitMergeCount) override;
+    void ET_triggerMergeTo(EntityId mergeTargetId) override;
     void ET_setSelected(bool flag) override;
     bool ET_canMatch() const override;
     bool ET_canSwitch() const override;
     void ET_onLandPlayed() override;
     void ET_onDestroyPlayed() override;
+    void ET_onMergeDone(EntityId elemId) override;
 
 private:
 
     EBoardElemState state;
     EBoardElemType type;
+    EPatternType mutateTo;
+    int mutateAfterMergeCount;
 };
 
 #endif /* __GAME_BOARD_ELEMENT_LOGIC_HPP__ */

@@ -35,7 +35,6 @@ public:
 
     // ETGameBoard
     void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) override;
-    void ET_matchElements() override;
     void ET_setBlockElemMatching(bool flag) override;
     EntityId ET_getElemByPos(const Vec2i& pt) const override;
     EntityId ET_getElemByBoardPos(const Vec2i& boardPt) const override;

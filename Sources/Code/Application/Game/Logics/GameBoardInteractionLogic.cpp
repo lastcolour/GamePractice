@@ -66,7 +66,7 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
 
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
-    if(moveDir.getLenght() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
+    if(moveDir.lenght() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
         return;
     }
     EntityId nextElemId;
@@ -145,7 +145,6 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
         ET_SendEvent(task.secondId, &ETEntity::ET_setLocalTransform, newTm);
     }
 
-    bool isNeedUpdateBoard = false;
     auto it = switchTasks.begin();
     while(it != switchTasks.end()) {
         auto& task = *it;
@@ -160,15 +159,10 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
             GameUtils::SetElemState(task.firstId, EBoardElemState::Static);
             GameUtils::SetElemState(task.secondId, EBoardElemState::Static);
 
-            isNeedUpdateBoard = true;
             it = switchTasks.erase(it);
         } else {
             ++it;
         }
-    }
-
-    if(isNeedUpdateBoard) {
-        ET_SendEvent(&ETGameBoard::ET_matchElements);
     }
 }
 

@@ -29,8 +29,8 @@ public:
 
     EulerAngles getEulerAngels() const;
     void getAxisAngle(Vec3& outAxis, float& outAngle) const;
-    float getLenght() const;
-    float getLenghtSq() const;
+    float lenght() const;
+    float lenghtSq() const;
     Quaternion getNormalized() const;
     Quaternion getInversed() const;
     Quaternion getConjugated() const;

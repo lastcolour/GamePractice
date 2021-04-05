@@ -177,14 +177,14 @@ TEST_F(VectorTests, Vec2_CheckMethods) {
     {
         Vec2 v(3.f, 4.f);
 
-        EXPECT_FLOAT_EQ(v.getLenghtSq(), 25.f);
-        EXPECT_FLOAT_EQ(v.getLenght(), 5.f);
+        EXPECT_FLOAT_EQ(v.lenghtSq(), 25.f);
+        EXPECT_FLOAT_EQ(v.lenght(), 5.f);
     }
 
     {
         Vec2 v1(2.f, 2.f);
 
-        Vec2 v2 = v1.getNormilized();
+        Vec2 v2 = v1.getNormalized();
 
         EXPECT_FLOAT_EQ(v2.x, 0.70710677f);
         EXPECT_FLOAT_EQ(v2.y, 0.70710677f);
@@ -430,14 +430,14 @@ TEST_F(VectorTests, Vec3_CheckMethods) {
     {
         Vec3 v(3.f, 4.f, 0.f);
 
-        EXPECT_FLOAT_EQ(v.getLenghtSq(), 25.f);
-        EXPECT_FLOAT_EQ(v.getLenght(), 5.f);
+        EXPECT_FLOAT_EQ(v.lenghtSq(), 25.f);
+        EXPECT_FLOAT_EQ(v.lenght(), 5.f);
     }
 
     {
         Vec3 v1(2.f, 2.f, 2.f);
 
-        Vec3 v2 = v1.getNormilized();
+        Vec3 v2 = v1.getNormalized();
 
         EXPECT_FLOAT_EQ(v2.x, 0.57735026f);
         EXPECT_FLOAT_EQ(v2.y, 0.57735026f);
@@ -726,14 +726,14 @@ TEST_F(VectorTests, Vec4_CheckMethods) {
     {
         Vec4 v(3.f, 4.f, 0.f, 0.f);
 
-        EXPECT_FLOAT_EQ(v.getLenghtSq(), 25.f);
-        EXPECT_FLOAT_EQ(v.getLenght(), 5.f);
+        EXPECT_FLOAT_EQ(v.lenghtSq(), 25.f);
+        EXPECT_FLOAT_EQ(v.lenght(), 5.f);
     }
 
     {
         Vec4 v1(2.f);
 
-        Vec4 v2 = v1.getNormilized();
+        Vec4 v2 = v1.getNormalized();
 
         EXPECT_FLOAT_EQ(v2.x, 0.5f);
         EXPECT_FLOAT_EQ(v2.y, 0.5f);

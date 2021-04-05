@@ -1,11 +1,15 @@
 #ifndef __ET_GAME_ELEM_HPP__
 #define __ET_GAME_ELEM_HPP__
 
+enum class EPatternType;
+
 enum class EBoardElemState {
     Static = 0,
     Falling,
     Switching,
     Landing,
+    Merging,
+    Mutating,
     Destroying,
     Destroyed
 };
@@ -26,11 +30,14 @@ struct ETGameBoardElem {
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy() = 0;
     virtual void ET_triggerLand() = 0;
+    virtual void ET_setMutateAfterMerge(EPatternType pattern, int waitMergeCount) = 0;
+    virtual void ET_triggerMergeTo(EntityId mergeTargetId) = 0;
     virtual void ET_setSelected(bool flag) = 0;
     virtual bool ET_canMatch() const = 0;
     virtual bool ET_canSwitch() const = 0;
     virtual void ET_onLandPlayed() = 0;
     virtual void ET_onDestroyPlayed() = 0;
+    virtual void ET_onMergeDone(EntityId elemId) = 0;
 };
 
 struct ETBoardElemDestroyAnimation {
@@ -47,6 +54,11 @@ struct ETGameBoardElemSelectAnimation {
 struct ETGameBoardElemLandAnimation {
     virtual ~ETGameBoardElemLandAnimation() = default;
     virtual void ET_playLand() = 0;
+};
+
+struct ETGameBoardElemMergeAnimationManager {
+    virtual ~ETGameBoardElemMergeAnimationManager() = default;
+    virtual void ET_createMergeTask(EntityId fromId, EntityId toId) = 0;
 };
 
 #endif /* __ET_GAME_ELEM_HPP__ */
