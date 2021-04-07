@@ -198,8 +198,8 @@
         "mergeSound": {
           "event": "getProgressionStar_01"
         },
-        "startVel": 0.10000000149011612,
-        "acc": 0.0010000000474974513
+        "startVel": 1.0,
+        "acc": 2.0
       }
     }
   ]

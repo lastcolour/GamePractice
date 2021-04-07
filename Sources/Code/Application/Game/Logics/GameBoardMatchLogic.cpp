@@ -36,17 +36,23 @@ void GameBoardMatchLogic::init() {
 void GameBoardMatchLogic::deinit() {
 }
 
-void GameBoardMatchLogic::ET_destoryMatchedElems() {
+bool GameBoardMatchLogic::ET_matchElements() {
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
 
     boardMatchState.reset();
-    ET_SendEvent(&ETGameBoard::ET_updateBoardMatchState, boardMatchState);
+    ET_SendEvent(&ETGameBoard::ET_readBoardMatchState, boardMatchState);
 
     auto patterns = FindAllMatchPatterns(boardMatchState);
+    if(patterns.empty()) {
+        return false;
+    }
+
     for(auto& p : patterns) {
         matchPattern(p, cellSize);
     }
+
+    return true;
 }
 
 void GameBoardMatchLogic::matchPattern(const PatternMatch& p, int cellSize) {

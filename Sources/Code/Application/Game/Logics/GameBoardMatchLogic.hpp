@@ -23,7 +23,7 @@ public:
     void deinit() override;
 
     // ETGameBoardMatcher
-    void ET_destoryMatchedElems() override;
+    bool ET_matchElements() override;
 
 private:
 

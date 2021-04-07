@@ -59,6 +59,8 @@ struct ETGameBoardElemLandAnimation {
 struct ETGameBoardElemMergeAnimationManager {
     virtual ~ETGameBoardElemMergeAnimationManager() = default;
     virtual void ET_createMergeTask(EntityId fromId, EntityId toId) = 0;
+    virtual bool ET_hasMergeTasks() const = 0;
+    virtual void ET_updateMergeTasks(float dt) = 0;
 };
 
 #endif /* __ET_GAME_ELEM_HPP__ */

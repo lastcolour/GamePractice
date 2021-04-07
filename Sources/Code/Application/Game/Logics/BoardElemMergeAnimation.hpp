@@ -2,13 +2,11 @@
 #define __BOARD_ELEM_MERGE_ANIMATION_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Game/ETGameTimer.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Math/Random.hpp"
 #include "Audio/SoundEvent.hpp"
 
 class BoardElemMergeAnimation : public EntityLogic,
-    public ETNode<ETGameTimerEvents>,
     public ETNode<ETGameBoardElemMergeAnimationManager> {
 public:
 
@@ -23,11 +21,10 @@ public:
     void init() override;
     void deinit() override;
 
-    // ETGameTimerEvents
-    void ET_onGameTick(float dt) override;
-
     // ETGameBoardElemMergeAnimationManager
     void ET_createMergeTask(EntityId fromId, EntityId toId) override;
+    bool ET_hasMergeTasks() const override;
+    void ET_updateMergeTasks(float dt) override;
 
 private:
 

@@ -5,6 +5,7 @@
 #include "Math/AABB.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameTimer.hpp"
+#include "Game/Logics/GameBoardFSM.hpp"
 #include "UI/UIProxyContainer.hpp"
 
 struct BoardElement {
@@ -46,7 +47,7 @@ public:
     void ET_setUIElement(EntityId rootUIElementId) override;
     bool ET_isAllElemStatic() const override;
     void ET_resize(const AABB2D& newAabb) override;
-    void ET_updateBoardMatchState(BoardMatchState& boardMatchState) const override;
+    void ET_readBoardMatchState(BoardMatchState& boardMatchState) const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -64,8 +65,11 @@ protected:
     const BoardElement* getElem(const Vec2i& boardPt) const;
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
-    void respawnDestroyedElems();
     void removeElem(BoardElement& elem);
+
+    void updateFSMState();
+    void respawnDestroyedElems();
+    void processMovingElems(float dt);
 
 protected:
 
@@ -79,9 +83,7 @@ protected:
     float moveSpeed;
     float moveAccel;
     int cellSize;
-    bool isElemMatchRequested;
-    bool isBoardStatic;
-    bool isElemMatchingBlocked;
+    GameBoardFSM gameBoardFSM;
 };
 
 #endif /* __GAME_BOARD_LOGIC_HPP__ */

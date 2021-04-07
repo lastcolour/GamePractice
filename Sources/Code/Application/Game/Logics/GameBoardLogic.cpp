@@ -24,10 +24,7 @@ GameBoardLogic::GameBoardLogic() :
     cellScale(0.9f),
     moveSpeed(1.f),
     moveAccel(4.f),
-    cellSize(0),
-    isElemMatchRequested(false),
-    isBoardStatic(true),
-    isElemMatchingBlocked(false) {
+    cellSize(0) {
 }
 
 GameBoardLogic::~GameBoardLogic() {
@@ -43,6 +40,8 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
     std::swap(firstElem->entId, secondElem->entId);
     setElemBoardPos(*firstElem, firstElem->boardPt);
     setElemBoardPos(*secondElem, secondElem->boardPt);
+
+    gameBoardFSM.getState().isMatchRequested = true;
 }
 
 EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
@@ -186,6 +185,8 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
 }
 
 void GameBoardLogic::respawnDestroyedElems() {
+    gameBoardFSM.getState().isRespawnRequested = false;
+
     Transform tm;
     auto pos = ET_getPosFromBoardPos(Vec2i(0, boardSize.y - 1));
     float topPosY = pos.y;
@@ -195,9 +196,7 @@ void GameBoardLogic::respawnDestroyedElems() {
         while(it != col.end()) {
             auto elem = *it;
             auto elemState = GameUtils::GetElemState(elem.entId);
-            if(elemState != EBoardElemState::Destroyed) {
-                ++it;
-            } else {
+            if(elemState == EBoardElemState::Destroyed) {
                 uiProxies.removeItem(it->entId);
                 it = col.erase(it);
 
@@ -225,8 +224,18 @@ void GameBoardLogic::respawnDestroyedElems() {
                 }
 
                 elem.boardPt.y = -1;
-                GameUtils::SetElemState(elem.entId, EBoardElemState::Falling);
+                elemState = EBoardElemState::Falling;
+                GameUtils::SetElemState(elem.entId, elemState);
                 col.push_back(elem);
+            } else {
+                ++it;
+            }
+
+            if(elemState != EBoardElemState::Static) {
+                gameBoardFSM.getState().isRespawnRequested = true;
+                if(elemState == EBoardElemState::Falling) {
+                    gameBoardFSM.getState().hasMovingElems = true;
+                }
             }
         }
     }
@@ -246,88 +255,60 @@ Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) c
     return resPt;
 }
 
+void GameBoardLogic::updateFSMState() {
+    auto& state = gameBoardFSM.getState();
+    ET_SendEventReturn(state.hasMergingElems, &ETGameBoardElemMergeAnimationManager::ET_hasMergeTasks);
+}
+
 void GameBoardLogic::ET_onGameTick(float dt) {
-    if(!isBoardStatic) {
-        respawnDestroyedElems();
-    }
+    updateFSMState();
 
-    int nonStaticElemCount = 0;
-    for(auto& col : columns) {
-        float prevYPos = -std::numeric_limits<float>::max();
-        float prevVel = -1.f;
-        for(int i = 0, sz = static_cast<int>(col.size()); i < sz; ++i) {
-            int movePtY = i;
-            auto& elem = col[i];
-
-            auto elemState = GameUtils::GetElemState(elem.entId);
-            if(elemState == EBoardElemState::Static) {
-                if(elem.boardPt.y != movePtY) {
-                    elemState = EBoardElemState::Falling;
-                    GameUtils::SetElemState(elem.entId, elemState);
-                }
+    auto pass = EGameBoardUpdatePass::Static;
+    auto hasUpdatePass = gameBoardFSM.queryPass(pass);
+    while(hasUpdatePass) {
+        switch(pass) {
+            case EGameBoardUpdatePass::Move: {
+                gameBoardFSM.getState().isMatchRequested = true;
+                processMovingElems(dt);
+                break;
             }
-            if(elemState != EBoardElemState::Static) {
-                ++nonStaticElemCount;
+            case EGameBoardUpdatePass::Merge: {
+                gameBoardFSM.getState().isMatchRequested = true;
+                gameBoardFSM.getState().isRespawnRequested = true;
+                ET_SendEvent(&ETGameBoardElemMergeAnimationManager::ET_updateMergeTasks, dt);
+                break;
             }
-
-            Transform tm;
-            ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
-
-            if(elemState != EBoardElemState::Falling) {
-                prevVel = 0.f;
-                prevYPos = tm.pt.y;
-                continue;
+            case EGameBoardUpdatePass::Trigger: {
+                break;
             }
-
-            elem.vel += dt * moveAccel;
-            tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
-
-            Vec3 desirePt = ET_getPosFromBoardPos(Vec2i(elem.boardPt.x, movePtY));
-            bool reachDestination = tm.pt.y <= desirePt.y;
-
-            if(tm.pt.y < (prevYPos + cellSize)) {
-                tm.pt.y = prevYPos + cellSize;
-                elem.vel = prevVel * 0.9f;
+            case EGameBoardUpdatePass::Match: {
+                gameBoardFSM.getState().isMatchRequested = false;
+                bool hasAnyMatches = false;
+                ET_SendEventReturn(hasAnyMatches, &ETGameBoardMatcher::ET_matchElements);
+                gameBoardFSM.getState().isRespawnRequested = hasAnyMatches;
+                break;
             }
-
-            prevYPos = tm.pt.y;
-            prevVel = elem.vel;
-
-            if(!reachDestination) {
-                ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-            } else {
-                elem.vel = 0.f;
-                setElemBoardPos(elem, Vec2i(elem.boardPt.x, movePtY));
-                ET_SendEvent(elem.entId, &ETGameBoardElem::ET_triggerLand);
-                if(GameUtils::GetElemState(elem.entId) == EBoardElemState::Static) {
-                    --nonStaticElemCount;
-                    isElemMatchRequested = true;
-                }
+            case EGameBoardUpdatePass::Respawn: {
+                respawnDestroyedElems();
+                break;
+            }
+            case EGameBoardUpdatePass::Static: {
+                ET_SendEvent(&ETGameBoardEvents::ET_onAllElemsStatic);
+                break;
+            }
+            default: {
+                assert(false && "Invalid update pass");
             }
         }
-    }
-
-    isBoardStatic = nonStaticElemCount == 0;
-    if(isBoardStatic) {
-        if(isElemMatchRequested && !isElemMatchingBlocked) {
-            isElemMatchRequested = false;
-            isBoardStatic = false;
-            ET_SendEvent(&ETGameBoardMatcher::ET_destoryMatchedElems);
-        }
-    }
-    if(isBoardStatic) {
-        ET_SendEvent(&ETGameBoardEvents::ET_onAllElemsStatic);
+        hasUpdatePass = gameBoardFSM.querySubPass(pass);
     }
 }
 
 bool GameBoardLogic::ET_isAllElemStatic() const {
-    if(isElemMatchRequested) {
-        return false;
-    }
-    return isBoardStatic;
+    return !gameBoardFSM.canQueryPass();
 }
 
-void GameBoardLogic::ET_updateBoardMatchState(BoardMatchState& boardMatchState) const {
+void GameBoardLogic::ET_readBoardMatchState(BoardMatchState& boardMatchState) const {
     boardMatchState.setSize(boardSize);
     for(auto& col : columns) {
         for(auto& elem : col) {
@@ -348,7 +329,7 @@ const AABB2Di& GameBoardLogic::ET_getBoardBox() const {
 }
 
 void GameBoardLogic::ET_setBlockElemMatching(bool flag) {
-    isElemMatchingBlocked = flag;
+    gameBoardFSM.getState().isMatchBlocked = flag;
 }
 
 void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
@@ -381,4 +362,64 @@ void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
 
 void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
     uiProxies.setUIParent(rootUIElementId);
+}
+
+void GameBoardLogic::processMovingElems(float dt) {
+    int movingElemsCount = 0;
+    for(auto& col : columns) {
+        float prevYPos = -std::numeric_limits<float>::max();
+        float prevVel = -1.f;
+        for(int i = 0, sz = static_cast<int>(col.size()); i < sz; ++i) {
+            int movePtY = i;
+            auto& elem = col[i];
+
+            auto elemState = GameUtils::GetElemState(elem.entId);
+            if(elemState == EBoardElemState::Static) {
+                if(elem.boardPt.y != movePtY) {
+                    elemState = EBoardElemState::Falling;
+                    GameUtils::SetElemState(elem.entId, elemState);
+                }
+            }
+            if(elemState != EBoardElemState::Static) {
+                ++movingElemsCount;
+            }
+
+            Transform tm;
+            ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
+
+            if(elemState != EBoardElemState::Falling) {
+                prevVel = 0.f;
+                prevYPos = tm.pt.y;
+                continue;
+            }
+
+            elem.vel += dt * moveAccel;
+            tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
+
+            Vec3 desirePt = ET_getPosFromBoardPos(Vec2i(elem.boardPt.x, movePtY));
+            bool reachDestination = tm.pt.y <= desirePt.y;
+
+            if(tm.pt.y < (prevYPos + cellSize)) {
+                tm.pt.y = prevYPos + cellSize;
+                elem.vel = prevVel * 0.9f;
+            }
+
+            prevYPos = tm.pt.y;
+            prevVel = elem.vel;
+
+            if(!reachDestination) {
+                ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
+            } else {
+                elem.vel = 0.f;
+                setElemBoardPos(elem, Vec2i(elem.boardPt.x, movePtY));
+                ET_SendEvent(elem.entId, &ETGameBoardElem::ET_triggerLand);
+                if(GameUtils::GetElemState(elem.entId) == EBoardElemState::Static) {
+                    --movingElemsCount;
+                    gameBoardFSM.getState().isMatchRequested = true;
+                }
+            }
+        }
+    }
+
+    gameBoardFSM.getState().hasMovingElems = movingElemsCount > 0;
 }

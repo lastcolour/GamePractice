@@ -24,7 +24,7 @@ public:
     }
 
     void updateAfterRemoves() {
-        isBoardStatic = false;
+        // isBoardStatic = false;
         ET_onGameTick(0.f);
     }
 

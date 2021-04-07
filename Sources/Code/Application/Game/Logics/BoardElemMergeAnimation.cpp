@@ -37,13 +37,16 @@ void BoardElemMergeAnimation::init() {
     acc = std::max(0.001f, acc);
 
     ETNode<ETGameBoardElemMergeAnimationManager>::connect(getEntityId());
-    ETNode<ETGameTimerEvents>::connect(getEntityId());
 }
 
 void BoardElemMergeAnimation::deinit() {
 }
 
-void BoardElemMergeAnimation::ET_onGameTick(float dt) {
+bool BoardElemMergeAnimation::ET_hasMergeTasks() const  {
+    return !tasksMap.empty();
+}
+
+void BoardElemMergeAnimation::ET_updateMergeTasks(float dt) {
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
 

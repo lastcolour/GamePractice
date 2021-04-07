@@ -89,7 +89,7 @@ TEST_F(GameBoardMatcherTests, TestOnly3HLine) {
         "SSS",
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDD");
@@ -106,7 +106,7 @@ TEST_F(GameBoardMatcherTests, TestOnly3VLine) {
         "S"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "D");
@@ -127,7 +127,7 @@ TEST_F(GameBoardMatcherTests, Test3VLine) {
         "DDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDD");
@@ -148,7 +148,7 @@ TEST_F(GameBoardMatcherTests, Test4HLine) {
         "DDDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDDD");
@@ -170,7 +170,7 @@ TEST_F(GameBoardMatcherTests, Test4VLine) {
         "DDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDD");
@@ -192,7 +192,7 @@ TEST_F(GameBoardMatcherTests, Test5HLine) {
         "DDDDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDDDD");
@@ -215,7 +215,7 @@ TEST_F(GameBoardMatcherTests, Test5VLine) {
         "DDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDD");
@@ -240,7 +240,7 @@ TEST_F(GameBoardMatcherTests, Test3MidCrossLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
@@ -263,7 +263,7 @@ TEST_F(GameBoardMatcherTests, Test3MidTDownLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
@@ -286,7 +286,7 @@ TEST_F(GameBoardMatcherTests, Test3MidTUpLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
@@ -309,7 +309,7 @@ TEST_F(GameBoardMatcherTests, Test3LeftLUpLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
@@ -332,7 +332,7 @@ TEST_F(GameBoardMatcherTests, Test3RightLUpLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
@@ -355,7 +355,7 @@ TEST_F(GameBoardMatcherTests, Test3LeftLDownLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
@@ -378,7 +378,7 @@ TEST_F(GameBoardMatcherTests, Test3RightLDownLine) {
         "DDDDD"
     });
 
-    matcher->ET_destoryMatchedElems();
+    matcher->ET_matchElements();
 
     auto setup = testGameBoard->getSetup();
     EXPECT_EQ(setup[0], "DDDDD");
