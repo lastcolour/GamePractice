@@ -1,6 +1,5 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
 #include "Render/ETParticlesSystem.hpp"
-#include "Game/Logics/GameBoardUtils.hpp"
 
 #include <cassert>
 
@@ -24,13 +23,6 @@ void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
 
 void GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
-
-    uiProxies.addItem(redDestroyEffectId, GameUtils::DESTROY_EFFECT_Z_INDEX);
-    uiProxies.addItem(blueDestroyEffectId, GameUtils::DESTROY_EFFECT_Z_INDEX);
-    uiProxies.addItem(yellowDestroyEffectId, GameUtils::DESTROY_EFFECT_Z_INDEX);
-    uiProxies.addItem(greenDestroyEffectId, GameUtils::DESTROY_EFFECT_Z_INDEX);
-    uiProxies.addItem(purpleDestroyEffectId, GameUtils::DESTROY_EFFECT_Z_INDEX);
-    uiProxies.setUIParent(getEntityId());
 }
 
 void GameBoardMatchLogic::deinit() {
@@ -68,8 +60,7 @@ void GameBoardMatchLogic::matchPattern(const PatternMatch& p, int cellSize) {
                 ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerMergeTo, midElem->entId);
             }
         }
-        ET_SendEvent(midElem->entId, &ETGameBoardElem::ET_setMutateAfterMerge, p.patternType,
-            static_cast<int>(p.points.size() - 1));
+        ET_SendEvent(midElem->entId, &ETGameBoardElem::ET_setMutateAfterMerge, p.patternType);
     }
 }
 

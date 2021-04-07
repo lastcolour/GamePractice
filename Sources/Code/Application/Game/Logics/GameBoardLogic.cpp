@@ -7,12 +7,22 @@
 
 #include <cassert>
 
+namespace {
+
+bool isElemMovingState(EBoardElemState elemState) {
+    return elemState == EBoardElemState::Falling || elemState == EBoardElemState::Landing;
+}
+
+} // namespace
+
 void GameBoardLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardLogic>("GameBoard")) {
         classInfo->addField("fallSpeed", &GameBoardLogic::moveSpeed);
         classInfo->addField("fallAcceleration", &GameBoardLogic::moveAccel);
         classInfo->addField("size", &GameBoardLogic::boardSize);
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
+        classInfo->addField("elemsZOffset", &GameBoardLogic::elemsZOffset);
+        classInfo->addField("backgroundZOffset", &GameBoardLogic::backgroundZOffset);
         classInfo->addField("backgroundId", &GameBoardLogic::backgroundId);
     }
 }
@@ -24,7 +34,9 @@ GameBoardLogic::GameBoardLogic() :
     cellScale(0.9f),
     moveSpeed(1.f),
     moveAccel(4.f),
-    cellSize(0) {
+    cellSize(0),
+    elemsZOffset(1),
+    backgroundZOffset(0) {
 }
 
 GameBoardLogic::~GameBoardLogic() {
@@ -98,7 +110,7 @@ void GameBoardLogic::init() {
     visualBox.setCenter(tm.pt.x, tm.pt.y);
     ET_resize(visualBox);
 
-    uiProxies.addItem(backgroundId, GameUtils::BACKGROUND_Z_INDEX);
+    uiProxies.addItem(backgroundId, backgroundZOffset);
     for(int i = 0; i < boardSize.x; ++i) {
         std::vector<BoardElement> column;
         for(int j = 0; j < boardSize.y; ++j) {
@@ -106,7 +118,7 @@ void GameBoardLogic::init() {
             if(!elem.entId.isValid()) {
                 return;
             } else {
-                uiProxies.addItem(elem.entId, GameUtils::ELEMENT_Z_INDEX);
+                uiProxies.addItem(elem.entId, elemsZOffset);
                 column.push_back(elem);
             }
         }
@@ -206,7 +218,7 @@ void GameBoardLogic::respawnDestroyedElems() {
                     LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");
                     return;
                 }
-                uiProxies.addItem(elem.entId, GameUtils::ELEMENT_Z_INDEX);
+                uiProxies.addItem(elem.entId, elemsZOffset);
 
                 bool hasTopElem = false;
                 if(!col.empty()) {
@@ -255,13 +267,9 @@ Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) c
     return resPt;
 }
 
-void GameBoardLogic::updateFSMState() {
-    auto& state = gameBoardFSM.getState();
-    ET_SendEventReturn(state.hasMergingElems, &ETGameBoardElemMergeAnimationManager::ET_hasMergeTasks);
-}
-
 void GameBoardLogic::ET_onGameTick(float dt) {
-    updateFSMState();
+    auto& state = gameBoardFSM.getState();
+    ET_SendEventReturn(state.hasMergingElems, &ETGameBoardElemMergeManager::ET_hasMergeTasks);
 
     auto pass = EGameBoardUpdatePass::Static;
     auto hasUpdatePass = gameBoardFSM.queryPass(pass);
@@ -275,7 +283,7 @@ void GameBoardLogic::ET_onGameTick(float dt) {
             case EGameBoardUpdatePass::Merge: {
                 gameBoardFSM.getState().isMatchRequested = true;
                 gameBoardFSM.getState().isRespawnRequested = true;
-                ET_SendEvent(&ETGameBoardElemMergeAnimationManager::ET_updateMergeTasks, dt);
+                ET_SendEvent(&ETGameBoardElemMergeManager::ET_updateMergeTasks, dt);
                 break;
             }
             case EGameBoardUpdatePass::Trigger: {
@@ -380,7 +388,7 @@ void GameBoardLogic::processMovingElems(float dt) {
                     GameUtils::SetElemState(elem.entId, elemState);
                 }
             }
-            if(elemState != EBoardElemState::Static) {
+            if(isElemMovingState(elemState)) {
                 ++movingElemsCount;
             }
 

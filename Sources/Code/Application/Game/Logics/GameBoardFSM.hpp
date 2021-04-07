@@ -44,6 +44,8 @@ private:
 
     GameBoardState state;
     EGameBoardUpdatePass updatePass;
+    EGameBoardUpdatePass returnPass;
+    bool isStaticWasVisited;
 };
 
 #endif /* __GAME_BOARD_FSM_HPP__ */

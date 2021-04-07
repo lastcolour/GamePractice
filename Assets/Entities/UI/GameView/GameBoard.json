@@ -114,6 +114,29 @@
       "name": "Entities/Effects/ElemDestroy/YellowDestroy.json",
       "id": 5,
       "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 488.0,
+          "y": 524.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/ElemDestroy/ElemMutate.json",
+      "id": 106,
+      "internal": false
     }
   ],
   "logics": [
@@ -188,18 +211,79 @@
       "data": {
         "highlightEntity": "Entities/Game/CellHighlighter.json",
         "fadeOutDuration": 1.0,
-        "cellScale": 0.800000011920929
+        "cellScale": 0.800000011920929,
+        "highlightZOffset": 0
       }
     },
     {
-      "type": "BoardElemMergeAnimation",
+      "type": "BoardElemMergeManager",
       "id": 7,
       "data": {
         "mergeSound": {
           "event": "getProgressionStar_01"
         },
+        "mutateSound": {
+          "event": "elemSwitch_01"
+        },
         "startVel": 1.0,
-        "acc": 2.0
+        "acc": 1.0,
+        "mutateEffectId": [
+          106
+        ],
+        "vRocketEntity": "Entities/Game/Blocks/VRocket.json",
+        "hRocketEntity": "Entities/Game/Blocks/HRocket.json",
+        "bombEntity": "Entities/Game/Blocks/Bomb.json",
+        "starEntity": "Entities/Game/Blocks/Star.json"
+      }
+    },
+    {
+      "type": "UIElementProxy",
+      "id": 8,
+      "data": {
+        "proxies": [
+          {
+            "target": [
+              1
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 1
+          },
+          {
+            "target": [
+              2
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 1
+          },
+          {
+            "target": [
+              3
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 1
+          },
+          {
+            "target": [
+              4
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 1
+          },
+          {
+            "target": [
+              5
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 1
+          },
+          {
+            "target": [
+              106
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 3
+          }
+        ]
       }
     }
   ]

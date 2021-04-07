@@ -1,125 +1,61 @@
 #include "GameBoardMatcherTests.hpp"
-#include "Game/Logics/GameBoardLogic.hpp"
-#include "Game/Logics/GameBoardUtils.hpp"
-#include "Game/Logics/GameBoardMatchLogic.hpp"
-#include "Entity/ETEntityManager.hpp"
+#include "Game/Logics/MatchAlgorithm.hpp"
 
 namespace {
 
-const char* TEST_ELEM = "Entities/Game/Blocks/Blue.json";
+BoardMatchState CreateBoardState(const std::vector<std::string>& setup) {
+    Vec2i size(0);
+    size.y = static_cast<int>(setup.size());
+    size.x = static_cast<int>(setup[0].size());
 
-class TestGameBoard : public GameBoardLogic {
-public:
+    BoardMatchState state;
+    state.setSize(size);
 
-    TestGameBoard() {}
-    virtual ~TestGameBoard() {}
-
-    void init() override {
-        return;
-    }
-
-    void createBoard(const std::vector<std::string>& setup) {
-        createSetup = setup;
-        boardSize.y = static_cast<int>(setup.size());
-        boardSize.x = static_cast<int>(setup[0].size());
-        GameBoardLogic::init();
-    }
-
-    std::vector<std::string> getSetup() const {
-        std::vector<std::string> res;
-        for(int i = boardSize.y - 1; i >= 0; --i) {
-            std::string rowStr;
-            for(int j = 0; j < boardSize.x; ++j) {
-                auto elem = getElem(Vec2i(j, i));
-                if(!elem) {
-                    rowStr += 'E';
-                } else {
-                    auto state = GameUtils::GetElemState(elem->entId);
-                    if(state == EBoardElemState::Static) {
-                        rowStr += 'S';
-                    } else if(state == EBoardElemState::Destroying) {
-                        rowStr += 'D';
-                    } else {
-                        rowStr += '0';
-                    }
-                }
+    for(int i = 0; i < size.x; ++i) {
+        for(int j = 0; j < size.y; ++j) {
+            Vec2i boardPt(i, j);
+            auto ch = setup[setup.size() - j - 1][i];
+            if(ch == 'S') {
+                state.getElem(i, j).elemType = EBoardElemType::Blue;
+            } else {
+                state.getElem(i, j).elemType = EBoardElemType::None;
             }
-            res.emplace_back(std::move(rowStr));
         }
-        return res;
     }
 
-protected:
-
-    BoardElement createNewElement(const Vec2i& boardPt) const override {
-        BoardElement elem;
-        ET_SendEventReturn(elem.entId, &ETEntityManager::ET_createEntity, TEST_ELEM);
-        if(!elem.entId.isValid()) {
-            return elem;
-        }
-        setElemBoardPos(elem, boardPt);
-
-        ET_SendEvent(elem.entId, &ETEntity::ET_setParent, getEntityId());
-
-        auto ch = createSetup[createSetup.size() - boardPt.y - 1][boardPt.x];
-    
-        if(ch == 'D') {
-            GameUtils::SetElemState(elem.entId, EBoardElemState::Destroying);
-        } else if(ch == 'S') {
-            GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
-        } else {
-            return BoardElement();
-        }
-        return elem;
-    }
-
-private:
-
-    std::vector<std::string> createSetup;
-};
+    return state;
+}
 
 } // namespace
 
 TEST_F(GameBoardMatcherTests, TestOnly3HLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "SSS",
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
+    EXPECT_EQ(patterns[0].points.size(), 3);
 }
 
 TEST_F(GameBoardMatcherTests, TestOnly3VLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "S",
         "S",
         "S"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "D");
-    EXPECT_EQ(setup[1], "D");
-    EXPECT_EQ(setup[2], "D");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::VLine);
+    EXPECT_EQ(patterns[0].points.size(), 3);
 }
 
 TEST_F(GameBoardMatcherTests, Test3VLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDD",
         "DSD",
         "DSD",
@@ -127,41 +63,43 @@ TEST_F(GameBoardMatcherTests, Test3VLine) {
         "DDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDD");
-    EXPECT_EQ(setup[1], "DDD");
-    EXPECT_EQ(setup[2], "DDD");
-    EXPECT_EQ(setup[3], "DDD");
-    EXPECT_EQ(setup[4], "DDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::VLine);
+    EXPECT_EQ(patterns[0].points.size(), 3);
+}
+
+TEST_F(GameBoardMatcherTests, Test3HLine) {
+    auto boardState = CreateBoardState({
+        "DDDDD",
+        "DSSSD",
+        "DDDDD",
+    });
+
+    auto patterns = FindAllMatchPatterns(boardState);
+
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
+    EXPECT_EQ(patterns[0].points.size(), 3);
 }
 
 TEST_F(GameBoardMatcherTests, Test4HLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDDD",
         "DSSSSD",
         "DDDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDDD");
-    EXPECT_EQ(setup[1], "DDDDDD");
-    EXPECT_EQ(setup[2], "DDDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::HRocket);
+    EXPECT_EQ(patterns[0].points.size(), 4);
 }
 
 TEST_F(GameBoardMatcherTests, Test4VLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDD",
         "DSD",
         "DSD",
@@ -170,42 +108,29 @@ TEST_F(GameBoardMatcherTests, Test4VLine) {
         "DDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDD");
-    EXPECT_EQ(setup[1], "DDD");
-    EXPECT_EQ(setup[2], "DDD");
-    EXPECT_EQ(setup[3], "DDD");
-    EXPECT_EQ(setup[4], "DDD");
-    EXPECT_EQ(setup[5], "DDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::VRocket);
+    EXPECT_EQ(patterns[0].points.size(), 4);
 }
 
 TEST_F(GameBoardMatcherTests, Test5HLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDDDD",
         "DSSSSSD",
         "DDDDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDDDD");
-    EXPECT_EQ(setup[1], "DDDDDDD");
-    EXPECT_EQ(setup[2], "DDDDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Star);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test5VLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDD",
         "DSD",
         "DSD",
@@ -215,24 +140,15 @@ TEST_F(GameBoardMatcherTests, Test5VLine) {
         "DDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDD");
-    EXPECT_EQ(setup[1], "DDD");
-    EXPECT_EQ(setup[2], "DDD");
-    EXPECT_EQ(setup[3], "DDD");
-    EXPECT_EQ(setup[4], "DDD");
-    EXPECT_EQ(setup[5], "DDD");
-    EXPECT_EQ(setup[6], "DDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Star);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test3MidCrossLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DDSDD",
         "DSSSD",
@@ -240,22 +156,18 @@ TEST_F(GameBoardMatcherTests, Test3MidCrossLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 2);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
+    EXPECT_EQ(patterns[0].points.size(), 3);
+
+    EXPECT_EQ(patterns[1].patternType, EPatternType::None);
+    EXPECT_EQ(patterns[1].points.size(), 2);
 }
 
 TEST_F(GameBoardMatcherTests, Test3MidTDownLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DSSSD",
         "DDSDD",
@@ -263,22 +175,15 @@ TEST_F(GameBoardMatcherTests, Test3MidTDownLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test3MidTUpLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DDSDD",
         "DDSDD",
@@ -286,22 +191,15 @@ TEST_F(GameBoardMatcherTests, Test3MidTUpLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test3LeftLUpLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DSDDD",
         "DSDDD",
@@ -309,22 +207,15 @@ TEST_F(GameBoardMatcherTests, Test3LeftLUpLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test3RightLUpLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DDDSD",
         "DDDSD",
@@ -332,22 +223,15 @@ TEST_F(GameBoardMatcherTests, Test3RightLUpLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test3LeftLDownLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DSSSD",
         "DSDDD",
@@ -355,22 +239,15 @@ TEST_F(GameBoardMatcherTests, Test3LeftLDownLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
 
 TEST_F(GameBoardMatcherTests, Test3RightLDownLine) {
-    auto entity = createVoidObject();
-    auto testGameBoard = entity->addCustomLogic<TestGameBoard>();
-    auto matcher = entity->addCustomLogic<GameBoardMatchLogic>();
-
-    testGameBoard->createBoard({
+    auto boardState = CreateBoardState({
         "DDDDD",
         "DSSSD",
         "DDDSD",
@@ -378,12 +255,109 @@ TEST_F(GameBoardMatcherTests, Test3RightLDownLine) {
         "DDDDD"
     });
 
-    matcher->ET_matchElements();
+    auto patterns = FindAllMatchPatterns(boardState);
 
-    auto setup = testGameBoard->getSetup();
-    EXPECT_EQ(setup[0], "DDDDD");
-    EXPECT_EQ(setup[1], "DDDDD");
-    EXPECT_EQ(setup[2], "DDDDD");
-    EXPECT_EQ(setup[3], "DDDDD");
-    EXPECT_EQ(setup[4], "DDDDD");
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
 }
+
+TEST_F(GameBoardMatcherTests, TestLeftT) {
+    auto boardState = CreateBoardState({
+        "DDDDD",
+        "DSDDD",
+        "DSSSD",
+        "DSDDD",
+        "DDDDD"
+    });
+
+    auto patterns = FindAllMatchPatterns(boardState);
+
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
+}
+
+TEST_F(GameBoardMatcherTests, TestRightT) {
+    auto boardState = CreateBoardState({
+        "DDDDD",
+        "DDDSD",
+        "DSSSD",
+        "DDDSD",
+        "DDDDD"
+    });
+
+    auto patterns = FindAllMatchPatterns(boardState);
+
+    ASSERT_EQ(patterns.size(), 1);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
+}
+
+TEST_F(GameBoardMatcherTests, Test3x3Quad) {
+    auto boardState = CreateBoardState({
+        "DDDDD",
+        "DSSSD",
+        "DSSSD",
+        "DSSSD",
+        "DDDDD"
+    });
+
+    auto patterns = FindAllMatchPatterns(boardState);
+
+    ASSERT_EQ(patterns.size(), 2);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
+
+    EXPECT_EQ(patterns[1].patternType, EPatternType::None);
+    EXPECT_EQ(patterns[1].points.size(), 4);
+}
+
+TEST_F(GameBoardMatcherTests, Test3x4Quad) {
+    auto boardState = CreateBoardState({
+        "DDDDDD",
+        "DSSSSD",
+        "DSSSSD",
+        "DSSSSD",
+        "DDDDDD"
+    });
+
+    auto patterns = FindAllMatchPatterns(boardState);
+
+    ASSERT_EQ(patterns.size(), 3);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[0].points.size(), 5);
+
+    EXPECT_EQ(patterns[1].patternType, EPatternType::Bomb);
+    EXPECT_EQ(patterns[1].points.size(), 5);
+
+    EXPECT_EQ(patterns[2].patternType, EPatternType::None);
+    EXPECT_EQ(patterns[2].points.size(), 2);
+}
+
+/*
+
+TEST_F(GameBoardMatcherTests, Test10x10Quad) {
+    auto boardState = CreateBoardState({
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS",
+        "SSSSSSSSSS"
+    });
+
+    auto patterns = FindAllMatchPatterns(boardState);
+
+    ASSERT_EQ(patterns.size(), 20);
+    for(int i = 0; i < 20; ++i) {
+        EXPECT_EQ(patterns[i].patternType, EPatternType::Star);
+        EXPECT_EQ(patterns[i].points.size(), 5);
+    }
+}
+
+*/

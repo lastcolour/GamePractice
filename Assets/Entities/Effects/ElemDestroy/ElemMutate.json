@@ -1,0 +1,98 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "ParticlesSystem",
+      "id": 1,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 0,
+        "emission": {
+          "duration": 0.10000000149011612,
+          "startDelay": 0.0,
+          "autoStart": false,
+          "loop": false,
+          "heating": true,
+          "emitterSpace": "World",
+          "emitterType": "Sphere",
+          "emitterVal": {
+            "x": 1.0,
+            "y": 0.0
+          },
+          "thickness": 0.0,
+          "emissionRate": 300.0,
+          "direction": 0.0,
+          "directionVar": 360.0,
+          "lifetime": 0.4000000059604645,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 50.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 2.0,
+            "y": 2.0
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          }
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.10000000149011612
+          },
+          "endCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.10000000149011612
+          },
+          "fadeIn": 0.10000000149011612,
+          "fadeOut": 0.10000000149011612
+        },
+        "render": {
+          "blending": "Normal",
+          "texture": "Images/block.png"
+        },
+        "subEmitters": {
+          "subEmitters": []
+        },
+        "gravity": {
+          "fields": []
+        }
+      }
+    }
+  ]
+}

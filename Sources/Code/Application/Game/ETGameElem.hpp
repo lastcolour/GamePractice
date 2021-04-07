@@ -30,7 +30,8 @@ struct ETGameBoardElem {
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy() = 0;
     virtual void ET_triggerLand() = 0;
-    virtual void ET_setMutateAfterMerge(EPatternType pattern, int waitMergeCount) = 0;
+    virtual void ET_setMutateAfterMerge(EPatternType pattern) = 0;
+    virtual void ET_triggerMutate() = 0;
     virtual void ET_triggerMergeTo(EntityId mergeTargetId) = 0;
     virtual void ET_setSelected(bool flag) = 0;
     virtual bool ET_canMatch() const = 0;
@@ -56,8 +57,8 @@ struct ETGameBoardElemLandAnimation {
     virtual void ET_playLand() = 0;
 };
 
-struct ETGameBoardElemMergeAnimationManager {
-    virtual ~ETGameBoardElemMergeAnimationManager() = default;
+struct ETGameBoardElemMergeManager {
+    virtual ~ETGameBoardElemMergeManager() = default;
     virtual void ET_createMergeTask(EntityId fromId, EntityId toId) = 0;
     virtual bool ET_hasMergeTasks() const = 0;
     virtual void ET_updateMergeTasks(float dt) = 0;

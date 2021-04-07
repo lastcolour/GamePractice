@@ -4,7 +4,6 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameElem.hpp"
-#include "UI/UIProxyContainer.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
 
 class GameBoardMatchLogic : public EntityLogic,
@@ -33,7 +32,6 @@ private:
 private:
 
     BoardMatchState boardMatchState;
-    UIProxyContainer uiProxies;
     EntityId redDestroyEffectId;
     EntityId blueDestroyEffectId;
     EntityId yellowDestroyEffectId;

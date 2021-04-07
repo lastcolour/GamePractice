@@ -5,11 +5,6 @@
 
 namespace GameUtils {
 
-const int BACKGROUND_Z_INDEX = 0;
-const int HIGHLIGHT_ELEM_Z_INDEX = 1;
-const int ELEMENT_Z_INDEX = 2;
-const int DESTROY_EFFECT_Z_INDEX = 3;
-
 EBoardElemState GetElemState(EntityId elemId);
 
 void SetElemState(EntityId elemId, EBoardElemState state);

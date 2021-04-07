@@ -66,8 +66,6 @@ protected:
     void setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) const;
     void switchElements(int firstElem, int secondElem);
     void removeElem(BoardElement& elem);
-
-    void updateFSMState();
     void respawnDestroyedElems();
     void processMovingElems(float dt);
 
@@ -83,6 +81,8 @@ protected:
     float moveSpeed;
     float moveAccel;
     int cellSize;
+    int elemsZOffset;
+    int backgroundZOffset;
     GameBoardFSM gameBoardFSM;
 };
 

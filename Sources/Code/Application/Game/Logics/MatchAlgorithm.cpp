@@ -84,6 +84,34 @@ PatternMatch findTupBomb(int x, int y, const BoardMatchState& board) {
     return p1;
 }
 
+PatternMatch findTLeftBomb(int x, int y, const BoardMatchState& board) {
+    auto p1 = findHLine(x, y, 3, board);
+    if(p1.points.empty()) {
+        return p1;
+    }
+    auto p2 = findVLine(x, y - 1, 3, board);
+    if(p2.points.empty()) {
+        return p2;
+    }
+    p1.points.push_back(p2.points[0]);
+    p1.points.push_back(p2.points[2]);
+    return p1;
+}
+
+PatternMatch findTRightBomb(int x, int y, const BoardMatchState& board) {
+    auto p1 = findHLine(x, y, 3, board);
+    if(p1.points.empty()) {
+        return p1;
+    }
+    auto p2 = findVLine(x + 2, y - 1, 3, board);
+    if(p2.points.empty()) {
+        return p2;
+    }
+    p1.points.push_back(p2.points[0]);
+    p1.points.push_back(p2.points[2]);
+    return p1;
+}
+
 PatternMatch findTdownBomb(int x, int y, const BoardMatchState& board) {
     auto p1 = findHLine(x, y, 3, board);
     if(p1.points.empty()) {
@@ -391,6 +419,20 @@ std::vector<PatternMatch> FindAllMatchPatterns(const BoardMatchState& board) {
             }
             {
                 auto p = findTdownBomb(i, j, board);
+                if(!p.points.empty()) {
+                    p.patternType = EPatternType::Bomb;
+                    allMatches.emplace_back(p);
+                }
+            }
+            {
+                auto p = findTLeftBomb(i, j, board);
+                if(!p.points.empty()) {
+                    p.patternType = EPatternType::Bomb;
+                    allMatches.emplace_back(p);
+                }
+            }
+            {
+                auto p = findTRightBomb(i, j, board);
                 if(!p.points.empty()) {
                     p.patternType = EPatternType::Bomb;
                     allMatches.emplace_back(p);
