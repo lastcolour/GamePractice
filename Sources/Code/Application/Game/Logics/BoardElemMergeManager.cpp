@@ -24,10 +24,6 @@ void BoardElemMergeManager::Reflect(ReflectContext& ctx) {
         classInfo->addField("acc", &BoardElemMergeManager::acc);
         classInfo->addField("mutateTaskDuration", &BoardElemMergeManager::mutateTaskDuration);
         classInfo->addField("mutateEffectId", &BoardElemMergeManager::mutateEffectId);
-        classInfo->addResourceField("vRocketEntity", ResourceType::Entity, &BoardElemMergeManager::vRocketEntity);
-        classInfo->addResourceField("hRocketEntity", ResourceType::Entity, &BoardElemMergeManager::hRocketEntity);
-        classInfo->addResourceField("bombEntity", ResourceType::Entity, &BoardElemMergeManager::bombEntity);
-        classInfo->addResourceField("starEntity", ResourceType::Entity, &BoardElemMergeManager::starEntity);
     }
 }
 

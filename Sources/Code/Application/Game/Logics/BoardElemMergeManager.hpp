@@ -51,10 +51,7 @@ private:
     Math::RandomFloatGenerator floatGen;
     SoundEvent mergeSound;
     SoundEvent mutateSound;
-    std::string vRocketEntity;
-    std::string hRocketEntity;
-    std::string bombEntity;
-    std::string starEntity;
+
     EntityId mutateEffectId;
     float startVel;
     float acc;

@@ -99,7 +99,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureTy
     texture->texId = textureId;
     texture->size = Vec2i(0);
     texture->setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
-    texture->setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    texture->setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
     texture->unbind();
 
     textures.push_back(texture);
@@ -184,7 +184,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
     texture->texId = textureId;
     texture->size = texSize;
     texture->setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
-    texture->setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    texture->setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
     texture->unbind();
 
     return texture;

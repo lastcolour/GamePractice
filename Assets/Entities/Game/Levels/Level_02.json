@@ -50,7 +50,7 @@
                 "b": 245,
                 "a": 255
               },
-              "image": "Images/block.png",
+              "image": "Images/UI/rblock_512x512.png",
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 0.10000000149011612

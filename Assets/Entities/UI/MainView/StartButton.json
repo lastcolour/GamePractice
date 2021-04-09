@@ -109,8 +109,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "size": {
-                "x": 420.0,
-                "y": 90.0
+                "x": 412.64996337890625,
+                "y": 88.42501831054688
               },
               "tintColor": {
                 "r": 255,
@@ -118,7 +118,7 @@
                 "b": 255,
                 "a": 255
               },
-              "image": "Images/block.png",
+              "image": "Images/UI/rblock_512x512.png",
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 1.0
@@ -165,7 +165,7 @@
                 "b": 238,
                 "a": 255
               },
-              "fontSize": 42.0,
+              "fontSize": 41.26499938964844,
               "text": "Start"
             }
           },
@@ -288,8 +288,8 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "size": {
-          "x": 420.0,
-          "y": 90.0
+          "x": 412.64996337890625,
+          "y": 88.42501831054688
         },
         "tintColor": {
           "r": 100,
@@ -297,7 +297,7 @@
           "b": 100,
           "a": 255
         },
-        "image": "Images/block.png",
+        "image": "Images/UI/rblock_512x512.png",
         "horizontal": 0.30000001192092896,
         "vertical": 0.30000001192092896,
         "patchScale": 1.0

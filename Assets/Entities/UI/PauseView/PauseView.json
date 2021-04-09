@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 21.75,
+                "y": 85.47747802734375,
                 "z": 0.0
               },
               "scale": {
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 7.5,
+                          "fontSize": 29.475000381469727,
                           "text": "Resume"
                         }
                       }
@@ -145,8 +145,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 18.75
+                      "x": 412.6499938964844,
+                      "y": 73.6875
                     },
                     "tintColor": {
                       "r": 234,
@@ -154,7 +154,7 @@
                       "b": 234,
                       "a": 255
                     },
-                    "image": "Images/block.png",
+                    "image": "Images/UI/rblock_512x512.png",
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
@@ -227,7 +227,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -21.75,
+                "y": -85.47750854492188,
                 "z": 0.0
               },
               "scale": {
@@ -303,7 +303,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 7.5,
+                          "fontSize": 29.475000381469727,
                           "text": "Exit"
                         }
                       }
@@ -344,8 +344,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 18.75
+                      "x": 412.6499938964844,
+                      "y": 73.6875
                     },
                     "tintColor": {
                       "r": 234,
@@ -353,7 +353,7 @@
                       "b": 234,
                       "a": 255
                     },
-                    "image": "Images/block.png",
+                    "image": "Images/UI/rblock_512x512.png",
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
@@ -502,7 +502,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 7.5,
+                          "fontSize": 29.475000381469727,
                           "text": "Restart"
                         }
                       }
@@ -543,8 +543,8 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "size": {
-                      "x": 105.0,
-                      "y": 18.75
+                      "x": 412.6499938964844,
+                      "y": 73.6875
                     },
                     "tintColor": {
                       "r": 234,
@@ -552,7 +552,7 @@
                       "b": 234,
                       "a": 255
                     },
-                    "image": "Images/block.png",
+                    "image": "Images/UI/rblock_512x512.png",
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
@@ -674,8 +674,8 @@
               "alpha": 0.8999999761581421,
               "drawPriority": 1,
               "size": {
-                "x": 112.5,
-                "y": 82.5
+                "x": 442.125,
+                "y": 324.2250061035156
               },
               "tintColor": {
                 "r": 35,
@@ -683,7 +683,7 @@
                 "b": 35,
                 "a": 255
               },
-              "image": "Images/block.png",
+              "image": "Images/UI/rblock_512x512.png",
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 0.699999988079071
@@ -844,8 +844,8 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 150.0,
-          "y": 506.0
+          "x": 1004.0,
+          "y": 1048.0
         },
         "color": {
           "r": 0,

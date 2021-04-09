@@ -84,7 +84,7 @@
         },
         "render": {
           "blending": "Additive",
-          "texture": "Images/block.png"
+          "texture": "Images/Game/circle_32x32.png"
         },
         "subEmitters": {
           "subEmitters": []
@@ -160,9 +160,9 @@
         },
         "color": {
           "startCol": {
-            "r": 255,
-            "g": 248,
-            "b": 44,
+            "r": 250,
+            "g": 255,
+            "b": 185,
             "a": 255
           },
           "startColVar": {
@@ -188,7 +188,7 @@
         },
         "render": {
           "blending": "Additive",
-          "texture": "Images/block.png"
+          "texture": "Images/Game/circle_32x32.png"
         },
         "subEmitters": {
           "subEmitters": []

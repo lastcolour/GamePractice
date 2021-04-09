@@ -94,7 +94,7 @@ void BlurNode::onRender(RenderContext& ctx) {
     RenderUtils::BlitFromFBOtoFBO(*mainFBO, *firstFBO);
 
     glViewport(0, 0, scaledSize.x, scaledSize.y);
-    for(int i = 0; i < 1; ++i) {
+    for(int i = 0; i < passes; ++i) {
         blurPass(*secondFBO, *firstFBO);
     }
 

@@ -28,6 +28,8 @@ const size_t RENDER_HEIGHT = 300;
 
 const char* TEST_SHADER_1 = "geom_solid_color";
 
+const char* TEST_IMAGE = "Images/Game/rblock_32x32.png";
+
 const char* SIMPLE_OBJECT = "Entities/Game/Simple.json";
 
 const float SCALE_FACTOR = 0.8f;
@@ -381,7 +383,7 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
     gameObj->ET_setTransform(tm);
 
-    renderImage->ET_setImage("Images/options.png");
+    renderImage->ET_setImage(TEST_IMAGE);
     renderImage->ET_setSize(Vec2(100.f));
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);

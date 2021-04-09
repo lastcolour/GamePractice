@@ -147,9 +147,9 @@
         "hidden": false,
         "enabled": true,
         "style": {
-          "width": 0.949999988079071,
+          "width": 0.95,
           "widthInv": "Relative",
-          "height": 0.800000011920929,
+          "height": 0.8,
           "heightInv": "Relative",
           "margin": {
             "top": 0.0,
@@ -184,14 +184,14 @@
         "purpleDestroyEffectId": [
           3
         ],
-        "destroyEffectScale": 0.07999999821186066
+        "destroyEffectScale": 0.08
       }
     },
     {
       "type": "GameBoardInteraction",
       "id": 4,
       "data": {
-        "switchDuration": 0.20000000298023224,
+        "switchDuration": 0.2,
         "switchSound": {
           "event": "elemSwitch_01"
         }
@@ -201,8 +201,8 @@
       "type": "GameBoardAnimation",
       "id": 5,
       "data": {
-        "minScale": 0.699999988079071,
-        "scaleDuration": 0.4000000059604645
+        "minScale": 0.7,
+        "scaleDuration": 0.4
       }
     },
     {
@@ -211,7 +211,7 @@
       "data": {
         "highlightEntity": "Entities/Game/CellHighlighter.json",
         "fadeOutDuration": 1.0,
-        "cellScale": 0.800000011920929,
+        "cellScale": 0.8,
         "highlightZOffset": 0
       }
     },
@@ -227,6 +227,7 @@
         },
         "startVel": 1.0,
         "acc": 1.0,
+        "mutateTaskDuration": 0.2,
         "mutateEffectId": [
           106
         ],

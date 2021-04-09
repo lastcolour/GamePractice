@@ -22,7 +22,11 @@ void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
             {"Blue", EBoardElemType::Blue},
             {"Green", EBoardElemType::Green},
             {"Purple", EBoardElemType::Purple},
-            {"Yellow", EBoardElemType::Yellow}
+            {"Yellow", EBoardElemType::Yellow},
+            {"HRocker", EBoardElemType::HRocket},
+            {"VRocker", EBoardElemType::VRocket},
+            {"Bomb", EBoardElemType::Bomb},
+            {"Star", EBoardElemType::Star}
         });
     }
     if(auto classInfo = ctx.classInfo<GameBoardElemLogic>("GameBoardElem")) {
@@ -115,6 +119,9 @@ void GameBoardElemLogic::ET_triggerMutate() {
 
     state = EBoardElemState::Destroying;
     ET_onDestroyPlayed();
+
+    ET_SendEvent(&ETGameBoard::ET_replaceElemToSpecial, getEntityId(), EBoardElemType::HRocket);
+    mutateTo = EPatternType::None;
 }
 
 void GameBoardElemLogic::ET_triggerMergeTo(EntityId mergeTargetId) {

@@ -73,14 +73,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 5,
+                    "drawPriority": 36,
                     "color": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 54.0,
+                    "fontSize": 53.05500030517578,
                     "text": "Success!"
                   }
                 },
@@ -248,10 +248,10 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 33,
               "size": {
-                "x": 360.0,
-                "y": 105.0
+                "x": 353.70001220703125,
+                "y": 103.1624984741211
               },
               "tintColor": {
                 "r": 255,
@@ -259,7 +259,7 @@
                 "b": 255,
                 "a": 255
               },
-              "image": "Images/block.png",
+              "image": "Images/UI/rblock_512x512.png",
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 1.0

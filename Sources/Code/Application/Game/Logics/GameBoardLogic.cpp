@@ -2,6 +2,7 @@
 #include "Game/Logics/GameBoardUtils.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
 #include "Game/ETGameInterfaces.hpp"
+#include "Game/ETGameElemsPool.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "UI/ETUIViewPort.hpp"
 
@@ -46,7 +47,7 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
     auto firstElem = getElem(firstId);
     auto secondElem = getElem(secondId);
     if(!firstElem || !secondElem) {
-        assert(false && "Try switch invalid board eleemts");
+        assert(false && "Try switch invalid board elems");
         return;
     }
     std::swap(firstElem->entId, secondElem->entId);
@@ -54,6 +55,25 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
     setElemBoardPos(*secondElem, secondElem->boardPt);
 
     gameBoardFSM.getState().isMatchRequested = true;
+}
+
+void GameBoardLogic::ET_replaceElemToSpecial(EntityId targetId, EBoardElemType elemType) {
+    auto boardElem = getElem(targetId);
+    if(!boardElem) {
+        assert(false && "Try replace invalid board elem");
+        return;
+    }
+
+    ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, boardElem->entId);
+
+    boardElem->entId = InvalidEntityId;
+
+    ET_SendEventReturn(boardElem->entId, &ETSpecialBoardElemsPool::ET_createSpecialElem,
+        elemType);
+
+    if(!boardElem->entId.isValid()) {
+        LogError("[GameBoardLogic::ET_replaceElemToSpecial] Can't create special elem");
+    }
 }
 
 EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
@@ -212,7 +232,9 @@ void GameBoardLogic::respawnDestroyedElems() {
                 uiProxies.removeItem(it->entId);
                 it = col.erase(it);
 
-                ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
+                if(elem.entId.isValid()) {
+                    ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
+                }
                 elem = createNewElement(elem.boardPt);
                 if(!elem.entId.isValid()) {
                     LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");

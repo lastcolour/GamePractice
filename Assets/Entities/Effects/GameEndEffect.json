@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 3,
               "emission": {
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
@@ -108,7 +108,7 @@
               },
               "render": {
                 "blending": "Additive",
-                "texture": "Images/block.png"
+                "texture": "Images/Game/circle_32x32.png"
               },
               "subEmitters": {
                 "subEmitters": [
@@ -134,7 +134,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "drawPriority": 2,
         "emission": {
           "duration": -1.0,
           "startDelay": 0.0,
@@ -211,7 +211,7 @@
         },
         "render": {
           "blending": "Additive",
-          "texture": "Images/block.png"
+          "texture": "Images/Game/circle_32x32.png"
         },
         "subEmitters": {
           "subEmitters": [

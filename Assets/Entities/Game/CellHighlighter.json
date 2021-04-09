@@ -18,7 +18,7 @@
           "b": 255,
           "a": 0
         },
-        "image": "Images/block.png",
+        "image": "Images/Game/rblock_64x64.png",
         "horizontal": 0.30000001192092896,
         "vertical": 0.30000001192092896,
         "patchScale": 1.0

@@ -95,4 +95,10 @@ void GradientNode::updateTexData() {
         };
         tex->writeRGBA(Vec2i(0), Vec2i(2), vertColors);
     }
+
+    if(startCol.a < 1.f || endCol.a < 1.f) {
+        setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
+    } else {
+        setBlendingMode(BlendMode{BlendType::NONE, BlendType::NONE});
+    }
 }

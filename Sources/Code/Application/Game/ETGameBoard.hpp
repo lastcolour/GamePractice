@@ -4,11 +4,12 @@
 #include "Render/Color.hpp"
 #include "Math/AABB.hpp"
 
-class ElementDescriptor;
 class BoardMatchState;
+enum class EBoardElemType;
 
 struct ETGameBoard {
     virtual ~ETGameBoard() = default;
+    virtual void ET_replaceElemToSpecial(EntityId targetId, EBoardElemType elemType) = 0;
     virtual void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) = 0;
     virtual void ET_readBoardMatchState(BoardMatchState& boardMatchState) const = 0;
     virtual EntityId ET_getElemByPos(const Vec2i& pt) const = 0;
@@ -43,13 +44,6 @@ struct ETGameBoardMatcher {
 struct ETGameBoardEvents {
     virtual ~ETGameBoardEvents() = default;
     virtual void ET_onAllElemsStatic() = 0;
-};
-
-struct ETGameBoardElemsPool {
-    virtual ~ETGameBoardElemsPool() = default;
-    virtual EntityId ET_spawnElem() = 0;
-    virtual void ET_removeElem(EntityId elemId) = 0;
-    virtual void ET_addElemsToSpawn(const ElementDescriptor& newElemDescr) = 0;
 };
 
 struct ETGameBoardAnimation {

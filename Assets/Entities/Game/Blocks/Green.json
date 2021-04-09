@@ -42,7 +42,7 @@
                 "b": 255,
                 "a": 255
               },
-              "image": "Images/block.png"
+              "image": "Images/Game/rblock_64x64.png"
             }
           }
         ]
@@ -74,7 +74,7 @@
           "b": 68,
           "a": 255
         },
-        "image": "Images/block.png"
+        "image": "Images/Game/rblock_64x64.png"
       }
     },
     {

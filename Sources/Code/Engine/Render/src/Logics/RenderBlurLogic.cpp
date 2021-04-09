@@ -24,6 +24,6 @@ void RenderBlurLogic::onInit() {
     passes = std::max(passes, 1);
     blurProxyNode->setPasses(passes);
 
-    downScaleFactor = std::max(downScaleFactor, 0);
+    downScaleFactor = std::max(downScaleFactor, 1);
     blurProxyNode->setDownScale(downScaleFactor);
 }

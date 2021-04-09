@@ -20,7 +20,11 @@ enum class EBoardElemType {
     Blue,
     Green,
     Purple,
-    Yellow
+    Yellow,
+    HRocket,
+    VRocket,
+    Bomb,
+    Star
 };
 
 struct ETGameBoardElem {

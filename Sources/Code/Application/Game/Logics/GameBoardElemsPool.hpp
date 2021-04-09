@@ -2,7 +2,7 @@
 #define __GAME_BOARD_ELEMS_POOL_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Game/ETGameBoard.hpp"
+#include "Game/ETGameElemsPool.hpp"
 #include "Math/Random.hpp"
 
 class ElementDescriptor {
