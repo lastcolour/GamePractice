@@ -84,48 +84,48 @@
       }
     },
     {
-      "type": "GameBoardElemsPool",
-      "id": 10,
-      "data": {
-        "elems": [
-          {
-            "object": "Entities/Game/Blocks/Blue.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Green.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Yellow.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Red.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Purple.json",
-            "weight": 1
-          }
-        ]
-      }
-    },
-    {
       "type": "GameBoard",
       "id": 11,
       "data": {
         "fallSpeed": 0.0,
         "fallAcceleration": 30.0,
         "size": {
-          "x": 10,
-          "y": 10
+          "x": 2,
+          "y": 2
         },
         "cellScale": 0.699999988079071,
         "elemsZOffset": 2,
         "backgroundZOffset": 0,
         "backgroundId": [
           1
+        ]
+      }
+    },
+    {
+      "type": "GameElemsPoolSetup",
+      "id": 12,
+      "data": {
+        "elems": [
+          {
+            "elemType": "Blue",
+            "weight": 1
+          },
+          {
+            "elemType": "Green",
+            "weight": 1
+          },
+          {
+            "elemType": "Purple",
+            "weight": 1
+          },
+          {
+            "elemType": "Red",
+            "weight": 1
+          },
+          {
+            "elemType": "Yellow",
+            "weight": 1
+          }
         ]
       }
     }

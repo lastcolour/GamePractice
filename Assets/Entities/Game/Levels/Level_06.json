@@ -41,8 +41,8 @@
               "alpha": 0.800000011920929,
               "drawPriority": 1,
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 1040.0,
+                "y": 1040.0
               },
               "tintColor": {
                 "r": 245,
@@ -84,34 +84,6 @@
       }
     },
     {
-      "type": "GameBoardElemsPool",
-      "id": 10,
-      "data": {
-        "elems": [
-          {
-            "object": "Entities/Game/Blocks/Blue.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Green.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Yellow.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Red.json",
-            "weight": 1
-          },
-          {
-            "object": "Entities/Game/Blocks/Purple.json",
-            "weight": 1
-          }
-        ]
-      }
-    },
-    {
       "type": "GameBoard",
       "id": 11,
       "data": {
@@ -122,8 +94,38 @@
           "y": 10
         },
         "cellScale": 0.699999988079071,
+        "elemsZOffset": 1,
+        "backgroundZOffset": 0,
         "backgroundId": [
           1
+        ]
+      }
+    },
+    {
+      "type": "GameElemsPoolSetup",
+      "id": 12,
+      "data": {
+        "elems": [
+          {
+            "elemType": "Blue",
+            "weight": 1
+          },
+          {
+            "elemType": "Green",
+            "weight": 1
+          },
+          {
+            "elemType": "Purple",
+            "weight": 1
+          },
+          {
+            "elemType": "Red",
+            "weight": 1
+          },
+          {
+            "elemType": "Yellow",
+            "weight": 1
+          }
         ]
       }
     }

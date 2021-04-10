@@ -94,10 +94,16 @@ void GameBoardTests::SetUp() {
         auto pool = entity->addCustomLogic<GameBoardElemsPool>();
         ASSERT_TRUE(pool);
 
-        ElementDescriptor elemDescr;
-        elemDescr.weight = 1;
-        elemDescr.object = TEST_OBJECT_1;
-        pool->ET_addElemsToSpawn(elemDescr);
+        pool->ET_setElemEntity(EBoardElemType::Blue, TEST_OBJECT_1);
+
+        GameElemPoolInfo info;
+        info.elemType = EBoardElemType::Blue;
+        info.weight = 1;
+
+        std::vector<GameElemPoolInfo> poolsInfo;
+        poolsInfo.emplace_back(info);
+
+        pool->ET_setPoolsSetup(poolsInfo);
     }
     {
         board = entity->addCustomLogic<TestGameBoardLogic>();

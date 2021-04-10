@@ -58,22 +58,25 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
 }
 
 void GameBoardLogic::ET_replaceElemToSpecial(EntityId targetId, EBoardElemType elemType) {
-    auto boardElem = getElem(targetId);
-    if(!boardElem) {
+    auto elem = getElem(targetId);
+    if(!elem) {
         assert(false && "Try replace invalid board elem");
         return;
     }
 
-    ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, boardElem->entId);
+    ET_SendEvent(&ETGameBoardElemsPool::ET_removeElem, elem->entId);
 
-    boardElem->entId = InvalidEntityId;
+    elem->entId = InvalidEntityId;
 
-    ET_SendEventReturn(boardElem->entId, &ETSpecialBoardElemsPool::ET_createSpecialElem,
+    ET_SendEventReturn(elem->entId, &ETGameBoardElemsPool::ET_spawnElem,
         elemType);
 
-    if(!boardElem->entId.isValid()) {
+    if(!elem->entId.isValid()) {
         LogError("[GameBoardLogic::ET_replaceElemToSpecial] Can't create special elem");
+        return;
     }
+
+    setupElem(*elem, elem->boardPt);
 }
 
 EntityId GameBoardLogic::ET_getElemByPos(const Vec2i& pt) const {
@@ -103,19 +106,14 @@ int GameBoardLogic::ET_getCellSize() const {
     return cellSize;
 }
 
-BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) const {
+BoardElement GameBoardLogic::createNewElement(const Vec2i& boardPt) {
     BoardElement elem;
-    ET_SendEventReturn(elem.entId, getEntityId(), &ETGameBoardElemsPool::ET_spawnElem);
+    ET_SendEventReturn(elem.entId, &ETGameBoardElemsPool::ET_spawnBaseRandomElem);
     if(!elem.entId.isValid()) {
         LogWarning("[GameBoardLogic::createNewElement] Can't spawn new board element");
         return elem;
     }
-
-    setElemBoardPos(elem, boardPt);
-    GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
-    ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
-    ET_SendEvent(elem.entId, &ETRenderNode::ET_show);
-
+    setupElem(elem, boardPt);
     return elem;
 }
 
@@ -131,6 +129,19 @@ void GameBoardLogic::init() {
     ET_resize(visualBox);
 
     uiProxies.addItem(backgroundId, backgroundZOffset);
+
+    ETNode<ETGameTimerEvents>::connect(getEntityId());
+    ETNode<ETGameBoard>::connect(getEntityId());
+}
+
+void GameBoardLogic::deinit() {
+}
+
+void GameBoardLogic::ET_spawnElems() {
+    if(!columns.empty()) {
+        LogError("[GameBoardLogic::ET_spawnElems] Elems already spawned");
+        return;
+    }
     for(int i = 0; i < boardSize.x; ++i) {
         std::vector<BoardElement> column;
         for(int j = 0; j < boardSize.y; ++j) {
@@ -138,18 +149,11 @@ void GameBoardLogic::init() {
             if(!elem.entId.isValid()) {
                 return;
             } else {
-                uiProxies.addItem(elem.entId, elemsZOffset);
                 column.push_back(elem);
             }
         }
         columns.push_back(std::move(column));
     }
-
-    ETNode<ETGameTimerEvents>::connect(getEntityId());
-    ETNode<ETGameBoard>::connect(getEntityId());
-}
-
-void GameBoardLogic::deinit() {
 }
 
 const BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) const {
@@ -233,15 +237,13 @@ void GameBoardLogic::respawnDestroyedElems() {
                 it = col.erase(it);
 
                 if(elem.entId.isValid()) {
-                    ET_SendEvent(getEntityId(), &ETGameBoardElemsPool::ET_removeElem, elem.entId);
+                    ET_SendEvent(&ETGameBoardElemsPool::ET_removeElem, elem.entId);
                 }
                 elem = createNewElement(elem.boardPt);
                 if(!elem.entId.isValid()) {
                     LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");
                     return;
                 }
-                uiProxies.addItem(elem.entId, elemsZOffset);
-
                 bool hasTopElem = false;
                 if(!col.empty()) {
                     auto& topElem = col.back();
@@ -365,8 +367,7 @@ void GameBoardLogic::ET_setBlockElemMatching(bool flag) {
 void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
     auto aabbSize = newAabb.getSize();
 
-    assert(aabbSize.x > 0 && "Invalid size of game board box");
-    assert(aabbSize.y > 0 && "Invalid size of game board box");
+    assert(aabbSize > Vec2(0.f) && "Invalid size of game board box");
 
     float cellSizeX = aabbSize.x / static_cast<float>(boardSize.x);
     float cellSizeY = aabbSize.y / static_cast<float>(boardSize.y);
@@ -452,4 +453,12 @@ void GameBoardLogic::processMovingElems(float dt) {
     }
 
     gameBoardFSM.getState().hasMovingElems = movingElemsCount > 0;
+}
+
+void GameBoardLogic::setupElem(BoardElement& elem, const Vec2i& boardPt) {
+    ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, elem.entId);
+    setElemBoardPos(elem, boardPt);
+    GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
+    ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
+    uiProxies.addItem(elem.entId, elemsZOffset);
 }

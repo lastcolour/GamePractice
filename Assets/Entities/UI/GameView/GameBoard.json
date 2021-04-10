@@ -147,9 +147,9 @@
         "hidden": false,
         "enabled": true,
         "style": {
-          "width": 0.95,
+          "width": 0.949999988079071,
           "widthInv": "Relative",
-          "height": 0.8,
+          "height": 0.800000011920929,
           "heightInv": "Relative",
           "margin": {
             "top": 0.0,
@@ -184,14 +184,14 @@
         "purpleDestroyEffectId": [
           3
         ],
-        "destroyEffectScale": 0.08
+        "destroyEffectScale": 0.07999999821186066
       }
     },
     {
       "type": "GameBoardInteraction",
       "id": 4,
       "data": {
-        "switchDuration": 0.2,
+        "switchDuration": 0.20000000298023224,
         "switchSound": {
           "event": "elemSwitch_01"
         }
@@ -201,8 +201,8 @@
       "type": "GameBoardAnimation",
       "id": 5,
       "data": {
-        "minScale": 0.7,
-        "scaleDuration": 0.4
+        "minScale": 0.699999988079071,
+        "scaleDuration": 0.4000000059604645
       }
     },
     {
@@ -211,7 +211,7 @@
       "data": {
         "highlightEntity": "Entities/Game/CellHighlighter.json",
         "fadeOutDuration": 1.0,
-        "cellScale": 0.8,
+        "cellScale": 0.800000011920929,
         "highlightZOffset": 0
       }
     },
@@ -227,14 +227,10 @@
         },
         "startVel": 1.0,
         "acc": 1.0,
-        "mutateTaskDuration": 0.2,
+        "mutateTaskDuration": 0.20000000298023224,
         "mutateEffectId": [
           106
-        ],
-        "vRocketEntity": "Entities/Game/Blocks/VRocket.json",
-        "hRocketEntity": "Entities/Game/Blocks/HRocket.json",
-        "bombEntity": "Entities/Game/Blocks/Bomb.json",
-        "starEntity": "Entities/Game/Blocks/Star.json"
+        ]
       }
     },
     {
@@ -285,6 +281,21 @@
             "extraZOffset": 3
           }
         ]
+      }
+    },
+    {
+      "type": "GameBoardElemsPool",
+      "id": 9,
+      "data": {
+        "blueEntity": "Entities/Game/Blocks/Blue.json",
+        "redEntity": "Entities/Game/Blocks/Red.json",
+        "yellowEntity": "Entities/Game/Blocks/Yellow.json",
+        "purpleEntity": "Entities/Game/Blocks/Purple.json",
+        "greenEntity": "Entities/Game/Blocks/Green.json",
+        "vRocketEntity": "Entities/Game/Blocks/VRocket.json",
+        "hRocketEntity": "Entities/Game/Blocks/HRocket.json",
+        "bombEntity": "Entities/Game/Blocks/Bomb.json",
+        "starEntity": "Entities/Game/Blocks/Star.json"
       }
     }
   ]

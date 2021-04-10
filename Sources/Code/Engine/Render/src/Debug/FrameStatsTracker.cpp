@@ -113,7 +113,7 @@ void FrameStatsTracker::onFrameEnd() {
         ET_SendEvent(&ETDebugRender::ET_drawText, drawPt, 14.f, col, drawTimeText.c_str());
     }
 
-    drawPt.y -= 45.f;
+    drawPt.y -= 48.f;
 
     DrawFPSChart(drawPt, Vec2(120.f, 40.f), fpsValues);
 }

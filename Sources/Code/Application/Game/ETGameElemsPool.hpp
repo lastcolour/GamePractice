@@ -3,18 +3,28 @@
 
 #include "Game/ETGameElem.hpp"
 
-class ElementDescriptor;
+struct GameElemPoolInfo {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    int weight;
+    EBoardElemType elemType;
+
+public:
+
+    GameElemPoolInfo();
+};
 
 struct ETGameBoardElemsPool {
     virtual ~ETGameBoardElemsPool() = default;
-    virtual EntityId ET_spawnElem() = 0;
+    virtual EntityId ET_spawnBaseRandomElem() = 0;
+    virtual EntityId ET_spawnElem(EBoardElemType elemType) = 0;
     virtual void ET_removeElem(EntityId elemId) = 0;
-    virtual void ET_addElemsToSpawn(const ElementDescriptor& newElemDescr) = 0;
-};
-
-struct ETSpecialBoardElemsPool {
-    virtual ~ETSpecialBoardElemsPool() = default;
-    virtual EntityId ET_createSpecialElem(EBoardElemType elemType) = 0;
+    virtual void ET_setPoolsSetup(const std::vector<GameElemPoolInfo>& poolsInfo) = 0;
+    virtual void ET_setElemEntity(EBoardElemType elemType, const char* entityName) = 0;
 };
 
 #endif /* __ET_GAME_ELEMS_POOL_HPP__ */

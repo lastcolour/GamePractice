@@ -35,6 +35,7 @@ public:
     void deinit() override;
 
     // ETGameBoard
+    void ET_spawnElems() override;
     void ET_replaceElemToSpecial(EntityId targetId, EBoardElemType elemType) override;
     void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) override;
     void ET_setBlockElemMatching(bool flag) override;
@@ -55,7 +56,7 @@ public:
 
 protected:
 
-    virtual BoardElement createNewElement(const Vec2i& boardPt) const;
+    virtual BoardElement createNewElement(const Vec2i& boardPt);
 
 protected:
 
@@ -69,6 +70,7 @@ protected:
     void removeElem(BoardElement& elem);
     void respawnDestroyedElems();
     void processMovingElems(float dt);
+    void setupElem(BoardElement& elem, const Vec2i& boardPt);
 
 protected:
 

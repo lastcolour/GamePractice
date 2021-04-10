@@ -9,6 +9,7 @@ enum class EBoardElemType;
 
 struct ETGameBoard {
     virtual ~ETGameBoard() = default;
+    virtual void ET_spawnElems() = 0;
     virtual void ET_replaceElemToSpecial(EntityId targetId, EBoardElemType elemType) = 0;
     virtual void ET_switchElemsBoardPos(EntityId firstId, EntityId secondId) = 0;
     virtual void ET_readBoardMatchState(BoardMatchState& boardMatchState) const = 0;

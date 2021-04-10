@@ -13,16 +13,24 @@ TEST_F(GameElemsPoolTests, CheckPoolDistribution) {
     auto pool = object->addCustomLogic<GameBoardElemsPool>();
     ASSERT_TRUE(pool);
     {
-        ElementDescriptor elemDescr;
-        elemDescr.weight = 1;
-        elemDescr.object = TEST_OBJECT_1;
-        pool->ET_addElemsToSpawn(elemDescr);
-    }
-    {
-        ElementDescriptor elemDescr;
-        elemDescr.weight = 2;
-        elemDescr.object = TEST_OBJECT_2;
-        pool->ET_addElemsToSpawn(elemDescr);
+        pool->ET_setElemEntity(EBoardElemType::Blue, TEST_OBJECT_1);
+        pool->ET_setElemEntity(EBoardElemType::Red, TEST_OBJECT_2);
+
+        std::vector<GameElemPoolInfo> poolsInfo;
+        {
+            GameElemPoolInfo info;
+            info.elemType = EBoardElemType::Blue;
+            info.weight = 1;
+            poolsInfo.emplace_back(info);
+        }
+        {
+            GameElemPoolInfo info;
+            info.elemType = EBoardElemType::Red;
+            info.weight = 2;
+            poolsInfo.emplace_back(info);
+
+        }
+        pool->ET_setPoolsSetup(poolsInfo);
     }
 
     const int N = 600;
@@ -30,7 +38,7 @@ TEST_F(GameElemsPoolTests, CheckPoolDistribution) {
     int elemType[] = {0, 0};
 
     for(int i = 0; i < N; ++i) {
-        auto elemId = pool->ET_spawnElem();
+        auto elemId = pool->ET_spawnBaseRandomElem();
         EXPECT_TRUE(elemId.isValid());
 
         std::string name = EntityUtils::GetEntityName(elemId);
@@ -53,17 +61,23 @@ TEST_F(GameElemsPoolTests, CheckPoolRespawn) {
     auto pool = object->addCustomLogic<GameBoardElemsPool>();
     ASSERT_TRUE(pool);
     {
-        ElementDescriptor elemDescr;
-        elemDescr.weight = 1;
-        elemDescr.object = TEST_OBJECT_1;
-        pool->ET_addElemsToSpawn(elemDescr);
+        pool->ET_setElemEntity(EBoardElemType::Blue, TEST_OBJECT_1);
+
+        std::vector<GameElemPoolInfo> poolsInfo;
+        {
+            GameElemPoolInfo info;
+            info.elemType = EBoardElemType::Blue;
+            info.weight = 1;
+            poolsInfo.emplace_back(info);
+        }
+        pool->ET_setPoolsSetup(poolsInfo);
     }
 
-    auto firstElemId = pool->ET_spawnElem();
+    auto firstElemId = pool->ET_spawnBaseRandomElem();
     pool->ET_removeElem(firstElemId);
 
-    auto secondElemId = pool->ET_spawnElem();
-    auto thirdElemId = pool->ET_spawnElem();
+    auto secondElemId = pool->ET_spawnBaseRandomElem();
+    auto thirdElemId = pool->ET_spawnBaseRandomElem();
 
     EXPECT_TRUE(secondElemId.isValid());
     EXPECT_TRUE(thirdElemId.isValid());

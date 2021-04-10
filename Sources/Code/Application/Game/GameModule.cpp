@@ -17,9 +17,9 @@
 #include "Game/Logics/ScoreObjective.hpp"
 #include "Game/Logics/GameBoardAnimation.hpp"
 #include "Game/Logics/GameBoardElemsPool.hpp"
+#include "Game/Logics/GameElemsPoolSetup.hpp"
 #include "Game/Logics/GameBoardElemHighlighter.hpp"
 #include "Game/Logics/BoardElemMergeManager.hpp"
-#include "Game/Logics/SpecialBoardElemsPool.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
@@ -60,7 +60,7 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameBoardElemLandAnimation>();
     logicsRegister.registerLogic<GameBoardElemHighlighter>();
     logicsRegister.registerLogic<BoardElemMergeManager>();
-    logicsRegister.registerLogic<SpecialBoardElemsPool>();
+    logicsRegister.registerLogic<GameElemsPoolSetup>();
 
     logicsRegister.registerLogic<GameResultViewScript>();
     logicsRegister.registerLogic<GameViewScript>();

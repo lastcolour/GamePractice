@@ -23,8 +23,8 @@ void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
             {"Green", EBoardElemType::Green},
             {"Purple", EBoardElemType::Purple},
             {"Yellow", EBoardElemType::Yellow},
-            {"HRocker", EBoardElemType::HRocket},
-            {"VRocker", EBoardElemType::VRocket},
+            {"HRocket", EBoardElemType::HRocket},
+            {"VRocket", EBoardElemType::VRocket},
             {"Bomb", EBoardElemType::Bomb},
             {"Star", EBoardElemType::Star}
         });
