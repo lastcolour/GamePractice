@@ -16,6 +16,7 @@ enum class EPatternType {
 struct MatchPoints {
     Vec2i pt;
     EntityId entId;
+    int clusterId;
     EBoardElemType elemType;
 };
 
@@ -39,6 +40,9 @@ public:
     void setElem(const Vec2i& pt, EntityId elemId);
     const MatchPoints& getElem(int x, int y) const;
     MatchPoints& getElem(int x, int y);
+    const MatchPoints& getElem(const Vec2i& pt) const;
+    MatchPoints& getElem(const Vec2i& pt);
+    int getElemIdx(int x, int y) const;
 
 private:
 
@@ -46,6 +50,6 @@ private:
     std::vector<MatchPoints> elems;
 };
 
-std::vector<PatternMatch> FindAllMatchPatterns(const BoardMatchState& board);
+std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board);
 
 #endif /* __MATCH_ALGORITHM_HPP__ */

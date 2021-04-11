@@ -90,8 +90,8 @@
         "fallSpeed": 0.0,
         "fallAcceleration": 30.0,
         "size": {
-          "x": 2,
-          "y": 2
+          "x": 10,
+          "y": 10
         },
         "cellScale": 0.699999988079071,
         "elemsZOffset": 2,
@@ -111,15 +111,15 @@
             "weight": 1
           },
           {
+            "elemType": "Red",
+            "weight": 1
+          },
+          {
             "elemType": "Green",
             "weight": 1
           },
           {
             "elemType": "Purple",
-            "weight": 1
-          },
-          {
-            "elemType": "Red",
             "weight": 1
           },
           {

@@ -23,11 +23,11 @@ public:
 
     // ETGameBoardMatcher
     bool ET_matchElements() override;
+    void ET_playDestroyEffect(EntityId elemId) override;
 
 private:
 
-    void matchPattern(const PatternMatch& p, int cellSize);
-    void playDestroyEffect(EntityId elemId, int cellSize);
+    void matchPattern(const PatternMatch& p);
 
 private:
 

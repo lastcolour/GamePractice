@@ -35,6 +35,7 @@ public:
     void ET_onLandPlayed() override;
     void ET_onDestroyPlayed() override;
     void ET_onMergeDone(EntityId elemId) override;
+    void ET_onTriggerDone() override;
 
 private:
 

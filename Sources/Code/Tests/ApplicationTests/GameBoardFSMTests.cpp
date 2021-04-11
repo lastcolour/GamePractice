@@ -215,3 +215,56 @@ TEST_F(GameBoardFSMTests, CheckEnterStaticAfterMove) {
         EXPECT_FALSE(successed);
     }
 }
+
+TEST_F(GameBoardFSMTests, CheckRespawnMatchAfterTrigger) {
+    GameBoardFSM gameBoardFSM;
+    auto& state = gameBoardFSM.getState();
+
+    state.hasTriggeringElems = true;
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.queryPass(pass);
+
+        EXPECT_TRUE(successed);
+        EXPECT_EQ(pass, EGameBoardUpdatePass::Trigger);
+    }
+
+    state.hasTriggeringElems = false;
+    state.isMatchRequested = true;
+    state.isRespawnRequested = true;
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.querySubPass(pass);
+
+        EXPECT_TRUE(successed);
+        EXPECT_EQ(pass, EGameBoardUpdatePass::Match);
+    }
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.querySubPass(pass);
+
+        EXPECT_TRUE(successed);
+        EXPECT_EQ(pass, EGameBoardUpdatePass::Respawn);
+    }
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.querySubPass(pass);
+
+        EXPECT_FALSE(successed);
+    }
+
+    state.isMatchRequested = false;
+    state.isRespawnRequested = false;
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.queryPass(pass);
+
+        EXPECT_TRUE(successed);
+        EXPECT_EQ(pass, EGameBoardUpdatePass::Static);
+    }
+}

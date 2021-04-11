@@ -19,4 +19,35 @@ EBoardElemType GetElemType(EntityId elemId) {
     return type;
 }
 
+bool HasTriggerLogic(EntityId elemId) {
+    auto elemType = GetElemType(elemId);
+    return IsTriggerType(elemType);
+}
+
+bool IsTriggerType(EBoardElemType elemType) {
+    bool res = false;
+    switch(elemType) {
+        case EBoardElemType::HRocket: {
+            res = true;
+            break;
+        }
+        case EBoardElemType::VRocket: {
+            res = true;
+            break;
+        }
+        case EBoardElemType::Bomb: {
+            res = true;
+            break;
+        }
+        case EBoardElemType::Star: {
+            res = true;
+            break;
+        }
+        default: {
+            res = false;
+        }
+    }
+    return res;
+}
+
 } // namespace GameUtils

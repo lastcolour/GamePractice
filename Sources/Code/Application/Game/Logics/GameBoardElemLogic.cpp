@@ -3,12 +3,13 @@
 #include "Render/ETRenderNode.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 #include <cassert>
 
 GameBoardElemLogic::GameBoardElemLogic() :
     state(EBoardElemState::Static),
-    type(EBoardElemType::Yellow),
+    type(EBoardElemType::None),
     mutateTo(EPatternType::None) {
 }
 
@@ -55,6 +56,8 @@ EBoardElemType GameBoardElemLogic::ET_getType() const {
 
 void GameBoardElemLogic::ET_triggerDestroy() {
     assert(state == EBoardElemState::Static && "Invalid elem state");
+
+    ET_SendEvent(&ETGameBoardMatcher::ET_playDestroyEffect, getEntityId());
 
     state = EBoardElemState::Destroying;
     if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
@@ -105,6 +108,11 @@ void GameBoardElemLogic::ET_onDestroyPlayed() {
     state = EBoardElemState::Destroyed;
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
     ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
+
+    if(GameUtils::IsTriggerType(type)) {
+        state = EBoardElemState::Triggering;
+        ET_SendEvent(&ETGameBoardElemTriggerManager::ET_createTriggerTask, getEntityId());
+    }
 }
 
 void GameBoardElemLogic::ET_setMutateAfterMerge(EPatternType pattern) {
@@ -133,10 +141,13 @@ void GameBoardElemLogic::ET_triggerMergeTo(EntityId mergeTargetId) {
 }
 
 void GameBoardElemLogic::ET_onMergeDone(EntityId elemId) {
-    if(state == EBoardElemState::Merging) {
-        state = EBoardElemState::Destroying;
-        ET_onDestroyPlayed();
-    } else {
-        assert(false && "Invalid elem state");
-    }
+    assert(state == EBoardElemState::Merging && "Invalid elem state");
+
+    state = EBoardElemState::Destroying;
+    ET_onDestroyPlayed();
+}
+
+void GameBoardElemLogic::ET_onTriggerDone() {
+    assert(state == EBoardElemState::Triggering && "Invalid elem state");
+    state = EBoardElemState::Destroyed;
 }

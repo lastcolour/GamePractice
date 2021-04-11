@@ -228,6 +228,9 @@ bool canMergePatterns(const PatternMatch& p1, const PatternMatch& p2) {
     if(p1.elemsType != p2.elemsType) {
         return false;
     }
+    if(p1.points[0]->clusterId != p2.points[0]->clusterId) {
+        return false;
+    }
     for(auto& e1 : p1.points) {
         for(auto& e2 : p2.points) {
             if(e1 == e2) {
@@ -259,8 +262,21 @@ std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>&
         allGroups.emplace_back(std::move(group));
     }
 
-    std::vector<PatternGroupsT> currGroups = allGroups;
     std::vector<PatternGroupsT> newGroups;
+
+    for(size_t i = 0, sz = patterns.size() - 1; i < sz; ++i) {
+        for(size_t j = i + 1; j < sz; ++j) {
+            auto& p = patterns[i];
+            auto& group = allGroups[j];
+            auto newGroup = tryMergeToGroup(p, group);
+            if(!newGroup.empty()) {
+                newGroups.push_back(newGroup);
+                allGroups.push_back(std::move(newGroup));
+            }
+        }
+    }
+
+    std::vector<PatternGroupsT> currGroups = std::move(newGroups);
 
     while(!currGroups.empty()) {
         for(auto& p : patterns) {
@@ -319,6 +335,68 @@ std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>&
     return resPatterns;
 }
 
+bool isInsideBoard(const Vec2i& size, const Vec2i& pt) {
+    return pt <= size && pt >= Vec2i(0);
+}
+
+void findAllClusters(BoardMatchState& board) {
+    auto size = board.getSize();
+    std::vector<int> visited(size.x * size.y, false);
+    std::vector<Vec2i> visitQueue;
+    int currClusterId = 0;
+    for(int i = 0; i < size.x; ++i) {
+        for(int j = 0; j < size.y; ++j) {
+            auto idx = board.getElemIdx(i, j);
+            if(visited[idx]) {
+                continue;
+            }
+            auto clusterElemsType = board.getElem(i, j).elemType;
+            visitQueue.push_back(Vec2i(i, j));
+            while(!visitQueue.empty()) {
+                Vec2i pt = visitQueue.back();
+                visitQueue.pop_back();
+
+                board.getElem(pt).clusterId = currClusterId;
+                visited[board.getElemIdx(pt.x, pt.y)] = true;
+
+                {
+                    Vec2i left(pt.x - 1, pt.y);
+                    if(isInsideBoard(size, left) && board.getElem(left).elemType == clusterElemsType) {
+                        if(!visited[board.getElemIdx(left.x, left.y)]) {
+                            visitQueue.push_back(left);
+                        }
+                    }
+                }
+                {
+                    Vec2i right(pt.x + 1, pt.y);
+                    if(isInsideBoard(size, right) && board.getElem(right).elemType == clusterElemsType) {
+                        if(!visited[board.getElemIdx(right.x, right.y)]) {
+                            visitQueue.push_back(right);
+                        }
+                    }
+                }
+                {
+                    Vec2i top(pt.x, pt.y + 1);
+                    if(isInsideBoard(size, top) && board.getElem(top).elemType == clusterElemsType) {
+                        if(!visited[board.getElemIdx(top.x, top.y)]) {
+                            visitQueue.push_back(top);
+                        }
+                    }
+                }
+                {
+                    Vec2i bot(pt.x, pt.y - 1);
+                    if(isInsideBoard(size, bot) && board.getElem(bot).elemType == clusterElemsType) {
+                        if(!visited[board.getElemIdx(bot.x, bot.y)]) {
+                            visitQueue.push_back(bot);
+                        }
+                    }
+                }
+            }
+            ++currClusterId;
+        }
+    }
+}
+
 } // namespace
 
 BoardMatchState::BoardMatchState() :
@@ -334,6 +412,7 @@ void BoardMatchState::reset() {
             auto& elem = getElem(i, j);
             elem.elemType = EBoardElemType::None;
             elem.entId = InvalidEntityId;
+            elem.clusterId = -1;
             elem.pt = Vec2i(i, j);
         }
     }
@@ -360,20 +439,30 @@ void BoardMatchState::setElem(const Vec2i& pt, EntityId entId) {
 }
 
 MatchPoints& BoardMatchState::getElem(int x, int y) {
-    auto i = x + size.x * y;
-    return elems[i];
+    return elems[getElemIdx(x, y)];
 }
 
 const MatchPoints& BoardMatchState::getElem(int x, int y) const {
-    auto i = x + size.x * y;
-    return elems[i];
+    return elems[getElemIdx(x, y)];
 }
 
-std::vector<PatternMatch> FindAllMatchPatterns(const BoardMatchState& board) {
-    auto boardSize = board.getSize();
+const MatchPoints& BoardMatchState::getElem(const Vec2i& pt) const {
+    return getElem(pt.x, pt.y);
+}
+
+MatchPoints& BoardMatchState::getElem(const Vec2i& pt) {
+    return getElem(pt.x, pt.y);
+}
+
+int BoardMatchState::getElemIdx(int x, int y) const {
+    return x + size.x * y;
+}
+
+std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board) {
+    findAllClusters(board);
 
     std::vector<PatternMatch> allMatches;
-
+    auto boardSize = board.getSize();
     for(int i = 0; i < boardSize.x; ++i) {
         for(int j = 0; j < boardSize.y; ++j) {
             bool hasSimpleLine = false;

@@ -149,15 +149,19 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
     while(it != switchTasks.end()) {
         auto& task = *it;
         if(task.duration > switchDuration) {
-            ET_SendEvent(&ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
+
+            GameUtils::SetElemState(task.firstId, EBoardElemState::Static);
+            GameUtils::SetElemState(task.secondId, EBoardElemState::Static);
 
             int drawPriority = 0;
             ET_SendEventReturn(drawPriority, task.firstId, &ETRenderNode::ET_getDrawPriority);
             drawPriority -= 1;
             ET_SendEvent(task.firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
 
-            GameUtils::SetElemState(task.firstId, EBoardElemState::Static);
-            GameUtils::SetElemState(task.secondId, EBoardElemState::Static);
+            ET_SendEvent(&ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
+            if(GameUtils::HasTriggerLogic(task.firstId)) {
+                ET_SendEvent(task.firstId, &ETGameBoardElem::ET_triggerDestroy);
+            }
 
             it = switchTasks.erase(it);
         } else {

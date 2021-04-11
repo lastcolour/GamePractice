@@ -118,6 +118,13 @@
           "event": "scoreIncrease_01"
         }
       }
+    },
+    {
+      "type": "GameElemRocketLogic",
+      "id": 7,
+      "data": {
+        "speed": 15.0
+      }
     }
   ]
 }

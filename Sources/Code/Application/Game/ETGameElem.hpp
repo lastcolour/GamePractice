@@ -10,6 +10,7 @@ enum class EBoardElemState {
     Landing,
     Merging,
     Mutating,
+    Triggering,
     Destroying,
     Destroyed
 };
@@ -43,6 +44,7 @@ struct ETGameBoardElem {
     virtual void ET_onLandPlayed() = 0;
     virtual void ET_onDestroyPlayed() = 0;
     virtual void ET_onMergeDone(EntityId elemId) = 0;
+    virtual void ET_onTriggerDone() = 0;
 };
 
 struct ETBoardElemDestroyAnimation {
@@ -66,6 +68,19 @@ struct ETGameBoardElemMergeManager {
     virtual void ET_createMergeTask(EntityId fromId, EntityId toId) = 0;
     virtual bool ET_hasMergeTasks() const = 0;
     virtual void ET_updateMergeTasks(float dt) = 0;
+};
+
+struct ETGameBoardElemTriggerLogic {
+    virtual ~ETGameBoardElemTriggerLogic() = default;
+    virtual void ET_start() = 0;
+    virtual bool ET_update(float dt) = 0;
+};
+
+struct ETGameBoardElemTriggerManager {
+    virtual ~ETGameBoardElemTriggerManager() = default;
+    virtual void ET_createTriggerTask(EntityId elemId) = 0;
+    virtual void ET_updateTriggerTasks(float dt) = 0;
+    virtual bool ET_hasTriggerTasks() const = 0;
 };
 
 #endif /* __ET_GAME_ELEM_HPP__ */

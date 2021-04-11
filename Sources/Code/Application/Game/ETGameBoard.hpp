@@ -40,6 +40,7 @@ struct ETGameBoardInteractionLogic {
 struct ETGameBoardMatcher {
     virtual ~ETGameBoardMatcher() = default;
     virtual bool ET_matchElements() = 0;
+    virtual void ET_playDestroyEffect(EntityId elemId) = 0;
 };
 
 struct ETGameBoardEvents {

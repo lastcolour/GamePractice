@@ -104,7 +104,13 @@ bool GameBoardFSM::queryPass(EGameBoardUpdatePass& outPass) {
             break;
         }
         case EGameBoardUpdatePass::Trigger: {
-            return false;
+            if(state.hasTriggeringElems) {
+                updatePass = EGameBoardUpdatePass::Trigger;
+            } else {
+                updatePass = EGameBoardUpdatePass::Static;
+                returnPass = updatePass;
+                return queryPass(outPass);
+            }
         }
         case EGameBoardUpdatePass::Match: {
             if(!state.isMatchRequested || state.isMatchBlocked) {

@@ -37,6 +37,5 @@ void GameElemsPoolSetup::ET_onLoaded() {
     ETNode<ETEntityEvents>::disconnect();
     if(!elems.empty()) {
         ET_SendEvent(&ETGameBoardElemsPool::ET_setPoolsSetup, elems);
-        ET_SendEvent(&ETGameBoard::ET_spawnElems);
     }
 }

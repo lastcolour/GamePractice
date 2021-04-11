@@ -4,36 +4,6 @@
 
 #include <cassert>
 
-namespace {
-
-bool isSpecialElemType(EBoardElemType elemType) {
-    bool res = false;
-    switch(elemType) {
-        case EBoardElemType::HRocket: {
-            res = true;
-            break;
-        }
-        case EBoardElemType::VRocket: {
-            res = true;
-            break;
-        }
-        case EBoardElemType::Bomb: {
-            res = true;
-            break;
-        }
-        case EBoardElemType::Star: {
-            res = true;
-            break;
-        }
-        default: {
-            res = false;
-        }
-    }
-    return res;
-}
-
-} // namespace
-
 void GameBoardElemsPool::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemsPool>("GameBoardElemsPool")) {
         classInfo->addResourceField("blueEntity", ResourceType::Entity,
@@ -138,7 +108,7 @@ void GameBoardElemsPool::initPools() {
                 pool.elemType, pool.weight);
             pool.weight = 0;
         }
-        if(isSpecialElemType(pool.elemType)) {
+        if(GameUtils::IsTriggerType(pool.elemType)) {
             LogWarning("[GameBoardElemPool::initPools] Can't have special elements of type '%d' in pools setup",
                 pool.elemType);
             continue;

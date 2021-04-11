@@ -297,6 +297,11 @@
         "bombEntity": "Entities/Game/Blocks/Bomb.json",
         "starEntity": "Entities/Game/Blocks/Star.json"
       }
+    },
+    {
+      "type": "BoardElemTriggerManager",
+      "id": 10,
+      "data": {}
     }
   ]
 }

@@ -53,6 +53,8 @@ void GameBoardSpawner::ET_loadPendingLevel() {
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, box);
 
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());
+
+    ET_SendEvent(&ETGameBoard::ET_spawnElems);
 }
 
 void GameBoardSpawner::ET_onBoxChanged(const AABB2D& newAabb) {

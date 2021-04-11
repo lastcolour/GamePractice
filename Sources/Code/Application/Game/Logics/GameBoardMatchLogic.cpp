@@ -29,9 +29,6 @@ void GameBoardMatchLogic::deinit() {
 }
 
 bool GameBoardMatchLogic::ET_matchElements() {
-    int cellSize = 0;
-    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
-
     boardMatchState.reset();
     ET_SendEvent(&ETGameBoard::ET_readBoardMatchState, boardMatchState);
 
@@ -41,17 +38,16 @@ bool GameBoardMatchLogic::ET_matchElements() {
     }
 
     for(auto& p : patterns) {
-        matchPattern(p, cellSize);
+        matchPattern(p);
     }
 
     return true;
 }
 
-void GameBoardMatchLogic::matchPattern(const PatternMatch& p, int cellSize) {
+void GameBoardMatchLogic::matchPattern(const PatternMatch& p) {
     if(p.patternType == EPatternType::HLine || p.patternType == EPatternType::VLine || p.patternType == EPatternType::None) {
         for(auto& elem : p.points) {
             ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy);
-            playDestroyEffect(elem->entId, cellSize);
         }
     } else {
         auto midElem = p.points[1];
@@ -64,10 +60,13 @@ void GameBoardMatchLogic::matchPattern(const PatternMatch& p, int cellSize) {
     }
 }
 
-void GameBoardMatchLogic::playDestroyEffect(EntityId elemId, int cellSize) {
+void GameBoardMatchLogic::ET_playDestroyEffect(EntityId elemId) {
+    int cellSize = 0;
+    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
+
     Transform tm;
     ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
-    tm.scale = Vec3(cellSize * destroyEffectScale);
+    tm.scale = Vec3(static_cast<float>(cellSize) * destroyEffectScale);
 
     EBoardElemType elemType = EBoardElemType::None;
     ET_SendEventReturn(elemType, elemId, &ETGameBoardElem::ET_getType);
@@ -96,6 +95,18 @@ void GameBoardMatchLogic::playDestroyEffect(EntityId elemId, int cellSize) {
         }
         case EBoardElemType::Green: {
             effectId = greenDestroyEffectId;
+            break;
+        }
+        case EBoardElemType::VRocket: {
+            break;
+        }
+        case EBoardElemType::HRocket: {
+            break;
+        }
+        case EBoardElemType::Bomb: {
+            break;
+        }
+        case EBoardElemType::Star: {
             break;
         }
         case EBoardElemType::None: {

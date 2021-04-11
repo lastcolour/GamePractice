@@ -54,7 +54,7 @@
       "type": "GameBoardElem",
       "id": 1,
       "data": {
-        "type": "VRocker"
+        "type": "VRocket"
       }
     },
     {
@@ -117,6 +117,13 @@
         "landSound": {
           "event": "scoreIncrease_01"
         }
+      }
+    },
+    {
+      "type": "GameElemRocketLogic",
+      "id": 7,
+      "data": {
+        "speed": 15.0
       }
     }
   ]

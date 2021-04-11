@@ -9,7 +9,11 @@ EBoardElemState GetElemState(EntityId elemId);
 
 void SetElemState(EntityId elemId, EBoardElemState state);
 
-EBoardElemType GetElemType(EntityId elemId); 
+EBoardElemType GetElemType(EntityId elemId);
+
+bool HasTriggerLogic(EntityId elemId);
+
+bool IsTriggerType(EBoardElemType elemType);
 
 } // namespace GameUtils
 

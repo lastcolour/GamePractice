@@ -294,6 +294,7 @@ Vec2i GameBoardLogic::getBoardPosFromPos(const Vec2i& boardPt, const Vec3& pt) c
 void GameBoardLogic::ET_onGameTick(float dt) {
     auto& state = gameBoardFSM.getState();
     ET_SendEventReturn(state.hasMergingElems, &ETGameBoardElemMergeManager::ET_hasMergeTasks);
+    ET_SendEventReturn(state.hasTriggeringElems, &ETGameBoardElemTriggerManager::ET_hasTriggerTasks);
 
     auto pass = EGameBoardUpdatePass::Static;
     auto hasUpdatePass = gameBoardFSM.queryPass(pass);
@@ -311,6 +312,9 @@ void GameBoardLogic::ET_onGameTick(float dt) {
                 break;
             }
             case EGameBoardUpdatePass::Trigger: {
+                gameBoardFSM.getState().isMatchRequested = true;
+                gameBoardFSM.getState().isRespawnRequested = true;
+                ET_SendEvent(&ETGameBoardElemTriggerManager::ET_updateTriggerTasks, dt);
                 break;
             }
             case EGameBoardUpdatePass::Match: {
