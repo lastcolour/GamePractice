@@ -9,8 +9,7 @@
 
 GameBoardElemLogic::GameBoardElemLogic() :
     state(EBoardElemState::Static),
-    type(EBoardElemType::None),
-    mutateTo(EPatternType::None) {
+    type(EBoardElemType::None) {
 }
 
 GameBoardElemLogic::~GameBoardElemLogic() {
@@ -115,35 +114,9 @@ void GameBoardElemLogic::ET_onDestroyPlayed() {
     }
 }
 
-void GameBoardElemLogic::ET_setMutateAfterMerge(EPatternType pattern) {
-    assert(state == EBoardElemState::Static && "Invalid elem state");
+void GameBoardElemLogic::ET_onMergeDone() {
+    assert(state == EBoardElemState::Destroying);
 
-    state = EBoardElemState::Mutating;
-    mutateTo = pattern;
-}
-
-void GameBoardElemLogic::ET_triggerMutate() {
-    assert(state == EBoardElemState::Mutating && "Invalid elem state");
-
-    state = EBoardElemState::Destroying;
-    ET_onDestroyPlayed();
-
-    ET_SendEvent(&ETGameBoard::ET_replaceElemToSpecial, getEntityId(), EBoardElemType::HRocket);
-    mutateTo = EPatternType::None;
-}
-
-void GameBoardElemLogic::ET_triggerMergeTo(EntityId mergeTargetId) {
-    assert(state == EBoardElemState::Static && "Invalid elem state");
-
-    state = EBoardElemState::Merging;
-    ET_SendEvent(&ETGameBoardElemMergeManager::ET_createMergeTask,
-        getEntityId(), mergeTargetId);
-}
-
-void GameBoardElemLogic::ET_onMergeDone(EntityId elemId) {
-    assert(state == EBoardElemState::Merging && "Invalid elem state");
-
-    state = EBoardElemState::Destroying;
     ET_onDestroyPlayed();
 }
 

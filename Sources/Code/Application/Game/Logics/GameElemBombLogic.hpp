@@ -1,10 +1,13 @@
-#ifndef __GAME_ELEM_ROCKET_LOGIC_HPP__
-#define __GAME_ELEM_ROCKET_LOGIC_HPP__
+#ifndef __GAME_ELEM_BOMB_LOGIC_HPP__
+#define __GAME_ELEM_BOMB_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
 
-class GameElemRocketLogic : public EntityLogic,
+#include "Entity/EntityLogic.hpp"
+#include "Game/ETGameElem.hpp"
+
+class GameElemBombLogic : public EntityLogic,
     public ETNode<ETGameBoardElemTriggerLogic> {
 public:
 
@@ -12,8 +15,8 @@ public:
 
 public:
 
-    GameElemRocketLogic();
-    virtual ~GameElemRocketLogic();
+    GameElemBombLogic();
+    virtual ~GameElemBombLogic();
 
     // EntityLogic
     void init() override;
@@ -28,7 +31,7 @@ private:
     Vec2i startPt;
     float speed;
     float currTime;
-    bool isHorizontal;
+    int radius;
 };
 
-#endif /* __GAME_ELEM_ROCKET_LOGIC_HPP__ */
+#endif /* __GAME_ELEM_BOMB_LOGIC_HPP__ */

@@ -2,23 +2,6 @@
 #include "Game/ETGameBoard.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
 
-namespace {
-
-void tryTriggerDestroy(const Vec2i& boardPt) {
-    EntityId elemId;
-    ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
-    if(!elemId.isValid()) {
-        return;
-    }
-    auto elemState = GameUtils::GetElemState(elemId);
-    if(elemState != EBoardElemState::Static) {
-        return;
-    }
-    ET_SendEvent(elemId, &ETGameBoardElem::ET_triggerDestroy);
-}
-
-} // namespace
-
 void GameElemRocketLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameElemRocketLogic>("GameElemRocketLogic")) {
         classInfo->addField("speed", &GameElemRocketLogic::speed);
@@ -28,6 +11,7 @@ void GameElemRocketLogic::Reflect(ReflectContext& ctx) {
 GameElemRocketLogic::GameElemRocketLogic() :
     startPt(-1),
     speed(1.f),
+    currTime(0.f),
     isHorizontal(false) {
 }
 
@@ -62,12 +46,12 @@ bool GameElemRocketLogic::ET_update(float dt) {
             {
                 Vec2i pt = startPt;
                 pt.x += i;
-                tryTriggerDestroy(pt);
+                GameUtils::TryTriggerElemDestroy(pt);
             }
             {
                 Vec2i pt = startPt;
                 pt.x -= i;
-                tryTriggerDestroy(pt);
+                GameUtils::TryTriggerElemDestroy(pt);
             }
         }
     } else {
@@ -75,12 +59,12 @@ bool GameElemRocketLogic::ET_update(float dt) {
             {
                 Vec2i pt = startPt;
                 pt.y += i;
-                tryTriggerDestroy(pt);
+                GameUtils::TryTriggerElemDestroy(pt);
             }
             {
                 Vec2i pt = startPt;
                 pt.y -= i;
-                tryTriggerDestroy(pt);
+                GameUtils::TryTriggerElemDestroy(pt);
             }
         }
     }

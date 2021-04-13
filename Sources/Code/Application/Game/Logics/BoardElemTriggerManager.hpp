@@ -26,6 +26,7 @@ public:
 
 private:
 
+    std::vector<EntityId> newTriggerTasks;
     std::vector<EntityId> triggerTasks;
 };
 

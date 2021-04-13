@@ -9,7 +9,6 @@ enum class EBoardElemState {
     Switching,
     Landing,
     Merging,
-    Mutating,
     Triggering,
     Destroying,
     Destroyed
@@ -28,6 +27,11 @@ enum class EBoardElemType {
     Star
 };
 
+struct ElemMergeTask {
+    std::vector<EntityId> elems;
+    EBoardElemType elemType;
+};
+
 struct ETGameBoardElem {
     virtual ~ETGameBoardElem() = default;
     virtual void ET_setElemState(EBoardElemState newState) = 0;
@@ -35,16 +39,13 @@ struct ETGameBoardElem {
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy() = 0;
     virtual void ET_triggerLand() = 0;
-    virtual void ET_setMutateAfterMerge(EPatternType pattern) = 0;
-    virtual void ET_triggerMutate() = 0;
-    virtual void ET_triggerMergeTo(EntityId mergeTargetId) = 0;
     virtual void ET_setSelected(bool flag) = 0;
     virtual bool ET_canMatch() const = 0;
     virtual bool ET_canSwitch() const = 0;
     virtual void ET_onLandPlayed() = 0;
     virtual void ET_onDestroyPlayed() = 0;
-    virtual void ET_onMergeDone(EntityId elemId) = 0;
     virtual void ET_onTriggerDone() = 0;
+    virtual void ET_onMergeDone() = 0;
 };
 
 struct ETBoardElemDestroyAnimation {
@@ -65,7 +66,7 @@ struct ETGameBoardElemLandAnimation {
 
 struct ETGameBoardElemMergeManager {
     virtual ~ETGameBoardElemMergeManager() = default;
-    virtual void ET_createMergeTask(EntityId fromId, EntityId toId) = 0;
+    virtual void ET_createMergeTask(const ElemMergeTask& newTask) = 0;
     virtual bool ET_hasMergeTasks() const = 0;
     virtual void ET_updateMergeTasks(float dt) = 0;
 };

@@ -22,6 +22,7 @@
 #include "Game/Logics/BoardElemMergeManager.hpp"
 #include "Game/Logics/BoardElemTriggerManager.hpp"
 #include "Game/Logics/GameElemRocketLogic.hpp"
+#include "Game/Logics/GameElemBombLogic.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
@@ -65,6 +66,7 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameElemsPoolSetup>();
     logicsRegister.registerLogic<BoardElemTriggerManager>();
     logicsRegister.registerLogic<GameElemRocketLogic>();
+    logicsRegister.registerLogic<GameElemBombLogic>();
 
     logicsRegister.registerLogic<GameResultViewScript>();
     logicsRegister.registerLogic<GameViewScript>();

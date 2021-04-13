@@ -69,9 +69,9 @@
           "y": 100.0
         },
         "tintColor": {
-          "r": 9,
-          "g": 58,
-          "b": 70,
+          "r": 22,
+          "g": 86,
+          "b": 52,
           "a": 255
         },
         "image": "Images/Game/circle_64x64.png"

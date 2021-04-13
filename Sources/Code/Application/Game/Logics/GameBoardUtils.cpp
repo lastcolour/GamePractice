@@ -1,5 +1,5 @@
 #include "Game/Logics/GameBoardUtils.hpp"
-#include "Game/ETGameElem.hpp"
+#include "Game/ETGameBoard.hpp"
 
 namespace GameUtils {
 
@@ -48,6 +48,19 @@ bool IsTriggerType(EBoardElemType elemType) {
         }
     }
     return res;
+}
+
+void TryTriggerElemDestroy(const Vec2i& boardPt) {
+    EntityId elemId;
+    ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
+    if(!elemId.isValid()) {
+        return;
+    }
+    auto elemState = GameUtils::GetElemState(elemId);
+    if(elemState != EBoardElemState::Static) {
+        return;
+    }
+    ET_SendEvent(elemId, &ETGameBoardElem::ET_triggerDestroy);
 }
 
 } // namespace GameUtils

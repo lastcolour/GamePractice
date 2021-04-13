@@ -22,31 +22,32 @@ public:
     void deinit() override;
 
     // ETGameBoardElemMergeManager
-    void ET_createMergeTask(EntityId fromId, EntityId toId) override;
+    void ET_createMergeTask(const ElemMergeTask& newTask) override;
     bool ET_hasMergeTasks() const override;
     void ET_updateMergeTasks(float dt) override;
 
 private:
 
     struct MergeTask {
-        EntityId targetId;
         Vec2 dir;
+        EntityId targetId;
         float vel;
     };
 
     struct MutateTask {
-        EntityId targetId;
+        EntityId toId;
+        std::vector<MergeTask> merges;
         float duration;
+        EBoardElemType elemType;
     };
 
 private:
 
-    void processMergeTasks(EntityId toId, std::vector<MergeTask>& tasks, float dt, float cellSize);
-    void processMutateTasks(float dt);
+    void processMerges(MutateTask& task, float dt, float cellSize);
+    void processMutate(MutateTask& task, float dt);
 
 private:
 
-    std::unordered_map<EntityId, std::vector<MergeTask>> tasksMap;
     std::vector<MutateTask> mutateTasks;
     Math::RandomFloatGenerator floatGen;
     SoundEvent mergeSound;

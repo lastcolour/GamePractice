@@ -3,6 +3,36 @@
 
 #include <cassert>
 
+namespace {
+
+EBoardElemType getSpecialElemType(EPatternType patternType) {
+    EBoardElemType res = EBoardElemType::None;
+    switch(patternType) {
+        case EPatternType::HRocket: {
+            res = EBoardElemType::HRocket;
+            break;
+        }
+        case EPatternType::VRocket: {
+            res = EBoardElemType::VRocket;
+            break;
+        }
+        case EPatternType::Bomb: {
+            res = EBoardElemType::Bomb;
+            break;
+        }
+        case EPatternType::Star: {
+            res = EBoardElemType::Star;
+            break;
+        }
+        default: {
+            assert(false && "Invalid pattern type");
+        }
+    }
+    return res;
+}
+
+} // namespace
+
 GameBoardMatchLogic::GameBoardMatchLogic() :
     destroyEffectScale(1.f) {
 }
@@ -50,13 +80,12 @@ void GameBoardMatchLogic::matchPattern(const PatternMatch& p) {
             ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy);
         }
     } else {
-        auto midElem = p.points[1];
+        ElemMergeTask mergeTask;
+        mergeTask.elemType = getSpecialElemType(p.patternType);
         for(auto& elem : p.points) {
-            if(elem != midElem) {
-                ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerMergeTo, midElem->entId);
-            }
+            mergeTask.elems.push_back(elem->entId);
         }
-        ET_SendEvent(midElem->entId, &ETGameBoardElem::ET_setMutateAfterMerge, p.patternType);
+        ET_SendEvent(&ETGameBoardElemMergeManager::ET_createMergeTask, mergeTask);
     }
 }
 

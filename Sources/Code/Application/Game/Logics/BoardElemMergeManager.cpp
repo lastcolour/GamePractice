@@ -1,7 +1,7 @@
 #include "Game/Logics/BoardElemMergeManager.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "Game/ETGameElem.hpp"
 #include "Render/ETParticlesSystem.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 #include <cassert>
 
@@ -48,63 +48,46 @@ void BoardElemMergeManager::deinit() {
 }
 
 bool BoardElemMergeManager::ET_hasMergeTasks() const  {
-    return !tasksMap.empty()
-        || !mutateTasks.empty();
+    return !mutateTasks.empty();
 }
 
 void BoardElemMergeManager::ET_updateMergeTasks(float dt) {
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
 
-    auto it = tasksMap.begin();
-    while(it != tasksMap.end()) {
-        processMergeTasks(it->first, it->second, dt, static_cast<float>(cellSize));
-        if(it->second.empty()) {
-
-            mutateSound.emit();
-
-            Transform tm;
-            ET_SendEventReturn(tm, it->first, &ETEntity::ET_getTransform);
-            ET_SendEvent(mutateEffectId, &ETParticlesSystem::ET_emitWithTm, tm);
-
-            MutateTask task;
-            task.targetId = it->first;
-            task.duration = mutateTaskDuration;
-
-            mutateTasks.push_back(task);
-
-            it = tasksMap.erase(it);
-        } else {
-            ++it;
-        }
-    }
-
-    processMutateTasks(dt);
-}
-
-void BoardElemMergeManager::processMutateTasks(float dt) {
     auto it = mutateTasks.begin();
     while(it != mutateTasks.end()) {
-        it->duration -= dt;
-        if(it->duration < 0.f) {
-
-            ET_SendEvent(it->targetId, &ETGameBoardElem::ET_triggerMutate);
-
-            it = mutateTasks.erase(it);
-        } else {
+        auto& task = *it;
+        if(!task.merges.empty()) {
+            processMerges(task, dt, static_cast<float>(cellSize));
             ++it;
+        } else {
+            processMutate(task, dt);
+            if(task.duration < 0.f) {
+                it = mutateTasks.erase(it);
+            } else {
+                ++it;
+            }
         }
     }
 }
 
-void BoardElemMergeManager::processMergeTasks(EntityId toId, std::vector<MergeTask>& tasks, float dt, float cellSize) {
+void BoardElemMergeManager::processMutate(MutateTask& task, float dt) {
+    task.duration -= dt;
+    if(task.duration < 0.f) {
+        ET_SendEvent(task.toId, &ETGameBoardElem::ET_onMergeDone);
+        ET_SendEvent(&ETGameBoard::ET_replaceElemToSpecial, task.toId, task.elemType);
+    }
+}
+
+void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cellSize) {
     Transform toTm;
-    ET_SendEventReturn(toTm, toId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(toTm, task.toId, &ETEntity::ET_getTransform);
 
     Vec2 toPt(toTm.pt.x, toTm.pt.y);
 
-    auto it = tasks.begin();
-    while(it != tasks.end()) {
+    auto it = task.merges.begin();
+    while(it != task.merges.end()) {
         Transform fromTm;
         ET_SendEventReturn(fromTm, it->targetId, &ETEntity::ET_getTransform);
         Vec2 fromPt(fromTm.pt.x, fromTm.pt.y);
@@ -120,9 +103,9 @@ void BoardElemMergeManager::processMergeTasks(EntityId toId, std::vector<MergeTa
         fromTm.pt.x += offset.x;
         fromTm.pt.y += offset.y;
         if(offset.lenghtSq() > distSq) {
-            ET_SendEvent(it->targetId, &ETGameBoardElem::ET_onMergeDone, toId);
+            ET_SendEvent(it->targetId, &ETGameBoardElem::ET_onMergeDone);
             mergeSound.emit();
-            it = tasks.erase(it);
+            it = task.merges.erase(it);
         } else {
             ET_SendEvent(it->targetId, &ETEntity::ET_setTransform, fromTm);
             ++it;
@@ -130,19 +113,27 @@ void BoardElemMergeManager::processMergeTasks(EntityId toId, std::vector<MergeTa
     }
 }
 
-void BoardElemMergeManager::ET_createMergeTask(EntityId fromId, EntityId toId) {
-    assert(fromId.isValid() && "Invalid from id");
-    assert(toId.isValid() && "Invalid from id");
+void BoardElemMergeManager::ET_createMergeTask(const ElemMergeTask& mergeTask) {
+    assert(mergeTask.elems.size() && "Empty elems to merge");
 
-    MergeTask task;
-    task.targetId = fromId;
-    task.dir = getRandomDir(floatGen);
-    task.vel = startVel;
+    MutateTask mutateTask;
+    mutateTask.toId = mergeTask.elems[0];
+    mutateTask.duration = mutateTaskDuration;
+    mutateTask.elemType = mergeTask.elemType;
 
-    auto it = tasksMap.find(toId);
-    if(it != tasksMap.end()) {
-        it->second.push_back(task);
-    } else {
-        tasksMap[toId].push_back(task);
+    GameUtils::SetElemState(mutateTask.toId, EBoardElemState::Destroying);
+
+    for(size_t i = 1, sz = mergeTask.elems.size(); i < sz; ++i) {
+        auto& elemId = mergeTask.elems[i];
+    
+        GameUtils::SetElemState(elemId, EBoardElemState::Destroying);
+
+        MergeTask task;
+        task.targetId = elemId;
+        task.vel = startVel;
+        task.dir = getRandomDir(floatGen);
+        mutateTask.merges.push_back(task);
     }
+
+    mutateTasks.push_back(mutateTask);
 }

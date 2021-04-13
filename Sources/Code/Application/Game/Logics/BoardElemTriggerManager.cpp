@@ -4,7 +4,6 @@
 
 void BoardElemTriggerManager::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<BoardElemTriggerManager>("BoardElemTriggerManager")) {
-        
     }
 }
 
@@ -26,15 +25,17 @@ void BoardElemTriggerManager::ET_createTriggerTask(EntityId elemId) {
         assert(false && "Invalid elem type");
         return;
     }
-    triggerTasks.push_back(elemId);
+    newTriggerTasks.push_back(elemId);
     ET_SendEvent(elemId, &ETGameBoardElemTriggerLogic::ET_start);
 }
 
 void BoardElemTriggerManager::ET_updateTriggerTasks(float dt) {
+    triggerTasks.insert(triggerTasks.end(), newTriggerTasks.begin(), newTriggerTasks.end());
+    newTriggerTasks.clear();
     auto it = triggerTasks.begin();
     while(it != triggerTasks.end()) {
         bool isEnded = true;
-        ET_SendEventReturn(isEnded, &ETGameBoardElemTriggerLogic::ET_update, dt);
+        ET_SendEventReturn(isEnded, *it, &ETGameBoardElemTriggerLogic::ET_update, dt);
         if(isEnded) {
             it = triggerTasks.erase(it);
         } else {
@@ -44,5 +45,5 @@ void BoardElemTriggerManager::ET_updateTriggerTasks(float dt) {
 }
 
 bool BoardElemTriggerManager::ET_hasTriggerTasks() const {
-    return !triggerTasks.empty();
+    return !triggerTasks.empty() || !newTriggerTasks.empty();
 }
