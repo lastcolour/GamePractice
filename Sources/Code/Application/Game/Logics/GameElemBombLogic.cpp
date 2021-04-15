@@ -31,6 +31,9 @@ void GameElemBombLogic::ET_start() {
     currTime = 0.f;
 }
 
+void GameElemBombLogic::ET_setSwapedElem(EntityId elemId) {
+}
+
 bool GameElemBombLogic::ET_update(float dt) {
     currTime += dt;
     int currRadius = static_cast<int>(speed * currTime);
@@ -38,12 +41,20 @@ bool GameElemBombLogic::ET_update(float dt) {
         currRadius = radius;
     }
 
-    for(int i = 1; i < radius; ++i) {
-        for(int j = 1; j < radius; ++j) {
-            Vec2i pt = Vec2i(i, j) + startPt;
+    for(int i = -radius; i <= radius; ++i) {
+        for(int j = -radius; j <= radius; ++j) {
+            if(i == 0 && j == 0) {
+                continue;
+            }
+            Vec2i pt = startPt + Vec2i(i, j);
             GameUtils::TryTriggerElemDestroy(pt);
         }
     }
 
-    return currRadius == radius;
+    bool isEnded = currRadius >= radius;
+    if(isEnded) {
+        ET_SendEvent(getEntityId(), &ETGameBoardElem::ET_onTriggerDone);
+    }
+
+    return isEnded;
 }

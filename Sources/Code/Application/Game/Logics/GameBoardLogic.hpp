@@ -50,6 +50,7 @@ public:
     bool ET_isAllElemStatic() const override;
     void ET_resize(const AABB2D& newAabb) override;
     void ET_readBoardMatchState(BoardMatchState& boardMatchState) const override;
+    std::vector<EntityId> ET_getAllElemsOfType(EBoardElemType queryElemType) const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;

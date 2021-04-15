@@ -79,7 +79,7 @@
           "minScore": 30
         },
         "threeStars": {
-          "minScore": 50
+          "minScore": 1500
         }
       }
     },
@@ -124,6 +124,22 @@
           },
           {
             "elemType": "Yellow",
+            "weight": 1
+          },
+          {
+            "elemType": "Star",
+            "weight": 1
+          },
+          {
+            "elemType": "HRocket",
+            "weight": 1
+          },
+          {
+            "elemType": "VRocket",
+            "weight": 1
+          },
+          {
+            "elemType": "Bomb",
             "weight": 1
           }
         ]

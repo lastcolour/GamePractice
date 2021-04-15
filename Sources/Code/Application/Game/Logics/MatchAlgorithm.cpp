@@ -336,7 +336,7 @@ std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>&
 }
 
 bool isInsideBoard(const Vec2i& size, const Vec2i& pt) {
-    return pt <= size && pt >= Vec2i(0);
+    return pt < size && pt >= Vec2i(0);
 }
 
 void findAllClusters(BoardMatchState& board) {

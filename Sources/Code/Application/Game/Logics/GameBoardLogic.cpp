@@ -348,6 +348,9 @@ void GameBoardLogic::ET_readBoardMatchState(BoardMatchState& boardMatchState) co
     boardMatchState.setSize(boardSize);
     for(auto& col : columns) {
         for(auto& elem : col) {
+            if(GameUtils::HasTriggerLogic(elem.entId)) {
+                continue;
+            }
             auto elemState = GameUtils::GetElemState(elem.entId);
             if(elemState == EBoardElemState::Static) {
                 boardMatchState.setElem(elem.boardPt, elem.entId);
@@ -465,4 +468,22 @@ void GameBoardLogic::setupElem(BoardElement& elem, const Vec2i& boardPt) {
     GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
     ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
     uiProxies.addItem(elem.entId, elemsZOffset);
+}
+
+std::vector<EntityId> GameBoardLogic::ET_getAllElemsOfType(EBoardElemType queryElemType) const {
+    std::vector<EntityId> res;
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            auto elemState = GameUtils::GetElemState(elem.entId);
+            if(elemState != EBoardElemState::Static) {
+                continue;
+            }
+            auto elemType = GameUtils::GetElemType(elem.entId);
+            if(elemType != queryElemType) {
+                continue;
+            }
+            res.push_back(elem.entId);
+        }
+    }
+    return res;
 }

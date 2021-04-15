@@ -109,9 +109,8 @@ void GameBoardElemsPool::initPools() {
             pool.weight = 0;
         }
         if(GameUtils::IsTriggerType(pool.elemType)) {
-            LogWarning("[GameBoardElemPool::initPools] Can't have special elements of type '%d' in pools setup",
+            LogWarning("[GameBoardElemPool::initPools] There are special elements of type '%d' in pools setup",
                 pool.elemType);
-            continue;
         }
         auto it = poolsElems.find(pool.elemType);
         if(it != poolsElems.end()) {

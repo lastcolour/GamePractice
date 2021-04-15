@@ -22,6 +22,7 @@ public:
     // ETGameBoardElemTriggerLogic
     void ET_start();
     bool ET_update(float dt) override;
+    void ET_setSwapedElem(EntityId elemId) override;
 
 private:
 

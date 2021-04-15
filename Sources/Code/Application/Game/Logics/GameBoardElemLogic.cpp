@@ -55,14 +55,18 @@ EBoardElemType GameBoardElemLogic::ET_getType() const {
 
 void GameBoardElemLogic::ET_triggerDestroy() {
     assert(state == EBoardElemState::Static && "Invalid elem state");
-
     ET_SendEvent(&ETGameBoardMatcher::ET_playDestroyEffect, getEntityId());
 
-    state = EBoardElemState::Destroying;
-    if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
-        ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimation::ET_playDestroy);
+    if(GameUtils::IsTriggerType(type)) {
+        state = EBoardElemState::Triggering;
+        ET_SendEvent(&ETGameBoardElemTriggerManager::ET_createTriggerTask, getEntityId());
     } else {
-        ET_onDestroyPlayed();
+        state = EBoardElemState::Destroying;
+        if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
+            ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimation::ET_playDestroy);
+        } else {
+            ET_onDestroyPlayed();
+        }
     }
 }
 
@@ -107,11 +111,6 @@ void GameBoardElemLogic::ET_onDestroyPlayed() {
     state = EBoardElemState::Destroyed;
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
     ET_SendEvent(&ETGameBoardElemDestoryEvents::ET_onElemsDestroyed, getEntityId());
-
-    if(GameUtils::IsTriggerType(type)) {
-        state = EBoardElemState::Triggering;
-        ET_SendEvent(&ETGameBoardElemTriggerManager::ET_createTriggerTask, getEntityId());
-    }
 }
 
 void GameBoardElemLogic::ET_onMergeDone() {
@@ -122,5 +121,7 @@ void GameBoardElemLogic::ET_onMergeDone() {
 
 void GameBoardElemLogic::ET_onTriggerDone() {
     assert(state == EBoardElemState::Triggering && "Invalid elem state");
-    state = EBoardElemState::Destroyed;
+    state = EBoardElemState::Destroying;
+
+    ET_onDestroyPlayed();
 }

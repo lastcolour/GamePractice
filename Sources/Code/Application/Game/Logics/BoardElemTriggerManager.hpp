@@ -26,8 +26,16 @@ public:
 
 private:
 
-    std::vector<EntityId> newTriggerTasks;
-    std::vector<EntityId> triggerTasks;
+    struct TriggerTask {
+        EntityId entId;
+        float delay;
+    };
+
+private:
+
+    std::vector<TriggerTask> newTriggerTasks;
+    std::vector<TriggerTask> triggerTasks;
+    float triggerDelay;
 };
 
 #endif /* __BOARD_ELEM_TRIGGER_MANAGER_HPP__ */

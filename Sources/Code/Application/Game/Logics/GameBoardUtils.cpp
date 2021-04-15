@@ -14,7 +14,7 @@ void SetElemState(EntityId elemId, EBoardElemState state) {
 }
 
 EBoardElemType GetElemType(EntityId elemId) {
-    EBoardElemType type;
+    EBoardElemType type = EBoardElemType::None;
     ET_SendEventReturn(type, elemId, &ETGameBoardElem::ET_getType);
     return type;
 }
@@ -50,17 +50,21 @@ bool IsTriggerType(EBoardElemType elemType) {
     return res;
 }
 
-void TryTriggerElemDestroy(const Vec2i& boardPt) {
-    EntityId elemId;
-    ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
-    if(!elemId.isValid()) {
+void TryTriggerElemDestroy(EntityId entId) {
+    if(!entId.isValid()) {
         return;
     }
-    auto elemState = GameUtils::GetElemState(elemId);
+    auto elemState = GameUtils::GetElemState(entId);
     if(elemState != EBoardElemState::Static) {
         return;
     }
-    ET_SendEvent(elemId, &ETGameBoardElem::ET_triggerDestroy);
+    ET_SendEvent(entId, &ETGameBoardElem::ET_triggerDestroy);
+}
+
+void TryTriggerElemDestroy(const Vec2i& boardPt) {
+    EntityId elemId;
+    ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
+    TryTriggerElemDestroy(elemId);
 }
 
 } // namespace GameUtils

@@ -69,12 +69,12 @@
           "y": 100.0
         },
         "tintColor": {
-          "r": 125,
+          "r": 0,
           "g": 0,
-          "b": 2,
-          "a": 255
+          "b": 0,
+          "a": 0
         },
-        "image": "Images/Game/circle_64x64.png"
+        "image": "Images/Game/bomb_128x128.png"
       }
     },
     {
@@ -83,7 +83,7 @@
       "data": {
         "startDelay": 0.10000000149011612,
         "duration": 0.0,
-        "endDelay": 0.20000000298023224,
+        "endDelay": 0.10000000149011612,
         "soundEvent": {
           "event": "elemDestroy_01"
         }
@@ -123,8 +123,8 @@
       "type": "GameElemBombLogic",
       "id": 7,
       "data": {
-        "speed": 30.0,
-        "radius": 3
+        "speed": 20.0,
+        "radius": 2
       }
     }
   ]

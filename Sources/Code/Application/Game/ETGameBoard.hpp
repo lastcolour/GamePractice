@@ -24,6 +24,7 @@ struct ETGameBoard {
     virtual bool ET_isAllElemStatic() const = 0;
     virtual void ET_setBlockElemMatching(bool flag) = 0;
     virtual void ET_resize(const AABB2D& newAabb) = 0;
+    virtual std::vector<EntityId> ET_getAllElemsOfType(EBoardElemType queryElemType) const = 0;
 };
 
 struct ETGameBoardElemDestoryEvents {

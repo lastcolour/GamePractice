@@ -15,6 +15,8 @@ bool HasTriggerLogic(EntityId elemId);
 
 bool IsTriggerType(EBoardElemType elemType);
 
+void TryTriggerElemDestroy(EntityId entId);
+
 void TryTriggerElemDestroy(const Vec2i& boardPt);
 
 } // namespace GameUtils

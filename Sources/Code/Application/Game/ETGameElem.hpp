@@ -75,6 +75,7 @@ struct ETGameBoardElemTriggerLogic {
     virtual ~ETGameBoardElemTriggerLogic() = default;
     virtual void ET_start() = 0;
     virtual bool ET_update(float dt) = 0;
+    virtual void ET_setSwapedElem(EntityId elemId) = 0;
 };
 
 struct ETGameBoardElemTriggerManager {

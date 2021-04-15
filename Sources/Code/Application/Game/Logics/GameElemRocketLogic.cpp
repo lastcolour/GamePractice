@@ -37,6 +37,9 @@ void GameElemRocketLogic::ET_start() {
     }
 }
 
+void GameElemRocketLogic::ET_setSwapedElem(EntityId elemId) {
+}
+
 bool GameElemRocketLogic::ET_update(float dt) {
     currTime += dt;
     int offset = static_cast<int>(speed * currTime);

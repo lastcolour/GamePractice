@@ -4,10 +4,12 @@
 
 void BoardElemTriggerManager::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<BoardElemTriggerManager>("BoardElemTriggerManager")) {
+        classInfo->addField("triggerDelay", &BoardElemTriggerManager::triggerDelay);
     }
 }
 
-BoardElemTriggerManager::BoardElemTriggerManager() {
+BoardElemTriggerManager::BoardElemTriggerManager() :
+    triggerDelay(0.1f) {
 }
 
 BoardElemTriggerManager::~BoardElemTriggerManager() {
@@ -25,7 +27,10 @@ void BoardElemTriggerManager::ET_createTriggerTask(EntityId elemId) {
         assert(false && "Invalid elem type");
         return;
     }
-    newTriggerTasks.push_back(elemId);
+    TriggerTask task;
+    task.entId = elemId;
+    task.delay = triggerDelay;
+    newTriggerTasks.push_back(task);
     ET_SendEvent(elemId, &ETGameBoardElemTriggerLogic::ET_start);
 }
 
@@ -34,12 +39,16 @@ void BoardElemTriggerManager::ET_updateTriggerTasks(float dt) {
     newTriggerTasks.clear();
     auto it = triggerTasks.begin();
     while(it != triggerTasks.end()) {
+        it->delay -= dt;
+        if(it->delay > 0.f) {
+            break;
+        }
         bool isEnded = true;
-        ET_SendEventReturn(isEnded, *it, &ETGameBoardElemTriggerLogic::ET_update, dt);
+        ET_SendEventReturn(isEnded, it->entId, &ETGameBoardElemTriggerLogic::ET_update, dt);
         if(isEnded) {
             it = triggerTasks.erase(it);
         } else {
-            ++it;
+            break;
         }
     }
 }

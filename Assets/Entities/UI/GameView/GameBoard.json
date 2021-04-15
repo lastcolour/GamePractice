@@ -301,7 +301,9 @@
     {
       "type": "BoardElemTriggerManager",
       "id": 10,
-      "data": {}
+      "data": {
+        "triggerDelay": 0.10000000149011612
+      }
     }
   ]
 }

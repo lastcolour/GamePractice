@@ -1,10 +1,10 @@
-#ifndef __GAME_ELEM_BOMB_LOGIC_HPP__
-#define __GAME_ELEM_BOMB_LOGIC_HPP__
+#ifndef __GAME_ELEM_STAR_LOGIC_HPP__
+#define __GAME_ELEM_STAR_LOGIC_HPP__
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
 
-class GameElemBombLogic : public EntityLogic,
+class GameElemStarLogic : public EntityLogic,
     public ETNode<ETGameBoardElemTriggerLogic> {
 public:
 
@@ -12,8 +12,8 @@ public:
 
 public:
 
-    GameElemBombLogic();
-    virtual ~GameElemBombLogic();
+    GameElemStarLogic();
+    virtual ~GameElemStarLogic();
 
     // EntityLogic
     void init() override;
@@ -26,10 +26,17 @@ public:
 
 private:
 
+    struct DestroyTask {
+        EntityId entId;
+        float delay;
+    };
+
+private:
+
+    std::vector<DestroyTask> destroyTasks;
     Vec2i startPt;
-    float speed;
-    float currTime;
-    int radius;
+    float destroyDelay;
+    EBoardElemType elemType;
 };
 
-#endif /* __GAME_ELEM_BOMB_LOGIC_HPP__ */
+#endif /* __GAME_ELEM_STAR_LOGIC_HPP__ */
