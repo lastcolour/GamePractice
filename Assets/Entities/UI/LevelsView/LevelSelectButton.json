@@ -80,17 +80,20 @@
                           "isVisible": false,
                           "alpha": 1.0,
                           "drawPriority": 2,
+                          "textureInfo": {
+                            "filename": "Images/Base/rblock_256x256.png",
+                            "lerpType": "Linear",
+                            "tintColor": {
+                              "r": 16,
+                              "g": 199,
+                              "b": 240,
+                              "a": 255
+                            }
+                          },
                           "size": {
                             "x": 158.0,
                             "y": 158.0
-                          },
-                          "tintColor": {
-                            "r": 76,
-                            "g": 176,
-                            "b": 79,
-                            "a": 255
-                          },
-                          "image": "Images/UI/rblock_512x512.png"
+                          }
                         }
                       }
                     ]
@@ -128,17 +131,20 @@
                           "isVisible": false,
                           "alpha": 1.0,
                           "drawPriority": 0,
+                          "textureInfo": {
+                            "filename": "Images/Base/rblock_256x256.png",
+                            "lerpType": "Linear",
+                            "tintColor": {
+                              "r": 11,
+                              "g": 134,
+                              "b": 216,
+                              "a": 255
+                            }
+                          },
                           "size": {
                             "x": 141.0,
                             "y": 141.0
-                          },
-                          "tintColor": {
-                            "r": 182,
-                            "g": 171,
-                            "b": 9,
-                            "a": 255
-                          },
-                          "image": "Images/UI/rblock_512x512.png"
+                          }
                         }
                       }
                     ]
@@ -258,7 +264,7 @@
                             {
                               "transform": {
                                 "pos": {
-                                  "x": -29.480010986328125,
+                                  "x": -29.475006103515625,
                                   "y": 0.0,
                                   "z": 0.0
                                 },
@@ -325,26 +331,6 @@
                                           }
                                         },
                                         {
-                                          "type": "RenderImage",
-                                          "id": 2,
-                                          "data": {
-                                            "isVisible": false,
-                                            "alpha": 1.0,
-                                            "drawPriority": 6,
-                                            "size": {
-                                              "x": 20.63250732421875,
-                                              "y": 20.63250732421875
-                                            },
-                                            "tintColor": {
-                                              "r": 252,
-                                              "g": 252,
-                                              "b": 252,
-                                              "a": 255
-                                            },
-                                            "image": "Images/UI/rblock_512x512.png"
-                                          }
-                                        },
-                                        {
                                           "type": "UIAnimationSequence",
                                           "id": 3,
                                           "data": {
@@ -385,6 +371,29 @@
                                                 "alpha": 1.0
                                               }
                                             ]
+                                          }
+                                        },
+                                        {
+                                          "type": "RenderImage",
+                                          "id": 4,
+                                          "data": {
+                                            "isVisible": false,
+                                            "alpha": 1.0,
+                                            "drawPriority": 6,
+                                            "textureInfo": {
+                                              "filename": "Images/Base/rblock_128x128.png",
+                                              "lerpType": "Linear",
+                                              "tintColor": {
+                                                "r": 245,
+                                                "g": 245,
+                                                "b": 245,
+                                                "a": 255
+                                              }
+                                            },
+                                            "size": {
+                                              "x": 20.63249969482422,
+                                              "y": 20.63249969482422
+                                            }
                                           }
                                         }
                                       ]
@@ -436,17 +445,20 @@
                                       "isVisible": false,
                                       "alpha": 1.0,
                                       "drawPriority": 5,
+                                      "textureInfo": {
+                                        "filename": "Images/Base/rblock_128x128.png",
+                                        "lerpType": "Linear",
+                                        "tintColor": {
+                                          "r": 107,
+                                          "g": 107,
+                                          "b": 107,
+                                          "a": 255
+                                        }
+                                      },
                                       "size": {
-                                        "x": 17.68499755859375,
-                                        "y": 17.68499755859375
-                                      },
-                                      "tintColor": {
-                                        "r": 195,
-                                        "g": 195,
-                                        "b": 195,
-                                        "a": 255
-                                      },
-                                      "image": "Images/UI/rblock_512x512.png"
+                                        "x": 17.684999465942383,
+                                        "y": 17.684999465942383
+                                      }
                                     }
                                   }
                                 ]
@@ -522,26 +534,6 @@
                                           }
                                         },
                                         {
-                                          "type": "RenderImage",
-                                          "id": 2,
-                                          "data": {
-                                            "isVisible": false,
-                                            "alpha": 1.0,
-                                            "drawPriority": 6,
-                                            "size": {
-                                              "x": 20.63250732421875,
-                                              "y": 20.63250732421875
-                                            },
-                                            "tintColor": {
-                                              "r": 252,
-                                              "g": 252,
-                                              "b": 252,
-                                              "a": 255
-                                            },
-                                            "image": "Images/UI/rblock_512x512.png"
-                                          }
-                                        },
-                                        {
                                           "type": "UIAnimationSequence",
                                           "id": 3,
                                           "data": {
@@ -582,6 +574,29 @@
                                                 "alpha": 1.0
                                               }
                                             ]
+                                          }
+                                        },
+                                        {
+                                          "type": "RenderImage",
+                                          "id": 4,
+                                          "data": {
+                                            "isVisible": false,
+                                            "alpha": 1.0,
+                                            "drawPriority": 6,
+                                            "textureInfo": {
+                                              "filename": "Images/Base/rblock_128x128.png",
+                                              "lerpType": "Linear",
+                                              "tintColor": {
+                                                "r": 245,
+                                                "g": 245,
+                                                "b": 245,
+                                                "a": 255
+                                              }
+                                            },
+                                            "size": {
+                                              "x": 20.63249969482422,
+                                              "y": 20.63249969482422
+                                            }
                                           }
                                         }
                                       ]
@@ -633,17 +648,20 @@
                                       "isVisible": false,
                                       "alpha": 1.0,
                                       "drawPriority": 5,
+                                      "textureInfo": {
+                                        "filename": "Images/Base/rblock_128x128.png",
+                                        "lerpType": "Linear",
+                                        "tintColor": {
+                                          "r": 107,
+                                          "g": 107,
+                                          "b": 107,
+                                          "a": 255
+                                        }
+                                      },
                                       "size": {
-                                        "x": 17.68499755859375,
-                                        "y": 17.68499755859375
-                                      },
-                                      "tintColor": {
-                                        "r": 195,
-                                        "g": 195,
-                                        "b": 195,
-                                        "a": 255
-                                      },
-                                      "image": "Images/UI/rblock_512x512.png"
+                                        "x": 17.684999465942383,
+                                        "y": 17.684999465942383
+                                      }
                                     }
                                   }
                                 ]
@@ -652,7 +670,7 @@
                             {
                               "transform": {
                                 "pos": {
-                                  "x": 29.480010986328125,
+                                  "x": 29.4749755859375,
                                   "y": 0.0,
                                   "z": 0.0
                                 },
@@ -719,26 +737,6 @@
                                           }
                                         },
                                         {
-                                          "type": "RenderImage",
-                                          "id": 2,
-                                          "data": {
-                                            "isVisible": false,
-                                            "alpha": 1.0,
-                                            "drawPriority": 6,
-                                            "size": {
-                                              "x": 20.63250732421875,
-                                              "y": 20.63250732421875
-                                            },
-                                            "tintColor": {
-                                              "r": 252,
-                                              "g": 252,
-                                              "b": 252,
-                                              "a": 255
-                                            },
-                                            "image": "Images/UI/rblock_512x512.png"
-                                          }
-                                        },
-                                        {
                                           "type": "UIAnimationSequence",
                                           "id": 3,
                                           "data": {
@@ -779,6 +777,29 @@
                                                 "alpha": 1.0
                                               }
                                             ]
+                                          }
+                                        },
+                                        {
+                                          "type": "RenderImage",
+                                          "id": 4,
+                                          "data": {
+                                            "isVisible": false,
+                                            "alpha": 1.0,
+                                            "drawPriority": 6,
+                                            "textureInfo": {
+                                              "filename": "Images/Base/rblock_128x128.png",
+                                              "lerpType": "Linear",
+                                              "tintColor": {
+                                                "r": 245,
+                                                "g": 245,
+                                                "b": 245,
+                                                "a": 255
+                                              }
+                                            },
+                                            "size": {
+                                              "x": 20.63249969482422,
+                                              "y": 20.63249969482422
+                                            }
                                           }
                                         }
                                       ]
@@ -830,17 +851,20 @@
                                       "isVisible": false,
                                       "alpha": 1.0,
                                       "drawPriority": 5,
+                                      "textureInfo": {
+                                        "filename": "Images/Base/rblock_128x128.png",
+                                        "lerpType": "Linear",
+                                        "tintColor": {
+                                          "r": 107,
+                                          "g": 107,
+                                          "b": 107,
+                                          "a": 255
+                                        }
+                                      },
                                       "size": {
-                                        "x": 17.68499755859375,
-                                        "y": 17.68499755859375
-                                      },
-                                      "tintColor": {
-                                        "r": 195,
-                                        "g": 195,
-                                        "b": 195,
-                                        "a": 255
-                                      },
-                                      "image": "Images/UI/rblock_512x512.png"
+                                        "x": 17.684999465942383,
+                                        "y": 17.684999465942383
+                                      }
                                     }
                                   }
                                 ]
@@ -959,17 +983,20 @@
                           "isVisible": false,
                           "alpha": 1.0,
                           "drawPriority": 7,
+                          "textureInfo": {
+                            "filename": "Images/Base/rblock_256x256.png",
+                            "lerpType": "Linear",
+                            "tintColor": {
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
+                            }
+                          },
                           "size": {
                             "x": 147.375,
                             "y": 147.375
                           },
-                          "tintColor": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 0
-                          },
-                          "image": "Images/UI/rblock_512x512.png",
                           "horizontal": 0.30000001192092896,
                           "vertical": 0.30000001192092896,
                           "patchScale": 1.0
@@ -1304,7 +1331,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 4,
+                                "drawPriority": 8,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
@@ -1367,7 +1394,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 4,
+                                "drawPriority": 8,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
@@ -1450,19 +1477,22 @@
                         "id": 1,
                         "data": {
                           "isVisible": false,
-                          "alpha": 1.0,
-                          "drawPriority": 7,
+                          "alpha": 0.4000000059604645,
+                          "drawPriority": 6,
+                          "textureInfo": {
+                            "filename": "Images/Base/rblock_256x256.png",
+                            "lerpType": "Linear",
+                            "tintColor": {
+                              "r": 216,
+                              "g": 22,
+                              "b": 57,
+                              "a": 255
+                            }
+                          },
                           "size": {
                             "x": 147.375,
                             "y": 147.375
                           },
-                          "tintColor": {
-                            "r": 255,
-                            "g": 89,
-                            "b": 89,
-                            "a": 255
-                          },
-                          "image": "Images/UI/rblock_512x512.png",
                           "horizontal": 0.30000001192092896,
                           "vertical": 0.30000001192092896,
                           "patchScale": 1.0
@@ -1580,17 +1610,20 @@
                     "isVisible": true,
                     "alpha": 1.0,
                     "drawPriority": 2,
+                    "textureInfo": {
+                      "filename": "Images/Base/rblock_256x256.png",
+                      "lerpType": "Linear",
+                      "tintColor": {
+                        "r": 159,
+                        "g": 159,
+                        "b": 159,
+                        "a": 255
+                      }
+                    },
                     "size": {
                       "x": 147.375,
                       "y": 147.375
                     },
-                    "tintColor": {
-                      "r": 117,
-                      "g": 117,
-                      "b": 117,
-                      "a": 255
-                    },
-                    "image": "Images/UI/rblock_512x512.png",
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
@@ -1660,7 +1693,7 @@
                   "type": "UILayout",
                   "id": 4,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 4,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -1677,7 +1710,7 @@
                   "type": "UILayout",
                   "id": 5,
                   "data": {
-                    "extraZOffset": 4,
+                    "extraZOffset": 3,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",

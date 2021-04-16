@@ -21,12 +21,6 @@ public:
         refVal(0) {}
 };
 
-enum class ETextureType {
-    R8,
-    RGB,
-    RGBA
-};
-
 enum class PrimitiveGeometryType {
     Square = 0,
     Sqaure_Tex,

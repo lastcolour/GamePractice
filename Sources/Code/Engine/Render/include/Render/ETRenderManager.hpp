@@ -7,7 +7,7 @@ class RenderTexture;
 class RenderGeometry;
 class RenderFramebuffer;
 
-enum class ETextureType;
+enum class ETextureDataType;
 enum class EFramebufferType;
 enum class PrimitiveGeometryType;
 
@@ -23,8 +23,8 @@ struct ETRenderFontManager {
 
 struct ETRenderTextureManager {
     virtual ~ETRenderTextureManager() = default;
-    virtual std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) = 0;
-    virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createFromFile(const char* fileName, ETextureDataType type) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureDataType type) = 0;
     virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) = 0;
 };
 

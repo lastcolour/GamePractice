@@ -35,25 +35,28 @@
           },
           {
             "type": "NinePatchImageLogic",
-            "id": 4,
+            "id": 3,
             "data": {
               "isVisible": false,
-              "alpha": 0.800000011920929,
+              "alpha": 0.9,
               "drawPriority": 1,
+              "textureInfo": {
+                "filename": "Images/Base/rblock_256x256.png",
+                "lerpType": "Linear",
+                "tintColor": {
+                  "r": 233,
+                  "g": 244,
+                  "b": 244,
+                  "a": 255
+                }
+              },
               "size": {
                 "x": 1040.0,
                 "y": 1040.0
               },
-              "tintColor": {
-                "r": 245,
-                "g": 245,
-                "b": 245,
-                "a": 255
-              },
-              "image": "Images/UI/rblock_512x512.png",
-              "horizontal": 0.30000001192092896,
-              "vertical": 0.30000001192092896,
-              "patchScale": 0.10000000149011612
+              "horizontal": 0.3,
+              "vertical": 0.3,
+              "patchScale": 0.5
             }
           }
         ]

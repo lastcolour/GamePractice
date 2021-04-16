@@ -2,8 +2,7 @@
 #define __RENDER_FRAMEBUFFER_HPP__
 
 #include "RenderTexture.hpp"
-
-enum class EFramebufferType;
+#include "Render/RenderCommon.hpp"
 
 class RenderFramebuffer {
 public:

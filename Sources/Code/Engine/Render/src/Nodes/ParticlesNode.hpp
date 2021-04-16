@@ -2,7 +2,6 @@
 #define __PARTICLES_NODE_HPP__
 
 #include "Nodes/Node.hpp"
-#include "RenderTexture.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 
 class ParticlesNode : public Node {
@@ -28,7 +27,7 @@ protected:
 
 private:
 
-    std::shared_ptr<RenderTexture> tex;
+    std::shared_ptr<RenderTexture> texObj;
     ParticlesEmitterRenderConfig renderConfig;
     ParticlesEmittersPool emittersPool;
 };

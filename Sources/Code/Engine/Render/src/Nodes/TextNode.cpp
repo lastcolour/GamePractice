@@ -120,9 +120,9 @@ unsigned int TextNode::drawLine(const Vec2& pt, unsigned int vertShift, size_t s
 }
 
 void TextNode::onRender(RenderContext& ctx) {
-    auto tex = font->getFontAtlas();
+    auto fontAtlas = font->getFontAtlas();
 
-    shader->setTexture2D(UniformType::Texture, *tex);
+    shader->setTexture2d(UniformType::Texture, 0, *fontAtlas);
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
     shader->setUniform4f(UniformType::Color, color);
 

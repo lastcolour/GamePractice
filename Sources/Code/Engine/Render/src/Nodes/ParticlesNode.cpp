@@ -1,6 +1,6 @@
 #include "Nodes/ParticlesNode.hpp"
-#include "Render/ETRenderManager.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "RenderUtils.hpp"
 
 #include <cassert>
 
@@ -12,8 +12,8 @@ ParticlesNode::~ParticlesNode() {
 
 void ParticlesNode::setConfig(const ParticlesEmitterRenderConfig& newRenderConf) {
     renderConfig = newRenderConf;
-    ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createFromImage,
-        renderConfig.texture.c_str(), ETextureType::RGBA);
+
+    texObj = RenderUtils::CreateTexture(renderConfig.textureInfo);
 
     BlendMode mode;
     switch(renderConfig.blending) {
@@ -42,7 +42,7 @@ bool ParticlesNode::canRender() const {
     if(!emittersPool.hasAlive()) {
         return false;
     }
-    if(!tex) {
+    if(!texObj) {
         return false;
     }
     return Node::canRender();
@@ -63,7 +63,8 @@ const Transform& ParticlesNode::getTransform() const {
 }
 
 void ParticlesNode::onRender(RenderContext& ctx) {
-    shader->setTexture2D(UniformType::Texture, *tex);
+    RenderUtils::ApplyTextureInfo(*texObj, renderConfig.textureInfo);
+    shader->setTexture2d(UniformType::Texture, 0, *texObj);
     for(auto& emitter : emittersPool.getEmitters()) {
         if(emitter->activeCount <= 0) {
             continue;

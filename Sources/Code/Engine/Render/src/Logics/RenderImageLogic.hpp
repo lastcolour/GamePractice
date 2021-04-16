@@ -2,6 +2,7 @@
 #define __RENDER_IMAGE_LOGIC_HPP__
 
 #include "Logics/RenderNode.hpp"
+#include "Render/TextureInfo.hpp"
 
 class RenderImageLogic : public RenderNode,
     public ETNode<ETRenderImageLogic>,
@@ -17,8 +18,8 @@ public:
     virtual ~RenderImageLogic();
 
     // ETRenderImageLogic
-    void ET_setImage(const char* imageName) override;
-    void ET_setTintColor(const ColorB& newTintColor) override;
+    TextureInfo ET_getTextureInfo() const override;
+    void ET_setTextureInfo(const TextureInfo& newTexture) override;
 
     // ETRenderRect
     void ET_setSize(const Vec2& newSize) override;
@@ -31,9 +32,8 @@ protected:
 
 protected:
 
-    std::string image;
+    TextureInfo textureInfo;
     Vec2 size;
-    ColorB tintColor;
 };
 
 #endif /* __RENDER_IMAGE_LOGIC_HPP__ */

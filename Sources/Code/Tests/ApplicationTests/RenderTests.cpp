@@ -383,7 +383,10 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
     tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
     gameObj->ET_setTransform(tm);
 
-    renderImage->ET_setImage(TEST_IMAGE);
+    TextureInfo texInfo;
+    texInfo.filename = TEST_IMAGE;
+    renderImage->ET_setTextureInfo(texInfo);
+
     renderImage->ET_setSize(Vec2(100.f));
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
@@ -405,11 +408,11 @@ TEST_F(RenderTests, CheckRenderSimpleImage) {
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {
     Vec2i texSize(100);
     std::shared_ptr<RenderTexture> tex1;
-    ET_SendEventReturn(tex1, &ETRenderTextureManager::ET_createTexture, ETextureType::R8);
+    ET_SendEventReturn(tex1, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
     EXPECT_TRUE(tex1);
 
     std::shared_ptr<RenderTexture> tex2;
-    ET_SendEventReturn(tex2, &ETRenderTextureManager::ET_createTexture, ETextureType::R8);
+    ET_SendEventReturn(tex2, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
     EXPECT_TRUE(tex2);
 
     EXPECT_NE(tex1.get(), tex2.get());
@@ -653,7 +656,7 @@ TEST_F(RenderTests, CheckNinePatch) {
 
     std::shared_ptr<RenderTexture> tex;
     {
-        ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createTexture, ETextureType::RGBA);
+        ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createTexture, ETextureDataType::RGBA);
         ASSERT_TRUE(tex);
 
         tex->bind();

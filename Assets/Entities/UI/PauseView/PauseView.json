@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 85.47747802734375,
+                "y": 85.47998046875,
                 "z": 0.0
               },
               "scale": {
@@ -144,17 +144,20 @@
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
+                    "textureInfo": {
+                      "filename": "Images/Base/rblock_256x256.png",
+                      "lerpType": "Linear",
+                      "tintColor": {
+                        "r": 241,
+                        "g": 241,
+                        "b": 241,
+                        "a": 255
+                      }
+                    },
                     "size": {
-                      "x": 412.6499938964844,
+                      "x": 412.64996337890625,
                       "y": 73.6875
                     },
-                    "tintColor": {
-                      "r": 234,
-                      "g": 234,
-                      "b": 234,
-                      "a": 255
-                    },
-                    "image": "Images/UI/rblock_512x512.png",
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
                     "patchScale": 1.0
@@ -227,7 +230,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -85.47750854492188,
+                "y": -85.48001098632812,
                 "z": 0.0
               },
               "scale": {
@@ -337,29 +340,6 @@
                   }
                 },
                 {
-                  "type": "NinePatchImageLogic",
-                  "id": 2,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
-                    "size": {
-                      "x": 412.6499938964844,
-                      "y": 73.6875
-                    },
-                    "tintColor": {
-                      "r": 234,
-                      "g": 234,
-                      "b": 234,
-                      "a": 255
-                    },
-                    "image": "Images/UI/rblock_512x512.png",
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
-                  }
-                },
-                {
                   "type": "UIAnimationSequence",
                   "id": 3,
                   "data": {
@@ -417,6 +397,32 @@
                         1
                       ]
                     ]
+                  }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 5,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.9,
+                    "drawPriority": 2,
+                    "textureInfo": {
+                      "filename": "Images/Base/rblock_256x256.png",
+                      "lerpType": "Linear",
+                      "tintColor": {
+                        "r": 241,
+                        "g": 241,
+                        "b": 241,
+                        "a": 255
+                      }
+                    },
+                    "size": {
+                      "x": 412.65,
+                      "y": 73.69
+                    },
+                    "horizontal": 0.3,
+                    "vertical": 0.3,
+                    "patchScale": 1.0
                   }
                 }
               ]
@@ -536,29 +542,6 @@
                   }
                 },
                 {
-                  "type": "NinePatchImageLogic",
-                  "id": 2,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
-                    "size": {
-                      "x": 412.6499938964844,
-                      "y": 73.6875
-                    },
-                    "tintColor": {
-                      "r": 234,
-                      "g": 234,
-                      "b": 234,
-                      "a": 255
-                    },
-                    "image": "Images/UI/rblock_512x512.png",
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
-                  }
-                },
-                {
                   "type": "UIAnimationSequence",
                   "id": 3,
                   "data": {
@@ -617,6 +600,32 @@
                       ]
                     ]
                   }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 5,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.9,
+                    "drawPriority": 2,
+                    "textureInfo": {
+                      "filename": "Images/Base/rblock_256x256.png",
+                      "lerpType": "Linear",
+                      "tintColor": {
+                        "r": 241,
+                        "g": 241,
+                        "b": 241,
+                        "a": 255
+                      }
+                    },
+                    "size": {
+                      "x": 412.65,
+                      "y": 73.69
+                    },
+                    "horizontal": 0.3,
+                    "vertical": 0.3,
+                    "patchScale": 1.0
+                  }
                 }
               ]
             }
@@ -671,19 +680,22 @@
             "id": 4,
             "data": {
               "isVisible": true,
-              "alpha": 0.8999999761581421,
+              "alpha": 0.800000011920929,
               "drawPriority": 1,
+              "textureInfo": {
+                "filename": "Images/Base/rblock_256x256.png",
+                "lerpType": "Linear",
+                "tintColor": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 255
+                }
+              },
               "size": {
                 "x": 442.125,
-                "y": 324.2250061035156
+                "y": 324.22503662109375
               },
-              "tintColor": {
-                "r": 35,
-                "g": 35,
-                "b": 35,
-                "a": 255
-              },
-              "image": "Images/UI/rblock_512x512.png",
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 0.699999988079071
@@ -844,7 +856,7 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 1004.0,
+          "x": 1094.0,
           "y": 1048.0
         },
         "color": {

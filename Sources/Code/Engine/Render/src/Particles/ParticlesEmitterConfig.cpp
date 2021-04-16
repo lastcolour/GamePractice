@@ -116,12 +116,11 @@ void ParticlesEmitterRenderConfig::Reflect(ReflectContext& ctx) {
     }
     if(auto classInfo = ctx.classInfo<ParticlesEmitterRenderConfig>("ParticlesEmitterRenderConfig")) {
         classInfo->addField("blending", &ParticlesEmitterRenderConfig::blending);
-        classInfo->addResourceField("texture", ResourceType::Image, &ParticlesEmitterRenderConfig::texture);
+        classInfo->addField("textureInfo", &ParticlesEmitterRenderConfig::textureInfo);
     }
 }
 
 ParticlesEmitterRenderConfig::ParticlesEmitterRenderConfig() :
-    texture(""),
     blending(BlendingConfig::Normal) {
 }
 

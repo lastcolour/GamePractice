@@ -2,11 +2,12 @@
 #define __RENDER_UTILS_HPP__
 
 #include "Math/Matrix.hpp"
-#include "Render/Color.hpp"
+#include "Render/TextureInfo.hpp"
 
 class ImageBuffer;
 class RenderFramebuffer;
 class RenderGeometry;
+class RenderTexture;
 class Node;
 
 enum class RenderNodeType {
@@ -41,6 +42,10 @@ void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO);
 Mat4 CalcModelMat(const Transform& tm, const Vec3& scale);
 
 std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType);
+
+std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex);
+
+void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo);
 
 } // namespace RenderUtils
 

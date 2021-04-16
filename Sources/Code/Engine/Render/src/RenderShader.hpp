@@ -28,7 +28,7 @@ public:
 
     void cacheUniformIds();
 
-    void setTexture2D(UniformType varType, const RenderTexture& tex);
+    void setTexture2d(UniformType varType, int unitId, RenderTexture& tex);
     void setUniform1i(UniformType varType, int val);
     void setUniform1f(UniformType varType, float val);
     void setUniform2f(UniformType varType, const Vec2i& val);
@@ -48,7 +48,6 @@ private:
 private:
 
     std::vector<int> chachedIds;
-    unsigned int activeTexUnitId;
     int programId;
 };
 

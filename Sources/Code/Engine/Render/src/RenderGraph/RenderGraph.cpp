@@ -33,8 +33,8 @@ void RenderGraph::init() {
     }
 
     mainFBO->color0.bind();
-    mainFBO->color0.setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
-    mainFBO->color0.setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+    mainFBO->color0.setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
+    mainFBO->color0.setWrapType(ETextureWrapType::ClamToEdge, ETextureWrapType::ClamToEdge);
     mainFBO->color0.unbind();
 
     for(int i = 0; i < EXTRA_FBOS_COUNT; ++i) {
@@ -46,8 +46,8 @@ void RenderGraph::init() {
         }
 
         extraFBO->color0.bind();
-        extraFBO->color0.setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
-        extraFBO->color0.setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+        extraFBO->color0.setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
+        extraFBO->color0.setWrapType(ETextureWrapType::ClamToEdge, ETextureWrapType::ClamToEdge);
         extraFBO->color0.unbind();
 
         extraFBOs.push_back(extraFBO);

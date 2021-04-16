@@ -7,8 +7,7 @@ RenderImageLogic::RenderImageLogic() :
 
 RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
     RenderNode(nodeType),
-    size(100.f),
-    tintColor(255, 255, 255, 0) {
+    size(100.f) {
 }
 
 RenderImageLogic::~RenderImageLogic() {
@@ -17,36 +16,35 @@ RenderImageLogic::~RenderImageLogic() {
 void RenderImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImage")) {
         classInfo->addBaseClass<RenderNode>();
+        classInfo->addField("textureInfo", &RenderImageLogic::textureInfo);
         classInfo->addField("size", &RenderImageLogic::size);
-        classInfo->addField("tintColor", &RenderImageLogic::tintColor);
-        classInfo->addResourceField("image", ResourceType::Image, &RenderImageLogic::image);
     }
 }
 
 void RenderImageLogic::onInit() {
     auto imageProxyNode = static_cast<ImageNode*>(proxyNode);
-    imageProxyNode->setTintColor(tintColor);
     imageProxyNode->setSize(size);
 
-    ET_setImage(image.c_str());
+    if(!textureInfo.filename.empty()) {
+        ET_setTextureInfo(textureInfo);
+    } else {
+        LogWarning("[RenderImageLogic::onInit] Texture file is empty on entity: '%s'",
+            EntityUtils::GetEntityName(getEntityId()));
+    }
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
 }
 
-void RenderImageLogic::ET_setImage(const char* imageName) {
-    image = imageName;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, img=image](){
-        auto imageProxyNode = static_cast<ImageNode*>(node);
-        imageProxyNode->setImage(img);
-    });
+TextureInfo RenderImageLogic::ET_getTextureInfo() const {
+    return textureInfo;
 }
 
-void RenderImageLogic::ET_setTintColor(const ColorB& newTintColor) {
-    tintColor = newTintColor;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newTintColor](){
+void RenderImageLogic::ET_setTextureInfo(const TextureInfo& newTextureInfo) {
+    textureInfo = newTextureInfo;
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, texInfo=textureInfo](){
         auto imageProxyNode = static_cast<ImageNode*>(node);
-        imageProxyNode->setTintColor(newTintColor);
+        imageProxyNode->setTextureInfo(texInfo);
     });
 }
 

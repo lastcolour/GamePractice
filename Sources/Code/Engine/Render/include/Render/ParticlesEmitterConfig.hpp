@@ -1,8 +1,7 @@
 #ifndef __PARTICLES_EMITTER_CONFIG_HPP__
 #define __PARTICLES_EMITTER_CONFIG_HPP__
 
-#include "Render/Color.hpp"
-#include "Render/RenderCommon.hpp"
+#include "Render/TextureInfo.hpp"
 
 enum class EmitterType {
     Sphere = 0,
@@ -113,7 +112,7 @@ public:
 
 public:
 
-    std::string texture;
+    TextureInfo textureInfo;
     BlendingConfig blending;
 };
 

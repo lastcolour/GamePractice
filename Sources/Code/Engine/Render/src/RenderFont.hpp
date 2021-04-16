@@ -35,6 +35,7 @@ public:
     ~RenderFont();
 
     void setFontAtlas(std::shared_ptr<RenderTexture>& newFontAtlas);
+    RenderTexture* getFontAtlas();
     const RenderTexture* getFontAtlas() const;
     void addGlyph(int ch, int shift, const RenderGlyph& glyphData);
     const RenderGlyph* getGlyph(int ch) const;

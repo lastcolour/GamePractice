@@ -1,6 +1,7 @@
 #include "RenderUtils.hpp"
 #include "RenderFramebuffer.hpp"
 #include "Render/ImageBuffer.hpp"
+#include "Render/ETRenderManager.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"
@@ -14,6 +15,7 @@
 #include "Nodes/GradientNode.hpp"
 #include "Nodes/ParticlesNode.hpp"
 #include "Nodes/BlurNode.hpp"
+#include "RenderTexture.hpp"
 
 #include <type_traits>
 #include <cassert>
@@ -213,6 +215,22 @@ std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType) {
         }
     }
     return node;
+}
+
+std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo) {
+    std::shared_ptr<RenderTexture> texObj;
+    ET_SendEventReturn(texObj, &ETRenderTextureManager::ET_createFromFile,
+        texInfo.filename.c_str(), ETextureDataType::RGBA);
+    return texObj;
+}
+
+void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo) {
+    if(texObj.minLerpType == texInfo.lerpType && texObj.magLerpType == texInfo.lerpType) {
+        return;
+    }
+    texObj.bind();
+    texObj.setLerpType(texInfo.lerpType, texInfo.lerpType);
+    texObj.unbind();
 }
 
 } // namespace RenderUtils

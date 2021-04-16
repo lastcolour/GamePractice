@@ -18,17 +18,17 @@ public:
     void deinit() override;
 
     // ETRenderTextureManager
-    std::shared_ptr<RenderTexture> ET_createFromImage(const char* imageName, ETextureType type) override;
-    std::shared_ptr<RenderTexture> ET_createTexture(ETextureType type) override;
+    std::shared_ptr<RenderTexture> ET_createFromFile(const char* imageName, ETextureDataType type) override;
+    std::shared_ptr<RenderTexture> ET_createTexture(ETextureDataType type) override;
     std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) override;
 
 private:
 
-    std::shared_ptr<RenderTexture> createTexture(const Buffer& buffer, ETextureType texType);
+    std::shared_ptr<RenderTexture> createTexture(const Buffer& buffer, ETextureDataType texType);
 
 private:
 
-    std::unordered_map<std::string, std::shared_ptr<RenderTexture>> images;
+    std::unordered_map<std::string, std::shared_ptr<RenderTexture>> fileTextures;
     std::vector<std::shared_ptr<RenderTexture>> textures;
     std::vector<std::shared_ptr<RenderFramebuffer>> framebuffers;
 };

@@ -65,7 +65,7 @@ void BlurNode::blurPass(RenderFramebuffer& first, RenderFramebuffer& second) {
 
     {
         first.bind();
-        shader->setTexture2D(UniformType::Texture, second.color0);
+        shader->setTexture2d(UniformType::Texture, 0, second.color0);
         shader->setUniform1i(UniformType::IsVerticalPass, 1);
         shader->setUniform2f(UniformType::TextureSize, size);
         geom->drawTriangles();
@@ -73,7 +73,7 @@ void BlurNode::blurPass(RenderFramebuffer& first, RenderFramebuffer& second) {
     }
     {
         second.bind();
-        shader->setTexture2D(UniformType::Texture, first.color0);
+        shader->setTexture2d(UniformType::Texture, 0, first.color0);
         shader->setUniform1i(UniformType::IsVerticalPass, 0);
         geom->drawTriangles();
         second.unbind();

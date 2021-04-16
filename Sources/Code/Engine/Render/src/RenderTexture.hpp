@@ -1,19 +1,7 @@
 #ifndef __RENDER_TEXTURE_HPP__
 #define __RENDER_TEXTURE_HPP__
 
-#include "Render/Color.hpp"
-#include "Render/RenderCommon.hpp"
-
-enum class TexLerpType {
-    Linear = 0,
-    Nearest
-};
-
-enum class TexWrapType {
-    Repeat = 0,
-    MirroredRepeat,
-    ClamToEdge
-};
+#include "Render/TextureInfo.hpp"
 
 class RenderTexture {
 public:
@@ -25,21 +13,26 @@ public:
     void writeRGB(const Vec2i& pt, const Vec2i& subSize, const void* data);
     void writeRGBA(const Vec2i& pt, const Vec2i& subSize, const void* data);
 
-    void setPixelWrapType(TexWrapType sWrapType, TexWrapType tWrapType);
-    void setPixelLerpType(TexLerpType minType, TexLerpType magType);
+    void setWrapType(ETextureWrapType stWrapType, ETextureWrapType tWrapType);
+    void setLerpType(ETextureLerpType minType, ETextureLerpType magType);
 
     void bind() const;
     void unbind() const;
 
-    Vec2i getSize() const;
     bool resize(const Vec2i& newSize);
-    bool resizeAndClear(const Vec2i& newSize);
+    bool clear();
+
+    const Vec2i& getSize() const;
 
 public:
 
-    ETextureType type;
     Vec2i size;
     unsigned int texId;
+    ETextureLerpType minLerpType;
+    ETextureLerpType magLerpType;
+    ETextureWrapType sWrapType;
+    ETextureWrapType tWrapType;
+    ETextureDataType dataType;
 };
 
 #endif /* __RENDER_TEXTURE_HPP__ */

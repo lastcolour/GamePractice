@@ -1,9 +1,9 @@
 #include "Nodes/ImageNode.hpp"
 #include "Render/ETRenderManager.hpp"
+#include "RenderUtils.hpp"
 
 ImageNode::ImageNode() :
-    size(100.f),
-    tintColor(255, 255, 255, 0) {
+    size(100.f) {
 }
 
 ImageNode::~ImageNode() {
@@ -14,14 +14,6 @@ void ImageNode::setSize(const Vec2& newSize) {
     setModelMatDirty();
 }
 
-void ImageNode::setImage(const std::string& newImage) {
-    ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createFromImage, newImage.c_str(), ETextureType::RGBA);
-}
-
-void ImageNode::setTintColor(const ColorB& newTintColor) {
-    tintColor = newTintColor;
-}
-
 void ImageNode::onInit() {
     setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
@@ -29,14 +21,15 @@ void ImageNode::onInit() {
 }
 
 void ImageNode::onRender(RenderContext& ctx) {
+    RenderUtils::ApplyTextureInfo(*texObj, texInfo);
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
-    shader->setTexture2D(UniformType::Texture, *tex);
-    shader->setUniform4f(UniformType::Color, tintColor);
+    shader->setTexture2d(UniformType::Texture, 0, *texObj);
+    shader->setUniform4f(UniformType::Color, texInfo.tintColor);
     geom->drawTriangles();
 }
 
 bool ImageNode::canRender() const {
-    if(!tex) {
+    if(!texObj) {
         return false;
     }
     return Node::canRender();
@@ -46,10 +39,7 @@ Mat4 ImageNode::calcModelMat(const Transform& newTm) {
     return RenderUtils::CalcModelMat(newTm, Vec3(size.x, size.y, 1.f));
 }
 
-void ImageNode::setTexture(std::shared_ptr<RenderTexture>& newTex) {
-    tex = newTex;
-}
-
-std::shared_ptr<RenderTexture> ImageNode::getTexture() {
-    return tex;
+void ImageNode::setTextureInfo(const TextureInfo& newTextureInfo) {
+    texInfo = newTextureInfo;
+    texObj = RenderUtils::CreateTexture(texInfo);
 }

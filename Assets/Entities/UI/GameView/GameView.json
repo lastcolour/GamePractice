@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": 404.2099609375,
+                "x": 451.2099609375,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -66.31878662109375,
+                      "x": -66.32000732421875,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -100,17 +100,20 @@
                           "isVisible": true,
                           "alpha": 1.0,
                           "drawPriority": 3,
+                          "textureInfo": {
+                            "filename": "Images/Base/circle_32x32.png",
+                            "lerpType": "Linear",
+                            "tintColor": {
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
+                            }
+                          },
                           "size": {
-                            "x": 17.684999465942383,
-                            "y": 17.684999465942383
-                          },
-                          "tintColor": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a": 255
-                          },
-                          "image": "Images/UI/rblock_512x512.png"
+                            "x": 17.68499755859375,
+                            "y": 17.68499755859375
+                          }
                         }
                       }
                     ]
@@ -297,22 +300,25 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.30000001192092896,
+                    "alpha": 0.4000000059604645,
                     "drawPriority": 2,
+                    "textureInfo": {
+                      "filename": "Images/Base/rblock_256x256.png",
+                      "lerpType": "Linear",
+                      "tintColor": {
+                        "r": 255,
+                        "g": 255,
+                        "b": 255,
+                        "a": 255
+                      }
+                    },
                     "size": {
-                      "x": 162.11248779296875,
+                      "x": 162.112548828125,
                       "y": 35.3699951171875
                     },
-                    "tintColor": {
-                      "r": 0,
-                      "g": 0,
-                      "b": 0,
-                      "a": 255
-                    },
-                    "image": "Images/UI/rblock_512x512.png",
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
-                    "patchScale": 0.699999988079071
+                    "patchScale": 1.0
                   }
                 }
               ]

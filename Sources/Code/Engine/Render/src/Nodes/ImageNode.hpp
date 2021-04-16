@@ -2,7 +2,9 @@
 #define __IMAGE_NODE_HPP__
 
 #include "Nodes/Node.hpp"
-#include "RenderTexture.hpp"
+#include "Render/TextureInfo.hpp"
+
+class RenderTexture;
 
 class ImageNode : public Node {
 public:
@@ -11,10 +13,7 @@ public:
     virtual ~ImageNode();
 
     void setSize(const Vec2& newSize);
-    void setImage(const std::string& newImage);
-    void setTintColor(const ColorB& newTintColor);
-    void setTexture(std::shared_ptr<RenderTexture>& newTex);
-    std::shared_ptr<RenderTexture> getTexture();
+    void setTextureInfo(const TextureInfo& newTextureInfo);
 
     // Node
     bool canRender() const override;
@@ -28,9 +27,9 @@ protected:
 
 protected:
 
-    std::shared_ptr<RenderTexture> tex;
+    TextureInfo texInfo;
+    std::shared_ptr<RenderTexture> texObj;
     Vec2 size;
-    ColorB tintColor;
 };
 
 #endif /* __IMAGE_NODE_HPP__ */

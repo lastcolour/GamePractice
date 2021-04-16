@@ -18,12 +18,12 @@ GradientNode::~GradientNode() {
 void GradientNode::onInit() {
     setGeometry(PrimitiveGeometryType::Sqaure_Tex);
     setShader("tex_vert_color");
-    ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createTexture, ETextureType::RGBA);
+    ET_SendEventReturn(tex, &ETRenderTextureManager::ET_createTexture, ETextureDataType::RGBA);
     if(tex) {
         tex->bind();
         tex->resize(Vec2i(2));
-        tex->setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
-        tex->setPixelWrapType(TexWrapType::ClamToEdge, TexWrapType::ClamToEdge);
+        tex->setLerpType(ETextureLerpType::Point, ETextureLerpType::Point);
+        tex->setWrapType(ETextureWrapType::ClamToEdge, ETextureWrapType::ClamToEdge);
         tex->unbind();
         doUpdate = true;
     } else {
@@ -39,7 +39,7 @@ void GradientNode::onRender(RenderContext& ctx) {
         tex->unbind();
     }
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
-    shader->setTexture2D(UniformType::Texture, *tex);
+    shader->setTexture2d(UniformType::Texture, 0, *tex);
     geom->drawTriangles();
 }
 

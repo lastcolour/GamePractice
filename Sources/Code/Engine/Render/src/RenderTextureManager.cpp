@@ -11,18 +11,18 @@
 
 namespace {
 
-std::string getLookupName(const char* imageName, ETextureType texType) {
+std::string getLookupName(const char* imageName, ETextureDataType texType) {
     const char* suffix = "";
     switch(texType) {
-        case ETextureType::R8: {
+        case ETextureDataType::R8: {
             suffix = "_r8";
             break;
         }
-        case ETextureType::RGB: {
+        case ETextureDataType::RGB: {
             suffix = "_rgb";
             break;
         }
-        case ETextureType::RGBA: {
+        case ETextureDataType::RGBA: {
             suffix = "_rgba";
             break;
         }
@@ -50,19 +50,19 @@ void RenderTextureManager::deinit() {
     ETNode<ETRenderTextureManager>::disconnect();
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromImage(const char* imageName, ETextureType texType) {
+std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromFile(const char* fileName, ETextureDataType texType) {
     assert(RenderUtils::IsOpenGLContextExists() && "Can't create image without OpenGL context");
 
-    std::string reqImageName = getLookupName(imageName, texType);
-    auto it = images.find(reqImageName);
-    if(it != images.end() && it->second) {
+    std::string reqImageName = getLookupName(fileName, texType);
+    auto it = fileTextures.find(reqImageName);
+    if(it != fileTextures.end() && it->second) {
         return it->second;
     }
 
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, imageName);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fileName);
     if(!buff) {
-        LogWarning("[RenderTextureManager::ET_createTexture] Can't load image from: '%s'", imageName);
+        LogWarning("[RenderTextureManager::ET_createTexture] Can't load image from: '%s'", fileName);
         return nullptr;
     }
 
@@ -70,11 +70,11 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromImage(const ch
     if(!tex) {
         return nullptr;
     }
-    images[reqImageName] = tex;
+    fileTextures[reqImageName] = tex;
     return tex;
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureType texType) {
+std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureDataType texType) {
     assert(RenderUtils::IsOpenGLContextExists() && "Can't create textrure without OpenGL context");
 
     unsigned int textureId = 0;
@@ -95,11 +95,11 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureTy
     }
 
     std::shared_ptr<RenderTexture> texture(new RenderTexture);
-    texture->type = texType;
+    texture->dataType = texType;
     texture->texId = textureId;
     texture->size = Vec2i(0);
-    texture->setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
-    texture->setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
+    texture->setWrapType(ETextureWrapType::Repeat, ETextureWrapType::Repeat);
+    texture->setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
     texture->unbind();
 
     textures.push_back(texture);
@@ -107,7 +107,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureTy
     return texture;
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer& buff, ETextureType texType) {
+std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer& buff, ETextureDataType texType) {
     unsigned int textureId = 0;
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
@@ -119,15 +119,15 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
 
     int reqLoadChannel = 0;
     switch(texType) {
-        case ETextureType::R8: {
+        case ETextureDataType::R8: {
             reqLoadChannel = 1;
             break;
         }
-        case ETextureType::RGB: {
+        case ETextureDataType::RGB: {
             reqLoadChannel = 3;
             break;
         }
-        case ETextureType::RGBA: {
+        case ETextureDataType::RGBA: {
             reqLoadChannel = 4;
             break;
         }
@@ -151,16 +151,16 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
     }
 
     switch(texType) {
-        case ETextureType::R8: {
+        case ETextureDataType::R8: {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, texSize.x, texSize.y, 0, GL_RED, GL_UNSIGNED_BYTE, static_cast<const GLvoid*>(data));
             break;
         }
-        case ETextureType::RGB: {
+        case ETextureDataType::RGB: {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texSize.x, texSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, static_cast<const GLvoid*>(data));
             break;
         }
-        case ETextureType::RGBA: {
+        case ETextureDataType::RGBA: {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texSize.x, texSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, static_cast<const GLvoid*>(data));
             break;
         }
@@ -180,11 +180,11 @@ std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer&
     }
 
     std::shared_ptr<RenderTexture> texture(new RenderTexture);
-    texture->type = texType;
+    texture->dataType = texType;
     texture->texId = textureId;
     texture->size = texSize;
-    texture->setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
-    texture->setPixelLerpType(TexLerpType::Linear, TexLerpType::Linear);
+    texture->setWrapType(ETextureWrapType::Repeat, ETextureWrapType::Repeat);
+    texture->setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
     texture->unbind();
 
     return texture;
@@ -240,11 +240,11 @@ std::shared_ptr<RenderFramebuffer> RenderTextureManager::ET_createFramebuffer(EF
 
     std::shared_ptr<RenderFramebuffer> framebuffer(new RenderFramebuffer);
     framebuffer->framebufferId = framebufferId;
-    framebuffer->color0.type = ETextureType::RGB;
+    framebuffer->color0.dataType = ETextureDataType::RGB;
     framebuffer->color0.texId = textureId;
     framebuffer->color0.size = Vec2i(0);
-    framebuffer->color0.setPixelWrapType(TexWrapType::Repeat, TexWrapType::Repeat);
-    framebuffer->color0.setPixelLerpType(TexLerpType::Nearest, TexLerpType::Nearest);
+    framebuffer->color0.setWrapType(ETextureWrapType::Repeat, ETextureWrapType::Repeat);
+    framebuffer->color0.setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
     framebuffer->renderBufferId = renderBufferId;
     framebuffer->type = type;
     framebuffer->unbind();

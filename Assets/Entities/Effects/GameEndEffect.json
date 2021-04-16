@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 3,
+              "drawPriority": 2,
               "emission": {
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
@@ -108,15 +108,19 @@
               },
               "render": {
                 "blending": "Additive",
-                "texture": "Images/Game/circle_32x32.png"
+                "textureInfo": {
+                  "filename": "Images/Base/circle_32x32.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
               },
               "subEmitters": {
-                "subEmitters": [
-                  {
-                    "event": "OnParticleLive",
-                    "entityId": []
-                  }
-                ]
+                "subEmitters": []
               },
               "gravity": {
                 "fields": []
@@ -134,7 +138,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 2,
+        "drawPriority": 1,
         "emission": {
           "duration": -1.0,
           "startDelay": 0.0,
@@ -211,7 +215,16 @@
         },
         "render": {
           "blending": "Additive",
-          "texture": "Images/Game/circle_32x32.png"
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Point",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
         },
         "subEmitters": {
           "subEmitters": [

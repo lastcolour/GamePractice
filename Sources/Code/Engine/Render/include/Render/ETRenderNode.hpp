@@ -2,7 +2,7 @@
 #define __ET_RENDER_NODE_HPP__
 
 #include "Math/AABB.hpp"
-#include "Render/Color.hpp"
+#include "Render/TextureInfo.hpp"
 
 class StencilWirteReadData;
 
@@ -40,8 +40,8 @@ struct ETRenderTextLogic {
 
 struct ETRenderImageLogic {
     virtual ~ETRenderImageLogic() = default;
-    virtual void ET_setImage(const char* imageName) = 0;
-    virtual void ET_setTintColor(const ColorB& newTintColor) = 0;
+    virtual TextureInfo ET_getTextureInfo() const = 0;
+    virtual void ET_setTextureInfo(const TextureInfo& newTextureInfo) = 0;
 };
 
 #endif /* __ET_RENDER_NODE_HPP__ */

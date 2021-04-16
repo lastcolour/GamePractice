@@ -6,15 +6,15 @@
 
 namespace {
 
-GLenum getGLFilterType(TexLerpType lerpType) {
+GLenum getGLFilterType(ETextureLerpType lerpType) {
     GLenum glLerpType = GL_NONE;
     switch(lerpType)
     {
-        case TexLerpType::Linear: {
+        case ETextureLerpType::Linear: {
             glLerpType = GL_LINEAR;
             break;
         }
-        case TexLerpType::Nearest: {
+        case ETextureLerpType::Point: {
             glLerpType = GL_NEAREST;
             break;
         }
@@ -25,18 +25,18 @@ GLenum getGLFilterType(TexLerpType lerpType) {
     return glLerpType;
 }
 
-GLenum getGLWrapType(TexWrapType wrapType) {
+GLenum getGLWrapType(ETextureWrapType wrapType) {
     GLenum glWrapType = GL_NONE;
     switch(wrapType) {
-        case TexWrapType::Repeat: {
+        case ETextureWrapType::Repeat: {
             glWrapType = GL_REPEAT;
             break;
         }
-        case TexWrapType::MirroredRepeat: {
+        case ETextureWrapType::MirroredRepeat: {
             glWrapType = GL_MIRRORED_REPEAT;
             break;
         }
-        case TexWrapType::ClamToEdge: {
+        case ETextureWrapType::ClamToEdge: {
             glWrapType = GL_CLAMP_TO_EDGE;
             break;
         }
@@ -50,8 +50,13 @@ GLenum getGLWrapType(TexWrapType wrapType) {
 } // namespace
 
 RenderTexture::RenderTexture() :
-    size(0),
-    texId(0) {
+    size(-1),
+    texId(0),
+    minLerpType(ETextureLerpType::Point),
+    magLerpType(ETextureLerpType::Point),
+    sWrapType(ETextureWrapType::ClamToEdge),
+    tWrapType(ETextureWrapType::ClamToEdge),
+    dataType(ETextureDataType::RGBA) {
 }
 
 RenderTexture::~RenderTexture() {
@@ -77,34 +82,49 @@ void RenderTexture::writeRGBA(const Vec2i& pt, const Vec2i& subSize, const void*
     glTexSubImage2D(GL_TEXTURE_2D, 0, pt.x, pt.y, subSize.x, subSize.y, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
-void RenderTexture::setPixelLerpType(TexLerpType minType, TexLerpType magType) {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getGLFilterType(minType));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getGLFilterType(magType));
+void RenderTexture::setLerpType(ETextureLerpType minType, ETextureLerpType magType) {
+    if(minLerpType != minType) {
+        minLerpType = minType;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getGLFilterType(minType));
+
+    }
+    if(magLerpType != magType) {
+        magLerpType = magType;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getGLFilterType(magType));
+
+    }
 }
 
-void RenderTexture::setPixelWrapType(TexWrapType sWrapType, TexWrapType tWrapType) {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getGLWrapType(sWrapType));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getGLWrapType(tWrapType));
+void RenderTexture::setWrapType(ETextureWrapType sWrap, ETextureWrapType tWrap) {
+    if(sWrapType != sWrap) {
+        sWrapType = sWrap;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getGLWrapType(sWrapType));
+    }
+    if(tWrapType != tWrap) {
+        tWrapType = tWrap;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getGLWrapType(tWrapType));
+    }
 }
 
-Vec2i RenderTexture::getSize() const {
+const Vec2i& RenderTexture::getSize() const {
     return size;
 }
 
 bool RenderTexture::resize(const Vec2i& newSize) {
     size = newSize;
-    switch(type) {
-        case ETextureType::R8: {
+    int mipLvl = 0;
+    switch(dataType) {
+        case ETextureDataType::R8: {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, size.x, size.y, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+            glTexImage2D(GL_TEXTURE_2D, mipLvl, GL_R8, size.x, size.y, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
             break;
         }
-        case ETextureType::RGB: {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        case ETextureDataType::RGB: {
+            glTexImage2D(GL_TEXTURE_2D, mipLvl, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
             break;
         }
-        case ETextureType::RGBA: {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        case ETextureDataType::RGBA: {
+            glTexImage2D(GL_TEXTURE_2D, mipLvl, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
             break;
         }
         default: {
@@ -118,26 +138,26 @@ bool RenderTexture::resize(const Vec2i& newSize) {
     return true;
 }
 
-bool RenderTexture::resizeAndClear(const Vec2i& newSize) {
-    size = newSize;
-    switch(type) {
-        case ETextureType::R8: {
+bool RenderTexture::clear() {
+    int mipLvl = 0;
+    switch(dataType) {
+        case ETextureDataType::R8: {
             Buffer buff(size.x * size.y);
             memset(buff.getWriteData(), 0, buff.getSize());
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, size.x, size.y, 0, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
+            glTexSubImage2D(GL_TEXTURE_2D, mipLvl, 0, 0, size.x, size.y, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
             break;
         }
-        case ETextureType::RGB: {
+        case ETextureDataType::RGB: {
             Buffer buff(size.x * size.y * 3);
             memset(buff.getWriteData(), 0, buff.getSize());
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, buff.getReadData());
+            glTexSubImage2D(GL_TEXTURE_2D, mipLvl, 0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, buff.getReadData());
             break;
         }
-        case ETextureType::RGBA: {
+        case ETextureDataType::RGBA: {
             Buffer buff(size.x * size.y * 4);
             memset(buff.getWriteData(), 0, buff.getSize());
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, buff.getReadData());
+            glTexSubImage2D(GL_TEXTURE_2D, mipLvl, 0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, buff.getReadData());
             break;
         }
         default: {
@@ -145,7 +165,7 @@ bool RenderTexture::resizeAndClear(const Vec2i& newSize) {
         }
     }
     if(auto errStr = RenderUtils::GetGLError()) {
-        LogError("[RenderTexture::resizeAndClear] Can't resize texture to a size %dx%d (Error: %s)", newSize.x, newSize.y, errStr);
+        LogError("[RenderTexture::clear] Can't clear texture (Error: %s)", errStr);
         return false;
     }
     return true;

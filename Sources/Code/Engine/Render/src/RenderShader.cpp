@@ -5,7 +5,6 @@
 #include <cassert>
 
 RenderShader::RenderShader(int progId) :
-    activeTexUnitId(0),
     programId(progId) {
     assert(programId && "Invalid program id");
 }
@@ -19,14 +18,12 @@ void RenderShader::bind() {
 
 void RenderShader::unbind() {
     glUseProgram(0);
-    activeTexUnitId = 0;
 }
 
-void RenderShader::setTexture2D(UniformType varType, const RenderTexture& tex) {
-    setUniform1i(varType, activeTexUnitId);
-    glActiveTexture(GL_TEXTURE0 + activeTexUnitId);
+void RenderShader::setTexture2d(UniformType varType, int unitId, RenderTexture& tex) {
+    setUniform1i(varType, unitId);
+    glActiveTexture(GL_TEXTURE0 + unitId);
     tex.bind();
-    //++activeTexUnitId;
 }
 
 void RenderShader::setUniform1i(UniformType varType, int val) {

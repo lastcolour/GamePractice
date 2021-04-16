@@ -108,7 +108,16 @@
               },
               "render": {
                 "blending": "Normal",
-                "texture": "Images/Game/circle_32x32.png"
+                "textureInfo": {
+                  "filename": "Images/Base/rblock_64x64.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
               },
               "subEmitters": {
                 "subEmitters": []
@@ -162,7 +171,7 @@
                 "emitterSpace": "World",
                 "emitterType": "Sphere",
                 "emitterVal": {
-                  "x": 0.0,
+                  "x": 5.0,
                   "y": 0.0
                 },
                 "thickness": 0.0,
@@ -173,7 +182,7 @@
                 "lifetimeVar": 0.10000000149011612
               },
               "movement": {
-                "speed": 50.0,
+                "speed": 5.0,
                 "speedVar": 0.10000000149011612,
                 "initRotation": 30.0,
                 "initRotationVar": 0.10000000149011612,
@@ -183,8 +192,8 @@
               },
               "size": {
                 "startScale": {
-                  "x": 0.800000011920929,
-                  "y": 0.800000011920929
+                  "x": 0.6000000238418579,
+                  "y": 0.6000000238418579
                 },
                 "startScaleVar": {
                   "x": 0.10000000149011612,
@@ -201,9 +210,9 @@
               },
               "color": {
                 "startCol": {
-                  "r": 241,
-                  "g": 222,
-                  "b": 8,
+                  "r": 249,
+                  "g": 249,
+                  "b": 249,
                   "a": 255
                 },
                 "startColVar": {
@@ -213,9 +222,9 @@
                   "w": 0.0
                 },
                 "endCol": {
-                  "r": 241,
-                  "g": 222,
-                  "b": 8,
+                  "r": 249,
+                  "g": 249,
+                  "b": 249,
                   "a": 255
                 },
                 "endColVar": {
@@ -229,7 +238,16 @@
               },
               "render": {
                 "blending": "Normal",
-                "texture": "Images/Game/circle_32x32.png"
+                "textureInfo": {
+                  "filename": "Images/Base/circle_32x32.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
               },
               "subEmitters": {
                 "subEmitters": []
@@ -267,7 +285,7 @@
           "startDelay": 0.05000000074505806,
           "autoStart": false,
           "loop": false,
-          "heating": false,
+          "heating": true,
           "emitterSpace": "World",
           "emitterType": "Box",
           "emitterVal": {
@@ -282,7 +300,7 @@
           "lifetimeVar": 0.10000000149011612
         },
         "movement": {
-          "speed": 30.0,
+          "speed": 10.0,
           "speedVar": 0.10000000149011612,
           "initRotation": 30.0,
           "initRotationVar": 0.10000000149011612,
@@ -292,8 +310,8 @@
         },
         "size": {
           "startScale": {
-            "x": 0.800000011920929,
-            "y": 0.800000011920929
+            "x": 1.0,
+            "y": 1.0
           },
           "startScaleVar": {
             "x": 0.10000000149011612,
@@ -310,9 +328,9 @@
         },
         "color": {
           "startCol": {
-            "r": 241,
-            "g": 222,
-            "b": 8,
+            "r": 249,
+            "g": 242,
+            "b": 25,
             "a": 255
           },
           "startColVar": {
@@ -322,9 +340,9 @@
             "w": 0.0
           },
           "endCol": {
-            "r": 241,
-            "g": 222,
-            "b": 8,
+            "r": 249,
+            "g": 242,
+            "b": 25,
             "a": 255
           },
           "endColVar": {
@@ -338,7 +356,16 @@
         },
         "render": {
           "blending": "Normal",
-          "texture": "Images/Game/circle_32x32.png"
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Point",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
         },
         "subEmitters": {
           "subEmitters": [

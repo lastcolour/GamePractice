@@ -1,4 +1,5 @@
 #include "Nodes/NinePatchNode.hpp"
+#include "RenderTexture.hpp"
 
 NinePatchNode::NinePatchNode() :
     tmScale(1.f),
@@ -28,7 +29,7 @@ Mat4 NinePatchNode::calcModelMat(const Transform& newTm) {
 }
 
 void NinePatchNode::onRender(RenderContext& ctx) {
-    Vec2i origSize = tex->getSize();
+    Vec2i origSize = texObj->getSize();
     Vec2 texScale = Vec2((size.x * tmScale.x) / origSize.x, (size.y * tmScale.y) / origSize.y);
     float minScale = std::min(texScale.x, texScale.y);
     if(minScale >= 1.f) {
@@ -40,9 +41,11 @@ void NinePatchNode::onRender(RenderContext& ctx) {
     float hPatch = 2.f * std::min(horizontal * minScale / texScale.x, 0.4999f);
     float vPatch = 2.f * std::min(vertical * minScale / texScale.y, 0.4999f);
 
+    RenderUtils::ApplyTextureInfo(*texObj, texInfo);
+
     shader->setUniformMat4(UniformType::ModelMat, modelMat);
-    shader->setTexture2D(UniformType::Texture, *tex);
-    shader->setUniform4f(UniformType::Color, tintColor);
+    shader->setTexture2d(UniformType::Texture, 0, *texObj);
+    shader->setUniform4f(UniformType::Color, texInfo.tintColor);
 
     geom->drawNinePatch(Vec2(hPatch, vPatch), Vec2(horizontal, vertical));
 }

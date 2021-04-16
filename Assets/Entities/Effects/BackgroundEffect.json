@@ -84,7 +84,16 @@
         },
         "render": {
           "blending": "Additive",
-          "texture": "Images/Game/circle_32x32.png"
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Linear",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
         },
         "subEmitters": {
           "subEmitters": []
@@ -187,8 +196,17 @@
           "fadeOut": 0.5
         },
         "render": {
-          "blending": "Additive",
-          "texture": "Images/Game/circle_32x32.png"
+          "blending": "Normal",
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Linear",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
         },
         "subEmitters": {
           "subEmitters": []

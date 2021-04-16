@@ -27,22 +27,25 @@
         "logics": [
           {
             "type": "RenderImage",
-            "id": 2,
+            "id": 1,
             "data": {
               "isVisible": false,
               "alpha": 0.699999988079071,
               "drawPriority": 0,
+              "textureInfo": {
+                "filename": "Images/Base/rblock_32x32.png",
+                "lerpType": "Point",
+                "tintColor": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                }
+              },
               "size": {
                 "x": 100.0,
                 "y": 100.0
-              },
-              "tintColor": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 255
-              },
-              "image": "Images/Game/rblock_64x64.png"
+              }
             }
           }
         ]
@@ -64,17 +67,20 @@
         "isVisible": true,
         "alpha": 1.0,
         "drawPriority": 1,
+        "textureInfo": {
+          "filename": "Images/Game/star_32x32.png",
+          "lerpType": "Point",
+          "tintColor": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 0
+          }
+        },
         "size": {
           "x": 100.0,
           "y": 100.0
-        },
-        "tintColor": {
-          "r": 213,
-          "g": 213,
-          "b": 213,
-          "a": 0
-        },
-        "image": "Images/Game/bomb_128x128.png"
+        }
       }
     },
     {

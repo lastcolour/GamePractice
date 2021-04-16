@@ -18,6 +18,10 @@ void RenderFont::setFontAtlas(std::shared_ptr<RenderTexture>& newFontAtlas) {
     fontAtlas = newFontAtlas;
 }
 
+RenderTexture* RenderFont::getFontAtlas() {
+    return fontAtlas.get();
+}
+
 const RenderTexture* RenderFont::getFontAtlas() const {
     return fontAtlas.get();
 }
