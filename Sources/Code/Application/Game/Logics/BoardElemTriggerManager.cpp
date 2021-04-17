@@ -1,4 +1,5 @@
 #include "Game/Logics/BoardElemTriggerManager.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 #include <cassert>
 
@@ -30,6 +31,7 @@ void BoardElemTriggerManager::ET_createTriggerTask(EntityId elemId) {
     TriggerTask task;
     task.entId = elemId;
     task.delay = triggerDelay;
+    task.destroyPlayed = false;
     newTriggerTasks.push_back(task);
     ET_SendEvent(elemId, &ETGameBoardElemTriggerLogic::ET_start);
 }
@@ -42,6 +44,10 @@ void BoardElemTriggerManager::ET_updateTriggerTasks(float dt) {
         it->delay -= dt;
         if(it->delay > 0.f) {
             break;
+        }
+        if(!it->destroyPlayed) {
+            it->destroyPlayed = true;
+            GameUtils::PlayElemDestroyEffect(it->entId);
         }
         bool isEnded = true;
         ET_SendEventReturn(isEnded, it->entId, &ETGameBoardElemTriggerLogic::ET_update, dt);

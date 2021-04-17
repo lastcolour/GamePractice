@@ -47,6 +47,7 @@ void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
         classInfo->addField("yellowDestroyEffectId", &GameBoardMatchLogic::yellowDestroyEffectId);
         classInfo->addField("greenDestroyEffectId", &GameBoardMatchLogic::greenDestroyEffectId);
         classInfo->addField("purpleDestroyEffectId", &GameBoardMatchLogic::purpleDestroyEffectId);
+        classInfo->addField("bomdDestroyEffectId", &GameBoardMatchLogic::bomdDestroyEffectId);
         classInfo->addField("destroyEffectScale", &GameBoardMatchLogic::destroyEffectScale);
     }
 }
@@ -100,10 +101,6 @@ void GameBoardMatchLogic::ET_playDestroyEffect(EntityId elemId) {
     EBoardElemType elemType = EBoardElemType::None;
     ET_SendEventReturn(elemType, elemId, &ETGameBoardElem::ET_getType);
 
-    Vec2i elemCellPt(-1);
-    ET_SendEventReturn(elemCellPt, &ETGameBoard::ET_getElemBoardPos, elemId);
-    ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, elemCellPt);
-
     EntityId effectId;
     switch(elemType) {
         case EBoardElemType::Red: {
@@ -133,6 +130,7 @@ void GameBoardMatchLogic::ET_playDestroyEffect(EntityId elemId) {
             break;
         }
         case EBoardElemType::Bomb: {
+            effectId = bomdDestroyEffectId;
             break;
         }
         case EBoardElemType::Star: {

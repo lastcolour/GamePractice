@@ -137,6 +137,29 @@
       "name": "Entities/Effects/ElemDestroy/ElemMutate.json",
       "id": 106,
       "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 533.0,
+          "y": 524.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/ElemDestroy/BombDestroy.json",
+      "id": 207,
+      "internal": false
     }
   ],
   "logics": [
@@ -184,7 +207,10 @@
         "purpleDestroyEffectId": [
           3
         ],
-        "destroyEffectScale": 0.07999999821186066
+        "destroyEffectScale": 0.07999999821186066,
+        "bomdDestroyEffectId": [
+          207
+        ]
       }
     },
     {
@@ -279,6 +305,13 @@
             ],
             "normScale": 1.0,
             "extraZOffset": 3
+          },
+          {
+            "target": [
+              207
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 1
           }
         ]
       }

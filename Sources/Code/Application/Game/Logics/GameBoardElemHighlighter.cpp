@@ -41,6 +41,12 @@ void GameBoardElemHighlighter::ET_onGameTick(float dt) {
 }
 
 void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
+    Vec2i boardSize(0);
+    ET_SendEventReturn(boardSize, &ETGameBoard::ET_getBoardSize);
+    if(!(cellPt >= Vec2i(0) && cellPt < boardSize)) {
+        return;
+    }
+
     HighlightElem* freeElem = nullptr;
     for(auto& elem : elements) {
         if(elem.boardPt == cellPt) {

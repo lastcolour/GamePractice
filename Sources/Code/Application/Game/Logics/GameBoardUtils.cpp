@@ -1,5 +1,6 @@
 #include "Game/Logics/GameBoardUtils.hpp"
 #include "Game/ETGameBoard.hpp"
+#include "Render/ETRenderNode.hpp"
 
 namespace GameUtils {
 
@@ -65,6 +66,17 @@ void TryTriggerElemDestroy(const Vec2i& boardPt) {
     EntityId elemId;
     ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
     TryTriggerElemDestroy(elemId);
+    ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, boardPt);
 }
+
+void PlayElemDestroyEffect(EntityId elemId) {
+    ET_SendEvent(&ETGameBoardMatcher::ET_playDestroyEffect, elemId);
+    ET_SendEvent(elemId, &ETRenderNode::ET_hide);
+
+    Vec2i elemCellPt(-1);
+    ET_SendEventReturn(elemCellPt, &ETGameBoard::ET_getElemBoardPos, elemId);
+    ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, elemCellPt);
+}
+
 
 } // namespace GameUtils

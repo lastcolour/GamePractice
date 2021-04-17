@@ -55,12 +55,12 @@ EBoardElemType GameBoardElemLogic::ET_getType() const {
 
 void GameBoardElemLogic::ET_triggerDestroy() {
     assert(state == EBoardElemState::Static && "Invalid elem state");
-    ET_SendEvent(&ETGameBoardMatcher::ET_playDestroyEffect, getEntityId());
 
     if(GameUtils::IsTriggerType(type)) {
         state = EBoardElemState::Triggering;
         ET_SendEvent(&ETGameBoardElemTriggerManager::ET_createTriggerTask, getEntityId());
     } else {
+        GameUtils::PlayElemDestroyEffect(getEntityId());
         state = EBoardElemState::Destroying;
         if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
             ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimation::ET_playDestroy);

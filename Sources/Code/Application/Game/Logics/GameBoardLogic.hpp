@@ -72,6 +72,7 @@ protected:
     void respawnDestroyedElems();
     void processMovingElems(float dt);
     void setupElem(BoardElement& elem, const Vec2i& boardPt);
+    void moveElem(BoardElement& elem, BoardElement* prevElem, const Vec2i& boardPt, float dt);
 
 protected:
 

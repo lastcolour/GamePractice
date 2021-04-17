@@ -19,6 +19,8 @@ void TryTriggerElemDestroy(EntityId entId);
 
 void TryTriggerElemDestroy(const Vec2i& boardPt);
 
+void PlayElemDestroyEffect(EntityId elemId);
+
 } // namespace GameUtils
 
 #endif /* __GAME_BOARD_UTILS_HPP__ */

@@ -37,6 +37,7 @@ private:
     EntityId yellowDestroyEffectId;
     EntityId greenDestroyEffectId;
     EntityId purpleDestroyEffectId;
+    EntityId bomdDestroyEffectId;
     float destroyEffectScale;
 };
 

@@ -402,64 +402,65 @@ void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
     uiProxies.setUIParent(rootUIElementId);
 }
 
-void GameBoardLogic::processMovingElems(float dt) {
-    int movingElemsCount = 0;
-    for(auto& col : columns) {
-        float prevYPos = -std::numeric_limits<float>::max();
-        float prevVel = -1.f;
-        for(int i = 0, sz = static_cast<int>(col.size()); i < sz; ++i) {
-            int movePtY = i;
-            auto& elem = col[i];
+void GameBoardLogic::moveElem(BoardElement& elem, BoardElement* prevElem, const Vec2i& boardPt, float dt) {
+    Transform tm;
+    ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
 
-            auto elemState = GameUtils::GetElemState(elem.entId);
-            if(elemState == EBoardElemState::Static) {
-                if(elem.boardPt.y != movePtY) {
-                    elemState = EBoardElemState::Falling;
-                    GameUtils::SetElemState(elem.entId, elemState);
-                }
-            }
-            if(isElemMovingState(elemState)) {
-                ++movingElemsCount;
-            }
+    elem.vel += dt * moveAccel;
+    tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
 
-            Transform tm;
-            ET_SendEventReturn(tm, elem.entId, &ETEntity::ET_getLocalTransform);
+    bool blocked = false;
 
-            if(elemState != EBoardElemState::Falling) {
-                prevVel = 0.f;
-                prevYPos = tm.pt.y;
-                continue;
-            }
+    if(prevElem) {
+        auto elemState = GameUtils::GetElemState(prevElem->entId);
+        if(elemState != EBoardElemState::Static && elemState != EBoardElemState::Landing) {
+            Transform prevTm;
+            ET_SendEventReturn(prevTm, prevElem->entId, &ETEntity::ET_getLocalTransform);
 
-            elem.vel += dt * moveAccel;
-            tm.pt.y -= (moveSpeed + elem.vel) * dt * cellSize;
-
-            Vec3 desirePt = ET_getPosFromBoardPos(Vec2i(elem.boardPt.x, movePtY));
-            bool reachDestination = tm.pt.y <= desirePt.y;
-
-            if(tm.pt.y < (prevYPos + cellSize)) {
-                tm.pt.y = prevYPos + cellSize;
-                elem.vel = prevVel * 0.9f;
-            }
-
-            prevYPos = tm.pt.y;
-            prevVel = elem.vel;
-
-            if(!reachDestination) {
-                ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-            } else {
-                elem.vel = 0.f;
-                setElemBoardPos(elem, Vec2i(elem.boardPt.x, movePtY));
-                ET_SendEvent(elem.entId, &ETGameBoardElem::ET_triggerLand);
-                if(GameUtils::GetElemState(elem.entId) == EBoardElemState::Static) {
-                    --movingElemsCount;
-                    gameBoardFSM.getState().isMatchRequested = true;
-                }
+            if(tm.pt.y < (prevTm.pt.y + cellSize)) {
+                blocked = true;
+                tm.pt.y = prevTm.pt.y + cellSize;
+                elem.vel = prevElem->vel * 0.9f;
             }
         }
     }
 
-    gameBoardFSM.getState().hasMovingElems = movingElemsCount > 0;
+    Vec3 desiredPt = ET_getPosFromBoardPos(boardPt);
+    if(tm.pt.y > desiredPt.y) {
+        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
+    } else if(!blocked) {
+        elem.vel = 0.f;
+        setElemBoardPos(elem, boardPt);
+        ET_SendEvent(elem.entId, &ETGameBoardElem::ET_triggerLand);
+    }
+}
+
+void GameBoardLogic::processMovingElems(float dt) {
+    gameBoardFSM.getState().hasMovingElems = false;
+    for(int i = 0; i < boardSize.x; ++i) {
+        BoardElement* prevElem = nullptr;
+        for(int j = 0; j < boardSize.y; ++j) {
+            Vec2i pt(i, j);
+            auto& elem = columns[i][j];
+            auto elemState = GameUtils::GetElemState(elem.entId);
+            if(elemState == EBoardElemState::Static) {
+                if(elem.boardPt != pt) {
+                    elem.boardPt = Vec2i(i, -1);
+                    elemState = EBoardElemState::Falling;
+                    GameUtils::SetElemState(elem.entId, elemState);
+                }
+            }
+            if(elemState == EBoardElemState::Falling) {
+                moveElem(elem, prevElem, pt, dt);
+                gameBoardFSM.getState().isMatchRequested = true;
+            }
+            elemState = GameUtils::GetElemState(elem.entId);
+            if(isElemMovingState(elemState)) {
+                gameBoardFSM.getState().hasMovingElems = true;
+            }
+            prevElem = &elem;
+        }
+    }
 }
 
 void GameBoardLogic::setupElem(BoardElement& elem, const Vec2i& boardPt) {

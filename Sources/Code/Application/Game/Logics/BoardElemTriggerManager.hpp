@@ -29,6 +29,7 @@ private:
     struct TriggerTask {
         EntityId entId;
         float delay;
+        bool destroyPlayed;
     };
 
 private:

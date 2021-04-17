@@ -38,7 +38,7 @@
             "id": 3,
             "data": {
               "isVisible": false,
-              "alpha": 0.9,
+              "alpha": 0.8999999761581421,
               "drawPriority": 1,
               "textureInfo": {
                 "filename": "Images/Base/rblock_256x256.png",
@@ -54,8 +54,8 @@
                 "x": 1040.0,
                 "y": 1040.0
               },
-              "horizontal": 0.3,
-              "vertical": 0.3,
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
               "patchScale": 0.5
             }
           }
@@ -111,22 +111,26 @@
         "elems": [
           {
             "elemType": "Blue",
-            "weight": 1
+            "weight": 3
           },
           {
             "elemType": "Green",
-            "weight": 1
+            "weight": 3
           },
           {
             "elemType": "Purple",
-            "weight": 1
+            "weight": 3
           },
           {
             "elemType": "Red",
-            "weight": 1
+            "weight": 3
           },
           {
             "elemType": "Yellow",
+            "weight": 3
+          },
+          {
+            "elemType": "Bomb",
             "weight": 1
           }
         ]

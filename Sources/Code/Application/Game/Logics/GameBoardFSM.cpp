@@ -62,12 +62,12 @@ bool GameBoardFSM::queryPass(EGameBoardUpdatePass& outPass) {
     updatePass = returnPass;
     switch(updatePass) {
         case EGameBoardUpdatePass::Static: {
-            if(state.hasMovingElems) {
-                updatePass = EGameBoardUpdatePass::Move;
+            if(state.hasTriggeringElems) {
+                updatePass = EGameBoardUpdatePass::Trigger;
             } else if(state.hasMergingElems) {
                 updatePass = EGameBoardUpdatePass::Merge;
-            } else if(state.hasTriggeringElems) {
-                updatePass = EGameBoardUpdatePass::Trigger;
+            } else if(state.hasMovingElems) {
+                updatePass = EGameBoardUpdatePass::Move;
             } else if(state.isMatchRequested) {
                 if(!state.isMatchBlocked) {
                     updatePass = EGameBoardUpdatePass::Match;

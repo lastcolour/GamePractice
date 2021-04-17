@@ -82,14 +82,14 @@ void BoardElemMergeManager::processMutate(MutateTask& task, float dt) {
 
 void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cellSize) {
     Transform toTm;
-    ET_SendEventReturn(toTm, task.toId, &ETEntity::ET_getTransform);
+    ET_SendEventReturn(toTm, task.toId, &ETEntity::ET_getLocalTransform);
 
     Vec2 toPt(toTm.pt.x, toTm.pt.y);
 
     auto it = task.merges.begin();
     while(it != task.merges.end()) {
         Transform fromTm;
-        ET_SendEventReturn(fromTm, it->targetId, &ETEntity::ET_getTransform);
+        ET_SendEventReturn(fromTm, it->targetId, &ETEntity::ET_getLocalTransform);
         Vec2 fromPt(fromTm.pt.x, fromTm.pt.y);
 
         auto moveDir = toPt - fromPt;
@@ -107,7 +107,7 @@ void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cell
             mergeSound.emit();
             it = task.merges.erase(it);
         } else {
-            ET_SendEvent(it->targetId, &ETEntity::ET_setTransform, fromTm);
+            ET_SendEvent(it->targetId, &ETEntity::ET_setLocalTransform, fromTm);
             ++it;
         }
     }
