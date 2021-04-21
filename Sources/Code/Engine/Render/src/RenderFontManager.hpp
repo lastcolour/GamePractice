@@ -5,6 +5,7 @@
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
+class FontConfig;
 class RenderFont;
 
 class RenderFontManager : public SystemLogic,
@@ -28,8 +29,8 @@ public:
 
 private:
 
-    std::shared_ptr<RenderFont> createFont(const char* fontName, int fontSize);
-    std::shared_ptr<RenderFont> createFontImpl(const char* fontName, int fontSize);
+    std::shared_ptr<RenderFont> createFont(const FontConfig& fontConfig);
+    std::shared_ptr<RenderFont> createFontImpl(const FontConfig& fontConfig);
 
 private:
 

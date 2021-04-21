@@ -5,12 +5,10 @@
 #include <cassert>
 
 JobTree::JobTree(int jobTreeId) :
-    tracker(this),
     pendingJobsCount(0),
     jobsCount(0),
     treeId(jobTreeId),
-    isRunning(false),
-    trackPerformance(false) {
+    isRunning(false) {
 }
 
 JobTree::~JobTree() {
@@ -22,9 +20,6 @@ bool JobTree::tryFinishTreeByOneJob(const TimePoint& currTime) {
         prevEndT = currTime;
         isRunning.store(false);
         pendingJobsCount.store(jobsCount);
-        if(trackPerformance) {
-            tracker.onTreeFinished();
-        }
         return true;
     }
     return false;
@@ -59,10 +54,6 @@ void JobTree::setJobsCount(int newJobsCount) {
 void JobTree::setRunFrequency(int frequency) {
     auto microSecDelay = static_cast<int>((1000000.0 / (static_cast<double>(frequency))));
     runDelay = std::chrono::microseconds(microSecDelay);
-}
-
-void JobTree::setTrackPerformance(bool flag) {
-    trackPerformance = flag;
 }
 
 bool JobTree::canStartAt(const TimePoint& currTime) const {

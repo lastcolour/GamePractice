@@ -19,10 +19,7 @@ public:
 
     void addChild(RunTask* other);
     void setFrequency(int frequency);
-    void setTrackPerformance(bool flag);
-    bool getTrackPerformance() const;
     int getFrequency() const;
-    int getRunCount() const;
     void setType(RunTaskType newType);
     RunTaskType getType() const;
     const char* getName() const;
@@ -35,10 +32,8 @@ private:
     std::vector<RunTask*> childrenTasks;
     std::string name;
     CallT func;
-    int runCount;
     int frequency;
     RunTaskType type;
-    bool trackPerformance;
 };
 
 #endif /* __RUN_TASK_HPP__ */

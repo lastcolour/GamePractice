@@ -13,6 +13,36 @@ public:
         count(0) {
     }
 
+    CycleArray(const CycleArray& other) :
+        data(other.data)
+        pos(other.pos),
+        count(other.count) {}
+
+    CycleArray(const CycleArray&& other) :
+        data(std::move(other.data))
+        pos(other.pos),
+        count(other.count) {}
+
+    CycleArray& operator=(const CycleArray& other) {
+        if(this != &other) {
+            data = other.data;
+            pos = other.pos;
+            count = other.count;
+        }
+        return *this;
+    }
+
+    CycleArray& operator=(CycleArray&& other) {
+        if(this != &other) {
+            data = std::move(other.data);
+            pos = other.pos;
+            other.pos = 0;
+            count = other.count;
+            other.count = 0;
+        }
+        return *this;
+    }
+
     ~CycleArray() = default;
 
     size_t size() const {
@@ -41,11 +71,6 @@ public:
         count = std::min(count + 1, data.size());
         pos %= data.size();
     }
-
-private:
-
-    CycleArray(const CycleArray&) = delete;
-    CycleArray& operator=(const CycleArray&) = delete;
 
 private:
 

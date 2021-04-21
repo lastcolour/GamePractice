@@ -2,7 +2,6 @@
 #define __JOB_TREE_HPP__
 
 #include "Core/TimePoint.hpp"
-#include "JobTreeRunTimeTracker.hpp"
 
 #include <atomic>
 
@@ -21,7 +20,6 @@ public:
     int getJobsCount() const;
     void setJobsCount(int newJobsCount);
     void setRunFrequency(int frequency);
-    void setTrackPerformance(bool flag);
     bool canStartAt(const TimePoint& currTime) const;
 
     const TimePoint& getStartTime() const;
@@ -31,7 +29,6 @@ public:
 
 private:
 
-    JobTreeRunTimeTracker tracker;
     std::vector<ThreadJob*> rootJobs;
     TimePoint prevStartT;
     TimePoint prevEndT;
@@ -40,7 +37,6 @@ private:
     int jobsCount;
     int treeId;
     std::atomic<bool> isRunning;
-    bool trackPerformance;
 };
 
 #endif /* __JOB_TREE_HPP__ */

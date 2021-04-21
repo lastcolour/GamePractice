@@ -7,6 +7,7 @@
 #include "RenderTextureManager.hpp"
 #include "RenderNodeManager.hpp"
 #include "Debug/DebugRender.hpp"
+#include "Debug/TasksStatsTracker.hpp"
 #include "Logics/ParticlesSystem.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
@@ -32,7 +33,8 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             RenderTextureManager,
             RenderNodeManager,
             RenderFontManager,
-            DebugRender>()
+            DebugRender,
+            TasksStatsTracker>()
         );
     return container;
 }

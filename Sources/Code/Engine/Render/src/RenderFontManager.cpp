@@ -74,7 +74,7 @@ void RenderFontManager::deinit() {
 
 void RenderFontManager::ET_onContextCreated() {
     auto renderConfig = GetGlobal<RenderConfig>();
-    auto res = createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
+    auto res = createFont(renderConfig->fontConfig);
     if(!res) {
         LogError("[RenderFontManager::ET_onContextCreated] Can't create default font");
     }
@@ -85,25 +85,24 @@ void RenderFontManager::ET_onContextDestroyed() {
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
     auto renderConfig = GetGlobal<RenderConfig>();
-    return createFont(renderConfig->defaultFont.c_str(), renderConfig->defaultFontSize);
+    return createFont(renderConfig->fontConfig);
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::createFont(const char* reqFontName, int fontSize) {
-    std::string fontName = reqFontName;
-    fontName += '_' + std::to_string(fontSize);
+std::shared_ptr<RenderFont> RenderFontManager::createFont(const FontConfig& fontConfig) {
+    std::string fontName = fontConfig.file +  '_' + std::to_string(fontConfig.size);
     auto it = fonts.find(fontName);
     if(it != fonts.end()) {
         return it->second;
     }
-    auto font = createFontImpl(reqFontName, fontSize);
+    auto font = createFontImpl(fontConfig);
     if(font) {
-        fonts[fontName] = font;
+        fonts[std::move(fontName)] = font;
         return font;
     }
     return nullptr;
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontName, int fontSize) {
+std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& fontConfig) {
     assert(RenderUtils::IsOpenGLContextExists() && "Can't create font without OpenGL context");
 
     FT_Library ftLib;
@@ -112,21 +111,25 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
         return nullptr;
     }
     Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fontName);
+    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fontConfig.file.c_str());
     if(!buff) {
         FT_Done_FreeType(ftLib);
-        LogError("[RenderFontManager::createFontImpl] Can't load default font: %s", fontName);
+        LogError("[RenderFontManager::createFontImpl] Can't load font from: '%s'",
+            fontConfig.file);
         return nullptr;
     }
     FT_Face fontFace = nullptr;
     if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getWriteData()),
         static_cast<FT_Long>(buff.getSize()), 0, &fontFace)) {
         FT_Done_FreeType(ftLib);
-        LogError("[RenderFontManager::createFontImpl] Can't create memory font face for font: %s", fontName);
+        LogError("[RenderFontManager::createFontImpl] Can't create memory font face for font: '%s'",
+            fontConfig.file);
         return nullptr;
     }
 
-    FT_Set_Pixel_Sizes(fontFace, 0, fontSize);
+    assert(fontConfig.size > 0 && "Negative font size");
+
+    FT_Set_Pixel_Sizes(fontFace, 0, fontConfig.size);
 
     unsigned int texWidth = 0;
     unsigned int texHeight = 0;
@@ -149,14 +152,15 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const char* fontNa
     std::shared_ptr<RenderTexture> fontAtlas;
     ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
     if(!fontAtlas) {
-        LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: %s", fontName);
+        LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: '%s'", 
+            fontConfig.file);
         FT_Done_Face(fontFace);
         FT_Done_FreeType(ftLib);
         return nullptr;
     }
 
     fontAtlas->bind();
-    fontAtlas->setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
+    fontAtlas->setLerpType(fontConfig.lerpType, fontConfig.lerpType);
     if(!fontAtlas->resize(Vec2i(texWidth, texHeight))) {
         return nullptr;
     }

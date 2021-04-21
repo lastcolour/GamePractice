@@ -3,7 +3,7 @@
 
 #include <atomic>
 
-#include "Core/TimePoint.hpp"
+#include "JobRunStats.hpp"
 
 class RunTask;
 class JobTree;
@@ -22,14 +22,12 @@ public:
     JobTree* getTree();
     void setParentsCount(int newParentCount);
     int getParentsCount() const;
-    int getRunCount() const;
     void addChildJob(ThreadJob* childJob);
     RunTask* getTask();
     void execute();
     bool canStartAt(const TimePoint& currTime) const;
-    std::chrono::microseconds getLastRunTime() const;
-    std::chrono::microseconds getLastWaitTime() const;
     void setCurrentStartTime(const TimePoint& currTime);
+    const JobRunStats& getRunStats() const;
 
 private:
 
@@ -38,7 +36,7 @@ private:
 
 private:
 
-    TimePoint prevScheduleT;
+    JobRunStats runStats;
     TimePoint prevStartT;
     TimePoint prevEndT;
     TimePoint currStartT;

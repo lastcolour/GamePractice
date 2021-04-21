@@ -36,10 +36,8 @@ void Render::ET_updateRender(float dt) {
     if(!canRenderToScreen()) {
         return;
     }
-    tracker.onFrameStart();
     ET_SendEvent(&ETRenderNodeManager::ET_drawFrame);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
-    tracker.onFrameEnd();
 }
 
 void Render::ET_updateParticles(float dt) {
@@ -69,15 +67,7 @@ void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSiz
     ET_SendEventReturn(prevViewPort, &ETRenderCamera::ET_getRenderPort);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, drawSize);
 
-    if(filter != DrawContentFilter::NoDebugInfo) {
-        tracker.onFrameStart();
-    }
-
     ET_SendEvent(&ETRenderNodeManager::ET_drawFrameToBuffer, imageBuffer, filter);
-
-    if(filter != DrawContentFilter::NoDebugInfo) {
-        tracker.onFrameEnd();
-    }
 
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }

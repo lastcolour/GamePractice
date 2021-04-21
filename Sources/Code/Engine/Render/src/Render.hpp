@@ -6,7 +6,6 @@
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "RenderGraph/RenderGraph.hpp"
-#include "Debug/FrameStatsTracker.hpp"
 
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
@@ -46,7 +45,6 @@ private:
 
 private:
 
-    FrameStatsTracker tracker;
     bool canOffscrenRender;
     bool canScreenRender;
 };

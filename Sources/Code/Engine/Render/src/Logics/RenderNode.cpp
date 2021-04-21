@@ -51,6 +51,7 @@ void RenderNode::init() {
 }
 
 void RenderNode::deinit() {
+    normScale = 1.f;
     ETNode<ETRenderNode>::disconnect();
     if(proxyNode != nullptr) {
         ET_QueueEvent(&ETRenderNodeManager::ET_removeNode, proxyNode);
@@ -130,11 +131,11 @@ void RenderNode::ET_onTransformChanged(const Transform& newTm) {
 }
 
 void RenderNode::ET_setNormalizationScale(float newNormScale) {
-    normScale = newNormScale;
     ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newS=newNormScale, oldS=normScale](){
         float nScale = std::max(0.001f, newS / oldS);
         node->setNormScale(nScale);
     });
+    normScale = newNormScale;
 }
 
 float RenderNode::ET_getNormalizationScale() const {

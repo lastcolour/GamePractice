@@ -112,7 +112,11 @@ unsigned int TextNode::drawLine(const Vec2& pt, unsigned int vertShift, size_t s
 
         vertShift += 6;
 
-        drawPt.x += glyph->advance.x;
+        if(i == startIdx) {
+            drawPt.x += glyph->advance.x - glyph->bearing.x;
+        } else {
+            drawPt.x += glyph->advance.x;
+        }
         drawPt.y += glyph->advance.y;
     }
 

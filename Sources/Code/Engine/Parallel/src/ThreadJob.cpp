@@ -68,6 +68,7 @@ bool ThreadJob::canStartInThread(int threadId) const {
 
 void ThreadJob::onFinished() {
     prevEndT = TimePoint::GetNowTime();
+    runStats.onExecuted(prevStartT, prevEndT);
     pendingParents.store(parentsCount);
     if(tree->tryFinishTreeByOneJob(prevEndT)) {
         nextJobs = &(tree->getRootJobs());
@@ -86,7 +87,6 @@ void ThreadJob::scheduleNextJobs(std::vector<ThreadJob*>& output) {
     }
     for(auto job : *nextJobs) {
         if(job->pendingParents.load() == 0) {
-            job->prevScheduleT = prevEndT;
             job->pendingParents.store(job->parentsCount);
             output.push_back(job);
         }
@@ -113,20 +113,10 @@ bool ThreadJob::canStartAt(const TimePoint& currTime) const {
     return tree->canStartAt(currTime);
 }
 
-std::chrono::microseconds ThreadJob::getLastRunTime() const {
-    return std::chrono::duration_cast<std::chrono::microseconds>(
-        prevEndT.getStdTimePoint() - prevStartT.getStdTimePoint());
-}
-
-std::chrono::microseconds ThreadJob::getLastWaitTime() const {
-    if(parentsCount == 0) {
-        return std::chrono::microseconds(0);
-    } else {
-        return std::chrono::duration_cast<std::chrono::microseconds>(
-            prevStartT.getStdTimePoint() - prevScheduleT.getStdTimePoint());
-    }
-}
-
 void ThreadJob::setCurrentStartTime(const TimePoint& currTime) {
     currStartT = currTime;
+}
+
+const JobRunStats& ThreadJob::getRunStats() const {
+    return runStats;
 }

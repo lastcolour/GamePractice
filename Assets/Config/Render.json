@@ -1,4 +1,14 @@
 {
-    "defaultFont":"Render/Fonts/OpenSans-Regular.ttf",
-    "defaultFontSize":64
+    "default_fonts": {
+        "file":"Render/Fonts/OpenSans-Regular.ttf",
+        "lerpType":"Linear",
+        "size":64
+    },
+    "default_camera": {
+        "zNear":-1.0,
+        "zFar":1.0
+    },
+    "debug_tasks": {
+        "tasks":["Render"]
+    }
 }

@@ -2,6 +2,7 @@
 #define __TASKS_RUNNER_HPP__
 
 #include "Parallel/RunTask.hpp"
+#include "Parallel/TaskRunInfo.hpp"
 
 #include <mutex>
 #include <atomic>
@@ -37,6 +38,8 @@ public:
     bool canRun() const;
     ThreadJob* finishAndGetNext(ThreadJob* prevJob, int threadId);
     std::vector<std::unique_ptr<RunTask>>& getTasks();
+
+    bool getTaskRunInfo(const std::string& taskName, TaskRunInfo& outInfo);
 
 private:
 
