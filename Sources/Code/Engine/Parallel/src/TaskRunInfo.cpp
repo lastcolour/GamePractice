@@ -14,15 +14,11 @@ TaskRunInfo::TaskRunInfo() :
 TaskRunInfo::~TaskRunInfo() {
 }
 
-float GetFPSAtPoint(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
-    float runDelta = timing[i].startT.getMiliSecElapsedFrom(timing[i - 1].startT);
-    if(runDelta > 0.f) {
-        return 1000.f / runDelta;
-    }
-    return 0.f;
+float GetRunTimeBetween(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
+    return timing[i].startT.getMiliSecElapsedFrom(timing[i - 1].startT);
 }
 
-float GetRunTimeAtPoint(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
+float GetRunDurationAt(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
     return timing[i].endT.getMiliSecElapsedFrom(timing[i].startT);
 }
 
@@ -49,12 +45,12 @@ AvarageRunInfo GetAvgRunInfo(const TaskRunInfo& runInfo) {
 
     size_t sz = runInfo.timing.size();
     for(size_t i = 1; i < sz; ++i) {
-        float fpsVal = GetFPSAtPoint(runInfo.timing, i);
+        float fpsVal = 1000.f / GetRunTimeBetween(runInfo.timing, i);
         avgRunInfo.minFPS = std::min(fpsVal, avgRunInfo.minFPS);
         avgRunInfo.maxFPS = std::max(fpsVal, avgRunInfo.maxFPS);
         avgRunInfo.avgFPS += fpsVal;
 
-        float runTime = GetRunTimeAtPoint(runInfo.timing, i);
+        float runTime = GetRunDurationAt(runInfo.timing, i);
         avgRunInfo.minRunTime = std::min(runTime, avgRunInfo.minRunTime);
         avgRunInfo.maxRunTime = std::max(runTime, avgRunInfo.maxRunTime);
         avgRunInfo.avgRunTime += runTime;

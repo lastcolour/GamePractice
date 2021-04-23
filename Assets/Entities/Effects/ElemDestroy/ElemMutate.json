@@ -283,8 +283,8 @@
         "emission": {
           "duration": 0.05000000074505806,
           "startDelay": 0.05000000074505806,
-          "autoStart": true,
-          "loop": true,
+          "autoStart": false,
+          "loop": false,
           "heating": true,
           "emitterSpace": "World",
           "emitterType": "Sphere",

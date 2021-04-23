@@ -1,25 +1,13 @@
 #include "Nodes/LineNode.hpp"
 #include "Platform/OpenGL.hpp"
+#include "Debug/DeubgCommands.hpp"
 
 #include <cassert>
 
-LineNode::LineNode() :
-    startPt(0.f),
-    endPt(0.f),
-    col(255, 255, 255),
-    width(1.f) {
+LineNode::LineNode() {
 }
 
 LineNode::~LineNode() {
-}
-
-void LineNode::setLine(const Vec2& newStartPt, const Vec2& newEndPt, const ColorB& newCol, float newWidth) {
-    assert(width > 0.f && "Invalid line width");
-
-    startPt = newStartPt;
-    endPt = newEndPt;
-    col = newCol;
-    width = newWidth;
 }
 
 Mat4 LineNode::calcModelMat(const Transform& newTm) {
@@ -31,10 +19,11 @@ void LineNode::onInit() {
     setShader("line_solid_color");
 }
 
-void LineNode::onRender(RenderContext& ctx) {
-    glLineWidth(width);
-
-    Vec2 vertData[] = {startPt, endPt};
-    shader->setUniform4f(UniformType::Color, col);
-    geom->drawLine(&vertData);
+void LineNode::renderLines(const std::vector<RenderLine>& lines, RenderContext& ctx) {
+    if(lines.empty()) {
+        return;
+    }
+    onRenderStart(ctx);
+    geom->drawLines(&lines[0], static_cast<unsigned int>(lines.size()));
+    onRenderEnd(ctx);
 }

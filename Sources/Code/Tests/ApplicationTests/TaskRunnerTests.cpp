@@ -55,9 +55,11 @@ TEST_F(TaskRunnerTests, RunTenTasksTenThreads) {
     });
 
     int totalRunCount = 0;
+    TaskRunInfo runInfo;
     for(auto& task : runner.getTasks()) {
-        EXPECT_GT(task->getRunCount(), 50);
-        totalRunCount += task->getRunCount();
+        EXPECT_TRUE(runner.getTaskRunInfo(*task, runInfo));
+        EXPECT_GT(runInfo.runCount, 50);
+        totalRunCount += runInfo.runCount;
     }
     EXPECT_EQ(value.load(), totalRunCount);
     EXPECT_GE(value.load(), 10000);
@@ -86,7 +88,10 @@ TEST_F(TaskRunnerTests, TestFrequency) {
         }
     });
 
-    EXPECT_EQ(task->getRunCount(), value.load());
+    TaskRunInfo runInfo;
+    EXPECT_TRUE(runner.getTaskRunInfo(*task, runInfo));
+
+    EXPECT_EQ(runInfo.runCount, value.load());
     EXPECT_GE(value.load(), TEST_FREQUENCY - 1);
 }
 
@@ -118,8 +123,10 @@ TEST_F(TaskRunnerTests, RunTaskWithChildren) {
         return botValue.load() < 500;
     });
 
+    TaskRunInfo runInfo;
     for(auto& task : runner.getTasks()) {
-        EXPECT_LE(task->getRunCount(), botValue.load() + 1);
+        EXPECT_TRUE(runner.getTaskRunInfo(*task, runInfo));
+        EXPECT_LE(runInfo.runCount, botValue.load() + 1);
     }
 }
 

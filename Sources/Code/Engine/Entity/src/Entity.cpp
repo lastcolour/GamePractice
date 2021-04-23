@@ -232,25 +232,33 @@ void Entity::ET_setParent(EntityId entId) {
         }
     }
     if(parent) {
-        parent->ET_removeChild(getEntityId());
+        parent->removeChild(this);
     }
     parent = newParent;
     if(parent) {
-        parent->ET_addChild(getEntityId());
+        parent->addChild(this);
     }
 }
 
 EntityChildId Entity::ET_addChild(EntityId entId) {
+    if(!entId.isValid()) {
+        LogError("[Entity::ET_addChild] Can't add invalid entity as a child to entity: '%s'", name);
+        return InvalidEntityChildId;
+    }
     assert(entId != entityId && "Can't add self as a child");
-    assert(entId != InvalidEntityId && "Invalid entity id");
 
     auto childEntity = registry->findEntity(entId);
+
     if(!childEntity) {
         LogError("[Entity::ET_addChild] Can't find entity with id '%d' to add as a child to: '%s'",
             entId.getRawId(), name);
         return InvalidEntityChildId;
     }
 
+    return addChild(childEntity);
+}
+
+EntityChildId Entity::addChild(Entity* childEntity) {
     for(auto childNode : children) {
         if(childNode.childEntity == childEntity) {
             return InvalidEntityChildId;
@@ -260,10 +268,24 @@ EntityChildId Entity::ET_addChild(EntityId entId) {
     auto childId = createNewChildId();
     children.emplace_back(EntityChildNode{childEntity, childId});
 
-    if(childEntity->ET_getParentId() != getEntityId()) {
-        childEntity->ET_setParent(getEntityId());
+    if(childEntity->parent) {
+        childEntity->parent->removeChild(childEntity);
     }
+
+    childEntity->parent = this;
+
     return childId;
+}
+
+void Entity::removeChild(Entity* childEntity) {
+    assert(childEntity->parent == this && "Invalid parent");
+    childEntity->parent = nullptr;
+    for(auto it = children.begin(), end = children.end(); it != end; ++it) {
+        if(it->childEntity == childEntity) {
+            children.erase(it);
+            return;
+        }
+    }
 }
 
 void Entity::ET_removeChild(EntityId entId) {
@@ -275,10 +297,9 @@ void Entity::ET_removeChild(EntityId entId) {
     }
     if(it != children.end()) {
         auto childEntity = it->childEntity;
+        assert(childEntity->parent == this && "Invalid parent");
+        childEntity->parent = nullptr;
         children.erase(it);
-        if(childEntity->ET_getParentId() == getEntityId()) {
-            childEntity->ET_setParent(InvalidEntityId);
-        }
     }
 }
 

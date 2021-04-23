@@ -14,6 +14,7 @@ public:
 
     void setSize(const Vec2& newSize);
     void setTextureInfo(const TextureInfo& newTextureInfo);
+    void setTextureObject(std::shared_ptr<RenderTexture>& newTextureObj);
 
     // Node
     bool canRender() const override;

@@ -40,6 +40,7 @@ public:
     std::vector<std::unique_ptr<RunTask>>& getTasks();
 
     bool getTaskRunInfo(const std::string& taskName, TaskRunInfo& outInfo);
+    bool getTaskRunInfo(const RunTask& task, TaskRunInfo& outInfo);
 
 private:
 

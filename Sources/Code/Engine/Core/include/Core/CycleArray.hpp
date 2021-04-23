@@ -14,14 +14,18 @@ public:
     }
 
     CycleArray(const CycleArray& other) :
-        data(other.data)
+        data(other.data),
         pos(other.pos),
         count(other.count) {}
 
     CycleArray(const CycleArray&& other) :
-        data(std::move(other.data))
+        data(std::move(other.data)),
         pos(other.pos),
-        count(other.count) {}
+        count(other.count) {
+
+        other.pos = 0;
+        other.count = 0;
+    }
 
     CycleArray& operator=(const CycleArray& other) {
         if(this != &other) {

@@ -22,11 +22,11 @@ public:
     void deinit() override;
 
     // ETDebugRender
-    void ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col, float width) override;
+    void ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col) override;
     void ET_drawQuadSolid(const AABB2D& box, const ColorB& col) override;
-    void ET_drawQuadBorder(const AABB2D& box, const ColorB& col, float width) override;
+    void ET_drawQuadBorder(const AABB2D& box, const ColorB& col) override;
     void ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) override;
-    void ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col, float width) override;
+    void ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col) override;
     void ET_drawCicleSolid(const Vec2& pt, float r, const ColorB& col) override;
     void ET_update(RenderContext& ctx) override;
 
@@ -42,7 +42,7 @@ private:
 
 private:
 
-    std::vector<DebugDrawLineCmd> drawLineCmds;
+    std::vector<RenderLine> drawLinesCmd;
     std::vector<DebugDrawQuadCmd> drawQuadCmds;
     std::vector<DebugDrawTextCmd> drawTextCmds;
     LineNode lineNode;

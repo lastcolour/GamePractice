@@ -5,6 +5,7 @@
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Nodes/Node.hpp"
 #include "RenderUtils.hpp"
+#include "Render/ImageBuffer.hpp"
 
 Render::Render() :
     canOffscrenRender(false),
@@ -59,6 +60,11 @@ bool Render::canRenderToFramebuffer() const {
 }
 
 void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) {
+    imageBuffer.setSizeAndClear(drawSize);
+    ET_drawFrameToBufferRaw(imageBuffer.getData().getWriteData(), drawSize, filter);
+}
+
+void Render::ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, DrawContentFilter filter) {
     if(!canRenderToFramebuffer()) {
         return;
     }
@@ -67,7 +73,7 @@ void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSiz
     ET_SendEventReturn(prevViewPort, &ETRenderCamera::ET_getRenderPort);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, drawSize);
 
-    ET_SendEvent(&ETRenderNodeManager::ET_drawFrameToBuffer, imageBuffer, filter);
+    ET_SendEvent(&ETRenderNodeManager::ET_drawFrameToBuffer, outBuffer, filter);
 
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }

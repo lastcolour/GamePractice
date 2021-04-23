@@ -116,22 +116,7 @@ void RenderGraph::setNeedReorderNodes() {
     needReorder = true;
 }
 
-void RenderGraph::render() {
-    if(!startFrame()) {
-        return;
-    }
-    for(auto node : children) {
-        if(node->canRender()) {
-            node->render(ctx);
-        }
-    }
-    ET_SendEvent(&ETDebugRender::ET_update, ctx);
-    endFrame();
-
-    RenderUtils::BlitFromFBOtoDefaultFBO(*mainFBO);
-}
-
-void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) {
+void RenderGraph::drawToFBO(DrawContentFilter filter) {
     if(!startFrame()) {
         return;
     }
@@ -144,6 +129,14 @@ void RenderGraph::renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter fil
         ET_SendEvent(&ETDebugRender::ET_update, ctx);
     }
     endFrame();
+}
 
-    RenderUtils::ReadFramebufferToImage(*mainFBO, imageBuffer);
+void RenderGraph::render() {
+    drawToFBO(drawFilter);
+    RenderUtils::BlitFromFBOtoDefaultFBO(*mainFBO);
+}
+
+void RenderGraph::renderToBuffer(void* outBuffer, DrawContentFilter filter) {
+    drawToFBO(drawFilter);
+    RenderUtils::ReadFramebufferToBuffer(*mainFBO, outBuffer);
 }

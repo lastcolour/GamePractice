@@ -11,7 +11,7 @@ struct ETRenderNodeManager {
     virtual void ET_removeNode(Node* node) = 0;
     virtual void ET_initRenderNode(Node* node) = 0;
     virtual void ET_drawFrame() = 0;
-    virtual void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) = 0;
+    virtual void ET_drawFrameToBuffer(void* outBuffer, DrawContentFilter filter) = 0;
 };
 
 struct ETParticlesUpdate {

@@ -301,12 +301,16 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createLine() {
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
     {
+        GLsizei stride = sizeof(Vec2) + sizeof(Vec4);
+
         glGenBuffers(1, &vboId);
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * 2, nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, RenderUtils::MaxLinesPerDraw * stride, nullptr, GL_DYNAMIC_DRAW);
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), static_cast<void*>(0));
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(2 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
     }
     glBindVertexArray(0);
 
@@ -315,7 +319,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createLine() {
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->vertCount = 2u;
-    geometry->vertType = VertexType::Vector2;
+    geometry->vertType = VertexType::Line;
 
     return geometry;
 }

@@ -44,13 +44,9 @@ void DebugRender::ET_onContextDestroyed() {
 void DebugRender::deinit() {
 }
 
-void DebugRender::ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col, float width) {
-    DebugDrawLineCmd cmd;
-    cmd.startPt = startPt;
-    cmd.endPt = endPt;
-    cmd.col = col;
-    cmd.width = width;
-    drawLineCmds.push_back(cmd);
+void DebugRender::ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col) {
+    auto colF = col.getColorF();
+    drawLinesCmd.emplace_back(RenderLine{startPt, colF, endPt, colF});
 }
 
 void DebugRender::ET_drawQuadSolid(const AABB2D& box, const ColorB& col) {
@@ -60,30 +56,11 @@ void DebugRender::ET_drawQuadSolid(const AABB2D& box, const ColorB& col) {
     drawQuadCmds.push_back(cmd);
 }
 
-void DebugRender::ET_drawQuadBorder(const AABB2D& box, const ColorB& col, float width) {
-    DebugDrawLineCmd cmd;
-    cmd.col = col;
-    cmd.width = width;
-    {
-        cmd.startPt = Vec2(box.bot.x, box.bot.y);
-        cmd.endPt = Vec2(box.bot.x, box.top.y);
-        drawLineCmds.push_back(cmd);
-    }
-    {
-        cmd.startPt = Vec2(box.bot.x, box.top.y);
-        cmd.endPt = Vec2(box.top.x, box.top.y);
-        drawLineCmds.push_back(cmd);
-    }
-    {
-        cmd.startPt = Vec2(box.top.x, box.top.y);
-        cmd.endPt = Vec2(box.top.x, box.bot.y);
-        drawLineCmds.push_back(cmd);
-    }
-    {
-        cmd.startPt = Vec2(box.top.x, box.bot.y);
-        cmd.endPt = Vec2(box.bot.x, box.bot.y);
-        drawLineCmds.push_back(cmd);
-    }
+void DebugRender::ET_drawQuadBorder(const AABB2D& box, const ColorB& col) {
+    ET_drawLine(Vec2(box.bot.x, box.bot.y), Vec2(box.bot.x, box.top.y), col);
+    ET_drawLine(Vec2(box.bot.x, box.top.y), Vec2(box.top.x, box.top.y), col);
+    ET_drawLine(Vec2(box.top.x, box.top.y), Vec2(box.top.x, box.bot.y), col);
+    ET_drawLine(Vec2(box.top.x, box.bot.y), Vec2(box.bot.x, box.bot.y), col);
 }
 
 void DebugRender::ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) {
@@ -104,11 +81,8 @@ void DebugRender::ET_update(RenderContext& ctx) {
 }
 
 void DebugRender::drawLines(RenderContext& ctx) {
-    for(auto& cmd : drawLineCmds) {
-        lineNode.setLine(cmd.startPt, cmd.endPt, cmd.col, cmd.width);
-        lineNode.render(ctx);
-    }
-    drawLineCmds.clear();
+    lineNode.renderLines(drawLinesCmd, ctx);
+    drawLinesCmd.clear();
 }
 
 void DebugRender::drawQuads(RenderContext& ctx) {
@@ -137,19 +111,16 @@ void DebugRender::drawTexts(RenderContext& ctx) {
     drawTextCmds.clear();
 }
 
-void DebugRender::ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col, float width) {
-    DebugDrawLineCmd cmd;
-    cmd.col = col;
-    cmd.width = width;
+void DebugRender::ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col) {
+    Vec2 p1(0.f);
+    Vec2 p2(0.f);
     const int N = 64;
     for(int i = 0; i < N; ++i) {
-        cmd.startPt = pt;
         float t1 = i * 2.f * Math::PI / static_cast<float>(N);
-        cmd.startPt += r * Vec2(cos(t1), sin(t1));
-        cmd.endPt = pt;
+        p1 = pt + r * Vec2(cos(t1), sin(t1));
         float t2 = (i + 1) * 2.f * Math::PI / static_cast<float>(N);
-        cmd.endPt += r * Vec2(cos(t2), sin(t2));
-        drawLineCmds.push_back(cmd);
+        p2 = pt + r * Vec2(cos(t2), sin(t2));
+        ET_drawLine(p1, p2, col);
     }
 }
 

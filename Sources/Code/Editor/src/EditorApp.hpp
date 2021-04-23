@@ -3,7 +3,6 @@
 
 #include "Application.hpp"
 #include "Platform/ETSurface.hpp"
-#include "Render/ImageBuffer.hpp"
 
 class TasksRunner;
 
@@ -45,7 +44,6 @@ protected:
 
 private:
 
-    ImageBuffer imageBuffer;
     bool updateGame;
 };
 

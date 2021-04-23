@@ -88,12 +88,15 @@ class EngineOutputFrameView(QWidget):
         return QPoint(int(x), int(y))
 
     def paintEvent(self, event):
-        GetEngineViewManager().drawNativeFrameTo(self._image.bits().__int__(), self._image.width(), self._image.height())
-        self._image = self._image.mirrored(vertical=True)
+        w, h = self._image.width(), self._image.height()
+        GetEngineViewManager().drawNativeFrameTo(self._image.bits().__int__(), w, h)
 
         painter = QPainter()
         painter.begin(self)
-        painter.drawImage(self._getDrawPoint(), self._image)
+        painter.translate(w / 2, h / 2)
+        painter.rotate(180)
+        painter.scale(-1.0, 1.0) 
+        painter.drawImage(-w / 2, -h / 2, self._image)
         painter.end()
 
     def setAspectRatio(self, ratio):

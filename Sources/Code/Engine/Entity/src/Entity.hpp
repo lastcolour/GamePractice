@@ -73,6 +73,8 @@ private:
     ClassInstance* findLogic(EntityLogicId logicId);
     EntityLogicId createNewLogicId() const;
     EntityChildId createNewChildId() const;
+    EntityChildId addChild(Entity* childEntity);
+    void removeChild(Entity* childEntity);
 
 private:
 

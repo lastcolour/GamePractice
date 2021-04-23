@@ -27,11 +27,15 @@ const float TextNewLineOffset = 1.f;
 
 const int MaxParticlessPerDraw = 1024;
 
+const int MaxLinesPerDraw = 8192;
+
 const int MaxCharsPerDraw = 512;
 
 const char* GetGLError();
 
 bool IsOpenGLContextExists();
+
+bool ReadFramebufferToBuffer(RenderFramebuffer& framebuffer, void* out);
 
 bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer);
 

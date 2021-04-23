@@ -22,6 +22,7 @@ public:
 
     // ETRender
     void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) override;
+    void ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, DrawContentFilter filter) override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;

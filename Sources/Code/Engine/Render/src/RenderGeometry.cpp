@@ -19,6 +19,8 @@ int getVertexSize(VertexType vertType) {
         return sizeof(Vec4);
     case VertexType::Vector2:
         return sizeof(Vec2);
+    case VertexType::Line:
+        return sizeof(Vec2) + sizeof(Vec4);
     default:
         assert(false && "Invalid vertex type");
         return 0;
@@ -47,13 +49,13 @@ void RenderGeometry::drawTriangles() {
     glBindVertexArray(0);
 }
 
-void RenderGeometry::drawLine(const void* vertexData) {
+void RenderGeometry::drawLines(const void* data, unsigned int lineCount) {
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, getVertexSize(vertType) * vertCount, vertexData);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertCount * getVertexSize(vertType) * lineCount, data);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+    
     glBindVertexArray(vaoId);
-    glDrawArrays(GL_LINES, 0, vertCount);
+    glDrawArrays(GL_LINES, 0, lineCount * vertCount);
     glBindVertexArray(0);
 }
 

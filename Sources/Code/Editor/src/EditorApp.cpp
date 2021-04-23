@@ -23,6 +23,7 @@
 namespace {
 
 const int EDITOR_THREADS_COUNT = 3;
+const int MAIN_THREAD_STEP_BEFORE_DRAW = 5;
 
 } // namespace
 
@@ -176,13 +177,13 @@ const char* EditorApp::getEntityName(EntityId entityId) {
 }
 
 void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
-    Vec2i viewport = Vec2i(width, height);
-    ET_SendEvent(&ETRenderCamera::ET_setRenderPort, viewport);
+    ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, Vec2i(width, height));
 
-    GetEnv()->GetTasksRunner()->stepMainTread();
+    for(int i = 0; i < MAIN_THREAD_STEP_BEFORE_DRAW; ++i) {
+        GetEnv()->GetTasksRunner()->stepMainTread();
+    }
 
-    ET_SendEvent(&ETRender::ET_drawFrameToBuffer, imageBuffer, Vec2i(width, height), DrawContentFilter::None);
-    memcpy(out, imageBuffer.getData().getReadData(), viewport.x * viewport.y * 4);
+    ET_SendEvent(&ETRender::ET_drawFrameToBufferRaw, out, Vec2i(width, height), DrawContentFilter::None);
 }
 
 EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {

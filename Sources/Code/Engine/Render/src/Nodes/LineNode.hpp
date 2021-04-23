@@ -3,26 +3,26 @@
 
 #include "Nodes/Node.hpp"
 
+struct RenderLine {
+    Vec2 startPt;
+    ColorF startCol;
+    Vec2 endPt;
+    ColorF endCol;
+};
+
 class LineNode : public Node {
 public:
 
     LineNode();
     virtual ~LineNode();
 
-    void setLine(const Vec2& newStartPt, const Vec2& newEndPt, const ColorB& newCol, float newWidth);
+    void renderLines(const std::vector<RenderLine>& lines, RenderContext& ctx);
 
 protected:
 
     void onInit() override;
-    void onRender(RenderContext& ctx) override;
+    void onRender(RenderContext& ctx) override {}
     Mat4 calcModelMat(const Transform& newTm) override;
-
-private:
-
-    Vec2 startPt;
-    Vec2 endPt;
-    ColorB col;
-    float width;
 };
 
 #endif /* __LINE_NODE_HPP__ */

@@ -671,7 +671,7 @@ TEST_F(RenderTests, CheckNinePatch) {
         tex->writeRGBA(Vec2i(0), tex->getSize(), &texData[0]);
         tex->unbind();
 
-        ninePatch.setTexture(tex);
+        ninePatch.setTextureObject(tex);
     }
     ninePatch.setPatches(0.33f, 0.33f, 1.f);
     {

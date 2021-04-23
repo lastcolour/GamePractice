@@ -4,13 +4,6 @@
 #include "Math/AABB.hpp"
 #include "Render/Color.hpp"
 
-struct DebugDrawLineCmd {
-    Vec2 startPt;
-    Vec2 endPt;
-    ColorB col;
-    float width;
-};
-
 struct DebugDrawQuadCmd {
     AABB2D box;
     ColorB col;

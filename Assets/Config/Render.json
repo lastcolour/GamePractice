@@ -9,6 +9,6 @@
         "zFar":1.0
     },
     "debug_tasks": {
-        "tasks":["Render"]
+        "tasks":["Render", "RenderSync", "Game", "UI", "Sound"]
     }
 }

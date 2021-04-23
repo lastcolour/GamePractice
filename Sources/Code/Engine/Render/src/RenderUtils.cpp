@@ -97,30 +97,35 @@ const char* GetFBOError(GLenum framebufferType) {
     return errStr;
 }
 
-bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer) {
+bool ReadFramebufferToBuffer(RenderFramebuffer& framebuffer, void* out) {
     auto size = framebuffer.color0.getSize();
-    imageBuffer.setSizeAndClear(size);
 
     framebuffer.bind();
     glReadBuffer(GL_COLOR_ATTACHMENT0);
 
     if(auto errStr = GetGLError()) {
-        LogError("[ReadFramebufferToImage] Can't read GL_COLOR_ATTACHMENT0 (Error: %s)", errStr);
+        LogError("[ReadFramebufferToBuffer] Can't read GL_COLOR_ATTACHMENT0 (Error: %s)", errStr);
         framebuffer.unbind();
         return false;
     }
 
-    GLvoid* writePtr = static_cast<GLvoid*>(imageBuffer.getData().getWriteData());
-    glReadPixels(0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, writePtr);
+    glReadPixels(0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, out);
 
     if(auto errStr = GetGLError()) {
-        LogError("[ReadFramebufferToImage] Can't read pixels from GL_COLOR_ATTACHMENT0 (Error: %s)", errStr);
+        LogError("[ReadFramebufferToBuffer] Can't read pixels from GL_COLOR_ATTACHMENT0 (Error: %s)", errStr);
         framebuffer.unbind();
         return false;
     }
 
     framebuffer.unbind();
     return true;
+}
+
+bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBuffer) {
+    auto size = framebuffer.color0.getSize();
+    imageBuffer.setSizeAndClear(size);
+
+    return ReadFramebufferToBuffer(framebuffer, imageBuffer.getData().getWriteData());
 }
 
 void BlitFromFBOtoFBO(RenderFramebuffer& fromFBO, RenderFramebuffer& toFBO) {

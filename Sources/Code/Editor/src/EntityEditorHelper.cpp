@@ -17,7 +17,7 @@ void drawUIElementHelp(const Transform& tm, EntityId entId) {
 
     AABB2D box(0.f);
     ET_SendEventReturn(box, entId, &ETUIElement::ET_getBox);
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(125, 255, 255, DRAW_ALPHA), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(125, 255, 255, DRAW_ALPHA));
 
     UIBoxMargin margin;
     ET_SendEventReturn(margin, entId, &ETUIElement::ET_getMargin);
@@ -27,7 +27,7 @@ void drawUIElementHelp(const Transform& tm, EntityId entId) {
     box.top.x += margin.right;
     box.top.y += margin.top;
 
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 125, 125, DRAW_ALPHA), 0.75f);
+    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 125, 125, DRAW_ALPHA));
 }
 
 void drawParticlesHelp(const Transform& tm, EntityId entId) {
@@ -48,11 +48,11 @@ void drawParticlesHelp(const Transform& tm, EntityId entId) {
         box.top = 2.f * normScale * emissionConfig.emitterVal;
         box.top.scale(Vec2(tm.scale.x, tm.scale.y));
         box.setCenter(tm.pt.x, tm.pt.y);
-        ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 255, 245, DRAW_ALPHA), 1.f);
+        ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 255, 245, DRAW_ALPHA));
     } else {
         float r = normScale * emissionConfig.emitterVal.x;
         r *= tm.scale.x;
-        ET_SendEvent(&ETDebugRender::ET_drawCicleBorder, Vec2(tm.pt.x, tm.pt.y), r, ColorB(255, 255, 245, DRAW_ALPHA), 1.f);
+        ET_SendEvent(&ETDebugRender::ET_drawCicleBorder, Vec2(tm.pt.x, tm.pt.y), r, ColorB(255, 255, 245, DRAW_ALPHA));
     }
 }
 
@@ -71,7 +71,7 @@ void drawRenderRectHelp(const Transform& tm, EntityId entId) {
     box.top *= normScale;
     box.setCenter(tm.pt.x, tm.pt.y);
 
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA));
 }
 
 void drawRenderTextHelp(const Transform& tm, EntityId entId) {
@@ -84,7 +84,7 @@ void drawRenderTextHelp(const Transform& tm, EntityId entId) {
     AABB2D box(0.f);
     ET_SendEventReturn(box, entId, &ETRenderTextLogic::ET_getTextAABB);
 
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA));
 }
 
 } // namespace

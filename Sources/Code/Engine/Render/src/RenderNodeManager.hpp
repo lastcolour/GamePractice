@@ -24,7 +24,7 @@ public:
     void ET_removeNode(Node* node) override;
     void ET_initRenderNode(Node* node) override;
     void ET_drawFrame() override;
-    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) override;
+    void ET_drawFrameToBuffer(void* outBuffer, DrawContentFilter filter) override;
 
     // ETRenderContextEvents
     void ET_onContextCreated() override;

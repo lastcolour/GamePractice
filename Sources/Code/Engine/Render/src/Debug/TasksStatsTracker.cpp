@@ -12,6 +12,18 @@ const float MAX_FPS = 120.f;
 const float MAX_RUN_TIME = 48.f;
 const float GRAPH_TIME_MS = 2000.f;
 
+void DrawLineBetweenPoints(const Vec2& curr, const Vec2& prev, const Vec2& drawPt, const Vec2& size, const ColorB& col) {
+    Vec2 startPt;
+    startPt.x = drawPt.x + Math::Lerp(0.f, static_cast<float>(size.x),
+        (GRAPH_TIME_MS + curr.x) / GRAPH_TIME_MS);
+    startPt.y = drawPt.y + (size.y - 2.f) * curr.y + 1.f;
+    Vec2 endPt;
+    endPt.x = drawPt.x + Math::Lerp(0.f, static_cast<float>(size.x),
+        (GRAPH_TIME_MS + prev.x) / GRAPH_TIME_MS);
+    endPt.y = drawPt.y + (size.y - 2.f) * prev.y + 1.f;
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, col);
+}
+
 void DrawFPSChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo::StartEndTime>& timing) {
     if(timing.size() <= 2) {
         return;
@@ -19,23 +31,17 @@ void DrawFPSChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo
     size_t i = timing.size() - 1;
     Vec2 prev;
     prev.x = 0.f;
-    prev.y = std::min(1.f, GetFPSAtPoint(timing, i) / MAX_FPS);
+    float runTime = GetRunTimeBetween(timing, i);
+    float fpsVal = 1000.f / runTime;
+    prev.y = std::min(1.f, fpsVal / MAX_FPS);
     --i;
     Vec2 curr(0.f);
     while(true) {
-        curr.x = prev.x - GetRunTimeAtPoint(timing, i - 1);
-        curr.y = std::min(1.f, GetFPSAtPoint(timing, i) / MAX_FPS);
-        {
-            Vec2 startPt;
-            startPt.x = pt.x + Math::Lerp(0.f, static_cast<float>(size.x),
-                (GRAPH_TIME_MS + curr.x) / GRAPH_TIME_MS);
-            startPt.y = pt.y + size.y * curr.y;
-            Vec2 endPt;
-            endPt.x = pt.x + Math::Lerp(0.f, static_cast<float>(size.x),
-                (GRAPH_TIME_MS + prev.x) / GRAPH_TIME_MS);
-            endPt.y = pt.y + size.y * prev.y;
-            ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255, 255, 0), 1.f);
-        }
+        runTime = GetRunTimeBetween(timing, i);
+        fpsVal = 1000.f / runTime;
+        curr.x = prev.x - runTime;
+        curr.y = std::min(1.f, fpsVal / MAX_FPS);
+        DrawLineBetweenPoints(curr, prev, pt, size,  ColorB(255, 255, 0));
         prev = curr;
         if(i == 1) {
             break;
@@ -54,26 +60,15 @@ void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRun
     size_t i = timing.size() - 1;
     Vec2 prev;
     prev.x = 0.f;
-    prev.y = std::min(1.f, GetRunTimeAtPoint(timing, i) / MAX_RUN_TIME);
+    prev.y = std::min(1.f, GetRunDurationAt(timing, i) / MAX_RUN_TIME);
     --i;
     Vec2 curr(0.f);
     while(true) {
-        float runTime = GetRunTimeAtPoint(timing, i);
-        curr.x = prev.x - runTime;
-        curr.y = std::min(1.f, runTime / MAX_RUN_TIME);
-        {
-            Vec2 startPt;
-            startPt.x = pt.x + Math::Lerp(0.f, static_cast<float>(size.x),
-                (GRAPH_TIME_MS + curr.x) / GRAPH_TIME_MS);
-            startPt.y = pt.y + size.y * curr.y;
-            Vec2 endPt;
-            endPt.x = pt.x + Math::Lerp(0.f, static_cast<float>(size.x),
-                (GRAPH_TIME_MS + prev.x) / GRAPH_TIME_MS);
-            endPt.y = pt.y + size.y * prev.y;
-            ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255, 0, 255), 1.f);
-        }
+        curr.x = prev.x - GetRunTimeBetween(timing, i);
+        curr.y = std::min(1.f,  GetRunDurationAt(timing, i) / MAX_RUN_TIME);
+        DrawLineBetweenPoints(curr, prev, pt, size, ColorB(255, 0, 255));
         prev = curr;
-        if(i == 0) {
+        if(i == 1) {
             break;
         }
         if(curr.x < -GRAPH_TIME_MS) {
@@ -86,19 +81,19 @@ void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRun
 void DrawGraphBox(const Vec2& pt, const Vec2& size) {
     auto startPt = pt;
     auto endPt = Vec2(startPt.x, startPt.y + size.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
 
     startPt = pt;
     endPt = Vec2(startPt.x + size.x, startPt.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
 
     startPt = pt + size;
     endPt = Vec2(startPt.x - size.x, startPt.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
 
     startPt = pt + size;
     endPt = Vec2(startPt.x, startPt.y - size.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255), 1.f);
+    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
 }
 
 void DrawTaskRunInfo(Vec2& pt, const std::string& taskName, const TaskRunInfo& runInfo) {

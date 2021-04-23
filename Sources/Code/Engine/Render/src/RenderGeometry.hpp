@@ -9,6 +9,7 @@ enum class VertexType {
     Vector4,
     Vector2_Tex,
     Particle,
+    Line,
     Vector2
 };
 
@@ -22,7 +23,7 @@ public:
     void drawText(const void* textData, unsigned int textVertCount);
     void drawInstanced(const void* instaceData, unsigned int instancesCount);
     void drawNinePatch(const Vec2& patch, const Vec2& uv);
-    void drawLine(const void* vertexData);
+    void drawLines(const void* data, unsigned int count);
 
 public:
 

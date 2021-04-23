@@ -18,12 +18,13 @@ public:
     void removeChild(Node* node);
 
     void render();
-    void renderToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter);
+    void renderToBuffer(void* outBuffer, DrawContentFilter filter);
 
     void setNeedReorderNodes();
 
 private:
 
+    void drawToFBO(DrawContentFilter filter);
     void prepareNodes();
     bool startFrame();
     void endFrame();
@@ -36,6 +37,7 @@ private:
     std::vector<std::shared_ptr<RenderFramebuffer>> extraFBOs;
     bool needReorder;
     ColorF clearColor;
+    DrawContentFilter drawFilter;
 };
 
 #endif /* __RENDER_GRAPH_HPP__ */

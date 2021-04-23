@@ -1,6 +1,7 @@
 #include "Nodes/ImageNode.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "RenderUtils.hpp"
+#include "RenderTexture.hpp"
 
 ImageNode::ImageNode() :
     size(100.f) {
@@ -42,4 +43,13 @@ Mat4 ImageNode::calcModelMat(const Transform& newTm) {
 void ImageNode::setTextureInfo(const TextureInfo& newTextureInfo) {
     texInfo = newTextureInfo;
     texObj = RenderUtils::CreateTexture(texInfo);
+}
+
+void ImageNode::setTextureObject(std::shared_ptr<RenderTexture>& newTextureObj) {
+    texObj = newTextureObj;
+    texInfo.filename.clear();
+    if(texObj) {
+        texInfo.lerpType = texObj->minLerpType;
+    } 
+    texInfo.tintColor = ColorB(0, 0, 0, 0);
 }

@@ -20,7 +20,7 @@ public:
     void deinit() override;
 
     // ETGameBoardElemTriggerLogic
-    void ET_start();
+    void ET_start() override;
     bool ET_update(float dt) override;
     void ET_setSwapedElem(EntityId elemId) override;
 

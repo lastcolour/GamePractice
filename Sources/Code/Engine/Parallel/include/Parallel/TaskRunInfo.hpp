@@ -33,9 +33,9 @@ public:
     int runCount;
 };
 
-float GetFPSAtPoint(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
+float GetRunTimeBetween(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
 
-float GetRunTimeAtPoint(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
+float GetRunDurationAt(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
 
 AvarageRunInfo GetAvgRunInfo(const TaskRunInfo& runInfo);
 

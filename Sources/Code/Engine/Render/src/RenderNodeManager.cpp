@@ -56,6 +56,6 @@ void RenderNodeManager::ET_drawFrame() {
     renderGraph.render();
 }
 
-void RenderNodeManager::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, DrawContentFilter filter) {
-    renderGraph.renderToBuffer(imageBuffer, filter);
+void RenderNodeManager::ET_drawFrameToBuffer(void* outBuffer, DrawContentFilter filter) {
+    renderGraph.renderToBuffer(outBuffer, filter);
 }

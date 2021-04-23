@@ -306,3 +306,14 @@ bool TasksRunner::getTaskRunInfo(const std::string& taskName, TaskRunInfo& outIn
     }
     return false;
 }
+
+bool TasksRunner::getTaskRunInfo(const RunTask& task, TaskRunInfo& outInfo) {
+    for(auto& job : jobs) {
+        if(job->getTask() == &task) {
+            auto& runStats = job->getRunStats();
+            runStats.getRunInfo(outInfo);
+            return true;
+        }
+    }
+    return false;
+}
