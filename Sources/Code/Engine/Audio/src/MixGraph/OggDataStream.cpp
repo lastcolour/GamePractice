@@ -104,6 +104,18 @@ const char* getVorbisErrorText(int error) {
     return errorText;
 }
 
+void convertOggMonoToStreoF32(float* data, int samples) {
+    for(int i = 0; i < samples; ++i) {
+        data[2 * i + 1] = data[2 * i];
+    }
+}
+
+void convertOggMonoToStereoI16(int16_t* data, int samples) {
+    for(int i = 0; i < samples; ++i) {
+        data[2 * i + 1] = data[2 * i];
+    }
+}
+
 bool isSoundDataValid(std::shared_ptr<SoundData>& newSoundData) {
     if(!newSoundData) {
         return false;
@@ -218,6 +230,9 @@ int OggDataStream::readF32(void* out, int channels, int samples, bool looped) {
             leftCount -= readCount;
         }
     }
+    if(oggChannels == 1 && channels == 2) {
+        convertOggMonoToStreoF32(static_cast<float*>(out), samples);
+    }
     return readCount;
 }
 
@@ -234,6 +249,9 @@ int OggDataStream::readI16(void* out, int channels, int samples, bool looped) {
                 static_cast<int16_t*>(out) + offset, leftCount * channels);
             leftCount = samples - readCount;
         }
+    }
+    if(oggChannels == 1 && channels == 2) {
+        convertOggMonoToStereoI16(static_cast<int16_t*>(out), samples);
     }
     return readCount;
 }

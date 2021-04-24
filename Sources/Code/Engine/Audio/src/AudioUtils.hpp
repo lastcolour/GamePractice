@@ -3,9 +3,13 @@
 
 #include <cstdint>
 
+#include "SoundConfig.hpp"
+
 namespace Audio {
 
 void ConverFloatsToInt16(float* from, int16_t* to, int samples);
+
+MixConfig& GetMixConfig();
 
 } // namespace Audio
 

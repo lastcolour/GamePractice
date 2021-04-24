@@ -1,6 +1,5 @@
 #include "MixGraph/OggSourceNode.hpp"
 #include "MixGraph/CombineNode.hpp"
-#include "MixGraph/MixConfig.hpp"
 #include "MixGraph/MixGraph.hpp"
 #include "Resampler.hpp"
 #include "SoundProxy.hpp"
@@ -44,7 +43,8 @@ void OggSourceNode::additiveMixTo(float* out, int channels, int samples) {
         stopMixing = true;
     }
     if(stopMixing) {
-        setSound(nullptr, false);
+        bool isEvent = false;
+        setSound(nullptr, isEvent);
         if(auto currParent = getParent()) {
             currParent->removeChild(this);
         }

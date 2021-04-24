@@ -2,12 +2,16 @@
 #include "Audio/Sound.hpp"
 #include "Core/ETTasks.hpp"
 #include "AudioBufferQueue.hpp"
+#include "SoundData.hpp"
+#include "MixGraph/OggDataStream.hpp"
+#include "Core/ETAssets.hpp"
 
 #include <thread>
 
 namespace {
 
 const char* TEST_SOUND_NAME = "Sounds/Game/Music/8bit_Bossa.ogg";
+const char* TEST_MONO_SOUND = "Sounds/UI/buttonPress_01.ogg";
 const int MAX_PARALLEL_SOUNDS = 16;
 
 void DoAudioSystemStep() {
@@ -206,4 +210,40 @@ TEST_F(SoundTests, CheckBufferQueueParallel) {
     }
 
     readThread.join();
+}
+
+TEST_F(SoundTests, CheckStereoMixOfMonoSource) {
+    std::shared_ptr<SoundData> soundData(new SoundData);
+
+    {
+        Buffer buff;
+        ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, TEST_MONO_SOUND);
+        ASSERT_TRUE(buff);
+        soundData->setLoading();
+        soundData->setLoaded(buff);
+    }
+
+    OggDataStream oggDataStream;
+    ASSERT_TRUE(oggDataStream.open(soundData));
+    ASSERT_EQ(oggDataStream.getChannels(), 1);
+
+    int SAMPLES = 512;
+
+    std::vector<float> data(SAMPLES * 2, 0.f);
+    {
+        bool looped = false;
+        int readCount = oggDataStream.readF32(&data[0], 2, SAMPLES, looped);
+        oggDataStream.close();
+        ASSERT_EQ(readCount, SAMPLES);
+    }
+
+    int zerosCount = 0;
+    for(int i = 0; i < SAMPLES; ++i) {
+        ASSERT_FLOAT_EQ(data[2 * i], data[2 * i + 1]);
+        if(abs(data[2 * i]) < 0.001f) {
+            ++zerosCount;
+        }
+    }
+
+    EXPECT_LE(zerosCount, SAMPLES / 8);
 }

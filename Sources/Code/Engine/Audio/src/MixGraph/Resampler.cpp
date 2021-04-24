@@ -2,9 +2,9 @@
 #include "MixGraph/MixGraph.hpp"
 #include "OggDataStream.hpp"
 #include "MixGraph/LinearResampler.hpp"
+#include "SoundConfig.hpp"
 
 #include <cassert>
-
 
 Resampler::Resampler(MixGraph* mixGraph) :
     graph(mixGraph) {

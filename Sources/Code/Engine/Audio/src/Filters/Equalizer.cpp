@@ -1,6 +1,5 @@
 #include "Filters/Equalizer.hpp"
 #include "AudioUtils.hpp"
-#include "MixGraph/MixConfig.hpp"
 
 namespace {
 
@@ -63,8 +62,8 @@ void applyStateStereo(float* from, float* to, int samplesCount, EqualizerState& 
 
 } // namespace
 
-Equalizer::Equalizer(const MixConfig* config) :
-    mixConfig(config),
+Equalizer::Equalizer() :
+    mixConfig(&Audio::GetMixConfig()),
     performLerp(false) {
 
     setSetup(setup);

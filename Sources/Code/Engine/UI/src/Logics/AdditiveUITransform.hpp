@@ -13,25 +13,12 @@ public:
     }
 
     void combine(const AddtiveUITransform& other) {
+        tm.addDelta(other.tm);
         alpha *= other.alpha;
-        tm.pt += other.tm.pt;
-        tm.scale = other.tm.scale.getScaled(tm.scale);
-    }
-
-    Transform applyTm(const Transform& targetTm) {
-        Transform resTm;
-        resTm.pt = targetTm.pt + tm.pt;
-        resTm.scale = targetTm.scale.getScaled(tm.scale);
-        return resTm;
-    }
-
-    float applyAlpha(float targetAlpha) {
-        return alpha * targetAlpha;
     }
 
     void inverse() {
-        tm.pt = -tm.pt;
-        tm.scale = Vec3(1.f / tm.scale.x, 1.f / tm.scale.y, 1.f);
+        tm.inverse();
         alpha = 1.f / alpha;
     }
 

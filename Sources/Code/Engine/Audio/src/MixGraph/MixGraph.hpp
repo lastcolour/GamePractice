@@ -2,7 +2,6 @@
 #define __MIX_GRAPH_HPP__
 
 #include "MixGraph/CombineNode.hpp"
-#include "MixGraph/MixConfig.hpp"
 #include "MixGraph/Resampler.hpp"
 #include "Audio/ETAudioSystem.hpp"
 #include "Audio/ETSoundManagers.hpp"
@@ -17,7 +16,7 @@ public:
     MixGraph();
     ~MixGraph();
 
-    bool init(const MixConfig& newMixConfig);
+    bool init();
     void mixBufferAndConvert(float* out);
 
     bool startSound(SoundProxy& soundProxy, float duration, bool isEvent);
@@ -39,7 +38,7 @@ public:
 
 private:
 
-    MixConfig config;
+    MixConfig* mixConfig;
     Resampler resampler;
     CombineNode gameNode;
     CombineNode musicNode;

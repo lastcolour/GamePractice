@@ -213,7 +213,8 @@ void UIElement::ET_applyAdditiveTranform() {
     if(!isAddTmChanged) {
         return;
     }
-    Transform resTm = addTm.applyTm(layoutTm);
+    Transform resTm = addTm.tm;
+    resTm.addDelta(layoutTm);
 
     ET_setIgnoreTransform(true);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, resTm);

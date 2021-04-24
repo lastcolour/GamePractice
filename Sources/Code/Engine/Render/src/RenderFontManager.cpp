@@ -3,9 +3,9 @@
 #include "Core/ETAssets.hpp"
 #include "Platform/OpenGL.hpp"
 #include "Core/ETApplication.hpp"
-#include "RenderConfig.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
+#include "RenderConfig.hpp"
 #include "Core/GlobalData.hpp"
 
 #include <cassert>

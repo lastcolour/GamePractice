@@ -1,12 +1,8 @@
 #include "SoundEventManager.hpp"
 #include "Reflect/ReflectUtils.hpp"
 #include "SoundProxy.hpp"
-
-namespace {
-
-const char* SOUND_EVENT_TABLE = "Sounds/Events.json";
-
-} // namespace
+#include "Core/GlobalData.hpp"
+#include "SoundConfig.hpp"
 
 void SoundEventInfo::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<SoundEventInfo>("SoundEventInfo")) {
@@ -33,8 +29,13 @@ SoundEventManager::~SoundEventManager() {
 }
 
 bool SoundEventManager::init() {
-    if(!ReflectUtils::LoadObjectFromAsset(*this, SOUND_EVENT_TABLE)) {
-        LogError("[SoundEventManager::init] Can't load sound events from: '%s'", SOUND_EVENT_TABLE);
+    auto& soundEventTable = GetGlobal<SoundConfig>()->soundEventTable;
+    if(soundEventTable.empty()) {
+        LogError("[SoundEventManager::init] Sound event table not specified");
+        return false;
+    }
+    if(!ReflectUtils::LoadObjectFromAsset(*this, soundEventTable.c_str())) {
+        LogError("[SoundEventManager::init] Can't load sound events from: '%s'", soundEventTable);
         return true;
     }
 

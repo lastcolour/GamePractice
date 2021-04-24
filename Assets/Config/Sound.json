@@ -1,0 +1,10 @@
+{
+    "sound_event_table":"Sounds/Events.json",
+    "mix_config": {
+        "outSampleRate":44100,
+        "maxSources":32,
+        "channels":2,
+        "buffersCount":4,
+        "samplesPerBuffer":800
+    }
+}

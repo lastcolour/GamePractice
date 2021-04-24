@@ -340,7 +340,7 @@ Quaternion SLerp(const Quaternion& q1, const Quaternion& q2, float t) {
 Quaternion NLerp(const Quaternion& q1, const Quaternion& q2, float t) {
     float valSign = 1.f;
     if(Dot(q1, q2) < 0.f) {
-        valSign = -1;
+        valSign = -1.f;
     }
     Quaternion res = Math::Lerp(q1, valSign * q2, t);
     res.normilize();

@@ -24,15 +24,6 @@
     "gameSongs":[
         {
             "sound": {
-                "file":"Sounds/Game/Music/Christmas_synths.ogg",
-                "group":"Music",
-                "loop":false,
-                "volume":0.3
-            },
-            "weight":1
-        },
-        {
-            "sound": {
                 "file":"Sounds/Game/Music/enchanted_tiki_86.ogg",
                 "group":"Music",
                 "loop":false,

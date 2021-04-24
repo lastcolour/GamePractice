@@ -2,13 +2,8 @@
 #include "Platform/ETSurface.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Platform/OpenGL.hpp"
-
-namespace {
-
-const float DEF_Z_NEAR = -1.f;
-const float DEF_Z_FAR = 1.f;
-
-} // namespace
+#include "RenderConfig.hpp"
+#include "Core/GlobalData.hpp"
 
 RenderCamera::RenderCamera() :
     projection(1.f),
@@ -41,8 +36,12 @@ void RenderCamera::ET_setRenderPort(const Vec2i& newSize) {
 
     glViewport(0, 0, viewport.x, viewport.y);
 
+    auto& cameraConfig = GetGlobal<RenderConfig>()->cameraConfig;
+    auto zNear = cameraConfig.zNear;
+    auto zFar = std::max(zNear + 0.001f, cameraConfig.zFar);
+
     Math::ProjectOrtho(projection, 0.f, static_cast<float>(viewport.x),
-        0.f, static_cast<float>(viewport.y), DEF_Z_NEAR, DEF_Z_FAR);
+        0.f, static_cast<float>(viewport.y), zNear, zFar);
 
     ET_QueueEvent(&ETRenderCameraEvents::ET_onRenderPortResized, newSize);
 }

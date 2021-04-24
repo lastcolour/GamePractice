@@ -3,12 +3,13 @@
 #include "Platform/OpenGL.hpp"
 #include "RenderShader.hpp"
 #include "RenderUtils.hpp"
+#include "RenderConfig.hpp"
+#include "Core/GlobalData.hpp"
 
 #include <cassert>
 
 namespace {
 
-const char* SHADERS = "Render/Shaders.json";
 const int MAX_INFO_BUFF_SIZE = 512u;
 const int INVALID_PROGRAM_ID = 0;
 
@@ -135,10 +136,16 @@ int RenderShaderManager::createProgramImpl(const std::string& vertSrc, const std
 }
 
 int RenderShaderManager::createShaderProgram(const std::string& shaderName) {
+    auto& shadersTable = GetGlobal<RenderConfig>()->shadersTable;
+    if(shadersTable.empty()) {
+        LogError("[RenderShaderManager::createShaderProgram] Shaders table not specified");
+        return INVALID_PROGRAM_ID;
+    }
+
     JSONNode rootNode;
-    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, SHADERS);
+    ET_SendEventReturn(rootNode, &ETAssets::ET_loadJSONAsset, shadersTable.c_str());
     if(!rootNode) {
-        LogError("[RenderShaderManager::createShaderProgram] Can't create shader '%s' from: %s", shaderName, SHADERS);
+        LogError("[RenderShaderManager::createShaderProgram] Can't create shader '%s' from: %s", shaderName, shadersTable);
         return INVALID_PROGRAM_ID;
     }
     for(auto& shaderNode : rootNode) {

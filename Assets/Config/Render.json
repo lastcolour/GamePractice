@@ -10,5 +10,6 @@
     },
     "debug_tasks": {
         "tasks":["Render", "RenderSync", "Game", "UI", "Sound"]
-    }
+    },
+    "shaders_table":"Render/Shaders.json"
 }

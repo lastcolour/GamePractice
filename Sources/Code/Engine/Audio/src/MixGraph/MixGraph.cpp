@@ -14,6 +14,7 @@ const float LOW_PASS_FREQ = 20000.f;
 } // namespace
 
 MixGraph::MixGraph() :
+    mixConfig(nullptr),
     resampler(this),
     gameNode(this),
     musicNode(this),
@@ -25,18 +26,18 @@ MixGraph::~MixGraph() {
     sources.clear();
 }
 
-bool MixGraph::init(const MixConfig& newMixConfig) {
-    if(!CheckAndPrintMixConfig(newMixConfig)) {
+bool MixGraph::init() {
+    mixConfig = &Audio::GetMixConfig();
+    if(!CheckAndPrintMixConfig(*mixConfig)) {
         return false;
     }
 
-    config = newMixConfig;
-    for(int i = 0; i < config.maxSources; ++i) {
+    for(int i = 0; i < mixConfig->maxSources; ++i) {
         auto source = new OggSourceNode(this);
         sources.emplace_back(source);
     }
 
-    lLowPass = CreateLowPass(LOW_PASS_FREQ / static_cast<float>(config.outSampleRate));
+    lLowPass = CreateLowPass(LOW_PASS_FREQ / static_cast<float>(mixConfig->outSampleRate));
     rLowPass = lLowPass;
 
     return true;
@@ -53,19 +54,19 @@ void MixGraph::resizeBuffers(int channels, int samples) {
 }
 
 void MixGraph::mixBufferAndConvert(float* out) {
-    std::fill_n(out, config.channels * config.samplesPerBuffer, 0.f);
+    std::fill_n(out, mixConfig->channels * mixConfig->samplesPerBuffer, 0.f);
 
-    resizeBuffers(config.channels, config.samplesPerBuffer);
+    resizeBuffers(mixConfig->channels, mixConfig->samplesPerBuffer);
 
-    gameNode.additiveMixTo(out, config.channels, config.samplesPerBuffer);
-    musicNode.additiveMixTo(out, config.channels, config.samplesPerBuffer);
-    uiNode.additiveMixTo(out, config.channels, config.samplesPerBuffer);
+    gameNode.additiveMixTo(out, mixConfig->channels, mixConfig->samplesPerBuffer);
+    musicNode.additiveMixTo(out, mixConfig->channels, mixConfig->samplesPerBuffer);
+    uiNode.additiveMixTo(out, mixConfig->channels, mixConfig->samplesPerBuffer);
 
-    applyLowPass(out, config.channels, config.samplesPerBuffer);
+    applyLowPass(out, mixConfig->channels, mixConfig->samplesPerBuffer);
 
     int lowClipCount = 0;
     int highClipCount = 0;
-    for(int i = 0; i < config.channels * config.samplesPerBuffer; ++i) {
+    for(int i = 0; i < mixConfig->channels * mixConfig->samplesPerBuffer; ++i) {
         out[i] *= masterVolume;
         if(out[i] > 1.f) {
             out[i] = 1.f;
@@ -81,7 +82,7 @@ void MixGraph::mixBufferAndConvert(float* out) {
     }
 
     Audio::ConverFloatsToInt16(out, reinterpret_cast<int16_t*>(out),
-        config.channels * config.samplesPerBuffer);
+        mixConfig->channels * mixConfig->samplesPerBuffer);
 }
 
 MixNode* MixGraph::getFreeSource() {
@@ -118,9 +119,9 @@ CombineNode* MixGraph::getCombineNode(ESoundGroup soundGroup) {
 }
 
 const MixConfig& MixGraph::getMixConfig() const {
-    return config;
+    assert(mixConfig && "Invalid mix conifg");
+    return *mixConfig;
 }
-
 Resampler& MixGraph::getResampler() {
     return resampler;
 }
@@ -182,7 +183,7 @@ bool MixGraph::startSound(SoundProxy& soundProxy, float duration, bool isEvent) 
     auto sourceNode = static_cast<OggSourceNode*>(freeSourceNode);
     if(duration > 0.f) {
         auto& fader = sourceNode->getFader();
-        int samples = static_cast<int>(config.outSampleRate * duration);
+        int samples = static_cast<int>(mixConfig->outSampleRate * duration);
         fader.setFadeIn(samples);
     }
     if(sourceNode->setSound(&soundProxy, isEvent)) {
@@ -205,7 +206,7 @@ void MixGraph::stopSound(SoundProxy& soundProxy, float duration, bool resetOffse
         oggSource->getParent()->removeChild(oggSource);
     } else {
         auto& fader = oggSource->getFader();
-        int samples = static_cast<int>(config.outSampleRate * duration);
+        int samples = static_cast<int>(mixConfig->outSampleRate * duration);
         fader.setFadeOut(samples);
     }
 }

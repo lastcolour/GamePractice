@@ -42,7 +42,7 @@ public:
             addLogicByTypeId(GetTypeId<LogicType>()));
         if(logicPtr == nullptr) {
             logicPtr = new LogicType();
-            ClassInstance instance = ClassInstance::CreateWithoutClassInfo<LogicType>(logicPtr);
+            auto instance = ClassInstance::CreateWithoutClassInfo<LogicType>(logicPtr);
             addLogic(std::move(instance));
         }
         return logicPtr;

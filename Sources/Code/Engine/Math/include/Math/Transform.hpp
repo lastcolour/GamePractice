@@ -22,6 +22,13 @@ public:
     Transform& operator=(const Transform& tm);
 
     Mat4 toMat4() const;
+    Transform getDelta(const Transform& tm) const;
+    void addDelta(const Transform& tm);
+    Transform getLocalDelta(const Transform& tm) const;
+    void addLocalDelta(const Transform& tm);
+
+    void inverse();
+    Transform getInversed() const;
 
 public:
 

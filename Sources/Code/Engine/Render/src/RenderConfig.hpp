@@ -46,6 +46,7 @@ public:
     FontConfig fontConfig;
     CameraConfig cameraConfig;
     DebugTasks debugTaskConfig;
+    std::string shadersTable;
 };
 
 #endif /* __RENDER_CONFIG_HPP__ */

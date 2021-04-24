@@ -76,14 +76,6 @@ Entity::~Entity() {
 void Entity::addChildEntityWithId(EntityChildId childId, Entity& childEntity) {
     assert(IsValidChildId(childId, children) && "Invalid children id");
     childEntity.parent = this;
-
-    Transform childTm = childEntity.tm;
-    childTm.pt += tm.pt;
-    childTm.scale.x *= tm.scale.x;
-    childTm.scale.y *= tm.scale.y;
-    childTm.scale.z *= tm.scale.z;
-    childEntity.ET_setTransform(childTm);
-
     children.emplace_back(EntityChildNode{&childEntity, childId});
 }
 
@@ -229,14 +221,14 @@ void Entity::ET_setParent(EntityId entId) {
         if(!newParent) {
             LogWarning("[Entity::ET_setParent] Can't find entity with id '%d' to set as a parent for: '%s'",
                 entId.getRawId(), name);
+            if(parent) {
+                parent->removeChild(this);
+            }
+            return;
         }
     }
-    if(parent) {
-        parent->removeChild(this);
-    }
-    parent = newParent;
-    if(parent) {
-        parent->addChild(this);
+    if(newParent) {
+        newParent->addChild(this);
     }
 }
 
@@ -315,28 +307,19 @@ const Transform& Entity::ET_getTransform() const {
 }
 
 void Entity::ET_setTransform(const Transform& newTm) {
-    Vec3 newScale = newTm.scale;
-    newScale.x = std::max(0.0001f, newScale.x);
-    newScale.y = std::max(0.0001f, newScale.y);
-    newScale.z = std::max(0.0001f, newScale.z);
-
     for(auto& childNode : children) {
         auto childEntity = childNode.childEntity;
 
-        Transform childTm = childEntity->ET_getLocalTransform();
-        Vec3 shift = childTm.pt.getScaled(newScale);
-        shift = newTm.quat * shift;
-        childTm.pt = newTm.pt + shift;
-        childTm.scale.scale(newScale);
-        childTm.quat *= newTm.quat;
+        auto currLocal = tm.getLocalDelta(childEntity->tm);
+        auto newChildTm = newTm;
+        newChildTm.addLocalDelta(currLocal);
 
-        childEntity->ET_setTransform(childTm);
+        childEntity->ET_setTransform(newChildTm);
     }
-
-    tm.pt = newTm.pt;
-    tm.scale = newScale;
-    tm.quat = newTm.quat;
-
+    tm = newTm;
+    tm.scale.x = std::max(0.001f, newTm.scale.x);
+    tm.scale.y = std::max(0.001f, newTm.scale.y);
+    tm.scale.z = std::max(0.001f, newTm.scale.z);
     ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);
 }
 
@@ -345,22 +328,7 @@ Transform Entity::ET_getLocalTransform() const {
         return tm;
     }
 
-    Transform parentTm = parent->ET_getTransform();
-    Quat qInv = parentTm.quat.getInversed();
-
-    Transform localTm;
-    localTm.pt = tm.pt - parentTm.pt;
-    localTm.pt = qInv * localTm.pt;
-    localTm.pt.x /= parentTm.scale.x;
-    localTm.pt.y /= parentTm.scale.y;
-    localTm.pt.z /= parentTm.scale.z;
-
-    localTm.scale.x = tm.scale.x / parentTm.scale.x;
-    localTm.scale.y = tm.scale.y / parentTm.scale.y;
-    localTm.scale.z = tm.scale.z / parentTm.scale.z;
-
-    localTm.quat = qInv * tm.quat;
-    return localTm;
+    return parent->tm.getLocalDelta(tm);
 }
 
 void Entity::ET_setLocalTransform(const Transform& newLocalTm) {
@@ -369,23 +337,8 @@ void Entity::ET_setLocalTransform(const Transform& newLocalTm) {
         return;
     }
 
-    Vec3 newScale = newLocalTm.scale;
-    newScale.x = std::max(0.0001f, newScale.x);
-    newScale.y = std::max(0.0001f, newScale.y);
-    newScale.z = std::max(0.0001f, newScale.z);
-
-    Transform parentTm = parent->ET_getTransform();
-
-    Vec3 shift = newLocalTm.pt;
-    shift.x *= parentTm.scale.x;
-    shift.y *= parentTm.scale.y;
-    shift.z *= parentTm.scale.z;
-
-    Transform newTm;
-    newTm.pt = parentTm.pt + parentTm.quat * shift;
-    newTm.scale = newScale.getScaled(parentTm.scale);
-    newTm.quat = newLocalTm.quat * parentTm.quat;
-
+    Transform newTm = parent->tm;
+    newTm.addLocalDelta(newLocalTm);
     ET_setTransform(newTm);
 }
 

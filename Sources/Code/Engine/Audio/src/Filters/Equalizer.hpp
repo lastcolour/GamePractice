@@ -16,7 +16,7 @@ struct EqualizerState {
 struct Equalizer {
 public:
 
-    Equalizer(const MixConfig* config);
+    Equalizer();
 
     void setSetup(const EqualizerSetup& newSetup);
     void exclusiveTransform(float* samples, int channels, int samplesCount);

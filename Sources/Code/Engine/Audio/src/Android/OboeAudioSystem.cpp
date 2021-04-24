@@ -1,5 +1,6 @@
 #include "Android/OboeAudioSystem.hpp"
 #include "Platform/ETDevice.hpp"
+#include "AudioUtils.hpp"
 
 #include <cassert>
 
@@ -26,11 +27,11 @@ bool OboeAudioSystem::initMixer() {
         return false;
     }
 
-    MixConfig mixConfig;
+    auto& mixConfig = Audio::GetMixConfig();
     mixConfig.outSampleRate = deviceConfig->frameRate;
     mixConfig.samplesPerBurst = deviceConfig->framesPerBurst;
 
-    if(!mixGraph.init(mixConfig)) {
+    if(!mixGraph.init()) {
         LogError("[OboeAudioSystem::initMixer] Can't init mix graph");
         return false;
     }

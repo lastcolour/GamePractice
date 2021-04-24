@@ -33,5 +33,6 @@ void RenderConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("default_fonts", &RenderConfig::fontConfig);
         classInfo->addField("default_camera", &RenderConfig::cameraConfig);
         classInfo->addField("debug_tasks", &RenderConfig::debugTaskConfig);
+        classInfo->addField("shaders_table", &RenderConfig::shadersTable);
     }
 }

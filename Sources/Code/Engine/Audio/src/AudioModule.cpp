@@ -4,6 +4,8 @@
 #include "Logics/SoundPlayLogic.hpp"
 #include "Logics/SoundEqualizerLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
+#include "Core/GlobalData.hpp"
+#include "SoundConfig.hpp"
 
 #if defined PLATFORM_WINDOWS || defined PLATFORM_LINUX
 
@@ -39,6 +41,7 @@ AudioModule::LogicsContainerPtrT AudioModule::createSystemLogics() const {
 }
 
 void AudioModule::createSystemConfigs() const {
+    CreateGlobal<SoundConfig>("Config/Sound.json");
 }
 
 void AudioModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
