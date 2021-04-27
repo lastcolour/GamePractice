@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 85.47998046875,
+                "y": 21.75,
                 "z": 0.0
               },
               "scale": {
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 29.475000381469727,
+                          "fontSize": 7.5,
                           "text": "Resume"
                         }
                       }
@@ -145,22 +145,22 @@
                     "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/pause_button_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 241,
-                        "g": 241,
-                        "b": 241,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
-                      "x": 412.64996337890625,
-                      "y": 73.6875
+                      "x": 105.0,
+                      "y": 18.75
                     },
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
+                    "patchScale": 2.0
                   }
                 },
                 {
@@ -230,7 +230,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -85.48001098632812,
+                "y": -21.75,
                 "z": 0.0
               },
               "scale": {
@@ -306,7 +306,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 29.475000381469727,
+                          "fontSize": 7.5,
                           "text": "Exit"
                         }
                       }
@@ -404,25 +404,25 @@
                   "id": 5,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.9,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/pause_button_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 241,
-                        "g": 241,
-                        "b": 241,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
-                      "x": 412.65,
-                      "y": 73.69
+                      "x": 105.0,
+                      "y": 18.75
                     },
-                    "horizontal": 0.3,
-                    "vertical": 0.3,
-                    "patchScale": 1.0
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 2.0
                   }
                 }
               ]
@@ -508,7 +508,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 29.475000381469727,
+                          "fontSize": 7.5,
                           "text": "Restart"
                         }
                       }
@@ -606,25 +606,25 @@
                   "id": 5,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.9,
+                    "alpha": 0.8999999761581421,
                     "drawPriority": 2,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/pause_button_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 241,
-                        "g": 241,
-                        "b": 241,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
-                      "x": 412.65,
-                      "y": 73.69
+                      "x": 105.0,
+                      "y": 18.75
                     },
-                    "horizontal": 0.3,
-                    "vertical": 0.3,
-                    "patchScale": 1.0
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 2.0
                   }
                 }
               ]
@@ -680,16 +680,16 @@
             "id": 4,
             "data": {
               "isVisible": true,
-              "alpha": 0.800000011920929,
+              "alpha": 0.8999999761581421,
               "drawPriority": 1,
               "textureInfo": {
-                "filename": "Images/Base/rblock_256x256.png",
-                "lerpType": "Linear",
+                "filename": "Images/UI/pause_bg.png",
+                "lerpType": "Point",
                 "tintColor": {
                   "r": 0,
                   "g": 0,
                   "b": 0,
-                  "a": 255
+                  "a": 0
                 }
               },
               "size": {
@@ -856,8 +856,8 @@
         "alpha": 0.20000000298023224,
         "drawPriority": 0,
         "size": {
-          "x": 1094.0,
-          "y": 1048.0
+          "x": 150.0,
+          "y": 506.0
         },
         "color": {
           "r": 0,

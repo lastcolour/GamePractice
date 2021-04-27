@@ -10,6 +10,7 @@ public:
     virtual ~NinePatchNode();
 
     void setPatches(float newHorizontal, float newVertical, float newPatchScale);
+    Vec2 getVertCoord() const;
 
 protected:
 
@@ -20,7 +21,6 @@ protected:
 
 protected:
 
-    Vec2 tmScale;
     float horizontal;
     float vertical;
     float patchScale;

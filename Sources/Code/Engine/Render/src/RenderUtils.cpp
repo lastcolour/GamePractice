@@ -238,4 +238,22 @@ void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo) {
     texObj.unbind();
 }
 
+Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale) {
+    Vec2 scale(imageSize.x / drawSize.x , imageSize.y / drawSize.y);
+
+    float r = scale.x / scale.y;
+
+    float hPatch_orig = patches.x * scale.x;
+    float hPatch_scaled = patches.x * r;
+    float hPatch = Math::Lerp(hPatch_orig, hPatch_scaled, patchScale);
+    hPatch = 2.f * std::min(hPatch, 0.4999f);
+
+    float vPatch_orig = patches.y * scale.y;
+    float vPatch_scaled = patches.y;
+    float vPatch = Math::Lerp(vPatch_orig, vPatch_scaled, patchScale);
+    vPatch = 2.f * std::min(vPatch, 0.4999f);
+
+    return Vec2(hPatch, vPatch);
+}
+
 } // namespace RenderUtils

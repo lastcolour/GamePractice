@@ -109,13 +109,13 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "textureInfo": {
-                "filename": "Images/Base/rblock_256x256.png",
-                "lerpType": "Linear",
+                "filename": "Images/UI/start_button_bg.png",
+                "lerpType": "Point",
                 "tintColor": {
-                  "r": 0,
-                  "g": 0,
-                  "b": 0,
-                  "a": 0
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
                 }
               },
               "size": {
@@ -124,7 +124,7 @@
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
-              "patchScale": 1.0
+              "patchScale": 2.0
             }
           }
         ]
@@ -291,13 +291,13 @@
         "alpha": 1.0,
         "drawPriority": 0,
         "textureInfo": {
-          "filename": "Images/Base/rblock_256x256.png",
-          "lerpType": "Linear",
+          "filename": "Images/UI/start_button_bg.png",
+          "lerpType": "Point",
           "tintColor": {
-            "r": 144,
-            "g": 144,
-            "b": 144,
-            "a": 255
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 0
           }
         },
         "size": {
@@ -306,7 +306,7 @@
         },
         "horizontal": 0.30000001192092896,
         "vertical": 0.30000001192092896,
-        "patchScale": 1.0
+        "patchScale": 2.0
       }
     },
     {

@@ -8,6 +8,19 @@ namespace {
 
 const int DRAW_ALPHA = 180;
 
+AABB2D getRenderRect(const Transform& tm, EntityId entId) {
+    float normScale = 1.f;
+    ET_SendEventReturn(normScale, entId, &ETRenderNode::ET_getNormalizationScale);
+
+    AABB2D box(0.f);
+    ET_SendEventReturn(box.top, entId, &ETRenderRect::ET_getSize);
+    box.top.x *= tm.scale.x * normScale;
+    box.top.y *= tm.scale.y * normScale;
+    box.setCenter(tm.pt.x, tm.pt.y);
+
+    return box;
+}
+
 void drawUIElementHelp(const Transform& tm, EntityId entId) {
     bool isHidden = false;
     ET_SendEventReturn(isHidden, entId, &ETUIElement::ET_isHidden);
@@ -63,14 +76,7 @@ void drawRenderRectHelp(const Transform& tm, EntityId entId) {
         return;
     }
 
-    float normScale = 1.f;
-    ET_SendEventReturn(normScale, entId, &ETRenderNode::ET_getNormalizationScale);
-
-    AABB2D box(0.f);
-    ET_SendEventReturn(box.top, entId, &ETRenderRect::ET_getSize);
-    box.top *= normScale;
-    box.setCenter(tm.pt.x, tm.pt.y);
-
+    auto box = getRenderRect(tm, entId);
     ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA));
 }
 
@@ -85,6 +91,59 @@ void drawRenderTextHelp(const Transform& tm, EntityId entId) {
     ET_SendEventReturn(box, entId, &ETRenderTextLogic::ET_getTextAABB);
 
     ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA));
+}
+
+void drawNinePatchImageHelp(const Transform& tm, EntityId entId) {
+    bool isVisible = false;
+    ET_SendEventReturn(isVisible, entId, &ETRenderNode::ET_isVisible);
+    if(!isVisible) {
+        return;
+    }
+
+    Vec2 vertCoord(0.f);
+    ET_SendEventReturn(vertCoord, entId, &ETNinePatchImageLogic::ET_getPatchesVertCoord);
+
+    auto box = getRenderRect(tm, entId);
+    auto size = box.getSize();
+
+    Vec2 p1(0.f);
+    Vec2 p2(0.f);
+    {
+        p1.x = size.x * vertCoord.x;
+        p1.y = 0.f;
+        p2.x = p1.x;
+        p2.y = size.y;
+        p1 += box.bot;
+        p2 += box.bot;
+        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+    }
+    {
+        p1.x = size.x * (1.f - vertCoord.x);
+        p1.y = 0.f;
+        p2.x = p1.x;
+        p2.y = size.y;
+        p1 += box.bot;
+        p2 += box.bot;
+        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+    }
+    {
+        p1.x = 0.f;
+        p1.y = size.y * vertCoord.y;
+        p2.x = size.x;
+        p2.y = p1.y;
+        p1 += box.bot;
+        p2 += box.bot;
+        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+    }
+    {
+        p1.x = 0.f;
+        p1.y = size.y * (1.f - vertCoord.y);
+        p2.x = size.x;
+        p2.y = p1.y;
+        p1 += box.bot;
+        p2 += box.bot;
+        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+    }
 }
 
 } // namespace
@@ -126,5 +185,8 @@ void EntityEditorHelper::ET_drawDebugInfo() {
     }
     if(ET_IsExistNode<ETRenderTextLogic>(focusEntId)) {
         drawRenderTextHelp(tm, focusEntId);
+    }
+    if(ET_IsExistNode<ETNinePatchImageLogic>(focusEntId)) {
+        drawNinePatchImageHelp(tm, focusEntId);
     }
 }

@@ -30,7 +30,7 @@
             "id": 1,
             "data": {
               "isVisible": false,
-              "alpha": 0.7,
+              "alpha": 0.699999988079071,
               "drawPriority": 0,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
@@ -68,7 +68,7 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "textureInfo": {
-          "filename": "Images/Game/green_elem_32x32.png",
+          "filename": "Images/Game/green_elem_12x12.png",
           "lerpType": "Point",
           "tintColor": {
             "r": 0,

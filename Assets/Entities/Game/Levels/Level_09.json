@@ -41,13 +41,13 @@
               "alpha": 0.9,
               "drawPriority": 1,
               "textureInfo": {
-                "filename": "Images/Base/rblock_256x256.png",
-                "lerpType": "Linear",
+                "filename": "Images/Game/game_board_bg.png",
+                "lerpType": "Point",
                 "tintColor": {
-                  "r": 233,
-                  "g": 244,
-                  "b": 244,
-                  "a": 255
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0
                 }
               },
               "size": {
@@ -56,7 +56,7 @@
               },
               "horizontal": 0.3,
               "vertical": 0.3,
-              "patchScale": 0.5
+              "patchScale": 0.2
             }
           }
         ]

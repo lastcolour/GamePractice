@@ -51,6 +51,8 @@ std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex);
 
 void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo);
 
+Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale);
+
 } // namespace RenderUtils
 
 #endif /*__RENDER_UTILS_HPP__ */

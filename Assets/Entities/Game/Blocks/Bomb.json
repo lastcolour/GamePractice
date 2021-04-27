@@ -68,7 +68,7 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "textureInfo": {
-          "filename": "Images/Game/bomb_32x32.png",
+          "filename": "Images/Game/bomb_12x12.png",
           "lerpType": "Point",
           "tintColor": {
             "r": 0,

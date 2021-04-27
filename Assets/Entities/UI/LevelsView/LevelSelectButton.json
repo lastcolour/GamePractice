@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -73.6875,
+                "x": -73.69000244140625,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -81,13 +81,13 @@
                           "alpha": 1.0,
                           "drawPriority": 2,
                           "textureInfo": {
-                            "filename": "Images/Base/rblock_256x256.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/unlocked_lvl_bg.png",
+                            "lerpType": "Point",
                             "tintColor": {
-                              "r": 16,
-                              "g": 199,
-                              "b": 240,
-                              "a": 255
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
                             }
                           },
                           "size": {
@@ -132,13 +132,13 @@
                           "alpha": 1.0,
                           "drawPriority": 0,
                           "textureInfo": {
-                            "filename": "Images/Base/rblock_256x256.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/completed_lvl_bg.png",
+                            "lerpType": "Point",
                             "tintColor": {
-                              "r": 11,
-                              "g": 134,
-                              "b": 216,
-                              "a": 255
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
                             }
                           },
                           "size": {
@@ -264,7 +264,7 @@
                             {
                               "transform": {
                                 "pos": {
-                                  "x": -29.475006103515625,
+                                  "x": -29.4749755859375,
                                   "y": 0.0,
                                   "z": 0.0
                                 },
@@ -984,13 +984,13 @@
                           "alpha": 1.0,
                           "drawPriority": 7,
                           "textureInfo": {
-                            "filename": "Images/Base/rblock_256x256.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/unlocked_lvl_bg.png",
+                            "lerpType": "Point",
                             "tintColor": {
-                              "r": 0,
-                              "g": 0,
-                              "b": 0,
-                              "a": 0
+                              "r": 255,
+                              "g": 255,
+                              "b": 255,
+                              "a": 255
                             }
                           },
                           "size": {
@@ -1480,8 +1480,8 @@
                           "alpha": 0.4000000059604645,
                           "drawPriority": 6,
                           "textureInfo": {
-                            "filename": "Images/Base/rblock_256x256.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/locked_button_bg.png",
+                            "lerpType": "Point",
                             "tintColor": {
                               "r": 216,
                               "g": 22,
@@ -1611,13 +1611,13 @@
                     "alpha": 1.0,
                     "drawPriority": 2,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/locked_button_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 159,
-                        "g": 159,
-                        "b": 159,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
