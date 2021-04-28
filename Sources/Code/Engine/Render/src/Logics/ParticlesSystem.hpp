@@ -37,12 +37,15 @@ public:
     void ET_stopEmitting() override;
     void ET_removeAll() override;
     void ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) override;
-    void ET_updateSubEmitter(int rootParticleId, const Vec2& pt) override;
+    void ET_updateSubEmitter(int rootParticleId, const Transform& newTm) override;
     void ET_stopSubEmitter(int rootParticleId) override;
     bool ET_hasAliveParticles() const override;
 
     // ETParticlesUpdate
     void ET_updateEmitter(float dt) override;
+
+    // RenderNode
+    void deinit() override;
 
 protected:
 

@@ -11,6 +11,8 @@ in vec4 colorMult;
 out vec4 FragColor;
 
 void main() {
-    FragColor = texture(tex, texCoords) * colorMult;
-    FragColor.a *= alpha;
+    vec4 sampled = texture(tex, texCoords);
+    float a = sampled.a * colorMult.a * alpha;
+    FragColor.rgb = colorMult.rgb * sampled.rgb * a;
+    FragColor.a = a;
 }

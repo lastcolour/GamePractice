@@ -32,7 +32,7 @@ enum class EmissionState {
 struct EmitterParticles {
 public:
 
-    EmitterParticles(const SimulationConfig& config);
+    EmitterParticles(const SimulationConfig& simConfig);
     ~EmitterParticles();
 
     void start(const EmitRequest& emitRequest);
@@ -44,7 +44,7 @@ public:
     void simulate(const Transform& systemTm, float dt);
     Mat4 getTransformMat() const;
     int getRootParticleId() const;
-    void updateEmitPos(const Vec2& newEmitPt);
+    void updateSubEmitterTm(const Transform& newTm);
 
 private:
 
@@ -66,13 +66,12 @@ public:
 private:
 
     EmitRequest emitReq;
-    const SimulationConfig& simConfig;
+    const SimulationConfig& simConf;
     float duration;
     float emitFracTime;
     Math::RandomFloatGenerator floatGen;
     unsigned int spawnedCount;
     std::atomic<EmissionState> emissionState;
-    bool wroldTmSpace;
 };
 
 #endif /* __EMITTER_PARTICLES_HPP__ */

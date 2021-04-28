@@ -42,7 +42,7 @@ Mat4 ImageNode::calcModelMat(const Transform& newTm) {
 
 void ImageNode::setTextureInfo(const TextureInfo& newTextureInfo) {
     texInfo = newTextureInfo;
-    texObj = RenderUtils::CreateTexture(texInfo);
+    texObj = RenderUtils::CreateTexture(texInfo, ETextureDataType::RGBA);
 }
 
 void ImageNode::setTextureObject(std::shared_ptr<RenderTexture>& newTextureObj) {

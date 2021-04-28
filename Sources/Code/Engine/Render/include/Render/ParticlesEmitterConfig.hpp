@@ -99,6 +99,8 @@ public:
 enum class BlendingConfig {
     Normal = 0,
     Additive,
+    Multiply,
+    Screen
 };
 
 class ParticlesEmitterRenderConfig {

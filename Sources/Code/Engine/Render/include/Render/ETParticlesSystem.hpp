@@ -23,7 +23,7 @@ struct ETParticlesSystem {
     virtual void ET_stopEmitting() = 0;
     virtual void ET_removeAll() = 0;
     virtual void ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) = 0;
-    virtual void ET_updateSubEmitter(int rootParticleId, const Vec2& pt) = 0;
+    virtual void ET_updateSubEmitter(int rootParticleId, const Transform& newTm) = 0;
     virtual void ET_stopSubEmitter(int rootParticleId) = 0;
     virtual bool ET_hasAliveParticles() const = 0;
 };

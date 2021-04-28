@@ -13,24 +13,10 @@ ParticlesNode::~ParticlesNode() {
 void ParticlesNode::setConfig(const ParticlesEmitterRenderConfig& newRenderConf) {
     renderConfig = newRenderConf;
 
-    texObj = RenderUtils::CreateTexture(renderConfig.textureInfo);
+    texObj = RenderUtils::CreateTexture(renderConfig.textureInfo, ETextureDataType::RGBA);
 
-    BlendMode mode;
-    switch(renderConfig.blending) {
-        case BlendingConfig::Normal: {
-            mode.src = BlendType::SRC_ALPHA;
-            mode.dst = BlendType::ONE_MINUS_SRC_ALPHA;
-            break;
-        }
-        case BlendingConfig::Additive: {
-            mode.src = BlendType::SRC_ALPHA;
-            mode.dst = BlendType::ONE;
-            break;
-        }
-        default: {
-            assert(false && "Invalid blend mode");
-        }
-    }
+    bool preMultipliedAlpha = true;
+    auto mode = RenderUtils::GetBlendMode(renderConfig.blending, preMultipliedAlpha);
     setBlendingMode(mode);
 }
 
@@ -49,7 +35,9 @@ bool ParticlesNode::canRender() const {
 }
 
 void ParticlesNode::onInit() {
-    setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
+    bool preMultipliedAlpha = true;
+    auto mode = RenderUtils::GetBlendMode(renderConfig.blending, preMultipliedAlpha);
+    setBlendingMode(mode);
     setGeometry(PrimitiveGeometryType::Particles);
     setShader("particle");
 }

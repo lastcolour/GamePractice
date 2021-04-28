@@ -38,7 +38,7 @@
             "id": 3,
             "data": {
               "isVisible": false,
-              "alpha": 0.8999999761581421,
+              "alpha": 1.0,
               "drawPriority": 1,
               "textureInfo": {
                 "filename": "Images/Game/game_board_bg.png",
@@ -76,13 +76,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 20
+          "minScore": 25
         },
         "twoStars": {
-          "minScore": 30
+          "minScore": 50
         },
         "threeStars": {
-          "minScore": 1500
+          "minScore": 100
         }
       }
     },
@@ -127,18 +127,6 @@
           },
           {
             "elemType": "Yellow",
-            "weight": 1
-          },
-          {
-            "elemType": "Star",
-            "weight": 1
-          },
-          {
-            "elemType": "HRocket",
-            "weight": 1
-          },
-          {
-            "elemType": "VRocket",
             "weight": 1
           },
           {

@@ -51,6 +51,15 @@ void ParticlesSystem::onInit() {
     ETNode<ETParticlesUpdate>::connect(getEntityId());
 }
 
+void ParticlesSystem::deinit() {
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode](){
+        auto particlesNode = static_cast<ParticlesNode*>(node);
+        auto& emittersPool = particlesNode->getEmittersPool();
+        emittersPool.asyncDestroyAll();
+    });
+    RenderNode::deinit();
+}
+
 void ParticlesSystem::ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) {
     colorConfig = newColorConf;
     ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newColorConf](){
@@ -216,10 +225,10 @@ void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Transform& sp
     emittersPool.createEmitter(emitReq);
 }
 
-void ParticlesSystem::ET_updateSubEmitter(int rootParticleId, const Vec2& pt) {
+void ParticlesSystem::ET_updateSubEmitter(int rootParticleId, const Transform& newTm) {
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
     auto& emittersPool = particlesNode->getEmittersPool();
-    emittersPool.updateEmitterPos(rootParticleId, pt);
+    emittersPool.updateSubEmitterTm(rootParticleId, newTm);
 }
 
 void ParticlesSystem::ET_stopSubEmitter(int rootParticleId) {

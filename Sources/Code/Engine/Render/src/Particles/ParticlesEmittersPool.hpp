@@ -15,7 +15,7 @@ public:
     ~ParticlesEmittersPool();
 
     void createEmitter(const EmitRequest& emitReq);
-    void updateEmitterPos(int rootParticleId, const Vec2& newPt);
+    void updateSubEmitterTm(int rootParticleId, const Transform& newTm);
     void stopEmitter(int rootParticleId);
     void simulate(const Transform& systemTm, float dt);
     bool hasAlive() const;

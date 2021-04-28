@@ -29,11 +29,11 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
     stoppedEmitter->start(emitReq);
 }
 
-void ParticlesEmittersPool::updateEmitterPos(int rootParticleId, const Vec2& newPt) {
+void ParticlesEmittersPool::updateSubEmitterTm(int rootParticleId, const Transform& newTm) {
     assert(rootParticleId != InvalidRootParticleId && "Invalid root particle id");
     for(auto& emitter : pool) {
         if(emitter->getRootParticleId() == rootParticleId) {
-            emitter->updateEmitPos(newPt);
+            emitter->updateSubEmitterTm(newTm);
         }
     }
 }

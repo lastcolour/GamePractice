@@ -111,7 +111,9 @@ void ParticlesEmitterRenderConfig::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<BlendingConfig>("BlendingConfig")) {
         enumInfo->addValues<BlendingConfig>({
             {"Normal", BlendingConfig::Normal},
-            {"Additive", BlendingConfig::Additive}
+            {"Additive", BlendingConfig::Additive},
+            {"Multiply", BlendingConfig::Multiply},
+            {"Screen", BlendingConfig::Screen}
         });
     }
     if(auto classInfo = ctx.classInfo<ParticlesEmitterRenderConfig>("ParticlesEmitterRenderConfig")) {

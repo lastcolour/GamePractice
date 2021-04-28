@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 314.39996337890625,
+          "y": 314.4000244140625,
           "z": 0.0
         },
         "scale": {
@@ -47,79 +47,7 @@
             "id": 1,
             "internal": true,
             "data": {
-              "children": [
-                {
-                  "transform": {
-                    "pos": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0
-                    },
-                    "scale": {
-                      "x": 1.0,
-                      "y": 1.0,
-                      "z": 1.0
-                    },
-                    "rot": {
-                      "x": 0.0,
-                      "y": 0.0,
-                      "z": 0.0,
-                      "w": 1.0
-                    }
-                  },
-                  "name": "Logo",
-                  "id": 1,
-                  "internal": true,
-                  "data": {
-                    "children": [],
-                    "logics": [
-                      {
-                        "type": "RenderImage",
-                        "id": 1,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 3,
-                          "textureInfo": {
-                            "filename": "Images/UI/options.png",
-                            "lerpType": "Linear",
-                            "tintColor": {
-                              "r": 0,
-                              "g": 0,
-                              "b": 0,
-                              "a": 0
-                            }
-                          },
-                          "size": {
-                            "x": 176.85000610351562,
-                            "y": 176.85000610351562
-                          }
-                        }
-                      },
-                      {
-                        "type": "UIBox",
-                        "id": 2,
-                        "data": {
-                          "hidden": false,
-                          "enabled": true,
-                          "style": {
-                            "width": 60.0,
-                            "widthInv": "Grid",
-                            "height": 60.0,
-                            "heightInv": "Grid",
-                            "margin": {
-                              "top": 0.0,
-                              "bot": 0.0,
-                              "left": 0.0,
-                              "right": 0.0
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
+              "children": [],
               "logics": [
                 {
                   "type": "UIBox",
@@ -142,23 +70,6 @@
                   }
                 },
                 {
-                  "type": "UILayout",
-                  "id": 4,
-                  "data": {
-                    "extraZOffset": 0,
-                    "style": {
-                      "type": "Horizontal",
-                      "xAlign": "Center",
-                      "yAlign": "Center"
-                    },
-                    "children": [
-                      [
-                        1
-                      ]
-                    ]
-                  }
-                },
-                {
                   "type": "RenderImage",
                   "id": 5,
                   "data": {
@@ -166,18 +77,18 @@
                     "alpha": 1.0,
                     "drawPriority": 2,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/logo.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 159,
-                        "g": 159,
-                        "b": 159,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
-                      "x": 265.2749938964844,
-                      "y": 265.2749938964844
+                      "x": 265.27496337890625,
+                      "y": 265.27496337890625
                     }
                   }
                 }
@@ -342,7 +253,7 @@
           {
             "transform": {
               "pos": {
-                "x": -162.1099853515625,
+                "x": -162.11248779296875,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -449,8 +360,8 @@
                       }
                     },
                     "size": {
-                      "x": 117.9000244140625,
-                      "y": 117.89999389648438
+                      "x": 117.9000015258789,
+                      "y": 117.9000015258789
                     },
                     "horizontal": 0.20000000298023224,
                     "vertical": 0.20000000298023224,
@@ -570,8 +481,8 @@
                       }
                     },
                     "size": {
-                      "x": 117.9000244140625,
-                      "y": 117.89999389648438
+                      "x": 117.9000015258789,
+                      "y": 117.9000015258789
                     },
                     "horizontal": 0.20000000298023224,
                     "vertical": 0.20000000298023224,
@@ -584,7 +495,7 @@
           {
             "transform": {
               "pos": {
-                "x": 162.1099853515625,
+                "x": 162.11248779296875,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -691,8 +602,8 @@
                       }
                     },
                     "size": {
-                      "x": 117.9000244140625,
-                      "y": 117.89999389648438
+                      "x": 117.9000015258789,
+                      "y": 117.9000015258789
                     },
                     "horizontal": 0.20000000298023224,
                     "vertical": 0.20000000298023224,

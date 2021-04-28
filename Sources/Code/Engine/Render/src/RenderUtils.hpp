@@ -10,6 +10,9 @@ class RenderGeometry;
 class RenderTexture;
 class Node;
 
+enum class BlendingConfig;
+struct BlendMode;
+
 enum class RenderNodeType {
     Simple = 0,
     Image,
@@ -47,11 +50,13 @@ Mat4 CalcModelMat(const Transform& tm, const Vec3& scale);
 
 std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType);
 
-std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex);
+std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex, ETextureDataType texType);
 
 void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo);
 
 Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale);
+
+BlendMode GetBlendMode(BlendingConfig blendConfig, bool preMultipliedAlpha);
 
 } // namespace RenderUtils
 

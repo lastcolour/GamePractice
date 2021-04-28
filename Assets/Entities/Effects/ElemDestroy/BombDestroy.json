@@ -107,7 +107,7 @@
                 "fadeOut": 0.10000000149011612
               },
               "render": {
-                "blending": "Normal",
+                "blending": "Additive",
                 "textureInfo": {
                   "filename": "Images/Base/point_of_light_128x128.png",
                   "lerpType": "Linear",
@@ -180,14 +180,14 @@
                   "y": 3.0
                 },
                 "thickness": 0.0,
-                "emissionRate": 150.0,
+                "emissionRate": 1000.0,
                 "direction": 0.0,
                 "directionVar": 360.0,
-                "lifetime": 0.6000000238418579,
+                "lifetime": 0.5,
                 "lifetimeVar": 0.10000000149011612
               },
               "movement": {
-                "speed": 50.0,
+                "speed": 60.0,
                 "speedVar": 0.10000000149011612,
                 "initRotation": 30.0,
                 "initRotationVar": 0.10000000149011612,
@@ -205,8 +205,8 @@
                   "y": 0.10000000149011612
                 },
                 "endScale": {
-                  "x": 1.0,
-                  "y": 1.0
+                  "x": 0.800000011920929,
+                  "y": 0.699999988079071
                 },
                 "endScaleVar": {
                   "x": 0.10000000149011612,
@@ -242,7 +242,7 @@
                 "fadeOut": 0.30000001192092896
               },
               "render": {
-                "blending": "Normal",
+                "blending": "Additive",
                 "textureInfo": {
                   "filename": "Images/Base/point_of_light_64x64.png",
                   "lerpType": "Point",
@@ -372,9 +372,9 @@
                 "fadeOut": 0.20000000298023224
               },
               "render": {
-                "blending": "Normal",
+                "blending": "Additive",
                 "textureInfo": {
-                  "filename": "Images/Base/circle_border_blurred_128x128.png",
+                  "filename": "Images/Particles/circle_02.png",
                   "lerpType": "Linear",
                   "tintColor": {
                     "r": 0,
@@ -479,9 +479,9 @@
           "fadeOut": 0.10000000149011612
         },
         "render": {
-          "blending": "Normal",
+          "blending": "Additive",
           "textureInfo": {
-            "filename": "Images/Base/point_of_light_128x128.png",
+            "filename": "Images/Particles/circle_01.png",
             "lerpType": "Linear",
             "tintColor": {
               "r": 0,

@@ -16,6 +16,7 @@
 #include "Nodes/ParticlesNode.hpp"
 #include "Nodes/BlurNode.hpp"
 #include "RenderTexture.hpp"
+#include "Render/ParticlesEmitterConfig.hpp"
 
 #include <type_traits>
 #include <cassert>
@@ -222,10 +223,10 @@ std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType) {
     return node;
 }
 
-std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo) {
+std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo, ETextureDataType texType) {
     std::shared_ptr<RenderTexture> texObj;
     ET_SendEventReturn(texObj, &ETRenderTextureManager::ET_createFromFile,
-        texInfo.filename.c_str(), ETextureDataType::RGBA);
+        texInfo.filename.c_str(), texType);
     return texObj;
 }
 
@@ -254,6 +255,35 @@ Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const
     vPatch = 2.f * std::min(vPatch, 0.4999f);
 
     return Vec2(hPatch, vPatch);
+}
+
+BlendMode GetBlendMode(BlendingConfig blendConfig, bool preMultipliedAlpha) {
+    BlendMode mode = {BlendType::NONE, BlendType::NONE};
+    switch(blendConfig) {
+        case BlendingConfig::Normal: {
+            mode.src = preMultipliedAlpha ? BlendType::ONE : BlendType::SRC_ALPHA;
+            mode.dst = BlendType::ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case BlendingConfig::Additive: {
+            mode.src = preMultipliedAlpha ? BlendType::ONE : BlendType::SRC_ALPHA;
+            mode.dst = BlendType::ONE;
+            break;
+        }
+        case BlendingConfig::Screen: {
+            mode.src = BlendType::ONE;
+            mode.dst = BlendType::ONE_MINUS_SRC_COLOR;
+            break;
+        }
+        case BlendingConfig::Multiply:
+            mode.src = BlendType::DST_COLOR;
+            mode.dst = BlendType::ONE_MINUS_SRC_ALPHA;
+            break;
+        default: {
+            assert(false && "Invalid blend mode");
+        }
+    }
+    return mode;
 }
 
 } // namespace RenderUtils

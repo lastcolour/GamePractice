@@ -38,7 +38,7 @@
             "id": 3,
             "data": {
               "isVisible": false,
-              "alpha": 0.9,
+              "alpha": 0.8999999761581421,
               "drawPriority": 1,
               "textureInfo": {
                 "filename": "Images/Game/game_board_bg.png",
@@ -54,9 +54,9 @@
                 "x": 1040.0,
                 "y": 1040.0
               },
-              "horizontal": 0.3,
-              "vertical": 0.3,
-              "patchScale": 0.2
+              "horizontal": 0.30000001192092896,
+              "vertical": 0.30000001192092896,
+              "patchScale": 0.20000000298023224
             }
           }
         ]
@@ -76,7 +76,7 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 30
+          "minScore": 25
         },
         "twoStars": {
           "minScore": 50
@@ -111,26 +111,22 @@
         "elems": [
           {
             "elemType": "Blue",
-            "weight": 3
+            "weight": 1
           },
           {
             "elemType": "Green",
-            "weight": 3
+            "weight": 1
           },
           {
             "elemType": "Purple",
-            "weight": 3
+            "weight": 1
           },
           {
             "elemType": "Red",
-            "weight": 3
+            "weight": 1
           },
           {
             "elemType": "Yellow",
-            "weight": 3
-          },
-          {
-            "elemType": "Bomb",
             "weight": 1
           }
         ]
