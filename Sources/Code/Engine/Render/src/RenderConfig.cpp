@@ -22,6 +22,12 @@ void CameraConfig::Reflect(ReflectContext& ctx) {
     }
 }
 
+void ParticlesConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<ParticlesConfig>("ParticlesConfig")) {
+        classInfo->addField("max_particles", &ParticlesConfig::maxParticles);
+    }
+}
+
 void RenderConfig::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<ETextureLerpType>("ETextureLerpType")) {
         enumInfo->addValues<ETextureLerpType>({
@@ -33,6 +39,7 @@ void RenderConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("default_fonts", &RenderConfig::fontConfig);
         classInfo->addField("default_camera", &RenderConfig::cameraConfig);
         classInfo->addField("debug_tasks", &RenderConfig::debugTaskConfig);
+        classInfo->addField("particles", &RenderConfig::particlesConfig);
         classInfo->addField("shaders_table", &RenderConfig::shadersTable);
     }
 }

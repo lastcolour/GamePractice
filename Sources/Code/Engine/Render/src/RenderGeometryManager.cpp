@@ -4,6 +4,8 @@
 #include "Math/Matrix.hpp"
 #include "Render/RenderCommon.hpp"
 #include "RenderUtils.hpp"
+#include "Core/GlobalData.hpp"
+#include "RenderConfig.hpp"
 
 #include <cassert>
 
@@ -202,11 +204,13 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
         glEnableVertexAttribArray(1);
     }
     {
+        auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
+
         GLsizei stride = sizeof(Vec4) + sizeof(Mat3x2);
 
         glGenBuffers(1, &extraVboId);
         glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
-        glBufferData(GL_ARRAY_BUFFER, RenderUtils::MaxParticlessPerDraw * stride, nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, maxParticles * stride, nullptr, GL_DYNAMIC_DRAW);
 
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(2);

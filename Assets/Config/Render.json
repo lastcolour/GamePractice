@@ -11,5 +11,8 @@
     "debug_tasks": {
         "tasks":["Render", "RenderSync", "Game", "UI", "Sound"]
     },
+    "particles": {
+        "max_particles":8192
+    },
     "shaders_table":"Render/Shaders.json"
 }

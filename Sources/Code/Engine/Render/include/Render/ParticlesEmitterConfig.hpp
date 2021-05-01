@@ -13,6 +13,12 @@ enum class EmitterSpace {
     World
 };
 
+enum class EmitterSimulationTime {
+    Render = 0,
+    Game,
+    UI
+};
+
 class ParticlesEmitterEmissionConfig {
 public:
 
@@ -24,6 +30,7 @@ public:
 
 public:
 
+    EmitterSimulationTime emitterSimTime;
     EmitterType emitterType;
     EmitterSpace emitterSpace;
     Vec2 emitterVal;
@@ -37,7 +44,6 @@ public:
     float startDelay;
     bool autoStart;
     bool loop;
-    bool heating;
 };
 
 class ParticlesEmitterColorConfig {

@@ -14,12 +14,19 @@ void ParticlesEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
             {"World", EmitterSpace::World}
         });
     }
+    if(auto enumInfo = ctx.enumInfo<EmitterSimulationTime>("EmitterSimulationTime")) {
+        enumInfo->addValues<EmitterSimulationTime>({
+            {"Render", EmitterSimulationTime::Render},
+            {"Game", EmitterSimulationTime::Game},
+            {"UI", EmitterSimulationTime::UI}
+        });
+    }
     if(auto classInfo = ctx.classInfo<ParticlesEmitterEmissionConfig>("ParticlesEmitterEmissionConfig")) {
+        classInfo->addField("simTime", &ParticlesEmitterEmissionConfig::emitterSimTime);
         classInfo->addField("duration", &ParticlesEmitterEmissionConfig::duration);
         classInfo->addField("startDelay", &ParticlesEmitterEmissionConfig::startDelay);
         classInfo->addField("autoStart", &ParticlesEmitterEmissionConfig::autoStart);
         classInfo->addField("loop", &ParticlesEmitterEmissionConfig::loop);
-        classInfo->addField("heating", &ParticlesEmitterEmissionConfig::heating);
         classInfo->addField("emitterSpace", &ParticlesEmitterEmissionConfig::emitterSpace);
         classInfo->addField("emitterType", &ParticlesEmitterEmissionConfig::emitterType);
         classInfo->addField("emitterVal", &ParticlesEmitterEmissionConfig::emitterVal);
@@ -33,6 +40,7 @@ void ParticlesEmitterEmissionConfig::Reflect(ReflectContext& ctx) {
 }
 
 ParticlesEmitterEmissionConfig::ParticlesEmitterEmissionConfig() :
+    emitterSimTime(EmitterSimulationTime::Render),
     emitterType(EmitterType::Sphere),
     emitterSpace(EmitterSpace::World),
     emitterVal(1.f, 0.f),
@@ -45,8 +53,7 @@ ParticlesEmitterEmissionConfig::ParticlesEmitterEmissionConfig() :
     lifetimeVar(0.1f),
     startDelay(0.f),
     autoStart(false),
-    loop(false),
-    heating(true) {
+    loop(false) {
 }
 
 void ParticlesEmitterColorConfig::Reflect(ReflectContext& ctx) {

@@ -36,6 +36,16 @@ public:
     float zFar;
 };
 
+class ParticlesConfig {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    int maxParticles;
+};
+
 class RenderConfig {
 public:
 
@@ -46,6 +56,7 @@ public:
     FontConfig fontConfig;
     CameraConfig cameraConfig;
     DebugTasks debugTaskConfig;
+    ParticlesConfig particlesConfig;
     std::string shadersTable;
 };
 

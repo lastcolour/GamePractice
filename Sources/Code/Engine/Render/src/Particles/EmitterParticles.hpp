@@ -7,6 +7,8 @@
 
 #include <atomic>
 
+class ParticlesEmittersPool;
+
 struct SimulationConfig {
     ParticlesEmitterEmissionConfig emission;
     ParticlesEmitterColorConfig color;
@@ -32,7 +34,7 @@ enum class EmissionState {
 struct EmitterParticles {
 public:
 
-    EmitterParticles(const SimulationConfig& simConfig);
+    EmitterParticles(ParticlesEmittersPool& pool);
     ~EmitterParticles();
 
     void start(const EmitRequest& emitRequest);
@@ -53,7 +55,7 @@ private:
     void moveAlive(float dt);
     void updateState(float dt);
     void spawnNewParticle(Particle& p);
-    void simulateGravities(float dt);
+    void simulateGravities(const Transform& tm, float dt);
     void updateIntacesData(float dt);
     int generateParticleId();
 
@@ -66,12 +68,14 @@ public:
 private:
 
     EmitRequest emitReq;
+    ParticlesEmittersPool& pool;
     const SimulationConfig& simConf;
     float duration;
     float emitFracTime;
     Math::RandomFloatGenerator floatGen;
     unsigned int spawnedCount;
     std::atomic<EmissionState> emissionState;
+    bool hasDependentSubEmitters;
 };
 
 #endif /* __EMITTER_PARTICLES_HPP__ */

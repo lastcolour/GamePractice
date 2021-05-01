@@ -2,6 +2,7 @@
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "UI/ETUIViewPort.hpp"
+#include "Render/ETRenderTickManager.hpp"
 
 #include <cassert>
 
@@ -40,6 +41,8 @@ void GameTimer::ET_onTick(float dt) {
     }
 
     dt *= scale;
+
+    ET_SendEvent(&ETRenderTickManager::ET_onGameTick, dt);
     ET_SendEvent(&ETGameTimerEvents::ET_onGameTick, dt);
 }
 

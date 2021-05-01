@@ -4,6 +4,8 @@
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 #include "Nodes/ParticlesNode.hpp"
+#include "Core/GlobalData.hpp"
+#include "RenderConfig.hpp"
 
 namespace {
 
@@ -273,4 +275,34 @@ TEST_F(ParticlesSystemTests, CheckSubEmitters) {
 
     ET_SendEvent(parentId, &ETParticlesSystem::ET_emit);
     TickParticlesEmitter(0.f);
+}
+
+TEST_F(ParticlesSystemTests, CheckMaxParticles) {
+    auto entity = createVoidObject();
+    auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+
+    auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
+
+    auto emissionConfig = system->ET_getEmissionConfig();
+    emissionConfig.lifetime = 5.f;
+    emissionConfig.duration = 1.f;
+    emissionConfig.emissionRate = maxParticles * 2.f;
+    emissionConfig.autoStart = false;
+    emissionConfig.loop = false;
+
+    system->ET_setEmissionConfig(emissionConfig);
+    system->ET_emit();
+
+    TickParticlesEmitter(64.f);
+
+    auto pool = system->getEmittersPool();
+    ASSERT_TRUE(pool);
+
+    {
+        auto& emitters = pool->getEmitters();
+        ASSERT_EQ(emitters.size(), 1);
+
+        auto& particles = emitters[0];
+        EXPECT_EQ(particles->activeCount, maxParticles);
+    }
 }

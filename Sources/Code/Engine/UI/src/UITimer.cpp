@@ -3,6 +3,7 @@
 #include "UI/ETUIViewCache.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Render/ETRenderTickManager.hpp"
 
 UITimer::UITimer() :
     scale(1.f),
@@ -35,6 +36,8 @@ void UITimer::ET_onTick(float dt) {
     }
 
     dt *= scale;
+
+    ET_SendEvent(&ETRenderTickManager::ET_onUITick, dt);
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, dt);
     ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_applyAdditiveTranform);
     ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_resetAdditiveTransform);

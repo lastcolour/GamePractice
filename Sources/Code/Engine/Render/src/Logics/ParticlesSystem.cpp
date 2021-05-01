@@ -1,7 +1,34 @@
 #include "Logics/ParticlesSystem.hpp"
 #include "Nodes/ParticlesNode.hpp"
+#include "Render/ETRenderTickManager.hpp"
 
 #include <cassert>
+
+namespace {
+
+float getUpdateDeltaTime(const ParticlesEmitterEmissionConfig& emissionConfig, float renderDt) {
+    float dt = 0.f;
+    switch(emissionConfig.emitterSimTime) {
+        case EmitterSimulationTime::Render: {
+            dt = renderDt;
+            break;
+        }
+        case EmitterSimulationTime::Game: {
+            ET_SendEventReturn(dt, &ETRenderTickManager::ET_getUIDeltaT);
+            break;
+        }
+        case EmitterSimulationTime::UI: {
+            ET_SendEventReturn(dt, &ETRenderTickManager::ET_getUIDeltaT);
+            break;
+        }
+        default: {
+            assert(false && "Invalid simulation time");
+        }
+    }
+    return dt;
+}
+
+} // namespace
 
 void ParticlesSystem::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<ParticlesSystem>("ParticlesSystem")) {
@@ -46,7 +73,6 @@ void ParticlesSystem::onInit() {
     if(emissionConfig.autoStart) {
         ET_emit();
     }
-
     ETNode<ETParticlesSystem>::connect(getEntityId());
     ETNode<ETParticlesUpdate>::connect(getEntityId());
 }
@@ -152,16 +178,10 @@ void ParticlesSystem::ET_updateEmitter(float dt) {
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
     auto& pool = particlesNode->getEmittersPool();
     auto& tm = particlesNode->getTransform();
-    pool.simulate(tm, dt);
-    if(!pool.hasAlive()) {
-        auto& simConfig = pool.getSimConfig();
-        if(simConfig.emission.loop) {
-            EmitRequest emitReq;
-            emitReq.rootParticleId = InvalidRootParticleId;
-            emitReq.syncWithSystemTm = true;
-            pool.createEmitter(emitReq);
-        }
-    }
+    auto& simConfig = pool.getSimConfig();
+    auto deltaT = getUpdateDeltaTime(simConfig.emission, dt);
+
+    pool.simulate(tm, deltaT);
 }
 
 void ParticlesSystem::ET_emit() {

@@ -3,7 +3,7 @@
 
 struct ETRenderUpdateTask {
     virtual ~ETRenderUpdateTask() = default;
-    virtual void ET_updateRender(float dt) = 0;
+    virtual void ET_updateRender() = 0;
     virtual void ET_updateParticles(float dt) = 0;
     virtual void ET_syncWithGame() = 0;
 };

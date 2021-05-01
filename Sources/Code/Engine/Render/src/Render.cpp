@@ -2,6 +2,7 @@
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Render/ETRenderTickManager.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Nodes/Node.hpp"
 #include "RenderUtils.hpp"
@@ -33,7 +34,7 @@ void Render::deinit() {
     ETNode<ETRenderUpdateTask>::disconnect();
 }
 
-void Render::ET_updateRender(float dt) {
+void Render::ET_updateRender() {
     if(!canRenderToScreen()) {
         return;
     }
@@ -42,6 +43,7 @@ void Render::ET_updateRender(float dt) {
 }
 
 void Render::ET_updateParticles(float dt) {
+    ET_SendEvent(&ETRenderTickManager::ET_fetchDeltaT);
     ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
 }
 

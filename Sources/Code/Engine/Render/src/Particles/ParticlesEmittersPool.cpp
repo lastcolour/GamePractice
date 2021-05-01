@@ -1,9 +1,12 @@
 #include "Particles/ParticlesEmittersPool.hpp"
+#include "Core/GlobalData.hpp"
+#include "RenderConfig.hpp"
 
 #include <cassert>
 
 ParticlesEmittersPool::ParticlesEmittersPool() :
-    asyncState(AsynState::Stopped) {
+    asyncState(AsynState::Stopped),
+    particlesCount(0) {
 }
 
 ParticlesEmittersPool::~ParticlesEmittersPool() {
@@ -22,7 +25,7 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
         }
     }
     if(!stoppedEmitter) {
-        pool.emplace_back(new EmitterParticles(simConfig));
+        pool.emplace_back(new EmitterParticles(*this));
         stoppedEmitter = pool.back().get();
     }
     asyncState.store(AsynState::Playing);
@@ -144,4 +147,20 @@ bool ParticlesEmittersPool::asyncHasAlive() const {
 
 SimulationConfig& ParticlesEmittersPool::getSimConfig() {
     return simConfig;
+}
+
+const SimulationConfig& ParticlesEmittersPool::getSimConfig() const {
+    return simConfig;
+}
+
+int ParticlesEmittersPool::addParticles(int count) {
+    auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
+    auto resCount = std::min(maxParticles, count + particlesCount) - particlesCount;
+    particlesCount += resCount;
+    return resCount;
+}
+
+void ParticlesEmittersPool::removeParticles(int count) {
+    particlesCount -= count;
+    assert(particlesCount >= 0 && "Invalid particles count");
 }

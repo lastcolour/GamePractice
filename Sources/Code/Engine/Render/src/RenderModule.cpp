@@ -6,6 +6,7 @@
 #include "RenderCamera.hpp"
 #include "RenderTextureManager.hpp"
 #include "RenderNodeManager.hpp"
+#include "RenderTickManager.hpp"
 #include "Debug/DebugRender.hpp"
 #include "Debug/TasksStatsTracker.hpp"
 #include "Logics/ParticlesSystem.hpp"
@@ -33,6 +34,7 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             RenderTextureManager,
             RenderNodeManager,
             RenderFontManager,
+            RenderTickManager,
             DebugRender,
             TasksStatsTracker>()
         );

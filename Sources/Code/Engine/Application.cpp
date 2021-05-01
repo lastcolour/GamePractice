@@ -91,6 +91,7 @@ void Application::mainLoop() {
         auto entitiesUpdate = runner->createTask("Entities", [](){
             ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
         });
+        entitiesUpdate->setType(RunTaskType::NoInMainThread);
         entitiesUpdate->setFrequency(120);
     }
     {
@@ -117,8 +118,8 @@ void Application::mainLoop() {
         soundUpdate->setFrequency(120);
     }
     {
-        auto renderUpdate = runner->createTask("Render", [](float dt){
-            ET_SendEvent(&ETRenderUpdateTask::ET_updateRender, dt);
+        auto renderUpdate = runner->createTask("Render", [](){
+            ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
         });
         renderUpdate->setType(RunTaskType::MainThreadOnly);
         renderUpdate->setFrequency(60);

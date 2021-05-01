@@ -66,6 +66,7 @@ void EditorApp::buildTasksRunner() {
         auto entitiesUpdate = taskRunner->createTask("Entities", [](){
             ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
         });
+        entitiesUpdate->setType(RunTaskType::NoInMainThread);
         entitiesUpdate->setFrequency(120);
     }
     {
