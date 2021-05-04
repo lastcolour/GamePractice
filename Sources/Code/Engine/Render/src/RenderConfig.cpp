@@ -12,6 +12,7 @@ void FontConfig::Reflect(ReflectContext& ctx) {
         classInfo->addField("file", &FontConfig::file);
         classInfo->addField("lerpType", &FontConfig::lerpType);
         classInfo->addField("size", &FontConfig::size);
+        classInfo->addField("monochrome", &FontConfig::monochrome);
     }
 }
 

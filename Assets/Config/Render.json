@@ -1,8 +1,9 @@
 {
     "default_fonts": {
         "file":"Render/Fonts/OpenSans-Regular.ttf",
-        "lerpType":"Linear",
-        "size":64
+        "lerpType":"Pixel",
+        "size":12,
+        "monochrome":true
     },
     "default_camera": {
         "zNear":-1.0,

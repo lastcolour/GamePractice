@@ -60,6 +60,9 @@ bool Node::canRender() const {
     if(!geom) {
         return false;
     }
+    if(alpha <= 0.001f && stencilData.mode == EStencilOpType::Disabled) {
+        return false;
+    }
     return visible;
 }
 

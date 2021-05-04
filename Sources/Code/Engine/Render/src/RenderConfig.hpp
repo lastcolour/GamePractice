@@ -23,6 +23,7 @@ public:
     std::string file;
     int size;
     ETextureLerpType lerpType;
+    bool monochrome;
 };
 
 class CameraConfig {

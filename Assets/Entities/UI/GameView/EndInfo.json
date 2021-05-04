@@ -73,14 +73,14 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 36,
+                    "drawPriority": 5,
                     "color": {
                       "r": 0,
                       "g": 0,
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 53.05500030517578,
+                    "fontSize": 51.84000015258789,
                     "text": "Success!"
                   }
                 },
@@ -248,7 +248,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 33,
+              "drawPriority": 2,
               "textureInfo": {
                 "filename": "Images/Base/rblock_256x256.png",
                 "lerpType": "Linear",
@@ -260,8 +260,8 @@
                 }
               },
               "size": {
-                "x": 353.70001220703125,
-                "y": 103.1624984741211
+                "x": 345.6000061035156,
+                "y": 100.80000305175781
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,

@@ -33,11 +33,11 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "emission": {
+                "simTime": "Render",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
                 "loop": false,
-                "heating": false,
                 "emitterSpace": "World",
                 "emitterType": "Sphere",
                 "emitterVal": {
@@ -140,11 +140,11 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
+          "simTime": "Render",
           "duration": -1.0,
           "startDelay": 0.0,
           "autoStart": true,
           "loop": false,
-          "heating": true,
           "emitterSpace": "World",
           "emitterType": "Box",
           "emitterVal": {
@@ -159,7 +159,7 @@
           "lifetimeVar": 0.10000000149011612
         },
         "movement": {
-          "speed": 40.0,
+          "speed": 60.0,
           "speedVar": 0.10000000149011612,
           "initRotation": 30.0,
           "initRotationVar": 0.10000000149011612,

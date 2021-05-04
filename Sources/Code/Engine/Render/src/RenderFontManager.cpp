@@ -17,6 +17,52 @@ namespace {
 
 const int TEX_SUB_PADDING = 2;
 
+void writeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i& pt, const Vec2i& subSize, uint8_t* data) {
+    uint8_t* ptr = static_cast<uint8_t*>(buff.getWriteData());
+    for(int q = 0, j = pt.y; q < subSize.y; ++j, ++q) {
+        for(int p = 0, i = pt.x; p < subSize.x; ++i, ++p) {
+            ptr[j * size.x + i] = data[q * subSize.x + p];
+        }
+    }
+}
+
+void writeMonochromeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i& pt, Vec2i subSize, int pitch, uint8_t* data) {
+    uint8_t* ptr = static_cast<uint8_t*>(buff.getWriteData());
+    for(int q = 0, j = pt.y; q < subSize.y; ++j, ++q) {
+        uint8_t* bytePtr = data + q * pitch;
+        int bitIdx = 0;
+        for(int p = 0, i = pt.x; p < subSize.x; ++i, ++p) {
+            ptr[j * size.x + i] = (*bytePtr) & (1 << (7 - (bitIdx++))) ? 255: 0;
+            if(bitIdx == 8) {
+                ++bytePtr;
+                bitIdx = 0;
+            }
+        }
+    }
+}
+
+std::shared_ptr<RenderTexture> createFontAtlas(Buffer& buff, const Vec2i& size, const FontConfig& fontConfig) {
+    std::shared_ptr<RenderTexture> fontAtlas;
+    ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
+    if(!fontAtlas) {
+        return nullptr;
+    }
+    fontAtlas->bind();
+    if(!fontAtlas->resize(size)) {
+        fontAtlas->unbind();
+        return nullptr;
+    }
+    fontAtlas->writeR8(Vec2i(0), size, buff.getReadData());
+    if(auto errStr = RenderUtils::GetGLError()) {
+        fontAtlas->unbind();
+        LogError("[RenderFont::createFontImpl] Can't copy buffer to a texutre (Error: %s)", errStr);
+        return nullptr;
+    }
+    fontAtlas->setLerpType(fontConfig.lerpType, fontConfig.lerpType);
+    fontAtlas->unbind();
+    return fontAtlas;
+}
+
 } // namespace
 
 RenderFontManager::RenderFontManager() {
@@ -110,17 +156,17 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
         LogError("[RenderFontManager::createFontImpl] Can't init FreeType library");
         return nullptr;
     }
-    Buffer buff;
-    ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fontConfig.file.c_str());
-    if(!buff) {
+    Buffer fontBuff;
+    ET_SendEventReturn(fontBuff, &ETAssets::ET_loadAsset, fontConfig.file.c_str());
+    if(!fontBuff) {
         FT_Done_FreeType(ftLib);
         LogError("[RenderFontManager::createFontImpl] Can't load font from: '%s'",
             fontConfig.file);
         return nullptr;
     }
     FT_Face fontFace = nullptr;
-    if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(buff.getWriteData()),
-        static_cast<FT_Long>(buff.getSize()), 0, &fontFace)) {
+    if(FT_New_Memory_Face(ftLib, static_cast<unsigned char*>(fontBuff.getWriteData()),
+        static_cast<FT_Long>(fontBuff.getSize()), 0, &fontFace)) {
         FT_Done_FreeType(ftLib);
         LogError("[RenderFontManager::createFontImpl] Can't create memory font face for font: '%s'",
             fontConfig.file);
@@ -131,10 +177,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
 
     FT_Set_Pixel_Sizes(fontFace, 0, fontConfig.size);
 
-    unsigned int texWidth = 0;
-    unsigned int texHeight = 0;
-
-    int fontHeight = 0;
+    Vec2i texSize(0);
 
     FT_GlyphSlot glyph = fontFace->glyph;
     for(auto ch : characterSet) {
@@ -142,35 +185,26 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
             LogWarning("[RenderFontManager::createFontImpl] Failed to load character '%c'", ch);
             continue;
         }
-        texWidth += glyph->bitmap.width + TEX_SUB_PADDING;
-        texHeight = std::max(texHeight, glyph->bitmap.rows);
-        fontHeight = std::max(fontHeight, static_cast<int>(glyph->bitmap.rows));
+        texSize.x += glyph->bitmap.width + TEX_SUB_PADDING;
+        texSize.y = std::max(texSize.y, static_cast<int>(glyph->bitmap.rows));
     }
 
+
+    Buffer texBuff;
+    texBuff.resize(texSize.x * texSize.y);
+    memset(texBuff.getWriteData(), 0, texBuff.getSize());
+
+    int fontHeight = texSize.y;
     std::shared_ptr<RenderFont> font(new RenderFont(fontHeight));
 
-    std::shared_ptr<RenderTexture> fontAtlas;
-    ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
-    if(!fontAtlas) {
-        LogWarning("[RenderFontManager::createFontImpl] Counld not create atlas for font: '%s'", 
-            fontConfig.file);
-        FT_Done_Face(fontFace);
-        FT_Done_FreeType(ftLib);
-        return nullptr;
-    }
-
-    fontAtlas->bind();
-    fontAtlas->setLerpType(fontConfig.lerpType, fontConfig.lerpType);
-    if(!fontAtlas->resize(Vec2i(texWidth, texHeight))) {
-        return nullptr;
-    }
-    if(!fontAtlas->clear()) {
-        return nullptr;
+    int ftRenderFlag = FT_LOAD_RENDER;
+    if(fontConfig.monochrome) {
+        ftRenderFlag |= FT_LOAD_TARGET_MONO;
     }
 
     int shift = 0;
     for(auto ch : characterSet) {
-        if(FT_Load_Char(fontFace, ch, FT_LOAD_RENDER)) {
+        if(FT_Load_Char(fontFace, ch, ftRenderFlag)) {
             continue;
         }
 
@@ -181,30 +215,32 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
         glyphData.size.y = glyph->bitmap.rows;
         glyphData.bearing.x = glyph->bitmap_left;
         glyphData.bearing.y = glyph->bitmap_top;
-        glyphData.texCoords.bot = Vec2(shift / static_cast<float>(texWidth), 0.f);
-        glyphData.texCoords.top = Vec2((shift + glyph->bitmap.width) / static_cast<float>(texWidth),
-            glyph->bitmap.rows / static_cast<float>(texHeight));
+        glyphData.texCoords.bot = Vec2(shift / static_cast<float>(texSize.x), 0.f);
+        glyphData.texCoords.top = Vec2((shift + glyph->bitmap.width) / static_cast<float>(texSize.x),
+            glyph->bitmap.rows / static_cast<float>(texSize.y));
 
         if(glyphData.size > Vec2i(0)) {
-            fontAtlas->writeR8(Vec2i(shift, 0), glyphData.size, glyph->bitmap.buffer);
-            if(auto errStr = RenderUtils::GetGLError()) {
-                LogError("[RenderFont::createFontImpl] Can't copy a glyph '%c' bitmap buffer to a font atlas (Error: %s)",
-                    static_cast<char>(ch), errStr);
-                FT_Done_Face(fontFace);
-                FT_Done_FreeType(ftLib);
-                return nullptr;
+            if(fontConfig.monochrome) {
+                writeMonochromeBitmapToBuffer(texBuff, texSize, Vec2i(shift, 0),
+                    glyphData.size, glyph->bitmap.pitch, glyph->bitmap.buffer);
+            } else {
+                writeBitmapToBuffer(texBuff, texSize, Vec2i(shift, 0), glyphData.size, glyph->bitmap.buffer);
             }
         }
 
         font->addGlyph(ch, shift, glyphData);
-
         shift += glyph->bitmap.width + TEX_SUB_PADDING;
     }
 
-    fontAtlas->unbind();
-    font->setFontAtlas(fontAtlas);
-
     FT_Done_Face(fontFace);
     FT_Done_FreeType(ftLib);
+
+    auto fontAtlas = createFontAtlas(texBuff, texSize, fontConfig);
+    if(!fontAtlas) {
+        LogError("[RenderFontManager::createFontImpl] Can't create font atlas for a font: '%s'",
+            fontConfig.file);
+        return nullptr;
+    }
+    font->setFontAtlas(fontAtlas);
     return font;
 }

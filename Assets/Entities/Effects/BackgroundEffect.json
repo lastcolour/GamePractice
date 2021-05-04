@@ -9,11 +9,11 @@
         "alpha": 0.800000011920929,
         "drawPriority": 1,
         "emission": {
+          "simTime": "Render",
           "duration": -1.0,
           "startDelay": 0.0,
           "autoStart": true,
           "loop": true,
-          "heating": true,
           "emitterSpace": "Local",
           "emitterType": "Box",
           "emitterVal": {
@@ -122,11 +122,11 @@
         "alpha": 0.800000011920929,
         "drawPriority": 1,
         "emission": {
+          "simTime": "Render",
           "duration": -1.0,
           "startDelay": 0.0,
           "autoStart": true,
           "loop": true,
-          "heating": true,
           "emitterSpace": "Local",
           "emitterType": "Box",
           "emitterVal": {

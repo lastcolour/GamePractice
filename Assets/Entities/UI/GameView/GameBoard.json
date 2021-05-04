@@ -207,10 +207,10 @@
         "purpleDestroyEffectId": [
           3
         ],
-        "destroyEffectScale": 0.07999999821186066,
         "bomdDestroyEffectId": [
           207
-        ]
+        ],
+        "destroyEffectScale": 0.07999999821186066
       }
     },
     {

@@ -53,19 +53,44 @@ void drawParticlesHelp(const Transform& tm, EntityId entId) {
     float normScale = 1.f;
     ET_SendEventReturn(normScale, entId, &ETRenderNode::ET_getNormalizationScale);
 
-    ParticlesEmitterEmissionConfig emissionConfig;
-    ET_SendEventReturn(emissionConfig, entId, &ETParticlesSystem::ET_getEmissionConfig);
+    ParticlesEmitterEmissionConfig emissionConf;
+    ET_SendEventReturn(emissionConf, entId, &ETParticlesSystem::ET_getEmissionConfig);
 
-    if(emissionConfig.emitterType == EmitterType::Box) {
+    if(emissionConf.emitterType == EmitterType::Box) {
         AABB2D box(0.f);
-        box.top = 2.f * normScale * emissionConfig.emitterVal;
+        box.top = 2.f * normScale * emissionConf.emitterVal;
         box.top.scale(Vec2(tm.scale.x, tm.scale.y));
         box.setCenter(tm.pt.x, tm.pt.y);
         ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 255, 245, DRAW_ALPHA));
     } else {
-        float r = normScale * emissionConfig.emitterVal.x;
+        float r = normScale * emissionConf.emitterVal.x;
         r *= tm.scale.x;
         ET_SendEvent(&ETDebugRender::ET_drawCicleBorder, Vec2(tm.pt.x, tm.pt.y), r, ColorB(255, 255, 245, DRAW_ALPHA));
+    }
+
+    ParticlesEmitterMovementConfig movementConf;
+    ET_SendEventReturn(movementConf, entId, &ETParticlesSystem::ET_getMovementConfig);
+
+    auto dir = Vec2(cos(Math::Deg2Rad(emissionConf.direction)),
+        sin(Math::Deg2Rad(emissionConf.direction)));
+
+    {
+        auto v = Vec3(dir, 0.f);
+        v = tm.quat * v;
+        dir = Vec2(v.x, v.y);
+    }
+
+    float speed = normScale * movementConf.speed * emissionConf.lifetime;
+
+    Vec2 start(tm.pt.x, tm.pt.y);
+    {
+        auto end = start + speed * Vec2(dir.x * tm.scale.x, dir.y * tm.scale.y);
+        ET_SendEvent(&ETDebugRender::ET_drawLine, start, end, ColorB(240, 100, 3, DRAW_ALPHA));
+    }
+
+    {
+        ET_SendEvent(&ETDebugRender::ET_drawCircleArc, start, speed * tm.scale.x, dir,
+            Math::Deg2Rad(emissionConf.directionVar), ColorB(127, 252, 3, DRAW_ALPHA));
     }
 }
 

@@ -2,6 +2,7 @@
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Math/MatrixTransform.hpp"
 #include "RenderUtils.hpp"
 
 #include <cassert>
@@ -13,7 +14,6 @@ DebugRender::~DebugRender() {
 }
 
 bool DebugRender::init() {
-    ETNode<ETDebugRender>::connect(getEntityId());
     ETNode<ETRenderContextEvents>::connect(getEntityId());
 
     if(RenderUtils::IsOpenGLContextExists()) {
@@ -27,15 +27,30 @@ void DebugRender::ET_onContextCreated() {
     lineNode.init();
     lineNode.setVisible(true);
     lineNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
+    if(!lineNode.canRender()) {
+        LogError("[DebugRender::ET_onContextCreated] Can't init line node");
+        return;
+    }
 
     quadNode.init();
     quadNode.setVisible(true);
     quadNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
+    if(!quadNode.canRender()) {
+        LogError("[DebugRender::ET_onContextCreated] Can't int quat line node");
+        return;
+    }
 
     textNode.init();
     textNode.setVisible(true);
     textNode.setAlignAtCenter(false);
+    textNode.setText(" ");
     textNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
+    if(!textNode.canRender()) {
+        LogError("[DebugRender::ET_onContextCreated] Can't init text line node");
+        return;
+    }
+
+    ETNode<ETDebugRender>::connect(getEntityId());
 }
 
 void DebugRender::ET_onContextDestroyed() {
@@ -120,6 +135,26 @@ void DebugRender::ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col)
         p1 = pt + r * Vec2(cos(t1), sin(t1));
         float t2 = (i + 1) * 2.f * Math::PI / static_cast<float>(N);
         p2 = pt + r * Vec2(cos(t2), sin(t2));
+        ET_drawLine(p1, p2, col);
+    }
+}
+
+void DebugRender::ET_drawCircleArc(const Vec2& pt, float r, const Vec2& dir, float angle, const ColorB& col) {
+    angle = Math::Clamp(angle, -2.f * Math::PI, 2.f * Math::PI);
+
+    Vec2 p1(0.f);
+    Vec2 p2(0.f);
+
+    p1 = pt + r * Math::RotateVec2D(dir, -angle / 2.f);
+    ET_drawLine(pt, p1, col);
+
+    p1 = pt + r * Math::RotateVec2D(dir, angle / 2.f);
+    ET_drawLine(pt, p1, col);
+
+    const int N  = 64;
+    for(int i = 0; i < N; ++i) {
+        p1 = pt + r * Math::RotateVec2D(dir, angle * (-0.5f + i / static_cast<float>(N)));
+        p2 = pt + r * Math::RotateVec2D(dir, angle * (-0.5f + (i + 1) / static_cast<float>(N)));
         ET_drawLine(p1, p2, col);
     }
 }

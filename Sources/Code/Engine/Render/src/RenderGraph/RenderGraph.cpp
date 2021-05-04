@@ -137,6 +137,6 @@ void RenderGraph::render() {
 }
 
 void RenderGraph::renderToBuffer(void* outBuffer, DrawContentFilter filter) {
-    drawToFBO(drawFilter);
+    drawToFBO(filter);
     RenderUtils::ReadFramebufferToBuffer(*mainFBO, outBuffer);
 }

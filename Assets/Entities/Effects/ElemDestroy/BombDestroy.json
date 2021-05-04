@@ -33,11 +33,11 @@
               "alpha": 0.6000000238418579,
               "drawPriority": 10100,
               "emission": {
+                "simTime": "Render",
                 "duration": 0.05000000074505806,
                 "startDelay": 0.0,
                 "autoStart": false,
                 "loop": false,
-                "heating": true,
                 "emitterSpace": "World",
                 "emitterType": "Box",
                 "emitterVal": {
@@ -168,11 +168,11 @@
               "alpha": 1.0,
               "drawPriority": 10010,
               "emission": {
+                "simTime": "Render",
                 "duration": 0.05000000074505806,
                 "startDelay": 0.05000000074505806,
                 "autoStart": false,
                 "loop": false,
-                "heating": true,
                 "emitterSpace": "World",
                 "emitterType": "Sphere",
                 "emitterVal": {
@@ -298,11 +298,11 @@
               "alpha": 0.30000001192092896,
               "drawPriority": 10000,
               "emission": {
+                "simTime": "Render",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
                 "loop": false,
-                "heating": true,
                 "emitterSpace": "World",
                 "emitterType": "Sphere",
                 "emitterVal": {
@@ -405,11 +405,11 @@
         "alpha": 1.0,
         "drawPriority": 2,
         "emission": {
+          "simTime": "Render",
           "duration": 0.05000000074505806,
           "startDelay": 0.0,
           "autoStart": false,
           "loop": false,
-          "heating": true,
           "emitterSpace": "World",
           "emitterType": "Sphere",
           "emitterVal": {
