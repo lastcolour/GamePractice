@@ -26,5 +26,9 @@
     "line_solid_color": {
         "vert":"Render/Shaders/line_base.vert",
         "frag":"Render/Shaders/line_single_color.frag"
+    },
+    "draw_fbo":{
+        "vert":"Render/Shaders/draw_fbo.vert",
+        "frag":"Render/Shaders/draw_fbo.frag"
     }
 }

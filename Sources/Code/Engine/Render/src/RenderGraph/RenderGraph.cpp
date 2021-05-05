@@ -18,8 +18,9 @@ const int EXTRA_FBOS_COUNT = 2;
 } // namespace
 
 RenderGraph::RenderGraph() :
-    needReorder(false),
-    clearColor(0, 0, 0, 1.f) {
+    clearColor(0, 0, 0, 1.f),
+    drawFilter(DrawContentFilter::None),
+    needReorder(false) {
 }
 
 RenderGraph::~RenderGraph() {
@@ -61,6 +62,10 @@ void RenderGraph::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+
+    if(!fboCopyLogic.init()) {
+        LogError("[RenderGraph::init] Can't init FBO copy logic");
+    }
 }
 
 bool RenderGraph::startFrame() {
@@ -93,6 +98,7 @@ void RenderGraph::prepareNodes() {
     std::sort(children.begin(), children.end(), [](Node* first, Node* second){
         return first->getDrawPriority() < second->getDrawPriority();
     });
+    needReorder = false;
 }
 
 void RenderGraph::addChild(Node* node) {
@@ -133,7 +139,7 @@ void RenderGraph::drawToFBO(DrawContentFilter filter) {
 
 void RenderGraph::render() {
     drawToFBO(drawFilter);
-    RenderUtils::BlitFromFBOtoDefaultFBO(*mainFBO);
+    fboCopyLogic.copyToDefault(*mainFBO);
 }
 
 void RenderGraph::renderToBuffer(void* outBuffer, DrawContentFilter filter) {

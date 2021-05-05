@@ -3,6 +3,7 @@
 
 #include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"
+#include "Nodes/CopyFBOtoFBO.hpp"
 
 class Node;
 class RenderFramebuffer;
@@ -35,9 +36,10 @@ private:
     std::vector<Node*> children;
     std::shared_ptr<RenderFramebuffer> mainFBO;
     std::vector<std::shared_ptr<RenderFramebuffer>> extraFBOs;
-    bool needReorder;
+    CopyFBOtoFBO fboCopyLogic;
     ColorF clearColor;
     DrawContentFilter drawFilter;
+    bool needReorder;
 };
 
 #endif /* __RENDER_GRAPH_HPP__ */

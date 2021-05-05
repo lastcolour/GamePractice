@@ -1,6 +1,7 @@
 #include "RenderShader.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderTexture.hpp"
+#include "RenderUtils.hpp"
 
 #include <cassert>
 
@@ -67,10 +68,10 @@ void RenderShader::setProgramId(int newProgramId) {
 }
 
 int RenderShader::getUniformId(UniformType varType) const {
-    assert(varType != UniformType::ENUM_SIZE && "Invalid uniform type");
-    int id = static_cast<int>(varType);
-    assert(id != -1 && "Invalid uniform id");
-    return chachedIds[static_cast<int>(varType)];
+    assert(varType < UniformType::ENUM_SIZE && "Invalid uniform type");
+    int varId = chachedIds[static_cast<int>(varType)];
+    assert(varId != -1 && "Invalid uniform id");
+    return varId;
 }
 
 bool RenderShader::findUniform(const char* name, int& resUniLoc) const {

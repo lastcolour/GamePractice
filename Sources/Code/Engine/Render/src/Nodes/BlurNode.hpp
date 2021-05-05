@@ -2,6 +2,7 @@
 #define __BLUR_NODE_HPP__
 
 #include "Nodes/Node.hpp"
+#include "Nodes/CopyFBOtoFBO.hpp"
 
 class BlurNode : public Node {
 public:
@@ -18,6 +19,8 @@ public:
 protected:
 
     // Node
+    void onRenderStart(RenderContext& ctx) override {}
+    void onRenderEnd(RenderContext& ctx) override {}
     void onInit() override;
     void onRender(RenderContext& ctx) override;
     Mat4 calcModelMat(const Transform& newTm) override;
@@ -28,6 +31,7 @@ private:
 
 private:
 
+    CopyFBOtoFBO fboCopyLogic;
     int passes;
     int downScale;
 };
