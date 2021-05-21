@@ -270,8 +270,6 @@ class EntityNative(NativeObject):
         if self._isInternal:
             return
         self._getAPI().getEntityLoader().saveEntity(self)
-        for child in self._children:
-            child.save()
 
     def canAddChild(self, entityName):
         if self._name == entityName:

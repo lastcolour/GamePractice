@@ -90,7 +90,7 @@ void drawParticlesHelp(const Transform& tm, EntityId entId) {
 
     {
         ET_SendEvent(&ETDebugRender::ET_drawCircleArc, start, speed * tm.scale.x, dir,
-            Math::Deg2Rad(emissionConf.directionVar), ColorB(127, 252, 3, DRAW_ALPHA));
+            2.f * Math::Deg2Rad(emissionConf.directionVar), ColorB(127, 252, 3, DRAW_ALPHA));
     }
 }
 

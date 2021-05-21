@@ -492,3 +492,15 @@ bool ClassInfo::checkIfSameType(TypeId typeId) const {
     }
     return true;
 }
+
+bool ClassInfo::isDerivedFrom(const ClassInfo& other) const {
+    if(this == &other) {
+        return true;
+    }
+    for(auto& base : baseClasses) {
+        if(base->isDerivedFrom(other)) {
+            return true;
+        }
+    }
+    return false;
+}

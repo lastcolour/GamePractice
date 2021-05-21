@@ -1,8 +1,14 @@
-from PyQt5.QtWidgets import QMenu, QAction, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QMenu, QAction, QLineEdit, QMessageBox, QApplication
+from PyQt5.QtGui import QClipboard
 
 from dialog.RemoveFile import RemoveFile
 from utils.ViewUtils import OpenPlatformFileExplorer
-from utils.Managers import GetEventManager
+from utils.Managers import GetEventManager, GetCopyPasteManager
+from utils.Log import Log
+
+import os
+import shutil
+import pathlib
 
 class FileNameEdit(QLineEdit):
     def __init__(self, parent):
@@ -23,8 +29,6 @@ class FileTreeMenu(QMenu):
 
         self._fileTreeView = parent
         self._currentItem = None
-        self._copyItem = None
-        self._cutItem = None
 
         self._newDirectoryAct = QAction("New Directoty")
         self._newDirectoryAct.triggered.connect(self._onCreateNewDir)
@@ -32,8 +36,8 @@ class FileTreeMenu(QMenu):
         self._newEntityAct = QAction("New Entity")
         self._newEntityAct.triggered.connect(self._onCreateNewEntity)
 
-        self._copyRelativePathAct = QAction("Copy Relative Path")
-        self._copyRelativePathAct.triggered.connect(self._onCopyRelativePath)
+        self._copyPathToBuffer = QAction("Copy Path")
+        self._copyPathToBuffer.triggered.connect(self._onCopyPathToBuffer)
 
         self._renameAct = QAction("Rename")
         self._renameAct.triggered.connect(self._onRename)
@@ -58,7 +62,7 @@ class FileTreeMenu(QMenu):
 
         self.addAction(self._newDirectoryAct)
         self.addAction(self._newEntityAct)
-        self.addAction(self._copyRelativePathAct)
+        self.addAction(self._copyPathToBuffer)
         self.addAction(self._renameAct)
         self.addAction(self._copyAct)
         self.addAction(self._cutAct)
@@ -73,17 +77,18 @@ class FileTreeMenu(QMenu):
             self._cutAct.setEnabled(False)
             self._removeAct.setEnabled(False)
             self._renameAct.setEnabled(False)
-            self._copyRelativePathAct.setEnabled(False)
+            self._copyPathToBuffer.setEnabled(False)
         else:
             self._copyAct.setEnabled(True)
             self._cutAct.setEnabled(True)
             self._removeAct.setEnabled(True)
             self._renameAct.setEnabled(True)
-            self._copyRelativePathAct.setEnabled(True)
-        if self._copyItem is None and self._cutItem is None:
-            self._pasteAct.setEnabled(False)
-        else:
+            self._copyPathToBuffer.setEnabled(True)
+        copyFile = GetCopyPasteManager().getCopyFile()
+        if copyFile is not None:
             self._pasteAct.setEnabled(True)
+        else:
+            self._pasteAct.setEnabled(False)
         self._currentItem = item
         self.exec(pt)
 
@@ -121,16 +126,53 @@ class FileTreeMenu(QMenu):
         self._fileNameEdit.setText(self._currentItem._node.getBaseName())
 
     def _onCopy(self):
-        pass
+        filePath = self._currentItem._node.getFullPath()
+        GetCopyPasteManager().setCopyFile(filePath, doCut=False)
 
     def _onCut(self):
-        pass
+        filePath = self._currentItem._node.getFullPath()
+        GetCopyPasteManager().setCopyFile(filePath, doCut=True)
 
     def _onPaste(self):
-        pass
+        copyFile = GetCopyPasteManager().getCopyFile()
+        if not os.path.exists(copyFile):
+            GetCopyPasteManager().setCopyFile(None, doCut=True)
+            Log.warning("[FileTreeMenu:_onPaste] Can't find file to copy: '{0}'".format(copyFile))
+            return
+        doCut = GetCopyPasteManager().getCutFlag()
+        dstDir = self._getCopyDirDestination()
+        if doCut:
+            try:
+                shutil.move(copyFile, dstDir)
+            except Exception as e:
+                Log.warning("[FileTreeMenu:_onPaste] Can't move file '{0}' to another '{1}' (Error: {2})".format(
+                    copyFile, dstDir, e.__str__()))
+                return
+        else:
+            path = pathlib.Path(copyFile)
+            stemName = path.stem
+            extName = path.suffix
+            i = 1
+            while True:
+                newFilePath = "{0}/{1} ({2}){3}".format(dstDir, stemName, i, extName)
+                if not os.path.exists(newFilePath):
+                    break
+            try:
+                if not os.path.isdir(copyFile):
+                    shutil.copy2(copyFile, newFilePath)
+                else:
+                    shutil.copytree(copyFile, newFilePath)
+            except Exception as e:
+                Log.warning("[FileTreeMenu:_onPaste] Can't copy file '{0}' to another '{1}' (Error: {2})".format(
+                    copyFile, newFilePath, e.__str__()))
+                return
+        GetEventManager().rebuildAssetsModel()
 
-    def _onCopyRelativePath(self):
-        pass
+    def _onCopyPathToBuffer(self):
+        filePath = self._currentItem._node.getFullPath()
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(filePath, mode=cb.Clipboard)
 
     def _onRemove(self):
         res = RemoveFile(self._currentItem._node).exec()
@@ -176,3 +218,13 @@ class FileTreeMenu(QMenu):
 
     def _onReloadModel(self):
         GetEventManager().rebuildAssetsModel()
+
+    def _getCopyDirDestination(self):
+        if self._currentItem is None:
+            filePath = self._fileTreeView._getRootFileNode()
+        else:
+            filePath = self._currentItem._node.getFullPath()
+        if os.path.isdir(filePath):
+            return filePath
+        else:
+            return os.path.dirname(filePath)

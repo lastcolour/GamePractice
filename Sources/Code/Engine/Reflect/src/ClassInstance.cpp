@@ -83,6 +83,10 @@ bool ClassInstance::readAllValuesFrom(const SerializeContext& ctx, MemoryStream&
     return readValueFrom(ctx, AllEntityLogicValueId, stream);
 }
 
+bool ClassInstance::writeAllValuesTo(const SerializeContext& ctx, JSONNode& node) {
+    return writeValueTo(ctx, AllEntityLogicValueId, node);
+}
+
 bool ClassInstance::writeAllValuesTo(const SerializeContext& ctx, MemoryStream& stream) {
     return writeValueTo(ctx, AllEntityLogicValueId, stream);
 }
@@ -109,6 +113,18 @@ bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueI
         return false;
     }
     return classInfo->readValueFrom(ctx, instance, valueId, stream);
+}
+
+bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, JSONNode& node) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::writeValueTo] Can't write value of instance without class info");
+        return false;
+    }
+    return classInfo->writeValueTo(ctx, instance, valueId, node);
 }
 
 bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream) {

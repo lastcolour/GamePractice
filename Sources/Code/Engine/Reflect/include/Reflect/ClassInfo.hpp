@@ -20,6 +20,7 @@ public:
     const char* getName() const;
     TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
+    bool isDerivedFrom(const ClassInfo& other) const;
 
     bool writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, JSONNode& node);
     bool writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream);
@@ -56,8 +57,9 @@ public:
         }
         auto valueTypeId = InvalidTypeId;
         if constexpr (type == ClassValueType::Array) {
-            using ElemT = typename ValueT::value_type;
-            valueTypeId = GetTypeId<ElemT>();
+            valueTypeId = GetTypeId<ValueT::value_type>();
+        } else if constexpr (type == ClassValueType::PolymorphObject){
+            valueTypeId = GetTypeId<ValueT::ObjectType>();
         } else {
             valueTypeId = GetTypeId<ValueT>();
         }

@@ -196,6 +196,20 @@ public:
     EntityId entityId;
 };
 
+class ObjectWithPolymoprhMember {
+public:
+
+    static void Reflect(ReflectContext& ctx) {
+        if(auto classInfo = ctx.classInfo<ObjectWithPolymoprhMember>("ObjectWithPolymoprhMember")) {
+            classInfo->addField("logic", &ObjectWithPolymoprhMember::logic);
+        }
+    }
+
+public:
+
+    Reflect::PolymorphPtr<SimpleEntityLogic> logic;
+};
+
 } // namespace
 
 void ReflectTests::TearDown() {
@@ -908,4 +922,51 @@ TEST_F(ReflectTests, CheckLongEntityReference) {
     parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
 
     ASSERT_EQ(logicPtr->entityId, secondChildEntity->getEntityId());
+}
+
+TEST_F(ReflectTests, CheckPolymorphObjects) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<ObjectWithPolymoprhMember>());
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    ASSERT_TRUE(classInfo);
+
+    auto instance = classInfo->createInstance();
+    auto objectPtr = static_cast<ObjectWithPolymoprhMember*>(instance.get());
+    ASSERT_TRUE(objectPtr);
+
+    {
+        auto jsonStr = StringFormat("{\"logic\" : {\"type\": \"SimpleEntityLogic\", \"data\": %s }}", SIMPLE_ENTITY_JSON_DATA);
+        auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
+        ASSERT_TRUE(jsonNode);
+
+        SerializeContext ctx;
+        ASSERT_TRUE(instance.readAllValuesFrom(ctx, jsonNode));
+
+        ASSERT_TRUE(objectPtr->logic.get());
+    }
+
+    objectPtr->logic->intF = 1024;
+
+    {
+        JSONNode node;
+
+        SerializeContext ctx;
+        ASSERT_TRUE(instance.writeAllValuesTo(ctx, node));
+
+        JSONNode logicNode = node.object("logic");
+        ASSERT_TRUE(logicNode);
+
+        std::string typeName;
+        logicNode.read("type", typeName);
+
+        ASSERT_STREQ(typeName.c_str(), "SimpleEntityLogic");
+
+        auto dataNode = logicNode.object("data");
+
+        int val = 0;
+        dataNode.read("intF", val);
+
+        ASSERT_EQ(val, 1024);
+    }
 }

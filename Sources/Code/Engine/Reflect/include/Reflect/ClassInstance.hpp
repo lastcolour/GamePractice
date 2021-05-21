@@ -54,9 +54,11 @@ public:
     TypeId getInstanceTypeId() const;
     bool readAllValuesFrom(const SerializeContext& ctx, const JSONNode& node);
     bool readAllValuesFrom(const SerializeContext& ctx, MemoryStream& stream);
+    bool writeAllValuesTo(const SerializeContext& ctx, JSONNode& node);
     bool writeAllValuesTo(const SerializeContext& ctx, MemoryStream& stream);
     bool readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, const JSONNode& node);
     bool readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
+    bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, JSONNode& node);
     bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
     bool addValueArrayElement(EntityLogicValueId valueId);
 

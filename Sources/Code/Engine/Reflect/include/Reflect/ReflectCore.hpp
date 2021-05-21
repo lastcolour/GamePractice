@@ -6,6 +6,7 @@
 #include "Core/TypeId.hpp"
 #include "Math/Vector.hpp"
 #include "Math/Quaternion.hpp"
+#include "Reflect/PolymorphPtr.hpp"
 
 #include <type_traits>
 
@@ -27,7 +28,8 @@ enum class ClassValueType {
     Resource,
     Enum,
     Array,
-    Entity
+    Entity,
+    PolymorphObject
 };
 
 enum class ResourceType {
@@ -46,6 +48,12 @@ struct is_std_vector : std::false_type {};
 template<typename T, typename A>
 struct is_std_vector<std::vector<T,A>> : std::true_type {};
 
+template<typename>
+struct is_polymorh_ptr : std::false_type {};
+
+template<typename T>
+struct is_polymorh_ptr<Reflect::PolymorphPtr<T>> : std::true_type {};
+
 using ReflectFuncT = std::function<void(ReflectContext&)>;
 
 bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc);
@@ -57,6 +65,12 @@ using ArrayResetFuncT = std::function<void(void*)>;
 
 bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc, ArraySizeFuncT sizeFunc,
     ArrayGetElemFuncT getElemFunc, ArrayResetFuncT resetFunc);
+
+template<typename T>
+constexpr bool IsReflectable() {
+    return std::is_function<decltype(T::Reflect)>::value
+        && std::is_same<decltype(&T::Reflect), void(*)(ReflectContext&)>::value;
+}
 
 } // namespace ReflectCore
 
@@ -89,9 +103,10 @@ constexpr ClassValueType GetClassValueType() {
         return ClassValueType::Array;
     } else if constexpr (std::is_same<ValueT, EntityId>::value) {
         return ClassValueType::Entity;
-    } else if constexpr (std::is_function<decltype(ValueT::Reflect)>::value) {
-        static_assert(std::is_same<decltype(&ValueT::Reflect), void(*)(ReflectContext&)>::value,
-            "Invalid object type");
+    } else if constexpr (ReflectCore::is_polymorh_ptr<ValueT>::value) {
+        static_assert(ReflectCore::IsReflectable<ValueT::ObjectType>(), "Object type isn't reflectable");
+        return ClassValueType::PolymorphObject;
+    } else if constexpr (ReflectCore::IsReflectable<ValueT>()) {
         return ClassValueType::Object;
     } else {
         return ClassValueType::Invalid;
@@ -110,6 +125,8 @@ bool CreateTypeInfo() {
             GetTypeId<ClassT>(),
             static_cast<ReflectCore::ReflectFuncT>(reflectFunc)
         );
+    } else if constexpr (type == ClassValueType::PolymorphObject) {
+        return CreateTypeInfo<ClassT::ObjectType>();
     } else if constexpr (type == ClassValueType::Array) {
         using ElemT = typename ClassT::value_type;
         if(!CreateTypeInfo<ElemT>()) {
@@ -141,8 +158,9 @@ bool CreateTypeInfo() {
             static_cast<ReflectCore::ArrayGetElemFuncT>(getElemFunc),
             static_cast<ReflectCore::ArrayResetFuncT>(resetFunc)
         );
+    } else {
+        return true;
     }
-    return true;
 }
 
 #endif /* __REFLECT_CORE_HPP__ */

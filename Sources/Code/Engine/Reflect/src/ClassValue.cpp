@@ -5,6 +5,7 @@
 #include "ArrayInfo.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/MemoryStream.hpp"
+#include "PolymorphPtrUtils.hpp"
 
 #include <cassert>
 
@@ -602,6 +603,20 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         getRef<EntityId>(valuePtr) = getEntityIdFromChildIdSequence(ctx, childIdSequence);
         return true;
     }
+    case ClassValueType::PolymorphObject: {
+        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        bool res = false;
+        if(isElement) {
+            res = ReflectUtils::ReadPolyPtrFrom(ctx, polyObj, typeId, node);
+        } else {
+            res = ReflectUtils::ReadPolyPtrFrom(ctx, polyObj, typeId, node.object(name.c_str()));
+        }
+        if(!res) {
+            LogError("[ClassValue::readValueFrom] Can't read polymorph ptr field '%s'", name);
+            return false;
+        }
+        return true;
+    }
     default:
         LogError("[ClassValue::readValueFrom] Unknown value type '%s'", name);
         assert(false && "Unknown value type");
@@ -805,6 +820,20 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
             node.write(name.c_str(), valNode);
         }
         break;
+    }
+    case ClassValueType::PolymorphObject: {
+        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        JSONNode valNode;
+        if(!ReflectUtils::WritePolyPtrTo(ctx, polyObj, valNode)) {
+            LogError("[ClassValue::writeValueTo] Can't write polymorph object field '%s'", name);
+            return false;
+        }
+        if(isElement) {
+            node.write(valNode);
+        } else {
+            node.write(name.c_str(), valNode);
+        }
+        return true;
     }
     case ClassValueType::Invalid:
     default:

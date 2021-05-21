@@ -10,6 +10,18 @@ class CopyPasteManager:
         self._mgr = mgr
         self._copyLogicData = None
         self._copyEntityData = None
+        self._copyFileName = None
+        self._doCutForFile = False
+
+    def setCopyFile(self, fileName, doCut):
+        self._copyFileName = fileName
+        self._doCutForFile = doCut
+
+    def getCopyFile(self):
+        return self._copyFileName
+
+    def getCutFlag(self):
+        return self._doCutForFile
 
     def getCopyEntity(self):
         return self._copyEntityData
