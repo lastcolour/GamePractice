@@ -32,15 +32,14 @@ class ArrayTitle(QWidget):
         self._arrayEdit._rebuildView()
 
 class EditArrayValue(QWidget):
-    def __init__(self, value):
+    def __init__(self, value, treeItem, logicView):
         self._val = value
-        self._rootArrayItem = None
-        self._logicView = None
-        self._title = None
+        self._rootArrayItem = treeItem
+        self._logicView = logicView
+        self._title = ArrayTitle(self)
         self._prevElemCount = 0
 
     def createTitle(self):
-        self._title = ArrayTitle(self)
         return self._title
 
     def createObjecValueWrap(self, value):
@@ -67,7 +66,6 @@ class EditArrayValue(QWidget):
     def _rebuildView(self):
         if len(self._val.getValues()) == self._prevElemCount:
             return
-        
         self._prevElemCount = len(self._val.getValues())
         self._title._updateElemCountText()
         self._logicView._buildArrayTree(self._logicView._tree, self._rootArrayItem, self, self._val.getValues())

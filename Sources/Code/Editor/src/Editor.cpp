@@ -147,6 +147,16 @@ void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valu
         static_cast<EntityLogicValueId>(valueId));
 }
 
+void SetEntityLogicPolymorphObjectType(uint32_t entityId, int32_t logicId, int32_t valueId, const char* newType) {
+    if(!EDITOR_APP) {
+        return;
+    }
+    EntityId entId;
+    entId.setRawId(entityId);
+    EDITOR_APP->setEntityLogicPolymorphObjectType(entId, static_cast<EntityLogicId>(logicId),
+        static_cast<EntityLogicValueId>(valueId), newType);
+}
+
 uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out) {
     if(!EDITOR_APP) {
         return 0u;

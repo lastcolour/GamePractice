@@ -29,6 +29,8 @@ struct ETEntityManager {
         EntityLogicValueId valueId, MemoryStream& stream) = 0;
     virtual bool ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
         EntityLogicValueId valueId) = 0;
+    virtual bool ET_setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicId logicId,
+        EntityLogicValueId valueId, const char* typeName) = 0;
 };
 
 struct ETAsyncEntityManager {

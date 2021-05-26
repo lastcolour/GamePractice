@@ -261,6 +261,10 @@ void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId
     ET_SendEvent(&ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
 }
 
+void EditorApp::setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId, const char* newType) {
+    ET_SendEvent(&ETEntityManager::ET_setEntityLogicPolymorphObjectType, entityId, logicId, valueId, newType);
+}
+
 EntityChildId EditorApp::createChildEntity(EntityId entityId, const char* childName) {
     EntityChildId childId = InvalidEntityChildId;
     ET_SendEventReturn(childId, &ETEntityManager::ET_createChildEntity, entityId, childName);

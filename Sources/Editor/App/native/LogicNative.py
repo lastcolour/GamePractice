@@ -1,5 +1,5 @@
 from .Native import NativeObject
-from .ValueNative import ObjectValue, AssignValueIdx, AssignValueLogic, CreateObjectValue
+from .ValueNative import ObjectValue, AssignValueIdx, _createValue
 from .MemoryStream import MemoryStream
 
 class LogicNative(NativeObject):
@@ -13,7 +13,7 @@ class LogicNative(NativeObject):
         self._isModified = False
         self._isEditorDataDiffer = False
         self._autoWriteToNative = True
-        self._rootValue = ObjectValue()
+        self._rootValue = None
 
     def isModified(self):
         return self._isModified
@@ -48,15 +48,6 @@ class LogicNative(NativeObject):
     def writeToStream(self, stream):
         self._rootValue.writeToStream(stream)
 
-    def readFromNative(self):
-        try:
-            stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
-            self._rootValue.readFromStream(stream)
-        except:
-            print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(
-                self._name, stream._data))
-            pass
-
     def isEditorDataDiffer(self):
         return self._isEditorDataDiffer
 
@@ -65,7 +56,19 @@ class LogicNative(NativeObject):
         if self._autoWriteToNative:
             self.writeToNative()
 
+    def readFromNative(self):
+        print("[LogicNative:readFromNative] Read '{0}'".format(self._name))
+        try:
+            stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
+            self._rootValue.readFromStream(stream)
+        except:
+            print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(
+                self._name, stream._data))
+            pass
+
     def writeToNative(self):
+        print("[LogicNative:writeToNative] Write '{0}'".format(self._name))
+        self._isEditorDataDiffer = False
         stream = MemoryStream()
         self.writeToStream(stream)
         self._getAPI().getLibrary().setEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID, stream)
@@ -73,9 +76,6 @@ class LogicNative(NativeObject):
 def CreateLogic(logicType):
     logic = LogicNative()
     logic._name = logicType
-    if not CreateObjectValue(logic._rootValue, logicType):
-        print("[CreateLogic] Can't create logic values for logic: '{0}'".format(logic._name))
-        return None
+    logic._rootValue = _createValue(None, logic, logicType)
     AssignValueIdx(logic._rootValue)
-    AssignValueLogic(logic._rootValue, logic)
     return logic

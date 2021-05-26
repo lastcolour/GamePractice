@@ -23,6 +23,7 @@ from .values.EditEnumValue import EditEnumValue
 from .values.EditEntityValue import EditEntityValue
 from .values.EditResourceValue import EditResourceValue
 from .values.EditArrayValue import EditArrayValue
+from .values.EditPolymorphObjectValue import PolymorphTypeSelector
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import RegisterForMessage, UnregisterFromAllMessages
@@ -166,7 +167,6 @@ class LogicView(QWidget):
         self._updateTreeSize()
 
     def _buildArrayTree(self, widgetTree, parentItem, arrayEdit, values):
-        _removeAllItemChildren(parentItem)
         for value in values:
             if value.getType() == ValueType.Object:
                 item = QTreeWidgetItem(parentItem)
@@ -184,18 +184,23 @@ class LogicView(QWidget):
         parentItem.setExpanded(True)
 
     def _buildTree(self, widgetTree, rootItem, values):
+        _removeAllItemChildren(rootItem)
         for value in values:
             if value.getType() == ValueType.Object:
                 item = QTreeWidgetItem(rootItem)
                 widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
                 self._buildTree(widgetTree, item, value.getValues())
                 item.setExpanded(True)
+            elif value.getType() == ValueType.PolymorphObject:
+                item = QTreeWidgetItem(rootItem)
+                widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
+                widgetTree.setItemWidget(item, 1, PolymorphTypeSelector(value, item, self))
+                self._buildTree(widgetTree, item, value.getValues())
+                item.setExpanded(True)
             elif value.getType() == ValueType.Array:
                 item = QTreeWidgetItem(rootItem)
                 widgetTree.setItemWidget(item, 0, QLabel("<b>{0}</b>".format(value.getName())))
-                arrayEdit = self._createEditWidget(value)
-                arrayEdit._rootArrayItem = item
-                arrayEdit._logicView = self
+                arrayEdit = EditArrayValue(value, item, self)
                 widgetTree.setItemWidget(item, 1, arrayEdit.createTitle())
                 self._buildArrayTree(widgetTree, item, arrayEdit, value.getValues())
                 item.setExpanded(True)
@@ -235,7 +240,7 @@ class LogicView(QWidget):
         elif valType == ValueType.Entity:
             return EditEntityValue(value)
         elif valType == ValueType.Array:
-            return EditArrayValue(value)
+            raise RuntimeError("Invalid value type")
         elif valType == ValueType.Enum:
             return EditEnumValue(value)
         elif valType == ValueType.Object:

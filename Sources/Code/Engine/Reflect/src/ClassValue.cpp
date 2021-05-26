@@ -384,6 +384,9 @@ std::string ClassValue::getTypeName() const {
             assert(false && "Can't find classInfo for object type value");
             return nullptr;
         }
+        case ClassValueType::PolymorphObject: {
+            return ReflectUtils::GetPolymorphPtrTypeName(typeId);
+        }
         case ClassValueType::Invalid: {
             assert(false && "Can't query value type name of invalid value");
             return nullptr;
@@ -939,6 +942,14 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         }
         break;
     }
+    case ClassValueType::PolymorphObject: {
+        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        if(!ReflectUtils::WritePolyPtrTo(ctx, polyObj, stream)) {
+            LogError("[ClassValue::writeValueTo] Can't write polymorph object field '%s'", name);
+            return false;
+        }
+        return true;
+    }
     case ClassValueType::Invalid:
     default:
         assert(false && "Invalid value type");
@@ -1082,6 +1093,14 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         getRef<EntityId>(valuePtr) = getEntityIdFromChildIdSequence(ctx, childIdSequence);
         break;
     }
+    case ClassValueType::PolymorphObject: {
+        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        if(!ReflectUtils::ReadPolyPtrFrom(ctx, polyObj, typeId, stream)) {
+            LogError("[ClassValue::writeValueTo] Can't write polymorph object field '%s'", name);
+            return false;
+        }
+        return true;
+    }
     case ClassValueType::Invalid:
     default:
         assert(false && "Invalid value type");
@@ -1099,6 +1118,12 @@ bool ClassValue::addArrayElement(void* valuePtr) {
         return false;
     }
     return arrayInfo->addElement(valuePtr);
+}
+
+bool ClassValue::setPolymorphType(void* valuePtr, const char* typeName) {
+    assert(type == ClassValueType::PolymorphObject && "Invalid value type");
+    ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+    return ReflectUtils::UpdateInstanceClass(polyObj, typeId, typeName);
 }
 
 void ClassValue::setDefaultValue(void* valuePtr) {

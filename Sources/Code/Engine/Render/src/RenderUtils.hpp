@@ -14,7 +14,8 @@ enum class BlendingConfig;
 struct BlendMode;
 
 enum class RenderNodeType {
-    Simple = 0,
+    Quad = 0,
+    Simple,
     Image,
     ColoredTexture,
     Gradient,

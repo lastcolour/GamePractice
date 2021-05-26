@@ -82,12 +82,6 @@ void ClassInfoManager::ET_makeReflectModel(JSONNode& node) {
         eunmInfo->makeReflectModel(enumNode);
         node.write(eunmInfo->getName(), enumNode);
     }
-    for(auto& arrayInfoNode : arrayInfoMap) {
-        auto& arrayInfo = arrayInfoNode.second;
-        JSONNode arrayNode;
-        arrayInfo->makeReflectModel(arrayNode);
-        node.write(arrayInfo->getName(), arrayNode);
-    }
     for(auto& classInfoItem : classInfoMap) {
         auto& classInfo = classInfoItem.second;
         JSONNode classNode;

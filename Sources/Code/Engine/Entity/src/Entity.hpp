@@ -29,6 +29,7 @@ public:
     bool readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
     bool addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId);
+    bool setLogicValuePolymorphType(EntityLogicId logicId, EntityLogicValueId valueId, const char* typeName);
     EntityId getEntityId() const { return entityId; }
     void setName(const char* newName);
     void* addLogicByTypeId(TypeId logicTypeId);

@@ -15,7 +15,7 @@ ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT
     elemValue.typeId = elemTypeId;
     elemValue.type = elemType;
 
-    name = StringFormat("Array<%s>", elemValue.getTypeName());
+    name = StringFormat("array.%s", elemValue.getTypeName());
 }
 
 ArrayInfo::~ArrayInfo() {
@@ -27,13 +27,6 @@ TypeId ArrayInfo::getElemTypeId() const {
 
 const char* ArrayInfo::getName() const {
     return name.c_str();
-}
-
-void ArrayInfo::makeReflectModel(JSONNode& node) {
-    node.write("type", "array");
-    JSONNode elemNode;
-    elemNode.write("type", elemValue.getTypeName());
-    node.write("data", elemNode);
 }
 
 bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, const JSONNode& node) {

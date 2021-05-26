@@ -19,7 +19,6 @@ public:
 
     TypeId getElemTypeId() const;
     const char* getName() const;
-    void makeReflectModel(JSONNode& node);
     bool writeValuesTo(const SerializeContext& ctx, void* valuePtr, JSONNode& node);
     bool writeValuesTo(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream);
     bool readValuesFrom(const SerializeContext& ctx, void* valuePtr, const JSONNode& node);

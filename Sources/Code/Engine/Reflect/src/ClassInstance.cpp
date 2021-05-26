@@ -97,7 +97,7 @@ bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueI
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::readValueFrom] Can't read value of instance without class info");
+        LogError("[ClassInstance::readValueFrom] Can't read value of an instance without a class info");
         return false;
     }
     return classInfo->readValueFrom(ctx, instance, valueId, node);
@@ -109,7 +109,7 @@ bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueI
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::readValueFrom] Can't read value of instance without class info");
+        LogError("[ClassInstance::readValueFrom] Can't read value of an instance without a class info");
         return false;
     }
     return classInfo->readValueFrom(ctx, instance, valueId, stream);
@@ -121,7 +121,7 @@ bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::writeValueTo] Can't write value of instance without class info");
+        LogError("[ClassInstance::writeValueTo] Can't write value of an instance without a class info");
         return false;
     }
     return classInfo->writeValueTo(ctx, instance, valueId, node);
@@ -133,7 +133,7 @@ bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::writeValueTo] Can't write value of instance without class info");
+        LogError("[ClassInstance::writeValueTo] Can't write value of an instance without a class info");
         return false;
     }
     return classInfo->writeValueTo(ctx, instance, valueId, stream);
@@ -145,8 +145,20 @@ bool ClassInstance::addValueArrayElement(EntityLogicValueId valueId) {
         return false;
     }
     if(!classInfo) {
-        LogError("[ClassInstance::addValueArrayElement] Can't add array element value to instance without class info");
+        LogError("[ClassInstance::addValueArrayElement] Can't add array element value to an instance without a class info");
         return false;
     }
     return classInfo->addNewValueArrayElement(instance, valueId);
+}
+
+bool ClassInstance::setValuePolymorphType(EntityLogicValueId valueId, const char* typeName) {
+    if(!instance) {
+        assert(false && "Invalid instance");
+        return false;
+    }
+    if(!classInfo) {
+        LogError("[ClassInstance::setValuePolymorphType] Can't set value polymorph type to an instance without a class info");
+        return false;
+    }
+    return classInfo->setValuePolymorphType(instance, valueId, typeName);
 }

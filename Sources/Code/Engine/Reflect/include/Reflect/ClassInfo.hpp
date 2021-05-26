@@ -27,6 +27,7 @@ public:
     bool readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, const JSONNode& node);
     bool readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream);
     bool addNewValueArrayElement(void* instance, EntityLogicValueId valueId);
+    bool setValuePolymorphType(void* instance, EntityLogicValueId valueId, const char* newType);
 
     template<typename ClassT>
     void init() {

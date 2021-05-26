@@ -278,8 +278,11 @@ ClassValue* ClassInfo::findValueByPrimitiveValueId(void*& instance, int valueId)
 }
 
 void ClassInfo::makeReflectModel(JSONNode& node) {
-    node.write("type", "class");
-
+    if(createFunc) {
+        node.write("type", "class");
+    } else {
+        node.write("type", "abs_class");
+    }
     JSONNode baseNode;
     for(auto baseClass : baseClasses) {
         baseNode.write(baseClass->getName());
@@ -478,6 +481,36 @@ bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId value
     auto ptr = getValueFunc(instance, value->ptr);
     if(!value->addArrayElement(ptr)) {
         LogError("[ClassInfo::addNewValueArrayElement] Can't create new array element for value '%s' in class: '%s'",
+            value->name, className);
+        return false;
+    }
+    return true;
+}
+
+bool ClassInfo::setValuePolymorphType(void* instance, EntityLogicValueId valueId, const char* newType) {
+    assert(instance && "Invalid instance");
+    if(valueId == InvalidEntityLogicValueId) {
+        LogError("ClassInfo::setValuePolymorphType] Can't set polymorph type to a value with invalid id");
+        return false;
+    }
+    if(valueId == AllEntityLogicValueId) {
+        LogError("ClassInfo::setValuePolymorphType]  Can't set polymorph type to a value with 'AllValuesId'");
+        return false;
+    }
+    auto value = findValueById(instance, valueId);
+    if(!value) {
+        LogError("[ClassInfo::setValuePolymorphType] Can't find value with id '%d' in class: '%s'",
+            valueId, className);
+        return false;
+    }
+    if(value->type != ClassValueType::PolymorphObject) {
+        LogError("[ClassInfo::setValuePolymorphType] Can't set polymorph type to a not polymorph object value '%s' of type: '%s' in class: '%s'",
+            value->name, value->getTypeName(), className);
+        return false;
+    }
+    auto ptr = getValueFunc(instance, value->ptr);
+    if(!value->setPolymorphType(ptr, newType)) {
+        LogError("[ClassInfo::setValuePolymorphType] Can't set polymorph type to a value '%s' in class: '%s'",
             value->name, className);
         return false;
     }

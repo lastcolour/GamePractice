@@ -27,6 +27,8 @@ class ValueType:
     Entity = 13
     Object = 14
     Array = 15
+    PolymorphObject = 16
+
 
 class ResourceType:
     Invalid = 0
@@ -103,8 +105,6 @@ class ValueNative(NativeObject):
         return ent.isLoadedToNative()
 
     def _setArrayVal(self, arrayVal):
-        if self._logic is not None:
-            raise RuntimeError("Value already belongs to a logic")
         self._arrayVal = arrayVal
 
     def _onValueChanged(self):
@@ -505,7 +505,7 @@ class ArrayValue(ValueNative):
         self._vals = []
         idx = 0
         for elemNode in node[self._name]:
-            elem = _createValue("[{0}]".format(idx), self._elemType)
+            elem = _createValue("[{0}]".format(idx), self.getLogic(), self._elemType)
             idx += 1
             elem._setArrayVal(self)
             elem._isArrayElement = True
@@ -532,7 +532,7 @@ class ArrayValue(ValueNative):
             item._name = "[{0}]".format(idx)
             idx += 1
         for i in range(newElemsCount):
-            elem = _createValue("[{0}]".format(idx), self._elemType)
+            elem = _createValue("[{0}]".format(idx), self.getLogic(), self._elemType)
             idx += 1
             elem._setArrayVal(self)
             elem._isArrayElement = True
@@ -546,8 +546,10 @@ class ArrayValue(ValueNative):
 
     def addNewElement(self):
         currSize = len(self._vals)
-        self._getAPI().getLibrary().addEntityLogicArrayElement(self.getEntityId(), self.getLogicId(), self._valueId)
-        stream = self._getAPI().getLibrary().getEntityLogicData(self.getEntityId(), self.getLogicId(), self._valueId)
+        self._getAPI().getLibrary().addEntityLogicArrayElement(
+            self.getEntityId(), self.getLogicId(), self._valueId)
+        stream = self._getAPI().getLibrary().getEntityLogicData(
+            self.getEntityId(), self.getLogicId(), self._valueId)
         self.readFromStream(stream)
         if len(self._vals) != currSize + 1:
             raise RuntimeError("Native error when adding ne element")
@@ -605,8 +607,9 @@ class EnumValue(ValueNative):
         return self._table
 
 class ObjectValue(ValueNative):
-    def __init__(self):
+    def __init__(self, typeName):
         super().__init__(ValueType.Object)
+        self._typeName = typeName
         self._vals = []
 
     def getValues(self):
@@ -748,7 +751,79 @@ class EntityValue(ValueNative):
                 return None
         return currEntity
 
-def _createValue(valueName, valueType):
+class PolymorphObject(ValueNative):
+    def __init__(self):
+        super().__init__(ValueType.PolymorphObject)
+        self._baseType = None
+        self._objVal = None
+
+    def getAllDerivedTypes(self):
+        return _getReflectModel().getAllDerivedTypes(self._baseType)
+
+    def getValues(self):
+        if self._objVal is None:
+            return []
+        return self._objVal.getValues()
+
+    def getPolymorphType(self):
+        if self._objVal is None:
+            return "Null"
+        return self._objVal._typeName
+
+    def updatePolymorhType(self, newType):
+        self._getAPI().getLibrary().setEntityLogicPolymorphObjectType(
+            self.getEntityId(), self.getLogicId(), self._valueId, newType)
+        stream = self._getAPI().getLibrary().getEntityLogicData(
+            self.getEntityId(), self.getLogicId(), self._valueId)
+        self.readFromStream(stream)
+
+    def _setPolymorphType(self, newType):
+        if newType == "Null":
+            if self._objVal is None:
+                return
+            else:
+                self._objVal = None
+        else:
+            if self._objVal is None or self._objVal._typeName != newType:
+                self._objVal = _createValue(None, self.getLogic(), newType)
+
+    def readFromDict(self, node):
+        elemNode = node
+        if not self._isArrayElement and self._name is not None:
+            elemNode = node[self._name] 
+        objType = elemNode["type"]
+        self._setPolymorphType(objType)
+        if self._objVal is not None:
+            self._objVal.readFromDict(elemNode["data"])
+
+    def writeToDict(self, node):
+        data = {}
+        if self._objVal is not None:
+            data["type"] = self._objVal._typeName
+            objData = []
+            self._objVal.writeToDict(objData)
+            data["data"] = objData[0]
+        else:
+            data["type"] = "Null"
+        if not self._isArrayElement and self._name is not None:
+            node[self._name] = data
+        else:
+            node.append(data) 
+
+    def readFromStream(self, stream):
+        objType = stream.readString()
+        self._setPolymorphType(objType)
+        if self._objVal is not None:
+            self._objVal.readFromStream(stream)
+
+    def writeToStream(self, stream):
+        if self._objVal is not None:
+            stream.writeString(self._objVal._typeName)
+            self._objVal.writeToStream(stream)
+        else:
+            stream.writeString("Null")
+
+def _createValue(valueName, logic, valueType):
     val = None
     if valueType == "bool":
         val = BoolValue()
@@ -775,23 +850,23 @@ def _createValue(valueName, valueType):
     elif len(valueType) > 9 and valueType[:9] == "resource.":
         val = ResourceValue()
         val._resType = ResourceType.getResourceType(valueType[9:])
+    elif len(valueType) > 6 and valueType[:6] == "array.":
+        val = ArrayValue()
+        val._elemType = valueType[6:]
+    elif len(valueType) > 9 and valueType[:9] == "poly_ptr.":
+        val = PolymorphObject()
+        val._baseType = valueType[9:]
     else:
         valueModel = _getReflectModel().getTypeModel(valueType)
         if valueModel is None:
             raise RuntimeError("Can't find type model for a type '{0}'".format(valueType))
         valModelType = valueModel["type"]
         if valModelType == "class":
-            val = ObjectValue()
+            val = ObjectValue(valueType)
             for itemName in valueModel["data"]:
                 itemType = valueModel["data"][itemName]
-                itemVal = _createValue(itemName, itemType)
+                itemVal = _createValue(itemName, logic, itemType)
                 val._vals.append(itemVal)
-        elif valModelType == "array":
-            val = ArrayValue()
-            elemType = _getReflectModel().getArrayElemType(valueType)
-            if elemType is None:
-                raise RuntimeError("Can't find element type of array: '{0}'".format(valueType))
-            val._elemType = elemType
         elif valModelType == "enum":
             val = EnumValue()
             val._table = _getReflectModel().getEnumTable(valueType)
@@ -800,28 +875,8 @@ def _createValue(valueName, valueType):
         else:
             raise RuntimeError("Unknown value type: '{0}'".format(valueType))
     val._name = valueName
+    val._logic = logic
     return val
-
-def CreateObjectValue(rootValue, valueType):
-    valueModel = _getReflectModel().getTypeModel(valueType)
-    if valueModel is None:
-        print("[CreateObjectValue] Can't find type model: '{0}'", valueType)
-        return False
-    if valueModel["type"] != "class":
-        raise RuntimeError("Invalid value type")
-    if type(rootValue) is not ObjectValue:
-        raise RuntimeError("Invalid type of root value")
-    if "data" not in valueModel:
-        return True
-    for valueName in valueModel["data"]:
-        valueType = valueModel["data"][valueName]
-        value = _createValue(valueName, valueType)
-        if value is None:
-            print("[createObjectValue] Can't create value '{0}' of type '{1}'".format(
-                valueName, valueType))
-            return False
-        rootValue._vals.append(value)
-    return True
 
 def _assignValueIds(rootValue, startIdx):
     currentIdx = startIdx
@@ -832,13 +887,6 @@ def _assignValueIds(rootValue, startIdx):
         else:
             currentIdx = _assignValueIds(val, currentIdx)
     return currentIdx
-
-def AssignValueLogic(rootValue, logic):
-    for val in rootValue._vals:
-        if val._type != ValueType.Object:
-            val._logic = logic
-        else:
-            AssignValueLogic(val, logic)
 
 def AssignValueIdx(rootValue):
     _assignValueIds(rootValue, 1)

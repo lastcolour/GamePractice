@@ -48,6 +48,7 @@ public:
     bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
     bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, const JSONNode& node);
     bool addArrayElement(void* valuePtr);
+    bool setPolymorphType(void* valuePtr, const char* typeName);
     void setDefaultValue(void* valuePtr);
 
 public:

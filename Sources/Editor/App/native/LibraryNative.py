@@ -69,6 +69,10 @@ class LibraryNative:
         self._addEntityLogicArrayElementFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32]
         self._addEntityLogicArrayElementFunc.restype = None
 
+        self._setEntityLogicPolymorphObjectTypeFunc = self._editorLib.SetEntityLogicPolymorphObjectType
+        self._setEntityLogicPolymorphObjectTypeFunc.argstype = [ctypes.c_uint32, ctypes.c_int32, ctypes.c_int32, ctypes.c_char_p]
+        self._setEntityLogicPolymorphObjectTypeFunc.restype = None
+
         self._addChildEntityToEntityFunc = self._editorLib.AddChildEntityToEntity
         self._addChildEntityToEntityFunc.argstype = [ctypes.c_uint32, ctypes.c_uint32]
         self._addChildEntityToEntityFunc.restype = ctypes.c_int32
@@ -195,6 +199,13 @@ class LibraryNative:
         cLogicId = ctypes.c_int32(logicId)
         cValueId = ctypes.c_int32(valueId)
         self._addEntityLogicArrayElementFunc(cEntId, cLogicId, cValueId)
+
+    def setEntityLogicPolymorphObjectType(self, entityId, logicId, valueId, newType):
+        cEntId = ctypes.c_uint32(entityId)
+        cLogicId = ctypes.c_int32(logicId)
+        cValueId = ctypes.c_int32(valueId)
+        cTypeName = ctypes.c_char_p(newType.encode('ascii') + b'\x00')
+        self._setEntityLogicPolymorphObjectTypeFunc(cEntId, cLogicId, cValueId, cTypeName)
 
     def createChildEntity(self, entityId, childName):
         cEntId = ctypes.c_uint32(entityId)

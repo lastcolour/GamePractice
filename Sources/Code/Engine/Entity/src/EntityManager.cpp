@@ -305,6 +305,24 @@ bool EntityManager::ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLo
     return true;
 }
 
+bool EntityManager::ET_setEntityLogicPolymorphObjectType(EntityId targetEntId, EntityLogicId logicId,
+    EntityLogicValueId valueId, const char* typeName) {
+    const char* errStr = "[EntityManager::ET_setEntityLogicPolymorphObjectType] Can't update polymorph type of entity logic value (Error: %s)";
+    auto entity = registry.findEntity(targetEntId);
+    if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
+        return false;
+    }
+    if(logicId == TransformLogicId) {
+        LogWarning("[EntityManager::ET_setEntityLogicPolymorphObjectType] Can't set polymorph type for a transform logic to entity: '%s'",
+            entity->ET_getName());
+        return false;
+    }
+    if(!entity->setLogicValuePolymorphType(logicId, valueId, typeName)) {
+        return false;
+    }
+    return true;
+}
+
 bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) const {
     auto logicsNodes = node.object("logics");
     if(!logicsNodes || logicsNodes.size() == 0u) {

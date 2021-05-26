@@ -188,6 +188,9 @@ Mat4 CalcModelMat(const Transform& tm, const Vec3& scale) {
 std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType) {
     std::unique_ptr<Node> node;
     switch(nodeType) {
+        case RenderNodeType::Quad: {
+            break;
+        }
         case RenderNodeType::NinePatchImage: {
             node.reset(new NinePatchNode());
             break;

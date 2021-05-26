@@ -61,6 +61,7 @@ public:
     bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, JSONNode& node);
     bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
     bool addValueArrayElement(EntityLogicValueId valueId);
+    bool setValuePolymorphType(EntityLogicValueId valueId, const char* typeName);
 
 private:
 

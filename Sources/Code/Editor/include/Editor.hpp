@@ -41,6 +41,8 @@ LIB_EXPORT void SetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t v
 
 LIB_EXPORT void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valueId);
 
+LIB_EXPORT void SetEntityLogicPolymorphObjectType(uint32_t entityId, int32_t logicId, int32_t valueId, const char* newType);
+
 LIB_EXPORT int32_t AddChildEntityToEntity(uint32_t parentId, uint32_t childId);
 
 LIB_EXPORT void RemoveChildEntityFromEntity(uint32_t parentEntityId, uint32_t childEntityId);

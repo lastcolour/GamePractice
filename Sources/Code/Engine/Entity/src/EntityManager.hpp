@@ -37,6 +37,8 @@ public:
         EntityLogicValueId valueId, MemoryStream& stream) override;
     bool ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLogicId logicId,
         EntityLogicValueId valueId) override;
+    bool ET_setEntityLogicPolymorphObjectType(EntityId targetEntId, EntityLogicId logicId,
+        EntityLogicValueId valueId, const char* typeName) override;
     EntityId ET_createUnfinishedEntity(const char* entityName) override;
     bool ET_finishEntity(EntityId targetEntId) override;
 

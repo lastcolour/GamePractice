@@ -206,6 +206,24 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     return res;
 }
 
+bool Entity::setLogicValuePolymorphType(EntityLogicId logicId, EntityLogicValueId valueId, const char* typeName) {
+    const char* errStr = "[Entity::setLogicValuePolymorphType] Can't set polymorph type (Error: '%s')";
+    auto logicInstance = findLogic(logicId);
+    if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
+        return false;
+    }
+    bool res = true;
+    auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
+    logicPtr->deinit();
+    if(!logicInstance->setValuePolymorphType(valueId, typeName)) {
+        res = false;
+    }
+    logicPtr->init();
+    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
+
+    return res;
+}
+
 const char* Entity::ET_getName() const {
     return name.c_str();
 }

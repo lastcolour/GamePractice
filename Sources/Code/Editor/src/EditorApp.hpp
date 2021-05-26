@@ -27,6 +27,7 @@ public:
     EntityChildId addChilEntityToEntity(EntityId parentId, EntityId childId);
     void removeChildEntityFromEntity(EntityId parentId, EntityId childId);
     void addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
+    void setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId, const char* newType);
     Buffer getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
     void setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
     EntityChildId createChildEntity(EntityId entityId, const char* childName);
