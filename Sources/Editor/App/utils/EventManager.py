@@ -11,6 +11,7 @@ from msg.Messages import MsgOpenEntityForEdit, MsgSetEditEntity, \
 from msg.MessageSystem import RegisterForMessage, SendMessage
 
 import os
+import traceback
 
 class EventManager:
 
@@ -43,6 +44,7 @@ class EventManager:
         except Exception as e:
             Log.error("[_EventManager:_onOpenNewEditEntity] Can't load entity '{0}' (Exception: {1})".format(
                 msg.entityName, e))
+            traceback.print_tb(e.__traceback__)
             return
         if newEntity is None:
             return

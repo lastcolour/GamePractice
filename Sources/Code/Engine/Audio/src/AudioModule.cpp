@@ -3,6 +3,7 @@
 #include "SoundDataManager.hpp"
 #include "Logics/SoundPlayLogic.hpp"
 #include "Logics/SoundEqualizerLogic.hpp"
+#include "Logics/ParticlesSoundEvent.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "Core/GlobalData.hpp"
 #include "SoundConfig.hpp"
@@ -47,4 +48,5 @@ void AudioModule::createSystemConfigs() const {
 void AudioModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
     logicsRegister.registerLogic<SoundPlayLogic>();
     logicsRegister.registerLogic<SoundEqualizerLogic>();
+    logicsRegister.registerLogic<ParticlesSoundEvent>();
 }

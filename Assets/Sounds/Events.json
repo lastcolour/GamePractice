@@ -38,7 +38,7 @@
                 "group":"Game",
                 "loop":false
             },
-            "nextDelay":0.1
+            "nextDelay":0.05
         },
         {
             "name":"scoreIncrease_01",
@@ -59,6 +59,16 @@
                 "loop":false
             },
             "nextDelay":0.0
+        },
+        {
+            "name":"firework_expl_01",
+            "sound":{
+                "file":"Sounds/Game/Effects/firework_expl_01.ogg",
+                "volume":0.2,
+                "group":"UI",
+                "loop":false
+            },
+            "nextDelay":0.05
         }
     ]
 }

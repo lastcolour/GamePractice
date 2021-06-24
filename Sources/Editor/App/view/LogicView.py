@@ -167,6 +167,7 @@ class LogicView(QWidget):
         self._updateTreeSize()
 
     def _buildArrayTree(self, widgetTree, parentItem, arrayEdit, values):
+        _removeAllItemChildren(parentItem)
         for value in values:
             if value.getType() == ValueType.Object:
                 item = QTreeWidgetItem(parentItem)

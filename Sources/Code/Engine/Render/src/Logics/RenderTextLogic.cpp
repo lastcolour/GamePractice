@@ -8,7 +8,8 @@
 RenderTextLogic::RenderTextLogic() :
     RenderNode(RenderNodeType::Text),
     color(255, 255, 255),
-    fontHeight(24.f) {
+    fontHeight(24.f),
+    fontType(EFontType::Game) {
 }
 
 RenderTextLogic::~RenderTextLogic() {
@@ -28,8 +29,8 @@ void RenderTextLogic::onInit() {
     textProxyNode->setFontHeight(fontHeight);
     textProxyNode->setColor0(color);
     textProxyNode->setText(text);
-
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
+    textProxyNode->setFontType(fontType);
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, EFontType::Game);
 
     ETNode<ETRenderTextLogic>::connect(getEntityId());
 }
@@ -78,4 +79,17 @@ void RenderTextLogic::ET_setText(const char* str) {
         auto textProxyNode = static_cast<TextNode*>(node);
         textProxyNode->setText(std::move(s));
     });
+}
+
+void RenderTextLogic::ET_setFontType(EFontType newFontType) {
+    fontType = newFontType;
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, EFontType::Game);
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, fontT=newFontType](){
+        auto textProxyNode = static_cast<TextNode*>(node);
+        textProxyNode->setFontType(fontT);
+    });
+}
+
+EFontType RenderTextLogic::ET_getFontType() const {
+    return fontType;
 }

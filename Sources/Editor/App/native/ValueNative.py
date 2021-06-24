@@ -863,10 +863,11 @@ def _createValue(valueName, logic, valueType):
         valModelType = valueModel["type"]
         if valModelType == "class":
             val = ObjectValue(valueType)
-            for itemName in valueModel["data"]:
-                itemType = valueModel["data"][itemName]
-                itemVal = _createValue(itemName, logic, itemType)
-                val._vals.append(itemVal)
+            if "data" in valueModel:
+                for itemName in valueModel["data"]:
+                    itemType = valueModel["data"][itemName]
+                    itemVal = _createValue(itemName, logic, itemType)
+                    val._vals.append(itemVal)
         elif valModelType == "enum":
             val = EnumValue()
             val._table = _getReflectModel().getEnumTable(valueType)

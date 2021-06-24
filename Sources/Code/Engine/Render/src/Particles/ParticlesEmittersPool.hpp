@@ -3,6 +3,7 @@
 
 #include "Render/ParticlesEmitterConfig.hpp"
 #include "Particles/EmitterParticles.hpp"
+#include "Particles/ParticlesUpdateFrameInfo.hpp"
 
 #include <atomic>
 
@@ -22,6 +23,7 @@ public:
     SimulationConfig& getSimConfig();
     const SimulationConfig& getSimConfig() const;
 
+    ParticlesUpdateFrameInfo getAndResetUpdateInfo();
     void asyncStopEmitting();
     void asyncDestroyAll();
     bool asyncHasAlive() const;
@@ -43,6 +45,7 @@ private:
 
 private:
 
+    ParticlesUpdateFrameInfo updateFrameInfo;
     std::atomic<AsynState> asyncState;
     std::vector<std::unique_ptr<EmitterParticles>> pool;
     SimulationConfig simConfig;

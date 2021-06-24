@@ -30,6 +30,7 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
     }
     asyncState.store(AsynState::Playing);
     stoppedEmitter->start(emitReq);
+    updateFrameInfo.systemStarted += 1;
 }
 
 void ParticlesEmittersPool::updateSubEmitterTm(int rootParticleId, const Transform& newTm) {
@@ -46,6 +47,9 @@ void ParticlesEmittersPool::stopEmitter(int rootParticleId) {
     for(auto& emitter : pool) {
         if(emitter->getRootParticleId() == rootParticleId) {
             emitter->stopEmitting();
+            if(emitter->isFinished()) {
+                updateFrameInfo.systemStopped += 1;
+            }
         }
     }
 }
@@ -76,6 +80,7 @@ void ParticlesEmittersPool::simulate(const Transform& systemTm, float dt) {
             for(auto& emitter : pool) {
                 if(!emitter->isFinished()) {
                     emitter->stop();
+                    updateFrameInfo.systemStopped += 1;
                 }
             }
             return;
@@ -103,6 +108,8 @@ void ParticlesEmittersPool::simulate(const Transform& systemTm, float dt) {
         }
         if(!emitter->isFinished()) {
             hasAlive = true;
+        } else {
+            updateFrameInfo.systemStopped += 1;
         }
     }
 
@@ -157,10 +164,18 @@ int ParticlesEmittersPool::addParticles(int count) {
     auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
     auto resCount = std::min(maxParticles, count + particlesCount) - particlesCount;
     particlesCount += resCount;
+    updateFrameInfo.particlesSpawned += count;
     return resCount;
 }
 
 void ParticlesEmittersPool::removeParticles(int count) {
     particlesCount -= count;
+    updateFrameInfo.particlesRemoved += count;
     assert(particlesCount >= 0 && "Invalid particles count");
+}
+
+ParticlesUpdateFrameInfo ParticlesEmittersPool::getAndResetUpdateInfo() {
+    auto res = updateFrameInfo;
+    updateFrameInfo.reset();
+    return res;
 }

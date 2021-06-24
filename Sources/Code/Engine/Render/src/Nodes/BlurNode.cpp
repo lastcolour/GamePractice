@@ -82,7 +82,10 @@ void BlurNode::onRender(RenderContext& ctx) {
         return;
     }
 
-    glViewport(0, 0, scaledSize.x, scaledSize.y);
+    if(mainFBO != secondFBO) {
+        glViewport(0, 0, scaledSize.x, scaledSize.y);
+        fboCopyLogic.copy(*mainFBO, *secondFBO);
+    }
 
     shader->bind();
     for(int i = 0; i < passes; ++i) {
@@ -90,9 +93,10 @@ void BlurNode::onRender(RenderContext& ctx) {
     }
     shader->unbind();
 
-    glViewport(0, 0, size.x, size.y);
-
-    fboCopyLogic.copy(*secondFBO, *mainFBO);
+    if(mainFBO != secondFBO) {
+        glViewport(0, 0, size.x, size.y);
+        fboCopyLogic.copy(*secondFBO, *mainFBO);
+    }
 
     mainFBO->bind();
 }

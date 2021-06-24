@@ -70,6 +70,10 @@ void* ClassInstance::get() {
     return instance;
 }
 
+const void* ClassInstance::get() const {
+    return instance;
+}
+
 void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
     instance = ptr;
     deleteFunc = deleteF;

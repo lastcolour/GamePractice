@@ -14,28 +14,28 @@ class EditVec4Value(QWidget):
 
         self._rootLayout = QHBoxLayout()
 
-        self._xLabel = QLabel("<b>X:</>")
+        self._xLabel = QLabel("<b>X:</b>")
         self._rootLayout.addWidget(self._xLabel)
 
         self._xSpinBox = EditFloatSpinBox()
         self._xSpinBox.valueChanged.connect(self._signal_xSpinBox_valueChanged)
         self._rootLayout.addWidget(self._xSpinBox)
 
-        self._yLabel = QLabel("<b>Y:</>")
+        self._yLabel = QLabel("<b>Y:</b>")
         self._rootLayout.addWidget(self._yLabel)
 
         self._ySpinBox = EditFloatSpinBox()
         self._ySpinBox.valueChanged.connect(self._signal_ySpinBox_valueChanged)
         self._rootLayout.addWidget(self._ySpinBox)
 
-        self._zLabel = QLabel("<b>Z:</>")
+        self._zLabel = QLabel("<b>Z:</b>")
         self._rootLayout.addWidget(self._zLabel)
 
         self._zSpinBox = EditFloatSpinBox()
         self._zSpinBox.valueChanged.connect(self._signal_zSpinBox_valueChanged)
         self._rootLayout.addWidget(self._zSpinBox)
 
-        self._wLabel = QLabel("<b>W:</>")
+        self._wLabel = QLabel("<b>W:</b>")
         self._rootLayout.addWidget(self._wLabel)
 
         self._wSpinBox = EditFloatSpinBox()

@@ -3,6 +3,14 @@
 
 #include "Render/ParticlesEmitterConfig.hpp"
 
+enum class EParticlesEmitEventType {
+    None = 0,
+    OnSystemStart = 1 << 0,
+    OnParticleSpawn = 1 << 2,
+    OnParticleDeath = 1 << 3,
+    OnSystemStop = 1 << 4
+};
+
 struct ETParticlesSystem {
     virtual ~ETParticlesSystem() = default;
     virtual void ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) = 0;
@@ -26,6 +34,11 @@ struct ETParticlesSystem {
     virtual void ET_updateSubEmitter(int rootParticleId, const Transform& newTm) = 0;
     virtual void ET_stopSubEmitter(int rootParticleId) = 0;
     virtual bool ET_hasAliveParticles() const = 0;
+};
+
+struct ETParticlesSystemEvent {
+    virtual ~ETParticlesSystemEvent() = default;
+    virtual void ET_onEmitEvent(EParticlesEmitEventType eventType) = 0;
 };
 
 #endif /* __ET_PARTICLES_SYSTEM_HPP__ */

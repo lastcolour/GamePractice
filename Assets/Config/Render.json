@@ -1,9 +1,17 @@
 {
-    "default_fonts": {
-        "file":"Render/Fonts/monogram_extended.ttf",
-        "lerpType":"Point",
-        "size":64,
-        "monochrome":true
+    "fonts": {
+        "game_font": {
+            "file":"Render/Fonts/monogram_extended.ttf",
+            "lerpType":"Point",
+            "size":64,
+            "monochrome":true
+        },
+        "debug_font": {
+            "file":"Render/Fonts/OpenSans-Regular.ttf",
+            "lerpType":"Linear",
+            "size":64,
+            "monochrome":false
+        }
     },
     "default_camera": {
         "zNear":-1.0,

@@ -43,6 +43,30 @@ void checkParticlePosition(const Vec2& expectedPt, int id, const EmitterParticle
     EXPECT_FLOAT_EQ(resPt.y, expectedPt.y);
 }
 
+class TestParticlesSystemEventListener : public EntityLogic,
+    public ETNode<ETParticlesSystemEvent> {
+public:
+
+    TestParticlesSystemEventListener() {}
+    virtual ~TestParticlesSystemEventListener() {}
+
+    // EntityLogic
+    void init() override {
+        ETNode<ETParticlesSystemEvent>::connect(getEntityId());
+    }
+
+    void deinit() override {
+    }
+
+    void ET_onEmitEvent(EParticlesEmitEventType eventType) override {
+        events.push_back(eventType);
+    }
+
+public:
+
+    std::vector<EParticlesEmitEventType> events;
+};
+
 } // namespace
 
 TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
@@ -304,5 +328,66 @@ TEST_F(ParticlesSystemTests, CheckMaxParticles) {
 
         auto& particles = emitters[0];
         EXPECT_EQ(particles->activeCount, maxParticles);
+    }
+}
+
+TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
+    auto entity = createVoidObject();
+    auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+    auto eventListener = entity->addCustomLogic<TestParticlesSystemEventListener>();
+
+    {
+        auto emissionConfig = system->ET_getEmissionConfig();
+        emissionConfig.lifetime = 1.f;
+        emissionConfig.duration = 1.f;
+        emissionConfig.emissionRate = 2.5f;
+        emissionConfig.autoStart = false;
+        emissionConfig.loop = false;
+        system->ET_setEmissionConfig(emissionConfig);
+    }
+
+    EXPECT_EQ(eventListener->events.size(), 0);
+
+    system->ET_emit();
+
+    TickParticlesEmitter(0.f);
+
+    {
+        ASSERT_EQ(eventListener->events.size(), 1);
+        ASSERT_EQ(eventListener->events[0], EParticlesEmitEventType::OnSystemStart);
+        eventListener->events.clear();
+    }
+
+    TickParticlesEmitter(0.5f);
+
+    {
+        ASSERT_EQ(eventListener->events.size(), 1);
+        ASSERT_EQ(eventListener->events[0], EParticlesEmitEventType::OnParticleSpawn);
+        eventListener->events.clear();
+    }
+
+    TickParticlesEmitter(0.4f);
+
+    {
+        ASSERT_EQ(eventListener->events.size(), 1);
+        ASSERT_EQ(eventListener->events[0], EParticlesEmitEventType::OnParticleSpawn);
+        eventListener->events.clear();
+    }
+
+    TickParticlesEmitter(0.7f);
+
+    {
+        ASSERT_EQ(eventListener->events.size(), 1);
+        ASSERT_EQ(eventListener->events[0], EParticlesEmitEventType::OnParticleDeath);
+        eventListener->events.clear();
+    }
+
+    TickParticlesEmitter(1.f);
+
+    {
+        ASSERT_EQ(eventListener->events.size(), 2);
+        ASSERT_EQ(eventListener->events[0], EParticlesEmitEventType::OnParticleDeath);
+        ASSERT_EQ(eventListener->events[1], EParticlesEmitEventType::OnSystemStop);
+        eventListener->events.clear();
     }
 }

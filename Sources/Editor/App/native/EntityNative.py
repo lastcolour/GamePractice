@@ -1,6 +1,8 @@
 from .Native import NativeObject
 from .LogicNative import CreateLogic
 
+import traceback
+
 def _getUniqueNameForNewChild(entity, entityName):
     childEntityName = entityName
     isNameUnique = False
@@ -138,6 +140,7 @@ class EntityNative(NativeObject):
         except Exception as e:
             print("[EntityNative:addLogicWithData] Can't read data of logic '{0}' of entity entity '{1}' (Error: {2})".format(
                 logicName, self._name, e))
+            traceback.print_tb(e.__traceback__)
         self._logics.append(logic)
         return logic
 

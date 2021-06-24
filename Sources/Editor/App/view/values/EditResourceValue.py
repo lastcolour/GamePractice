@@ -6,6 +6,8 @@ from dialog.SelectResourcFile import SelectResourceFile
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
 
+from view.values.UIUitls import FreezeEditButtonSize
+
 class EditResourceValue(QWidget):
     def __init__(self, value):
         super().__init__()
@@ -20,6 +22,7 @@ class EditResourceValue(QWidget):
         self._rootLayout.addWidget(self._lineEdit)
 
         self._clearBt = QPushButton("x")
+        FreezeEditButtonSize(self._clearBt)
         self._clearBt.clicked.connect(self._signal_clearBt_clicked)
         self._rootLayout.addWidget(self._clearBt)
 

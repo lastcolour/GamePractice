@@ -15,6 +15,7 @@ public:
     void setText(std::string&& newText);
     void setText(const std::string& newText);
     void setAlignAtCenter(bool flag);
+    void setFontType(EFontType newFontType);
 
     // Node
     bool canRender() const override;

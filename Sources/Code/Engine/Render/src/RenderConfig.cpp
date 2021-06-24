@@ -7,12 +7,19 @@ void DebugTasks::Reflect(ReflectContext& ctx) {
     }
 }
 
-void FontConfig::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<FontConfig>("FontConfig")) {
-        classInfo->addField("file", &FontConfig::file);
-        classInfo->addField("lerpType", &FontConfig::lerpType);
-        classInfo->addField("size", &FontConfig::size);
-        classInfo->addField("monochrome", &FontConfig::monochrome);
+void FontDescription::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<FontDescription>("FontDescription")) {
+        classInfo->addField("file", &FontDescription::file);
+        classInfo->addField("lerpType", &FontDescription::lerpType);
+        classInfo->addField("size", &FontDescription::size);
+        classInfo->addField("monochrome", &FontDescription::monochrome);
+    }
+}
+
+void FontsConfig::Reflect(ReflectContext& ctx) {
+    if(auto classInfo = ctx.classInfo<FontsConfig>("FontsConfig")) {
+        classInfo->addField("game_font", &FontsConfig::gameFont);
+        classInfo->addField("debug_font", &FontsConfig::debugFont);
     }
 }
 
@@ -37,7 +44,7 @@ void RenderConfig::Reflect(ReflectContext& ctx) {
         });
     }
     if(auto classInfo = ctx.classInfo<RenderConfig>("RenderConfig")) {
-        classInfo->addField("default_fonts", &RenderConfig::fontConfig);
+        classInfo->addField("fonts", &RenderConfig::fontsConfig);
         classInfo->addField("default_camera", &RenderConfig::cameraConfig);
         classInfo->addField("debug_tasks", &RenderConfig::debugTaskConfig);
         classInfo->addField("particles", &RenderConfig::particlesConfig);

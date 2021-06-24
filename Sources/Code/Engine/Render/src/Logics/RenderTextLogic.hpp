@@ -20,6 +20,8 @@ public:
     void ET_setColor(const ColorB& newColor) override;
     void ET_setText(const char* str) override;
     void ET_setFontHeight(float newFontHeight) override;
+    void ET_setFontType(EFontType newFontType) override;
+    EFontType ET_getFontType() const override;
     AABB2D ET_getTextAABB() const override;
 
 protected:
@@ -37,6 +39,7 @@ private:
     std::string text;
     ColorB color;
     float fontHeight;
+    EFontType fontType;
 };
 
 #endif /* __RENDER_TEXT_LOGIC_HPP__ */

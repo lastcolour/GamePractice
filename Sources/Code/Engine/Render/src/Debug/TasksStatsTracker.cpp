@@ -11,6 +11,8 @@ namespace {
 const float MAX_FPS = 120.f;
 const float MAX_RUN_TIME = 48.f;
 const float GRAPH_TIME_MS = 2000.f;
+const float FONT_SIZE = 14.f;
+const float NEW_LINE_OFFSET = 2.f;
 
 void DrawLineBetweenPoints(const Vec2& curr, const Vec2& prev, const Vec2& drawPt, const Vec2& size, const ColorB& col) {
     Vec2 startPt;
@@ -102,18 +104,18 @@ void DrawTaskRunInfo(Vec2& pt, const std::string& taskName, const TaskRunInfo& r
     {
         std::string fpsText = StringFormat("%s: FPS: %.1f [%.1f .. %.1f]", taskName,
             avgRunInfo.avgFPS, avgRunInfo.minFPS, avgRunInfo.maxFPS);
-        ET_SendEvent(&ETDebugRender::ET_drawText, pt, 16.f, textCol, fpsText.c_str());
+        ET_SendEvent(&ETDebugRender::ET_drawText, pt, FONT_SIZE, textCol, fpsText.c_str());
     }
 
-    pt.y -= 16.f;
+    pt.y -= FONT_SIZE + NEW_LINE_OFFSET;
 
     {
         std::string runTimeText = StringFormat("%s: AVG Run Time: %.2f [%.1f .. %.1f] ms", taskName,
             avgRunInfo.avgRunTime, avgRunInfo.minRunTime, avgRunInfo.maxRunTime);
-        ET_SendEvent(&ETDebugRender::ET_drawText, pt, 14.f, textCol, runTimeText.c_str());
+        ET_SendEvent(&ETDebugRender::ET_drawText, pt, FONT_SIZE, textCol, runTimeText.c_str());
     }
 
-    pt.y -= 48.f;
+    pt.y -= FONT_SIZE + 40.f;
 
     {
         Vec2 size(140.f, 40.f);
@@ -147,7 +149,7 @@ void TasksStatsTracker::ET_drawDebugInfo() {
 
     Vec2 pt = Vec2(static_cast<float>(viewPort.x), static_cast<float>(viewPort.y));
     pt.x = 10.f;
-    pt.y -= 18.f;
+    pt.y -= FONT_SIZE;
 
     TaskRunInfo runInfo;
     for(auto& taskName : renderConfig->debugTaskConfig.tasks) {
@@ -155,6 +157,6 @@ void TasksStatsTracker::ET_drawDebugInfo() {
             continue;
         }
         DrawTaskRunInfo(pt, taskName, runInfo);
-        pt.y -= 18.f;
+        pt.y -= FONT_SIZE + NEW_LINE_OFFSET;
     }
 }

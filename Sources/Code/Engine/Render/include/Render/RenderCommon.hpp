@@ -53,4 +53,9 @@ enum BlendType {
     ONE_MINUS_CONSTANT_ALPHA
 };
 
+enum class EFontType {
+    Game,
+    Debug
+};
+
 #endif /* __RENDER_COMMON_HPP__ */

@@ -6,6 +6,8 @@ from dialog.SelectFromEntityChild import SelectFromEntityChild
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
 
+from view.values.UIUitls import FreezeEditButtonSize
+
 def _getChildPath(thisEntity, childEntity):
     if childEntity.isInternal():
         resPath = childEntity.getName()
@@ -34,6 +36,7 @@ class EditEntityValue(QWidget):
         self._rootLayout.addWidget(self._lineEdit)
 
         self._clearBt = QPushButton("x")
+        FreezeEditButtonSize(self._clearBt)
         self._clearBt.clicked.connect(self._signal_clearBt_clicked)
         self._rootLayout.addWidget(self._clearBt)
 

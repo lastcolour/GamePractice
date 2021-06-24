@@ -5,7 +5,7 @@
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 
-class FontConfig;
+class FontDescription;
 class RenderFont;
 
 class RenderFontManager : public SystemLogic,
@@ -25,12 +25,12 @@ public:
     void ET_onContextDestroyed() override;
 
     // ETRenderFontManager
-    std::shared_ptr<RenderFont> ET_getDefaultFont() override;
+    std::shared_ptr<RenderFont> ET_createFont(EFontType fontType) override;
 
 private:
 
-    std::shared_ptr<RenderFont> createFont(const FontConfig& fontConfig);
-    std::shared_ptr<RenderFont> createFontImpl(const FontConfig& fontConfig);
+    std::shared_ptr<RenderFont> createFont(const FontDescription& fontDecr);
+    std::shared_ptr<RenderFont> createFontImpl(const FontDescription& fontDecr);
 
 private:
 

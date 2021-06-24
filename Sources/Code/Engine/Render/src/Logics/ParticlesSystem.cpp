@@ -182,6 +182,9 @@ void ParticlesSystem::ET_updateEmitter(float dt) {
     auto deltaT = getUpdateDeltaTime(simConfig.emission, dt);
 
     pool.simulate(tm, deltaT);
+
+    auto updateInfo = pool.getAndResetUpdateInfo();
+    DispatchParticlesSystemEvents(getEntityId(), updateInfo);
 }
 
 void ParticlesSystem::ET_emit() {

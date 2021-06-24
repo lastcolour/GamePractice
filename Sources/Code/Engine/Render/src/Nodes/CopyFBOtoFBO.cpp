@@ -39,6 +39,11 @@ bool CopyFBOtoFBO::copy(RenderFramebuffer& from, RenderFramebuffer& to) {
         return false;
     }
 
+    if(&from == &to) {
+        LogError("[CopyFBOtoFBO::copy] Can't copy to the same FBO");
+        return false;
+    }
+
     to.bind();
 
     shader->bind();

@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QTreeWidgetItem, QLabel
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+
+from view.values.UIUitls import FreezeEditButtonSize
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
@@ -43,13 +45,25 @@ class EditArrayValue(QWidget):
         return self._title
 
     def createObjecValueWrap(self, value):
+        wrapWidget = QWidget()
+        wrapWidget._rootLayout = QHBoxLayout()
+        wrapWidget._rootLayout.setContentsMargins(0, 0, 0, 0)
+
         removeBt = QPushButton("x")
+        FreezeEditButtonSize(removeBt)
         removeBt.clicked.connect(lambda: self._signal_removeBt_clicked(removeBt))
         removeBt._value = value
-        return removeBt
+
+        wrapWidget._rootLayout.addStretch()
+        wrapWidget._rootLayout.addWidget(removeBt)
+
+        wrapWidget.setLayout(wrapWidget._rootLayout)
+
+        return wrapWidget
 
     def createSimpleWrap(self, editWidget):
         removeBt = QPushButton("x")
+        FreezeEditButtonSize(removeBt)
         removeBt.clicked.connect(lambda: self._signal_removeBt_clicked(removeBt))
         removeBt._value = editWidget._val
         editWidget._rootLayout.addWidget(removeBt)

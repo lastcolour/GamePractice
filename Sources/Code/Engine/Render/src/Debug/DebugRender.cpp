@@ -43,6 +43,7 @@ void DebugRender::ET_onContextCreated() {
     textNode.init();
     textNode.setVisible(true);
     textNode.setAlignAtCenter(false);
+    textNode.setFontType(EFontType::Debug);
     textNode.setText(" ");
     textNode.setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
     if(!textNode.canRender()) {

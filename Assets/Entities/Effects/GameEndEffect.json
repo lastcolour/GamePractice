@@ -19,7 +19,7 @@
           "w": 1.0
         }
       },
-      "name": "Explosion",
+      "name": "Blue_Explosion",
       "id": 1,
       "internal": true,
       "data": {
@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "drawPriority": 6,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -45,7 +45,7 @@
                   "y": 0.0
                 },
                 "thickness": 0.0,
-                "emissionRate": 300.0,
+                "emissionRate": 500.0,
                 "direction": 0.0,
                 "directionVar": 360.0,
                 "lifetime": 0.6000000238418579,
@@ -70,8 +70,240 @@
                   "y": 0.10000000149011612
                 },
                 "endScale": {
-                  "x": 0.4000000059604645,
-                  "y": 0.4000000059604645
+                  "x": 1.0,
+                  "y": 1.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                }
+              },
+              "color": {
+                "startCol": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "endCol": {
+                  "r": 37,
+                  "g": 161,
+                  "b": 255,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.15000000596046448
+              },
+              "render": {
+                "blending": "Additive",
+                "textureInfo": {
+                  "filename": "Images/Base/point_of_light_128x128.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          },
+          {
+            "type": "ParticlesSystem",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 6,
+              "emission": {
+                "simTime": "Render",
+                "duration": 0.10000000149011612,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 1.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 10.0,
+                "direction": 0.0,
+                "directionVar": 360.0,
+                "lifetime": 0.10000000149011612,
+                "lifetimeVar": 0.10000000149011612
+              },
+              "movement": {
+                "speed": 10.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 30.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 5.0,
+                  "y": 5.0
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 30.0,
+                  "y": 30.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                }
+              },
+              "color": {
+                "startCol": {
+                  "r": 10,
+                  "g": 251,
+                  "b": 255,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "endCol": {
+                  "r": 10,
+                  "g": 251,
+                  "b": 255,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.15000000596046448
+              },
+              "render": {
+                "blending": "Additive",
+                "textureInfo": {
+                  "filename": "Images/Base/point_of_light_128x128.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Red_Explosion",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "ParticlesSystem",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 6,
+              "emission": {
+                "simTime": "Render",
+                "duration": 0.10000000149011612,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 1.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 500.0,
+                "direction": 0.0,
+                "directionVar": 360.0,
+                "lifetime": 0.6000000238418579,
+                "lifetimeVar": 0.10000000149011612
+              },
+              "movement": {
+                "speed": 60.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 30.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 1.0,
+                  "y": 1.0
                 },
                 "endScaleVar": {
                   "x": 0.10000000149011612,
@@ -93,14 +325,14 @@
                 },
                 "endCol": {
                   "r": 255,
-                  "g": 0,
-                  "b": 0,
+                  "g": 55,
+                  "b": 108,
                   "a": 255
                 },
                 "endColVar": {
-                  "x": 0.20000000298023224,
-                  "y": 0.20000000298023224,
-                  "z": 0.20000000298023224,
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
                   "w": 0.0
                 },
                 "fadeIn": 0.0,
@@ -109,7 +341,341 @@
               "render": {
                 "blending": "Additive",
                 "textureInfo": {
-                  "filename": "Images/Base/circle_32x32.png",
+                  "filename": "Images/Base/point_of_light_128x128.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          },
+          {
+            "type": "ParticlesSystem",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 6,
+              "emission": {
+                "simTime": "Render",
+                "duration": 0.10000000149011612,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 1.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 10.0,
+                "direction": 0.0,
+                "directionVar": 360.0,
+                "lifetime": 0.10000000149011612,
+                "lifetimeVar": 0.10000000149011612
+              },
+              "movement": {
+                "speed": 10.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 30.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 5.0,
+                  "y": 5.0
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 30.0,
+                  "y": 30.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                }
+              },
+              "color": {
+                "startCol": {
+                  "r": 255,
+                  "g": 120,
+                  "b": 152,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "endCol": {
+                  "r": 255,
+                  "g": 120,
+                  "b": 152,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.15000000596046448
+              },
+              "render": {
+                "blending": "Additive",
+                "textureInfo": {
+                  "filename": "Images/Base/point_of_light_128x128.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Green_Explosion",
+      "id": 3,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "ParticlesSystem",
+            "id": 1,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 6,
+              "emission": {
+                "simTime": "Render",
+                "duration": 0.10000000149011612,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 1.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 500.0,
+                "direction": 0.0,
+                "directionVar": 360.0,
+                "lifetime": 0.6000000238418579,
+                "lifetimeVar": 0.10000000149011612
+              },
+              "movement": {
+                "speed": 60.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 30.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 1.0,
+                  "y": 1.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                }
+              },
+              "color": {
+                "startCol": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "endCol": {
+                  "r": 23,
+                  "g": 255,
+                  "b": 77,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.15000000596046448
+              },
+              "render": {
+                "blending": "Additive",
+                "textureInfo": {
+                  "filename": "Images/Base/point_of_light_128x128.png",
+                  "lerpType": "Point",
+                  "tintColor": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0
+                  }
+                }
+              },
+              "subEmitters": {
+                "subEmitters": []
+              },
+              "gravity": {
+                "fields": []
+              }
+            }
+          },
+          {
+            "type": "ParticlesSystem",
+            "id": 2,
+            "data": {
+              "isVisible": true,
+              "alpha": 1.0,
+              "drawPriority": 6,
+              "emission": {
+                "simTime": "Render",
+                "duration": 0.10000000149011612,
+                "startDelay": 0.0,
+                "autoStart": false,
+                "loop": false,
+                "emitterSpace": "World",
+                "emitterType": "Sphere",
+                "emitterVal": {
+                  "x": 1.0,
+                  "y": 0.0
+                },
+                "thickness": 0.0,
+                "emissionRate": 10.0,
+                "direction": 0.0,
+                "directionVar": 360.0,
+                "lifetime": 0.10000000149011612,
+                "lifetimeVar": 0.10000000149011612
+              },
+              "movement": {
+                "speed": 10.0,
+                "speedVar": 0.10000000149011612,
+                "initRotation": 30.0,
+                "initRotationVar": 0.10000000149011612,
+                "rotationSpeed": 10.0,
+                "rotationSpeedVar": 0.10000000149011612,
+                "rotationAcc": 0.0
+              },
+              "size": {
+                "startScale": {
+                  "x": 5.0,
+                  "y": 5.0
+                },
+                "startScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                },
+                "endScale": {
+                  "x": 30.0,
+                  "y": 30.0
+                },
+                "endScaleVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612
+                }
+              },
+              "color": {
+                "startCol": {
+                  "r": 146,
+                  "g": 255,
+                  "b": 183,
+                  "a": 255
+                },
+                "startColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "endCol": {
+                  "r": 146,
+                  "g": 255,
+                  "b": 183,
+                  "a": 255
+                },
+                "endColVar": {
+                  "x": 0.10000000149011612,
+                  "y": 0.10000000149011612,
+                  "z": 0.10000000149011612,
+                  "w": 0.0
+                },
+                "fadeIn": 0.0,
+                "fadeOut": 0.15000000596046448
+              },
+              "render": {
+                "blending": "Additive",
+                "textureInfo": {
+                  "filename": "Images/Base/point_of_light_128x128.png",
                   "lerpType": "Point",
                   "tintColor": {
                     "r": 0,
@@ -141,7 +707,7 @@
         "drawPriority": 1,
         "emission": {
           "simTime": "Render",
-          "duration": -1.0,
+          "duration": 5.0,
           "startDelay": 0.0,
           "autoStart": true,
           "loop": false,
@@ -152,7 +718,7 @@
             "y": 2.0
           },
           "thickness": 0.0,
-          "emissionRate": 5.0,
+          "emissionRate": 1.0,
           "direction": 90.0,
           "directionVar": 30.0,
           "lifetime": 1.5,
@@ -253,8 +819,248 @@
       }
     },
     {
+      "type": "ParticlesSystem",
+      "id": 4,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 1,
+        "emission": {
+          "simTime": "Render",
+          "duration": 5.0,
+          "startDelay": 0.30000001192092896,
+          "autoStart": true,
+          "loop": false,
+          "emitterSpace": "World",
+          "emitterType": "Box",
+          "emitterVal": {
+            "x": 30.0,
+            "y": 2.0
+          },
+          "thickness": 0.0,
+          "emissionRate": 1.0,
+          "direction": 90.0,
+          "directionVar": 30.0,
+          "lifetime": 1.5,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 80.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          }
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
+            "w": 0.0
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.05000000074505806
+        },
+        "render": {
+          "blending": "Additive",
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Point",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
+        },
+        "subEmitters": {
+          "subEmitters": [
+            {
+              "event": "OnParticleDeath",
+              "entityId": [
+                2
+              ]
+            }
+          ]
+        },
+        "gravity": {
+          "fields": [
+            {
+              "type": "Simple",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": -90.0,
+              "value": 30.0,
+              "radius": -1.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "ParticlesSystem",
+      "id": 5,
+      "data": {
+        "isVisible": true,
+        "alpha": 1.0,
+        "drawPriority": 1,
+        "emission": {
+          "simTime": "Render",
+          "duration": 5.0,
+          "startDelay": 0.6000000238418579,
+          "autoStart": true,
+          "loop": false,
+          "emitterSpace": "World",
+          "emitterType": "Box",
+          "emitterVal": {
+            "x": 30.0,
+            "y": 2.0
+          },
+          "thickness": 0.0,
+          "emissionRate": 1.0,
+          "direction": 90.0,
+          "directionVar": 30.0,
+          "lifetime": 1.5,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 70.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          }
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612,
+            "z": 0.10000000149011612,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.20000000298023224,
+            "y": 0.20000000298023224,
+            "z": 0.20000000298023224,
+            "w": 0.0
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.05000000074505806
+        },
+        "render": {
+          "blending": "Additive",
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Point",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
+        },
+        "subEmitters": {
+          "subEmitters": [
+            {
+              "event": "OnParticleDeath",
+              "entityId": [
+                3
+              ]
+            }
+          ]
+        },
+        "gravity": {
+          "fields": [
+            {
+              "type": "Simple",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": -90.0,
+              "value": 30.0,
+              "radius": -1.0
+            }
+          ]
+        }
+      }
+    },
+    {
       "type": "UIElementProxy",
-      "id": 2,
+      "id": 6,
       "data": {
         "proxies": [
           {
@@ -269,9 +1075,33 @@
               1
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 5
+          },
+          {
+            "target": [
+              2
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 5
+          },
+          {
+            "target": [
+              3
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 5
           }
         ]
+      }
+    },
+    {
+      "type": "ParticlesSoundEvent",
+      "id": 7,
+      "data": {
+        "emitType": "OnParticleDeath",
+        "soundEvent": {
+          "event": "firework_expl_01"
+        }
       }
     }
   ]

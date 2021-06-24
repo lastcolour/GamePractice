@@ -2,6 +2,8 @@ from .Native import NativeObject
 from .ValueNative import ObjectValue, AssignValueIdx, _createValue
 from .MemoryStream import MemoryStream
 
+import traceback
+
 class LogicNative(NativeObject):
 
     ALL_VALUE_ID = 0
@@ -61,10 +63,10 @@ class LogicNative(NativeObject):
         try:
             stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
             self._rootValue.readFromStream(stream)
-        except:
+        except Exception as e:
             print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(
                 self._name, stream._data))
-            pass
+            traceback.print_tb(e.__traceback__)
 
     def writeToNative(self):
         print("[LogicNative:writeToNative] Write '{0}'".format(self._name))

@@ -40,4 +40,18 @@ void ApplyTupleResult(std::tuple<ArgsT ... >& tuple, FuncT&& func, std::vector<R
     });
 }
 
+template<typename T>
+bool EnumFlagsIntersect(T first, T second) {
+    static_assert(std::is_enum<T>::value, "T isn't enum type");
+    return static_cast<bool>(
+        static_cast<int>(first) & static_cast<int>(second));
+}
+
+template<typename T>
+T EnumFlagsUnite(T first, T second) {
+    static_assert(std::is_enum<T>::value, "T isn't enum type");
+    return static_cast<T>(
+        static_cast<int>(first) | static_cast<int>(second));
+}
+
 #endif /* __UTILS_HPP__ */

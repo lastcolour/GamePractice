@@ -1,15 +1,14 @@
 #ifndef __ET_RENDER_MANAGER_HPP__
 #define __ET_RENDER_MANAGER_HPP__
 
+#include "Render/RenderCommon.hpp"
+#include "Render/TextureInfo.hpp"
+
 class RenderShader;
 class RenderFont;
 class RenderTexture;
 class RenderGeometry;
 class RenderFramebuffer;
-
-enum class ETextureDataType;
-enum class EFramebufferType;
-enum class PrimitiveGeometryType;
 
 struct ETRenderGeometryManager {
     virtual ~ETRenderGeometryManager() = default;
@@ -18,7 +17,7 @@ struct ETRenderGeometryManager {
 
 struct ETRenderFontManager {
     virtual ~ETRenderFontManager() = default;
-    virtual std::shared_ptr<RenderFont> ET_getDefaultFont() = 0;
+    virtual std::shared_ptr<RenderFont> ET_createFont(EFontType fontType) = 0;
 };
 
 struct ETRenderTextureManager {

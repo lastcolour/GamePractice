@@ -7,6 +7,7 @@
 #include "RenderUtils.hpp"
 #include "RenderConfig.hpp"
 #include "Core/GlobalData.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <cassert>
 
@@ -41,7 +42,7 @@ void writeMonochromeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i&
     }
 }
 
-std::shared_ptr<RenderTexture> createFontAtlas(Buffer& buff, const Vec2i& size, const FontConfig& fontConfig) {
+std::shared_ptr<RenderTexture> createFontAtlas(Buffer& buff, const Vec2i& size, const FontDescription& fontDescr) {
     std::shared_ptr<RenderTexture> fontAtlas;
     ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
     if(!fontAtlas) {
@@ -58,7 +59,7 @@ std::shared_ptr<RenderTexture> createFontAtlas(Buffer& buff, const Vec2i& size, 
         LogError("[RenderFont::createFontImpl] Can't copy buffer to a texutre (Error: %s)", errStr);
         return nullptr;
     }
-    fontAtlas->setLerpType(fontConfig.lerpType, fontConfig.lerpType);
+    fontAtlas->setLerpType(fontDescr.lerpType, fontDescr.lerpType);
     fontAtlas->unbind();
     return fontAtlas;
 }
@@ -120,35 +121,55 @@ void RenderFontManager::deinit() {
 
 void RenderFontManager::ET_onContextCreated() {
     auto renderConfig = GetGlobal<RenderConfig>();
-    auto res = createFont(renderConfig->fontConfig);
-    if(!res) {
-        LogError("[RenderFontManager::ET_onContextCreated] Can't create default font");
+    if(!createFont(renderConfig->fontsConfig.gameFont)) {
+        LogError("[RenderFontManager::ET_onContextCreated] Can't create 'Game' font");
+    }
+    if(!createFont(renderConfig->fontsConfig.debugFont)) {
+        LogError("[RenderFontManager::ET_onContextCreated] Can't create 'Debug' font");
     }
 }
 
 void RenderFontManager::ET_onContextDestroyed() {
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::ET_getDefaultFont() {
+std::shared_ptr<RenderFont> RenderFontManager::ET_createFont(EFontType fontType) {
     auto renderConfig = GetGlobal<RenderConfig>();
-    return createFont(renderConfig->fontConfig);
-}
-
-std::shared_ptr<RenderFont> RenderFontManager::createFont(const FontConfig& fontConfig) {
-    std::string fontName = fontConfig.file +  '_' + std::to_string(fontConfig.size);
-    auto it = fonts.find(fontName);
-    if(it != fonts.end()) {
-        return it->second;
-    }
-    auto font = createFontImpl(fontConfig);
-    if(font) {
-        fonts[std::move(fontName)] = font;
-        return font;
+    switch(fontType) {
+        case EFontType::Game: {
+            return createFont(renderConfig->fontsConfig.gameFont);
+        }
+        case EFontType::Debug: {
+            return createFont(renderConfig->fontsConfig.debugFont);
+        }
+        default: {
+            assert(false && "Invalid font type");
+        }
     }
     return nullptr;
 }
 
-std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& fontConfig) {
+std::shared_ptr<RenderFont> RenderFontManager::createFont(const FontDescription& fontDescr) {
+    std::string fontName = fontDescr.file +  '_' + std::to_string(fontDescr.size);
+    auto it = fonts.find(fontName);
+    if(it != fonts.end()) {
+        return it->second;
+    }
+
+    auto createStartT = TimePoint::GetNowTime();
+
+    auto font = createFontImpl(fontDescr);
+    if(!font) {
+        return nullptr;
+    }
+
+    float msValue = -createStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
+    LogDebug("[RenderFontManager::createFont] Font '%s' created in %.1f ms", fontName, msValue);
+
+    fonts[std::move(fontName)] = font;
+    return font;
+}
+
+std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontDescription& fontDescr) {
     assert(RenderUtils::IsOpenGLContextExists() && "Can't create font without OpenGL context");
 
     FT_Library ftLib;
@@ -157,11 +178,11 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
         return nullptr;
     }
     Buffer fontBuff;
-    ET_SendEventReturn(fontBuff, &ETAssets::ET_loadAsset, fontConfig.file.c_str());
+    ET_SendEventReturn(fontBuff, &ETAssets::ET_loadAsset, fontDescr.file.c_str());
     if(!fontBuff) {
         FT_Done_FreeType(ftLib);
         LogError("[RenderFontManager::createFontImpl] Can't load font from: '%s'",
-            fontConfig.file);
+            fontDescr.file);
         return nullptr;
     }
     FT_Face fontFace = nullptr;
@@ -169,13 +190,13 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
         static_cast<FT_Long>(fontBuff.getSize()), 0, &fontFace)) {
         FT_Done_FreeType(ftLib);
         LogError("[RenderFontManager::createFontImpl] Can't create memory font face for font: '%s'",
-            fontConfig.file);
+            fontDescr.file);
         return nullptr;
     }
 
-    assert(fontConfig.size > 0 && "Negative font size");
+    assert(fontDescr.size > 0 && "Negative font size");
 
-    FT_Set_Pixel_Sizes(fontFace, 0, fontConfig.size);
+    FT_Set_Pixel_Sizes(fontFace, 0, fontDescr.size);
 
     Vec2i texSize(0);
 
@@ -198,7 +219,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
     std::shared_ptr<RenderFont> font(new RenderFont(fontHeight));
 
     int ftRenderFlag = FT_LOAD_RENDER;
-    if(fontConfig.monochrome) {
+    if(fontDescr.monochrome) {
         ftRenderFlag |= FT_LOAD_TARGET_MONO;
     }
 
@@ -220,7 +241,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
             glyph->bitmap.rows / static_cast<float>(texSize.y));
 
         if(glyphData.size > Vec2i(0)) {
-            if(fontConfig.monochrome) {
+            if(fontDescr.monochrome) {
                 writeMonochromeBitmapToBuffer(texBuff, texSize, Vec2i(shift, 0),
                     glyphData.size, glyph->bitmap.pitch, glyph->bitmap.buffer);
             } else {
@@ -235,10 +256,10 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontConfig& 
     FT_Done_Face(fontFace);
     FT_Done_FreeType(ftLib);
 
-    auto fontAtlas = createFontAtlas(texBuff, texSize, fontConfig);
+    auto fontAtlas = createFontAtlas(texBuff, texSize, fontDescr);
     if(!fontAtlas) {
         LogError("[RenderFontManager::createFontImpl] Can't create font atlas for a font: '%s'",
-            fontConfig.file);
+            fontDescr.file);
         return nullptr;
     }
     font->setFontAtlas(fontAtlas);

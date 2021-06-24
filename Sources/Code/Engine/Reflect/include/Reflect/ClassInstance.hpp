@@ -49,6 +49,7 @@ public:
     }
 
     void* get();
+    const void* get() const;
 
     ClassInfo* getClassInfo();
     TypeId getInstanceTypeId() const;

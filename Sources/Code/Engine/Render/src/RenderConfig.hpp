@@ -13,7 +13,7 @@ public:
     std::vector<std::string> tasks;
 };
 
-class FontConfig {
+class FontDescription {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -24,6 +24,17 @@ public:
     int size;
     ETextureLerpType lerpType;
     bool monochrome;
+};
+
+class FontsConfig {
+public:
+
+    static void Reflect(ReflectContext& ctx);
+
+public:
+
+    FontDescription gameFont;
+    FontDescription debugFont;
 };
 
 class CameraConfig {
@@ -54,7 +65,7 @@ public:
 
 public:
 
-    FontConfig fontConfig;
+    FontsConfig fontsConfig;
     CameraConfig cameraConfig;
     DebugTasks debugTaskConfig;
     ParticlesConfig particlesConfig;

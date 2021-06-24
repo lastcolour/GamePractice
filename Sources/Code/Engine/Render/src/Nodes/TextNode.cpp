@@ -18,7 +18,7 @@ void TextNode::onInit() {
     setGeometry(PrimitiveGeometryType::Text);
     setShader("text_solid_color");
     setBlendingMode(BlendMode{BlendType::SRC_ALPHA, BlendType::ONE_MINUS_SRC_ALPHA});
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_getDefaultFont);
+    setFontType(EFontType::Game);
 }
 
 void TextNode::setFontHeight(float newFontHeight) {
@@ -145,4 +145,8 @@ bool TextNode::canRender() const {
 
 void TextNode::setAlignAtCenter(bool flag) {
     alignAtCenter = flag;
+}
+
+void TextNode::setFontType(EFontType newFontType) {
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, newFontType);
 }

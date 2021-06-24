@@ -3,6 +3,7 @@
 
 #include "Math/AABB.hpp"
 #include "Render/TextureInfo.hpp"
+#include "Render/RenderCommon.hpp"
 
 class StencilWirteReadData;
 
@@ -35,6 +36,8 @@ struct ETRenderTextLogic {
     virtual void ET_setText(const char* text) = 0;
     virtual void ET_setColor(const ColorB& color) = 0;
     virtual void ET_setFontHeight(float newFontHeight) = 0;
+    virtual void ET_setFontType(EFontType newFontType) = 0;
+    virtual EFontType ET_getFontType() const = 0;
     virtual AABB2D ET_getTextAABB() const = 0;
 };
 

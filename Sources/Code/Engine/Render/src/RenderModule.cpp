@@ -9,7 +9,6 @@
 #include "RenderTickManager.hpp"
 #include "Debug/DebugRender.hpp"
 #include "Debug/TasksStatsTracker.hpp"
-#include "Shaders/RenderShadersParams.hpp"
 #include "Logics/ParticlesSystem.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
 #include "Logics/RenderTextLogic.hpp"
@@ -18,7 +17,6 @@
 #include "Logics/RenderLinearGradientRect.hpp"
 #include "Logics/RenderBlurLogic.hpp"
 #include "Logics/RenderStencilLogic.hpp"
-#include "Logics/RenderQuadLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "RenderConfig.hpp"
 #include "Core/GlobalData.hpp"
@@ -48,9 +46,6 @@ void RenderModule::createSystemConfigs() const {
 }
 
 void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
-    ReflectShadersParams();
-
-    logicsRegister.registerLogic<RenderQuadLogic>();
     logicsRegister.registerLogic<RenderSimpleLogic>();
     logicsRegister.registerLogic<RenderTextLogic>();
     logicsRegister.registerLogic<RenderImageLogic>();

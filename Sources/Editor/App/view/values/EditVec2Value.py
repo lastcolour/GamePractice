@@ -14,14 +14,14 @@ class EditVec2Value(QWidget):
 
         self._rootLayout = QHBoxLayout()
 
-        self._xLabel = QLabel("<b>X:</>")
+        self._xLabel = QLabel("<b>X:</b>")
         self._rootLayout.addWidget(self._xLabel)
 
         self._xSpinBox = EditFloatSpinBox()
         self._xSpinBox.valueChanged.connect(self._signal_xSpinBox_valueChanged)
         self._rootLayout.addWidget(self._xSpinBox)
 
-        self._yLabel = QLabel("<b>Y:</>")
+        self._yLabel = QLabel("<b>Y:</b>")
         self._rootLayout.addWidget(self._yLabel)
 
         self._ySpinBox = EditFloatSpinBox()

@@ -58,9 +58,9 @@ public:
         }
         auto valueTypeId = InvalidTypeId;
         if constexpr (type == ClassValueType::Array) {
-            valueTypeId = GetTypeId<ValueT::value_type>();
+            valueTypeId = GetTypeId<typename ValueT::value_type>();
         } else if constexpr (type == ClassValueType::PolymorphObject){
-            valueTypeId = GetTypeId<ValueT::ObjectType>();
+            valueTypeId = GetTypeId<typename ValueT::ObjectType>();
         } else {
             valueTypeId = GetTypeId<ValueT>();
         }
