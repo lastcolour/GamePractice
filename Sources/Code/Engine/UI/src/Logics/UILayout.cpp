@@ -16,7 +16,7 @@ void UILayout::Reflect(ReflectContext& ctx) {
 
 UILayout::UILayout() :
     combinedBox(0.f),
-    extraZOffset(0),
+    extraZOffset(1),
     isCalculatingLayout(false) {
 }
 
@@ -209,7 +209,7 @@ void UILayout::calculateLayout() {
 
     int childZIndex = 0;
     ET_SendEventReturn(childZIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-    childZIndex += extraZOffset + 1;
+    childZIndex += extraZOffset;
 
     for(size_t i = 0u; i < children.size(); ++i) {
         auto childId = children[i];
@@ -228,7 +228,7 @@ void UILayout::calculateLayout() {
 }
 
 void UILayout::ET_onZIndexChanged(int newZIndex) {
-    int childZIndex = newZIndex + extraZOffset + 1;
+    int childZIndex = newZIndex + extraZOffset;
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }

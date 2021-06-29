@@ -7,6 +7,28 @@
 #include "Game/ETLevelProgress.hpp"
 #include "Render/ETParticlesSystem.hpp"
 
+namespace {
+
+void queueStarAppearEvent(EventSequence& eventSeq, EntityId startId, EntityId shakeBoxId, SoundEvent& soundEvent) {
+    {
+        EventSequence::Event event;
+        event.targetId = startId;
+        event.animType = EAnimSequenceType::Appear;
+        event.onEndCallback = [&soundEvent](){
+            soundEvent.emit();
+        };
+        eventSeq.addEvent(event);
+    }
+    {
+        EventSequence::Event event;
+        event.targetId = shakeBoxId;
+        event.animType = EAnimSequenceType::Shake;
+        eventSeq.addEvent(event);
+    }
+}
+
+} // namespace
+
 void GameResultViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameResultViewScript>("GameResultViewScript")) {
         classInfo->addField("levelName", &GameResultViewScript::levelNameId);
@@ -15,7 +37,9 @@ void GameResultViewScript::Reflect(ReflectContext& ctx) {
         classInfo->addField("timeBox", &GameResultViewScript::timeBoxId);
         classInfo->addField("scoreValue", &GameResultViewScript::scoreValueId);
         classInfo->addField("scoreBox", &GameResultViewScript::scoreBoxId);
+        classInfo->addField("shakeBox", &GameResultViewScript::shakeBoxId);
         classInfo->addField("effect", &GameResultViewScript::emitterId);
+        classInfo->addField("starAppearSound", &GameResultViewScript::starAppearSound);
         classInfo->addField("stars", &GameResultViewScript::progressStars);
     }
 }
@@ -74,22 +98,13 @@ void GameResultViewScript::ET_onViewGetFocus() {
     ET_SendEvent(emitterId, &ETParticlesSystem::ET_emit);
 
     if(starsCount > 0) {
-        EventSequence::Event event;
-        event.targetId = progressStars.fristId;
-        event.animType = EAnimSequenceType::Appear;
-        eventSeq.addEvent(event);
+        queueStarAppearEvent(eventSeq, progressStars.fristId, shakeBoxId, starAppearSound);
     }
     if(starsCount > 1) {
-        EventSequence::Event event;
-        event.targetId = progressStars.secondId;
-        event.animType = EAnimSequenceType::Appear;
-        eventSeq.addEvent(event);
+        queueStarAppearEvent(eventSeq, progressStars.secondId, shakeBoxId, starAppearSound);
     }
     if(starsCount > 2) {
-        EventSequence::Event event;
-        event.targetId = progressStars.thirdId;
-        event.animType = EAnimSequenceType::Appear;
-        eventSeq.addEvent(event);
+        queueStarAppearEvent(eventSeq, progressStars.thirdId, shakeBoxId, starAppearSound);
     }
     {
         EventSequence::Event event;

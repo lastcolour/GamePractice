@@ -60,6 +60,7 @@ private:
     float switchDuration;
     std::vector<SwitchTask> switchTasks;
     SoundEvent switchSoundEvent;
+    EntityId swapEffectId;
 };
 
 #endif /* __GAME_BOARD_INTERACTION_LOGIC_HPP__ */

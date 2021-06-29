@@ -83,7 +83,7 @@ void RenderTextLogic::ET_setText(const char* str) {
 
 void RenderTextLogic::ET_setFontType(EFontType newFontType) {
     fontType = newFontType;
-    ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, EFontType::Game);
+    ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, fontType);
     ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, fontT=newFontType](){
         auto textProxyNode = static_cast<TextNode*>(node);
         textProxyNode->setFontType(fontT);

@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": -193.44000244140625,
+                "x": -186.239990234375,
                 "y": -67.67999267578125,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -43.470001220703125,
+                      "x": -48.24000549316406,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -80,7 +80,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 5.0,
+                            "fontSize": 4.5,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -97,14 +97,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 58,
+                          "drawPriority": 57,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 14.399999618530273,
+                          "fontSize": 12.960000038146973,
                           "text": "Progress: "
                         }
                       }
@@ -114,7 +114,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 35.144989013671875,
+                      "x": 41.94000244140625,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -143,15 +143,15 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 5.0,
+                            "fontSize": 4.5,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
-                              "left": 3.0,
+                              "left": 2.0,
                               "right": 0.0
                             }
                           },
-                          "text": "50% (15/30)"
+                          "text": "60% (15/30)"
                         }
                       },
                       {
@@ -160,15 +160,15 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 58,
+                          "drawPriority": 57,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 14.399999618530273,
-                          "text": "50% (15/30)"
+                          "fontSize": 12.960000038146973,
+                          "text": "60% (15/30)"
                         }
                       }
                     ]
@@ -183,7 +183,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 70.0,
+                      "width": 75.0,
                       "widthInv": "Grid",
                       "height": 13.0,
                       "heightInv": "Grid",
@@ -200,7 +200,7 @@
                   "type": "UILayout",
                   "id": 3,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -221,25 +221,25 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.8500000238418579,
-                    "drawPriority": 57,
+                    "alpha": 0.949999988079071,
+                    "drawPriority": 56,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_128x128.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/info_box_white_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 255,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
-                      "x": 201.60000610351562,
+                      "x": 216.0,
                       "y": 37.439998626708984
                     },
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
-                    "patchScale": 0.800000011920929
+                    "patchScale": 10.0
                   }
                 },
                 {
@@ -292,7 +292,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 5.760009765625,
+                "y": -5.760009765625,
                 "z": 0.0
               },
               "scale": {
@@ -361,7 +361,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 53,
+                          "drawPriority": 52,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -384,12 +384,12 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 100.0,
+                      "width": 120.0,
                       "widthInv": "Grid",
                       "height": 20.0,
                       "heightInv": "Grid",
                       "margin": {
-                        "top": 3.0,
+                        "top": 7.0,
                         "bot": 0.0,
                         "left": 0.0,
                         "right": 0.0
@@ -401,7 +401,7 @@
                   "type": "UILayout",
                   "id": 2,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -420,10 +420,10 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.949999988079071,
-                    "drawPriority": 52,
+                    "drawPriority": 51,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/info_box_white_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
                         "r": 0,
                         "g": 0,
@@ -432,12 +432,12 @@
                       }
                     },
                     "size": {
-                      "x": 288.0,
+                      "x": 345.6000061035156,
                       "y": 57.599998474121094
                     },
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
+                    "patchScale": 4.0
                   }
                 }
               ]
@@ -712,7 +712,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 72.0,
+                      "y": 72.00006103515625,
                       "z": 0.0
                     },
                     "scale": {
@@ -758,7 +758,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 429.1201171875,
+                      "y": 429.1199951171875,
                       "z": 0.0
                     },
                     "scale": {
@@ -804,7 +804,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 786.239990234375,
+                      "y": 786.2401123046875,
                       "z": 0.0
                     },
                     "scale": {
@@ -829,7 +829,7 @@
                   "type": "UILayout",
                   "id": 2,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Vertical",
                       "xAlign": "Center",
@@ -912,7 +912,7 @@
             "type": "UIScrollArea",
             "id": 2,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Vertical",
                 "origin": "End"
@@ -957,7 +957,7 @@
       "type": "UILayout",
       "id": 3,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 1,
         "style": {
           "type": "Vertical",
           "xAlign": "Center",

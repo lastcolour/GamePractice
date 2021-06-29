@@ -195,7 +195,7 @@ void ParticlesSystem::ET_emit() {
     }
 
     EmitRequest emitReq;
-    emitReq.syncWithSystemTm = true;
+    emitReq.tmTrackType = EParticleTMTrackType::System;
     emitReq.rootParticleId = InvalidRootParticleId;
 
     ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, emitReq](){
@@ -214,8 +214,33 @@ void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
 
     EmitRequest emitReq;
     emitReq.rootParticleId = InvalidRootParticleId;
-    emitReq.syncWithSystemTm = false;
+    emitReq.tmTrackType = EParticleTMTrackType::None;
     emitReq.tm = emitTm;
+
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, emitReq](){
+        auto particlesNode = static_cast<ParticlesNode*>(node);
+        auto& pool = particlesNode->getEmittersPool();
+        pool.createEmitter(emitReq);
+    });
+}
+
+void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
+    if(!ET_isVisible()) {
+        LogWarning("[ParticlesSystem::ET_emitTrackingEntity] Can't emit hidden particle effect: '%s'",
+            EntityUtils::GetEntityName(getEntityId()));
+        return;
+    }
+    if(!trackEntId.isValid()) {
+        LogWarning("[ParticlesSystem::ET_emitTrackingEntity] Can't emit system '%s' to track invalid entity",
+            EntityUtils::GetEntityName(getEntityId()));
+        return;
+    }
+
+    EmitRequest emitReq;
+    emitReq.rootParticleId = InvalidRootParticleId;
+    emitReq.tmTrackType = EParticleTMTrackType::Entity;
+    emitReq.trackEntId = trackEntId;
+    ET_SendEventReturn(emitReq.tm, trackEntId, &ETEntity::ET_getTransform);
 
     ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, emitReq](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
@@ -242,7 +267,7 @@ void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Transform& sp
 
     EmitRequest emitReq;
     emitReq.rootParticleId = rootParticleId;
-    emitReq.syncWithSystemTm = false;
+    emitReq.tmTrackType = EParticleTMTrackType::None;
     emitReq.tm = spawnTm;
 
     emittersPool.createEmitter(emitReq);

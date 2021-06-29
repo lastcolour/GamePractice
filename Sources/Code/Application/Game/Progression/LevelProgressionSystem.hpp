@@ -19,7 +19,6 @@ public:
     // ETLevelsProgression
     const LevelProgress* ET_getLevelProgress(const char* levelName) const override;
     void ET_setLevelProgress(const LevelProgress& newLevelProgress) override;
-    int ET_getStarsDone() const override;
     const LevelProgressDelta* ET_getProgressDelta() const override;
     void ET_resetProgressDelta() override;
 

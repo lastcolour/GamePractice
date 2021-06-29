@@ -5,6 +5,10 @@
 
 namespace GameUtils {
 
+const int BOARD_BACKGROUND_Z_OFFSET = 1;
+const int ELEM_HIGHLIGHT_Z_OFFSET = 2;
+const int BOARD_ELEM_Z_OFFSET = 3;
+
 EBoardElemState GetElemState(EntityId elemId);
 
 void SetElemState(EntityId elemId, EBoardElemState state);

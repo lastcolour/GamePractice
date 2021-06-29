@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 6,
+              "drawPriority": 5,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -133,7 +133,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 6,
+              "drawPriority": 5,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -263,7 +263,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 6,
+              "drawPriority": 5,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -365,7 +365,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 6,
+              "drawPriority": 5,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -495,7 +495,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 6,
+              "drawPriority": 5,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -597,7 +597,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 6,
+              "drawPriority": 5,
               "emission": {
                 "simTime": "Render",
                 "duration": 0.10000000149011612,
@@ -829,7 +829,7 @@
           "simTime": "Render",
           "duration": 5.0,
           "startDelay": 0.30000001192092896,
-          "autoStart": true,
+          "autoStart": false,
           "loop": false,
           "emitterSpace": "World",
           "emitterType": "Box",
@@ -949,7 +949,7 @@
           "simTime": "Render",
           "duration": 5.0,
           "startDelay": 0.6000000238418579,
-          "autoStart": true,
+          "autoStart": false,
           "loop": false,
           "emitterSpace": "World",
           "emitterType": "Box",
@@ -1068,7 +1068,7 @@
               0
             ],
             "normScale": 1.0,
-            "extraZOffset": 0
+            "extraZOffset": 1
           },
           {
             "target": [

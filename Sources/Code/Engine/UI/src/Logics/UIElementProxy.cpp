@@ -12,7 +12,7 @@ void UIProxyNode::Reflect(ReflectContext& ctx) {
 
 UIProxyNode::UIProxyNode() :
     normScale(1.f),
-    extraZOffset(0) {
+    extraZOffset(1) {
 }
 
 void UIElementProxy::Reflect(ReflectContext& ctx) {
@@ -56,7 +56,7 @@ UIBoxMargin UIElementProxy::ET_getMargin() const {
 
 void UIElementProxy::onZIndexChanged(int newZIndex) {
     for(auto& node : nodes) {
-        int nodeZIndex = newZIndex + node.extraZOffset + 1;
+        int nodeZIndex = newZIndex + node.extraZOffset;
         ET_SendEvent(node.entId, &ETRenderNode::ET_setDrawPriority, nodeZIndex);
     }
 }

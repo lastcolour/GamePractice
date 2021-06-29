@@ -121,7 +121,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -210,7 +210,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -639,7 +639,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -667,7 +667,7 @@
       "type": "UILayout",
       "id": 2,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 1,
         "style": {
           "type": "Vertical",
           "xAlign": "Center",

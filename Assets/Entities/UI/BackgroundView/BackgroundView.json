@@ -148,7 +148,7 @@
             "data": {
               "isVisible": true,
               "alpha": 0.4000000059604645,
-              "drawPriority": 1,
+              "drawPriority": 2,
               "size": {
                 "x": 600.0,
                 "y": 307.20001220703125
@@ -223,7 +223,7 @@
       "type": "UILayout",
       "id": 5,
       "data": {
-        "extraZOffset": 1,
+        "extraZOffset": 2,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",
@@ -240,7 +240,7 @@
       "type": "UILayout",
       "id": 6,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 2,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",

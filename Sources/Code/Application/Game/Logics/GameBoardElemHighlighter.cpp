@@ -1,6 +1,7 @@
 #include "Game/Logics/GameBoardElemHighlighter.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Entity/ETEntityManager.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {
@@ -8,14 +9,12 @@ void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
             &GameBoardElemHighlighter::highlightEntityName);
         classInfo->addField("fadeOutDuration", &GameBoardElemHighlighter::fadeOutDuration);
         classInfo->addField("cellScale", &GameBoardElemHighlighter::cellScale);
-        classInfo->addField("highlightZOffset", &GameBoardElemHighlighter::highlightZOffset);
     }
 }
 
 GameBoardElemHighlighter::GameBoardElemHighlighter() :
     fadeOutDuration(0.1f),
-    cellScale(0.95f),
-    highlightZOffset(0) {
+    cellScale(0.95f) {
 }
 
 GameBoardElemHighlighter::~GameBoardElemHighlighter() {
@@ -72,7 +71,7 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     freeElem->duration = 0.f;
     freeElem->state = State::FadeOut;
 
-    uiProxies.addItem(freeElem->entId, highlightZOffset);
+    uiProxies.addItem(freeElem->entId, GameUtils::ELEM_HIGHLIGHT_Z_OFFSET);
 
     Transform tm;
     ET_SendEventReturn(tm.pt, &ETGameBoard::ET_getPosFromBoardPos, cellPt);

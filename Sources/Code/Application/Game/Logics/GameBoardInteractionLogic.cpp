@@ -2,6 +2,7 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
+#include "Render/ETParticlesSystem.hpp"
 
 #include <cassert>
 
@@ -23,6 +24,7 @@ void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardInteractionLogic>("GameBoardInteraction")) {
         classInfo->addField("switchDuration", &GameBoardInteractionLogic::switchDuration);
         classInfo->addField("switchSound", &GameBoardInteractionLogic::switchSoundEvent);
+        classInfo->addField("swapEffectId", &GameBoardInteractionLogic::swapEffectId);
     }
 }
 
@@ -175,6 +177,7 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
     assert(firstId != secondId && "Can't switch same element");
 
     switchSoundEvent.emit();
+    ET_SendEvent(swapEffectId, &ETParticlesSystem::ET_emitTrackingEntity, firstId);
 
     SwitchTask task;
     task.duration = 0.f;

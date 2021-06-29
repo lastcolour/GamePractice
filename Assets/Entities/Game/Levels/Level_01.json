@@ -76,13 +76,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 25
+          "minScore": 1
         },
         "twoStars": {
-          "minScore": 50
+          "minScore": 2
         },
         "threeStars": {
-          "minScore": 100
+          "minScore": 3
         }
       }
     },
@@ -97,8 +97,6 @@
           "y": 10
         },
         "cellScale": 0.699999988079071,
-        "elemsZOffset": 2,
-        "backgroundZOffset": 0,
         "backgroundId": [
           1
         ]
@@ -127,10 +125,6 @@
           },
           {
             "elemType": "Yellow",
-            "weight": 1
-          },
-          {
-            "elemType": "Bomb",
             "weight": 1
           }
         ]

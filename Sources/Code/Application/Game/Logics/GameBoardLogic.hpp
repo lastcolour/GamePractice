@@ -86,8 +86,6 @@ protected:
     float moveSpeed;
     float moveAccel;
     int cellSize;
-    int elemsZOffset;
-    int backgroundZOffset;
     GameBoardFSM gameBoardFSM;
 };
 

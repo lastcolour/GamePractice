@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 471.03997802734375,
+          "y": 471.0400390625,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": 206.4000244140625,
+                "x": 204.96002197265625,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -64.79998779296875,
+                      "x": -72.0,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -122,7 +122,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -25.20001220703125,
+                      "x": -27.3599853515625,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -185,7 +185,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 19.14752197265625,
+                      "x": 27.67999267578125,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -259,7 +259,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 55.0,
+                      "width": 60.0,
                       "widthInv": "Grid",
                       "height": 12.0,
                       "heightInv": "Grid",
@@ -267,7 +267,7 @@
                         "top": 0.0,
                         "bot": 0.0,
                         "left": 0.0,
-                        "right": 5.0
+                        "right": 3.0
                       }
                     }
                   }
@@ -276,7 +276,7 @@
                   "type": "UILayout",
                   "id": 3,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Left",
@@ -300,25 +300,25 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.4000000059604645,
+                    "alpha": 0.5,
                     "drawPriority": 2,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/info_box_white_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 255,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
-                      "x": 158.39999389648438,
+                      "x": 172.8000030517578,
                       "y": 34.560001373291016
                     },
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
+                    "patchScale": 5.0
                   }
                 }
               ]
@@ -391,7 +391,7 @@
                   "type": "UILayout",
                   "id": 2,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -433,7 +433,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Right",
@@ -450,7 +450,7 @@
             "type": "UILayout",
             "id": 4,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -470,7 +470,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -5.12005615234375,
+          "y": -5.11993408203125,
           "z": 0.0
         },
         "scale": {
@@ -539,7 +539,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -559,7 +559,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -481.28009033203125,
+          "y": -481.2799987792969,
           "z": 0.0
         },
         "scale": {
@@ -675,7 +675,7 @@
       "type": "UILayout",
       "id": 2,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 1,
         "style": {
           "type": "Vertical",
           "xAlign": "Center",

@@ -52,7 +52,7 @@ void UIScrollArea::Reflect(ReflectContext& ctx) {
 
 UIScrollArea::UIScrollArea() :
     scrollProgress(0.f),
-    extraZOffset(0),
+    extraZOffset(1),
     isPressed(false),
     kinematicScrollEnabled(true) {
 }
@@ -88,7 +88,7 @@ void UIScrollArea::alignTarget() {
 
     int childZIndex = 0;
     ET_SendEventReturn(childZIndex, getEntityId(), &ETUIElement::ET_getZIndex);
-    childZIndex += extraZOffset + 1;
+    childZIndex += extraZOffset;
 
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
@@ -198,7 +198,7 @@ bool UIScrollArea::onMove(const Vec2& pt) {
 }
 
 void UIScrollArea::ET_onZIndexChanged(int newZIndex) {
-    int childZIndex = newZIndex + extraZOffset + 1;
+    int childZIndex = newZIndex + extraZOffset;
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
 }
 

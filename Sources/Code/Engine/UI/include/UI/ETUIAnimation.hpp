@@ -8,7 +8,8 @@ enum class EAnimSequenceType {
     Press,
     Appear,
     Disappear,
-    Highlight
+    Highlight,
+    Shake
 };
 
 enum class EShowEvent {

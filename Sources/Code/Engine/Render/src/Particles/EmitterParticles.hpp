@@ -18,10 +18,23 @@ struct SimulationConfig {
     ParticlesSubEmittersConfig subEmittorsConfig;
 };
 
+enum class EParticleTMTrackType {
+    None = 0,
+    System,
+    Entity
+};
+
 struct EmitRequest {
     Transform tm;
+    EntityId trackEntId;
     int rootParticleId;
-    bool syncWithSystemTm;
+    EParticleTMTrackType tmTrackType;
+
+public:
+
+    EmitRequest() :
+        rootParticleId(-1),
+        tmTrackType(EParticleTMTrackType::None) {}
 };
 
 enum class EmissionState {
@@ -54,6 +67,7 @@ private:
     void emitNew(float dt);
     void moveAlive(float dt);
     void updateState(float dt);
+    void updateTransform(const Transform& systemTm);
     void spawnNewParticle(Particle& p);
     void simulateGravities(const Transform& tm, float dt);
     void updateIntacesData(float dt);
@@ -75,7 +89,7 @@ private:
     Math::RandomFloatGenerator floatGen;
     unsigned int spawnedCount;
     std::atomic<EmissionState> emissionState;
-    bool hasDependentSubEmitters;
+    SubEmitterTriggerEvent subEmitterFlags;
 };
 
 #endif /* __EMITTER_PARTICLES_HPP__ */

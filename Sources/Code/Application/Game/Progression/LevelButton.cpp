@@ -169,3 +169,8 @@ void LevelButton::ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState 
         eventSeq.addEvent(event);
     }
 }
+
+int LevelButton::ET_getLevelStars() const {
+    assert(starsCount >= 0 && "Invalid stars amount");
+    return starsCount;
+}

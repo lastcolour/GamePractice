@@ -14,7 +14,6 @@ struct ETLevelsProgression {
     virtual ~ETLevelsProgression() = default;
     virtual const LevelProgress* ET_getLevelProgress(const char* levelName) const = 0;
     virtual void ET_setLevelProgress(const LevelProgress& newLevelProgress) = 0;
-    virtual int ET_getStarsDone() const = 0;
     virtual const LevelProgressDelta* ET_getProgressDelta() const = 0;
     virtual void ET_resetProgressDelta() = 0;
 };
@@ -26,6 +25,7 @@ struct ETLevelButton {
     virtual void ET_setLevelState(ELevelButtonState newState, int newStarsCount) = 0;
     virtual void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int newStarCount) = 0;
     virtual ELevelButtonState ET_getState() const = 0;
+    virtual int ET_getLevelStars() const = 0;
 };
 
 struct ETLevelButtonList {

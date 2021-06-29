@@ -134,7 +134,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 5.35498046875,
+          "y": 4.47998046875,
           "z": 0.0
         },
         "scale": {
@@ -270,7 +270,7 @@
       "type": "UILayout",
       "id": 6,
       "data": {
-        "extraZOffset": 1,
+        "extraZOffset": 2,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",
@@ -313,7 +313,7 @@
       "type": "UILayout",
       "id": 9,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 1,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",

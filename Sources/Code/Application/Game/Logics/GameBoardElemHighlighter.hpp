@@ -59,7 +59,6 @@ private:
     std::vector<HighlightElem> elements;
     float fadeOutDuration;
     float cellScale;
-    int highlightZOffset;
 };
 
 #endif /*__GAME_BOARD_ELEM_HIGHLIGHTER_HPP__ */

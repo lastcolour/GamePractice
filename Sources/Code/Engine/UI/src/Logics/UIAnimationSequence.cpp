@@ -82,7 +82,8 @@ void UIAnimationSequence::Reflect(ReflectContext& ctx) {
             {"Appear", EAnimSequenceType::Appear},
             {"Disappear", EAnimSequenceType::Disappear},
             {"Press", EAnimSequenceType::Press},
-            {"Highlight", EAnimSequenceType::Highlight}
+            {"Highlight", EAnimSequenceType::Highlight},
+            {"Shake", EAnimSequenceType::Shake}
         });
     }
     if(auto enumInfo = ctx.enumInfo<EShowEvent>("EShowEvent")) {
@@ -235,11 +236,10 @@ void UIAnimationSequence::ET_onUITick(float dt) {
         currUIAddTm);
 
     if(animFinished) {
-        auto prevTriggerId = triggerId;
         if(cyclic) {
             restartCycle();
         } else {
-            prevTriggerId = triggerId;
+            auto prevTriggerId = triggerId;
             ET_stopAnimation();
             ET_SendEvent(prevTriggerId, &ETUIAnimationSequenceEvent::ET_onAnimationPlayed,
                 getEntityId(), seqType);
@@ -270,6 +270,7 @@ void UIAnimationSequence::ET_stopAnimation() {
     }
 
     isPlaying = false;
+    triggerId = InvalidEntityId;
 
     for(auto& frame : frames) {
         frame.state = EAnimFrameState::Finished;

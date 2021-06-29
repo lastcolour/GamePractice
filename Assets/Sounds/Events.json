@@ -69,6 +69,16 @@
                 "loop":false
             },
             "nextDelay":0.05
+        },
+        {
+            "name":"star_appear_01",
+            "sound":{
+                "file":"Sounds/UI/star_appear_01.ogg",
+                "volume":0.3,
+                "group":"UI",
+                "loop":false
+            },
+            "nextDelay":0
         }
     ]
 }

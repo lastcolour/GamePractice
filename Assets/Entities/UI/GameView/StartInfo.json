@@ -73,7 +73,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 36,
+                    "drawPriority": 3,
                     "color": {
                       "r": 0,
                       "g": 0,
@@ -248,10 +248,10 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 33,
+              "drawPriority": 1,
               "textureInfo": {
-                "filename": "Images/Base/rblock_256x256.png",
-                "lerpType": "Linear",
+                "filename": "Images/UI/info_box_white_bg.png",
+                "lerpType": "Point",
                 "tintColor": {
                   "r": 0,
                   "g": 0,
@@ -265,7 +265,7 @@
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
-              "patchScale": 1.0
+              "patchScale": 2.0
             }
           }
         ]

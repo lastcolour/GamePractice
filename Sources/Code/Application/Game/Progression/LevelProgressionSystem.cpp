@@ -85,14 +85,6 @@ void LevelProgressionSystem::ET_setLevelProgress(const LevelProgress& newLevelPr
     ReflectUtils::AsyncSaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE);
 }
 
-int LevelProgressionSystem::ET_getStarsDone() const {
-    int starsDone = 0;
-    for(auto& lvlProgress : levelsData.levels) {
-        starsDone += lvlProgress.stars;
-    }
-    return starsDone;
-}
-
 const LevelProgressDelta* LevelProgressionSystem::ET_getProgressDelta() const {
     return progressDelta.get();
 }

@@ -3,6 +3,8 @@
 #include "Render/ETParticlesSystem.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 #include "RenderUtils.hpp"
+#include "Core/Utils.hpp"
+#include "Nodes/ETRenderNodeManager.hpp"
 
 #include <cassert>
 
@@ -97,8 +99,12 @@ void simulateVortexField(const GravityField& field, const Transform& tm, int act
     }
 }
 
-void triggerSubEmitters(const Particle* p, SubEmitterTriggerEvent event,
-    const SimulationConfig& simConf, const EmitRequest& emitReq) {
+bool triggerSubEmitters(const Particle* p, SubEmitterTriggerEvent event,
+    const SimulationConfig& simConf, const EmitRequest& emitReq, SubEmitterTriggerEvent flags) {
+
+    if(!EnumFlagsIntersect(event, flags)) {
+        return false;
+    }
 
     int pId = -1;
     Transform tm;
@@ -125,18 +131,31 @@ void triggerSubEmitters(const Particle* p, SubEmitterTriggerEvent event,
             ET_SendEvent(sub.entId, &ETParticlesSystem::ET_spawnSubEmitter, pId, tm);
         }
     }
+
+    return true;
 }
 
-bool checkIfHasDependentSubEmitters(const SimulationConfig& simConf) {
+SubEmitterTriggerEvent caclSubEmitterFlags(const SimulationConfig& simConf) {
+    SubEmitterTriggerEvent flags = SubEmitterTriggerEvent::None;
     for(auto& sub : simConf.subEmittorsConfig.subEmitters) {
         if(!sub.entId.isValid()) {
             continue;
         }
-        if(sub.event == SubEmitterTriggerEvent::OnParticleLive) {
-            return true;
-        }
+        assert(sub.event != SubEmitterTriggerEvent::None && "Invalid sub event");
+        flags = EnumFlagsUnite(flags, sub.event);
     }
-    return false;
+    return flags;
+}
+
+int getNewParticlesAmount(const SimulationConfig& simConf, float dt) {
+    auto maxAmount = simConf.emission.lifetime * simConf.emission.emissionRate;
+    auto emitCount = simConf.emission.emissionRate * dt;
+    if(maxAmount < 1.f) {
+        emitCount = std::min(1.f, emitCount);
+    } else {
+        emitCount = std::min(maxAmount, emitCount);
+    }
+    return static_cast<int>(emitCount);
 }
 
 } // namespace
@@ -150,18 +169,18 @@ EmitterParticles::EmitterParticles(ParticlesEmittersPool& emittersPool) :
     floatGen(0.f, 1.f),
     spawnedCount(0),
     emissionState(EmissionState::Finished),
-    hasDependentSubEmitters(false) {
+    subEmitterFlags(SubEmitterTriggerEvent::None) {
 }
 
 EmitterParticles::~EmitterParticles() {
     if(emissionState == EmissionState::Finished) {
         return;
     }
-    if(hasDependentSubEmitters) {
-        for(int i = 0; i < activeCount; ++i) {
-            const auto& p = particles[i];
-            triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleDeath,
-                simConf, emitReq);
+    for(int i = 0; i < activeCount; ++i) {
+        const auto& p = particles[i];
+        if(!triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleDeath,
+            simConf, emitReq, subEmitterFlags)) {
+            break;
         }
     }
 }
@@ -177,7 +196,7 @@ void EmitterParticles::removeOld(float dt) {
             ++j;
         } else {
             triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleDeath,
-                simConf, emitReq);
+                simConf, emitReq, subEmitterFlags);
         }
     }
     auto removedCount = activeCount - j;
@@ -275,9 +294,7 @@ int EmitterParticles::generateParticleId() {
 
 void EmitterParticles::emitNew(float dt) {
     emitFracTime += dt;
-
-    int emitCount = static_cast<int>(std::min(simConf.emission.lifetime * simConf.emission.emissionRate,
-        simConf.emission.emissionRate * emitFracTime));
+    auto emitCount = getNewParticlesAmount(simConf, emitFracTime);
     emitCount = pool.addParticles(emitCount);
     if(emitCount == 0) {
         return;
@@ -299,7 +316,7 @@ void EmitterParticles::emitNew(float dt) {
         auto& p = particles[i];
         spawnNewParticle(p);
         triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleSpawn,
-            simConf, emitReq);
+            simConf, emitReq, subEmitterFlags);
     }
 
     activeCount += emitCount;
@@ -326,11 +343,11 @@ void EmitterParticles::moveAlive(float dt) {
 
     updateIntacesData(dt);
 
-    if(hasDependentSubEmitters) {
-        for(int i = 0; i < activeCount; ++i) {
-            auto& p = particles[i];
-            triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleLive,
-                simConf, emitReq);
+    for(int i = 0; i < activeCount; ++i) {
+        auto& p = particles[i];
+        if(!triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleLive,
+            simConf, emitReq, subEmitterFlags)) {
+            break;
         }
     }
 }
@@ -385,7 +402,8 @@ void EmitterParticles::updateState(float dt) {
             if(duration < simConf.emission.startDelay) {
                 break;
             }
-            triggerSubEmitters(nullptr, SubEmitterTriggerEvent::OnStart, simConf, emitReq);
+            triggerSubEmitters(nullptr, SubEmitterTriggerEvent::OnStart, simConf,
+                emitReq, subEmitterFlags);
             duration = 0.f;
             emitFracTime = 0.f;
             emissionState = EmissionState::Alive;
@@ -407,7 +425,8 @@ void EmitterParticles::updateState(float dt) {
             if(activeCount == 0) {
                 emissionState = EmissionState::Finished;
                 activeCount = 0;
-                triggerSubEmitters(nullptr, SubEmitterTriggerEvent::OnEnd, simConf, emitReq);
+                triggerSubEmitters(nullptr, SubEmitterTriggerEvent::OnEnd, simConf,
+                    emitReq, subEmitterFlags);
                 if(simConf.emission.loop) {
                     start(emitReq);
                 }
@@ -425,13 +444,11 @@ void EmitterParticles::updateState(float dt) {
 }
 
 void EmitterParticles::simulate(const Transform& systemTm, float dt) {
-    if(emitReq.syncWithSystemTm) {
-        emitReq.tm = systemTm;
-    }
     updateState(dt);
     if(emissionState == EmissionState::Finished) {
         return;
     }
+    updateTransform(systemTm);
     if(activeCount > 0) {
         removeOld(dt);
     }
@@ -449,7 +466,7 @@ void EmitterParticles::start(const EmitRequest& emitRequest) {
     activeCount = 0;
     emissionState = EmissionState::StartDelay;
     emitReq = emitRequest;
-    hasDependentSubEmitters = checkIfHasDependentSubEmitters(simConf);
+    subEmitterFlags = caclSubEmitterFlags(simConf);
 }
 
 void EmitterParticles::stop() {
@@ -488,6 +505,27 @@ int EmitterParticles::getRootParticleId() const {
 }
 
 void EmitterParticles::updateSubEmitterTm(const Transform& newTm) {
-    assert(!emitReq.syncWithSystemTm && "Can't update emitter pos");
+    assert(emitReq.tmTrackType == EParticleTMTrackType::None && "Can't update emitter pos");
     emitReq.tm = newTm;
+}
+
+void EmitterParticles::updateTransform(const Transform& systemTm) {
+    switch(emitReq.tmTrackType) {
+        case EParticleTMTrackType::None: {
+            break;
+        }
+        case EParticleTMTrackType::System: {
+            emitReq.tm = systemTm;
+            break;
+        }
+        case EParticleTMTrackType::Entity: {
+            ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [req=&emitReq](){
+                ET_SendEventReturn(req->tm, req->trackEntId, &ETEntity::ET_getTransform);
+            });
+            break;
+        }
+        default: {
+            assert(false && "Invalid track tm type");
+        }
+    }
 }

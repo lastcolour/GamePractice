@@ -22,8 +22,6 @@ void GameBoardLogic::Reflect(ReflectContext& ctx) {
         classInfo->addField("fallAcceleration", &GameBoardLogic::moveAccel);
         classInfo->addField("size", &GameBoardLogic::boardSize);
         classInfo->addField("cellScale", &GameBoardLogic::cellScale);
-        classInfo->addField("elemsZOffset", &GameBoardLogic::elemsZOffset);
-        classInfo->addField("backgroundZOffset", &GameBoardLogic::backgroundZOffset);
         classInfo->addField("backgroundId", &GameBoardLogic::backgroundId);
     }
 }
@@ -35,9 +33,7 @@ GameBoardLogic::GameBoardLogic() :
     cellScale(0.9f),
     moveSpeed(1.f),
     moveAccel(4.f),
-    cellSize(0),
-    elemsZOffset(1),
-    backgroundZOffset(0) {
+    cellSize(0) {
 }
 
 GameBoardLogic::~GameBoardLogic() {
@@ -128,7 +124,7 @@ void GameBoardLogic::init() {
     visualBox.setCenter(tm.pt.x, tm.pt.y);
     ET_resize(visualBox);
 
-    uiProxies.addItem(backgroundId, backgroundZOffset);
+    uiProxies.addItem(backgroundId, GameUtils::BOARD_BACKGROUND_Z_OFFSET);
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
@@ -468,7 +464,7 @@ void GameBoardLogic::setupElem(BoardElement& elem, const Vec2i& boardPt) {
     setElemBoardPos(elem, boardPt);
     GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
     ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
-    uiProxies.addItem(elem.entId, elemsZOffset);
+    uiProxies.addItem(elem.entId, GameUtils::BOARD_ELEM_Z_OFFSET);
 }
 
 std::vector<EntityId> GameBoardLogic::ET_getAllElemsOfType(EBoardElemType queryElemType) const {

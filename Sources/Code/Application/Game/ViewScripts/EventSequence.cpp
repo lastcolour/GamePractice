@@ -100,8 +100,17 @@ void EventSequence::forceFinish() {
     if(!isPlaying) {
         return;
     }
+    for(auto& event : pendingEvents) {
+        event.startDelay = -1.f;
+    }
+    if(waitDelayEvent) {
+        waitDelayEvent = nullptr;
+        startNextEvent();
+    }
     while(!pendingEvents.empty()) {
-        ET_SendEvent(&ETUITimerEvents::ET_onUITick, 32.f);
+        auto& event = pendingEvents.front();
+        ET_SendEvent(event.targetId, &ETUIAnimationSequence::ET_stopAnimation);
+        ET_onAnimationPlayed(event.targetId, event.animType);
     }
 }
 

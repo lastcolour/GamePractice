@@ -56,7 +56,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "fontSize": 18.0,
+                      "fontSize": 20.0,
                       "margin": {
                         "top": 0.0,
                         "bot": 0.0,
@@ -80,7 +80,7 @@
                       "b": 0,
                       "a": 255
                     },
-                    "fontSize": 51.84000015258789,
+                    "fontSize": 57.599998474121094,
                     "text": "Success!"
                   }
                 },
@@ -229,7 +229,7 @@
             "type": "UILayout",
             "id": 4,
             "data": {
-              "extraZOffset": 2,
+              "extraZOffset": 3,
               "style": {
                 "type": "Horizontal",
                 "xAlign": "Center",
@@ -250,8 +250,8 @@
               "alpha": 1.0,
               "drawPriority": 2,
               "textureInfo": {
-                "filename": "Images/Base/rblock_256x256.png",
-                "lerpType": "Linear",
+                "filename": "Images/UI/info_box_white_bg.png",
+                "lerpType": "Point",
                 "tintColor": {
                   "r": 0,
                   "g": 0,
@@ -265,7 +265,7 @@
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
-              "patchScale": 1.0
+              "patchScale": 2.0
             }
           }
         ]
@@ -277,7 +277,7 @@
       "type": "UILayout",
       "id": 3,
       "data": {
-        "extraZOffset": 1,
+        "extraZOffset": 2,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",

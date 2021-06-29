@@ -1,0 +1,107 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "ParticlesSystem",
+      "id": 1,
+      "data": {
+        "isVisible": true,
+        "alpha": 0.5,
+        "drawPriority": 0,
+        "emission": {
+          "simTime": "Game",
+          "duration": 0.20000000298023224,
+          "startDelay": 0.0,
+          "autoStart": false,
+          "loop": false,
+          "emitterSpace": "World",
+          "emitterType": "Box",
+          "emitterVal": {
+            "x": 17.0,
+            "y": 17.0
+          },
+          "thickness": 0.0,
+          "emissionRate": 50.0,
+          "direction": 0.0,
+          "directionVar": 0.0,
+          "lifetime": 0.20000000298023224,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 0.0,
+          "speedVar": 0.0,
+          "initRotation": 90.0,
+          "initRotationVar": 0.0,
+          "rotationSpeed": 0.0,
+          "rotationSpeedVar": 0.0,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 5.0,
+            "y": 5.0
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          }
+        },
+        "color": {
+          "startCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          },
+          "fadeIn": 0.10000000149011612,
+          "fadeOut": 0.10000000149011612
+        },
+        "render": {
+          "blending": "Additive",
+          "textureInfo": {
+            "filename": "Images/Base/block_1x1.png",
+            "lerpType": "Point",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
+        },
+        "subEmitters": {
+          "subEmitters": []
+        },
+        "gravity": {
+          "fields": []
+        }
+      }
+    }
+  ]
+}

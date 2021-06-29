@@ -4,6 +4,7 @@
 #include "Game/ViewScripts/BaseViewScript.hpp"
 #include "Game/ViewScripts/ProgressionStars.hpp"
 #include "Game/ViewScripts/EventSequence.hpp"
+#include "Audio/SoundEvent.hpp"
 
 class GameResultViewScript : public BaseViewScript {
 public:
@@ -28,6 +29,7 @@ protected:
 
 private:
 
+    SoundEvent starAppearSound;
     EventSequence eventSeq;
     ProgressionStars progressStars;
     EntityId continueButtonId;
@@ -37,6 +39,7 @@ private:
     EntityId scoreBoxId;
     EntityId levelNameId;
     EntityId emitterId;
+    EntityId shakeBoxId;
 };
 
 #endif /* __GAME_RESULT_VIEW_SCRIPT_HPP__ */

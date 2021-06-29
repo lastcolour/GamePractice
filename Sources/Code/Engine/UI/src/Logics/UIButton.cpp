@@ -145,6 +145,7 @@ EInputEventResult UIButton::onRelease(const Vec2i& pt) {
     if(!UI::PlayAnimation(getEntityId(), EAnimSequenceType::Press, getEntityId())) {
         ET_onAnimationPlayed(getEntityId(), EAnimSequenceType::Press);
     }
+    pressSound.emit();
     return EInputEventResult::Accept;
 }
 
@@ -156,7 +157,6 @@ void UIButton::ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animTyp
         return;
     }
     UIEvent buttonEvent{getEntityId(), eventType};
-    pressSound.emit();
     ET_SendEvent(&ETUIViewScript::ET_onEvent, buttonEvent);
 }
 

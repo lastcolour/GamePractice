@@ -158,11 +158,12 @@ public:
 };
 
 enum class SubEmitterTriggerEvent {
-    OnStart = 0,
-    OnParticleSpawn,
-    OnParticleDeath,
-    OnParticleLive,
-    OnEnd
+    None = 0,
+    OnStart = 1 << 0,
+    OnParticleSpawn = 1 << 1,
+    OnParticleDeath = 1 << 2,
+    OnParticleLive = 1 << 3,
+    OnEnd = 1 << 4
 };
 
 class SubEmitter {

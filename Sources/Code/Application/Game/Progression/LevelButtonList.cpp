@@ -37,9 +37,14 @@ int LevelButtonList::ET_getTotalStars() const {
 }
 
 int LevelButtonList::ET_getDoneStars() const {
-    int currStarDone = 0;
-    ET_SendEventReturn(currStarDone, &ETLevelsProgression::ET_getStarsDone);
-    return currStarDone;
+    int currStarsDone = 0;
+    for(auto& button : levelButtons) {
+        int stars = 0;
+        ET_SendEventReturn(stars, button.buttonId, &ETLevelButton::ET_getLevelStars);
+        currStarsDone += stars;
+    }
+    assert(currStarsDone <= ET_getTotalStars() && "Too many stars done");
+    return currStarsDone;
 }
 
 void LevelButtonList::initLevelProress() {

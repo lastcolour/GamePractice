@@ -160,6 +160,29 @@
       "name": "Entities/Effects/ElemDestroy/BombDestroy.json",
       "id": 207,
       "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 627.0,
+          "y": 524.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/ElemMove.json",
+      "id": 308,
+      "internal": false
     }
   ],
   "logics": [
@@ -220,7 +243,10 @@
         "switchDuration": 0.20000000298023224,
         "switchSound": {
           "event": "elemSwitch_01"
-        }
+        },
+        "swapEffectId": [
+          308
+        ]
       }
     },
     {
@@ -237,8 +263,7 @@
       "data": {
         "highlightEntity": "Entities/Game/CellHighlighter.json",
         "fadeOutDuration": 1.0,
-        "cellScale": 0.800000011920929,
-        "highlightZOffset": 0
+        "cellScale": 0.800000011920929
       }
     },
     {
@@ -269,49 +294,56 @@
               1
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 3
           },
           {
             "target": [
               2
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 3
           },
           {
             "target": [
               3
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 5
           },
           {
             "target": [
               4
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 5
           },
           {
             "target": [
               5
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 5
           },
           {
             "target": [
               106
             ],
             "normScale": 1.0,
-            "extraZOffset": 3
+            "extraZOffset": 5
           },
           {
             "target": [
               207
             ],
             "normScale": 1.0,
-            "extraZOffset": 1
+            "extraZOffset": 5
+          },
+          {
+            "target": [
+              308
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 5
           }
         ]
       }

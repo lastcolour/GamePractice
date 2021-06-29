@@ -123,15 +123,15 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 4,
+                                "drawPriority": 8,
                                 "textureInfo": {
-                                  "filename": "Images/Base/rblock_128x128.png",
-                                  "lerpType": "Linear",
+                                  "filename": "Images/UI/start.png",
+                                  "lerpType": "Point",
                                   "tintColor": {
-                                    "r": 241,
-                                    "g": 228,
-                                    "b": 78,
-                                    "a": 255
+                                    "r": 0,
+                                    "g": 0,
+                                    "b": 0,
+                                    "a": 0
                                   }
                                 },
                                 "size": {
@@ -159,17 +159,17 @@
                                     "duration": 0.0,
                                     "offset": {
                                       "x": 0.0,
-                                      "y": 10.0
+                                      "y": 30.0
                                     },
                                     "scale": {
-                                      "x": 1.5,
-                                      "y": 1.5
+                                      "x": 3.0,
+                                      "y": 3.0
                                     },
                                     "alpha": 0.0
                                   },
                                   {
                                     "lerpMode": "Linear",
-                                    "duration": 0.20000000298023224,
+                                    "duration": 0.15000000596046448,
                                     "offset": {
                                       "x": 0.0,
                                       "y": 0.0
@@ -212,7 +212,7 @@
                         "type": "UILayout",
                         "id": 3,
                         "data": {
-                          "extraZOffset": 0,
+                          "extraZOffset": 1,
                           "style": {
                             "type": "Horizontal",
                             "xAlign": "Center",
@@ -231,15 +231,15 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "textureInfo": {
-                            "filename": "Images/Base/rblock_128x128.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/start_bg.png",
+                            "lerpType": "Point",
                             "tintColor": {
-                              "r": 149,
-                              "g": 149,
-                              "b": 149,
-                              "a": 255
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
                             }
                           },
                           "size": {
@@ -321,13 +321,36 @@
                               }
                             },
                             {
+                              "type": "RenderImage",
+                              "id": 4,
+                              "data": {
+                                "isVisible": false,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "textureInfo": {
+                                  "filename": "Images/UI/start.png",
+                                  "lerpType": "Point",
+                                  "tintColor": {
+                                    "r": 0,
+                                    "g": 0,
+                                    "b": 0,
+                                    "a": 0
+                                  }
+                                },
+                                "size": {
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
+                                }
+                              }
+                            },
+                            {
                               "type": "UIAnimationSequence",
-                              "id": 3,
+                              "id": 5,
                               "data": {
                                 "autoStart": false,
                                 "cyclic": false,
                                 "type": "Appear",
-                                "startDelay": 0.0,
+                                "startDelay": 0.30000001192092896,
                                 "disablePlaying": false,
                                 "waitChildren": false,
                                 "subAnimations": [],
@@ -339,17 +362,17 @@
                                     "duration": 0.0,
                                     "offset": {
                                       "x": 0.0,
-                                      "y": 10.0
+                                      "y": 30.0
                                     },
                                     "scale": {
-                                      "x": 1.5,
-                                      "y": 1.5
+                                      "x": 3.0,
+                                      "y": 3.0
                                     },
                                     "alpha": 0.0
                                   },
                                   {
                                     "lerpMode": "Linear",
-                                    "duration": 0.20000000298023224,
+                                    "duration": 0.15000000596046448,
                                     "offset": {
                                       "x": 0.0,
                                       "y": 0.0
@@ -361,29 +384,6 @@
                                     "alpha": 1.0
                                   }
                                 ]
-                              }
-                            },
-                            {
-                              "type": "RenderImage",
-                              "id": 4,
-                              "data": {
-                                "isVisible": false,
-                                "alpha": 1.0,
-                                "drawPriority": 4,
-                                "textureInfo": {
-                                  "filename": "Images/Base/rblock_128x128.png",
-                                  "lerpType": "Linear",
-                                  "tintColor": {
-                                    "r": 241,
-                                    "g": 228,
-                                    "b": 78,
-                                    "a": 255
-                                  }
-                                },
-                                "size": {
-                                  "x": 115.19999694824219,
-                                  "y": 115.19999694824219
-                                }
                               }
                             }
                           ]
@@ -412,33 +412,10 @@
                         }
                       },
                       {
-                        "type": "RenderImage",
-                        "id": 2,
-                        "data": {
-                          "isVisible": true,
-                          "alpha": 1.0,
-                          "drawPriority": 3,
-                          "textureInfo": {
-                            "filename": "Images/Base/rblock_128x128.png",
-                            "lerpType": "Linear",
-                            "tintColor": {
-                              "r": 149,
-                              "g": 149,
-                              "b": 149,
-                              "a": 255
-                            }
-                          },
-                          "size": {
-                            "x": 100.80000305175781,
-                            "y": 100.80000305175781
-                          }
-                        }
-                      },
-                      {
                         "type": "UILayout",
                         "id": 3,
                         "data": {
-                          "extraZOffset": 0,
+                          "extraZOffset": 1,
                           "style": {
                             "type": "Horizontal",
                             "xAlign": "Center",
@@ -449,6 +426,29 @@
                               1
                             ]
                           ]
+                        }
+                      },
+                      {
+                        "type": "RenderImage",
+                        "id": 4,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 7,
+                          "textureInfo": {
+                            "filename": "Images/UI/start_bg.png",
+                            "lerpType": "Point",
+                            "tintColor": {
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
+                            }
+                          },
+                          "size": {
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
+                          }
                         }
                       }
                     ]
@@ -524,13 +524,36 @@
                               }
                             },
                             {
+                              "type": "RenderImage",
+                              "id": 4,
+                              "data": {
+                                "isVisible": false,
+                                "alpha": 1.0,
+                                "drawPriority": 8,
+                                "textureInfo": {
+                                  "filename": "Images/UI/start.png",
+                                  "lerpType": "Point",
+                                  "tintColor": {
+                                    "r": 0,
+                                    "g": 0,
+                                    "b": 0,
+                                    "a": 0
+                                  }
+                                },
+                                "size": {
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
+                                }
+                              }
+                            },
+                            {
                               "type": "UIAnimationSequence",
-                              "id": 3,
+                              "id": 5,
                               "data": {
                                 "autoStart": false,
                                 "cyclic": false,
                                 "type": "Appear",
-                                "startDelay": 0.0,
+                                "startDelay": 0.30000001192092896,
                                 "disablePlaying": false,
                                 "waitChildren": false,
                                 "subAnimations": [],
@@ -542,17 +565,17 @@
                                     "duration": 0.0,
                                     "offset": {
                                       "x": 0.0,
-                                      "y": 10.0
+                                      "y": 30.0
                                     },
                                     "scale": {
-                                      "x": 1.5,
-                                      "y": 1.5
+                                      "x": 3.0,
+                                      "y": 3.0
                                     },
                                     "alpha": 0.0
                                   },
                                   {
                                     "lerpMode": "Linear",
-                                    "duration": 0.20000000298023224,
+                                    "duration": 0.15000000596046448,
                                     "offset": {
                                       "x": 0.0,
                                       "y": 0.0
@@ -564,29 +587,6 @@
                                     "alpha": 1.0
                                   }
                                 ]
-                              }
-                            },
-                            {
-                              "type": "RenderImage",
-                              "id": 4,
-                              "data": {
-                                "isVisible": false,
-                                "alpha": 1.0,
-                                "drawPriority": 4,
-                                "textureInfo": {
-                                  "filename": "Images/Base/rblock_128x128.png",
-                                  "lerpType": "Linear",
-                                  "tintColor": {
-                                    "r": 241,
-                                    "g": 228,
-                                    "b": 78,
-                                    "a": 255
-                                  }
-                                },
-                                "size": {
-                                  "x": 115.19999694824219,
-                                  "y": 115.19999694824219
-                                }
                               }
                             }
                           ]
@@ -618,7 +618,7 @@
                         "type": "UILayout",
                         "id": 3,
                         "data": {
-                          "extraZOffset": 0,
+                          "extraZOffset": 1,
                           "style": {
                             "type": "Horizontal",
                             "xAlign": "Center",
@@ -637,15 +637,15 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "textureInfo": {
-                            "filename": "Images/Base/rblock_128x128.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/start_bg.png",
+                            "lerpType": "Point",
                             "tintColor": {
-                              "r": 149,
-                              "g": 149,
-                              "b": 149,
-                              "a": 255
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
                             }
                           },
                           "size": {
@@ -683,7 +683,7 @@
                   "type": "UILayout",
                   "id": 3,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -778,7 +778,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 4,
+                          "drawPriority": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -824,15 +824,15 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
+                    "drawPriority": 6,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/continue_button_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
-                        "r": 159,
-                        "g": 159,
-                        "b": 159,
-                        "a": 255
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
                       }
                     },
                     "size": {
@@ -841,7 +841,7 @@
                     },
                     "horizontal": 0.4999000132083893,
                     "vertical": 0.4000000059604645,
-                    "patchScale": 1.0
+                    "patchScale": 2.0
                   }
                 },
                 {
@@ -1006,7 +1006,7 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "fontSize": 10.0,
+                            "fontSize": 13.0,
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
@@ -1023,14 +1023,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28.799999237060547,
+                          "fontSize": 37.439998626708984,
                           "text": "Level 1"
                         }
                       }
@@ -1063,7 +1063,7 @@
                   "type": "UILayout",
                   "id": 3,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Center",
@@ -1081,11 +1081,11 @@
                   "id": 4,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.800000011920929,
-                    "drawPriority": 2,
+                    "alpha": 0.8999999761581421,
+                    "drawPriority": 6,
                     "textureInfo": {
-                      "filename": "Images/Base/rblock_256x256.png",
-                      "lerpType": "Linear",
+                      "filename": "Images/UI/info_box_white_bg.png",
+                      "lerpType": "Point",
                       "tintColor": {
                         "r": 0,
                         "g": 0,
@@ -1097,9 +1097,9 @@
                       "x": 403.20001220703125,
                       "y": 57.599998474121094
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
+                    "horizontal": 0.20000000298023224,
+                    "vertical": 0.20000000298023224,
+                    "patchScale": 3.0
                   }
                 }
               ]
@@ -1132,7 +1132,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -39.600006103515625,
+                      "x": -83.19999694824219,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1178,7 +1178,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -1195,7 +1195,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 20.519989013671875,
+                      "x": -6.399993896484375,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1241,7 +1241,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -1264,7 +1264,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 60.0,
+                      "width": 100.0,
                       "widthInv": "Grid",
                       "height": 13.0,
                       "heightInv": "Grid",
@@ -1281,7 +1281,7 @@
                   "type": "UILayout",
                   "id": 3,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Left",
@@ -1295,32 +1295,6 @@
                         2
                       ]
                     ]
-                  }
-                },
-                {
-                  "type": "NinePatchImageLogic",
-                  "id": 4,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
-                    "textureInfo": {
-                      "filename": "Images/Base/rblock_128x128.png",
-                      "lerpType": "Linear",
-                      "tintColor": {
-                        "r": 36,
-                        "g": 36,
-                        "b": 36,
-                        "a": 255
-                      }
-                    },
-                    "size": {
-                      "x": 172.8000030517578,
-                      "y": 37.439998626708984
-                    },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 0.800000011920929
                   }
                 },
                 {
@@ -1365,6 +1339,32 @@
                       }
                     ]
                   }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 6,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.800000011920929,
+                    "drawPriority": 6,
+                    "textureInfo": {
+                      "filename": "Images/UI/info_box_black_bg.png",
+                      "lerpType": "Point",
+                      "tintColor": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
+                      }
+                    },
+                    "size": {
+                      "x": 288.0,
+                      "y": 37.439998626708984
+                    },
+                    "horizontal": 0.20000000298023224,
+                    "vertical": 0.20000000298023224,
+                    "patchScale": 5.0
+                  }
                 }
               ]
             }
@@ -1396,7 +1396,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -39.41998291015625,
+                      "x": -83.19999694824219,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1442,7 +1442,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -1459,7 +1459,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 25.3800048828125,
+                      "x": -6.399993896484375,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1492,7 +1492,7 @@
                             "margin": {
                               "top": 0.0,
                               "bot": 0.0,
-                              "left": 5.0,
+                              "left": 3.0,
                               "right": 0.0
                             }
                           },
@@ -1505,7 +1505,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "drawPriority": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -1528,7 +1528,7 @@
                     "hidden": false,
                     "enabled": true,
                     "style": {
-                      "width": 60.0,
+                      "width": 100.0,
                       "widthInv": "Grid",
                       "height": 13.0,
                       "heightInv": "Grid",
@@ -1545,7 +1545,7 @@
                   "type": "UILayout",
                   "id": 3,
                   "data": {
-                    "extraZOffset": 0,
+                    "extraZOffset": 1,
                     "style": {
                       "type": "Horizontal",
                       "xAlign": "Left",
@@ -1559,32 +1559,6 @@
                         2
                       ]
                     ]
-                  }
-                },
-                {
-                  "type": "NinePatchImageLogic",
-                  "id": 4,
-                  "data": {
-                    "isVisible": true,
-                    "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
-                    "textureInfo": {
-                      "filename": "Images/Base/rblock_128x128.png",
-                      "lerpType": "Linear",
-                      "tintColor": {
-                        "r": 36,
-                        "g": 36,
-                        "b": 36,
-                        "a": 255
-                      }
-                    },
-                    "size": {
-                      "x": 172.8000030517578,
-                      "y": 37.439998626708984
-                    },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 0.800000011920929
                   }
                 },
                 {
@@ -1629,6 +1603,32 @@
                       }
                     ]
                   }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 6,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.800000011920929,
+                    "drawPriority": 6,
+                    "textureInfo": {
+                      "filename": "Images/UI/info_box_black_bg.png",
+                      "lerpType": "Point",
+                      "tintColor": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
+                      }
+                    },
+                    "size": {
+                      "x": 288.0,
+                      "y": 37.439998626708984
+                    },
+                    "horizontal": 0.20000000298023224,
+                    "vertical": 0.20000000298023224,
+                    "patchScale": 5.0
+                  }
                 }
               ]
             }
@@ -1659,7 +1659,7 @@
             "type": "UILayout",
             "id": 3,
             "data": {
-              "extraZOffset": 0,
+              "extraZOffset": 1,
               "style": {
                 "type": "Vertical",
                 "xAlign": "Center",
@@ -1690,15 +1690,15 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "drawPriority": 5,
               "textureInfo": {
-                "filename": "Images/Base/rblock_256x256.png",
-                "lerpType": "Linear",
+                "filename": "Images/UI/game_end_view_bg.png",
+                "lerpType": "Point",
                 "tintColor": {
-                  "r": 231,
-                  "g": 231,
-                  "b": 231,
-                  "a": 255
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0
                 }
               },
               "size": {
@@ -1707,7 +1707,7 @@
               },
               "horizontal": 0.4999000132083893,
               "vertical": 0.4999000132083893,
-              "patchScale": 0.0
+              "patchScale": 0.30000001192092896
             }
           },
           {
@@ -1782,6 +1782,88 @@
                 }
               ]
             }
+          },
+          {
+            "type": "UIAnimationSequence",
+            "id": 7,
+            "data": {
+              "autoStart": false,
+              "cyclic": false,
+              "type": "Shake",
+              "startDelay": 0.0,
+              "disablePlaying": false,
+              "waitChildren": false,
+              "subAnimations": [],
+              "startEvent": "None",
+              "endEvent": "None",
+              "frames": [
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": 1.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 0.9599999785423279,
+                    "y": 0.9599999785423279
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": -0.699999988079071,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": 0.699999988079071,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                },
+                {
+                  "lerpMode": "Linear",
+                  "duration": 0.05000000074505806,
+                  "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                  },
+                  "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                  },
+                  "alpha": 1.0
+                }
+              ]
+            }
           }
         ]
       }
@@ -1835,7 +1917,7 @@
       "type": "UILayout",
       "id": 2,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 5,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",
@@ -1898,9 +1980,15 @@
           1,
           5
         ],
+        "shakeBox": [
+          1
+        ],
         "effect": [
           2
         ],
+        "starAppearSound": {
+          "event": "star_appear_01"
+        },
         "stars": {
           "first": [
             1,
@@ -2019,7 +2107,7 @@
       "type": "UILayout",
       "id": 9,
       "data": {
-        "extraZOffset": 0,
+        "extraZOffset": 3,
         "style": {
           "type": "Horizontal",
           "xAlign": "Center",

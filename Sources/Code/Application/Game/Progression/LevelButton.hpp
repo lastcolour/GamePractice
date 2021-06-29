@@ -53,6 +53,7 @@ public:
     void ET_setLevelState(ELevelButtonState newState, int newStarsCount) override;
     void ET_scheduleChanges(EventSequence& eventSeq, ELevelButtonState newState, int newStarCount) override;
     ELevelButtonState ET_getState() const override;
+    int ET_getLevelStars() const override;
 
 private:
 
