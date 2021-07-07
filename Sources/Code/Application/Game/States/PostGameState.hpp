@@ -14,7 +14,7 @@ public:
     PostGameState();
     ~PostGameState();
 
-    void onEnter(EntityId gameEntityId);
+    void onEnter(EntityId gameId);
     void onLeave();
 
     // ETGameEndResult

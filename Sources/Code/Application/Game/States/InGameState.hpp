@@ -5,10 +5,12 @@
 #include "Game/ETGame.hpp"
 #include "Game/ETGameScore.hpp"
 #include "Game/ETGameTimer.hpp"
+#include "Game/ETGameBoard.hpp"
 
-class InGameState : public ETNode<ETGameEndTimerEvents>,
-    public ETNode<ETGameObjectiveEvents>,
-    public ETNode<ETGameTimerEvents> {
+class InGameState : public ETNode<ETGameObjectiveEvents>,
+    public ETNode<ETGameLimitsEvents>,
+    public ETNode<ETGameTimerEvents>,
+    public ETNode<ETGameBoardEvents> {
 public:
 
     InGameState();
@@ -17,8 +19,8 @@ public:
     void onEnter(EntityId gameEntityId);
     void onLeave();
 
-    // ETGameEndTimerEvents
-    void ET_onGameTimeOut() override;
+    // ETGameLimitsEvents
+    void ET_onGameLimitReached() override;
 
     // ETGameObjectiveEvents
     void ET_onObjectiveCompleted(ObjectiveProgress type) override;
@@ -26,8 +28,12 @@ public:
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
 
+    // ETGameBoardEvents
+    void ET_onAllElemsStatic() override;
+
 private:
 
+    EntityId gameEntityId;
     float gameTime;
 };
 

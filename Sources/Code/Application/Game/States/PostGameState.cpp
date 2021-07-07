@@ -20,6 +20,8 @@ void PostGameState::onEnter(EntityId gameId) {
 
     ET_SendEvent(&ETGameStateEvents::ET_onGameEnterState, EGameState::PostGame);
 
+    ET_SendEvent(&ETGameBoard::ET_setBlockElemMatching, true);
+
     gameEntityId = gameId;
     ETNode<ETGameEndResult>::connect(gameId);
 

@@ -5,8 +5,6 @@
 #include "Game/Progression/LevelProgressionSystem.hpp"
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Game/Logics/GameBoardLogic.hpp"
-#include "Game/Logics/GameEndTimerLogic.hpp"
-#include "Game/Logics/GameEndTimerUpdaterLogic.hpp"
 #include "Game/Logics/GameBoardInteractionLogic.hpp"
 #include "Game/Logics/GameScoreUpdaterLogic.hpp"
 #include "Game/Logics/GameBoardMatchLogic.hpp"
@@ -24,6 +22,8 @@
 #include "Game/Logics/GameElemRocketLogic.hpp"
 #include "Game/Logics/GameElemBombLogic.hpp"
 #include "Game/Logics/GameElemStarLogic.hpp"
+#include "Game/Logics/GameMovesLimitLogic.hpp"
+#include "Game/Logics/GameTimeLimitLogic.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
@@ -50,8 +50,6 @@ void GameModule::createSystemConfigs() const {
 void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {
     logicsRegister.registerLogic<GameBoardLogic>();
     logicsRegister.registerLogic<GameBoardElemLogic>();
-    logicsRegister.registerLogic<GameEndTimerLogic>();
-    logicsRegister.registerLogic<GameEndTimerUpdaterLogic>();
     logicsRegister.registerLogic<GameBoardInteractionLogic>();
     logicsRegister.registerLogic<GameScoreUpdaterLogic>();
     logicsRegister.registerLogic<GameBoardMatchLogic>();
@@ -69,6 +67,8 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameElemRocketLogic>();
     logicsRegister.registerLogic<GameElemBombLogic>();
     logicsRegister.registerLogic<GameElemStarLogic>();
+    logicsRegister.registerLogic<GameMovesLimitLogic>();
+    logicsRegister.registerLogic<GameTimeLimitLogic>();
 
     logicsRegister.registerLogic<GameResultViewScript>();
     logicsRegister.registerLogic<GameViewScript>();

@@ -10,10 +10,21 @@ namespace {
 
 const float MIN_MOVE_LEN_FOR_SWITCH = 0.6f;
 
+Vec3 getScaleDuringSwap(float prog, float maxScale) {
+    float s = 1.f;
+    if(prog < 0.5f) {
+        s = Math::Lerp(1.f, maxScale, 2.f * prog);
+    } else {
+        s = Math::Lerp(maxScale, 1.f, 2.f * (prog - 0.5f));
+    }
+    return Vec3(s);
+}
+
 } // namespace
 
 GameBoardInteractionLogic::GameBoardInteractionLogic() :
     startPt(0),
+    maxScale(1.6f),
     switchDuration(0.3f) {
 }
 
@@ -23,6 +34,7 @@ GameBoardInteractionLogic::~GameBoardInteractionLogic() {
 void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardInteractionLogic>("GameBoardInteraction")) {
         classInfo->addField("switchDuration", &GameBoardInteractionLogic::switchDuration);
+        classInfo->addField("maxScale", &GameBoardInteractionLogic::maxScale);
         classInfo->addField("switchSound", &GameBoardInteractionLogic::switchSoundEvent);
         classInfo->addField("swapEffectId", &GameBoardInteractionLogic::swapEffectId);
     }
@@ -81,9 +93,10 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     if(!canSwitch) {
         return;
     }
-    createSwitchElemsTask(activeElemId, nextElemId);
+    Vec2i swapDir = startPt - nextBoardPt;
+    createSwitchElemsTask(activeElemId, nextElemId, swapDir);
     setActiveElem(InvalidEntityId);
-    return;
+    ET_SendEvent(&ETGameBoardInteractionEvents::ET_onElemMoved);
 }
 
 void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& pt) {
@@ -140,10 +153,19 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
 
         Transform newTm = task.firstTm;
         newTm.pt = Math::Lerp(task.firstTm.pt, task.secondTm.pt, prog);
+        if(task.dir.x > 0 || task.dir.y > 0) {
+            newTm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), 2.f * prog * Math::PI);
+        } else {
+            newTm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), -2.f * prog * Math::PI);
+        }
+        newTm.scale = getScaleDuringSwap(prog, maxScale);
         ET_SendEvent(task.firstId, &ETEntity::ET_setLocalTransform, newTm);
 
         newTm = task.secondTm;
+        newTm.quat.setIndentity();
+        newTm.scale = Vec3(1.f);
         newTm.pt = Math::Lerp(task.secondTm.pt, task.firstTm.pt, prog);
+
         ET_SendEvent(task.secondId, &ETEntity::ET_setLocalTransform, newTm);
     }
 
@@ -173,7 +195,7 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
     }
 }
 
-void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId secondId) {
+void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId secondId, const Vec2i& swapDir) {
     assert(firstId != secondId && "Can't switch same element");
 
     switchSoundEvent.emit();
@@ -194,6 +216,8 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
     task.secondId = secondId;
     ET_SendEventReturn(task.secondTm, secondId, &ETEntity::ET_getLocalTransform);
     GameUtils::SetElemState(task.secondId, EBoardElemState::Switching);
+
+    task.dir = swapDir;
 
     switchTasks.push_back(task);
 }
@@ -225,4 +249,8 @@ void GameBoardInteractionLogic::setActiveElem(EntityId elemId) {
 
 bool GameBoardInteractionLogic::ET_canInteract() const {
     return ET_IsExistNode<ETInputEvents>(getEntityId());
+}
+
+bool GameBoardInteractionLogic::ET_hasActiveSwitching() const {
+    return !switchTasks.empty();
 }

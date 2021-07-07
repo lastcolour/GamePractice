@@ -9,7 +9,8 @@ enum class EGameBoardUpdatePass {
     Trigger,
     Match,
     Static,
-    Respawn
+    Respawn,
+    Switch
 };
 
 struct GameBoardState {
@@ -20,6 +21,7 @@ struct GameBoardState {
     bool isMatchRequested;
     bool isMatchBlocked;
     bool isRespawnRequested;
+    bool hasSwitchingElems;
 
 public:
 

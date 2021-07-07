@@ -32,6 +32,7 @@ public:
     // ETGameBoardInteractionLogic
     void ET_allowInteraction(bool flag) override;
     bool ET_canInteract() const override;
+    bool ET_hasActiveSwitching() const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -39,7 +40,7 @@ public:
 private:
 
     void tryFinishElemMove(const Vec2i& pt);
-    void createSwitchElemsTask(EntityId firstId, EntityId secondId);
+    void createSwitchElemsTask(EntityId firstId, EntityId secondId, const Vec2i& swapDir);
     void switchElements(EntityId firstId, EntityId secondId);
     void setActiveElem(EntityId elemId);
 
@@ -51,12 +52,14 @@ private:
         EntityId secondId;
         Transform secondTm;
         float duration;
+        Vec2i dir;
     };
 
 private:
 
     Vec2i startPt;
     EntityId activeElemId;
+    float maxScale;
     float switchDuration;
     std::vector<SwitchTask> switchTasks;
     SoundEvent switchSoundEvent;

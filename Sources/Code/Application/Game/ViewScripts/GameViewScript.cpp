@@ -14,7 +14,10 @@ void GameViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameViewScript>("GameViewScript")) {
         classInfo->addField("stars", &GameViewScript::progressStars);
         classInfo->addField("timeInfoBox", &GameViewScript::timeInfoBoxId);
-        classInfo->addField("boardSpawner", &GameViewScript::boardSpawnerId);
+        classInfo->addField("timeValueLabelId", &GameViewScript::timeValueLabelId);
+        classInfo->addField("movesInfoBoxId", &GameViewScript::movesInfoBoxId);
+        classInfo->addField("movesValueLabelId", &GameViewScript::movesValueLabelId);
+        classInfo->addField("scoreInfoBox", &GameViewScript::scoreInfoBoxId);
         classInfo->addField("startInfo", &GameViewScript::startInfoId);
         classInfo->addField("endInfo", &GameViewScript::endInfoId);
         classInfo->addField("postGameTime", &GameViewScript::postGameTime);
@@ -24,8 +27,7 @@ void GameViewScript::Reflect(ReflectContext& ctx) {
 
 GameViewScript::GameViewScript() :
     postGameTime(1.f),
-    scriptState(State::None),
-    gameLeftPostGame(false) {
+    scriptState(State::None) {
 }
 
 GameViewScript::~GameViewScript() {
@@ -45,7 +47,7 @@ void GameViewScript::init() {
 void GameViewScript::ET_onViewOpened() {
     BaseViewScript::ET_onViewOpened();
 
-    ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_show);
+    ET_SendEvent(scoreInfoBoxId, &ETUIElement::ET_show);
     ET_SendEvent(progressStars.fristId, &ETUIElement::ET_hide);
     ET_SendEvent(progressStars.secondId, &ETUIElement::ET_hide);
     ET_SendEvent(progressStars.thirdId, &ETUIElement::ET_hide);
@@ -55,8 +57,33 @@ void GameViewScript::ET_onViewOpened() {
     ET_SendEvent(&ETGameScoreUpdater::ET_reset);
     ET_SendEvent(&ETGameBoardSpawner::ET_loadPendingLevel);
 
+    EGameLimitType gameLimitType = EGameLimitType::None;
+    ET_SendEventReturn(gameLimitType, &ETGameLimits::ET_getLimitType);
+    switch(gameLimitType) {
+        case EGameLimitType::Moves: {
+            ET_SendEvent(movesInfoBoxId, &ETUIElement::ET_show);
+            ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
+            ET_SendEvent(&ETGameLimits::ET_setLabelId, movesValueLabelId);
+            break;
+        }
+        case EGameLimitType::Time: {
+            ET_SendEvent(movesInfoBoxId, &ETUIElement::ET_hide);
+            ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_show);
+            ET_SendEvent(&ETGameLimits::ET_setLabelId, timeValueLabelId);
+            break;
+        }
+        case EGameLimitType::None: {
+            LogWarning("[GameViewScript::ET_onViewOpened] Level doesn't have any limit logic");
+            ET_SendEvent(movesInfoBoxId, &ETUIElement::ET_hide);
+            ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
+            break;
+        }
+        default: {
+            assert(false && "Invalid limit type");
+        }
+    }
+
     scriptState = State::None;
-    gameLeftPostGame = false;
 }
 
 void GameViewScript::ET_onViewClosed() {
@@ -185,9 +212,11 @@ void GameViewScript::ET_onGameEnterState(EGameState state) {
     if(!UI::PlayAnimation(timeInfoBoxId, EAnimSequenceType::Disappear, InvalidEntityId)) {
         ET_SendEvent(timeInfoBoxId, &ETUIElement::ET_hide);
     }
+    if(!UI::PlayAnimation(movesInfoBoxId, EAnimSequenceType::Disappear, InvalidEntityId)) {
+        ET_SendEvent(movesInfoBoxId, &ETUIElement::ET_hide);
+    }
     ET_SendEvent(&ETGameTimer::ET_setScale, 0.1f);
     ET_SendEvent(&ETGameScoreUpdater::ET_pause);
-    ET_SendEvent(&ETGameBoard::ET_setBlockElemMatching, true);
 
     {
         EventSequence::Event event;
@@ -195,7 +224,6 @@ void GameViewScript::ET_onGameEnterState(EGameState state) {
         event.targetId = endInfoId;
         event.onEndCallback = [this](){
             ET_SendEvent(&ETGameScoreUpdater::ET_resume);
-            ET_SendEvent(&ETGameBoard::ET_setBlockElemMatching, false);
             ET_SendEvent(&ETGameTimer::ET_setScale, 1.f);
             setScriptState(State::WaitingPostGame);
         };
@@ -221,6 +249,7 @@ void GameViewScript::ET_onGameLeaveState(EGameState gameState) {
         event.startDelay = postGameTime;
         event.onEndCallback = [this](){
             setScriptState(State::None);
+            ET_SendEvent(scoreInfoBoxId, &ETUIElement::ET_hide);
             ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
         };
         eventSeq.addEvent(event);

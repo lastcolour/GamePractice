@@ -1,4 +1,5 @@
 #include "Game/Logics/GameBoardAnimation.hpp"
+#include "UI/ETUIBox.hpp"
 
 void GameBoardAnimation::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardAnimation>("GameBoardAnimation")) {
@@ -38,7 +39,9 @@ void GameBoardAnimation::ET_onGameTick(float dt) {
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
 
     tm.scale = Vec3(currScale);
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+    ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
 }
 
 void GameBoardAnimation::ET_zoomOut() {

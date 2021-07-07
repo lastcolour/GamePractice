@@ -18,7 +18,7 @@
         "zFar":1.0
     },
     "debug_tasks": {
-        "tasks":["Render", "RenderSync", "Game", "UI", "Sound"]
+        "tasks":["Render", "RenderSync"]
     },
     "particles": {
         "max_particles":8192

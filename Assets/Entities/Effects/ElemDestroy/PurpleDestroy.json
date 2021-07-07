@@ -19,136 +19,6 @@
           "w": 1.0
         }
       },
-      "name": "Flash",
-      "id": 1,
-      "internal": true,
-      "data": {
-        "children": [],
-        "logics": [
-          {
-            "type": "ParticlesSystem",
-            "id": 1,
-            "data": {
-              "isVisible": true,
-              "alpha": 1.0,
-              "drawPriority": 10000,
-              "emission": {
-                "simTime": "Render",
-                "duration": 0.05000000074505806,
-                "startDelay": 0.0,
-                "autoStart": false,
-                "loop": false,
-                "emitterSpace": "World",
-                "emitterType": "Sphere",
-                "emitterVal": {
-                  "x": 0.0,
-                  "y": 0.0
-                },
-                "thickness": 0.0,
-                "emissionRate": 20.0,
-                "direction": 0.0,
-                "directionVar": 0.10000000149011612,
-                "lifetime": 0.009999999776482582,
-                "lifetimeVar": 0.0
-              },
-              "movement": {
-                "speed": 100.0,
-                "speedVar": 0.10000000149011612,
-                "initRotation": 0.0,
-                "initRotationVar": 0.10000000149011612,
-                "rotationSpeed": 10.0,
-                "rotationSpeedVar": 0.10000000149011612,
-                "rotationAcc": 0.0
-              },
-              "size": {
-                "startScale": {
-                  "x": 5.0,
-                  "y": 5.0
-                },
-                "startScaleVar": {
-                  "x": 0.10000000149011612,
-                  "y": 0.10000000149011612
-                },
-                "endScale": {
-                  "x": 5.0,
-                  "y": 5.0
-                },
-                "endScaleVar": {
-                  "x": 0.10000000149011612,
-                  "y": 0.10000000149011612
-                }
-              },
-              "color": {
-                "startCol": {
-                  "r": 255,
-                  "g": 255,
-                  "b": 255,
-                  "a": 255
-                },
-                "startColVar": {
-                  "x": 0.0,
-                  "y": 0.0,
-                  "z": 0.0,
-                  "w": 0.10000000149011612
-                },
-                "endCol": {
-                  "r": 255,
-                  "g": 255,
-                  "b": 255,
-                  "a": 255
-                },
-                "endColVar": {
-                  "x": 0.0,
-                  "y": 0.0,
-                  "z": 0.0,
-                  "w": 0.10000000149011612
-                },
-                "fadeIn": 0.0,
-                "fadeOut": 0.0
-              },
-              "render": {
-                "blending": "Normal",
-                "textureInfo": {
-                  "filename": "Images/Base/rblock_64x64.png",
-                  "lerpType": "Point",
-                  "tintColor": {
-                    "r": 0,
-                    "g": 0,
-                    "b": 0,
-                    "a": 0
-                  }
-                }
-              },
-              "subEmitters": {
-                "subEmitters": []
-              },
-              "gravity": {
-                "fields": []
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
       "name": "Sparks",
       "id": 2,
       "internal": true,
@@ -277,7 +147,7 @@
       "type": "ParticlesSystem",
       "id": 4,
       "data": {
-        "isVisible": true,
+        "isVisible": false,
         "alpha": 1.0,
         "drawPriority": 2,
         "emission": {

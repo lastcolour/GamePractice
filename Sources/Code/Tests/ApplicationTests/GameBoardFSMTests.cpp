@@ -268,3 +268,35 @@ TEST_F(GameBoardFSMTests, CheckRespawnMatchAfterTrigger) {
         EXPECT_EQ(pass, EGameBoardUpdatePass::Static);
     }
 }
+
+TEST_F(GameBoardFSMTests, CheckSwitchState) {
+    GameBoardFSM gameBoardFSM;
+
+    auto& state = gameBoardFSM.getState();
+    state.hasSwitchingElems = true;
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.queryPass(pass);
+
+        EXPECT_TRUE(successed);
+        EXPECT_EQ(pass, EGameBoardUpdatePass::Switch);
+    }
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.querySubPass(pass);
+
+        EXPECT_FALSE(successed);
+    }
+
+    state.hasSwitchingElems = false;
+
+    {
+        EGameBoardUpdatePass pass = EGameBoardUpdatePass::Static;
+        auto successed = gameBoardFSM.queryPass(pass);
+
+        EXPECT_TRUE(successed);
+        EXPECT_EQ(pass, EGameBoardUpdatePass::Static);
+    }
+}

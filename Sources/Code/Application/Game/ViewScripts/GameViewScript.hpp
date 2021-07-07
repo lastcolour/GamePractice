@@ -71,13 +71,15 @@ private:
 
     ProgressionStars progressStars;
     SoundEvent getStarEvent;
+    EntityId scoreInfoBoxId;
     EntityId timeInfoBoxId;
-    EntityId boardSpawnerId;
+    EntityId timeValueLabelId;
+    EntityId movesInfoBoxId;
+    EntityId movesValueLabelId;
     EntityId startInfoId;
     EntityId endInfoId;
     float postGameTime;
     State scriptState;
-    bool gameLeftPostGame;
     EventSequence eventSeq;
 };
 

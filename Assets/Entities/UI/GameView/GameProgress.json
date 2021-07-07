@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -10.079986572265625,
+          "y": -1.4737548828125,
           "z": 0.0
         },
         "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -89.19071960449219,
+                      "x": -91.2811279296875,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -106,8 +106,8 @@
                           "alpha": 1.0,
                           "drawPriority": 4,
                           "size": {
-                            "x": 178.55999755859375,
-                            "y": 4.320000171661377
+                            "x": 182.7449951171875,
+                            "y": 4.421249866485596
                           },
                           "color": {
                             "r": 255,
@@ -167,8 +167,8 @@
                     "alpha": 0.5,
                     "drawPriority": 2,
                     "size": {
-                      "x": 178.55999755859375,
-                      "y": 4.320000171661377
+                      "x": 182.7449951171875,
+                      "y": 4.4212646484375
                     },
                     "color": {
                       "r": 255,
@@ -221,7 +221,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 3.5999755859375,
+          "y": 12.52685546875,
           "z": 0.0
         },
         "scale": {
@@ -244,7 +244,7 @@
           {
             "transform": {
               "pos": {
-                "x": 32.480010986328125,
+                "x": 33.24127197265625,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -297,7 +297,7 @@
                       "b": 255,
                       "a": 255
                     },
-                    "fontSize": 20.15999984741211,
+                    "fontSize": 20.63249969482422,
                     "text": "Score:"
                   }
                 }
@@ -307,7 +307,7 @@
           {
             "transform": {
               "pos": {
-                "x": 80.79998779296875,
+                "x": 82.6937255859375,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -360,7 +360,7 @@
                       "b": 255,
                       "a": 255
                     },
-                    "fontSize": 20.15999984741211,
+                    "fontSize": 20.63249969482422,
                     "text": "0"
                   }
                 }
@@ -411,6 +411,657 @@
           }
         ]
       }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": -15.474365234375,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Stars",
+      "id": 3,
+      "internal": true,
+      "data": {
+        "children": [
+          {
+            "transform": {
+              "pos": {
+                "x": -23.58001708984375,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "First",
+            "id": 1,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 6.103515625e-05,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Star",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "hidden": false,
+                          "enabled": false,
+                          "style": {
+                            "width": 4.099999904632568,
+                            "widthInv": "Grid",
+                            "height": 4.099999904632568,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "UIAnimationSequence",
+                        "id": 3,
+                        "data": {
+                          "autoStart": false,
+                          "cyclic": false,
+                          "type": "Appear",
+                          "startDelay": 0.0,
+                          "disablePlaying": false,
+                          "waitChildren": false,
+                          "subAnimations": [],
+                          "startEvent": "Show",
+                          "endEvent": "None",
+                          "frames": [
+                            {
+                              "lerpMode": "Linear",
+                              "duration": 0.0,
+                              "offset": {
+                                "x": 0.0,
+                                "y": 3.0
+                              },
+                              "scale": {
+                                "x": 1.2000000476837158,
+                                "y": 1.2000000476837158
+                              },
+                              "alpha": 0.0
+                            },
+                            {
+                              "lerpMode": "Linear",
+                              "duration": 0.20000000298023224,
+                              "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                              },
+                              "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                              },
+                              "alpha": 1.0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "RenderSimple",
+                        "id": 4,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 3,
+                          "size": {
+                            "x": 12.08477783203125,
+                            "y": 12.084747314453125
+                          },
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "hidden": false,
+                    "enabled": false,
+                    "style": {
+                      "width": 4.0,
+                      "widthInv": "Grid",
+                      "height": 4.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 2,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
+                },
+                {
+                  "type": "RenderSimple",
+                  "id": 3,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.5,
+                    "drawPriority": 2,
+                    "size": {
+                      "x": 11.789999961853027,
+                      "y": 11.789999961853027
+                    },
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Second",
+            "id": 2,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Star",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "hidden": true,
+                          "enabled": false,
+                          "style": {
+                            "width": 4.099999904632568,
+                            "widthInv": "Grid",
+                            "height": 4.099999904632568,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "UIAnimationSequence",
+                        "id": 3,
+                        "data": {
+                          "autoStart": false,
+                          "cyclic": false,
+                          "type": "Appear",
+                          "startDelay": 0.0,
+                          "disablePlaying": false,
+                          "waitChildren": false,
+                          "subAnimations": [],
+                          "startEvent": "Show",
+                          "endEvent": "None",
+                          "frames": [
+                            {
+                              "lerpMode": "Linear",
+                              "duration": 0.0,
+                              "offset": {
+                                "x": 0.0,
+                                "y": 3.0
+                              },
+                              "scale": {
+                                "x": 1.2000000476837158,
+                                "y": 1.2000000476837158
+                              },
+                              "alpha": 0.0
+                            },
+                            {
+                              "lerpMode": "Linear",
+                              "duration": 0.20000000298023224,
+                              "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                              },
+                              "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                              },
+                              "alpha": 1.0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "RenderSimple",
+                        "id": 4,
+                        "data": {
+                          "isVisible": false,
+                          "alpha": 1.0,
+                          "drawPriority": 3,
+                          "size": {
+                            "x": 12.08477783203125,
+                            "y": 12.084747314453125
+                          },
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "hidden": false,
+                    "enabled": false,
+                    "style": {
+                      "width": 4.0,
+                      "widthInv": "Grid",
+                      "height": 4.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 4.0,
+                        "right": 4.0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 2,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
+                },
+                {
+                  "type": "RenderSimple",
+                  "id": 3,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.5,
+                    "drawPriority": 2,
+                    "size": {
+                      "x": 11.789999961853027,
+                      "y": 11.789999961853027
+                    },
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 23.58001708984375,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Third",
+            "id": 3,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 6.103515625e-05,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "Star",
+                  "id": 1,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "hidden": true,
+                          "enabled": false,
+                          "style": {
+                            "width": 4.099999904632568,
+                            "widthInv": "Grid",
+                            "height": 4.099999904632568,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "UIAnimationSequence",
+                        "id": 3,
+                        "data": {
+                          "autoStart": false,
+                          "cyclic": false,
+                          "type": "Appear",
+                          "startDelay": 0.0,
+                          "disablePlaying": false,
+                          "waitChildren": false,
+                          "subAnimations": [],
+                          "startEvent": "Show",
+                          "endEvent": "None",
+                          "frames": [
+                            {
+                              "lerpMode": "Linear",
+                              "duration": 0.0,
+                              "offset": {
+                                "x": 0.0,
+                                "y": 3.0
+                              },
+                              "scale": {
+                                "x": 1.2000000476837158,
+                                "y": 1.2000000476837158
+                              },
+                              "alpha": 0.0
+                            },
+                            {
+                              "lerpMode": "Linear",
+                              "duration": 0.20000000298023224,
+                              "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                              },
+                              "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                              },
+                              "alpha": 1.0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "RenderSimple",
+                        "id": 4,
+                        "data": {
+                          "isVisible": false,
+                          "alpha": 1.0,
+                          "drawPriority": 3,
+                          "size": {
+                            "x": 12.08477783203125,
+                            "y": 12.084747314453125
+                          },
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "hidden": false,
+                    "enabled": false,
+                    "style": {
+                      "width": 4.0,
+                      "widthInv": "Grid",
+                      "height": 4.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 0.0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 2,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Center",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        1
+                      ]
+                    ]
+                  }
+                },
+                {
+                  "type": "RenderSimple",
+                  "id": 3,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.5,
+                    "drawPriority": 2,
+                    "size": {
+                      "x": 11.789999961853027,
+                      "y": 11.789999961853027
+                    },
+                    "color": {
+                      "r": 255,
+                      "g": 255,
+                      "b": 255,
+                      "a": 255
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "logics": [
+          {
+            "type": "UILayoutBox",
+            "id": 1,
+            "data": {
+              "hidden": false,
+              "enabled": false,
+              "margin": {
+                "top": 2.0,
+                "bot": 0.0,
+                "left": 0.0,
+                "right": 0.0
+              }
+            }
+          },
+          {
+            "type": "UILayout",
+            "id": 2,
+            "data": {
+              "extraZOffset": 1,
+              "style": {
+                "type": "Horizontal",
+                "xAlign": "Center",
+                "yAlign": "Center"
+              },
+              "children": [
+                [
+                  1
+                ],
+                [
+                  2
+                ],
+                [
+                  3
+                ]
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
   "logics": [
@@ -430,6 +1081,9 @@
           ],
           [
             1
+          ],
+          [
+            3
           ]
         ]
       }

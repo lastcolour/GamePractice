@@ -4,7 +4,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 471.0400390625,
+          "y": 426.8800048828125,
           "z": 0.0
         },
         "scale": {
@@ -27,7 +27,7 @@
           {
             "transform": {
               "pos": {
-                "x": 204.96002197265625,
+                "x": 349.43994140625,
                 "y": 0.0,
                 "z": 0.0
               },
@@ -43,7 +43,7 @@
                 "w": 1.0
               }
             },
-            "name": "RightBox",
+            "name": "TimeLimitInfo",
             "id": 3,
             "internal": true,
             "data": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -72.0,
+                      "x": -63.94500732421875,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -80,9 +80,9 @@
                           "hidden": false,
                           "enabled": true,
                           "style": {
-                            "width": 6.0,
+                            "width": 7.0,
                             "widthInv": "Grid",
-                            "height": 6.0,
+                            "height": 7.0,
                             "heightInv": "Grid",
                             "margin": {
                               "top": 0.0,
@@ -101,8 +101,8 @@
                           "alpha": 1.0,
                           "drawPriority": 3,
                           "textureInfo": {
-                            "filename": "Images/Base/circle_32x32.png",
-                            "lerpType": "Linear",
+                            "filename": "Images/UI/time_icon_9x9.png",
+                            "lerpType": "Point",
                             "tintColor": {
                               "r": 0,
                               "g": 0,
@@ -111,8 +111,8 @@
                             }
                           },
                           "size": {
-                            "x": 17.280000686645508,
-                            "y": 17.280000686645508
+                            "x": 18.270000457763672,
+                            "y": 18.270000457763672
                           }
                         }
                       }
@@ -122,7 +122,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -27.3599853515625,
+                      "x": -22.18499755859375,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -175,7 +175,7 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 20.15999984741211,
+                          "fontSize": 18.270000457763672,
                           "text": "Time:"
                         }
                       }
@@ -185,7 +185,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 27.67999267578125,
+                      "x": 27.69500732421875,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -238,14 +238,9 @@
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 20.15999984741211,
+                          "fontSize": 18.270000457763672,
                           "text": "0.0"
                         }
-                      },
-                      {
-                        "type": "GameEndTimerUpdater",
-                        "id": 3,
-                        "data": {}
                       }
                     ]
                   }
@@ -313,8 +308,8 @@
                       }
                     },
                     "size": {
-                      "x": 172.8000030517578,
-                      "y": 34.560001373291016
+                      "x": 156.60000610351562,
+                      "y": 31.31999969482422
                     },
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
@@ -406,6 +401,301 @@
                 }
               ]
             }
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 513.8699951171875,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "MovesLimitInfo",
+            "id": 6,
+            "internal": true,
+            "data": {
+              "children": [
+                {
+                  "transform": {
+                    "pos": {
+                      "x": -63.9449462890625,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "MovesIcon",
+                  "id": 2,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UIBox",
+                        "id": 1,
+                        "data": {
+                          "hidden": false,
+                          "enabled": true,
+                          "style": {
+                            "width": 7.0,
+                            "widthInv": "Grid",
+                            "height": 7.0,
+                            "heightInv": "Grid",
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 2.0,
+                              "right": 2.0
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "RenderImage",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 3,
+                          "textureInfo": {
+                            "filename": "Images/UI/moves_icon_9x9.png",
+                            "lerpType": "Point",
+                            "tintColor": {
+                              "r": 0,
+                              "g": 0,
+                              "b": 0,
+                              "a": 0
+                            }
+                          },
+                          "size": {
+                            "x": 18.27001953125,
+                            "y": 18.27001953125
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": -16.094970703125,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "MovesLabel",
+                  "id": 3,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "hidden": false,
+                          "enabled": true,
+                          "style": {
+                            "fontSize": 7.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 2.0
+                            }
+                          },
+                          "text": "Moves:"
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 3,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 18.270000457763672,
+                          "text": "Moves:"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "transform": {
+                    "pos": {
+                      "x": 27.6949462890625,
+                      "y": 0.0,
+                      "z": 0.0
+                    },
+                    "scale": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    },
+                    "rot": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.0,
+                      "w": 1.0
+                    }
+                  },
+                  "name": "MovesValue",
+                  "id": 4,
+                  "internal": true,
+                  "data": {
+                    "children": [],
+                    "logics": [
+                      {
+                        "type": "UILabel",
+                        "id": 1,
+                        "data": {
+                          "hidden": false,
+                          "enabled": true,
+                          "style": {
+                            "fontSize": 7.0,
+                            "margin": {
+                              "top": 0.0,
+                              "bot": 0.0,
+                              "left": 0.0,
+                              "right": 0.0
+                            }
+                          },
+                          "text": "0"
+                        }
+                      },
+                      {
+                        "type": "RenderText",
+                        "id": 2,
+                        "data": {
+                          "isVisible": true,
+                          "alpha": 1.0,
+                          "drawPriority": 3,
+                          "color": {
+                            "r": 255,
+                            "g": 255,
+                            "b": 255,
+                            "a": 255
+                          },
+                          "fontSize": 18.270000457763672,
+                          "text": "0"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "logics": [
+                {
+                  "type": "UIBox",
+                  "id": 1,
+                  "data": {
+                    "hidden": false,
+                    "enabled": true,
+                    "style": {
+                      "width": 60.0,
+                      "widthInv": "Grid",
+                      "height": 12.0,
+                      "heightInv": "Grid",
+                      "margin": {
+                        "top": 0.0,
+                        "bot": 0.0,
+                        "left": 0.0,
+                        "right": 3.0
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "UILayout",
+                  "id": 3,
+                  "data": {
+                    "extraZOffset": 1,
+                    "style": {
+                      "type": "Horizontal",
+                      "xAlign": "Left",
+                      "yAlign": "Center"
+                    },
+                    "children": [
+                      [
+                        2
+                      ],
+                      [
+                        3
+                      ],
+                      [
+                        4
+                      ]
+                    ]
+                  }
+                },
+                {
+                  "type": "NinePatchImageLogic",
+                  "id": 4,
+                  "data": {
+                    "isVisible": true,
+                    "alpha": 0.5,
+                    "drawPriority": 2,
+                    "textureInfo": {
+                      "filename": "Images/UI/info_box_white_bg.png",
+                      "lerpType": "Point",
+                      "tintColor": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 0
+                      }
+                    },
+                    "size": {
+                      "x": 156.60000610351562,
+                      "y": 31.31999969482422
+                    },
+                    "horizontal": 0.30000001192092896,
+                    "vertical": 0.30000001192092896,
+                    "patchScale": 5.0
+                  }
+                }
+              ]
+            }
           }
         ],
         "logics": [
@@ -442,6 +732,9 @@
               "children": [
                 [
                   3
+                ],
+                [
+                  6
                 ]
               ]
             }
@@ -470,7 +763,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -5.11993408203125,
+          "y": -4.6400146484375,
           "z": 0.0
         },
         "scale": {
@@ -559,7 +852,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -481.2799987792969,
+          "y": -436.1600341796875,
           "z": 0.0
         },
         "scale": {
@@ -699,15 +992,54 @@
       "id": 4,
       "data": {
         "stars": {
-          "first": [],
-          "second": [],
-          "third": []
+          "first": [
+            2,
+            5,
+            1,
+            3,
+            1,
+            1
+          ],
+          "second": [
+            2,
+            5,
+            1,
+            3,
+            2,
+            1
+          ],
+          "third": [
+            2,
+            5,
+            1,
+            3,
+            3,
+            1
+          ]
         },
         "timeInfoBox": [
           2,
           3
         ],
-        "boardSpawner": [],
+        "timeValueLabelId": [
+          2,
+          3,
+          4
+        ],
+        "movesInfoBoxId": [
+          2,
+          6
+        ],
+        "movesValueLabelId": [
+          2,
+          6,
+          4
+        ],
+        "scoreInfoBox": [
+          2,
+          5,
+          1
+        ],
         "startInfo": [
           5
         ],

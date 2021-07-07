@@ -23,9 +23,14 @@ public:
     virtual ~TestGameBoardLogic() {
     }
 
+    void init() override {
+        GameBoardLogic::init();
+        ET_spawnElems();
+    }
+
     void updateAfterRemoves() {
-        // isBoardStatic = false;
-        ET_onGameTick(0.f);
+        respawnDestroyedElems();
+        processMovingElems(0.f);
     }
 
     void finishElemsFailling() {
@@ -286,6 +291,38 @@ TEST_F(GameBoardTests, CheckSpawnNewWhenMoving) {
     ASSERT_FLOAT_EQ(ptDiff.z, 0.f);
 }
 
+TEST_F(GameBoardTests, CheckVelocityClamping) {
+    TestBoardParams params;
+    params.boardSize = Vec2i(1, 3);
+    params.moveSpeed = 1.f;
+    board->setParams(params);
+    board->init();
+
+    auto elem1 = board->getElem(Vec2i(0, 0));
+    ASSERT_TRUE(elem1);
+
+    auto elem2 = board->getElem(Vec2i(0, 1));
+    ASSERT_TRUE(elem2);
+
+    auto elem3 = board->getElem(Vec2i(0, 2));
+    ASSERT_TRUE(elem3);
+
+    GameUtils::SetElemState(elem1->entId, EBoardElemState::Destroyed);
+    board->updateAfterRemoves();
+
+    while(GameUtils::GetElemState(elem2->entId) == EBoardElemState::Falling) {
+        elem2->vel = 1000.f;
+        board->ET_onGameTick(0.01f);
+        EXPECT_LE(elem2->vel, elem1->vel);
+    }
+
+    board->ET_onGameTick(10.f);
+
+    EXPECT_EQ(elem3->boardPt.y, 2);
+    EXPECT_EQ(elem2->boardPt.y, 1);
+    EXPECT_EQ(elem1->boardPt.y, 0);
+}
+
 TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     auto uiBoxPtr = entity->addCustomLogic<UIBox>();
     ASSERT_TRUE(uiBoxPtr);
@@ -309,10 +346,12 @@ TEST_F(GameBoardTests, CheckRelativeLocationToUIBox) {
     auto cellSize = board->getCellSize();
 
     auto uiBoxSize = uiBox.getSize();
-    auto expectedCellSize = std::min(uiBoxSize.x, uiBoxSize.y);
+    auto expectedCellSize = std::min(uiBoxSize.x, uiBoxSize.y) / 10;
     EXPECT_EQ(cellSize, expectedCellSize);
 
     auto elem = board->getElem(Vec2i(0, 0));
+    ASSERT_TRUE(elem);
+
     Transform tm;
     ET_SendEventReturn(tm, elem->entId, &ETEntity::ET_getTransform);
 

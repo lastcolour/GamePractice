@@ -10,6 +10,8 @@
 
 namespace {
 
+const Vec2i MAX_BOARD_SIZE = Vec2i(10, 10);
+
 bool isElemMovingState(EBoardElemState elemState) {
     return elemState == EBoardElemState::Falling || elemState == EBoardElemState::Landing;
 }
@@ -219,56 +221,38 @@ void GameBoardLogic::setElemBoardPos(BoardElement& elem, const Vec2i& boardPt) c
 void GameBoardLogic::respawnDestroyedElems() {
     gameBoardFSM.getState().isRespawnRequested = false;
 
-    Transform tm;
-    auto pos = ET_getPosFromBoardPos(Vec2i(0, boardSize.y - 1));
-    float topPosY = pos.y;
-
-    for(auto& col : columns) {
+    for(size_t i = 0u, sz = columns.size(); i < sz; ++i) {
+        auto& col = columns[i];
         auto it = col.begin();
         while(it != col.end()) {
             auto elem = *it;
             auto elemState = GameUtils::GetElemState(elem.entId);
             if(elemState == EBoardElemState::Destroyed) {
                 uiProxies.removeItem(it->entId);
-                it = col.erase(it);
-
                 if(elem.entId.isValid()) {
                     ET_SendEvent(&ETGameBoardElemsPool::ET_removeElem, elem.entId);
                 }
-                elem = createNewElement(elem.boardPt);
-                if(!elem.entId.isValid()) {
-                    LogError("[GameBoardLogic::updateAfterRemoves] Can't respawn new element");
-                    return;
-                }
-                bool hasTopElem = false;
-                if(!col.empty()) {
-                    auto& topElem = col.back();
-                    ET_SendEventReturn(tm, topElem.entId, &ETEntity::ET_getLocalTransform);
-                    if(tm.pt.y > topPosY) {
-                        hasTopElem = true;
-                        tm.pt.y += cellSize;
-                        ET_SendEvent(elem.entId, &ETEntity::ET_setLocalTransform, tm);
-                    }
-                }
-
-                if(!hasTopElem) {
-                    setElemBoardPos(elem, Vec2i(elem.boardPt.x, boardSize.y));
-                }
-
-                elem.boardPt.y = -1;
-                elemState = EBoardElemState::Falling;
-                GameUtils::SetElemState(elem.entId, elemState);
-                col.push_back(elem);
+                it = col.erase(it);
+                gameBoardFSM.getState().hasMovingElems = true;
             } else {
+                if(elemState != EBoardElemState::Static) {
+                    gameBoardFSM.getState().isRespawnRequested = true;
+                }
                 ++it;
             }
-
-            if(elemState != EBoardElemState::Static) {
-                gameBoardFSM.getState().isRespawnRequested = true;
-                if(elemState == EBoardElemState::Falling) {
-                    gameBoardFSM.getState().hasMovingElems = true;
-                }
+        }
+        auto newCount = boardSize.y -  col.size();
+        for(size_t j = 0u; j < newCount; ++j) {
+            auto elemBoardPt = Vec2i(static_cast<int>(i),
+                boardSize.y + static_cast<int>(j));
+            auto elem = createNewElement(elemBoardPt);
+            if(!elem.entId.isValid()) {
+                return;
             }
+            elem.boardPt.y = -1;
+            auto elemState = EBoardElemState::Falling;
+            GameUtils::SetElemState(elem.entId, elemState);
+            col.push_back(elem);
         }
     }
 }
@@ -291,6 +275,7 @@ void GameBoardLogic::ET_onGameTick(float dt) {
     auto& state = gameBoardFSM.getState();
     ET_SendEventReturn(state.hasMergingElems, &ETGameBoardElemMergeManager::ET_hasMergeTasks);
     ET_SendEventReturn(state.hasTriggeringElems, &ETGameBoardElemTriggerManager::ET_hasTriggerTasks);
+    ET_SendEventReturn(state.hasSwitchingElems, &ETGameBoardInteractionLogic::ET_hasActiveSwitching);
 
     auto pass = EGameBoardUpdatePass::Static;
     auto hasUpdatePass = gameBoardFSM.queryPass(pass);
@@ -322,6 +307,9 @@ void GameBoardLogic::ET_onGameTick(float dt) {
             }
             case EGameBoardUpdatePass::Respawn: {
                 respawnDestroyedElems();
+                break;
+            }
+            case EGameBoardUpdatePass::Switch: {
                 break;
             }
             case EGameBoardUpdatePass::Static: {
@@ -372,8 +360,8 @@ void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
 
     assert(aabbSize > Vec2(0.f) && "Invalid size of game board box");
 
-    float cellSizeX = aabbSize.x / static_cast<float>(boardSize.x);
-    float cellSizeY = aabbSize.y / static_cast<float>(boardSize.y);
+    float cellSizeX = aabbSize.x / static_cast<float>(MAX_BOARD_SIZE.x);
+    float cellSizeY = aabbSize.y / static_cast<float>(MAX_BOARD_SIZE.y);
     cellSize = static_cast<int>(floor(std::min(cellSizeX, cellSizeY)));
     objectSize = Vec2(floor(cellSize * cellScale));
     Vec2i boardBoxSize = Vec2i(cellSize * boardSize.x, cellSize * boardSize.y);
@@ -385,6 +373,10 @@ void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
 
     ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, Vec2(
         static_cast<float>(boardBoxSize.x), static_cast<float>(boardBoxSize.y)));
+
+    if(!columns.empty()) {
+        LogWarning("[GameBoardLogic::ET_resize] Resize of non-empty board may-cause elements jumps!");
+    }
 
     for(auto& col : columns) {
         for(auto& elem : col) {

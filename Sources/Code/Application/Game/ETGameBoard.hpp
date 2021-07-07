@@ -36,6 +36,12 @@ struct ETGameBoardInteractionLogic {
     virtual ~ETGameBoardInteractionLogic() = default;
     virtual void ET_allowInteraction(bool flag) = 0;
     virtual bool ET_canInteract() const = 0;
+    virtual bool ET_hasActiveSwitching() const = 0;
+};
+
+struct ETGameBoardInteractionEvents {
+    virtual ~ETGameBoardInteractionEvents() = default;
+    virtual void ET_onElemMoved() = 0;
 };
 
 struct ETGameBoardMatcher {

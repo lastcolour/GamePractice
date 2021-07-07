@@ -277,7 +277,7 @@
       "type": "ParticlesSystem",
       "id": 4,
       "data": {
-        "isVisible": true,
+        "isVisible": false,
         "alpha": 1.0,
         "drawPriority": 4,
         "emission": {

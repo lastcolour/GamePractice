@@ -168,7 +168,6 @@ void OboeAudioSystem::stopOboeStream() {
 
 void OboeAudioSystem::deinit() {
     stopOboeStream();
-    return;
 }
 
 void OboeAudioSystem::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result res) {

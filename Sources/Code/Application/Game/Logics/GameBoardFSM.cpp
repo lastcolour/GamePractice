@@ -46,7 +46,8 @@ GameBoardState::GameBoardState() :
     hasTriggeringElems(false),
     isMatchRequested(false),
     isMatchBlocked(false),
-    isRespawnRequested(false) {
+    isRespawnRequested(false),
+    hasSwitchingElems(false) {
 }
 
 GameBoardFSM::GameBoardFSM() :
@@ -62,7 +63,9 @@ bool GameBoardFSM::queryPass(EGameBoardUpdatePass& outPass) {
     updatePass = returnPass;
     switch(updatePass) {
         case EGameBoardUpdatePass::Static: {
-            if(state.hasTriggeringElems) {
+            if(state.hasSwitchingElems) {
+                updatePass = EGameBoardUpdatePass::Switch;
+            } else if(state.hasTriggeringElems) {
                 updatePass = EGameBoardUpdatePass::Trigger;
             } else if(state.hasMergingElems) {
                 updatePass = EGameBoardUpdatePass::Merge;
@@ -125,6 +128,16 @@ bool GameBoardFSM::queryPass(EGameBoardUpdatePass& outPass) {
             returnPass = updatePass;
             return queryPass(outPass);
         }
+        case EGameBoardUpdatePass::Switch: {
+            if(state.hasSwitchingElems) {
+                updatePass = EGameBoardUpdatePass::Switch;
+            } else {
+                updatePass = EGameBoardUpdatePass::Static;
+                returnPass = updatePass;
+                return queryPass(outPass);
+            }
+            break;
+        }
         default: {
             assert(false && "Invalid update pass");
         }
@@ -174,6 +187,9 @@ bool GameBoardFSM::querySubPass(EGameBoardUpdatePass& outPass) {
         case EGameBoardUpdatePass::Respawn: {
             return false;
         }
+        case EGameBoardUpdatePass::Switch: {
+            return false;
+        }
         default: {
             assert(false && "Invalid update pass");
         }
@@ -203,5 +219,6 @@ bool GameBoardFSM::canQueryPass() const {
         || state.hasMergingElems
         || state.hasTriggeringElems
         || state.isMatchRequested
-        || state.isRespawnRequested;
+        || state.isRespawnRequested
+        || state.hasSwitchingElems;
 }

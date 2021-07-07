@@ -241,6 +241,37 @@ bool canMergePatterns(const PatternMatch& p1, const PatternMatch& p2) {
     return true;
 }
 
+bool isSymetric(const PatternGroupsT& first, const PatternGroupsT& second) {
+    if(first.size() != second.size()) {
+        return false;
+    }
+    if(first[0]->elemsType != second[0]->elemsType) {
+        return false;
+    }
+    if(first[0]->points[0]->clusterId != second[0]->points[0]->clusterId) {
+        return false;
+    }
+    size_t totalSize = first.size();
+    size_t dublicates = 0;
+    for(size_t i = 0; i < (totalSize - 1); ++i) {
+        for(size_t j = i + 1; j < totalSize; ++j) {
+            if(first[i] == second[j]) {
+                ++dublicates;
+            }
+        }
+    }
+    return dublicates == totalSize;
+}
+
+bool isSymetric(const PatternGroupsT& group, const std::vector<PatternGroupsT>& currGroups) {
+    for(auto& other : currGroups) {
+        if(isSymetric(other, group)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 PatternGroupsT tryMergeToGroup(const PatternMatch& p, PatternGroupsT& group) {
     std::vector<const PatternMatch*> res;
     for(auto& otherP : group) {
@@ -254,53 +285,60 @@ PatternGroupsT tryMergeToGroup(const PatternMatch& p, PatternGroupsT& group) {
 }
 
 std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>& patterns) {
-    std::vector<PatternGroupsT> allGroups;
+    std::vector<PatternGroupsT> currGroups;
+    std::vector<PatternGroupsT> newGroups;
+    PatternGroupsT bestGroup;
+    int bestScore = 0;
 
     for(auto& p : patterns) {
         PatternGroupsT group;
         group.emplace_back(&p);
-        allGroups.emplace_back(std::move(group));
+        
+        int groupScore = calcGroupScore(group);
+        if(groupScore > bestScore) {
+            bestScore = groupScore;
+            bestGroup = group;
+        }
+
+        currGroups.emplace_back(std::move(group));
     }
 
-    std::vector<PatternGroupsT> newGroups;
-
-    for(size_t i = 0, sz = patterns.size() - 1; i < sz; ++i) {
+    for(size_t i = 0, sz = patterns.size(); i < (sz - 1); ++i) {
         for(size_t j = i + 1; j < sz; ++j) {
             auto& p = patterns[i];
-            auto& group = allGroups[j];
+            auto& group = currGroups[j];
             auto newGroup = tryMergeToGroup(p, group);
             if(!newGroup.empty()) {
-                newGroups.push_back(newGroup);
-                allGroups.push_back(std::move(newGroup));
+                int groupScore = calcGroupScore(newGroup);
+                if(groupScore > bestScore) {
+                    bestScore = groupScore;
+                    bestGroup = newGroup;
+                }
+                newGroups.push_back(std::move(newGroup));
             }
         }
     }
 
-    std::vector<PatternGroupsT> currGroups = std::move(newGroups);
+    currGroups = std::move(newGroups);
 
     while(!currGroups.empty()) {
-        for(auto& p : patterns) {
-            for(auto& group : currGroups) {
+        for(auto& group : currGroups) {
+            for(auto& p : patterns) {
                 auto newGroup = tryMergeToGroup(p, group);
                 if(!newGroup.empty()) {
-                    newGroups.push_back(newGroup);
-                    allGroups.push_back(std::move(newGroup));
+                    if(isSymetric(newGroup, newGroups)) {
+                        continue;
+                    }
+                    int groupScore = calcGroupScore(newGroup);
+                    if(groupScore > bestScore) {
+                        bestScore = groupScore;
+                        bestGroup = newGroup;
+                    }
+                    newGroups.push_back(std::move(newGroup));
                 }
             }
         }
         currGroups = std::move(newGroups);
-    }
-
-    auto bestGroup = &allGroups[0];
-    auto bestScore = calcGroupScore(*bestGroup);
-
-    for(size_t i = 1, sz = allGroups.size(); i < sz; ++i) {
-        auto& group = allGroups[i];
-        auto score = calcGroupScore(group);
-        if(score > bestScore) {
-            bestGroup = &group;
-            bestScore = score;
-        }
     }
 
     std::unordered_set<const MatchPoints*> remainingPoints;
@@ -312,7 +350,7 @@ std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>&
 
     std::vector<PatternMatch> resPatterns;
 
-    for(auto& p : *bestGroup) {
+    for(auto& p : bestGroup) {
         resPatterns.push_back(*p);
         for(auto& elem : p->points) {
             auto it = remainingPoints.find(elem);

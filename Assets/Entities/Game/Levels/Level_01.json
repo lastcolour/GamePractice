@@ -51,8 +51,8 @@
                 }
               },
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 150.0,
+                "y": 150.0
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
@@ -65,24 +65,17 @@
   ],
   "logics": [
     {
-      "type": "GameEndTimer",
-      "id": 6,
-      "data": {
-        "gameDuration": 300.0
-      }
-    },
-    {
       "type": "ScoreObjective",
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 1
+          "minScore": 5
         },
         "twoStars": {
-          "minScore": 2
+          "minScore": 10
         },
         "threeStars": {
-          "minScore": 3
+          "minScore": 15
         }
       }
     },
@@ -109,25 +102,32 @@
         "elems": [
           {
             "elemType": "Blue",
-            "weight": 1
+            "weight": 10
           },
           {
             "elemType": "Red",
-            "weight": 1
+            "weight": 10
           },
           {
             "elemType": "Green",
-            "weight": 1
+            "weight": 10
           },
           {
             "elemType": "Purple",
-            "weight": 1
+            "weight": 10
           },
           {
             "elemType": "Yellow",
-            "weight": 1
+            "weight": 10
           }
         ]
+      }
+    },
+    {
+      "type": "GameMovesLimitLogic",
+      "id": 13,
+      "data": {
+        "maxMoves": 20
       }
     }
   ]
