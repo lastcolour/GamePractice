@@ -19,170 +19,263 @@
           "w": 1.0
         }
       },
-      "name": "Entities/Effects/ElemDestroy/BlueDestroy.json",
-      "id": 1,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemDestroy/GreenDestroy.json",
-      "id": 2,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemDestroy/PurpleDestroy.json",
-      "id": 3,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemDestroy/RedDestroy.json",
-      "id": 4,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemDestroy/YellowDestroy.json",
-      "id": 5,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 488.0,
-          "y": 524.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemDestroy/ElemMutate.json",
-      "id": 106,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 533.0,
-          "y": 524.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemDestroy/BombDestroy.json",
-      "id": 207,
-      "internal": false
-    },
-    {
-      "transform": {
-        "pos": {
-          "x": 627.0,
-          "y": 524.0,
-          "z": 0.0
-        },
-        "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-        },
-        "rot": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "w": 1.0
-        }
-      },
-      "name": "Entities/Effects/ElemMove.json",
-      "id": 308,
-      "internal": false
+      "name": "Proxies",
+      "id": 409,
+      "internal": true,
+      "data": {
+        "children": [
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/BlueDestroy.json",
+            "id": 1,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/GreenDestroy.json",
+            "id": 2,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/PurpleDestroy.json",
+            "id": 3,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/RedDestroy.json",
+            "id": 4,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/YellowDestroy.json",
+            "id": 5,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 488.0,
+                "y": 524.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/ElemMutate.json",
+            "id": 106,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 533.0,
+                "y": 524.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemDestroy/BombDestroy.json",
+            "id": 207,
+            "internal": false
+          },
+          {
+            "transform": {
+              "pos": {
+                "x": 627.0,
+                "y": 524.0,
+                "z": 0.0
+              },
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "rot": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            },
+            "name": "Entities/Effects/ElemMove.json",
+            "id": 308,
+            "internal": false
+          }
+        ],
+        "logics": [
+          {
+            "type": "UIElementProxy",
+            "id": 8,
+            "data": {
+              "proxies": [
+                {
+                  "target": [
+                    1
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 3
+                },
+                {
+                  "target": [
+                    2
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 3
+                },
+                {
+                  "target": [
+                    3
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 5
+                },
+                {
+                  "target": [
+                    4
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 5
+                },
+                {
+                  "target": [
+                    5
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 5
+                },
+                {
+                  "target": [
+                    106
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 5
+                },
+                {
+                  "target": [
+                    207
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 5
+                },
+                {
+                  "target": [
+                    308
+                  ],
+                  "normScale": 1.0,
+                  "extraZOffset": 5
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
   "logics": [
@@ -216,21 +309,27 @@
       "id": 3,
       "data": {
         "redDestroyEffectId": [
+          409,
           4
         ],
         "blueDestroyEffectId": [
+          409,
           1
         ],
         "yellowDestroyEffectId": [
+          409,
           5
         ],
         "greenDestroyEffectId": [
+          409,
           2
         ],
         "purpleDestroyEffectId": [
+          409,
           3
         ],
         "bomdDestroyEffectId": [
+          409,
           207
         ],
         "destroyEffectScale": 0.07999999821186066
@@ -241,10 +340,12 @@
       "id": 4,
       "data": {
         "switchDuration": 0.20000000298023224,
+        "maxScale": 1.600000023841858,
         "switchSound": {
           "event": "elemSwitch_01"
         },
         "swapEffectId": [
+          409,
           308
         ]
       }
@@ -279,73 +380,7 @@
         "startVel": 1.0,
         "acc": 1.0,
         "mutateTaskDuration": 0.20000000298023224,
-        "mutateEffectId": [
-          106
-        ]
-      }
-    },
-    {
-      "type": "UIElementProxy",
-      "id": 8,
-      "data": {
-        "proxies": [
-          {
-            "target": [
-              1
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 3
-          },
-          {
-            "target": [
-              2
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 3
-          },
-          {
-            "target": [
-              3
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              4
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              5
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              106
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              207
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              308
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          }
-        ]
+        "mutateEffectId": []
       }
     },
     {
@@ -368,6 +403,23 @@
       "id": 10,
       "data": {
         "triggerDelay": 0.10000000149011612
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 11,
+      "data": {
+        "extraZOffset": 0,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            409
+          ]
+        ]
       }
     }
   ]

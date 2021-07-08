@@ -27,6 +27,12 @@ UIElement::~UIElement() {
 
 void UIElement::init() {
     isIgnoringTransform = true;
+
+    if(ET_IsExistNode<ETUIElement>(getEntityId())) {
+        LogError("[UIElement::init] The is another UIElement on entity: '%s'",
+            EntityUtils::GetEntityName(getEntityId()));
+    }
+
     ETNode<ETUIElement>::connect(getEntityId());
     ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETUIAdditiveAnimationTarget>::connect(getEntityId());
