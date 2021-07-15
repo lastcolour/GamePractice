@@ -104,7 +104,7 @@ constexpr ClassValueType GetClassValueType() {
     } else if constexpr (std::is_same<ValueT, EntityId>::value) {
         return ClassValueType::Entity;
     } else if constexpr (ReflectCore::is_polymorh_ptr<ValueT>::value) {
-        static_assert(ReflectCore::IsReflectable<ValueT::ObjectType>(), "Object type isn't reflectable");
+        static_assert(ReflectCore::IsReflectable<typename ValueT::ObjectType>(), "Object type isn't reflectable");
         return ClassValueType::PolymorphObject;
     } else if constexpr (ReflectCore::IsReflectable<ValueT>()) {
         return ClassValueType::Object;
@@ -126,7 +126,7 @@ bool CreateTypeInfo() {
             static_cast<ReflectCore::ReflectFuncT>(reflectFunc)
         );
     } else if constexpr (type == ClassValueType::PolymorphObject) {
-        return CreateTypeInfo<ClassT::ObjectType>();
+        return CreateTypeInfo<typename ClassT::ObjectType>();
     } else if constexpr (type == ClassValueType::Array) {
         using ElemT = typename ClassT::value_type;
         if(!CreateTypeInfo<ElemT>()) {
