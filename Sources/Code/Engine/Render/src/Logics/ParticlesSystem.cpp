@@ -249,6 +249,20 @@ void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
     });
 }
 
+void ParticlesSystem::ET_stopTrackedEmitter(EntityId trackEntId) {
+    if(!trackEntId.isValid()) {
+        LogWarning("[ParticlesSystem::ET_stopTrackedEmitter] Can't stop emit system '%s' with tracking invalid entity",
+            EntityUtils::GetEntityName(getEntityId()));
+        return;
+    }
+
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, trackEntId](){
+        auto particlesNode = static_cast<ParticlesNode*>(node);
+        auto& pool = particlesNode->getEmittersPool();
+        pool.stopTrackEmitter(trackEntId);
+    });
+}
+
 void ParticlesSystem::ET_stopEmitting() {
     auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
     auto& emittersPool = particlesNode->getEmittersPool();

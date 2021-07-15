@@ -183,6 +183,52 @@
       "name": "Entities/Effects/ElemMove.json",
       "id": 308,
       "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 558.0,
+          "y": 464.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/RocketTrail.json",
+      "id": 409,
+      "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 413.0,
+          "y": 464.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/ElemDestroy/RocketDestroy.json",
+      "id": 510,
+      "internal": false
     }
   ],
   "logics": [
@@ -214,35 +260,16 @@
     {
       "type": "GameBoardMatcher",
       "id": 3,
-      "data": {
-        "redDestroyEffectId": [
-          4
-        ],
-        "blueDestroyEffectId": [
-          1
-        ],
-        "yellowDestroyEffectId": [
-          5
-        ],
-        "greenDestroyEffectId": [
-          2
-        ],
-        "purpleDestroyEffectId": [
-          3
-        ],
-        "bomdDestroyEffectId": [
-          207
-        ],
-        "destroyEffectScale": 0.07999999821186066
-      }
+      "data": {}
     },
     {
       "type": "GameBoardInteraction",
       "id": 4,
       "data": {
         "switchDuration": 0.20000000298023224,
+        "maxScale": 1.600000023841858,
         "switchSound": {
-          "event": "elemSwitch_01"
+          "event": ""
         },
         "swapEffectId": [
           308
@@ -344,6 +371,20 @@
             ],
             "normScale": 1.0,
             "extraZOffset": 5
+          },
+          {
+            "target": [
+              409
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 3
+          },
+          {
+            "target": [
+              510
+            ],
+            "normScale": 1.0,
+            "extraZOffset": 5
           }
         ]
       }
@@ -368,6 +409,37 @@
       "id": 10,
       "data": {
         "triggerDelay": 0.10000000149011612
+      }
+    },
+    {
+      "type": "GameBoardEffects",
+      "id": 11,
+      "data": {
+        "redDestroy": [
+          4
+        ],
+        "blueDestroy": [
+          1
+        ],
+        "yellowDestroy": [
+          5
+        ],
+        "greenDestroy": [
+          2
+        ],
+        "purpleDestroy": [
+          3
+        ],
+        "bomdDestroy": [
+          207
+        ],
+        "rocketTrail": [
+          409
+        ],
+        "rocketDestroy": [
+          510
+        ],
+        "destroyEffectScale": 0.07999999821186066
       }
     }
   ]

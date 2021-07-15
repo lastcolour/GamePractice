@@ -23,14 +23,14 @@ void BoardElemTriggerManager::init() {
 void BoardElemTriggerManager::deinit() {
 }
 
-void BoardElemTriggerManager::ET_createTriggerTask(EntityId elemId) {
+void BoardElemTriggerManager::ET_createTriggerTask(EntityId elemId, bool applyDelay) {
     if(!elemId.isValid()) {
         assert(false && "Invalid elem type");
         return;
     }
     TriggerTask task;
     task.entId = elemId;
-    task.delay = triggerDelay;
+    task.delay = applyDelay ? triggerDelay : 0.f;
     task.destroyPlayed = false;
     newTriggerTasks.push_back(task);
     ET_SendEvent(elemId, &ETGameBoardElemTriggerLogic::ET_start);
@@ -42,19 +42,18 @@ void BoardElemTriggerManager::ET_updateTriggerTasks(float dt) {
     auto it = triggerTasks.begin();
     while(it != triggerTasks.end()) {
         it->delay -= dt;
-        if(it->delay > 0.f) {
-            break;
+        bool isEnded = false;
+        if(it->delay < 0.f) {
+            if(!it->destroyPlayed) {
+                it->destroyPlayed = true;
+                GameUtils::PlayElemDestroyEffect(it->entId);
+            }
+            ET_SendEventReturn(isEnded, it->entId, &ETGameBoardElemTriggerLogic::ET_update, dt);
         }
-        if(!it->destroyPlayed) {
-            it->destroyPlayed = true;
-            GameUtils::PlayElemDestroyEffect(it->entId);
-        }
-        bool isEnded = true;
-        ET_SendEventReturn(isEnded, it->entId, &ETGameBoardElemTriggerLogic::ET_update, dt);
         if(isEnded) {
             it = triggerTasks.erase(it);
         } else {
-            break;
+            ++it;
         }
     }
 }

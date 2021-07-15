@@ -20,7 +20,7 @@ public:
     void deinit() override;
 
     // ETGameBoardElemTriggerManager
-    void ET_createTriggerTask(EntityId elemId) override;
+    void ET_createTriggerTask(EntityId elemId, bool applyDelay) override;
     void ET_updateTriggerTasks(float dt) override;
     bool ET_hasTriggerTasks() const override;
 

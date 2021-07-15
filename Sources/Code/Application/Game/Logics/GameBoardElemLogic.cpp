@@ -36,6 +36,7 @@ void GameBoardElemLogic::Reflect(ReflectContext& ctx) {
 
 void GameBoardElemLogic::init() {
     ETNode<ETGameBoardElem>::connect(getEntityId());
+    ETNode<ETGameBoardRenderElem>::connect(getEntityId());
 }
 
 void GameBoardElemLogic::deinit() {
@@ -53,12 +54,13 @@ EBoardElemType GameBoardElemLogic::ET_getType() const {
     return type;
 }
 
-void GameBoardElemLogic::ET_triggerDestroy() {
+void GameBoardElemLogic::ET_triggerDestroy(EntityId sourceId) {
     assert(state == EBoardElemState::Static && "Invalid elem state");
 
     if(GameUtils::IsTriggerType(type)) {
         state = EBoardElemState::Triggering;
-        ET_SendEvent(&ETGameBoardElemTriggerManager::ET_createTriggerTask, getEntityId());
+        bool applyDelay = GameUtils::ShouldApplyTriggerDelay(getEntityId(), sourceId);
+        ET_SendEvent(&ETGameBoardElemTriggerManager::ET_createTriggerTask, getEntityId(), applyDelay);
     } else {
         GameUtils::PlayElemDestroyEffect(getEntityId());
         state = EBoardElemState::Destroying;
@@ -124,4 +126,14 @@ void GameBoardElemLogic::ET_onTriggerDone() {
     state = EBoardElemState::Destroying;
 
     ET_onDestroyPlayed();
+}
+
+void GameBoardElemLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {
+    ET_SendEvent(getEntityId(), &ETRenderRect::ET_setSize, elemSize);
+    rootContainer.addItem(getEntityId(), GameUtils::BOARD_ELEM_Z_OFFSET);
+}
+
+void GameBoardElemLogic::ET_deinitRender(UIProxyContainer& rootContainer) {
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
+    rootContainer.removeItem(getEntityId());
 }

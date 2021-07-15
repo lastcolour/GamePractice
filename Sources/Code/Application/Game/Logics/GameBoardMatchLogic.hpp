@@ -3,7 +3,6 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameBoard.hpp"
-#include "Game/ETGameElem.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
 
 class GameBoardMatchLogic : public EntityLogic,
@@ -23,7 +22,6 @@ public:
 
     // ETGameBoardMatcher
     bool ET_matchElements() override;
-    void ET_playDestroyEffect(EntityId elemId) override;
 
 private:
 
@@ -32,13 +30,6 @@ private:
 private:
 
     BoardMatchState boardMatchState;
-    EntityId redDestroyEffectId;
-    EntityId blueDestroyEffectId;
-    EntityId yellowDestroyEffectId;
-    EntityId greenDestroyEffectId;
-    EntityId purpleDestroyEffectId;
-    EntityId bomdDestroyEffectId;
-    float destroyEffectScale;
 };
 
 #endif /* __GAME_BOARD_MATCH_LOGIC_HPP__ */

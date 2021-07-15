@@ -228,7 +228,7 @@ void GameBoardLogic::respawnDestroyedElems() {
             auto elem = *it;
             auto elemState = GameUtils::GetElemState(elem.entId);
             if(elemState == EBoardElemState::Destroyed) {
-                uiProxies.removeItem(it->entId);
+                ET_SendEvent(it->entId, &ETGameBoardRenderElem::ET_deinitRender, uiProxies);
                 if(elem.entId.isValid()) {
                     ET_SendEvent(&ETGameBoardElemsPool::ET_removeElem, elem.entId);
                 }
@@ -455,8 +455,7 @@ void GameBoardLogic::setupElem(BoardElement& elem, const Vec2i& boardPt) {
     ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, elem.entId);
     setElemBoardPos(elem, boardPt);
     GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
-    ET_SendEvent(elem.entId, &ETRenderRect::ET_setSize, objectSize);
-    uiProxies.addItem(elem.entId, GameUtils::BOARD_ELEM_Z_OFFSET);
+    ET_SendEvent(elem.entId, &ETGameBoardRenderElem::ET_initRender, uiProxies, objectSize);
 }
 
 std::vector<EntityId> GameBoardLogic::ET_getAllElemsOfType(EBoardElemType queryElemType) const {

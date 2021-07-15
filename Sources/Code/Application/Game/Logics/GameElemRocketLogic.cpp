@@ -1,10 +1,46 @@
 #include "Game/Logics/GameElemRocketLogic.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
+#include "Render/ETRenderNode.hpp"
+#include "Render/ETParticlesSystem.hpp"
+
+namespace {
+
+bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOffset,
+    int cellSize, const Vec2i& startPt, const Vec2i& boardSize) {
+
+    bool isEnded = false;
+    int iOffset = static_cast<int>(fOffset) + 1;
+    Vec2i boardPt = moveDir * iOffset + startPt;
+    if(boardPt.x < 0 || boardPt.x >= boardSize.x) {
+        isEnded = true;
+    }
+    if(boardPt.y < 0 || boardPt.y >= boardSize.y) {
+        isEnded = true;
+    }
+
+    if(isEnded) {
+        ET_SendEvent(rocketId, &ETRenderNode::ET_hide);
+        EntityId trailEffectId;
+        ET_SendEventReturn(trailEffectId, &ETGameBoardEffects::ET_getRocketTrailEffect);
+        ET_SendEvent(trailEffectId, &ETParticlesSystem::ET_stopTrackedEmitter, rocketId);
+    } else {
+        Transform rocketTm;
+        rocketTm.pt = tm.pt + (fOffset * cellSize) * Vec3(
+        static_cast<float>(moveDir.x), static_cast<float>(moveDir.y), 0.f);
+        ET_SendEvent(rocketId, &ETEntity::ET_setTransform, rocketTm);
+    }
+
+    return isEnded;
+}
+
+} // namespace
 
 void GameElemRocketLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameElemRocketLogic>("GameElemRocketLogic")) {
         classInfo->addField("speed", &GameElemRocketLogic::speed);
+        classInfo->addField("firstRocket", &GameElemRocketLogic::firstRocket);
+        classInfo->addField("secondRocket", &GameElemRocketLogic::secondRocket);
     }
 }
 
@@ -12,7 +48,9 @@ GameElemRocketLogic::GameElemRocketLogic() :
     startPt(-1),
     speed(1.f),
     currTime(0.f),
-    isHorizontal(false) {
+    prevOffset(0),
+    isHorizontal(false),
+    isStarted(false) {
 }
 
 GameElemRocketLogic::~GameElemRocketLogic() {
@@ -20,15 +58,27 @@ GameElemRocketLogic::~GameElemRocketLogic() {
 
 void GameElemRocketLogic::init() {
     ETNode<ETGameBoardElemTriggerLogic>::connect(getEntityId());
+    ETNode<ETGameBoardRenderElem>::connect(getEntityId());
+
+    ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
+    ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
 }
 
 void GameElemRocketLogic::deinit() {
 }
 
 void GameElemRocketLogic::ET_start() {
+    isStarted = false;
+    prevOffset = 0;
+    currTime = 0.f;
     ET_SendEventReturn(startPt, &ETGameBoard::ET_getElemBoardPos, getEntityId());
 
-    currTime = 0.f;
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+
+    ET_SendEvent(firstRocket, &ETEntity::ET_setTransform, tm);
+    ET_SendEvent(secondRocket, &ETEntity::ET_setTransform, tm);
+
     auto elemType = GameUtils::GetElemType(getEntityId());
     if(elemType == EBoardElemType::HRocket) {
         isHorizontal = true;
@@ -41,54 +91,78 @@ void GameElemRocketLogic::ET_setSwapedElem(EntityId elemId) {
 }
 
 bool GameElemRocketLogic::ET_update(float dt) {
-    currTime += dt;
-    int offset = static_cast<int>(speed * currTime);
-
-    if(isHorizontal) {
-        for(int i = 1; i < offset; ++i) {
-            {
-                Vec2i pt = startPt;
-                pt.x += i;
-                GameUtils::TryTriggerElemDestroy(pt);
-            }
-            {
-                Vec2i pt = startPt;
-                pt.x -= i;
-                GameUtils::TryTriggerElemDestroy(pt);
-            }
-        }
-    } else {
-        for(int i = 1; i < offset; ++i) {
-            {
-                Vec2i pt = startPt;
-                pt.y += i;
-                GameUtils::TryTriggerElemDestroy(pt);
-            }
-            {
-                Vec2i pt = startPt;
-                pt.y -= i;
-                GameUtils::TryTriggerElemDestroy(pt);
-            }
-        }
+    if(!isStarted) {
+        isStarted = true;
+        onStart();
     }
-
-    Vec2i size(0);
-    ET_SendEventReturn(size, &ETGameBoard::ET_getBoardSize);
-
-    bool isEnded = false;
-    if(isHorizontal) {
-        if((startPt.x - offset) < 0 && (startPt.x + offset) >= size.x) {
-            isEnded = true;
-        }
-    } else {
-        if((startPt.y - offset) < 0 && (startPt.y + offset) >= size.y) {
-            isEnded = true;
-        }
-    }
-
+    auto isEnded = onUpdate(dt);
     if(isEnded) {
         ET_SendEvent(getEntityId(), &ETGameBoardElem::ET_onTriggerDone);
     }
-
     return isEnded;
+}
+
+void GameElemRocketLogic::onStart() {
+    ET_SendEvent(firstRocket, &ETRenderNode::ET_show);
+    ET_SendEvent(secondRocket, &ETRenderNode::ET_show);
+
+    EntityId trailEffectId;
+    ET_SendEventReturn(trailEffectId, &ETGameBoardEffects::ET_getRocketTrailEffect);
+
+    ET_SendEvent(trailEffectId, &ETParticlesSystem::ET_emitTrackingEntity, firstRocket);
+    ET_SendEvent(trailEffectId, &ETParticlesSystem::ET_emitTrackingEntity, secondRocket);
+}
+
+bool GameElemRocketLogic::onUpdate(float dt) {
+    currTime += dt;
+
+    Vec2i dir = isHorizontal ? Vec2i(1, 0) : Vec2i(0, 1);
+
+    int cellSize = 0;
+    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
+
+    Vec2i boardSize(0);
+    ET_SendEventReturn(boardSize, &ETGameBoard::ET_getBoardSize);
+
+    float fOffset = speed * currTime;
+
+    Transform tm;
+    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    auto isFirstDone = moveRocket(firstRocket, dir, tm, fOffset, cellSize, startPt, boardSize);
+    auto isSecondDone = moveRocket(secondRocket, -dir, tm, fOffset, cellSize, startPt, boardSize);
+
+    int iOffset = static_cast<int>(fOffset) + 2;
+    for(int i = prevOffset; i < iOffset; ++i) {
+        {
+            Vec2i pt = startPt;
+            pt += dir * i;
+            GameUtils::TryTriggerElemDestroy(getEntityId(), pt);
+        }
+        {
+            Vec2i pt = startPt;
+            pt -= dir * i;
+            GameUtils::TryTriggerElemDestroy(getEntityId(), pt);
+        }
+    }
+    prevOffset = iOffset;
+
+    return isFirstDone && isSecondDone;
+}
+
+void GameElemRocketLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {
+    ET_SendEvent(firstRocket, &ETRenderRect::ET_setSize, elemSize);
+    rootContainer.addItem(firstRocket, GameUtils::ROCKET_PART_Z_OFFSET);
+    ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
+
+    ET_SendEvent(secondRocket, &ETRenderRect::ET_setSize, elemSize);
+    rootContainer.addItem(secondRocket, GameUtils::ROCKET_PART_Z_OFFSET);
+    ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
+}
+
+void GameElemRocketLogic::ET_deinitRender(UIProxyContainer& rootContainer) {
+    rootContainer.removeItem(firstRocket);
+    ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
+
+    rootContainer.removeItem(secondRocket);
+    ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
 }

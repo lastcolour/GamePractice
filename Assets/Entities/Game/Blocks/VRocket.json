@@ -50,6 +50,124 @@
           }
         ]
       }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "FirstRocket",
+      "id": 2,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderImage",
+            "id": 1,
+            "data": {
+              "isVisible": false,
+              "alpha": 1.0,
+              "drawPriority": 1,
+              "textureInfo": {
+                "filename": "Images/Game/vrocket_12x12.png",
+                "lerpType": "Point",
+                "tintColor": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0
+                }
+              },
+              "size": {
+                "x": 100.0,
+                "y": 100.0
+              }
+            }
+          },
+          {
+            "type": "RenderStencilLogic",
+            "id": 2,
+            "data": {
+              "mode": "Read",
+              "refVal": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "SecondRocket",
+      "id": 3,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": [
+          {
+            "type": "RenderImage",
+            "id": 1,
+            "data": {
+              "isVisible": false,
+              "alpha": 1.0,
+              "drawPriority": 1,
+              "textureInfo": {
+                "filename": "Images/Game/vrocket_12x12.png",
+                "lerpType": "Point",
+                "tintColor": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0
+                }
+              },
+              "size": {
+                "x": 100.0,
+                "y": 100.0
+              }
+            }
+          },
+          {
+            "type": "RenderStencilLogic",
+            "id": 2,
+            "data": {
+              "mode": "Read",
+              "refVal": 1
+            }
+          }
+        ]
+      }
     }
   ],
   "logics": [
@@ -129,7 +247,13 @@
       "type": "GameElemRocketLogic",
       "id": 7,
       "data": {
-        "speed": 15.0
+        "speed": 10.0,
+        "firstRocket": [
+          2
+        ],
+        "secondRocket": [
+          3
+        ]
       }
     }
   ]

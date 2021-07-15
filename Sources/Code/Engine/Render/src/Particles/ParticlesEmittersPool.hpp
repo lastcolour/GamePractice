@@ -16,6 +16,7 @@ public:
     ~ParticlesEmittersPool();
 
     void createEmitter(const EmitRequest& emitReq);
+    void stopTrackEmitter(EntityId trackEntId);
     void updateSubEmitterTm(int rootParticleId, const Transform& newTm);
     void stopEmitter(int rootParticleId);
     void simulate(const Transform& systemTm, float dt);

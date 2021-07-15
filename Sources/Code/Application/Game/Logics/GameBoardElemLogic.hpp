@@ -6,7 +6,8 @@
 #include "Game/ETGameBoard.hpp"
 
 class GameBoardElemLogic : public EntityLogic,
-    public ETNode<ETGameBoardElem> {
+    public ETNode<ETGameBoardElem>,
+    public ETNode<ETGameBoardRenderElem> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -24,7 +25,7 @@ public:
     void ET_setElemState(EBoardElemState newState) override;
     EBoardElemState ET_getState() const override;
     EBoardElemType ET_getType() const override;
-    void ET_triggerDestroy() override;
+    void ET_triggerDestroy(EntityId sourceId) override;
     void ET_triggerLand() override;
     void ET_setSelected(bool flag) override;
     bool ET_canMatch() const override;
@@ -33,6 +34,10 @@ public:
     void ET_onDestroyPlayed() override;
     void ET_onTriggerDone() override;
     void ET_onMergeDone() override;
+
+    // ETGameBoardRenderElem
+    void ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) override;
+    void ET_deinitRender(UIProxyContainer& rootContainer) override;
 
 private:
 

@@ -33,7 +33,7 @@
               "alpha": 1.0,
               "drawPriority": 5,
               "emission": {
-                "simTime": "Render",
+                "simTime": "UI",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
@@ -135,7 +135,7 @@
               "alpha": 1.0,
               "drawPriority": 5,
               "emission": {
-                "simTime": "Render",
+                "simTime": "UI",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
@@ -265,7 +265,7 @@
               "alpha": 1.0,
               "drawPriority": 5,
               "emission": {
-                "simTime": "Render",
+                "simTime": "UI",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
@@ -367,7 +367,7 @@
               "alpha": 1.0,
               "drawPriority": 5,
               "emission": {
-                "simTime": "Render",
+                "simTime": "UI",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
@@ -497,7 +497,7 @@
               "alpha": 1.0,
               "drawPriority": 5,
               "emission": {
-                "simTime": "Render",
+                "simTime": "UI",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
@@ -599,7 +599,7 @@
               "alpha": 1.0,
               "drawPriority": 5,
               "emission": {
-                "simTime": "Render",
+                "simTime": "UI",
                 "duration": 0.10000000149011612,
                 "startDelay": 0.0,
                 "autoStart": false,
@@ -706,7 +706,7 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
-          "simTime": "Render",
+          "simTime": "UI",
           "duration": 5.0,
           "startDelay": 0.0,
           "autoStart": true,
@@ -826,7 +826,7 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
-          "simTime": "Render",
+          "simTime": "UI",
           "duration": 5.0,
           "startDelay": 0.30000001192092896,
           "autoStart": false,
@@ -946,7 +946,7 @@
         "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
-          "simTime": "Render",
+          "simTime": "UI",
           "duration": 5.0,
           "startDelay": 0.6000000238418579,
           "autoStart": false,

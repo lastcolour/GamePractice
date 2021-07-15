@@ -1,5 +1,4 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
-#include "Render/ETParticlesSystem.hpp"
 
 #include <cassert>
 
@@ -33,8 +32,7 @@ EBoardElemType getSpecialElemType(EPatternType patternType) {
 
 } // namespace
 
-GameBoardMatchLogic::GameBoardMatchLogic() :
-    destroyEffectScale(1.f) {
+GameBoardMatchLogic::GameBoardMatchLogic() {
 }
 
 GameBoardMatchLogic::~GameBoardMatchLogic() {
@@ -42,13 +40,6 @@ GameBoardMatchLogic::~GameBoardMatchLogic() {
 
 void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher")) {
-        classInfo->addField("redDestroyEffectId", &GameBoardMatchLogic::redDestroyEffectId);
-        classInfo->addField("blueDestroyEffectId", &GameBoardMatchLogic::blueDestroyEffectId);
-        classInfo->addField("yellowDestroyEffectId", &GameBoardMatchLogic::yellowDestroyEffectId);
-        classInfo->addField("greenDestroyEffectId", &GameBoardMatchLogic::greenDestroyEffectId);
-        classInfo->addField("purpleDestroyEffectId", &GameBoardMatchLogic::purpleDestroyEffectId);
-        classInfo->addField("bomdDestroyEffectId", &GameBoardMatchLogic::bomdDestroyEffectId);
-        classInfo->addField("destroyEffectScale", &GameBoardMatchLogic::destroyEffectScale);
     }
 }
 
@@ -78,7 +69,7 @@ bool GameBoardMatchLogic::ET_matchElements() {
 void GameBoardMatchLogic::matchPattern(const PatternMatch& p) {
     if(p.patternType == EPatternType::HLine || p.patternType == EPatternType::VLine || p.patternType == EPatternType::None) {
         for(auto& elem : p.points) {
-            ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy);
+            ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
         }
     } else {
         ElemMergeTask mergeTask;
@@ -88,65 +79,4 @@ void GameBoardMatchLogic::matchPattern(const PatternMatch& p) {
         }
         ET_SendEvent(&ETGameBoardElemMergeManager::ET_createMergeTask, mergeTask);
     }
-}
-
-void GameBoardMatchLogic::ET_playDestroyEffect(EntityId elemId) {
-    int cellSize = 0;
-    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
-
-    Transform tm;
-    ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
-    tm.scale = Vec3(static_cast<float>(cellSize) * destroyEffectScale);
-
-    EBoardElemType elemType = EBoardElemType::None;
-    ET_SendEventReturn(elemType, elemId, &ETGameBoardElem::ET_getType);
-
-    EntityId effectId;
-    switch(elemType) {
-        case EBoardElemType::Red: {
-            effectId = redDestroyEffectId;
-            break;
-        }
-        case EBoardElemType::Blue: {
-            effectId = blueDestroyEffectId;
-            break;
-        }
-        case EBoardElemType::Yellow: {
-            effectId = yellowDestroyEffectId;
-            break;
-        }
-        case EBoardElemType::Purple: {
-            effectId = purpleDestroyEffectId;
-            break;
-        }
-        case EBoardElemType::Green: {
-            effectId = greenDestroyEffectId;
-            break;
-        }
-        case EBoardElemType::VRocket: {
-            break;
-        }
-        case EBoardElemType::HRocket: {
-            break;
-        }
-        case EBoardElemType::Bomb: {
-            effectId = bomdDestroyEffectId;
-            break;
-        }
-        case EBoardElemType::Star: {
-            break;
-        }
-        case EBoardElemType::None: {
-            [[fallthrough]];
-        }
-        default: {
-            assert(false && "Invalid elem type");
-        }
-    }
-
-    if(!effectId.isValid()) {
-        return;
-    }
-
-    ET_SendEvent(effectId, &ETParticlesSystem::ET_emitWithTm, tm);
 }

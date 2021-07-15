@@ -35,6 +35,13 @@ public:
     EmitRequest() :
         rootParticleId(-1),
         tmTrackType(EParticleTMTrackType::None) {}
+
+    void reset() {
+        tm = Transform();
+        trackEntId = InvalidEntityId;
+        rootParticleId = -1;
+        tmTrackType = EParticleTMTrackType::None;
+    }
 };
 
 enum class EmissionState {
@@ -58,8 +65,8 @@ public:
     bool hasAlive() const;
     void simulate(const Transform& systemTm, float dt);
     Mat4 getTransformMat() const;
-    int getRootParticleId() const;
     void updateSubEmitterTm(const Transform& newTm);
+    const EmitRequest& getEmitRequest() const;
 
 private:
 

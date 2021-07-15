@@ -43,7 +43,7 @@ void DrawFPSChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo
         fpsVal = 1000.f / runTime;
         curr.x = prev.x - runTime;
         curr.y = std::min(1.f, fpsVal / MAX_FPS);
-        DrawLineBetweenPoints(curr, prev, pt, size,  ColorB(255, 255, 0));
+        DrawLineBetweenPoints(curr, prev, pt, size, ColorB(255, 255, 0));
         prev = curr;
         if(i == 1) {
             break;

@@ -1,6 +1,8 @@
 #ifndef __ET_GAME_ELEM_HPP__
 #define __ET_GAME_ELEM_HPP__
 
+#include "UI/UIProxyContainer.hpp"
+
 enum class EPatternType;
 
 enum class EBoardElemState {
@@ -37,7 +39,7 @@ struct ETGameBoardElem {
     virtual void ET_setElemState(EBoardElemState newState) = 0;
     virtual EBoardElemState ET_getState() const = 0;
     virtual EBoardElemType ET_getType() const = 0;
-    virtual void ET_triggerDestroy() = 0;
+    virtual void ET_triggerDestroy(EntityId sourceId) = 0;
     virtual void ET_triggerLand() = 0;
     virtual void ET_setSelected(bool flag) = 0;
     virtual bool ET_canMatch() const = 0;
@@ -46,6 +48,12 @@ struct ETGameBoardElem {
     virtual void ET_onDestroyPlayed() = 0;
     virtual void ET_onTriggerDone() = 0;
     virtual void ET_onMergeDone() = 0;
+};
+
+struct ETGameBoardRenderElem {
+    virtual ~ETGameBoardRenderElem() = default;
+    virtual void ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) = 0;
+    virtual void ET_deinitRender(UIProxyContainer& rootContainer) = 0;
 };
 
 struct ETBoardElemDestroyAnimation {
@@ -80,7 +88,7 @@ struct ETGameBoardElemTriggerLogic {
 
 struct ETGameBoardElemTriggerManager {
     virtual ~ETGameBoardElemTriggerManager() = default;
-    virtual void ET_createTriggerTask(EntityId elemId) = 0;
+    virtual void ET_createTriggerTask(EntityId elemId, bool applyDelay) = 0;
     virtual void ET_updateTriggerTasks(float dt) = 0;
     virtual bool ET_hasTriggerTasks() const = 0;
 };

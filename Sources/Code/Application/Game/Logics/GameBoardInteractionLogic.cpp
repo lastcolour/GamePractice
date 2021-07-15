@@ -185,7 +185,7 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
             ET_SendEvent(&ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
             if(GameUtils::HasTriggerLogic(task.firstId)) {
                 ET_SendEvent(task.firstId, &ETGameBoardElemTriggerLogic::ET_setSwapedElem, task.secondId);
-                ET_SendEvent(task.firstId, &ETGameBoardElem::ET_triggerDestroy);
+                ET_SendEvent(task.firstId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
             }
 
             it = switchTasks.erase(it);

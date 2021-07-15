@@ -75,7 +75,7 @@
           "minScore": 10
         },
         "threeStars": {
-          "minScore": 15
+          "minScore": 300
         }
       }
     },
@@ -119,6 +119,14 @@
           {
             "elemType": "Yellow",
             "weight": 10
+          },
+          {
+            "elemType": "HRocket",
+            "weight": 3
+          },
+          {
+            "elemType": "VRocket",
+            "weight": 3
           }
         ]
       }

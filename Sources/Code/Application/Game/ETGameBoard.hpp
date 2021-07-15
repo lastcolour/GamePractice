@@ -47,7 +47,6 @@ struct ETGameBoardInteractionEvents {
 struct ETGameBoardMatcher {
     virtual ~ETGameBoardMatcher() = default;
     virtual bool ET_matchElements() = 0;
-    virtual void ET_playDestroyEffect(EntityId elemId) = 0;
 };
 
 struct ETGameBoardEvents {
@@ -73,6 +72,12 @@ struct ETGameBoardElemHighlighter {
 struct ETGameBoardSpawnerEvents {
     virtual ~ETGameBoardSpawnerEvents() = default;
     virtual void ET_onStartLoading() = 0;
+};
+
+struct ETGameBoardEffects {
+    virtual ~ETGameBoardEffects() = default;
+    virtual void ET_playDestroyEffect(EntityId elemId) = 0;
+    virtual EntityId ET_getRocketTrailEffect() const = 0;
 };
 
 #endif /* __ET_GAME_BOARD_HPP__ */

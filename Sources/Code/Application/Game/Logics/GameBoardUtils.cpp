@@ -51,7 +51,7 @@ bool IsTriggerType(EBoardElemType elemType) {
     return res;
 }
 
-void TryTriggerElemDestroy(EntityId entId) {
+void TryTriggerElemDestroy(EntityId sourceId, EntityId entId) {
     if(!entId.isValid()) {
         return;
     }
@@ -59,18 +59,21 @@ void TryTriggerElemDestroy(EntityId entId) {
     if(elemState != EBoardElemState::Static) {
         return;
     }
-    ET_SendEvent(entId, &ETGameBoardElem::ET_triggerDestroy);
+    ET_SendEvent(entId, &ETGameBoardElem::ET_triggerDestroy, sourceId);
 }
 
-void TryTriggerElemDestroy(const Vec2i& boardPt) {
+void TryTriggerElemDestroy(EntityId sourceId, const Vec2i& boardPt) {
     EntityId elemId;
     ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByBoardPos, boardPt);
-    TryTriggerElemDestroy(elemId);
-    ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, boardPt);
+    if(elemId.isValid()) {
+        TryTriggerElemDestroy(sourceId, elemId);
+    } else {
+        ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, boardPt);
+    }
 }
 
 void PlayElemDestroyEffect(EntityId elemId) {
-    ET_SendEvent(&ETGameBoardMatcher::ET_playDestroyEffect, elemId);
+    ET_SendEvent(&ETGameBoardEffects::ET_playDestroyEffect, elemId);
     ET_SendEvent(elemId, &ETRenderNode::ET_hide);
 
     Vec2i elemCellPt(-1);
@@ -78,5 +81,18 @@ void PlayElemDestroyEffect(EntityId elemId) {
     ET_SendEvent(&ETGameBoardElemHighlighter::ET_highlightCell, elemCellPt);
 }
 
+bool ShouldApplyTriggerDelay(EntityId targetId, EntityId sourceId) {
+    EBoardElemType sType = EBoardElemType::None;
+    ET_SendEventReturn(sType, sourceId, &ETGameBoardElem::ET_getType);
+
+    EBoardElemType tType = EBoardElemType::None;
+    ET_SendEventReturn(tType, targetId, &ETGameBoardElem::ET_getType);
+
+    if(sType == EBoardElemType::Bomb && tType == sType) {
+        return true;
+    }
+
+    return false;
+}
 
 } // namespace GameUtils

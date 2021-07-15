@@ -34,7 +34,8 @@ public:
 
     void ET_emit() override;
     void ET_emitWithTm(const Transform& emitTm) override;
-    void ET_emitTrackingEntity(EntityId trackEndId) override;
+    void ET_emitTrackingEntity(EntityId trackEntId) override;
+    void ET_stopTrackedEmitter(EntityId trackEntId) override;
     void ET_stopEmitting() override;
     void ET_removeAll() override;
     void ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) override;

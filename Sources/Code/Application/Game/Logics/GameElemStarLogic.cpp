@@ -103,7 +103,7 @@ bool GameElemStarLogic::ET_update(float dt) {
     while(it != destroyTasks.end()) {
         it->delay -= dt;
         if(it->delay < 0.f) {
-            GameUtils::TryTriggerElemDestroy(it->entId);
+            GameUtils::TryTriggerElemDestroy(getEntityId(), it->entId);
             it = destroyTasks.erase(it);
         } else {
             ++it;

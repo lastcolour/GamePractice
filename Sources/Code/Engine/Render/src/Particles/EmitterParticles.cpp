@@ -429,6 +429,8 @@ void EmitterParticles::updateState(float dt) {
                     emitReq, subEmitterFlags);
                 if(simConf.emission.loop) {
                     start(emitReq);
+                } else {
+                    emitReq.reset();
                 }
             }
             break;
@@ -474,6 +476,7 @@ void EmitterParticles::stop() {
     emitFracTime = 0.f;
     activeCount = 0;
     emissionState = EmissionState::Finished;
+    emitReq.reset();
 }
 
 void EmitterParticles::stopEmitting() {
@@ -500,8 +503,8 @@ Mat4 EmitterParticles::getTransformMat() const {
     return resMat;
 }
 
-int EmitterParticles::getRootParticleId() const {
-    return emitReq.rootParticleId;
+const EmitRequest& EmitterParticles::getEmitRequest() const {
+    return emitReq;
 }
 
 void EmitterParticles::updateSubEmitterTm(const Transform& newTm) {

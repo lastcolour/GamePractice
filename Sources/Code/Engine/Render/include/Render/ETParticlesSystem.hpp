@@ -28,7 +28,8 @@ struct ETParticlesSystem {
 
     virtual void ET_emit() = 0;
     virtual void ET_emitWithTm(const Transform& emitTm) = 0;
-    virtual void ET_emitTrackingEntity(EntityId trackEndId) = 0;
+    virtual void ET_emitTrackingEntity(EntityId trackEntId) = 0;
+    virtual void ET_stopTrackedEmitter(EntityId trackEntId) = 0;
     virtual void ET_stopEmitting() = 0;
     virtual void ET_removeAll() = 0;
     virtual void ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) = 0;

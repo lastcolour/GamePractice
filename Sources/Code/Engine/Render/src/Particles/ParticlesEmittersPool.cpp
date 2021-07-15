@@ -33,10 +33,21 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
     updateFrameInfo.systemStarted += 1;
 }
 
+void ParticlesEmittersPool::stopTrackEmitter(EntityId trackEntId) {
+    for(auto& emitter : pool) {
+        if(emitter->getEmitRequest().trackEntId == trackEntId) {
+            emitter->stopEmitting();
+            if(emitter->isFinished()) {
+                updateFrameInfo.systemStopped += 1;
+            }
+        }
+    }
+}
+
 void ParticlesEmittersPool::updateSubEmitterTm(int rootParticleId, const Transform& newTm) {
     assert(rootParticleId != InvalidRootParticleId && "Invalid root particle id");
     for(auto& emitter : pool) {
-        if(emitter->getRootParticleId() == rootParticleId) {
+        if(emitter->getEmitRequest().rootParticleId == rootParticleId) {
             emitter->updateSubEmitterTm(newTm);
         }
     }
@@ -45,7 +56,7 @@ void ParticlesEmittersPool::updateSubEmitterTm(int rootParticleId, const Transfo
 void ParticlesEmittersPool::stopEmitter(int rootParticleId) {
     assert(rootParticleId != InvalidRootParticleId && "Invalid root particle id");
     for(auto& emitter : pool) {
-        if(emitter->getRootParticleId() == rootParticleId) {
+        if(emitter->getEmitRequest().rootParticleId == rootParticleId) {
             emitter->stopEmitting();
             if(emitter->isFinished()) {
                 updateFrameInfo.systemStopped += 1;

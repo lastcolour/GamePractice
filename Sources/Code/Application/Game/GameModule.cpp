@@ -24,6 +24,7 @@
 #include "Game/Logics/GameElemStarLogic.hpp"
 #include "Game/Logics/GameMovesLimitLogic.hpp"
 #include "Game/Logics/GameTimeLimitLogic.hpp"
+#include "Game/Logics/GameBoardEffects.hpp"
 #include "Game/ViewScripts/GameResultViewScript.hpp"
 #include "Game/ViewScripts/GameViewScript.hpp"
 #include "Game/ViewScripts/LevelsViewScript.hpp"
@@ -69,6 +70,7 @@ void GameModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) cons
     logicsRegister.registerLogic<GameElemStarLogic>();
     logicsRegister.registerLogic<GameMovesLimitLogic>();
     logicsRegister.registerLogic<GameTimeLimitLogic>();
+    logicsRegister.registerLogic<GameBoardEffects>();
 
     logicsRegister.registerLogic<GameResultViewScript>();
     logicsRegister.registerLogic<GameViewScript>();

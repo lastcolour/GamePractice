@@ -3,51 +3,51 @@
   "logics": [
     {
       "type": "ParticlesSystem",
-      "id": 3,
+      "id": 1,
       "data": {
         "isVisible": true,
-        "alpha": 0.800000011920929,
+        "alpha": 0.20000000298023224,
         "drawPriority": 1,
         "emission": {
-          "simTime": "UI",
+          "simTime": "Game",
           "duration": -1.0,
           "startDelay": 0.0,
-          "autoStart": true,
-          "loop": true,
-          "emitterSpace": "Local",
-          "emitterType": "Box",
+          "autoStart": false,
+          "loop": false,
+          "emitterSpace": "World",
+          "emitterType": "Sphere",
           "emitterVal": {
-            "x": 100.0,
-            "y": 200.0
+            "x": 10.0,
+            "y": 0.0
           },
           "thickness": 0.0,
-          "emissionRate": 30.0,
+          "emissionRate": 200.0,
           "direction": 90.0,
           "directionVar": 360.0,
-          "lifetime": 4.0,
+          "lifetime": 0.699999988079071,
           "lifetimeVar": 0.10000000149011612
         },
         "movement": {
-          "speed": 1.0,
-          "speedVar": 2.0,
-          "initRotation": 30.0,
-          "initRotationVar": 0.10000000149011612,
-          "rotationSpeed": 10.0,
-          "rotationSpeedVar": 0.10000000149011612,
+          "speed": 10.0,
+          "speedVar": 1.0,
+          "initRotation": 90.0,
+          "initRotationVar": 360.0,
+          "rotationSpeed": 0.0,
+          "rotationSpeedVar": 0.0,
           "rotationAcc": 0.0
         },
         "size": {
           "startScale": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612
+            "x": 10.0,
+            "y": 10.0
           },
           "startScaleVar": {
             "x": 0.10000000149011612,
             "y": 0.10000000149011612
           },
           "endScale": {
-            "x": 0.800000011920929,
-            "y": 0.699999988079071
+            "x": 3.0,
+            "y": 3.0
           },
           "endScaleVar": {
             "x": 0.10000000149011612,
@@ -56,9 +56,9 @@
         },
         "color": {
           "startCol": {
-            "r": 255,
-            "g": 249,
-            "b": 235,
+            "r": 44,
+            "g": 227,
+            "b": 255,
             "a": 255
           },
           "startColVar": {
@@ -68,8 +68,8 @@
             "w": 0.0
           },
           "endCol": {
-            "r": 255,
-            "g": 255,
+            "r": 44,
+            "g": 227,
             "b": 255,
             "a": 255
           },
@@ -79,14 +79,14 @@
             "z": 0.0,
             "w": 0.0
           },
-          "fadeIn": 0.0,
-          "fadeOut": 0.5
+          "fadeIn": 0.10000000149011612,
+          "fadeOut": 0.10000000149011612
         },
         "render": {
           "blending": "Additive",
           "textureInfo": {
-            "filename": "Images/Base/circle_32x32.png",
-            "lerpType": "Linear",
+            "filename": "Images/Base/block_1x1.png",
+            "lerpType": "Point",
             "tintColor": {
               "r": 0,
               "g": 0,
@@ -99,68 +99,57 @@
           "subEmitters": []
         },
         "gravity": {
-          "fields": [
-            {
-              "type": "Vortex",
-              "offset": {
-                "x": 0.0,
-                "y": 0.0
-              },
-              "dir": 45.0,
-              "value": 1.0,
-              "radius": -1.0
-            }
-          ]
+          "fields": []
         }
       }
     },
     {
       "type": "ParticlesSystem",
-      "id": 4,
+      "id": 2,
       "data": {
         "isVisible": true,
-        "alpha": 0.800000011920929,
+        "alpha": 1.0,
         "drawPriority": 1,
         "emission": {
-          "simTime": "UI",
+          "simTime": "Game",
           "duration": -1.0,
           "startDelay": 0.0,
-          "autoStart": true,
-          "loop": true,
-          "emitterSpace": "Local",
-          "emitterType": "Box",
+          "autoStart": false,
+          "loop": false,
+          "emitterSpace": "World",
+          "emitterType": "Sphere",
           "emitterVal": {
-            "x": 100.0,
-            "y": 200.0
+            "x": 12.0,
+            "y": 0.0
           },
           "thickness": 0.0,
-          "emissionRate": 10.0,
+          "emissionRate": 20.0,
           "direction": 90.0,
           "directionVar": 360.0,
-          "lifetime": 4.0,
+          "lifetime": 1.0,
           "lifetimeVar": 0.10000000149011612
         },
         "movement": {
-          "speed": 1.0,
-          "speedVar": 2.0,
-          "initRotation": 30.0,
-          "initRotationVar": 0.10000000149011612,
-          "rotationSpeed": 10.0,
-          "rotationSpeedVar": 0.10000000149011612,
+          "speed": 10.0,
+          "speedVar": 1.0,
+          "initRotation": 90.0,
+          "initRotationVar": 360.0,
+          "rotationSpeed": 0.0,
+          "rotationSpeedVar": 0.0,
           "rotationAcc": 0.0
         },
         "size": {
           "startScale": {
-            "x": 0.10000000149011612,
-            "y": 0.10000000149011612
+            "x": 5.0,
+            "y": 5.0
           },
           "startScaleVar": {
             "x": 0.10000000149011612,
             "y": 0.10000000149011612
           },
           "endScale": {
-            "x": 0.800000011920929,
-            "y": 0.699999988079071
+            "x": 0.0,
+            "y": 0.0
           },
           "endScaleVar": {
             "x": 0.10000000149011612,
@@ -169,9 +158,9 @@
         },
         "color": {
           "startCol": {
-            "r": 250,
-            "g": 255,
-            "b": 185,
+            "r": 44,
+            "g": 227,
+            "b": 255,
             "a": 255
           },
           "startColVar": {
@@ -181,8 +170,8 @@
             "w": 0.0
           },
           "endCol": {
-            "r": 255,
-            "g": 255,
+            "r": 44,
+            "g": 227,
             "b": 255,
             "a": 255
           },
@@ -192,14 +181,14 @@
             "z": 0.0,
             "w": 0.0
           },
-          "fadeIn": 0.0,
-          "fadeOut": 0.5
+          "fadeIn": 0.10000000149011612,
+          "fadeOut": 0.10000000149011612
         },
         "render": {
           "blending": "Normal",
           "textureInfo": {
-            "filename": "Images/Base/circle_32x32.png",
-            "lerpType": "Linear",
+            "filename": "Images/Base/block_1x1.png",
+            "lerpType": "Point",
             "tintColor": {
               "r": 0,
               "g": 0,
@@ -212,34 +201,8 @@
           "subEmitters": []
         },
         "gravity": {
-          "fields": [
-            {
-              "type": "Vortex",
-              "offset": {
-                "x": 0.0,
-                "y": 0.0
-              },
-              "dir": -45.0,
-              "value": 1.0,
-              "radius": -1.0
-            }
-          ]
+          "fields": []
         }
-      }
-    },
-    {
-      "type": "UIElementProxy",
-      "id": 5,
-      "data": {
-        "proxies": [
-          {
-            "target": [
-              0
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 1
-          }
-        ]
       }
     }
   ]

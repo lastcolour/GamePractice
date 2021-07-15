@@ -33,7 +33,7 @@
               "alpha": 1.0,
               "drawPriority": 100000,
               "emission": {
-                "simTime": "Render",
+                "simTime": "Game",
                 "duration": 0.05000000074505806,
                 "startDelay": 0.05000000074505806,
                 "autoStart": false,
@@ -151,7 +151,7 @@
         "alpha": 1.0,
         "drawPriority": 2,
         "emission": {
-          "simTime": "Render",
+          "simTime": "Game",
           "duration": 0.05000000074505806,
           "startDelay": 0.05000000074505806,
           "autoStart": false,
@@ -241,9 +241,7 @@
           "subEmitters": [
             {
               "event": "OnStart",
-              "entityId": [
-                1
-              ]
+              "entityId": []
             },
             {
               "event": "OnStart",

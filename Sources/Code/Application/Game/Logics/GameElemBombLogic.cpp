@@ -47,7 +47,7 @@ bool GameElemBombLogic::ET_update(float dt) {
                 continue;
             }
             Vec2i pt = startPt + Vec2i(i, j);
-            GameUtils::TryTriggerElemDestroy(pt);
+            GameUtils::TryTriggerElemDestroy(getEntityId(), pt);
         }
     }
 

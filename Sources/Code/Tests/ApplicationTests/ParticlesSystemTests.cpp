@@ -97,7 +97,7 @@ TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
 
         EXPECT_FALSE(particles->isFinished());
         EXPECT_TRUE(particles->hasAlive());
-        EXPECT_EQ(particles->getRootParticleId(), -1);
+        EXPECT_EQ(particles->getEmitRequest().rootParticleId, -1);
 
         EXPECT_EQ(particles->activeCount, 64);
 
@@ -114,7 +114,7 @@ TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
     
         EXPECT_TRUE(particles->isFinished());
         EXPECT_FALSE(particles->hasAlive());
-        EXPECT_EQ(particles->getRootParticleId(), -1);
+        EXPECT_EQ(particles->getEmitRequest().rootParticleId, -1);
 
         EXPECT_EQ(particles->activeCount, 0);
 
