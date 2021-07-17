@@ -69,11 +69,6 @@ struct ETGameBoardElemHighlighter {
     virtual void ET_highlightCell(const Vec2i& cellPt) = 0;
 };
 
-struct ETGameBoardSpawnerEvents {
-    virtual ~ETGameBoardSpawnerEvents() = default;
-    virtual void ET_onStartLoading() = 0;
-};
-
 struct ETGameBoardEffects {
     virtual ~ETGameBoardEffects() = default;
     virtual void ET_playDestroyEffect(EntityId elemId) = 0;

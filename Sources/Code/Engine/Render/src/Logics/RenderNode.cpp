@@ -118,8 +118,8 @@ int RenderNode::ET_getDrawPriority() const {
 
 void RenderNode::ET_setStencilData(const StencilWirteReadData& newStencilData) {
     stencilData = newStencilData;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newStencilData](){
-        node->setStencilData(newStencilData);
+    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, sData=newStencilData](){
+        node->setStencilData(sData);
     });
 }
 

@@ -18,6 +18,7 @@ BoardElemTriggerManager::~BoardElemTriggerManager() {
 
 void BoardElemTriggerManager::init() {
     ETNode<ETGameBoardElemTriggerManager>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
 }
 
 void BoardElemTriggerManager::deinit() {
@@ -60,4 +61,13 @@ void BoardElemTriggerManager::ET_updateTriggerTasks(float dt) {
 
 bool BoardElemTriggerManager::ET_hasTriggerTasks() const {
     return !triggerTasks.empty() || !newTriggerTasks.empty();
+}
+
+void BoardElemTriggerManager::ET_onStartLoading() {
+    assert(!ET_hasTriggerTasks() && "Invalid trigger tasks");
+}
+
+void BoardElemTriggerManager::ET_onStartDestroying() {
+    triggerTasks.clear();
+    newTriggerTasks.clear();
 }

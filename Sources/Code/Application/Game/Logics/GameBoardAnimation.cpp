@@ -56,3 +56,7 @@ void GameBoardAnimation::ET_onStartLoading() {
 
     ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
 }
+
+void GameBoardAnimation::ET_onStartDestroying() {
+    ET_onStartLoading();
+}

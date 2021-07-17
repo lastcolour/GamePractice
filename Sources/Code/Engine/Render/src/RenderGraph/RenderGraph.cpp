@@ -88,6 +88,7 @@ bool RenderGraph::startFrame() {
 
 void RenderGraph::endFrame() {
     ctx.setBlending(BlendMode{BlendType::NONE, BlendType::NONE});
+    ctx.setStencilState(StencilWirteReadData());
     mainFBO->unbind();
 }
 

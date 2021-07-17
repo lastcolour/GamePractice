@@ -6,12 +6,14 @@
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameTimer.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 #include "Audio/SoundEvent.hpp"
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
     public ETNode<ETGameBoardInteractionLogic>,
-    public ETNode<ETGameTimerEvents> {
+    public ETNode<ETGameTimerEvents>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -36,6 +38,10 @@ public:
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override;
+    void ET_onStartDestroying() override;
 
 private:
 

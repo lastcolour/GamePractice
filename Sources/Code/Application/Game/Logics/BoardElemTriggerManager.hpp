@@ -3,9 +3,11 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 
 class BoardElemTriggerManager : public EntityLogic,
-    public ETNode<ETGameBoardElemTriggerManager> {
+    public ETNode<ETGameBoardElemTriggerManager>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -23,6 +25,10 @@ public:
     void ET_createTriggerTask(EntityId elemId, bool applyDelay) override;
     void ET_updateTriggerTasks(float dt) override;
     bool ET_hasTriggerTasks() const override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override;
+    void ET_onStartDestroying() override;
 
 private:
 

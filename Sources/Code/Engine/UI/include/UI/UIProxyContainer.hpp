@@ -13,6 +13,7 @@ public:
     EntityId getUIParent() const;
     void addItem(EntityId itemId, int extraZOffset);
     void removeItem(EntityId itemId);
+    size_t count() const;
 
     // ETUIElementEvents
     void ET_onBoxChanged(const AABB2D& newAabb) override {}

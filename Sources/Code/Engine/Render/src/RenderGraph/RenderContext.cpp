@@ -103,8 +103,8 @@ void RenderContext::setBlending(const BlendMode& newBlendMode) {
 }
 
 void RenderContext::setStencilState(const StencilWirteReadData& newStencilState) {
-    if(stencilState.mode == newStencilState.mode &&
-        stencilState.refVal == newStencilState.refVal) {
+    if((stencilState.mode == newStencilState.mode) &&
+        (stencilState.refVal == newStencilState.refVal)) {
         return;
     }
     bool isStencilEnabled = stencilState.mode != EStencilOpType::Disabled;
@@ -115,6 +115,7 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             break;
         }
         case EStencilOpType::Read: {
+
             if(!isStencilEnabled) {
                 glEnable(GL_STENCIL_TEST);
             }
@@ -124,6 +125,8 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             break;
         }
         case EStencilOpType::ReadIncrease: {
+            LogError("[tmpLog] StencilOpType::ReadIncrease");
+
             if(!isStencilEnabled) {
                 glEnable(GL_STENCIL_TEST);
             }
@@ -133,6 +136,8 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             break;
         }
         case EStencilOpType::Write: {
+            LogError("[tmpLog] StencilOpType::Write");
+
             if(!isStencilEnabled) {
                 glEnable(GL_STENCIL_TEST);
             }
@@ -140,6 +145,9 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
             glStencilFunc(GL_ALWAYS, stencilState.refVal, 0xFF);
             break;
+        }
+        default: {
+            assert(false && "Invalid Stecil OP type");
         }
     }
 }

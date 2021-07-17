@@ -76,6 +76,10 @@ void UIProxyContainer::removeItem(EntityId itemId) {
     }
 }
 
+size_t UIProxyContainer::count() const {
+    return proxies.size();
+}
+
 void UIProxyContainer::ET_onZIndexChanged(int newZIndex) {
     for(auto& node : proxies) {
         ET_SendEvent(node.first, &ETRenderNode::ET_setDrawPriority, newZIndex + node.second.extraZOffset);

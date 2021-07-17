@@ -42,6 +42,7 @@ void BoardElemMergeManager::init() {
     acc = std::max(0.001f, acc);
 
     ETNode<ETGameBoardElemMergeManager>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
 }
 
 void BoardElemMergeManager::deinit() {
@@ -136,4 +137,12 @@ void BoardElemMergeManager::ET_createMergeTask(const ElemMergeTask& mergeTask) {
     }
 
     mutateTasks.push_back(mutateTask);
+}
+
+void BoardElemMergeManager::ET_onStartLoading() {
+    assert(!ET_hasMergeTasks() && "Mutate tasks already exists");
+}
+
+void BoardElemMergeManager::ET_onStartDestroying() {
+    mutateTasks.clear();
 }

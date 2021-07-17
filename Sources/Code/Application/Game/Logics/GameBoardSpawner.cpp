@@ -69,6 +69,7 @@ void GameBoardSpawner::ET_unloadLevel() {
         LogWarning("[GameBoardSpawner::ET_unloadLevel] No level to unload");
         return;
     }
+    ET_SendEvent(&ETGameBoardSpawnerEvents::ET_onStartDestroying);
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, gameBoardId);
     gameBoardId = InvalidEntityId;
 }

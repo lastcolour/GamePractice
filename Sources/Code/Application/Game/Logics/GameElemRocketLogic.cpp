@@ -3,32 +3,47 @@
 #include "Game/Logics/GameBoardUtils.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Render/ETParticlesSystem.hpp"
+#include "UI/ETUIViewPort.hpp"
 
 namespace {
 
-bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOffset,
-    int cellSize, const Vec2i& startPt, const Vec2i& boardSize) {
+bool isMoveEnded(const Vec3& pt, int cellSize, const Vec2i& startPt, const Vec2i& boardSize, float fOffset, const Vec2i& moveDir) {
+    Vec2i viewPort(0);
+    ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
-    bool isEnded = false;
+    AABB2D viewBox;
+    viewBox.top = Vec2(static_cast<float>(viewPort.x + cellSize),
+        static_cast<float>(viewPort.y + cellSize));
+    viewBox.bot = Vec2(static_cast<float>(-cellSize));
+    bool isOutOfViewPort = !viewBox.isInside(Vec2(pt.x, pt.y));
+    bool isOutOfBoard = false;
+
     int iOffset = static_cast<int>(fOffset) + 1;
     Vec2i boardPt = moveDir * iOffset + startPt;
     if(boardPt.x < 0 || boardPt.x >= boardSize.x) {
-        isEnded = true;
+        isOutOfBoard = true;
     }
     if(boardPt.y < 0 || boardPt.y >= boardSize.y) {
-        isEnded = true;
+        isOutOfBoard = true;
     }
+
+    return isOutOfBoard && isOutOfViewPort;
+}
+
+bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOffset,
+    int cellSize, const Vec2i& startPt, const Vec2i& boardSize) {
+    Transform rocketTm;
+    rocketTm.pt = tm.pt + (fOffset * cellSize) * Vec3(
+    static_cast<float>(moveDir.x), static_cast<float>(moveDir.y), 0.f);
+    ET_SendEvent(rocketId, &ETEntity::ET_setTransform, rocketTm);
+
+    bool isEnded = isMoveEnded(rocketTm.pt, cellSize, startPt, boardSize, fOffset, moveDir);
 
     if(isEnded) {
         ET_SendEvent(rocketId, &ETRenderNode::ET_hide);
         EntityId trailEffectId;
         ET_SendEventReturn(trailEffectId, &ETGameBoardEffects::ET_getRocketTrailEffect);
         ET_SendEvent(trailEffectId, &ETParticlesSystem::ET_stopTrackedEmitter, rocketId);
-    } else {
-        Transform rocketTm;
-        rocketTm.pt = tm.pt + (fOffset * cellSize) * Vec3(
-        static_cast<float>(moveDir.x), static_cast<float>(moveDir.y), 0.f);
-        ET_SendEvent(rocketId, &ETEntity::ET_setTransform, rocketTm);
     }
 
     return isEnded;
@@ -103,6 +118,8 @@ bool GameElemRocketLogic::ET_update(float dt) {
 }
 
 void GameElemRocketLogic::onStart() {
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
+
     ET_SendEvent(firstRocket, &ETRenderNode::ET_show);
     ET_SendEvent(secondRocket, &ETRenderNode::ET_show);
 

@@ -3,11 +3,13 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 #include "Math/Random.hpp"
 #include "Audio/SoundEvent.hpp"
 
 class BoardElemMergeManager : public EntityLogic,
-    public ETNode<ETGameBoardElemMergeManager> {
+    public ETNode<ETGameBoardElemMergeManager>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -25,6 +27,10 @@ public:
     void ET_createMergeTask(const ElemMergeTask& newTask) override;
     bool ET_hasMergeTasks() const override;
     void ET_updateMergeTasks(float dt) override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override;
+    void ET_onStartDestroying() override;
 
 private:
 

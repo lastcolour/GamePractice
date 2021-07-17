@@ -249,7 +249,7 @@ void GameViewScript::ET_onGameLeaveState(EGameState gameState) {
         event.startDelay = postGameTime;
         event.onEndCallback = [this](){
             setScriptState(State::None);
-            ET_SendEvent(scoreInfoBoxId, &ETUIElement::ET_hide);
+            ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
             ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::EndGame);
         };
         eventSeq.addEvent(event);

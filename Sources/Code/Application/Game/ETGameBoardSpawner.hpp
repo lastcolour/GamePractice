@@ -9,4 +9,10 @@ struct ETGameBoardSpawner {
     virtual void ET_unloadLevel() = 0;
 };
 
+struct ETGameBoardSpawnerEvents {
+    virtual ~ETGameBoardSpawnerEvents() = default;
+    virtual void ET_onStartLoading() = 0;
+    virtual void ET_onStartDestroying() = 0;
+};
+
 #endif /* __ET_GAME_BOARD_SPAWNER_HPP__ */

@@ -43,6 +43,7 @@ void GameBoardInteractionLogic::Reflect(ReflectContext& ctx) {
 void GameBoardInteractionLogic::init() {
     ETNode<ETGameBoardInteractionLogic>::connect(getEntityId());
     ETNode<ETGameTimerEvents>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
 }
 
 void GameBoardInteractionLogic::deinit() {
@@ -253,4 +254,13 @@ bool GameBoardInteractionLogic::ET_canInteract() const {
 
 bool GameBoardInteractionLogic::ET_hasActiveSwitching() const {
     return !switchTasks.empty();
+}
+
+void GameBoardInteractionLogic::ET_onStartLoading() {
+    assert(!ET_hasActiveSwitching() && "Invalid switch state");
+}
+
+void GameBoardInteractionLogic::ET_onStartDestroying() {
+    activeElemId = InvalidEntityId;
+    switchTasks.clear();
 }

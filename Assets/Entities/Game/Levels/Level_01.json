@@ -75,7 +75,7 @@
           "minScore": 10
         },
         "threeStars": {
-          "minScore": 300
+          "minScore": 15
         }
       }
     },

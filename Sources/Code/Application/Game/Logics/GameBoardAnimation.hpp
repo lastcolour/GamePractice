@@ -4,6 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 
 class GameBoardAnimation : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
@@ -27,6 +28,7 @@ public:
 
     // ETGameBoardSpawnerEvents
     void ET_onStartLoading() override;
+    void ET_onStartDestroying() override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;

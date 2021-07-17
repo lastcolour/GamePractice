@@ -52,7 +52,6 @@ GameResultViewScript::~GameResultViewScript() {
 
 void GameResultViewScript::onEvent(const UIEvent& event) {
     if(event.type == UIEvent::EventType::OnBackButton || event.type == UIEvent::EventType::OnGameEndViewExit) {
-        ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::Game);
         ET_SendEvent(&ETUIViewManager::ET_closeView, UIViewType::EndGame);
         ET_SendEvent(&ETUIViewManager::ET_openView, UIViewType::Levels);
     }

@@ -4,6 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 #include "UI/UIProxyContainer.hpp"
 
 class GameBoardElemHighlighter : public EntityLogic,
@@ -31,6 +32,7 @@ public:
 
     // ETGameBoardSpawnerEvents
     void ET_onStartLoading() override;
+    void ET_onStartDestroying() override;
 
 private:
 

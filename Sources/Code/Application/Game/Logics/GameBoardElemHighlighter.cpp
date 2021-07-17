@@ -3,6 +3,8 @@
 #include "Entity/ETEntityManager.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
 
+#include <cassert>
+
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {
         classInfo->addResourceField("highlightEntity", ResourceType::Entity,
@@ -138,5 +140,9 @@ void GameBoardElemHighlighter::updateElem(HighlightElem& elem, float dt) {
 }
 
 void GameBoardElemHighlighter::ET_onStartLoading() {
+    assert(uiProxies.count() == 0 && "Invalid hightlight elems");
+}
+
+void GameBoardElemHighlighter::ET_onStartDestroying() {
     ET_onGameTick(1024.f);
 }
