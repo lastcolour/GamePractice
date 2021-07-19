@@ -45,9 +45,6 @@ class EmptyTransformLogic:
     def __init_(self):
         pass
 
-    def setAutoWriteToNative(self, flag):
-        pass
-
     def getEntity(self):
         return None
 
@@ -73,5 +70,7 @@ class EditTransformValue(LogicView):
             self._setupLogic(EmptyTransformLogic())
             self._tree.setEnabled(False)
         else:
+            entity.setDoNotSync(True)
             self._setupLogic(entity.getTransformLogic())
             self._tree.setEnabled(msg.canEditTransform)
+            entity.setDoNotSync(False)

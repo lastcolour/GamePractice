@@ -29,7 +29,7 @@ void UIElement::init() {
     isIgnoringTransform = true;
 
     if(ET_IsExistNode<ETUIElement>(getEntityId())) {
-        LogError("[UIElement::init] The is another UIElement on entity: '%s'",
+        LogError("[UIElement::init] There is another UIElement on entity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
     }
 
@@ -41,6 +41,7 @@ void UIElement::init() {
 }
 
 void UIElement::deinit() {
+    ETNode<ETUIElement>::disconnect();
 }
 
 void UIElement::ET_onLoaded() {

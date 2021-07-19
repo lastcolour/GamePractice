@@ -243,21 +243,37 @@ void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo) {
 }
 
 Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale) {
-    Vec2 scale(imageSize.x / drawSize.x , imageSize.y / drawSize.y);
+    float r = (imageSize.x * drawSize.y) / (imageSize.y * drawSize.x);
 
-    float r = scale.x / scale.y;
+    float h1 = 0.f;
+    if(imageSize.x <= drawSize.x) {
+        h1 = imageSize.x * patches.x / drawSize.x;
+        h1 = Math::Lerp(h1, patches.y * r, patchScale);
+    } else {
+        h1 = 0.5f * r;
+    }
 
-    float hPatch_orig = patches.x * scale.x;
-    float hPatch_scaled = patches.x * r;
-    float hPatch = Math::Lerp(hPatch_orig, hPatch_scaled, patchScale);
-    hPatch = 2.f * std::min(hPatch, 0.4999f);
+    float v1 = 0.f;
+    if(imageSize.y <= drawSize.y) {
+        v1 = imageSize.y * patches.y / drawSize.y;
+        v1 = Math::Lerp(v1, patches.y, patchScale);
+    } else {
+        v1 = 0.5f;
+    }
 
-    float vPatch_orig = patches.y * scale.y;
-    float vPatch_scaled = patches.y;
-    float vPatch = Math::Lerp(vPatch_orig, vPatch_scaled, patchScale);
-    vPatch = 2.f * std::min(vPatch, 0.4999f);
+    float s = 1.f;
 
-    return Vec2(hPatch, vPatch);
+    if(h1 >= 0.5f) {
+        s = 0.5f / h1;
+    }
+    if(v1 >= 0.5f) {
+        s = std::min(s, 0.5f / v1);
+    }
+
+    h1 *= s;
+    v1 *= s;
+
+    return Vec2(h1, v1);
 }
 
 BlendMode GetBlendMode(BlendingConfig blendConfig, bool preMultipliedAlpha) {

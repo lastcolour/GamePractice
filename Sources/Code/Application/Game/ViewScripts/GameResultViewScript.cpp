@@ -6,6 +6,7 @@
 #include "Game/GameUtils.hpp"
 #include "Game/ETLevelProgress.hpp"
 #include "Render/ETParticlesSystem.hpp"
+#include "Game/ETGameMusic.hpp"
 
 namespace {
 
@@ -129,5 +130,6 @@ void GameResultViewScript::ET_onViewGetFocus() {
 void GameResultViewScript::ET_onViewLostFocus() {
     BaseViewScript::ET_onViewLostFocus();
 
+    ET_SendEvent(&ETGameMusic::ET_setTheme, EMusicTheme::None);
     ET_SendEvent(emitterId, &ETParticlesSystem::ET_stopEmitting);
 }

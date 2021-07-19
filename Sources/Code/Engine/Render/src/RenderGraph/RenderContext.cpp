@@ -125,8 +125,6 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             break;
         }
         case EStencilOpType::ReadIncrease: {
-            LogError("[tmpLog] StencilOpType::ReadIncrease");
-
             if(!isStencilEnabled) {
                 glEnable(GL_STENCIL_TEST);
             }
@@ -136,8 +134,6 @@ void RenderContext::setStencilState(const StencilWirteReadData& newStencilState)
             break;
         }
         case EStencilOpType::Write: {
-            LogError("[tmpLog] StencilOpType::Write");
-
             if(!isStencilEnabled) {
                 glEnable(GL_STENCIL_TEST);
             }

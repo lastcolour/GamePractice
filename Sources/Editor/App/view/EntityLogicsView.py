@@ -9,7 +9,7 @@ from utils.ViewUtils import ClearLayout
 from menu.EntityLogicMenu import EntityLogicMenu
 
 from msg.Messages import MsgSetEditEntity, MsgChangeEditEntity, MsgOnAddLogicBtPressed, \
-    MsgAddLogicToEntity
+    MsgAddLogicToEntity, MsgOnLogicDataEdited
 from msg.MessageSystem import RegisterForMessage, SendMessage
 
 class EntityLogicsView(QWidget):
@@ -52,15 +52,18 @@ class EntityLogicsView(QWidget):
         RegisterForMessage(MsgSetEditEntity, self._onSetEditEntity)
         RegisterForMessage(MsgChangeEditEntity, self._onSetEditEntity)
         RegisterForMessage(MsgAddLogicToEntity, self._onAddLogicView)
+        RegisterForMessage(MsgOnLogicDataEdited, self._onFetchDataFromNative)
 
     def _buildLogicsList(self):
         ClearLayout(self._logicsLayout)
         if self._editEntity is None:
             return
+        self._editEntity.setDoNotSync(True)
         for logic in self._editEntity.getLogics():
             logicView = LogicView(logic)
             logicView.setEnabled(self._canEditLogics)
             self._logicsLayout.addWidget(logicView)
+        self._editEntity.setDoNotSync(False)
 
     def _onSetEditEntity(self, msg):
         self._editEntity = msg.entity
@@ -89,6 +92,16 @@ class EntityLogicsView(QWidget):
                     self._logicsLayout.removeWidget(widget)
                     widget.close()
                     return
+
+    def _onFetchDataFromNative(self, msg):
+        if self._editEntity != msg.value.getEntity():
+            return
+        if not self._editEntity.shouldSyncWithNative():
+            return
+        for i in range(self._logicsLayout.count()):
+            item = self._logicsLayout.itemAt(i)
+            widget = item.widget()
+            widget.fetchDataFromNative()
 
     def _signal_addLogicBt_clicked(self):
         SendMessage(MsgOnAddLogicBtPressed(self._editEntity))

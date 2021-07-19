@@ -29,6 +29,7 @@ class EntityNative(NativeObject):
         self._nameSuffix = None
         self._childId = None
         self._isInternal = False
+        self._doNotSyncFlag = True
 
     def getName(self):
         return self._name
@@ -38,6 +39,12 @@ class EntityNative(NativeObject):
 
     def getParent(self):
         return self._parent
+
+    def setDoNotSync(self, doNotSyncFlag):
+        self._doNotSyncFlag = doNotSyncFlag
+
+    def shouldSyncWithNative(self):
+        return self._doNotSyncFlag == False
 
     def isModified(self):
         if self._isModified:

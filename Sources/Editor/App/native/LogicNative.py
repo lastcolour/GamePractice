@@ -13,8 +13,6 @@ class LogicNative(NativeObject):
         self._logicId = None
         self._name = None
         self._isModified = False
-        self._isEditorDataDiffer = False
-        self._autoWriteToNative = True
         self._rootValue = None
 
     def isModified(self):
@@ -32,9 +30,6 @@ class LogicNative(NativeObject):
     def getNativeId(self):
         return self._logicId
 
-    def setAutoWriteToNative(self, flag):
-        self._autoWriteToNative = flag
-
     def writeToDict(self, data):
         data["type"] = self._name
         data["id"] = self._logicId
@@ -50,16 +45,12 @@ class LogicNative(NativeObject):
     def writeToStream(self, stream):
         self._rootValue.writeToStream(stream)
 
-    def isEditorDataDiffer(self):
-        return self._isEditorDataDiffer
-
     def _onValueChanged(self):
-        self._isEditorDataDiffer = True
-        if self._autoWriteToNative:
-            self.writeToNative()
+        if not self._entity.shouldSyncWithNative():
+            return
+        self.writeToNative()
 
     def readFromNative(self):
-        print("[LogicNative:readFromNative] Read '{0}'".format(self._name))
         try:
             stream = self._getAPI().getLibrary().getEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID)
             self._rootValue.readFromStream(stream)
@@ -69,8 +60,6 @@ class LogicNative(NativeObject):
             traceback.print_tb(e.__traceback__)
 
     def writeToNative(self):
-        print("[LogicNative:writeToNative] Write '{0}'".format(self._name))
-        self._isEditorDataDiffer = False
         stream = MemoryStream()
         self.writeToStream(stream)
         self._getAPI().getLibrary().setEntityLogicData(self._entity.getNativeId(), self._logicId, LogicNative.ALL_VALUE_ID, stream)

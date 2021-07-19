@@ -67,7 +67,7 @@
                 "cwd":"${gameBinsRoot}/${buildType}",
                 "createCwd":false,
                 "args":[
-                    "--gtest_filter=*"
+                    "--gtest_filter=*RenderUtilsTests*"
                 ]
             }
         },

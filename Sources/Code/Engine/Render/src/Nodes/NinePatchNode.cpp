@@ -28,7 +28,7 @@ Vec2 NinePatchNode::getVertCoord() const {
     }
     Vec2 vertCoord = RenderUtils::GetNinePatchVertexCoord(texObj->getSize(),
         Vec2(size.x * tm.scale.x, size.y * tm.scale.y), Vec2(horizontal, vertical), patchScale);
-    return vertCoord;
+    return vertCoord * 2.f;
 }
 
 Mat4 NinePatchNode::calcModelMat(const Transform& newTm) {

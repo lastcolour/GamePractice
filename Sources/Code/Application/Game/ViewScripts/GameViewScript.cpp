@@ -91,7 +91,6 @@ void GameViewScript::ET_onViewClosed() {
     scriptState = State::None;
     ET_SendEvent(&ETGameBoardSpawner::ET_unloadLevel);
     ET_SendEvent(&ETGameStateManager::ET_finishGame);
-    ET_SendEvent(&ETGameMusic::ET_setTheme, EMusicTheme::None);
 }
 
 void GameViewScript::ET_onViewLostFocus() {

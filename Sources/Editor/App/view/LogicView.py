@@ -25,9 +25,6 @@ from .values.EditResourceValue import EditResourceValue
 from .values.EditArrayValue import EditArrayValue
 from .values.EditPolymorphObjectValue import PolymorphTypeSelector
 
-from msg.Messages import MsgOnLogicDataEdited
-from msg.MessageSystem import RegisterForMessage, UnregisterFromAllMessages
-
 def _removeAllItemChildren(item):
     for i in reversed(range(item.childCount())):
         item.removeChild(item.child(i))
@@ -97,12 +94,7 @@ class LogicView(QWidget):
     def __init__(self, entityLogic):
         super().__init__()
 
-        self._tickTimer = QTimer()
-        self._tickTimer.timeout.connect(self._onUpdateView)
-        self._tickTimer.setSingleShot(True)
-
         self._entityLogic = entityLogic
-        self._entityLogic.setAutoWriteToNative(False)
 
         self._frame = QFrame()
         self._frame.setFrameStyle(QFrame.WinPanel)
@@ -139,11 +131,7 @@ class LogicView(QWidget):
 
         self._setupLogic(self._entityLogic)
 
-        RegisterForMessage(MsgOnLogicDataEdited, self._onMarkValuesDirty)
-
     def closeEvent(self, event):
-        self._tickTimer.stop()
-        UnregisterFromAllMessages(self)
         super().closeEvent(event)
 
     def _setCanCopy(self, copyFlag):
@@ -249,11 +237,9 @@ class LogicView(QWidget):
         else:
             raise RuntimeError("Unknown Value Type '{0}'".format(valType))
 
-    def _onUpdateView(self):
+    def fetchDataFromNative(self):
         if not hasattr(self._entityLogic, "readFromNative"):
             return
-        if self._entityLogic.isEditorDataDiffer():
-            self._entityLogic.writeToNative()
         self._entityLogic.readFromNative()
         q = []
         q.append(self._tree.invisibleRootItem())
@@ -265,9 +251,3 @@ class LogicView(QWidget):
             for i in range(currElem.childCount()):
                 treeItem = currElem.child(i)
                 q.append(treeItem)
-
-    def _onMarkValuesDirty(self, msg):
-        if self._entityLogic.getEntity() != msg.value.getEntity():
-            return
-        if not self._tickTimer.isActive():
-            self._tickTimer.start()

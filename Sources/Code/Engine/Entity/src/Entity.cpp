@@ -46,6 +46,21 @@ bool IsValidLogicId(EntityLogicId logicId, const std::vector<Entity::EntityLogic
     return true;
 }
 
+void InitDeinitAllLogic(EntityId entId, std::vector<Entity::EntityLogicNode>& logics, bool init) {
+    if(init) {
+        for(auto& logicNode : logics) {
+            auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+            logicPtr->init();
+        }
+        ET_SendEvent(entId, &ETEntityEvents::ET_onLoaded);
+    } else {
+        for(auto& logicNode : logics) {
+            auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+            logicPtr->deinit();
+        }
+    }
+}
+
 } // namespace
 
 Entity::Entity(const char* entityName, EntityRegistry* entityRegistry, EntityId entId) :
@@ -171,10 +186,8 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
+    InitDeinitAllLogic(getEntityId(), logics, false);
     bool res = true;
-    auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
-    logicPtr->deinit();
-
     SerializeContext serCtx;
     serCtx.entityId = entityId;
     if(!logicInstance->readValueFrom(serCtx, valueId, stream)) {
@@ -182,9 +195,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
              logicId, ET_getName()));
         res = false;
     }
-    logicPtr->init();
-    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
-
+    InitDeinitAllLogic(getEntityId(), logics, true);
     return res;
 }
 
@@ -194,15 +205,12 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
+    InitDeinitAllLogic(getEntityId(), logics, false);
     bool res = true;
-    auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
-    logicPtr->deinit();
     if(!logicInstance->addValueArrayElement(valueId)) {
         res = false;
     }
-    logicPtr->init();
-    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
-
+    InitDeinitAllLogic(getEntityId(), logics, true);
     return res;
 }
 
@@ -212,15 +220,12 @@ bool Entity::setLogicValuePolymorphType(EntityLogicId logicId, EntityLogicValueI
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
+    InitDeinitAllLogic(getEntityId(), logics, false);
     bool res = true;
-    auto logicPtr = static_cast<EntityLogic*>(logicInstance->get());
-    logicPtr->deinit();
     if(!logicInstance->setValuePolymorphType(valueId, typeName)) {
         res = false;
     }
-    logicPtr->init();
-    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
-
+    InitDeinitAllLogic(getEntityId(), logics, true);
     return res;
 }
 
