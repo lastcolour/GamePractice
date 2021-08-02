@@ -168,12 +168,12 @@ bool GameElemRocketLogic::onUpdate(float dt) {
 
 void GameElemRocketLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {
     ET_SendEvent(firstRocket, &ETRenderRect::ET_setSize, elemSize);
-    rootContainer.addItem(firstRocket, GameUtils::ROCKET_PART_Z_OFFSET);
     ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
+    rootContainer.addItem(firstRocket, GameUtils::ROCKET_PART_Z_OFFSET);
 
     ET_SendEvent(secondRocket, &ETRenderRect::ET_setSize, elemSize);
-    rootContainer.addItem(secondRocket, GameUtils::ROCKET_PART_Z_OFFSET);
     ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
+    rootContainer.addItem(secondRocket, GameUtils::ROCKET_PART_Z_OFFSET);
 }
 
 void GameElemRocketLogic::ET_deinitRender(UIProxyContainer& rootContainer) {

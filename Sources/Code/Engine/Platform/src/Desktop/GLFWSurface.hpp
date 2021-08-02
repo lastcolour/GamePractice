@@ -50,7 +50,6 @@ private:
 
     GLFWwindow* window;
     Vec2i size;
-    std::vector<Vec2i> activeGesture;
     bool editorMode;
 };
 

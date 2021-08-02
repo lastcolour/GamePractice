@@ -36,8 +36,9 @@ struct ElemMergeTask {
 
 struct ETGameBoardElem {
     virtual ~ETGameBoardElem() = default;
-    virtual void ET_setElemState(EBoardElemState newState) = 0;
+    virtual void ET_setState(EBoardElemState newState) = 0;
     virtual EBoardElemState ET_getState() const = 0;
+    virtual void ET_setType(EBoardElemType newType) = 0 ;
     virtual EBoardElemType ET_getType() const = 0;
     virtual void ET_triggerDestroy(EntityId sourceId) = 0;
     virtual void ET_triggerLand() = 0;

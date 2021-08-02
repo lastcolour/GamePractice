@@ -272,7 +272,11 @@ EntityChildId EditorApp::createChildEntity(EntityId entityId, const char* childN
 }
 
 void EditorApp::mouseInputEvent(EActionType actionType, const Vec2i& pos) {
-    ET_QueueEvent(&ETInputEvents::ET_onTouch, actionType, pos);
+    TouchEvent event;
+    event.actionType = actionType;
+    event.eventT = TimePoint::GetNowTime();
+    event.pt = pos;
+    ET_QueueEvent(&ETInputEvents::ET_onTouch, event);
 }
 
 void EditorApp::unloadAll() {

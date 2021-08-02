@@ -8,6 +8,7 @@
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
 #include "Audio/SoundEvent.hpp"
+#include "Game/Logics/DoubleTapDetection.hpp"
 
 class GameBoardInteractionLogic : public EntityLogic,
     public ETNode<ETInputEvents>,
@@ -28,8 +29,8 @@ public:
     void deinit() override;
 
     // ETInputEvents
-    void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
-    void ET_onButton(EActionType actionType, EButtonId buttonId) override { (void)actionType; (void)buttonId; }
+    void ET_onTouch(const TouchEvent& event) override;
+    void ET_onButton(const ButtonEvent& event) override { (void)event; }
 
     // ETGameBoardInteractionLogic
     void ET_allowInteraction(bool flag) override;
@@ -45,7 +46,7 @@ public:
 
 private:
 
-    void tryFinishElemMove(const Vec2i& pt);
+    bool tryFinishElemMove(const Vec2i& pt);
     void createSwitchElemsTask(EntityId firstId, EntityId secondId, const Vec2i& swapDir);
     void switchElements(EntityId firstId, EntityId secondId);
     void setActiveElem(EntityId elemId);
@@ -63,6 +64,7 @@ private:
 
 private:
 
+    DoubleTapDetection doubleTapDetector;
     Vec2i startPt;
     EntityId activeElemId;
     float maxScale;

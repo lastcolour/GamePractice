@@ -129,19 +129,19 @@ void UISurfaceEventHandler::onRelease(const Vec2i& pt, bool releaseIgnore) {
     eventHandlers.clear();
 }
 
-void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) {
-    lastTouchPt = pt;
-    switch(actionType)
+void UISurfaceEventHandler::ET_onTouch(const TouchEvent& event) {
+    lastTouchPt = event.pt;
+    switch(event.actionType)
     {
     case EActionType::Press:
-        onPress(pt);
+        onPress(event.pt);
         break;
     case EActionType::Move:
-        onMove(pt);
+        onMove(event.pt);
         break;
     case EActionType::Release: {
         bool releaseIgnore = false;
-        onRelease(pt, releaseIgnore);
+        onRelease(event.pt, releaseIgnore);
         break;
     }
     default:
@@ -150,13 +150,13 @@ void UISurfaceEventHandler::ET_onTouch(EActionType actionType, const Vec2i& pt) 
     }
 }
 
-void UISurfaceEventHandler::ET_onButton(EActionType actionType, EButtonId buttonId) {
+void UISurfaceEventHandler::ET_onButton(const ButtonEvent& event) {
     EntityId viewId;
     ET_SendEventReturn(viewId, &ETUIViewManager::ET_getActiveViewId);
     if(!viewId.isValid()) {
         return;
     }
-    if(actionType == EActionType::Press && buttonId == EButtonId::Back) {
+    if(event.actionType == EActionType::Press && event.buttonId == EButtonId::Back) {
         UIEvent backEvent{InvalidEntityId, UIEvent::EventType::OnBackButton};
         ET_SendEvent(viewId, &ETUIViewScript::ET_onEvent, backEvent);
     }

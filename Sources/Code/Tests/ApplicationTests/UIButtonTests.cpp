@@ -85,11 +85,26 @@ TEST_F(UIButtonTests, CheckTouchInside) {
 
     auto button = createUIButton(center, Vec2(0.5f));
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
+    {
+        TouchEvent event;
+        event.actionType = EActionType::Press;
+        event.pt = center;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
+    {
+        TouchEvent event;
+        event.actionType = EActionType::Move;
+        event.pt = center;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+    {
+        TouchEvent event;
+        event.actionType = EActionType::Release;
+        event.pt = center;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 1u);
 
@@ -107,12 +122,26 @@ TEST_F(UIButtonTests, CheckTouchMoveRelease) {
 
     Vec2i pt = center;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, pt);
+    {
+        TouchEvent event;
+        event.pt = center;
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     pt.y = viewPort.y;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, pt);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, pt);
+    {
+        TouchEvent event;
+        event.pt.x = center.x;
+        event.pt.y = viewPort.y;
+
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
 }
@@ -128,11 +157,26 @@ TEST_F(UIButtonTests, CheckTwoButtonsTouchMoveRelease) {
     Vec2i botButtonCenter = Vec2i(center.x, viewPort.y / 4);
     createUIButton(botButtonCenter, Vec2(0.5f));
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
+    {
+        TouchEvent event;
+        event.pt = topButtonCenter;
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, botButtonCenter);
+    {
+        TouchEvent event;
+        event.pt = botButtonCenter;
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, botButtonCenter);
+    {
+        TouchEvent event;
+        event.pt = botButtonCenter;
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
 }
@@ -148,11 +192,27 @@ TEST_F(UIButtonTests, CheckPressTwoButtonsAtTheSameTime) {
     Vec2i botButtonCenter = Vec2i(center.x, viewPort.y / 4);
     createUIButton(botButtonCenter, Vec2(0.5f));
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, topButtonCenter);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, topButtonCenter);
+    {
+        TouchEvent event;
+        event.pt = topButtonCenter;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, botButtonCenter);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, botButtonCenter);
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
+
+    {
+        TouchEvent event;
+        event.pt = botButtonCenter;
+
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 2u);
 
@@ -178,11 +238,19 @@ TEST_F(UIButtonTests, CheckButtonPressAnimation) {
         pressAnimation->ET_setType(EAnimSequenceType::Press);
     }
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
+    {
+        TouchEvent event;
+        event.pt = center;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_EQ(buttonListener->eventQueue.size(), 0u);
 
@@ -221,17 +289,37 @@ TEST_F(UIButtonTests, CheckButtonFromNonFocusedView) {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     Vec2i center = viewPort / 2;
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+    {
+        TouchEvent event;
+        event.pt = center;
+
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     EXPECT_EQ(buttonListener->eventQueue.size(), 0u);
 
     ET_SendEvent(parent->getEntityId(), &ETUIView::ET_setFocus, true);
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+    {
+        TouchEvent event;
+        event.pt = center;
+
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     EXPECT_EQ(buttonListener->eventQueue.size(), 1u);
 }
@@ -245,9 +333,19 @@ TEST_F(UIButtonTests, CheckHiddenButton) {
 
     ET_SendEvent(button->getEntityId(), &ETUIElement::ET_hide);
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+    {
+        TouchEvent event;
+        event.pt = center;
+
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
 }
@@ -261,9 +359,19 @@ TEST_F(UIButtonTests, CheckDisabledButton) {
 
     ET_SendEvent(button->getEntityId(), &ETUIElement::ET_disable);
 
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Press, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Move, center);
-    ET_SendEvent(&ETInputEvents::ET_onTouch, EActionType::Release, center);
+    {
+        TouchEvent event;
+        event.pt = center;
+
+        event.actionType = EActionType::Press;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Move;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+
+        event.actionType = EActionType::Release;
+        ET_SendEvent(&ETInputEvents::ET_onTouch, event);
+    }
 
     ASSERT_TRUE(buttonListener->eventQueue.empty());
 }

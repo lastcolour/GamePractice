@@ -105,19 +105,26 @@ bool AndroidEventManager::hadleMotionEvent(AInputEvent* inputEvent) {
     ET_SendEventReturn(size, &ETSurface::ET_getSize);
     touchPt.y = size.y - touchPt.y;
 
+    TouchEvent event;
+    event.pt = touchPt;
+    event.eventT = TimePoint::GetNowTime();
+
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
     switch(eventAction)
     {
     case AMOTION_EVENT_ACTION_DOWN: {
-        ET_QueueEvent(&ETInputEvents::ET_onTouch, EActionType::Press, touchPt);
+        event.actionType = EActionType::Press;
+        ET_QueueEvent(&ETInputEvents::ET_onTouch, event);
         return true;
     }
     case AMOTION_EVENT_ACTION_MOVE: {
-        ET_QueueEvent(&ETInputEvents::ET_onTouch, EActionType::Move, touchPt);
+        event.actionType = EActionType::Move;
+        ET_QueueEvent(&ETInputEvents::ET_onTouch, event);
         return true;
     }
     case AMOTION_EVENT_ACTION_UP: {
-        ET_QueueEvent(&ETInputEvents::ET_onTouch, EActionType::Release, touchPt);
+        event.actionType = EActionType::Release;
+        ET_QueueEvent(&ETInputEvents::ET_onTouch, event);
         return true;
     }
     default:
@@ -130,12 +137,20 @@ bool AndroidEventManager::handleKeyEvent(AInputEvent* inputEvent) {
     if(keyCode != AKEYCODE_BACK) {
         return false;
     }
+
+    ButtonEvent event;
+    event.eventT = TimePoint::GetNowTime();
+
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
     if(eventAction == AKEY_EVENT_ACTION_DOWN) {
-        ET_QueueEvent(&ETInputEvents::ET_onButton, EActionType::Press, EButtonId::Back);
+        event.actionType = EActionType::Press;
+        event.buttonId = EButtonId::Back;
+        ET_QueueEvent(&ETInputEvents::ET_onButton, event);
         return true;
     } else if(eventAction == AKEY_EVENT_ACTION_UP) {
-        ET_QueueEvent(&ETInputEvents::ET_onButton, EActionType::Release, EButtonId::Back);
+        event.actionType = EActionType::Press;
+        event.buttonId = EButtonId::Back;
+        ET_QueueEvent(&ETInputEvents::ET_onButton, event);
         return true;
     }
     return false;

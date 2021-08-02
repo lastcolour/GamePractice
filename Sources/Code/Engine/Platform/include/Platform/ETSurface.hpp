@@ -1,6 +1,8 @@
 #ifndef __ET_SURFACE_HPP__
 #define __ET_SURFACE_HPP__
 
+#include "Core/TimePoint.hpp"
+
 struct ETSurface {
     virtual ~ETSurface() = default;
     virtual bool ET_show() = 0;
@@ -23,9 +25,21 @@ enum class EButtonId {
     Back = 0,
 };
 
+struct TouchEvent {
+    Vec2i pt;
+    TimePoint eventT;
+    EActionType actionType;
+};
+
+struct ButtonEvent {
+    TimePoint eventT;
+    EActionType actionType;
+    EButtonId buttonId;
+};
+
 struct ETInputEvents {
-    virtual void ET_onTouch(EActionType actionType, const Vec2i& pt) = 0;
-    virtual void ET_onButton(EActionType actionType, EButtonId buttonId) = 0;
+    virtual void ET_onTouch(const TouchEvent& event) = 0;
+    virtual void ET_onButton(const ButtonEvent& event) = 0;
 };
 
 struct ETSurfaceEvents {

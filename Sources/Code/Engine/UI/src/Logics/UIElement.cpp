@@ -108,7 +108,7 @@ void UIElement::ET_show() {
         return;
     }
     onHide(false);
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, false);
     if(!isParentHidden) {
         ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
     }
@@ -123,7 +123,7 @@ void UIElement::ET_hide() {
         return;
     }
     onHide(true);
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, isHidden);
+    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, true);
     if(!isParentHidden) {
         ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
     }}

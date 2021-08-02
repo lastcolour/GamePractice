@@ -22,8 +22,9 @@ public:
     void deinit() override;
 
     // ETGameBoardElem
-    void ET_setElemState(EBoardElemState newState) override;
+    void ET_setState(EBoardElemState newState) override;
     EBoardElemState ET_getState() const override;
+    void ET_setType(EBoardElemType newType) override;
     EBoardElemType ET_getType() const override;
     void ET_triggerDestroy(EntityId sourceId) override;
     void ET_triggerLand() override;

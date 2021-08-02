@@ -126,6 +126,7 @@ void GameBoardLogic::init() {
     visualBox.setCenter(tm.pt.x, tm.pt.y);
     ET_resize(visualBox);
 
+    ET_SendEvent(backgroundId, &ETRenderNode::ET_show);
     uiProxies.addItem(backgroundId, GameUtils::BOARD_BACKGROUND_Z_OFFSET);
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());

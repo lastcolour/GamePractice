@@ -34,6 +34,14 @@ float TimePoint::getMiliSecElapsedFrom(const TimePoint& other) const {
     return msValue;
 }
 
+void TimePoint::addMiliSecDelta(float msDelta) {
+    value += std::chrono::microseconds(static_cast<int>(msDelta * 1000.f));
+}
+
+void TimePoint::addSecDelta(float secDelta) {
+    value += std::chrono::milliseconds(static_cast<int>(secDelta * 1000.f));
+}
+
 const typename TimePoint::ClockT::time_point& TimePoint::getStdTimePoint() const {
     return value;
 }

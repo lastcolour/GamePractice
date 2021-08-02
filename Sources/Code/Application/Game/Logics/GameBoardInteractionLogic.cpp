@@ -49,15 +49,15 @@ void GameBoardInteractionLogic::init() {
 void GameBoardInteractionLogic::deinit() {
 }
 
-void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
+bool GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     if(!activeElemId.isValid()) {
-        return;
+        return false;
     }
     bool canSwitch = false;
     ET_SendEventReturn(canSwitch, activeElemId, &ETGameBoardElem::ET_canSwitch);
     if(!canSwitch) {
         setActiveElem(InvalidEntityId);
-        return;
+        return false;
     }
 
     Transform tm;
@@ -82,67 +82,78 @@ void GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
     if(moveDir.lenght() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
-        return;
+        return false;
     }
     EntityId nextElemId;
     ET_SendEventReturn(nextElemId, &ETGameBoard::ET_getElemByBoardPos, nextBoardPt);
     if(!nextElemId.isValid()) {
-        return;
+        return false;
     }
     canSwitch = false;
     ET_SendEventReturn(canSwitch, nextElemId, &ETGameBoardElem::ET_canSwitch);
     if(!canSwitch) {
-        return;
+        return false;
     }
+
     Vec2i swapDir = startPt - nextBoardPt;
     createSwitchElemsTask(activeElemId, nextElemId, swapDir);
     setActiveElem(InvalidEntityId);
     ET_SendEvent(&ETGameBoardInteractionEvents::ET_onElemMoved);
+    return true;
 }
 
-void GameBoardInteractionLogic::ET_onTouch(EActionType actionType, const Vec2i& pt) {
+void GameBoardInteractionLogic::ET_onTouch(const TouchEvent& event) {
     bool isBoardStatic = false;
     ET_SendEventReturn(isBoardStatic, &ETGameBoard::ET_isAllElemStatic);
 
-    switch(actionType)
+    EntityId touchElemId;
+    if(isBoardStatic && event.actionType != EActionType::ReleaseAndIgnore) {
+        ET_SendEventReturn(touchElemId, &ETGameBoard::ET_getElemByPos, event.pt);
+        doubleTapDetector.onTouchEvent(touchElemId, event);
+    } else {
+        setActiveElem(InvalidEntityId);
+        doubleTapDetector.reset();
+        return;
+    }
+    
+    switch(event.actionType)
     {
     case EActionType::Press: {
-        if(!isBoardStatic) {
-            return;
-        }
-        EntityId elemId;
-        ET_SendEventReturn(elemId, &ETGameBoard::ET_getElemByPos, pt);
-        if(!elemId.isValid()) {
+        if(!touchElemId.isValid()) {
             break;
         }
         bool canSwitch = false;
-        ET_SendEventReturn(canSwitch, elemId, &ETGameBoardElem::ET_canSwitch);
+        ET_SendEventReturn(canSwitch, touchElemId, &ETGameBoardElem::ET_canSwitch);
         if(!canSwitch) {
             break;
         }
-        setActiveElem(elemId);
+        setActiveElem(touchElemId);
         break;
     }
     case EActionType::Move: {
-        if(!isBoardStatic) {
-            setActiveElem(InvalidEntityId);
-        } else {
-            tryFinishElemMove(pt);
+        if(tryFinishElemMove(event.pt)) {
+            doubleTapDetector.reset();
         }
         break;
     }
     case EActionType::Release: {
-        if(isBoardStatic) {
-            tryFinishElemMove(pt);
+        if(tryFinishElemMove(event.pt)) {
+            doubleTapDetector.reset();
+            break;
+        } else {
+            setActiveElem(InvalidEntityId);
+            auto tapInfo = doubleTapDetector.getTapInfo();
+            if(tapInfo.tapCount == 2) {
+                ET_SendEvent(tapInfo.targetId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
+                doubleTapDetector.reset();
+            }
         }
-        setActiveElem(InvalidEntityId);
         break;
     }
-    case EActionType::ReleaseAndIgnore: {
-        setActiveElem(InvalidEntityId);
-    }
+    case EActionType::ReleaseAndIgnore:
+        [[fallthrough]];
     default:
-        break;
+        assert(false && "Invalid action type");
     }
 }
 
@@ -187,8 +198,10 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
             if(GameUtils::HasTriggerLogic(task.firstId)) {
                 ET_SendEvent(task.firstId, &ETGameBoardElemTriggerLogic::ET_setSwapedElem, task.secondId);
                 ET_SendEvent(task.firstId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
+            } else if(GameUtils::HasTriggerLogic(task.secondId)) {
+                ET_SendEvent(task.secondId, &ETGameBoardElemTriggerLogic::ET_setSwapedElem, task.firstId);
+                ET_SendEvent(task.secondId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
             }
-
             it = switchTasks.erase(it);
         } else {
             ++it;
@@ -229,6 +242,7 @@ void GameBoardInteractionLogic::ET_allowInteraction(bool flag) {
     } else {
         ETNode<ETInputEvents>::disconnect();
         setActiveElem(InvalidEntityId);
+        doubleTapDetector.reset();
     }
 }
 
@@ -263,4 +277,5 @@ void GameBoardInteractionLogic::ET_onStartLoading() {
 void GameBoardInteractionLogic::ET_onStartDestroying() {
     activeElemId = InvalidEntityId;
     switchTasks.clear();
+    doubleTapDetector.reset();
 }

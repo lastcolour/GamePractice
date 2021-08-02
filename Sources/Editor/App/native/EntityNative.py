@@ -29,7 +29,7 @@ class EntityNative(NativeObject):
         self._nameSuffix = None
         self._childId = None
         self._isInternal = False
-        self._doNotSyncFlag = True
+        self._doNotSyncFlag = False
 
     def getName(self):
         return self._name

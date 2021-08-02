@@ -18,8 +18,8 @@ public:
     void deinit() override;
 
     // ETInputEvents
-    void ET_onTouch(EActionType actionType, const Vec2i& pt) override;
-    void ET_onButton(EActionType actionType, EButtonId buttonId) override;
+    void ET_onTouch(const TouchEvent& event) override;
+    void ET_onButton(const ButtonEvent& event) override;
 
     // ETSurfaceEvents
     void ET_onSurfaceCreated() override {}

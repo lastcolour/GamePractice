@@ -11,7 +11,7 @@ EBoardElemState GetElemState(EntityId elemId) {
 }
 
 void SetElemState(EntityId elemId, EBoardElemState state) {
-    ET_SendEvent(elemId, &ETGameBoardElem::ET_setElemState, state);
+    ET_SendEvent(elemId, &ETGameBoardElem::ET_setState, state);
 }
 
 EBoardElemType GetElemType(EntityId elemId) {

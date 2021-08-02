@@ -42,12 +42,16 @@ void GameBoardElemLogic::init() {
 void GameBoardElemLogic::deinit() {
 }
 
-void GameBoardElemLogic::ET_setElemState(EBoardElemState newState) {
+void GameBoardElemLogic::ET_setState(EBoardElemState newState) {
     state = newState;
 }
 
 EBoardElemState GameBoardElemLogic::ET_getState() const {
     return state;
+}
+
+void GameBoardElemLogic::ET_setType(EBoardElemType newType) {
+    type = newType;
 }
 
 EBoardElemType GameBoardElemLogic::ET_getType() const {
@@ -130,6 +134,7 @@ void GameBoardElemLogic::ET_onTriggerDone() {
 
 void GameBoardElemLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {
     ET_SendEvent(getEntityId(), &ETRenderRect::ET_setSize, elemSize);
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_show);
     rootContainer.addItem(getEntityId(), GameUtils::BOARD_ELEM_Z_OFFSET);
 }
 

@@ -32,6 +32,7 @@ private:
 
     struct ProxyData {
         int extraZOffset;
+        bool prevVisble;
     };
 
 private:

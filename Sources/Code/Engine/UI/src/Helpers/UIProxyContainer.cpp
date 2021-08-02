@@ -18,6 +18,11 @@ void UIProxyContainer::setUIParent(EntityId newParentId) {
         ETNode<ETUIElementEvents>::disconnect();
     }
 
+    bool prevHidden = true;
+    ET_SendEventReturn(prevHidden, parentId, &ETUIElement::ET_isHidden);
+    bool currHidden = true;
+    ET_SendEventReturn(currHidden, newParentId, &ETUIElement::ET_isHidden);
+
     parentId = newParentId;
     if(!parentId.isValid()) {
         return;
@@ -29,9 +34,9 @@ void UIProxyContainer::setUIParent(EntityId newParentId) {
     ET_SendEventReturn(zIndex, newParentId, &ETUIElement::ET_getZIndex);
     ET_onZIndexChanged(zIndex);
 
-    bool isHidden = false;
-    ET_SendEventReturn(isHidden, newParentId, &ETUIElement::ET_isHidden);
-    ET_onHidden(isHidden);
+    if(prevHidden != currHidden) {
+        ET_onHidden(currHidden);
+    }
 
     float alpha = 1.f;
     ET_SendEventReturn(alpha, newParentId, &ETUIElement::ET_getAlpha);
@@ -42,11 +47,15 @@ void UIProxyContainer::addItem(EntityId itemId, int extraZOffset) {
     if(!itemId.isValid()) {
         return;
     }
+
+    ProxyData proxyData = {extraZOffset, false};
+    ET_SendEventReturn(proxyData.prevVisble, itemId, &ETRenderNode::ET_isVisible);
+
     auto it = proxies.find(itemId);
     if(it == proxies.end()) {
-        proxies[itemId] = ProxyData{extraZOffset};
+        proxies[itemId] = proxyData;
     } else {
-        it->second = ProxyData{extraZOffset};
+        it->second = proxyData;
     }
 
     int zIndex = 0;
@@ -57,8 +66,6 @@ void UIProxyContainer::addItem(EntityId itemId, int extraZOffset) {
     ET_SendEventReturn(isHidden, parentId, &ETUIElement::ET_isHidden);
     if(isHidden) {
         ET_SendEvent(itemId, &ETRenderNode::ET_hide);
-    } else {
-        ET_SendEvent(itemId, &ETRenderNode::ET_show);
     }
 
     float alpha = 1.f;
@@ -95,11 +102,14 @@ void UIProxyContainer::ET_onAlphaChanged(float newAlpha) {
 void UIProxyContainer::ET_onHidden(bool flag) {
     if(flag) {
         for(auto& node : proxies) {
+            ET_SendEventReturn(node.second.prevVisble, node.first, &ETRenderNode::ET_isVisible);
             ET_SendEvent(node.first, &ETRenderNode::ET_hide);
         }
     } else {
         for(auto& node : proxies) {
-            ET_SendEvent(node.first, &ETRenderNode::ET_show);
+            if(node.second.prevVisble) {
+                ET_SendEvent(node.first, &ETRenderNode::ET_show);
+            }
         }
     }
 }
