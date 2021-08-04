@@ -1,5 +1,6 @@
 #include "Game/Logics/MatchAlgorithm.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
+#include "Game/Logics/BronKerbosch.hpp"
 
 #include <cassert>
 #include <unordered_set>
@@ -216,15 +217,7 @@ int calcPatternScore(const PatternMatch& p) {
     return score;
 }
 
-int calcGroupScore(const PatternGroupsT& group) {
-    int totalScore = 0;
-    for(auto& p : group) {
-        totalScore += calcPatternScore(*p);
-    }
-    return totalScore;
-}
-
-bool canMergePatterns(const PatternMatch& p1, const PatternMatch& p2) {
+bool patternsIntersect(const PatternMatch& p1, const PatternMatch& p2) {
     if(p1.elemsType != p2.elemsType) {
         return false;
     }
@@ -234,112 +227,33 @@ bool canMergePatterns(const PatternMatch& p1, const PatternMatch& p2) {
     for(auto& e1 : p1.points) {
         for(auto& e2 : p2.points) {
             if(e1 == e2) {
-                return false;
+                return true;
             }
-        }
-    }
-    return true;
-}
-
-bool isSymetric(const PatternGroupsT& first, const PatternGroupsT& second) {
-    if(first.size() != second.size()) {
-        return false;
-    }
-    if(first[0]->elemsType != second[0]->elemsType) {
-        return false;
-    }
-    if(first[0]->points[0]->clusterId != second[0]->points[0]->clusterId) {
-        return false;
-    }
-    size_t totalSize = first.size();
-    size_t dublicates = 0;
-    for(size_t i = 0; i < (totalSize - 1); ++i) {
-        for(size_t j = i + 1; j < totalSize; ++j) {
-            if(first[i] == second[j]) {
-                ++dublicates;
-            }
-        }
-    }
-    return dublicates == totalSize;
-}
-
-bool isSymetric(const PatternGroupsT& group, const std::vector<PatternGroupsT>& currGroups) {
-    for(auto& other : currGroups) {
-        if(isSymetric(other, group)) {
-            return true;
         }
     }
     return false;
 }
 
-PatternGroupsT tryMergeToGroup(const PatternMatch& p, PatternGroupsT& group) {
-    std::vector<const PatternMatch*> res;
-    for(auto& otherP : group) {
-        if(!canMergePatterns(p, *otherP)) {
-            return res;
-        }
-    }
-    res = group;
-    res.push_back(&p);
-    return res;
-}
+std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>& patterns, BronKerboschRequest& cacheRequest) 
+{
+    int n = static_cast<int>(patterns.size());
+    
+    cacheRequest.adjMat.reset(n);
+    cacheRequest.adjMat.reset(n);
 
-std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>& patterns) {
-    std::vector<PatternGroupsT> currGroups;
-    std::vector<PatternGroupsT> newGroups;
-    PatternGroupsT bestGroup;
-    int bestScore = 0;
-
-    for(auto& p : patterns) {
-        PatternGroupsT group;
-        group.emplace_back(&p);
-        
-        int groupScore = calcGroupScore(group);
-        if(groupScore > bestScore) {
-            bestScore = groupScore;
-            bestGroup = group;
-        }
-
-        currGroups.emplace_back(std::move(group));
-    }
-
-    for(size_t i = 0, sz = patterns.size(); i < (sz - 1); ++i) {
-        for(size_t j = i + 1; j < sz; ++j) {
-            auto& p = patterns[i];
-            auto& group = currGroups[j];
-            auto newGroup = tryMergeToGroup(p, group);
-            if(!newGroup.empty()) {
-                int groupScore = calcGroupScore(newGroup);
-                if(groupScore > bestScore) {
-                    bestScore = groupScore;
-                    bestGroup = newGroup;
-                }
-                newGroups.push_back(std::move(newGroup));
+    for(int i = 0; i < (n - 1); ++i) {
+        cacheRequest.adjMat.setVertexCost(i, calcPatternScore(patterns[i]));
+        for(int j = i + 1; j < n; ++j) {
+            bool hasIntersect = patternsIntersect(patterns[i], patterns[j]);
+            if(!hasIntersect) {
+                cacheRequest.adjMat.addEdge(i, j);
             }
         }
     }
 
-    currGroups = std::move(newGroups);
+    cacheRequest.adjMat.setVertexCost(n - 1, calcPatternScore(patterns[n - 1]));
 
-    while(!currGroups.empty()) {
-        for(auto& group : currGroups) {
-            for(auto& p : patterns) {
-                auto newGroup = tryMergeToGroup(p, group);
-                if(!newGroup.empty()) {
-                    if(isSymetric(newGroup, newGroups)) {
-                        continue;
-                    }
-                    int groupScore = calcGroupScore(newGroup);
-                    if(groupScore > bestScore) {
-                        bestScore = groupScore;
-                        bestGroup = newGroup;
-                    }
-                    newGroups.push_back(std::move(newGroup));
-                }
-            }
-        }
-        currGroups = std::move(newGroups);
-    }
+    BronKerbosch(cacheRequest);
 
     std::unordered_set<const MatchPoints*> remainingPoints;
     for(auto& p : patterns) {
@@ -348,29 +262,31 @@ std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>&
         }
     }
 
-    std::vector<PatternMatch> resPatterns;
+    std::vector<PatternMatch> result;
 
-    for(auto& p : bestGroup) {
-        resPatterns.push_back(*p);
-        for(auto& elem : p->points) {
+    for(auto& i : cacheRequest.result) {
+        auto& p = patterns[i];
+        for(auto& elem : p.points) {
             auto it = remainingPoints.find(elem);
             if(it != remainingPoints.end()) {
                 remainingPoints.erase(it);
             }
         }
+        result.push_back(p);
     }
 
     if(!remainingPoints.empty()) {
-        PatternMatch p;
-        p.patternType = EPatternType::None;
-        p.elemsType = EBoardElemType::None;
-        for(auto& elem : remainingPoints) {
-            p.points.push_back(elem);
-        }
-        resPatterns.push_back(p);
+
+        PatternMatch nonePattern;
+        nonePattern.patternType = EPatternType::None;
+        nonePattern.elemsType = EBoardElemType::None;
+        nonePattern.points.insert(nonePattern.points.begin(),
+            remainingPoints.begin(), remainingPoints.end());
+
+        result.push_back(nonePattern);
     }
 
-    return resPatterns;
+    return result;
 }
 
 bool isInsideBoard(const Vec2i& size, const Vec2i& pt) {
@@ -496,7 +412,7 @@ int BoardMatchState::getElemIdx(int x, int y) const {
     return x + size.x * y;
 }
 
-std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board) {
+std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board, BronKerboschRequest& cacheRequest) {
     findAllClusters(board);
 
     std::vector<PatternMatch> allMatches;
@@ -614,5 +530,5 @@ std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board) {
         return allMatches;
     }
 
-    return mergeAllMatchPatterns(allMatches);
+    return mergeAllMatchPatterns(allMatches, cacheRequest);
 }

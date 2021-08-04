@@ -4,9 +4,12 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
+#include "Game/Logics/BronKerbosch.hpp"
 
 class GameBoardMatchLogic : public EntityLogic,
-    public ETNode<ETGameBoardMatcher> {
+    public ETNode<ETGameBoardMatcher>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -22,6 +25,11 @@ public:
 
     // ETGameBoardMatcher
     bool ET_matchElements() override;
+    void ET_setLastSwappedElem(EntityId elemId) override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override;
+    void ET_onStartDestroying() override;
 
 private:
 
@@ -29,6 +37,8 @@ private:
 
 private:
 
+    BronKerboschRequest cacheRequest;
+    EntityId lastSwappedElem;
     BoardMatchState boardMatchState;
 };
 

@@ -33,13 +33,13 @@ void DrawFPSChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo
     size_t i = timing.size() - 1;
     Vec2 prev;
     prev.x = 0.f;
-    float runTime = GetRunTimeBetween(timing, i);
+    float runTime = std::max(0.1f, GetRunTimeBetween(timing, i));
     float fpsVal = 1000.f / runTime;
     prev.y = std::min(1.f, fpsVal / MAX_FPS);
     --i;
     Vec2 curr(0.f);
     while(true) {
-        runTime = GetRunTimeBetween(timing, i);
+        runTime = std::max(0.1f, GetRunTimeBetween(timing, i));
         fpsVal = 1000.f / runTime;
         curr.x = prev.x - runTime;
         curr.y = std::min(1.f, fpsVal / MAX_FPS);

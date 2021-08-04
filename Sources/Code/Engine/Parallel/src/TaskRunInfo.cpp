@@ -45,7 +45,7 @@ AvarageRunInfo GetAvgRunInfo(const TaskRunInfo& runInfo) {
 
     size_t sz = runInfo.timing.size();
     for(size_t i = 1; i < sz; ++i) {
-        float fpsVal = 1000.f / GetRunTimeBetween(runInfo.timing, i);
+        float fpsVal = 1000.f / std::max(0.1f, GetRunTimeBetween(runInfo.timing, i));
         avgRunInfo.minFPS = std::min(fpsVal, avgRunInfo.minFPS);
         avgRunInfo.maxFPS = std::max(fpsVal, avgRunInfo.maxFPS);
         avgRunInfo.avgFPS += fpsVal;

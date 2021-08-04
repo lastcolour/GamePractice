@@ -27,6 +27,7 @@ void GameElemBombLogic::deinit() {
 }
 
 void GameElemBombLogic::ET_start() {
+    ET_SendEvent(&ETGameBoardShake::ET_addShake);
     ET_SendEventReturn(startPt, &ETGameBoard::ET_getElemBoardPos, getEntityId());
     currTime = 0.f;
 }

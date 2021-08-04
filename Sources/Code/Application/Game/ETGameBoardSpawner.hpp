@@ -7,6 +7,7 @@ struct ETGameBoardSpawner {
     virtual void ET_loadPendingLevel() = 0;
     virtual const char* ET_getLevelName() const = 0;
     virtual void ET_unloadLevel() = 0;
+    virtual EntityId ET_getGameBoard() const = 0;
 };
 
 struct ETGameBoardSpawnerEvents {

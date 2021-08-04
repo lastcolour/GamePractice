@@ -3,6 +3,8 @@
 
 #include "Game/ETGameElem.hpp"
 
+struct BronKerboschRequest;
+
 enum class EPatternType {
     None = 0,
     HLine,
@@ -50,6 +52,6 @@ private:
     std::vector<MatchPoints> elems;
 };
 
-std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board);
+std::vector<PatternMatch> FindAllMatchPatterns(BoardMatchState& board, BronKerboschRequest& cacheRequest);
 
 #endif /* __MATCH_ALGORITHM_HPP__ */

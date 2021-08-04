@@ -24,7 +24,8 @@ void DoubleTapDetection::onTouchEvent(EntityId targetId, const TouchEvent& event
                 reset();
                 return;
             }
-            if(!GameUtils::HasTriggerLogic(targetId)) {
+            auto elemType = GameUtils::GetElemType(targetId);
+            if(elemType == EBoardElemType::Star || !GameUtils::IsTriggerType(elemType)) {
                 reset();
                 return;
             }

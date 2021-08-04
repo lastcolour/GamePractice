@@ -48,6 +48,9 @@ void GameBoardLogic::ET_switchElemsBoardPos(EntityId firstId, EntityId secondId)
         assert(false && "Try switch invalid board elems");
         return;
     }
+
+    ET_SendEvent(&ETGameBoardMatcher::ET_setLastSwappedElem, firstId);
+
     std::swap(firstElem->entId, secondElem->entId);
     setElemBoardPos(*firstElem, firstElem->boardPt);
     setElemBoardPos(*secondElem, secondElem->boardPt);

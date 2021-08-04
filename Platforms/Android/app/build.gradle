@@ -11,7 +11,7 @@ android {
         applicationId 'com.lastcolour.Game01'
 
         // Defines the minimum API level required to run the app.
-        minSdkVersion 21
+        minSdkVersion 23
 
         // Specifies the API level used to test the app.
         targetSdkVersion 30
@@ -51,7 +51,6 @@ android {
         main {
             assets.srcDirs = ["$ProjectRootDir/Assets"]
             jniLibs.srcDirs = ["$BuildRootDir/RelWithDebInfo"]
-            jni.srcDirs = []
         }
     }
 }

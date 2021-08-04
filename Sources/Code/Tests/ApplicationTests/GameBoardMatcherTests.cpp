@@ -1,5 +1,6 @@
 #include "GameBoardMatcherTests.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
+#include "Game/Logics/BronKerbosch.hpp"
 
 namespace {
 
@@ -33,7 +34,8 @@ TEST_F(GameBoardMatcherTests, TestOnly3HLine) {
         "SSS",
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
@@ -47,7 +49,8 @@ TEST_F(GameBoardMatcherTests, TestOnly3VLine) {
         "S"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::VLine);
@@ -63,7 +66,8 @@ TEST_F(GameBoardMatcherTests, Test3VLine) {
         "DDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::VLine);
@@ -77,7 +81,8 @@ TEST_F(GameBoardMatcherTests, Test3HLine) {
         "DDDDD",
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
@@ -91,7 +96,8 @@ TEST_F(GameBoardMatcherTests, Test4HLine) {
         "DDDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::HRocket);
@@ -108,7 +114,8 @@ TEST_F(GameBoardMatcherTests, Test4VLine) {
         "DDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::VRocket);
@@ -122,7 +129,8 @@ TEST_F(GameBoardMatcherTests, Test5HLine) {
         "DDDDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Star);
@@ -140,7 +148,8 @@ TEST_F(GameBoardMatcherTests, Test5VLine) {
         "DDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Star);
@@ -156,7 +165,8 @@ TEST_F(GameBoardMatcherTests, Test3MidCrossLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 2);
     EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
@@ -175,7 +185,8 @@ TEST_F(GameBoardMatcherTests, Test3MidTDownLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -191,7 +202,8 @@ TEST_F(GameBoardMatcherTests, Test3MidTUpLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -207,7 +219,8 @@ TEST_F(GameBoardMatcherTests, Test3LeftLUpLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -223,7 +236,8 @@ TEST_F(GameBoardMatcherTests, Test3RightLUpLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -239,7 +253,8 @@ TEST_F(GameBoardMatcherTests, Test3LeftLDownLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -255,7 +270,8 @@ TEST_F(GameBoardMatcherTests, Test3RightLDownLine) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -271,7 +287,8 @@ TEST_F(GameBoardMatcherTests, TestLeftT) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -287,7 +304,8 @@ TEST_F(GameBoardMatcherTests, TestRightT) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 1);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -303,7 +321,8 @@ TEST_F(GameBoardMatcherTests, Test3x3Quad) {
         "DDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 2);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -322,7 +341,8 @@ TEST_F(GameBoardMatcherTests, Test3x4Quad) {
         "DDDDDD"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_EQ(patterns.size(), 3);
     EXPECT_EQ(patterns[0].patternType, EPatternType::Bomb);
@@ -335,7 +355,26 @@ TEST_F(GameBoardMatcherTests, Test3x4Quad) {
     EXPECT_EQ(patterns[2].points.size(), 2);
 }
 
-/*
+TEST_F(GameBoardMatcherTests, CheckDoubleRocket) {
+    auto boardState = CreateBoardState({
+        "DDDDD",
+        "DSDSD",
+        "DSDSD",
+        "DSDSD",
+        "DSDSD",
+        "DDDDD"
+    });
+
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
+
+    ASSERT_EQ(patterns.size(), 2);
+    EXPECT_EQ(patterns[0].patternType, EPatternType::VRocket);
+    EXPECT_EQ(patterns[0].points.size(), 4);
+
+    EXPECT_EQ(patterns[1].patternType, EPatternType::VRocket);
+    EXPECT_EQ(patterns[1].points.size(), 4);
+}
 
 TEST_F(GameBoardMatcherTests, Test10x10Quad) {
     auto boardState = CreateBoardState({
@@ -351,13 +390,19 @@ TEST_F(GameBoardMatcherTests, Test10x10Quad) {
         "SSSSSSSSSS"
     });
 
-    auto patterns = FindAllMatchPatterns(boardState);
+    BronKerboschRequest req;
+    auto patterns = FindAllMatchPatterns(boardState, req);
 
-    ASSERT_EQ(patterns.size(), 20);
+    ASSERT_GE(patterns.size(), 20);
+
+
+    int starsCount = 0;
     for(int i = 0; i < 20; ++i) {
-        EXPECT_EQ(patterns[i].patternType, EPatternType::Star);
-        EXPECT_EQ(patterns[i].points.size(), 5);
+        if(patterns[i].patternType == EPatternType::Star) {
+            ++starsCount;
+            EXPECT_EQ(patterns[i].points.size(), 5);
+        }
     }
-}
 
-*/
+    EXPECT_EQ(starsCount, 20);
+}

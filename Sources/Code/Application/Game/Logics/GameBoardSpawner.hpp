@@ -26,6 +26,7 @@ public:
     void ET_loadPendingLevel() override;
     void ET_unloadLevel() override;
     const char* ET_getLevelName() const override;
+    EntityId ET_getGameBoard() const override;
 
     // ETUIElementEvents
     void ET_onBoxChanged(const AABB2D& newAabb) override;

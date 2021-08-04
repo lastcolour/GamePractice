@@ -67,6 +67,7 @@ private:
         std::unordered_map<ETNodeBase*, EntityId> ptrToIdMap;
         std::unordered_multimap<EntityId, ETNodeBase*> idToPtrMap;
         std::vector<Event> pendingEvents;
+        std::vector<Event> processEvents;
         std::vector<ConnectionRequest> pendingConnections;
     };
 

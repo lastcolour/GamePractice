@@ -51,8 +51,8 @@
                 }
               },
               "size": {
-                "x": 150.0,
-                "y": 150.0
+                "x": 920.0,
+                "y": 920.0
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
@@ -75,7 +75,7 @@
           "minScore": 10
         },
         "threeStars": {
-          "minScore": 15
+          "minScore": 300
         }
       }
     },
@@ -121,7 +121,7 @@
             "weight": 10
           },
           {
-            "elemType": "HRocket",
+            "elemType": "Bomb",
             "weight": 3
           },
           {

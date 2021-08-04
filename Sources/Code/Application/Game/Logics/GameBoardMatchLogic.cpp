@@ -1,8 +1,12 @@
 #include "Game/Logics/GameBoardMatchLogic.hpp"
+#include "Game/Logics/GameBoardUtils.hpp"
 
 #include <cassert>
 
 namespace {
+
+const int MAX_BRON_KERBOSCH_ITER = 500000;
+const float LOG_MS_THRESHOLD_MS = 1.f;
 
 EBoardElemType getSpecialElemType(EPatternType patternType) {
     EBoardElemType res = EBoardElemType::None;
@@ -30,6 +34,16 @@ EBoardElemType getSpecialElemType(EPatternType patternType) {
     return res;
 }
 
+bool makeSwappedElemFirst(EntityId swappedId, PatternMatch& p) {
+    for(size_t i = 0, sz = p.points.size(); i < sz; ++i) {
+        if(p.points[i]->entId == swappedId) {
+            std::swap(p.points[0], p.points[i]);
+            return true;
+        }
+    }
+    return false;
+}
+
 } // namespace
 
 GameBoardMatchLogic::GameBoardMatchLogic() {
@@ -45,6 +59,9 @@ void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
 
 void GameBoardMatchLogic::init() {
     ETNode<ETGameBoardMatcher>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
+
+    cacheRequest.stopIterCount = MAX_BRON_KERBOSCH_ITER;
 }
 
 void GameBoardMatchLogic::deinit() {
@@ -54,9 +71,26 @@ bool GameBoardMatchLogic::ET_matchElements() {
     boardMatchState.reset();
     ET_SendEvent(&ETGameBoard::ET_readBoardMatchState, boardMatchState);
 
-    auto patterns = FindAllMatchPatterns(boardMatchState);
+    auto patterns = FindAllMatchPatterns(boardMatchState, cacheRequest);
+
+    if(cacheRequest.duration > LOG_MS_THRESHOLD_MS) {
+        LogInfo("[GameBoardMatchLogic::ET_matchElements] Finish match: 'iter'=%d, 'maxDepth'=%d, 'duration'=%.2fms",
+            cacheRequest.iterCount,
+            cacheRequest.maxDepth,
+            cacheRequest.duration);
+    }
+
     if(patterns.empty()) {
         return false;
+    }
+
+    if(lastSwappedElem.isValid()) {
+        for(auto& p : patterns) {
+            if(makeSwappedElemFirst(lastSwappedElem, p)) {
+                break;
+            }
+        }
+        lastSwappedElem = InvalidEntityId;
     }
 
     for(auto& p : patterns) {
@@ -64,6 +98,17 @@ bool GameBoardMatchLogic::ET_matchElements() {
     }
 
     return true;
+}
+
+void GameBoardMatchLogic::ET_setLastSwappedElem(EntityId elemId) {
+    lastSwappedElem = elemId;
+}
+
+void GameBoardMatchLogic::ET_onStartLoading() {
+    lastSwappedElem = InvalidEntityId;
+}
+
+void GameBoardMatchLogic::ET_onStartDestroying() {
 }
 
 void GameBoardMatchLogic::matchPattern(const PatternMatch& p) {

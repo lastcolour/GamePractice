@@ -241,13 +241,14 @@ void ETNodeRegistry::queueEventForAll(int etId, CallFunctionT callF) {
 }
 
 void ETNodeRegistry::pollEventsForAll(int etId) {
-    std::vector<Event> events;
+    auto& events = connections[etId].processEvents;
     {
         std::lock_guard<std::mutex> lock(eventMutex);
-        events = std::move(connections[etId].pendingEvents);
-        if(events.empty()) {
+        if(connections[etId].pendingEvents.empty()) {
             return;
         }
+        std::swap(events, connections[etId].pendingEvents);
+        connections[etId].pendingEvents.clear();
     }
     startRoute(etId);
     {
