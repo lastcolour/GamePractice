@@ -28,7 +28,7 @@ const size_t RENDER_HEIGHT = 300;
 
 const char* TEST_SHADER_1 = "geom_solid_color";
 
-const char* TEST_IMAGE = "Images/Game/rblock_32x32.png";
+const char* TEST_IMAGE = "Images/Base/block_1x1.png";
 
 const char* SIMPLE_OBJECT = "Entities/Game/Simple.json";
 
@@ -687,22 +687,32 @@ TEST_F(RenderTests, CheckNinePatch) {
     Vec2i center = renderPort / 2;
     Vec2i size = center;
 
+    int failPixCount = 0;
+
     {
         AABB2Di texBox;
         texBox.bot = center - size / 2 + Vec2i(1);
         texBox.top = center + size / 2 - Vec2i(1);
 
         ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, texBox.bot.y);
-        EXPECT_EQ(col, ColorB(255, 0, 0));
+        if(col != ColorB(255, 0, 0)) {
+            ++failPixCount;
+        }
 
         col = IMAGE_BUFFER->getColor(texBox.bot.x, texBox.top.y);
-        EXPECT_EQ(col, ColorB(255, 0, 0));
+        if(col != ColorB(255, 0, 0)) {
+            ++failPixCount;
+        }
 
         col = IMAGE_BUFFER->getColor(texBox.top.x, texBox.bot.y);
-        EXPECT_EQ(col, ColorB(255, 0, 0));
+        if(col != ColorB(255, 0, 0)) {
+            ++failPixCount;
+        }
 
         col = IMAGE_BUFFER->getColor(texBox.top.x, texBox.top.y);
-        EXPECT_EQ(col, ColorB(255, 0, 0));
+        if(col != ColorB(255, 0, 0)) {
+            ++failPixCount;
+        }
     }
 
     {
@@ -712,24 +722,34 @@ TEST_F(RenderTests, CheckNinePatch) {
 
         for(int i = texBox.bot.x + 3; i < texBox.top.x - 3; ++i) {
             ColorB col = IMAGE_BUFFER->getColor(i, texBox.bot.y);
-            EXPECT_EQ(col, ColorB(0, 255, 0));
+            if(col != ColorB(0, 255, 0)) {
+                ++failPixCount;
+            }
         }
 
         for(int i = texBox.top.x + 3; i < texBox.top.x - 3; ++i) {
             ColorB col = IMAGE_BUFFER->getColor(i, texBox.top.y);
-            EXPECT_EQ(col, ColorB(0, 255, 0));
+            if(col != ColorB(0, 255, 0)) {
+                ++failPixCount;
+            }
         }
 
         for(int i = texBox.bot.y + 3; i < texBox.bot.y - 3; ++i) {
             ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, i);
-            EXPECT_EQ(col, ColorB(0, 255, 0));
+            if(col != ColorB(0, 255, 0)) {
+                ++failPixCount;
+            }
         }
 
         for(int i = texBox.bot.y + 3; i < texBox.bot.y - 3; ++i) {
             ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, i);
-            EXPECT_EQ(col, ColorB(0, 255, 0));
+            if(col != ColorB(0, 255, 0)) {
+                ++failPixCount;
+            }
         }
     }
+
+    ASSERT_TRUE(failPixCount);
 
     {
         AABB2Di texBox;

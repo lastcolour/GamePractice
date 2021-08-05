@@ -43,6 +43,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${RESULT_OUTPUT_DIR}/Release)
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${RESULT_OUTPUT_DIR}/RelWithDebInfo)
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    message(status "Disable MSVC secure warnings for tests")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GTEST_LIB_STATIC_BIN}
     ${THREADS_LIB_SHARED_BIN}

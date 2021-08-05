@@ -32,9 +32,9 @@ bool isMoveEnded(const Vec3& pt, int cellSize, const Vec2i& startPt, const Vec2i
 
 bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOffset,
     int cellSize, const Vec2i& startPt, const Vec2i& boardSize) {
-    Transform rocketTm;
-    rocketTm.pt = tm.pt + (fOffset * cellSize) * Vec3(
-    static_cast<float>(moveDir.x), static_cast<float>(moveDir.y), 0.f);
+    Transform rocketTm = tm;
+    rocketTm.pt += (fOffset * cellSize) * Vec3(
+        static_cast<float>(moveDir.x), static_cast<float>(moveDir.y), 0.f);
     ET_SendEvent(rocketId, &ETEntity::ET_setTransform, rocketTm);
 
     bool isEnded = isMoveEnded(rocketTm.pt, cellSize, startPt, boardSize, fOffset, moveDir);
@@ -54,6 +54,7 @@ bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOf
 void GameElemRocketLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameElemRocketLogic>("GameElemRocketLogic")) {
         classInfo->addField("speed", &GameElemRocketLogic::speed);
+        classInfo->addField("acc", &GameElemRocketLogic::acc);
         classInfo->addField("firstRocket", &GameElemRocketLogic::firstRocket);
         classInfo->addField("secondRocket", &GameElemRocketLogic::secondRocket);
     }
@@ -63,6 +64,8 @@ GameElemRocketLogic::GameElemRocketLogic() :
     startPt(-1),
     speed(1.f),
     currTime(0.f),
+    acc(0.1f),
+    currSpeed(0.f),
     prevOffset(0),
     isHorizontal(false),
     isStarted(false) {
@@ -86,6 +89,7 @@ void GameElemRocketLogic::ET_start() {
     isStarted = false;
     prevOffset = 0;
     currTime = 0.f;
+    currSpeed = speed;
     ET_SendEventReturn(startPt, &ETGameBoard::ET_getElemBoardPos, getEntityId());
 
     Transform tm;
@@ -141,11 +145,20 @@ bool GameElemRocketLogic::onUpdate(float dt) {
     Vec2i boardSize(0);
     ET_SendEventReturn(boardSize, &ETGameBoard::ET_getBoardSize);
 
-    float fOffset = speed * currTime;
+    float fOffset = currSpeed * currTime;
+    currSpeed += acc * dt;
 
     Transform tm;
     ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+
+    tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), 
+        isHorizontal ? -Math::PI / 2.f : 0.f);
+
     auto isFirstDone = moveRocket(firstRocket, dir, tm, fOffset, cellSize, startPt, boardSize);
+
+    tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), 
+        isHorizontal ? Math::PI / 2.f : Math::PI);
+
     auto isSecondDone = moveRocket(secondRocket, -dir, tm, fOffset, cellSize, startPt, boardSize);
 
     int iOffset = static_cast<int>(fOffset) + 2;

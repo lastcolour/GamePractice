@@ -46,7 +46,6 @@ public:
     AdjacencyMatrix adjMat;
     std::vector<int> result;
     BronKerboschCache* cache;
-    int currStopIterCount;
     int stopIterCount;
     int maxCost;
     int iterCount;

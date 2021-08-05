@@ -2,7 +2,6 @@
 #include "Core/TimePoint.hpp"
 
 #include <cassert>
-#include <iostream>
 
 AdjacencyMatrix::AdjacencyMatrix() :
     vertNum(0),
@@ -43,11 +42,6 @@ void AdjacencyMatrix::addEdge(int a, int b) {
     }
 
     auto idx = a * vertNum + b;
-
-    if(idx >= data.size()) {
-        std::cout << "Error = " << idx << ", a = " << a << ", b = " << b << std::endl;
-    }
-
     if(!data[idx]) {
         data[idx] = 1;
         ++edgeNum;
@@ -93,11 +87,14 @@ void AdjacencyMatrix::setVertexCost(int a, int cost) {
 namespace {
 
 struct BK_State {
-    std::vector<int> R;
+    int rCost;
+    int pCost;
+    int maxEnterCost;
+    std::vector<int> P_copy;
     std::vector<int> P;
+    std::vector<int> R;
     std::vector<int> X;
 };
-
 
 void removeByValue(std::vector<int>& vec, int x) {
     if(vec.empty()) {
@@ -117,12 +114,12 @@ void removeByPredicate(std::vector<int>& vec, F pred) {
 } // namespace
 
 struct BronKerboschCache {
+    int currStopIterCount;
     std::vector<BK_State> states;
 };
 
 BronKerboschRequest::BronKerboschRequest() :
     cache(nullptr),
-    currStopIterCount(0),
     stopIterCount(1000000),
     maxCost(0),
     iterCount(0),
@@ -151,7 +148,7 @@ void updateResult(BronKerboschRequest& req, std::vector<int>& clique) {
     if(totalCost > req.maxCost) {
         req.maxCost = totalCost;
         req.result = std::move(clique);
-        req.currStopIterCount = 0;
+        req.cache->currStopIterCount = 0;
     }
 }
 
@@ -159,11 +156,16 @@ bool shouldStopByMaxIter(BronKerboschRequest& req) {
     if(req.stopIterCount == -1) {
         return false;
     }
-    if(req.currStopIterCount >= req.stopIterCount) {
+    if(req.cache->currStopIterCount >= req.stopIterCount) {
         req.stopBecauseLimit = true;
         return true;
     }
     return false;
+}
+
+bool canIncreaseCost(int depth, BronKerboschRequest& req) {
+    auto state = &req.cache->states[depth];
+    return (state->pCost + state->rCost) > req.maxCost;
 }
 
 void BronKerbosch_Impl(int depth, BronKerboschRequest& req) {
@@ -171,43 +173,70 @@ void BronKerbosch_Impl(int depth, BronKerboschRequest& req) {
         return;
     }
 
+    if(!canIncreaseCost(depth, req)) {
+        return;
+    }
+
     req.iterCount += 1;
-    req.currStopIterCount += 1;
+    req.cache->currStopIterCount += 1;
     req.maxDepth = std::max(req.maxDepth, depth);
+
+    if(req.cache->states.size() <= (depth + 1)) {
+        req.cache->states.emplace_back();
+        req.cache->states.back().maxEnterCost = 0;
+    }
 
     auto state = &req.cache->states[depth];
     if(state->P.empty() && state->X.empty()) {
         updateResult(req, state->R);
     } else {
-        auto P_copy = state->P;
-        for(auto& v : P_copy) {
-            if(req.cache->states.size() <= (depth + 1)) {
-                req.cache->states.emplace_back();
-                state = &req.cache->states[depth];
-            }
-            auto newState = &req.cache->states[depth + 1];
-            *newState = *state;
+        state->P_copy = state->P;
+        for(size_t i = 0; i < req.cache->states[depth].P_copy.size(); ++i) {
+            state = &req.cache->states[depth];
+            auto nextState = &req.cache->states[depth + 1];
 
-            newState->R.push_back(v);
+            auto v = state->P_copy[i];
+            auto vCost = req.adjMat.getVertexCost(v);
 
-            removeByPredicate(newState->X, [adjMat=&req.adjMat, v](int u){
-                return !adjMat->hasEdge(u, v);
-            });
+            if(vCost >= state->maxEnterCost) {
+                state->maxEnterCost = vCost;
 
-            removeByPredicate(newState->P, [adjMat=&req.adjMat, v](int u){
-                return !adjMat->hasEdge(u, v);
-            });
+                auto prevMaxCost = nextState->maxEnterCost;
+                *nextState = *state;
+                nextState->maxEnterCost = prevMaxCost;
+    
+                nextState->R.push_back(v);
+                nextState->rCost += req.adjMat.getVertexCost(v);
+                nextState->pCost = 0;
 
-            BronKerbosch_Impl(depth + 1, req);
+                removeByPredicate(nextState->X, [adjMat=&req.adjMat, v](int u){
+                    return !adjMat->hasEdge(u, v);
+                });
 
-            if(shouldStopByMaxIter(req)) {
-                return;
+                removeByPredicate(nextState->P, [adjMat=&req.adjMat, v, nextState](int u){
+                    if(adjMat->hasEdge(v, u)) {
+                        nextState->pCost += adjMat->getVertexCost(u);
+                        return false;
+                    }
+                    return true;
+                });
+
+                BronKerbosch_Impl(depth + 1, req);
+
+                if(shouldStopByMaxIter(req)) {
+                    return;
+                }
             }
  
             state = &req.cache->states[depth];
 
             removeByValue(state->P, v);
+            state->pCost -= req.adjMat.getVertexCost(v);
             state->X.push_back(v);
+
+            if(!canIncreaseCost(depth, req)) {
+                return;
+            }
         }
     }
 }
@@ -218,7 +247,6 @@ void BronKerbosch(BronKerboschRequest& req) {
     auto startT = TimePoint::GetNowTime();
 
     req.result.clear();
-    req.currStopIterCount = 0;
     req.maxCost = 0;
     req.iterCount = 0;
     req.maxDepth = 0;
@@ -233,6 +261,14 @@ void BronKerbosch(BronKerboschRequest& req) {
         req.cache->states.emplace_back();
     }
 
+    req.cache->currStopIterCount = 0;
+    req.cache->states[0].pCost = 0;
+    req.cache->states[0].rCost = 0;
+
+    for(auto& s : req.cache->states) {
+        s.maxEnterCost = 0;
+    }
+
     req.cache->states[0].P.clear();
     req.cache->states[0].R.clear();
     req.cache->states[0].X.clear();
@@ -240,6 +276,7 @@ void BronKerbosch(BronKerboschRequest& req) {
     auto& state = req.cache->states[0];
     for(int i = 0, sz = req.adjMat.vertexCount(); i < sz; ++i) {
         state.P.push_back(i);
+        state.pCost += req.adjMat.getVertexCost(i);
     }
 
     std::sort(state.P.begin(), state.P.end(), [&req](int a, int b){

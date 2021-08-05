@@ -41,6 +41,8 @@ private:
     EntityId secondRocket;
     float speed;
     float currTime;
+    float acc;
+    float currSpeed;
     int prevOffset;
     bool isHorizontal;
     bool isStarted;

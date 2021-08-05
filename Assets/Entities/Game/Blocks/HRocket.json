@@ -66,8 +66,8 @@
         "rot": {
           "x": 0.0,
           "y": 0.0,
-          "z": 0.7071068286895752,
-          "w": 0.7071068286895752
+          "z": 0.7071067811865476,
+          "w": 0.7071067811865476
         }
       },
       "name": "FirstRocket",
@@ -117,8 +117,8 @@
         "rot": {
           "x": 0.0,
           "y": 0.0,
-          "z": -0.7071068286895752,
-          "w": 0.7071068286895752
+          "z": -0.7071067811865476,
+          "w": 0.7071067811865476
         }
       },
       "name": "SecondRocket",
@@ -135,7 +135,7 @@
               "alpha": 1.0,
               "drawPriority": 1,
               "textureInfo": {
-                "filename": "Images/Game/hrocket_12x12.png",
+                "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
                 "tintColor": {
                   "r": 0,
@@ -189,9 +189,9 @@
       "type": "BoardElemDestroyAnimation",
       "id": 3,
       "data": {
-        "startDelay": 0.05000000074505806,
+        "startDelay": 0.05,
         "duration": 0.0,
-        "endDelay": 0.05000000074505806,
+        "endDelay": 0.05,
         "soundEvent": {
           "event": "elemDestroy_01"
         }
@@ -201,9 +201,9 @@
       "type": "BoardElemSelectAnimation",
       "id": 4,
       "data": {
-        "duration": 0.10000000149011612,
-        "maxBackgroundScale": 1.100000023841858,
-        "minForegroundScale": 0.8999999761581421,
+        "duration": 0.1,
+        "maxBackgroundScale": 1.1,
+        "minForegroundScale": 0.9,
         "background": [
           1
         ]
@@ -221,7 +221,7 @@
       "type": "GameBoardElemLandAnimation",
       "id": 6,
       "data": {
-        "totalDuration": 0.30000001192092896,
+        "totalDuration": 0.3,
         "landSound": {
           "event": "scoreIncrease_01"
         }
@@ -232,6 +232,7 @@
       "id": 7,
       "data": {
         "speed": 10.0,
+        "acc": 5.0,
         "firstRocket": [
           2
         ],
