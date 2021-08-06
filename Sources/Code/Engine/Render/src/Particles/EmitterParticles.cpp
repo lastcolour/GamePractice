@@ -261,8 +261,8 @@ void EmitterParticles::spawnNewParticle(Particle& p) {
     p.rot = getRandomRotation(floatGen, simConf.movement.initRotation, simConf.movement.initRotationVar);
     p.rotSpeed = getRandomRotation(floatGen, simConf.movement.rotationSpeed, simConf.movement.rotationSpeedVar);
 
-    p.startCol = getRandomColor(floatGen, simConf.color.startCol.getColorF(), simConf.color.startColVar);
-    p.endCol = getRandomColor(floatGen, simConf.color.endCol.getColorF(), simConf.color.endColVar);
+    p.startCol = getRandomColor(floatGen, Color::toColorF(simConf.color.startCol), simConf.color.startColVar);
+    p.endCol = getRandomColor(floatGen, Color::toColorF(simConf.color.endCol), simConf.color.endColVar);
 
     p.acc = Vec2(0.f);
 

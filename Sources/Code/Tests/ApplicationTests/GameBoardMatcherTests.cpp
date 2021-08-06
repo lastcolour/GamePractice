@@ -391,10 +391,10 @@ TEST_F(GameBoardMatcherTests, Test10x10Quad) {
     });
 
     BronKerboschRequest req;
+    req.stopIterCount = 500000;
     auto patterns = FindAllMatchPatterns(boardState, req);
 
     ASSERT_GE(patterns.size(), 20);
-
 
     int starsCount = 0;
     for(int i = 0; i < 20; ++i) {

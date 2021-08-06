@@ -61,7 +61,7 @@ void DebugRender::deinit() {
 }
 
 void DebugRender::ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col) {
-    auto colF = col.getColorF();
+    auto colF = Color::toColorF(col);
     drawLinesCmd.emplace_back(RenderLine{startPt, colF, endPt, colF});
 }
 

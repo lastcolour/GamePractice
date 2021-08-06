@@ -43,6 +43,16 @@ public:
         return *this;
     }
 
+    Vector2& operator-=(T a) {
+        *this -= Vector2(a);
+        return *this;
+    }
+
+    Vector2& operator+=(T a) {
+        *this += Vector2(a);
+        return *this;
+    }
+
     Vector2& operator*=(const T a) {
         x *= a;
         y *= a;
@@ -92,6 +102,14 @@ public:
         return Vector2(static_cast<T>(x * sX), static_cast<T>(y * sY));
     }
 
+    T max() const {
+        return std::max(x, y);
+    }
+
+    T min() const {
+        return std::min(x, y);
+    }
+
 public:
 
     T x;
@@ -136,6 +154,16 @@ public:
         x += v.x;
         y += v.y;
         z += v.z;
+        return *this;
+    }
+
+    Vector3& operator-=(T a) {
+        *this -= Vector3(a);
+        return *this;
+    }
+
+    Vector3& operator+=(T a) {
+        *this += Vector3(a);
         return *this;
     }
 
@@ -203,6 +231,14 @@ public:
             x * v.y - v.x * y);
     }
 
+    T max() const {
+        return std::max(x, std::max(y, z));
+    }
+
+    T min() const {
+        return std::min(x, std::min(y, z));
+    }
+
 public:
 
     T x;
@@ -251,6 +287,16 @@ public:
         y += v.y;
         z += v.z;
         w += v.w;
+        return *this;
+    }
+
+    Vector4& operator-=(T a) {
+        *this -= Vector4(a);
+        return *this;
+    }
+
+    Vector4& operator+=(T a) {
+        *this += Vector4(a);
         return *this;
     }
 
@@ -310,6 +356,14 @@ public:
     Vector4 getScaled(float sX, float sY, float sZ, float sW) const {
         return Vector4(static_cast<T>(x * sX), static_cast<T>(y * sY),
             static_cast<T>(z * sZ), static_cast<T>(w * sW));
+    }
+
+    T max() const {
+        return std::max(x, std::max(y, std::max(z, w)));
+    }
+
+    T min() const {
+        return std::min(x, std::min(y, std::min(z, w)));
     }
 
 public:

@@ -167,7 +167,7 @@ TEST_F(RenderTests, CheckClear) {
     for(int i = 0; i < size.x; ++i) {
         for(int j = 0; j < size.y; ++j) {
             const ColorB col = IMAGE_BUFFER->getColor(i, j);
-            if(col.getColorF() != clearColor) {
+            if(Color::toColorF(col) != clearColor) {
                 ++failPixCount;
             }
         }

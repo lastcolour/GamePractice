@@ -50,6 +50,6 @@ void ImageNode::setTextureObject(std::shared_ptr<RenderTexture>& newTextureObj) 
     texInfo.filename.clear();
     if(texObj) {
         texInfo.lerpType = texObj->minLerpType;
-    } 
+    }
     texInfo.tintColor = ColorB(0, 0, 0, 0);
 }

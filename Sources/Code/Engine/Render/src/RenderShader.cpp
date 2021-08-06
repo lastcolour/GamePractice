@@ -51,7 +51,7 @@ void RenderShader::setUniformMat4(UniformType varType, const Mat4& mat) {
 }
 
 void RenderShader::setUniform4f(UniformType varType, const ColorB& col) {
-    ColorF colF = col.getColorF();
+    ColorF colF = Color::toColorF(col);
     setUniform4f(varType, Vec4(colF.r, colF.g, colF.b, colF.a));
 }
 

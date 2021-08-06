@@ -51,8 +51,8 @@
                 }
               },
               "size": {
-                "x": 920.0,
-                "y": 920.0
+                "x": 150.0,
+                "y": 150.0
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
@@ -75,7 +75,7 @@
           "minScore": 10
         },
         "threeStars": {
-          "minScore": 300
+          "minScore": 3000
         }
       }
     },
@@ -105,28 +105,8 @@
             "weight": 10
           },
           {
-            "elemType": "Red",
-            "weight": 10
-          },
-          {
-            "elemType": "Green",
-            "weight": 10
-          },
-          {
             "elemType": "Purple",
             "weight": 10
-          },
-          {
-            "elemType": "Yellow",
-            "weight": 10
-          },
-          {
-            "elemType": "Bomb",
-            "weight": 3
-          },
-          {
-            "elemType": "VRocket",
-            "weight": 3
           }
         ]
       }

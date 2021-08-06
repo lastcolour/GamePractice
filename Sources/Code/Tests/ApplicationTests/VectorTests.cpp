@@ -141,6 +141,22 @@ TEST_F(VectorTests, Vec2_CheckOperators) {
         EXPECT_FLOAT_EQ(v.x, 0.5f);
         EXPECT_FLOAT_EQ(v.y, 1.f);
     }
+
+    {
+        Vec2 v(1.f);
+        v += 1.f;
+
+        EXPECT_FLOAT_EQ(v.x, 2.f);
+        EXPECT_FLOAT_EQ(v.y, 2.f);
+    }
+
+    {
+        Vec2 v(1.f);
+        v -= 1.f;
+
+        EXPECT_FLOAT_EQ(v.x, 0.f);
+        EXPECT_FLOAT_EQ(v.y, 0.f);
+    }
 }
 
 TEST_F(VectorTests, Vec2_CheckMethods) {
@@ -389,6 +405,24 @@ TEST_F(VectorTests, Vec3_CheckOperators) {
         EXPECT_FLOAT_EQ(v.x, 0.5f);
         EXPECT_FLOAT_EQ(v.y, 1.f);
         EXPECT_FLOAT_EQ(v.z, 1.5f);
+    }
+
+    {
+        Vec3 v(1.f);
+        v += 1.f;
+
+        EXPECT_FLOAT_EQ(v.x, 2.f);
+        EXPECT_FLOAT_EQ(v.y, 2.f);
+        EXPECT_FLOAT_EQ(v.z, 2.f);
+    }
+
+    {
+        Vec3 v(1.f);
+        v -= 1.f;
+
+        EXPECT_FLOAT_EQ(v.x, 0.f);
+        EXPECT_FLOAT_EQ(v.y, 0.f);
+        EXPECT_FLOAT_EQ(v.z, 0.f);
     }
 }
 
@@ -682,6 +716,26 @@ TEST_F(VectorTests, Vec4_CheckOperators) {
         EXPECT_FLOAT_EQ(v.z, 1.5f);
         EXPECT_FLOAT_EQ(v.w, 2.f);
     }
+
+    {
+        Vec4 v(1.f);
+        v += 1.f;
+
+        EXPECT_FLOAT_EQ(v.x, 2.f);
+        EXPECT_FLOAT_EQ(v.y, 2.f);
+        EXPECT_FLOAT_EQ(v.z, 2.f);
+        EXPECT_FLOAT_EQ(v.w, 2.f);
+    }
+
+    {
+        Vec4 v(1.f);
+        v -= 1.f;
+
+        EXPECT_FLOAT_EQ(v.x, 0.f);
+        EXPECT_FLOAT_EQ(v.y, 0.f);
+        EXPECT_FLOAT_EQ(v.z, 0.f);
+        EXPECT_FLOAT_EQ(v.w, 0.f);
+    }
 }
 
 TEST_F(VectorTests, Vec4_CheckMethods) {
@@ -773,5 +827,64 @@ TEST_F(VectorTests, Vec4_CheckCompare) {
         EXPECT_TRUE(v1 <= v2);
         EXPECT_FALSE(v2 > v1);
         EXPECT_TRUE(v2 >= v1);
+    }
+}
+
+TEST_F(VectorTests, Vec2_MinMax) {
+    {
+        Vec2 v(-1.f, 1.f);
+        EXPECT_FLOAT_EQ(v.min(), -1.f);
+        EXPECT_FLOAT_EQ(v.max(), 1.f);
+    }
+    {
+        Vec2 v(1.f, -1.f);
+        EXPECT_FLOAT_EQ(v.min(), -1.f);
+        EXPECT_FLOAT_EQ(v.max(), 1.f);
+    }
+}
+
+TEST_F(VectorTests, Vec3_MinMax) {
+    {
+        Vec3 v(-1.f, 0.f, 1.f);
+        EXPECT_FLOAT_EQ(v.min(), -1.f);
+        EXPECT_FLOAT_EQ(v.max(), 1.f);
+    }
+    {
+        Vec3 v(1.f, 0.f, -1.f);
+        EXPECT_FLOAT_EQ(v.min(), -1.f);
+        EXPECT_FLOAT_EQ(v.max(), 1.f);
+    }
+    {
+        Vec3 v(1.f, -1.f, 0.f);
+        EXPECT_FLOAT_EQ(v.min(), -1.f);
+        EXPECT_FLOAT_EQ(v.max(), 1.f);
+    }
+    {
+        Vec3 v(-1.f, 1.f, 0.f);
+        EXPECT_FLOAT_EQ(v.min(), -1.f);
+        EXPECT_FLOAT_EQ(v.max(), 1.f);
+    }
+}
+
+TEST_F(VectorTests, Vec4_MinMax) {
+    {
+        Vec4 v(1.f, 2.f, 3.f, 4.f);
+        EXPECT_FLOAT_EQ(v.min(), 1.f);
+        EXPECT_FLOAT_EQ(v.max(), 4.f);
+    }
+    {
+        Vec4 v(4.f, 1.f, 2.f, 3.f);
+        EXPECT_FLOAT_EQ(v.min(), 1.f);
+        EXPECT_FLOAT_EQ(v.max(), 4.f);
+    }
+    {
+        Vec4 v(3.f, 4.f, 1.f, 2.f);
+        EXPECT_FLOAT_EQ(v.min(), 1.f);
+        EXPECT_FLOAT_EQ(v.max(), 4.f);
+    }
+    {
+        Vec4 v(2.f, 3.f, 4.f, 1.f);
+        EXPECT_FLOAT_EQ(v.min(), 1.f);
+        EXPECT_FLOAT_EQ(v.max(), 4.f);
     }
 }

@@ -7,12 +7,8 @@
 
 namespace {
 
-Vec2 getRandomDir(Math::RandomFloatGenerator& floatGen) {
-    auto x = floatGen.generate();
-    auto y = floatGen.generate();
-    auto dir = Vec2(x, y);
-    return dir.getNormalized();
-}
+const float MAX_PULSE_SCALE = 1.6f;
+const float MIN_SHRINK_SIZE = 0.3f;
 
 } // namespace
 
@@ -22,13 +18,18 @@ void BoardElemMergeManager::Reflect(ReflectContext& ctx) {
         classInfo->addField("mutateSound", &BoardElemMergeManager::mutateSound);
         classInfo->addField("startVel", &BoardElemMergeManager::startVel);
         classInfo->addField("acc", &BoardElemMergeManager::acc);
+        classInfo->addField("pulseScaleIncrese", &BoardElemMergeManager::pulseScaleIncrese);
+        classInfo->addField("pulseScaleDecaySpeed", &BoardElemMergeManager::pulseScaleDecaySpeed);
+        classInfo->addField("shrinkSpeed", &BoardElemMergeManager::shrinkSpeed);
         classInfo->addField("mutateTaskDuration", &BoardElemMergeManager::mutateTaskDuration);
         classInfo->addField("mutateEffectId", &BoardElemMergeManager::mutateEffectId);
     }
 }
 
 BoardElemMergeManager::BoardElemMergeManager() :
-    floatGen(-1.f, 1.f),
+    pulseScaleIncrese(0.4f),
+    pulseScaleDecaySpeed(5.f),
+    shrinkSpeed(1.f),
     startVel(1.f),
     acc(1.f),
     mutateTaskDuration(0.2f) {
@@ -59,25 +60,12 @@ void BoardElemMergeManager::ET_updateMergeTasks(float dt) {
     auto it = mutateTasks.begin();
     while(it != mutateTasks.end()) {
         auto& task = *it;
-        if(!task.merges.empty()) {
-            processMerges(task, dt, static_cast<float>(cellSize));
-            ++it;
+        processMerges(task, dt, static_cast<float>(cellSize));
+        if(task.merges.empty() && task.duration < 0.f) {
+            it = mutateTasks.erase(it);
         } else {
-            processMutate(task, dt);
-            if(task.duration < 0.f) {
-                it = mutateTasks.erase(it);
-            } else {
-                ++it;
-            }
+            ++it;
         }
-    }
-}
-
-void BoardElemMergeManager::processMutate(MutateTask& task, float dt) {
-    task.duration -= dt;
-    if(task.duration < 0.f) {
-        ET_SendEvent(task.toId, &ETGameBoardElem::ET_onMergeDone);
-        ET_SendEvent(&ETGameBoard::ET_replaceElemToSpecial, task.toId, task.elemType);
     }
 }
 
@@ -103,14 +91,40 @@ void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cell
 
         fromTm.pt.x += offset.x;
         fromTm.pt.y += offset.y;
+
+        fromTm.scale -= Vec3(shrinkSpeed * dt);
+        if(fromTm.scale.max() < MIN_SHRINK_SIZE) {
+            fromTm.scale = Vec3(MIN_SHRINK_SIZE);
+        }
+
         if(offset.lenghtSq() > distSq) {
             ET_SendEvent(it->targetId, &ETGameBoardElem::ET_onMergeDone);
             mergeSound.emit();
             it = task.merges.erase(it);
+            task.pulseScale = std::min(MAX_PULSE_SCALE, task.pulseScale + pulseScaleIncrese);
         } else {
             ET_SendEvent(it->targetId, &ETEntity::ET_setLocalTransform, fromTm);
             ++it;
         }
+    }
+
+    task.pulseScale = std::max(1.f, task.pulseScale -  dt * pulseScaleDecaySpeed);
+
+    toTm.scale = Vec3(task.pulseScale);
+    ET_SendEvent(task.toId, &ETEntity::ET_setLocalTransform, toTm);
+
+    if(!task.merges.empty()) {
+        return;
+    }
+
+    task.duration -= dt;
+    if(task.duration <= 0.f) {
+
+        toTm.scale = Vec3(1.f);
+        ET_SendEvent(task.toId, &ETEntity::ET_setLocalTransform, toTm);
+
+        ET_SendEvent(task.toId, &ETGameBoardElem::ET_onMergeDone);
+        ET_SendEvent(&ETGameBoard::ET_replaceElemToSpecial, task.toId, task.elemType);
     }
 }
 
@@ -121,6 +135,7 @@ void BoardElemMergeManager::ET_createMergeTask(const ElemMergeTask& mergeTask) {
     mutateTask.toId = mergeTask.elems[0];
     mutateTask.duration = mutateTaskDuration;
     mutateTask.elemType = mergeTask.elemType;
+    mutateTask.pulseScale = 1.f;
 
     GameUtils::SetElemState(mutateTask.toId, EBoardElemState::Destroying);
 
@@ -132,7 +147,6 @@ void BoardElemMergeManager::ET_createMergeTask(const ElemMergeTask& mergeTask) {
         MergeTask task;
         task.targetId = elemId;
         task.vel = startVel;
-        task.dir = getRandomDir(floatGen);
         mutateTask.merges.push_back(task);
     }
 

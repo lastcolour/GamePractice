@@ -4,7 +4,6 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElem.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
-#include "Math/Random.hpp"
 #include "Audio/SoundEvent.hpp"
 
 class BoardElemMergeManager : public EntityLogic,
@@ -35,7 +34,6 @@ public:
 private:
 
     struct MergeTask {
-        Vec2 dir;
         EntityId targetId;
         float vel;
     };
@@ -45,21 +43,23 @@ private:
         std::vector<MergeTask> merges;
         float duration;
         EBoardElemType elemType;
+        float pulseScale;
     };
 
 private:
 
     void processMerges(MutateTask& task, float dt, float cellSize);
-    void processMutate(MutateTask& task, float dt);
 
 private:
 
     std::vector<MutateTask> mutateTasks;
-    Math::RandomFloatGenerator floatGen;
     SoundEvent mergeSound;
     SoundEvent mutateSound;
 
     EntityId mutateEffectId;
+    float pulseScaleIncrese;
+    float pulseScaleDecaySpeed;
+    float shrinkSpeed;
     float startVel;
     float acc;
     float mutateTaskDuration;
