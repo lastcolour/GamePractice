@@ -1,32 +1,8 @@
 #ifndef __ET_SYSTEM_HPP__
 #define __ET_SYSTEM_HPP__
 
+#include "Core/ETUtils.hpp"
 #include "Core/ETNodeRegistry.hpp"
-
-namespace ET {
-
-int GetNextETId();
-
-int GetTotalETIds();
-
-template<typename T>
-class ETIdHelper {
-public:
-    static int value() {
-        static const int etId = GetNextETId();
-        return etId;
-    }
-};
-
-template<typename T>
-constexpr int GetETId() {
-    return ETIdHelper<T>::value();
-}
-
-} // namespace ET
-
-template<typename T>
-class ETNode;
 
 class ETSystem {
 public:
@@ -135,34 +111,58 @@ public:
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.queueEventForAddress(ET::GetETId<ETType>(), addressId, [=](ETNodeBase* node){
-            auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(params...);
-        });
+        if(!addressId.isValid()) {
+            return;
+        }
+
+        using ObjectT = ETNode<ETType>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(func), ParamType...>;
+
+        auto memPtr = registry.allocDefferedEvent<CallT>();
+        auto callObject = new (memPtr) CallT(addressId,
+            func, std::forward<ParamType>(params)...);
+        
+        registry.queueEvent(ET::GetETId<ETType>(), callObject);
     }
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(EntityId addressId, RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.queueEventForAddress(ET::GetETId<ETType>(), addressId, [=](ETNodeBase* node){
-            auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(params...);
-        });
+        if(!addressId.isValid()) {
+            return;
+        }
+
+        using ObjectT = ETNode<ETType>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(func), ParamType...>;
+
+        auto memPtr = registry.allocDefferedEvent<CallT>();
+        auto callObject = new (memPtr) CallT(addressId,
+            func, std::forward<ParamType>(params)...);
+        
+        registry.queueEvent(ET::GetETId<ETType>(), callObject);
     }
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(RetType (ETType::*func)(ArgsType...) const, ParamType&& ... params) {
-        registry.queueEventForAll(ET::GetETId<ETType>(), [=](ETNodeBase* node){
-            auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(params...);
-        });
+        using ObjectT = ETNode<ETType>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(func), ParamType...>;
+
+        auto memPtr = registry.allocDefferedEvent<CallT>();
+        auto callObject = new (memPtr) CallT(InvalidEntityId,
+            func, std::forward<ParamType>(params)...);
+        
+        registry.queueEvent(ET::GetETId<ETType>(), callObject);
     }
 
     template<typename ETType, typename RetType, typename ... ArgsType, typename ... ParamType>
     void queueEvent(RetType (ETType::*func)(ArgsType...), ParamType&& ... params) {
-        registry.queueEventForAll(ET::GetETId<ETType>(), [=](ETNodeBase* node){
-            auto obj = static_cast<ETNode<ETType>*>(node);
-            (obj->*func)(params...);
-        });
+        using ObjectT = ETNode<ETType>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(func), ParamType...>;
+
+        auto memPtr = registry.allocDefferedEvent<CallT>();
+        auto callObject = new (memPtr) CallT(InvalidEntityId,
+            func, std::forward<ParamType>(params)...);
+        
+        registry.queueEvent(ET::GetETId<ETType>(), callObject);
     }
 
     template<typename ETType>

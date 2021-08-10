@@ -11,6 +11,7 @@ const int MAX_ET_NODE_TYPES = 128;
 } // namespace
 
 ETNodeRegistry::ETNodeRegistry() :
+    eventAllocator(ET::MAX_EVENT_SIZE, 2048),
     syncRoute(new ETSyncRoute(MAX_ET_NODE_TYPES)),
     connections(MAX_ET_NODE_TYPES) {
 }
@@ -109,64 +110,6 @@ void ETNodeRegistry::disconnectNode(int etId, ETNodeBase* ptr) {
     syncRoute->hardUnlock(etId);
 }
 
-void ETNodeRegistry::forEachNode(int etId, EntityId addressId, CallFunctionT callF) {
-    if(!addressId.isValid()) {
-        return;
-    }
-    startRoute(etId);
-    {
-        auto range = connections[etId].idToPtrMap.equal_range(addressId);
-        for(auto it = range.first; it != range.second; ++it) {
-            if(it->second != nullptr) {
-                callF(it->second);
-            }
-        }
-    }
-    endRoute(etId);
-}
-
-void ETNodeRegistry::forEachNode(int etId, CallFunctionT callF) {
-    startRoute(etId);
-    {
-        for(auto& node : connections[etId].idToPtrMap) {
-            if(node.second != nullptr) {
-                callF(node.second);
-            }
-        }
-    }
-    endRoute(etId);
-}
-
-void ETNodeRegistry::forFirst(int etId, EntityId addressId, CallFunctionT callF) {
-    if(!addressId.isValid()) {
-        return;
-    }
-    startRoute(etId);
-    {
-        auto range = connections[etId].idToPtrMap.equal_range(addressId);
-        for(auto it = range.first; it != range.second; ++it) {
-            if(it->second != nullptr) {
-                callF(it->second);
-                break;
-            }
-        }
-    }
-    endRoute(etId);
-}
-
-void ETNodeRegistry::forFirst(int etId, CallFunctionT callF) {
-    startRoute(etId);
-    {
-        for(auto& node : connections[etId].idToPtrMap) {
-            if(node.second != nullptr) {
-                callF(node.second);
-                break;
-            }
-        }
-    }
-    endRoute(etId);
-}
-
 void ETNodeRegistry::startRoute(int etId) {
     assert(etId < MAX_ET_NODE_TYPES && "Too many ET nodes types");
     syncRoute->pushRoute(etId);
@@ -227,17 +170,13 @@ bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
     return result;
 }
 
-void ETNodeRegistry::queueEventForAddress(int etId, EntityId addressId, CallFunctionT callF) {
-    if(!addressId.isValid()) {
+void ETNodeRegistry::queueEvent(int etId, ET::ETDefferedCallBase* defferedCall) {
+    if(!defferedCall) {
+        assert(false && "Invalid deffered event");
         return;
     }
     std::lock_guard<std::mutex> lock(eventMutex);
-    connections[etId].pendingEvents.emplace_back(Event{callF, addressId});
-}
-
-void ETNodeRegistry::queueEventForAll(int etId, CallFunctionT callF) {
-    std::lock_guard<std::mutex> lock(eventMutex);
-    connections[etId].pendingEvents.emplace_back(Event{callF, InvalidEntityId});
+    connections[etId].pendingEvents.emplace_back(defferedCall);
 }
 
 void ETNodeRegistry::pollEventsForAll(int etId) {
@@ -254,21 +193,29 @@ void ETNodeRegistry::pollEventsForAll(int etId) {
     {
         auto& nodes = connections[etId].idToPtrMap;
         for(auto& event : events) {
-            if(event.id == InvalidEntityId) {
+            if(event->addressId == InvalidEntityId) {
                 for(auto& node : nodes) {
                     if(node.second != nullptr) {
-                        event.callF(node.second);
+                        event->call(node.second);
                     }
                 }
             } else {
-                auto range = connections[etId].idToPtrMap.equal_range(event.id);
+                auto range = connections[etId].idToPtrMap.equal_range(event->addressId);
                 for(auto it = range.first; it != range.second; ++it) {
                     if(it->second != nullptr) {
-                        event.callF(it->second);
+                        event->call(it->second);
                     }
                 }
             }
         }
     }
     endRoute(etId);
+    {
+        std::lock_guard<std::mutex> lock(eventMutex);
+        for(auto& event : events) {
+            event->~ETDefferedCallBase();
+            eventAllocator.deallocate(event);
+        }
+        events.clear();
+    }
 }

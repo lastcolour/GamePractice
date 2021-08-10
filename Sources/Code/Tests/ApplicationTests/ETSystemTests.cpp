@@ -364,9 +364,7 @@ TEST_F(ETSystemTests, CheckQueueEvents) {
     EXPECT_EQ(node_2.counter, 1);
 }
 
-/*
 TEST_F(ETSystemTests, CheckQueueEventWithNonCopybaleObject) {
-    // require perfect lambda capture with support of transfering ownership of an object
     GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
@@ -382,5 +380,5 @@ TEST_F(ETSystemTests, CheckQueueEventWithNonCopybaleObject) {
     ET_PollAllEvents<TestETInterface>();
 
     EXPECT_TRUE(node.object.get());
+    EXPECT_FALSE(testObject.get());
 }
-*/
