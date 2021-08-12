@@ -7,6 +7,8 @@
 #include <mutex>
 #include <atomic>
 
+namespace ET {
+
 class ETSyncRoute {
 public:
 
@@ -46,5 +48,7 @@ private:
 
     std::vector<Node> blockedRouteMap;
 };
+
+} // namespace ET
 
 #endif /* __ET_SYNCHRONIZATION_HPP__ */

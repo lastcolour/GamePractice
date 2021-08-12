@@ -1,13 +1,14 @@
 #include "Core/ETSystem.hpp"
 #include "Core/GlobalEnvironment.hpp"
 
-ETSystem* GetETSystem() {
+ET::ETSystem* GetETSystem() {
     auto env = GetEnv();
     if(!env) {
         return nullptr;
     }
     return env->GetETSystem();
 }
+namespace ET {
 
 ETSystem::ETSystem() :
     entityIdGen() {
@@ -15,3 +16,5 @@ ETSystem::ETSystem() :
 
 ETSystem::~ETSystem() {
 }
+
+} // namespace ET

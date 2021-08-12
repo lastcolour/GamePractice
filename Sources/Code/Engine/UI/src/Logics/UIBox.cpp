@@ -21,6 +21,7 @@ UIBox::~UIBox() {
 void UIBox::init() {
     UIElement::init();
 
+    ETNode<ETUIElementBox>::connect(getEntityId());
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 

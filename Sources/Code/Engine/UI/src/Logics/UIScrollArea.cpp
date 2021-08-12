@@ -35,7 +35,7 @@ AABB2D calcScrollArea(UIScrollType scrollType, const AABB2D& scrollBox, const AA
 
 AABB2D getUIBox(EntityId targetId) {
     AABB2D resBox(0.f);
-    ET_SendEventReturn(resBox, targetId, &ETUIElement::ET_getBox);
+    ET_SendEventReturn(resBox, targetId, &ETUIElementBox::ET_getBox);
     return resBox;
 }
 
@@ -410,7 +410,7 @@ void UIScrollArea::ET_setTargetPosClamped(const Vec2& newScrollPt) {
 
 AABB2D UIScrollArea::ET_getScrollArea() const {
     AABB2D targetBox(0.f);
-    ET_SendEventReturn(targetBox, targetId, &ETUIElement::ET_getBox);
+    ET_SendEventReturn(targetBox, targetId, &ETUIElementBox::ET_getBox);
 
     AABB2D scrollBox = getUIBox(getEntityId());
     AABB2D scrollArea = calcScrollArea(style.type, scrollBox, targetBox);

@@ -14,7 +14,7 @@ namespace {
 
 void SubmitEventSequence(UIScrollAreaTests::TestContext& ctx, const std::vector<Vec2>& sequence) {
     AABB2D box(0.f);
-    ET_SendEventReturn(box, ctx.parentEntity->getEntityId(), &ETUIElement::ET_getBox);
+    ET_SendEventReturn(box, ctx.parentEntity->getEntityId(), &ETUIElementBox::ET_getBox);
     auto boxSize = box.getSize();
 
     auto tm = ctx.parentEntity->ET_getTransform();

@@ -13,7 +13,7 @@ protected:
 template<typename T>
 class ETNode : public ETNodeBase, public T {
 
-    friend class ETSystem;
+    friend class ET::ETSystem;
 
 public:
 

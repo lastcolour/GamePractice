@@ -4,6 +4,7 @@
 
 void UIProgressBar::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIProgressBar>("UIProgressBar")) {
+        (void)classInfo;
     }
 }
 

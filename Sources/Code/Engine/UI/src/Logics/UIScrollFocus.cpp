@@ -4,6 +4,7 @@
 
 void UIScrollFocus::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIScrollFocus>("UIScrollFocus")) {
+        (void)classInfo;
     }
 }
 

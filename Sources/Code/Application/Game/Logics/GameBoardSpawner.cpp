@@ -5,6 +5,7 @@
 
 void GameBoardSpawner::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardSpawner>("GameBoardSpawner")) {
+        (void)classInfo;
     }
 }
 
@@ -49,7 +50,10 @@ void GameBoardSpawner::ET_loadPendingLevel() {
     ET_SendEvent(gameBoardId, &ETEntity::ET_setParent, getEntityId());
 
     AABB2D box(0.f);
-    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
+    if(!ET_IsExistNode<ETUIElement>(getEntityId())) {
+        LogError("[tmpLog] Can't find ETUIElement");
+    }
+    ET_SendEventReturn(box, getEntityId(), &ETUIElementBox::ET_getBox);
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, box);
 
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());

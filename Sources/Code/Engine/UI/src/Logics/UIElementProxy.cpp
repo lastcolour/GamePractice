@@ -16,7 +16,6 @@ UIProxyNode::UIProxyNode() :
 }
 
 void UIElementProxy::Reflect(ReflectContext& ctx) {
-    UIElementProxy obj;
     if(auto classInfo = ctx.classInfo<UIElementProxy>("UIElementProxy")) {
         classInfo->addField("proxies", &UIElementProxy::nodes);
     }
@@ -44,14 +43,6 @@ void UIElementProxy::ET_onLoaded() {
 
 void UIElementProxy::ET_onViewPortChanged(const Vec2i& newSize) {
     applyNormScale();
-}
-
-AABB2D UIElementProxy::ET_getBox() const {
-    return AABB2D(0.f);
-}
-
-UIBoxMargin UIElementProxy::ET_getMargin() const {
-    return UIBoxMargin();
 }
 
 void UIElementProxy::onZIndexChanged(int newZIndex) {

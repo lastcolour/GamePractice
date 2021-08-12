@@ -10,8 +10,10 @@ const int MAX_ET_NODE_TYPES = 128;
 
 } // namespace
 
+namespace ET {
+
 ETNodeRegistry::ETNodeRegistry() :
-    eventAllocator(ET::MAX_EVENT_SIZE, 2048),
+    eventAllocator(MAX_EVENT_SIZE, 2048),
     syncRoute(new ETSyncRoute(MAX_ET_NODE_TYPES)),
     connections(MAX_ET_NODE_TYPES) {
 }
@@ -219,3 +221,5 @@ void ETNodeRegistry::pollEventsForAll(int etId) {
         events.clear();
     }
 }
+
+} // namespace ET

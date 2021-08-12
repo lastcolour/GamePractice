@@ -9,8 +9,6 @@ struct AddtiveUITransform;
 
 struct ETUIElement {
     virtual ~ETUIElement() = default;
-    virtual AABB2D ET_getBox() const = 0;
-    virtual UIBoxMargin ET_getMargin() const = 0;
     virtual void ET_setHostLayout(EntityId newLayoutId) = 0;
     virtual EntityId ET_getHostLayout() const = 0;
     virtual void ET_setZIndex(int newZIndex) = 0;
@@ -28,6 +26,12 @@ struct ETUIElement {
     virtual void ET_setParentDisabled(bool flag) = 0;
     virtual void ET_setParentAlpha(float newParentAlpha) = 0;
     virtual void ET_setLayoutPos(const Vec2& layoutPt) = 0;
+};
+
+struct ETUIElementBox {
+    virtual ~ETUIElementBox() = default;
+    virtual AABB2D ET_getBox() const = 0;
+    virtual UIBoxMargin ET_getMargin() const = 0;
 };
 
 struct ETUIAdditiveAnimationTarget {

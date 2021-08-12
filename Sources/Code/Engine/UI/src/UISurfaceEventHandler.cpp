@@ -18,7 +18,7 @@ bool isCulledByHostBoxes(EntityId entId, const Vec2i& pt, const AABB2D& checkBox
             break;
         }
         AABB2D hostBox(0.f);
-        ET_SendEventReturn(hostBox, hostId, &ETUIElement::ET_getBox);
+        ET_SendEventReturn(hostBox, hostId, &ETUIElementBox::ET_getBox);
         if(!hostBox.isInside(static_cast<float>(pt.x), static_cast<float>(pt.y))) {
             return true;
         }
@@ -30,7 +30,7 @@ bool isCulledByHostBoxes(EntityId entId, const Vec2i& pt, const AABB2D& checkBox
 
 bool isHitBoxHovered(const Vec2i& pt, EntityId entId) {
     AABB2D elemBox(0.f);
-    ET_SendEventReturn(elemBox, entId, &ETUIElement::ET_getBox);
+    ET_SendEventReturn(elemBox, entId, &ETUIElementBox::ET_getBox);
     if(!elemBox.isInside(static_cast<float>(pt.x), static_cast<float>(pt.y))) {
         return false;
     }

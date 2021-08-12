@@ -62,10 +62,10 @@ void GameBoardShakeLogic::ET_onGameTick(float dt) {
     Vec2 resPt;
     if(frameId == 0) {
         resPt = Math::Lerp(Vec2(0.f), shakes[frameId], t);
-    } else if(frameId < shakes.size()) {
+    } else if(frameId < static_cast<int>(shakes.size())) {
         resPt = Math::Lerp(shakes[frameId - 1], shakes[frameId], t);
     } else {
-        assert(frameId == shakes.size() && "Invalid frame id");
+        assert(frameId == static_cast<int>(shakes.size()) && "Invalid frame id");
         resPt = Math::Lerp(shakes[frameId - 1], Vec2(0.f), t);
     }
 

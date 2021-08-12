@@ -4,6 +4,8 @@
 #include "Core/ETUtils.hpp"
 #include "Core/ETNodeRegistry.hpp"
 
+namespace ET {
+
 class ETSystem {
 public:
 
@@ -182,6 +184,8 @@ private:
     EntityId entityIdGen;
 };
 
-ETSystem* GetETSystem();
+} // namespace ET
+
+ET::ETSystem* GetETSystem();
 
 #endif /* __ET_SYSTEM_HPP__ */

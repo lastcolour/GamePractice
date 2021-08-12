@@ -13,7 +13,7 @@ GlobalEnvironment::GlobalEnvironment() {
     } else {
         ENV = this;
     }
-    etSystem.reset(new ETSystem);
+    etSystem.reset(new ET::ETSystem);
     taskRunner.reset(new TasksRunner);
     globalData.reset(new GlobalData);
 }
@@ -24,7 +24,7 @@ GlobalEnvironment::~GlobalEnvironment() {
     }
 }
 
-ETSystem* GlobalEnvironment::GetETSystem() {
+ET::ETSystem* GlobalEnvironment::GetETSystem() {
     return etSystem.get();
 }
 

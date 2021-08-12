@@ -8,11 +8,6 @@ RenderTickManager::~RenderTickManager() {
 
 bool RenderTickManager::init() {
     ETNode<ETRenderTickManager>::connect(getEntityId());
-
-    curr.gameDt = 0.f;
-    curr.uiDt = 0.f;
-    prev = curr;
-
     return true;
 }
 

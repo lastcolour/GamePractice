@@ -1,6 +1,8 @@
 #include "ETSystemTests.hpp"
 #include "Core/GlobalEnvironment.hpp"
 
+using namespace ET;
+
 namespace {
 
 class TestObject {

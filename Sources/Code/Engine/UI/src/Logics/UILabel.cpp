@@ -22,6 +22,7 @@ UILabel::~UILabel() {
 
 void UILabel::init() {
     UIElement::init();
+    ETNode<ETUIElementBox>::connect(getEntityId());
     ETNode<ETUILabel>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 

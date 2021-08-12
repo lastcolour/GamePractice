@@ -1,7 +1,12 @@
 #ifndef __GLOBAL_ENVIRONMENT_HPP__
 #define __GLOBAL_ENVIRONMENT_HPP__
 
+namespace ET {
+
 class ETSystem;
+
+} // namespace ET
+
 class TasksRunner;
 class GlobalData;
 
@@ -11,13 +16,13 @@ public:
     GlobalEnvironment();
     ~GlobalEnvironment();
 
-    ETSystem* GetETSystem();
+    ET::ETSystem* GetETSystem();
     TasksRunner* GetTasksRunner();
     GlobalData* GetGlobalData();
 
 private:
 
-    std::unique_ptr<ETSystem> etSystem;
+    std::unique_ptr<ET::ETSystem> etSystem;
     std::unique_ptr<TasksRunner> taskRunner;
     std::unique_ptr<GlobalData> globalData;
 };

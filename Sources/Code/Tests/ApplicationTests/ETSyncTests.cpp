@@ -5,6 +5,8 @@
 #include <atomic>
 #include <thread>
 
+using namespace ET;
+
 namespace {
 
 const int THREAD_OP_WAIT_DELAY_MS = 250;

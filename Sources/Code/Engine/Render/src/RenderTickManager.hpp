@@ -27,8 +27,8 @@ public:
 private:
 
     struct TickData {
-        float gameDt;
-        float uiDt;
+        float gameDt {0.f};
+        float uiDt {0.f};
     };
 
 private:

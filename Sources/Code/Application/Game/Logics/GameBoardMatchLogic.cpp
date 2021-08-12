@@ -54,6 +54,7 @@ GameBoardMatchLogic::~GameBoardMatchLogic() {
 
 void GameBoardMatchLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardMatchLogic>("GameBoardMatcher")) {
+        (void)classInfo;
     }
 }
 

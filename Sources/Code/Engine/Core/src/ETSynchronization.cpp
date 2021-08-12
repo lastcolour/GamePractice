@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+namespace ET {
+
 ETSyncRoute::ETSyncRoute(int etNodesCount) :
     blockedRouteMap(etNodesCount) {
 }
@@ -176,3 +178,5 @@ bool ETSyncRoute::isBlockable(const Node& node) const {
     }
     return true;
 }
+
+} // namespace ET

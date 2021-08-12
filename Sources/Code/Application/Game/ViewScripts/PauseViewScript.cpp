@@ -6,6 +6,7 @@
 
 void PauseViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<PauseViewScript>("PauseViewScript")) {
+        (void)classInfo;
     }
 }
 

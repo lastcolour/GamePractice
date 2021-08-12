@@ -114,6 +114,7 @@ bool GameBoardFSM::queryPass(EGameBoardUpdatePass& outPass) {
                 returnPass = updatePass;
                 return queryPass(outPass);
             }
+            break;
         }
         case EGameBoardUpdatePass::Match: {
             if(!state.isMatchRequested || state.isMatchBlocked) {

@@ -14,7 +14,7 @@ Vec2i ImageBuffer::getSize() const {
 }
 
 void ImageBuffer::setSizeAndClear(const Vec2i& newSize) {
-    if(data.getSize() < newSize.x * newSize.y * 4) {
+    if(data.getSize() < static_cast<size_t>(newSize.x * newSize.y * 4)) {
         data.resize(newSize.x * newSize.y * 4);
     }
     size = newSize;

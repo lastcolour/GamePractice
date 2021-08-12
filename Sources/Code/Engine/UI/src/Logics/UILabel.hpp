@@ -7,7 +7,8 @@
 
 class UILabel : public UIElement,
     public ETNode<ETUILabel>,
-    public ETNode<ETUIViewPortEvents> {
+    public ETNode<ETUIViewPortEvents>,
+    public ETNode<ETUIElementBox> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -28,7 +29,7 @@ public:
     void ET_setFontSize(float newSize) override;
     void ET_setTextRender(EntityId newRenderId) override;
 
-    // ETUIElement
+    // ETUIElementBox
     AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 

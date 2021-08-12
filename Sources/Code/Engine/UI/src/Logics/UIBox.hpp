@@ -7,7 +7,8 @@
 
 class UIBox : public UIElement,
     public ETNode<ETUIBox>,
-    public ETNode<ETUIViewPortEvents> {
+    public ETNode<ETUIViewPortEvents>,
+    public ETNode<ETUIElementBox> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -21,7 +22,7 @@ public:
     void init() override;
     void deinit() override;
 
-    // ETUIElement
+    // ETUIElementBox
     AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 

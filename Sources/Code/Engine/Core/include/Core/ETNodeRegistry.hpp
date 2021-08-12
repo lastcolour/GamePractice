@@ -7,6 +7,9 @@
 #include <mutex>
 
 class ETNodeBase;
+
+namespace ET {
+
 class ETSyncRoute;
 
 class ETNodeRegistry {
@@ -98,12 +101,12 @@ public:
     std::vector<EntityId> getAll(int etId);
     bool isExist(int etId, EntityId addressId);
 
-    void queueEvent(int etId, ET::ETDefferedCallBase* defferedCall);
+    void queueEvent(int etId, ETDefferedCallBase* defferedCall);
     void pollEventsForAll(int etId);
 
     template<typename T>
     void* allocDefferedEvent() {
-        static_assert(sizeof(T) <= ET::MAX_EVENT_SIZE, "Event size is too big");
+        static_assert(sizeof(T) <= MAX_EVENT_SIZE, "Event size is too big");
         std::lock_guard<std::mutex> lock(eventMutex);
         return eventAllocator.allocate();
     }
@@ -135,5 +138,7 @@ private:
     std::mutex connMutex;
     std::mutex eventMutex;
 };
+
+} // namespace ET
 
 #endif /* __ET_NODE_REGISTRY_HPP__ */

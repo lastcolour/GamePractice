@@ -18,6 +18,8 @@ UILayoutBox::~UILayoutBox() {
 
 void UILayoutBox::init() {
     UIElement::init();
+
+    ETNode<ETUIElementBox>::connect(getEntityId());
     ETNode<ETUILayoutEvents>::connect(getEntityId());
 
     boxRenderId = getEntityId();

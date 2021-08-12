@@ -96,7 +96,7 @@ AABB2D UILayout::calculateAligment(std::vector<AABB2D>& childrenBoxes) {
     }
 
     AABB2D box(0.f);
-    ET_SendEventReturn(box, getEntityId(), &ETUIElement::ET_getBox);
+    ET_SendEventReturn(box, getEntityId(), &ETUIElementBox::ET_getBox);
 
     auto center = UI::CalcAligmentCenter(style.xAlign, style.yAlign, box, layoutBox);
 
@@ -116,8 +116,8 @@ AABB2D UILayout::calculateItem(float& offset, float& prevMargin, EntityId itemId
         bool isHidden = false;
         ET_SendEventReturn(isHidden, itemId, &ETUIElement::ET_isHidden);
         if(!isHidden) {
-            ET_SendEventReturn(itemBox, itemId, &ETUIElement::ET_getBox);
-            ET_SendEventReturn(itemMargin, itemId, &ETUIElement::ET_getMargin);
+            ET_SendEventReturn(itemBox, itemId, &ETUIElementBox::ET_getBox);
+            ET_SendEventReturn(itemMargin, itemId, &ETUIElementBox::ET_getMargin);
         }
     }
 

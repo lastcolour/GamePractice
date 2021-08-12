@@ -161,11 +161,11 @@ int getNewParticlesAmount(const SimulationConfig& simConf, float dt) {
 } // namespace
 
 EmitterParticles::EmitterParticles(ParticlesEmittersPool& emittersPool) :
+    activeCount(0),
     pool(emittersPool),
     simConf(emittersPool.getSimConfig()),
     duration(0.f),
     emitFracTime(0.f),
-    activeCount(0),
     floatGen(0.f, 1.f),
     spawnedCount(0),
     emissionState(EmissionState::Finished),

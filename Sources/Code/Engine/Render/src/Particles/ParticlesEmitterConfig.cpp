@@ -184,8 +184,8 @@ SubEmitter::SubEmitter() :
 }
 
 SubEmitter::SubEmitter(SubEmitterTriggerEvent triggerEvent, EntityId entityId) :
-    event(triggerEvent),
-    entId(entityId) {
+    entId(entityId),
+    event(triggerEvent) {
 }
 
 void ParticlesSubEmittersConfig::Reflect(ReflectContext& ctx) {

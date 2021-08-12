@@ -35,10 +35,6 @@ public:
     void init() override;
     void deinit() override;
 
-    // ETUIElement
-    AABB2D ET_getBox() const override;
-    UIBoxMargin ET_getMargin() const override;
-
     // ETEntityEvents
     void ET_onLoaded() override;
 

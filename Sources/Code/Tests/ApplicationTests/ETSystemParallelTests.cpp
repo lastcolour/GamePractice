@@ -5,6 +5,8 @@
 #include <atomic>
 #include <chrono>
 
+using namespace ET;
+
 namespace {
 
 struct ETObject {

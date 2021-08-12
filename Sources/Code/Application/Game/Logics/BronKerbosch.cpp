@@ -181,7 +181,7 @@ void BronKerbosch_Impl(int depth, BronKerboschRequest& req) {
     req.cache->currStopIterCount += 1;
     req.maxDepth = std::max(req.maxDepth, depth);
 
-    if(req.cache->states.size() <= (depth + 1)) {
+    if(req.cache->states.size() <= static_cast<size_t>(depth + 1)) {
         req.cache->states.emplace_back();
         req.cache->states.back().maxEnterCost = 0;
     }

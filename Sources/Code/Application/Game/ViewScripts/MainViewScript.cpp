@@ -4,6 +4,7 @@
 
 void MainViewScript::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<MainViewScript>("MainViewScript")) {
+        (void)classInfo;
     }
 }
 
