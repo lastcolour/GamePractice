@@ -7,7 +7,7 @@
 
 class UILayoutBox : public UIElement,
     public ETNode<ETUILayoutEvents>,
-    public ETNode<ETUIElementBox> {
+    public ETNode<ETUIElementGeom> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -21,7 +21,11 @@ public:
     void init() override;
     void deinit() override;
 
-    // ETUIElementBox
+    // ETUIElementGeom
+    void ET_setRenderId(EntityId newRenderId) override;
+    EntityId ET_getRenderId(EntityId newRenderId) const override;
+
+    // ETUIElementGeom
     AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 

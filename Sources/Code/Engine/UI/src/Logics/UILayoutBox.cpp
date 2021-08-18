@@ -19,7 +19,7 @@ UILayoutBox::~UILayoutBox() {
 void UILayoutBox::init() {
     UIElement::init();
 
-    ETNode<ETUIElementBox>::connect(getEntityId());
+    ETNode<ETUIElementGeom>::connect(getEntityId());
     ETNode<ETUILayoutEvents>::connect(getEntityId());
 
     boxRenderId = getEntityId();
@@ -31,12 +31,29 @@ void UILayoutBox::deinit() {
 
 void UILayoutBox::ET_onLoaded() {
     UIElement::ET_onLoaded();
-    updateSelfLayout();
 
-    auto box = ET_getBox();
-    Vec2 boxSize = box.getSize();
+    ET_setRenderId(boxRenderId);
+
+    updateSelfLayout();
+}
+
+void UILayoutBox::ET_setRenderId(EntityId newRenderId) {
+    boxRenderId = newRenderId;
+    if(!boxRenderId.isValid()) {
+        return;
+    }
+    Vec2 boxSize = aabb.getSize();
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    if(ET_isHidden()) {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(boxRenderId, &ETRenderNode::ET_show);
+    }
+}
+
+EntityId UILayoutBox::ET_getRenderId(EntityId newRenderId) const {
+    return boxRenderId;
 }
 
 AABB2D UILayoutBox::ET_getBox() const {

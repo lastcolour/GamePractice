@@ -11,7 +11,7 @@ namespace {
 
 void CheckUIBox(EntityId entityId, const Vec2& expCenter, const Vec2& expSize) {
     AABB2D box(0.f);
-    ET_SendEventReturn(box, entityId, &ETUIElementBox::ET_getBox);
+    ET_SendEventReturn(box, entityId, &ETUIElementGeom::ET_getBox);
 
     auto center = box.getCenter();
 
@@ -169,7 +169,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(viewPort.x / 2.f, viewPort.y / 4.f);
@@ -184,7 +184,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(viewPort.x / 2.f, viewPort.y / 2.f);
@@ -199,7 +199,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(viewPort.x / 2.f, 3.f * viewPort.y / 4.f);
@@ -214,7 +214,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(viewPort.x / 4.f, viewPort.y / 4.f);
@@ -229,7 +229,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(viewPort.x / 4.f, viewPort.y / 2.f);
@@ -244,7 +244,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(viewPort.x / 4.f, 3.f * viewPort.y / 4.f);
@@ -259,7 +259,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(3.f * viewPort.x / 4.f, viewPort.y / 4.f);
@@ -274,7 +274,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(3.f * viewPort.x / 4.f, viewPort.y / 2.f);
@@ -289,7 +289,7 @@ TEST_F(UILayoutTests, CheckAlign) {
         rootLayout->ET_setStyle(style);
 
         AABB2D box(0.f);
-        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
         auto center = box.getCenter();
         auto expCenter = Vec2(3.f * viewPort.x / 4.f, 3.f * viewPort.y / 4.f);
@@ -594,7 +594,7 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
 
     {
         AABB2D box(0.f);
-        ET_SendEventReturn(box, secondId, &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(box, secondId, &ETUIElementGeom::ET_getBox);
 
         auto boxSize = box.getSize();
         EXPECT_FLOAT_EQ(boxSize.x, center.x / 2.f);
@@ -617,10 +617,10 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
 
     {
         AABB2D firstBox(0.f);
-        ET_SendEventReturn(firstBox, firstId, &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(firstBox, firstId, &ETUIElementGeom::ET_getBox);
 
         AABB2D secondBox(0.f);
-        ET_SendEventReturn(secondBox, secondId, &ETUIElementBox::ET_getBox);
+        ET_SendEventReturn(secondBox, secondId, &ETUIElementGeom::ET_getBox);
 
         Vec2 firstSize = firstBox.getSize();
         Vec2 secondSize = secondBox.getSize();

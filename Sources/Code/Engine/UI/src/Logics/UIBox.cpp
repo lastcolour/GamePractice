@@ -21,7 +21,7 @@ UIBox::~UIBox() {
 void UIBox::init() {
     UIElement::init();
 
-    ETNode<ETUIElementBox>::connect(getEntityId());
+    ETNode<ETUIElementGeom>::connect(getEntityId());
     ETNode<ETUIBox>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 
@@ -92,9 +92,9 @@ void UIBox::onZIndexChanged(int newZIndex) {
 
 void UIBox::ET_onLoaded() {
     UIElement::ET_onLoaded();
-    Vec2 boxSize = aabb.getSize();
-    ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+
+    ET_setRenderId(boxRenderId);
+
     updateSelfLayout();
 }
 

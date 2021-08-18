@@ -53,7 +53,7 @@ void GameBoardSpawner::ET_loadPendingLevel() {
     if(!ET_IsExistNode<ETUIElement>(getEntityId())) {
         LogError("[tmpLog] Can't find ETUIElement");
     }
-    ET_SendEventReturn(box, getEntityId(), &ETUIElementBox::ET_getBox);
+    ET_SendEventReturn(box, getEntityId(), &ETUIElementGeom::ET_getBox);
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, box);
 
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());

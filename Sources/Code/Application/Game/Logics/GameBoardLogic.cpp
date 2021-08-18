@@ -159,7 +159,7 @@ void GameBoardLogic::ET_spawnElems() {
 }
 
 const BoardElement* GameBoardLogic::getElem(const Vec2i& boardPt) const {
-    if(boardPt.x >= static_cast<int>(columns.size())) {
+    if(boardPt.x < 0 || boardPt.x >= static_cast<int>(columns.size())) {
         return nullptr;
     }
     auto& col = columns[boardPt.x];

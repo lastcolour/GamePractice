@@ -31,6 +31,10 @@ public:
     UIElementProxy();
     virtual ~UIElementProxy();
 
+    // ETUIElement
+    void ET_setRenderId(EntityId newRenderId) override {}
+    EntityId ET_getRenderId(EntityId newRenderId) const override { return InvalidEntityId; }
+
     // EntityLogic
     void init() override;
     void deinit() override;

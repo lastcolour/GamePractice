@@ -1,4 +1,4 @@
-#include "UILabelStyle.hpp"
+#include "UI/UILabelStyle.hpp"
 
 void UILabelStyle::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UILabelStyle>("UILabelStyle")) {

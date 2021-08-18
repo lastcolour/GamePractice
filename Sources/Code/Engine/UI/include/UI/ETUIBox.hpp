@@ -2,9 +2,8 @@
 #define __ET_UI_BOX_HPP__
 
 #include "Math/AABB.hpp"
+#include "UI/UILabelStyle.hpp"
 
-class UIBoxStyle;
-class UIBoxMargin;
 struct AddtiveUITransform;
 
 struct ETUIElement {
@@ -26,10 +25,12 @@ struct ETUIElement {
     virtual void ET_setParentDisabled(bool flag) = 0;
     virtual void ET_setParentAlpha(float newParentAlpha) = 0;
     virtual void ET_setLayoutPos(const Vec2& layoutPt) = 0;
+    virtual void ET_setRenderId(EntityId newRenderId) = 0;
+    virtual EntityId ET_getRenderId(EntityId newRenderId) const = 0;
 };
 
-struct ETUIElementBox {
-    virtual ~ETUIElementBox() = default;
+struct ETUIElementGeom {
+    virtual ~ETUIElementGeom() = default;
     virtual AABB2D ET_getBox() const = 0;
     virtual UIBoxMargin ET_getMargin() const = 0;
 };
@@ -55,17 +56,14 @@ struct ETUIBox {
     virtual ~ETUIBox() = default;
     virtual const UIBoxStyle& ET_getStyle() const = 0;
     virtual void ET_setStyle(const UIBoxStyle& newStyle) = 0;
-    virtual void ET_setRenderId(EntityId newRenderId) = 0;
-    virtual EntityId ET_getRenderId(EntityId newRenderId) const = 0;
 };
 
 struct ETUILabel {
     virtual ~ETUILabel() = default;
     virtual void ET_setText(const char* newText) = 0;
     virtual const char* ET_getText() const = 0;
-    virtual float ET_getFontSize() const = 0;
-    virtual void ET_setFontSize(float newSize) = 0;
-    virtual void ET_setTextRender(EntityId newRenderId) = 0;
+    virtual const UILabelStyle& ET_getStyle() const = 0;
+    virtual void ET_setStyle(const UILabelStyle& newStyle) = 0;
 };
 
 #endif /* __ET_UI_BOX_HPP__ */

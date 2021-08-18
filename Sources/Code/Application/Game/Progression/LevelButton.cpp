@@ -10,10 +10,10 @@ namespace {
 
 void setCompletedBackground(UnlockedLevelButtonData& unlockedBt, bool flag) {
     if(flag) {
-        ET_SendEvent(unlockedBt.buttonId, &ETUIBox::ET_setRenderId, unlockedBt.completedRenderId);
+        ET_SendEvent(unlockedBt.buttonId, &ETUIElement::ET_setRenderId, unlockedBt.completedRenderId);
         ET_SendEvent(unlockedBt.unlockedRenderId, &ETRenderNode::ET_hide);
     } else {
-        ET_SendEvent(unlockedBt.buttonId, &ETUIBox::ET_setRenderId, unlockedBt.unlockedRenderId);
+        ET_SendEvent(unlockedBt.buttonId, &ETUIElement::ET_setRenderId, unlockedBt.unlockedRenderId);
         ET_SendEvent(unlockedBt.completedRenderId, &ETRenderNode::ET_hide);
     }
 }

@@ -23,7 +23,10 @@ TEST_F(UILabelTests, CheckTextSize) {
 
     label->ET_setText("YyPpQq");
 
-    label->ET_setFontSize(15.f);
+    UILabelStyle style;
+    style.fontSize = 15.f;
+
+    label->ET_setStyle(style);
 
     auto smallBox = label->ET_getBox();
     auto smallSize = smallBox.getSize();
@@ -32,7 +35,9 @@ TEST_F(UILabelTests, CheckTextSize) {
         ASSERT_GT(smallSize.y, 0.f);
     }
 
-    label->ET_setFontSize(30.f);
+    style.fontSize = 30.f;
+
+    label->ET_setStyle(style);
 
     auto bigBox = label->ET_getBox();
     auto bigSize = bigBox.getSize();

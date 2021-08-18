@@ -3,12 +3,11 @@
 
 #include "UI/ETUIViewPort.hpp"
 #include "Logics/UIElement.hpp"
-#include "Logics/UILabelStyle.hpp"
 
 class UILabel : public UIElement,
     public ETNode<ETUILabel>,
     public ETNode<ETUIViewPortEvents>,
-    public ETNode<ETUIElementBox> {
+    public ETNode<ETUIElementGeom> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -22,14 +21,17 @@ public:
     void init() override;
     void deinit() override;
 
+    // ETUIElementGeom
+    void ET_setRenderId(EntityId newRenderId) override;
+    EntityId ET_getRenderId(EntityId newRenderId) const override;
+
     // ETUILabel
     void ET_setText(const char* newText) override;
     const char* ET_getText() const override;
-    float ET_getFontSize() const override;
-    void ET_setFontSize(float newSize) override;
-    void ET_setTextRender(EntityId newRenderId) override;
+    const UILabelStyle& ET_getStyle() const override;
+    void ET_setStyle(const UILabelStyle& newStyle) override;
 
-    // ETUIElementBox
+    // ETUIElementGeom
     AABB2D ET_getBox() const override;
     UIBoxMargin ET_getMargin() const override;
 

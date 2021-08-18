@@ -22,7 +22,7 @@ UILabel::~UILabel() {
 
 void UILabel::init() {
     UIElement::init();
-    ETNode<ETUIElementBox>::connect(getEntityId());
+    ETNode<ETUIElementGeom>::connect(getEntityId());
     ETNode<ETUILabel>::connect(getEntityId());
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 
@@ -43,12 +43,12 @@ const char* UILabel::ET_getText() const {
     return text.c_str();
 }
 
-float UILabel::ET_getFontSize() const {
-    return style.fontSize;
+const UILabelStyle& UILabel::ET_getStyle() const {
+    return style;
 }
 
-void UILabel::ET_setFontSize(float newFontSize) {
-    style.fontSize = newFontSize;
+void UILabel::ET_setStyle(const UILabelStyle& newStyle) {
+    style = newStyle;
     auto fontHeight = GetGlobal<UIConfig>()->getSizeOnGrid(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setFontHeight, fontHeight);
     updateHostLayout();
@@ -64,7 +64,7 @@ UIBoxMargin UILabel::ET_getMargin() const {
     return UI::CalculateMargin(getEntityId(), style.margin);
 }
 
-void UILabel::ET_setTextRender(EntityId newRenderId) {
+void UILabel::ET_setRenderId(EntityId newRenderId) {
     labelRenderId = newRenderId;
     if(!labelRenderId.isValid()) {
         return;
@@ -75,8 +75,17 @@ void UILabel::ET_setTextRender(EntityId newRenderId) {
         return;
     }
     ET_setText(text.c_str());
-    ET_setFontSize(style.fontSize);
+    ET_setStyle(style);
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    if(ET_isHidden()) {
+        ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(labelRenderId, &ETRenderNode::ET_show);
+    }
+}
+
+EntityId UILabel::ET_getRenderId(EntityId newRenderId) const {
+    return labelRenderId;
 }
 
 void UILabel::onZIndexChanged(int newZIndex) {
@@ -84,7 +93,7 @@ void UILabel::onZIndexChanged(int newZIndex) {
 }
 
 void UILabel::ET_onViewPortChanged(const Vec2i& newSize) {
-    ET_setFontSize(style.fontSize);
+    ET_setStyle(style);
 }
 
 void UILabel::onHide(bool flag) {
@@ -101,5 +110,6 @@ void UILabel::onAlphaChanged(float newAlpha) {
 
 void UILabel::ET_onLoaded() {
     UIElement::ET_onLoaded();
-    ET_setTextRender(labelRenderId);
+
+    ET_setRenderId(labelRenderId);
 }

@@ -29,11 +29,11 @@ void drawUIElementHelp(const Transform& tm, EntityId entId) {
     }
 
     AABB2D box(0.f);
-    ET_SendEventReturn(box, entId, &ETUIElementBox::ET_getBox);
+    ET_SendEventReturn(box, entId, &ETUIElementGeom::ET_getBox);
     ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(125, 255, 255, DRAW_ALPHA));
 
     UIBoxMargin margin;
-    ET_SendEventReturn(margin, entId, &ETUIElementBox::ET_getMargin);
+    ET_SendEventReturn(margin, entId, &ETUIElementGeom::ET_getMargin);
 
     box.bot.x -= margin.left;
     box.bot.y -= margin.bot;

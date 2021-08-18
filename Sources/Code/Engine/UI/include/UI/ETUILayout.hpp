@@ -2,6 +2,7 @@
 #define __ET_UI_LAYOUT_HPP__
 
 #include "Math/AABB.hpp"
+#include "UI/UILayoutStyle.hpp"
 
 class UILayoutStyle;
 
