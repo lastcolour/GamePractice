@@ -42,7 +42,7 @@ TextureInfo RenderImageLogic::ET_getTextureInfo() const {
 
 void RenderImageLogic::ET_setTextureInfo(const TextureInfo& newTextureInfo) {
     textureInfo = newTextureInfo;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, texInfo=textureInfo](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, texInfo=textureInfo](){
         auto imageProxyNode = static_cast<ImageNode*>(node);
         imageProxyNode->setTextureInfo(texInfo);
     });
@@ -50,7 +50,7 @@ void RenderImageLogic::ET_setTextureInfo(const TextureInfo& newTextureInfo) {
 
 void RenderImageLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSize](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newSize](){
         auto imageProxyNode = static_cast<ImageNode*>(node);
         imageProxyNode->setSize(newSize);
     });

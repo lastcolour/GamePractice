@@ -34,7 +34,7 @@ void RenderLinearGradientRect::onInit() {
 
 void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSize](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newSize](){
         auto gradientProxyNode = static_cast<GradientNode*>(node);
         gradientProxyNode->setSize(newSize);
     });

@@ -9,7 +9,8 @@ class ParticlesNode;
 
 class RenderNodeManager : public SystemLogic,
     public ETNode<ETRenderNodeManager>,
-    public ETNode<ETRenderContextEvents> {
+    public ETNode<ETRenderContextEvents>,
+    public ETNode<ETParticlesManager> {
 public:
 
     RenderNodeManager();
@@ -20,11 +21,14 @@ public:
     void deinit() override;
 
     // ETRenderNodeManager
-    void ET_addUpdateEvent(std::function<void(void)> func) override;
+    void ET_scheduleNodeEvent(std::function<void(void)>&& func) override;
     void ET_removeNode(Node* node) override;
     void ET_initRenderNode(Node* node) override;
     void ET_drawFrame() override;
     void ET_drawFrameToBuffer(void* outBuffer, DrawContentFilter filter) override;
+
+    // ETParticlesManager
+    void ET_scheduleEmitterEvent(std::function<void(void)>&& func) override;
 
     // ETRenderContextEvents
     void ET_onContextCreated() override;

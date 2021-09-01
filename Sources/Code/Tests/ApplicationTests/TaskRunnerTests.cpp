@@ -149,7 +149,7 @@ TEST_F(TaskRunnerTests, CheckManualMainThreadStepping) {
 
     runner.startOtherThreads(1);
     for(int i = 0; i < MAX_ITER; ++i) {
-        runner.stepMainTread();
+        runner.stepMainThread();
     }
     runner.stopOtherTreads();
 

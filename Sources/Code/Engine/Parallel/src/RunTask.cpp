@@ -7,6 +7,9 @@ RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
     func(callFunc),
     frequency(std::numeric_limits<int>::max()),
     type(RunTaskType::Default) {
+
+    assert(taskName && taskName[0] && "Invalid task name");
+    assert(callFunc && "Invalid call func");
 }
 
 RunTask::~RunTask() {
@@ -29,7 +32,21 @@ const char* RunTask::getName() const {
 }
 
 void RunTask::addChild(RunTask* other) {
+    if(!other) {
+        return;
+    }
+    if(other == this) {
+        assert(false && "Can't add self as a child task");
+        return;
+    }
+    for(auto child : childrenTasks) {
+        if(child == other) {
+            assert(false && "Double add of a child");
+            return;
+        }
+    }
     childrenTasks.push_back(other);
+    other->childrenTasks.push_back(this);
 }
 
 std::vector<RunTask*>& RunTask::getChildren() {

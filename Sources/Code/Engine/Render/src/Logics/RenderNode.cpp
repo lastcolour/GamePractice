@@ -67,7 +67,7 @@ void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
         alphaMult = Math::Clamp(alphaMult, 0.f, 1.f);
     }
     float resAlpha = Math::Clamp(alphaMult * alpha, 0.f, 1.f);
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, resAlpha](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, resAlpha](){
         node->setAlpha(resAlpha);
     });
 }
@@ -84,7 +84,7 @@ void RenderNode::ET_hide() {
     if(!isLoaded) {
         return;
     }
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode](){
         node->setVisible(false);
     });
 }
@@ -97,7 +97,7 @@ void RenderNode::ET_show() {
     if(!isLoaded) {
         return;
     }
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode](){
         node->setVisible(true);
     });
 }
@@ -107,7 +107,7 @@ void RenderNode::ET_setDrawPriority(int newDrawPriority) {
         return;
     }
     drawPriority = newDrawPriority;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newDrawPriority](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newDrawPriority](){
         node->setDrawPriority(newDrawPriority);
     });
 }
@@ -118,20 +118,20 @@ int RenderNode::ET_getDrawPriority() const {
 
 void RenderNode::ET_setStencilData(const StencilWirteReadData& newStencilData) {
     stencilData = newStencilData;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, sData=newStencilData](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, sData=newStencilData](){
         node->setStencilData(sData);
     });
 }
 
 void RenderNode::ET_onTransformChanged(const Transform& newTm) {
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, nScale=normScale, tm=newTm]()mutable{
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, nScale=normScale, tm=newTm]()mutable{
         tm.scale *= nScale;
         node->setTransform(tm);
     });
 }
 
 void RenderNode::ET_setNormalizationScale(float newNormScale) {
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newS=newNormScale, oldS=normScale](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newS=newNormScale, oldS=normScale](){
         float nScale = std::max(0.001f, newS / oldS);
         node->setNormScale(nScale);
     });
@@ -145,7 +145,7 @@ float RenderNode::ET_getNormalizationScale() const {
 void RenderNode::ET_onLoaded() {
     isLoaded = true;
     if(ET_isVisible()) {
-        ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode](){
+        ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode](){
             node->setVisible(true);
         });
     }

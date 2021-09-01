@@ -10,7 +10,6 @@
 
 class ThreadsPool;
 class ThreadJob;
-class JobTree;
 class TimePoint;
 
 class TasksRunner {
@@ -32,7 +31,7 @@ public:
     void stop();
 
     void startOtherThreads(int threadCount);
-    void stepMainTread();
+    void stepMainThread();
     void stopOtherTreads();
 
     bool canRun() const;
@@ -46,7 +45,6 @@ private:
 
     void updateRunFlag(int threadId);
     void initJobs();
-    void initJobTrees();
     ThreadJob* getNextJob(const TimePoint& currTime, int threadId);
 
 private:
@@ -63,7 +61,6 @@ private:
     PredicateT predFunc;
     std::unique_ptr<ThreadsPool> threadsPool;
     std::vector<std::unique_ptr<RunTask>> tasks;
-    std::vector<std::unique_ptr<JobTree>> jobTrees;
     std::vector<std::unique_ptr<ThreadJob>> jobs;
     std::vector<ThreadJob*> pendingJobs;
     std::atomic<bool> predicateFailed;

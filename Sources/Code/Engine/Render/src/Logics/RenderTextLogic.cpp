@@ -39,7 +39,7 @@ void RenderTextLogic::ET_setFontHeight(float newFontHeight) {
     assert(newFontHeight >= 0.f && "Invalid font height");
 
     fontHeight = newFontHeight;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newFontHeight](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newFontHeight](){
         auto textProxyNode = static_cast<TextNode*>(node);
         textProxyNode->setFontHeight(newFontHeight);
     });
@@ -66,7 +66,7 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
 
 void RenderTextLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newColor](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newColor](){
         auto textProxyNode = static_cast<TextNode*>(node);
         textProxyNode->setColor0(newColor);
     });
@@ -75,7 +75,7 @@ void RenderTextLogic::ET_setColor(const ColorB& newColor) {
 void RenderTextLogic::ET_setText(const char* str) {
     text = str;
     std::string copyText = text;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, s(std::move(copyText))](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, s(std::move(copyText))](){
         auto textProxyNode = static_cast<TextNode*>(node);
         textProxyNode->setText(std::move(s));
     });
@@ -84,7 +84,7 @@ void RenderTextLogic::ET_setText(const char* str) {
 void RenderTextLogic::ET_setFontType(EFontType newFontType) {
     fontType = newFontType;
     ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, fontType);
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, fontT=newFontType](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, fontT=newFontType](){
         auto textProxyNode = static_cast<TextNode*>(node);
         textProxyNode->setFontType(fontT);
     });

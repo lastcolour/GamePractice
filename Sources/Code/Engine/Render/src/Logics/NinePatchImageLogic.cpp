@@ -42,7 +42,7 @@ void NinePatchImageLogic::ET_setPatches(const Vec2& patches) {
     horizontal = Math::Clamp(horizontal, 0.f, 0.4999f);
     vertical = patches.y;
     vertical = Math::Clamp(vertical, 0.f, 0.4999f);
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, h=horizontal, v=vertical, s=patchScale](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, h=horizontal, v=vertical, s=patchScale](){
         auto ninePatchNode = static_cast<NinePatchNode*>(node);
         ninePatchNode->setPatches(h, v, s);
     });

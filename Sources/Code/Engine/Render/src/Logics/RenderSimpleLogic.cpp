@@ -29,7 +29,7 @@ void RenderSimpleLogic::onInit() {
 
 void RenderSimpleLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newColor](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newColor](){
         auto simpleProxyNode = static_cast<SimpleNode*>(node);
         simpleProxyNode->setColor(newColor);
     });
@@ -37,7 +37,7 @@ void RenderSimpleLogic::ET_setColor(const ColorB& newColor) {
 
 void RenderSimpleLogic::ET_setSize(const Vec2& newSize) {
     size = newSize;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSize](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newSize](){
         auto simpleProxyNode = static_cast<SimpleNode*>(node);
         simpleProxyNode->setSize(newSize);
     });

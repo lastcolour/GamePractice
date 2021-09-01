@@ -522,9 +522,7 @@ void EmitterParticles::updateTransform(const Transform& systemTm) {
             break;
         }
         case EParticleTMTrackType::Entity: {
-            ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [req=&emitReq](){
-                ET_SendEventReturn(req->tm, req->trackEntId, &ETEntity::ET_getTransform);
-            });
+            ET_SendEventReturn(emitReq.tm, emitReq.trackEntId, &ETEntity::ET_getTransform);
             break;
         }
         default: {

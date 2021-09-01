@@ -66,7 +66,7 @@ void ParticlesSystem::onInit() {
     simConfig.subEmittorsConfig = subEmittersConfig;
     simConfig.sizeConfig = sizeConfig;
 
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=particlesNode, config=renderConfig](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=particlesNode, config=renderConfig](){
         node->setConfig(config);
     });
 
@@ -78,7 +78,7 @@ void ParticlesSystem::onInit() {
 }
 
 void ParticlesSystem::deinit() {
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& emittersPool = particlesNode->getEmittersPool();
         emittersPool.asyncDestroyAll();
@@ -88,7 +88,7 @@ void ParticlesSystem::deinit() {
 
 void ParticlesSystem::ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) {
     colorConfig = newColorConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newColorConf](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newColorConf](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         auto& simConfig = pool.getSimConfig();
@@ -102,7 +102,7 @@ const ParticlesEmitterColorConfig& ParticlesSystem::ET_getColorConfig() const {
 
 void ParticlesSystem::ET_setMovementConfig(const ParticlesEmitterMovementConfig& newMovementConf) {
     movementConfig = newMovementConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newMovementConf](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newMovementConf](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         auto& simConfig = pool.getSimConfig();
@@ -116,7 +116,7 @@ const ParticlesEmitterMovementConfig& ParticlesSystem::ET_getMovementConfig() co
 
 void ParticlesSystem::ET_setEmissionConfig(const ParticlesEmitterEmissionConfig& newEmissionConf) {
     emissionConfig = newEmissionConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newEmissionConf](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newEmissionConf](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         auto& simConfig = pool.getSimConfig();
@@ -130,7 +130,7 @@ const ParticlesEmitterEmissionConfig& ParticlesSystem::ET_getEmissionConfig() co
 
 void ParticlesSystem::ET_setRenderConfig(const ParticlesEmitterRenderConfig& newRenerConf) {
     renderConfig = newRenerConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newRenerConf](){
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newRenerConf](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         particlesNode->setConfig(newRenerConf);
     });
@@ -142,7 +142,7 @@ const ParticlesEmitterRenderConfig& ParticlesSystem::ET_getRenderConfig() const 
 
 void ParticlesSystem::ET_setSubEmittersConfig(const ParticlesSubEmittersConfig& newSubEmittersConf) {
     subEmittersConfig = newSubEmittersConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSubEmittersConf](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newSubEmittersConf](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         auto& simConfig = pool.getSimConfig();
@@ -152,7 +152,7 @@ void ParticlesSystem::ET_setSubEmittersConfig(const ParticlesSubEmittersConfig& 
 
 void ParticlesSystem::ET_setSizeConfig(const ParticlesEmitterSizeConfig& newSizeConf) {
     sizeConfig = newSizeConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, newSizeConf](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newSizeConf](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         auto& simConfig = pool.getSimConfig();
@@ -198,7 +198,7 @@ void ParticlesSystem::ET_emit() {
     emitReq.tmTrackType = EParticleTMTrackType::System;
     emitReq.rootParticleId = InvalidRootParticleId;
 
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, emitReq](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, emitReq](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         pool.createEmitter(emitReq);
@@ -217,7 +217,7 @@ void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
     emitReq.tmTrackType = EParticleTMTrackType::None;
     emitReq.tm = emitTm;
 
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, emitReq](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, emitReq](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         pool.createEmitter(emitReq);
@@ -242,7 +242,7 @@ void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
     emitReq.trackEntId = trackEntId;
     ET_SendEventReturn(emitReq.tm, trackEntId, &ETEntity::ET_getTransform);
 
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, emitReq](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, emitReq](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         pool.createEmitter(emitReq);
@@ -256,7 +256,7 @@ void ParticlesSystem::ET_stopTrackedEmitter(EntityId trackEntId) {
         return;
     }
 
-    ET_QueueEvent(&ETRenderNodeManager::ET_addUpdateEvent, [node=proxyNode, trackEntId](){
+    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, trackEntId](){
         auto particlesNode = static_cast<ParticlesNode*>(node);
         auto& pool = particlesNode->getEmittersPool();
         pool.stopTrackEmitter(trackEntId);

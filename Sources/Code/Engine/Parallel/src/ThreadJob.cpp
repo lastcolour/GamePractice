@@ -1,48 +1,47 @@
 #include "ThreadJob.hpp"
 #include "Parallel/RunTask.hpp"
-#include "JobTree.hpp"
 
 #include <cassert>
 
 ThreadJob::ThreadJob(RunTask* runTask) :
-    pendingParents(0),
+    pendingCount(0),
     task(runTask),
-    tree(nullptr),
-    parentsCount(0) {
+    runDelay(0) {
 
     assert(runTask && "Invalid run task");
+
+    auto microSecDelay = static_cast<int>((1000000.0 / (static_cast<double>(runTask->getFrequency()))));
+    runDelay = std::chrono::microseconds(microSecDelay);
 }
 
 ThreadJob::~ThreadJob() {
 }
 
-void ThreadJob::setTree(JobTree* newTree) {
-    tree = newTree;
-}
-
-JobTree* ThreadJob::getTree() {
-    return tree;
-}
-
-void ThreadJob::setParentsCount(int newParentsCount) {
-    parentsCount = newParentsCount;
-    pendingParents.store(parentsCount);
-}
-
-
-int ThreadJob::getParentsCount() const {
-    return parentsCount;
-}
-
 void ThreadJob::execute() {
     float dt = currStartT.getSecElapsedFrom(prevStartT);
     prevStartT = currStartT;
-    tree->tryRestartTree(prevStartT);
     task->execute(dt);
     onFinished();
 }
 
-bool ThreadJob::canStartInThread(int threadId) const {
+void ThreadJob::onFinished() {
+    prevEndT = TimePoint::GetNowTime();
+    runStats.onExecuted(prevStartT, prevEndT);
+    for(auto job : childJobs) {
+        auto val = job->pendingCount.fetch_sub(1);
+        assert(val > 0 && "Invalind pendings count");
+    }
+    pendingCount.store(static_cast<int>(childJobs.size()));
+}
+
+RunTask* ThreadJob::getTask() {
+    return task;
+}
+
+bool ThreadJob::tryStartAt(int threadId, const TimePoint& currTime) {
+    if(pendingCount.load() > 0) {
+        return false;
+    }
     switch(task->getType()) {
         case RunTaskType::Default: {
             break;
@@ -63,58 +62,19 @@ bool ThreadJob::canStartInThread(int threadId) const {
             assert(false && "Invalid job type");
         }
     }
-    return true;
-}
-
-void ThreadJob::onFinished() {
-    prevEndT = TimePoint::GetNowTime();
-    runStats.onExecuted(prevStartT, prevEndT);
-    pendingParents.store(parentsCount);
-    if(tree->tryFinishTreeByOneJob(prevEndT)) {
-        nextJobs = &(tree->getRootJobs());
-    } else {
-        nextJobs = &childrenJobs;
-        for(auto child : childrenJobs) {
-            child->onParentTaskFinished();
+    if(prevStartT.getStdTimePoint().time_since_epoch().count() == 0) {
+        currStartT = currTime;
+        for(auto job : childJobs) {
+            job->pendingCount.store(static_cast<int>(job->childJobs.size()));
         }
+        return true;
     }
-}
-
-void ThreadJob::scheduleNextJobs(std::vector<ThreadJob*>& output) {
-    if(!nextJobs) {
-        output.push_back(this);
-        return;
+    auto delta = currTime.getStdTimePoint() - prevStartT.getStdTimePoint();
+    if(delta < runDelay) {
+        return false;
     }
-    for(auto job : *nextJobs) {
-        if(job->pendingParents.load() == 0) {
-            job->pendingParents.store(job->parentsCount);
-            output.push_back(job);
-        }
-    }
-}
-
-void ThreadJob::onParentTaskFinished() {
-    pendingParents.fetch_sub(1);
-}
-
-void ThreadJob::addChildJob(ThreadJob* childJob) {
-    childrenJobs.push_back(childJob);
-}
-
-std::vector<ThreadJob*>& ThreadJob::getChildJobs() {
-    return childrenJobs;
-}
-
-RunTask* ThreadJob::getTask() {
-    return task;
-}
-
-bool ThreadJob::canStartAt(const TimePoint& currTime) const {
-    return tree->canStartAt(currTime);
-}
-
-void ThreadJob::setCurrentStartTime(const TimePoint& currTime) {
     currStartT = currTime;
+    return true;
 }
 
 const JobRunStats& ThreadJob::getRunStats() const {

@@ -24,6 +24,8 @@ namespace {
 
 const int EDITOR_THREADS_COUNT = 3;
 const int MAIN_THREAD_STEP_BEFORE_DRAW = 5;
+const int EDITOR_MAX_GAME_TICK_RATE = 60;
+const int EDITOR_AUX_TASK_TICK_RATE = EDITOR_MAX_GAME_TICK_RATE * 2;
 
 } // namespace
 
@@ -54,49 +56,56 @@ void EditorApp::deinitiazlie() {
 }
 
 void EditorApp::buildTasksRunner() {
-    auto taskRunner = GetEnv()->GetTasksRunner();
+    auto runner = GetEnv()->GetTasksRunner();
+    assert(runner && "Invalid task runner");
     {
-        auto assetsUpdate = taskRunner->createTask("Assets", [](float dt){
+        auto assetsUpdate = runner->createTask("Assets", [](float dt){
             ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, dt);
         });
         assetsUpdate->setType(RunTaskType::NoInMainThread);
-        assetsUpdate->setFrequency(120);
+        assetsUpdate->setFrequency(EDITOR_AUX_TASK_TICK_RATE);
     }
     {
-        auto entitiesUpdate = taskRunner->createTask("Entities", [](){
+        auto entitiesUpdate = runner->createTask("Entities", [](){
             ET_SendEvent(&ETEntitiesUpdateTask::ET_updateEntities);
         });
         entitiesUpdate->setType(RunTaskType::NoInMainThread);
-        entitiesUpdate->setFrequency(120);
+        entitiesUpdate->setFrequency(EDITOR_AUX_TASK_TICK_RATE);
     }
     {
-        auto uiUpdate = taskRunner->createTask("UI", [](float dt){
-            ET_SendEvent(&ETUITimer::ET_onTick, dt);
-        });
-        auto renderSync = taskRunner->createTask("RenderSync", [](){
-            ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
-        });
-        renderSync->setType(RunTaskType::MainThreadOnly);
-        auto gameUpdate = taskRunner->createTask("Game", [](float dt){
-            ET_SendEvent(&ETGameTimer::ET_onTick, dt);
-        });
-        gameUpdate->setFrequency(60);
-        gameUpdate->addChild(uiUpdate);
-        uiUpdate->addChild(renderSync);
-    }
-    {
-        auto updateParticles = taskRunner->createTask("UpdateParticles", [](float dt){
-            ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles, dt);
-        });
-        updateParticles->setType(RunTaskType::MainThreadOnly);
-        updateParticles->setFrequency(60);
-    }
-    {
-        auto soundUpdate = taskRunner->createTask("Sound", [](){
+        auto soundUpdate = runner->createTask("Sound", [](){
             ET_SendEvent(&ETSoundUpdateTask::ET_updateSound);
         });
-        soundUpdate->setFrequency(120);
+        soundUpdate->setFrequency(EDITOR_AUX_TASK_TICK_RATE);
     }
+
+    auto uiUpdate = runner->createTask("UI", [](float dt){
+        ET_SendEvent(&ETUITimer::ET_onTick, dt);
+    });
+    uiUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
+
+    auto gameUpdate = runner->createTask("Game", [](float dt){
+        ET_SendEvent(&ETGameTimer::ET_onTick, dt);
+    });
+    gameUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
+
+    auto renderSync = runner->createTask("RenderSync", [](){
+        ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
+    });
+    renderSync->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
+    renderSync->setType(RunTaskType::MainThreadOnly);
+
+    auto particlesUpdate = runner->createTask("Particles", [](float dt){
+        ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles, dt);
+    });
+    particlesUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
+
+    gameUpdate->addChild(uiUpdate);
+    gameUpdate->addChild(renderSync);
+    gameUpdate->addChild(particlesUpdate);
+
+    uiUpdate->addChild(renderSync);
+    uiUpdate->addChild(particlesUpdate);
 }
 
 Buffer EditorApp::getReflectModel() {
@@ -181,7 +190,7 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, Vec2i(width, height));
 
     for(int i = 0; i < MAIN_THREAD_STEP_BEFORE_DRAW; ++i) {
-        GetEnv()->GetTasksRunner()->stepMainTread();
+        GetEnv()->GetTasksRunner()->stepMainThread();
     }
 
     ET_SendEvent(&ETRender::ET_drawFrameToBufferRaw, out, Vec2i(width, height), DrawContentFilter::None);

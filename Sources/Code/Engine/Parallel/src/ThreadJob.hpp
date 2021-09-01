@@ -6,7 +6,6 @@
 #include "JobRunStats.hpp"
 
 class RunTask;
-class JobTree;
 
 class ThreadJob {
 public:
@@ -14,25 +13,14 @@ public:
     ThreadJob(RunTask* runTask);
     ~ThreadJob();
 
-    bool canStartInThread(int threadId) const;
-    void scheduleNextJobs(std::vector<ThreadJob*>& output);
-    std::vector<ThreadJob*>& getNextJobs();
-    std::vector<ThreadJob*>& getChildJobs();
-    void setTree(JobTree* tree);
-    JobTree* getTree();
-    void setParentsCount(int newParentCount);
-    int getParentsCount() const;
-    void addChildJob(ThreadJob* childJob);
-    RunTask* getTask();
+    bool tryStartAt(int threadId, const TimePoint& currTime);
     void execute();
-    bool canStartAt(const TimePoint& currTime) const;
-    void setCurrentStartTime(const TimePoint& currTime);
+    RunTask* getTask();
     const JobRunStats& getRunStats() const;
 
 private:
 
     void onFinished();
-    void onParentTaskFinished();
 
 private:
 
@@ -40,12 +28,10 @@ private:
     TimePoint prevStartT;
     TimePoint prevEndT;
     TimePoint currStartT;
-    std::vector<ThreadJob*> childrenJobs;
-    std::vector<ThreadJob*>* nextJobs;
-    std::atomic<int> pendingParents;
+    std::vector<ThreadJob*> childJobs;
+    std::atomic<int> pendingCount;
     RunTask* task;
-    JobTree* tree;
-    int parentsCount;
+    std::chrono::microseconds runDelay;
 };
 
 #endif /* __THREAD_JOB_HPP__ */

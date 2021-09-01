@@ -14,6 +14,7 @@ RenderNodeManager::~RenderNodeManager() {
 bool RenderNodeManager::init() {
     ETNode<ETRenderNodeManager>::connect(getEntityId());
     ETNode<ETRenderContextEvents>::connect(getEntityId());
+    ETNode<ETParticlesManager>::connect(getEntityId());
 
     if(RenderUtils::IsOpenGLContextExists()) {
         ET_onContextCreated();
@@ -26,7 +27,11 @@ void RenderNodeManager::deinit() {
     ET_PollAllEvents<ETRenderNodeManager>();
 }
 
-void RenderNodeManager::ET_addUpdateEvent(std::function<void(void)> func) {
+void RenderNodeManager::ET_scheduleNodeEvent(std::function<void(void)>&& func) {
+    func();
+}
+
+void RenderNodeManager::ET_scheduleEmitterEvent(std::function<void(void)>&& func) {
     func();
 }
 

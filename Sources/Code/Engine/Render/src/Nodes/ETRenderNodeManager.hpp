@@ -7,11 +7,16 @@ enum class DrawContentFilter;
 
 struct ETRenderNodeManager {
     virtual ~ETRenderNodeManager() = default;
-    virtual void ET_addUpdateEvent(std::function<void(void)> func) = 0;
+    virtual void ET_scheduleNodeEvent(std::function<void(void)>&& func) = 0;
     virtual void ET_removeNode(Node* node) = 0;
     virtual void ET_initRenderNode(Node* node) = 0;
     virtual void ET_drawFrame() = 0;
     virtual void ET_drawFrameToBuffer(void* outBuffer, DrawContentFilter filter) = 0;
+};
+
+struct ETParticlesManager {
+    virtual ~ETParticlesManager() = default;
+    virtual void ET_scheduleEmitterEvent(std::function<void(void)>&& func) = 0;
 };
 
 struct ETParticlesUpdate {

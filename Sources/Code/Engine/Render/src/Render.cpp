@@ -43,6 +43,7 @@ void Render::ET_updateRender() {
 }
 
 void Render::ET_updateParticles(float dt) {
+    ET_PollAllEvents<ETParticlesManager>();
     ET_SendEvent(&ETRenderTickManager::ET_fetchDeltaT);
     ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
 }

@@ -11,6 +11,7 @@ namespace {
 
 void TickParticlesEmitter(float dt) {
     ET_PollAllEvents<ETRenderNodeManager>();
+    ET_PollAllEvents<ETParticlesManager>();
     ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
     ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, 0.f);
 }
