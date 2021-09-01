@@ -46,9 +46,6 @@ public:
     // ETParticlesUpdate
     void ET_updateEmitter(float dt) override;
 
-    // RenderNode
-    void deinit() override;
-
 protected:
 
     // RenderNode

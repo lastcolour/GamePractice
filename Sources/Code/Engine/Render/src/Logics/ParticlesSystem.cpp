@@ -77,15 +77,6 @@ void ParticlesSystem::onInit() {
     ETNode<ETParticlesUpdate>::connect(getEntityId());
 }
 
-void ParticlesSystem::deinit() {
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& emittersPool = particlesNode->getEmittersPool();
-        emittersPool.asyncDestroyAll();
-    });
-    RenderNode::deinit();
-}
-
 void ParticlesSystem::ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) {
     colorConfig = newColorConf;
     ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newColorConf](){
