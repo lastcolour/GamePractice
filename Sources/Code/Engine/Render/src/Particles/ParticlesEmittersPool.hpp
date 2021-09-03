@@ -24,6 +24,7 @@ public:
     SimulationConfig& getSimConfig();
     const SimulationConfig& getSimConfig() const;
 
+    ParticlesUpdateFrameInfo& getUpdateInfo();
     ParticlesUpdateFrameInfo getAndResetUpdateInfo();
     void asyncStopEmitting();
     void asyncDestroyAll();

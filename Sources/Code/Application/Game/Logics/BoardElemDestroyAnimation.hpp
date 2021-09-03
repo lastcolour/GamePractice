@@ -40,7 +40,6 @@ private:
 
 private:
 
-    SoundEvent destroySound;
     float startDelay;
     float duration;
     float endDelay;

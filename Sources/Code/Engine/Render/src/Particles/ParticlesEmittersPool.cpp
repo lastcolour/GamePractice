@@ -30,7 +30,6 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
     }
     asyncState.store(AsynState::Playing);
     stoppedEmitter->start(emitReq);
-    updateFrameInfo.systemStarted += 1;
 }
 
 void ParticlesEmittersPool::stopTrackEmitter(EntityId trackEntId) {
@@ -183,6 +182,10 @@ void ParticlesEmittersPool::removeParticles(int count) {
     particlesCount -= count;
     updateFrameInfo.particlesRemoved += count;
     assert(particlesCount >= 0 && "Invalid particles count");
+}
+
+ParticlesUpdateFrameInfo& ParticlesEmittersPool::getUpdateInfo() {
+    return updateFrameInfo;
 }
 
 ParticlesUpdateFrameInfo ParticlesEmittersPool::getAndResetUpdateInfo() {

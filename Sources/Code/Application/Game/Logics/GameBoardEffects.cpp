@@ -36,9 +36,9 @@ void GameBoardEffects::Reflect(ReflectContext& ctx) {
         classInfo->addField("bomdDestroy", &GameBoardEffects::bomdDestroyEffectId);
         classInfo->addField("rocketTrail", &GameBoardEffects::rocketTrailEffectId);
         classInfo->addField("rocketDestroy", &GameBoardEffects::rocketDestroyEffectId);
-        classInfo->addField("destroyEffectScale", &GameBoardEffects::destroyEffectScale);
         classInfo->addField("mutateEffect", &GameBoardEffects::mutateEffectId);
         classInfo->addField("mergeEffect", &GameBoardEffects::mergeEffectId);
+        classInfo->addField("destroyEffectScale", &GameBoardEffects::destroyEffectScale);
     }
 }
 

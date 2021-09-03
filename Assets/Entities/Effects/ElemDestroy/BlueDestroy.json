@@ -272,6 +272,16 @@
         "gridScale": 1.0,
         "useGridScale": false
       }
+    },
+    {
+      "type": "ParticlesSoundEvent",
+      "id": 7,
+      "data": {
+        "emitType": "OnSystemStart",
+        "soundEvent": {
+          "event": "elemDestroy_01"
+        }
+      }
     }
   ]
 }

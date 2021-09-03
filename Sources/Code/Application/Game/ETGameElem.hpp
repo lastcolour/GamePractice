@@ -46,7 +46,7 @@ struct ETGameBoardElem {
     virtual bool ET_canMatch() const = 0;
     virtual bool ET_canSwitch() const = 0;
     virtual void ET_onLandPlayed() = 0;
-    virtual void ET_onDestroyPlayed() = 0;
+    virtual void ET_onDestroyDone() = 0;
     virtual void ET_onTriggerDone() = 0;
     virtual void ET_onMergeDone() = 0;
 };

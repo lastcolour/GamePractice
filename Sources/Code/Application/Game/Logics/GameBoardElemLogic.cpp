@@ -71,7 +71,7 @@ void GameBoardElemLogic::ET_triggerDestroy(EntityId sourceId) {
         if(ET_IsExistNode<ETBoardElemDestroyAnimation>(getEntityId())) {
             ET_SendEvent(getEntityId(), &ETBoardElemDestroyAnimation::ET_playDestroy);
         } else {
-            ET_onDestroyPlayed();
+            ET_onDestroyDone();
         }
     }
 }
@@ -111,7 +111,7 @@ void GameBoardElemLogic::ET_onLandPlayed() {
     state = EBoardElemState::Static;
 }
 
-void GameBoardElemLogic::ET_onDestroyPlayed() {
+void GameBoardElemLogic::ET_onDestroyDone() {
     assert(state == EBoardElemState::Destroying && "Invalid elem state");
 
     state = EBoardElemState::Destroyed;
@@ -122,14 +122,14 @@ void GameBoardElemLogic::ET_onDestroyPlayed() {
 void GameBoardElemLogic::ET_onMergeDone() {
     assert(state == EBoardElemState::Destroying);
 
-    ET_onDestroyPlayed();
+    ET_onDestroyDone();
 }
 
 void GameBoardElemLogic::ET_onTriggerDone() {
     assert(state == EBoardElemState::Triggering && "Invalid elem state");
     state = EBoardElemState::Destroying;
 
-    ET_onDestroyPlayed();
+    ET_onDestroyDone();
 }
 
 void GameBoardElemLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {

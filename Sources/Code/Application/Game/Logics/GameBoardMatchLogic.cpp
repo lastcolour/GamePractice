@@ -115,7 +115,7 @@ void GameBoardMatchLogic::ET_onStartDestroying() {
 void GameBoardMatchLogic::matchPattern(const PatternMatch& p) {
     if(p.patternType == EPatternType::HLine || p.patternType == EPatternType::VLine || p.patternType == EPatternType::None) {
         for(auto& elem : p.points) {
-            ET_SendEvent(elem->entId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
+            GameUtils::TryTriggerElemDestroy(InvalidEntityId, elem->entId);
         }
     } else {
         ElemMergeTask mergeTask;

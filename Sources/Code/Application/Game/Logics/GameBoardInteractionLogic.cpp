@@ -144,7 +144,7 @@ void GameBoardInteractionLogic::ET_onTouch(const TouchEvent& event) {
             setActiveElem(InvalidEntityId);
             auto tapInfo = doubleTapDetector.getTapInfo();
             if(tapInfo.tapCount == 2) {
-                ET_SendEvent(tapInfo.targetId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
+                GameUtils::TryTriggerElemDestroy(InvalidEntityId, tapInfo.targetId);
                 doubleTapDetector.reset();
             }
         }
@@ -197,10 +197,10 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
             ET_SendEvent(&ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
             if(GameUtils::HasTriggerLogic(task.firstId)) {
                 ET_SendEvent(task.firstId, &ETGameBoardElemTriggerLogic::ET_setSwapedElem, task.secondId);
-                ET_SendEvent(task.firstId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
+                GameUtils::TryTriggerElemDestroy(InvalidEntityId, task.firstId);
             } else if(GameUtils::HasTriggerLogic(task.secondId)) {
                 ET_SendEvent(task.secondId, &ETGameBoardElemTriggerLogic::ET_setSwapedElem, task.firstId);
-                ET_SendEvent(task.secondId, &ETGameBoardElem::ET_triggerDestroy, InvalidEntityId);
+                GameUtils::TryTriggerElemDestroy(InvalidEntityId, task.secondId);
             }
             it = switchTasks.erase(it);
         } else {

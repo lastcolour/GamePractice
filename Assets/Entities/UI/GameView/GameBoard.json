@@ -229,6 +229,29 @@
       "name": "Entities/Effects/ElemDestroy/RocketDestroy.json",
       "id": 510,
       "internal": false
+    },
+    {
+      "transform": {
+        "pos": {
+          "x": 548.0,
+          "y": 469.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Entities/Effects/ElemDestroy/ElemMerge.json",
+      "id": 611,
+      "internal": false
     }
   ],
   "logics": [
@@ -355,13 +378,13 @@
         "rocketDestroy": [
           510
         ],
-        "destroyEffectScale": 0.07999999821186066,
         "mutateEffect": [
           106
         ],
         "mergeEffect": [
-          106
-        ]
+          611
+        ],
+        "destroyEffectScale": 0.07999999821186066
       }
     },
     {
@@ -429,6 +452,9 @@
           ],
           [
             510
+          ],
+          [
+            611
           ]
         ]
       }

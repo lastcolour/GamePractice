@@ -193,7 +193,7 @@
         "duration": 0.0,
         "endDelay": 0.05000000074505806,
         "soundEvent": {
-          "event": "elemDestroy_01"
+          "event": "rocket_elem_expl_01"
         }
       }
     },

@@ -534,6 +534,16 @@
         "gridScale": 1.0,
         "useGridScale": false
       }
+    },
+    {
+      "type": "ParticlesSoundEvent",
+      "id": 4,
+      "data": {
+        "emitType": "OnSystemStart",
+        "soundEvent": {
+          "event": "bomb_elem_expl_01"
+        }
+      }
     }
   ]
 }

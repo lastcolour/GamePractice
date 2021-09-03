@@ -469,6 +469,7 @@ void EmitterParticles::start(const EmitRequest& emitRequest) {
     emissionState = EmissionState::StartDelay;
     emitReq = emitRequest;
     subEmitterFlags = caclSubEmitterFlags(simConf);
+    pool.getUpdateInfo().systemStarted += 1;
 }
 
 void EmitterParticles::stop() {

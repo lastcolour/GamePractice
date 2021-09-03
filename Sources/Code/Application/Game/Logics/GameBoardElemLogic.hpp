@@ -32,7 +32,7 @@ public:
     bool ET_canMatch() const override;
     bool ET_canSwitch() const override;
     void ET_onLandPlayed() override;
-    void ET_onDestroyPlayed() override;
+    void ET_onDestroyDone() override;
     void ET_onTriggerDone() override;
     void ET_onMergeDone() override;
 

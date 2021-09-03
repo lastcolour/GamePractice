@@ -74,7 +74,6 @@ void TryTriggerElemDestroy(EntityId sourceId, const Vec2i& boardPt) {
 
 void PlayElemDestroyEffect(EntityId elemId) {
     ET_SendEvent(&ETGameBoardEffects::ET_playDestroyEffect, elemId);
-    ET_SendEvent(elemId, &ETRenderNode::ET_hide);
 
     Vec2i elemCellPt(-1);
     ET_SendEventReturn(elemCellPt, &ETGameBoard::ET_getElemBoardPos, elemId);

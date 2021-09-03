@@ -1,0 +1,136 @@
+{
+  "children": [],
+  "logics": [
+    {
+      "type": "UIElementProxy",
+      "id": 6,
+      "data": {
+        "gridScale": 1.0,
+        "useGridScale": false
+      }
+    },
+    {
+      "type": "ParticlesSoundEvent",
+      "id": 7,
+      "data": {
+        "emitType": "OnSystemStart",
+        "soundEvent": {
+          "event": ""
+        }
+      }
+    },
+    {
+      "type": "ParticlesSystem",
+      "id": 8,
+      "data": {
+        "isVisible": true,
+        "alpha": 0.6000000238418579,
+        "zIndex": 0,
+        "emission": {
+          "simTime": "Game",
+          "duration": 0.05000000074505806,
+          "startDelay": 0.05000000074505806,
+          "autoStart": false,
+          "loop": false,
+          "emitterSpace": "World",
+          "emitterType": "Sphere",
+          "emitterVal": {
+            "x": 5.0,
+            "y": 0.0
+          },
+          "thickness": 0.5,
+          "emissionRate": 50.0,
+          "direction": 0.0,
+          "directionVar": 360.0,
+          "lifetime": 0.5,
+          "lifetimeVar": 0.10000000149011612
+        },
+        "movement": {
+          "speed": 5.0,
+          "speedVar": 0.10000000149011612,
+          "initRotation": 30.0,
+          "initRotationVar": 0.10000000149011612,
+          "rotationSpeed": 10.0,
+          "rotationSpeedVar": 0.10000000149011612,
+          "rotationAcc": 0.0
+        },
+        "size": {
+          "startScale": {
+            "x": 0.6000000238418579,
+            "y": 0.6000000238418579
+          },
+          "startScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          },
+          "endScale": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "endScaleVar": {
+            "x": 0.10000000149011612,
+            "y": 0.10000000149011612
+          }
+        },
+        "color": {
+          "startCol": {
+            "r": 249,
+            "g": 249,
+            "b": 249,
+            "a": 255
+          },
+          "startColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          },
+          "endCol": {
+            "r": 249,
+            "g": 249,
+            "b": 249,
+            "a": 255
+          },
+          "endColVar": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.10000000149011612
+          },
+          "fadeIn": 0.0,
+          "fadeOut": 0.10000000149011612
+        },
+        "render": {
+          "blending": "Additive",
+          "textureInfo": {
+            "filename": "Images/Base/circle_32x32.png",
+            "lerpType": "Point",
+            "tintColor": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0
+            }
+          }
+        },
+        "subEmitters": {
+          "subEmitters": []
+        },
+        "gravity": {
+          "fields": [
+            {
+              "type": "Simple",
+              "offset": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "dir": -90.0,
+              "value": 50.0,
+              "radius": -1.0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

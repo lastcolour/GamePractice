@@ -79,6 +79,26 @@
                 "loop":false
             },
             "nextDelay":0
+        },
+        {
+            "name":"rocket_elem_expl_01",
+            "sound":{
+                "file":"Sounds/Game/Effects/rocket_explosion.ogg",
+                "volume":0.3,
+                "group":"Game",
+                "loop":false
+            },
+            "nextDelay":0.1
+        },
+        {
+            "name":"bomb_elem_expl_01",
+            "sound":{
+                "file":"Sounds/Game/Effects/bomb_exlosion.ogg",
+                "volume":0.25,
+                "group":"Game",
+                "loop":false
+            },
+            "nextDelay":0.1
         }
     ]
 }

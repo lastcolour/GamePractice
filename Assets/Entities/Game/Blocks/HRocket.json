@@ -30,7 +30,7 @@
             "id": 1,
             "data": {
               "isVisible": false,
-              "alpha": 0.699999988079071,
+              "alpha": 0.7,
               "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
@@ -66,8 +66,8 @@
         "rot": {
           "x": 0.0,
           "y": 0.0,
-          "z": 0.7071068286895752,
-          "w": 0.7071068286895752
+          "z": 0.7071067811865476,
+          "w": 0.7071067811865476
         }
       },
       "name": "FirstRocket",
@@ -117,8 +117,8 @@
         "rot": {
           "x": 0.0,
           "y": 0.0,
-          "z": -0.7071068286895752,
-          "w": 0.7071068286895752
+          "z": -0.7071067811865476,
+          "w": 0.7071067811865476
         }
       },
       "name": "SecondRocket",
@@ -193,7 +193,7 @@
         "duration": 0.0,
         "endDelay": 0.05000000074505806,
         "soundEvent": {
-          "event": "elemDestroy_01"
+          "event": "rocket_elem_expl_01"
         }
       }
     },

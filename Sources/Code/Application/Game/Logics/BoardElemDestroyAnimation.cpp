@@ -8,7 +8,6 @@ void BoardElemDestroyAnimation::Reflect(ReflectContext& ctx) {
         classInfo->addField("startDelay", &BoardElemDestroyAnimation::startDelay);
         classInfo->addField("duration", &BoardElemDestroyAnimation::duration);
         classInfo->addField("endDelay", &BoardElemDestroyAnimation::endDelay);
-        classInfo->addField("soundEvent", &BoardElemDestroyAnimation::destroySound);
     }
 }
 
@@ -68,7 +67,7 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
         }
         case State::Ended: {
             tm.scale = Vec3(1.f);
-            ET_SendEvent(getEntityId(), &ETGameBoardElem::ET_onDestroyPlayed);
+            ET_SendEvent(getEntityId(), &ETGameBoardElem::ET_onDestroyDone);
             ETNode<ETGameTimerEvents>::disconnect();
             break;
         }
@@ -87,5 +86,4 @@ void BoardElemDestroyAnimation::ET_playDestroy() {
     currDuration = 0.f;
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
-    destroySound.emit();
 }
