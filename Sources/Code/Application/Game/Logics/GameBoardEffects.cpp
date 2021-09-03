@@ -4,6 +4,28 @@
 
 #include <cassert>
 
+namespace {
+
+void spawnEffectWithScale(EntityId targetEntId, EntityId effectId, float scale) {
+    if(!targetEntId.isValid()) {
+        return;
+    }
+    if(!effectId.isValid()) {
+        return;
+    }
+
+    int cellSize = 0;
+    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
+
+    Transform tm;
+    ET_SendEventReturn(tm, targetEntId, &ETEntity::ET_getTransform);
+    tm.scale = Vec3(static_cast<float>(cellSize) * scale);
+
+    ET_SendEvent(effectId, &ETParticlesSystem::ET_emitWithTm, tm);
+}
+
+} // namespace
+
 void GameBoardEffects::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardEffects>("GameBoardEffects")) {
         classInfo->addField("redDestroy", &GameBoardEffects::redDestroyEffectId);
@@ -15,6 +37,8 @@ void GameBoardEffects::Reflect(ReflectContext& ctx) {
         classInfo->addField("rocketTrail", &GameBoardEffects::rocketTrailEffectId);
         classInfo->addField("rocketDestroy", &GameBoardEffects::rocketDestroyEffectId);
         classInfo->addField("destroyEffectScale", &GameBoardEffects::destroyEffectScale);
+        classInfo->addField("mutateEffect", &GameBoardEffects::mutateEffectId);
+        classInfo->addField("mergeEffect", &GameBoardEffects::mergeEffectId);
     }
 }
 
@@ -37,13 +61,6 @@ EntityId GameBoardEffects::ET_getRocketTrailEffect() const {
 }
 
 void GameBoardEffects::ET_playDestroyEffect(EntityId elemId) {
-    int cellSize = 0;
-    ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
-
-    Transform tm;
-    ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
-    tm.scale = Vec3(static_cast<float>(cellSize) * destroyEffectScale);
-
     EBoardElemType elemType = EBoardElemType::None;
     ET_SendEventReturn(elemType, elemId, &ETGameBoardElem::ET_getType);
 
@@ -92,9 +109,13 @@ void GameBoardEffects::ET_playDestroyEffect(EntityId elemId) {
         }
     }
 
-    if(!effectId.isValid()) {
-        return;
-    }
+    spawnEffectWithScale(elemId, effectId, destroyEffectScale);
+}
 
-    ET_SendEvent(effectId, &ETParticlesSystem::ET_emitWithTm, tm);
+void GameBoardEffects::ET_playMergeEffect(EntityId elemId) {
+    spawnEffectWithScale(elemId, mergeEffectId, destroyEffectScale);
+}
+
+void GameBoardEffects::ET_playMutateEffect(EntityId elemId) {
+    spawnEffectWithScale(elemId, mutateEffectId, destroyEffectScale);
 }

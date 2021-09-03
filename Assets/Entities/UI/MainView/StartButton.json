@@ -107,7 +107,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "drawPriority": 2,
+              "zIndex": 2,
               "textureInfo": {
                 "filename": "Images/UI/start_button_bg.png",
                 "lerpType": "Point",
@@ -161,7 +161,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 1,
               "color": {
                 "r": 238,
                 "g": 238,
@@ -289,7 +289,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 0,
+        "zIndex": 0,
         "textureInfo": {
           "filename": "Images/UI/start_button_bg.png",
           "lerpType": "Point",

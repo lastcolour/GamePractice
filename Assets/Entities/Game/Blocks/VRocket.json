@@ -31,7 +31,7 @@
             "data": {
               "isVisible": false,
               "alpha": 0.699999988079071,
-              "drawPriority": 0,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
                 "lerpType": "Point",
@@ -82,7 +82,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
@@ -118,7 +118,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 1.0,
-          "w": 6.123233995736766e-17
+          "w": 6.123234262925839e-17
         }
       },
       "name": "SecondRocket",
@@ -133,7 +133,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
@@ -168,7 +168,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "textureInfo": {
           "filename": "Images/Game/vrocket_12x12.png",
           "lerpType": "Point",

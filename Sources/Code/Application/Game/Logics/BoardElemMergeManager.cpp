@@ -14,15 +14,12 @@ const float MIN_SHRINK_SIZE = 0.3f;
 
 void BoardElemMergeManager::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<BoardElemMergeManager>("BoardElemMergeManager")) {
-        classInfo->addField("mergeSound", &BoardElemMergeManager::mergeSound);
-        classInfo->addField("mutateSound", &BoardElemMergeManager::mutateSound);
         classInfo->addField("startVel", &BoardElemMergeManager::startVel);
         classInfo->addField("acc", &BoardElemMergeManager::acc);
         classInfo->addField("pulseScaleIncrese", &BoardElemMergeManager::pulseScaleIncrese);
         classInfo->addField("pulseScaleDecaySpeed", &BoardElemMergeManager::pulseScaleDecaySpeed);
         classInfo->addField("shrinkSpeed", &BoardElemMergeManager::shrinkSpeed);
         classInfo->addField("mutateTaskDuration", &BoardElemMergeManager::mutateTaskDuration);
-        classInfo->addField("mutateEffectId", &BoardElemMergeManager::mutateEffectId);
     }
 }
 
@@ -98,8 +95,8 @@ void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cell
         }
 
         if(offset.lenghtSq() > distSq) {
+            ET_SendEvent(&ETGameBoardEffects::ET_playMergeEffect, task.toId);
             ET_SendEvent(it->targetId, &ETGameBoardElem::ET_onMergeDone);
-            mergeSound.emit();
             it = task.merges.erase(it);
             task.pulseScale = std::min(MAX_PULSE_SCALE, task.pulseScale + pulseScaleIncrese);
         } else {
@@ -123,7 +120,9 @@ void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cell
         toTm.scale = Vec3(1.f);
         ET_SendEvent(task.toId, &ETEntity::ET_setLocalTransform, toTm);
 
+        ET_SendEvent(&ETGameBoardEffects::ET_playMutateEffect, task.toId);
         ET_SendEvent(task.toId, &ETGameBoardElem::ET_onMergeDone);
+
         ET_SendEvent(&ETGameBoard::ET_replaceElemToSpecial, task.toId, task.elemType);
     }
 }

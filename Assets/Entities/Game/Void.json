@@ -1,4 +1,48 @@
 {
-  "children": [],
-  "logics": []
+  "children": [
+    {
+      "transform": {
+        "pos": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "rot": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        }
+      },
+      "name": "Child",
+      "id": 1,
+      "internal": true,
+      "data": {
+        "children": [],
+        "logics": []
+      }
+    }
+  ],
+  "logics": [
+    {
+      "type": "UILayout",
+      "id": 1,
+      "data": {
+        "extraZOffset": 1,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          []
+        ]
+      }
+    }
+  ]
 }

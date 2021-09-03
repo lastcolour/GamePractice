@@ -6,11 +6,6 @@ import collections
 def _getReflectModel():
     return NativeObject._NATIVE_API.getReflectModel()
 
-def _writeValueToNative(val):
-    stream = MemoryStream()
-    val.writeToStream(stream)
-    NativeObject._NATIVE_API.getLibrary().setEntityLogicData(val.getEntityId(), val.getLogicId(), val._valueId, stream)
-
 class ValueType:
     Bool = 0
     Int = 1
@@ -28,7 +23,6 @@ class ValueType:
     Object = 14
     Array = 15
     PolymorphObject = 16
-
 
 class ResourceType:
     Invalid = 0
@@ -620,6 +614,9 @@ class ObjectValue(ValueNative):
         if not self._isArrayElement and self._name is not None:
             objectNode = node[self._name]
         for val in self._vals:
+            if val._name not in objectNode:
+                print("[ObjectValue:readFromStream] Can't find value '{0}' data".format(val._name))
+                continue
             val.readFromDict(objectNode)
 
     def writeToDict(self, node):

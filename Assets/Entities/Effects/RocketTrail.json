@@ -7,7 +7,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.20000000298023224,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "Game",
           "duration": -1.0,
@@ -109,7 +109,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "Game",
           "duration": -1.0,

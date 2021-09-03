@@ -21,6 +21,8 @@ public:
 
     // ETGameBoardEffects
     void ET_playDestroyEffect(EntityId elemId) override;
+    void ET_playMergeEffect(EntityId elemId) override;
+    void ET_playMutateEffect(EntityId elemId) override;
     EntityId ET_getRocketTrailEffect() const override;
 
 public:
@@ -33,6 +35,8 @@ public:
     EntityId bomdDestroyEffectId;
     EntityId rocketTrailEffectId;
     EntityId rocketDestroyEffectId;
+    EntityId mutateEffectId;
+    EntityId mergeEffectId;
     float destroyEffectScale;
 };
 

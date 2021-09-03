@@ -97,7 +97,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "zIndex": 3,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -143,7 +143,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/pause_button_bg.png",
                       "lerpType": "Point",
@@ -299,7 +299,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "zIndex": 3,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -405,7 +405,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/pause_button_bg.png",
                       "lerpType": "Point",
@@ -501,7 +501,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 3,
+                          "zIndex": 3,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -607,7 +607,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/pause_button_bg.png",
                       "lerpType": "Point",
@@ -681,7 +681,7 @@
             "data": {
               "isVisible": true,
               "alpha": 0.8999999761581421,
-              "drawPriority": 1,
+              "zIndex": 1,
               "textureInfo": {
                 "filename": "Images/UI/pause_bg.png",
                 "lerpType": "Point",
@@ -754,7 +754,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 0,
+        "zIndex": 0,
         "downScaleFactor": 3,
         "passes": 3
       }
@@ -854,7 +854,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.20000000298023224,
-        "drawPriority": 0,
+        "zIndex": 0,
         "size": {
           "x": 600.0,
           "y": 1024.0

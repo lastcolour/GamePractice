@@ -189,10 +189,10 @@ void GameBoardInteractionLogic::ET_onGameTick(float dt) {
             GameUtils::SetElemState(task.firstId, EBoardElemState::Static);
             GameUtils::SetElemState(task.secondId, EBoardElemState::Static);
 
-            int drawPriority = 0;
-            ET_SendEventReturn(drawPriority, task.firstId, &ETRenderNode::ET_getDrawPriority);
-            drawPriority -= 1;
-            ET_SendEvent(task.firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
+            int zIndex = 0;
+            ET_SendEventReturn(zIndex, task.firstId, &ETRenderNode::ET_getZIndex);
+            zIndex -= 1;
+            ET_SendEvent(task.firstId, &ETRenderNode::ET_setZIndex, zIndex);
 
             ET_SendEvent(&ETGameBoard::ET_switchElemsBoardPos, task.firstId, task.secondId);
             if(GameUtils::HasTriggerLogic(task.firstId)) {
@@ -218,10 +218,10 @@ void GameBoardInteractionLogic::createSwitchElemsTask(EntityId firstId, EntityId
     SwitchTask task;
     task.duration = 0.f;
 
-    int drawPriority = 0;
-    ET_SendEventReturn(drawPriority, firstId, &ETRenderNode::ET_getDrawPriority);
-    drawPriority += 1;
-    ET_SendEvent(firstId, &ETRenderNode::ET_setDrawPriority, drawPriority);
+    int zIndex = 0;
+    ET_SendEventReturn(zIndex, firstId, &ETRenderNode::ET_getZIndex);
+    zIndex += 1;
+    ET_SendEvent(firstId, &ETRenderNode::ET_setZIndex, zIndex);
 
     task.firstId = firstId;
     ET_SendEventReturn(task.firstTm, firstId, &ETEntity::ET_getLocalTransform);

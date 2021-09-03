@@ -2,26 +2,16 @@
 #include "UIUtils.hpp"
 #include "Render/ETRenderNode.hpp"
 
-void UIProxyNode::Reflect(ReflectContext& ctx) {
-    if(auto classInfo = ctx.classInfo<UIProxyNode>("UIProxyNode")) {
-        classInfo->addField("target", &UIProxyNode::entId);
-        classInfo->addField("normScale", &UIProxyNode::normScale);
-        classInfo->addField("extraZOffset", &UIProxyNode::extraZOffset);
-    }
-}
-
-UIProxyNode::UIProxyNode() :
-    normScale(1.f),
-    extraZOffset(1) {
-}
-
 void UIElementProxy::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIElementProxy>("UIElementProxy")) {
-        classInfo->addField("proxies", &UIElementProxy::nodes);
+        classInfo->addField("gridScale", &UIElementProxy::gridScale);
+        classInfo->addField("useGridScale", &UIElementProxy::useGridScale);
     }
 }
 
-UIElementProxy::UIElementProxy() {
+UIElementProxy::UIElementProxy() :
+    gridScale(1.f),
+    useGridScale(true) {
 }
 
 UIElementProxy::~UIElementProxy() {
@@ -29,7 +19,9 @@ UIElementProxy::~UIElementProxy() {
 
 void UIElementProxy::init() {
     UIElement::init();
-    ETNode<ETUIViewPortEvents>::connect(getEntityId());
+    if(useGridScale) {
+        ETNode<ETUIViewPortEvents>::connect(getEntityId());
+    }
 }
 
 void UIElementProxy::deinit() {
@@ -39,6 +31,8 @@ void UIElementProxy::deinit() {
 void UIElementProxy::ET_onLoaded() {
     UIElement::ET_onLoaded();
     applyNormScale();
+
+    ETNode<ETEntityEvents>::disconnect();
 }
 
 void UIElementProxy::ET_onViewPortChanged(const Vec2i& newSize) {
@@ -46,33 +40,24 @@ void UIElementProxy::ET_onViewPortChanged(const Vec2i& newSize) {
 }
 
 void UIElementProxy::onZIndexChanged(int newZIndex) {
-    for(auto& node : nodes) {
-        int nodeZIndex = newZIndex + node.extraZOffset;
-        ET_SendEvent(node.entId, &ETRenderNode::ET_setDrawPriority, nodeZIndex);
-    }
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_setZIndex, newZIndex);
 }
 
 void UIElementProxy::onHide(bool flag) {
     if(flag) {
-        for(auto& node : nodes) {
-            ET_SendEvent(node.entId, &ETRenderNode::ET_hide);
-        }
+        ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
     } else {
-        for(auto& node : nodes) {
-            ET_SendEvent(node.entId, &ETRenderNode::ET_show);
-        }
+        ET_SendEvent(getEntityId(), &ETRenderNode::ET_show);
     }
 }
 
 void UIElementProxy::onAlphaChanged(float newAlpha) {
-    for(auto& node : nodes) {
-        ET_SendEvent(node.entId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
-    }
+    ET_SendEvent(getEntityId(), &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
 void UIElementProxy::applyNormScale() {
-    for(auto& node : nodes) {
-        float normScale = UI::GetValueOnGrind(node.normScale);
-        ET_SendEvent(node.entId, &ETRenderNode::ET_setNormalizationScale, normScale);
+    if(useGridScale) {
+        auto scaleFactor = UI::GetValueOnGrind(gridScale);
+        ET_SendEvent(getEntityId(), &ETRenderNode::ET_setNormalizationScale, scaleFactor);
     }
 }

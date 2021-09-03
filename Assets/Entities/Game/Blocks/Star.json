@@ -31,7 +31,7 @@
             "data": {
               "isVisible": false,
               "alpha": 0.699999988079071,
-              "drawPriority": 0,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
                 "lerpType": "Point",
@@ -66,7 +66,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "textureInfo": {
           "filename": "Images/Game/star_12x12.png",
           "lerpType": "Point",

@@ -97,7 +97,7 @@ void RenderGraph::prepareNodes() {
         return;
     }
     std::sort(children.begin(), children.end(), [](Node* first, Node* second){
-        return first->getDrawPriority() < second->getDrawPriority();
+        return first->getZIndex() < second->getZIndex();
     });
     needReorder = false;
 }

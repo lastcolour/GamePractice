@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 0.8999999761581421,
-              "drawPriority": 10000,
+              "zIndex": 1,
               "emission": {
                 "simTime": "Game",
                 "duration": 0.05000000074505806,
@@ -161,7 +161,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 100000,
+              "zIndex": 1,
               "emission": {
                 "simTime": "Game",
                 "duration": 0.05000000074505806,
@@ -277,9 +277,9 @@
       "type": "ParticlesSystem",
       "id": 4,
       "data": {
-        "isVisible": false,
+        "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 4,
+        "zIndex": 0,
         "emission": {
           "simTime": "Game",
           "duration": 0.05000000074505806,
@@ -397,6 +397,23 @@
             }
           ]
         }
+      }
+    },
+    {
+      "type": "RenderScene",
+      "id": 5,
+      "data": {
+        "zIndexStep": 1,
+        "stencilPolicy": "None",
+        "buildChildListOnLoad": true
+      }
+    },
+    {
+      "type": "UIElementProxy",
+      "id": 6,
+      "data": {
+        "gridScale": 1.0,
+        "useGridScale": false
       }
     }
   ]

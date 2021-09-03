@@ -118,8 +118,8 @@
     {
       "transform": {
         "pos": {
-          "x": 488.0,
-          "y": 524.0,
+          "x": 0.0,
+          "y": 0.0,
           "z": 0.0
         },
         "scale": {
@@ -141,8 +141,8 @@
     {
       "transform": {
         "pos": {
-          "x": 533.0,
-          "y": 524.0,
+          "x": 0.0,
+          "y": 0.0,
           "z": 0.0
         },
         "scale": {
@@ -164,8 +164,8 @@
     {
       "transform": {
         "pos": {
-          "x": 627.0,
-          "y": 524.0,
+          "x": 0.0,
+          "y": 0.0,
           "z": 0.0
         },
         "scale": {
@@ -187,8 +187,8 @@
     {
       "transform": {
         "pos": {
-          "x": 558.0,
-          "y": 464.0,
+          "x": 0.0,
+          "y": 0.0,
           "z": 0.0
         },
         "scale": {
@@ -210,8 +210,8 @@
     {
       "transform": {
         "pos": {
-          "x": 413.0,
-          "y": 464.0,
+          "x": 0.0,
+          "y": 0.0,
           "z": 0.0
         },
         "scale": {
@@ -297,99 +297,12 @@
       "type": "BoardElemMergeManager",
       "id": 7,
       "data": {
-        "mergeSound": {
-          "event": "getProgressionStar_01"
-        },
-        "mutateSound": {
-          "event": "elemSwitch_01"
-        },
         "startVel": 1.0,
         "acc": 1.0,
         "pulseScaleIncrese": 0.4000000059604645,
         "pulseScaleDecaySpeed": 5.0,
         "shrinkSpeed": 1.0,
-        "mutateTaskDuration": 0.20000000298023224,
-        "mutateEffectId": [
-          106
-        ]
-      }
-    },
-    {
-      "type": "UIElementProxy",
-      "id": 8,
-      "data": {
-        "proxies": [
-          {
-            "target": [
-              1
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 3
-          },
-          {
-            "target": [
-              2
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 3
-          },
-          {
-            "target": [
-              3
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              4
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              5
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              106
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              207
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              308
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              409
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 3
-          },
-          {
-            "target": [
-              510
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          }
-        ]
+        "mutateTaskDuration": 0.20000000298023224
       }
     },
     {
@@ -442,7 +355,13 @@
         "rocketDestroy": [
           510
         ],
-        "destroyEffectScale": 0.07999999821186066
+        "destroyEffectScale": 0.07999999821186066,
+        "mutateEffect": [
+          106
+        ],
+        "mergeEffect": [
+          106
+        ]
       }
     },
     {
@@ -467,6 +386,50 @@
             "x": 0.0,
             "y": -0.20000000298023224
           }
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 13,
+      "data": {
+        "extraZOffset": 4,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            106
+          ],
+          [
+            207
+          ],
+          [
+            308
+          ],
+          [
+            409
+          ],
+          [
+            510
+          ]
         ]
       }
     }

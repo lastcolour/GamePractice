@@ -35,6 +35,8 @@ void UILayoutBox::ET_onLoaded() {
     ET_setRenderId(boxRenderId);
 
     updateSelfLayout();
+
+    ETNode<ETEntityEvents>::disconnect();
 }
 
 void UILayoutBox::ET_setRenderId(EntityId newRenderId) {
@@ -44,7 +46,7 @@ void UILayoutBox::ET_setRenderId(EntityId newRenderId) {
     }
     Vec2 boxSize = aabb.getSize();
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setZIndex, ET_getZIndex());
     if(ET_isHidden()) {
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
     } else {
@@ -65,7 +67,7 @@ UIBoxMargin UILayoutBox::ET_getMargin() const {
 }
 
 void UILayoutBox::onZIndexChanged(int newZIndex) {
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setZIndex, newZIndex);
 }
 
 void UILayoutBox::onHide(bool flag) {

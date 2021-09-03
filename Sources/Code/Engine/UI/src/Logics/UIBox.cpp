@@ -87,7 +87,7 @@ void UIBox::onHide(bool flag) {
 }
 
 void UIBox::onZIndexChanged(int newZIndex) {
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setZIndex, newZIndex);
 }
 
 void UIBox::ET_onLoaded() {
@@ -109,7 +109,7 @@ void UIBox::ET_setRenderId(EntityId newRenderId) {
     }
     Vec2 boxSize = aabb.getSize();
     ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, boxSize);
-    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    ET_SendEvent(boxRenderId, &ETRenderNode::ET_setZIndex, ET_getZIndex());
     if(ET_isHidden()) {
         ET_SendEvent(boxRenderId, &ETRenderNode::ET_hide);
     } else {

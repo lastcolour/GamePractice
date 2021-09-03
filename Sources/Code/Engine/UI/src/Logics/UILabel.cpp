@@ -76,7 +76,7 @@ void UILabel::ET_setRenderId(EntityId newRenderId) {
     }
     ET_setText(text.c_str());
     ET_setStyle(style);
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, ET_getZIndex());
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setZIndex, ET_getZIndex());
     if(ET_isHidden()) {
         ET_SendEvent(labelRenderId, &ETRenderNode::ET_hide);
     } else {
@@ -89,7 +89,7 @@ EntityId UILabel::ET_getRenderId(EntityId newRenderId) const {
 }
 
 void UILabel::onZIndexChanged(int newZIndex) {
-    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setDrawPriority, newZIndex);
+    ET_SendEvent(labelRenderId, &ETRenderNode::ET_setZIndex, newZIndex);
 }
 
 void UILabel::ET_onViewPortChanged(const Vec2i& newSize) {
@@ -112,4 +112,6 @@ void UILabel::ET_onLoaded() {
     UIElement::ET_onLoaded();
 
     ET_setRenderId(labelRenderId);
+
+    ETNode<ETEntityEvents>::disconnect();
 }

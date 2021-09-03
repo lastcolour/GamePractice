@@ -79,7 +79,7 @@
                         "data": {
                           "isVisible": false,
                           "alpha": 1.0,
-                          "drawPriority": 2,
+                          "zIndex": 0,
                           "textureInfo": {
                             "filename": "Images/UI/unlocked_lvl_bg.png",
                             "lerpType": "Point",
@@ -130,7 +130,7 @@
                         "data": {
                           "isVisible": false,
                           "alpha": 1.0,
-                          "drawPriority": 0,
+                          "zIndex": 0,
                           "textureInfo": {
                             "filename": "Images/UI/completed_lvl_bg.png",
                             "lerpType": "Point",
@@ -223,7 +223,7 @@
                               "data": {
                                 "isVisible": false,
                                 "alpha": 1.0,
-                                "drawPriority": 4,
+                                "zIndex": 4,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
@@ -379,7 +379,7 @@
                                           "data": {
                                             "isVisible": false,
                                             "alpha": 1.0,
-                                            "drawPriority": 6,
+                                            "zIndex": 6,
                                             "size": {
                                               "x": 14.687999725341797,
                                               "y": 14.687999725341797
@@ -440,7 +440,7 @@
                                     "data": {
                                       "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 5,
+                                      "zIndex": 5,
                                       "size": {
                                         "x": 14.399999618530273,
                                         "y": 14.399999618530273
@@ -574,7 +574,7 @@
                                           "data": {
                                             "isVisible": false,
                                             "alpha": 1.0,
-                                            "drawPriority": 6,
+                                            "zIndex": 6,
                                             "size": {
                                               "x": 14.687999725341797,
                                               "y": 14.687999725341797
@@ -635,7 +635,7 @@
                                     "data": {
                                       "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 5,
+                                      "zIndex": 5,
                                       "size": {
                                         "x": 14.399999618530273,
                                         "y": 14.399999618530273
@@ -769,7 +769,7 @@
                                           "data": {
                                             "isVisible": false,
                                             "alpha": 1.0,
-                                            "drawPriority": 6,
+                                            "zIndex": 6,
                                             "size": {
                                               "x": 14.687999725341797,
                                               "y": 14.687999725341797
@@ -830,7 +830,7 @@
                                     "data": {
                                       "isVisible": false,
                                       "alpha": 1.0,
-                                      "drawPriority": 5,
+                                      "zIndex": 5,
                                       "size": {
                                         "x": 14.399999618530273,
                                         "y": 14.399999618530273
@@ -958,7 +958,7 @@
                         "data": {
                           "isVisible": false,
                           "alpha": 1.0,
-                          "drawPriority": 6,
+                          "zIndex": 6,
                           "textureInfo": {
                             "filename": "Images/UI/unlocked_lvl_bg.png",
                             "lerpType": "Point",
@@ -1307,7 +1307,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 7,
+                                "zIndex": 7,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
@@ -1370,7 +1370,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 7,
+                                "zIndex": 7,
                                 "color": {
                                   "r": 255,
                                   "g": 255,
@@ -1454,7 +1454,7 @@
                         "data": {
                           "isVisible": false,
                           "alpha": 0.4000000059604645,
-                          "drawPriority": 5,
+                          "zIndex": 5,
                           "textureInfo": {
                             "filename": "Images/UI/locked_button_bg.png",
                             "lerpType": "Point",
@@ -1585,7 +1585,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/locked_button_bg.png",
                       "lerpType": "Point",

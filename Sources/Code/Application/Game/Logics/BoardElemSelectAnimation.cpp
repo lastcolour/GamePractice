@@ -70,9 +70,9 @@ void BoardElemSelectAnimation::ET_playSelect() {
 
         ET_SendEvent(backgroundId, &ETRenderNode::ET_show);
 
-        int drawPriority = 0;
-        ET_SendEventReturn(drawPriority, getEntityId(), &ETRenderNode::ET_getDrawPriority);
-        ET_SendEvent(backgroundId, &ETRenderNode::ET_setDrawPriority, drawPriority - 1);
+        int zIndex = 0;
+        ET_SendEventReturn(zIndex, getEntityId(), &ETRenderNode::ET_getZIndex);
+        ET_SendEvent(backgroundId, &ETRenderNode::ET_setZIndex, zIndex - 1);
 
         ET_SendEventReturn(startSize, getEntityId(), &ETRenderRect::ET_getSize);
         ET_SendEvent(backgroundId, &ETRenderRect::ET_setSize, startSize);

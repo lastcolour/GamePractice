@@ -8,7 +8,7 @@ Node::Node() :
     renderGraph(nullptr),
     blendMode(BlendMode{BlendType::NONE, BlendType::NONE}),
     alpha(1.f),
-    drawPriority(0),
+    zIndex(0),
     visible(false),
     modelMatDirty(true) {
 }
@@ -25,8 +25,12 @@ void Node::setAlpha(float newAlpha) {
     alpha = newAlpha;
 }
 
-void Node::setDrawPriority(int newDrawPriority) {
-    drawPriority = newDrawPriority;
+int Node::getZIndex() const {
+    return zIndex;
+}
+
+void Node::setZIndex(int newZIndex) {
+    zIndex = newZIndex;
     if(renderGraph) {
         renderGraph->setNeedReorderNodes();
     }
@@ -72,10 +76,6 @@ void Node::setRenderGraph(RenderGraph* graph) {
 
 void Node::setStencilData(const StencilWirteReadData& newStencilData) {
     stencilData = newStencilData;
-}
-
-int Node::getDrawPriority() const {
-    return drawPriority;
 }
 
 void Node::onRenderStart(RenderContext& ctx) {

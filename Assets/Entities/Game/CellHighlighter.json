@@ -7,7 +7,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.8999999761581421,
-        "drawPriority": 0,
+        "zIndex": 0,
         "textureInfo": {
           "filename": "Images/Base/rblock_256x256.png",
           "lerpType": "Linear",

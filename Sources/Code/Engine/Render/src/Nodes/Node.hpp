@@ -17,10 +17,10 @@ public:
     void init();
     void setRenderGraph(RenderGraph* graph);
     void render(RenderContext& ctx);
-    int getDrawPriority() const;
+    int getZIndex() const;
+    void setZIndex(int newZIndex);
 
     void setAlpha(float newAlpha);
-    void setDrawPriority(int newDrawPriority);
     void setVisible(bool flag);
     void setTransform(const Transform& newTm);
     void setStencilData(const StencilWirteReadData& newStencilData);
@@ -57,7 +57,7 @@ private:
     StencilWirteReadData stencilData;
     BlendMode blendMode;
     float alpha;
-    int drawPriority;
+    int zIndex;
     bool visible;
     bool modelMatDirty;
 };

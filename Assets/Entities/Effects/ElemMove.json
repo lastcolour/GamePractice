@@ -7,7 +7,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.5,
-        "drawPriority": 0,
+        "zIndex": 0,
         "emission": {
           "simTime": "Game",
           "duration": 0.20000000298023224,
@@ -101,6 +101,14 @@
         "gravity": {
           "fields": []
         }
+      }
+    },
+    {
+      "type": "UIElementProxy",
+      "id": 2,
+      "data": {
+        "gridScale": 1.0,
+        "useGridScale": false
       }
     }
   ]

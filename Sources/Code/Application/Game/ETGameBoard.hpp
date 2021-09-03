@@ -73,6 +73,8 @@ struct ETGameBoardElemHighlighter {
 struct ETGameBoardEffects {
     virtual ~ETGameBoardEffects() = default;
     virtual void ET_playDestroyEffect(EntityId elemId) = 0;
+    virtual void ET_playMergeEffect(EntityId elemId) = 0;
+    virtual void ET_playMutateEffect(EntityId elemId) = 0;
     virtual EntityId ET_getRocketTrailEffect() const = 0;
 };
 

@@ -5,7 +5,7 @@ void RenderNode::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderNode>("RenderNode")) {
         classInfo->addField("isVisible", &RenderNode::isVisible);
         classInfo->addField("alpha", &RenderNode::alpha);
-        classInfo->addField("drawPriority", &RenderNode::drawPriority);
+        classInfo->addField("zIndex", &RenderNode::zIndex);
     }
 }
 
@@ -14,10 +14,11 @@ RenderNode::RenderNode(RenderNodeType nodeType) :
     alpha(1.f),
     alphaMult(1.f),
     normScale(1.f),
-    drawPriority(0),
+    zIndex(0),
     type(nodeType),
     isVisible(true),
-    isLoaded(false) {
+    isLoaded(false),
+    emitEvents(false) {
 }
 
 RenderNode::~RenderNode() {
@@ -40,7 +41,7 @@ void RenderNode::init() {
 
     proxyNode->setTransform(tm);
     proxyNode->setAlpha(alpha * alphaMult);
-    proxyNode->setDrawPriority(drawPriority);
+    proxyNode->setZIndex(zIndex);
 
     onInit();
 
@@ -52,6 +53,7 @@ void RenderNode::init() {
 
 void RenderNode::deinit() {
     normScale = 1.f;
+    ETNode<ETEntityEvents>::disconnect();
     ETNode<ETRenderNode>::disconnect();
     if(proxyNode != nullptr) {
         ET_QueueEvent(&ETRenderNodeManager::ET_removeNode, proxyNode);
@@ -70,6 +72,13 @@ void RenderNode::ET_setAlphaMultiplier(float newAlphaMult) {
     ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, resAlpha](){
         node->setAlpha(resAlpha);
     });
+    if(emitEvents) {
+        ET_SendEvent(getEntityId(), &ETRenderNodeEvents::ET_onAlphaMultChanged, newAlphaMult);
+    }
+}
+
+float RenderNode::ET_getAlphaMultiplier() const {
+    return alphaMult;
 }
 
 bool RenderNode::ET_isVisible() const {
@@ -87,6 +96,9 @@ void RenderNode::ET_hide() {
     ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode](){
         node->setVisible(false);
     });
+    if(emitEvents) {
+        ET_SendEvent(getEntityId(), &ETRenderNodeEvents::ET_onHidden, !isVisible);
+    }
 }
 
 void RenderNode::ET_show() {
@@ -100,20 +112,26 @@ void RenderNode::ET_show() {
     ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode](){
         node->setVisible(true);
     });
+    if(emitEvents) {
+        ET_SendEvent(getEntityId(), &ETRenderNodeEvents::ET_onHidden, !isVisible);
+    }
 }
 
-void RenderNode::ET_setDrawPriority(int newDrawPriority) {
-    if(newDrawPriority == drawPriority) {
+void RenderNode::ET_setZIndex(int newZIndex) {
+    if(newZIndex == zIndex) {
         return;
     }
-    drawPriority = newDrawPriority;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newDrawPriority](){
-        node->setDrawPriority(newDrawPriority);
+    zIndex = newZIndex;
+    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newZIndex](){
+        node->setZIndex(newZIndex);
     });
+    if(emitEvents) {
+        ET_SendEvent(getEntityId(), &ETRenderNodeEvents::ET_onZIndexChanged, zIndex);
+    }
 }
 
-int RenderNode::ET_getDrawPriority() const {
-    return drawPriority;
+int RenderNode::ET_getZIndex() const {
+    return zIndex;
 }
 
 void RenderNode::ET_setStencilData(const StencilWirteReadData& newStencilData) {
@@ -136,6 +154,9 @@ void RenderNode::ET_setNormalizationScale(float newNormScale) {
         node->setNormScale(nScale);
     });
     normScale = newNormScale;
+    if(emitEvents) {
+        ET_SendEvent(getEntityId(), &ETRenderNodeEvents::ET_onNormScaleChanged, normScale);
+    }
 }
 
 float RenderNode::ET_getNormalizationScale() const {
@@ -149,4 +170,8 @@ void RenderNode::ET_onLoaded() {
             node->setVisible(true);
         });
     }
+}
+
+void RenderNode::ET_setEmitEvents(bool flag) {
+    emitEvents = flag;
 }

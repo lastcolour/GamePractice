@@ -12,12 +12,28 @@ struct ETRenderNode {
     virtual bool ET_isVisible() const = 0;
     virtual void ET_hide() = 0;
     virtual void ET_show() = 0;
-    virtual void ET_setDrawPriority(int newDrawPriority) = 0;
+    virtual void ET_setZIndex(int newZIndex) = 0;
+    virtual int ET_getZIndex() const = 0;
     virtual void ET_setAlphaMultiplier(float newAlphaMult) = 0;
+    virtual float ET_getAlphaMultiplier() const = 0;
     virtual void ET_setNormalizationScale(float newNormScale) = 0;
     virtual float ET_getNormalizationScale() const = 0;
-    virtual int ET_getDrawPriority() const = 0;
     virtual void ET_setStencilData(const StencilWirteReadData& newSteniclData) = 0;
+    virtual void ET_setEmitEvents(bool flag) = 0;
+};
+
+struct ETRenderNodeEvents {
+    virtual ~ETRenderNodeEvents() = default;
+    virtual void ET_onHidden(bool flag) = 0;
+    virtual void ET_onZIndexChanged(int newZIndex) = 0;
+    virtual void ET_onAlphaMultChanged(float newAlphaMult) = 0;
+    virtual void ET_onNormScaleChanged(float newNormScale) = 0;
+};
+
+struct ETRenderScene {
+    virtual ~ETRenderScene() = default;
+    virtual void ET_addItem(int layer, EntityId entId) = 0;
+    virtual void ET_removeItem(EntityId entId) = 0;
 };
 
 struct ETRenderRect {

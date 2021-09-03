@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 1,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -133,7 +133,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 1,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -263,7 +263,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 1,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -365,7 +365,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 1,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -495,7 +495,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 1,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -597,7 +597,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 1,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -704,7 +704,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "UI",
           "duration": 5.0,
@@ -824,7 +824,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "UI",
           "duration": 5.0,
@@ -944,7 +944,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "UI",
           "duration": 5.0,
@@ -1062,36 +1062,8 @@
       "type": "UIElementProxy",
       "id": 6,
       "data": {
-        "proxies": [
-          {
-            "target": [
-              0
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 1
-          },
-          {
-            "target": [
-              1
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              2
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          },
-          {
-            "target": [
-              3
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 5
-          }
-        ]
+        "gridScale": 1.0,
+        "useGridScale": true
       }
     },
     {
@@ -1102,6 +1074,15 @@
         "soundEvent": {
           "event": "firework_expl_01"
         }
+      }
+    },
+    {
+      "type": "RenderScene",
+      "id": 8,
+      "data": {
+        "zIndexStep": 1,
+        "stencilPolicy": "None",
+        "buildChildListOnLoad": true
       }
     }
   ]

@@ -30,6 +30,13 @@ bool isMoveEnded(const Vec3& pt, int cellSize, const Vec2i& startPt, const Vec2i
     return isOutOfBoard && isOutOfViewPort;
 }
 
+void hideRocket(EntityId rocketId) {
+    ET_SendEvent(rocketId, &ETRenderNode::ET_hide);
+    EntityId trailEffectId;
+    ET_SendEventReturn(trailEffectId, &ETGameBoardEffects::ET_getRocketTrailEffect);
+    ET_SendEvent(trailEffectId, &ETParticlesSystem::ET_stopTrackedEmitter, rocketId);
+}
+
 bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOffset,
     int cellSize, const Vec2i& startPt, const Vec2i& boardSize) {
     Transform rocketTm = tm;
@@ -40,10 +47,7 @@ bool moveRocket(EntityId rocketId, Vec2i moveDir, const Transform& tm, float fOf
     bool isEnded = isMoveEnded(rocketTm.pt, cellSize, startPt, boardSize, fOffset, moveDir);
 
     if(isEnded) {
-        ET_SendEvent(rocketId, &ETRenderNode::ET_hide);
-        EntityId trailEffectId;
-        ET_SendEventReturn(trailEffectId, &ETGameBoardEffects::ET_getRocketTrailEffect);
-        ET_SendEvent(trailEffectId, &ETParticlesSystem::ET_stopTrackedEmitter, rocketId);
+        hideRocket(rocketId);
     }
 
     return isEnded;
@@ -191,8 +195,8 @@ void GameElemRocketLogic::ET_initRender(UIProxyContainer& rootContainer, const V
 
 void GameElemRocketLogic::ET_deinitRender(UIProxyContainer& rootContainer) {
     rootContainer.removeItem(firstRocket);
-    ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
+    hideRocket(firstRocket);
 
     rootContainer.removeItem(secondRocket);
-    ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
+    hideRocket(firstRocket);
 }

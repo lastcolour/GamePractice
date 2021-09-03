@@ -27,12 +27,14 @@ public:
     bool ET_isVisible() const override;
     void ET_hide() override;
     void ET_show() override;
-    void ET_setDrawPriority(int newDrawPriority) override;
-    int ET_getDrawPriority() const override;
+    void ET_setZIndex(int newZIndex) override;
+    int ET_getZIndex() const override;
     void ET_setAlphaMultiplier(float newAlphaMult) override;
+    float ET_getAlphaMultiplier() const override;
     void ET_setStencilData(const StencilWirteReadData& newSteniclData) override;
     void ET_setNormalizationScale(float newNormScale) override;
     float ET_getNormalizationScale() const override;
+    void ET_setEmitEvents(bool flag) override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;
@@ -49,10 +51,11 @@ protected:
     float alpha;
     float alphaMult;
     float normScale;
-    int drawPriority;
+    int zIndex;
     RenderNodeType type;
     bool isVisible;
     bool isLoaded;
+    bool emitEvents;
 };
 
 #endif /* __RENDER_NODE_HPP__ */

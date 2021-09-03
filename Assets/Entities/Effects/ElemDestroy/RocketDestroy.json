@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 100000,
+              "zIndex": 1,
               "emission": {
                 "simTime": "Game",
                 "duration": 0.05000000074505806,
@@ -149,7 +149,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.4000000059604645,
-        "drawPriority": 2,
+        "zIndex": 0,
         "emission": {
           "simTime": "Game",
           "duration": 0.05000000074505806,
@@ -250,6 +250,23 @@
         "gravity": {
           "fields": []
         }
+      }
+    },
+    {
+      "type": "RenderScene",
+      "id": 5,
+      "data": {
+        "zIndexStep": 1,
+        "stencilPolicy": "None",
+        "buildChildListOnLoad": true
+      }
+    },
+    {
+      "type": "UIElementProxy",
+      "id": 6,
+      "data": {
+        "gridScale": 1.0,
+        "useGridScale": false
       }
     }
   ]

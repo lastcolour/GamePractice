@@ -4,22 +4,6 @@
 #include "Logics/UIElement.hpp"
 #include "UI/ETUIViewPort.hpp"
 
-class UIProxyNode {
-public:
-
-    static void Reflect(ReflectContext& ctx);
-
-public:
-
-    UIProxyNode();
-
-public:
-
-    EntityId entId;
-    float normScale;
-    int extraZOffset;
-};
-
 class UIElementProxy : public UIElement,
     public ETNode<ETUIViewPortEvents> {
 public:
@@ -59,7 +43,8 @@ private:
 
 private:
 
-    std::vector<UIProxyNode> nodes;
+    float gridScale;
+    bool useGridScale;
 };
 
 #endif /* __UI_ELEMENT_PROXY_HPP__ */

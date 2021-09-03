@@ -73,7 +73,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 3,
+                    "zIndex": 3,
                     "color": {
                       "r": 0,
                       "g": 0,
@@ -248,7 +248,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 1,
               "textureInfo": {
                 "filename": "Images/UI/info_box_white_bg.png",
                 "lerpType": "Point",

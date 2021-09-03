@@ -31,7 +31,7 @@
             "data": {
               "isVisible": false,
               "alpha": 0.699999988079071,
-              "drawPriority": 0,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
                 "lerpType": "Point",
@@ -66,8 +66,8 @@
         "rot": {
           "x": 0.0,
           "y": 0.0,
-          "z": 0.7071067811865476,
-          "w": 0.7071067811865476
+          "z": 0.7071068286895752,
+          "w": 0.7071068286895752
         }
       },
       "name": "FirstRocket",
@@ -82,7 +82,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
@@ -117,8 +117,8 @@
         "rot": {
           "x": 0.0,
           "y": 0.0,
-          "z": -0.7071067811865476,
-          "w": 0.7071067811865476
+          "z": -0.7071068286895752,
+          "w": 0.7071068286895752
         }
       },
       "name": "SecondRocket",
@@ -133,7 +133,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
@@ -168,7 +168,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 1,
+        "zIndex": 0,
         "textureInfo": {
           "filename": "Images/Game/hrocket_12x12.png",
           "lerpType": "Point",
@@ -189,9 +189,9 @@
       "type": "BoardElemDestroyAnimation",
       "id": 3,
       "data": {
-        "startDelay": 0.05,
+        "startDelay": 0.05000000074505806,
         "duration": 0.0,
-        "endDelay": 0.05,
+        "endDelay": 0.05000000074505806,
         "soundEvent": {
           "event": "elemDestroy_01"
         }
@@ -201,9 +201,9 @@
       "type": "BoardElemSelectAnimation",
       "id": 4,
       "data": {
-        "duration": 0.1,
-        "maxBackgroundScale": 1.1,
-        "minForegroundScale": 0.9,
+        "duration": 0.10000000149011612,
+        "maxBackgroundScale": 1.100000023841858,
+        "minForegroundScale": 0.8999999761581421,
         "background": [
           1
         ]
@@ -221,7 +221,7 @@
       "type": "GameBoardElemLandAnimation",
       "id": 6,
       "data": {
-        "totalDuration": 0.3,
+        "totalDuration": 0.30000001192092896,
         "landSound": {
           "event": "scoreIncrease_01"
         }

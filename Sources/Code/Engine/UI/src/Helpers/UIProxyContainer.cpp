@@ -60,7 +60,7 @@ void UIProxyContainer::addItem(EntityId itemId, int extraZOffset) {
 
     int zIndex = 0;
     ET_SendEventReturn(zIndex, parentId, &ETUIElement::ET_getZIndex);
-    ET_SendEvent(itemId, &ETRenderNode::ET_setDrawPriority, zIndex + extraZOffset);
+    ET_SendEvent(itemId, &ETRenderNode::ET_setZIndex, zIndex + extraZOffset);
 
     bool isHidden = true;
     ET_SendEventReturn(isHidden, parentId, &ETUIElement::ET_isHidden);
@@ -89,7 +89,7 @@ size_t UIProxyContainer::count() const {
 
 void UIProxyContainer::ET_onZIndexChanged(int newZIndex) {
     for(auto& node : proxies) {
-        ET_SendEvent(node.first, &ETRenderNode::ET_setDrawPriority, newZIndex + node.second.extraZOffset);
+        ET_SendEvent(node.first, &ETRenderNode::ET_setZIndex, newZIndex + node.second.extraZOffset);
     }
 }
 

@@ -49,7 +49,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 1,
               "color": {
                 "r": 255,
                 "g": 255,
@@ -114,7 +114,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 1,
+              "zIndex": 1,
               "textureInfo": {
                 "filename": "Images/Base/circle_64x64.png",
                 "lerpType": "Linear",
@@ -162,7 +162,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 0,
+        "zIndex": 0,
         "size": {
           "x": 600.0,
           "y": 1024.0

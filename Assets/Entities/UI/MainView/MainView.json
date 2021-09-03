@@ -75,7 +75,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/logo.png",
                       "lerpType": "Point",
@@ -348,7 +348,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/info_button_bg.png",
                       "lerpType": "Point",
@@ -469,7 +469,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/option_button_bg.png",
                       "lerpType": "Point",
@@ -590,7 +590,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 2,
+                    "zIndex": 2,
                     "textureInfo": {
                       "filename": "Images/UI/shop_button_bg.png",
                       "lerpType": "Point",

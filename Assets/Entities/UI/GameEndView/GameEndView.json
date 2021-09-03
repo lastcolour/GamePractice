@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 68.59124755859375,
+                "y": 74.8800048828125,
                 "z": 0.0
               },
               "scale": {
@@ -51,7 +51,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -113.43939208984375,
+                      "x": -123.83999633789062,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -123,7 +123,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "drawPriority": 8,
+                                "zIndex": 8,
                                 "textureInfo": {
                                   "filename": "Images/UI/start.png",
                                   "lerpType": "Point",
@@ -135,8 +135,8 @@
                                   }
                                 },
                                 "size": {
-                                  "x": 105.5250015258789,
-                                  "y": 105.5250015258789
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
                                 }
                               }
                             },
@@ -231,7 +231,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "textureInfo": {
                             "filename": "Images/UI/start_bg.png",
                             "lerpType": "Point",
@@ -243,8 +243,8 @@
                             }
                           },
                           "size": {
-                            "x": 92.3343734741211,
-                            "y": 92.3343734741211
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
                           }
                         }
                       }
@@ -254,7 +254,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 0.0,
+                      "x": 3.0517578125e-05,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -326,7 +326,7 @@
                               "data": {
                                 "isVisible": false,
                                 "alpha": 1.0,
-                                "drawPriority": 8,
+                                "zIndex": 8,
                                 "textureInfo": {
                                   "filename": "Images/UI/start.png",
                                   "lerpType": "Point",
@@ -338,8 +338,8 @@
                                   }
                                 },
                                 "size": {
-                                  "x": 105.5250015258789,
-                                  "y": 105.5250015258789
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
                                 }
                               }
                             },
@@ -434,7 +434,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "textureInfo": {
                             "filename": "Images/UI/start_bg.png",
                             "lerpType": "Point",
@@ -446,8 +446,8 @@
                             }
                           },
                           "size": {
-                            "x": 92.3343734741211,
-                            "y": 92.3343734741211
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
                           }
                         }
                       }
@@ -457,7 +457,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": 113.43939208984375,
+                      "x": 123.84002685546875,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -529,7 +529,7 @@
                               "data": {
                                 "isVisible": false,
                                 "alpha": 1.0,
-                                "drawPriority": 8,
+                                "zIndex": 8,
                                 "textureInfo": {
                                   "filename": "Images/UI/start.png",
                                   "lerpType": "Point",
@@ -541,8 +541,8 @@
                                   }
                                 },
                                 "size": {
-                                  "x": 105.5250015258789,
-                                  "y": 105.5250015258789
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
                                 }
                               }
                             },
@@ -637,7 +637,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "textureInfo": {
                             "filename": "Images/UI/start_bg.png",
                             "lerpType": "Point",
@@ -649,8 +649,8 @@
                             }
                           },
                           "size": {
-                            "x": 92.3343734741211,
-                            "y": 92.3343734741211
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
                           }
                         }
                       }
@@ -709,7 +709,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -141.14,
+                "y": -154.08001708984375,
                 "z": 0.0
               },
               "scale": {
@@ -778,14 +778,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 31.66,
+                          "fontSize": 34.560001373291016,
                           "text": "Continue"
                         }
                       }
@@ -824,7 +824,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "drawPriority": 6,
+                    "zIndex": 6,
                     "textureInfo": {
                       "filename": "Images/UI/continue_button_bg.png",
                       "lerpType": "Point",
@@ -836,8 +836,8 @@
                       }
                     },
                     "size": {
-                      "x": 369.33746337890625,
-                      "y": 65.953125
+                      "x": 403.20001220703125,
+                      "y": 72.0
                     },
                     "horizontal": 0.30000001192092896,
                     "vertical": 0.30000001192092896,
@@ -954,7 +954,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 160.93,
+                "y": 175.6800537109375,
                 "z": 0.0
               },
               "scale": {
@@ -1023,14 +1023,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "color": {
                             "r": 59,
                             "g": 59,
                             "b": 59,
                             "a": 255
                           },
-                          "fontSize": 44.84812545776367,
+                          "fontSize": 48.959999084472656,
                           "text": "Level 1"
                         }
                       }
@@ -1082,7 +1082,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "drawPriority": 6,
+                    "zIndex": 6,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_white_bg.png",
                       "lerpType": "Point",
@@ -1094,8 +1094,8 @@
                       }
                     },
                     "size": {
-                      "x": 369.33746337890625,
-                      "y": 52.76251220703125
+                      "x": 403.20001220703125,
+                      "y": 57.599998474121094
                     },
                     "horizontal": 0.20000000298023224,
                     "vertical": 0.20000000298023224,
@@ -1109,7 +1109,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -19.79,
+                "y": -21.600006103515625,
                 "z": 0.0
               },
               "scale": {
@@ -1132,7 +1132,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -76.21249389648438,
+                      "x": -83.19999694824219,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1178,14 +1178,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21.104999542236328,
+                          "fontSize": 23.040000915527344,
                           "text": "Score: "
                         }
                       }
@@ -1195,7 +1195,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -5.86248779296875,
+                      "x": -6.399993896484375,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1241,14 +1241,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21.104999542236328,
+                          "fontSize": 23.040000915527344,
                           "text": "300"
                         }
                       }
@@ -1346,7 +1346,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.800000011920929,
-                    "drawPriority": 6,
+                    "zIndex": 6,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_black_bg.png",
                       "lerpType": "Point",
@@ -1358,8 +1358,8 @@
                       }
                     },
                     "size": {
-                      "x": 263.8125,
-                      "y": 34.295623779296875
+                      "x": 288.0,
+                      "y": 37.439998626708984
                     },
                     "horizontal": 0.20000000298023224,
                     "vertical": 0.20000000298023224,
@@ -1373,7 +1373,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -59.36,
+                "y": -64.80001831054688,
                 "z": 0.0
               },
               "scale": {
@@ -1396,7 +1396,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -76.21,
+                      "x": -90.8800048828125,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1442,14 +1442,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21.104999542236328,
+                          "fontSize": 23.040000915527344,
                           "text": "Time: "
                         }
                       }
@@ -1459,7 +1459,7 @@
                 {
                   "transform": {
                     "pos": {
-                      "x": -5.86,
+                      "x": -21.760009765625,
                       "y": 0.0,
                       "z": 0.0
                     },
@@ -1505,14 +1505,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "drawPriority": 7,
+                          "zIndex": 7,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 21.1,
+                          "fontSize": 23.040000915527344,
                           "text": "60s"
                         }
                       }
@@ -1577,20 +1577,20 @@
                     "frames": [
                       {
                         "lerpMode": "Linear",
-                        "duration": 0.15,
+                        "duration": 0.15000000596046448,
                         "offset": {
                           "x": 0.0,
                           "y": 0.0
                         },
                         "scale": {
-                          "x": 1.2,
-                          "y": 1.2
+                          "x": 1.2000000476837158,
+                          "y": 1.2000000476837158
                         },
                         "alpha": 1.0
                       },
                       {
                         "lerpMode": "Linear",
-                        "duration": 0.15,
+                        "duration": 0.15000000596046448,
                         "offset": {
                           "x": 0.0,
                           "y": 0.0
@@ -1609,8 +1609,8 @@
                   "id": 6,
                   "data": {
                     "isVisible": true,
-                    "alpha": 0.8,
-                    "drawPriority": 6,
+                    "alpha": 0.800000011920929,
+                    "zIndex": 6,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_black_bg.png",
                       "lerpType": "Point",
@@ -1622,11 +1622,11 @@
                       }
                     },
                     "size": {
-                      "x": 263.81,
-                      "y": 34.3
+                      "x": 288.0,
+                      "y": 37.439998626708984
                     },
-                    "horizontal": 0.2,
-                    "vertical": 0.2,
+                    "horizontal": 0.20000000298023224,
+                    "vertical": 0.20000000298023224,
                     "patchScale": 10.0
                   }
                 }
@@ -1690,7 +1690,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "drawPriority": 5,
+              "zIndex": 5,
               "textureInfo": {
                 "filename": "Images/UI/game_end_view_bg.png",
                 "lerpType": "Point",
@@ -1702,12 +1702,12 @@
                 }
               },
               "size": {
-                "x": 395.72,
-                "y": 395.72
+                "x": 432.0,
+                "y": 432.0
               },
-              "horizontal": 0.5,
-              "vertical": 0.5,
-              "patchScale": 0.3
+              "horizontal": 0.4999000132083893,
+              "vertical": 0.4999000132083893,
+              "patchScale": 0.30000001192092896
             }
           },
           {
@@ -1732,14 +1732,14 @@
                     "y": -1.0
                   },
                   "scale": {
-                    "x": 0.9,
-                    "y": 0.9
+                    "x": 0.8999999761581421,
+                    "y": 0.8999999761581421
                   },
                   "alpha": 1.0
                 },
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.3,
+                  "duration": 0.30000001192092896,
                   "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1769,14 +1769,14 @@
               "frames": [
                 {
                   "lerpMode": "Sin",
-                  "duration": 0.1,
+                  "duration": 0.10000000149011612,
                   "offset": {
                     "x": 0.0,
                     "y": 0.0
                   },
                   "scale": {
-                    "x": 0.9,
-                    "y": 0.9
+                    "x": 0.8999999761581421,
+                    "y": 0.8999999761581421
                   },
                   "alpha": 1.0
                 }
@@ -1799,20 +1799,20 @@
               "frames": [
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.05,
+                  "duration": 0.05000000074505806,
                   "offset": {
                     "x": 1.0,
                     "y": 0.0
                   },
                   "scale": {
-                    "x": 0.96,
-                    "y": 0.96
+                    "x": 0.9599999785423279,
+                    "y": 0.9599999785423279
                   },
                   "alpha": 1.0
                 },
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.05,
+                  "duration": 0.05000000074505806,
                   "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1825,9 +1825,9 @@
                 },
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.05,
+                  "duration": 0.05000000074505806,
                   "offset": {
-                    "x": -0.7,
+                    "x": -0.699999988079071,
                     "y": 0.0
                   },
                   "scale": {
@@ -1838,9 +1838,9 @@
                 },
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.05,
+                  "duration": 0.05000000074505806,
                   "offset": {
-                    "x": 0.7,
+                    "x": 0.699999988079071,
                     "y": 0.0
                   },
                   "scale": {
@@ -1851,7 +1851,7 @@
                 },
                 {
                   "lerpMode": "Linear",
-                  "duration": 0.05,
+                  "duration": 0.05000000074505806,
                   "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1935,11 +1935,11 @@
       "id": 4,
       "data": {
         "isVisible": true,
-        "alpha": 0.2,
-        "drawPriority": 0,
+        "alpha": 0.20000000298023224,
+        "zIndex": 0,
         "size": {
-          "x": 1064.0,
-          "y": 938.0
+          "x": 600.0,
+          "y": 1024.0
         },
         "color": {
           "r": 0,
@@ -2017,7 +2017,7 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 0,
+        "zIndex": 0,
         "downScaleFactor": 3,
         "passes": 3
       }
@@ -2055,7 +2055,7 @@
           },
           {
             "lerpMode": "Linear",
-            "duration": 0.3,
+            "duration": 0.30000001192092896,
             "offset": {
               "x": 0.0,
               "y": 0.0
@@ -2089,7 +2089,7 @@
         "frames": [
           {
             "lerpMode": "Sin",
-            "duration": 0.1,
+            "duration": 0.10000000149011612,
             "offset": {
               "x": 0.0,
               "y": 0.0

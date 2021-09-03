@@ -53,10 +53,6 @@ private:
 private:
 
     std::vector<MutateTask> mutateTasks;
-    SoundEvent mergeSound;
-    SoundEvent mutateSound;
-
-    EntityId mutateEffectId;
     float pulseScaleIncrese;
     float pulseScaleDecaySpeed;
     float shrinkSpeed;

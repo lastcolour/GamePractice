@@ -27,7 +27,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": -176.4,
+          "y": -358.3999938964844,
           "z": 0.0
         },
         "scale": {
@@ -74,10 +74,10 @@
             "data": {
               "isVisible": true,
               "alpha": 0.5,
-              "drawPriority": 2,
+              "zIndex": 2,
               "size": {
-                "x": 1254.0,
-                "y": 278.4000244140625
+                "x": 600.0,
+                "y": 307.20001220703125
               },
               "startColor": {
                 "r": 41,
@@ -101,7 +101,7 @@
       "transform": {
         "pos": {
           "x": 0.0,
-          "y": 176.4,
+          "y": 358.4000244140625,
           "z": 0.0
         },
         "scale": {
@@ -148,10 +148,10 @@
             "data": {
               "isVisible": true,
               "alpha": 0.4000000059604645,
-              "drawPriority": 2,
+              "zIndex": 2,
               "size": {
-                "x": 1254.0,
-                "y": 278.4000244140625
+                "x": 600.0,
+                "y": 307.20001220703125
               },
               "startColor": {
                 "r": 109,
@@ -199,10 +199,10 @@
       "data": {
         "isVisible": true,
         "alpha": 1.0,
-        "drawPriority": 0,
+        "zIndex": 0,
         "size": {
-          "x": 150.0,
-          "y": 504.0
+          "x": 600.0,
+          "y": 1024.0
         },
         "startColor": {
           "r": 9,
@@ -249,6 +249,23 @@
         "children": [
           [
             3
+          ]
+        ]
+      }
+    },
+    {
+      "type": "UILayout",
+      "id": 7,
+      "data": {
+        "extraZOffset": 1,
+        "style": {
+          "type": "Horizontal",
+          "xAlign": "Center",
+          "yAlign": "Center"
+        },
+        "children": [
+          [
+            1
           ]
         ]
       }

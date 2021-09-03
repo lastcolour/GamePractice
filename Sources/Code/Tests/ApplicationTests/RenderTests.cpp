@@ -449,15 +449,15 @@ TEST_F(RenderTests, CheckRenderPriority) {
     const size_t yStart = static_cast<size_t>(center.y - SCALE_FACTOR * size.y * 0.5f);
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * size.y * 0.5f);
 
-    ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 1);
-    ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 0);
+    ET_SendEvent(firstSquareId, &ETRenderNode::ET_setZIndex, 1);
+    ET_SendEvent(secondSquareId, &ETRenderNode::ET_setZIndex, 0);
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
     checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
 
-    ET_SendEvent(firstSquareId, &ETRenderNode::ET_setDrawPriority, 0);
-    ET_SendEvent(secondSquareId, &ETRenderNode::ET_setDrawPriority, 1);
+    ET_SendEvent(firstSquareId, &ETRenderNode::ET_setZIndex, 0);
+    ET_SendEvent(secondSquareId, &ETRenderNode::ET_setZIndex, 1);
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
@@ -575,7 +575,7 @@ TEST_F(RenderTests, CheckRenderWithMask) {
         auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
         logicPtr->ET_setSize(halfSize);
         logicPtr->ET_setColor(ColorB(255, 0, 0));
-        logicPtr->ET_setDrawPriority(0);
+        logicPtr->ET_setZIndex(0);
         StencilWirteReadData stencilData;
         stencilData.mode = EStencilOpType::Write;
         stencilData.refVal = 1;
@@ -595,7 +595,7 @@ TEST_F(RenderTests, CheckRenderWithMask) {
         auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
         logicPtr->ET_setSize(halfSize);
         logicPtr->ET_setColor(ColorB(0, 255, 0));
-        logicPtr->ET_setDrawPriority(1);
+        logicPtr->ET_setZIndex(1);
         StencilWirteReadData stencilData;
         stencilData.mode = EStencilOpType::ReadIncrease;
         stencilData.refVal = 1;
@@ -616,7 +616,7 @@ TEST_F(RenderTests, CheckRenderWithMask) {
         auto halfSize = Vec2(renderPort.x / 2.f, renderPort.y / 2.f);
         logicPtr->ET_setSize(halfSize);
         logicPtr->ET_setColor(ColorB(0, 0, 255));
-        logicPtr->ET_setDrawPriority(2);
+        logicPtr->ET_setZIndex(2);
         StencilWirteReadData stencilData;
         stencilData.mode = EStencilOpType::Read;
         stencilData.refVal = 2;

@@ -7,7 +7,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.800000011920929,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "UI",
           "duration": -1.0,
@@ -120,7 +120,7 @@
       "data": {
         "isVisible": true,
         "alpha": 0.800000011920929,
-        "drawPriority": 1,
+        "zIndex": 0,
         "emission": {
           "simTime": "UI",
           "duration": -1.0,
@@ -231,15 +231,8 @@
       "type": "UIElementProxy",
       "id": 5,
       "data": {
-        "proxies": [
-          {
-            "target": [
-              0
-            ],
-            "normScale": 1.0,
-            "extraZOffset": 1
-          }
-        ]
+        "gridScale": 1.0,
+        "useGridScale": true
       }
     }
   ]
