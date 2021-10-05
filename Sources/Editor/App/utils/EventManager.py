@@ -1,6 +1,5 @@
 from utils.Log import Log
 
-from dialog.LogicSelecDialog import LogicSelectDialog
 from dialog.SaveEntityChanges import SaveEntityChanges
 from dialog.OverrideFile import OverrideFile
 
@@ -64,9 +63,8 @@ class EventManager:
         if not entity.isLoadedToNative():
             raise RuntimeError("Can't add logic to entity '{0}' that is not loaded to native".format(
                 entity.getName()))
-        selectDialog = LogicSelectDialog(self._app._logicsModel)
-        selectDialog.exec_()
-        logic = selectDialog.getResultLogic()
+        from dialog.UniversalSelectDialog import ExecEntityLogicSelectDialog
+        logic = ExecEntityLogicSelectDialog()
         if logic is None:
             return
         entityLogic = entity.addLogic(logic.getName())
@@ -144,3 +142,6 @@ class EventManager:
 
     def getSoundEventsModel(self):
         return self._app._soundEventsModel
+
+    def getEntityLogicsModel(self):
+        return self._app._logicsModel

@@ -173,7 +173,7 @@ void RenderScene::ET_onHidden(bool flag) {
 
 void RenderScene::ET_onZIndexChanged(int newZIndex) {
     for(auto& child : children) {
-        int zIndex = child.depth * zIndexStep;
+        int zIndex = newZIndex + child.depth * zIndexStep;
         ET_SendEvent(child.entId, &ETRenderNode::ET_setZIndex, zIndex);
     }
 }

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton
 from PyQt5.QtCore import Qt
 
-from dialog.SelectResourcFile import SelectResourceFile
+from dialog.UniversalSelectDialog import ExecResourceSelectDialog
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
@@ -40,12 +40,10 @@ class EditResourceValue(QWidget):
         SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_selectBt_clicked(self):
-        dialog = SelectResourceFile(self._val.getResourceType())
-        dialog.exec()
-        res = dialog.getSelectedResource()
+        res = ExecResourceSelectDialog(self._val.getResourceType())
         if res is None:
             return
-        self._push(res)
+        self._push(res.getRelativePath())
         SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, resource):

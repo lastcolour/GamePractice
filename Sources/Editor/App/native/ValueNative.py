@@ -1,7 +1,4 @@
 from .Native import NativeObject
-from .MemoryStream import MemoryStream
-
-import collections
 
 def _getReflectModel():
     return NativeObject._NATIVE_API.getReflectModel()

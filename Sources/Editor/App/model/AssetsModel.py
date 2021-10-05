@@ -1,21 +1,45 @@
 import os
-import pathlib
 import shutil
-import copy
 
 from utils.Log import Log
 from native.EntityNativeLoader import CreateVoidEntity
 
 class FileNodeType:
-    Entity = 0
-    Image = 1
-    Dir = 2
-    Sound = 3
+    Invalid = 0
+    Entity = 1
+    Image = 2
+    Dir = 3
+    Sound = 4
+    VertShader = 5
+    FragShader = 6
+    TTFFont= 7
+
+def _getFileType(dirPath, baseName):
+    tokens = baseName.split(".")
+    if len(tokens) < 2:
+        return FileNodeType.Invalid
+    lastToken = tokens[-1]
+    if lastToken == "png":
+        return FileNodeType.Image
+    elif lastToken == "ogg":
+        return FileNodeType.Sound
+    elif lastToken == "json":
+        return FileNodeType.Entity
+    elif lastToken == "frag":
+        return FileNodeType.FragShader
+    elif lastToken == "vert":
+        return FileNodeType.VertShader
+    elif lastToken == "ttf":
+        return FileNodeType.TTFFont
+    else:
+        Log.warning("[AssetsModel:_getFileType] Can't determine file type: '{0}/{1}'".format(
+            dirPath, baseName))
+        return FileNodeType.Invalid
 
 class FileNode:
-    def __init__(self):
-        self._parent = None
-        self._name = None
+    def __init__(self, parent, name):
+        self._parent = parent
+        self._name = name
         self._type = None
 
     def isDir(self):
@@ -55,8 +79,8 @@ class FileNode:
         return resPath
 
 class DirNode(FileNode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent, name):
+        super().__init__(parent, name)
         self._type = FileNodeType.Dir
         self._children = []
 
@@ -79,7 +103,7 @@ class DirNode(FileNode):
 class AssetsModel:
     def __init__(self, appConfig):
         self._appConfig = appConfig
-        self._resourceRootDir = DirNode()
+        self._resourceRootDir = DirNode(None, None)
 
     def _scanDir(self, dirNode):
         dirPath = dirNode.getFullPath()
@@ -88,15 +112,12 @@ class AssetsModel:
         for item in os.listdir(dirPath):
             itemPath = "{0}/{1}".format(dirPath, item)
             if os.path.isdir(itemPath):
-                node = DirNode()
-                node._name = item
-                node._parent = dirNode
+                node = DirNode(dirNode, item)
                 self._scanDir(node)
                 dirNode._children.append(node)
             else:
-                node = FileNode()
-                node._name = item
-                node._parent = dirNode
+                node = FileNode(dirNode, item)
+                node._type = _getFileType(dirPath, item)
                 dirNode._children.append(node)
         dirNode._children.sort(key=lambda node: node._name)
         dirNode._children.sort(key=lambda node: not node.isDir())
@@ -182,8 +203,7 @@ class AssetsModel:
         if not os.path.exists(assetsRootDir):
             Log.error("[AssetsModel:init] Can't find assets root dir: '{0}'".format(assetsRootDir))
             return False
-        self._resourceRootDir = DirNode()
-        self._resourceRootDir._name = assetsRootDir
+        self._resourceRootDir = DirNode(None, assetsRootDir)
         self._scanDir(self._resourceRootDir)
         return True
 

@@ -51,8 +51,8 @@
                 }
               },
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 930.0,
+                "y": 930.0
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
@@ -69,13 +69,13 @@
       "id": 8,
       "data": {
         "oneStar": {
-          "minScore": 75
+          "minScore": 5
         },
         "twoStars": {
-          "minScore": 175
+          "minScore": 10
         },
         "threeStars": {
-          "minScore": 225
+          "minScore": 15
         }
       }
     },

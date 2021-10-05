@@ -47,7 +47,10 @@ class EntityTreeView(QWidget):
             treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
         else:
             treeItem.setText(0, "{0} {1}".format(entity.getName(), entity.getNameSuffix()))
-            treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileLinkIcon))
+            if not entity.isInvalidEntity():
+                treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileLinkIcon))
+            else:
+                treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_MessageBoxCritical))
         treeItem._entity = entity
         for child in entity.getChildren():
             self._createTreeItem(treeItem, child)

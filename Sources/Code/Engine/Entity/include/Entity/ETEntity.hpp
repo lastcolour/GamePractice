@@ -24,7 +24,7 @@ struct ETEntity {
     virtual Transform ET_getLocalTransform() const = 0;
     virtual void ET_setLocalTransform(const Transform& localTm) = 0;
     virtual EntityChildId ET_getChildIdFromEntityId(EntityId childEntId) const = 0;
-    virtual EntityId ET_getEntityIdFromChildId(EntityChildId childId) const = 0;
+    virtual EntityId ET_getEntityIdFromChildId(const std::vector<EntityChildId>& childrenIds) const = 0;
     virtual std::vector<EntityId> ET_getChildren() const = 0;
     virtual std::vector<EntityLogic*> ET_getLogisByTypeId(TypeId logicTypeId) = 0;
 };

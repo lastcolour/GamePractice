@@ -1,12 +1,10 @@
+from .InvalidEntity import InvalidEntity
 from .Native import NativeObject
 from .EntityNative import EntityNative
-from .LogicNative import LogicNative
 from .ValueNative import *
-from .LogicNative import CreateLogic
 
 import json
 import os
-import pathlib
 
 _DEFAULT_TRANSFORM = {
     "pos":{"x":0, "y":0, "z":0},
@@ -66,7 +64,10 @@ class EntityNativeLoader(NativeObject):
             childTm = childNode["transform"]
             childInternal = childNode["internal"]
             if not childInternal:
-                childEntity = self.loadEntity(childName)
+                try:
+                    childEntity = self.loadEntity(childName)
+                except:
+                    childEntity = InvalidEntity(childName)
             else:
                 childData = childNode["data"]
                 childEntity = self._loadEntityFromData(childName, childData)
@@ -82,7 +83,10 @@ class EntityNativeLoader(NativeObject):
             for otherChild in entity._children:
                 if otherChild.getName() == childName:
                     duplicatesCount += 1
-            childEntity._nameSuffix = "({0})".format(duplicatesCount)
+            if duplicatesCount > 0:
+                childEntity._nameSuffix = "({0})".format(duplicatesCount)
+            else:
+                childEntity._nameSuffix = ""
             entity._children.append(childEntity)
         return True
 
@@ -137,7 +141,7 @@ class EntityNativeLoader(NativeObject):
         fullFilePath = self.getEntityFullPath(entityName)
         if not os.path.exists(fullFilePath):
             print("[EntityNativeLoader:loadEntity] Can't find entity file '{0}' to load".format(fullFilePath))
-            return None
+            raise RuntimeError()
         with open(fullFilePath) as tFile:
             data = json.load(tFile)
         return self._loadEntityFromData(entityName, data)

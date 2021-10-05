@@ -58,7 +58,7 @@ public:
     const Transform& ET_getTransform() const override;
     void ET_setTransform(const Transform& newTm) override;
     EntityChildId ET_getChildIdFromEntityId(EntityId childEntId) const override;
-    EntityId ET_getEntityIdFromChildId(EntityChildId childId) const override;
+    EntityId ET_getEntityIdFromChildId(const std::vector<EntityChildId>& childrenIds) const override;
     Transform ET_getLocalTransform() const override;
     void ET_setLocalTransform(const Transform& newLocalTm) override;
     std::vector<EntityId> ET_getChildren() const override;

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton
 from PyQt5.QtCore import Qt
 
-from dialog.SelectFromEntityChild import SelectFromEntityChild
+from dialog.UniversalSelectDialog import ExecSelectFromChildrenEntities
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
@@ -54,9 +54,7 @@ class EditEntityValue(QWidget):
         SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_selectBt_clicked(self):
-        dialog = SelectFromEntityChild(self._val.getEntity())
-        dialog.exec()
-        res = dialog.getSelectedEntity()
+        res = ExecSelectFromChildrenEntities(self._val.getEntity())
         if res is None:
             return
         self._push(res)

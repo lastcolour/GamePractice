@@ -6,6 +6,7 @@ from utils.Log import Log
 class RootNode:
     def __init__(self):
         self._children = []
+        self._type = None
 
     def isDir(self):
         return True
@@ -16,6 +17,9 @@ class RootNode:
     def getRelativePath(self):
         return ""
 
+    def getBaseName(self):
+        return ""
+
     def __iter__(self):
         for child in self._children:
             yield child
@@ -23,6 +27,7 @@ class RootNode:
 class SoundEvent:
     def __init__(self):
         self._name = None
+        self._type = None
 
     def isDir(self):
         return False

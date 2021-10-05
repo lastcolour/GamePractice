@@ -46,6 +46,9 @@ class EntityNative(NativeObject):
     def shouldSyncWithNative(self):
         return self._doNotSyncFlag == False
 
+    def isInvalidEntity(self):
+        return False
+
     def isModified(self):
         if self._isModified:
             return True

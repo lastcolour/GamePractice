@@ -1,5 +1,5 @@
 from .Native import NativeObject
-from .ValueNative import ObjectValue, AssignValueIdx, _createValue
+from .ValueNative import AssignValueIdx, _createValue
 from .MemoryStream import MemoryStream
 
 import traceback

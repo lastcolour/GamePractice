@@ -174,7 +174,8 @@ EntityId EditorApp::getEntityChildEntityId(EntityId entityId, EntityChildId chil
         return InvalidEntityId;
     }
     EntityId childEntityId;
-    ET_SendEventReturn(childEntityId, entityId, &ETEntity::ET_getEntityIdFromChildId, childId);
+    std::vector<EntityChildId> childrenIds(1, childId);
+    ET_SendEventReturn(childEntityId, entityId, &ETEntity::ET_getEntityIdFromChildId, childrenIds);
     return childEntityId;
 }
 

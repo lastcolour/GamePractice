@@ -397,16 +397,31 @@ EntityChildId Entity::ET_getChildIdFromEntityId(EntityId childEntId) const {
     return InvalidEntityChildId;
 }
 
-EntityId Entity::ET_getEntityIdFromChildId(EntityChildId childId) const {
-    if(childId == 0) {
-        return entityId;
+EntityId Entity::ET_getEntityIdFromChildId(const std::vector<EntityChildId>& childrenIds) const {
+    if(childrenIds.empty()) {
+        return InvalidEntityId;
     }
-    for(auto& chilNode : children) {
-        if(chilNode.childId == childId) {
-            return chilNode.childEntity->getEntityId();
+    const Entity* currEntity = this;
+    for(auto childId : childrenIds) {
+        if(childId == 0) {
+            assert(childrenIds.back() == 0 && "Invalid chilrend id sequence. (Self referencing should be last)");
+            return currEntity->getEntityId();
+        }
+        bool foundChild = false;
+        for(auto& childNode : currEntity->children) {
+            if(childNode.childId == childId) {
+                currEntity = childNode.childEntity;
+                foundChild = true;
+                break;
+            }
+        }
+        if(!foundChild) {
+            LogError("[Entity::ET_getEntityIdFromChildId] Can't find child with id '%d' on entity '%s'",
+                childId, currEntity->name);
+            return InvalidEntityId;
         }
     }
-    return InvalidEntityId;
+    return currEntity->getEntityId();
 }
 
 std::vector<EntityId> Entity::ET_getChildren() const {

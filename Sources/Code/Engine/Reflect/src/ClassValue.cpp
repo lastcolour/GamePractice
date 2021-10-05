@@ -20,20 +20,9 @@ EntityId getEntityIdFromChildIdSequence(const SerializeContext& ctx, const std::
         assert(false && "Invalid serializable entity");
         return InvalidEntityId;
     }
-    EntityId currentParentEntId = ctx.entityId;
-    EntityId currentChildEntId;
-    for(size_t i = 0, sz = childIdSequence.size(); i < sz; ++i) {
-        currentChildEntId = InvalidEntityId;
-        auto childId = childIdSequence[i];
-        ET_SendEventReturn(currentChildEntId, currentParentEntId, &ETEntity::ET_getEntityIdFromChildId, childId);
-        if(!currentChildEntId.isValid()) {
-            LogWarning("[ClassValue::getEntityIdFromChildIdSequence] Can't query entity id for a child with id '%d' from an entiy: '%s'",
-                childId, EntityUtils::GetEntityName(currentParentEntId));
-            break;
-        }
-        currentParentEntId = currentChildEntId;
-    }
-    return currentChildEntId;
+    EntityId childEntId;
+    ET_SendEventReturn(childEntId, ctx.entityId, &ETEntity::ET_getEntityIdFromChildId, childIdSequence);
+    return childEntId;
 }
 
 std::vector<EntityChildId> getChildIdSequenceFromEntityId(const SerializeContext& ctx, EntityId childEntId) {

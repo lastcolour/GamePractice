@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QMenu, QAction, QLineEdit, QMessageBox, QApplication
-from PyQt5.QtGui import QClipboard
 
 from dialog.RemoveFile import RemoveFile
 from utils.ViewUtils import OpenPlatformFileExplorer

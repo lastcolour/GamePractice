@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMenu, QAction, QLineEdit
 
-from dialog.SelectChildEntity import SelectChildEntity
+from dialog.UniversalSelectDialog import ExecAddEntitySelectDialog
 
 from utils.Managers import GetCopyPasteManager
 from utils.Managers import GetEventManager
@@ -29,7 +29,7 @@ class EntityTreeMenu(QMenu):
         self._addNewChildAct = QAction("Add From File")
         self._addNewChildAct.triggered.connect(self._onAddNewChild)
 
-        self._createNewChildAct = QAction("Create New")
+        self._createNewChildAct = QAction("Create New Internal")
         self._createNewChildAct.triggered.connect(self._onCreateNewChild)
 
         self._renameChildAct = QAction("Rename")
@@ -47,21 +47,27 @@ class EntityTreeMenu(QMenu):
         self._extractToEntityAct = QAction("Extract To File")
         self._extractToEntityAct.triggered.connect(self._onExtractToEntity)
 
+        self._removeInvalidEntityAct = QAction("Remove Invalid Entity")
+        self._removeInvalidEntityAct.triggered.connect(self._onRemoveInvalidEntity)
+
+        self._fixInvalidEntityAct = QAction("Fix Invalid Entity")
+        self._fixInvalidEntityAct.triggered.connect(self._onFixInvalidEntity)
+
         self.addAction(self._addNewChildAct)
         self.addAction(self._createNewChildAct)
         self.addAction(self._renameChildAct)
         self.addAction(self._removeChildAct)
         self.addAction(self._copyEntityAct)
         self.addAction(self._pasteEntityAct)
+        self.addAction(self._removeInvalidEntityAct)
+        self.addAction(self._fixInvalidEntityAct)
 
         self.addSeparator()
 
         self.addAction(self._extractToEntityAct)
 
     def _onAddNewChild(self):
-        selectDialog = SelectChildEntity(self._currentItem._entity)
-        selectDialog.exec()
-        res = selectDialog.getResultEntity()
+        res = ExecAddEntitySelectDialog(self._currentItem._entity)
         if res is not None:
             self._entityTreeView._onAddNewChild(self._currentItem, res.getRelativePath())
 
@@ -128,25 +134,58 @@ class EntityTreeMenu(QMenu):
         copyChild = GetEventManager().onAddCopyChild(self._currentItem._entity, copyEntityData)
         self._entityTreeView._createTreeItem(self._currentItem, copyChild)
 
+    def _onRemoveInvalidEntity(self):
+        self._onRemoveChild()
+
+    def _onFixInvalidEntity(self):
+        res = ExecAddEntitySelectDialog(self._currentItem._entity)
+        if res is not None:
+            parentItem = self._currentItem.parent()
+            self._onRemoveInvalidEntity()
+            self._entityTreeView._onAddNewChild(parentItem, res.getRelativePath())
+
     def onMenuRequestedOnItem(self, item, pt):
         self._currentItem = item
         if self._currentItem is None:
             return
-        if self._currentItem.parent() is None:
-            self._removeChildAct.setEnabled(False)
-            self._extractToEntityAct.setEnabled(False)
-            self._renameChildAct.setEnabled(False)
-            self._extractToEntityAct.setEnabled(False)
+
+        if self._currentItem._entity.isInvalidEntity():
+            self._fixInvalidEntityAct.setVisible(True)
+            self._removeInvalidEntityAct.setVisible(True)
+            self._addNewChildAct.setVisible(False)
+            self._createNewChildAct.setVisible(False)
+            self._renameChildAct.setVisible(False)
+            self._removeChildAct.setVisible(False)
+            self._copyEntityAct.setVisible(False)
+            self._pasteEntityAct.setVisible(False)
+            self._extractToEntityAct.setVisible(False)
         else:
-            self._removeChildAct.setEnabled(True)
-            if self._currentItem._entity.isInternal():
-                self._extractToEntityAct.setEnabled(True)
-                self._renameChildAct.setEnabled(True)
-            else:
+            self._fixInvalidEntityAct.setVisible(False)
+            self._removeInvalidEntityAct.setVisible(False)
+            self._addNewChildAct.setVisible(True)
+            self._createNewChildAct.setVisible(True)
+            self._renameChildAct.setVisible(True)
+            self._removeChildAct.setVisible(True)
+            self._copyEntityAct.setVisible(True)
+            self._pasteEntityAct.setVisible(True)
+            self._extractToEntityAct.setVisible(True)
+
+            if self._currentItem.parent() is None:
+                self._removeChildAct.setEnabled(False)
+                self._extractToEntityAct.setEnabled(False)
                 self._renameChildAct.setEnabled(False)
                 self._extractToEntityAct.setEnabled(False)
-        if GetCopyPasteManager().getCopyEntity() is None:
-            self._pasteEntityAct.setEnabled(False)
-        else:
-            self._pasteEntityAct.setEnabled(True)
+            else:
+                self._removeChildAct.setEnabled(True)
+                if self._currentItem._entity.isInternal():
+                    self._extractToEntityAct.setEnabled(True)
+                    self._renameChildAct.setEnabled(True)
+                else:
+                    self._renameChildAct.setEnabled(False)
+                    self._extractToEntityAct.setEnabled(False)
+            if GetCopyPasteManager().getCopyEntity() is None:
+                self._pasteEntityAct.setEnabled(False)
+            else:
+                self._pasteEntityAct.setEnabled(True)
+
         self.exec(pt)
