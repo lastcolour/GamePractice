@@ -1,14 +1,26 @@
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QComboBox
 from PyQt5.QtCore import Qt
 
+import math
+
 class EditFloatSpinBox(QDoubleSpinBox):
     def __init__(self):
         super().__init__()
         self.setMaximum(1000000.0)
         self.setMinimum(-1000000.0)
+        self.setDecimals(5)
         self.setSingleStep(0.1)
         self.setAlignment(Qt.AlignRight)
         self.setFocusPolicy(Qt.StrongFocus)
+
+    def valueFromText(self, s):
+        return float(s)
+
+    def textFromValue(self, val):
+        if self.hasFocus():
+            if math.isclose(float(self.text()), val):
+                return self.text()
+        return "{0}".format(val)
 
     def wheelEvent(self, event):
         if self.hasFocus():

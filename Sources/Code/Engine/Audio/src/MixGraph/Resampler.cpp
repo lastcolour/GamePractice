@@ -46,9 +46,9 @@ StreamMixState Resampler::exclusiveResampleTo(float* out, int channels, int samp
     }
 
     if(channels == 1) {
-        resampler->resampleMono(source, out, samples);
+        resampler->resampleMono(source, mixState.samplesRead, out, samples);
     } else if(channels == 2) {
-        resampler->resampleStereo(source, out, samples);
+        resampler->resampleStereo(source, mixState.samplesRead, out, samples);
     } else {
         assert(false && "too many channels");
     }
