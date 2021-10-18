@@ -4,9 +4,8 @@
 
 namespace {
 
-void multByFractionInt16(int16_t& val, int a, int b) {
-    int32_t x = static_cast<int32_t>(val);
-    val = static_cast<int16_t>(x * a / b);
+int16_t multByFractionInt16(int32_t x, int32_t a, int32_t b) {
+    return static_cast<int16_t>(x * a / b);
 }
 
 } // namespace
@@ -161,7 +160,7 @@ void Fader::exclusiveTransformFloat(float* data, int channels, int samples) {
             if(remainingSamples == 0) {
                 break;
             }
-            fadeOutOffset = remainingSamples;
+            fadeOutOffset = samplesDone;
             state = State::FadeOutDone;
             [[fallthrough]];
         }
@@ -191,13 +190,13 @@ void Fader::exclusiveTransformInt16(int16_t* data, int channels, int samples) {
             int maxSamplesToProcess = std::min(totalSamples - samplesDone, samples);
             if(channels == 1) {
                 for(int i = 0; i < maxSamplesToProcess; ++i) {
-                    multByFractionInt16(data[i], samplesDone, totalSamples);
+                    data[i] = multByFractionInt16(data[i], samplesDone, totalSamples);
                     ++samplesDone;
                 }
             } else if(channels == 2) {
                 for(int i = 0; i < maxSamplesToProcess; ++i) {
-                    multByFractionInt16(data[2 * i], samplesDone, totalSamples);
-                    multByFractionInt16(data[2 * i + 1], samplesDone, totalSamples);
+                    data[2 * i] = multByFractionInt16(data[2 * i], samplesDone, totalSamples);
+                    data[2 * i + 1] = multByFractionInt16(data[2 * i + 1], samplesDone, totalSamples);
                     ++samplesDone;
                 }
             }
@@ -214,13 +213,13 @@ void Fader::exclusiveTransformInt16(int16_t* data, int channels, int samples) {
             int maxSamplesToProcess = std::min(totalSamples - samplesDone, samples);
             if(channels == 1) {
                 for(int i = 0; i < maxSamplesToProcess; ++i) {
-                    multByFractionInt16(data[i], samplesDone, totalSamples);
+                    data[i] = multByFractionInt16(data[i], totalSamples - samplesDone, totalSamples);
                     ++samplesDone;
                 }
             } else if(channels == 2) {
                 for(int i = 0; i < maxSamplesToProcess; ++i) {
-                    multByFractionInt16(data[2 * i], totalSamples - samplesDone, totalSamples);
-                    multByFractionInt16(data[2 * i + 1], totalSamples - samplesDone, totalSamples);
+                    data[2 * i] = multByFractionInt16(data[2 * i], totalSamples - samplesDone, totalSamples);
+                    data[2 * i + 1] = multByFractionInt16(data[2 * i + 1], totalSamples - samplesDone, totalSamples);
                     ++samplesDone;
                 }
             }
@@ -229,7 +228,7 @@ void Fader::exclusiveTransformInt16(int16_t* data, int channels, int samples) {
             if(remainingSamples == 0) {
                 break;
             }
-            fadeOutOffset = remainingSamples;
+            fadeOutOffset = samplesDone;
             state = State::FadeOutDone;
             [[fallthrough]];
         }
