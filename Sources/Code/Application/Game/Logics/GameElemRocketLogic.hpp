@@ -26,8 +26,8 @@ public:
     void ET_setSwapedElem(EntityId elemId) override;
 
     // ETGameBoardRenderElem
-    void ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) override;
-    void ET_deinitRender(UIProxyContainer& rootContainer) override;
+    void ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) override;
+    void ET_deinitRender(EntityId rootRenderEntId) override;
 
 private:
 

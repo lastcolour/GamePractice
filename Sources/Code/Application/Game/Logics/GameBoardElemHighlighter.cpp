@@ -2,6 +2,7 @@
 #include "Render/ETRenderNode.hpp"
 #include "Entity/ETEntityManager.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
+#include "Render/ETRenderScene.hpp"
 
 #include <cassert>
 
@@ -73,7 +74,7 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     freeElem->duration = 0.f;
     freeElem->state = State::FadeOut;
 
-    uiProxies.addItem(freeElem->entId, GameUtils::ELEM_HIGHLIGHT_Z_OFFSET);
+    ET_SendEvent(rootRenderId, &ETRenderScene::ET_addItem, GameUtils::ELEM_HIGHLIGHT_Z_OFFSET, freeElem->entId);
 
     Transform tm;
     ET_SendEventReturn(tm.pt, &ETGameBoard::ET_getPosFromBoardPos, cellPt);
@@ -88,7 +89,8 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
 }
 
 bool GameBoardElemHighlighter::createElemsPool() {
-    uiProxies.setUIParent(getEntityId());
+    ET_SendEventReturn(rootRenderId, &ETGameBoard::ET_getRootRenderId);
+
     destroyAllElems();
     int poolSize = 10 * 10;
     for(int i = 0; i < poolSize; ++i) {
@@ -115,8 +117,8 @@ bool GameBoardElemHighlighter::createElemsPool() {
 
 void GameBoardElemHighlighter::destroyAllElems() {
     for(auto& elem : elements) {
+        ET_SendEvent(rootRenderId, &ETRenderScene::ET_removeItem, elem.entId);
         ET_SendEvent(&ETEntityManager::ET_destroyEntity, elem.entId);
-        uiProxies.removeItem(elem.entId);
     }
     elements.clear();
 }
@@ -134,13 +136,12 @@ void GameBoardElemHighlighter::updateElem(HighlightElem& elem, float dt) {
     if(elem.duration > fadeOutDuration) {
         elem.state = State::Finished;
         elem.boardPt = Vec2i(-1);
-        uiProxies.removeItem(elem.entId);
+        ET_SendEvent(rootRenderId, &ETRenderScene::ET_removeItem, elem.entId);
         ET_SendEvent(elem.entId, &ETRenderNode::ET_hide);
     }
 }
 
 void GameBoardElemHighlighter::ET_onStartLoading() {
-    assert(uiProxies.count() == 0 && "Invalid hightlight elems");
 }
 
 void GameBoardElemHighlighter::ET_onStartDestroying() {

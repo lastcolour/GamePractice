@@ -89,10 +89,7 @@
       "data": {
         "startDelay": 0.10000000149011612,
         "duration": 0.0,
-        "endDelay": 0.20000000298023224,
-        "soundEvent": {
-          "event": "elemDestroy_01"
-        }
+        "endDelay": 0.20000000298023224
       }
     },
     {
@@ -105,14 +102,6 @@
         "background": [
           1
         ]
-      }
-    },
-    {
-      "type": "RenderStencilLogic",
-      "id": 5,
-      "data": {
-        "mode": "Read",
-        "refVal": 1
       }
     },
     {

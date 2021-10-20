@@ -2,6 +2,13 @@
 #include "Entity/ETEntityManager.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "UI/ETUIBox.hpp"
+#include "Render/ETRenderNode.hpp"
+
+namespace {
+
+const int GAME_BOARD_Z_INDEX_OFFSET = 10;
+
+} // namespace
 
 void GameBoardSpawner::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardSpawner>("GameBoardSpawner")) {
@@ -51,20 +58,39 @@ void GameBoardSpawner::ET_loadPendingLevel() {
 
     AABB2D box(0.f);
     if(!ET_IsExistNode<ETUIElement>(getEntityId())) {
-        LogError("[tmpLog] Can't find ETUIElement");
+        LogError("[GameBoardSpawner::ET_loadPendingLevel] Can't find 'ETUIElement' on game board spawner: '%s'",
+            EntityUtils::GetEntityName(getEntityId()));
     }
     ET_SendEventReturn(box, getEntityId(), &ETUIElementGeom::ET_getBox);
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, box);
 
-    ET_SendEvent(gameBoardId, &ETGameBoard::ET_setUIElement, getEntityId());
+    ET_SendEventReturn(gameBoardRootRenderId, gameBoardId, &ETGameBoard::ET_getRootRenderId);
+    if(!gameBoardRootRenderId.isValid()) {
+        LogError("[GameBoardSpawner::ET_loadPendingLevel] Can't find root render object on game board '%s'",
+            EntityUtils::GetEntityName(gameBoardId));
+    }
 
+    ET_SendEvent(gameBoardRootRenderId, &ETRenderNode::ET_hide);
     ET_SendEvent(&ETGameBoard::ET_spawnElems);
 }
 
-void GameBoardSpawner::ET_onBoxChanged(const AABB2D& newAabb) {
-    if(!gameBoardId.isValid()) {
-        return;
+void GameBoardSpawner::ET_onZIndexChanged(int newZIndex) {
+    ET_SendEvent(gameBoardRootRenderId, &ETRenderNode::ET_setZIndex, newZIndex + GAME_BOARD_Z_INDEX_OFFSET);
+}
+
+void GameBoardSpawner::ET_onAlphaChanged(float newAlpha) {
+    ET_SendEvent(gameBoardRootRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
+}
+
+void GameBoardSpawner::ET_onHidden(bool flag) {
+    if(flag) {
+        ET_SendEvent(gameBoardRootRenderId, &ETRenderNode::ET_hide);
+    } else {
+        ET_SendEvent(gameBoardRootRenderId, &ETRenderNode::ET_show);
     }
+}
+
+void GameBoardSpawner::ET_onBoxChanged(const AABB2D& newAabb) {
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, newAabb);
 }
 

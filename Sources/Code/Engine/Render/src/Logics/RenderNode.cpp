@@ -27,7 +27,7 @@ RenderNode::~RenderNode() {
 void RenderNode::init() {
     auto node = RenderUtils::CreateRenderNode(type);
     if(!node) {
-        LogError("[RenderNode::init] Can't create proxy node an enity: '%s'",
+        LogError("[RenderNode::init] Can't create proxy node for an enity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
         return;
     }
@@ -135,6 +135,10 @@ int RenderNode::ET_getZIndex() const {
 }
 
 void RenderNode::ET_setStencilData(const StencilWirteReadData& newStencilData) {
+    if(newStencilData.mode == stencilData.mode
+        && newStencilData.refVal == stencilData.refVal) {
+        return;
+    }
     stencilData = newStencilData;
     ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, sData=newStencilData](){
         node->setStencilData(sData);
@@ -172,6 +176,7 @@ void RenderNode::ET_onLoaded() {
     }
 }
 
-void RenderNode::ET_setEmitEvents(bool flag) {
+bool RenderNode::ET_setEmitEvents(bool flag) {
     emitEvents = flag;
+    return true;
 }

@@ -234,10 +234,9 @@ bool patternsIntersect(const PatternMatch& p1, const PatternMatch& p2) {
     return false;
 }
 
-std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>& patterns, BronKerboschRequest& cacheRequest) 
-{
+std::vector<PatternMatch> mergeAllMatchPatterns(const std::vector<PatternMatch>& patterns, BronKerboschRequest& cacheRequest) {
     int n = static_cast<int>(patterns.size());
-    
+
     cacheRequest.adjMat.reset(n);
     cacheRequest.adjMat.reset(n);
 

@@ -76,12 +76,11 @@ bool RenderGraph::startFrame() {
     Vec2i viewport(0);
     ET_SendEventReturn(viewport, &ETRenderCamera::ET_getRenderPort);
 
-    mainFBO->bind();
     if(!mainFBO->resize(viewport)) {
-        mainFBO->unbind();
         LogError("[RenderGraph::startFrame] Can't resize framebuffer to size: %dx%d", viewport.x, viewport.y);
         return false;
     }
+    mainFBO->bind();
     mainFBO->clear();
     return true;
 }

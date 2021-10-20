@@ -256,9 +256,15 @@
       "type": "RenderScene",
       "id": 5,
       "data": {
-        "zIndexStep": 1,
-        "stencilPolicy": "None",
-        "buildChildListOnLoad": true
+        "params": {
+          "zIndexStep": 1,
+          "occlussion": {
+            "refOp": "None",
+            "refVal": 0
+          }
+        },
+        "buildChildListOnLoad": true,
+        "manualChildren": []
       }
     },
     {

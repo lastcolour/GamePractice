@@ -20,11 +20,11 @@ struct ETGameBoard {
     virtual const AABB2Di& ET_getBoardBox() const = 0;
     virtual int ET_getCellSize() const = 0;
     virtual Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const = 0;
-    virtual void ET_setUIElement(EntityId rootUIElementId) = 0;
     virtual bool ET_isAllElemStatic() const = 0;
     virtual void ET_setBlockElemMatching(bool flag) = 0;
     virtual void ET_resize(const AABB2D& newAabb) = 0;
     virtual std::vector<EntityId> ET_getAllElemsOfType(EBoardElemType queryElemType) const = 0;
+    virtual EntityId ET_getRootRenderId() const = 0;
 };
 
 struct ETGameBoardElemDestoryEvents {

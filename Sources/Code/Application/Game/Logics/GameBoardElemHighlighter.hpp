@@ -5,7 +5,6 @@
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
-#include "UI/UIProxyContainer.hpp"
 
 class GameBoardElemHighlighter : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
@@ -56,7 +55,7 @@ private:
 
 private:
 
-    UIProxyContainer uiProxies;
+    EntityId rootRenderId;
     std::string highlightEntityName;
     std::vector<HighlightElem> elements;
     float fadeOutDuration;

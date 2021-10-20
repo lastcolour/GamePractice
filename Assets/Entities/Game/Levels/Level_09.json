@@ -26,18 +26,10 @@
         "children": [],
         "logics": [
           {
-            "type": "RenderStencilLogic",
-            "id": 2,
-            "data": {
-              "mode": "Write",
-              "refVal": 1
-            }
-          },
-          {
             "type": "NinePatchImageLogic",
             "id": 3,
             "data": {
-              "isVisible": false,
+              "isVisible": true,
               "alpha": 0.8999999761581421,
               "zIndex": 1,
               "textureInfo": {

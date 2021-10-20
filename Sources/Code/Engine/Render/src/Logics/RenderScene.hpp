@@ -3,6 +3,7 @@
 
 #include "Entity/EntityLogic.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Render/ETRenderScene.hpp"
 
 class RenderScene : public EntityLogic,
     public ETNode<ETEntityEvents>,
@@ -22,12 +23,14 @@ public:
     void deinit() override;
 
     // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
+    void ET_onTransformChanged(const Transform& newTm) override {}
     void ET_onLoaded() override;
 
     // ETRenderScene
     void ET_addItem(int layer, EntityId entId) override;
     void ET_removeItem(EntityId entId) override;
+    const RenderSceneParams& ET_getParams() const override;
+    void ET_setParams(RenderSceneParams& newParams) override;
 
     // ETRenderNodeEvents
     void ET_onHidden(bool flag) override;
@@ -37,22 +40,32 @@ public:
 
 private:
 
-    enum class EChildStencilPolicy {
-        ReadIncrease = 0,
-        Read,
-        None
-    };
-
     struct ChildNode {
+    public:
+
+        static void Reflect(ReflectContext& ctx);
+
+    public:
+
         EntityId entId;
-        int depth;
+        int depth{1};
+        bool prevVisible{false};
     };
 
 private:
 
+    std::vector<ChildNode> collectChildren(EntityId rootList) const;
+    void propagateParentState(std::vector<ChildNode>& childList);
+    void updateHidden(bool flag, std::vector<ChildNode>& childList);
+    void updateZIndex(int newZIndex, std::vector<ChildNode>& childList);
+    void updateAlphaMult(float newAlphaMult, std::vector<ChildNode>& childList);
+    void updateNormScale(float newNormScale, std::vector<ChildNode>& childList);
+
+private:
+
+    std::vector<ChildNode> manulChildren;
     std::vector<ChildNode> children;
-    int zIndexStep;
-    EChildStencilPolicy stencilPolicy;
+    RenderSceneParams params;
     bool buildChildListOnLoad;
 };
 

@@ -6,7 +6,6 @@
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/Logics/GameBoardFSM.hpp"
-#include "UI/UIProxyContainer.hpp"
 
 struct BoardElement {
     Vec2i boardPt;
@@ -46,11 +45,11 @@ public:
     const Vec2i& ET_getBoardSize() const override;
     const AABB2Di& ET_getBoardBox() const override;
     Vec3 ET_getPosFromBoardPos(const Vec2i& boardPt) const override;
-    void ET_setUIElement(EntityId rootUIElementId) override;
     bool ET_isAllElemStatic() const override;
     void ET_resize(const AABB2D& newAabb) override;
     void ET_readBoardMatchState(BoardMatchState& boardMatchState) const override;
     std::vector<EntityId> ET_getAllElemsOfType(EBoardElemType queryElemType) const override;
+    EntityId ET_getRootRenderId() const override;
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
@@ -76,7 +75,6 @@ protected:
 
 protected:
 
-    UIProxyContainer uiProxies;
     std::vector<std::vector<BoardElement>> columns;
     AABB2Di boardBox;
     Vec2i boardSize;

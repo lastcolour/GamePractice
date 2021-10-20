@@ -1,8 +1,6 @@
 #ifndef __ET_GAME_ELEM_HPP__
 #define __ET_GAME_ELEM_HPP__
 
-#include "UI/UIProxyContainer.hpp"
-
 enum class EPatternType;
 
 enum class EBoardElemState {
@@ -53,8 +51,8 @@ struct ETGameBoardElem {
 
 struct ETGameBoardRenderElem {
     virtual ~ETGameBoardRenderElem() = default;
-    virtual void ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) = 0;
-    virtual void ET_deinitRender(UIProxyContainer& rootContainer) = 0;
+    virtual void ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) = 0;
+    virtual void ET_deinitRender(EntityId rootRenderEntId) = 0;
 };
 
 struct ETBoardElemDestroyAnimation {

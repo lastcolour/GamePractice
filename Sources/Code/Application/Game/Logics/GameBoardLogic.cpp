@@ -130,7 +130,6 @@ void GameBoardLogic::init() {
     ET_resize(visualBox);
 
     ET_SendEvent(backgroundId, &ETRenderNode::ET_show);
-    uiProxies.addItem(backgroundId, GameUtils::BOARD_BACKGROUND_Z_OFFSET);
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
@@ -232,7 +231,7 @@ void GameBoardLogic::respawnDestroyedElems() {
             auto elem = *it;
             auto elemState = GameUtils::GetElemState(elem.entId);
             if(elemState == EBoardElemState::Destroyed) {
-                ET_SendEvent(it->entId, &ETGameBoardRenderElem::ET_deinitRender, uiProxies);
+                ET_SendEvent(it->entId, &ETGameBoardRenderElem::ET_deinitRender, backgroundId);
                 if(elem.entId.isValid()) {
                     ET_SendEvent(&ETGameBoardElemsPool::ET_removeElem, elem.entId);
                 }
@@ -390,8 +389,8 @@ void GameBoardLogic::ET_resize(const AABB2D& newAabb) {
     }
 }
 
-void GameBoardLogic::ET_setUIElement(EntityId rootUIElementId) {
-    uiProxies.setUIParent(rootUIElementId);
+EntityId GameBoardLogic::ET_getRootRenderId() const {
+    return backgroundId;
 }
 
 void GameBoardLogic::moveElem(BoardElement& elem, BoardElement* prevElem, const Vec2i& boardPt, float dt) {
@@ -459,7 +458,7 @@ void GameBoardLogic::setupElem(BoardElement& elem, const Vec2i& boardPt) {
     ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, elem.entId);
     setElemBoardPos(elem, boardPt);
     GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
-    ET_SendEvent(elem.entId, &ETGameBoardRenderElem::ET_initRender, uiProxies, objectSize);
+    ET_SendEvent(elem.entId, &ETGameBoardRenderElem::ET_initRender, backgroundId, objectSize);
 }
 
 std::vector<EntityId> GameBoardLogic::ET_getAllElemsOfType(EBoardElemType queryElemType) const {

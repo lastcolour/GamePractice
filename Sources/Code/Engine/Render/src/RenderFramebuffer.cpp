@@ -60,6 +60,7 @@ bool RenderFramebuffer::resize(const Vec2i& newSize) {
             return false;
         }
     }
+
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
     return true;

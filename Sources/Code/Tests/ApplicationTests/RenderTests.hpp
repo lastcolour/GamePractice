@@ -25,7 +25,7 @@ protected:
 
 protected:
 
-    void checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd);
+    size_t checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) const;
     void dumpImageBuffer();
 };
 

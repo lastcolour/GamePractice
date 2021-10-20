@@ -34,7 +34,7 @@ public:
     void ET_setStencilData(const StencilWirteReadData& newSteniclData) override;
     void ET_setNormalizationScale(float newNormScale) override;
     float ET_getNormalizationScale() const override;
-    void ET_setEmitEvents(bool flag) override;
+    bool ET_setEmitEvents(bool flag) override;
 
     // ETEntityEvents
     void ET_onTransformChanged(const Transform& newTm) override;

@@ -183,20 +183,15 @@ bool GameElemRocketLogic::onUpdate(float dt) {
     return isFirstDone && isSecondDone;
 }
 
-void GameElemRocketLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {
+void GameElemRocketLogic::ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) {
     ET_SendEvent(firstRocket, &ETRenderRect::ET_setSize, elemSize);
     ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
-    rootContainer.addItem(firstRocket, GameUtils::ROCKET_PART_Z_OFFSET);
 
     ET_SendEvent(secondRocket, &ETRenderRect::ET_setSize, elemSize);
     ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
-    rootContainer.addItem(secondRocket, GameUtils::ROCKET_PART_Z_OFFSET);
 }
 
-void GameElemRocketLogic::ET_deinitRender(UIProxyContainer& rootContainer) {
-    rootContainer.removeItem(firstRocket);
+void GameElemRocketLogic::ET_deinitRender(EntityId rootRenderEntId) {
     hideRocket(firstRocket);
-
-    rootContainer.removeItem(secondRocket);
-    hideRocket(firstRocket);
+    hideRocket(secondRocket);
 }

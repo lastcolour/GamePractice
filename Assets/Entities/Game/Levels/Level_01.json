@@ -26,20 +26,12 @@
         "children": [],
         "logics": [
           {
-            "type": "RenderStencilLogic",
-            "id": 2,
-            "data": {
-              "mode": "Write",
-              "refVal": 1
-            }
-          },
-          {
             "type": "NinePatchImageLogic",
             "id": 3,
             "data": {
-              "isVisible": false,
+              "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Game/game_board_bg.png",
                 "lerpType": "Point",
@@ -51,12 +43,27 @@
                 }
               },
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 150.0,
+                "y": 150.0
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 0.20000000298023224
+            }
+          },
+          {
+            "type": "RenderScene",
+            "id": 4,
+            "data": {
+              "params": {
+                "zIndexStep": 5,
+                "occlussion": {
+                  "refOp": "OccludAll",
+                  "refVal": 1
+                }
+              },
+              "buildChildListOnLoad": true,
+              "manualChildren": []
             }
           }
         ]
@@ -89,7 +96,7 @@
           "x": 10,
           "y": 10
         },
-        "cellScale": 0.699999988079071,
+        "cellScale": 0.7,
         "backgroundId": [
           1
         ]

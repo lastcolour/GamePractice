@@ -16,7 +16,6 @@
 #include "Logics/NinePatchImageLogic.hpp"
 #include "Logics/RenderLinearGradientRect.hpp"
 #include "Logics/RenderBlurLogic.hpp"
-#include "Logics/RenderStencilLogic.hpp"
 #include "Logics/RenderScene.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "RenderConfig.hpp"
@@ -54,6 +53,5 @@ void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) co
     logicsRegister.registerLogic<RenderLinearGradientRect>();
     logicsRegister.registerLogic<ParticlesSystem>();
     logicsRegister.registerLogic<RenderBlurLogic>();
-    logicsRegister.registerLogic<RenderStencilLogic>();
     logicsRegister.registerLogic<RenderScene>();
 }

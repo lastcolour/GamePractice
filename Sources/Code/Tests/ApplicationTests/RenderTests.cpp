@@ -122,7 +122,7 @@ void RenderTests::TearDown() {
     ASSERT_EQ(fbSize.y, imageSize.y);
 }
 
-void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) {
+size_t RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEnd, size_t yStart, size_t yEnd) const {
     size_t failPixCount = 0;
     const Vec2i size = IMAGE_BUFFER->getSize();
     for(int i = 0; i < size.x; ++i) {
@@ -135,7 +135,7 @@ void RenderTests::checkSquare(const ColorB& drawColor, size_t xStart, size_t xEn
             }
         }
     }
-    EXPECT_EQ(failPixCount, 0u);
+    return failPixCount;
 }
 
 void RenderTests::dumpImageBuffer() {
@@ -274,7 +274,7 @@ TEST_F(RenderTests, CheckProjectionToScreen) {
     const size_t yStart = static_cast<size_t>(center.y - SCALE_FACTOR * h * 0.5f);
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * h * 0.5f);
 
-    checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
+    EXPECT_EQ(0, checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd));
 }
 
 TEST_F(RenderTests, CheckRenderSimpleObject) {
@@ -300,7 +300,7 @@ TEST_F(RenderTests, CheckRenderSimpleObject) {
     const size_t yStart = static_cast<size_t>(center.y - SCALE_FACTOR * size.y * 0.5f);
     const size_t yEnd = static_cast<size_t>(center.y + SCALE_FACTOR * size.y * 0.5f);
 
-    checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
+    EXPECT_EQ(0, checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd));
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId);
 }
@@ -454,14 +454,14 @@ TEST_F(RenderTests, CheckRenderPriority) {
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
-    checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd);
+    EXPECT_EQ(0, checkSquare(DRAW_COLOR, xStart, xEnd, yStart, yEnd));
 
     ET_SendEvent(firstSquareId, &ETRenderNode::ET_setZIndex, 0);
     ET_SendEvent(secondSquareId, &ETRenderNode::ET_setZIndex, 1);
 
     SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
 
-    checkSquare(DRAW_COLOR_B, xStart, xEnd, yStart, yEnd);
+    EXPECT_EQ(0, checkSquare(DRAW_COLOR_B, xStart, xEnd, yStart, yEnd));
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, firstSquareId);
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, secondSquareId);
@@ -484,21 +484,21 @@ TEST_F(RenderTests, CheckHideUnhide) {
 
     {
         SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
-        checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
+        EXPECT_EQ(0, checkSquare(DRAW_COLOR, 0, size.x, 0, size.y));
     }
 
     ET_SendEvent(boxId, &ETRenderNode::ET_hide);
 
     {
         SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
-        checkSquare(CLEAR_COLOR, 0, size.x, 0, size.y);
+        EXPECT_EQ(0, checkSquare(CLEAR_COLOR, 0, size.x, 0, size.y));
     }
 
     ET_SendEvent(boxId, &ETRenderNode::ET_show);
 
     {
         SyncAndDrawFrameToImageBuffer(*IMAGE_BUFFER);
-        checkSquare(DRAW_COLOR, 0, size.x, 0, size.y);
+        EXPECT_EQ(0, checkSquare(DRAW_COLOR, 0, size.x, 0, size.y));
     }
 
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, boxId);
@@ -632,14 +632,14 @@ TEST_F(RenderTests, CheckRenderWithMask) {
 
     Vec2i c = renderPort / 2;
 
-    checkSquare(ColorB(255, 0, 0), c.x - c.x / 2, c.x,
-        c.y - c.y / 2,  c.y + c.y / 2);
+    EXPECT_EQ(0, checkSquare(ColorB(255, 0, 0), c.x - c.x / 2, c.x,
+        c.y - c.y / 2,  c.y + c.y / 2));
 
-    checkSquare(ColorB(0, 255, 0), c.x, c.x + c.x / 2,
-        c.y - c.y / 2, c.y);
+    EXPECT_EQ(0, checkSquare(ColorB(0, 255, 0), c.x, c.x + c.x / 2,
+        c.y - c.y / 2, c.y));
 
-    checkSquare(ColorB(0, 0, 255), c.x, c.x + c.x / 2,
-        c.y, c.y + c.y / 2);
+    EXPECT_EQ(0, checkSquare(ColorB(0, 0, 255), c.x, c.x + c.x / 2,
+        c.y, c.y + c.y / 2));
 }
 
 TEST_F(RenderTests, CheckNinePatch) {
@@ -661,6 +661,7 @@ TEST_F(RenderTests, CheckNinePatch) {
 
         tex->bind();
         tex->resize(Vec2i(3, 3));
+        tex->setLerpType(ETextureLerpType::Point, ETextureLerpType::Point);
 
         ColorB texData[] = {
             ColorB(255, 0, 0), ColorB(0, 255, 0), ColorB(255, 0, 0),
@@ -687,75 +688,106 @@ TEST_F(RenderTests, CheckNinePatch) {
     Vec2i center = renderPort / 2;
     Vec2i size = center;
 
-    int failPixCount = 0;
+    int cornerSquareSize = size.y / 3;
+
+    Vec2i a0 = center - size / 2;
+    Vec2i a1 = Vec2i(a0.x + cornerSquareSize, a0.y);
+    Vec2i a2 = Vec2i(a0.x + size.x - cornerSquareSize, a0.y);
+    Vec2i a3 = Vec2i(a0.x + size.x, a0.y);
+
+    Vec2i b0 = Vec2i(a0.x, a0.y + cornerSquareSize);
+    Vec2i b1 = Vec2i(a1.x, a1.y + cornerSquareSize);
+    Vec2i b2 = Vec2i(a2.x, a2.y + cornerSquareSize);
+    Vec2i b3 = Vec2i(a3.x, a3.y + cornerSquareSize);
+
+    Vec2i c0 = Vec2i(b0.x, b0.y + cornerSquareSize);
+    Vec2i c1 = Vec2i(b1.x, b1.y + cornerSquareSize);
+    Vec2i c2 = Vec2i(b2.x, b2.y + cornerSquareSize);
+    Vec2i c3 = Vec2i(b3.x, b3.y + cornerSquareSize);
+
+    Vec2i d0 = Vec2i(c0.x, c0.y + cornerSquareSize);
+    Vec2i d1 = Vec2i(c1.x, c1.y + cornerSquareSize);
+    Vec2i d2 = Vec2i(c2.x, c2.y + cornerSquareSize);
+    Vec2i d3 = Vec2i(c3.x, c3.y + cornerSquareSize);
 
     {
-        AABB2Di texBox;
-        texBox.bot = center - size / 2 + Vec2i(1);
-        texBox.top = center + size / 2 - Vec2i(1);
+        AABB2Di box(a0, b1);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
 
-        ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, texBox.bot.y);
-        if(col != ColorB(255, 0, 0)) {
-            ++failPixCount;
-        }
-
-        col = IMAGE_BUFFER->getColor(texBox.bot.x, texBox.top.y);
-        if(col != ColorB(255, 0, 0)) {
-            ++failPixCount;
-        }
-
-        col = IMAGE_BUFFER->getColor(texBox.top.x, texBox.bot.y);
-        if(col != ColorB(255, 0, 0)) {
-            ++failPixCount;
-        }
-
-        col = IMAGE_BUFFER->getColor(texBox.top.x, texBox.top.y);
-        if(col != ColorB(255, 0, 0)) {
-            ++failPixCount;
-        }
+        EXPECT_EQ(0, checkSquare(ColorB(255, 0, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
     }
 
     {
-        AABB2Di texBox;
-        texBox.bot = center - size / 2;
-        texBox.top = center + size / 2;
+        AABB2Di box(c0, d1);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
 
-        for(int i = texBox.bot.x + 3; i < texBox.top.x - 3; ++i) {
-            ColorB col = IMAGE_BUFFER->getColor(i, texBox.bot.y);
-            if(col != ColorB(0, 255, 0)) {
-                ++failPixCount;
-            }
-        }
-
-        for(int i = texBox.top.x + 3; i < texBox.top.x - 3; ++i) {
-            ColorB col = IMAGE_BUFFER->getColor(i, texBox.top.y);
-            if(col != ColorB(0, 255, 0)) {
-                ++failPixCount;
-            }
-        }
-
-        for(int i = texBox.bot.y + 3; i < texBox.bot.y - 3; ++i) {
-            ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, i);
-            if(col != ColorB(0, 255, 0)) {
-                ++failPixCount;
-            }
-        }
-
-        for(int i = texBox.bot.y + 3; i < texBox.bot.y - 3; ++i) {
-            ColorB col = IMAGE_BUFFER->getColor(texBox.bot.x, i);
-            if(col != ColorB(0, 255, 0)) {
-                ++failPixCount;
-            }
-        }
+        EXPECT_EQ(0, checkSquare(ColorB(255, 0, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
     }
 
-    ASSERT_TRUE(failPixCount);
+    {
+        AABB2Di box(a2, b3);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
+
+        EXPECT_EQ(0, checkSquare(ColorB(255, 0, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
+    }
 
     {
-        AABB2Di texBox;
-        texBox.bot = center - size / 2 + Vec2i(3);
-        texBox.top = center + size / 2 - Vec2i(3);
+        AABB2Di box(c2, d3);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
 
-        checkSquare(ColorB(0, 0, 255), texBox.bot.x, texBox.top.x, texBox.bot.y, texBox.top.y);
+        EXPECT_EQ(0, checkSquare(ColorB(255, 0, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
+    }
+
+    {
+        AABB2Di box(a1, b2);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
+
+        EXPECT_EQ(0, checkSquare(ColorB(0, 255, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
+    }
+
+    {
+        AABB2Di box(b0, c1);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
+
+        EXPECT_EQ(0, checkSquare(ColorB(0, 255, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
+    }
+
+    {
+        AABB2Di box(b2, c3);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
+
+        EXPECT_EQ(0, checkSquare(ColorB(0, 255, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
+    }
+
+    {
+        AABB2Di box(c1, d2);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
+
+        EXPECT_EQ(0, checkSquare(ColorB(0, 255, 0),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
+    }
+
+    {
+        AABB2Di box(b1, c2);
+        box.bot += Vec2i(1);
+        box.top -= Vec2i(1);
+
+        EXPECT_EQ(0, checkSquare(ColorB(0, 0, 255),
+            box.bot.x, box.top.x, box.bot.y, box.top.y));
     }
 }

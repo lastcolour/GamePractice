@@ -1,6 +1,7 @@
 #include "Game/Logics/GameBoardElemLogic.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "Render/ETRenderNode.hpp"
+#include "Render/ETRenderScene.hpp"
 #include "Game/ETGameInterfaces.hpp"
 #include "Game/Logics/MatchAlgorithm.hpp"
 #include "Game/Logics/GameBoardUtils.hpp"
@@ -132,13 +133,13 @@ void GameBoardElemLogic::ET_onTriggerDone() {
     ET_onDestroyDone();
 }
 
-void GameBoardElemLogic::ET_initRender(UIProxyContainer& rootContainer, const Vec2& elemSize) {
+void GameBoardElemLogic::ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) {
     ET_SendEvent(getEntityId(), &ETRenderRect::ET_setSize, elemSize);
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_show);
-    rootContainer.addItem(getEntityId(), GameUtils::BOARD_ELEM_Z_OFFSET);
+    ET_SendEvent(rootRenderEntId, &ETRenderScene::ET_addItem, GameUtils::BOARD_ELEM_Z_OFFSET, getEntityId());
 }
 
-void GameBoardElemLogic::ET_deinitRender(UIProxyContainer& rootContainer) {
+void GameBoardElemLogic::ET_deinitRender(EntityId rootRenderEntId) {
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
-    rootContainer.removeItem(getEntityId());
+    ET_SendEvent(rootRenderEntId, &ETRenderScene::ET_removeItem, getEntityId());
 }

@@ -209,7 +209,7 @@ class AssetsModel:
 
     def reload(self):
         Log.debug("[AssetsModel:reload] Trigger Reload")
-        self._resourceRootDir = DirNode()
+        self._resourceRootDir = DirNode(None, None)
         if not self.init():
             raise RuntimeError("Can't reload assets model")
 
