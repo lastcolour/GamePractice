@@ -1081,14 +1081,31 @@
       "id": 8,
       "data": {
         "params": {
-          "zIndexStep": 1,
           "occlussion": {
             "refOp": "None",
             "refVal": 0
           }
         },
-        "buildChildListOnLoad": true,
-        "manualChildren": []
+        "manualChildren": [
+          {
+            "entId": [
+              3
+            ],
+            "zIndexOffset": 3
+          },
+          {
+            "entId": [
+              2
+            ],
+            "zIndexOffset": 3
+          },
+          {
+            "entId": [
+              1
+            ],
+            "zIndexOffset": 3
+          }
+        ]
       }
     }
   ]

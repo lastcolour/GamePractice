@@ -121,6 +121,26 @@
         "speed": 20.0,
         "radius": 2
       }
+    },
+    {
+      "type": "RenderScene",
+      "id": 8,
+      "data": {
+        "params": {
+          "occlussion": {
+            "refOp": "None",
+            "refVal": 0
+          }
+        },
+        "manualChildren": [
+          {
+            "entId": [
+              1
+            ],
+            "zIndexOffset": -1
+          }
+        ]
+      }
     }
   ]
 }

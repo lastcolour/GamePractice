@@ -31,7 +31,7 @@
             "data": {
               "isVisible": false,
               "alpha": 0.699999988079071,
-              "zIndex": 0,
+              "zIndex": -1,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
                 "lerpType": "Point",
@@ -82,7 +82,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "zIndex": 0,
+              "zIndex": -1,
               "textureInfo": {
                 "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
@@ -133,7 +133,7 @@
             "data": {
               "isVisible": false,
               "alpha": 1.0,
-              "zIndex": 0,
+              "zIndex": -1,
               "textureInfo": {
                 "filename": "Images/Game/rocket_launch.png",
                 "lerpType": "Point",
@@ -227,6 +227,38 @@
         ],
         "secondRocket": [
           3
+        ]
+      }
+    },
+    {
+      "type": "RenderScene",
+      "id": 8,
+      "data": {
+        "params": {
+          "occlussion": {
+            "refOp": "None",
+            "refVal": 0
+          }
+        },
+        "manualChildren": [
+          {
+            "entId": [
+              1
+            ],
+            "zIndexOffset": -1
+          },
+          {
+            "entId": [
+              2
+            ],
+            "zIndexOffset": 1
+          },
+          {
+            "entId": [
+              3
+            ],
+            "zIndexOffset": 1
+          }
         ]
       }
     }

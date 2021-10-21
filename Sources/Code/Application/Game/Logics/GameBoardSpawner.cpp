@@ -102,6 +102,7 @@ void GameBoardSpawner::ET_unloadLevel() {
     ET_SendEvent(&ETGameBoardSpawnerEvents::ET_onStartDestroying);
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, gameBoardId);
     gameBoardId = InvalidEntityId;
+    gameBoardRootRenderId = InvalidEntityId;
 }
 
 EntityId GameBoardSpawner::ET_getGameBoard() const {

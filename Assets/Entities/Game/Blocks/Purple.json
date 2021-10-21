@@ -113,6 +113,26 @@
           "event": "scoreIncrease_01"
         }
       }
+    },
+    {
+      "type": "RenderScene",
+      "id": 7,
+      "data": {
+        "params": {
+          "occlussion": {
+            "refOp": "None",
+            "refVal": 0
+          }
+        },
+        "manualChildren": [
+          {
+            "entId": [
+              1
+            ],
+            "zIndexOffset": -1
+          }
+        ]
+      }
     }
   ]
 }

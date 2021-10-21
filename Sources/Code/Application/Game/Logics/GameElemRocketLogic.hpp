@@ -26,8 +26,8 @@ public:
     void ET_setSwapedElem(EntityId elemId) override;
 
     // ETGameBoardRenderElem
-    void ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) override;
-    void ET_deinitRender(EntityId rootRenderEntId) override;
+    void ET_initRender(const Vec2& elemSize) override;
+    void ET_deinitRender() override;
 
 private:
 

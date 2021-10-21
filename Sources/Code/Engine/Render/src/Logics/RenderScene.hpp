@@ -27,10 +27,11 @@ public:
     void ET_onLoaded() override;
 
     // ETRenderScene
-    void ET_addItem(int layer, EntityId entId) override;
+    void ET_addItem(int zIndexOffset, EntityId entId) override;
     void ET_removeItem(EntityId entId) override;
     const RenderSceneParams& ET_getParams() const override;
     void ET_setParams(RenderSceneParams& newParams) override;
+    size_t ET_getItemsCount() const override;
 
     // ETRenderNodeEvents
     void ET_onHidden(bool flag) override;
@@ -48,13 +49,13 @@ private:
     public:
 
         EntityId entId;
-        int depth{1};
+        int zIndexOffset{1};
         bool prevVisible{false};
     };
 
 private:
 
-    std::vector<ChildNode> collectChildren(EntityId rootList) const;
+    std::vector<ChildNode> collectChildren(EntityId rootEntityId) const;
     void propagateParentState(std::vector<ChildNode>& childList);
     void updateHidden(bool flag, std::vector<ChildNode>& childList);
     void updateZIndex(int newZIndex, std::vector<ChildNode>& childList);
@@ -66,7 +67,6 @@ private:
     std::vector<ChildNode> manulChildren;
     std::vector<ChildNode> children;
     RenderSceneParams params;
-    bool buildChildListOnLoad;
 };
 
 #endif /* __RENDER_SCENE_HPP__ */

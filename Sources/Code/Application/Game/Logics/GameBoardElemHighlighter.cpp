@@ -74,6 +74,9 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     freeElem->duration = 0.f;
     freeElem->state = State::FadeOut;
 
+    if(!rootRenderId.isValid()) {
+        ET_SendEventReturn(rootRenderId, &ETGameBoard::ET_getRootRenderId);
+    }
     ET_SendEvent(rootRenderId, &ETRenderScene::ET_addItem, GameUtils::ELEM_HIGHLIGHT_Z_OFFSET, freeElem->entId);
 
     Transform tm;
@@ -89,8 +92,6 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
 }
 
 bool GameBoardElemHighlighter::createElemsPool() {
-    ET_SendEventReturn(rootRenderId, &ETGameBoard::ET_getRootRenderId);
-
     destroyAllElems();
     int poolSize = 10 * 10;
     for(int i = 0; i < poolSize; ++i) {
@@ -146,4 +147,5 @@ void GameBoardElemHighlighter::ET_onStartLoading() {
 
 void GameBoardElemHighlighter::ET_onStartDestroying() {
     ET_onGameTick(1024.f);
+    rootRenderId = InvalidEntityId;
 }

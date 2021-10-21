@@ -43,12 +43,25 @@
                 }
               },
               "size": {
-                "x": 600.0,
-                "y": 600.0
+                "x": 930.0,
+                "y": 930.0
               },
               "horizontal": 0.30000001192092896,
               "vertical": 0.30000001192092896,
               "patchScale": 0.20000000298023224
+            }
+          },
+          {
+            "type": "RenderScene",
+            "id": 4,
+            "data": {
+              "params": {
+                "occlussion": {
+                  "refOp": "OccludAll",
+                  "refVal": 1
+                }
+              },
+              "manualChildren": []
             }
           }
         ]
@@ -81,7 +94,7 @@
           "x": 10,
           "y": 10
         },
-        "cellScale": 0.699999988079071,
+        "cellScale": 0.7,
         "backgroundId": [
           1
         ]

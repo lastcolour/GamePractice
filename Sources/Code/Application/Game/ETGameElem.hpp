@@ -51,8 +51,8 @@ struct ETGameBoardElem {
 
 struct ETGameBoardRenderElem {
     virtual ~ETGameBoardRenderElem() = default;
-    virtual void ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) = 0;
-    virtual void ET_deinitRender(EntityId rootRenderEntId) = 0;
+    virtual void ET_initRender(const Vec2& elemSize) = 0;
+    virtual void ET_deinitRender() = 0;
 };
 
 struct ETBoardElemDestroyAnimation {

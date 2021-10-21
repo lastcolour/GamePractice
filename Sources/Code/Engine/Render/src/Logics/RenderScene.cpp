@@ -19,7 +19,6 @@ void RenderSceneParams::StencilOcclusion::Reflect(ReflectContext& ctx) {
 
 void RenderSceneParams::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderSceneParams>("RenderSceneParams")) {
-        classInfo->addField("zIndexStep", &RenderSceneParams::zIndexStep);
         classInfo->addField("occlussion", &RenderSceneParams::occlusion);
     }
 }
@@ -27,20 +26,18 @@ void RenderSceneParams::Reflect(ReflectContext& ctx) {
 void RenderScene::ChildNode::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderScene::ChildNode>("RenderSceneChildNode")) {
         classInfo->addField("entId", &RenderScene::ChildNode::entId);
-        classInfo->addField("layer", &RenderScene::ChildNode::depth);
+        classInfo->addField("zIndexOffset", &RenderScene::ChildNode::zIndexOffset);
     }
 }
 
 void RenderScene::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderScene>("RenderScene")) {
         classInfo->addField("params", &RenderScene::params);
-        classInfo->addField("buildChildListOnLoad", &RenderScene::buildChildListOnLoad);
         classInfo->addField("manualChildren", &RenderScene::manulChildren);
     }
 }
 
-RenderScene::RenderScene() :
-    buildChildListOnLoad(true) {
+RenderScene::RenderScene() {
 }
 
 RenderScene::~RenderScene() {
@@ -51,10 +48,6 @@ void RenderScene::init() {
         LogWarning("[RenderScene::init] Can't find root render node for a scene on entity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
         return;
-    }
-
-    if(!manulChildren.empty()) {
-        buildChildListOnLoad = false;
     }
 
     ETNode<ETEntityEvents>::connect(getEntityId());
@@ -96,20 +89,10 @@ void RenderScene::ET_onLoaded() {
         }
     }
 
-    if(buildChildListOnLoad) {
-        children = collectChildren(getEntityId());
-        propagateParentState(children);
-    } else {
-        propagateParentState(manulChildren);
-    }
+    propagateParentState(manulChildren);
 }
 
-void RenderScene::ET_addItem(int layer, EntityId entId) {
-    if(layer < 1) {
-        LogError("[RenderScene::ET_addItem] Can't add entity '%s' to layer '%d' on entity: '%s'",
-            EntityUtils::GetEntityName(entId), layer, EntityUtils::GetEntityName(getEntityId()));
-        return;
-    }
+void RenderScene::ET_addItem(int zIndexOffset, EntityId entId) {
     if(!entId.isValid()) {
         LogError("[RenderScene::ET_addItem] Can't add invalid entity to entity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
@@ -122,7 +105,14 @@ void RenderScene::ET_addItem(int layer, EntityId entId) {
     }
     for(auto& child : children) {
         if(child.entId == entId) {
-            LogError("[RenderScene::ET_addItem] Entity '%s' already register on scene on entity: '%s'",
+            LogWarning("[RenderScene::ET_addItem] Entity '%s' already added to scene on entity: '%s'",
+                EntityUtils::GetEntityName(entId), EntityUtils::GetEntityName(getEntityId()));
+            return;
+        }
+    }
+    for(auto& child : manulChildren) {
+        if(child.entId == entId) {
+            LogWarning("[RenderScene::ET_addItem] Entity '%s' already manually added to scene on entity: '%s'",
                 EntityUtils::GetEntityName(entId), EntityUtils::GetEntityName(getEntityId()));
             return;
         }
@@ -130,26 +120,38 @@ void RenderScene::ET_addItem(int layer, EntityId entId) {
 
     auto newChildren = collectChildren(entId);
     for(auto& newChild : newChildren) {
-        newChild.depth += 1;
+        newChild.zIndexOffset = (newChild.zIndexOffset + 1) * zIndexOffset;
     }
-
-    bool newRootChildVisible = false;
-    ET_SendEventReturn(newRootChildVisible, entId, &ETRenderNode::ET_isVisible);
-
-    newChildren.push_back(ChildNode{entId, layer, newRootChildVisible});
 
     propagateParentState(newChildren);
     children.insert(children.end(), newChildren.begin(), newChildren.end());
 }
 
 void RenderScene::ET_removeItem(EntityId entId) {
-    auto it = children.begin();
-    for(auto end = children.end(); it != end; ++it) {
-        if(it->entId == entId) {
-            children.erase(it);
-            break;
+    std::vector<ChildNode> childToRemove = collectChildren(entId);
+
+    if(params.occlusion.refOp != RenderSceneParams::EOcclusionPolicy::None) {
+        StencilWirteReadData defStencilData;
+        for(auto& node : childToRemove) {
+            ET_SendEvent(node.entId, &ETRenderNode::ET_setStencilData, defStencilData);
         }
     }
+
+    children.erase(std::remove_if(children.begin(), children.end(),
+        [&childToRemove](const ChildNode& node) {
+            return childToRemove.end() != std::find_if(childToRemove.begin(), childToRemove.end(),
+                [&node](const ChildNode& otherNode){
+                    return otherNode.entId == node.entId;
+            });
+    }), children.end());
+
+    manulChildren.erase(std::remove_if(manulChildren.begin(), manulChildren.end(),
+        [&childToRemove](const ChildNode& node) {
+            return childToRemove.end() != std::find_if(childToRemove.begin(), childToRemove.end(),
+                [&node](const ChildNode& otherNode){
+                    return otherNode.entId == node.entId;
+            });
+    }), manulChildren.end());
 }
 
 const RenderSceneParams& RenderScene::ET_getParams() const {
@@ -161,14 +163,18 @@ void RenderScene::ET_setParams(RenderSceneParams& newParams) {
     propagateParentState(children);
 }
 
+size_t RenderScene::ET_getItemsCount() const {
+    return manulChildren.size() + children.size();
+}
+
 std::vector<RenderScene::ChildNode> RenderScene::collectChildren(EntityId rootEntityId) const {
     std::vector<ChildNode> result;
 
-    int currentDepth = 1;
+    int currentDepth = 0;
 
     std::vector<EntityId> extraChildren;
     std::vector<EntityId> openList;
-    ET_SendEventReturn(openList, rootEntityId, &ETEntity::ET_getChildren);
+    openList.push_back(rootEntityId);
 
     while(!openList.empty()) {
         size_t sz = openList.size();
@@ -281,7 +287,7 @@ void RenderScene::ET_onNormScaleChanged(float newNormScale) {
 
 void RenderScene::updateZIndex(int newZIndex, std::vector<ChildNode>& childList) {
     for(auto& child : childList) {
-        int zIndex = newZIndex + child.depth * params.zIndexStep;
+        int zIndex = newZIndex + child.zIndexOffset;
         ET_SendEvent(child.entId, &ETRenderNode::ET_setZIndex, zIndex);
     }
 }

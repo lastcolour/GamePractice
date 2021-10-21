@@ -133,13 +133,11 @@ void GameBoardElemLogic::ET_onTriggerDone() {
     ET_onDestroyDone();
 }
 
-void GameBoardElemLogic::ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) {
+void GameBoardElemLogic::ET_initRender(const Vec2& elemSize) {
     ET_SendEvent(getEntityId(), &ETRenderRect::ET_setSize, elemSize);
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_show);
-    ET_SendEvent(rootRenderEntId, &ETRenderScene::ET_addItem, GameUtils::BOARD_ELEM_Z_OFFSET, getEntityId());
 }
 
-void GameBoardElemLogic::ET_deinitRender(EntityId rootRenderEntId) {
+void GameBoardElemLogic::ET_deinitRender() {
     ET_SendEvent(getEntityId(), &ETRenderNode::ET_hide);
-    ET_SendEvent(rootRenderEntId, &ETRenderScene::ET_removeItem, getEntityId());
 }

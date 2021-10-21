@@ -30,7 +30,7 @@
             "id": 3,
             "data": {
               "isVisible": true,
-              "alpha": 1.0,
+              "alpha": 0.8999999761581421,
               "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Game/game_board_bg.png",
@@ -56,13 +56,11 @@
             "id": 4,
             "data": {
               "params": {
-                "zIndexStep": 5,
                 "occlussion": {
                   "refOp": "OccludAll",
                   "refVal": 1
                 }
               },
-              "buildChildListOnLoad": true,
               "manualChildren": []
             }
           }
@@ -82,7 +80,7 @@
           "minScore": 10
         },
         "threeStars": {
-          "minScore": 3000
+          "minScore": 300
         }
       }
     },
@@ -93,10 +91,10 @@
         "fallSpeed": 0.0,
         "fallAcceleration": 30.0,
         "size": {
-          "x": 10,
-          "y": 10
+          "x": 3,
+          "y": 3
         },
-        "cellScale": 0.7,
+        "cellScale": 0.699999988079071,
         "backgroundId": [
           1
         ]
@@ -114,6 +112,22 @@
           {
             "elemType": "Purple",
             "weight": 10
+          },
+          {
+            "elemType": "Green",
+            "weight": 1
+          },
+          {
+            "elemType": "Yellow",
+            "weight": 1
+          },
+          {
+            "elemType": "Red",
+            "weight": 1
+          },
+          {
+            "elemType": "HRocket",
+            "weight": 1
           }
         ]
       }

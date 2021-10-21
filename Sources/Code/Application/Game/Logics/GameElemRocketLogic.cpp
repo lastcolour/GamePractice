@@ -183,7 +183,7 @@ bool GameElemRocketLogic::onUpdate(float dt) {
     return isFirstDone && isSecondDone;
 }
 
-void GameElemRocketLogic::ET_initRender(EntityId rootRenderEntId, const Vec2& elemSize) {
+void GameElemRocketLogic::ET_initRender(const Vec2& elemSize) {
     ET_SendEvent(firstRocket, &ETRenderRect::ET_setSize, elemSize);
     ET_SendEvent(firstRocket, &ETRenderNode::ET_hide);
 
@@ -191,7 +191,7 @@ void GameElemRocketLogic::ET_initRender(EntityId rootRenderEntId, const Vec2& el
     ET_SendEvent(secondRocket, &ETRenderNode::ET_hide);
 }
 
-void GameElemRocketLogic::ET_deinitRender(EntityId rootRenderEntId) {
+void GameElemRocketLogic::ET_deinitRender() {
     hideRocket(firstRocket);
     hideRocket(secondRocket);
 }
