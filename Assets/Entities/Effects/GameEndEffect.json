@@ -31,7 +31,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 3,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -133,7 +133,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 3,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -263,7 +263,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 3,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -365,7 +365,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 3,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -495,7 +495,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 3,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -597,7 +597,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 3,
               "emission": {
                 "simTime": "UI",
                 "duration": 0.10000000149011612,
@@ -1091,19 +1091,22 @@
             "entId": [
               3
             ],
-            "zIndexOffset": 3
+            "zIndexOffset": 3,
+            "propagateVisibility": true
           },
           {
             "entId": [
               2
             ],
-            "zIndexOffset": 3
+            "zIndexOffset": 3,
+            "propagateVisibility": true
           },
           {
             "entId": [
               1
             ],
-            "zIndexOffset": 3
+            "zIndexOffset": 3,
+            "propagateVisibility": true
           }
         ]
       }

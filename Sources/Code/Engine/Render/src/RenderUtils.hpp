@@ -22,7 +22,8 @@ enum class RenderNodeType {
     Text,
     ParticleEmmiter,
     Blur,
-    NinePatchImage
+    NinePatchImage,
+    LightingBolt
 };
 
 namespace RenderUtils {

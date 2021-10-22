@@ -133,9 +133,18 @@ void GameBoardLogic::init() {
 
     ETNode<ETGameTimerEvents>::connect(getEntityId());
     ETNode<ETGameBoard>::connect(getEntityId());
+    ETNode<ETGameBoardSpawnerEvents>::connect(getEntityId());
 }
 
 void GameBoardLogic::deinit() {
+}
+
+void GameBoardLogic::ET_onStartDestroying() {
+    for(auto& col : columns) {
+        for(auto& elem : col) {
+            deinitElem(elem);
+        }
+    }
 }
 
 void GameBoardLogic::ET_spawnElems() {

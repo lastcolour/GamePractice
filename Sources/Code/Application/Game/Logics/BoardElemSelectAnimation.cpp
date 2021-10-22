@@ -23,6 +23,8 @@ BoardElemSelectAnimation::~BoardElemSelectAnimation() {
 
 void BoardElemSelectAnimation::init() {
     ETNode<ETGameBoardElemSelectAnimation>::connect(getEntityId());
+
+    ET_SendEvent(backgroundId, &ETRenderNode::ET_hide);
 }
 
 void BoardElemSelectAnimation::deinit() {

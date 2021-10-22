@@ -50,6 +50,7 @@ private:
 
         EntityId entId;
         int zIndexOffset{1};
+        bool propagateVisibility{true};
         bool prevVisible{false};
     };
 

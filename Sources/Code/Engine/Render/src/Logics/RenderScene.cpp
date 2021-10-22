@@ -27,6 +27,7 @@ void RenderScene::ChildNode::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderScene::ChildNode>("RenderSceneChildNode")) {
         classInfo->addField("entId", &RenderScene::ChildNode::entId);
         classInfo->addField("zIndexOffset", &RenderScene::ChildNode::zIndexOffset);
+        classInfo->addField("propagateVisibility", &RenderScene::ChildNode::propagateVisibility);
     }
 }
 
@@ -161,6 +162,7 @@ const RenderSceneParams& RenderScene::ET_getParams() const {
 void RenderScene::ET_setParams(RenderSceneParams& newParams) {
     params = newParams;
     propagateParentState(children);
+    propagateParentState(manulChildren);
 }
 
 size_t RenderScene::ET_getItemsCount() const {
@@ -188,7 +190,8 @@ std::vector<RenderScene::ChildNode> RenderScene::collectChildren(EntityId rootEn
             bool childVisible = false;
             ET_SendEventReturn(childVisible, childEntId, &ETRenderNode::ET_isVisible);
 
-            result.emplace_back(ChildNode{childEntId, currentDepth, childVisible});
+            bool propagateVisibility = true;
+            result.emplace_back(ChildNode{childEntId, currentDepth, propagateVisibility, childVisible});
 
             if(!ET_IsExistNode<ETRenderScene>(childEntId)) {
                 ET_SendEventReturn(extraChildren, childEntId, &ETEntity::ET_getChildren);
@@ -230,7 +233,7 @@ void RenderScene::propagateParentState(std::vector<ChildNode>& childList) {
             StencilWirteReadData stencilData;
             stencilData.mode = EStencilOpType::Disabled;
             stencilData.refVal = 0;
-            for(auto& child : children) {
+            for(auto& child : childList) {
                 ET_SendEvent(child.entId, &ETRenderNode::ET_setStencilData, stencilData);
             }
             break;
@@ -239,7 +242,7 @@ void RenderScene::propagateParentState(std::vector<ChildNode>& childList) {
             StencilWirteReadData stencilData;
             stencilData.mode = EStencilOpType::Read;
             stencilData.refVal = params.occlusion.refVal;
-            for(auto& child : children) {
+            for(auto& child : childList) {
                 ET_SendEvent(child.entId, &ETRenderNode::ET_setStencilData, stencilData);
             }
             break;
@@ -258,7 +261,7 @@ void RenderScene::updateHidden(bool flag, std::vector<ChildNode>& childList) {
         }
     } else {
         for(auto& child : childList) {
-            if(child.prevVisible) {
+            if(child.prevVisible && child.propagateVisibility) {
                 ET_SendEvent(child.entId, &ETRenderNode::ET_show);
             }
         }

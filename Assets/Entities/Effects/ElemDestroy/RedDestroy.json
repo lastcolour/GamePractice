@@ -261,13 +261,11 @@
       "id": 5,
       "data": {
         "params": {
-          "zIndexStep": 1,
           "occlussion": {
             "refOp": "None",
             "refVal": 0
           }
         },
-        "buildChildListOnLoad": true,
         "manualChildren": []
       }
     },

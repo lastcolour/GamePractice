@@ -6,6 +6,7 @@
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameTimer.hpp"
 #include "Game/Logics/GameBoardFSM.hpp"
+#include "Game/ETGameBoardSpawner.hpp"
 
 struct BoardElement {
     Vec2i boardPt;
@@ -19,7 +20,8 @@ struct BoardElement {
 
 class GameBoardLogic : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
-    public ETNode<ETGameBoard> {
+    public ETNode<ETGameBoard>,
+    public ETNode<ETGameBoardSpawnerEvents> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -53,6 +55,10 @@ public:
 
     // ETGameTimerEvents
     void ET_onGameTick(float dt) override;
+
+    // ETGameBoardSpawnerEvents
+    void ET_onStartLoading() override {}
+    void ET_onStartDestroying() override;
 
 protected:
 

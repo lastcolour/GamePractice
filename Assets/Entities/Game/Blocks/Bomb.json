@@ -31,7 +31,7 @@
             "data": {
               "isVisible": false,
               "alpha": 0.699999988079071,
-              "zIndex": 0,
+              "zIndex": -1,
               "textureInfo": {
                 "filename": "Images/Base/rblock_32x32.png",
                 "lerpType": "Point",
@@ -137,7 +137,8 @@
             "entId": [
               1
             ],
-            "zIndexOffset": -1
+            "zIndexOffset": -1,
+            "propagateVisibility": false
           }
         ]
       }
