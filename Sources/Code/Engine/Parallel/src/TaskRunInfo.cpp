@@ -14,11 +14,11 @@ TaskRunInfo::TaskRunInfo() :
 TaskRunInfo::~TaskRunInfo() {
 }
 
-float GetRunTimeBetween(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
+float GetRunTimeBetween(const Core::CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
     return timing[i].startT.getMiliSecElapsedFrom(timing[i - 1].startT);
 }
 
-float GetRunDurationAt(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
+float GetRunDurationAt(const Core::CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
     return timing[i].endT.getMiliSecElapsedFrom(timing[i].startT);
 }
 

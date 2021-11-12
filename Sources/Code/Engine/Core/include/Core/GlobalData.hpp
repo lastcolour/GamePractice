@@ -1,10 +1,9 @@
 #ifndef __GLOBAL_DATA_HPP__
 #define __GLOBAL_DATA_HPP__
 
-#include "Core/GlobalEnvironment.hpp"
-#include "Core/TypeId.hpp"
 #include "Reflect/ReflectUtils.hpp"
-#include "Reflect/ReflectContext.hpp"
+
+namespace Core {
 
 class GlobalData {
 public:
@@ -14,12 +13,12 @@ public:
 
     template<typename T>
     void create() {
-        create(ReflectUtils::GetOrCreateClassInfo<T>());
+        create(Reflect::GetOrCreateClassInfo<T>());
     }
 
     template<typename T>
     void createAndLoad(const char* fileName) {
-        createAndLoad(ReflectUtils::GetOrCreateClassInfo<T>(), fileName);
+        createAndLoad(Reflect::GetOrCreateClassInfo<T>(), fileName);
     }
 
     template<typename T>
@@ -36,14 +35,14 @@ public:
 
 private:
 
-    void createAndLoad(ClassInfo* classInfo, const char* fileName);
-    void create(ClassInfo* classInfo);
+    void createAndLoad(Reflect::ClassInfo* classInfo, const char* fileName);
+    void create(Reflect::ClassInfo* classInfo);
     void* getByTypeId(TypeId typeId);
     void removeByTypeId(TypeId typeId);
 
 private:
 
-    std::unordered_map<TypeId, ClassInstance> data;
+    std::unordered_map<TypeId, Reflect::ClassInstance> data;
 };
 
 template<typename T>
@@ -65,5 +64,7 @@ template<typename T>
 T* GetGlobal() {
     return GetEnv()->GetGlobalData()->get<T>();
 }
+
+} // namespace Core
 
 #endif /* __GLOBAL_DATA_HPP__ */

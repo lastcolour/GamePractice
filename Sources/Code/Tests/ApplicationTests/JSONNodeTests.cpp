@@ -4,7 +4,7 @@
 #include <map>
 
 TEST_F(JSONNodeTests, ParseEmptyBuffer) {
-    Buffer buff;
+    Memory::Buffer buff;
     auto node = JSONNode::ParseBuffer(buff);
     ASSERT_FALSE(node);
 }
@@ -206,7 +206,7 @@ TEST_F(JSONNodeTests, CheckWriteObject) {
 }
 
 TEST_F(JSONNodeTests, CheckCreateReadSame) {
-    Buffer buff;
+    Memory::Buffer buff;
     int write_val = 1;
     {
         JSONNode node;

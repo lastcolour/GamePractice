@@ -4,10 +4,6 @@
 #include "Entity/EntityLogic.hpp"
 #include "Reflect/ReflectContext.hpp"
 
-#include <type_traits>
-
-class ClassInfo;
-
 class EntityLogicsRegister {
 public:
 
@@ -25,7 +21,7 @@ public:
         registerFromReflectCtx(ctx);
     }
 
-    std::vector<ClassInfo*>& getLogicClasses();
+    std::vector<Reflect::ClassInfo*>& getLogicClasses();
     const char* getModuleName() const;
 
 private:
@@ -35,7 +31,7 @@ private:
 private:
 
     const char* moduleName;
-    std::vector<ClassInfo*> logics;
+    std::vector<Reflect::ClassInfo*> logics;
 };
 
 #endif /* __ENTITY_LOGICS_REGISTER_HPP__ */

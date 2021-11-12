@@ -4,7 +4,8 @@
 class SystemLogic {
 public:
 
-    SystemLogic();
+    SystemLogic() :
+        entityId(GetEnv()->GetETSystem()->createNewEntityId()) {}
     virtual ~SystemLogic() = default;
 
     virtual bool init() = 0;

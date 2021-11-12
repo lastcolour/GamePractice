@@ -1,5 +1,3 @@
-#include "Core/MemoryStream.hpp"
-
 #include <cassert>
 
 namespace {
@@ -17,6 +15,8 @@ const T& getRef(const void* ptr) {
 }
 
 } // namespace
+
+namespace Memory {
 
 MemoryStream::MemoryStream() :
     buffer(),
@@ -261,3 +261,5 @@ size_t MemoryStream::size() const {
 size_t MemoryStream::tellg() const {
     return pos;
 }
+
+} // namespace Memory

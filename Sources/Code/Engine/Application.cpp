@@ -1,7 +1,6 @@
 #include "Application.hpp"
 #include "Core/ETApplication.hpp"
 #include "CoreModule.hpp"
-#include "Core/GlobalEnvironment.hpp"
 #include "Render/RenderModule.hpp"
 #include "Audio/AudioModule.hpp"
 #include "Entity/EntityModule.hpp"
@@ -22,11 +21,12 @@ namespace {
 const int APP_THREAD_COUNT = 4;
 const int MAX_GAME_TICK_RATE = 60;
 const int AUX_TASK_TICK_RATE = MAX_GAME_TICK_RATE * 2;
+const int MEMORY_TICK_RATE = 30;
 
 } // namespace
 
 Application::Application() :
-    globalEnv(new GlobalEnvironment()) {
+    globalEnv(new Core::GlobalEnvironment()) {
 }
 
 Application::~Application() {
@@ -75,6 +75,12 @@ void Application::deinit() {
 void Application::mainLoop() {
     auto runner = GetEnv()->GetTasksRunner();
     assert(runner && "Invalid task runner");
+    {
+        auto memoryUpdate = runner->createTask("Memory", [](float dt){
+            GetEnv()->GetMemoryAllocator()->update(dt);
+        });
+        memoryUpdate->setFrequency(MEMORY_TICK_RATE);
+    }
     {
         auto inputUpdate = runner->createTask("Input", [](){
             ET_SendEvent(&ETInputUpdateTask::ET_updateInput);

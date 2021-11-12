@@ -40,15 +40,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Engine)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    <limits>
-    [["Reflect/ReflectContext.hpp"]]
-    [["Core/ETLogger.hpp"]]
+    [["Core/Core.hpp"]]
     [["Entity/ETEntity.hpp"]]
 )

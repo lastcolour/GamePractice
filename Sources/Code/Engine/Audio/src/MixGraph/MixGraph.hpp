@@ -24,8 +24,8 @@ public:
 
     const MixConfig& getMixConfig() const;
     Resampler& getResampler();
-    Buffer& getResampleBuffer();
-    Buffer& getCombineBuffer();
+    Memory::Buffer& getResampleBuffer();
+    Memory::Buffer& getCombineBuffer();
 
     void setMasterVolume(float newVolume);
     void setEqualizer(ESoundGroup soundGroup, const EqualizerSetup& eqSetup);
@@ -43,8 +43,8 @@ private:
     CombineNode gameNode;
     CombineNode musicNode;
     CombineNode uiNode;
-    Buffer resampleBuffer;
-    Buffer combineBuffer;
+    Memory::Buffer resampleBuffer;
+    Memory::Buffer combineBuffer;
     RecursiveFilter lLowPass;
     RecursiveFilter rLowPass;
     std::vector<std::unique_ptr<MixNode>> sources;

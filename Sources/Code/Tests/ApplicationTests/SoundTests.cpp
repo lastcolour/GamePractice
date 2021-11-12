@@ -216,7 +216,7 @@ TEST_F(SoundTests, CheckStereoMixOfMonoSource) {
     std::shared_ptr<SoundData> soundData(new SoundData);
 
     {
-        Buffer buff;
+        Memory::Buffer buff;
         ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, TEST_MONO_SOUND);
         ASSERT_TRUE(buff);
         soundData->setLoading();

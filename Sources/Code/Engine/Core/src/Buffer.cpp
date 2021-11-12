@@ -1,13 +1,17 @@
 #include <cassert>
 
+namespace Memory {
+
 struct BufferImpl {
     size_t size;
-    std::unique_ptr<uint8_t[]> data;
+    char* data;
 
-    BufferImpl() : size(0u), data() {}
-    BufferImpl(size_t buffSize) : size(buffSize) {
+    BufferImpl() : size(0u), data(nullptr) {}
+
+    BufferImpl(size_t buffSize) : size(buffSize), data(nullptr) {
         if(buffSize > 0) {
-            data.reset(new uint8_t[buffSize]);
+            data = reinterpret_cast<char*>(
+                GetEnv()->GetMemoryAllocator()->allocate(buffSize));
             if(!data) {
                 assert(false && "Can't allocate memory");
             } else {
@@ -15,13 +19,33 @@ struct BufferImpl {
             }
         }
     }
-    BufferImpl(BufferImpl&& buff) : size(buff.size), data(std::move(buff.data)) {
-        buff.size = 0u;
+
+    BufferImpl(BufferImpl&& other) : size(other.size), data(other.data) {
+        other.data = nullptr;
+        other.size = 0u;
+    }
+
+    BufferImpl& operator=(BufferImpl&& other) {
+        if(this != &other) {
+            reset();
+            data = other.data;
+            size = other.size;
+
+            other.size = 0;
+            other.data = nullptr;
+
+        }
+        return *this;
+    }
+
+    ~BufferImpl() {
+        reset();
     }
 
     void reset() {
+        GetEnv()->GetMemoryAllocator()->deallocate(data);
         size = 0u;
-        data.reset();
+        data = nullptr;
     }
 };
 
@@ -46,7 +70,7 @@ Buffer::Buffer(const void* dataPtr, size_t dataSize) :
     resize(dataSize);
     if(dataSize > 0) {
         assert(dataPtr != nullptr && "Invalid source data");
-        memcpy(buffImpl->data.get(), dataPtr, dataSize);
+        memcpy(buffImpl->data, dataPtr, dataSize);
     }
 }
 
@@ -76,7 +100,7 @@ std::string Buffer::acquireString() {
         return "";
     }
     buffImpl->data[buffImpl->size - 1] = 0;
-    auto cStr = reinterpret_cast<const char*>(buffImpl->data.get());
+    auto cStr = reinterpret_cast<const char*>(buffImpl->data);
     auto cStrLength = strlen(cStr);
     std::string resStr(cStr, cStrLength);
     buffImpl->reset();
@@ -88,7 +112,7 @@ std::string_view Buffer::getString() const {
         return "";
     }
     buffImpl->data[buffImpl->size - 1] = 0;
-    auto cStr = reinterpret_cast<const char*>(buffImpl->data.get());
+    auto cStr = reinterpret_cast<const char*>(buffImpl->data);
     auto cStrLength = strlen(cStr);
     return std::string_view(cStr, cStrLength);
 }
@@ -98,7 +122,7 @@ const char* Buffer::getCString() const {
         return "";
     }
     buffImpl->data[buffImpl->size - 1] = 0;
-    return reinterpret_cast<const char*>(buffImpl->data.get());
+    return reinterpret_cast<const char*>(buffImpl->data);
 }
 
 size_t Buffer::getSize() const {
@@ -110,7 +134,7 @@ size_t Buffer::getSize() const {
 
 const void* Buffer::getReadData() const {
     if(buffImpl != nullptr) {
-        return static_cast<const void*>(buffImpl->data.get());
+        return static_cast<const void*>(buffImpl->data);
     }
     return nullptr;
 }
@@ -120,9 +144,9 @@ void* Buffer::getWriteData() {
         if(buffImpl.use_count() > 1u) {
             auto prevBuffer = buffImpl;
             buffImpl.reset(new BufferImpl(prevBuffer->size));
-            memcpy(buffImpl->data.get(), prevBuffer->data.get(), prevBuffer->size);
+            memcpy(buffImpl->data, prevBuffer->data, prevBuffer->size);
         }
-        return static_cast<void*>(buffImpl->data.get());
+        return static_cast<void*>(buffImpl->data);
     }
     return nullptr;
 }
@@ -143,7 +167,7 @@ void Buffer::resize(size_t newSize) {
     } else {
         buffImpl->data[actualNewSize-1] = 0u;
         if(prevBuffer != nullptr && prevBuffer->size > 0) {
-            memcpy(buffImpl->data.get(), prevBuffer->data.get(), prevBuffer->size);
+            memcpy(buffImpl->data, prevBuffer->data, prevBuffer->size);
         } else {
             buffImpl->data[0] = 0u;
         }
@@ -153,3 +177,5 @@ void Buffer::resize(size_t newSize) {
 void Buffer::reset() {
     buffImpl.reset();
 }
+
+} // namespace Memory

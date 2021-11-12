@@ -21,7 +21,7 @@ void ImageBuffer::setSizeAndClear(const Vec2i& newSize) {
     clear();
 }
 
-Buffer& ImageBuffer::getData() {
+Memory::Buffer& ImageBuffer::getData() {
     return data;
 }
 

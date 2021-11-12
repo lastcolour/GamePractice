@@ -1,5 +1,3 @@
-#include "Core/ETUtils.hpp"
-
 namespace ET {
 
 int GLOBAL_ET_ID = 0;

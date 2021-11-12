@@ -5,7 +5,6 @@
 #include "Config/UIConfig.hpp"
 #include "Logics/UILayoutBox.hpp"
 #include "Core/ETApplication.hpp"
-#include "Core/GlobalData.hpp"
 
 namespace {
 
@@ -48,8 +47,9 @@ public:
 } // namespace
 
 void UILayoutTests::SetUpTestCase() {
-    ConsoleAppTests::SetUpTestCase();
-    auto uiConfig = GetGlobal<UIConfig>();
+    CreateTestApp(ETestAppModules::CheckRender);
+
+    auto uiConfig = Core::GetGlobal<UIConfig>();
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);

@@ -20,7 +20,7 @@ public:
 private:
 
     MixGraph* graph;
-    Buffer buffer;
+    Memory::Buffer buffer;
 };
 
 #endif /* __RESAMPLER_HPP__ */

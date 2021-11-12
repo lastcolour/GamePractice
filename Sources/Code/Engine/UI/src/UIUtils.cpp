@@ -5,7 +5,6 @@
 #include "UI/ETUIViewPort.hpp"
 #include "UI/ETUIBox.hpp"
 #include "Logics/UIAnimationSequence.hpp"
-#include "Core/GlobalData.hpp"
 
 #include <cassert>
 
@@ -17,7 +16,7 @@ UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin)
 
     UIBoxMargin resMargin;
 
-    auto uiConfig = GetGlobal<UIConfig>();
+    auto uiConfig = Core::GetGlobal<UIConfig>();
     resMargin.left = uiConfig->getSizeOnGrid(margin.left);
     resMargin.right = uiConfig->getSizeOnGrid(margin.right);
     resMargin.bot = uiConfig->getSizeOnGrid(margin.bot);
@@ -135,12 +134,12 @@ void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm) {
 }
 
 float GetValueOnGrind(float val) {
-    auto uiConfig = GetGlobal<UIConfig>();
+    auto uiConfig = Core::GetGlobal<UIConfig>();
     return uiConfig->getSizeOnGrid(val);
 }
 
 float ConvertValueFromGrid(float val) {
-    auto uiConfig = GetGlobal<UIConfig>();
+    auto uiConfig = Core::GetGlobal<UIConfig>();
     return uiConfig->convertFromGrid(val);
 }
 

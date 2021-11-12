@@ -1,20 +1,19 @@
 #include "Particles/ParticlesUpdateFrameInfo.hpp"
-#include "Core/Utils.hpp"
 #include "Render/ETParticlesSystem.hpp"
 
 void DispatchParticlesSystemEvents(EntityId entId, ParticlesUpdateFrameInfo& updateInfo) {
     EParticlesEmitEventType flags = EParticlesEmitEventType::None;
     if(updateInfo.systemStarted) {
-        flags = EnumFlagsUnite(flags, EParticlesEmitEventType::OnSystemStart);
+        flags = Core::EnumFlagsBitXORCreate(flags, EParticlesEmitEventType::OnSystemStart);
     }
     if(updateInfo.systemStopped) {
-        flags = EnumFlagsUnite(flags, EParticlesEmitEventType::OnSystemStop);
+        flags = Core::EnumFlagsBitXORCreate(flags, EParticlesEmitEventType::OnSystemStop);
     }
     if(updateInfo.particlesSpawned) {
-        flags = EnumFlagsUnite(flags, EParticlesEmitEventType::OnParticleSpawn);
+        flags = Core::EnumFlagsBitXORCreate(flags, EParticlesEmitEventType::OnParticleSpawn);
     }
     if(updateInfo.particlesRemoved) {
-        flags = EnumFlagsUnite(flags, EParticlesEmitEventType::OnParticleDeath);
+        flags = Core::EnumFlagsBitXORCreate(flags, EParticlesEmitEventType::OnParticleDeath);
     }
     if(flags == EParticlesEmitEventType::None) {
         return;

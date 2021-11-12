@@ -10,7 +10,7 @@ void tryLoadSoundData(SoundData* soundData) {
         return;
     }
     soundData->setLoading();
-    ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, soundData->fileName, [soundData](Buffer& buff){
+    ET_SendEvent(&ETAsyncAssets::ET_asyncLoadAsset, soundData->fileName, [soundData](Memory::Buffer& buff){
         soundData->setLoaded(buff);
         ET_QueueEvent(&ETSoundDataManager::ET_updatePendingStarts);
     });

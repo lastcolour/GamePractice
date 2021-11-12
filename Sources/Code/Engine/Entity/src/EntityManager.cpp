@@ -3,8 +3,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "Core/ETAssets.hpp"
-#include "Core/MemoryStream.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "Core/TimePoint.hpp"
 
 #include <cassert>
@@ -37,11 +36,11 @@ bool CheckEntityLogic(const char* errStr, EntityId entityId, Entity* entity, Ent
     return true;
 }
 
-bool CheckEntityLogicValue(const char* errStr, EntityId entityId, Entity* entity, EntityLogicId logicId, EntityLogicValueId valueId) {
+bool CheckEntityLogicValue(const char* errStr, EntityId entityId, Entity* entity, EntityLogicId logicId, Reflect::ClassValueId valueId) {
     if(!CheckEntityLogic(errStr, entityId, entity, logicId)) {
         return false;
     }
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == Reflect::InvalidClassValueId) {
         LogWarning(errStr, StringFormat("Invalid value id: '%d' of logic with id '%d' for entity: '%s'",
             valueId, logicId, entity->ET_getName()));
         return false;
@@ -245,7 +244,7 @@ void EntityManager::ET_removeLogicFromEntity(EntityId targetEntId, EntityLogicId
 }
 
 bool EntityManager::ET_readEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
-    EntityLogicValueId valueId, MemoryStream& stream) {
+    Reflect::ClassValueId valueId, Memory::MemoryStream& stream) {
     const char* errStr = "[EntityManager::ET_readEntityLogicData] Can't read logic data (Error: %s)";
     auto entity = registry.findEntity(targetEntId);
     if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
@@ -253,7 +252,7 @@ bool EntityManager::ET_readEntityLogicData(EntityId targetEntId, EntityLogicId l
     }
     if(logicId == TransformLogicId) {
 
-        SerializeContext serCtx;
+        Reflect::SerializeContext serCtx;
         serCtx.entityId = entity->getEntityId();
 
         auto localTm = entity->ET_getLocalTransform();
@@ -267,7 +266,7 @@ bool EntityManager::ET_readEntityLogicData(EntityId targetEntId, EntityLogicId l
 }
 
 bool EntityManager::ET_writeEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
-    EntityLogicValueId valueId, MemoryStream& stream) {
+    Reflect::ClassValueId valueId, Memory::MemoryStream& stream) {
     const char* errStr = "[EntityManager::ET_writeEntityLogicData] Can't write logic data (Error: %s)";
     auto entity = registry.findEntity(targetEntId);
     if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
@@ -275,7 +274,7 @@ bool EntityManager::ET_writeEntityLogicData(EntityId targetEntId, EntityLogicId 
     }
     if(logicId == TransformLogicId) {
         Transform localTm = entity->ET_getLocalTransform();
-        SerializeContext serCtx;
+        Reflect::SerializeContext serCtx;
         serCtx.entityId = targetEntId;
         if(!tmClassInfo->readValueFrom(serCtx, &localTm, valueId, stream)) {
             LogWarning(errStr, StringFormat("Can't read transform data for entity: '%s'", entity->ET_getName()));
@@ -288,7 +287,7 @@ bool EntityManager::ET_writeEntityLogicData(EntityId targetEntId, EntityLogicId 
 }
 
 bool EntityManager::ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLogicId logicId,
-    EntityLogicValueId valueId) {
+    Reflect::ClassValueId valueId) {
     const char* errStr = "[EntityManager::ET_addEntityLogicArrayElement] Can't add entity logic array element (Error: %s)";
     auto entity = registry.findEntity(targetEntId);
     if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
@@ -306,7 +305,7 @@ bool EntityManager::ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLo
 }
 
 bool EntityManager::ET_setEntityLogicPolymorphObjectType(EntityId targetEntId, EntityLogicId logicId,
-    EntityLogicValueId valueId, const char* typeName) {
+    Reflect::ClassValueId valueId, const char* typeName) {
     const char* errStr = "[EntityManager::ET_setEntityLogicPolymorphObjectType] Can't update polymorph type of entity logic value (Error: %s)";
     auto entity = registry.findEntity(targetEntId);
     if(!CheckEntityLogicValue(errStr, targetEntId, entity, logicId, valueId)) {
@@ -329,7 +328,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
         return true;
     }
 
-    SerializeContext serCtx;
+    Reflect::SerializeContext serCtx;
     serCtx.entityId = entity->getEntityId();
 
     for(const auto& logicNode : logicsNodes) {
@@ -352,7 +351,7 @@ bool EntityManager::setupEntityLogics(Entity* entity, const JSONNode& node) cons
         }
         EntityLogicId logicId = InvalidEntityLogicId;
         logicNode.read("id", logicId);
-        if(logicId == InvalidEntityLogicValueId) {
+        if(logicId == InvalidEntityLogicId) {
             LogWarning("[EntityManager::setupEntityLogics] Invalid logic id for logic '%s' in entity '%s'", logicType, entity->ET_getName());
             continue;
         } else if (logicId == TransformLogicId) {
@@ -438,11 +437,11 @@ bool EntityManager::setupEntityChildren(Entity* entity, const JSONNode& node, bo
             continue;
         }
 
-        SerializeContext serCtx;
+        Reflect::SerializeContext serCtx;
         serCtx.entityId = childEntity->getEntityId();
 
         Transform localTm;
-        if(!tmClassInfo->readValueFrom(serCtx, &localTm, AllEntityLogicValueId, tmNode)) {
+        if(!tmClassInfo->readValueFrom(serCtx, &localTm, Reflect::AllClassValuesId, tmNode)) {
             LogWarning("[EntityManager::setupEntityTranform] Can't serialize 'transform' for entity '%s'", entity->ET_getName());
             continue;
         }
@@ -571,4 +570,8 @@ bool EntityManager::ET_finishEntity(EntityId targetEntId) {
     }
 
     return true;
+}
+
+size_t EntityManager::ET_getEntitiesCount() const {
+    return registry.getEntitiesCount();
 }

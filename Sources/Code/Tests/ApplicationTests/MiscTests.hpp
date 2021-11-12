@@ -1,9 +1,9 @@
 #ifndef __MISC_TESTS_HPP__
 #define __MISC_TESTS_HPP__
 
-#include <gtest/gtest.h>
+#include "TestUtils/EngineTests.hpp"
 
-class MiscTests : public ::testing::Test {
+class MiscTests : public EngineTests {
 };
 
 #endif /* __MISC_TESTS_HPP__ */

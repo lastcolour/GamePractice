@@ -10,24 +10,8 @@ const char* TEST_LOCAL_PATH = "Test.txt";
 
 } // namepsace
 
-std::unique_ptr<DesktopAssets> AssetsTests::ASSETS;
-
-void AssetsTests::SetUpTestCase() {
-    VoidAppTests::SetUpTestCase();
-
-    ASSETS.reset(new DesktopAssets);
-    ASSERT_TRUE(ASSETS->init());
-}
-
-void AssetsTests::TearDownTestCase() {
-    ASSETS->deinit();
-    ASSETS.reset();
-
-    VoidAppTests::TearDownTestCase();
-}
-
 TEST_F(AssetsTests, CheckLoadEmptyPath) {
-    Buffer buff;
+    Memory::Buffer buff;
     ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, "");
 
     ASSERT_FALSE(buff);
@@ -37,7 +21,7 @@ TEST_F(AssetsTests, CheckLoadEmptyPath) {
 }
 
 TEST_F(AssetsTests, CheckLoadValidAsset) {
-    Buffer buff;
+    Memory::Buffer buff;
     ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
 
     ASSERT_TRUE(buff);
@@ -56,7 +40,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithSlashInStart) {
     std::string assetNameWithSlash = "\\";
     assetNameWithSlash += TEST_FILE_PATH;
 
-    Buffer buff;
+    Memory::Buffer buff;
     ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, assetNameWithSlash.c_str());
 
     ASSERT_TRUE(buff);
@@ -79,7 +63,7 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithInvalidSlashes) {
     std::string path = TEST_FILE_PATH;
     std::replace(path.begin(), path.end(), '/', '\\');
 
-    Buffer buff;
+    Memory::Buffer buff;
     ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, path.c_str());
 
     ASSERT_TRUE(buff);
@@ -91,10 +75,10 @@ TEST_F(AssetsTests, CheckLoadValidAssetWithInvalidSlashes) {
 TEST_F(AssetsTests, CheckAssetsCache) {
     ASSERT_TRUE(ET_IsExistNode<ETAssetsCacheManager>());
 
-    Buffer buff1;
+    Memory::Buffer buff1;
     ET_SendEventReturn(buff1, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
 
-    Buffer buff2;
+    Memory::Buffer buff2;
     ET_SendEventReturn(buff2, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
 
     ASSERT_TRUE(buff1);
@@ -106,7 +90,7 @@ TEST_F(AssetsTests, CheckAssetsCache) {
 
     ET_SendEvent(&ETAssetsUpdateTask::ET_updateAssets, cacheLifetime);
 
-    Buffer buff3;
+    Memory::Buffer buff3;
     ET_SendEventReturn(buff3, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
 
     ASSERT_TRUE(buff3);
@@ -115,14 +99,14 @@ TEST_F(AssetsTests, CheckAssetsCache) {
 
 TEST_F(AssetsTests, CheckSaveDeleteLocalFile) {
     {
-        Buffer buff;
+        Memory::Buffer buff;
         ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, TEST_FILE_PATH);
         bool saveRes = false;
         ET_SendEventReturn(saveRes, &ETAssets::ET_saveLocalFile, TEST_LOCAL_PATH, buff);
         ASSERT_TRUE(saveRes);
     }
     {
-        Buffer buff;
+        Memory::Buffer buff;
         ET_SendEventReturn(buff, &ETAssets::ET_loadLocalFile, TEST_LOCAL_PATH);
         ASSERT_TRUE(buff);
     }
@@ -132,7 +116,7 @@ TEST_F(AssetsTests, CheckSaveDeleteLocalFile) {
         ASSERT_TRUE(removeRes);
     }
     {
-        Buffer buff;
+        Memory::Buffer buff;
         ET_SendEventReturn(buff, &ETAssets::ET_loadLocalFile, TEST_LOCAL_PATH);
         ASSERT_FALSE(buff);
     }

@@ -1,16 +1,13 @@
 #include "PolymorphPtrUtils.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
-#include "Reflect/ClassInfo.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 
 #include <cassert>
 
 namespace {
 
-bool IsClassDerivededFrom(TypeId baseClassId, const ClassInfo& classInfo) {
-    ClassInfo* baseClassInfo = nullptr;
-    ET_SendEventReturn(baseClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, baseClassId);
+bool IsClassDerivededFrom(Core::TypeId baseClassId, const Reflect::ClassInfo& classInfo) {
+    auto baseClassInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(baseClassId);
     if(!baseClassInfo) {
         LogError("[IsClassDerivededFrom] Can't find base class info for type id '%d'", baseClassId);
         return false;
@@ -25,17 +22,16 @@ bool IsClassDerivededFrom(TypeId baseClassId, const ClassInfo& classInfo) {
 
 } // namespace
 
-namespace ReflectUtils {
+namespace Reflect {
 
-bool UpdateInstanceClass(ClassInstance& instance, TypeId baseClassId, const std::string& typeName) {
+bool UpdateInstanceClass(ClassInstance& instance, Core::TypeId baseClassId, const std::string& typeName) {
     if(typeName == "Null") {
         instance = ClassInstance();
         return true;
     }
     auto currClassInfo = instance.getClassInfo();
     if(!currClassInfo || typeName != currClassInfo->getName()) {
-        ClassInfo* newClassInfo = nullptr;
-        ET_SendEventReturn(newClassInfo, &ETClassInfoManager::ET_findClassInfoByName, typeName.c_str());
+        ClassInfo* newClassInfo = GetEnv()->GetClassInfoManager()->findClassInfoByName(typeName.c_str());
         if(!newClassInfo) {
             LogWarning("[UpdateInstanceClass] Can't find class info for a type: '%s'", typeName);
             return false;
@@ -53,7 +49,7 @@ bool UpdateInstanceClass(ClassInstance& instance, TypeId baseClassId, const std:
     return true;
 }
 
-bool ReadPolyPtrFrom(const SerializeContext& ctx, ClassInstance& instance, TypeId baseClassId, const JSONNode& node) {
+bool ReadPolyPtrFrom(const SerializeContext& ctx, ClassInstance& instance, Core::TypeId baseClassId, const JSONNode& node) {
     if(!node.hasKey("type")) {
         LogWarning("[ReadPolyPtrFrom] Can't find required field 'type'");
         return false;
@@ -85,7 +81,7 @@ bool ReadPolyPtrFrom(const SerializeContext& ctx, ClassInstance& instance, TypeI
     return true;
 }
 
-bool ReadPolyPtrFrom(const SerializeContext& ctx, ClassInstance& instance, TypeId baseClassId, MemoryStream& stream) {
+bool ReadPolyPtrFrom(const SerializeContext& ctx, ClassInstance& instance, Core::TypeId baseClassId, Memory::MemoryStream& stream) {
     std::string typeName;
     stream.read(typeName);
     if(typeName.empty()) {
@@ -125,7 +121,7 @@ bool WritePolyPtrTo(const SerializeContext& ctx, ClassInstance& instance, JSONNo
     return true;
 }
 
-bool WritePolyPtrTo(const SerializeContext& ctx, ClassInstance& instance, MemoryStream& stream) {
+bool WritePolyPtrTo(const SerializeContext& ctx, ClassInstance& instance, Memory::MemoryStream& stream) {
     auto classInfo = instance.getClassInfo();
     if(!classInfo) {
         stream.write("Null");
@@ -139,9 +135,8 @@ bool WritePolyPtrTo(const SerializeContext& ctx, ClassInstance& instance, Memory
     return true;
 }
 
-std::string GetPolymorphPtrTypeName(TypeId baseClassId) {
-    ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, baseClassId);
+std::string GetPolymorphPtrTypeName(Core::TypeId baseClassId) {
+    ClassInfo* classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(baseClassId);
     if(!classInfo) {
         assert(false && "Can't find base class type info");
         return "";
@@ -149,4 +144,4 @@ std::string GetPolymorphPtrTypeName(TypeId baseClassId) {
     return StringFormat("poly_ptr.%s", classInfo->getName());
 }
 
-} // namespace ReflectUtils
+} // namespace Reflect

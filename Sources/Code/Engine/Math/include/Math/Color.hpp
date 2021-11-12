@@ -1,9 +1,6 @@
 #ifndef __COLOR_HPP__
 #define __COLOR_HPP__
 
-#include <stdint.h>
-#include <cmath>
-
 namespace Color {
 
     static const float PIXEL_EQUAL_TOLERANCE = 0.01f;

@@ -1,6 +1,5 @@
 #include "Laucher/GameLaucherModule.hpp"
 #include "Laucher/GameLaucher.hpp"
-#include "Core/GlobalData.hpp"
 
 GameLaucherModule::GameLaucherModule() :
     SystemModule("GameLaucher") {}

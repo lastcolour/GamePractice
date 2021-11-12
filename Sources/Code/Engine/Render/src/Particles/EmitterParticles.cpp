@@ -3,7 +3,6 @@
 #include "Render/ETParticlesSystem.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 #include "RenderUtils.hpp"
-#include "Core/Utils.hpp"
 #include "Nodes/ETRenderNodeManager.hpp"
 
 #include <cassert>
@@ -102,7 +101,7 @@ void simulateVortexField(const GravityField& field, const Transform& tm, int act
 bool triggerSubEmitters(const Particle* p, SubEmitterTriggerEvent event,
     const SimulationConfig& simConf, const EmitRequest& emitReq, SubEmitterTriggerEvent flags) {
 
-    if(!EnumFlagsIntersect(event, flags)) {
+    if(!Core::EnumFlagsBitANDCheck(event, flags)) {
         return false;
     }
 
@@ -142,7 +141,7 @@ SubEmitterTriggerEvent caclSubEmitterFlags(const SimulationConfig& simConf) {
             continue;
         }
         assert(sub.event != SubEmitterTriggerEvent::None && "Invalid sub event");
-        flags = EnumFlagsUnite(flags, sub.event);
+        flags = Core::EnumFlagsBitXORCreate(flags, sub.event);
     }
     return flags;
 }

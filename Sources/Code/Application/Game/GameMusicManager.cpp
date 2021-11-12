@@ -1,5 +1,4 @@
 #include "GameMusicManager.hpp"
-#include "Reflect/ReflectUtils.hpp"
 #include "Math/Random.hpp"
 
 #include <cassert>
@@ -98,7 +97,7 @@ void GameMusicManager::ET_setTheme(EMusicTheme newTheme) {
 }
 
 bool GameMusicManager::init() {
-    if(!ReflectUtils::LoadObjectFromAsset(*this, GAME_MUSIC_CONFIG)) {
+    if(!Reflect::LoadObjectFromAsset(*this, GAME_MUSIC_CONFIG)) {
         LogError("[GameMusicManager::init] Can't load game music configs from: '%s'", GAME_MUSIC_CONFIG);
         return true;
     }

@@ -1,5 +1,4 @@
 #include "AudioUtils.hpp"
-#include "Core/GlobalData.hpp"
 
 namespace Audio {
 
@@ -16,7 +15,7 @@ void ConverFloatsToInt16(float* from, int16_t* to, int samples) {
 }
 
 MixConfig& GetMixConfig() {
-    return GetGlobal<SoundConfig>()->mixConfig;
+    return Core::GetGlobal<SoundConfig>()->mixConfig;
 }
 
 } // namespace Audio

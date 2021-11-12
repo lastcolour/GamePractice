@@ -59,7 +59,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createFromFile(const cha
         return it->second;
     }
 
-    Buffer buff;
+    Memory::Buffer buff;
     ET_SendEventReturn(buff, &ETAssets::ET_loadAsset, fileName);
     if(!buff) {
         LogWarning("[RenderTextureManager::ET_createTexture] Can't load image from: '%s'", fileName);
@@ -107,7 +107,7 @@ std::shared_ptr<RenderTexture> RenderTextureManager::ET_createTexture(ETextureDa
     return texture;
 }
 
-std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Buffer& buff, ETextureDataType texType) {
+std::shared_ptr<RenderTexture> RenderTextureManager::createTexture(const Memory::Buffer& buff, ETextureDataType texType) {
     unsigned int textureId = 0;
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);

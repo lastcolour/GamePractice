@@ -3,7 +3,6 @@
 #include "Game/Logics/BronKerbosch.hpp"
 
 #include <cassert>
-#include <unordered_set>
 
 namespace {
 

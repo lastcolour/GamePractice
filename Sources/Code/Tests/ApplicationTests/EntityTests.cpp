@@ -4,8 +4,8 @@
 #include "Entity/EntityLogicsRegister.hpp"
 #include "Entity/ETEntityManager.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
 #include "Logics/UIAnimationSequence.hpp"
+#include "Core/MemoryStream.hpp"
 
 #include <set>
 
@@ -39,6 +39,8 @@ TEST_F(EntityTests, CreateSimpleEntity) {
     std::string name;
     ET_SendEventReturn(name, objId, &ETEntity::ET_getName);
     ASSERT_FALSE(name.empty());
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId);
 }
 
 TEST_F(EntityTests, CreateTwoSimpleEntities) {
@@ -59,6 +61,9 @@ TEST_F(EntityTests, CreateTwoSimpleEntities) {
     ET_SendEventReturn(name2, objId2, &ETEntity::ET_getName);
 
     ASSERT_EQ(name1, name1);
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId1);
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId2);
 }
 
 TEST_F(EntityTests, CreateInvalidEntity) {
@@ -114,6 +119,8 @@ TEST_F(EntityTests, CheckChildInheritParentTransform) {
     ASSERT_FLOAT_EQ(diff.x, offset.x);
     ASSERT_FLOAT_EQ(diff.y, offset.x);
     ASSERT_FLOAT_EQ(diff.z, offset.x);
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId1);
 }
 
 TEST_F(EntityTests, CheckChildInheritParentScale) {
@@ -156,6 +163,8 @@ TEST_F(EntityTests, CheckChildInheritParentScale) {
     EXPECT_FLOAT_EQ(tm.scale.x, 0.5f);
     EXPECT_FLOAT_EQ(tm.scale.y, 0.5f);
     EXPECT_FLOAT_EQ(tm.scale.z, 0.5f);
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, parentId);
 }
 
 TEST_F(EntityTests, CheckChildInheritParentRotation) {
@@ -216,6 +225,8 @@ TEST_F(EntityTests, CheckChildInheritParentRotation) {
             EXPECT_FLOAT_EQ(angle, -Math::PI / 2.f);
         }
     }
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, parentId);
 }
 
 TEST_F(EntityTests, CheckLocalTransform) {
@@ -360,12 +371,12 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
     ASSERT_FLOAT_EQ(tm.quat.z, 0.f);
     ASSERT_FLOAT_EQ(tm.quat.w, 1.f);
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
     res = false;
     EntityLogicId logicId = 0;
-    EntityLogicValueId valueId = 1;
+    Reflect::ClassValueId valueId = 1;
     ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entId, logicId, valueId, stream);
 
     ASSERT_TRUE(res);
@@ -387,6 +398,8 @@ TEST_F(EntityTests, CheckRegisterEntityLogics) {
         stream.read(zVal);
         ASSERT_FLOAT_EQ(zVal, 0.f);
     }
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, entId);
 }
 
 TEST_F(EntityTests, CheckAddRemoveLogic) {
@@ -406,6 +419,8 @@ TEST_F(EntityTests, CheckAddRemoveLogic) {
 
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, firstLogicId);
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, objId, secondLogicId);
+
+    ET_SendEvent(&ETEntityManager::ET_destroyEntity, objId);
 }
 
 TEST_F(EntityTests, CheckOnlyUniqueLogicsRegistered) {

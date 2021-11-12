@@ -5,8 +5,6 @@
 #include "Audio/ETSoundManagers.hpp"
 #include "SoundProxy.hpp"
 
-#include <unordered_set>
-
 class SoundDataManager : public SystemLogic,
     public ETNode<ETSoundDataManager> {
 public:

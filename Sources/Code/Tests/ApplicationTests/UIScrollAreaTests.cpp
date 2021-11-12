@@ -8,7 +8,6 @@
 #include "Config/UIConfig.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Core/ETApplication.hpp"
-#include "Core/GlobalData.hpp"
 
 namespace {
 
@@ -102,8 +101,8 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
 }
 
 void UIScrollAreaTests::SetUpTestCase() {
-    ConsoleAppTests::SetUpTestCase();
-    auto uiConfig = GetGlobal<UIConfig>();
+    CreateTestApp(ETestAppModules::CheckRender);
+    auto uiConfig = Core::GetGlobal<UIConfig>();
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);

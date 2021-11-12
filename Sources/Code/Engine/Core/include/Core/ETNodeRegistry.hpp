@@ -1,16 +1,18 @@
 #ifndef __ET_NODE_REGISTRY_HPP__
 #define __ET_NODE_REGISTRY_HPP__
 
-#include "Core/Core.hpp"
-#include "Core/PoolAllocator.hpp"
-
-#include <mutex>
-
-class ETNodeBase;
+#include "Core/MainMemoryAllocator.hpp"
+#include "Core/ETUtils.hpp"
 
 namespace ET {
 
 class ETSyncRoute;
+class ETSystem;
+
+class ETNodeBase {
+protected:
+    virtual ~ETNodeBase() = default;
+};
 
 class ETNodeRegistry {
 public:
@@ -38,9 +40,6 @@ public:
 
     template<typename FuncT>
     void forEachNode(int etId, EntityId addressId, FuncT&& callF) {
-        if(!addressId.isValid()) {
-            return;
-        }
         startRoute(etId);
         {
             auto range = connections[etId].idToPtrMap.equal_range(addressId);
@@ -68,9 +67,6 @@ public:
 
     template<typename FuncT>
     void forFirst(int etId, EntityId addressId, FuncT&& callF) {
-        if(!addressId.isValid()) {
-            return;
-        }
         startRoute(etId);
         {
             auto range = connections[etId].idToPtrMap.equal_range(addressId);
@@ -100,15 +96,15 @@ public:
 
     std::vector<EntityId> getAll(int etId);
     bool isExist(int etId, EntityId addressId);
+    bool isExist(int etId);
 
     void queueEvent(int etId, ETDefferedCallBase* defferedCall);
     void pollEventsForAll(int etId);
 
-    template<typename T>
-    void* allocDefferedEvent() {
-        static_assert(sizeof(T) <= MAX_EVENT_SIZE, "Event size is too big");
-        std::lock_guard<std::mutex> lock(eventMutex);
-        return eventAllocator.allocate();
+    template<typename T, typename ... ArgsType>
+    T* createDefferedEvent(ArgsType&& ... args) {
+        auto ptr = GetEnv()->GetMemoryAllocator()->allocate(sizeof(T));
+        return new (ptr) T(std::forward<ArgsType>(args)...);
     }
 
 private:
@@ -132,7 +128,6 @@ private:
 
 private:
 
-    PoolAllocator eventAllocator;
     std::unique_ptr<ETSyncRoute> syncRoute;
     std::vector<Registry> connections;
     std::mutex connMutex;
@@ -140,5 +135,34 @@ private:
 };
 
 } // namespace ET
+
+template<typename T>
+class ETNode : public ET::ETNodeBase, public T {
+
+    friend class ET::ETSystem;
+
+public:
+
+    ETNode() {
+        static_assert(std::is_abstract<T>::value, "ETType can be only abstract class");
+    }
+    virtual ~ETNode() {
+        disconnect();
+    }
+
+protected:
+
+    void connect(EntityId adId) {
+        GetEnv()->GetETSystem()->connectNode(*this, adId);
+    }
+    void disconnect() {
+        GetEnv()->GetETSystem()->disconnectNode(*this);
+    }
+
+private:
+
+    ETNode(const ETNode&) = delete;
+    ETNode& operator=(const ETNode&) = delete;
+};
 
 #endif /* __ET_NODE_REGISTRY_HPP__ */

@@ -1,17 +1,14 @@
-#include "Reflect/ClassValue.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
-#include "Reflect/ClassInfo.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "ArrayInfo.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
 #include "PolymorphPtrUtils.hpp"
 
 #include <cassert>
 
 namespace {
 
-EntityId getEntityIdFromChildIdSequence(const SerializeContext& ctx, const std::vector<EntityChildId>& childIdSequence) {
+EntityId getEntityIdFromChildIdSequence(const Reflect::SerializeContext& ctx, const std::vector<EntityChildId>& childIdSequence) {
     if(childIdSequence.empty()) {
         return InvalidEntityId;
     }
@@ -25,7 +22,7 @@ EntityId getEntityIdFromChildIdSequence(const SerializeContext& ctx, const std::
     return childEntId;
 }
 
-std::vector<EntityChildId> getChildIdSequenceFromEntityId(const SerializeContext& ctx, EntityId childEntId) {
+std::vector<EntityChildId> getChildIdSequenceFromEntityId(const Reflect::SerializeContext& ctx, EntityId childEntId) {
     std::vector<EntityChildId> childIdSequence;
     if(!childEntId.isValid()) {
         return childIdSequence;
@@ -293,11 +290,13 @@ bool readJSONChildIdSequence(std::vector<EntityChildId>& childIdSequence, const 
 
 } // namespace
 
+namespace Reflect {
+
 ClassValue::ClassValue() :
     name(),
     type(ClassValueType::Invalid),
     ptr(),
-    typeId(InvalidTypeId),
+    typeId(Core::InvalidTypeId),
     resourceType(ResourceType::Invalid),
     primitiveValueCount(0),
     isElement(false) {
@@ -344,8 +343,7 @@ std::string ClassValue::getTypeName() const {
             return typeName;
         }
         case ClassValueType::Enum: {
-            EnumInfo* enumInfo = nullptr;
-            ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
+            EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(typeId);
             if(enumInfo) {
                 return enumInfo->getName();
             }
@@ -353,8 +351,7 @@ std::string ClassValue::getTypeName() const {
             return nullptr;
         }
         case ClassValueType::Array: {
-            ArrayInfo* arrayInfo = nullptr;
-            ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+            ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);
             if(arrayInfo) {
                 return arrayInfo->getName();
             }
@@ -365,8 +362,7 @@ std::string ClassValue::getTypeName() const {
             return "entity";
         }
         case ClassValueType::Object: {
-            ClassInfo* clsInfo = nullptr;
-            ET_SendEventReturn(clsInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+            ClassInfo* clsInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(typeId);
             if(clsInfo) {
                 return clsInfo->getName();
             }
@@ -374,7 +370,7 @@ std::string ClassValue::getTypeName() const {
             return nullptr;
         }
         case ClassValueType::PolymorphObject: {
-            return ReflectUtils::GetPolymorphPtrTypeName(typeId);
+            return GetPolymorphPtrTypeName(typeId);
         }
         case ClassValueType::Invalid: {
             assert(false && "Can't query value type name of invalid value");
@@ -425,8 +421,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return true;
     }
     case ClassValueType::Object: {
-        ClassInfo* classInfo = nullptr;
-        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        ClassInfo* classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(typeId);
         if(!classInfo) {
             LogError("[ClassValue::readValueFrom] Can't find class info for a field '%s'", name);
             return false;
@@ -437,12 +432,12 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
                 LogError("[ClassValue::readValueFrom] Can't get object from data for a field '%s'", name);
                 return false;
             }
-            if(!classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, objectNode)) {
+            if(!classInfo->readValueFrom(ctx, valuePtr, AllClassValuesId, objectNode)) {
                 LogError("[ClassValue::readValueFrom] Can't read object field '%s'", name);
                 return false;
             }
         } else {
-            if(!classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, node)) {
+            if(!classInfo->readValueFrom(ctx, valuePtr, AllClassValuesId, node)) {
                 LogError("[ClassValue::readValueFrom] Can't read object of array");
                 return false;
             }
@@ -532,8 +527,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
             LogError("[ClassValue::readValueFrom] Array of arrays is not supported: '%s'", name);
             return false;
         }
-        ArrayInfo* arrayInfo = nullptr;
-        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);;
         if(!arrayInfo) {
             LogError("[ClassValue::readValueFrom] Can't find array info for a field '%s'", name);
             return false;
@@ -550,8 +544,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return true;
     }
     case ClassValueType::Enum: {
-        EnumInfo* enumInfo = nullptr;
-        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
+        EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(typeId);
         if(!enumInfo) {
             LogError("[ClassValue::readValueFrom] Can't find enum info for a field '%s'", name);
             return false;
@@ -596,12 +589,12 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return true;
     }
     case ClassValueType::PolymorphObject: {
-        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        ClassInstance& polyObj = getRef<PolymorphPtr<ClassValue>>(valuePtr).getInstance();
         bool res = false;
         if(isElement) {
-            res = ReflectUtils::ReadPolyPtrFrom(ctx, polyObj, typeId, node);
+            res = ReadPolyPtrFrom(ctx, polyObj, typeId, node);
         } else {
-            res = ReflectUtils::ReadPolyPtrFrom(ctx, polyObj, typeId, node.object(name.c_str()));
+            res = ReadPolyPtrFrom(ctx, polyObj, typeId, node.object(name.c_str()));
         }
         if(!res) {
             LogError("[ClassValue::readValueFrom] Can't read polymorph ptr field '%s'", name);
@@ -730,14 +723,13 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::Object: {
-        ClassInfo* classInfo = nullptr;
-        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        ClassInfo* classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(typeId);
         if(!classInfo) {
             LogError("[ClassValue::writeValueTo] Can't find class info for a field '%s'", name);
             return false;
         }
         JSONNode valNode;
-        if(!classInfo->writeValueTo(ctx, valuePtr, AllEntityLogicValueId, valNode)) {
+        if(!classInfo->writeValueTo(ctx, valuePtr, AllClassValuesId, valNode)) {
             LogError("[ClassValue::writeValueTo] Can't write object field '%s'", name);
             return false;
         }
@@ -757,8 +749,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::Enum: {
-        EnumInfo* enumInfo = nullptr;
-        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
+        EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(typeId);
         if(!enumInfo) {
             LogError("[ClassValue::writeValueTo] Can't find enum info for a field '%s'", name);
             return false;
@@ -778,8 +769,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::Array: {
-        ArrayInfo* arrayInfo = nullptr;
-        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);
         if(!arrayInfo) {
             LogError("[ClassValue::writeValueTo] Can't find array info for a field '%s'", name);
             return false;
@@ -814,9 +804,9 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::PolymorphObject: {
-        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        ClassInstance& polyObj = getRef<PolymorphPtr<ClassValue>>(valuePtr).getInstance();
         JSONNode valNode;
-        if(!ReflectUtils::WritePolyPtrTo(ctx, polyObj, valNode)) {
+        if(!WritePolyPtrTo(ctx, polyObj, valNode)) {
             LogError("[ClassValue::writeValueTo] Can't write polymorph object field '%s'", name);
             return false;
         }
@@ -835,7 +825,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
     return true;
 }
 
-bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, MemoryStream& stream) {
+bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, Memory::MemoryStream& stream) {
     switch(type) {
     case ClassValueType::Bool: {
         stream.write(getRef<bool>(valuePtr));
@@ -897,13 +887,12 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::Object: {
-        ClassInfo* classInfo = nullptr;
-        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        ClassInfo* classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(typeId);
         if(!classInfo) {
             LogError("[ClassValue::writeValueTo] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->writeValueTo(ctx, valuePtr, AllEntityLogicValueId, stream);
+        return classInfo->writeValueTo(ctx, valuePtr, AllClassValuesId, stream);
     }
     case ClassValueType::Resource: {
         stream.write("");
@@ -914,8 +903,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::Array: {
-        ArrayInfo* arrayInfo = nullptr;
-        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);
         if(!arrayInfo) {
             LogError("[ClassValue::writeValueTo] Can't find array info for a field '%s'", name);
             return false;
@@ -932,8 +920,8 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::PolymorphObject: {
-        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
-        if(!ReflectUtils::WritePolyPtrTo(ctx, polyObj, stream)) {
+        ClassInstance& polyObj = getRef<PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        if(!WritePolyPtrTo(ctx, polyObj, stream)) {
             LogError("[ClassValue::writeValueTo] Can't write polymorph object field '%s'", name);
             return false;
         }
@@ -947,7 +935,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
     return true;
 }
 
-bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void* valuePtr, MemoryStream& stream) {
+bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void* valuePtr, Memory::MemoryStream& stream) {
     switch(type) {
     case ClassValueType::Bool: {
         bool val = false;
@@ -1037,13 +1025,12 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         break;
     }
     case ClassValueType::Object: {
-        ClassInfo* classInfo = nullptr;
-        ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
+        ClassInfo* classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(typeId);
         if(!classInfo) {
             LogError("[ClassValue::readValueFrom] Can't find class info for a field '%s'", name);
             return false;
         }
-        return classInfo->readValueFrom(ctx, valuePtr, AllEntityLogicValueId, stream);
+        return classInfo->readValueFrom(ctx, valuePtr, AllClassValuesId, stream);
     }
     case ClassValueType::Resource: {
         std::string val;
@@ -1062,8 +1049,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         break;
     }
     case ClassValueType::Array: {
-        ArrayInfo* arrayInfo = nullptr;
-        ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+        ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);
         if(!arrayInfo) {
             LogError("[ClassValue::readValueFrom] Can't find array info for a field '%s'", name);
             return false;
@@ -1083,8 +1069,8 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         break;
     }
     case ClassValueType::PolymorphObject: {
-        ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
-        if(!ReflectUtils::ReadPolyPtrFrom(ctx, polyObj, typeId, stream)) {
+        ClassInstance& polyObj = getRef<PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+        if(!ReadPolyPtrFrom(ctx, polyObj, typeId, stream)) {
             LogError("[ClassValue::writeValueTo] Can't write polymorph object field '%s'", name);
             return false;
         }
@@ -1100,8 +1086,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
 
 bool ClassValue::addArrayElement(void* valuePtr) {
     assert(type == ClassValueType::Array && "Invalid value type");
-    ArrayInfo* arrayInfo = nullptr;
-    ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, typeId);
+    ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);
     if(!arrayInfo) {
         LogError("[ClassValue::addArrayElement] Can't find array info for a field: '%s'", name);
         return false;
@@ -1111,8 +1096,8 @@ bool ClassValue::addArrayElement(void* valuePtr) {
 
 bool ClassValue::setPolymorphType(void* valuePtr, const char* typeName) {
     assert(type == ClassValueType::PolymorphObject && "Invalid value type");
-    ClassInstance& polyObj = getRef<Reflect::PolymorphPtr<ClassValue>>(valuePtr).getInstance();
-    return ReflectUtils::UpdateInstanceClass(polyObj, typeId, typeName);
+    ClassInstance& polyObj = getRef<PolymorphPtr<ClassValue>>(valuePtr).getInstance();
+    return UpdateInstanceClass(polyObj, typeId, typeName);
 }
 
 void ClassValue::setDefaultValue(void* valuePtr) {
@@ -1163,8 +1148,7 @@ void ClassValue::setDefaultValue(void* valuePtr) {
         break;
     }
     case ClassValueType::Enum: {
-        EnumInfo* enumInfo = nullptr;
-        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, typeId);
+        EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(typeId);
         if(!enumInfo) {
             LogError("[ClassValue::setDefaultValue] Can't find enum info for a field '%s'", name);
             return;
@@ -1185,3 +1169,5 @@ void ClassValue::setDefaultValue(void* valuePtr) {
         assert(false && "Invalid value type");
     }
 }
+
+} // namespace Reflect

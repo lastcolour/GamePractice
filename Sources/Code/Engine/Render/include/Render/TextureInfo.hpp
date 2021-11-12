@@ -1,7 +1,7 @@
 #ifndef __TEXTURE_INFO_HPP__
 #define __TEXTURE_INFO_HPP__
 
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 
 enum class ETextureLerpType {
     Point = 0,

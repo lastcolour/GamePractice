@@ -2,7 +2,7 @@
 #include "Core/MemoryStream.hpp"
 
 TEST_F(MemoryStreamTests, TestReadPrimitiveTypes) {
-    MemoryStream stream;
+    Memory::MemoryStream stream;
 
     stream.openForWrite();
 

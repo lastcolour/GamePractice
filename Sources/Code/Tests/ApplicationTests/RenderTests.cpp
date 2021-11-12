@@ -77,7 +77,7 @@ std::unique_ptr<ImageBuffer> RenderTests::IMAGE_BUFFER;
 std::shared_ptr<RenderFramebuffer> RenderTests::RENDER_FB;
 
 void RenderTests::SetUpTestCase() {
-    ConsoleAppTests::SetUpTestCase();
+    CreateTestApp(ETestAppModules::CheckRender);
 
     IMAGE_BUFFER.reset(new ImageBuffer());
     IMAGE_BUFFER->setSizeAndClear(Vec2i(RENDER_WIDTH, RENDER_HEIGHT));
@@ -92,11 +92,11 @@ void RenderTests::SetUpTestCase() {
 void RenderTests::TearDownTestCase() {
     IMAGE_BUFFER.reset();
     RENDER_FB.reset();
-    ConsoleAppTests::TearDownTestCase();
+    EngineTests::TearDownTestCase();
 }
 
 void RenderTests::SetUp() {
-    ConsoleAppTests::SetUp();
+    EngineTests::SetUp();
 
     IMAGE_BUFFER->clear();
 
@@ -108,7 +108,7 @@ void RenderTests::SetUp() {
 }
 
 void RenderTests::TearDown() {
-    ConsoleAppTests::TearDown();
+    EngineTests::TearDown();
 
     auto errCode = glGetError();
     ASSERT_EQ(errCode, static_cast<GLenum>(GL_NO_ERROR));

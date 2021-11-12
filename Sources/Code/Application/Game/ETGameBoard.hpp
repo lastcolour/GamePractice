@@ -1,7 +1,7 @@
 #ifndef __ET_GAME_BOARD_HPP__
 #define __ET_GAME_BOARD_HPP__
 
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 #include "Math/AABB.hpp"
 
 class BoardMatchState;

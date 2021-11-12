@@ -5,8 +5,6 @@
 #include "Entity/ETEntityManager.hpp"
 #include "EntityRegistry.hpp"
 
-class ClassInfo;
-
 class EntityManager : public SystemLogic,
     public ETNode<ETEntityManager> {
 public:
@@ -32,15 +30,16 @@ public:
     void ET_removeLogicFromEntity(EntityId targetEntId, EntityLogicId logicId) override;
     JSONNode ET_getRegisteredLogics() const override;
     bool ET_readEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
-        EntityLogicValueId valueId, MemoryStream& stream) override;
+        Reflect::ClassValueId valueId, Memory::MemoryStream& stream) override;
     bool ET_writeEntityLogicData(EntityId targetEntId, EntityLogicId logicId,
-        EntityLogicValueId valueId, MemoryStream& stream) override;
+        Reflect::ClassValueId valueId, Memory::MemoryStream& stream) override;
     bool ET_addEntityLogicArrayElement(EntityId targetEntId, EntityLogicId logicId,
-        EntityLogicValueId valueId) override;
+        Reflect::ClassValueId valueId) override;
     bool ET_setEntityLogicPolymorphObjectType(EntityId targetEntId, EntityLogicId logicId,
-        EntityLogicValueId valueId, const char* typeName) override;
+        Reflect::ClassValueId valueId, const char* typeName) override;
     EntityId ET_createUnfinishedEntity(const char* entityName) override;
     bool ET_finishEntity(EntityId targetEntId) override;
+    size_t ET_getEntitiesCount() const override;
 
 private:
 
@@ -55,14 +54,14 @@ private:
 
     struct LogicNode {
         const char* moduleName;
-        ClassInfo* classInfo;
+        Reflect::ClassInfo* classInfo;
     };
 
 private:
 
     EntityRegistry registry;
     std::unordered_map<std::string, LogicNode> registeredLogics;
-    ClassInfo* tmClassInfo;
+    Reflect::ClassInfo* tmClassInfo;
 };
 
 #endif /* __ENTITY_MANAGER_HPP__ */

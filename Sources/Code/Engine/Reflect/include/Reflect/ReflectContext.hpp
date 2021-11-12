@@ -3,8 +3,6 @@
 
 #include "Reflect/ClassInfo.hpp"
 
-class EnumInfo;
-
 class ReflectContext {
 public:
 
@@ -23,8 +21,8 @@ public:
     }
 
     template<typename ClassT>
-    ClassInfo* classInfo(const char* name) {
-        auto cInfo = createClassInfo(name, GetTypeId<ClassT>()  );
+    Reflect::ClassInfo* classInfo(const char* name) {
+        auto cInfo = createClassInfo(name, Core::GetTypeId<ClassT>()  );
         if(cInfo) {
             cInfo->template init<ClassT>();
         }
@@ -32,24 +30,24 @@ public:
     }
 
     template<typename EnumT>
-    EnumInfo* enumInfo(const char* name) {
-        return createEnumInfo(name, GetTypeId<EnumT>());
+    Reflect::EnumInfo* enumInfo(const char* name) {
+        return createEnumInfo(name, Core::GetTypeId<EnumT>());
     }
 
-    ClassInfo* getRegisteredClassInfo();
+    Reflect::ClassInfo* getRegisteredClassInfo();
 
 private:
 
-    EnumInfo* createEnumInfo(const char* enumName, TypeId enumTypeId);
-    ClassInfo* createClassInfo(const char* className, TypeId classTypeId);
+    Reflect::EnumInfo* createEnumInfo(const char* enumName, Core::TypeId enumTypeId);
+    Reflect::ClassInfo* createClassInfo(const char* className, Core::TypeId classTypeId);
     bool registerInfos();
     bool registerEnums();
 
 private:
 
-    std::unique_ptr<ClassInfo> clsInfo;
-    std::vector<std::unique_ptr<EnumInfo>> enumInfos;
-    ClassInfo* registeredClsInfo;
+    std::unique_ptr<Reflect::ClassInfo> clsInfo;
+    std::vector<std::unique_ptr<Reflect::EnumInfo>> enumInfos;
+    Reflect::ClassInfo* registeredClsInfo;
 };
 
 #endif /* __REFLECT_CONTEXT_HPP__ */

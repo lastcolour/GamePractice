@@ -1,8 +1,6 @@
 #ifndef __TIME_POINT_HPP__
 #define __TIME_POINT_HPP__
 
-#include <chrono>
-
 class TimePoint {
 public:
 

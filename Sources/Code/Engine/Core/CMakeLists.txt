@@ -9,7 +9,6 @@ include_directories(
     ${REFLECT_INCLUDE_DIR}
     ${ENTITY_INCLUDE_DIR}
     ${MATH_INCLUDE_DIR}
-    ${RENDER_INCLUDE_DIR}
     ${PARALLEL_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
@@ -25,13 +24,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 target_link_libraries(${PROJECT_NAME} PRIVATE Reflect Platform)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    <limits>
-    [["Core/ETLogger.hpp"]]
+    [["Core/Core.hpp"]]
 )

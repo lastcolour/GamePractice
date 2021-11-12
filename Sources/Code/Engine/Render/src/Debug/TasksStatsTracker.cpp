@@ -2,7 +2,6 @@
 #include "Render/ETDebugRender.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "RenderConfig.hpp"
-#include "Core/GlobalData.hpp"
 #include "Parallel/TasksRunner.hpp"
 #include "Math/Primitivies.hpp"
 
@@ -26,7 +25,7 @@ void DrawLineBetweenPoints(const Vec2& curr, const Vec2& prev, const Vec2& drawP
     ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, col);
 }
 
-void DrawFPSChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo::StartEndTime>& timing) {
+void DrawFPSChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
     if(timing.size() <= 2) {
         return;
     }
@@ -55,7 +54,7 @@ void DrawFPSChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo
     }
 }
 
-void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const CycleArray<TaskRunInfo::StartEndTime>& timing) {
+void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
     if(timing.size() <= 2) {
         return;
     }
@@ -142,7 +141,7 @@ void TasksStatsTracker::deinit() {
 }
 
 void TasksStatsTracker::ET_drawDebugInfo() {
-    auto renderConfig = GetGlobal<RenderConfig>();
+    auto renderConfig = Core::GetGlobal<RenderConfig>();
 
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETRenderCamera::ET_getRenderPort);

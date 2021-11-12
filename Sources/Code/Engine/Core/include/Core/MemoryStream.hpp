@@ -1,6 +1,8 @@
 #ifndef __MEMORY_STREAM_HPP__
 #define __MEMORY_STREAM_HPP__
 
+namespace Memory {
+
 class MemoryStream {
 public:
 
@@ -56,5 +58,7 @@ private:
     size_t pos;
     StreamState state;
 };
+
+} // namespace Memory
 
 #endif /* __MEMORY_STREAM_HPP__ */

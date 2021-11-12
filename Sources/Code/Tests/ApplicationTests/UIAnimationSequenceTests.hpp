@@ -1,9 +1,14 @@
 #ifndef __UI_ANIMATION_SEQUENCE_TESTS_HPP__
 #define __UI_ANIMATION_SEQUENCE_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
-class UIAnimationSequenceTests : public ConsoleAppTests {
+class UIAnimationSequenceTests : public EngineTests {
+public:
+
+    static void SetUpTestCase() {
+        CreateTestApp(ETestAppModules::CheckRender);
+    }
 };
 
 #endif /* __UI_ANIMATION_SEQUENCE_TESTS_HPP__ */

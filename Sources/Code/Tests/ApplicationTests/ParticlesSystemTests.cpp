@@ -4,7 +4,6 @@
 #include "Nodes/ETRenderNodeManager.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 #include "Nodes/ParticlesNode.hpp"
-#include "Core/GlobalData.hpp"
 #include "RenderConfig.hpp"
 
 namespace {
@@ -306,7 +305,7 @@ TEST_F(ParticlesSystemTests, CheckMaxParticles) {
     auto entity = createVoidObject();
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
 
-    auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
+    auto maxParticles = Core::GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
 
     auto emissionConfig = system->ET_getEmissionConfig();
     emissionConfig.lifetime = 5.f;

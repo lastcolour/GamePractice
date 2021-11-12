@@ -41,19 +41,19 @@ void AssetsCacheManager::ET_updateAssets(float dt) {
     }
 }
 
-Buffer AssetsCacheManager::ET_getAssetFromCache(const char* assetName) {
+Memory::Buffer AssetsCacheManager::ET_getAssetFromCache(const char* assetName) {
     std::lock_guard<std::mutex> lock(mutex);
 
     auto it = assetsCacheMap.find(assetName);
     if(it == assetsCacheMap.end()) {
-        return Buffer();
+        return Memory::Buffer();
     }
     AssetCacheNode& node = it->second;
     node.lifetime = assetsLifetime;
     return node.buff;
 }
 
-void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Buffer& buff) {
+void AssetsCacheManager::ET_putAssetToCache(const char* assetName, const Memory::Buffer& buff) {
     if(!assetName || !assetName[0]) {
         assert(false && "empty asset name");
         return;

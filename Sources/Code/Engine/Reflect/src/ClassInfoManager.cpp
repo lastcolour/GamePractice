@@ -1,10 +1,11 @@
 #include "Reflect/ClassInfoManager.hpp"
-#include "Reflect/ClassInfo.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "ArrayInfo.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
+
+namespace Reflect {
 
 ClassInfoManager::ClassInfoManager() {
 }
@@ -12,15 +13,7 @@ ClassInfoManager::ClassInfoManager() {
 ClassInfoManager::~ClassInfoManager() {
 }
 
-bool ClassInfoManager::init() {
-    ETNode<ETClassInfoManager>::connect(getEntityId());
-    return true;
-}
-
-void ClassInfoManager::deinit() {
-}
-
-ClassInfo* ClassInfoManager::ET_findClassInfoByName(const char* className) {
+ClassInfo* ClassInfoManager::findClassInfoByName(const char* className) {
     std::string name = className;
     if(name.empty()) {
         return nullptr;
@@ -33,19 +26,19 @@ ClassInfo* ClassInfoManager::ET_findClassInfoByName(const char* className) {
     return nullptr;
 }
 
-bool ClassInfoManager::ET_registerClassInfo(ClassInfoPtrT& classInfo) {
+bool ClassInfoManager::registerClassInfo(ClassInfoPtrT& classInfo) {
     if(!classInfo) {
-        LogError("[ClassInfoManager::ET_registerClassInfo] Invalid class info");
+        LogError("[ClassInfoManager::registerClassInfo] Invalid class info");
         assert(false && "Invalid class info");
         return false;
     }
-    if(ET_findClassInfoByName(classInfo->getName())) {
-        LogError("[ClassInfoManager::ET_registerClassInfo] Class name duplicate: '%s'", classInfo->getName());
+    if(findClassInfoByName(classInfo->getName())) {
+        LogError("[ClassInfoManager::registerClassInfo] Class name duplicate: '%s'", classInfo->getName());
         assert(false && "Class name duplicate");
         return false;
     }
-    if(ET_findClassInfoByTypeId(classInfo->getIntanceTypeId())) {
-        LogError("[ClassInfoManager::ET_registerClassInfo] Class info already registered: '%s'", classInfo->getName());
+    if(findClassInfoByTypeId(classInfo->getIntanceTypeId())) {
+        LogError("[ClassInfoManager::registerClassInfo] Class info already registered: '%s'", classInfo->getName());
         assert(false && "Class instance typeId duplicate");
         return false;
     }
@@ -53,7 +46,7 @@ bool ClassInfoManager::ET_registerClassInfo(ClassInfoPtrT& classInfo) {
     return true;
 }
 
-ClassInfo* ClassInfoManager::ET_findClassInfoByTypeId(TypeId classTypeId) {
+ClassInfo* ClassInfoManager::findClassInfoByTypeId(Core::TypeId classTypeId) {
     auto it = classInfoMap.find(classTypeId);
     if(it != classInfoMap.end()) {
         return it->second.get();
@@ -61,17 +54,17 @@ ClassInfo* ClassInfoManager::ET_findClassInfoByTypeId(TypeId classTypeId) {
     return nullptr;
 }
 
-void ClassInfoManager::ET_reset() {
+void ClassInfoManager::reset() {
     classInfoMap.clear();
     enumInfoMap.clear();
     arrayInfoMap.clear();
 }
 
-int ClassInfoManager::ET_getRegisteredClassCount() {
+int ClassInfoManager::getRegisteredClassCount() {
     return static_cast<int>(classInfoMap.size());
 }
 
-void ClassInfoManager::ET_makeReflectModel(JSONNode& node) {
+void ClassInfoManager::makeReflectModel(JSONNode& node) {
     if(node) {
         assert(false && "JSONNode should be empty");
         return;
@@ -90,7 +83,7 @@ void ClassInfoManager::ET_makeReflectModel(JSONNode& node) {
     }
 }
 
-EnumInfo* ClassInfoManager::ET_findEnumInfoByTypeId(TypeId enumTypeId) {
+EnumInfo* ClassInfoManager::findEnumInfoByTypeId(Core::TypeId enumTypeId) {
     auto it = enumInfoMap.find(enumTypeId);
     if(it != enumInfoMap.end()) {
         return it->second.get();
@@ -98,7 +91,7 @@ EnumInfo* ClassInfoManager::ET_findEnumInfoByTypeId(TypeId enumTypeId) {
     return nullptr;
 }
 
-EnumInfo* ClassInfoManager::ET_findEnumInfoByName(const char* enumName) {
+EnumInfo* ClassInfoManager::findEnumInfoByName(const char* enumName) {
     std::string name = enumName;
     if(name.empty()) {
         return nullptr;
@@ -111,14 +104,14 @@ EnumInfo* ClassInfoManager::ET_findEnumInfoByName(const char* enumName) {
     return nullptr;
 }
 
-bool ClassInfoManager::ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) {
+bool ClassInfoManager::registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) {
     if(!enumInfo) {
-        LogError("[ClassInfoManager::ET_registerEnumInfo] Invalid enum info");
+        LogError("[ClassInfoManager::registerEnumInfo] Invalid enum info");
         assert(false && "Invalid enum info");
         return false;
     }
-    if(ET_findEnumInfoByTypeId(enumInfo->getEnumTypeId())) {
-        LogError("[ClassInfoManager::ET_registerEnumInfo] Enum info already registered");
+    if(findEnumInfoByTypeId(enumInfo->getEnumTypeId())) {
+        LogError("[ClassInfoManager::registerEnumInfo] Enum info already registered");
         assert(false && "Enum typeId duplicate");
         return false;
     }
@@ -126,7 +119,7 @@ bool ClassInfoManager::ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) 
     return true;
 }
 
-ArrayInfo* ClassInfoManager::ET_findArrayInfoByElemTypeId(TypeId elemTypeId) {
+ArrayInfo* ClassInfoManager::findArrayInfoByElemTypeId(Core::TypeId elemTypeId) {
     auto it = arrayInfoMap.find(elemTypeId);
     if(it == arrayInfoMap.end()) {
         return nullptr;
@@ -134,17 +127,19 @@ ArrayInfo* ClassInfoManager::ET_findArrayInfoByElemTypeId(TypeId elemTypeId) {
     return it->second.get();
 }
 
-bool ClassInfoManager::ET_registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) {
+bool ClassInfoManager::registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) {
     if(!arrayInfo) {
-        LogError("[ClassInfoManager::ET_registerArrayInfo] Invalid array info");
+        LogError("[ClassInfoManager::registerArrayInfo] Invalid array info");
         assert(false && "Invalid enum info");
         return false;
     }
-    if(ET_findArrayInfoByElemTypeId(arrayInfo->getElemTypeId())) {
-        LogError("[ClassInfoManager::ET_registerArrayInfo] Array info already registered");
+    if(findArrayInfoByElemTypeId(arrayInfo->getElemTypeId())) {
+        LogError("[ClassInfoManager::registerArrayInfo] Array info already registered");
         assert(false && "Array elem typeId duplicate");
         return false;
     }
     arrayInfoMap[arrayInfo->getElemTypeId()] = std::move(arrayInfo);
     return true;
 }
+
+} // namespace Reflect

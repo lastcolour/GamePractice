@@ -103,35 +103,35 @@ std::string NormilizeAssetName(const char* assetName) {
     return name;
 }
 
-Buffer LoadFile(const std::filesystem::path& fileName) {
+Memory::Buffer LoadFile(const std::filesystem::path& fileName) {
     if(IsDirExists(fileName)) {
         LogError("[LoadFile] Can't opend dir as file: '%s'", fileName.string());
-        return Buffer();
+        return Memory::Buffer();
     }
     std::ifstream fin(fileName, std::ios::binary | std::ios::ate);
     if(!fin.good() || !fin.is_open()) {
         LogError("[LoadFile] Can't open file: '%s' (Error: %s)", fileName.string(), GetSafeStrErrno());
-        return Buffer();
+        return Memory::Buffer();
     }
     std::streamoff fileSize = fin.tellg();
     if(fileSize == -1) {
         LogError("[LoadFile] Can't get file size: '%s'", fileName.string());
-        return Buffer();
+        return Memory::Buffer();
     }
     fin.seekg(0u, std::ios::beg);
-    Buffer buffer(fileSize);
+    Memory::Buffer buffer(fileSize);
     if(!buffer) {
         LogError("[LoadFile] Can't allocate buffer of size %ld bytes to load file: '%s'", fileSize, fileName.string());
-        return Buffer();
+        return Memory::Buffer();
     }
     if(!fin.read(static_cast<char*>(buffer.getWriteData()), fileSize)) {
         LogError("[LoadFile] Can't read from file: '%s'", fileName.string());
-        return Buffer();
+        return Memory::Buffer();
     }
     return buffer;
 }
 
-Buffer LoadFileFromDir(const std::filesystem::path& dirName, const char* fileName) {
+Memory::Buffer LoadFileFromDir(const std::filesystem::path& dirName, const char* fileName) {
     auto filePath = CombinePath(dirName, fileName);
     return LoadFile(filePath);
 }
@@ -158,7 +158,7 @@ bool RemoveFileFromDir(const std::filesystem::path& dirName, const char* fileNam
     return true;
 }
 
-bool SaveFileToDir(const std::filesystem::path& dirName, const char* fileName, const Buffer& buffer) {
+bool SaveFileToDir(const std::filesystem::path& dirName, const char* fileName, const Memory::Buffer& buffer) {
     auto filePath = CombinePath(dirName, fileName);
     if(filePath.empty()) {
         LogError("[SaveFileToDir] Can't save a file by invalid name: '%s'", fileName);

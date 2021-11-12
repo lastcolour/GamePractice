@@ -31,7 +31,7 @@ class JSONNode {
 
 public:
 
-    static JSONNode ParseBuffer(const Buffer& buff);
+    static JSONNode ParseBuffer(const Memory::Buffer& buff);
     static JSONNode ParseString(const char* str);
 
 public:
@@ -78,7 +78,7 @@ public:
     bool isArray() const;
     size_t size() const;
 
-    Buffer flushToBuffer() const;
+    Memory::Buffer flushToBuffer() const;
 
 private:
 

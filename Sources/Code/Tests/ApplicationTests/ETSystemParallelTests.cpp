@@ -1,5 +1,4 @@
 #include "ETSystemParallelTests.hpp"
-#include "Core/GlobalEnvironment.hpp"
 
 #include <thread>
 #include <atomic>
@@ -67,7 +66,7 @@ public:
 } // namespace
 
 TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     ETSystem& etSystem = *env.GetETSystem();
 
     const int MAX_OBJECTS_COUNT = 200;
@@ -113,7 +112,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
 }
 
 TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     ETSystem& etSystem = *env.GetETSystem();
 
     const int MAX_OBJECTS = 200;
@@ -168,7 +167,7 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 }
 
 TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     ETSystem& etSystem = *env.GetETSystem();
 
     const int MAX_OBJECTS = 200;

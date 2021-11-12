@@ -1,15 +1,13 @@
 #include "Reflect/ReflectUtils.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "Core/ETAssets.hpp"
 
 #include <cassert>
 
-namespace ReflectUtils {
+namespace Reflect {
 
-ClassInfo* FindClassInfo(TypeId typeId) {
-    ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, typeId);
-    return classInfo;
+ClassInfo* FindClassInfo(Core::TypeId typeId) {
+    return GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(typeId);
 }
 
 void AsyncWriteInstaceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName) {
@@ -20,7 +18,7 @@ void AsyncWriteInstaceToLocalFile(void* object, ClassInfo* classInfo, const char
     }
     JSONNode node;
     SerializeContext serCtx;
-    if(!classInfo->writeValueTo(serCtx, object, AllEntityLogicValueId, node)) {
+    if(!classInfo->writeValueTo(serCtx, object, AllClassValuesId, node)) {
         return;
     }
     auto buffer = node.flushToBuffer();
@@ -39,7 +37,7 @@ bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fi
     }
     JSONNode node;
     SerializeContext serCtx;
-    if(!classInfo->writeValueTo(serCtx, object, AllEntityLogicValueId, node)) {
+    if(!classInfo->writeValueTo(serCtx, object, AllClassValuesId, node)) {
         return false;
     }
     bool saveRes = false;
@@ -64,7 +62,7 @@ bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fi
         return false;
     }
     SerializeContext serCtx;
-    if(!classInfo->readValueFrom(serCtx, object, AllEntityLogicValueId, node)) {
+    if(!classInfo->readValueFrom(serCtx, object, AllClassValuesId, node)) {
         return false;
     }
     return true;
@@ -82,7 +80,7 @@ bool ReadInstanceFromAsset(void* object, ClassInfo* classInfo, const char* asset
         return false;
     }
     SerializeContext serCtx;
-    if(!classInfo->readValueFrom(serCtx, object, AllEntityLogicValueId, node)) {
+    if(!classInfo->readValueFrom(serCtx, object, AllClassValuesId, node)) {
         return false;
     }
     return true;
@@ -92,4 +90,4 @@ bool LoadObjectFromAsset(ClassInstance& instance, const char* assetName) {
     return ReadInstanceFromAsset(instance.get(), instance.getClassInfo(), assetName);
 }
 
-} // namespace ReflectUtils
+} // namespace Reflect

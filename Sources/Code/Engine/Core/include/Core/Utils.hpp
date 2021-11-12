@@ -1,10 +1,9 @@
 #ifndef __UTILS_HPP__
 #define __UTILS_HPP__
 
-#include <tuple>
-#include <type_traits>
-
 namespace Core {
+
+namespace Impl {
 
 template <typename ... ArgsT, typename FuncT, std::size_t... Idx>
 void ApplyTuple(std::tuple<ArgsT ... >& tuple, FuncT&& func, std::index_sequence<Idx...>) {
@@ -21,16 +20,27 @@ void ApplyTupleReverse(std::tuple<ArgsT ... >& tuple, FuncT&& func, std::index_s
     };
 }
 
-} // namespace Core
+int GetNextTypeId();
+
+template<typename T>
+class TypeIdHelper {
+public:
+    static int value() {
+        static const TypeId typeId = GetNextTypeId();
+        return typeId;
+    }
+};
+
+} // namespace Impl
 
 template <typename... ArgsT, typename FuncT>
 void ApplyTuple(std::tuple<ArgsT ... >& tuple, FuncT&& func) {
-    Core::ApplyTuple(tuple, func, std::index_sequence_for<ArgsT...>{});
+    Impl::ApplyTuple(tuple, func, std::index_sequence_for<ArgsT...>{});
 }
 
 template <typename... ArgsT, typename FuncT>
 void ApplyTupleReverse(std::tuple<ArgsT ... >& tuple, FuncT&& func) {
-    Core::ApplyTupleReverse(tuple, func, std::index_sequence_for<ArgsT...>{});
+    Impl::ApplyTupleReverse(tuple, func, std::index_sequence_for<ArgsT...>{});
 }
 
 template <typename... ArgsT, typename FuncT, typename ResT>
@@ -40,18 +50,28 @@ void ApplyTupleResult(std::tuple<ArgsT ... >& tuple, FuncT&& func, std::vector<R
     });
 }
 
+using TypeId = int;
+const TypeId InvalidTypeId = 0;
+
 template<typename T>
-bool EnumFlagsIntersect(T first, T second) {
+constexpr TypeId GetTypeId() {
+    return Impl::TypeIdHelper<T>::value();
+}
+
+template<typename T>
+bool EnumFlagsBitANDCheck(T first, T second) {
     static_assert(std::is_enum<T>::value, "T isn't enum type");
     return static_cast<bool>(
         static_cast<int>(first) & static_cast<int>(second));
 }
 
 template<typename T>
-T EnumFlagsUnite(T first, T second) {
+T EnumFlagsBitXORCreate(T first, T second) {
     static_assert(std::is_enum<T>::value, "T isn't enum type");
     return static_cast<T>(
         static_cast<int>(first) | static_cast<int>(second));
 }
+
+} // namespace Core
 
 #endif /* __UTILS_HPP__ */

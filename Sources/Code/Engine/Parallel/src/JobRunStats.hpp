@@ -3,8 +3,6 @@
 
 #include "Parallel/TaskRunInfo.hpp"
 
-#include <mutex>
-
 class JobRunStats {
 public:
 

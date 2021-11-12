@@ -1,8 +1,6 @@
 #ifndef __RESAMPLERS_HPP__
 #define __RESAMPLERS_HPP__
 
-#include <cstdint>
-
 class LinearResampler {
 public:
 

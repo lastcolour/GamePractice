@@ -2,7 +2,6 @@
 #include "Core/App/AppRunState.hpp"
 #include "Core/App/AssetsCacheManager.hpp"
 #include "Core/App/AsyncAssetsLoader.hpp"
-#include "Reflect/ClassInfoManager.hpp"
 #include "Platform/PlatformLogger.hpp"
 
 CoreModule::CoreModule() :
@@ -12,7 +11,6 @@ CoreModule::LogicsContainerPtrT CoreModule::createSystemLogics() const {
     LogicsContainerPtrT container(
         new SystemLogicContainer<
             AppRunState,
-            ClassInfoManager,
             PlatformLogger,
             AsyncAssetsLoader,
             AssetsCacheManager>()

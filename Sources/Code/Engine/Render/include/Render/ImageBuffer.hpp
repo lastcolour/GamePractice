@@ -1,8 +1,6 @@
 #ifndef __IMAGE_BUFFER_HPP__
 #define __IMAGE_BUFFER_HPP__
 
-#include "Render/Color.hpp"
-
 class ImageBuffer {
 public:
 
@@ -12,13 +10,13 @@ public:
     Vec2i getSize() const;
     void setSizeAndClear(const Vec2i& newSize);
     ColorB getColor(int w, int h) const;
-    Buffer& getData();
+    Memory::Buffer& getData();
     void clear();
 
 private:
 
     Vec2i size;
-    Buffer data;
+    Memory::Buffer data;
 };
 
 #endif /* __IMAGE_BUFFER_HPP__ */

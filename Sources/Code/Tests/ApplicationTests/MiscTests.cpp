@@ -1,22 +1,21 @@
 #include "MiscTests.hpp"
-#include "Core/Utils.hpp"
 
 TEST_F(MiscTests, CheckSameTypeID) {
-    auto intTypeId1 = GetTypeId<int>();
-    auto intTypeId2 = GetTypeId<int>();
+    auto intTypeId1 = Core::GetTypeId<int>();
+    auto intTypeId2 = Core::GetTypeId<int>();
     ASSERT_EQ(intTypeId1, intTypeId2);
 }
 
 TEST_F(MiscTests, CheckSameTypeIDViaTypeDef) {
     typedef float TypedefFloat;
-    auto floatTypeId1 = GetTypeId<float>();
-    auto floatTypeId2 = GetTypeId<TypedefFloat>();
+    auto floatTypeId1 = Core::GetTypeId<float>();
+    auto floatTypeId2 = Core::GetTypeId<TypedefFloat>();
     ASSERT_EQ(floatTypeId1, floatTypeId2);
 }
 
 TEST_F(MiscTests, CheckDifferentTypes) {
-    auto dobuleTypeId = GetTypeId<double>();
-    auto charTypeId = GetTypeId<char>();
+    auto dobuleTypeId = Core::GetTypeId<double>();
+    auto charTypeId = Core::GetTypeId<char>();
     ASSERT_NE(dobuleTypeId, charTypeId);
 }
 
@@ -37,7 +36,7 @@ TEST_F(MiscTests, CheckApplyTuple) {
 
     std::vector<int> order;
 
-    ApplyTuple(t, [&order](int num){
+    Core::ApplyTuple(t, [&order](int num){
         order.push_back(num);
     });
 
@@ -48,7 +47,7 @@ TEST_F(MiscTests, CheckApplyTuple) {
 
     order.clear();
 
-    ApplyTupleReverse(t, [&order](int num){
+    Core::ApplyTupleReverse(t, [&order](int num){
         order.push_back(num);
     });
 

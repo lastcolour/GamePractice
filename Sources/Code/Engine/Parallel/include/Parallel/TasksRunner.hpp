@@ -4,7 +4,6 @@
 #include "Parallel/RunTask.hpp"
 #include "Parallel/TaskRunInfo.hpp"
 
-#include <mutex>
 #include <atomic>
 #include <condition_variable>
 

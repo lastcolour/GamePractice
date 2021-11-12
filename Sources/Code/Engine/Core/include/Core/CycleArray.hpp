@@ -3,6 +3,8 @@
 
 #include <cassert>
 
+namespace Core {
+
 template<typename T>
 class CycleArray {
 public:
@@ -82,5 +84,7 @@ private:
     size_t pos;
     size_t count;
 };
+
+} // namespace Core
 
 #endif /* __CYCLE_ARRAY_HPP__ */

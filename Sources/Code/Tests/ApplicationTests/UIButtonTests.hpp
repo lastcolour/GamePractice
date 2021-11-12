@@ -1,12 +1,12 @@
 #ifndef __UI_BUTTON_TESTS_HPP__
 #define __UI_BUTTON_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
 class UIButton;
 class TestButtonEventListener;
 
-class UIButtonTests : public ConsoleAppTests {
+class UIButtonTests : public EngineTests {
 protected:
 
     static void SetUpTestCase();

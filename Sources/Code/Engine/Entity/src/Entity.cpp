@@ -1,16 +1,17 @@
 #include "Entity.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "Entity/ETEntityManager.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "EntityRegistry.hpp"
 
 #include <cassert>
 
 namespace {
 
-bool CheckLogicValue(const char* errStr, Entity* entity, EntityLogicId logicId, ClassInstance* logicInstance, EntityLogicValueId valueId) {
+bool CheckLogicValue(const char* errStr, Entity* entity, EntityLogicId logicId,
+    Reflect::ClassInstance* logicInstance, Reflect::ClassValueId valueId) {
     assert(logicId != InvalidEntityLogicId && "Invalid logic id");
-    assert(valueId != InvalidEntityLogicValueId && "Invalid logic value id");
+    assert(valueId != Reflect::InvalidClassValueId && "Invalid logic value id");
     if(!logicInstance) {
         LogWarning(errStr, StringFormat("Can't find logic with id '%d' in entity: '%s'",
              logicId, entity->ET_getName()));
@@ -94,7 +95,7 @@ void Entity::addChildEntityWithId(EntityChildId childId, Entity& childEntity) {
     children.emplace_back(EntityChildNode{&childEntity, childId});
 }
 
-EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
+EntityLogicId Entity::addLogic(Reflect::ClassInstance&& logicInstance) {
     assert(logicInstance.get() && "Can't add null game logic");
     auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
     logicPtr->setEntity(this);
@@ -105,7 +106,7 @@ EntityLogicId Entity::addLogic(ClassInstance&& logicInstance) {
     return logicId;
 }
 
-bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance) {
+bool Entity::addLogicWithId(EntityLogicId logicId, Reflect::ClassInstance&& logicInstance) {
     assert(logicInstance.get() && "Can't add null game logic");
     assert(IsValidLogicId(logicId, logics) && "Invalid entity logic id");
     auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
@@ -115,9 +116,8 @@ bool Entity::addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance
     return true;
 }
 
-void* Entity::addLogicByTypeId(TypeId logicTypeId) {
-    ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, logicTypeId);
+void* Entity::addLogicByTypeId(Core::TypeId logicTypeId) {
+    auto classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(logicTypeId);
     if(!classInfo) {
         LogWarning("[Entity::addLogicByTypeId] Can't find logic with type id: '%d'", logicTypeId);
         return nullptr;
@@ -150,7 +150,7 @@ bool Entity::removeLogic(EntityLogicId logicId) {
     return true;
 }
 
-ClassInstance* Entity::findLogic(EntityLogicId logicId) {
+Reflect::ClassInstance* Entity::findLogic(EntityLogicId logicId) {
     for(auto& logicNode : logics) {
         if(logicNode.logicId == logicId) {
             return &logicNode.logic;
@@ -164,13 +164,13 @@ void Entity::setName(const char* newName) {
     name = newName;
 }
 
-bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
+bool Entity::readLogicData(EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::MemoryStream& stream) {
     const char* errStr = "[Entity::readLogicData] Can't read logic data (Error: '%s')";
     auto logicInstance = findLogic(logicId);
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    SerializeContext serCtx;
+    Reflect::SerializeContext serCtx;
     serCtx.entityId = entityId;
     if(!logicInstance->writeValueTo(serCtx, valueId, stream)) {
         LogWarning(errStr, StringFormat("Error during read from logic with id '%d' in entity: '%s'",
@@ -180,7 +180,7 @@ bool Entity::readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, Me
     return true;
 }
 
-bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream) {
+bool Entity::writeLogicData(EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::MemoryStream& stream) {
     const char* errStr = "[Entity::writeLogicData] Can't write logic data (Error: '%s')";
     auto logicInstance = findLogic(logicId);
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
@@ -188,7 +188,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     }
     InitDeinitAllLogic(getEntityId(), logics, false);
     bool res = true;
-    SerializeContext serCtx;
+    Reflect::SerializeContext serCtx;
     serCtx.entityId = entityId;
     if(!logicInstance->readValueFrom(serCtx, valueId, stream)) {
         LogError(errStr, StringFormat("Error during write to logic with id '%d' in entity: '%s'",
@@ -199,7 +199,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, M
     return res;
 }
 
-bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId) {
+bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, Reflect::ClassValueId valueId) {
     const char* errStr = "[Entity::addLogicValueArrayElemet] Can't add logic array element (Error: '%s')";
     auto logicInstance = findLogic(logicId);
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
@@ -214,7 +214,7 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId 
     return res;
 }
 
-bool Entity::setLogicValuePolymorphType(EntityLogicId logicId, EntityLogicValueId valueId, const char* typeName) {
+bool Entity::setLogicValuePolymorphType(EntityLogicId logicId, Reflect::ClassValueId valueId, const char* typeName) {
     const char* errStr = "[Entity::setLogicValuePolymorphType] Can't set polymorph type (Error: '%s')";
     auto logicInstance = findLogic(logicId);
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
@@ -438,7 +438,7 @@ void Entity::purgeAllRelationships() {
     children.clear();
 }
 
-std::vector<EntityLogic*> Entity::ET_getLogisByTypeId(TypeId logicTypeId) {
+std::vector<EntityLogic*> Entity::ET_getLogisByTypeId(Core::TypeId logicTypeId) {
     std::vector<EntityLogic*> result;
     for(auto& node : logics) {
         if(node.logic.getInstanceTypeId() == logicTypeId) {

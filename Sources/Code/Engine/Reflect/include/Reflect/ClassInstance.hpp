@@ -1,12 +1,9 @@
 #ifndef __CLASS_INSTANCE_HPP__
 #define __CLASS_INSTANCE_HPP__
 
-#include "Core/TypeId.hpp"
+namespace Reflect {
 
 class ClassInfo;
-class MemoryStream;
-class JSONNode;
-struct SerializeContext;
 
 class ClassInstance {
 
@@ -34,40 +31,37 @@ public:
     ~ClassInstance();
 
     template<typename T>
-    std::unique_ptr<T> acquire() {
+    T* castTo() {
         if(!instance) {
             return nullptr;
         }
-        auto typeId = GetTypeId<T>();
+        auto typeId = Core::GetTypeId<T>();
         if(!isInstanceOfType(typeId)) {
             return nullptr;
         }
-        auto resPtr = std::unique_ptr<T>(static_cast<T*>(instance));
-        instance = nullptr;
-        classInfo = nullptr;
-        return resPtr;
+        return static_cast<T*>(instance);
     }
 
     void* get();
     const void* get() const;
 
     ClassInfo* getClassInfo();
-    TypeId getInstanceTypeId() const;
+    Core::TypeId getInstanceTypeId() const;
     bool readAllValuesFrom(const SerializeContext& ctx, const JSONNode& node);
-    bool readAllValuesFrom(const SerializeContext& ctx, MemoryStream& stream);
+    bool readAllValuesFrom(const SerializeContext& ctx, Memory::MemoryStream& stream);
     bool writeAllValuesTo(const SerializeContext& ctx, JSONNode& node);
-    bool writeAllValuesTo(const SerializeContext& ctx, MemoryStream& stream);
-    bool readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, const JSONNode& node);
-    bool readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
-    bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, JSONNode& node);
-    bool writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream);
-    bool addValueArrayElement(EntityLogicValueId valueId);
-    bool setValuePolymorphType(EntityLogicValueId valueId, const char* typeName);
+    bool writeAllValuesTo(const SerializeContext& ctx, Memory::MemoryStream& stream);
+    bool readValueFrom(const SerializeContext& ctx, ClassValueId valueId, const JSONNode& node);
+    bool readValueFrom(const SerializeContext& ctx, ClassValueId valueId, Memory::MemoryStream& stream);
+    bool writeValueTo(const SerializeContext& ctx, ClassValueId valueId, JSONNode& node);
+    bool writeValueTo(const SerializeContext& ctx, ClassValueId valueId, Memory::MemoryStream& stream);
+    bool addValueArrayElement(ClassValueId valueId);
+    bool setValuePolymorphType(ClassValueId valueId, const char* typeName);
 
 private:
 
     void setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr);
-    bool isInstanceOfType(TypeId typeId) const;
+    bool isInstanceOfType(Core::TypeId typeId) const;
 
 private:
 
@@ -80,5 +74,7 @@ private:
     void* instance;
     DeleteFuncT deleteFunc;
 };
+
+} // namespace Reflect
 
 #endif /* __CLASS_INSTANCE_HPP__ */

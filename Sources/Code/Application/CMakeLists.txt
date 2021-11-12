@@ -34,14 +34,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME
 target_link_libraries(${PROJECT_NAME} PRIVATE Core)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    [["Reflect/ReflectContext.hpp"]]
-    [["Core/ETLogger.hpp"]]
+    [["Core/Core.hpp"]]
     [["Entity/ETEntity.hpp"]]
 )

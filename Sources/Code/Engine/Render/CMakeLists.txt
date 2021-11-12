@@ -65,15 +65,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${RENDER_LIB_DEPENDICIES})
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    <limits>
+    [["Core/Core.hpp"]]
     [["Reflect/ReflectContext.hpp"]]
-    [["Core/ETLogger.hpp"]]
     [["Entity/ETEntity.hpp"]]
 )

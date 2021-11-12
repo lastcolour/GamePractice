@@ -142,20 +142,20 @@ bool RenderTexture::clear() {
     int mipLvl = 0;
     switch(dataType) {
         case ETextureDataType::R8: {
-            Buffer buff(size.x * size.y);
+            Memory::Buffer buff(size.x * size.y);
             memset(buff.getWriteData(), 0, buff.getSize());
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             glTexSubImage2D(GL_TEXTURE_2D, mipLvl, 0, 0, size.x, size.y, GL_RED, GL_UNSIGNED_BYTE, buff.getReadData());
             break;
         }
         case ETextureDataType::RGB: {
-            Buffer buff(size.x * size.y * 3);
+            Memory::Buffer buff(size.x * size.y * 3);
             memset(buff.getWriteData(), 0, buff.getSize());
             glTexSubImage2D(GL_TEXTURE_2D, mipLvl, 0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, buff.getReadData());
             break;
         }
         case ETextureDataType::RGBA: {
-            Buffer buff(size.x * size.y * 4);
+            Memory::Buffer buff(size.x * size.y * 4);
             memset(buff.getWriteData(), 0, buff.getSize());
             glTexSubImage2D(GL_TEXTURE_2D, mipLvl, 0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, buff.getReadData());
             break;

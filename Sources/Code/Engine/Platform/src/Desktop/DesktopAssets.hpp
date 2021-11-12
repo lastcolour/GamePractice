@@ -20,16 +20,16 @@ public:
 
     // ETAssets
     JSONNode ET_loadJSONAsset(const char* assetName) override;
-    Buffer ET_loadAsset(const char* assetName) override;
-    Buffer ET_loadLocalFile(const char* assetName) override;
+    Memory::Buffer ET_loadAsset(const char* assetName) override;
+    Memory::Buffer ET_loadLocalFile(const char* assetName) override;
     JSONNode ET_loadLocalJSONFile(const char* fileName) override;
-    bool ET_saveLocalFile(const char* fileName, const Buffer& buff) override;
+    bool ET_saveLocalFile(const char* fileName, const Memory::Buffer& buff) override;
     bool ET_removeLocalFile(const char* fileName) override;
     bool ET_isLocalFileExists(const char* fileName) const override;
 
 private:
 
-    Buffer loadFileFromDir(const std::filesystem::path& dirPath, const std::string& fileName);
+    Memory::Buffer loadFileFromDir(const std::filesystem::path& dirPath, const std::string& fileName);
 
 private:
 

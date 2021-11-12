@@ -1,10 +1,7 @@
 #ifndef __ET_SYNCHRONIZATION_HPP__
 #define __ET_SYNCHRONIZATION_HPP__
 
-#include "Core/TypeId.hpp"
-
 #include <thread>
-#include <mutex>
 #include <atomic>
 
 namespace ET {

@@ -126,11 +126,11 @@ Resampler& MixGraph::getResampler() {
     return resampler;
 }
 
-Buffer& MixGraph::getResampleBuffer() {
+Memory::Buffer& MixGraph::getResampleBuffer() {
     return resampleBuffer;
 }
 
-Buffer& MixGraph::getCombineBuffer() {
+Memory::Buffer& MixGraph::getCombineBuffer() {
     return combineBuffer;
 }
 

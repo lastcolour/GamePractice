@@ -6,7 +6,7 @@
 #include "Core/ETAssets.hpp"
 
 struct AsyncLoadRequest {
-    std::function<void(Buffer&)> callback;
+    std::function<void(Memory::Buffer&)> callback;
     std::string filename;
     bool local;
 };
@@ -24,9 +24,9 @@ public:
     void deinit() override;
 
     // ETAsyncAssets
-    void ET_asyncSaveLocalFile(const char* fileName, Buffer& buff) override;
-    void ET_asyncLoadLocalFile(const char* fileName, std::function<void(Buffer&)> callback) override;
-    void ET_asyncLoadAsset(const char* fileName, std::function<void(Buffer&)> callback) override;
+    void ET_asyncSaveLocalFile(const char* fileName, Memory::Buffer& buff) override;
+    void ET_asyncLoadLocalFile(const char* fileName, std::function<void(Memory::Buffer&)> callback) override;
+    void ET_asyncLoadAsset(const char* fileName, std::function<void(Memory::Buffer&)> callback) override;
     void ET_processAsyncLoadRequest(const AsyncLoadRequest& req) override;
 
     // ETAssetsUpdateTask

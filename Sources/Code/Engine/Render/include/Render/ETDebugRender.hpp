@@ -2,7 +2,7 @@
 #define __ET_DEBUG_RENDER_HPP__
 
 #include "Math/AABB.hpp"
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 
 class RenderContext;
 

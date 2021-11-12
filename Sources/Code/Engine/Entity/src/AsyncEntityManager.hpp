@@ -5,7 +5,6 @@
 #include "Core/SystemLogic.hpp"
 #include "Entity/ETEntityManager.hpp"
 
-#include <mutex>
 #include <thread>
 
 class AsyncEntityManager : public SystemLogic,

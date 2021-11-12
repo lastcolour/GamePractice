@@ -1,6 +1,8 @@
 #ifndef __BUFFER_HPP__
 #define __BUFFER_HPP__
 
+namespace Memory {
+
 struct BufferImpl;
 
 class Buffer {
@@ -32,5 +34,7 @@ private:
 
     std::shared_ptr<BufferImpl> buffImpl;
 };
+
+} // namespace Memory
 
 #endif /* __BUFFER_HPP__ */

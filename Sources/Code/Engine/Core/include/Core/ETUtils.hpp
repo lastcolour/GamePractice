@@ -1,14 +1,42 @@
 #ifndef __ET_UTILS_HPP__
 #define __ET_UTILS_HPP__
 
-#include "Core/Core.hpp"
+class EntityId {
 
-class ETNodeBase;
+    static const uint32_t INVALID_ID = 0u;
 
-template<typename T>
-class ETNode;
+public:
+
+    EntityId() : id(INVALID_ID) {}
+    EntityId(const EntityId& entId) : id(entId.id) {}
+    EntityId& operator=(const EntityId& endId) { id = endId.id; return *this; }
+    ~EntityId() = default;
+    bool operator==(const EntityId& entId) const { return id == entId.id; }
+    bool operator!=(const EntityId& entId) const { return id != entId.id; }
+    bool isValid() const { return id != INVALID_ID; }
+
+    void setRawId(uint32_t entId) { id = entId; }
+    uint32_t getRawId() const { return id; }
+
+private:
+
+    uint32_t id;
+};
+
+namespace std {
+    template <>
+    struct hash<EntityId> {
+        size_t operator()(const EntityId& entId) const {
+            return std::hash<uint32_t>()(entId.getRawId());
+        }
+    };
+}
+
+const EntityId InvalidEntityId;
 
 namespace ET {
+
+class ETNodeBase;
 
 int GetNextETId();
 
@@ -38,8 +66,6 @@ public:
 
     EntityId addressId;
 };
-
-constexpr const size_t MAX_EVENT_SIZE = 164;
 
 template<typename ObjectType, typename FuncType, typename ... ParamType>
 class ETDefferedCall : public ETDefferedCallBase {

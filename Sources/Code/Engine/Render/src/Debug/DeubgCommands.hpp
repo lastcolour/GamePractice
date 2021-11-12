@@ -2,7 +2,7 @@
 #define __DEBUG_COMMANDS_HPP__
 
 #include "Math/AABB.hpp"
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 
 struct DebugDrawQuadCmd {
     AABB2D box;

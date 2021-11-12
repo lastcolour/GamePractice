@@ -1,11 +1,10 @@
 #ifndef __ET_ENTITY_MANAGER_HPP__
 #define __ET_ENTITY_MANAGER_HPP__
 
-class EntityLogicsRegister;
-class JSONNode;
-class MemoryStream;
 class Entity;
+class JSONNode;
 class EntityLoadResult;
+class EntityLogicsRegister;
 
 struct ETEntityManager {
     virtual ~ETEntityManager() = default;
@@ -24,13 +23,14 @@ struct ETEntityManager {
     virtual void ET_removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) = 0;
     virtual JSONNode ET_getRegisteredLogics() const = 0;
     virtual bool ET_readEntityLogicData(EntityId entityId, EntityLogicId logicId,
-        EntityLogicValueId valueId, MemoryStream& stream) = 0;
+        Reflect::ClassValueId valueId, Memory::MemoryStream& stream) = 0;
     virtual bool ET_writeEntityLogicData(EntityId entityId, EntityLogicId logicId,
-        EntityLogicValueId valueId, MemoryStream& stream) = 0;
+        Reflect::ClassValueId valueId, Memory::MemoryStream& stream) = 0;
     virtual bool ET_addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId,
-        EntityLogicValueId valueId) = 0;
+        Reflect::ClassValueId valueId) = 0;
     virtual bool ET_setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicId logicId,
-        EntityLogicValueId valueId, const char* typeName) = 0;
+        Reflect::ClassValueId valueId, const char* typeName) = 0;
+    virtual size_t ET_getEntitiesCount() const = 0;
 };
 
 struct ETAsyncEntityManager {

@@ -4,7 +4,6 @@
 #include "Math/Matrix.hpp"
 #include "Render/RenderCommon.hpp"
 #include "RenderUtils.hpp"
-#include "Core/GlobalData.hpp"
 #include "RenderConfig.hpp"
 
 #include <cassert>
@@ -204,7 +203,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
         glEnableVertexAttribArray(1);
     }
     {
-        auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
+        auto maxParticles = Core::GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
 
         GLsizei stride = sizeof(Vec4) + sizeof(Mat3x2);
 

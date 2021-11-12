@@ -3,8 +3,6 @@
 
 #include "Math/Primitivies.hpp"
 
-#include <cmath>
-
 namespace Math {
 
 template<typename T>

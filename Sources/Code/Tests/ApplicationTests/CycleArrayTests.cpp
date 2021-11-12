@@ -2,7 +2,7 @@
 #include "Core/CycleArray.hpp"
 
 TEST_F(CycleArrayTests, CheckCycleArray) {
-    CycleArray<int> cycleArray(5);
+    Core::CycleArray<int> cycleArray(5);
 
     for(int i = 0; i < 5; ++i) {
         cycleArray.insert(i + 1);

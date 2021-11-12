@@ -1,6 +1,4 @@
-#include "Reflect/ReflectContext.hpp"
-#include "Reflect/ClassInfo.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/EnumInfo.hpp"
 
 #include <cassert>
@@ -16,20 +14,19 @@ bool ReflectContext::registerInfos() {
     if(!clsInfo) {
         return false;
     }
-    bool res = false;
     registeredClsInfo = clsInfo.get();
-    ET_SendEventReturn(res, &ETClassInfoManager::ET_registerClassInfo, clsInfo);
-    assert(clsInfo == nullptr && "Expeced to move ownership of class info to manager");
-    if(!res) {
+    if(!GetEnv()->GetClassInfoManager()->registerClassInfo(clsInfo)) {
         registeredClsInfo = nullptr;
+        return false;
     }
-    return res;
+    assert(!clsInfo && "Expeced to move ownership of class info to manager");
+    return true;
 }
 
 bool ReflectContext::registerEnums() {
     bool res = true;
     for(auto& enumInfo : enumInfos) {
-        ET_SendEventReturn(res, &ETClassInfoManager::ET_registerEnumInfo, enumInfo);
+        res = GetEnv()->GetClassInfoManager()->registerEnumInfo(enumInfo);
         if(!res) {
             LogError("[ReflectContext::registerEnums] Can't register enum: %s", enumInfo->getName());
             res = false;
@@ -40,15 +37,14 @@ bool ReflectContext::registerEnums() {
     return res;
 }
 
-ClassInfo* ReflectContext::createClassInfo(const char* className, TypeId classTypeId) {
+Reflect::ClassInfo* ReflectContext::createClassInfo(const char* className, Core::TypeId classTypeId) {
     const char* errStr = "[ReflectContext::createClassInfo] Can't create class info for '%s' (Error: %s)";
     if(!className || !className[0]) {
         LogError(errStr, className, "empty name");
         assert(false && "can't create class info");
         return nullptr;
     }
-    ClassInfo* cInfo = nullptr;
-    ET_SendEventReturn(cInfo, &ETClassInfoManager::ET_findClassInfoByName, className);
+    auto cInfo = GetEnv()->GetClassInfoManager()->findClassInfoByName(className);
     if(cInfo) {
         if(classTypeId != cInfo->getIntanceTypeId()) {
             LogError(errStr, className, "other class was registered by this name");
@@ -56,12 +52,12 @@ ClassInfo* ReflectContext::createClassInfo(const char* className, TypeId classTy
         }
         return nullptr;
     }
-    if(classTypeId == InvalidTypeId) {
+    if(classTypeId == Core::InvalidTypeId) {
         LogError(errStr, className, "instances have invalid type id");
         assert(false && "can't create class info");
         return nullptr;
     }
-    ET_SendEventReturn(cInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, classTypeId);
+    cInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(classTypeId);
     if(cInfo) {
         std::string name = className;
         if(name != cInfo->getName()) {
@@ -74,36 +70,35 @@ ClassInfo* ReflectContext::createClassInfo(const char* className, TypeId classTy
         assert(false && "can't create class info");
         return nullptr;
     }
-    clsInfo.reset(new ClassInfo(className, classTypeId));
+    clsInfo.reset(new Reflect::ClassInfo(className, classTypeId));
     return clsInfo.get();
 }
 
-EnumInfo* ReflectContext::createEnumInfo(const char* enumName, TypeId enumTypeId) {
+Reflect::EnumInfo* ReflectContext::createEnumInfo(const char* enumName, Core::TypeId enumTypeId) {
     const char* errStr = "[ReflectContext::createEnumInfo] Can't create enum info for '%s' (Error: %s)";
     if(!enumName || !enumName[0]) {
         LogError(errStr, enumName, "empty name");
         assert(false && "can't create enum info");
         return nullptr;
     }
-    EnumInfo* enumInfo = nullptr;
-    ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByName, enumName);
+    auto enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByName(enumName);
     if(enumInfo) {
         LogError(errStr, enumName, "already registered by name");
         assert(false && "can't create enum info");
         return nullptr;
     }
-    if(enumTypeId == InvalidTypeId) {
+    if(enumTypeId == Core::InvalidTypeId) {
         LogError(errStr, enumName, "enum have invalid type id");
         assert(false && "can't create enum info");
         return nullptr;
     }
-    ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, enumTypeId);
+    enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(enumTypeId);
     if(enumInfo) {
         LogError(errStr, enumName, "already registered by typeId");
         assert(false && "can't create enum info");
         return nullptr;
     }
-    enumInfos.push_back(std::unique_ptr<EnumInfo>(new EnumInfo(enumName, enumTypeId)));
+    enumInfos.push_back(std::unique_ptr<Reflect::EnumInfo>(new Reflect::EnumInfo(enumName, enumTypeId)));
     return enumInfos.back().get();
 }
 
@@ -112,6 +107,6 @@ bool ReflectContext::reflectEmbedded(const std::function<void(ReflectContext&)>&
     return registerInfos();
 }
 
-ClassInfo* ReflectContext::getRegisteredClassInfo() {
+Reflect::ClassInfo* ReflectContext::getRegisteredClassInfo() {
     return registeredClsInfo;
 }

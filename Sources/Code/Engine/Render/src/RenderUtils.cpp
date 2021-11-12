@@ -18,7 +18,6 @@
 #include "RenderTexture.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 
-#include <type_traits>
 #include <cassert>
 
 static_assert(std::is_same<int, GLsizei>::value, "int != GLsizei");

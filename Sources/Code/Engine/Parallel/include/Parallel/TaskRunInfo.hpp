@@ -29,13 +29,13 @@ public:
 
 public:
 
-    CycleArray<StartEndTime> timing;
+    Core::CycleArray<StartEndTime> timing;
     int runCount;
 };
 
-float GetRunTimeBetween(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
+float GetRunTimeBetween(const Core::CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
 
-float GetRunDurationAt(const CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
+float GetRunDurationAt(const Core::CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i);
 
 AvarageRunInfo GetAvgRunInfo(const TaskRunInfo& runInfo);
 

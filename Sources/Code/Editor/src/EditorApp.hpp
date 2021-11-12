@@ -14,8 +14,8 @@ public:
 
     bool initialize();
     void deinitiazlie();
-    Buffer getReflectModel();
-    Buffer getRegisteredEntityLogics();
+    Memory::Buffer getReflectModel();
+    Memory::Buffer getRegisteredEntityLogics();
     EntityId loadEntityFromFile(const char* entityName);
     EntityId loadEntityFromData(const char* entityName, const char* entityData);
     void unloadEntity(EntityId entityId);
@@ -26,10 +26,10 @@ public:
     void drawFrame(void* out, int32_t width, int32_t height);
     EntityChildId addChilEntityToEntity(EntityId parentId, EntityId childId);
     void removeChildEntityFromEntity(EntityId parentId, EntityId childId);
-    void addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
-    void setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId, const char* newType);
-    Buffer getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId);
-    void setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer);
+    void addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId);
+    void setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId, const char* newType);
+    Memory::Buffer getEntityLogicData(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId);
+    void setEntityLogicData(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::Buffer& buffer);
     EntityChildId createChildEntity(EntityId entityId, const char* childName);
     void mouseInputEvent(EActionType actionType, const Vec2i& pos);
     void setTimeScale(float timeScale);

@@ -13,10 +13,11 @@ EntityRegistry::~EntityRegistry() {
 Entity* EntityRegistry::createEntity(const char* name) {
     Entity* res = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex);
-        std::unique_ptr<Entity> entity(new Entity(name, this, GetETSystem()->createNewEntityId()));
-        res = entity.get();
-        entities[res->getEntityId()] = std::move(entity);
+        std::lock_guard<std::recursive_mutex> lock(mutex);
+        res = pool.create(name, this,
+            GetEnv()->GetETSystem()->createNewEntityId());
+        assert(res && "Can't create entity");
+        searchTable[res->getEntityId()] = res;
     }
     return res;
 }
@@ -24,10 +25,10 @@ Entity* EntityRegistry::createEntity(const char* name) {
 Entity* EntityRegistry::findEntity(EntityId entityId) {
     Entity* res = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex);
-        auto it = entities.find(entityId);
-        if(it != entities.end()) {
-            res = it->second.get();
+        std::lock_guard<std::recursive_mutex> lock(mutex);
+        auto it = searchTable.find(entityId);
+        if(it != searchTable.end()) {
+            res = it->second;
         }
     }
     return res;
@@ -39,10 +40,10 @@ void EntityRegistry::removeEntity(Entity* entity) {
 }
 
 void EntityRegistry::removeAllEntities() {
-    EntityContainerT entitiesToRemove;
+    std::unordered_map<EntityId, Entity*> entitiesToRemove;
     {
-        std::lock_guard<std::mutex> lock(mutex);
-        entitiesToRemove = std::move(entities);
+        std::lock_guard<std::recursive_mutex> lock(mutex);
+        entitiesToRemove = std::move(searchTable);
     }
     for(auto& entity : entitiesToRemove) {
         entity.second->purgeAllRelationships();
@@ -51,15 +52,16 @@ void EntityRegistry::removeAllEntities() {
 }
 
 void EntityRegistry::removeEntity(EntityId entityId) {
-    std::unique_ptr<Entity> entityToRemove;
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        auto it = entities.find(entityId);
-        if(it == entities.end()) {
-            return;
-        }
-        entityToRemove = std::move(it->second);
-        entities.erase(it);
+    std::lock_guard<std::recursive_mutex> lock(mutex);
+
+    auto it = searchTable.find(entityId);
+    if (it != searchTable.end()) {
+        pool.recycle(it->second);
+        searchTable.erase(it);
     }
-    entityToRemove.reset();
+}
+
+size_t EntityRegistry::getEntitiesCount() const {
+    std::lock_guard<std::recursive_mutex> lock(mutex);
+    return searchTable.size();
 }

@@ -19,7 +19,7 @@ void EntityLogicsRegister::registerFromReflectCtx(ReflectContext& ctx) {
     logics.push_back(classInfo);
 }
 
-std::vector<ClassInfo*>& EntityLogicsRegister::getLogicClasses() {
+std::vector<Reflect::ClassInfo*>& EntityLogicsRegister::getLogicClasses() {
     return logics;
 }
 

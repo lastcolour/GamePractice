@@ -4,8 +4,6 @@
 #include "Core/SystemLogic.hpp"
 #include "Render/ETRenderManager.hpp"
 
-class Buffer;
-
 class RenderTextureManager : public SystemLogic,
     public ETNode<ETRenderTextureManager> {
 public:
@@ -24,7 +22,7 @@ public:
 
 private:
 
-    std::shared_ptr<RenderTexture> createTexture(const Buffer& buffer, ETextureDataType texType);
+    std::shared_ptr<RenderTexture> createTexture(const Memory::Buffer& buffer, ETextureDataType texType);
 
 private:
 

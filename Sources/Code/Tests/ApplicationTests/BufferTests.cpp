@@ -7,7 +7,7 @@ const size_t TEST_SIZE = 32;
 } // namespace
 
 TEST_F(BufferTests, CheckVoidBuffer) {
-    Buffer buff;
+    Memory::Buffer buff;
     ASSERT_FALSE(buff);
     ASSERT_EQ(buff.getSize(), 0u);
     ASSERT_EQ(buff.getReadData(), nullptr);
@@ -16,7 +16,7 @@ TEST_F(BufferTests, CheckVoidBuffer) {
 }
 
 TEST_F(BufferTests, CheckNormalBuffer) {
-    Buffer buff(TEST_SIZE);
+    Memory::Buffer buff(TEST_SIZE);
     ASSERT_TRUE(buff);
     ASSERT_EQ(buff.getSize(), TEST_SIZE);
     ASSERT_NE(buff.getReadData(), nullptr);
@@ -25,7 +25,7 @@ TEST_F(BufferTests, CheckNormalBuffer) {
 }
 
 TEST_F(BufferTests, CheckResize) {
-    Buffer buff;
+    Memory::Buffer buff;
     buff.resize(TEST_SIZE);
     ASSERT_TRUE(buff);
     ASSERT_EQ(buff.getSize(), TEST_SIZE);
@@ -36,7 +36,7 @@ TEST_F(BufferTests, CheckResize) {
 
 TEST_F(BufferTests, CheckWriteStr) {
     std::string testStr = "test_str ";
-    Buffer buff(testStr.size());
+    Memory::Buffer buff(testStr.size());
     Core::StringCopyUnsafe(static_cast<char*>(buff.getWriteData()), testStr.c_str());
 
     ASSERT_TRUE(buff);
@@ -46,7 +46,7 @@ TEST_F(BufferTests, CheckWriteStr) {
 }
 
 TEST_F(BufferTests, CheckResizeToZero) {
-    Buffer buff(TEST_SIZE);
+    Memory::Buffer buff(TEST_SIZE);
     buff.resize(0u);
 
     ASSERT_FALSE(buff);
@@ -57,8 +57,8 @@ TEST_F(BufferTests, CheckResizeToZero) {
 }
 
 TEST_F(BufferTests, CheckMoveBuffer) {
-    Buffer firstBuffer(TEST_SIZE);
-    Buffer secondBuffer;
+    Memory::Buffer firstBuffer(TEST_SIZE);
+    Memory::Buffer secondBuffer;
 
     secondBuffer = std::move(firstBuffer);
 
@@ -75,13 +75,13 @@ TEST_F(BufferTests, CheckMoveBuffer) {
 }
 
 TEST_F(BufferTests, CheckEqualOfWriteReadData) {
-    Buffer buff(TEST_SIZE);
+    Memory::Buffer buff(TEST_SIZE);
     ASSERT_EQ(buff.getReadData(), buff.getWriteData());
 }
 
 TEST_F(BufferTests, CheckConstructWithData) {
     std::string writeStr = "Test";
-    Buffer buff(static_cast<const void*>(writeStr.c_str()), writeStr.length());
+    Memory::Buffer buff(static_cast<const void*>(writeStr.c_str()), writeStr.length());
     ASSERT_EQ(buff.getSize(), writeStr.length());
     std::string readStr = buff.acquireString();
     ASSERT_EQ(writeStr, readStr);
@@ -89,14 +89,14 @@ TEST_F(BufferTests, CheckConstructWithData) {
 
 TEST_F(BufferTests, CheckCopyBuffer) {
     char cStr[] = "Test Str";
-    Buffer buff1(cStr, sizeof(cStr));
-    Buffer buff2 = buff1;
+    Memory::Buffer buff1(cStr, sizeof(cStr));
+    Memory::Buffer buff2 = buff1;
 
     EXPECT_EQ(buff1.getReadData(), buff2.getReadData());
     EXPECT_EQ(buff1.getSize(), buff2.getSize());
 
     char cLongStr[] = "Long Test Str";
-    Buffer buff3;
+    Memory::Buffer buff3;
     buff3.resize(sizeof(cLongStr));
     buff3 = buff2;
 
@@ -115,7 +115,7 @@ TEST_F(BufferTests, CheckCopyBuffer) {
 
 TEST_F(BufferTests, CheckStringAcquire) {
     std::string str = "Test";
-    Buffer buff(static_cast<const void*>(str.c_str()), str.length());
+    Memory::Buffer buff(static_cast<const void*>(str.c_str()), str.length());
 
     std::string resStr = buff.acquireString();
     ASSERT_STREQ(str.c_str(), resStr.c_str());
@@ -127,7 +127,7 @@ TEST_F(BufferTests, CheckStringAcquire) {
 
 TEST_F(BufferTests, CheckResizeToSameSize) {
     std::string str = "Test";
-    Buffer buff(static_cast<const void*>(str.c_str()), str.length());
+    Memory::Buffer buff(static_cast<const void*>(str.c_str()), str.length());
 
     const void* oldPtr = buff.getReadData();
 

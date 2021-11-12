@@ -27,7 +27,6 @@ endif()
 
 include_directories(
     ${CORE_INCLUDE_DIR}
-    ${RENDER_INCLUDE_DIR}
     ${AUDIO_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
     ${AUDIO_PLATFORM_INCLUDE_DIR}
@@ -69,15 +68,7 @@ target_link_libraries(${PROJECT_NAME}
     ${AUDIO_LIB_DEPENDICIES})
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    <limits>
+    [["Core/Core.hpp"]]
     [["Reflect/ReflectContext.hpp"]]
-    [["Core/ETLogger.hpp"]]
     [["Entity/ETEntity.hpp"]]
 )

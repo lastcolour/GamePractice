@@ -2,7 +2,7 @@
 #define __RENDER_SHADER_HPP__
 
 #include "Math/Matrix.hpp"
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 
 class RenderTexture;
 

@@ -130,9 +130,9 @@ JSONNode DesktopAssets::ET_loadJSONAsset(const char* assetName) {
     return rootNode;
 }
 
-Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
+Memory::Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     auto normalAssetName = FileUtils::NormilizeAssetName(assetName);
-    Buffer buff;
+    Memory::Buffer buff;
     if(normalAssetName.empty()) {
         return buff;
     }
@@ -157,7 +157,7 @@ Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     return buff;
 }
 
-Buffer DesktopAssets::ET_loadLocalFile(const char* fileName) {
+Memory::Buffer DesktopAssets::ET_loadLocalFile(const char* fileName) {
     return FileUtils::LoadFileFromDir(localRootPath, fileName);
 }
 
@@ -174,7 +174,7 @@ JSONNode DesktopAssets::ET_loadLocalJSONFile(const char* fileName) {
     return rootNode;
 }
 
-bool DesktopAssets::ET_saveLocalFile(const char* fileName, const Buffer& buff) {
+bool DesktopAssets::ET_saveLocalFile(const char* fileName, const Memory::Buffer& buff) {
     return FileUtils::SaveFileToDir(localRootPath, fileName, buff);
 }
 

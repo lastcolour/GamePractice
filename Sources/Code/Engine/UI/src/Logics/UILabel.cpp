@@ -3,7 +3,6 @@
 #include "Config/UIConfig.hpp"
 #include "Core/ETApplication.hpp"
 #include "UI/UIBoxStyle.hpp"
-#include "Core/GlobalData.hpp"
 #include "UIUtils.hpp"
 
 void UILabel::Reflect(ReflectContext& ctx) {
@@ -49,7 +48,7 @@ const UILabelStyle& UILabel::ET_getStyle() const {
 
 void UILabel::ET_setStyle(const UILabelStyle& newStyle) {
     style = newStyle;
-    auto fontHeight = GetGlobal<UIConfig>()->getSizeOnGrid(style.fontSize);
+    auto fontHeight = Core::GetGlobal<UIConfig>()->getSizeOnGrid(style.fontSize);
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setFontHeight, fontHeight);
     updateHostLayout();
 }

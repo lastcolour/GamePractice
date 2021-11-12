@@ -1,6 +1,4 @@
-#include "Core/ETNodeRegistry.hpp"
 #include "ETSynchronization.hpp"
-#include "Core/ETSystem.hpp"
 
 #include <cassert>
 
@@ -13,7 +11,6 @@ const int MAX_ET_NODE_TYPES = 128;
 namespace ET {
 
 ETNodeRegistry::ETNodeRegistry() :
-    eventAllocator(MAX_EVENT_SIZE, 2048),
     syncRoute(new ETSyncRoute(MAX_ET_NODE_TYPES)),
     connections(MAX_ET_NODE_TYPES) {
 }
@@ -172,6 +169,16 @@ bool ETNodeRegistry::isExist(int etId, EntityId addressId) {
     return result;
 }
 
+bool ETNodeRegistry::isExist(int etId) {
+    bool result = false;
+    startRoute(etId);
+    {
+        result = !connections[etId].ptrToIdMap.empty();
+    }
+    endRoute(etId);
+    return result;
+}
+
 void ETNodeRegistry::queueEvent(int etId, ET::ETDefferedCallBase* defferedCall) {
     if(!defferedCall) {
         assert(false && "Invalid deffered event");
@@ -213,10 +220,9 @@ void ETNodeRegistry::pollEventsForAll(int etId) {
     }
     endRoute(etId);
     {
-        std::lock_guard<std::mutex> lock(eventMutex);
         for(auto& event : events) {
             event->~ETDefferedCallBase();
-            eventAllocator.deallocate(event);
+            GetEnv()->GetMemoryAllocator()->deallocate(event);
         }
         events.clear();
     }

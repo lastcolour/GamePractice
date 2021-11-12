@@ -3,12 +3,7 @@
 
 #include "Reflect/ReflectCore.hpp"
 
-class JSONNode;
-class MemoryStream;
-
-struct SerializeContext {
-    EntityId entityId;
-};
+namespace Reflect {
 
 class ClassValue {
 public:
@@ -43,9 +38,9 @@ public:
     ~ClassValue();
 
     std::string getTypeName() const;
-    bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
+    bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, Memory::MemoryStream& stream);
     bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, JSONNode& node);
-    bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, MemoryStream& stream);
+    bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, Memory::MemoryStream& stream);
     bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, const JSONNode& node);
     bool addArrayElement(void* valuePtr);
     bool setPolymorphType(void* valuePtr, const char* typeName);
@@ -56,11 +51,13 @@ public:
     std::string name;
     ClassValueType type;
     ValuePtrT ptr;
-    TypeId typeId;
+    Core::TypeId typeId;
     ResourceType resourceType;
     SetResourceFuncT setResourceFunc;
     int primitiveValueCount;
     bool isElement;
 };
+
+} // namespace Reflect
 
 #endif /* __CLASS_VALUE_HPP__ */

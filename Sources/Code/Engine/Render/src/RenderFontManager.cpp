@@ -6,7 +6,6 @@
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 #include "RenderConfig.hpp"
-#include "Core/GlobalData.hpp"
 #include "Core/TimePoint.hpp"
 
 #include <cassert>
@@ -18,7 +17,7 @@ namespace {
 
 const int TEX_SUB_PADDING = 2;
 
-void writeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i& pt, const Vec2i& subSize, uint8_t* data) {
+void writeBitmapToBuffer(Memory::Buffer& buff, const Vec2i& size, const Vec2i& pt, const Vec2i& subSize, uint8_t* data) {
     uint8_t* ptr = static_cast<uint8_t*>(buff.getWriteData());
     for(int q = 0, j = pt.y; q < subSize.y; ++j, ++q) {
         for(int p = 0, i = pt.x; p < subSize.x; ++i, ++p) {
@@ -27,7 +26,7 @@ void writeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i& pt, const
     }
 }
 
-void writeMonochromeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i& pt, Vec2i subSize, int pitch, uint8_t* data) {
+void writeMonochromeBitmapToBuffer(Memory::Buffer& buff, const Vec2i& size, const Vec2i& pt, Vec2i subSize, int pitch, uint8_t* data) {
     uint8_t* ptr = static_cast<uint8_t*>(buff.getWriteData());
     for(int q = 0, j = pt.y; q < subSize.y; ++j, ++q) {
         uint8_t* bytePtr = data + q * pitch;
@@ -42,7 +41,7 @@ void writeMonochromeBitmapToBuffer(Buffer& buff, const Vec2i& size, const Vec2i&
     }
 }
 
-std::shared_ptr<RenderTexture> createFontAtlas(Buffer& buff, const Vec2i& size, const FontDescription& fontDescr) {
+std::shared_ptr<RenderTexture> createFontAtlas(Memory::Buffer& buff, const Vec2i& size, const FontDescription& fontDescr) {
     std::shared_ptr<RenderTexture> fontAtlas;
     ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
     if(!fontAtlas) {
@@ -120,7 +119,7 @@ void RenderFontManager::deinit() {
 }
 
 void RenderFontManager::ET_onContextCreated() {
-    auto renderConfig = GetGlobal<RenderConfig>();
+    auto renderConfig = Core::GetGlobal<RenderConfig>();
     if(!createFont(renderConfig->fontsConfig.gameFont)) {
         LogError("[RenderFontManager::ET_onContextCreated] Can't create 'Game' font");
     }
@@ -133,7 +132,7 @@ void RenderFontManager::ET_onContextDestroyed() {
 }
 
 std::shared_ptr<RenderFont> RenderFontManager::ET_createFont(EFontType fontType) {
-    auto renderConfig = GetGlobal<RenderConfig>();
+    auto renderConfig = Core::GetGlobal<RenderConfig>();
     switch(fontType) {
         case EFontType::Game: {
             return createFont(renderConfig->fontsConfig.gameFont);
@@ -177,7 +176,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontDescript
         LogError("[RenderFontManager::createFontImpl] Can't init FreeType library");
         return nullptr;
     }
-    Buffer fontBuff;
+    Memory::Buffer fontBuff;
     ET_SendEventReturn(fontBuff, &ETAssets::ET_loadAsset, fontDescr.file.c_str());
     if(!fontBuff) {
         FT_Done_FreeType(ftLib);
@@ -210,8 +209,7 @@ std::shared_ptr<RenderFont> RenderFontManager::createFontImpl(const FontDescript
         texSize.y = std::max(texSize.y, static_cast<int>(glyph->bitmap.rows));
     }
 
-
-    Buffer texBuff;
+    Memory::Buffer texBuff;
     texBuff.resize(texSize.x * texSize.y);
     memset(texBuff.getWriteData(), 0, texBuff.getSize());
 

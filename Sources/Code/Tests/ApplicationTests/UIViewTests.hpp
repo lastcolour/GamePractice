@@ -1,9 +1,14 @@
 #ifndef __UI_VIEW_TESTS_HPP__
 #define __UI_VIEW_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
-class UIViewTests : public ConsoleAppTests {
+class UIViewTests : public EngineTests {
+public:
+
+    static void SetUpTestCase() {
+        CreateTestApp(ETestAppModules::CheckRender);
+    }
 };
 
 #endif /* __UI_VIEW_TESTS_HPP__ */

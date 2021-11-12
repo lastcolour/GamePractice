@@ -1,10 +1,8 @@
 #include "SystemModuleTests.hpp"
 #include "Core/SystemLogic.hpp"
 #include "Core/SystemModule.hpp"
-#include "Core/Utils.hpp"
 #include "Core/JSONNode.hpp"
 #include "Core/ETApplication.hpp"
-#include "Core/GlobalData.hpp"
 
 #include <tuple>
 #include <iostream>
@@ -60,7 +58,7 @@ public:
 protected:
 
     void createSystemConfigs() const override {
-        CreateGlobal<TestSystemConfigs>();
+        Core::CreateGlobal<TestSystemConfigs>();
     }
 
     LogicsContainerPtrT createSystemLogics() const override {
@@ -80,14 +78,14 @@ void SystemModuleTests::SetUp() {
 }
 
 void SystemModuleTests::TearDown() {
-    RemoveGlobal<TestSystemConfigs>();
+    Core::RemoveGlobal<TestSystemConfigs>();
 }
 
 TEST_F(SystemModuleTests, TestSystemModuleInitSuccess) {
     TestSystemModule module;
     ASSERT_TRUE(module.init());
 
-    auto config = GetGlobal<TestSystemConfigs>();
+    auto config = Core::GetGlobal<TestSystemConfigs>();
     ASSERT_TRUE(config);
     ASSERT_EQ(config->configVal, 1);
 }

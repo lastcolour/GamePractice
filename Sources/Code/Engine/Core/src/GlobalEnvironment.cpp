@@ -1,11 +1,12 @@
-#include "Core/GlobalEnvironment.hpp"
-#include "Core/ETSystem.hpp"
-#include "Core/GlobalData.hpp"
+#include "Core/MainMemoryAllocator.hpp"
 #include "Parallel/TasksRunner.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 
 #include <cassert>
 
-GlobalEnvironment* ENV = nullptr;
+namespace Core {
+
+GlobalEnvironment* GlobalEnvironment::ENV = nullptr;
 
 GlobalEnvironment::GlobalEnvironment() {
     if(ENV) {
@@ -13,29 +14,19 @@ GlobalEnvironment::GlobalEnvironment() {
     } else {
         ENV = this;
     }
+    memoryAllocator.reset(new Memory::MainMemoryAllocator);
     etSystem.reset(new ET::ETSystem);
     taskRunner.reset(new TasksRunner);
     globalData.reset(new GlobalData);
+    classInfoManager.reset(new Reflect::ClassInfoManager);
 }
 
 GlobalEnvironment::~GlobalEnvironment() {
+    globalData.reset();
+    classInfoManager.reset();
     if(ENV == this) {
         ENV = nullptr;
     }
 }
 
-ET::ETSystem* GlobalEnvironment::GetETSystem() {
-    return etSystem.get();
-}
-
-TasksRunner* GlobalEnvironment::GetTasksRunner() {
-    return taskRunner.get();
-}
-
-GlobalData* GlobalEnvironment::GetGlobalData() {
-    return globalData.get();
-}
-
-GlobalEnvironment* GetEnv() {
-    return ENV;
-}
+} // namepsace Core

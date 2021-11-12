@@ -4,7 +4,6 @@
 #include "RenderShader.hpp"
 #include "RenderUtils.hpp"
 #include "RenderConfig.hpp"
-#include "Core/GlobalData.hpp"
 
 #include <cassert>
 
@@ -55,7 +54,7 @@ std::shared_ptr<RenderShader> RenderShaderManager::ET_createShader(const char* s
 }
 
 int RenderShaderManager::createProgram(const std::string& vertFile, const std::string& fragFile) {
-    Buffer buffer;
+    Memory::Buffer buffer;
     ET_SendEventReturn(buffer, &ETAssets::ET_loadAsset, vertFile.c_str());
     if(!buffer) {
         LogWarning("[RenderShaderManager::createProgram] Can't load vert shader file: %s", vertFile.c_str());
@@ -136,7 +135,7 @@ int RenderShaderManager::createProgramImpl(const std::string& vertSrc, const std
 }
 
 int RenderShaderManager::createShaderProgram(const std::string& shaderName) {
-    auto& shadersTable = GetGlobal<RenderConfig>()->shadersTable;
+    auto& shadersTable = Core::GetGlobal<RenderConfig>()->shadersTable;
     if(shadersTable.empty()) {
         LogError("[RenderShaderManager::createShaderProgram] Shaders table not specified");
         return INVALID_PROGRAM_ID;

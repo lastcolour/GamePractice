@@ -1,10 +1,11 @@
 #include "ArrayInfo.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
 
 #include <cassert>
 
-ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF,
+namespace Reflect {
+
+ArrayInfo::ArrayInfo(Core::TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT createF,
     SizeFuncT sizeF, GetElemFuncT getElemF, ResetFuncT resetF) :
     createFunc(createF),
     sizeFunc(sizeF),
@@ -21,7 +22,7 @@ ArrayInfo::ArrayInfo(TypeId elemTypeId, ClassValueType elemType, CreateElemFuncT
 ArrayInfo::~ArrayInfo() {
 }
 
-TypeId ArrayInfo::getElemTypeId() const {
+Core::TypeId ArrayInfo::getElemTypeId() const {
     return elemValue.typeId;
 }
 
@@ -40,7 +41,7 @@ bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, cons
     return true;
 }
 
-bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream) {
+bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, Memory::MemoryStream& stream) {
     resetFunc(valuePtr);
     int sz = 0;
     stream.read(sz);
@@ -53,7 +54,7 @@ bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, Memo
     return true;
 }
 
-bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, MemoryStream& stream) {
+bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, Memory::MemoryStream& stream) {
     int sz = static_cast<int>(sizeFunc(valuePtr));
     stream.write(sz);
     for(int i = 0; i < sz; ++i) {
@@ -89,3 +90,5 @@ bool ArrayInfo::addElement(void* valuePtr) {
 void ArrayInfo::setDefaultValue(void* valuePtr) {
     resetFunc(valuePtr);
 }
+
+} // namespace Reflect

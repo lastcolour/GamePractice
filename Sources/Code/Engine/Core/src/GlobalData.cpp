@@ -1,8 +1,8 @@
-#include "Core/GlobalData.hpp"
 #include "Core/ETAssets.hpp"
-#include "Reflect/ReflectUtils.hpp"
 
 #include <cassert>
+
+namespace Core {
 
 GlobalData::GlobalData() {
 }
@@ -10,7 +10,7 @@ GlobalData::GlobalData() {
 GlobalData::~GlobalData() {
 }
 
-void GlobalData::createAndLoad(ClassInfo* classInfo, const char* fileName) {
+void GlobalData::createAndLoad(Reflect::ClassInfo* classInfo, const char* fileName) {
     if(!classInfo) {
         assert(false && "Invalid class info");
         return;
@@ -36,7 +36,7 @@ void GlobalData::createAndLoad(ClassInfo* classInfo, const char* fileName) {
         return;
     }
 
-    if(!ReflectUtils::LoadObjectFromAsset(instance, fileName)) {
+    if(!Reflect::LoadObjectFromAsset(instance, fileName)) {
         LogError("[GlobalData::createAndLoad] Can't read instance data of instance '%s' from: '%s'",
             classInfo->getName(), fileName);
     }
@@ -44,7 +44,7 @@ void GlobalData::createAndLoad(ClassInfo* classInfo, const char* fileName) {
     data[typeId] = std::move(instance);
 }
 
-void GlobalData::create(ClassInfo* classInfo) {
+void GlobalData::create(Reflect::ClassInfo* classInfo) {
     if(!classInfo) {
         assert(false && "Invalid class info");
         return;
@@ -83,3 +83,5 @@ void GlobalData::removeByTypeId(TypeId typeId) {
             typeId);
     }
 }
+
+} // namespace Core

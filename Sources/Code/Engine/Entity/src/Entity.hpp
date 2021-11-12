@@ -13,7 +13,7 @@ public:
     };
 
     struct EntityLogicNode {
-        ClassInstance logic;
+        Reflect::ClassInstance logic;
         EntityLogicId logicId;
     };
 
@@ -23,16 +23,16 @@ public:
     virtual ~Entity();
 
     void addChildEntityWithId(EntityChildId childId, Entity& entity);
-    bool addLogicWithId(EntityLogicId logicId, ClassInstance&& logicInstance);
-    EntityLogicId addLogic(ClassInstance&& logicInstance);
+    bool addLogicWithId(EntityLogicId logicId, Reflect::ClassInstance&& logicInstance);
+    EntityLogicId addLogic(Reflect::ClassInstance&& logicInstance);
     bool removeLogic(EntityLogicId logicId);
-    bool readLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
-    bool writeLogicData(EntityLogicId logicId, EntityLogicValueId valueId, MemoryStream& stream);
-    bool addLogicValueArrayElemet(EntityLogicId logicId, EntityLogicValueId valueId);
-    bool setLogicValuePolymorphType(EntityLogicId logicId, EntityLogicValueId valueId, const char* typeName);
+    bool readLogicData(EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::MemoryStream& stream);
+    bool writeLogicData(EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::MemoryStream& stream);
+    bool addLogicValueArrayElemet(EntityLogicId logicId, Reflect::ClassValueId valueId);
+    bool setLogicValuePolymorphType(EntityLogicId logicId, Reflect::ClassValueId valueId, const char* typeName);
     EntityId getEntityId() const { return entityId; }
     void setName(const char* newName);
-    void* addLogicByTypeId(TypeId logicTypeId);
+    void* addLogicByTypeId(Core::TypeId logicTypeId);
     void purgeAllRelationships();
 
     template<typename LogicType>
@@ -40,10 +40,10 @@ public:
         static_assert(std::is_base_of<EntityLogic, LogicType>::value, "Invalid non-entity logic type");
         static_assert(!std::is_abstract<LogicType>::value, "Can't add logic of abstract type");
         LogicType* logicPtr = reinterpret_cast<LogicType*>(
-            addLogicByTypeId(GetTypeId<LogicType>()));
+            addLogicByTypeId(Core::GetTypeId<LogicType>()));
         if(logicPtr == nullptr) {
             logicPtr = new LogicType();
-            auto instance = ClassInstance::CreateWithoutClassInfo<LogicType>(logicPtr);
+            auto instance = Reflect::ClassInstance::CreateWithoutClassInfo<LogicType>(logicPtr);
             addLogic(std::move(instance));
         }
         return logicPtr;
@@ -62,7 +62,7 @@ public:
     Transform ET_getLocalTransform() const override;
     void ET_setLocalTransform(const Transform& newLocalTm) override;
     std::vector<EntityId> ET_getChildren() const override;
-    std::vector<EntityLogic*> ET_getLogisByTypeId(TypeId logicTypeId) override;
+    std::vector<EntityLogic*> ET_getLogisByTypeId(Core::TypeId logicTypeId) override;
 
 private:
 
@@ -71,7 +71,7 @@ private:
 
 private:
 
-    ClassInstance* findLogic(EntityLogicId logicId);
+    Reflect::ClassInstance* findLogic(EntityLogicId logicId);
     EntityLogicId createNewLogicId() const;
     EntityChildId createNewChildId() const;
     EntityChildId addChild(Entity* childEntity);

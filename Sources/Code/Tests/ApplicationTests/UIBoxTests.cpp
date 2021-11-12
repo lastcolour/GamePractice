@@ -5,7 +5,6 @@
 #include "Core/ETApplication.hpp"
 #include "Render/ETRenderCamera.hpp"
 #include "Logics/UILayout.hpp"
-#include "Core/GlobalData.hpp"
 
 namespace {
 
@@ -24,8 +23,9 @@ void CheckBoxCenter(const AABB2D box, const Vec2i& exCenter) {
 } // namespace
 
 void UIBoxTests::SetUpTestCase() {
-    ConsoleAppTests::SetUpTestCase();
-    auto uiConfig = GetGlobal<UIConfig>();
+    CreateTestApp(ETestAppModules::CheckRender);
+
+    auto uiConfig = Core::GetGlobal<UIConfig>();
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);
@@ -54,7 +54,7 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
         UIBoxStyle style;
         style.width = 0.25f;
         style.widthInv = UIBoxSizeInvariant::Relative;
-        style.height = GetGlobal<UIConfig>()->horizontalGrid / 2.f;
+        style.height = Core::GetGlobal<UIConfig>()->horizontalGrid / 2.f;
         style.heightInv = UIBoxSizeInvariant::Grid;
         uiBox->ET_setStyle(style);
 
@@ -64,7 +64,7 @@ TEST_F(UIBoxTests, CheckUIBoxSize) {
     }
     {
         UIBoxStyle style;
-        style.width = GetGlobal<UIConfig>()->horizontalGrid / 2.f;
+        style.width = Core::GetGlobal<UIConfig>()->horizontalGrid / 2.f;
         style.widthInv = UIBoxSizeInvariant::Grid;
         style.height = 0.25f;
         style.heightInv = UIBoxSizeInvariant::Relative;

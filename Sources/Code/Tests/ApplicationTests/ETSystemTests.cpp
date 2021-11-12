@@ -112,14 +112,8 @@ public:
 } // namespace
 
 TEST_F(ETSystemTests, CheckEnv) {
-    std::unique_ptr<GlobalEnvironment> env(new GlobalEnvironment);
-    auto etSystem = env->GetETSystem();
-
-    ASSERT_EQ(etSystem, GetETSystem());
-
-    env.reset();
-
-    ASSERT_EQ(GetETSystem(), nullptr);
+    std::unique_ptr<Core::GlobalEnvironment> env(new Core::GlobalEnvironment);
+    ASSERT_TRUE(env->GetETSystem());
 }
 
 TEST_F(ETSystemTests, CheckCretaeEntityId) {
@@ -135,7 +129,7 @@ TEST_F(ETSystemTests, CheckCretaeEntityId) {
 }
 
 TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     TestETNode node;
@@ -146,7 +140,7 @@ TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
 }
 
 TEST_F(ETSystemTests, CheckDobuleConnect) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -159,7 +153,7 @@ TEST_F(ETSystemTests, CheckDobuleConnect) {
 }
 
 TEST_F(ETSystemTests, CheckDoubleDisconnect) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -175,7 +169,7 @@ TEST_F(ETSystemTests, CheckDoubleDisconnect) {
 }
 
 TEST_F(ETSystemTests, CheckGetAll) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
@@ -197,7 +191,7 @@ TEST_F(ETSystemTests, CheckGetAll) {
 }
 
 TEST_F(ETSystemTests, CheckSendEvent) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -216,7 +210,7 @@ TEST_F(ETSystemTests, CheckSendEvent) {
 }
 
 TEST_F(ETSystemTests, CheckSendEventAfterDisconnect) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -236,7 +230,7 @@ TEST_F(ETSystemTests, CheckSendEventAfterDisconnect) {
 }
 
 TEST_F(ETSystemTests, CheckSendEventAll) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
@@ -259,7 +253,7 @@ TEST_F(ETSystemTests, CheckSendEventAll) {
 }
 
 TEST_F(ETSystemTests, CheckSendEventReturn) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -280,7 +274,7 @@ TEST_F(ETSystemTests, CheckSendEventReturn) {
 }
 
 TEST_F(ETSystemTests, CheckRecursiveETNodeCreate) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -299,7 +293,7 @@ TEST_F(ETSystemTests, CheckRecursiveETNodeCreate) {
 }
 
 TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId = etSystem->createNewEntityId();
@@ -319,7 +313,7 @@ TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
 }
 
 TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
@@ -337,7 +331,7 @@ TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
 }
 
 TEST_F(ETSystemTests, CheckQueueEvents) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto entId_1 = etSystem->createNewEntityId();
@@ -367,7 +361,7 @@ TEST_F(ETSystemTests, CheckQueueEvents) {
 }
 
 TEST_F(ETSystemTests, CheckQueueEventWithNonCopybaleObject) {
-    GlobalEnvironment env;
+    Core::GlobalEnvironment env;
     auto etSystem = env.GetETSystem();
 
     auto addressId = etSystem->createNewEntityId();

@@ -1,6 +1,5 @@
 #include "Game/Progression/LevelProgressionSystem.hpp"
 #include "Core/ETAssets.hpp"
-#include "Reflect/ReflectUtils.hpp"
 
 namespace {
 
@@ -19,13 +18,13 @@ bool LevelProgressionSystem::init() {
     ET_SendEventReturn(isProgressExist, &ETAssets::ET_isLocalFileExists, LEVEL_PROGRESS_FILE);
 
     if(isProgressExist) {
-        if(!ReflectUtils::LoadObjectFromLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
+        if(!Reflect::LoadObjectFromLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
             LogWarning("[LevelProgressionSystem::init] Can't load saved progress: '%s'", LEVEL_PROGRESS_FILE);
             isProgressExist = false;
         }
     }
     if(!isProgressExist) {
-        if(!ReflectUtils::SaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
+        if(!Reflect::SaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE)) {
             LogError("[LevelProgressionSystem::init] Can't create levels progress file: '%s'", LEVEL_PROGRESS_FILE);
             return false;
         }
@@ -82,7 +81,7 @@ void LevelProgressionSystem::ET_setLevelProgress(const LevelProgress& newLevelPr
         return;
     }
 
-    ReflectUtils::AsyncSaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE);
+    Reflect::AsyncSaveObjectToLocalFile(levelsData, LEVEL_PROGRESS_FILE);
 }
 
 const LevelProgressDelta* LevelProgressionSystem::ET_getProgressDelta() const {

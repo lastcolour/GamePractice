@@ -11,7 +11,7 @@
 
 namespace {
 
-const unsigned int APP_START_DELAY_MS = 10u * 1000u; // 5 sec
+const unsigned int APP_START_DELAY_MS = 10u * 1000u; // 10 sec
 const unsigned int APP_FINISH_DELAY_MS = APP_START_DELAY_MS;
 
 class TestSystemLogic : public SystemLogic {
@@ -68,7 +68,12 @@ TEST_F(ApplicationTests, CheckRunWithInvalidModule) {
 
 TEST_F(ApplicationTests, CheckNormalFlow) {
     Application app;
-    ASSERT_TRUE(GetETSystem());
+    ASSERT_TRUE(GetEnv());
+    ASSERT_TRUE(GetEnv()->GetETSystem());
+    ASSERT_TRUE(GetEnv()->GetGlobalData());
+    ASSERT_TRUE(GetEnv()->GetMemoryAllocator());
+    ASSERT_TRUE(GetEnv()->GetClassInfoManager());
+    ASSERT_TRUE(GetEnv()->GetTasksRunner());
 
     std::atomic<bool> isAppFinished(false);
 

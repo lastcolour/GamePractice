@@ -1,8 +1,6 @@
 #ifndef __SYSTEM_LOGIC_CONTAINER_HPP__
 #define __SYSTEM_LOGIC_CONTAINER_HPP__
 
-#include "Core/Utils.hpp"
-
 class SystemLogicContainerBase {
 public:
     virtual ~SystemLogicContainerBase() = default;
@@ -23,7 +21,7 @@ public:
 
     bool init() override {
         std::vector<bool> results;
-        ApplyTupleResult(logicsTuple, [](auto& logic){
+        Core::ApplyTupleResult(logicsTuple, [](auto& logic){
             return logic.init();
         }, results);
         for(const auto& res : results) {
@@ -35,7 +33,7 @@ public:
     }
 
     void deinit() override {
-        ApplyTupleReverse(logicsTuple, [](auto& logic){
+        Core::ApplyTupleReverse(logicsTuple, [](auto& logic){
             logic.deinit();
         });
     }

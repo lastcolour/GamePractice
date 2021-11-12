@@ -1,5 +1,4 @@
 #include "UIButtonTests.hpp"
-#include "Core/GlobalData.hpp"
 #include "UI/ETUIButton.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Logics/UIButton.hpp"
@@ -15,7 +14,7 @@
 class TestButtonEventListener : public ETNode<ETUIViewScript> {
 public:
     TestButtonEventListener() {
-        auto entId = GetETSystem()->createNewEntityId();
+        auto entId = GetEnv()->GetETSystem()->createNewEntityId();
         ETNode<ETUIViewScript>::connect(entId);
     }
 
@@ -40,8 +39,9 @@ public:
 };
 
 void UIButtonTests::SetUpTestCase() {
-    ConsoleAppTests::SetUpTestCase();
-    auto uiConfig = GetGlobal<UIConfig>();
+    CreateTestApp(ETestAppModules::CheckRender);
+
+    auto uiConfig = Core::GetGlobal<UIConfig>();
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);
@@ -50,13 +50,13 @@ void UIButtonTests::SetUpTestCase() {
 }
 
 void UIButtonTests::SetUp() {
-    ConsoleAppTests::SetUp();
+    EngineTests::SetUp();
     buttonListener.reset(new TestButtonEventListener);
 }
 
 void UIButtonTests::TearDown() {
     buttonListener.reset();
-    ConsoleAppTests::TearDown();
+    EngineTests::TearDown();
 }
 
 Entity* UIButtonTests::createUIButton(const Vec2i& pos, const Vec2& size) {

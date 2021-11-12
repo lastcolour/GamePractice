@@ -1,10 +1,11 @@
 #include "Reflect/EnumInfo.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
 
 #include <cassert>
 
-EnumInfo::EnumInfo(const char* name, TypeId typeId) :
+namespace Reflect {
+
+EnumInfo::EnumInfo(const char* name, Core::TypeId typeId) :
     enumName(name),
     enumTypeId(typeId) {
 }
@@ -34,7 +35,7 @@ const char* EnumInfo::getName() const {
     return enumName.c_str();
 }
 
-TypeId EnumInfo::getEnumTypeId() const {
+Core::TypeId EnumInfo::getEnumTypeId() const {
     return enumTypeId;
 }
 
@@ -75,3 +76,5 @@ void EnumInfo::makeReflectModel(JSONNode& node) {
     }
     node.write("data", enumValsNode);
 }
+
+} // namespace EnumInfo

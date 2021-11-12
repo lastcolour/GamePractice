@@ -1,12 +1,12 @@
 #ifndef __UI_SCROLL_AREA_TESTS_HPP__
 #define __UI_SCROLL_AREA_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
 class UIScrollAreaStyle;
 class UIScrollArea;
 
-class UIScrollAreaTests : public ConsoleAppTests {
+class UIScrollAreaTests : public EngineTests {
 public:
 
     struct TestContext {

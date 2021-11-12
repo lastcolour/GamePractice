@@ -1,5 +1,4 @@
 #include "Core/App/AppRunState.hpp"
-#include "Core/GlobalEnvironment.hpp"
 #include "Parallel/TasksRunner.hpp"
 
 AppRunState::AppRunState() {

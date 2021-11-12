@@ -2,7 +2,7 @@
 #define __RENDER_CONTEXT_HPP__
 
 #include "Math/Matrix.hpp"
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 #include "Render/RenderCommon.hpp"
 
 class RenderFramebuffer;

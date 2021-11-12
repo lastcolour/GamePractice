@@ -2,12 +2,33 @@
 #include "Core/PoolAllocator.hpp"
 
 TEST_F(MemoryPoolTests, CheckAllocateReuse) {
-    PoolAllocator allocator(32, 1);
+    Memory::PoolAllocator<Memory::AdaptiveGrowPolicy> allocator(32, 1);
+    allocator.setUseCentralAllocator(false);
+
+    {
+        EXPECT_FLOAT_EQ(1.f, allocator.getFillRatio());
+        EXPECT_EQ(0, allocator.getNumBlocks());
+        EXPECT_EQ(0, allocator.getNumObjects());
+        EXPECT_EQ(0, allocator.getAllocatedMemorySize());
+    }
 
     auto ptr1 = allocator.allocate();
     EXPECT_TRUE(ptr1);
 
+    {
+        EXPECT_FLOAT_EQ(1.f, allocator.getFillRatio());
+        EXPECT_EQ(1, allocator.getNumBlocks());
+        EXPECT_EQ(1, allocator.getNumObjects());
+        EXPECT_EQ(8 + 8 + 32, allocator.getAllocatedMemorySize());
+    }
+
     allocator.deallocate(ptr1);
+
+    {
+        EXPECT_FLOAT_EQ(0.f, allocator.getFillRatio());
+        EXPECT_EQ(1, allocator.getNumBlocks());
+        EXPECT_EQ(0, allocator.getNumObjects());
+    }
 
     auto ptr2 = allocator.allocate();
     EXPECT_TRUE(ptr2);
@@ -16,12 +37,26 @@ TEST_F(MemoryPoolTests, CheckAllocateReuse) {
 }
 
 TEST_F(MemoryPoolTests, CheckBlockAllocation) {
-    PoolAllocator allocator(32, 2);
+    Memory::PoolAllocator<Memory::FixedGrowPolicy<16>> allocator(32, 1);
+    allocator.setUseCentralAllocator(false);
 
-    for(int i = 0; i < 64; ++i) {
+    for(int i = 0; i < 8; ++i) {
         auto ptr1 = allocator.allocate();
         auto ptr2 = allocator.allocate();
 
-        EXPECT_EQ(ptr2, static_cast<unsigned char*>(ptr1) + 32);
+        EXPECT_EQ(ptr2, static_cast<unsigned char*>(ptr1) + 32 + 8);
     }
+}
+
+TEST_F(MemoryPoolTests, CheckRemoveBlocks) {
+    Memory::PoolAllocator<Memory::FixedGrowPolicy<1>> allocator(32, 1);
+    allocator.setUseCentralAllocator(false);
+
+    auto ptr = allocator.allocate();
+
+    EXPECT_EQ(allocator.getNumBlocks(), 1);
+
+    allocator.deallocate(ptr);
+
+    EXPECT_EQ(allocator.getNumBlocks(), 0);
 }

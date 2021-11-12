@@ -3,7 +3,6 @@
 #include "Math/MatrixTransform.hpp"
 #include "Platform/OpenGL.hpp"
 #include "RenderConfig.hpp"
-#include "Core/GlobalData.hpp"
 
 RenderCamera::RenderCamera() :
     projection(1.f),
@@ -36,7 +35,7 @@ void RenderCamera::ET_setRenderPort(const Vec2i& newSize) {
 
     glViewport(0, 0, viewport.x, viewport.y);
 
-    auto& cameraConfig = GetGlobal<RenderConfig>()->cameraConfig;
+    auto& cameraConfig = Core::GetGlobal<RenderConfig>()->cameraConfig;
     auto zNear = cameraConfig.zNear;
     auto zFar = std::max(zNear + 0.001f, cameraConfig.zFar);
 

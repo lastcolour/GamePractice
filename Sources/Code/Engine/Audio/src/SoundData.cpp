@@ -27,7 +27,7 @@ void SoundData::setLoading() {
     }
 }
 
-void SoundData::setLoaded(Buffer& buff) {
+void SoundData::setLoaded(Memory::Buffer& buff) {
     auto tLoadingState = LoadState::Loading;
     if(!loadState.compare_exchange_strong(tLoadingState, LoadState::Loaded)) {
         assert(false && "Invalid state");

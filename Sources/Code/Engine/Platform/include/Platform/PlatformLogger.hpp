@@ -3,8 +3,6 @@
 
 #include "Core/SystemLogic.hpp"
 
-#include <mutex>
-
 class PlatformLogger: public SystemLogic,
     public ETNode<ETLogger> {
 public:
@@ -17,17 +15,17 @@ public:
     void deinit() override;
 
     // ETLogger
-    void ET_logMessage(LogLevel lvl, const std::string& msg) override;
-    void ET_setLogLevel(LogLevel lvl) override;
+    void ET_logMessage(Level lvl, const std::string& msg) override;
+    void ET_setLogLevel(Level lvl) override;
 
 protected:
 
-    virtual std::string formatMessage(LogLevel lvl, const std::string& msg);
-    virtual void printMessasge(LogLevel lvl, const std::string& msg);
+    virtual std::string formatMessage(Level lvl, const std::string& msg);
+    virtual void printMessasge(Level lvl, const std::string& msg);
 
 private:
 
-    LogLevel logLevel;
+    Level logLevel;
     std::mutex mutex;
 };
 

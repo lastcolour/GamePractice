@@ -4,7 +4,7 @@
 #include "Game/GameModule.hpp"
 #include "UI/UIModule.hpp"
 #include "Entity/EntityModule.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "Platform/PlatformModule.hpp"
 #include "EditorModule.hpp"
 #include "Entity/ETEntityManager.hpp"
@@ -18,7 +18,6 @@
 #include "Game/ETGameTimer.hpp"
 #include "Audio/ETAudioSystem.hpp"
 #include "Render/ETRenderCamera.hpp"
-#include "Core/GlobalEnvironment.hpp"
 
 namespace {
 
@@ -108,20 +107,20 @@ void EditorApp::buildTasksRunner() {
     uiUpdate->addChild(particlesUpdate);
 }
 
-Buffer EditorApp::getReflectModel() {
+Memory::Buffer EditorApp::getReflectModel() {
     JSONNode node;
-    ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+    GetEnv()->GetClassInfoManager()->makeReflectModel(node);
     if(!node) {
-        return Buffer();
+        return Memory::Buffer();
     }
     return node.flushToBuffer();
 }
 
-Buffer EditorApp::getRegisteredEntityLogics() {
+Memory::Buffer EditorApp::getRegisteredEntityLogics() {
     JSONNode node;
     ET_SendEventReturn(node, &ETEntityManager::ET_getRegisteredLogics);
     if(!node) {
-        return Buffer();
+        return Memory::Buffer();
     }
     return node.flushToBuffer();
 }
@@ -250,28 +249,28 @@ void EditorApp::removeChildEntityFromEntity(EntityId parentId, EntityId childId)
     ET_SendEvent(&ETEntityManager::ET_destroyEntity, childId);
 }
 
-Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId) {
-    MemoryStream stream;
+Memory::Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId) {
+    Memory::MemoryStream stream;
     stream.openForWrite();
     bool res = false;
     ET_SendEventReturn(res, &ETEntityManager::ET_readEntityLogicData, entityId, logicId, valueId, stream);
     if(!res) {
-        return Buffer();
+        return Memory::Buffer();
     }
     return stream.flushToBuffer();
 }
 
-void EditorApp::setEntityLogicData(EntityId entityId, EntityLogicId logicId, EntityLogicValueId valueId, Buffer& buffer) {
-    MemoryStream stream;
+void EditorApp::setEntityLogicData(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::Buffer& buffer) {
+    Memory::MemoryStream stream;
     stream.openForRead(buffer);
     ET_SendEvent(&ETEntityManager::ET_writeEntityLogicData, entityId, logicId, valueId, stream);
 }
 
-void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId) {
+void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId) {
     ET_SendEvent(&ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
 }
 
-void EditorApp::setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicValueId logicId, EntityLogicValueId valueId, const char* newType) {
+void EditorApp::setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId, const char* newType) {
     ET_SendEvent(&ETEntityManager::ET_setEntityLogicPolymorphObjectType, entityId, logicId, valueId, newType);
 }
 

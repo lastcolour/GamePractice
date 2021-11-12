@@ -2,7 +2,7 @@
 #define __PARTICLE_HPP__
 
 #include "Math/Matrix.hpp"
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 
 struct Particle {
 public:

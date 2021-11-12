@@ -1,7 +1,6 @@
-#include "Reflect/ClassInstance.hpp"
-#include "Reflect/ClassInfo.hpp"
-
 #include <cassert>
+
+namespace Reflect {
 
 ClassInstance::ClassInstance() :
     classInfo(nullptr),
@@ -24,7 +23,11 @@ ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
         return *this;
     }
     if(instance) {
-        deleteFunc(instance);
+        if(classInfo) {
+            classInfo->removeInstance(instance);
+        } else {
+            deleteFunc(instance);
+        }
     }
     instance = other.instance;
     classInfo = other.classInfo;
@@ -37,18 +40,21 @@ ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
 
 ClassInstance::ClassInstance(ClassInfo& clsInfo, void* clsInstance) :
     classInfo(&clsInfo),
-    instance(clsInstance),
-    deleteFunc(clsInfo.getDeleteFunction()) {
+    instance(clsInstance) {
 }
 
 ClassInstance::~ClassInstance() {
     if(instance) {
-        deleteFunc(instance);
+        if(classInfo) {
+            classInfo->removeInstance(instance);
+        } else {
+            deleteFunc(instance);
+        }
     }
     instance = nullptr;
 }
 
-bool ClassInstance::isInstanceOfType(TypeId typeId) const {
+bool ClassInstance::isInstanceOfType(Core::TypeId typeId) const {
     if(!classInfo) {
         return false;
     }
@@ -59,9 +65,9 @@ ClassInfo* ClassInstance::getClassInfo() {
     return classInfo;
 }
 
-TypeId ClassInstance::getInstanceTypeId() const {
+Core::TypeId ClassInstance::getInstanceTypeId() const {
     if(!classInfo) {
-        return InvalidTypeId;
+        return Core::InvalidTypeId;
     }
     return classInfo->getIntanceTypeId();
 }
@@ -75,27 +81,28 @@ const void* ClassInstance::get() const {
 }
 
 void ClassInstance::setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr) {
+    assert(!classInfo && "Intance has class info");
     instance = ptr;
     deleteFunc = deleteF;
 }
 
 bool ClassInstance::readAllValuesFrom(const SerializeContext& ctx, const JSONNode& node) {
-    return readValueFrom(ctx, AllEntityLogicValueId, node);
+    return readValueFrom(ctx, AllClassValuesId, node);
 }
 
-bool ClassInstance::readAllValuesFrom(const SerializeContext& ctx, MemoryStream& stream) {
-    return readValueFrom(ctx, AllEntityLogicValueId, stream);
+bool ClassInstance::readAllValuesFrom(const SerializeContext& ctx, Memory::MemoryStream& stream) {
+    return readValueFrom(ctx, AllClassValuesId, stream);
 }
 
 bool ClassInstance::writeAllValuesTo(const SerializeContext& ctx, JSONNode& node) {
-    return writeValueTo(ctx, AllEntityLogicValueId, node);
+    return writeValueTo(ctx, AllClassValuesId, node);
 }
 
-bool ClassInstance::writeAllValuesTo(const SerializeContext& ctx, MemoryStream& stream) {
-    return writeValueTo(ctx, AllEntityLogicValueId, stream);
+bool ClassInstance::writeAllValuesTo(const SerializeContext& ctx, Memory::MemoryStream& stream) {
+    return writeValueTo(ctx, AllClassValuesId, stream);
 }
 
-bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, const JSONNode& node) {
+bool ClassInstance::readValueFrom(const SerializeContext& ctx, ClassValueId valueId, const JSONNode& node) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -107,7 +114,7 @@ bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueI
     return classInfo->readValueFrom(ctx, instance, valueId, node);
 }
 
-bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInstance::readValueFrom(const SerializeContext& ctx, ClassValueId valueId, Memory::MemoryStream& stream) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -119,7 +126,7 @@ bool ClassInstance::readValueFrom(const SerializeContext& ctx, EntityLogicValueI
     return classInfo->readValueFrom(ctx, instance, valueId, stream);
 }
 
-bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, JSONNode& node) {
+bool ClassInstance::writeValueTo(const SerializeContext& ctx, ClassValueId valueId, JSONNode& node) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -131,7 +138,7 @@ bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId
     return classInfo->writeValueTo(ctx, instance, valueId, node);
 }
 
-bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInstance::writeValueTo(const SerializeContext& ctx, ClassValueId valueId, Memory::MemoryStream& stream) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -143,7 +150,7 @@ bool ClassInstance::writeValueTo(const SerializeContext& ctx, EntityLogicValueId
     return classInfo->writeValueTo(ctx, instance, valueId, stream);
 }
 
-bool ClassInstance::addValueArrayElement(EntityLogicValueId valueId) {
+bool ClassInstance::addValueArrayElement(ClassValueId valueId) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -155,7 +162,7 @@ bool ClassInstance::addValueArrayElement(EntityLogicValueId valueId) {
     return classInfo->addNewValueArrayElement(instance, valueId);
 }
 
-bool ClassInstance::setValuePolymorphType(EntityLogicValueId valueId, const char* typeName) {
+bool ClassInstance::setValuePolymorphType(ClassValueId valueId, const char* typeName) {
     if(!instance) {
         assert(false && "Invalid instance");
         return false;
@@ -166,3 +173,5 @@ bool ClassInstance::setValuePolymorphType(EntityLogicValueId valueId, const char
     }
     return classInfo->setValuePolymorphType(instance, valueId, typeName);
 }
+
+} // namespace Reflect

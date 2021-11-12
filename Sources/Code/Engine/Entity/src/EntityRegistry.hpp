@@ -1,15 +1,10 @@
 #ifndef __ENTITY_CONTEXT_HPP__
 #define __ENTITY_CONTEXT_HPP__
 
-#include <mutex>
-
-class Entity;
+#include "Core/ObjectPool.hpp"
+#include "Entity.hpp"
 
 class EntityRegistry {
-public:
-
-    using EntityContainerT = std::unordered_map<EntityId, std::unique_ptr<Entity>>;
-
 public:
 
     EntityRegistry();
@@ -21,10 +16,13 @@ public:
     void removeEntity(EntityId entity);
     void removeAllEntities();
 
+    size_t getEntitiesCount() const;
+
 private:
 
-    std::mutex mutex;
-    EntityContainerT entities;
+    mutable std::recursive_mutex mutex;
+    Memory::ObjectPool<Entity> pool;
+    std::unordered_map<EntityId, Entity*> searchTable;
 };
 
 #endif /* __ENTITY_CONTEXT_HPP__ */

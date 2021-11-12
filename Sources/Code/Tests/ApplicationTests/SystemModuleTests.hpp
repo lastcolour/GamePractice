@@ -1,9 +1,9 @@
 #ifndef __SYSTEM_MODULE_TESTS_HPP__
 #define __SYSTEM_MODULE_TESTS_HPP__
 
-#include "TestUtils/VoidAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
-class SystemModuleTests : public VoidAppTests {
+class SystemModuleTests : public EngineTests {
 protected:
 
     void SetUp() override;

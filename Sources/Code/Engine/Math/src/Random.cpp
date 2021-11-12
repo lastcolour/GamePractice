@@ -1,6 +1,5 @@
 #include "Math/Random.hpp"
 
-#include <cstdlib>
 #include <cassert>
 
 namespace Math {

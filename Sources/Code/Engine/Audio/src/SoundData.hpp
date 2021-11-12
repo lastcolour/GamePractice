@@ -12,7 +12,7 @@ public:
     bool isLoaded() const;
     bool isLoading() const;
     void setLoading();
-    void setLoaded(Buffer& data);
+    void setLoaded(Memory::Buffer& data);
     bool tryFree();
     void addUseRef();
     void removeUseRef();
@@ -20,7 +20,7 @@ public:
 
 public:
 
-    Buffer data;
+    Memory::Buffer data;
     const char* fileName;
 
 private:

@@ -38,7 +38,7 @@ private:
 private:
 
     std::shared_ptr<SoundData> soundData;
-    Buffer sbtAllocData;
+    Memory::Buffer sbtAllocData;
     ProxyStbAllocData allocDataDescr;
     stb_vorbis* oggStream;
     std::unique_ptr<LinearResampler> resampler;

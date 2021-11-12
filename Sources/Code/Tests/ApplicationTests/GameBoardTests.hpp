@@ -1,13 +1,17 @@
 #ifndef __GAME_BOARD_TESTS_HPP__
 #define __GAME_BOARD_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
 class TestGameBoardLogic;
 class Entity;
 
-class GameBoardTests : public ConsoleAppTests {
+class GameBoardTests : public EngineTests {
 protected:
+
+    static void SetUpTestCase() {
+        CreateTestApp(ETestAppModules::CheckRender);
+    }
 
     void SetUp();
 

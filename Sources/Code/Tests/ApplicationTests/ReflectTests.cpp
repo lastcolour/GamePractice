@@ -2,11 +2,12 @@
 #include "Reflect/ClassInfo.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
 #include "Entity.hpp"
 #include "Entity/EntityLogic.hpp"
 #include "EntityRegistry.hpp"
+#include "Reflect/ClassInfoManager.hpp"
+#include "Reflect/PolymorphPtr.hpp"
+#include "Core/MemoryStream.hpp"
 
 namespace {
 
@@ -213,7 +214,7 @@ public:
 } // namespace
 
 void ReflectTests::TearDown() {
-    ET_SendEvent(&ETClassInfoManager::ET_reset);
+    GetEnv()->GetClassInfoManager()->reset();
 }
 
 TEST_F(ReflectTests, TestSimpleLogic) {
@@ -228,21 +229,16 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     ASSERT_EQ(classInstance.getInstanceTypeId(), classInfo->getIntanceTypeId());
 
-    auto object = classInstance.acquire<SimpleEntityLogic>();
+    auto object = classInstance.castTo<SimpleEntityLogic>();
     ASSERT_TRUE(object);
 
-    ASSERT_EQ(classInstance.getInstanceTypeId(), InvalidTypeId);
-    ASSERT_FALSE(classInstance.get());
+    ChekcSimpleEntityReflect(object);
 
-    ChekcSimpleEntityReflect(object.get());
-
-    int classReflected = 0;
-    ET_SendEventReturn(classReflected, &ETClassInfoManager::ET_getRegisteredClassCount);
-    ASSERT_EQ(classReflected, 1);
+    ASSERT_EQ(GetEnv()->GetClassInfoManager()->getRegisteredClassCount(), 1);
 }
 
 TEST_F(ReflectTests, TestObjectWithObject) {
@@ -257,16 +253,14 @@ TEST_F(ReflectTests, TestObjectWithObject) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.acquire<ObjectWithObjectEntity>();
+    auto object = classInstance.castTo<ObjectWithObjectEntity>();
     ASSERT_TRUE(object);
 
     ChekcSimpleEntityReflect(&object->objectF);
 
-    int classReflected = 0;
-    ET_SendEventReturn(classReflected, &ETClassInfoManager::ET_getRegisteredClassCount);
-    ASSERT_EQ(classReflected, 2);
+    ASSERT_EQ(GetEnv()->GetClassInfoManager()->getRegisteredClassCount(), 2);
 }
 
 TEST_F(ReflectTests, TestReflectModel) {
@@ -274,7 +268,7 @@ TEST_F(ReflectTests, TestReflectModel) {
     ASSERT_TRUE(reflectCtx.reflect<ObjectWithObjectEntity>());
 
     JSONNode node;
-    ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+    GetEnv()->GetClassInfoManager()->makeReflectModel(node);
 
     ASSERT_TRUE(node);
     ASSERT_EQ(node.size(), 2u);
@@ -342,16 +336,14 @@ TEST_F(ReflectTests, TestBaseAndDeriveded) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.acquire<DerivedObject>();
+    auto object = classInstance.castTo<DerivedObject>();
     ASSERT_TRUE(object);
 
-    ChekcSimpleEntityReflect(object.get());
+    ChekcSimpleEntityReflect(object);
 
-    int classReflected = 0;
-    ET_SendEventReturn(classReflected, &ETClassInfoManager::ET_getRegisteredClassCount);
-    ASSERT_EQ(classReflected, 2);
+    ASSERT_EQ(GetEnv()->GetClassInfoManager()->getRegisteredClassCount(), 2);
 }
 
 TEST_F(ReflectTests, TestResource) {
@@ -365,9 +357,9 @@ TEST_F(ReflectTests, TestResource) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.acquire<ObjectWithResource>();
+    auto object = classInstance.castTo<ObjectWithResource>();
     ASSERT_TRUE(object);
 
     ASSERT_TRUE(object->resource);
@@ -386,9 +378,9 @@ TEST_F(ReflectTests, TestEnum) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.acquire<ObjectWithEnum>();
+    auto object = classInstance.castTo<ObjectWithEnum>();
     ASSERT_TRUE(object);
 
     ASSERT_EQ(object->number, ObjectWithEnum::Numbers::Two);
@@ -405,9 +397,9 @@ TEST_F(ReflectTests, TestArray) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.acquire<ObjectWitArray>();
+    auto object = classInstance.castTo<ObjectWitArray>();
     ASSERT_TRUE(object);
 
     ASSERT_EQ(object->array.size(), 2);
@@ -426,7 +418,7 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
     auto object = static_cast<ObjectWithStringArray*>(classInstance.get());
     ASSERT_TRUE(object);
@@ -435,13 +427,13 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     ASSERT_STREQ(object->array[0].c_str(), "one");
     ASSERT_STREQ(object->array[1].c_str(), "two");
 
-    EntityLogicValueId valueId = 1;
+    Reflect::ClassValueId valueId = 1;
     ASSERT_TRUE(classInstance.addValueArrayElement(valueId));
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
-    ASSERT_TRUE(classInstance.writeValueTo(ctx, AllEntityLogicValueId, stream));
+    ASSERT_TRUE(classInstance.writeValueTo(ctx, Reflect::AllClassValuesId, stream));
 
     stream.reopenForRead();
 
@@ -476,9 +468,9 @@ TEST_F(ReflectTests, TestArrayOfVec3) {
     ASSERT_TRUE(jsonNode);
 
     auto classInstance = classInfo->createInstance();
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.acquire<ObjectWithArrayOfVec3>();
+    auto object = classInstance.castTo<ObjectWithArrayOfVec3>();
     ASSERT_TRUE(object);
 
     ASSERT_EQ(object->array.size(), 3);
@@ -500,7 +492,7 @@ TEST_F(ReflectTests, TestDerivedReflection) {
     ASSERT_TRUE(reflectCtx.reflect<DerivedObject>());
 
     JSONNode node;
-    ET_SendEvent(&ETClassInfoManager::ET_makeReflectModel, node);
+    GetEnv()->GetClassInfoManager()->makeReflectModel(node);
 
     ASSERT_TRUE(node);
     ASSERT_EQ(node.size(), 2u);
@@ -525,12 +517,12 @@ TEST_F(ReflectTests, TestReadValuesSimpleObject) {
     auto classInfo =  reflectCtx.getRegisteredClassInfo();
     ASSERT_TRUE(classInfo);
 
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
 
     auto instance = classInfo->createInstance();
     ASSERT_TRUE(instance.readAllValuesFrom(ctx, jsonNode));
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
     ASSERT_TRUE(instance.writeAllValuesTo(ctx, stream));
@@ -580,7 +572,7 @@ TEST_F(ReflectTests, TestWriteClassValueOfSimpleEntity) {
     float floatVal = 1.f;
     std::string strVal = "1";
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
     stream.write(boolVal);
@@ -590,7 +582,7 @@ TEST_F(ReflectTests, TestWriteClassValueOfSimpleEntity) {
 
     stream.reopenForRead();
 
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
 
     ASSERT_TRUE(instance.readValueFrom(ctx, 1, stream));
     ASSERT_TRUE(instance.readValueFrom(ctx, 2, stream));
@@ -619,11 +611,11 @@ TEST_F(ReflectTests, TestReadClassValueOfSimpleEntity) {
     logicPtr->floatF = 1.f;
     logicPtr->stringF = "1";
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
 
     stream.openForWrite();
 
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
 
     ASSERT_TRUE(instance.writeValueTo(ctx, 1, stream));
     ASSERT_TRUE(instance.writeValueTo(ctx, 2, stream));
@@ -668,10 +660,10 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWithObject) {
 
     objectPtr->objectF.floatF = 1.f;
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
 
     ASSERT_TRUE(instance.writeValueTo(ctx, 3, stream));
 
@@ -705,7 +697,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
 
     ASSERT_TRUE(objectPtr->array.empty());
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
     stream.write(3);
@@ -715,7 +707,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
 
     stream.reopenForRead();
 
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(instance.readValueFrom(ctx, 1, stream));
 
     ASSERT_EQ(objectPtr->array.size(), 3);
@@ -764,14 +756,14 @@ TEST_F(ReflectTests, CheckAddArrayElemet) {
 
     ASSERT_TRUE(objectPtr->array.empty());
 
-    EntityLogicValueId valueId = 1;
+    Reflect::ClassValueId valueId = 1;
     ASSERT_TRUE(instance.addValueArrayElement(valueId));
     ASSERT_FALSE(objectPtr->array.empty());
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
 
-    SerializeContext ctx;
+    Reflect::SerializeContext ctx;
     ASSERT_TRUE(instance.writeValueTo(ctx, 1, stream));
 
     stream.reopenForRead();
@@ -804,14 +796,14 @@ TEST_F(ReflectTests, TestEntityReference) {
     auto childEntity = registy.createEntity("Child");
     parentEntity->addChildEntityWithId(childId, *childEntity);
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
     stream.write(1);
     stream.write(childId);
 
     stream.reopenForRead();
 
-    parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
+    parentEntity->writeLogicData(logicId, Reflect::AllClassValuesId, stream);
 
     ASSERT_EQ(logicPtr->entityId, childEntity->getEntityId());
 }
@@ -836,7 +828,7 @@ TEST_F(ReflectTests, TestSelfReferencing) {
         auto jsonNode = JSONNode::ParseString("{ \"entity\": [0] }");
         ASSERT_TRUE(jsonNode);
 
-        SerializeContext ctx;
+        Reflect::SerializeContext ctx;
         ctx.entityId = parentEntity->getEntityId();
         logicInstance.readAllValuesFrom(ctx, jsonNode);
 
@@ -847,7 +839,7 @@ TEST_F(ReflectTests, TestSelfReferencing) {
         auto jsonNode = JSONNode::ParseString("{ \"entity\": [] }");
         ASSERT_TRUE(jsonNode);
 
-        SerializeContext ctx;
+        Reflect::SerializeContext ctx;
         ctx.entityId = parentEntity->getEntityId();
         logicInstance.readAllValuesFrom(ctx, jsonNode);
 
@@ -857,20 +849,20 @@ TEST_F(ReflectTests, TestSelfReferencing) {
     logicId = parentEntity->addLogic(std::move(logicInstance));
     ASSERT_NE(logicId, InvalidEntityLogicId);
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
     stream.write(1);
     stream.write(0);
 
     stream.reopenForRead();
 
-    parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
+    parentEntity->writeLogicData(logicId, Reflect::AllClassValuesId, stream);
 
     ASSERT_EQ(logicPtr->entityId, parentEntity->getEntityId());
 
     stream.reopenForWrite();
 
-    parentEntity->readLogicData(logicId, AllEntityLogicValueId, stream);
+    parentEntity->readLogicData(logicId, Reflect::AllClassValuesId, stream);
 
     stream.reopenForRead();
 
@@ -911,7 +903,7 @@ TEST_F(ReflectTests, CheckLongEntityReference) {
     auto secondChildEntity = registy.createEntity("SecondChild");
     firstChildEntity->addChildEntityWithId(secondChildId, *secondChildEntity);
 
-    MemoryStream stream;
+    Memory::MemoryStream stream;
     stream.openForWrite();
     stream.write(2);
     stream.write(firstChildId);
@@ -919,7 +911,7 @@ TEST_F(ReflectTests, CheckLongEntityReference) {
 
     stream.reopenForRead();
 
-    parentEntity->writeLogicData(logicId, AllEntityLogicValueId, stream);
+    parentEntity->writeLogicData(logicId, Reflect::AllClassValuesId, stream);
 
     ASSERT_EQ(logicPtr->entityId, secondChildEntity->getEntityId());
 }
@@ -940,7 +932,7 @@ TEST_F(ReflectTests, CheckPolymorphObjects) {
         auto jsonNode = JSONNode::ParseString(jsonStr.c_str());
         ASSERT_TRUE(jsonNode);
 
-        SerializeContext ctx;
+        Reflect::SerializeContext ctx;
         ASSERT_TRUE(instance.readAllValuesFrom(ctx, jsonNode));
 
         ASSERT_TRUE(objectPtr->logic.get());
@@ -951,7 +943,7 @@ TEST_F(ReflectTests, CheckPolymorphObjects) {
     {
         JSONNode node;
 
-        SerializeContext ctx;
+        Reflect::SerializeContext ctx;
         ASSERT_TRUE(instance.writeAllValuesTo(ctx, node));
 
         JSONNode logicNode = node.object("logic");

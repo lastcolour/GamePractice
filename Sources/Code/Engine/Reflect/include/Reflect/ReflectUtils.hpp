@@ -3,17 +3,9 @@
 
 #include "Reflect/ReflectContext.hpp"
 
-namespace ReflectUtils {
+namespace Reflect {
 
-ClassInfo* FindClassInfo(TypeId typeId);
-
-void AsyncWriteInstaceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
-
-bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
-
-bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
-
-bool ReadInstanceFromAsset(void* object, ClassInfo* classInfo, const char* fileName);
+ClassInfo* FindClassInfo(Core::TypeId typeId);
 
 template<typename T>
 ClassInfo* CreateClassInfo() {
@@ -24,13 +16,21 @@ ClassInfo* CreateClassInfo() {
 
 template<typename T>
 ClassInfo* GetOrCreateClassInfo() {
-    auto typeId = GetTypeId<T>();
+    auto typeId = Core::GetTypeId<T>();
     auto classInfo = FindClassInfo(typeId);
     if(!classInfo) {
         return CreateClassInfo<T>();
     }
     return classInfo;
 }
+
+void AsyncWriteInstaceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
+
+bool WriteInstanceToLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
+
+bool ReadIntanceFromLocalFile(void* object, ClassInfo* classInfo, const char* fileName);
+
+bool ReadInstanceFromAsset(void* object, ClassInfo* classInfo, const char* fileName);
 
 template<typename T>
 bool LoadObjectFromAsset(T& object, const char* assetName) {
@@ -58,6 +58,6 @@ void AsyncSaveObjectToLocalFile(T& object, const char* fileName) {
     return AsyncWriteInstaceToLocalFile(&object, classInfo, fileName);
 }
 
-} // namespace ReflectUtils
+} // namespace Reflect
 
 #endif /* __REFLECT_UTILS_HPP__ */

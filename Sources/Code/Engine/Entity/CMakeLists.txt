@@ -5,7 +5,6 @@ project(Entity CXX)
 include_directories(
     ${ENTITY_INCLUDE_DIR}
     ${CORE_INCLUDE_DIR}
-    ${RENDER_INCLUDE_DIR}
     ${MATH_INCLUDE_DIR}
     ${REFLECT_INCLUDE_DIR}
     ${PLATFORM_INCLUDE_DIR}
@@ -22,15 +21,7 @@ add_library(${PROJECT_NAME} STATIC ${ENTITY_SOURCES} ${ENTITY_HEADERS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME})
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    <limits>
+    [["Core/Core.hpp"]]
     [["Reflect/ReflectContext.hpp"]]
-    [["Core/ETLogger.hpp"]]
     [["Entity/ETEntity.hpp"]]
 )

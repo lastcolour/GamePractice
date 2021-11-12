@@ -4,7 +4,7 @@
 #include <cassert>
 
 PlatformLogger::PlatformLogger() :
-    logLevel(LogLevel::Debug) {
+    logLevel(Level::Debug) {
 }
 
 PlatformLogger::~PlatformLogger() {
@@ -20,12 +20,12 @@ void PlatformLogger::deinit() {
     ETNode<ETLogger>::disconnect();
 }
 
-void PlatformLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
+void PlatformLogger::ET_logMessage(Level lvl, const std::string& msg) {
     std::lock_guard<std::mutex> lock(mutex);
     if(logLevel > lvl) {
         return;
     }
-    if(logLevel == LogLevel::Silent) {
+    if(logLevel == Level::Silent) {
         return;
     }
     if(msg.empty()) {
@@ -35,30 +35,30 @@ void PlatformLogger::ET_logMessage(LogLevel lvl, const std::string& msg) {
     printMessasge(lvl, logMsg);
 }
 
-void PlatformLogger::ET_setLogLevel(LogLevel lvl) {
+void PlatformLogger::ET_setLogLevel(Level lvl) {
     std::lock_guard<std::mutex> lock(mutex);
     logLevel = lvl;
 }
 
-std::string PlatformLogger::formatMessage(LogLevel lvl, const std::string& msg) {
+std::string PlatformLogger::formatMessage(Level lvl, const std::string& msg) {
     const char* prefix = nullptr;
     switch(lvl) {
-        case LogLevel::Debug:
+        case Level::Debug:
             prefix = "[Debug] ";
             break;
-        case LogLevel::Info:
+        case Level::Info:
             prefix = "[Info] ";
             break;
-        case LogLevel::Warning:
+        case Level::Warning:
             prefix = "[Warning] ";
             break;
-        case LogLevel::Error:
+        case Level::Error:
             prefix = "[Error] ";
             break;
-        case LogLevel::Fatal:
+        case Level::Fatal:
             prefix = "[Fatal] ";
             break;
-        case LogLevel::Silent:
+        case Level::Silent:
         default:
             assert(false && "Invalid log level");
     }
@@ -67,7 +67,7 @@ std::string PlatformLogger::formatMessage(LogLevel lvl, const std::string& msg) 
     return logMsg;
 }
 
-void PlatformLogger::printMessasge(LogLevel lvl, const std::string& msg) {
+void PlatformLogger::printMessasge(Level lvl, const std::string& msg) {
     (void)lvl;
     std::cout << msg << std::endl;
 }

@@ -1,9 +1,9 @@
 #ifndef __REFLECT_TESTS_HPP__
 #define __REFLECT_TESTS_HPP__
 
-#include "TestUtils/VoidAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
-class ReflectTests : public VoidAppTests {
+class ReflectTests : public EngineTests {
 protected:
 
     void TearDown() override;

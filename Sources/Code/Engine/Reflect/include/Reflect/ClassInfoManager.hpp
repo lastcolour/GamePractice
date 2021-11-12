@@ -1,11 +1,13 @@
 #ifndef __CLASS_INFO_MANAGER_HPP__
 #define __CLASS_INFO_MANAGER_HPP__
 
-#include "Core/SystemLogic.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+namespace Reflect {
 
-class ClassInfoManager : SystemLogic,
-    public ETNode<ETClassInfoManager> {
+class ClassInfo;
+class EnumInfo;
+class ArrayInfo;
+
+class ClassInfoManager {
 private:
 
     using ClassInfoPtrT = std::unique_ptr<ClassInfo>;
@@ -15,30 +17,27 @@ private:
 public:
 
     ClassInfoManager();
-    virtual ~ClassInfoManager();
+    ~ClassInfoManager();
 
-    // SystemLogic
-    bool init() override;
-    void deinit() override;
-
-    // ETClassInfoManager
-    ClassInfo* ET_findClassInfoByName(const char* className) override;
-    ClassInfo* ET_findClassInfoByTypeId(TypeId classTypeId) override;
-    bool ET_registerClassInfo(ClassInfoPtrT& classInfo) override;
-    EnumInfo* ET_findEnumInfoByTypeId(TypeId enumTypeId) override;
-    EnumInfo* ET_findEnumInfoByName(const char* enumName) override;
-    bool ET_registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) override;
-    ArrayInfo* ET_findArrayInfoByElemTypeId(TypeId elemTypeId) override;
-    bool ET_registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) override;
-    void ET_reset() override;
-    int ET_getRegisteredClassCount() override;
-    void ET_makeReflectModel(JSONNode& node) override;
+    ClassInfo* findClassInfoByName(const char* className);
+    ClassInfo* findClassInfoByTypeId(Core::TypeId classTypeId);
+    bool registerClassInfo(ClassInfoPtrT& classInfo);
+    EnumInfo* findEnumInfoByTypeId(Core::TypeId enumTypeId);
+    EnumInfo* findEnumInfoByName(const char* enumName);
+    bool registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo);
+    ArrayInfo* findArrayInfoByElemTypeId(Core::TypeId elemTypeId);
+    bool registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo);
+    void reset();
+    int getRegisteredClassCount();
+    void makeReflectModel(JSONNode& node);
 
 private:
 
-    std::unordered_map<TypeId, ClassInfoPtrT> classInfoMap;
-    std::unordered_map<TypeId, EnumInfoPtrT> enumInfoMap;
-    std::unordered_map<TypeId, ArrayInfoPtrT> arrayInfoMap;
+    std::unordered_map<Core::TypeId, ClassInfoPtrT> classInfoMap;
+    std::unordered_map<Core::TypeId, EnumInfoPtrT> enumInfoMap;
+    std::unordered_map<Core::TypeId, ArrayInfoPtrT> arrayInfoMap;
 };
+
+} // namespace Reflect
 
 #endif /* __CLASS_INFO_MANAGER_HPP__ */

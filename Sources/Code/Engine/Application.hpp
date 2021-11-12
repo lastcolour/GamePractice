@@ -5,7 +5,12 @@
 #include <memory>
 
 class SystemModule;
+
+namespace Core {
+
 class GlobalEnvironment;
+
+} // namespace Core
 
 class Application {
 public:
@@ -36,7 +41,7 @@ private:
 
 private:
 
-    std::unique_ptr<GlobalEnvironment> globalEnv;
+    std::unique_ptr<Core::GlobalEnvironment> globalEnv;
     ModuleListT systemModules;
 };
 

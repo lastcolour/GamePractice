@@ -1,5 +1,4 @@
 #include "Particles/ParticlesEmittersPool.hpp"
-#include "Core/GlobalData.hpp"
 #include "RenderConfig.hpp"
 
 #include <cassert>
@@ -171,7 +170,7 @@ const SimulationConfig& ParticlesEmittersPool::getSimConfig() const {
 }
 
 int ParticlesEmittersPool::addParticles(int count) {
-    auto maxParticles = GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
+    auto maxParticles = Core::GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
     auto resCount = std::min(maxParticles, count + particlesCount) - particlesCount;
     particlesCount += resCount;
     updateFrameInfo.particlesSpawned += count;

@@ -15,7 +15,7 @@ T ConvertToPrintable(T& val) {
 const char* ConvertToPrintable(const std::string& str);
 
 template <typename... ArgsT>
-void StringFormatImpl(Buffer& buff, const std::string& format, const ArgsT& ... args) {
+void StringFormatImpl(Memory::Buffer& buff, const std::string& format, const ArgsT& ... args) {
     int resStrSize = std::snprintf(static_cast<char*>(buff.getWriteData()), buff.getSize(), format.c_str(), args...);
     if(resStrSize < 0) {
         return;
@@ -36,7 +36,7 @@ std::string StringFormat(const std::string& format) {
 
 template<typename ... ArgsT>
 std::string StringFormat(const std::string& format, const ArgsT& ... args) {
-    Buffer buff(format.size() + 1);
+    Memory::Buffer buff(format.size() + 1);
     if constexpr (sizeof...(args) > 0u) {
         Core::StringFormatImpl(buff, format.c_str(), Core::ConvertToPrintable(args)...);
     } else {

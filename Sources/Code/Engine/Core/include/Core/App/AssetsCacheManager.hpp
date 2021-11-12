@@ -6,15 +6,13 @@
 #include "Core/ETTasks.hpp"
 #include "Core/TimePoint.hpp"
 
-#include <mutex>
-
 class AssetsCacheManager : SystemLogic,
     public ETNode<ETAssetsUpdateTask>,
     public ETNode<ETAssetsCacheManager> {
 private:
 
     struct AssetCacheNode {
-        Buffer buff;
+        Memory::Buffer buff;
         float lifetime;
     };
 
@@ -32,8 +30,8 @@ public:
     void deinit() override;
 
     // ETAssetsCacheManager
-    Buffer ET_getAssetFromCache(const char* assetName) override;
-    void ET_putAssetToCache(const char* assetName, const Buffer& buff) override;
+    Memory::Buffer ET_getAssetFromCache(const char* assetName) override;
+    void ET_putAssetToCache(const char* assetName, const Memory::Buffer& buff) override;
     void ET_setCacheLifetime(float seconds) override;
     float ET_getCacheLifetime() const override;
     void ET_clear() override;

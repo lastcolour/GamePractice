@@ -528,7 +528,7 @@ JSONNode::operator bool() const {
     return nodeImpl->val != nullptr;
 }
 
-JSONNode JSONNode::ParseBuffer(const Buffer& buff) {
+JSONNode JSONNode::ParseBuffer(const Memory::Buffer& buff) {
     return ParseString(buff.getCString());
 }
 
@@ -549,13 +549,13 @@ JSONNode JSONNode::ParseString(const char* str) {
     return JSONNode(std::move(impl));
 }
 
-Buffer JSONNode::flushToBuffer() const {
+Memory::Buffer JSONNode::flushToBuffer() const {
     if(!nodeImpl->root) {
-        return Buffer();
+        return Memory::Buffer();
     }
     rapidjson::MemoryBuffer jsonMemBuffer;
     rapidjson::PrettyWriter<rapidjson::MemoryBuffer> writer(jsonMemBuffer);
     nodeImpl->root->Accept(writer);
-    Buffer buff(jsonMemBuffer.GetBuffer(), jsonMemBuffer.GetSize());
+    Memory::Buffer buff(jsonMemBuffer.GetBuffer(), jsonMemBuffer.GetSize());
     return buff;
 }

@@ -1,11 +1,17 @@
 #ifndef __UI_LABEL_TESTS_HPP__
 #define __UI_LABEL_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
 class UILabel;
 
-class UILabelTests : public ConsoleAppTests {
+class UILabelTests : public EngineTests {
+public:
+
+    static void SetUpTestCase() {
+        CreateTestApp(ETestAppModules::CheckRender);
+    }
+
 protected:
 
     UILabel* createUILabel();

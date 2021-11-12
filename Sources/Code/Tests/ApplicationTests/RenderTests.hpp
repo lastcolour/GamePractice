@@ -1,13 +1,13 @@
 #ifndef __RENDER_TESTS_HPP__
 #define __RENDER_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 #include "Render/ImageBuffer.hpp"
-#include "Render/Color.hpp"
+#include "Math/Color.hpp"
 
 class RenderFramebuffer;
 
-class RenderTests : public ConsoleAppTests {
+class RenderTests : public EngineTests {
 protected:
 
     static void SetUpTestCase();

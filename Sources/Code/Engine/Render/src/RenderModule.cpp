@@ -19,7 +19,6 @@
 #include "Logics/RenderScene.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
 #include "RenderConfig.hpp"
-#include "Core/GlobalData.hpp"
 
 RenderModule::RenderModule() :
     SystemModule("Render") {}
@@ -42,7 +41,7 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
 }
 
 void RenderModule::createSystemConfigs() const {
-    CreateGlobal<RenderConfig>("Config/Render.json");
+    Core::CreateGlobal<RenderConfig>("Config/Render.json");
 }
 
 void RenderModule::registerEntityLogics(EntityLogicsRegister& logicsRegister) const {

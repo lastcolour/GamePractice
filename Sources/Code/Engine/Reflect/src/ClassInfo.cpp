@@ -1,7 +1,5 @@
-#include "Reflect/ClassInfo.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "Core/JSONNode.hpp"
-#include "Core/MemoryStream.hpp"
 
 #include <cassert>
 
@@ -11,9 +9,9 @@ const int MAX_PRIMITIVE_PROPERTIES = 255;
 
 } // namespace
 
-ClassInfo::ClassInfo(const char* name, TypeId typeId) :
-    createFunc(nullptr),
-    deleteFunc(nullptr),
+namespace Reflect {
+
+ClassInfo::ClassInfo(const char* name, Core::TypeId typeId) :
     getValueFunc(nullptr),
     className(name),
     instanceTypeId(typeId),
@@ -23,11 +21,7 @@ ClassInfo::ClassInfo(const char* name, TypeId typeId) :
 ClassInfo::~ClassInfo() {
 }
 
-ClassInfo::DeleteFuncT ClassInfo::getDeleteFunction() const {
-    return deleteFunc;
-}
-
-TypeId ClassInfo::getIntanceTypeId() const {
+Core::TypeId ClassInfo::getIntanceTypeId() const {
     return instanceTypeId;
 }
 
@@ -35,7 +29,7 @@ const char* ClassInfo::getName() const {
     return className.c_str();
 }
 
-void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, TypeId valueTypeId,
+void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, Core::TypeId valueTypeId,
     ResourceType resType, ClassValue::SetResourceFuncT valueSetFunc) {
     const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class '%s' (Error: %s)";
     if(!valueName || !valueName[0]) {
@@ -60,8 +54,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
             return;
         }
     } else if (valueType == ClassValueType::Enum) {
-        EnumInfo* enumInfo = nullptr;
-        ET_SendEventReturn(enumInfo, &ETClassInfoManager::ET_findEnumInfoByTypeId, valueTypeId);
+        EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(valueTypeId);
         if(!enumInfo) {
             LogError(errStr, valueName, className, "can't find enum info");
             assert(false && "can't register class value");
@@ -73,7 +66,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
             assert(false && "can't register class value");
             return;
         }
-        if(valueTypeId == InvalidTypeId) {
+        if(valueTypeId == Core::InvalidTypeId) {
             LogError(errStr, valueName, className, "invalid type of field");
             assert(false && "can't register class value");
             return;
@@ -109,8 +102,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     classValue.primitiveValueCount = 1;
 
     if(valueType == ClassValueType::Object) {
-        ClassInfo* valueClassInfo = nullptr;
-        ET_SendEventReturn(valueClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, valueTypeId);
+        ClassInfo* valueClassInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(valueTypeId);
         if(!valueClassInfo) {
             assert(false && "Can't find value class info");
             return;
@@ -129,15 +121,19 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
 }
 
 ClassInstance ClassInfo::createInstance() {
-    if(!createFunc) {
+    if(!pool) {
         assert(false && "Can't create instance of abstract classs");
         return ClassInstance();
     }
-    auto object = createFunc();
+    auto object = pool->simpleCreate();
     if(!object) {
         return ClassInstance();
     }
     return ClassInstance(*this, object);
+}
+
+void ClassInfo::removeInstance(void* ptr) {
+    pool->recycle(ptr);
 }
 
 void ClassInfo::getAllClasses(std::vector<ClassInfo*>& classes) {
@@ -147,10 +143,10 @@ void ClassInfo::getAllClasses(std::vector<ClassInfo*>& classes) {
     classes.push_back(this);
 }
 
-void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
+void ClassInfo::registerBaseClass(Core::TypeId baseClassTypeId) {
     const char* errStr = "[ClassInfo::registerBaseClass] Can't register the base class '%s' for the class '%s' (Error: %s)";
 
-    if(baseClassTypeId == InvalidTypeId) {
+    if(baseClassTypeId == Core::InvalidTypeId) {
         LogError(errStr, "null", className, "invalid base class type id");
         assert(false && "can't register base class");
         return;
@@ -162,8 +158,7 @@ void ClassInfo::registerBaseClass(TypeId baseClassTypeId) {
         return;
     }
 
-    ClassInfo* baseClassInfo = nullptr;
-    ET_SendEventReturn(baseClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, baseClassTypeId);
+    ClassInfo* baseClassInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(baseClassTypeId);
     if(!baseClassInfo) {
         LogError(errStr, "null", className, "can't find class info by type id");
         return;
@@ -261,8 +256,7 @@ ClassValue* ClassInfo::findValueByPrimitiveValueId(void*& instance, int valueId)
                 continue;
             }
             if(value.type == ClassValueType::Object) {
-                ClassInfo* valueClassInfo = nullptr;
-                ET_SendEventReturn(valueClassInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, value.typeId);
+                ClassInfo* valueClassInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(value.typeId);
                 if(!valueClassInfo) {
                     LogError("[ClassInfo::findValueByPrimitiveValueId] Can't find class info for a value '%s' in class '%s'",
                         value.name, className);
@@ -278,7 +272,7 @@ ClassValue* ClassInfo::findValueByPrimitiveValueId(void*& instance, int valueId)
 }
 
 void ClassInfo::makeReflectModel(JSONNode& node) {
-    if(createFunc) {
+    if(pool) {
         node.write("type", "class");
     } else {
         node.write("type", "abs_class");
@@ -296,18 +290,18 @@ void ClassInfo::makeReflectModel(JSONNode& node) {
     node.write("data", fieldsNode);
 }
 
-bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, const JSONNode& node) {
+bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, ClassValueId valueId, const JSONNode& node) {
     assert(instance && "Invalid instance");
     if(!node) {
         LogError("[ClassInfo::readValueFrom] Can't read class value with id '%d' of class '%s' from invalid JSON node",
             valueId, className);
         return false;
     }
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == InvalidClassValueId) {
         LogError("ClassInfo::readValueFrom] Can't read value with invalid id");
         return false;
     }
-    if(valueId == AllEntityLogicValueId) {
+    if(valueId == AllClassValuesId) {
         std::vector<ClassInfo*> allClasses;
         getAllClasses(allClasses);
 
@@ -337,18 +331,18 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Entit
     return true;
 }
 
-bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, ClassValueId valueId, Memory::MemoryStream& stream) {
     assert(instance && "Invalid instance");
     if(!stream.isOpenedForRead()) {
         LogError("[ClassInfo::readValueFrom] Can't read class value with id '%d' of class '%s' from non-read stream",
             valueId, className);
         return false;
     }
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == InvalidClassValueId) {
         LogError("ClassInfo::readValueFrom] Can't read value with invalid id");
         return false;
     }
-    if(valueId == AllEntityLogicValueId) {
+    if(valueId == AllClassValuesId) {
         std::vector<ClassInfo*> allClasses;
         getAllClasses(allClasses);
 
@@ -379,13 +373,13 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Entit
     return true;
 }
 
-bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, JSONNode& node) {
+bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, ClassValueId valueId, JSONNode& node) {
     assert(instance && "Invalid instance");
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == InvalidClassValueId) {
         LogError("ClassInfo::writeValueTo] Can't write value with invalid id");
         return false;
     }
-    if(valueId == AllEntityLogicValueId) {
+    if(valueId == AllClassValuesId) {
         std::vector<ClassInfo*> allClasses;
         getAllClasses(allClasses);
 
@@ -415,18 +409,18 @@ bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, Entity
     return true;
 }
 
-bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, EntityLogicValueId valueId, MemoryStream& stream) {
+bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, ClassValueId valueId, Memory::MemoryStream& stream) {
     assert(instance && "Invalid instance");
     if(!stream.isOpenedForWrite()) {
         LogError("[ClassInfo::writeValueTo] Can't write class value with id '%d' of class '%s' to non-write stream",
             valueId, className);
         return false;
     }
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == InvalidClassValueId) {
         LogError("ClassInfo::writeValueTo] Can't write value with invalid id");
         return false;
     }
-    if(valueId == AllEntityLogicValueId) {
+    if(valueId == AllClassValuesId) {
         std::vector<ClassInfo*> allClasses;
         getAllClasses(allClasses);
 
@@ -457,13 +451,13 @@ bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, Entity
     return true;
 }
 
-bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId valueId) {
+bool ClassInfo::addNewValueArrayElement(void* instance, ClassValueId valueId) {
     assert(instance && "Invalid instance");
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == InvalidClassValueId) {
         LogError("ClassInfo::addNewValueArrayElement] Can't add array element to value with invalid id");
         return false;
     }
-    if(valueId == AllEntityLogicValueId) {
+    if(valueId == AllClassValuesId) {
         LogError("ClassInfo::addNewValueArrayElement] Can't add array element to value with 'AllValuesId'");
         return false;
     }
@@ -487,13 +481,13 @@ bool ClassInfo::addNewValueArrayElement(void* instance, EntityLogicValueId value
     return true;
 }
 
-bool ClassInfo::setValuePolymorphType(void* instance, EntityLogicValueId valueId, const char* newType) {
+bool ClassInfo::setValuePolymorphType(void* instance, ClassValueId valueId, const char* newType) {
     assert(instance && "Invalid instance");
-    if(valueId == InvalidEntityLogicValueId) {
+    if(valueId == InvalidClassValueId) {
         LogError("ClassInfo::setValuePolymorphType] Can't set polymorph type to a value with invalid id");
         return false;
     }
-    if(valueId == AllEntityLogicValueId) {
+    if(valueId == AllClassValuesId) {
         LogError("ClassInfo::setValuePolymorphType]  Can't set polymorph type to a value with 'AllValuesId'");
         return false;
     }
@@ -517,7 +511,7 @@ bool ClassInfo::setValuePolymorphType(void* instance, EntityLogicValueId valueId
     return true;
 }
 
-bool ClassInfo::checkIfSameType(TypeId typeId) const {
+bool ClassInfo::checkIfSameType(Core::TypeId typeId) const {
     if(getIntanceTypeId() != typeId) {
         assert(false && "Invalid type");
         LogError("[ClassInfo::checkIfSameType] Instace type id has other type");
@@ -537,3 +531,5 @@ bool ClassInfo::isDerivedFrom(const ClassInfo& other) const {
     }
     return false;
 }
+
+} // namespace Reflect

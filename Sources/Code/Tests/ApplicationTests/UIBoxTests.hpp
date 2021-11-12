@@ -1,11 +1,11 @@
 #ifndef __UI_BOX_TESTS_HPP__
 #define __UI_BOX_TESTS_HPP__
 
-#include "TestUtils/ConsoleAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
 class UIBox;
 
-class UIBoxTests : public ConsoleAppTests {
+class UIBoxTests : public EngineTests {
 protected:
 
     static void SetUpTestCase();

@@ -64,14 +64,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Engine)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE
-    <string>
-    <cstring>
-    <vector>
-    <memory>
-    <algorithm>
-    <functional>
-    <unordered_map>
-    <limits>
-    [["Core/ETLogger.hpp"]]
+    [["Core/Core.hpp"]]
     [["Math/Transform.hpp"]]
 )

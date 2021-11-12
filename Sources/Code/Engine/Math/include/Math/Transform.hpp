@@ -4,8 +4,6 @@
 #include "Math/Vector.hpp"
 #include "Math/Quaternion.hpp"
 
-class ReflectContext;
-
 namespace Math {
 
 class Transform {

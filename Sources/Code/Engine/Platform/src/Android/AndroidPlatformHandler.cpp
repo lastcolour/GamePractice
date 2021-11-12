@@ -1,6 +1,5 @@
 #include "Android/AndroidPlatformHandler.hpp"
 #include "Application.hpp"
-#include "Core/GlobalEnvironment.hpp"
 #include "Parallel/TasksRunner.hpp"
 
 #include <thread>

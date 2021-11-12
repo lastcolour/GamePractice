@@ -1,9 +1,9 @@
 #ifndef __TASK_RUNNER_TESTS_HPP__
 #define __TASK_RUNNER_TESTS_HPP__
 
-#include "TestUtils/VoidAppTests.hpp"
+#include "TestUtils/EngineTests.hpp"
 
-class TaskRunnerTests : public VoidAppTests {
+class TaskRunnerTests : public EngineTests {
 };
 
 #endif /* __TASK_RUNNER_TESTS_HPP__ */

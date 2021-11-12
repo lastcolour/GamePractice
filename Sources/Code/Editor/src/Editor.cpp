@@ -3,7 +3,8 @@
 #include "Core/MemoryStream.hpp"
 
 EditorApp* EDITOR_APP = nullptr;
-Buffer INTERNAL_BUFFER;
+
+Memory::Buffer INTERNAL_BUFFER;
 
 uint32_t Initiliaze() {
     if(EDITOR_APP) {
@@ -144,7 +145,7 @@ void AddEntityLogicArrayElement(uint32_t entityId, int32_t logicId, int32_t valu
     EntityId entId;
     entId.setRawId(entityId);
     EDITOR_APP->addEntityLogicArrayElement(entId, static_cast<EntityLogicId>(logicId),
-        static_cast<EntityLogicValueId>(valueId));
+        static_cast<Reflect::ClassValueId>(valueId));
 }
 
 void SetEntityLogicPolymorphObjectType(uint32_t entityId, int32_t logicId, int32_t valueId, const char* newType) {
@@ -154,7 +155,7 @@ void SetEntityLogicPolymorphObjectType(uint32_t entityId, int32_t logicId, int32
     EntityId entId;
     entId.setRawId(entityId);
     EDITOR_APP->setEntityLogicPolymorphObjectType(entId, static_cast<EntityLogicId>(logicId),
-        static_cast<EntityLogicValueId>(valueId), newType);
+        static_cast<Reflect::ClassValueId>(valueId), newType);
 }
 
 uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, void** out) {
@@ -164,7 +165,7 @@ uint32_t GetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId,
     EntityId entId;
     entId.setRawId(entityId);
     auto buffer = EDITOR_APP->getEntityLogicData(entId, static_cast<EntityLogicId>(logicId),
-        static_cast<EntityLogicValueId>(valueId));
+        static_cast<Reflect::ClassValueId>(valueId));
     INTERNAL_BUFFER = std::move(buffer);
     *out = INTERNAL_BUFFER.getWriteData();
     return static_cast<uint32_t>(INTERNAL_BUFFER.getSize());
@@ -176,9 +177,9 @@ void SetEntityLogicData(uint32_t entityId, int32_t logicId, int32_t valueId, con
     }
     EntityId entId;
     entId.setRawId(entityId);
-    Buffer buffer(data, size);
+    Memory::Buffer buffer(data, size);
     EDITOR_APP->setEntityLogicData(entId, static_cast<EntityLogicId>(logicId),
-        static_cast<EntityLogicValueId>(valueId), buffer);
+        static_cast<Reflect::ClassValueId>(valueId), buffer);
 }
 
 void UnloadAll() {

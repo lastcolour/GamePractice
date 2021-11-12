@@ -1,6 +1,5 @@
 #include "Logics/ParticlesSoundEvent.hpp"
 #include "Reflect/EnumInfo.hpp"
-#include "Core/Utils.hpp"
 
 void ParticlesSoundEvent::Reflect(ReflectContext& ctx) {
     if(auto enumInfo = ctx.enumInfo<EParticlesEmitEventType>("EParticlesEmitEventType")) {
@@ -32,7 +31,7 @@ void ParticlesSoundEvent::deinit() {
 }
 
 void ParticlesSoundEvent::ET_onEmitEvent(EParticlesEmitEventType emitFlags) {
-    if(EnumFlagsIntersect(emitType, emitFlags)) {
+    if(Core::EnumFlagsBitANDCheck(emitType, emitFlags)) {
         soundEvent.emit();
     }
 }

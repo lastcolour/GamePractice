@@ -1,43 +1,42 @@
-#include "Reflect/ReflectCore.hpp"
-#include "Reflect/ETReflectInterfaces.hpp"
+#include "Reflect/ClassInfoManager.hpp"
 #include "ArrayInfo.hpp"
 
 #include <cassert>
 
-namespace ReflectCore {
+namespace Reflect {
 
-bool ReflectClassByCall(TypeId instanceTypeId, ReflectFuncT reflectFunc) {
-    ClassInfo* classInfo = nullptr;
-    ET_SendEventReturn(classInfo, &ETClassInfoManager::ET_findClassInfoByTypeId, instanceTypeId);
+namespace Impl {
+
+bool ReflectClassByCall(Core::TypeId instanceTypeId, ReflectFuncT reflectFunc) {
+    ClassInfo* classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(instanceTypeId);
     if(classInfo) {
         return true;
     }
     ReflectContext ctx;
     if(!ctx.reflectEmbedded(reflectFunc)) {
-        LogError("[ReflectCore::ReflectClassByCall] Can't reflect embedded class info");
+        LogError("[Reflect::ReflectClassByCall] Can't reflect embedded class info");
         assert(false && "false reflect result");
         return false;
     }
     return true;
 }
 
-bool RegisterArrayInfo(TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc,
+bool RegisterArrayInfo(Core::TypeId elemTypeId, ClassValueType elemType, ArrayCreateElemFuncT createFunc,
     ArraySizeFuncT sizeFunc, ArrayGetElemFuncT getElemFunc, ArrayResetFuncT resetFunc) {
-    ArrayInfo* arrayInfo = nullptr;
-    ET_SendEventReturn(arrayInfo, &ETClassInfoManager::ET_findArrayInfoByElemTypeId, elemTypeId);
+    ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(elemTypeId);
     if(arrayInfo) {
         return true;
     }
     std::unique_ptr<ArrayInfo> arrayInfoPtr(new ArrayInfo(elemTypeId, elemType, createFunc,
         sizeFunc, getElemFunc, resetFunc));
-    bool res = false;
-    ET_SendEventReturn(res, &ETClassInfoManager::ET_registerArrayInfo, arrayInfoPtr);
-    if(!res) {
-        LogError("[ReflectCore::RegisterArrayInfo] Can't register array info");
+    if(!GetEnv()->GetClassInfoManager()->registerArrayInfo(arrayInfoPtr)) {
+        LogError("[Reflect::RegisterArrayInfo] Can't register array info");
         assert(false && "false register result");
         return false;
     }
     return true;
 }
 
-} // namespace ReflectCore
+} // namespace Impl
+
+} // namespace Reflect
