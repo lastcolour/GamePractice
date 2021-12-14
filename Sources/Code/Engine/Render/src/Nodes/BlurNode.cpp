@@ -2,7 +2,6 @@
 #include "RenderFramebuffer.hpp"
 #include "RenderTexture.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Platform/OpenGL.hpp"
 #include "RenderUtils.hpp"
 
 #include <cassert>

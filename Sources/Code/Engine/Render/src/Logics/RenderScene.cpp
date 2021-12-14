@@ -73,14 +73,14 @@ void RenderScene::ET_onLoaded() {
     switch(params.occlusion.refOp) {
         case RenderSceneParams::EOcclusionPolicy::None: {
             StencilWirteReadData stencilData;
-            stencilData.mode = EStencilOpType::Disabled;
+            stencilData.opType = EStencilOpType::Disabled;
             stencilData.refVal = 0;
             ET_SendEvent(getEntityId(), &ETRenderNode::ET_setStencilData, stencilData);
             break;
         }
         case RenderSceneParams::EOcclusionPolicy::OccludAll: {
             StencilWirteReadData stencilData;
-            stencilData.mode = EStencilOpType::Write;
+            stencilData.opType = EStencilOpType::Write;
             stencilData.refVal = params.occlusion.refVal;
             ET_SendEvent(getEntityId(), &ETRenderNode::ET_setStencilData, stencilData);
             break;
@@ -231,7 +231,7 @@ void RenderScene::propagateParentState(std::vector<ChildNode>& childList) {
     switch(params.occlusion.refOp) {
         case RenderSceneParams::EOcclusionPolicy::None: {
             StencilWirteReadData stencilData;
-            stencilData.mode = EStencilOpType::Disabled;
+            stencilData.opType = EStencilOpType::Disabled;
             stencilData.refVal = 0;
             for(auto& child : childList) {
                 ET_SendEvent(child.entId, &ETRenderNode::ET_setStencilData, stencilData);
@@ -240,7 +240,7 @@ void RenderScene::propagateParentState(std::vector<ChildNode>& childList) {
         }
         case RenderSceneParams::EOcclusionPolicy::OccludAll: {
             StencilWirteReadData stencilData;
-            stencilData.mode = EStencilOpType::Read;
+            stencilData.opType = EStencilOpType::Read;
             stencilData.refVal = params.occlusion.refVal;
             for(auto& child : childList) {
                 ET_SendEvent(child.entId, &ETRenderNode::ET_setStencilData, stencilData);

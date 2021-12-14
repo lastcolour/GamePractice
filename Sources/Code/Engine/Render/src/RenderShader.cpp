@@ -1,5 +1,4 @@
 #include "RenderShader.hpp"
-#include "Platform/OpenGL.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 
@@ -21,10 +20,18 @@ void RenderShader::unbind() {
     glUseProgram(0);
 }
 
-void RenderShader::setTexture2d(UniformType varType, int unitId, RenderTexture& tex) {
+void RenderShader::setTexture2d(UniformType varType, int unitId, RenderTexture& texObj) {
     setUniform1i(varType, unitId);
     glActiveTexture(GL_TEXTURE0 + unitId);
-    tex.bind();
+    texObj.bind();
+}
+
+void RenderShader::setTexture2d(UniformType varType, int unitId, RenderTexture& texObj, TextureInfo& texInfo) {
+    RenderUtils::ApplyTextureInfo(texObj, texInfo);
+
+    setUniform1i(varType, unitId);
+    glActiveTexture(GL_TEXTURE0 + unitId);
+    texObj.bind();
 }
 
 void RenderShader::setUniform1i(UniformType varType, int val) {

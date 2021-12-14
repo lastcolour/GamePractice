@@ -1,13 +1,11 @@
-#ifndef __RENDER_NODE_HPP__
-#define __RENDER_NODE_HPP__
+#ifndef __DRAW_COMMAND_PROXY_HPP__
+#define __DRAW_COMMAND_PROXY_HPP__
 
 #include "Entity/EntityLogic.hpp"
-#include "Render/RenderCommon.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "RenderUtils.hpp"
-#include "Nodes/ETRenderNodeManager.hpp"
+#include "Commands/ETDrawCommands.hpp"
 
-class RenderNode : public EntityLogic,
+class DrawCommandProxy : public EntityLogic,
     public ETNode<ETRenderNode>,
     public ETNode<ETEntityEvents> {
 public:
@@ -16,8 +14,8 @@ public:
 
 public:
 
-    RenderNode(RenderNodeType nodeType);
-    virtual ~RenderNode() = 0;
+    DrawCommandProxy(EDrawCmdType cmdType);
+    virtual ~DrawCommandProxy() = 0;
 
     // EntityLogic
     void init() override;
@@ -46,16 +44,16 @@ protected:
 
 protected:
 
+    DrawCmd* cmd;
     StencilWirteReadData stencilData;
-    Node* proxyNode;
     float alpha;
     float alphaMult;
     float normScale;
     int zIndex;
-    RenderNodeType type;
+    EDrawCmdType type;
     bool isVisible;
     bool isLoaded;
     bool emitEvents;
 };
 
-#endif /* __RENDER_NODE_HPP__ */
+#endif /* __DRAW_COMMAND_PROXY_HPP__ */

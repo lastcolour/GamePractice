@@ -4,23 +4,20 @@
 #include "Math/AABB.hpp"
 #include "Math/Color.hpp"
 
-class RenderContext;
+struct DebugInfoDrawer {
+    virtual ~DebugInfoDrawer() = default;
+    virtual void drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col) = 0;
+    virtual void drawQuadSolid(const AABB2D& box, const ColorB& col) = 0;
+    virtual void drawQuadBorder(const AABB2D& box, const ColorB& col) = 0;
+    virtual void drawText(const Vec2& pt, float fontHeight, const ColorB& col, const char* text) = 0;
+    virtual void drawCicleBorder(const Vec2& pt, float r, const ColorB& col) = 0;
+    virtual void drawCicleSolid(const Vec2& pt, float r, const ColorB& col) = 0;
+    virtual void drawCircleArc(const Vec2& pt, float r, const Vec2& dir, float angle, const ColorB& col) = 0;
+};
 
 struct ETDebugInfoProvider {
     virtual ~ETDebugInfoProvider() = default;
-    virtual void ET_drawDebugInfo() = 0;
-};
-
-struct ETDebugRender {
-    virtual ~ETDebugRender() = default;
-    virtual void ET_drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col) = 0;
-    virtual void ET_drawQuadSolid(const AABB2D& box, const ColorB& col) = 0;
-    virtual void ET_drawQuadBorder(const AABB2D& box, const ColorB& col) = 0;
-    virtual void ET_drawText(const Vec2& pt, float size, const ColorB& col, const char* text) = 0;
-    virtual void ET_drawCicleBorder(const Vec2& pt, float r, const ColorB& col) = 0;
-    virtual void ET_drawCicleSolid(const Vec2& pt, float r, const ColorB& col) = 0;
-    virtual void ET_drawCircleArc(const Vec2& pt, float r, const Vec2& dir, float angle, const ColorB& col) = 0;
-    virtual void ET_update(RenderContext& ctx) = 0;
+    virtual void ET_drawDebugInfo(DebugInfoDrawer& dd) = 0;
 };
 
 #endif /* __ET_DEBUG_RENDER_HPP__ */

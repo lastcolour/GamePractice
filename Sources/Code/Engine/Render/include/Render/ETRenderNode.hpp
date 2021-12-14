@@ -2,7 +2,6 @@
 #define __ET_RENDER_NODE_HPP__
 
 #include "Math/AABB.hpp"
-#include "Render/TextureInfo.hpp"
 #include "Render/RenderCommon.hpp"
 
 class StencilWirteReadData;

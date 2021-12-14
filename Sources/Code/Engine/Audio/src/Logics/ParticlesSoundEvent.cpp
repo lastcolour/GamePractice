@@ -31,7 +31,7 @@ void ParticlesSoundEvent::deinit() {
 }
 
 void ParticlesSoundEvent::ET_onEmitEvent(EParticlesEmitEventType emitFlags) {
-    if(Core::EnumFlagsBitANDCheck(emitType, emitFlags)) {
+    if(Core::EnumFlagsBitAND(emitType, emitFlags)) {
         soundEvent.emit();
     }
 }

@@ -59,14 +59,14 @@ constexpr TypeId GetTypeId() {
 }
 
 template<typename T>
-bool EnumFlagsBitANDCheck(T first, T second) {
+bool EnumFlagsBitAND(T first, T second) {
     static_assert(std::is_enum<T>::value, "T isn't enum type");
     return static_cast<bool>(
         static_cast<int>(first) & static_cast<int>(second));
 }
 
 template<typename T>
-T EnumFlagsBitXORCreate(T first, T second) {
+T EnumFlagsBitXOR(T first, T second) {
     static_assert(std::is_enum<T>::value, "T isn't enum type");
     return static_cast<T>(
         static_cast<int>(first) | static_cast<int>(second));

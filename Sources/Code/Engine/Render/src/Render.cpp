@@ -3,10 +3,9 @@
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderNode.hpp"
 #include "Render/ETRenderTickManager.hpp"
-#include "Nodes/ETRenderNodeManager.hpp"
-#include "Nodes/Node.hpp"
 #include "RenderUtils.hpp"
 #include "Render/ImageBuffer.hpp"
+#include "Commands/ETDrawCommands.hpp"
 
 Render::Render() :
     canOffscrenRender(false),
@@ -38,14 +37,14 @@ void Render::ET_updateRender() {
     if(!canRenderToScreen()) {
         return;
     }
-    ET_SendEvent(&ETRenderNodeManager::ET_drawFrame);
+    ET_SendEvent(&ETDrawCommandsManager::ET_renderToDefaultFBO);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
 }
 
 void Render::ET_updateParticles(float dt) {
     ET_PollAllEvents<ETParticlesManager>();
     ET_SendEvent(&ETRenderTickManager::ET_fetchDeltaT);
-    ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
+    ET_SendEvent(&ETDrawCommandsManager::ET_updateEmitters, dt);
 }
 
 bool Render::canRenderToScreen() const {
@@ -62,12 +61,12 @@ bool Render::canRenderToFramebuffer() const {
     return true;
 }
 
-void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) {
+void Render::ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, EDrawContentFilter filter) {
     imageBuffer.setSizeAndClear(drawSize);
     ET_drawFrameToBufferRaw(imageBuffer.getData().getWriteData(), drawSize, filter);
 }
 
-void Render::ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, DrawContentFilter filter) {
+void Render::ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, EDrawContentFilter filter) {
     if(!canRenderToFramebuffer()) {
         return;
     }
@@ -76,7 +75,7 @@ void Render::ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, Dra
     ET_SendEventReturn(prevViewPort, &ETRenderCamera::ET_getRenderPort);
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, drawSize);
 
-    ET_SendEvent(&ETRenderNodeManager::ET_drawFrameToBuffer, outBuffer, filter);
+    ET_SendEvent(&ETDrawCommandsManager::ET_renderToBuffer, outBuffer, filter);
 
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, prevViewPort);
 }
@@ -112,6 +111,6 @@ void Render::ET_onSurfaceResized(const Vec2i& size) {
 
 void Render::ET_syncWithGame() {
     if(canCreateRenderNodes()) {
-        ET_PollAllEvents<ETRenderNodeManager>();
+        ET_PollAllEvents<ETDrawCommandsManager>();
     }
 }

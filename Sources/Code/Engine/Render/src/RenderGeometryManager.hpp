@@ -16,11 +16,11 @@ public:
     void deinit() override;
 
     // ETRenderGeometryManager
-    std::shared_ptr<RenderGeometry> ET_createGeometry(PrimitiveGeometryType geomType) override;
+    std::shared_ptr<RenderGeometry> ET_createGeometry(EPrimitiveGeometryType geomType) override;
 
 private:
 
-    std::shared_ptr<RenderGeometry> createGeometryOfType(PrimitiveGeometryType geomType);
+    std::shared_ptr<RenderGeometry> createGeometryOfType(EPrimitiveGeometryType geomType);
     std::shared_ptr<RenderGeometry> createSquare();
     std::shared_ptr<RenderGeometry> createSquareTex();
     std::shared_ptr<RenderGeometry> createText();
@@ -30,7 +30,7 @@ private:
 
 private:
 
-    std::unordered_map<PrimitiveGeometryType, std::shared_ptr<RenderGeometry>> geometris;
+    std::unordered_map<EPrimitiveGeometryType, std::shared_ptr<RenderGeometry>> geometris;
 };
 
 #endif /* __RENDER_GEOMETRY_MANAGER_HPP__ */

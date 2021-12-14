@@ -1,9 +1,9 @@
 #include "Logics/RenderSimpleLogic.hpp"
-#include "Nodes/SimpleNode.hpp"
+#include "Math/MatrixTransform.hpp"
 
 RenderSimpleLogic::RenderSimpleLogic() :
-    RenderNode(RenderNodeType::Simple),
-    size(20.f),
+    DrawCommandProxy(EDrawCmdType::Quad),
+    size(100.f),
     color(255, 255, 255) {
 }
 
@@ -12,16 +12,19 @@ RenderSimpleLogic::~RenderSimpleLogic() {
 
 void RenderSimpleLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderSimpleLogic>("RenderSimple")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<DrawCommandProxy>();
         classInfo->addField("size", &RenderSimpleLogic::size);
         classInfo->addField("color", &RenderSimpleLogic::color);
     }
 }
 
 void RenderSimpleLogic::onInit() {
-    auto simpleProxyNode = static_cast<SimpleNode*>(proxyNode);
-    simpleProxyNode->setSize(size);
-    simpleProxyNode->setColor(color);
+    auto coloredQuadCmd = static_cast<DrawColoredQuadCmd*>(cmd);
+
+    coloredQuadCmd->color = color;
+
+    Math::AddScale(coloredQuadCmd->modelMat, Vec3(
+        static_cast<float>(size.x), static_cast<float>(size.y), 1.f));
 
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
@@ -29,18 +32,12 @@ void RenderSimpleLogic::onInit() {
 
 void RenderSimpleLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newColor](){
-        auto simpleProxyNode = static_cast<SimpleNode*>(node);
-        simpleProxyNode->setColor(newColor);
-    });
+    DrawColoredQuadCmd::QueueColorUpdate(*cmd, color);
 }
 
 void RenderSimpleLogic::ET_setSize(const Vec2& newSize) {
+    DrawColoredQuadCmd::QueueSizeUpdate(*cmd, size, newSize, EDrawCmdType::Quad);
     size = newSize;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newSize](){
-        auto simpleProxyNode = static_cast<SimpleNode*>(node);
-        simpleProxyNode->setSize(newSize);
-    });
 }
 
 Vec2 RenderSimpleLogic::ET_getSize() const {

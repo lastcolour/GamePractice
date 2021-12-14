@@ -21,7 +21,7 @@ public:
 
 protected:
 
-    // RenderNode
+    // DrawCommandProxy
     void onInit() override;
 
 private:

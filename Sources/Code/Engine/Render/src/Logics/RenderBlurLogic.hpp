@@ -1,9 +1,9 @@
 #ifndef __RENDER_BLUR_LOGIC_HPP__
 #define __RENDER_BLUR_LOGIC_HPP__
 
-#include "Logics/RenderNode.hpp"
+#include "Logics/DrawCommandProxy.hpp"
 
-class RenderBlurLogic : public RenderNode {
+class RenderBlurLogic : public DrawCommandProxy {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -15,7 +15,7 @@ public:
 
 protected:
 
-    // RenderNode
+    // DrawCommandProxy
     void onInit() override;
 
 private:

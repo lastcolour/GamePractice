@@ -3,15 +3,15 @@
 
 class ImageBuffer;
 
-enum class DrawContentFilter {
+enum class EDrawContentFilter {
     None = 0,
     NoDebugInfo
 };
 
 struct ETRender {
     virtual ~ETRender() = default;
-    virtual void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) = 0;
-    virtual void ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, DrawContentFilter filter) = 0;
+    virtual void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, EDrawContentFilter filter) = 0;
+    virtual void ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, EDrawContentFilter filter) = 0;
 };
 
 struct ETRenderContextEvents {

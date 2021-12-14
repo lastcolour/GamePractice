@@ -1,9 +1,7 @@
 #include "RenderFont.hpp"
-#include "Platform/OpenGL.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "RenderUtils.hpp"
 
 #include <cassert>
 

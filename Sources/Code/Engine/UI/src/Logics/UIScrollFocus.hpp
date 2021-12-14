@@ -6,7 +6,6 @@
 #include "UI/ETUIScrollArea.hpp"
 
 class UIScrollFocus : public EntityLogic,
-    public ETNode<ETUITimerEvents>,
     public ETNode<ETUIScrollFocus> {
 public:
 
@@ -20,9 +19,6 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
-
-    // ETUITimerEvents
-    void ET_onUITick(float dt) override;
 
     // ETUIScrollFocus
     void ET_setFocusToEntity(EntityId newFocusEntId) override;

@@ -1,16 +1,15 @@
 #include "Logics/RenderBlurLogic.hpp"
-#include "Nodes/BlurNode.hpp"
 
 void RenderBlurLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderBlurLogic>("RenderBlurLogic")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<DrawCommandProxy>();
         classInfo->addField("downScaleFactor", &RenderBlurLogic::downScaleFactor);
         classInfo->addField("passes", &RenderBlurLogic::passes);
     }
 }
 
 RenderBlurLogic::RenderBlurLogic() :
-    RenderNode(RenderNodeType::Blur),
+    DrawCommandProxy(EDrawCmdType::Blur),
     passes(1),
     downScaleFactor(2) {
 }
@@ -19,11 +18,11 @@ RenderBlurLogic::~RenderBlurLogic() {
 }
 
 void RenderBlurLogic::onInit() {
-    auto blurProxyNode = static_cast<BlurNode*>(proxyNode);
+    auto blurCmd = static_cast<DrawBlurCmd*>(cmd);
 
     passes = std::max(passes, 1);
-    blurProxyNode->setPasses(passes);
+    blurCmd->passes = passes;
 
     downScaleFactor = std::max(downScaleFactor, 1);
-    blurProxyNode->setDownScale(downScaleFactor);
+    blurCmd->downScale = downScaleFactor;
 }

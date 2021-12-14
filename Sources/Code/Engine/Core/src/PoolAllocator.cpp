@@ -95,6 +95,17 @@ BaseMemoryPoolAllocator::~BaseMemoryPoolAllocator() {
 }
 
 void* BaseMemoryPoolAllocator::allocate() {
+    MemLocker memLocker;
+    return allocateUnsafe();
+
+}
+
+void BaseMemoryPoolAllocator::deallocate(void* ptr) {
+    MemLocker memLocker;
+    deallocateUnsafe(ptr);
+}
+
+void* BaseMemoryPoolAllocator::allocateUnsafe() {
     BlockHeader* blockHrd = nullptr;
     for(auto& b : blocks) {
         auto currBlockHdr = reinterpret_cast<BlockHeader*>(b);
@@ -116,7 +127,7 @@ void* BaseMemoryPoolAllocator::allocate() {
     return getObjectFromObjectHrd(freeObjHdr, objSize, objAlign);
 }
 
-void BaseMemoryPoolAllocator::deallocate(void* ptr) {
+void BaseMemoryPoolAllocator::deallocateUnsafe(void* ptr) {
     if(!ptr) {
         return;
     }
@@ -138,7 +149,7 @@ void BaseMemoryPoolAllocator::deallocate(void* ptr) {
         if(blockHdr->size == 0 && canRemoveBlocks()) {
             std::swap(blocks[i], blocks.back());
             if(useCentralAllocator) {
-                GetEnv()->GetMemoryAllocator()->deallocate(blockHdr);
+                GetEnv()->GetMemoryAllocator()->deallocateUnsafe(blockHdr);
             } else {
                 delete[] blocks[i];
             }
@@ -153,7 +164,7 @@ BaseMemoryPoolAllocator::BlockHeader* BaseMemoryPoolAllocator::allocateBlock(siz
 
     void* ptr = nullptr;
     if(useCentralAllocator) {
-        ptr = static_cast<uint8_t*>(GetEnv()->GetMemoryAllocator()->allocate(memSize));
+        ptr = static_cast<uint8_t*>(GetEnv()->GetMemoryAllocator()->allocateUnsafe(memSize));
     } else {
         ptr = new uint8_t [memSize];
     }
@@ -198,10 +209,13 @@ void BaseMemoryPoolAllocator::setUseCentralAllocator(bool flag) {
 float BaseMemoryPoolAllocator::getFillRatio() const {
     size_t objCount = 0;
     size_t totalObjCount = 0;
-    for(size_t i = 0, sz = blocks.size(); i < sz; ++i) {
-        auto blockHrd = reinterpret_cast<BlockHeader*>(blocks[i]);
-        totalObjCount += getObjectsInBlock(i);
-        objCount += blockHrd->size;
+    {
+        MemLocker memLocker;
+        for(size_t i = 0, sz = blocks.size(); i < sz; ++i) {
+            auto blockHrd = reinterpret_cast<BlockHeader*>(blocks[i]);
+            totalObjCount += getObjectsInBlock(i);
+            objCount += blockHrd->size;
+        }
     }
     if(totalObjCount == 0) {
         return 1.f;
@@ -210,22 +224,29 @@ float BaseMemoryPoolAllocator::getFillRatio() const {
 }
 
 size_t BaseMemoryPoolAllocator::getNumBlocks() const {
+    MemLocker memLocker;
     return blocks.size();
 }
 
 size_t BaseMemoryPoolAllocator::getNumObjects() const {
     size_t res = 0;
-    for(auto& b : blocks) {
-        auto blockHrd = reinterpret_cast<BlockHeader*>(b);
-        res += blockHrd->size;
+    {
+        MemLocker memLocker;
+        for(auto& b : blocks) {
+            auto blockHrd = reinterpret_cast<BlockHeader*>(b);
+            res += blockHrd->size;
+        }
     }
     return res;
 }
 
 size_t BaseMemoryPoolAllocator::getAllocatedMemorySize() const {
     size_t res = 0;
-    for(size_t i = 0, sz = blocks.size(); i < sz; ++i) {
-        res += getBlockSize(objSize, objAlign, getObjectsInBlock(i));
+    {
+        MemLocker memLocker;
+        for(size_t i = 0, sz = blocks.size(); i < sz; ++i) {
+            res += getBlockSize(objSize, objAlign, getObjectsInBlock(i));
+        }
     }
     return res;
 }
@@ -235,6 +256,8 @@ size_t BaseMemoryPoolAllocator::getObjectSize() const {
 }
 
 void BaseMemoryPoolAllocator::visitEachObject(void(*func)(void*)) {
+    MemLocker memLocker;
+
     for(size_t i = 0, sz = blocks.size(); i < sz; ++i) {
         auto& b = blocks[i];
         auto objCount = getObjectsInBlock(i);

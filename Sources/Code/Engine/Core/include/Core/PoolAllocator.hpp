@@ -66,6 +66,9 @@ public:
     void* allocate();
     void deallocate(void* ptr);
 
+    void* allocateUnsafe();
+    void deallocateUnsafe(void* ptr);
+
     float getFillRatio() const;
     size_t getNumBlocks() const;
     size_t getNumObjects() const;

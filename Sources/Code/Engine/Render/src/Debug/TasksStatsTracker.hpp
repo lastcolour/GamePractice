@@ -16,7 +16,7 @@ public:
     void deinit() override;
 
     // ETDebugInfoProvider
-    void ET_drawDebugInfo() override;
+    void ET_drawDebugInfo(DebugInfoDrawer& dd) override;
 };
 
 #endif /* __TASKS_STATS_TRACKER_HPP__ */

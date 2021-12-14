@@ -115,22 +115,22 @@ ParticlesEmitterMovementConfig::ParticlesEmitterMovementConfig() :
 }
 
 void ParticlesEmitterRenderConfig::Reflect(ReflectContext& ctx) {
-    if(auto enumInfo = ctx.enumInfo<BlendingConfig>("BlendingConfig")) {
-        enumInfo->addValues<BlendingConfig>({
-            {"Normal", BlendingConfig::Normal},
-            {"Additive", BlendingConfig::Additive},
-            {"Multiply", BlendingConfig::Multiply},
-            {"Screen", BlendingConfig::Screen}
+    if(auto enumInfo = ctx.enumInfo<EBlendMode>("EBlendMode")) {
+        enumInfo->addValues<EBlendMode>({
+            {"Normal", EBlendMode::Normal},
+            {"Additive", EBlendMode::Additive},
+            {"Multiply", EBlendMode::Multiply},
+            {"Screen", EBlendMode::Screen}
         });
     }
     if(auto classInfo = ctx.classInfo<ParticlesEmitterRenderConfig>("ParticlesEmitterRenderConfig")) {
-        classInfo->addField("blending", &ParticlesEmitterRenderConfig::blending);
+        classInfo->addField("blending", &ParticlesEmitterRenderConfig::blendMode);
         classInfo->addField("textureInfo", &ParticlesEmitterRenderConfig::textureInfo);
     }
 }
 
 ParticlesEmitterRenderConfig::ParticlesEmitterRenderConfig() :
-    blending(BlendingConfig::Normal) {
+    blendMode(EBlendMode::Normal) {
 }
 
 void GravityField::Reflect(ReflectContext& ctx) {

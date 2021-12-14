@@ -1,9 +1,9 @@
 #ifndef __RENDER_LINEAR_GRADIENT_RECT_HPP__
 #define __RENDER_LINEAR_GRADIENT_RECT_HPP__
 
-#include "Logics/RenderNode.hpp"
+#include "Logics/RenderImageLogic.hpp"
 
-class RenderLinearGradientRect : public RenderNode,
+class RenderLinearGradientRect : public DrawCommandProxy,
     public ETNode<ETRenderRect> {
 public:
 
@@ -20,7 +20,7 @@ public:
 
 protected:
 
-    // RenderNode
+    // DrawCommandProxy
     void onInit() override;
 
 private:

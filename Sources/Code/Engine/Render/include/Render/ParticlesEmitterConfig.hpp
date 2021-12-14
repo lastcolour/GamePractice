@@ -1,7 +1,7 @@
 #ifndef __PARTICLES_EMITTER_CONFIG_HPP__
 #define __PARTICLES_EMITTER_CONFIG_HPP__
 
-#include "Render/TextureInfo.hpp"
+#include "Render/RenderCommon.hpp"
 
 enum class EmitterType {
     Sphere = 0,
@@ -102,13 +102,6 @@ public:
     float rotationAcc;
 };
 
-enum class BlendingConfig {
-    Normal = 0,
-    Additive,
-    Multiply,
-    Screen
-};
-
 class ParticlesEmitterRenderConfig {
 public:
 
@@ -121,7 +114,7 @@ public:
 public:
 
     TextureInfo textureInfo;
-    BlendingConfig blending;
+    EBlendMode blendMode;
 };
 
 enum class GravityType {

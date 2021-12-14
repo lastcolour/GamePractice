@@ -2,29 +2,14 @@
 #define __RENDER_UTILS_HPP__
 
 #include "Math/Matrix.hpp"
-#include "Render/TextureInfo.hpp"
+#include "Render/RenderCommon.hpp"
+#include "Commands/Commands.hpp"
+#include "Platform/OpenGL.hpp"
 
 class ImageBuffer;
 class RenderFramebuffer;
 class RenderGeometry;
 class RenderTexture;
-class Node;
-
-enum class BlendingConfig;
-struct BlendMode;
-
-enum class RenderNodeType {
-    Quad = 0,
-    Simple,
-    Image,
-    ColoredTexture,
-    Gradient,
-    Text,
-    ParticleEmmiter,
-    Blur,
-    NinePatchImage,
-    LightingBolt
-};
 
 namespace RenderUtils {
 
@@ -36,7 +21,19 @@ const int MaxCharsPerDraw = 512;
 
 const char* GetGLError();
 
+const char* GetGLFBOError(GLenum framebufferType);
+
 bool IsOpenGLContextExists();
+
+GLenum GetGLBlendOp(EBlendOp blendOp);
+
+GLenum GetGLTexWrapType(ETextureWrapType wrapType);
+
+GLenum GetGLTexLerpType(ETextureLerpType lerpType);
+
+const char* GetDrawCmdTypeName(EDrawCmdType cmdType);
+
+BlendOpPair GetBlendOpPair(EBlendMode blendMode, bool preMultipliedAlpha);
 
 bool ReadFramebufferToBuffer(RenderFramebuffer& framebuffer, void* out);
 
@@ -46,17 +43,13 @@ void BlitFromFBOtoFBO(RenderFramebuffer& fromFBO, RenderFramebuffer& toFBO);
 
 void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO);
 
-Mat4 CalcModelMat(const Transform& tm, const Vec3& scale);
-
-std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType);
-
 std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex, ETextureDataType texType);
 
 void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo);
 
 Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale);
 
-BlendMode GetBlendMode(BlendingConfig blendConfig, bool preMultipliedAlpha);
+const char* GetNameOfDrawCmdType(EDrawCmdType cmdType);
 
 } // namespace RenderUtils
 

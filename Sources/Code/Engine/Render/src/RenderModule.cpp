@@ -5,9 +5,8 @@
 #include "RenderShaderManager.hpp"
 #include "RenderCamera.hpp"
 #include "RenderTextureManager.hpp"
-#include "RenderNodeManager.hpp"
 #include "RenderTickManager.hpp"
-#include "Debug/DebugRender.hpp"
+#include "Commands/DrawCommandsManager.hpp"
 #include "Debug/TasksStatsTracker.hpp"
 #include "Logics/ParticlesSystem.hpp"
 #include "Logics/RenderSimpleLogic.hpp"
@@ -31,10 +30,9 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             RenderGeometryManager,
             RenderShaderManager,
             RenderTextureManager,
-            RenderNodeManager,
+            DrawCommandsManager,
             RenderFontManager,
             RenderTickManager,
-            DebugRender,
             TasksStatsTracker>()
         );
     return container;

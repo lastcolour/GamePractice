@@ -17,6 +17,10 @@ public:
 
     void* allocate(size_t size);
     void deallocate(void* ptr);
+    void* allocateUnsafe(size_t size);
+    void deallocateUnsafe(void* ptr);
+    void memLock();
+    void memUnlock();
     void update(float dt);
 
 private:
@@ -37,6 +41,18 @@ private:
     PoolAllocator<AdaptiveGrowPolicy> fixedSizePools[MAX_FIXED_BLOCK_SIZE];
     std::vector<BigChunk> bigChunks;
     std::mutex mutex;
+};
+
+class MemLocker {
+public:
+
+    MemLocker();
+    ~MemLocker();
+
+private:
+
+    MemLocker(const MemLocker&) = delete;
+    MemLocker& operator=(const MemLocker&) = delete;
 };
 
 } // namespace Memory

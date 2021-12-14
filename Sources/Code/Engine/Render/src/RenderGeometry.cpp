@@ -30,12 +30,12 @@ int getVertexSize(VertexType vertType) {
 } // namespace
 
 RenderGeometry::RenderGeometry() :
-    aabb(0.f),
+    // aabb(0.f),
     vaoId(0),
     vboId(0),
     eboId(0),
     extraVboId(0),
-    vertCount(0),
+    // vertCount(0),
     indciesCount(0),
     vertType(VertexType::Vector3) {
 }
@@ -43,17 +43,44 @@ RenderGeometry::RenderGeometry() :
 RenderGeometry::~RenderGeometry() {
 }
 
-void RenderGeometry::drawTriangles() {
+void RenderGeometry::vboData(void* data, size_t bytes) {
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, data);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void RenderGeometry::extraVboData(void* data, size_t bytes) {
+    glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, data);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void RenderGeometry::bind() {
     glBindVertexArray(vaoId);
-    glDrawArrays(GL_TRIANGLES, 0, vertCount);
+}
+
+void RenderGeometry::unbind() {
     glBindVertexArray(0);
 }
 
+void RenderGeometry::drawTriangles(int start, int end) {
+    glDrawArrays(GL_TRIANGLES, start, end);
+}
+
+void RenderGeometry::drawTrianglesInstanced(int start, int end, int instances) {
+    glDrawArraysInstanced(GL_TRIANGLES, start, end, instances);
+}
+
+void RenderGeometry::drawLines(int start, int end) {
+    glDrawArrays(GL_LINES, start, end);
+}
+
+/*
 void RenderGeometry::drawLines(const void* data, unsigned int lineCount) {
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertCount * getVertexSize(vertType) * lineCount, data);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
+
     glBindVertexArray(vaoId);
     glDrawArrays(GL_LINES, 0, lineCount * vertCount);
     glBindVertexArray(0);
@@ -105,3 +132,4 @@ void RenderGeometry::drawNinePatch(const Vec2& patchPt, const Vec2& patchUV) {
     glDrawElements(GL_TRIANGLES, indciesCount, GL_UNSIGNED_SHORT, nullptr);
     glBindVertexArray(0);
 }
+*/

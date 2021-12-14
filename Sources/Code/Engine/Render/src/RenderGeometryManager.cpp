@@ -1,5 +1,4 @@
 #include "RenderGeometryManager.hpp"
-#include "Platform/OpenGL.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/Matrix.hpp"
 #include "Render/RenderCommon.hpp"
@@ -23,19 +22,19 @@ void RenderGeometryManager::deinit() {
     ETNode<ETRenderGeometryManager>::disconnect();
 }
 
-std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(PrimitiveGeometryType geomType) {
+std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(EPrimitiveGeometryType geomType) {
     switch(geomType) {
-    case PrimitiveGeometryType::Square:
+    case EPrimitiveGeometryType::Square:
         return createSquare();
-    case PrimitiveGeometryType::Sqaure_Tex:
+    case EPrimitiveGeometryType::Sqaure_Tex:
         return createSquareTex();
-    case PrimitiveGeometryType::Text:
+    case EPrimitiveGeometryType::Text:
         return createText();
-    case PrimitiveGeometryType::Particles:
+    case EPrimitiveGeometryType::Particles:
         return createParticles();
-    case PrimitiveGeometryType::NinePatch:
+    case EPrimitiveGeometryType::NinePatch:
         return createNinePatch();
-    case PrimitiveGeometryType::Line:
+    case EPrimitiveGeometryType::Line:
         return createLine();
     default:
         assert(false && "Invalid geometry type");
@@ -44,7 +43,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createGeometryOfType(Prim
     return nullptr;
 }
 
-std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(PrimitiveGeometryType geomType) {
+std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(EPrimitiveGeometryType geomType) {
     assert(RenderUtils::IsOpenGLContextExists() && "Can't get geometry without OpenGL context");
 
     auto reqGeomType = geomType;
@@ -65,7 +64,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::ET_createGeometry(Primiti
         return nullptr;
     }
 
-    assert(geom->aabb.getCenter() == Vec2(0.f) && "Invalid geometry center");
+    // assert(geom->aabb.getCenter() == Vec2(0.f) && "Invalid geometry center");
 
     geometris[reqGeomType] = geom;
     return geom;
@@ -102,10 +101,10 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquareTex() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
+    // geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
-    geometry->vertCount = 6u;
+    // geometry->vertCount = 6u;
     geometry->vertType = VertexType::Vector3_Tex;
 
     return geometry;
@@ -139,10 +138,10 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createSquare() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
+    // geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
-    geometry->vertCount = 6u;
+    // geometry->vertCount = 6u;
     geometry->vertType = VertexType::Vector3;
 
     return geometry;
@@ -165,10 +164,10 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createText() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB2D(0.f);
+    // geometry->aabb = AABB2D(0.f);
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
-    geometry->vertCount = RenderUtils::MaxCharsPerDraw;
+    // geometry->vertCount = RenderUtils::MaxCharsPerDraw;
     geometry->vertType = VertexType::Vector4;
 
     return geometry;
@@ -199,6 +198,7 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
 
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(0);
+
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(2 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
     }
@@ -231,11 +231,11 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createParticles() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
+    // geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->extraVboId = extraVboId;
-    geometry->vertCount = 6u;
+    // geometry->vertCount = 6u;
     geometry->vertType = VertexType::Particle;
 
     return geometry;
@@ -286,11 +286,11 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createNinePatch() {
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
+    // geometry->aabb = AABB2D(Vec2(-1.f, -1.f), Vec2(1.f, 1.f));
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
     geometry->eboId = eboId;
-    geometry->vertCount = 16;
+    // geometry->vertCount = 16;
     geometry->indciesCount = indciesCount;
     geometry->vertType = VertexType::Vector2_Tex;
 
@@ -312,16 +312,15 @@ std::shared_ptr<RenderGeometry> RenderGeometryManager::createLine() {
 
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(0);
+
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(2 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
     }
     glBindVertexArray(0);
 
     std::shared_ptr<RenderGeometry> geometry(new RenderGeometry);
-    geometry->aabb = AABB2D(0.f);
     geometry->vaoId = vaoId;
     geometry->vboId = vboId;
-    geometry->vertCount = 2u;
     geometry->vertType = VertexType::Line;
 
     return geometry;

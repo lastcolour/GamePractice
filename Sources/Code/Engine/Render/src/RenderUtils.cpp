@@ -2,19 +2,10 @@
 #include "RenderFramebuffer.hpp"
 #include "Render/ImageBuffer.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "Platform/OpenGL.hpp"
-#include "RenderGraph/RenderContext.hpp"
 #include "Render/ETRenderInterfaces.hpp"
 #include "Platform/ETSurface.hpp"
 #include "RenderGeometry.hpp"
 #include "Math/MatrixTransform.hpp"
-#include "Nodes/ImageNode.hpp"
-#include "Nodes/NinePatchNode.hpp"
-#include "Nodes/SimpleNode.hpp"
-#include "Nodes/TextNode.hpp"
-#include "Nodes/GradientNode.hpp"
-#include "Nodes/ParticlesNode.hpp"
-#include "Nodes/BlurNode.hpp"
 #include "RenderTexture.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 
@@ -27,74 +18,222 @@ static_assert(std::is_same<unsigned int, GLuint>::value, "unsigned int != GLuint
 
 namespace RenderUtils {
 
-const char* GetGLError() {
-    GLenum errCode = glGetError();
-    const char* errStr = nullptr;
-    switch(errCode) {
-        case GL_NO_ERROR: {
-            break;
-        }
-        case GL_INVALID_ENUM: {
-            errStr = "GL_INVALID_ENUM";
-            break;
-        }
-        case GL_INVALID_VALUE: {
-            errStr = "GL_INVALID_VALUE";
-            break;
-        }
-        case GL_INVALID_OPERATION: {
-            errStr = "GL_INVALID_OPERATION";
-            break;
-        }
-        case GL_OUT_OF_MEMORY: {
-            errStr = "GL_OUT_OF_MEMORY";
-            break;
-        }
-        case GL_INVALID_FRAMEBUFFER_OPERATION: {
-            errStr = "GL_INVALID_FRAMEBUFFER_OPERATION";
-            break;
-        }
-        default: {
-            errStr = "Unknown";
-            break;
-        }
-    }
-    return errStr;
-}
-
-const char* GetFBOError(GLenum framebufferType) {
+const char* GetGLFBOError(GLenum framebufferType) {
     GLenum errCode = glCheckFramebufferStatus(framebufferType);
-    const char* errStr = nullptr;
+    const char* resErrStr = nullptr;
     switch(errCode) {
         case GL_FRAMEBUFFER_COMPLETE: {
             break;
         }
         case GL_FRAMEBUFFER_UNDEFINED: {
-            errStr = "GL_FRAMEBUFFER_UNDEFINED";
+            resErrStr = "GL_FRAMEBUFFER_UNDEFINED";
             break;
         }
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: {
-            errStr = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+            resErrStr = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
             break;
         }
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: {
-            errStr = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+            resErrStr = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
             break;
         }
         case GL_FRAMEBUFFER_UNSUPPORTED: {
-            errStr = "GL_FRAMEBUFFER_UNSUPPORTED";
+            resErrStr = "GL_FRAMEBUFFER_UNSUPPORTED";
             break;
         }
         case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: {
-            errStr = "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE";
+            resErrStr = "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE";
             break;
         }
         default: {
-            errStr = "Uknown";
+            resErrStr = "Uknown";
             break;
         }
     }
-    return errStr;
+    return resErrStr;
+}
+
+const char* GetGLError() {
+    GLenum errCode = glGetError();
+    const char* resErrStr = nullptr;
+    switch(errCode) {
+        case GL_NO_ERROR: {
+            break;
+        }
+        case GL_INVALID_ENUM: {
+            resErrStr = "GL_INVALID_ENUM";
+            break;
+        }
+        case GL_INVALID_VALUE: {
+            resErrStr = "GL_INVALID_VALUE";
+            break;
+        }
+        case GL_INVALID_OPERATION: {
+            resErrStr = "GL_INVALID_OPERATION";
+            break;
+        }
+        case GL_OUT_OF_MEMORY: {
+            resErrStr = "GL_OUT_OF_MEMORY";
+            break;
+        }
+        case GL_INVALID_FRAMEBUFFER_OPERATION: {
+            resErrStr = "GL_INVALID_FRAMEBUFFER_OPERATION";
+            break;
+        }
+        default: {
+            resErrStr = "Unknown";
+            break;
+        }
+    }
+    return resErrStr;
+}
+
+bool IsOpenGLContextExists() {
+    bool hasContext = false;
+    ET_SendEventReturn(hasContext, &ETSurface::ET_canRender);
+    return hasContext;
+}
+
+GLenum GetGLTexLerpType(ETextureLerpType lerpType) {
+    GLenum resLerpType = GL_NONE;
+    switch(lerpType)
+    {
+        case ETextureLerpType::Linear: {
+            resLerpType = GL_LINEAR;
+            break;
+        }
+        case ETextureLerpType::Point: {
+            resLerpType = GL_NEAREST;
+            break;
+        }
+        default: {
+            assert(false && "Invalid texture lerp type");
+        }
+    }
+    return resLerpType;
+}
+
+GLenum GetGLTexWrapType(ETextureWrapType wrapType) {
+    GLenum resWrapType = GL_NONE;
+    switch(wrapType) {
+        case ETextureWrapType::Repeat: {
+            resWrapType = GL_REPEAT;
+            break;
+        }
+        case ETextureWrapType::MirroredRepeat: {
+            resWrapType = GL_MIRRORED_REPEAT;
+            break;
+        }
+        case ETextureWrapType::ClampToEdge: {
+            resWrapType = GL_CLAMP_TO_EDGE;
+            break;
+        }
+        default: {
+            assert(false && "Invalid texture wrap type");
+        }
+    }
+    return resWrapType;
+}
+
+GLenum GetGLBlendMode(EBlendOp blendOp) {
+    GLenum resBlenOp = GL_ONE;
+    switch(blendOp) {
+        case EBlendOp::NONE: {
+            assert(false && "Invalid blend mode");
+        }
+        case EBlendOp::ZERO: {
+            resBlenOp = GL_ZERO;
+            break;
+        }
+        case EBlendOp::ONE: {
+            resBlenOp = GL_ONE;
+            break;
+        }
+        case EBlendOp::SRC_COLOR: {
+            resBlenOp = GL_SRC_COLOR;
+            break;
+        }
+        case EBlendOp::ONE_MINUS_SRC_COLOR: {
+            resBlenOp = GL_ONE_MINUS_SRC_COLOR;
+            break;
+        }
+        case EBlendOp::DST_COLOR: {
+            resBlenOp = GL_DST_COLOR;
+            break;
+        }
+        case EBlendOp::ONE_MINUS_DST_COLOR: {
+            resBlenOp = GL_ONE_MINUS_DST_COLOR;
+            break;
+        }
+        case EBlendOp::SRC_ALPHA: {
+            resBlenOp = GL_SRC_ALPHA;
+            break;
+        }
+        case EBlendOp::ONE_MINUS_SRC_ALPHA: {
+            resBlenOp = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case EBlendOp::DST_ALPHA: {
+            resBlenOp = GL_DST_ALPHA;
+            break;
+        }
+        case EBlendOp::ONE_MINUS_DST_ALPHA: {
+            resBlenOp = GL_ONE_MINUS_DST_ALPHA;
+            break;
+        }
+        case EBlendOp::CONSTANT_COLOR: {
+            resBlenOp = GL_CONSTANT_COLOR;
+            break;
+        }
+        case EBlendOp::ONE_MINUS_CONSTANT_COLOR: {
+            resBlenOp = GL_ONE_MINUS_CONSTANT_COLOR;
+            break;
+        }
+        case EBlendOp::CONSTANT_ALPHA: {
+            resBlenOp = GL_CONSTANT_ALPHA;
+            break;
+        }
+        case EBlendOp::ONE_MINUS_CONSTANT_ALPHA: {
+            resBlenOp = GL_ONE_MINUS_CONSTANT_ALPHA;
+            break;
+        }
+        default: {
+            assert(false && "Invalid blend mode");
+        }
+    }
+    return resBlenOp;
+}
+
+BlendOpPair GetBlendOpPair(EBlendMode blendMode, bool preMultipliedAlpha) {
+    BlendOpPair resOpPair = {EBlendOp::NONE, EBlendOp::NONE};
+    switch(blendMode) {
+        case EBlendMode::None: {
+            break;
+        }
+        case EBlendMode::Normal: {
+            resOpPair.src = preMultipliedAlpha ? EBlendOp::ONE : EBlendOp::SRC_ALPHA;
+            resOpPair.dst = EBlendOp::ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case EBlendMode::Additive: {
+            resOpPair.src = preMultipliedAlpha ? EBlendOp::ONE : EBlendOp::SRC_ALPHA;
+            resOpPair.dst = EBlendOp::ONE;
+            break;
+        }
+        case EBlendMode::Screen: {
+            resOpPair.src = EBlendOp::ONE;
+            resOpPair.dst = EBlendOp::ONE_MINUS_SRC_COLOR;
+            break;
+        }
+        case EBlendMode::Multiply:
+            resOpPair.src = EBlendOp::DST_COLOR;
+            resOpPair.dst = EBlendOp::ONE_MINUS_SRC_ALPHA;
+            break;
+        default: {
+            assert(false && "Invalid blend mode");
+        }
+    }
+    return resOpPair;
 }
 
 bool ReadFramebufferToBuffer(RenderFramebuffer& framebuffer, void* out) {
@@ -130,13 +269,13 @@ bool ReadFramebufferToImage(RenderFramebuffer& framebuffer, ImageBuffer& imageBu
 
 void BlitFromFBOtoFBO(RenderFramebuffer& fromFBO, RenderFramebuffer& toFBO) {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fromFBO.framebufferId);
-    if(auto err = GetFBOError(GL_READ_FRAMEBUFFER)) {
+    if(auto err = GetGLFBOError(GL_READ_FRAMEBUFFER)) {
         LogError("[BlitFromFBOtoFBO] Invalid from FBO (Error: %s)", err);
         return;
     }
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, toFBO.framebufferId);
-    if(auto err = GetFBOError(GL_DRAW_FRAMEBUFFER)) {
+    if(auto err = GetGLFBOError(GL_DRAW_FRAMEBUFFER)) {
         LogError("[BlitFromFBOtoFBO] Invalid to FBO (Error: %s)", err);
         return;
     }
@@ -155,7 +294,7 @@ void BlitFromFBOtoFBO(RenderFramebuffer& fromFBO, RenderFramebuffer& toFBO) {
 
 void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO) {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fromFBO.framebufferId);
-    if(auto err = GetFBOError(GL_READ_FRAMEBUFFER)) {
+    if(auto err = GetGLFBOError(GL_READ_FRAMEBUFFER)) {
         LogError("[BlitFromFBOtoDefaultFBO] Invalid from FBO (Error: %s)", err);
         return;
     }
@@ -170,59 +309,6 @@ void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO) {
     }
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-}
-
-bool IsOpenGLContextExists() {
-    bool hasContext = false;
-    ET_SendEventReturn(hasContext, &ETSurface::ET_canRender);
-    return hasContext;
-}
-
-Mat4 CalcModelMat(const Transform& tm, const Vec3& scale) {
-    auto resMat = tm.toMat4();
-    Math::AddScale(resMat, scale / 2.f);
-    return resMat;
-}
-
-std::unique_ptr<Node> CreateRenderNode(RenderNodeType nodeType) {
-    std::unique_ptr<Node> node;
-    switch(nodeType) {
-        case RenderNodeType::Quad: {
-            break;
-        }
-        case RenderNodeType::NinePatchImage: {
-            node.reset(new NinePatchNode());
-            break;
-        }
-        case RenderNodeType::Gradient: {
-            node.reset(new GradientNode());
-            break;
-        }
-        case RenderNodeType::Image: {
-            node.reset(new ImageNode());
-            break;
-        }
-        case RenderNodeType::Simple: {
-            node.reset(new SimpleNode());
-            break;
-        }
-        case RenderNodeType::Text: {
-            node.reset(new TextNode());
-            break;
-        }
-        case RenderNodeType::ParticleEmmiter: {
-            node.reset(new ParticlesNode());
-            break;
-        }
-        case RenderNodeType::Blur:
-            node.reset(new BlurNode());
-            break;
-        default: {
-            assert(false && "Invalid node type");
-            return nullptr;
-        }
-    }
-    return node;
 }
 
 std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo, ETextureDataType texType) {
@@ -275,33 +361,34 @@ Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const
     return Vec2(h1, v1);
 }
 
-BlendMode GetBlendMode(BlendingConfig blendConfig, bool preMultipliedAlpha) {
-    BlendMode mode = {BlendType::NONE, BlendType::NONE};
-    switch(blendConfig) {
-        case BlendingConfig::Normal: {
-            mode.src = preMultipliedAlpha ? BlendType::ONE : BlendType::SRC_ALPHA;
-            mode.dst = BlendType::ONE_MINUS_SRC_ALPHA;
+const char* GetNameOfDrawCmdType(EDrawCmdType cmdType) {
+    const char* resName = "Unknown";
+    switch(cmdType) {
+        case EDrawCmdType::Text: {
+            resName = "Text";
             break;
         }
-        case BlendingConfig::Additive: {
-            mode.src = preMultipliedAlpha ? BlendType::ONE : BlendType::SRC_ALPHA;
-            mode.dst = BlendType::ONE;
+        case EDrawCmdType::TexturedQuad: {
+            resName = "TexturedQuad";
             break;
         }
-        case BlendingConfig::Screen: {
-            mode.src = BlendType::ONE;
-            mode.dst = BlendType::ONE_MINUS_SRC_COLOR;
+        case EDrawCmdType::Quad: {
+            resName = "Quad";
             break;
         }
-        case BlendingConfig::Multiply:
-            mode.src = BlendType::DST_COLOR;
-            mode.dst = BlendType::ONE_MINUS_SRC_ALPHA;
+        case EDrawCmdType::Particles: {
+            resName = "Particles";
             break;
+        }
+        case EDrawCmdType::Blur: {
+            resName = "Blur";
+            break;
+        }
         default: {
-            assert(false && "Invalid blend mode");
+            assert(false && "Invalid name");
         }
     }
-    return mode;
+    return resName;
 }
 
 } // namespace RenderUtils

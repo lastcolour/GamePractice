@@ -17,8 +17,7 @@ include_directories(
 
 file(GLOB RENDER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/RenderGraph/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Nodes/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Commands/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Particles/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Debug/*.cpp)
@@ -26,8 +25,7 @@ file(GLOB RENDER_SOURCES
 file(GLOB RENDER_HEADERS
     ${RENDER_INCLUDE_DIR}/Render/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/RenderGraph/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Nodes/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Commands/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Particles/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Debug/*.hpp)

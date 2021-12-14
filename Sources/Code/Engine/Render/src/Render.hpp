@@ -5,7 +5,6 @@
 #include "Core/ETTasks.hpp"
 #include "Platform/ETSurface.hpp"
 #include "Render/ETRenderInterfaces.hpp"
-#include "RenderGraph/RenderGraph.hpp"
 
 class Render : public SystemLogic,
     public ETNode<ETSurfaceEvents>,
@@ -21,8 +20,8 @@ public:
     void deinit() override;
 
     // ETRender
-    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, DrawContentFilter filter) override;
-    void ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, DrawContentFilter filter) override;
+    void ET_drawFrameToBuffer(ImageBuffer& imageBuffer, const Vec2i& drawSize, EDrawContentFilter filter) override;
+    void ET_drawFrameToBufferRaw(void* outBuffer, const Vec2i& drawSize, EDrawContentFilter filter) override;
 
     // ETSurfaceEvents
     void ET_onSurfaceDestroyed() override;

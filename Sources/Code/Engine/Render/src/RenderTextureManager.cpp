@@ -2,7 +2,6 @@
 #include "RenderTexture.hpp"
 #include "RenderFramebuffer.hpp"
 #include "RenderUtils.hpp"
-#include "Platform/OpenGL.hpp"
 #include "Core/ETAssets.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION

@@ -1,61 +1,15 @@
 #include "RenderTexture.hpp"
-#include "Platform/OpenGL.hpp"
 #include "RenderUtils.hpp"
 
 #include <cassert>
-
-namespace {
-
-GLenum getGLFilterType(ETextureLerpType lerpType) {
-    GLenum glLerpType = GL_NONE;
-    switch(lerpType)
-    {
-        case ETextureLerpType::Linear: {
-            glLerpType = GL_LINEAR;
-            break;
-        }
-        case ETextureLerpType::Point: {
-            glLerpType = GL_NEAREST;
-            break;
-        }
-        default: {
-            assert(false && "Invalid texture lerp type");
-        }
-    }
-    return glLerpType;
-}
-
-GLenum getGLWrapType(ETextureWrapType wrapType) {
-    GLenum glWrapType = GL_NONE;
-    switch(wrapType) {
-        case ETextureWrapType::Repeat: {
-            glWrapType = GL_REPEAT;
-            break;
-        }
-        case ETextureWrapType::MirroredRepeat: {
-            glWrapType = GL_MIRRORED_REPEAT;
-            break;
-        }
-        case ETextureWrapType::ClamToEdge: {
-            glWrapType = GL_CLAMP_TO_EDGE;
-            break;
-        }
-        default: {
-            assert(false && "Invalid texture wrap type");
-        }
-    }
-    return glWrapType;
-}
-
-} // namespace
 
 RenderTexture::RenderTexture() :
     size(-1),
     texId(0),
     minLerpType(ETextureLerpType::Point),
     magLerpType(ETextureLerpType::Point),
-    sWrapType(ETextureWrapType::ClamToEdge),
-    tWrapType(ETextureWrapType::ClamToEdge),
+    sWrapType(ETextureWrapType::ClampToEdge),
+    tWrapType(ETextureWrapType::ClampToEdge),
     dataType(ETextureDataType::RGBA) {
 }
 
@@ -85,12 +39,12 @@ void RenderTexture::writeRGBA(const Vec2i& pt, const Vec2i& subSize, const void*
 void RenderTexture::setLerpType(ETextureLerpType minType, ETextureLerpType magType) {
     if(minLerpType != minType) {
         minLerpType = minType;
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getGLFilterType(minType));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, RenderUtils::GetGLTexLerpType(minType));
 
     }
     if(magLerpType != magType) {
         magLerpType = magType;
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getGLFilterType(magType));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, RenderUtils::GetGLTexLerpType(magType));
 
     }
 }
@@ -98,11 +52,11 @@ void RenderTexture::setLerpType(ETextureLerpType minType, ETextureLerpType magTy
 void RenderTexture::setWrapType(ETextureWrapType sWrap, ETextureWrapType tWrap) {
     if(sWrapType != sWrap) {
         sWrapType = sWrap;
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getGLWrapType(sWrapType));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, RenderUtils::GetGLTexWrapType(sWrapType));
     }
     if(tWrapType != tWrap) {
         tWrapType = tWrap;
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getGLWrapType(tWrapType));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, RenderUtils::GetGLTexWrapType(tWrapType));
     }
 }
 

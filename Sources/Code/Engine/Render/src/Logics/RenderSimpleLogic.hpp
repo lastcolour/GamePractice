@@ -1,9 +1,9 @@
 #ifndef __RENDER_SIMPLE_LOGIC_HPP__
 #define __RENDER_SIMPLE_LOGIC_HPP__
 
-#include "Logics/RenderNode.hpp"
+#include "Logics/DrawCommandProxy.hpp"
 
-class RenderSimpleLogic : public RenderNode,
+class RenderSimpleLogic : public DrawCommandProxy,
     public ETNode<ETRenderSimpleLogic>,
     public ETNode<ETRenderRect> {
 public:
@@ -24,7 +24,7 @@ public:
 
 protected:
 
-    // RenderNode
+    // DrawCommandProxy
     void onInit() override;
 
 private:

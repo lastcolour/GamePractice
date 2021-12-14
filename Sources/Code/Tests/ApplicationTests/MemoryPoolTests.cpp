@@ -1,9 +1,10 @@
 #include "MemoryPoolTests.hpp"
 #include "Core/PoolAllocator.hpp"
 
+#include <thread>
+
 TEST_F(MemoryPoolTests, CheckAllocateReuse) {
     Memory::PoolAllocator<Memory::AdaptiveGrowPolicy> allocator(32, 1);
-    allocator.setUseCentralAllocator(false);
 
     {
         EXPECT_FLOAT_EQ(1.f, allocator.getFillRatio());
@@ -38,7 +39,6 @@ TEST_F(MemoryPoolTests, CheckAllocateReuse) {
 
 TEST_F(MemoryPoolTests, CheckBlockAllocation) {
     Memory::PoolAllocator<Memory::FixedGrowPolicy<16>> allocator(32, 1);
-    allocator.setUseCentralAllocator(false);
 
     for(int i = 0; i < 8; ++i) {
         auto ptr1 = allocator.allocate();
@@ -50,7 +50,6 @@ TEST_F(MemoryPoolTests, CheckBlockAllocation) {
 
 TEST_F(MemoryPoolTests, CheckRemoveBlocks) {
     Memory::PoolAllocator<Memory::FixedGrowPolicy<1>> allocator(32, 1);
-    allocator.setUseCentralAllocator(false);
 
     auto ptr = allocator.allocate();
 
@@ -59,4 +58,35 @@ TEST_F(MemoryPoolTests, CheckRemoveBlocks) {
     allocator.deallocate(ptr);
 
     EXPECT_EQ(allocator.getNumBlocks(), 0);
+}
+
+TEST_F(MemoryPoolTests, CheckAsyncPoolUse) {
+    Memory::PoolAllocator<Memory::AdaptiveGrowPolicy> allocator(32, 8);
+
+    std::atomic<bool> runFlag(true);
+    std::atomic<int> activeThread(16);
+
+    std::vector<std::thread> workers;
+    for(int i = 0; i < 16; ++i) {
+        std::thread t([&allocator, &runFlag, &activeThread](){
+            while(runFlag.load()) {
+                auto obj = allocator.allocate();
+                ASSERT_TRUE(obj);
+                allocator.deallocate(obj);
+            }
+            activeThread.fetch_sub(1);
+        });
+        t.detach();
+        workers.push_back(std::move(t));
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    runFlag.store(false);
+
+    while(activeThread.load() != 0) {
+        std::this_thread::yield();
+    }
+
+    EXPECT_EQ(0, allocator.getNumObjects());
 }

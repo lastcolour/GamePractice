@@ -1,12 +1,11 @@
 #include "Logics/RenderTextLogic.hpp"
 #include "RenderFont.hpp"
-#include "Nodes/TextNode.hpp"
 #include "Render/ETRenderManager.hpp"
 
 #include <cassert>
 
 RenderTextLogic::RenderTextLogic() :
-    RenderNode(RenderNodeType::Text),
+    DrawCommandProxy(EDrawCmdType::Text),
     color(255, 255, 255),
     fontHeight(24.f),
     fontType(EFontType::Game) {
@@ -17,7 +16,7 @@ RenderTextLogic::~RenderTextLogic() {
 
 void RenderTextLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderTextLogic>("RenderText")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<DrawCommandProxy>();
         classInfo->addField("color", &RenderTextLogic::color);
         classInfo->addField("fontSize", &RenderTextLogic::fontHeight);
         classInfo->addField("text", &RenderTextLogic::text);
@@ -25,24 +24,21 @@ void RenderTextLogic::Reflect(ReflectContext& ctx) {
 }
 
 void RenderTextLogic::onInit() {
-    auto textProxyNode = static_cast<TextNode*>(proxyNode);
-    textProxyNode->setFontHeight(fontHeight);
-    textProxyNode->setColor0(color);
-    textProxyNode->setText(text);
-    textProxyNode->setFontType(fontType);
     ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, EFontType::Game);
+
+    auto textCmd = static_cast<DrawTextCmd*>(cmd);
+    textCmd->fontHeight = fontHeight;
+    textCmd->color = color;
+    textCmd->text = text;
+    textCmd->font = font;
 
     ETNode<ETRenderTextLogic>::connect(getEntityId());
 }
 
 void RenderTextLogic::ET_setFontHeight(float newFontHeight) {
     assert(newFontHeight >= 0.f && "Invalid font height");
-
     fontHeight = newFontHeight;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newFontHeight](){
-        auto textProxyNode = static_cast<TextNode*>(node);
-        textProxyNode->setFontHeight(newFontHeight);
-    });
+    DrawTextCmd::QueueFontHeightUpdate(*cmd, fontHeight);
 }
 
 AABB2D RenderTextLogic::ET_getTextAABB() const {
@@ -66,28 +62,19 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
 
 void RenderTextLogic::ET_setColor(const ColorB& newColor) {
     color = newColor;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newColor](){
-        auto textProxyNode = static_cast<TextNode*>(node);
-        textProxyNode->setColor0(newColor);
-    });
+    DrawTextCmd::QueueColorUpdate(*cmd, color);
 }
 
 void RenderTextLogic::ET_setText(const char* str) {
     text = str;
-    std::string copyText = text;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, s(std::move(copyText))](){
-        auto textProxyNode = static_cast<TextNode*>(node);
-        textProxyNode->setText(std::move(s));
-    });
+    DrawTextCmd::QueueTextUpdate(*cmd, text);
 }
 
 void RenderTextLogic::ET_setFontType(EFontType newFontType) {
     fontType = newFontType;
     ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, fontType);
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, fontT=newFontType](){
-        auto textProxyNode = static_cast<TextNode*>(node);
-        textProxyNode->setFontType(fontT);
-    });
+
+    DrawTextCmd::QueueFontTypeUpdate(*cmd, fontType);
 }
 
 EFontType RenderTextLogic::ET_getFontType() const {

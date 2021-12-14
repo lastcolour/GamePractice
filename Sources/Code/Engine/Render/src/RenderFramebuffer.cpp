@@ -1,5 +1,4 @@
 #include "RenderFramebuffer.hpp"
-#include "Platform/OpenGL.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "RenderUtils.hpp"
 

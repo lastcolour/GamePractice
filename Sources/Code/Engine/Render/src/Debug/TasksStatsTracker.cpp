@@ -13,7 +13,8 @@ const float GRAPH_TIME_MS = 2000.f;
 const float FONT_SIZE = 14.f;
 const float NEW_LINE_OFFSET = 2.f;
 
-void DrawLineBetweenPoints(const Vec2& curr, const Vec2& prev, const Vec2& drawPt, const Vec2& size, const ColorB& col) {
+void DrawLineBetweenPoints(DebugInfoDrawer& dd, const Vec2& curr, const Vec2& prev,
+    const Vec2& drawPt, const Vec2& size, const ColorB& col) {
     Vec2 startPt;
     startPt.x = drawPt.x + Math::Lerp(0.f, static_cast<float>(size.x),
         (GRAPH_TIME_MS + curr.x) / GRAPH_TIME_MS);
@@ -22,10 +23,12 @@ void DrawLineBetweenPoints(const Vec2& curr, const Vec2& prev, const Vec2& drawP
     endPt.x = drawPt.x + Math::Lerp(0.f, static_cast<float>(size.x),
         (GRAPH_TIME_MS + prev.x) / GRAPH_TIME_MS);
     endPt.y = drawPt.y + (size.y - 2.f) * prev.y + 1.f;
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, col);
+
+    dd.drawLine(startPt, endPt, col);
 }
 
-void DrawFPSChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
+void DrawFPSChart(DebugInfoDrawer& dd, const Vec2& pt, const Vec2& size,
+    const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
     if(timing.size() <= 2) {
         return;
     }
@@ -42,7 +45,7 @@ void DrawFPSChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<TaskR
         fpsVal = 1000.f / runTime;
         curr.x = prev.x - runTime;
         curr.y = std::min(1.f, fpsVal / MAX_FPS);
-        DrawLineBetweenPoints(curr, prev, pt, size, ColorB(255, 255, 0));
+        DrawLineBetweenPoints(dd, curr, prev, pt, size, ColorB(255, 255, 0));
         prev = curr;
         if(i == 1) {
             break;
@@ -54,7 +57,8 @@ void DrawFPSChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<TaskR
     }
 }
 
-void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
+void DrawRunTimeChart(DebugInfoDrawer& dd, const Vec2& pt, const Vec2& size,
+    const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
     if(timing.size() <= 2) {
         return;
     }
@@ -67,7 +71,7 @@ void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<T
     while(true) {
         curr.x = prev.x - GetRunTimeBetween(timing, i);
         curr.y = std::min(1.f,  GetRunDurationAt(timing, i) / MAX_RUN_TIME);
-        DrawLineBetweenPoints(curr, prev, pt, size, ColorB(255, 0, 255));
+        DrawLineBetweenPoints(dd, curr, prev, pt, size, ColorB(255, 0, 255));
         prev = curr;
         if(i == 1) {
             break;
@@ -79,31 +83,31 @@ void DrawRunTimeChart(const Vec2& pt, const Vec2& size, const Core::CycleArray<T
     }
 }
 
-void DrawGraphBox(const Vec2& pt, const Vec2& size) {
+void DrawGraphBox(DebugInfoDrawer& dd, const Vec2& pt, const Vec2& size) {
     auto startPt = pt;
     auto endPt = Vec2(startPt.x, startPt.y + size.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
+    dd.drawLine(startPt, endPt, ColorB(255));
 
     startPt = pt;
     endPt = Vec2(startPt.x + size.x, startPt.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
+    dd.drawLine(startPt, endPt, ColorB(255));
 
     startPt = pt + size;
     endPt = Vec2(startPt.x - size.x, startPt.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
+    dd.drawLine(startPt, endPt, ColorB(255));
 
     startPt = pt + size;
     endPt = Vec2(startPt.x, startPt.y - size.y);
-    ET_SendEvent(&ETDebugRender::ET_drawLine, startPt, endPt, ColorB(255));
+    dd.drawLine(startPt, endPt, ColorB(255));
 }
 
-void DrawTaskRunInfo(Vec2& pt, const std::string& taskName, const TaskRunInfo& runInfo) {
+void DrawTaskRunInfo(DebugInfoDrawer& dd, Vec2& pt, const std::string& taskName, const TaskRunInfo& runInfo) {
     auto avgRunInfo = GetAvgRunInfo(runInfo);
     ColorB textCol(255, 255, 0);
     {
         std::string fpsText = StringFormat("%s: FPS: %.1f [%.1f .. %.1f]", taskName,
             avgRunInfo.avgFPS, avgRunInfo.minFPS, avgRunInfo.maxFPS);
-        ET_SendEvent(&ETDebugRender::ET_drawText, pt, FONT_SIZE, textCol, fpsText.c_str());
+        dd.drawText(pt, FONT_SIZE, textCol, fpsText.c_str());
     }
 
     pt.y -= FONT_SIZE + NEW_LINE_OFFSET;
@@ -111,16 +115,16 @@ void DrawTaskRunInfo(Vec2& pt, const std::string& taskName, const TaskRunInfo& r
     {
         std::string runTimeText = StringFormat("%s: AVG Run Time: %.2f [%.1f .. %.1f] ms", taskName,
             avgRunInfo.avgRunTime, avgRunInfo.minRunTime, avgRunInfo.maxRunTime);
-        ET_SendEvent(&ETDebugRender::ET_drawText, pt, FONT_SIZE, textCol, runTimeText.c_str());
+        dd.drawText(pt, FONT_SIZE, textCol, runTimeText.c_str());
     }
 
     pt.y -= FONT_SIZE + 40.f;
 
     {
         Vec2 size(140.f, 40.f);
-        DrawGraphBox(pt, size);
-        DrawFPSChart(pt, size, runInfo.timing);
-        DrawRunTimeChart(pt, size, runInfo.timing);
+        DrawGraphBox(dd, pt, size);
+        DrawFPSChart(dd, pt, size, runInfo.timing);
+        DrawRunTimeChart(dd, pt, size, runInfo.timing);
     }
 }
 
@@ -140,7 +144,7 @@ bool TasksStatsTracker::init() {
 void TasksStatsTracker::deinit() {
 }
 
-void TasksStatsTracker::ET_drawDebugInfo() {
+void TasksStatsTracker::ET_drawDebugInfo(DebugInfoDrawer& dd) {
     auto renderConfig = Core::GetGlobal<RenderConfig>();
 
     Vec2i viewPort(0);
@@ -155,7 +159,7 @@ void TasksStatsTracker::ET_drawDebugInfo() {
         if(!GetEnv()->GetTasksRunner()->getTaskRunInfo(taskName, runInfo)) {
             continue;
         }
-        DrawTaskRunInfo(pt, taskName, runInfo);
+        DrawTaskRunInfo(dd, pt, taskName, runInfo);
         pt.y -= FONT_SIZE + NEW_LINE_OFFSET;
     }
 }

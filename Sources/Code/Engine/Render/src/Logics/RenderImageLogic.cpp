@@ -1,12 +1,7 @@
 #include "Logics/RenderImageLogic.hpp"
-#include "Nodes/ImageNode.hpp"
 
 RenderImageLogic::RenderImageLogic() :
-    RenderImageLogic(RenderNodeType::Image) {
-}
-
-RenderImageLogic::RenderImageLogic(RenderNodeType nodeType) :
-    RenderNode(nodeType),
+    DrawCommandProxy(EDrawCmdType::TexturedQuad),
     size(100.f) {
 }
 
@@ -15,18 +10,18 @@ RenderImageLogic::~RenderImageLogic() {
 
 void RenderImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderImageLogic>("RenderImage")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<DrawCommandProxy>();
         classInfo->addField("textureInfo", &RenderImageLogic::textureInfo);
         classInfo->addField("size", &RenderImageLogic::size);
     }
 }
 
 void RenderImageLogic::onInit() {
-    auto imageProxyNode = static_cast<ImageNode*>(proxyNode);
-    imageProxyNode->setSize(size);
+    auto texQuadCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
+    texQuadCmd->imageType = DrawTexturedQuadCmd::EImageCmdType::Image;
 
     if(!textureInfo.filename.empty()) {
-        ET_setTextureInfo(textureInfo);
+        texQuadCmd->texInfo = textureInfo;
     } else {
         LogWarning("[RenderImageLogic::onInit] Texture file is empty on entity: '%s'",
             EntityUtils::GetEntityName(getEntityId()));
@@ -42,18 +37,12 @@ TextureInfo RenderImageLogic::ET_getTextureInfo() const {
 
 void RenderImageLogic::ET_setTextureInfo(const TextureInfo& newTextureInfo) {
     textureInfo = newTextureInfo;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, texInfo=textureInfo](){
-        auto imageProxyNode = static_cast<ImageNode*>(node);
-        imageProxyNode->setTextureInfo(texInfo);
-    });
+    DrawTexturedQuadCmd::QueueTexInfoUpdate(*cmd, textureInfo);
 }
 
 void RenderImageLogic::ET_setSize(const Vec2& newSize) {
+    DrawCmd::QueueSizeUpdate(*cmd, size, newSize, EDrawCmdType::TexturedQuad);
     size = newSize;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newSize](){
-        auto imageProxyNode = static_cast<ImageNode*>(node);
-        imageProxyNode->setSize(newSize);
-    });
 }
 
 Vec2 RenderImageLogic::ET_getSize() const {

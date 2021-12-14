@@ -1,9 +1,9 @@
 #include "Logics/RenderLinearGradientRect.hpp"
-#include "Nodes/GradientNode.hpp"
+#include "Math/MatrixTransform.hpp"
 
 RenderLinearGradientRect::RenderLinearGradientRect() :
-    RenderNode(RenderNodeType::Gradient),
-    size(100.f),
+    DrawCommandProxy(EDrawCmdType::TexturedQuad),
+    size(100),
     startCol(255, 255, 255),
     endCol(0, 0, 0),
     isVertical(true) {
@@ -14,7 +14,7 @@ RenderLinearGradientRect::~RenderLinearGradientRect() {
 
 void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderLinearGradientRect>("RenderLinearGradientRect")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<DrawCommandProxy>();
         classInfo->addField("size", &RenderLinearGradientRect::size);
         classInfo->addField("startColor", &RenderLinearGradientRect::startCol);
         classInfo->addField("endColor", &RenderLinearGradientRect::endCol);
@@ -23,21 +23,20 @@ void RenderLinearGradientRect::Reflect(ReflectContext& ctx) {
 }
 
 void RenderLinearGradientRect::onInit() {
-    auto gradientProxyNode = static_cast<GradientNode*>(proxyNode);
-    gradientProxyNode->setColor0(startCol);
-    gradientProxyNode->setColor1(endCol);
-    gradientProxyNode->setVertical(isVertical);
-    gradientProxyNode->setSize(size);
+    auto texQuadCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
+    texQuadCmd->imageType = DrawTexturedQuadCmd::EImageCmdType::Gradient;
+
+    Math::AddScale(texQuadCmd->modelMat, Vec3(
+        static_cast<float>(size.x), static_cast<float>(size.y), 1.f));
+
+    DrawTexturedQuadCmd::QueueSetTexGradient(*cmd, startCol, endCol, isVertical);
 
     ETNode<ETRenderRect>::connect(getEntityId());
 }
 
 void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {
+    DrawColoredQuadCmd::QueueSizeUpdate(*cmd, size, newSize, EDrawCmdType::TexturedQuad);
     size = newSize;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newSize](){
-        auto gradientProxyNode = static_cast<GradientNode*>(node);
-        gradientProxyNode->setSize(newSize);
-    });
 }
 
 Vec2 RenderLinearGradientRect::ET_getSize() const {

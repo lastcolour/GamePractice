@@ -1,5 +1,5 @@
 #include "Logics/NinePatchImageLogic.hpp"
-#include "Nodes/NinePatchNode.hpp"
+#include "RenderUtils.hpp"
 
 void NinePatchImageLogic::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<NinePatchImageLogic>("NinePatchImageLogic")) {
@@ -11,7 +11,6 @@ void NinePatchImageLogic::Reflect(ReflectContext& ctx) {
 }
 
 NinePatchImageLogic::NinePatchImageLogic() :
-    RenderImageLogic(RenderNodeType::NinePatchImage),
     horizontal(0.3f),
     vertical(0.3f),
     patchScale(1.f) {
@@ -27,8 +26,10 @@ void NinePatchImageLogic::onInit() {
     vertical = Math::Clamp(vertical, 0.f, 0.4999f);
     patchScale = Math::Clamp(patchScale, 0.f, 10.f);
 
-    auto ninePatchNode = static_cast<NinePatchNode*>(proxyNode);
-    ninePatchNode->setPatches(horizontal, vertical, patchScale);
+    auto ninePatchCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
+    ninePatchCmd->imageType = DrawTexturedQuadCmd::EImageCmdType::NinePatch;
+    ninePatchCmd->ninePatches = Vec2(horizontal, vertical);
+    ninePatchCmd->patchesScale = patchScale;
 
     ETNode<ETNinePatchImageLogic>::connect(getEntityId());
 }
@@ -42,16 +43,16 @@ void NinePatchImageLogic::ET_setPatches(const Vec2& patches) {
     horizontal = Math::Clamp(horizontal, 0.f, 0.4999f);
     vertical = patches.y;
     vertical = Math::Clamp(vertical, 0.f, 0.4999f);
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, h=horizontal, v=vertical, s=patchScale](){
-        auto ninePatchNode = static_cast<NinePatchNode*>(node);
-        ninePatchNode->setPatches(h, v, s);
-    });
+
+    DrawTexturedQuadCmd::QueueNinePatchUpdate(*cmd, Vec2(horizontal, vertical));
 }
 
 Vec2 NinePatchImageLogic::ET_getPatchesVertCoord() const {
-    if(!proxyNode) {
+    auto ninePatchCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
+    if(!ninePatchCmd || !ninePatchCmd->texObj) {
         return Vec2(0.f);
     }
-    auto ninePatchNode = static_cast<NinePatchNode*>(proxyNode);
-    return ninePatchNode->getVertCoord() / 2.f;
+    return Vec2(0.f);
+    // return RenderUtils::GetNinePatchVertexCoord(ninePatchCmd->texObj->getSize(),
+    //     Vec2(size.x * tm.scale.x, size.y * tm.scale.y), Vec2(horizontal, vertical), patchScale);
 }

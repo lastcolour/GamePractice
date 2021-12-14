@@ -1,11 +1,11 @@
 #ifndef __RENDER_TEXT_LOGIC_HPP__
 #define __RENDER_TEXT_LOGIC_HPP__
 
-#include "Logics/RenderNode.hpp"
+#include "Logics/DrawCommandProxy.hpp"
 
 class RenderFont;
 
-class RenderTextLogic : public RenderNode,
+class RenderTextLogic : public DrawCommandProxy,
     public ETNode<ETRenderTextLogic> {
 public:
 
@@ -28,10 +28,6 @@ protected:
 
     // RenderNode
     void onInit() override;
-
-private:
-
-    void calcTextSize();
 
 private:
 

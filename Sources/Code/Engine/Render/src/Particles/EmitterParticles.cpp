@@ -101,7 +101,7 @@ void simulateVortexField(const GravityField& field, const Transform& tm, int act
 bool triggerSubEmitters(const Particle* p, SubEmitterTriggerEvent event,
     const SimulationConfig& simConf, const EmitRequest& emitReq, SubEmitterTriggerEvent flags) {
 
-    if(!Core::EnumFlagsBitANDCheck(event, flags)) {
+    if(!Core::EnumFlagsBitAND(event, flags)) {
         return false;
     }
 
@@ -141,7 +141,7 @@ SubEmitterTriggerEvent caclSubEmitterFlags(const SimulationConfig& simConf) {
             continue;
         }
         assert(sub.event != SubEmitterTriggerEvent::None && "Invalid sub event");
-        flags = Core::EnumFlagsBitXORCreate(flags, sub.event);
+        flags = Core::EnumFlagsBitXOR(flags, sub.event);
     }
     return flags;
 }

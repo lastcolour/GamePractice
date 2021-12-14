@@ -1,7 +1,6 @@
 #include "RenderFontManager.hpp"
 #include "RenderFont.hpp"
 #include "Core/ETAssets.hpp"
-#include "Platform/OpenGL.hpp"
 #include "Core/ETApplication.hpp"
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"

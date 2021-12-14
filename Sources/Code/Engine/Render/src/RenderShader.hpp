@@ -3,6 +3,7 @@
 
 #include "Math/Matrix.hpp"
 #include "Math/Color.hpp"
+#include "Render/RenderCommon.hpp"
 
 class RenderTexture;
 
@@ -28,7 +29,8 @@ public:
 
     void cacheUniformIds();
 
-    void setTexture2d(UniformType varType, int unitId, RenderTexture& tex);
+    void setTexture2d(UniformType varType, int unitId, RenderTexture& texObj);
+    void setTexture2d(UniformType varType, int unitId, RenderTexture& texObj, TextureInfo& texInfo);
     void setUniform1i(UniformType varType, int val);
     void setUniform1f(UniformType varType, float val);
     void setUniform2f(UniformType varType, const Vec2i& val);

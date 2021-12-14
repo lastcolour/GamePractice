@@ -1,10 +1,9 @@
 #ifndef __RENDER_IMAGE_LOGIC_HPP__
 #define __RENDER_IMAGE_LOGIC_HPP__
 
-#include "Logics/RenderNode.hpp"
-#include "Render/TextureInfo.hpp"
+#include "Logics/DrawCommandProxy.hpp"
 
-class RenderImageLogic : public RenderNode,
+class RenderImageLogic : public DrawCommandProxy,
     public ETNode<ETRenderImageLogic>,
     public ETNode<ETRenderRect> {
 public:
@@ -14,7 +13,6 @@ public:
 public:
 
     RenderImageLogic();
-    RenderImageLogic(RenderNodeType nodeType);
     virtual ~RenderImageLogic();
 
     // ETRenderImageLogic
@@ -27,7 +25,7 @@ public:
 
 protected:
 
-    // RenderNode
+    // DrawCommandProxy
     void onInit() override;
 
 protected:

@@ -1,14 +1,13 @@
 #ifndef __PARTICLES_EMITTER_HPP__
 #define __PARTICLES_EMITTER_HPP__
 
-#include "Logics/RenderNode.hpp"
+#include "Logics/DrawCommandProxy.hpp"
 #include "Render/ETParticlesSystem.hpp"
 #include "Render/ParticlesEmitterConfig.hpp"
 #include "Particles/EmitterParticles.hpp"
 
-class ParticlesSystem : public RenderNode,
-    public ETNode<ETParticlesSystem>,
-    public ETNode<ETParticlesUpdate> {
+class ParticlesSystem : public DrawCommandProxy,
+    public ETNode<ETParticlesSystem> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -43,12 +42,9 @@ public:
     void ET_stopSubEmitter(int rootParticleId) override;
     bool ET_hasAliveParticles() const override;
 
-    // ETParticlesUpdate
-    void ET_updateEmitter(float dt) override;
-
 protected:
 
-    // RenderNode
+    // DrawCommandProxy
     void onInit() override;
 
 private:

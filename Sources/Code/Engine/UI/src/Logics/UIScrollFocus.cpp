@@ -66,6 +66,3 @@ void UIScrollFocus::applyFocusToEntity() {
 
     focusEntId = InvalidEntityId;
 }
-
-void UIScrollFocus::ET_onUITick(float dt) {
-}

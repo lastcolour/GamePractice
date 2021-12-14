@@ -1,4 +1,4 @@
-#include "Render/TextureInfo.hpp"
+#include "Render/RenderCommon.hpp"
 
 void TextureInfo::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<TextureInfo>("TextureInfo")) {
@@ -6,12 +6,4 @@ void TextureInfo::Reflect(ReflectContext& ctx) {
         classInfo->addField("lerpType", &TextureInfo::lerpType);
         classInfo->addField("tintColor", &TextureInfo::tintColor);
     }
-}
-
-TextureInfo::TextureInfo() :
-    lerpType(ETextureLerpType::Point),
-    tintColor(0, 0, 0, 0) {
-}
-
-TextureInfo::~TextureInfo() {
 }

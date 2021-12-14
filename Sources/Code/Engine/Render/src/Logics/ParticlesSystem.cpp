@@ -1,38 +1,11 @@
 #include "Logics/ParticlesSystem.hpp"
-#include "Nodes/ParticlesNode.hpp"
 #include "Render/ETRenderTickManager.hpp"
 
 #include <cassert>
 
-namespace {
-
-float getUpdateDeltaTime(const ParticlesEmitterEmissionConfig& emissionConfig, float renderDt) {
-    float dt = 0.f;
-    switch(emissionConfig.emitterSimTime) {
-        case EmitterSimulationTime::Render: {
-            dt = renderDt;
-            break;
-        }
-        case EmitterSimulationTime::Game: {
-            ET_SendEventReturn(dt, &ETRenderTickManager::ET_getUIDeltaT);
-            break;
-        }
-        case EmitterSimulationTime::UI: {
-            ET_SendEventReturn(dt, &ETRenderTickManager::ET_getUIDeltaT);
-            break;
-        }
-        default: {
-            assert(false && "Invalid simulation time");
-        }
-    }
-    return dt;
-}
-
-} // namespace
-
 void ParticlesSystem::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<ParticlesSystem>("ParticlesSystem")) {
-        classInfo->addBaseClass<RenderNode>();
+        classInfo->addBaseClass<DrawCommandProxy>();
         classInfo->addField("emission", &ParticlesSystem::emissionConfig);
         classInfo->addField("movement", &ParticlesSystem::movementConfig);
         classInfo->addField("size", &ParticlesSystem::sizeConfig);
@@ -44,7 +17,7 @@ void ParticlesSystem::Reflect(ReflectContext& ctx) {
 }
 
 ParticlesSystem::ParticlesSystem() :
-    RenderNode(RenderNodeType::ParticleEmmiter) {
+    DrawCommandProxy(EDrawCmdType::Particles) {
 }
 
 ParticlesSystem::~ParticlesSystem() {
@@ -55,10 +28,10 @@ void ParticlesSystem::onInit() {
     emissionConfig.emissionRate = std::max(emissionConfig.emissionRate, 0.01f);
     emissionConfig.startDelay = std::max(emissionConfig.startDelay, 0.f);
 
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& pool = particlesNode->getEmittersPool();
-    auto& simConfig = pool.getSimConfig();
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    particlesCmd->renderConfig = renderConfig;
 
+    auto& simConfig = particlesCmd->emittersPool.getSimConfig();
     simConfig.emission = emissionConfig;
     simConfig.movement = movementConfig;
     simConfig.color = colorConfig;
@@ -66,25 +39,16 @@ void ParticlesSystem::onInit() {
     simConfig.subEmittorsConfig = subEmittersConfig;
     simConfig.sizeConfig = sizeConfig;
 
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=particlesNode, config=renderConfig](){
-        node->setConfig(config);
-    });
-
     if(emissionConfig.autoStart) {
         ET_emit();
     }
+
     ETNode<ETParticlesSystem>::connect(getEntityId());
-    ETNode<ETParticlesUpdate>::connect(getEntityId());
 }
 
 void ParticlesSystem::ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) {
     colorConfig = newColorConf;
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newColorConf](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        auto& simConfig = pool.getSimConfig();
-        simConfig.color = newColorConf;
-    });
+    DrawParticlesCmd::QueueColorConfigUpdate(*cmd, colorConfig);
 }
 
 const ParticlesEmitterColorConfig& ParticlesSystem::ET_getColorConfig() const {
@@ -93,12 +57,7 @@ const ParticlesEmitterColorConfig& ParticlesSystem::ET_getColorConfig() const {
 
 void ParticlesSystem::ET_setMovementConfig(const ParticlesEmitterMovementConfig& newMovementConf) {
     movementConfig = newMovementConf;
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newMovementConf](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        auto& simConfig = pool.getSimConfig();
-        simConfig.movement = newMovementConf;
-    });
+    DrawParticlesCmd::QueueMovementConfigUpdate(*cmd, movementConfig);
 }
 
 const ParticlesEmitterMovementConfig& ParticlesSystem::ET_getMovementConfig() const {
@@ -107,12 +66,7 @@ const ParticlesEmitterMovementConfig& ParticlesSystem::ET_getMovementConfig() co
 
 void ParticlesSystem::ET_setEmissionConfig(const ParticlesEmitterEmissionConfig& newEmissionConf) {
     emissionConfig = newEmissionConf;
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newEmissionConf](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        auto& simConfig = pool.getSimConfig();
-        simConfig.emission = newEmissionConf;
-    });
+    DrawParticlesCmd::QueueEmissionConfigUpdate(*cmd, emissionConfig);
 }
 
 const ParticlesEmitterEmissionConfig& ParticlesSystem::ET_getEmissionConfig() const {
@@ -121,10 +75,7 @@ const ParticlesEmitterEmissionConfig& ParticlesSystem::ET_getEmissionConfig() co
 
 void ParticlesSystem::ET_setRenderConfig(const ParticlesEmitterRenderConfig& newRenerConf) {
     renderConfig = newRenerConf;
-    ET_QueueEvent(&ETRenderNodeManager::ET_scheduleNodeEvent, [node=proxyNode, newRenerConf](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        particlesNode->setConfig(newRenerConf);
-    });
+    DrawParticlesCmd::QueueRenderConfigUpdate(*cmd, renderConfig);
 }
 
 const ParticlesEmitterRenderConfig& ParticlesSystem::ET_getRenderConfig() const {
@@ -133,22 +84,12 @@ const ParticlesEmitterRenderConfig& ParticlesSystem::ET_getRenderConfig() const 
 
 void ParticlesSystem::ET_setSubEmittersConfig(const ParticlesSubEmittersConfig& newSubEmittersConf) {
     subEmittersConfig = newSubEmittersConf;
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newSubEmittersConf](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        auto& simConfig = pool.getSimConfig();
-        simConfig.subEmittorsConfig = newSubEmittersConf;
-    });
+    DrawParticlesCmd::QueueSubEmittersConfigUpdate(*cmd, subEmittersConfig);
 }
 
 void ParticlesSystem::ET_setSizeConfig(const ParticlesEmitterSizeConfig& newSizeConf) {
     sizeConfig = newSizeConf;
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, newSizeConf](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        auto& simConfig = pool.getSimConfig();
-        simConfig.sizeConfig = newSizeConf;
-    });
+    DrawParticlesCmd::QueueSizeConfigUpdate(*cmd, sizeConfig);
 }
 
 const ParticlesEmitterSizeConfig& ParticlesSystem::ET_getSizeConfig() const {
@@ -160,22 +101,8 @@ const ParticlesSubEmittersConfig& ParticlesSystem::ET_getSubEmittersConfig() con
 }
 
 bool ParticlesSystem::ET_hasAliveParticles() const {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& pool = particlesNode->getEmittersPool();
-    return pool.asyncHasAlive();
-}
-
-void ParticlesSystem::ET_updateEmitter(float dt) {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& pool = particlesNode->getEmittersPool();
-    auto& tm = particlesNode->getTransform();
-    auto& simConfig = pool.getSimConfig();
-    auto deltaT = getUpdateDeltaTime(simConfig.emission, dt);
-
-    pool.simulate(tm, deltaT);
-
-    auto updateInfo = pool.getAndResetUpdateInfo();
-    DispatchParticlesSystemEvents(getEntityId(), updateInfo);
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    return particlesCmd->emittersPool.asyncHasAlive();
 }
 
 void ParticlesSystem::ET_emit() {
@@ -189,11 +116,7 @@ void ParticlesSystem::ET_emit() {
     emitReq.tmTrackType = EParticleTMTrackType::System;
     emitReq.rootParticleId = InvalidRootParticleId;
 
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, emitReq](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        pool.createEmitter(emitReq);
-    });
+    DrawParticlesCmd::QueueCreateEmitterUpdate(*cmd, emitReq);
 }
 
 void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
@@ -208,11 +131,7 @@ void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
     emitReq.tmTrackType = EParticleTMTrackType::None;
     emitReq.tm = emitTm;
 
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, emitReq](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        pool.createEmitter(emitReq);
-    });
+    DrawParticlesCmd::QueueCreateEmitterUpdate(*cmd, emitReq);
 }
 
 void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
@@ -233,11 +152,7 @@ void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
     emitReq.trackEntId = trackEntId;
     ET_SendEventReturn(emitReq.tm, trackEntId, &ETEntity::ET_getTransform);
 
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, emitReq](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        pool.createEmitter(emitReq);
-    });
+    DrawParticlesCmd::QueueCreateEmitterUpdate(*cmd, emitReq);
 }
 
 void ParticlesSystem::ET_stopTrackedEmitter(EntityId trackEntId) {
@@ -247,45 +162,35 @@ void ParticlesSystem::ET_stopTrackedEmitter(EntityId trackEntId) {
         return;
     }
 
-    ET_QueueEvent(&ETParticlesManager::ET_scheduleEmitterEvent, [node=proxyNode, trackEntId](){
-        auto particlesNode = static_cast<ParticlesNode*>(node);
-        auto& pool = particlesNode->getEmittersPool();
-        pool.stopTrackEmitter(trackEntId);
-    });
+    DrawParticlesCmd::QueueStopTrackedEmitterUpate(*cmd, trackEntId);
 }
 
 void ParticlesSystem::ET_stopEmitting() {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& emittersPool = particlesNode->getEmittersPool();
-    emittersPool.asyncStopEmitting();
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    particlesCmd->emittersPool.asyncStopEmitting();
 }
 
 void ParticlesSystem::ET_removeAll() {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& emittersPool = particlesNode->getEmittersPool();
-    emittersPool.asyncDestroyAll();
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    particlesCmd->emittersPool.asyncDestroyAll();
 }
 
 void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& emittersPool = particlesNode->getEmittersPool();
-
     EmitRequest emitReq;
     emitReq.rootParticleId = rootParticleId;
     emitReq.tmTrackType = EParticleTMTrackType::None;
     emitReq.tm = spawnTm;
 
-    emittersPool.createEmitter(emitReq);
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    particlesCmd->emittersPool.createEmitter(emitReq);
 }
 
 void ParticlesSystem::ET_updateSubEmitter(int rootParticleId, const Transform& newTm) {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& emittersPool = particlesNode->getEmittersPool();
-    emittersPool.updateSubEmitterTm(rootParticleId, newTm);
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    particlesCmd->emittersPool.updateSubEmitterTm(rootParticleId, newTm);
 }
 
 void ParticlesSystem::ET_stopSubEmitter(int rootParticleId) {
-    auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-    auto& emittersPool = particlesNode->getEmittersPool();
-    emittersPool.stopEmitter(rootParticleId);
+    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+    particlesCmd->emittersPool.stopEmitter(rootParticleId);
 }
