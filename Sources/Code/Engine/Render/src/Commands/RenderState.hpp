@@ -24,6 +24,7 @@ public:
 
 public:
 
+    Memory::Buffer buffer;
     Mat4 proj2dMat;
     std::shared_ptr<RenderFramebuffer> mainFBO;
     std::vector<std::shared_ptr<RenderFramebuffer>> extraFBOs;

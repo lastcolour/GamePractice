@@ -131,29 +131,26 @@ void UIAnimationSequence::init() {
 
     if(startDelay < 0.f) {
         LogWarning("[UIAnimationSequence::init] Animation sequence has negative start delay: %.2f",
-            startDelay, EntityUtils::GetEntityName(getEntityId()));
+            startDelay, getEntityName());
         startDelay = 0.f;
     }
 
     for(auto& frame : frames) {
         if(frame.duration < 0.f) {
             LogWarning("[UIAnimationSequence::init] One of the frames has negative duration: %.2f",
-                frame.duration, EntityUtils::GetEntityName(getEntityId()));
+                frame.duration, getEntityName());
             frame.duration = 0.f;
         }
     }
 
-    ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETUIAnimationSequence>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
 }
 
-void UIAnimationSequence::ET_onLoaded() {
-    ETNode<ETEntityEvents>::disconnect();
-
+void UIAnimationSequence::onLoaded() {
     if(!ET_IsExistNode<ETUIElement>(getEntityId())) {
-        LogWarning("[UIAnimationSequence::ET_onLoaded] Can't have animation without any UI element: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+        LogWarning("[UIAnimationSequence::onLoaded] Can't have animation without any UI element: '%s'",
+            getEntityName());
         return;
     }
     bool isHidden = false;
@@ -302,7 +299,7 @@ void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {
     }
     if(frames.empty()) {
         LogError("[UIAnimationSequence::ET_playAnimation] No frames to play on: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
 

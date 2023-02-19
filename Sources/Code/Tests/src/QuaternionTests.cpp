@@ -5,8 +5,8 @@ TEST_F(QuaternionTests, CheckIndenity) {
     Quat q = Quat::Indentity();
 
     {
-        EXPECT_FLOAT_EQ(q.lenght(), 1.f);
-        EXPECT_FLOAT_EQ(q.lenghtSq(), 1.f);
+        EXPECT_FLOAT_EQ(q.length(), 1.f);
+        EXPECT_FLOAT_EQ(q.lengthSq(), 1.f);
     }
 
     {
@@ -52,7 +52,7 @@ TEST_F(QuaternionTests, CheckIndenity) {
 
         EXPECT_FLOAT_EQ(angle, 0.f);
 
-        EXPECT_FLOAT_EQ(axis.lenght(), 1.f);
+        EXPECT_FLOAT_EQ(axis.length(), 1.f);
     }
 
     {
@@ -121,7 +121,7 @@ TEST_F(QuaternionTests, CheckAxisAngle) {
     }
 
     {
-        EXPECT_FLOAT_EQ(q.lenght(), 1.f);
+        EXPECT_FLOAT_EQ(q.length(), 1.f);
     }
 
     {
@@ -160,7 +160,7 @@ TEST_F(QuaternionTests, CheckAxisAngle) {
         q.getAxisAngle(axis, angle);
 
         Mat4 rotMat(1.f);
-        Math::AddRotate(rotMat, axis, angle);
+        Math::AddRotate3D(rotMat, axis, angle);
 
         Vec3 pt(1.f);
 
@@ -194,7 +194,7 @@ TEST_F(QuaternionTests, CheckRotationBetween) {
     }
 
     {
-        EXPECT_FLOAT_EQ(q.lenght(), 1.f);
+        EXPECT_FLOAT_EQ(q.length(), 1.f);
     }
 
     {
@@ -276,7 +276,7 @@ TEST_F(QuaternionTests, CheckSLerp) {
 
         Vec3 rotPt = qRot * pt;
 
-        EXPECT_FLOAT_EQ(rotPt.lenght(), pt.lenght());
+        EXPECT_FLOAT_EQ(rotPt.length(), pt.length());
     }
 }
 
@@ -315,6 +315,6 @@ TEST_F(QuaternionTests, CheckNLerp) {
 
         Vec3 rotPt = qRot * pt;
 
-        EXPECT_FLOAT_EQ(rotPt.lenght(), pt.lenght());
+        EXPECT_FLOAT_EQ(rotPt.length(), pt.length());
     }
 }

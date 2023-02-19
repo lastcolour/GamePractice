@@ -30,6 +30,10 @@ void ParticlesSystem::onInit() {
 
     auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
     particlesCmd->renderConfig = renderConfig;
+    particlesCmd->tm = getTransform();
+
+    const bool preMultAlpha = true; 
+    particlesCmd->blendOpPair = RenderUtils::GetBlendOpPair(renderConfig.blendMode, preMultAlpha);
 
     auto& simConfig = particlesCmd->emittersPool.getSimConfig();
     simConfig.emission = emissionConfig;
@@ -39,11 +43,36 @@ void ParticlesSystem::onInit() {
     simConfig.subEmittorsConfig = subEmittersConfig;
     simConfig.sizeConfig = sizeConfig;
 
+    ETNode<ETParticlesSystem>::connect(getEntityId());
+}
+
+void ParticlesSystem::onLoaded() {
+    DrawCommandProxy::onLoaded();
     if(emissionConfig.autoStart) {
         ET_emit();
     }
+}
 
-    ETNode<ETParticlesSystem>::connect(getEntityId());
+Mat4 ParticlesSystem::calcModelMat() const {
+    return Mat4(1.f);
+}
+
+void ParticlesSystem::onTransformChanged(const Transform& newTm) {
+    if(cmd) {
+        Transform tmCopy = newTm;
+        tmCopy.scale.x *= normScale;
+        tmCopy.scale.y *= normScale;
+        DrawParticlesCmd::QueueTMUpdate(*cmd, tmCopy);
+    }
+}
+
+void ParticlesSystem::ET_setNormalizationScale(float newNormScale) {
+    normScale = newNormScale;
+    onTransformChanged(getTransform());
+
+    if(emitEvents) {
+        ET_SendEvent(getEntityId(), &ETRenderNodeEvents::ET_onNormScaleChanged, normScale);
+    }
 }
 
 void ParticlesSystem::ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) {
@@ -102,13 +131,13 @@ const ParticlesSubEmittersConfig& ParticlesSystem::ET_getSubEmittersConfig() con
 
 bool ParticlesSystem::ET_hasAliveParticles() const {
     auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
-    return particlesCmd->emittersPool.asyncHasAlive();
+    return !particlesCmd->emittersPool.isStopped();
 }
 
 void ParticlesSystem::ET_emit() {
     if(!ET_isVisible()) {
         LogWarning("[ParticlesSystem::ET_emit] Can't emit hidden particle effect: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+           getEntityName());
         return;
     }
 
@@ -122,7 +151,7 @@ void ParticlesSystem::ET_emit() {
 void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
     if(!ET_isVisible()) {
         LogWarning("[ParticlesSystem::ET_emitWithTm] Can't emit hidden particle effect: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+           getEntityName());
         return;
     }
 
@@ -137,12 +166,12 @@ void ParticlesSystem::ET_emitWithTm(const Transform& emitTm) {
 void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
     if(!ET_isVisible()) {
         LogWarning("[ParticlesSystem::ET_emitTrackingEntity] Can't emit hidden particle effect: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
     if(!trackEntId.isValid()) {
         LogWarning("[ParticlesSystem::ET_emitTrackingEntity] Can't emit system '%s' to track invalid entity",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
 
@@ -158,21 +187,21 @@ void ParticlesSystem::ET_emitTrackingEntity(EntityId trackEntId) {
 void ParticlesSystem::ET_stopTrackedEmitter(EntityId trackEntId) {
     if(!trackEntId.isValid()) {
         LogWarning("[ParticlesSystem::ET_stopTrackedEmitter] Can't stop emit system '%s' with tracking invalid entity",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
 
-    DrawParticlesCmd::QueueStopTrackedEmitterUpate(*cmd, trackEntId);
+    DrawParticlesCmd::QueueStopTrackedEmitterUpdate(*cmd, trackEntId);
 }
 
 void ParticlesSystem::ET_stopEmitting() {
-    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
-    particlesCmd->emittersPool.asyncStopEmitting();
+    bool force = false;
+    DrawParticlesCmd::QueueStopEmitting(*cmd, force);
 }
 
 void ParticlesSystem::ET_removeAll() {
-    auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
-    particlesCmd->emittersPool.asyncDestroyAll();
+    bool force = true;
+    DrawParticlesCmd::QueueStopEmitting(*cmd, force);
 }
 
 void ParticlesSystem::ET_spawnSubEmitter(int rootParticleId, const Transform& spawnTm) {

@@ -10,8 +10,7 @@ bool IsEqual(T a, T b) {
     return a == b;
 }
 
-template<>
-bool IsEqual<float>(float a, float b);
+bool IsEqual(float a, float b, float eps = 0.001f);
 
 float Deg2Rad(float degrees);
 

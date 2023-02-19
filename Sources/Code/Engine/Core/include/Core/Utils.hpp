@@ -72,6 +72,27 @@ T EnumFlagsBitXOR(T first, T second) {
         static_cast<int>(first) | static_cast<int>(second));
 }
 
+template<typename T>
+class ScopedCall {
+public:
+
+    ScopedCall(T callFunc) :
+        func(callFunc) {}
+
+    ~ScopedCall() {
+        func();
+    }
+
+private:
+
+    ScopedCall(const ScopedCall&) = delete;
+    ScopedCall& operator=(const ScopedCall&) = delete;
+
+private:
+
+    T func;
+};
+
 } // namespace Core
 
 #endif /* __UTILS_HPP__ */

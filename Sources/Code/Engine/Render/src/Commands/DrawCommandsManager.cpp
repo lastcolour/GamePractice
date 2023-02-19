@@ -4,8 +4,9 @@
 #include "Commands/DrawParticlesExecutor.hpp"
 #include "Commands/DrawTexturedQuadExecutor.hpp"
 #include "Commands/DrawBlurExecutor.hpp"
+#include "Commands/DrawNinePatchExecutor.hpp"
+#include "Render/ETRenderTickManager.hpp"
 #include "Render/ETRenderCamera.hpp"
-#include "RenderUtils.hpp"
 
 DrawCommandsManager::DrawCommandsManager() :
     clearColor(0.f, 0.f, 0.f, 1.f) {
@@ -33,8 +34,18 @@ bool DrawCommandsManager::init() {
     cmdExecutorStates[static_cast<size_t>(EDrawCmdType::Blur)]
         .executor.reset(new DrawBlurExecutor);
 
+    cmdExecutorStates[static_cast<size_t>(EDrawCmdType::NinePatch)]
+        .executor.reset(new DrawNinePatchExecutor);
+
+    debugCmdExecutor.reset(new DebugDrawExecutor);
+
     ETNode<ETDrawCommandsManager>::connect(getEntityId());
     ETNode<ETRenderContextEvents>::connect(getEntityId());
+
+    if(RenderUtils::IsOpenGLContextExists()) {
+        ET_onContextCreated();
+    }
+
     return true;
 }
 
@@ -46,12 +57,16 @@ void DrawCommandsManager::ET_onContextCreated() {
         LogError("[DrawCommandsManager::ET_onContextCreated] Can't init render state");
         return;
     }
-    for(auto& exState : cmdExecutorStates) {
-        if(!exState.executor->init()) {
-            LogError("[DrawCommandsManager::ET_onContextCreated] Can't init cmd executor");
-            return;
+    for(size_t i = 0, sz = cmdExecutorStates.size(); i < sz; ++i) {
+        auto& executor = cmdExecutorStates[i].executor;
+        if(!executor->init()) {
+            LogError("[DrawCommandsManager::ET_onContextCreated] Can't init cmd executor: '%s'",
+                DrawCmdUtils::GetNameOfDrawCmdType(static_cast<EDrawCmdType>(i)));
+            cmdExecutorStates[i].inited = false;
+        } else {
+            executor->addEvent(EDrawCmdEventType::UpdateVertexData);
+            cmdExecutorStates[i].inited = true;
         }
-        exState.executor->addEvent(EDrawCmdEventType::UpdateVertexData);
     }
     if(!debugCmdExecutor->init()) {
         LogError("[DrawCommandsManager::ET_onContextCreated] Can't init debug cmd executor");
@@ -69,7 +84,7 @@ void DrawCommandsManager::ET_onContextDestroyed() {
 DrawCmd* DrawCommandsManager::ET_createDrawCmd(EDrawCmdType cmdType) {
     auto executor = cmdExecutorStates[static_cast<size_t>(cmdType)].executor.get();
     if(!executor) {
-        LogError("[RenderCommandsManager::ET_createDrawCmd] Can't create cmd of type: '%d'", cmdType);
+        LogError("[RenderCommandsManager::ET_createDrawCmd] Can't find an executor for cmd type: '%d'", cmdType);
         return nullptr;
     }
     auto cmd = executor->createCmd();
@@ -86,6 +101,10 @@ void DrawCommandsManager::ET_scheduleDrawCmdEvent(std::function<void(BaseDrawCom
     func(ex.get());
 }
 
+void DrawCommandsManager::ET_preRender() {
+    debugCmdExecutor->preRender();
+}
+
 void DrawCommandsManager::ET_renderToDefaultFBO() {
     render(EDrawContentFilter::None);
     renderState.copyFBOtoDefaultFBO(*renderState.mainFBO);
@@ -97,56 +116,69 @@ void DrawCommandsManager::ET_renderToBuffer(void* out, EDrawContentFilter filter
 }
 
 void DrawCommandsManager::render(EDrawContentFilter filter) {
+    ET_SendEvent(&ETRenderTickManager::ET_fetchDeltaT);
+
     ET_SendEventReturn(renderState.proj2dMat, &ETRenderCamera::ET_getProj2DMat4);
 
     Vec2i viewport(0);
     ET_SendEventReturn(viewport, &ETRenderCamera::ET_getRenderPort);
 
-    if(!renderState.mainFBO->resize(viewport)) {
-        LogError("[DrawCommandsManager::render] Can't resize framebuffer to size: %dx%d", viewport.x, viewport.y);
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[DrawCommandsManager::render] GL has render start error: %s", errStr);
         return;
     }
+
     renderState.mainFBO->bind();
+    if(!renderState.mainFBO->resize(viewport)) {
+        LogError("[DrawCommandsManager::render] Can't resize framebuffer to viewport size: [%d x %d]", viewport.x, viewport.y);
+        return;
+    }
     renderState.mainFBO->clear();
 
-    for(auto& exState : cmdExecutorStates) {
-        exState.executor->preDraw();
+    for(size_t i = 0, sz = cmdExecutorStates.size(); i < sz; ++i) {
+        auto& exState = cmdExecutorStates[i];
+        if(!exState.inited) {
+            continue;
+        }
+
+        exState.executor->preDraw(renderState);
+
+        if(auto errStr = RenderUtils::GetGLError()) {
+            LogError("[DrawCommandsManager::render] GL has preDraw() error for an executor: %s. Error: %s",
+                DrawCmdUtils::GetNameOfDrawCmdType(static_cast<EDrawCmdType>(i)), errStr);
+        }
+
         exState.executor->clearEvents();
         exState.slice = exState.executor->getCmdSlice();
         exState.slice.advance();
     }
 
     while(true) {
-        BaseDrawCommandExectuor* firstMinEx = nullptr;
-        auto firstMinSlice = DrawCmdSlice();
-
-        BaseDrawCommandExectuor* secondMinEx = nullptr;
-        auto secondMinSlice = DrawCmdSlice();
+        CmdExecutorState* firstMin = nullptr;
+        CmdExecutorState* secondMin = nullptr;
 
         int totalExecutors = 0;
         for(auto& exState : cmdExecutorStates) {
-            auto& slice = exState.slice;
-            if(!slice.empty()) {
+            if(!exState.slice.empty()) {
                totalExecutors += 1;
-               if(slice < firstMinSlice) {
-                   secondMinSlice = firstMinSlice;
-                   secondMinEx = firstMinEx;
-
-                   firstMinSlice = slice;
-                   firstMinEx = exState.executor.get();
+               if(!firstMin || exState.slice < firstMin->slice) {
+                   secondMin = firstMin;
+                   firstMin = &exState;
+               } else if (!secondMin || exState.slice < secondMin->slice) {
+                    secondMin = &exState;
                }
             }
         }
-        if(!firstMinSlice.empty()) {
+        if(!firstMin) {
            break;
         }
         if(totalExecutors > 1) {
-            firstMinSlice.tryToGrowUpTo(secondMinSlice);
-            firstMinEx->draw(renderState, firstMinSlice);
-            firstMinSlice.advance();
+            firstMin->slice.tryToGrowUpTo(secondMin->slice);
+            firstMin->executor->draw(renderState, firstMin->slice);
+            firstMin->slice.advance();
         } else {
-            firstMinSlice.makeMaxSlice();
-            firstMinEx->draw(renderState, firstMinSlice);
+            firstMin->slice.makeMaxSlice();
+            firstMin->executor->draw(renderState, firstMin->slice);
             break;
         }
     }
@@ -154,10 +186,10 @@ void DrawCommandsManager::render(EDrawContentFilter filter) {
     if(filter != EDrawContentFilter::NoDebugInfo) {
         debugCmdExecutor->draw(renderState);
     }
-}
 
-void DrawCommandsManager::ET_updateEmitters(float dt) {
-    auto executor =  static_cast<DrawParticlesExecutor*>(
-        cmdExecutorStates[static_cast<size_t>(EDrawCmdType::Particles)].executor.get());
-    executor->update(dt);
+    renderState.mainFBO->unbind();
+
+    if(auto errStr = RenderUtils::GetGLError()) {
+        LogError("[DrawCommandsManager::render] GL has render end error: %s", errStr);
+    }
 }

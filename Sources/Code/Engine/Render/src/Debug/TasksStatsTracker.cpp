@@ -13,73 +13,93 @@ const float GRAPH_TIME_MS = 2000.f;
 const float FONT_SIZE = 14.f;
 const float NEW_LINE_OFFSET = 2.f;
 
-void DrawLineBetweenPoints(DebugInfoDrawer& dd, const Vec2& curr, const Vec2& prev,
-    const Vec2& drawPt, const Vec2& size, const ColorB& col) {
-    Vec2 startPt;
-    startPt.x = drawPt.x + Math::Lerp(0.f, static_cast<float>(size.x),
-        (GRAPH_TIME_MS + curr.x) / GRAPH_TIME_MS);
-    startPt.y = drawPt.y + (size.y - 2.f) * curr.y + 1.f;
-    Vec2 endPt;
-    endPt.x = drawPt.x + Math::Lerp(0.f, static_cast<float>(size.x),
-        (GRAPH_TIME_MS + prev.x) / GRAPH_TIME_MS);
-    endPt.y = drawPt.y + (size.y - 2.f) * prev.y + 1.f;
-
-    dd.drawLine(startPt, endPt, col);
-}
-
 void DrawFPSChart(DebugInfoDrawer& dd, const Vec2& pt, const Vec2& size,
-    const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
-    if(timing.size() <= 2) {
+    const Core::CycleArray<TaskRunInfo::StartEndTime>& timings) {
+
+    if(timings.size() < 2) {
         return;
     }
-    size_t i = timing.size() - 1;
-    Vec2 prev;
-    prev.x = 0.f;
-    float runTime = std::max(0.1f, GetRunTimeBetween(timing, i));
-    float fpsVal = 1000.f / runTime;
-    prev.y = std::min(1.f, fpsVal / MAX_FPS);
-    --i;
-    Vec2 curr(0.f);
-    while(true) {
-        runTime = std::max(0.1f, GetRunTimeBetween(timing, i));
-        fpsVal = 1000.f / runTime;
-        curr.x = prev.x - runTime;
-        curr.y = std::min(1.f, fpsVal / MAX_FPS);
-        DrawLineBetweenPoints(dd, curr, prev, pt, size, ColorB(255, 255, 0));
-        prev = curr;
-        if(i == 1) {
+
+    float prevFPSVal = -1.f;
+    float xOffset = 0.f;
+
+    for(int i = static_cast<int>(timings.size()) - 1; i >= 1; --i) {
+        float runTime = std::max(0.1f, GetRunTimeBetween(timings, i));
+        float fpsVal = 1000.f / runTime;
+
+        Vec2 startPt;
+        startPt.x = size.x - xOffset;
+        startPt.y = std::min(1.f, fpsVal / MAX_FPS) * size.y;
+
+        if(prevFPSVal > 0.f && !Math::IsEqual(fpsVal, prevFPSVal, 1.f)) {
+            Vec2 prevEndPt = startPt;
+            prevEndPt.y = std::min(1.f, prevFPSVal / MAX_FPS) * size.y;
+            dd.drawLine(startPt + pt, prevEndPt + pt, ColorB(255, 255, 0));
+        }
+
+        prevFPSVal = fpsVal;
+
+        xOffset += (runTime / GRAPH_TIME_MS) * size.x;
+
+        Vec2 endPt;
+        endPt.x = size.x - xOffset;
+        endPt.y = startPt.y;
+
+        bool lastVal = false;
+        if(endPt.x < 0.f) {
+            endPt.x = 0.f;
+            lastVal = true;
+        }
+        dd.drawLine(startPt + pt, endPt + pt, ColorB(255, 255, 0));
+
+        if(lastVal) {
             break;
         }
-        if(curr.x < -GRAPH_TIME_MS) {
-            break;
-        }
-        --i;
     }
 }
 
 void DrawRunTimeChart(DebugInfoDrawer& dd, const Vec2& pt, const Vec2& size,
-    const Core::CycleArray<TaskRunInfo::StartEndTime>& timing) {
-    if(timing.size() <= 2) {
+    const Core::CycleArray<TaskRunInfo::StartEndTime>& timings) {
+
+    if(timings.size() < 2) {
         return;
     }
-    size_t i = timing.size() - 1;
-    Vec2 prev;
-    prev.x = 0.f;
-    prev.y = std::min(1.f, GetRunDurationAt(timing, i) / MAX_RUN_TIME);
-    --i;
-    Vec2 curr(0.f);
-    while(true) {
-        curr.x = prev.x - GetRunTimeBetween(timing, i);
-        curr.y = std::min(1.f,  GetRunDurationAt(timing, i) / MAX_RUN_TIME);
-        DrawLineBetweenPoints(dd, curr, prev, pt, size, ColorB(255, 0, 255));
-        prev = curr;
-        if(i == 1) {
+
+    float prevRunDuration = -1.f;
+    float xOffset = 0.f;
+
+    for(int i = static_cast<int>(timings.size()) - 1; i >= 1; --i) {
+        float runDuration = GetRunDurationAt(timings, i);
+        float runTime = GetRunTimeBetween(timings, i);
+
+        Vec2 startPt;
+        startPt.x = size.x - xOffset;
+        startPt.y = std::min(1.f, runDuration / MAX_RUN_TIME) * size.y;
+
+        if(prevRunDuration > 0.f && !Math::IsEqual(runDuration, prevRunDuration, 1.f)) {
+            Vec2 prevEndPt = startPt;
+            prevEndPt.y = std::min(1.f, prevRunDuration / MAX_RUN_TIME) * size.y;
+            dd.drawLine(startPt + pt, prevEndPt + pt, ColorB(255, 0, 255));
+        }
+
+        prevRunDuration = runDuration;
+
+        xOffset += (runTime / GRAPH_TIME_MS) * size.x;
+
+        Vec2 endPt;
+        endPt.x = size.x - xOffset;
+        endPt.y = startPt.y;
+
+        bool lastVal = false;
+        if(endPt.x < 0.f) {
+            endPt.x = 0.f;
+            lastVal = true;
+        }
+        dd.drawLine(startPt + pt, endPt + pt, ColorB(255, 0, 255));
+
+        if(lastVal) {
             break;
         }
-        if(curr.x < -GRAPH_TIME_MS) {
-            break;
-        }
-        --i;
     }
 }
 
@@ -123,8 +143,8 @@ void DrawTaskRunInfo(DebugInfoDrawer& dd, Vec2& pt, const std::string& taskName,
     {
         Vec2 size(140.f, 40.f);
         DrawGraphBox(dd, pt, size);
-        DrawFPSChart(dd, pt, size, runInfo.timing);
-        DrawRunTimeChart(dd, pt, size, runInfo.timing);
+        DrawFPSChart(dd, pt + Vec2(1.f), size - Vec2(2.f), runInfo.timing);
+        DrawRunTimeChart(dd, pt + Vec2(1.f), size - Vec2(2.f), runInfo.timing);
     }
 }
 

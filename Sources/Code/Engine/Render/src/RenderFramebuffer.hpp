@@ -12,9 +12,16 @@ public:
 
     void bind();
     void unbind();
+    bool isBound() const;
 
     void clear();
     bool resize(const Vec2i& newSize);
+    Vec2i getSize() const;
+
+private:
+
+    RenderFramebuffer(const RenderFramebuffer&) = delete;
+    RenderFramebuffer& operator=(const RenderFramebuffer&) = delete;
 
 public:
 
@@ -22,6 +29,7 @@ public:
     RenderTexture color0;
     unsigned int framebufferId;
     unsigned int renderBufferId;
+    bool bound;
 };
 
 #endif /* __RENDER_FRAMEBUFFER_HPP__ */

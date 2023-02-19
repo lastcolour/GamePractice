@@ -1,18 +1,16 @@
-#include "ParticlesSystemTests.hpp"
+#include "RenderTests/RenderParticlesTests.hpp"
 #include "Logics/ParticlesSystem.hpp"
-#include "Render/ParticlesEmitterConfig.hpp"
-#include "Nodes/ETRenderNodeManager.hpp"
-#include "Particles/ParticlesEmittersPool.hpp"
-#include "Nodes/ParticlesNode.hpp"
-#include "RenderConfig.hpp"
+#include "Render/src/Commands/Commands.hpp"
+#include "Render/src/RenderConfig.hpp"
 
 namespace {
 
-void TickParticlesEmitter(float dt) {
-    ET_PollAllEvents<ETRenderNodeManager>();
-    ET_PollAllEvents<ETParticlesManager>();
-    ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, dt);
-    ET_SendEvent(&ETParticlesUpdate::ET_updateEmitter, 0.f);
+const char* TEST_IMAGE = "Images/Base/block_1x1.png";
+
+void makeVisisble(ParticlesSystem& system) {
+    auto renderConfig = system.ET_getRenderConfig();
+    renderConfig.textureInfo.filename = TEST_IMAGE;
+    system.ET_setRenderConfig(renderConfig);
 }
 
 class TestParticlesSystemLogic : public ParticlesSystem {
@@ -22,16 +20,16 @@ public:
     virtual ~TestParticlesSystemLogic() = default;
 
     ParticlesEmittersPool* getEmittersPool() {
-        if(!proxyNode) {
+        if(!cmd) {
             return nullptr;
         }
-        auto particlesNode = static_cast<ParticlesNode*>(proxyNode);
-        return &particlesNode->getEmittersPool();
+        auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+        return &particlesCmd->emittersPool;
     } 
 };
 
 void checkParticlePosition(const Vec2& expectedPt, int id, const EmitterParticles& particles) {
-    auto& p = particles.instaceData[id];
+    auto& p = particles.instanceData[id];
 
     auto tmMat = p.mat.toMat3();
     Vec3 pt1 = tmMat * Vec3(0.f, 0.f, 1.f);
@@ -69,9 +67,15 @@ public:
 
 } // namespace
 
-TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
+void RenderParticlesTests::TickParticleSystems(float dt) {
+    syncWithGameAndDrawToImageBuffer(dt);
+    syncWithGameAndDrawToImageBuffer(0.f);
+}
+
+TEST_F(RenderParticlesTests, CheckParticlesEmitterPlaying) {
     auto entity = createVoidObject();
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+    makeVisisble(*system);
 
     auto emissionConfig = system->ET_getEmissionConfig();
     emissionConfig.lifetime = 5.f;
@@ -84,7 +88,11 @@ TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
     system->ET_removeAll();
     system->ET_emit();
 
-    TickParticlesEmitter(1.f);
+    {
+        float dt = 1.f;
+        syncWithGameAndDrawToImageBuffer(dt);
+        syncWithGameAndDrawToImageBuffer(0.f);
+    }
 
     auto pool = system->getEmittersPool();
     ASSERT_TRUE(pool);
@@ -104,7 +112,7 @@ TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
         EXPECT_TRUE(system->ET_hasAliveParticles());
     }
 
-    TickParticlesEmitter(10.f);
+    TickParticleSystems(10.f);
 
     {
         auto& emitters = pool->getEmitters();
@@ -122,7 +130,7 @@ TEST_F(ParticlesSystemTests, CheckParticlesEmitterPlaying) {
     }
 }
 
-TEST_F(ParticlesSystemTests, CheckWorldTM) {
+TEST_F(RenderParticlesTests, CheckWorldTM) {
     Vec2 emitPt(100, 200);
 
     auto entity = createVoidObject();
@@ -132,6 +140,7 @@ TEST_F(ParticlesSystemTests, CheckWorldTM) {
         entity->ET_setTransform(tm);
     }
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+    makeVisisble(*system);
 
     auto emissionConfig = system->ET_getEmissionConfig();
     emissionConfig.lifetime = 5.f;
@@ -151,7 +160,7 @@ TEST_F(ParticlesSystemTests, CheckWorldTM) {
     system->ET_removeAll();
     system->ET_emit();
 
-    TickParticlesEmitter(1.f);
+    TickParticleSystems(1.f);
 
     auto pool = system->getEmittersPool();
     ASSERT_TRUE(pool);
@@ -174,7 +183,7 @@ TEST_F(ParticlesSystemTests, CheckWorldTM) {
         entity->ET_setTransform(tm);
     }
 
-    TickParticlesEmitter(1.f);
+    TickParticleSystems(1.f);
 
     {
         auto& emitters = pool->getEmitters();
@@ -187,7 +196,7 @@ TEST_F(ParticlesSystemTests, CheckWorldTM) {
     }
 }
 
-TEST_F(ParticlesSystemTests, CheckLocalTm) {
+TEST_F(RenderParticlesTests, CheckLocalTm) {
     Vec2 emitPt(100, 200);
 
     auto entity = createVoidObject();
@@ -197,6 +206,7 @@ TEST_F(ParticlesSystemTests, CheckLocalTm) {
         entity->ET_setTransform(tm);
     }
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+    makeVisisble(*system);
 
     auto emissionConfig = system->ET_getEmissionConfig();
     emissionConfig.lifetime = 5.f;
@@ -216,7 +226,7 @@ TEST_F(ParticlesSystemTests, CheckLocalTm) {
     system->ET_removeAll();
     system->ET_emit();
 
-    TickParticlesEmitter(1.f);
+    TickParticleSystems(1.f);
 
     auto pool = system->getEmittersPool();
     ASSERT_TRUE(pool);
@@ -239,7 +249,7 @@ TEST_F(ParticlesSystemTests, CheckLocalTm) {
         entity->ET_setTransform(tm);
     }
 
-    TickParticlesEmitter(1.f);
+    TickParticleSystems(1.f);
 
     {
         auto& emitters = pool->getEmitters();
@@ -252,7 +262,7 @@ TEST_F(ParticlesSystemTests, CheckLocalTm) {
     }
 }
 
-TEST_F(ParticlesSystemTests, CheckSubEmitters) {
+TEST_F(RenderParticlesTests, CheckSubEmitters) {
     EntityId parentId;
     EntityId childId;
     {
@@ -260,6 +270,7 @@ TEST_F(ParticlesSystemTests, CheckSubEmitters) {
         parentId = parent->getEntityId();
 
         auto system = parent->addCustomLogic<TestParticlesSystemLogic>();
+        makeVisisble(*system);
 
         auto emissionConfig = system->ET_getEmissionConfig();
         emissionConfig.lifetime = 1.f;
@@ -275,6 +286,7 @@ TEST_F(ParticlesSystemTests, CheckSubEmitters) {
         childId = child->getEntityId();
 
         auto system = child->addCustomLogic<TestParticlesSystemLogic>();
+        makeVisisble(*system);
 
         auto emissionConfig = system->ET_getEmissionConfig();
         emissionConfig.lifetime = 1.f;
@@ -298,12 +310,14 @@ TEST_F(ParticlesSystemTests, CheckSubEmitters) {
     }
 
     ET_SendEvent(parentId, &ETParticlesSystem::ET_emit);
-    TickParticlesEmitter(0.f);
+
+    TickParticleSystems(1.f);
 }
 
-TEST_F(ParticlesSystemTests, CheckMaxParticles) {
+TEST_F(RenderParticlesTests, CheckMaxParticles) {
     auto entity = createVoidObject();
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+    makeVisisble(*system);
 
     auto maxParticles = Core::GetGlobal<RenderConfig>()->particlesConfig.maxParticles;
 
@@ -317,7 +331,7 @@ TEST_F(ParticlesSystemTests, CheckMaxParticles) {
     system->ET_setEmissionConfig(emissionConfig);
     system->ET_emit();
 
-    TickParticlesEmitter(64.f);
+    TickParticleSystems(64.f);
 
     auto pool = system->getEmittersPool();
     ASSERT_TRUE(pool);
@@ -331,9 +345,11 @@ TEST_F(ParticlesSystemTests, CheckMaxParticles) {
     }
 }
 
-TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
+TEST_F(RenderParticlesTests, CheckParticleSystemEvents) {
     auto entity = createVoidObject();
     auto system = entity->addCustomLogic<TestParticlesSystemLogic>();
+    makeVisisble(*system);
+
     auto eventListener = entity->addCustomLogic<TestParticlesSystemEventListener>();
 
     {
@@ -350,7 +366,7 @@ TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
 
     system->ET_emit();
 
-    TickParticlesEmitter(0.f);
+    TickParticleSystems(0.f);
 
     {
         ASSERT_EQ(eventListener->events.size(), 1);
@@ -358,7 +374,7 @@ TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
         eventListener->events.clear();
     }
 
-    TickParticlesEmitter(0.5f);
+    TickParticleSystems(0.5f);
 
     {
         ASSERT_EQ(eventListener->events.size(), 1);
@@ -366,7 +382,7 @@ TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
         eventListener->events.clear();
     }
 
-    TickParticlesEmitter(0.4f);
+    TickParticleSystems(0.4f);
 
     {
         ASSERT_EQ(eventListener->events.size(), 1);
@@ -374,7 +390,7 @@ TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
         eventListener->events.clear();
     }
 
-    TickParticlesEmitter(0.7f);
+    TickParticleSystems(0.7f);
 
     {
         ASSERT_EQ(eventListener->events.size(), 1);
@@ -382,7 +398,7 @@ TEST_F(ParticlesSystemTests, CheckParticleSystemEvents) {
         eventListener->events.clear();
     }
 
-    TickParticlesEmitter(1.f);
+    TickParticleSystems(1.f);
 
     {
         ASSERT_EQ(eventListener->events.size(), 2);

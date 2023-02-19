@@ -30,9 +30,9 @@ RenderModule::LogicsContainerPtrT RenderModule::createSystemLogics() const {
             RenderGeometryManager,
             RenderShaderManager,
             RenderTextureManager,
-            DrawCommandsManager,
             RenderFontManager,
             RenderTickManager,
+            DrawCommandsManager,
             TasksStatsTracker>()
         );
     return container;

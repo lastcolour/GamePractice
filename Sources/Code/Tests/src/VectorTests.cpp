@@ -193,8 +193,8 @@ TEST_F(VectorTests, Vec2_CheckMethods) {
     {
         Vec2 v(3.f, 4.f);
 
-        EXPECT_FLOAT_EQ(v.lenghtSq(), 25.f);
-        EXPECT_FLOAT_EQ(v.lenght(), 5.f);
+        EXPECT_FLOAT_EQ(v.lengthSq(), 25.f);
+        EXPECT_FLOAT_EQ(v.length(), 5.f);
     }
 
     {
@@ -464,8 +464,8 @@ TEST_F(VectorTests, Vec3_CheckMethods) {
     {
         Vec3 v(3.f, 4.f, 0.f);
 
-        EXPECT_FLOAT_EQ(v.lenghtSq(), 25.f);
-        EXPECT_FLOAT_EQ(v.lenght(), 5.f);
+        EXPECT_FLOAT_EQ(v.lengthSq(), 25.f);
+        EXPECT_FLOAT_EQ(v.length(), 5.f);
     }
 
     {
@@ -780,8 +780,8 @@ TEST_F(VectorTests, Vec4_CheckMethods) {
     {
         Vec4 v(3.f, 4.f, 0.f, 0.f);
 
-        EXPECT_FLOAT_EQ(v.lenghtSq(), 25.f);
-        EXPECT_FLOAT_EQ(v.lenght(), 5.f);
+        EXPECT_FLOAT_EQ(v.lengthSq(), 25.f);
+        EXPECT_FLOAT_EQ(v.length(), 5.f);
     }
 
     {

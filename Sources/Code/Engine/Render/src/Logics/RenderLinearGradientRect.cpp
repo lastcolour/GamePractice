@@ -26,17 +26,36 @@ void RenderLinearGradientRect::onInit() {
     auto texQuadCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
     texQuadCmd->imageType = DrawTexturedQuadCmd::EImageCmdType::Gradient;
 
-    Math::AddScale(texQuadCmd->modelMat, Vec3(
-        static_cast<float>(size.x), static_cast<float>(size.y), 1.f));
+    if(size.x <= 0.f || size.y < 0.f) {
+        LogError("[RenderLinearGradientRect::onInit] Negative size: <%.1f, %.1f> (Entity: %s)", size.x, size.y,
+            getEntityName());
+        size.x = std::max(1.f, size.x);
+        size.y = std::max(1.f, size.y);
+    }
 
     DrawTexturedQuadCmd::QueueSetTexGradient(*cmd, startCol, endCol, isVertical);
 
     ETNode<ETRenderRect>::connect(getEntityId());
 }
 
+Mat4 RenderLinearGradientRect::calcModelMat() const {
+    Mat4 mat = getTransform().toMat4();
+    Vec3 scale(size.x * normScale / 2.f, size.y * normScale / 2.f, 1.f);
+    Math::AddScale3D(mat, scale);
+    return mat;
+}
+
 void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {
-    DrawColoredQuadCmd::QueueSizeUpdate(*cmd, size, newSize, EDrawCmdType::TexturedQuad);
-    size = newSize;
+    Vec2 newSizeCopy = newSize;
+    if(newSizeCopy.x <= 0.f || newSizeCopy.y < 0.f) {
+        LogError("[RenderLinearGradientRect::ET_setSize] Negative size: <%.1f, %.1f> (Entity: %s)", newSizeCopy.x, newSizeCopy.y,
+            getEntityName());
+        newSizeCopy.x = std::max(1.f, newSizeCopy.x);
+        newSizeCopy.y = std::max(1.f, newSizeCopy.y);
+    }
+
+    DrawColoredQuadCmd::QueueSizeUpdate(*cmd, size, newSizeCopy, cmdType);
+    size = newSizeCopy;
 }
 
 Vec2 RenderLinearGradientRect::ET_getSize() const {

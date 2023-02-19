@@ -23,15 +23,13 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETUIInteractionBox
     EInputEventResult ET_onInputEvent(EActionType type, const Vec2i& pt) override;
 
     // ETUIAnimationSequenceEvent
     void ET_onAnimationPlayed(EntityId sourceId, EAnimSequenceType animType) override;
-
-    // UIBox
-    void ET_onLoaded() override;
 
 protected:
 

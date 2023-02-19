@@ -42,15 +42,11 @@ void writeMonochromeBitmapToBuffer(Memory::Buffer& buff, const Vec2i& size, cons
 
 std::shared_ptr<RenderTexture> createFontAtlas(Memory::Buffer& buff, const Vec2i& size, const FontDescription& fontDescr) {
     std::shared_ptr<RenderTexture> fontAtlas;
-    ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8);
+    ET_SendEventReturn(fontAtlas, &ETRenderTextureManager::ET_createTexture, ETextureDataType::R8, size);
     if(!fontAtlas) {
         return nullptr;
     }
     fontAtlas->bind();
-    if(!fontAtlas->resize(size)) {
-        fontAtlas->unbind();
-        return nullptr;
-    }
     fontAtlas->writeR8(Vec2i(0), size, buff.getReadData());
     if(auto errStr = RenderUtils::GetGLError()) {
         fontAtlas->unbind();

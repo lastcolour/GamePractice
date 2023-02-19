@@ -2,19 +2,59 @@
 #include "Commands/DrawCommandExecutor.hpp"
 #include "Math/MatrixTransform.hpp"
 #include "Render/ETRenderManager.hpp"
-#include "RenderUtils.hpp"
 
 #include <cassert>
 
 namespace DrawCmdUtils {
 
-Mat4 CalcModelMat(const Transform& tm, const Vec3& scale) {
-    auto resMat = tm.toMat4();
-    Math::AddScale(resMat, scale / 2.f);
-    return resMat;
+const char* GetNameOfDrawCmdType(EDrawCmdType cmdType) {
+    const char* resName = "Unknown";
+    switch(cmdType) {
+        case EDrawCmdType::Text: {
+            resName = "Text";
+            break;
+        }
+        case EDrawCmdType::TexturedQuad: {
+            resName = "TexturedQuad";
+            break;
+        }
+        case EDrawCmdType::Quad: {
+            resName = "Quad";
+            break;
+        }
+        case EDrawCmdType::Particles: {
+            resName = "Particles";
+            break;
+        }
+        case EDrawCmdType::Blur: {
+            resName = "Blur";
+            break;
+        }
+        case EDrawCmdType::NinePatch: {
+            resName = "NinePatch";
+            break;
+        }
+        default: {
+            assert(false && "Invalid name");
+        }
+    }
+    return resName;
 }
 
 } // namespace DrawCmdUtils
+
+
+void DrawCmd::updateBlendOpPair() {
+    if(!autoUpdateBlenOp) {
+        return;
+    }
+
+    if(alpha >= 0.99999f) {
+        blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::None, false);
+    } else {
+        blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::Normal, false);
+    }
+}
 
 void DrawCmd::QueueToRemove(DrawCmd& drawCmd, EDrawCmdType cmdType) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd](BaseDrawCommandExectuor* ex){
@@ -28,9 +68,9 @@ void DrawCmd::QueueToRender(DrawCmd& drawCmd, EDrawCmdType cmdType) {
     }, cmdType);
 }
 
-void DrawCmd::QueueTMUpdate(DrawCmd& drawCmd, const Transform& newTm, EDrawCmdType cmdType) {
-    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, tm=newTm](BaseDrawCommandExectuor* ex){
-        cmd->modelMat = DrawCmdUtils::CalcModelMat(tm, Vec3(1.f));
+void DrawCmd::QueueModelMatUpdate(DrawCmd& drawCmd, const Mat4& newModelMat, EDrawCmdType cmdType) {
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, modelMat=newModelMat](BaseDrawCommandExectuor* ex){
+        cmd->modelMat = modelMat;
     }, cmdType);
 }
 
@@ -51,12 +91,13 @@ void DrawCmd::QueueZIndexUpdate(DrawCmd& drawCmd, int newZIndex, EDrawCmdType cm
 void DrawCmd::QueueAlphaUpdate(DrawCmd& drawCmd, float newAlpha, EDrawCmdType cmdType) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, alpha=newAlpha](BaseDrawCommandExectuor* ex){
         cmd->alpha = alpha;
+        cmd->updateBlendOpPair();
     }, cmdType);
 }
 
 void DrawCmd::QueueScaleUpdate(DrawCmd& drawCmd, const Vec3& newScale, EDrawCmdType cmdType) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, scale=newScale](BaseDrawCommandExectuor* ex){
-        Math::AddScale(cmd->modelMat, scale);
+        Math::AddScale3D(cmd->modelMat, scale);
     }, cmdType);
 }
 
@@ -71,10 +112,20 @@ void DrawCmd::QueueStencilDataUpdate(DrawCmd& drawCmd, const StencilWirteReadDat
     }, cmdType);
 }
 
+void DrawTextCmd::updateTextMetric() {
+    if(font) {
+        textMetric = font->getTextMetric(text);
+    } else {
+        textMetric.reset();
+    }
+}
+
 void DrawTextCmd::QueueTextUpdate(DrawCmd& drawCmd, const std::string& newText) {
     std::string copyText = newText;
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, text=std::move(copyText)](BaseDrawCommandExectuor* ex){
-        static_cast<DrawTextCmd*>(cmd)->text = std::move(text);
+        auto textCmd = static_cast<DrawTextCmd*>(cmd);
+        textCmd->text = std::move(text);
+        textCmd->updateTextMetric();
         ex->addEvent(EDrawCmdEventType::UpdateVertexData);
     }, EDrawCmdType::Text);
 }
@@ -85,16 +136,29 @@ void DrawTextCmd::QueueColorUpdate(DrawCmd& drawCmd, const ColorB& newColor) {
     }, EDrawCmdType::Text);
 }
 
-void DrawTextCmd::QueueFontHeightUpdate(DrawCmd& drawCmd, float newFontHeight) {
-    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, fontHeight=newFontHeight](BaseDrawCommandExectuor* ex){
-        static_cast<DrawTextCmd*>(cmd)->fontHeight = fontHeight;
-    }, EDrawCmdType::Text);
-}
-
 void DrawTextCmd::QueueFontTypeUpdate(DrawCmd& drawCmd, EFontType newFontType) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, fontType=newFontType](BaseDrawCommandExectuor* ex){
-        ET_SendEventReturn(static_cast<DrawTextCmd*>(cmd)->font,
+        auto textCmd = static_cast<DrawTextCmd*>(cmd);
+
+        int prevFontHeight = -1;
+        if(textCmd->font) {
+            prevFontHeight = textCmd->font->getHeight();
+        }
+
+        ET_SendEventReturn(textCmd->font,
             &ETRenderFontManager::ET_createFont, fontType);
+
+        textCmd->updateTextMetric();
+
+        if(textCmd->font && prevFontHeight > 1.f) {
+            const int newFontHeight = textCmd->font->getHeight();
+            const float scale = static_cast<float>(newFontHeight) / prevFontHeight;
+            Math::AddScale3D(cmd->modelMat, Vec3(scale, scale, 1.f));
+        }
+
+        if(DrawTextCmd::IsVisible(*textCmd)) {
+            ex->addEvent(EDrawCmdEventType::UpdateVertexData);
+        }
     }, EDrawCmdType::Text);
 }
 
@@ -107,7 +171,17 @@ void DrawTextCmd::QueueAlignUpdate(DrawCmd& drawCmd, bool newAlign) {
 void DrawColoredQuadCmd::QueueColorUpdate(DrawCmd& drawCmd, const ColorB& newColor) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, color=newColor](BaseDrawCommandExectuor* ex){
         static_cast<DrawColoredQuadCmd*>(cmd)->color = color;
+        if(color.a != 255) {
+            cmd->blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::Normal, false);
+        } else {
+            cmd->updateBlendOpPair();
+        }
     }, EDrawCmdType::Quad);
+}
+
+void DrawTexturedQuadCmd::updateTexture(const TextureInfo& newTexInfo) {
+    texInfo = newTexInfo;
+    texObj = RenderUtils::CreateTexture(texInfo, ETextureDataType::RGBA);
 }
 
 void DrawTexturedQuadCmd::QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo& newTexInfo) {
@@ -115,8 +189,7 @@ void DrawTexturedQuadCmd::QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo
         auto texCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
         bool wasVisible = DrawTexturedQuadCmd::IsVisible(*texCmd);
 
-        texCmd->texInfo = texInfo;
-        texCmd->texObj = RenderUtils::CreateTexture(texInfo, ETextureDataType::RGBA);
+        texCmd->updateTexture(texInfo);
 
         if(wasVisible && !DrawTexturedQuadCmd::IsVisible(*texCmd)) {
             ex->addEvent(EDrawCmdEventType::Reorder);
@@ -124,11 +197,71 @@ void DrawTexturedQuadCmd::QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo
     }, EDrawCmdType::TexturedQuad);
 }
 
-void DrawTexturedQuadCmd::QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatches) {
+void DrawNinePatchCmd::QueueModelMatUpdate(DrawCmd& drawCmd, const Mat4& newModelMat) {
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, modelMat=newModelMat](BaseDrawCommandExectuor* ex){
+        auto ninePatchesCmd = static_cast<DrawNinePatchCmd*>(cmd);
+        ninePatchesCmd->modelMat = modelMat;
+
+        ninePatchesCmd->updateVertCoords();
+
+        if(DrawTexturedQuadCmd::IsVisible(*ninePatchesCmd)) {
+            ex->addEvent(EDrawCmdEventType::UpdateVertexData);
+        }
+    }, EDrawCmdType::NinePatch);
+}
+
+void DrawNinePatchCmd::QueueScaleUpdate(DrawCmd& drawCmd, const Vec3& newScale) {
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, scale=newScale](BaseDrawCommandExectuor* ex){
+        auto ninePatchesCmd = static_cast<DrawNinePatchCmd*>(cmd);
+        Math::AddScale3D(ninePatchesCmd->modelMat, scale);
+
+        ninePatchesCmd->updateVertCoords();
+
+        if(DrawTexturedQuadCmd::IsVisible(*ninePatchesCmd)) {
+            ex->addEvent(EDrawCmdEventType::UpdateVertexData);
+        }
+    }, EDrawCmdType::NinePatch);
+}
+
+void DrawNinePatchCmd::QueueSizeUpdate(DrawCmd& drawCmd, const Vec2& prevSize, const Vec2& newSize) {
+    Vec3 scaleChange(newSize.x / prevSize.x, newSize.y / prevSize.y, 1.f);
+    DrawNinePatchCmd::QueueScaleUpdate(drawCmd, scaleChange);
+}
+
+void DrawNinePatchCmd::QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatches) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, patches=newPatches](BaseDrawCommandExectuor* ex){
-        static_cast<DrawTexturedQuadCmd*>(cmd)->ninePatches = patches;
-        ex->addEvent(EDrawCmdEventType::UpdateVertexData);
-    }, EDrawCmdType::TexturedQuad);
+        auto ninePatchesCmd = static_cast<DrawNinePatchCmd*>(cmd);
+        ninePatchesCmd->ninePatches = patches;
+        ninePatchesCmd->updateVertCoords();
+
+        if(DrawTexturedQuadCmd::IsVisible(*ninePatchesCmd)) {
+            ex->addEvent(EDrawCmdEventType::UpdateVertexData);
+        }
+    }, EDrawCmdType::NinePatch);
+}
+
+void DrawNinePatchCmd::QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo& newTexInfo) {
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, texInfo=newTexInfo](BaseDrawCommandExectuor* ex){
+        auto ninePatchesCmd = static_cast<DrawNinePatchCmd*>(cmd);
+        bool wasVisible = DrawTexturedQuadCmd::IsVisible(*ninePatchesCmd);
+
+        ninePatchesCmd->updateTexture(texInfo);
+        ninePatchesCmd->updateVertCoords();
+
+        if(wasVisible && !DrawTexturedQuadCmd::IsVisible(*ninePatchesCmd)) {
+            ex->addEvent(EDrawCmdEventType::Reorder);
+        }
+    }, EDrawCmdType::NinePatch);
+}
+
+void DrawNinePatchCmd::updateVertCoords() {
+    if(!texObj) {
+        return;
+    }
+
+    const Vec3 scale = Math::GetScale3D(modelMat);
+    const Vec2 drawSize{scale.x * 2.f, scale.y * 2.f};
+    vertCoord = RenderUtils::GetNinePatchVertexCoord(texObj->getSize(), drawSize, ninePatches);
 }
 
 void DrawTexturedQuadCmd::QueueSetTexGradient(DrawCmd& drawCmd, const ColorB& startCol, const ColorB& endCol, bool isVertical) {
@@ -136,7 +269,14 @@ void DrawTexturedQuadCmd::QueueSetTexGradient(DrawCmd& drawCmd, const ColorB& st
         (BaseDrawCommandExectuor* ex) {
         auto texDrawCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
         if(!texDrawCmd->texObj) {
-            return;
+            ET_SendEventReturn(texDrawCmd->texObj, &ETRenderTextureManager::ET_createTexture, ETextureDataType::RGBA, Vec2i(2));
+            if(!texDrawCmd->texObj) {
+                LogError("[DrawTexturedQuadCmd::QueueSetTexGradient] Can't create texutre for an entity: '%s'",
+                    EntityUtils::GetEntityName(cmd->refEntityId));
+            } else {
+                texDrawCmd->texInfo.lerpType = ETextureLerpType::Point;
+                texDrawCmd->texInfo.wrapType = ETextureWrapType::ClampToEdge;
+            }
         }
         texDrawCmd->texObj->bind();
         if(vertical) {
@@ -158,12 +298,28 @@ void DrawTexturedQuadCmd::QueueSetTexGradient(DrawCmd& drawCmd, const ColorB& st
         }
         texDrawCmd->texObj->unbind();
 
+        if(auto errStr = RenderUtils::GetGLError()) {
+            LogError("[DrawTexturedQuadCmd::QueueSetTexGradient] Can't write to tex. (Error: '%s')",
+                errStr);
+        }
+
         if(sCol.a < 255 || eCol.a < 255) {
             texDrawCmd->blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::Normal, false);
         } else {
             texDrawCmd->blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::None, false);
         }
     }, EDrawCmdType::TexturedQuad);
+}
+
+void DrawParticlesCmd::updateTexture(const TextureInfo& newTexInfo) {
+    texObj = RenderUtils::CreateTexture(newTexInfo, ETextureDataType::RGBA);
+}
+
+void DrawParticlesCmd::QueueTMUpdate(DrawCmd& drawCmd, const Transform& newTm) {
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, tm=newTm](BaseDrawCommandExectuor* ex){
+        auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+        particlesCmd->tm = tm;
+    }, EDrawCmdType::Particles);
 }
 
 void DrawParticlesCmd::QueueColorConfigUpdate(DrawCmd& drawCmd, const ParticlesEmitterColorConfig& newColorConf) {
@@ -191,7 +347,10 @@ void DrawParticlesCmd::QueueRenderConfigUpdate(DrawCmd& drawCmd, const Particles
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, renderConf=newRenderConf](BaseDrawCommandExectuor* ex){
         auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
         particlesCmd->renderConfig = renderConf;
-        particlesCmd->texObj = RenderUtils::CreateTexture(renderConf.textureInfo, ETextureDataType::RGBA);
+        particlesCmd->updateTexture(particlesCmd->renderConfig.textureInfo);
+
+        bool preMultAlpha = true;
+        particlesCmd->blendOpPair = RenderUtils::GetBlendOpPair(renderConf.blendMode, preMultAlpha);
     }, EDrawCmdType::Particles);
 }
 
@@ -216,9 +375,20 @@ void DrawParticlesCmd::QueueCreateEmitterUpdate(DrawCmd& drawCmd, const EmitRequ
     }, EDrawCmdType::Particles);
 }
 
-void DrawParticlesCmd::QueueStopTrackedEmitterUpate(DrawCmd& drawCmd, EntityId trackEntId) {
+void DrawParticlesCmd::QueueStopTrackedEmitterUpdate(DrawCmd& drawCmd, EntityId trackEntId) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, entId=trackEntId](BaseDrawCommandExectuor* ex){
         auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
         particlesCmd->emittersPool.stopTrackEmitter(entId);
+    }, EDrawCmdType::Particles);
+}
+
+void DrawParticlesCmd::QueueStopEmitting(DrawCmd& drawCmd, bool forced) {
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, forcedFlag=forced](BaseDrawCommandExectuor* ex){
+        auto particlesCmd = static_cast<DrawParticlesCmd*>(cmd);
+        if(forcedFlag) {
+            particlesCmd->emittersPool.destroyAll();
+        } else {
+            particlesCmd->emittersPool.stopEmittingAll();
+        }
     }, EDrawCmdType::Particles);
 }

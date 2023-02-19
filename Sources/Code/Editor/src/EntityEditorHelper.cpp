@@ -21,7 +21,7 @@ AABB2D getRenderRect(const Transform& tm, EntityId entId) {
     return box;
 }
 
-void drawUIElementHelp(const Transform& tm, EntityId entId) {
+void drawUIElementHelp(DebugInfoDrawer& dd, const Transform& tm, EntityId entId) {
     bool isHidden = false;
     ET_SendEventReturn(isHidden, entId, &ETUIElement::ET_isHidden);
     if(isHidden) {
@@ -30,7 +30,7 @@ void drawUIElementHelp(const Transform& tm, EntityId entId) {
 
     AABB2D box(0.f);
     ET_SendEventReturn(box, entId, &ETUIElementGeom::ET_getBox);
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(125, 255, 255, DRAW_ALPHA));
+    dd.drawQuadBorder(box, ColorB(125, 255, 255, DRAW_ALPHA));
 
     UIBoxMargin margin;
     ET_SendEventReturn(margin, entId, &ETUIElementGeom::ET_getMargin);
@@ -40,10 +40,10 @@ void drawUIElementHelp(const Transform& tm, EntityId entId) {
     box.top.x += margin.right;
     box.top.y += margin.top;
 
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 125, 125, DRAW_ALPHA));
+    dd.drawQuadBorder(box, ColorB(255, 125, 125, DRAW_ALPHA));
 }
 
-void drawParticlesHelp(const Transform& tm, EntityId entId) {
+void drawParticlesHelp(DebugInfoDrawer& dd, const Transform& tm, EntityId entId) {
     bool isVisible = false;
     ET_SendEventReturn(isVisible, entId, &ETRenderNode::ET_isVisible);
     if(!isVisible) {
@@ -61,11 +61,11 @@ void drawParticlesHelp(const Transform& tm, EntityId entId) {
         box.top = 2.f * normScale * emissionConf.emitterVal;
         box.top.scale(Vec2(tm.scale.x, tm.scale.y));
         box.setCenter(tm.pt.x, tm.pt.y);
-        ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(255, 255, 245, DRAW_ALPHA));
+        dd.drawQuadBorder(box, ColorB(255, 255, 245, DRAW_ALPHA));
     } else {
         float r = normScale * emissionConf.emitterVal.x;
         r *= tm.scale.x;
-        ET_SendEvent(&ETDebugRender::ET_drawCicleBorder, Vec2(tm.pt.x, tm.pt.y), r, ColorB(255, 255, 245, DRAW_ALPHA));
+        dd.drawCircleBorder(Vec2(tm.pt.x, tm.pt.y), r, ColorB(255, 255, 245, DRAW_ALPHA));
     }
 
     ParticlesEmitterMovementConfig movementConf;
@@ -85,16 +85,16 @@ void drawParticlesHelp(const Transform& tm, EntityId entId) {
     Vec2 start(tm.pt.x, tm.pt.y);
     {
         auto end = start + speed * Vec2(dir.x * tm.scale.x, dir.y * tm.scale.y);
-        ET_SendEvent(&ETDebugRender::ET_drawLine, start, end, ColorB(240, 100, 3, DRAW_ALPHA));
+        dd.drawLine(start, end, ColorB(240, 100, 3, DRAW_ALPHA));
     }
 
     {
-        ET_SendEvent(&ETDebugRender::ET_drawCircleArc, start, speed * tm.scale.x, dir,
+        dd.drawCircleArc(start, speed * tm.scale.x, dir,
             2.f * Math::Deg2Rad(emissionConf.directionVar), ColorB(127, 252, 3, DRAW_ALPHA));
     }
 }
 
-void drawRenderRectHelp(const Transform& tm, EntityId entId) {
+void drawRenderRectHelp(DebugInfoDrawer& dd, const Transform& tm, EntityId entId) {
     bool isVisible = false;
     ET_SendEventReturn(isVisible, entId, &ETRenderNode::ET_isVisible);
     if(!isVisible) {
@@ -102,10 +102,10 @@ void drawRenderRectHelp(const Transform& tm, EntityId entId) {
     }
 
     auto box = getRenderRect(tm, entId);
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA));
+    dd.drawQuadBorder(box, ColorB(127, 252, 3, DRAW_ALPHA));
 }
 
-void drawRenderTextHelp(const Transform& tm, EntityId entId) {
+void drawRenderTextHelp(DebugInfoDrawer& dd, const Transform& tm, EntityId entId) {
     bool isVisible = false;
     ET_SendEventReturn(isVisible, entId, &ETRenderNode::ET_isVisible);
     if(!isVisible) {
@@ -115,10 +115,10 @@ void drawRenderTextHelp(const Transform& tm, EntityId entId) {
     AABB2D box(0.f);
     ET_SendEventReturn(box, entId, &ETRenderTextLogic::ET_getTextAABB);
 
-    ET_SendEvent(&ETDebugRender::ET_drawQuadBorder, box, ColorB(127, 252, 3, DRAW_ALPHA));
+    dd.drawQuadBorder(box, ColorB(127, 252, 3, DRAW_ALPHA));
 }
 
-void drawNinePatchImageHelp(const Transform& tm, EntityId entId) {
+void drawNinePatchImageHelp(DebugInfoDrawer& dd, const Transform& tm, EntityId entId) {
     bool isVisible = false;
     ET_SendEventReturn(isVisible, entId, &ETRenderNode::ET_isVisible);
     if(!isVisible) {
@@ -140,7 +140,7 @@ void drawNinePatchImageHelp(const Transform& tm, EntityId entId) {
         p2.y = size.y;
         p1 += box.bot;
         p2 += box.bot;
-        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+        dd.drawLine(p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
     }
     {
         p1.x = size.x * (1.f - vertCoord.x);
@@ -149,7 +149,7 @@ void drawNinePatchImageHelp(const Transform& tm, EntityId entId) {
         p2.y = size.y;
         p1 += box.bot;
         p2 += box.bot;
-        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+        dd.drawLine(p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
     }
     {
         p1.x = 0.f;
@@ -158,7 +158,7 @@ void drawNinePatchImageHelp(const Transform& tm, EntityId entId) {
         p2.y = p1.y;
         p1 += box.bot;
         p2 += box.bot;
-        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+        dd.drawLine(p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
     }
     {
         p1.x = 0.f;
@@ -167,7 +167,7 @@ void drawNinePatchImageHelp(const Transform& tm, EntityId entId) {
         p2.y = p1.y;
         p1 += box.bot;
         p2 += box.bot;
-        ET_SendEvent(&ETDebugRender::ET_drawLine, p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
+        dd.drawLine(p1, p2, ColorB(127, 252, 3, DRAW_ALPHA));
     }
 }
 
@@ -192,7 +192,7 @@ void EntityEditorHelper::ET_setFocusEntity(EntityId newFocusEntId) {
     focusEntId = newFocusEntId;
 }
 
-void EntityEditorHelper::ET_drawDebugInfo() {
+void EntityEditorHelper::ET_drawDebugInfo(DebugInfoDrawer& dd) {
     if(!focusEntId.isValid()) {
         return;
     }
@@ -200,18 +200,18 @@ void EntityEditorHelper::ET_drawDebugInfo() {
     ET_SendEventReturn(tm, focusEntId, &ETEntity::ET_getTransform);
 
     if(ET_IsExistNode<ETUIElement>(focusEntId)) {
-        drawUIElementHelp(tm, focusEntId);
+        drawUIElementHelp(dd, tm, focusEntId);
     }
     if(ET_IsExistNode<ETParticlesSystem>(focusEntId)) {
-        drawParticlesHelp(tm, focusEntId);
+        drawParticlesHelp(dd, tm, focusEntId);
     }
     if(ET_IsExistNode<ETRenderRect>(focusEntId)) {
-        drawRenderRectHelp(tm, focusEntId);
+        drawRenderRectHelp(dd, tm, focusEntId);
     }
     if(ET_IsExistNode<ETRenderTextLogic>(focusEntId)) {
-        drawRenderTextHelp(tm, focusEntId);
+        drawRenderTextHelp(dd, tm, focusEntId);
     }
     if(ET_IsExistNode<ETNinePatchImageLogic>(focusEntId)) {
-        drawNinePatchImageHelp(tm, focusEntId);
+        drawNinePatchImageHelp(dd, tm, focusEntId);
     }
 }

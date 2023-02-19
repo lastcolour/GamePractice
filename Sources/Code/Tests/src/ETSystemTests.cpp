@@ -68,6 +68,7 @@ struct TestETInterface {
     virtual void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) = 0;
     virtual void ET_IncreaseCounter(int num) = 0;
     virtual void ET_acquireObject(std::unique_ptr<TestObject>& obj) = 0;
+    virtual void ET_moveObject(TestObject&& obj) = 0;
 };
 
 struct TestETNode : public ETNode<TestETInterface> {
@@ -102,6 +103,11 @@ struct TestETNode : public ETNode<TestETInterface> {
     void ET_acquireObject(std::unique_ptr<TestObject>& obj) override {
         object = std::move(obj);
     }
+
+    void ET_moveObject(TestObject&& obj) override {
+        object.reset(new TestObject(std::move(obj)));
+    }
+
 
 public:
 
@@ -378,3 +384,30 @@ TEST_F(ETSystemTests, CheckQueueEventWithNonCopybaleObject) {
     EXPECT_TRUE(node.object.get());
     EXPECT_FALSE(testObject.get());
 }
+
+/*
+Require Perfcet Lambda Capture from C++20
+TEST_F(ETSystemTests, CheckQueueEventMoveObject) {
+    Core::GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
+    auto addressId = etSystem->createNewEntityId();
+    TestETNode node;
+    etSystem->connectNode(node, addressId);
+
+    EXPECT_FALSE(node.object.get());
+
+    TestObject testObject;
+    etSystem->queueEvent(&TestETInterface::ET_moveObject, std::move(testObject));
+
+    ET_PollAllEvents<TestETInterface>();
+
+    EXPECT_TRUE(node.object.get());
+
+    EXPECT_EQ(node.object->voidConstructCount, 1u);
+    EXPECT_EQ(node.object->copyConstructCount, 1u);
+    EXPECT_EQ(node.object->moveConstructCount, 0u);
+    EXPECT_EQ(node.object->copyAssingCount, 0u);
+    EXPECT_EQ(node.object->moveAssignCount, 1u);
+}
+*/

@@ -6,8 +6,7 @@
 #include "Audio/Sound.hpp"
 
 class SoundPlayLogic : public EntityLogic,
-    public ETNode<ETSoundPlayer>,
-    public ETNode<ETEntityEvents> {
+    public ETNode<ETSoundPlayer> {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -20,14 +19,11 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETSoundPlayer
     void ET_play() override;
     void ET_stop() override;
-
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override {}
-    void ET_onLoaded() override;
 
 private:
 

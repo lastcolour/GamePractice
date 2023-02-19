@@ -13,20 +13,22 @@ public:
 public:
 
     RenderImageLogic();
+    RenderImageLogic(EDrawCmdType cmdType);
     virtual ~RenderImageLogic();
-
-    // ETRenderImageLogic
-    TextureInfo ET_getTextureInfo() const override;
-    void ET_setTextureInfo(const TextureInfo& newTexture) override;
 
     // ETRenderRect
     void ET_setSize(const Vec2& newSize) override;
     Vec2 ET_getSize() const override;
 
+    // ETRenderImageLogic
+    TextureInfo ET_getTextureInfo() const override;
+    void ET_setTextureInfo(const TextureInfo& newTexture) override;
+
 protected:
 
     // DrawCommandProxy
     void onInit() override;
+    Mat4 calcModelMat() const override;
 
 protected:
 

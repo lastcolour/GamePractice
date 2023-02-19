@@ -3,8 +3,8 @@
 
 #include "Math/Matrix.hpp"
 #include "Render/RenderCommon.hpp"
-#include "Commands/Commands.hpp"
 #include "Platform/OpenGL.hpp"
+#include "VertTypes.hpp"
 
 class ImageBuffer;
 class RenderFramebuffer;
@@ -19,19 +19,19 @@ const int MaxLinesPerDraw = 8192;
 
 const int MaxCharsPerDraw = 512;
 
+const int NinePatchesVertCount = 2 * 3 * 9;
+
 const char* GetGLError();
 
 const char* GetGLFBOError(GLenum framebufferType);
 
 bool IsOpenGLContextExists();
 
-GLenum GetGLBlendOp(EBlendOp blendOp);
+GLenum GetGLBlendMode(EBlendOp blendOp);
 
 GLenum GetGLTexWrapType(ETextureWrapType wrapType);
 
 GLenum GetGLTexLerpType(ETextureLerpType lerpType);
-
-const char* GetDrawCmdTypeName(EDrawCmdType cmdType);
 
 BlendOpPair GetBlendOpPair(EBlendMode blendMode, bool preMultipliedAlpha);
 
@@ -45,11 +45,9 @@ void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO);
 
 std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex, ETextureDataType texType);
 
-void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo);
+Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches);
 
-Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale);
-
-const char* GetNameOfDrawCmdType(EDrawCmdType cmdType);
+int CreateNinePatchVertData(const Vec2& patchPt, const Vec2& patchUV, Vert_Vec3_Tex* out);
 
 } // namespace RenderUtils
 

@@ -14,7 +14,7 @@ bool DrawColoredQuadExecutor::init() {
     if(!shader) {
         return false;
     }
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, EPrimitiveGeometryType::Square);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, EPrimitiveGeometryType::Vec3);
     if(!geom) {
         return false;
     }
@@ -22,12 +22,6 @@ bool DrawColoredQuadExecutor::init() {
 }
 
 void DrawColoredQuadExecutor::deinit() {
-}
-
-void DrawColoredQuadExecutor::preDraw() {
-    if(Core::EnumFlagsBitAND(events, EDrawCmdEventType::Reorder)) {
-        visibleCount = DrawCmdUtils::SortCmdDrawQueue(queue);
-    }
 }
 
 void DrawColoredQuadExecutor::draw(RenderState& renderState, DrawCmdSlice& slice) {
@@ -40,8 +34,12 @@ void DrawColoredQuadExecutor::draw(RenderState& renderState, DrawCmdSlice& slice
         renderState.startCommand(cmd);
 
         shader->setUniformMat4(UniformType::ModelMat, cmd.modelMat);
-        // shader->setUniform4f(UniformType::Color,
-        //     ColorB(cmd.color.r, cmd.color.g, cmd.color.b, cmd.color.a * cmd.alpha));
+
+        const uint8_t alpha = static_cast<uint8_t>(Math::Clamp(
+            static_cast<int>(static_cast<float>(cmd.color.a) * cmd.alpha), 0, 255));
+
+        shader->setUniform4f(UniformType::Color,
+            ColorB(cmd.color.r, cmd.color.g, cmd.color.b, alpha));
         geom->drawTriangles(0, 6);
     }
 

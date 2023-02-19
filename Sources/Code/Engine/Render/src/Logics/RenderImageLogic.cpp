@@ -1,7 +1,12 @@
 #include "Logics/RenderImageLogic.hpp"
+#include "Math/MatrixTransform.hpp"
 
 RenderImageLogic::RenderImageLogic() :
-    DrawCommandProxy(EDrawCmdType::TexturedQuad),
+    RenderImageLogic(EDrawCmdType::TexturedQuad) {
+}
+
+RenderImageLogic::RenderImageLogic(EDrawCmdType cmdType) :
+    DrawCommandProxy(cmdType),
     size(100.f) {
 }
 
@@ -24,11 +29,25 @@ void RenderImageLogic::onInit() {
         texQuadCmd->texInfo = textureInfo;
     } else {
         LogWarning("[RenderImageLogic::onInit] Texture file is empty on entity: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
+    }
+
+    if(size.x <= 0.f || size.y < 0.f) {
+        LogError("[RenderImageLogic::onInit] Negative size: <%.1f, %.1f> (Entity: %s)", size.x, size.y,
+            getEntityName());
+        size.x = std::max(1.f, size.x);
+        size.y = std::max(1.f, size.y);
     }
 
     ETNode<ETRenderImageLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
+}
+
+Mat4 RenderImageLogic::calcModelMat() const {
+    Mat4 mat = getTransform().toMat4();
+    Vec3 scale(size.x * normScale / 2.f, size.y * normScale / 2.f, 1.f);
+    Math::AddScale3D(mat, scale);
+    return mat;
 }
 
 TextureInfo RenderImageLogic::ET_getTextureInfo() const {
@@ -41,8 +60,16 @@ void RenderImageLogic::ET_setTextureInfo(const TextureInfo& newTextureInfo) {
 }
 
 void RenderImageLogic::ET_setSize(const Vec2& newSize) {
-    DrawCmd::QueueSizeUpdate(*cmd, size, newSize, EDrawCmdType::TexturedQuad);
-    size = newSize;
+    Vec2 newSizeCopy = newSize;
+    if(newSizeCopy.x <= 0.f || newSizeCopy.y < 0.f) {
+        LogError("[RenderImageLogic::ET_setSize] Negative size: <%.1f, %.1f> (Entity: %s)", newSizeCopy.x, newSizeCopy.y,
+            getEntityName());
+        newSizeCopy.x = std::max(1.f, newSizeCopy.x);
+        newSizeCopy.y = std::max(1.f, newSizeCopy.y);
+    }
+
+    DrawColoredQuadCmd::QueueSizeUpdate(*cmd, size, newSizeCopy, cmdType);
+    size = newSizeCopy;
 }
 
 Vec2 RenderImageLogic::ET_getSize() const {

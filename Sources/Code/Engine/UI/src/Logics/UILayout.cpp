@@ -179,7 +179,7 @@ void UILayout::calculateLayout() {
 
     if(isCalculatingLayout) {
         LogError("[UILayout::calculateLayout] Can't do recursive layout calcuation for an entity '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         assert(false && "Recursive layout recalculation");
         return;
     }
@@ -196,7 +196,7 @@ void UILayout::calculateLayout() {
             LogWarning("[UILayout::calculateLayout] Can't have an host entity '%s' on layout", EntityUtils::GetEntityName(childId));
             childId = InvalidEntityId;
         } else if(!childId.isValid()) {
-            LogWarning("[UILayout::calculateLayout] Invalid child on entity layout: '%s'", EntityUtils::GetEntityName(getEntityId()));
+            LogWarning("[UILayout::calculateLayout] Invalid child on entity layout: '%s'", getEntityName());
         } else {
             childBox = calculateItem(offset, prevMargin, childId);
         }

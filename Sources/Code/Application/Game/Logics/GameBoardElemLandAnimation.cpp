@@ -41,8 +41,7 @@ void GameBoardElemLandAnimation::deinit() {
 void GameBoardElemLandAnimation::ET_playLand() {
     assert(state == State::Finished && "Invalid anim state");
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm = getLocalTransform();
     elemLandPt = Vec2(tm.pt.x, tm.pt.y);
 
     state = State::ScaleDown;
@@ -54,8 +53,7 @@ void GameBoardElemLandAnimation::ET_playLand() {
 void GameBoardElemLandAnimation::ET_onGameTick(float dt) {
     currDuration += dt;
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm = getLocalTransform();
 
     switch(state) {
         case State::ScaleDown: {
@@ -109,5 +107,5 @@ void GameBoardElemLandAnimation::ET_onGameTick(float dt) {
     float newYCellSize = tm.scale.y * cellSize;
     tm.pt.y -= (cellSize - newYCellSize) / 2.f;
 
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+    setLocalTransform(tm);
 }

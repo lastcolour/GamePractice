@@ -1,20 +1,21 @@
 #include "Commands/DrawTextExecutor.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "RenderFont.hpp"
-#include "RenderUtils.hpp"
 
 #include <cassert>
 
 namespace {
 
-void genTextLineVertexData(const DrawTextCmd& cmd, std::vector<Vec4>& vertData, int& vertShift,
-    const Vec2& pt, size_t startIdx, size_t endIdx) {
+int genTextLineVertexData(const std::string& text, const RenderFont& font,
+    const Vec2& pt, size_t startIdx, size_t endIdx, Vec4* out) {
 
+    int vertShift = 0;
     Vec2 drawPt = pt;
+
     for(size_t i = startIdx; i < endIdx; ++i) {
-        auto ch = cmd.text[i];
+        auto ch = text[i];
         assert(ch != '\n' && "Invalid new line character");
-        auto glyph = cmd.font->getGlyph(ch);
+        auto glyph = font.getGlyph(ch);
         if(!glyph) {
             continue;
         }
@@ -32,13 +33,13 @@ void genTextLineVertexData(const DrawTextCmd& cmd, std::vector<Vec4>& vertData, 
         const auto& txTop = glyph->texCoords.top;
 
         // First tri
-        vertData[vertShift + 0] = { glyphPt.x    , glyphPt.y + h, txBot.x, txBot.y };
-        vertData[vertShift + 1] = { glyphPt.x + w, glyphPt.y    , txTop.x, txTop.y };
-        vertData[vertShift + 2] = { glyphPt.x    , glyphPt.y    , txBot.x, txTop.y };
+        out[vertShift + 0] = { glyphPt.x    , glyphPt.y + h, txBot.x, txBot.y };
+        out[vertShift + 1] = { glyphPt.x + w, glyphPt.y    , txTop.x, txTop.y };
+        out[vertShift + 2] = { glyphPt.x    , glyphPt.y    , txBot.x, txTop.y };
         // Second tri
-        vertData[vertShift + 3] = { glyphPt.x    , glyphPt.y + h, txBot.x, txBot.y };
-        vertData[vertShift + 4] = { glyphPt.x + w, glyphPt.y + h, txTop.x, txBot.y };
-        vertData[vertShift + 5] = { glyphPt.x + w, glyphPt.y    , txTop.x, txTop.y };
+        out[vertShift + 3] = { glyphPt.x    , glyphPt.y + h, txBot.x, txBot.y };
+        out[vertShift + 4] = { glyphPt.x + w, glyphPt.y + h, txTop.x, txBot.y };
+        out[vertShift + 5] = { glyphPt.x + w, glyphPt.y    , txTop.x, txTop.y };
 
         vertShift += 6;
 
@@ -49,29 +50,11 @@ void genTextLineVertexData(const DrawTextCmd& cmd, std::vector<Vec4>& vertData, 
         }
         drawPt.y += glyph->advance.y;
     }
+
+    return vertShift;
 }
 
-void genTextVertexData(const DrawTextCmd& cmd, std::vector<Vec4>& vertData, int& vertShift) {
-    float xStart = 0.f;
-    float yStart = cmd.textMetric.size.y / 2.f;
-    if(cmd.alignAtCenter) {
-        xStart = -cmd.textMetric.size.x / 2.f;
-    }
-    Vec2 drawPt(0.f, yStart);
-    for(size_t i = 0, sz = cmd.textMetric.lineMetrics.size(); i < sz; ++i) {
-        const auto& lineMetric = cmd.textMetric.lineMetrics[i];
-        if(i == 0) {
-            drawPt.y -= cmd.textMetric.firstLineOffset;
-        } else {
-            drawPt.y -= cmd.font->getHeight() * RenderUtils::TextNewLineOffset;
-        }
-        drawPt.x = xStart;
-        genTextLineVertexData(cmd, vertData, vertShift,
-            drawPt, lineMetric.startIdx, lineMetric.endIdx);
-    }
-}
-
-int calcVertCount(const DrawTextCmd& cmd) {
+int calcGlyphCount(const DrawTextCmd& cmd) {
     int vertCount = 0;
     for(auto& ch : cmd.text) {
         if(cmd.font->getGlyph(ch)) {
@@ -86,6 +69,35 @@ int calcVertCount(const DrawTextCmd& cmd) {
 
 } // namespace
 
+int DrawTextExecutor::GenTextVertData(const std::string& text, const TextMetric& metric, const RenderFont& font, bool alignAtCenter, void* out) {
+    if(!out) {
+        assert(false && "Invalid buffer");
+        return 0;
+    }
+
+    int vertShift = 0;
+    Vec4* outPtr = static_cast<Vec4*>(out);
+
+    float xStart = 0.f;
+    float yStart = metric.size.y / 2.f;
+    if(alignAtCenter) {
+        xStart = -metric.size.x / 2.f;
+    }
+    Vec2 drawPt(0.f, yStart);
+    for(size_t i = 0, sz = metric.lineMetrics.size(); i < sz; ++i) {
+        const auto& lineMetric = metric.lineMetrics[i];
+        if(i == 0) {
+            drawPt.y -= metric.firstLineOffset;
+        } else {
+            drawPt.y -= font.getHeight() * RenderUtils::TextNewLineOffset;
+        }
+        drawPt.x = xStart;
+        vertShift += genTextLineVertexData(text, font, drawPt, lineMetric.startIdx, lineMetric.endIdx, outPtr + vertShift);
+    }
+
+    return vertShift;
+}
+
 DrawTextExecutor::DrawTextExecutor() {
 }
 
@@ -97,7 +109,7 @@ bool DrawTextExecutor::init() {
     if(!shader) {
         return false;
     }
-    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, EPrimitiveGeometryType::Text);
+    ET_SendEventReturn(geom, &ETRenderGeometryManager::ET_createGeometry, EPrimitiveGeometryType::Vec2_Tex);
     if(!geom) {
         return false;
     }
@@ -107,34 +119,38 @@ bool DrawTextExecutor::init() {
 void DrawTextExecutor::deinit() {
 }
 
-void DrawTextExecutor::preDraw() {
-    if(Core::EnumFlagsBitAND(events, EDrawCmdEventType::Reorder)) {
-        visibleCount = DrawCmdUtils::SortCmdDrawQueue(queue);
-        addEvent(EDrawCmdEventType::UpdateVertexData);
+void DrawTextExecutor::preDraw(RenderState& renderState) {
+    DrawCommandExecutor<DrawTextCmd>::preDraw(renderState);
+
+    if(!Core::EnumFlagsBitAND(events, EDrawCmdEventType::UpdateVertexData)) {
+        return;
     }
-    if(Core::EnumFlagsBitAND(events, EDrawCmdEventType::UpdateVertexData)) {
-        int totalVertCount = 0;
-        for(size_t i = 0; i < visibleCount; ++i) {
-            auto& cmd = *queue[i];
-            totalVertCount += calcVertCount(cmd);
-        }
 
-        vertData.resize(totalVertCount * 6);
-        int vertShift = 0;
-
-        for(size_t i = 0; i < visibleCount; ++i) {
-            auto& cmd = *queue[i];
-            cmd.vertStart = vertShift;
-            genTextVertexData(*queue[i], vertData, vertShift);
-            cmd.vertEnd = vertShift;
-        }
-
-        geom->bind();
-        geom->vboData(&vertData[0], sizeof(Vec4) * vertData.size());
-        geom->unbind();
-
-        vertData.clear();
+    int totalGlyphCount = 0;
+    for(size_t i = 0; i < visibleCount; ++i) {
+        auto& cmd = *queue[i];
+        totalGlyphCount += calcGlyphCount(cmd);
     }
+
+    if(totalGlyphCount == 0) {
+        return;
+    }
+
+    const int buffSize = sizeof(Vert_Vec2_Tex) * totalGlyphCount * 6;
+    auto& buff = renderState.buffer;
+    buff.resize(buffSize);
+
+    Vec4* outPtr = static_cast<Vec4*>(buff.getWriteData());
+    int vertShift = 0;
+
+    for(size_t i = 0; i < visibleCount; ++i) {
+        auto& cmd = *queue[i];
+        cmd.vertStart = vertShift;
+        vertShift += GenTextVertData(cmd.text, cmd.textMetric, *cmd.font, cmd.alignAtCenter, outPtr + vertShift);
+        cmd.vertEnd = vertShift;
+    }
+
+    geom->setVboData(outPtr, buffSize);
 }
 
 void DrawTextExecutor::draw(RenderState& renderState, DrawCmdSlice& slice) {
@@ -142,20 +158,22 @@ void DrawTextExecutor::draw(RenderState& renderState, DrawCmdSlice& slice) {
     shader->bind();
     shader->setUniformMat4(UniformType::CameraMat, renderState.proj2dMat);
 
-    RenderTexture* prevFontAtlas = nullptr;
+    const DrawTextCmd* prevCmd = nullptr;
     for(size_t i = slice.startIdx; i < slice.endIdx; ++i) {
         auto& cmd = *queue[i];
         renderState.startCommand(cmd);
 
-        auto fontAtlas = cmd.font->getFontAtlas();
-        if(fontAtlas != prevFontAtlas) {
-            shader->setTexture2d(UniformType::Texture, 0, *fontAtlas);
-        }
         shader->setUniformMat4(UniformType::ModelMat, cmd.modelMat);
-        // shader->setUniform4f(UniformType::Color,
-        //     ColorB(cmd.color.r, cmd.color.g, cmd.color.b, cmd.color.a * cmd.alpha));
+
+        if(!prevCmd || prevCmd->font.get() != cmd.font.get()) {
+            shader->setTexture2d(UniformType::Texture, 0, *cmd.font->getFontAtlas());
+        }
+
+        shader->setUniform4f(UniformType::Color, ColorB(cmd.color.r, cmd.color.g, cmd.color.b, static_cast<uint8_t>(cmd.color.a * cmd.alpha)));
 
         geom->drawTriangles(cmd.vertStart, cmd.vertEnd);
+
+        prevCmd = &cmd;
     }
 
     shader->unbind();

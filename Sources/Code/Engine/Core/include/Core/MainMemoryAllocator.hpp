@@ -40,7 +40,7 @@ private:
 
     PoolAllocator<AdaptiveGrowPolicy> fixedSizePools[MAX_FIXED_BLOCK_SIZE];
     std::vector<BigChunk> bigChunks;
-    std::mutex mutex;
+    std::recursive_mutex mutex;
 };
 
 class MemLocker {

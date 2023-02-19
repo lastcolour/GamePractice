@@ -27,12 +27,12 @@ public:
 
     bool operator<(const DrawCmdSlice& other) {
         if(other.empty()) {
-            return false;
+            return !empty();
         }
         if(empty()) {
             return false;
         }
-        return false;
+        return queue[startIdx]->zIndex < other.queue[other.startIdx]->zIndex;
     }
 
     bool empty() const {
@@ -54,6 +54,8 @@ public:
         for(size_t i = endIdx; i < size; ++i) {
             if(queue[i]->zIndex <= refZIndex) {
                 ++endIdx;
+            } else {
+                break;
             }
         }
     }
@@ -63,8 +65,11 @@ public:
             return;
         }
         startIdx = endIdx;
+        if(startIdx >= size) {
+            return;
+        }
         int refZIndex = queue[startIdx]->zIndex;
-        for(size_t i = startIdx + 1; i < size; ++i) {
+        for(size_t i = startIdx; i < size; ++i) {
             if(queue[i]->zIndex == refZIndex) {
                 endIdx += 1;
             }
@@ -83,19 +88,27 @@ namespace DrawCmdUtils {
 
 template<typename T>
 size_t SortCmdDrawQueue(std::vector<T*>& queue) {
+    if(queue.empty()) {
+        return 0u;
+    }
+
     size_t i = 0;
     size_t j = queue.size() - 1;
 
-    while(i < j) {
-        if(!T::IsVisible(*queue[i])) {
-            std::swap(queue[i], queue[j]);
-            --j;
-        } else {
+    while(i <= j) {
+        if(T::IsVisible(*queue[i])) {
             ++i;
+        } else {
+            if(i != j) {
+                std::swap(queue[i], queue[j]);
+                --j;
+            } else {
+                break;
+            }
         }
     }
 
-    if(i > 0) {
+    if(i > 1) {
         std::sort(queue.begin(), queue.begin() + i, [](const T* first, const T* second){
             return first->zIndex < second->zIndex;
         });
@@ -127,14 +140,16 @@ class BaseDrawCommandExectuor {
 public:
 
     virtual ~BaseDrawCommandExectuor() = default;
+
     virtual bool init() = 0;
     virtual void deinit() = 0;
-    virtual void preDraw() = 0;
     virtual void draw(RenderState& renderState, DrawCmdSlice& slice) = 0;
+
+    virtual void preDraw(RenderState& renderState) = 0;
     virtual DrawCmd* createCmd() = 0;
     virtual void registerCmdForDraw(DrawCmd* cmd) = 0;
     virtual void destroyCmd(DrawCmd* cmd) = 0;
-    virtual DrawCmdSlice getCmdSlice();
+    virtual DrawCmdSlice getCmdSlice() = 0;
 
     void addEvent(EDrawCmdEventType eventType) {
         events = Core::EnumFlagsBitXOR(events, eventType);
@@ -158,6 +173,18 @@ public:
 
     DrawCmd* createCmd() override {
         return reinterpret_cast<DrawCmd*>(pool.create());
+    }
+
+    void preDraw(RenderState& renderState) override {
+        if(Core::EnumFlagsBitAND(events, EDrawCmdEventType::Reorder)) {
+            visibleCount = DrawCmdUtils::SortCmdDrawQueue(queue);
+            if(visibleCount > 0) {
+                addEvent(EDrawCmdEventType::UpdateVertexData);
+            }
+        }
+        if(visibleCount == 0) {
+            clearEvents();
+        }
     }
 
     void registerCmdForDraw(DrawCmd* cmd) override {

@@ -1,6 +1,7 @@
 #include "Logics/RenderTextLogic.hpp"
 #include "RenderFont.hpp"
 #include "Render/ETRenderManager.hpp"
+#include "Math/MatrixTransform.hpp"
 
 #include <cassert>
 
@@ -27,18 +28,30 @@ void RenderTextLogic::onInit() {
     ET_SendEventReturn(font, &ETRenderFontManager::ET_createFont, EFontType::Game);
 
     auto textCmd = static_cast<DrawTextCmd*>(cmd);
-    textCmd->fontHeight = fontHeight;
     textCmd->color = color;
     textCmd->text = text;
     textCmd->font = font;
+    textCmd->alignAtCenter = true;
+    textCmd->updateTextMetric();
 
     ETNode<ETRenderTextLogic>::connect(getEntityId());
 }
 
+Mat4 RenderTextLogic::calcModelMat() const {
+    float fontScale = 1.f;
+    if(font) {
+        fontScale = fontHeight / static_cast<float>(font->getHeight());
+    }
+    Mat4 mat = getTransform().toMat4();
+    Vec3 scale(fontScale * normScale, fontScale * normScale, 1.f);
+    Math::AddScale3D(mat, scale);
+    return mat;
+}
+
 void RenderTextLogic::ET_setFontHeight(float newFontHeight) {
-    assert(newFontHeight >= 0.f && "Invalid font height");
+    assert(newFontHeight > 0.f && "Invalid font height");
+    DrawCmd::QueueSizeUpdate(*cmd, Vec2(fontHeight),  Vec2(newFontHeight), cmdType);
     fontHeight = newFontHeight;
-    DrawTextCmd::QueueFontHeightUpdate(*cmd, fontHeight);
 }
 
 AABB2D RenderTextLogic::ET_getTextAABB() const {
@@ -47,8 +60,7 @@ AABB2D RenderTextLogic::ET_getTextAABB() const {
         return aabb;
     }
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    const Transform& tm = getTransform();
 
     auto textSize = font->getTextSize(text);
     auto scale = fontHeight / static_cast<float>(font->getHeight());

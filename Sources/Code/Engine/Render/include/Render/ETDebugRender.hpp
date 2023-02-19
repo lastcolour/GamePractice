@@ -10,8 +10,8 @@ struct DebugInfoDrawer {
     virtual void drawQuadSolid(const AABB2D& box, const ColorB& col) = 0;
     virtual void drawQuadBorder(const AABB2D& box, const ColorB& col) = 0;
     virtual void drawText(const Vec2& pt, float fontHeight, const ColorB& col, const char* text) = 0;
-    virtual void drawCicleBorder(const Vec2& pt, float r, const ColorB& col) = 0;
-    virtual void drawCicleSolid(const Vec2& pt, float r, const ColorB& col) = 0;
+    virtual void drawCircleBorder(const Vec2& pt, float r, const ColorB& col) = 0;
+    virtual void drawCircleSolid(const Vec2& pt, float r, const ColorB& col) = 0;
     virtual void drawCircleArc(const Vec2& pt, float r, const Vec2& dir, float angle, const ColorB& col) = 0;
 };
 

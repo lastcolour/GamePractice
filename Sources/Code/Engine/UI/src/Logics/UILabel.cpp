@@ -107,10 +107,7 @@ void UILabel::onAlphaChanged(float newAlpha) {
     ET_SendEvent(labelRenderId, &ETRenderNode::ET_setAlphaMultiplier, newAlpha);
 }
 
-void UILabel::ET_onLoaded() {
-    UIElement::ET_onLoaded();
-
+void UILabel::onLoaded() {
+    UIElement::onLoaded();
     ET_setRenderId(labelRenderId);
-
-    ETNode<ETEntityEvents>::disconnect();
 }

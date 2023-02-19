@@ -51,8 +51,8 @@ protected:
             modules.emplace_back(new EntityModule);
             modules.emplace_back(new PlatformModule);
             modules.emplace_back(new RenderModule);
-            modules.emplace_back(new UIModule);
-            modules.emplace_back(new GameModule);
+            // modules.emplace_back(new UIModule);
+            // modules.emplace_back(new GameModule);
         }
     }
 

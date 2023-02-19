@@ -11,12 +11,6 @@ const EntityChildId InvalidEntityChildId = -1;
 using EntityLogicId = int;
 const EntityLogicId InvalidEntityLogicId = -1;
 
-struct ETEntityEvents {
-    virtual ~ETEntityEvents() = default;
-    virtual void ET_onTransformChanged(const Transform& newTm) = 0;
-    virtual void ET_onLoaded() = 0;
-};
-
 struct ETEntity {
     virtual ~ETEntity() = default;
     virtual void ET_setParent(EntityId entId) = 0;

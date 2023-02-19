@@ -53,7 +53,9 @@ TEST_F(MathTests, CheckTranslate2D) {
     Vec3 resPos = m * testPos;
     Vec3 expectedPos = testPos + Vec3(pos, 0.f);
 
-    ASSERT_EQ(resPos, expectedPos);
+    EXPECT_FLOAT_EQ(resPos.x, expectedPos.x);
+    EXPECT_FLOAT_EQ(resPos.y, expectedPos.y);
+    EXPECT_FLOAT_EQ(resPos.z, expectedPos.z);
 }
 
 TEST_F(MathTests, CheckRotate2D) {
@@ -80,7 +82,7 @@ TEST_F(MathTests, CheckScale2D) {
 TEST_F(MathTests, CheckTranslate) {
     Mat4 m(1.f);
     Vec3 pos(1.f, 2.f, 3.f);
-    Math::AddTranslate(m, pos);
+    Math::AddTranslate3D(m, pos);
 
     Vec4 testPos(1.f);
     Vec4 resPos = m * testPos;
@@ -93,7 +95,7 @@ TEST_F(MathTests, CheckRotate) {
     Mat4 m(1.f);
     Vec3 axis(0.f, 0.f, 1.f);
     float angle = Math::Deg2Rad(90.f);
-    Math::AddRotate(m, axis, angle);
+    Math::AddRotate3D(m, axis, angle);
 
     Vec4 testPos(1.f, 0.f, 0.f, 0.f);
     Vec4 resPos = m * testPos;
@@ -104,7 +106,7 @@ TEST_F(MathTests, CheckRotate) {
 TEST_F(MathTests, CheckScale) {
     Mat4 m(1.f);
     Vec3 scale(2.f);
-    Math::AddScale(m, scale);
+    Math::AddScale3D(m, scale);
 
     Vec4 testPos(1.f, 2.f, 3.f, 0.f);
     Vec4 resPos = m * testPos;
@@ -211,4 +213,31 @@ TEST_F(MathTests, CheckLerpVec) {
 
     res = Math::Lerp(start, end, 1.f);
     ASSERT_EQ(res, end);
+}
+
+TEST_F(MathTests, Check_GetTransform) {
+    Transform tm;
+    tm.pt = Vec3(100.f, 200.f, 300.f);
+    tm.scale = Vec3(3.f, 2.f, 1.f);
+    tm.quat.setAxisAngle(Vec3(0.f, 1.f, 0.f), Math::PI / 4.f);
+
+    Mat4 mat = tm.toMat4();
+
+    Transform resTm = Math::GetTransform(mat);
+
+    EXPECT_FLOAT_EQ(resTm.pt.x, tm.pt.x);
+    EXPECT_FLOAT_EQ(resTm.pt.y, tm.pt.y);
+    EXPECT_FLOAT_EQ(resTm.pt.z, tm.pt.z);
+
+    EXPECT_FLOAT_EQ(resTm.scale.x, tm.scale.x);
+    EXPECT_FLOAT_EQ(resTm.scale.y, tm.scale.y);
+    EXPECT_FLOAT_EQ(resTm.scale.z, tm.scale.z);
+
+    Vec3 pt{1.f, 1.f, 0.f};
+    Vec3 origRotPt = tm.quat * pt;
+    Vec3 resRotPt = resTm.quat * pt;
+
+    EXPECT_FLOAT_EQ(resRotPt.x, origRotPt.x);
+    EXPECT_FLOAT_EQ(resRotPt.y, origRotPt.y);
+    EXPECT_FLOAT_EQ(resRotPt.z, origRotPt.z);
 }

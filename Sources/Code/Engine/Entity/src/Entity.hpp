@@ -34,6 +34,7 @@ public:
     void setName(const char* newName);
     void* addLogicByTypeId(Core::TypeId logicTypeId);
     void purgeAllRelationships();
+    void setLoaded();
 
     template<typename LogicType>
     LogicType* addCustomLogic() {

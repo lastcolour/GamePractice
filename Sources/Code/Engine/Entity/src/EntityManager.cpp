@@ -483,7 +483,7 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
         return nullptr;
     }
     if(finishLoad) {
-        ET_SendEvent(entity->getEntityId(), &ETEntityEvents::ET_onLoaded);
+        entity->setLoaded();
     }
     return entity;
 }
@@ -565,8 +565,7 @@ bool EntityManager::ET_finishEntity(EntityId targetEntId) {
     }
 
     for(auto it = traverseOrder.rbegin(), end = traverseOrder.rend(); it != end; ++it) {
-        auto entId = (*it)->getEntityId();
-        ET_SendEvent(entId, &ETEntityEvents::ET_onLoaded);
+        (*it)->setLoaded();
     }
 
     return true;

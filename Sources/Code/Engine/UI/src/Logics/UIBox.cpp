@@ -90,8 +90,8 @@ void UIBox::onZIndexChanged(int newZIndex) {
     ET_SendEvent(boxRenderId, &ETRenderNode::ET_setZIndex, newZIndex);
 }
 
-void UIBox::ET_onLoaded() {
-    UIElement::ET_onLoaded();
+void UIBox::onLoaded() {
+    UIElement::onLoaded();
 
     ET_setRenderId(boxRenderId);
 
@@ -99,7 +99,9 @@ void UIBox::ET_onLoaded() {
 }
 
 void UIBox::onTransformChanged(const Transform& newTm) {
-    calculateBox();
+    if(isIgnoringTransform) {
+        calculateBox();
+    }
 }
 
 void UIBox::ET_setRenderId(EntityId newRenderId) {

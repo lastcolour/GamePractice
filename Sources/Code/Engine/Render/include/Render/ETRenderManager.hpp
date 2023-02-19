@@ -22,8 +22,8 @@ struct ETRenderFontManager {
 struct ETRenderTextureManager {
     virtual ~ETRenderTextureManager() = default;
     virtual std::shared_ptr<RenderTexture> ET_createFromFile(const char* fileName, ETextureDataType type) = 0;
-    virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureDataType type) = 0;
-    virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type) = 0;
+    virtual std::shared_ptr<RenderTexture> ET_createTexture(ETextureDataType type, const Vec2i& size) = 0;
+    virtual std::shared_ptr<RenderFramebuffer> ET_createFramebuffer(EFramebufferType type, const Vec2i& size) = 0;
 };
 
 struct ETRenderShaderManager {

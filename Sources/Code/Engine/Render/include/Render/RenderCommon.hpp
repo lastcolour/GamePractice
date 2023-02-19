@@ -11,11 +11,10 @@ enum class EStencilOpType {
 };
 
 enum class EPrimitiveGeometryType {
-    Square = 0,
-    Sqaure_Tex,
-    Text,
+    Vec2_Tex = 0,
+    Vec3,
+    Vec3_Tex,
     Particles,
-    NinePatch,
     Line
 };
 
@@ -56,12 +55,14 @@ enum class EFontType {
 };
 
 enum class ETextureLerpType {
-    Point = 0,
+    Unset = 0,
+    Point,
     Linear
 };
 
 enum class ETextureWrapType {
-    Repeat = 0,
+    Unset = 0,
+    Repeat,
     MirroredRepeat,
     ClampToEdge
 };
@@ -93,12 +94,17 @@ public:
 public:
 
     TextureInfo() :
+        wrapType(ETextureWrapType::ClampToEdge),
         lerpType(ETextureLerpType::Linear),
         tintColor(0, 0, 0, 0) {}
+
+    bool operator==(const TextureInfo& other) const;
+    bool operator!=(const TextureInfo& other) const;
 
 public:
 
     std::string filename;
+    ETextureWrapType wrapType;
     ETextureLerpType lerpType;
     ColorB tintColor;
 };

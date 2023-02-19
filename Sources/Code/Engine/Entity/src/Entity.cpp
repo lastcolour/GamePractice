@@ -49,12 +49,17 @@ bool IsValidLogicId(EntityLogicId logicId, const std::vector<Entity::EntityLogic
 
 void InitDeinitAllLogic(EntityId entId, std::vector<Entity::EntityLogicNode>& logics, bool init) {
     if(init) {
+        LogDebug("[InitDeinitAllLogic] Init all logic on entity: '%s'", EntityUtils::GetEntityName(entId));
         for(auto& logicNode : logics) {
             auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
             logicPtr->init();
         }
-        ET_SendEvent(entId, &ETEntityEvents::ET_onLoaded);
+        for(auto& logicNode : logics) {
+            auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+            logicPtr->onLoaded();
+        }
     } else {
+        LogDebug("[InitDeinitAllLogic] Deinit all logic on entity: '%s'", EntityUtils::GetEntityName(entId));
         for(auto& logicNode : logics) {
             auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
             logicPtr->deinit();
@@ -98,11 +103,11 @@ void Entity::addChildEntityWithId(EntityChildId childId, Entity& childEntity) {
 EntityLogicId Entity::addLogic(Reflect::ClassInstance&& logicInstance) {
     assert(logicInstance.get() && "Can't add null game logic");
     auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
-    logicPtr->setEntity(this);
+    logicPtr->entity = this;
     logicPtr->init();
     auto logicId = createNewLogicId();
     logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
-    ET_SendEvent(getEntityId(), &ETEntityEvents::ET_onLoaded);
+    logicPtr->onLoaded();
     return logicId;
 }
 
@@ -110,7 +115,7 @@ bool Entity::addLogicWithId(EntityLogicId logicId, Reflect::ClassInstance&& logi
     assert(logicInstance.get() && "Can't add null game logic");
     assert(IsValidLogicId(logicId, logics) && "Invalid entity logic id");
     auto logicPtr = static_cast<EntityLogic*>(logicInstance.get());
-    logicPtr->setEntity(this);
+    logicPtr->entity = this;
     logicPtr->init();
     logics.emplace_back(EntityLogicNode{std::move(logicInstance), logicId});
     return true;
@@ -343,7 +348,10 @@ void Entity::ET_setTransform(const Transform& newTm) {
     tm.scale.x = std::max(0.001f, newTm.scale.x);
     tm.scale.y = std::max(0.001f, newTm.scale.y);
     tm.scale.z = std::max(0.001f, newTm.scale.z);
-    ET_SendEvent(entityId, &ETEntityEvents::ET_onTransformChanged, tm);
+    for(auto& logicNode : logics) {
+        auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+        logicPtr->onTransformChanged(tm);
+    }
 }
 
 Transform Entity::ET_getLocalTransform() const {
@@ -436,6 +444,13 @@ std::vector<EntityId> Entity::ET_getChildren() const {
 void Entity::purgeAllRelationships() {
     parent = nullptr;
     children.clear();
+}
+
+void Entity::setLoaded() {
+    for(auto& logicNode : logics) {
+        auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+        logicPtr->onLoaded();
+    }
 }
 
 std::vector<EntityLogic*> Entity::ET_getLogisByTypeId(Core::TypeId logicTypeId) {

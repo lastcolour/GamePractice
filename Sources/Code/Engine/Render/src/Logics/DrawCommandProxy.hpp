@@ -6,20 +6,24 @@
 #include "Commands/ETDrawCommands.hpp"
 
 class DrawCommandProxy : public EntityLogic,
-    public ETNode<ETRenderNode>,
-    public ETNode<ETEntityEvents> {
+    public ETNode<ETRenderNode> {
 public:
 
     static void Reflect(ReflectContext& ctx);
 
 public:
 
-    DrawCommandProxy(EDrawCmdType cmdType);
+    DrawCommandProxy(EDrawCmdType drawCmdType);
     virtual ~DrawCommandProxy() = 0;
+
+    DrawCmd* getDrawCmd();
+    const DrawCmd* getDrawCmd() const;
 
     // EntityLogic
     void init() override;
     void deinit() override;
+    virtual void onTransformChanged(const Transform& newTm) override;
+    virtual void onLoaded() override;
 
     // ETRenderNode
     bool ET_isVisible() const override;
@@ -34,13 +38,10 @@ public:
     float ET_getNormalizationScale() const override;
     bool ET_setEmitEvents(bool flag) override;
 
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
-    void ET_onLoaded() override;
-
 protected:
 
     virtual void onInit() = 0;
+    virtual Mat4 calcModelMat() const = 0;
 
 protected:
 
@@ -50,7 +51,7 @@ protected:
     float alphaMult;
     float normScale;
     int zIndex;
-    EDrawCmdType type;
+    EDrawCmdType cmdType;
     bool isVisible;
     bool isLoaded;
     bool emitEvents;

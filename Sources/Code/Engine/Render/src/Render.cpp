@@ -2,10 +2,10 @@
 #include "Render/ETRenderCamera.hpp"
 #include "Render/ETRenderManager.hpp"
 #include "Render/ETRenderNode.hpp"
-#include "Render/ETRenderTickManager.hpp"
 #include "RenderUtils.hpp"
 #include "Render/ImageBuffer.hpp"
 #include "Commands/ETDrawCommands.hpp"
+#include "Render/ETRenderTickManager.hpp"
 
 Render::Render() :
     canOffscrenRender(false),
@@ -33,18 +33,15 @@ void Render::deinit() {
     ETNode<ETRenderUpdateTask>::disconnect();
 }
 
-void Render::ET_updateRender() {
+void Render::ET_Render(float dt) {
     if(!canRenderToScreen()) {
         return;
     }
+
+    ET_SendEvent(&ETRenderTickManager::ET_onRenderTick, dt);
+
     ET_SendEvent(&ETDrawCommandsManager::ET_renderToDefaultFBO);
     ET_SendEvent(&ETSurface::ET_swapBuffers);
-}
-
-void Render::ET_updateParticles(float dt) {
-    ET_PollAllEvents<ETParticlesManager>();
-    ET_SendEvent(&ETRenderTickManager::ET_fetchDeltaT);
-    ET_SendEvent(&ETDrawCommandsManager::ET_updateEmitters, dt);
 }
 
 bool Render::canRenderToScreen() const {
@@ -109,8 +106,9 @@ void Render::ET_onSurfaceResized(const Vec2i& size) {
     ET_SendEvent(&ETRenderCamera::ET_setRenderPort, size);
 }
 
-void Render::ET_syncWithGame() {
+void Render::ET_PreRender() {
     if(canCreateRenderNodes()) {
         ET_PollAllEvents<ETDrawCommandsManager>();
+        ET_SendEvent(&ETDrawCommandsManager::ET_preRender);
     }
 }

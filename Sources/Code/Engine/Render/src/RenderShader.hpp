@@ -26,6 +26,7 @@ public:
 
     void bind();
     void unbind();
+    bool isBound() const;
 
     void cacheUniformIds();
 
@@ -44,6 +45,9 @@ public:
 
 private:
 
+    RenderShader(const RenderShader&) = delete;
+    RenderShader& operator=(const RenderShader&) = delete;
+
     int getUniformId(UniformType varType) const;
     bool findUniform(const char* name, int& resUniLoc) const;
 
@@ -51,6 +55,7 @@ private:
 
     std::vector<int> chachedIds;
     int programId;
+    bool bound;
 };
 
 #endif /* __RENDER_SHADER_HPP__ */

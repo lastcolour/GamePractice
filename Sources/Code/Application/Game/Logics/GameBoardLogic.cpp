@@ -123,8 +123,7 @@ void GameBoardLogic::init() {
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     AABB2D visualBox(Vec2(0.f), Vec2(static_cast<float>(viewPort.x), static_cast<float>(viewPort.y)));
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    const Transform& tm = getTransform();
 
     visualBox.setCenter(tm.pt.x, tm.pt.y);
     ET_resize(visualBox);

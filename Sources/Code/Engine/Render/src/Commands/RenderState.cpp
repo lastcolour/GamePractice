@@ -1,5 +1,4 @@
 #include "Commands/RenderState.hpp"
-#include "RenderUtils.hpp"
 #include "Render/ETRenderManager.hpp"
 
 #include <cassert>
@@ -19,7 +18,7 @@ RenderState::~RenderState() {
 }
 
 bool RenderState::init() {
-    ET_SendEventReturn(mainFBO, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color_Depth_Stencil);
+    ET_SendEventReturn(mainFBO, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color_Depth_Stencil, Vec2i(1));
     if(!mainFBO) {
         LogError("[RenderState::init] Can't create main framebuffer");
         return false;
@@ -27,12 +26,11 @@ bool RenderState::init() {
 
     mainFBO->color0.bind();
     mainFBO->color0.setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
-    mainFBO->color0.setWrapType(ETextureWrapType::ClampToEdge, ETextureWrapType::ClampToEdge);
     mainFBO->color0.unbind();
 
     for(int i = 0; i < EXTRA_FBOS_COUNT; ++i) {
         std::shared_ptr<RenderFramebuffer> extraFBO;
-        ET_SendEventReturn(extraFBO, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color);
+        ET_SendEventReturn(extraFBO, &ETRenderTextureManager::ET_createFramebuffer, EFramebufferType::Color, Vec2i(1));
         if(!extraFBO) {
             LogError("[RenderState::init] Can't create extra framebuffer");
             return false;
@@ -40,7 +38,6 @@ bool RenderState::init() {
 
         extraFBO->color0.bind();
         extraFBO->color0.setLerpType(ETextureLerpType::Linear, ETextureLerpType::Linear);
-        extraFBO->color0.setWrapType(ETextureWrapType::ClampToEdge, ETextureWrapType::ClampToEdge);
         extraFBO->color0.unbind();
 
         extraFBOs.push_back(extraFBO);
@@ -50,7 +47,7 @@ bool RenderState::init() {
     if(!copyFBOShader) {
         return false;
     }
-    ET_SendEventReturn(copyFBOGeom, &ETRenderGeometryManager::ET_createGeometry, EPrimitiveGeometryType::Sqaure_Tex);
+    ET_SendEventReturn(copyFBOGeom, &ETRenderGeometryManager::ET_createGeometry, EPrimitiveGeometryType::Vec3_Tex);
     if(!copyFBOGeom) {
         return false;
     }
@@ -58,8 +55,8 @@ bool RenderState::init() {
 }
 
 void RenderState::setBlenMode(EBlendMode blendMode, bool preMultAlpha) {
-    auto blendOpPair = RenderUtils::GetBlendOpPair(blendMode, preMultAlpha);
-    setBlendOpPair(blendOpPair);
+    auto newBlendOpPair = RenderUtils::GetBlendOpPair(blendMode, preMultAlpha);
+    setBlendOpPair(newBlendOpPair);
 }
 
 void RenderState::setBlendOpPair(const BlendOpPair& newBlendOpPair) {
@@ -73,8 +70,8 @@ void RenderState::setBlendOpPair(const BlendOpPair& newBlendOpPair) {
     } else {
         glEnable(GL_BLEND);
         glBlendFunc(
-            RenderUtils::GetGLBlendOp(blendOpPair.src),
-            RenderUtils::GetGLBlendOp(blendOpPair.dst));
+            RenderUtils::GetGLBlendMode(blendOpPair.src),
+            RenderUtils::GetGLBlendMode(blendOpPair.dst));
     }
 }
 
@@ -136,12 +133,14 @@ bool RenderState::copyFBOtoFBO(RenderFramebuffer& from, RenderFramebuffer& to) {
     }
 
     to.bind();
-
     copyFBOShader->bind();
     copyFBOShader->setTexture2d(UniformType::Texture, 0, from.color0);
-    copyFBOGeom->drawTriangles(0, 6);
+    {
+        copyFBOGeom->bind();
+        copyFBOGeom->drawTriangles(0, 6);
+        copyFBOGeom->unbind();
+    }
     copyFBOShader->unbind();
-
     to.unbind();
 
     if(auto err = RenderUtils::GetGLError()) {
@@ -162,7 +161,11 @@ bool RenderState::copyFBOtoDefaultFBO(RenderFramebuffer& from) {
 
     copyFBOShader->bind();
     copyFBOShader->setTexture2d(UniformType::Texture, 0, from.color0);
-    copyFBOGeom->drawTriangles(0, 6);
+    {
+        copyFBOGeom->bind();
+        copyFBOGeom->drawTriangles(0, 6);
+        copyFBOGeom->unbind();
+    }
     copyFBOShader->unbind();
 
     if(auto err = RenderUtils::GetGLError()) {
@@ -173,7 +176,7 @@ bool RenderState::copyFBOtoDefaultFBO(RenderFramebuffer& from) {
     return true;
 }
 
-void RenderState::startCommand(DrawCmd& drawCmd) {
+void RenderState::startCommand(const DrawCmd& drawCmd) {
     setStencilState(drawCmd.stencilData);
     setBlendOpPair(drawCmd.blendOpPair);
 }

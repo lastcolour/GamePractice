@@ -4,7 +4,7 @@
 #include <cassert>
 
 ParticlesEmittersPool::ParticlesEmittersPool() :
-    asyncState(AsynState::Stopped),
+    emittingState(EmittingState::Stopped),
     particlesCount(0) {
 }
 
@@ -27,7 +27,7 @@ void ParticlesEmittersPool::createEmitter(const EmitRequest& emitReq) {
         pool.emplace_back(new EmitterParticles(*this));
         stoppedEmitter = pool.back().get();
     }
-    asyncState.store(AsynState::Playing);
+    emittingState = EmittingState::Playing;
     stoppedEmitter->start(emitReq);
 }
 
@@ -64,45 +64,8 @@ void ParticlesEmittersPool::stopEmitter(int rootParticleId) {
 }
 
 void ParticlesEmittersPool::simulate(const Transform& systemTm, float dt) {
-    auto currState = asyncState.load();
-    switch(currState) {
-        case AsynState::Playing: {
-            break;
-        }
-        case AsynState::StopRequested: {
-            bool hasAlive = false;
-            asyncState.store(AsynState::Stoppig);
-            for(auto& emitter : pool) {
-                if(!emitter->isFinished()) {
-                    hasAlive = true;
-                    emitter->stopEmitting();
-                }
-            }
-            if(!hasAlive) {
-                asyncState.store(AsynState::Stopped);
-                return;
-            }
-            break;
-        }
-        case AsynState::ForceStopRequested: {
-            asyncState.store(AsynState::Stopped);
-            for(auto& emitter : pool) {
-                if(!emitter->isFinished()) {
-                    emitter->stop();
-                    updateFrameInfo.systemStopped += 1;
-                }
-            }
-            return;
-        }
-        case AsynState::Stoppig: {
-            break;
-        }
-        case AsynState::Stopped: {
-            return;
-        }
-        default: {
-            assert(false && "Invalid async state");
-        }
+    if(emittingState == EmittingState::Stopped) {
+        return;
     }
 
     bool hasEmitting = false;
@@ -124,9 +87,9 @@ void ParticlesEmittersPool::simulate(const Transform& systemTm, float dt) {
 
     if(!hasEmitting) {
         if(hasAlive) {
-            asyncState.store(AsynState::Stoppig);
+            emittingState = EmittingState::Stopping;
         } else {
-            asyncState.store(AsynState::Stopped);
+            emittingState = EmittingState::Stopped;
         }
     }
 }
@@ -140,25 +103,39 @@ bool ParticlesEmittersPool::hasAlive() const {
     return false;
 }
 
-void ParticlesEmittersPool::asyncStopEmitting() {
-    auto currState = asyncState.load();
-    if(currState != AsynState::Playing) {
+void ParticlesEmittersPool::stopEmittingAll() {
+    if(emittingState != EmittingState::Playing) {
         return;
     }
-    asyncState.store(AsynState::StopRequested);
-}
 
-void ParticlesEmittersPool::asyncDestroyAll() {
-    auto currState = asyncState.load();
-    if(currState == AsynState::Stopped) {
+    emittingState = EmittingState::Stopping;
+
+    bool hasAlive = false;
+    for(auto& emitter : pool) {
+        if(!emitter->isFinished()) {
+            hasAlive = true;
+            emitter->stopEmitting();
+        }
+    }
+
+    if(!hasAlive) {
+        emittingState = EmittingState::Stopped;
         return;
     }
-    asyncState.store(AsynState::ForceStopRequested);
 }
 
-bool ParticlesEmittersPool::asyncHasAlive() const {
-    auto currState = asyncState.load();
-    return currState != AsynState::Stopped;
+void ParticlesEmittersPool::destroyAll() {
+    if(emittingState == EmittingState::Stopped) {
+        return;
+    }
+
+    emittingState = EmittingState::Stopped;
+    for(auto& emitter : pool) {
+        if(!emitter->isFinished()) {
+            emitter->stop();
+            updateFrameInfo.systemStopped += 1;
+        }
+    }
 }
 
 SimulationConfig& ParticlesEmittersPool::getSimConfig() {
@@ -183,6 +160,10 @@ void ParticlesEmittersPool::removeParticles(int count) {
     assert(particlesCount >= 0 && "Invalid particles count");
 }
 
+int ParticlesEmittersPool::getParticlesCount() const {
+    return particlesCount;
+}
+
 ParticlesUpdateFrameInfo& ParticlesEmittersPool::getUpdateInfo() {
     return updateFrameInfo;
 }
@@ -191,4 +172,8 @@ ParticlesUpdateFrameInfo ParticlesEmittersPool::getAndResetUpdateInfo() {
     auto res = updateFrameInfo;
     updateFrameInfo.reset();
     return res;
+}
+
+bool ParticlesEmittersPool::isStopped() const {
+    return emittingState == EmittingState::Stopped;
 }

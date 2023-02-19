@@ -5,6 +5,16 @@
 
 #include <cassert>
 
+TextMetric::TextMetric() :
+    size(0),
+    firstLineOffset(0) {}
+
+void TextMetric::reset() {
+    lineMetrics.clear();
+    size = Vec2i(0);
+    firstLineOffset = 0;
+}
+
 RenderFont::RenderFont(int fontMaxHeight) :
     fontHeight(fontMaxHeight) {
 }

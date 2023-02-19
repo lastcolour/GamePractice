@@ -17,8 +17,8 @@ public:
     void drawQuadSolid(const AABB2D& box, const ColorB& col) override;
     void drawQuadBorder(const AABB2D& box, const ColorB& col) override;
     void drawText(const Vec2& pt, float fontHeight, const ColorB& col, const char* text) override;
-    void drawCicleBorder(const Vec2& pt, float r, const ColorB& col) override;
-    void drawCicleSolid(const Vec2& pt, float r, const ColorB& col) override;
+    void drawCircleBorder(const Vec2& pt, float r, const ColorB& col) override;
+    void drawCircleSolid(const Vec2& pt, float r, const ColorB& col) override;
     void drawCircleArc(const Vec2& pt, float r, const Vec2& dir, float angle, const ColorB& col) override;
 
 public:

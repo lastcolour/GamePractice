@@ -22,7 +22,7 @@ void SoundEqualizerLogic::ET_enable() {
         return;
     }
     LogDebug("[SoundEqualizerLogic::ET_enable] Enable equalizer on entity: '%s'",
-        EntityUtils::GetEntityName(getEntityId()));
+        getEntityName());
 
     isEnabled = true;
     ET_QueueEvent(&ETAudioSystem::ET_setEqualizer, soundGroup, eqSetup);
@@ -34,7 +34,7 @@ void SoundEqualizerLogic::ET_disable() {
     }
 
     LogDebug("[SoundEqualizerLogic::ET_disable] Disable equalizer on entity: '%s'",
-        EntityUtils::GetEntityName(getEntityId()));
+        getEntityName());
 
     isEnabled = false;
     auto defSetup = EqualizerSetup();

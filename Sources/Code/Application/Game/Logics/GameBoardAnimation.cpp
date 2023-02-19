@@ -35,12 +35,11 @@ void GameBoardAnimation::ET_onGameTick(float dt) {
         ETNode<ETGameTimerEvents>::disconnect();
     }
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm = getLocalTransform();
 
     tm.scale = Vec3(currScale);
     ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+    setLocalTransform(tm);
     ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
 }
 
@@ -50,11 +49,9 @@ void GameBoardAnimation::ET_zoomOut() {
 }
 
 void GameBoardAnimation::ET_onStartLoading() {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm = getLocalTransform();
     tm.scale = Vec3(1.f);
-
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+    setLocalTransform(tm);
 }
 
 void GameBoardAnimation::ET_onStartDestroying() {

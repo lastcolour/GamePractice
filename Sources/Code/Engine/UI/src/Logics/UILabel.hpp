@@ -20,6 +20,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETUIElementGeom
     void ET_setRenderId(EntityId newRenderId) override;
@@ -37,9 +38,6 @@ public:
 
     // ETUIViewPortEvents
     void ET_onViewPortChanged(const Vec2i& newSize) override;
-
-    // ETEntityEvents
-    void ET_onLoaded() override;
 
 protected:
 

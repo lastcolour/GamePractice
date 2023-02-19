@@ -96,8 +96,7 @@ void GameElemRocketLogic::ET_start() {
     currSpeed = speed;
     ET_SendEventReturn(startPt, &ETGameBoard::ET_getElemBoardPos, getEntityId());
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    const Transform& tm = getTransform();
 
     ET_SendEvent(firstRocket, &ETEntity::ET_setTransform, tm);
     ET_SendEvent(secondRocket, &ETEntity::ET_setTransform, tm);
@@ -152,8 +151,7 @@ bool GameElemRocketLogic::onUpdate(float dt) {
     float fOffset = currSpeed * currTime;
     currSpeed += acc * dt;
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    Transform tm = getTransform();
 
     tm.quat.setAxisAngle(Vec3(0.f, 0.f, 1.f), 
         isHorizontal ? -Math::PI / 2.f : 0.f);

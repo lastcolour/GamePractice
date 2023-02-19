@@ -4,6 +4,7 @@
 #include "Render/RenderCommon.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 #include "RenderFont.hpp"
+#include "RenderUtils.hpp"
 
 class RenderTexture;
 
@@ -11,6 +12,7 @@ enum class EDrawCmdType {
     Text = 0,
     Quad,
     TexturedQuad,
+    NinePatch,
     Particles,
     Blur,
     COUNT
@@ -28,7 +30,7 @@ public:
 
     static void QueueToRemove(DrawCmd& drawCmd, EDrawCmdType cmdType);
     static void QueueToRender(DrawCmd& drawCmd, EDrawCmdType cmdType);
-    static void QueueTMUpdate(DrawCmd& drawCmd, const Transform& newTm, EDrawCmdType cmdType);
+    static void QueueModelMatUpdate(DrawCmd& drawCmd, const Mat4& modelMat, EDrawCmdType cmdType);
     static void QueueVisUpdate(DrawCmd& drawCmd, bool newVisible, EDrawCmdType cmdType);
     static void QueueZIndexUpdate(DrawCmd& drawCmd, int newZIndex, EDrawCmdType cmdType);
     static void QueueAlphaUpdate(DrawCmd& drawCmd, float newAlpha, EDrawCmdType cmdType);
@@ -42,7 +44,10 @@ public:
         modelMat(1.f),
         alpha(1.f),
         zIndex(0),
-        visible(false) {}
+        visible(false),
+        autoUpdateBlenOp(true) {}
+
+    void updateBlendOpPair();
 
 public:
 
@@ -53,6 +58,7 @@ public:
     float alpha;
     int zIndex;
     bool visible;
+    bool autoUpdateBlenOp;
 };
 
 class DrawTextCmd : public DrawCmd {
@@ -60,6 +66,9 @@ public:
 
     static bool IsVisible(const DrawTextCmd& cmd) {
         if(cmd.text.empty()) {
+            return false;
+        }
+        if(cmd.textMetric.size.lengthSq() < 0.001f) {
             return false;
         }
         if(!cmd.font || !cmd.font->getFontAtlas()) {
@@ -70,7 +79,6 @@ public:
 
     static void QueueTextUpdate(DrawCmd& drawCmd, const std::string& newText);
     static void QueueColorUpdate(DrawCmd& drawCmd, const ColorB& newColor);
-    static void QueueFontHeightUpdate(DrawCmd& drawCmd, float newFontHeight);
     static void QueueFontTypeUpdate(DrawCmd& drawCmd, EFontType newFontType);
     static void QueueAlignUpdate(DrawCmd& drawCmd, bool newAlign);
 
@@ -78,10 +86,15 @@ public:
 
     DrawTextCmd() :
         color(255, 255, 255),
-        fontHeight(24.f),
         vertStart(-1),
         vertEnd(-1),
-        alignAtCenter(false) {}
+        alignAtCenter(true) {
+
+        autoUpdateBlenOp = false;
+        blendOpPair =  RenderUtils::GetBlendOpPair(EBlendMode::Normal, false);
+    }
+
+    void updateTextMetric();
 
 public:
 
@@ -89,7 +102,6 @@ public:
     std::shared_ptr<RenderFont> font;
     TextMetric textMetric;
     ColorB color;
-    float fontHeight;
     int vertStart;
     int vertEnd;
     bool alignAtCenter;
@@ -119,8 +131,7 @@ public:
 
     enum class EImageCmdType {
         Image = 0,
-        Gradient,
-        NinePatch
+        Gradient
     };
 
 public:
@@ -133,28 +144,56 @@ public:
     }
 
     static void QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo& newTexInfo);
-    static void QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatches);
     static void QueueSetTexGradient(DrawCmd& drawCmd, const ColorB& startCol, const ColorB& endCol, bool isVertical);
 
 public:
 
     DrawTexturedQuadCmd() :
-        ninePatches(0.3f, 0.3f),
-        patchesScale(1.f),
         vertStart(-1),
         vertEnd(-1),
-        imageType(EImageCmdType::Image) {}
+        imageType(EImageCmdType::Image) {
+
+        autoUpdateBlenOp = false;
+        blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::Normal, false);
+    }
+
+    void updateTexture(const TextureInfo& newTexInfo);
 
 public:
 
     TextureInfo texInfo;
     std::shared_ptr<RenderTexture> texObj;
-    Vec2 ninePatches;
-    float patchesScale;
     int vertStart;
     int vertEnd;
     EImageCmdType imageType;
 };
+
+class DrawNinePatchCmd : public DrawTexturedQuadCmd
+{
+public:
+
+    static void QueueModelMatUpdate(DrawCmd& drawCmd, const Mat4& newModelMat);
+    static void QueueScaleUpdate(DrawCmd& drawCmd, const Vec3& newScale);
+    static void QueueSizeUpdate(DrawCmd& drawCmd, const Vec2& prevSize, const Vec2& newSize);
+    static void QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatches);
+    static void QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo& newTexInfo);
+
+public:
+
+    DrawNinePatchCmd() :
+        ninePatches(0.3f, 0.3f) {}
+
+public:
+
+    void updateVertCoords();
+
+public:
+
+    Vec2 vertCoord;
+    Vec2 ninePatches;
+};
+
+class DrawParticlesExecutor;
 
 class DrawParticlesCmd : public DrawCmd {
 public:
@@ -166,6 +205,7 @@ public:
         return DrawCmd::IsVisible(cmd);
     }
 
+    static void QueueTMUpdate(DrawCmd& drawCmd, const Transform& newTm);
     static void QueueColorConfigUpdate(DrawCmd& drawCmd, const ParticlesEmitterColorConfig& newColorConf);
     static void QueueMovementConfigUpdate(DrawCmd& drawCmd, const ParticlesEmitterMovementConfig& newMovementConf);
     static void QueueEmissionConfigUpdate(DrawCmd& drawCmd, const ParticlesEmitterEmissionConfig& newEmissionConf);
@@ -173,10 +213,22 @@ public:
     static void QueueSubEmittersConfigUpdate(DrawCmd& drawCmd, const ParticlesSubEmittersConfig& newSubEmittersConf);
     static void QueueSizeConfigUpdate(DrawCmd& drawCmd, const ParticlesEmitterSizeConfig& newSizeConf);
     static void QueueCreateEmitterUpdate(DrawCmd& drawCmd, const EmitRequest& emitReq);
-    static void QueueStopTrackedEmitterUpate(DrawCmd& drawCmd, EntityId trackEntId);
+    static void QueueStopTrackedEmitterUpdate(DrawCmd& drawCmd, EntityId trackEntId);
+    static void QueueStopEmitting(DrawCmd& drawCmd, bool forced);
 
 public:
 
+    DrawParticlesCmd() {
+        autoUpdateBlenOp = false;
+        bool preMultAlpha = true;
+        blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::Normal, preMultAlpha);
+    }
+
+    void updateTexture(const TextureInfo& newTexInfo);
+
+public:
+
+    Transform tm;
     std::shared_ptr<RenderTexture> texObj;
     ParticlesEmitterRenderConfig renderConfig;
     ParticlesEmittersPool emittersPool;
@@ -193,7 +245,10 @@ public:
 
     DrawBlurCmd() :
         passes(1),
-        downScale(2) {}
+        downScale(2) {
+
+        autoUpdateBlenOp = false;
+    }
 
 public:
 
@@ -213,9 +268,9 @@ public:
 public:
 
     Vec2 startPt;
-    ColorB startCol;
+    ColorF startCol;
     Vec2 endPt;
-    ColorB endCol;
+    ColorF endCol;
 };
 
 class DebugDrawQuadCmd {
@@ -237,7 +292,9 @@ public:
     DebugDrawTextCmd() :
         pt(0.f),
         col(255, 255, 255),
-        fontHeight(24.f) {}
+        fontHeight(24.f),
+        vertStart(-1),
+        vertEnd(-1) {}
 
 public:
 
@@ -245,11 +302,16 @@ public:
     Vec2 pt;
     ColorB col;
     float fontHeight;
+
+public:
+
+    int vertStart;
+    int vertEnd;
 };
 
 namespace DrawCmdUtils {
 
-Mat4 CalcModelMat(const Transform& tm, const Vec3& scale);
+const char* GetNameOfDrawCmdType(EDrawCmdType cmdType);
 
 } // namespace DrawCmdUtils
 

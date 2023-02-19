@@ -21,9 +21,9 @@ public:
     // ETDrawCommandsManager
     DrawCmd* ET_createDrawCmd(EDrawCmdType cmdType) override;
     void ET_scheduleDrawCmdEvent(std::function<void(BaseDrawCommandExectuor*)>&& func, EDrawCmdType cmdType) override;
+    void ET_preRender() override;
     void ET_renderToDefaultFBO() override;
     void ET_renderToBuffer(void* out, EDrawContentFilter filter) override;
-    void ET_updateEmitters(float dt) override;
 
     // ETRenderContextEvents
     void ET_onContextCreated() override;
@@ -41,14 +41,14 @@ private:
         CmdExecutorState() :
             inited(false) {}
 
-        CmdExecutorState(CmdExecutorState& other) :
+        CmdExecutorState(CmdExecutorState&& other) :
             slice(other.slice),
             executor(std::move(other.executor)),
             inited(other.inited) {
             other.inited = false;
         }
 
-        CmdExecutorState& operator=(CmdExecutorState& other) {
+        CmdExecutorState& operator=(CmdExecutorState&& other) {
             if(this != &other) {
                 slice = other.slice;
                 executor = std::move(other.executor);

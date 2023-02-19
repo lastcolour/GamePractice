@@ -25,12 +25,13 @@ public:
     void setLookAtRotation(const Vec3& dir, const Vec3& up);
     void setRotationBetween(const Vec3& p1, const Vec3& p2);
     void setRotationMat(const Mat3& mat);
+    void setRotationMat(const Mat4x3& mat);
     void setRotationMat(const Mat4& mat);
 
     EulerAngles getEulerAngels() const;
     void getAxisAngle(Vec3& outAxis, float& outAngle) const;
-    float lenght() const;
-    float lenghtSq() const;
+    float length() const;
+    float lengthSq() const;
     Quaternion getNormalized() const;
     Quaternion getInversed() const;
     Quaternion getConjugated() const;

@@ -30,21 +30,20 @@ void UIElement::init() {
 
     if(ET_IsExistNode<ETUIElement>(getEntityId())) {
         LogError("[UIElement::init] There is another UIElement on entity: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
     }
 
     ETNode<ETUIElement>::connect(getEntityId());
-    ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETUIAdditiveAnimationTarget>::connect(getEntityId());
 
-    ET_SendEventReturn(layoutTm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    layoutTm = getLocalTransform();
 }
 
 void UIElement::deinit() {
     ETNode<ETUIElement>::disconnect();
 }
 
-void UIElement::ET_onLoaded() {
+void UIElement::onLoaded() {
     isIgnoringTransform = false;
     zIndex -= 1;
     ET_setZIndex(zIndex + 1);
@@ -82,8 +81,7 @@ int UIElement::ET_getZIndex() const {
 }
 
 void UIElement::ET_setLayoutPos(const Vec2& layoutPt) {
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm = getLocalTransform();
     layoutTm.pt = tm.pt;
 }
 
@@ -126,7 +124,8 @@ void UIElement::ET_hide() {
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, true);
     if(!isParentHidden) {
         ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
-    }}
+    }
+}
 
 void UIElement::ET_setParentHidden(bool flag) {
     if(isParentHidden == flag) {
@@ -199,13 +198,6 @@ void UIElement::ET_setIgnoreTransform(bool flag) {
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onIngoreTransform, isIgnoringTransform);
 }
 
-void UIElement::ET_onTransformChanged(const Transform& newTm) {
-    if(isIgnoringTransform) {
-        return;
-    }
-    onTransformChanged(newTm);
-}
-
 void UIElement::ET_setParentAlpha(float newParentAlpha) {
     parentAlpha = newParentAlpha;
     ET_setAlpha(alpha);
@@ -224,7 +216,7 @@ void UIElement::ET_applyAdditiveTranform() {
     resTm.addDelta(layoutTm);
 
     ET_setIgnoreTransform(true);
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, resTm);
+    setLocalTransform(resTm);
     ET_setIgnoreTransform(false);
 
     ET_setAlpha(alpha);

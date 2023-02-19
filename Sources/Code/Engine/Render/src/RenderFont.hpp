@@ -23,6 +23,11 @@ public:
 
 public:
 
+    TextMetric();
+    void reset();
+
+public:
+
     std::vector<LineMetric> lineMetrics;
     Vec2i size;
     int firstLineOffset;

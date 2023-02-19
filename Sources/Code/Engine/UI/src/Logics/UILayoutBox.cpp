@@ -29,14 +29,12 @@ void UILayoutBox::deinit() {
     UIElement::deinit();
 }
 
-void UILayoutBox::ET_onLoaded() {
-    UIElement::ET_onLoaded();
+void UILayoutBox::onLoaded() {
+    UIElement::onLoaded();
 
     ET_setRenderId(boxRenderId);
 
     updateSelfLayout();
-
-    ETNode<ETEntityEvents>::disconnect();
 }
 
 void UILayoutBox::ET_setRenderId(EntityId newRenderId) {

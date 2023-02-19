@@ -28,11 +28,9 @@ void UIElementProxy::deinit() {
     UIElement::deinit();
 }
 
-void UIElementProxy::ET_onLoaded() {
-    UIElement::ET_onLoaded();
+void UIElementProxy::onLoaded() {
+    UIElement::onLoaded();
     applyNormScale();
-
-    ETNode<ETEntityEvents>::disconnect();
 }
 
 void UIElementProxy::ET_onViewPortChanged(const Vec2i& newSize) {

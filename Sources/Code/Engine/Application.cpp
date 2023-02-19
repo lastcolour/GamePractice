@@ -119,32 +119,24 @@ void Application::mainLoop() {
     });
     gameUpdate->setFrequency(MAX_GAME_TICK_RATE);
 
-    auto renderSync = runner->createTask("RenderSync", [](){
-        ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
+    auto preRender = runner->createTask("PreRender", [](){
+        ET_SendEvent(&ETRenderUpdateTask::ET_PreRender);
     });
-    renderSync->setFrequency(MAX_GAME_TICK_RATE);
-    renderSync->setType(RunTaskType::MainThreadOnly);
+    preRender->setFrequency(MAX_GAME_TICK_RATE);
+    preRender->setType(RunTaskType::MainThreadOnly);
 
-    auto renderUpdate = runner->createTask("Render", [](){
-        ET_SendEvent(&ETRenderUpdateTask::ET_updateRender);
+    auto renderUpdate = runner->createTask("Render", [](float dt){
+        ET_SendEvent(&ETRenderUpdateTask::ET_Render, dt);
     });
     renderUpdate->setType(RunTaskType::MainThreadOnly);
     renderUpdate->setFrequency(MAX_GAME_TICK_RATE);
 
-    auto particlesUpdate = runner->createTask("Particles", [](float dt){
-        ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles, dt);
-    });
-    particlesUpdate->setFrequency(MAX_GAME_TICK_RATE);
-
     gameUpdate->addChild(uiUpdate);
-    gameUpdate->addChild(renderSync);
-    gameUpdate->addChild(particlesUpdate);
+    gameUpdate->addChild(preRender);
 
-    uiUpdate->addChild(renderSync);
-    uiUpdate->addChild(particlesUpdate);
+    uiUpdate->addChild(preRender);
 
-    renderSync->addChild(renderUpdate);
-    particlesUpdate->addChild(renderUpdate);
+    preRender->addChild(renderUpdate);
 
     runner->start(APP_THREAD_COUNT);
 }

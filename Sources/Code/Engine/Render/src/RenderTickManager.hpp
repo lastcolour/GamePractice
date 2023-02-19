@@ -18,24 +18,17 @@ public:
     void deinit() override;
 
     // ETRenderTickManager
+    void ET_onRenderTick(float dt) override;
     void ET_onGameTick(float dt) override;
     void ET_onUITick(float dt) override;
-    float ET_getGameDeltaT() const override;
-    float ET_getUIDeltaT() const override;
+    Ticks ET_getTicks() const override;
     void ET_fetchDeltaT() override;
 
 private:
 
-    struct TickData {
-        float gameDt {0.f};
-        float uiDt {0.f};
-    };
-
-private:
-
     std::mutex mutex;
-    TickData prev;
-    TickData curr;
+    Ticks prev;
+    Ticks curr;
 };
 
 #endif /* __RENDER_TICK_MANAGER_HPP__*/

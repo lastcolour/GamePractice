@@ -17,6 +17,13 @@ public:
     ParticlesSystem();
     virtual ~ParticlesSystem();
 
+    // EntityLogic
+    void onTransformChanged(const Transform& newTm) override;
+    void onLoaded() override;
+
+    // DrawCommandProxy
+    void ET_setNormalizationScale(float newNormScale);
+
     // ETParticlesSystem
     void ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) override;
     const ParticlesEmitterColorConfig& ET_getColorConfig() const override;
@@ -46,6 +53,7 @@ protected:
 
     // DrawCommandProxy
     void onInit() override;
+    Mat4 calcModelMat() const override;
 
 private:
 

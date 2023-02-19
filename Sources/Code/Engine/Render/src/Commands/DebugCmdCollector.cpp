@@ -18,9 +18,9 @@ void DebugCmdCollector::clearCmds() {
 void DebugCmdCollector::drawLine(const Vec2& startPt, const Vec2& endPt, const ColorB& col) {
     DebugDrawLineCmd cmd;
     cmd.startPt = startPt;
-    cmd.startCol = col;
+    cmd.startCol = Color::toColorF(col);
     cmd.endPt = endPt;
-    cmd.endCol = col;
+    cmd.endCol = Color::toColorF(col);
     drawLinesCmds.push_back(cmd);
 }
 
@@ -47,7 +47,7 @@ void DebugCmdCollector::drawText(const Vec2& pt, float fontHeight, const ColorB&
     drawTextCmds.push_back(cmd);
 }
 
-void DebugCmdCollector::drawCicleBorder(const Vec2& pt, float r, const ColorB& col) {
+void DebugCmdCollector::drawCircleBorder(const Vec2& pt, float r, const ColorB& col) {
     Vec2 p1(0.f);
     Vec2 p2(0.f);
     const int N = 64;
@@ -60,7 +60,7 @@ void DebugCmdCollector::drawCicleBorder(const Vec2& pt, float r, const ColorB& c
     }
 }
 
-void DebugCmdCollector::drawCicleSolid(const Vec2& pt, float r, const ColorB& col) {
+void DebugCmdCollector::drawCircleSolid(const Vec2& pt, float r, const ColorB& col) {
     assert(false && "Not implemented");
 }
 

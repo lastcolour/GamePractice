@@ -11,7 +11,6 @@
 class UIAnimationSequence : public EntityLogic,
     public ETNode<ETUITimerEvents>,
     public ETNode<ETUIAnimationSequence>,
-    public ETNode<ETEntityEvents>,
     public ETNode<ETUIElementEvents> {
 public:
 
@@ -25,6 +24,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETUITimerEvents
     void ET_onUITick(float dt) override;
@@ -39,10 +39,6 @@ public:
     void ET_addSubAnimation(EntityId subAnimId) override;
     void ET_setStartEndEvents(EShowEvent newStartEvent, EShowEvent newEndEvent) override;
     bool ET_isPlaying() const override;
-
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override {}
-    void ET_onLoaded() override;
 
     // ETUIElementEvents
     void ET_onBoxChanged(const AABB2D& newAabb) override {}

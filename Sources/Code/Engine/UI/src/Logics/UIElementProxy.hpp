@@ -22,9 +22,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
-
-    // ETEntityEvents
-    void ET_onLoaded() override;
+    void onLoaded() override;
 
     // ETUIViewPortEvents
     void ET_onViewPortChanged(const Vec2i& newSize) override;

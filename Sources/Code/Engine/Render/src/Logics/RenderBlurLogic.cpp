@@ -26,3 +26,7 @@ void RenderBlurLogic::onInit() {
     downScaleFactor = std::max(downScaleFactor, 1);
     blurCmd->downScale = downScaleFactor;
 }
+
+Mat4 RenderBlurLogic::calcModelMat() const {
+    return getTransform().toMat4();
+}

@@ -88,23 +88,16 @@ void EditorApp::buildTasksRunner() {
     });
     gameUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
 
-    auto renderSync = runner->createTask("RenderSync", [](){
-        ET_SendEvent(&ETRenderUpdateTask::ET_syncWithGame);
+    auto preRender = runner->createTask("PreRender", [](){
+        ET_SendEvent(&ETRenderUpdateTask::ET_PreRender);
     });
-    renderSync->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
-    renderSync->setType(RunTaskType::MainThreadOnly);
-
-    auto particlesUpdate = runner->createTask("Particles", [](float dt){
-        ET_SendEvent(&ETRenderUpdateTask::ET_updateParticles, dt);
-    });
-    particlesUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
+    preRender->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
+    preRender->setType(RunTaskType::MainThreadOnly);
 
     gameUpdate->addChild(uiUpdate);
-    gameUpdate->addChild(renderSync);
-    gameUpdate->addChild(particlesUpdate);
+    gameUpdate->addChild(preRender);
 
-    uiUpdate->addChild(renderSync);
-    uiUpdate->addChild(particlesUpdate);
+    uiUpdate->addChild(preRender);
 }
 
 Memory::Buffer EditorApp::getReflectModel() {
@@ -193,7 +186,7 @@ void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
         GetEnv()->GetTasksRunner()->stepMainThread();
     }
 
-    ET_SendEvent(&ETRender::ET_drawFrameToBufferRaw, out, Vec2i(width, height), DrawContentFilter::None);
+    ET_SendEvent(&ETRender::ET_drawFrameToBufferRaw, out, Vec2i(width, height), EDrawContentFilter::None);
 }
 
 EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {

@@ -3,7 +3,6 @@
 #include "Render/ETParticlesSystem.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
 #include "RenderUtils.hpp"
-#include "Nodes/ETRenderNodeManager.hpp"
 
 #include <cassert>
 
@@ -73,7 +72,7 @@ void simulateSimpleField(const GravityField& field, const Transform& tm, int act
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         Vec2 dir = p.pt - fieldCenter;
-        if(field.radius > 0.f && dir.lenghtSq() > radSq) {
+        if(field.radius > 0.f && dir.lengthSq() > radSq) {
             continue;
         }
         p.acc += dtAcc;
@@ -88,7 +87,7 @@ void simulateVortexField(const GravityField& field, const Transform& tm, int act
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
         Vec2 dir = fieldCenter - p.pt;
-        if(field.radius > 0.f && dir.lenghtSq() > radSq) {
+        if(field.radius > 0.f && dir.lengthSq() > radSq) {
             continue;
         }
         dir.normalize();
@@ -191,7 +190,6 @@ void EmitterParticles::removeOld(float dt) {
         p.lifetime -= dt;
         if(p.lifetime > 0.f) {
             particles[j] = particles[i];
-            instaceData[j] = instaceData[i];
             ++j;
         } else {
             triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleDeath,
@@ -302,18 +300,19 @@ void EmitterParticles::emitNew(float dt) {
     emitFracTime -= emitCount / simConf.emission.emissionRate;
 
     particles.resize(activeCount + emitCount);
-    instaceData.resize(activeCount + emitCount);
+    instanceData.resize(activeCount + emitCount);
+
 
     if(activeCount > 0) {
         memmove(&particles[0] + emitCount, &particles[0],
             activeCount * sizeof(Particle));
-        memmove(&instaceData[0] + emitCount, &instaceData[0],
-            activeCount * sizeof(ParticleInstanceData));
     }
 
     for(int i = 0; i < emitCount; ++i) {
         auto& p = particles[i];
         spawnNewParticle(p);
+
+        // TODO: Move this to another loop and check if 'OnParticleSpawn' should be emitted
         triggerSubEmitters(&p, SubEmitterTriggerEvent::OnParticleSpawn,
             simConf, emitReq, subEmitterFlags);
     }
@@ -354,7 +353,7 @@ void EmitterParticles::moveAlive(float dt) {
 void EmitterParticles::updateIntacesData(float dt) {
     for(int i = 0; i < activeCount; ++i) {
         auto& p = particles[i];
-        auto& out = instaceData[i];
+        auto& out = instanceData[i];
 
         auto prog = 1.f - p.lifetime / p.totalLifetime;
 

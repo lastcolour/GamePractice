@@ -4,21 +4,21 @@
 namespace Math {
 
 template<typename T>
-struct AABB {
+struct AABB2D {
 
     using ElemTypeT = typename T::ValueType;
 
 public:
 
-    AABB() = default;
-    AABB(const T& bt, const T& tp) :
+    AABB2D() = default;
+    AABB2D(const T& bt, const T& tp) :
         bot(bt), top(tp) {}
-    AABB(const AABB& other) :
+    AABB2D(const AABB2D& other) :
         bot(other.bot), top(other.top) {}
-    explicit AABB(const ElemTypeT& val) :
+    explicit AABB2D(const ElemTypeT& val) :
         bot(val), top(val) {}
 
-    AABB& operator=(const AABB& other) {
+    AABB2D& operator=(const AABB2D& other) {
         bot = other.bot;
         top = other.top;
         return *this;
@@ -62,6 +62,19 @@ public:
         top += shift;
     }
 
+    void setCenterAndSize(const T& c, const T& sz) {
+        bot = c - sz / (ElemTypeT)2;
+        top += sz;
+    }
+
+    AABB2D expandBy(const T& v) const {
+        return AABB2D{bot - v, top + v};
+    }
+
+    AABB2D expandBy(const ElemTypeT& v) const {
+        return expandBy(T(v));
+    }
+
 public:
 
     T bot;
@@ -69,23 +82,23 @@ public:
 };
 
 template<typename T>
-AABB<T> operator+(const AABB<T>& aabb, const T& pos) {
-    return AABB<T>(aabb.bot + pos, aabb.top + pos);
+AABB2D<T> operator+(const AABB2D<T>& aabb, const T& pos) {
+    return AABB2D<T>(aabb.bot + pos, aabb.top + pos);
 }
 
 template<typename T>
-bool operator==(const AABB<T>& first, const AABB<T>& second) {
+bool operator==(const AABB2D<T>& first, const AABB2D<T>& second) {
     return first.top == second.top && first.bot == second.bot;
 }
 
 template<typename T>
-bool operator!=(const AABB<T>& first, const AABB<T>& second) {
+bool operator!=(const AABB2D<T>& first, const AABB2D<T>& second) {
     return !(first == second);
 }
 
 } // namespace Math
 
-using AABB2D = Math::AABB<Vec2>;
-using AABB2Di = Math::AABB<Vec2i>;
+using AABB2D = Math::AABB2D<Vec2>;
+using AABB2Di = Math::AABB2D<Vec2i>;
 
 #endif /* __AABB_HPP__ */

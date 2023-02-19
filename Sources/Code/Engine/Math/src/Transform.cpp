@@ -50,9 +50,9 @@ Transform& Transform::operator=(const Transform& tm) {
 
 Mat4 Transform::toMat4() const {
     Mat4 resMat(1.f);
-    AddTranslate(resMat, pt);
-    AddRotate(resMat, quat);
-    AddScale(resMat, scale);
+    AddTranslate3D(resMat, pt);
+    AddRotate3D(resMat, quat);
+    AddScale3D(resMat, scale);
     return resMat;
 }
 

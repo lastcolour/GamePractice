@@ -69,12 +69,12 @@ public:
 
     const T* getPtr() const { return &x; }
 
-    T lenghtSq() const { return x * x + y * y; }
+    T lengthSq() const { return x * x + y * y; }
 
-    T lenght() const { return static_cast<T>(static_cast<float>(sqrt(lenghtSq()))); }
+    T length() const { return static_cast<T>(static_cast<float>(sqrt(lengthSq()))); }
 
     Vector2<T> getNormalized() const {
-        const auto len = lenght();
+        const auto len = length();
         return Vector2<T>(x / len, y / len);
     }
 
@@ -185,12 +185,12 @@ public:
 
     const T* getPtr() const { return &x; }
 
-    T lenghtSq() const { return x * x + y * y + z * z; }
+    T lengthSq() const { return x * x + y * y + z * z; }
 
-    T lenght() const { return static_cast<T>(static_cast<float>(sqrt(lenghtSq()))); }
+    T length() const { return static_cast<T>(static_cast<float>(sqrt(lengthSq()))); }
 
     Vector3<T> getNormalized() const {
-        const auto len = lenght();
+        const auto len = length();
         return Vector3<T>(x / len, y / len, z / len);
     }
 
@@ -320,12 +320,12 @@ public:
 
     const T* getPtr() const { return &x; }
 
-    T lenghtSq() const { return x * x + y * y + z * z + w * w; }
+    T lengthSq() const { return x * x + y * y + z * z + w * w; }
 
-    T lenght() const { return static_cast<T>(static_cast<float>(sqrt(lenghtSq()))); }
+    T length() const { return static_cast<T>(static_cast<float>(sqrt(lengthSq()))); }
 
     Vector4<T> getNormalized() const {
-        const auto len = lenght();
+        const auto len = length();
         return Vector4(x / len, y / len, z / len, w / len);
     }
 

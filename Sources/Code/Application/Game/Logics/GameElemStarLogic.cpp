@@ -82,8 +82,7 @@ void GameElemStarLogic::ET_start() {
         ET_SendEventReturn(destroyElems, &ETGameBoard::ET_getAllElemsOfType, elemType);
     }
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    const Transform& tm = getTransform();
 
     sortEntitiesByDirection(destroyElems, Vec2(tm.pt.x, tm.pt.y));
 

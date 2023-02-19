@@ -81,7 +81,7 @@ bool GameBoardInteractionLogic::tryFinishElemMove(const Vec2i& endPt) {
 
     int cellSize = 0;
     ET_SendEventReturn(cellSize, &ETGameBoard::ET_getCellSize);
-    if(moveDir.lenght() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
+    if(moveDir.length() < static_cast<float>(cellSize) * MIN_MOVE_LEN_FOR_SWITCH) {
         return false;
     }
     EntityId nextElemId;

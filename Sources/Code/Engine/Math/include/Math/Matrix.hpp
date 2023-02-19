@@ -45,6 +45,8 @@ public:
     Vec2& operator[](int i);
     const Vec2& operator[](int i) const;
 
+    Vec2 apply(const Vec2& v);
+
     const float* getPtr() const;
 
     Matrix3 toMat3() const;

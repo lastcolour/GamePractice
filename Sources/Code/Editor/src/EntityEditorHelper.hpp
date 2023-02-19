@@ -21,7 +21,7 @@ public:
     void ET_setFocusEntity(EntityId newFocusEntId) override;
 
     // ETDebugInfoProvider
-    void ET_drawDebugInfo() override;
+    void ET_drawDebugInfo(DebugInfoDrawer& dd) override;
 
 private:
 

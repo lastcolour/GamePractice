@@ -26,29 +26,29 @@ public:
 
     ParticlesUpdateFrameInfo& getUpdateInfo();
     ParticlesUpdateFrameInfo getAndResetUpdateInfo();
-    void asyncStopEmitting();
-    void asyncDestroyAll();
-    bool asyncHasAlive() const;
+
+    void stopEmittingAll();
+    void destroyAll();
+    bool isStopped() const;
 
     const std::vector<std::unique_ptr<EmitterParticles>>& getEmitters() const;
 
     int addParticles(int count);
     void removeParticles(int count);
+    int getParticlesCount() const;
 
 private:
 
-    enum AsynState {
-        Playing,
-        StopRequested,
-        ForceStopRequested,
-        Stoppig,
-        Stopped,
+    enum class EmittingState {
+        Playing = 0,
+        Stopping,
+        Stopped
     };
 
 private:
 
     ParticlesUpdateFrameInfo updateFrameInfo;
-    std::atomic<AsynState> asyncState;
+    EmittingState emittingState;
     std::vector<std::unique_ptr<EmitterParticles>> pool;
     SimulationConfig simConfig;
     int particlesCount;

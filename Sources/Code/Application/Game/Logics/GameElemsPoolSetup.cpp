@@ -27,14 +27,12 @@ GameElemsPoolSetup::~GameElemsPoolSetup() {
 }
 
 void GameElemsPoolSetup::init() {
-    ETNode<ETEntityEvents>::connect(getEntityId());
 }
 
 void GameElemsPoolSetup::deinit() {
 }
 
-void GameElemsPoolSetup::ET_onLoaded() {
-    ETNode<ETEntityEvents>::disconnect();
+void GameElemsPoolSetup::onLoaded() {
     if(!elems.empty()) {
         ET_SendEvent(&ETGameBoardElemsPool::ET_setPoolsSetup, elems);
     }

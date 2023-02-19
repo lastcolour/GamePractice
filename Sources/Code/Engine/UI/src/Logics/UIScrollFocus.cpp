@@ -29,7 +29,7 @@ void UIScrollFocus::ET_setPendingFocus() {
     ET_SendEventReturn(isHidden, getEntityId(), &ETUIElement::ET_isHidden);
     if(isHidden) {
         LogError("[UIScrollFocus::ET_setPendingFocus] Can't set focus to entity: '%s' if UI element: '%s' is hidden",
-            EntityUtils::GetEntityName(focusEntId), EntityUtils::GetEntityName(getEntityId()));
+            EntityUtils::GetEntityName(focusEntId), getEntityName());
         focusEntId = InvalidEntityId;
         return;
     }

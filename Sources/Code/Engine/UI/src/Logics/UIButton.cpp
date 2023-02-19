@@ -20,7 +20,7 @@ bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
     shift.x = UI::ConvertValueFromGrid(static_cast<float>(diff.y));
     shift.y = UI::ConvertValueFromGrid(static_cast<float>(diff.x));
 
-    if(shift.lenght() > MOVE_AWAY_GRID_LEN) {
+    if(shift.length() > MOVE_AWAY_GRID_LEN) {
         return true;
     }
 
@@ -78,8 +78,8 @@ void UIButton::deinit() {
     ETNode<ETUIAnimationSequenceEvent>::disconnect();
 }
 
-void UIButton::ET_onLoaded() {
-    UIBox::ET_onLoaded();
+void UIButton::onLoaded() {
+    UIBox::onLoaded();
     isLoaded = true;
     if(ET_isEnabled()) {
         ETNode<ETUIInteractionBox>::connect(getEntityId());

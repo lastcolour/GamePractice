@@ -2,15 +2,11 @@
 #define __RENDER_GEOMETRY_HPP_
 
 #include "Math/AABB.hpp"
+#include "Render/RenderCommon.hpp"
 
-enum class VertexType {
-    Vector3,
-    Vector3_Tex,
-    Vector4,
-    Vector2_Tex,
-    Particle,
-    Line,
-    Vector2
+struct RenderBufferInfo {
+    unsigned int id {0};
+    size_t size {0};
 };
 
 class RenderGeometry {
@@ -21,29 +17,28 @@ public:
 
     void bind();
     void unbind();
+    bool isBound() const;
 
-    void vboData(void* data, size_t bytes);
-    void extraVboData(void* data, size_t bytes);
+    void setVboData(const void* data, size_t bytes);
+    void setExtraVboData(const void* data, size_t bytes);
 
     void drawTriangles(int start, int end);
-    void drawTrianglesInstanced(int start, int end, int instances);
+    void drawTrianglesInstanced(int instances);
     void drawLines(int start, int end);
 
-    // void drawTriangles();
-    // void drawText(const void* textData, unsigned int textVertCount);
-    // void drawInstanced(const void* instaceData, unsigned int instancesCount);
-    // void drawNinePatch(const Vec2& patch, const Vec2& uv);
+private:
+
+    RenderGeometry(const RenderGeometry&) = delete;
+    RenderGeometry& operator=(const RenderGeometry&) = delete;
 
 public:
 
-    // AABB2D aabb;
     unsigned int vaoId;
-    unsigned int vboId;
-    unsigned int eboId;
-    unsigned int extraVboId;
-    // unsigned int vertCount;
-    unsigned int indciesCount;
-    VertexType vertType;
+    RenderBufferInfo vbo;
+    RenderBufferInfo ebo;
+    RenderBufferInfo extraVbo;
+    EPrimitiveGeometryType geoType;
+    bool bound;
 };
 
 #endif /* __RENDER_GEOMETRY_HPP_ */

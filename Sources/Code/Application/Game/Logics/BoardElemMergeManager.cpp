@@ -80,7 +80,7 @@ void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cell
 
         auto moveDir = toPt - fromPt;
 
-        float distSq = moveDir.lenghtSq();
+        float distSq = moveDir.lengthSq();
         moveDir.normalize();
 
         Vec2 offset = moveDir * it->vel * dt * cellSize;
@@ -94,7 +94,7 @@ void BoardElemMergeManager::processMerges(MutateTask& task, float dt, float cell
             fromTm.scale = Vec3(MIN_SHRINK_SIZE);
         }
 
-        if(offset.lenghtSq() > distSq) {
+        if(offset.lengthSq() > distSq) {
             ET_SendEvent(&ETGameBoardEffects::ET_playMergeEffect, task.toId);
             ET_SendEvent(it->targetId, &ETGameBoardElem::ET_onMergeDone);
             it = task.merges.erase(it);

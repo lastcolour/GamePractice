@@ -20,6 +20,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETUIElementGeom
     void ET_setRenderId(EntityId newRenderId) override;
@@ -31,9 +32,6 @@ public:
 
     // ETUILayoutEvents
     void ET_onLayoutChanged(const AABB2D& newCombinedBox) override;
-
-    // ETEntityEvents
-    void ET_onLoaded() override;
 
 protected:
 

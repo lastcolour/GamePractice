@@ -6,7 +6,6 @@
 #include "Render/ETRenderScene.hpp"
 
 class RenderScene : public EntityLogic,
-    public ETNode<ETEntityEvents>,
     public ETNode<ETRenderNodeEvents>,
     public ETNode<ETRenderScene> {
 public:
@@ -21,10 +20,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
-
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override {}
-    void ET_onLoaded() override;
+    void onLoaded() override;
 
     // ETRenderScene
     void ET_addItem(int zIndexOffset, EntityId entId) override;
@@ -65,7 +61,7 @@ private:
 
 private:
 
-    std::vector<ChildNode> manulChildren;
+    std::vector<ChildNode> manualChildren;
     std::vector<ChildNode> children;
     RenderSceneParams params;
 };

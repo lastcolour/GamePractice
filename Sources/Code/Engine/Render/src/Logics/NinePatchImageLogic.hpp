@@ -14,21 +14,30 @@ public:
     NinePatchImageLogic();
     virtual ~NinePatchImageLogic();
 
+    // EntityLogic
+    void onTransformChanged(const Transform& newTm) override;
+
     // ETNinePatchImageLogic
     Vec2 ET_getPatches() const override;
     void ET_setPatches(const Vec2& patches) override;
     Vec2 ET_getPatchesVertCoord() const override;
 
+    // ETRenderRect
+    void ET_setSize(const Vec2& newSize) override;
+
+    // ETRenderImageLogic
+    void ET_setTextureInfo(const TextureInfo& newTexture) override;
+
 protected:
 
     // DrawCommandProxy
     void onInit() override;
+    Mat4 calcModelMat() const override;
 
 private:
 
     float horizontal;
     float vertical;
-    float patchScale;
 };
 
 #endif /* __NINE_PATCH_IMAGE_LOGIC_HPP__ */

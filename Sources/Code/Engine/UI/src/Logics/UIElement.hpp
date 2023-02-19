@@ -7,7 +7,6 @@
 
 class UIElement : public EntityLogic,
     public ETNode<ETUIElement>,
-    public ETNode<ETEntityEvents>,
     public ETNode<ETUIAdditiveAnimationTarget> {
 public:
 
@@ -21,6 +20,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETUIElement
     void ET_setHostLayout(EntityId newLayoutId) override;
@@ -46,10 +46,6 @@ public:
     void ET_addAdditiveTransform(const AddtiveUITransform& newAddTm) override;
     void ET_resetAdditiveTransform() override;
 
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override;
-    void ET_onLoaded() override;
-
 protected:
 
     void updateHostLayout();
@@ -61,7 +57,6 @@ protected:
     virtual void onHide(bool flag) = 0;
     virtual void onAlphaChanged(float newAlpha) = 0;
     virtual void onDisabled(bool flag) = 0;
-    virtual void onTransformChanged(const Transform& newTm) = 0;
 
 protected:
 

@@ -4,8 +4,7 @@
 #include "Entity/EntityLogic.hpp"
 #include "Game/ETGameElemsPool.hpp"
 
-class GameElemsPoolSetup : public EntityLogic,
-    public ETNode<ETEntityEvents> {
+class GameElemsPoolSetup : public EntityLogic {
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -18,10 +17,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
-
-    // ETEntityEvents
-    void ET_onTransformChanged(const Transform& newTm) override {}
-    void ET_onLoaded() override;
+    void onLoaded() override;
 
 private:
 

@@ -39,11 +39,45 @@ void ProjectOrtho(Mat4& mat, float left, float right, float bot, float top, floa
     mat[3][2] = -(zFar + zNear) / (zFar - zNear);
 }
 
-void AddTranslate(Mat4& mat, const Vec3& pos) {
-     mat[3] = mat[0] * pos[0] + mat[1] * pos[1] + mat[2] * pos[2] + mat[3];
+Vec2 RotateVec2D(const Vec2& v, float angle) {
+    Vec2 res;
+    float cosA = cos(angle);
+    float sinA = sin(angle);
+    res.x = v.x * cosA - v.y * sinA;
+    res.y = v.x * sinA + v.y * cosA;
+    return res;
 }
 
-void AddRotate(Mat4& mat, const Vec3& axis, float angle) {
+void AddTranslate2D(Matrix3x2& mat, const Vec2& pos) {
+    mat[2] = mat[0] * pos[0] + mat[1] * pos[1] + mat[2];
+}
+
+void AddTranslate2D(Matrix3& mat, const Vec2& pos) {
+    mat[2] = mat[0] * pos[0] + mat[1] * pos[1] + mat[2];
+}
+
+void AddTranslate3D(Matrix4x3& mat, const Vec3& pos) {
+    mat[3] = mat[0] * pos[0] + mat[1] * pos[1] + mat[2] * pos[2] + mat[3];
+}
+
+void AddTranslate3D(Matrix4& mat, const Vec3& pos) {
+    mat[3] = mat[0] * pos[0] + mat[1] * pos[1] + mat[2] * pos[2] + mat[3];
+}
+
+void AddRotate2D(Matrix3& mat, float angle) {
+    float cosA = cos(angle);
+    float sinA = sin(angle);
+
+    Mat2 rotMat;
+    rotMat[0][0] = cosA;
+    rotMat[0][1] = sinA;
+    rotMat[1][0] = -sinA;
+    rotMat[1][1] = cosA;
+
+    mat = Mat3toMat2Mult(mat, rotMat);
+}
+
+void AddRotate3D(Matrix4& mat, const Vec3& axis, float angle) {
     const float cosA = cos(angle);
     const float sinA = sin(angle);
     const Vec3 temp = (1.f - cosA) * axis;
@@ -62,46 +96,64 @@ void AddRotate(Mat4& mat, const Vec3& axis, float angle) {
     mat = Mat4toMat3Mult(mat, rotMat);
 }
 
-void AddRotate(Mat4& mat, const Quat& quat) {
+void AddRotate3D(Matrix4& mat, const Quaternion& quat) {
     Mat3 rotMat = quat.toMat3();
     mat = Mat4toMat3Mult(mat, rotMat);
 }
 
-void AddScale(Mat4& mat, const Vec3& scale) {
+void AddScale3D(Matrix4& mat, const Vec3& scale) {
     mat[0] *= scale[0];
     mat[1] *= scale[1];
     mat[2] *= scale[2];
 }
 
-void AddTranslate2D(Mat3& mat, const Vec2& pos) {
-    mat[2] = mat[0] * pos[0] + mat[1] * pos[1] + mat[2];
+void AddScale2D(Matrix3& mat, const Vec2& scale) {
+    mat[0] = Vec3(mat[0][0] * scale[0], mat[0][1] * scale[1], mat[0][2]);
+    mat[1] = Vec3(mat[1][0] * scale[0], mat[1][1] * scale[1], mat[1][2]);
 }
 
-void AddRotate2D(Mat3& mat, float angle) {
-    float cosA = cos(angle);
-    float sinA = sin(angle);
-
-    Mat2 rotMat;
-    rotMat[0][0] = cosA;
-    rotMat[0][1] = sinA;
-    rotMat[1][0] = -sinA;
-    rotMat[1][1] = cosA;
-
-    mat = Mat3toMat2Mult(mat, rotMat);
+Vec2 GetScale2D(const Matrix3x2& mat) {
+    Vec2 s;
+    s[0] = mat[0].length();
+    s[1] = mat[1].length();
+    return s;
 }
 
-void AddScale2D(Mat3& mat, const Vec2& scale) {
-    mat[0] *= scale[0];
-    mat[1] *= scale[1];
+Vec2 GetScale2D(const Matrix3& mat) {
+    Vec2 s;
+    s[0] = mat[0].length();
+    s[1] = mat[1].length();
+    return s;
 }
 
-Vec2 RotateVec2D(const Vec2& v, float angle) {
-    Vec2 res;
-    float cosA = cos(angle);
-    float sinA = sin(angle);
-    res.x = v.x * cosA - v.y * sinA;
-    res.y = v.x * sinA + v.y * cosA;
-    return res;
+Vec3 GetScale3D(const Matrix4x3& mat) {
+    Vec3 s;
+    s[0] = mat[0].length();
+    s[1] = mat[1].length();
+    s[2] = mat[2].length();
+    return s;
+}
+
+Vec3 GetScale3D(const Matrix4& mat) {
+    Vec3 s;
+    s[0] = Vec3(mat[0][0], mat[0][1], mat[0][2]).length();
+    s[1] = Vec3(mat[1][0], mat[1][1], mat[1][2]).length();
+    s[2] = Vec3(mat[2][0], mat[2][1], mat[2][2]).length();
+    return s;
+}
+
+Transform GetTransform(const Matrix4& mat) {
+    Transform tm;
+    tm.scale = GetScale3D(mat);
+
+    Matrix3 rotMat = {
+        Vec3(mat[0][0], mat[0][1], mat[0][2]) / tm.scale.x,
+        Vec3(mat[1][0], mat[1][1], mat[1][2]) / tm.scale.y,
+        Vec3(mat[2][0], mat[2][1], mat[2][2]) / tm.scale.z};
+    tm.quat.setRotationMat(rotMat);
+
+    tm.pt = Vec3(mat[3][0], mat[3][1], mat[3][2]);
+    return tm;
 }
 
 } // namespace Math

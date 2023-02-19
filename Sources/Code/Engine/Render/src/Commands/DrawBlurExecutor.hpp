@@ -12,12 +12,25 @@ public:
     // DrawCommandExecutor
     bool init() override;
     void deinit() override;
-    void preDraw() override;
     void draw(RenderState& renderState, DrawCmdSlice& slice) override;
 
 private:
 
-    Vec2i size;
+    struct BlurFBOs {
+        RenderFramebuffer* main{nullptr};
+        RenderFramebuffer* first{nullptr};
+        RenderFramebuffer* second{nullptr};
+    };
+
+private:
+
+
+    bool setupFBOs(const DrawBlurCmd& cmd, RenderState& renderState, BlurFBOs& FBOs);
+    void blurPass(BlurFBOs& FBOs);
+
+private:
+
+    // Vec2i size;
     std::shared_ptr<RenderShader> shader;
     std::shared_ptr<RenderGeometry> geom;
 };

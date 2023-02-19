@@ -34,7 +34,7 @@ void RenderScene::ChildNode::Reflect(ReflectContext& ctx) {
 void RenderScene::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<RenderScene>("RenderScene")) {
         classInfo->addField("params", &RenderScene::params);
-        classInfo->addField("manualChildren", &RenderScene::manulChildren);
+        classInfo->addField("manualChildren", &RenderScene::manualChildren);
     }
 }
 
@@ -47,11 +47,10 @@ RenderScene::~RenderScene() {
 void RenderScene::init() {
     if(!ET_IsExistNode<ETRenderNode>(getEntityId())) {
         LogWarning("[RenderScene::init] Can't find root render node for a scene on entity: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
 
-    ETNode<ETEntityEvents>::connect(getEntityId());
     ETNode<ETRenderNodeEvents>::connect(getEntityId());
     ETNode<ETRenderScene>::connect(getEntityId());
 }
@@ -59,14 +58,13 @@ void RenderScene::init() {
 void RenderScene::deinit() {
 }
 
-void RenderScene::ET_onLoaded() {
-    ETNode<ETEntityEvents>::disconnect();
+void RenderScene::onLoaded() {
     {
         bool res = false;
         ET_SendEventReturn(res, getEntityId(), &ETRenderNode::ET_setEmitEvents, true);
         if(!res) {
-            LogWarning("[RenderScene::ET_onLoaded] Can't find 'ETRenderNode' on entity '%s'",
-                EntityUtils::GetEntityName(getEntityId()));
+            LogWarning("[RenderScene::onLoaded] Can't find 'ETRenderNode' on entity '%s'",
+                getEntityName());
         }
     }
 
@@ -90,31 +88,31 @@ void RenderScene::ET_onLoaded() {
         }
     }
 
-    propagateParentState(manulChildren);
+    propagateParentState(manualChildren);
 }
 
 void RenderScene::ET_addItem(int zIndexOffset, EntityId entId) {
     if(!entId.isValid()) {
         LogError("[RenderScene::ET_addItem] Can't add invalid entity to entity: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
     if(getEntityId() == entId) {
         LogError("[RenderScene::ET_addItem] Can't add self to scene: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
         return;
     }
     for(auto& child : children) {
         if(child.entId == entId) {
             LogWarning("[RenderScene::ET_addItem] Entity '%s' already added to scene on entity: '%s'",
-                EntityUtils::GetEntityName(entId), EntityUtils::GetEntityName(getEntityId()));
+                EntityUtils::GetEntityName(entId), getEntityName());
             return;
         }
     }
-    for(auto& child : manulChildren) {
+    for(auto& child : manualChildren) {
         if(child.entId == entId) {
             LogWarning("[RenderScene::ET_addItem] Entity '%s' already manually added to scene on entity: '%s'",
-                EntityUtils::GetEntityName(entId), EntityUtils::GetEntityName(getEntityId()));
+                EntityUtils::GetEntityName(entId), getEntityName());
             return;
         }
     }
@@ -146,13 +144,13 @@ void RenderScene::ET_removeItem(EntityId entId) {
             });
     }), children.end());
 
-    manulChildren.erase(std::remove_if(manulChildren.begin(), manulChildren.end(),
+    manualChildren.erase(std::remove_if(manualChildren.begin(), manualChildren.end(),
         [&childToRemove](const ChildNode& node) {
             return childToRemove.end() != std::find_if(childToRemove.begin(), childToRemove.end(),
                 [&node](const ChildNode& otherNode){
                     return otherNode.entId == node.entId;
             });
-    }), manulChildren.end());
+    }), manualChildren.end());
 }
 
 const RenderSceneParams& RenderScene::ET_getParams() const {
@@ -162,11 +160,11 @@ const RenderSceneParams& RenderScene::ET_getParams() const {
 void RenderScene::ET_setParams(RenderSceneParams& newParams) {
     params = newParams;
     propagateParentState(children);
-    propagateParentState(manulChildren);
+    propagateParentState(manualChildren);
 }
 
 size_t RenderScene::ET_getItemsCount() const {
-    return manulChildren.size() + children.size();
+    return manualChildren.size() + children.size();
 }
 
 std::vector<RenderScene::ChildNode> RenderScene::collectChildren(EntityId rootEntityId) const {
@@ -270,22 +268,22 @@ void RenderScene::updateHidden(bool flag, std::vector<ChildNode>& childList) {
 
 void RenderScene::ET_onHidden(bool flag) {
     updateHidden(flag, children);
-    updateHidden(flag, manulChildren);
+    updateHidden(flag, manualChildren);
 }
 
 void RenderScene::ET_onZIndexChanged(int newZIndex) {
     updateZIndex(newZIndex, children);
-    updateZIndex(newZIndex, manulChildren);
+    updateZIndex(newZIndex, manualChildren);
 }
 
 void RenderScene::ET_onAlphaMultChanged(float newAlphaMult) {
     updateAlphaMult(newAlphaMult, children);
-    updateAlphaMult(newAlphaMult, manulChildren);
+    updateAlphaMult(newAlphaMult, manualChildren);
 }
 
 void RenderScene::ET_onNormScaleChanged(float newNormScale) {
     updateNormScale(newNormScale, children);
-    updateNormScale(newNormScale, manulChildren);
+    updateNormScale(newNormScale, manualChildren);
 }
 
 void RenderScene::updateZIndex(int newZIndex, std::vector<ChildNode>& childList) {

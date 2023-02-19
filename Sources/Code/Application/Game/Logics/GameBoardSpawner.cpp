@@ -51,15 +51,14 @@ void GameBoardSpawner::ET_loadPendingLevel() {
         return;
     }
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    const Transform& tm = getTransform();
     ET_SendEvent(gameBoardId, &ETEntity::ET_setTransform, tm);
     ET_SendEvent(gameBoardId, &ETEntity::ET_setParent, getEntityId());
 
     AABB2D box(0.f);
     if(!ET_IsExistNode<ETUIElement>(getEntityId())) {
         LogError("[GameBoardSpawner::ET_loadPendingLevel] Can't find 'ETUIElement' on game board spawner: '%s'",
-            EntityUtils::GetEntityName(getEntityId()));
+            getEntityName());
     }
     ET_SendEventReturn(box, getEntityId(), &ETUIElementGeom::ET_getBox);
     ET_SendEvent(gameBoardId, &ETGameBoard::ET_resize, box);

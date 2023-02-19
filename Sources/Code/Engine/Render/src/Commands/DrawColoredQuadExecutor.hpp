@@ -12,7 +12,6 @@ public:
     // DrawCommandExecutor
     bool init() override;
     void deinit() override;
-    void preDraw() override;
     void draw(RenderState& renderState, DrawCmdSlice& slice) override;
 
 private:

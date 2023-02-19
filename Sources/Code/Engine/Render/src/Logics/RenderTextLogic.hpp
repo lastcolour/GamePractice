@@ -28,6 +28,7 @@ protected:
 
     // RenderNode
     void onInit() override;
+    Mat4 calcModelMat() const override;
 
 private:
 

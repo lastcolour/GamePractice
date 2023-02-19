@@ -33,10 +33,7 @@ void BoardElemDestroyAnimation::deinit() {
 }
 
 void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
-
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
-
+    Transform tm = getLocalTransform();
     currDuration += dt;
     switch(currState) {
         case State::Starting: {
@@ -76,7 +73,7 @@ void BoardElemDestroyAnimation::ET_onGameTick(float dt) {
         }
     }
 
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+    setLocalTransform(tm);
 }
 
 void BoardElemDestroyAnimation::ET_playDestroy() {

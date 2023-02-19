@@ -86,7 +86,7 @@ void Quaternion::setLookAtRotation(const Vec3& dir, const Vec3& up) {
 
 void Quaternion::setRotationBetween(const Vec3& p1, const Vec3& p2) {
     float cosVal = p1.dot(p2);
-    float t = sqrt(p1.lenghtSq() * p1.lenghtSq());
+    float t = sqrt(p1.lengthSq() * p1.lengthSq());
 
     if(IsEqual(t, 0.f)) {
         setIndentity();
@@ -107,6 +107,13 @@ void Quaternion::setRotationBetween(const Vec3& p1, const Vec3& p2) {
 }
 
 void Quaternion::setRotationMat(const Mat4& mat) {
+    setRotationMat(Mat3(
+        Vec3(mat[0][0], mat[0][1], mat[0][2]),
+        Vec3(mat[1][0], mat[1][1], mat[1][2]),
+        Vec3(mat[2][0], mat[2][1], mat[2][2])));
+}
+
+void Quaternion::setRotationMat(const Mat4x3& mat) {
     setRotationMat(Mat3(
         Vec3(mat[0][0], mat[0][1], mat[0][2]),
         Vec3(mat[1][0], mat[1][1], mat[1][2]),
@@ -184,16 +191,16 @@ void Quaternion::getAxisAngle(Vec3& outAxis, float& outAngle) const {
     }
 }
 
-float Quaternion::lenght() const {
-    return sqrt(lenghtSq());
+float Quaternion::length() const {
+    return sqrt(lengthSq());
 }
 
-float Quaternion::lenghtSq() const {
+float Quaternion::lengthSq() const {
     return x * x + y * y + z * z + w * w;
 }
 
 Quaternion Quaternion::getNormalized() const {
-    float len = lenght();
+    float len = length();
     return Quaternion(x / len, y / len, z / len, w / len);
 }
 

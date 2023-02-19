@@ -17,6 +17,7 @@ protected:
 
     // DrawCommandProxy
     void onInit() override;
+    Mat4 calcModelMat() const override;
 
 private:
 

@@ -9,12 +9,11 @@ public:
     DrawParticlesExecutor();
     virtual ~DrawParticlesExecutor();
 
-    void update(float renderDt);
-
     // DrawCommandExecutor
     bool init() override;
     void deinit() override;
-    void preDraw() override;
+    void registerCmdForDraw(DrawCmd* cmd) override;
+    void preDraw(RenderState& renderState) override;
     void draw(RenderState& renderState, DrawCmdSlice& slice) override;
 
 private:

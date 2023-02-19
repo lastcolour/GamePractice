@@ -318,77 +318,83 @@ std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo, ETextur
     return texObj;
 }
 
-void ApplyTextureInfo(RenderTexture& texObj, const TextureInfo& texInfo) {
-    if(texObj.minLerpType == texInfo.lerpType && texObj.magLerpType == texInfo.lerpType) {
-        return;
+Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches) {
+    Vec2 p{0.f};
+
+    const float MaxCoordPt = 0.4999f;
+
+    Vec2 scale{1.f};
+    scale.x = static_cast<float>(imageSize.x) / drawSize.x;
+    scale.y = static_cast<float>(imageSize.y) / drawSize.y;
+
+    if(scale.x > 1.f && scale.y > 1.f) {
+        const float f = scale.x / scale.y;
+        if(f > 1.f) {
+            p.x = MaxCoordPt;
+            p.y = MaxCoordPt / f;
+        } else {
+            p.x = MaxCoordPt * f;
+            p.y = MaxCoordPt;
+        }
+    } else {
+        p.x = patches.x * scale.x;
+        p.y = patches.y * scale.y;
     }
-    texObj.bind();
-    texObj.setLerpType(texInfo.lerpType, texInfo.lerpType);
-    texObj.unbind();
+
+    p.x = 2.f * std::min(p.x, MaxCoordPt);
+    p.y = 2.f * std::min(p.y, MaxCoordPt);
+
+    return p;
 }
 
-Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches, float patchScale) {
-    float r = (imageSize.x * drawSize.y) / (imageSize.y * drawSize.x);
+int CreateNinePatchVertData(const Vec2& patchPt, const Vec2& patchUV, Vert_Vec3_Tex* out) {
+    if(!out) {
+        assert(false && "Invalid out data");
+        return 0;
+    }
+    float xLeft = Math::Lerp(-1.f, 0.f, patchPt.x);
+    float xRight = Math::Lerp(0.f, 1.f, 1.f - patchPt.x);
+    float yTop = Math::Lerp(0.f, 1.f, 1.f - patchPt.y);
+    float yBot = Math::Lerp(-1.f, 0.f, patchPt.y);
 
-    float h1 = 0.f;
-    if(imageSize.x <= drawSize.x) {
-        h1 = imageSize.x * patches.x / drawSize.x;
-        h1 = Math::Lerp(h1, patches.y * r, patchScale);
-    } else {
-        h1 = 0.5f * r;
+    float uLeft = patchUV.x;
+    float uRight = 1.f - patchUV.x;
+    float vTop = 1.f - patchUV.y;
+    float vBot = patchUV.y;
+
+    Vec4 points[16];
+    points[0] = Vec4(-1.f, -1.f, 0.f, 0.f);
+    points[1] = Vec4(xLeft, -1.f, uLeft, 0.f);
+    points[2] = Vec4(xRight, -1.f, uRight, 0.f);
+    points[3] = Vec4(1.f, -1.f, 1.f, 0.f);
+    points[4] = Vec4(-1.f, yBot, 0.f, vBot);
+    points[5] = Vec4(xLeft, yBot, uLeft, vBot);
+    points[6] = Vec4(xRight, yBot, uRight, vBot);
+    points[7] = Vec4(1.f, yBot, 1.f, vBot);
+    points[8] = Vec4(-1.f, yTop, 0.f, vTop);
+    points[9] = Vec4(xLeft, yTop, uLeft, vTop);
+    points[10] = Vec4(xRight, yTop, uRight, vTop);
+    points[11] = Vec4(1.f, yTop, 1.f, vTop);
+    points[12] = Vec4(-1.f, 1.f, 0.f, 1.f);
+    points[13] = Vec4(xLeft, 1.f, uLeft, 1.f);
+    points[14] = Vec4(xRight, 1.f, uRight, 1.f);
+    points[15] = Vec4(1.f, 1.f, 1.f, 1.f);
+
+    int vertShift = 0;
+    VertQuad<Vert_Vec3_Tex> quad;
+
+    for(int i = 0; i < 3; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            int r = 4 * i + j;
+            quad.botLeft = {Vec3(points[r].x, points[r].y, 0.f), Vec2(points[r].z, points[r].w)};
+            quad.botRight = {Vec3(points[r + 1].x, points[r + 1].y, 0.f), Vec2(points[r + 1].z, points[r + 1].w)};
+            quad.topLeft = {Vec3(points[r + 4].x, points[r + 4].y, 0.f), Vec2(points[r + 4].z, points[r + 4].w)};
+            quad.topRight = {Vec3(points[r + 5].x, points[r + 5].y, 0.f), Vec2(points[r + 5].z, points[r + 5].w)};
+            vertShift += CreateQuadVertData(quad, out + vertShift);
+        }
     }
 
-    float v1 = 0.f;
-    if(imageSize.y <= drawSize.y) {
-        v1 = imageSize.y * patches.y / drawSize.y;
-        v1 = Math::Lerp(v1, patches.y, patchScale);
-    } else {
-        v1 = 0.5f;
-    }
-
-    float s = 1.f;
-
-    if(h1 >= 0.5f) {
-        s = 0.5f / h1;
-    }
-    if(v1 >= 0.5f) {
-        s = std::min(s, 0.5f / v1);
-    }
-
-    h1 *= s;
-    v1 *= s;
-
-    return Vec2(h1, v1);
-}
-
-const char* GetNameOfDrawCmdType(EDrawCmdType cmdType) {
-    const char* resName = "Unknown";
-    switch(cmdType) {
-        case EDrawCmdType::Text: {
-            resName = "Text";
-            break;
-        }
-        case EDrawCmdType::TexturedQuad: {
-            resName = "TexturedQuad";
-            break;
-        }
-        case EDrawCmdType::Quad: {
-            resName = "Quad";
-            break;
-        }
-        case EDrawCmdType::Particles: {
-            resName = "Particles";
-            break;
-        }
-        case EDrawCmdType::Blur: {
-            resName = "Blur";
-            break;
-        }
-        default: {
-            assert(false && "Invalid name");
-        }
-    }
-    return resName;
+    return vertShift;
 }
 
 } // namespace RenderUtils

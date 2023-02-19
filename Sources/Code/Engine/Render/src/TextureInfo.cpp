@@ -7,3 +7,14 @@ void TextureInfo::Reflect(ReflectContext& ctx) {
         classInfo->addField("tintColor", &TextureInfo::tintColor);
     }
 }
+
+bool TextureInfo::operator==(const TextureInfo& other) const {
+    return filename == other.filename
+        && lerpType == other.lerpType
+        && tintColor == other.tintColor
+        && wrapType == other.wrapType;
+}
+
+bool TextureInfo::operator!=(const TextureInfo& other) const {
+    return !(*this == other);
+}

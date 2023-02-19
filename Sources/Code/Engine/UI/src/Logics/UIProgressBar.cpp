@@ -25,11 +25,10 @@ void UIProgressBar::deinit() {
 void UIProgressBar::ET_setProgress(float newProgress) {
     currProgress = Math::Clamp(newProgress, 0.f, 1.f);
 
-    Transform tm;
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getLocalTransform);
+    Transform tm = getLocalTransform();
 
     tm.scale.x = Math::Lerp(0.f, 1.f, currProgress);
-    ET_SendEvent(getEntityId(), &ETEntity::ET_setLocalTransform, tm);
+    setLocalTransform(tm);
 
     EntityId hostLayoutId;
     ET_SendEventReturn(hostLayoutId, getEntityId(), &ETUIElement::ET_getHostLayout);

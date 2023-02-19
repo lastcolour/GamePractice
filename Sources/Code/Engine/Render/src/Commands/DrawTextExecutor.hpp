@@ -14,14 +14,17 @@ public:
     // DrawCommandExecutor
     bool init() override;
     void deinit() override;
-    void preDraw() override;
+    void preDraw(RenderState& renderState) override;
     void draw(RenderState& renderState, DrawCmdSlice& slice) override;
+
+public:
+
+    static int GenTextVertData(const std::string& text, const TextMetric& metric, const RenderFont& font, bool alignAtCenter, void* out);
 
 private:
 
     std::shared_ptr<RenderShader> shader;
     std::shared_ptr<RenderGeometry> geom;
-    std::vector<Vec4> vertData;
 };
 
 #endif /* __DRAW_TEXT_EXECUTOR_HPP__ */

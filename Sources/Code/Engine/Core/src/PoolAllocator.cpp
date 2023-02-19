@@ -97,7 +97,6 @@ BaseMemoryPoolAllocator::~BaseMemoryPoolAllocator() {
 void* BaseMemoryPoolAllocator::allocate() {
     MemLocker memLocker;
     return allocateUnsafe();
-
 }
 
 void BaseMemoryPoolAllocator::deallocate(void* ptr) {

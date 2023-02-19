@@ -33,9 +33,8 @@ public:
     void ET_onSurfaceResized(const Vec2i& size) override;
 
     // ETRenderUpdateTask
-    void ET_updateRender() override;
-    void ET_updateParticles(float dt) override;
-    void ET_syncWithGame() override;
+    void ET_Render(float dt) override;
+    void ET_PreRender() override;
 
 private:
 

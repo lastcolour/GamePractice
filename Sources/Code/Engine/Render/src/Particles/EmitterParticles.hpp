@@ -5,8 +5,6 @@
 #include "Render/ParticlesEmitterConfig.hpp"
 #include "Math/Random.hpp"
 
-#include <atomic>
-
 class ParticlesEmittersPool;
 
 struct SimulationConfig {
@@ -83,7 +81,7 @@ private:
 public:
 
     std::vector<Particle> particles;
-    std::vector<ParticleInstanceData> instaceData;
+    std::vector<ParticleInstanceData> instanceData;
     int activeCount;
 
 private:
@@ -95,7 +93,7 @@ private:
     float emitFracTime;
     Math::RandomFloatGenerator floatGen;
     unsigned int spawnedCount;
-    std::atomic<EmissionState> emissionState;
+    EmissionState emissionState;
     SubEmitterTriggerEvent subEmitterFlags;
 };
 

@@ -6,9 +6,8 @@ namespace Math {
 
 const float PI = 3.14159265f;
 
-template<>
-bool IsEqual<float>(float a, float b) {
-    return abs(a - b) <= 0.0001f;
+bool IsEqual(float a, float b, float eps) {
+    return abs(a - b) <= eps;
 }
 
 float Deg2Rad(float degrees) {

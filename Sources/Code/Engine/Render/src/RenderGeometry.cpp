@@ -6,20 +6,18 @@
 
 namespace {
 
-int getVertexSize(VertexType vertType) {
-    switch(vertType)
+int getVertexSize(EPrimitiveGeometryType geoType) {
+    switch(geoType)
     {
-    case VertexType::Vector3:
+    case EPrimitiveGeometryType::Vec2_Tex:
+        return sizeof(Vec4);
+    case EPrimitiveGeometryType::Vec3:
         return sizeof(Vec3);
-    case VertexType::Vector4:
-        return sizeof(Vec4);
-    case VertexType::Particle:
+    case EPrimitiveGeometryType::Vec3_Tex:
+        return sizeof(Vec3) + sizeof(Mat3x2);
+    case EPrimitiveGeometryType::Particles:
         return sizeof(Vec4) + sizeof(Mat3x2);
-    case VertexType::Vector2_Tex:
-        return sizeof(Vec4);
-    case VertexType::Vector2:
-        return sizeof(Vec2);
-    case VertexType::Line:
+    case EPrimitiveGeometryType::Line:
         return sizeof(Vec2) + sizeof(Vec4);
     default:
         assert(false && "Invalid vertex type");
@@ -30,106 +28,96 @@ int getVertexSize(VertexType vertType) {
 } // namespace
 
 RenderGeometry::RenderGeometry() :
-    // aabb(0.f),
     vaoId(0),
-    vboId(0),
-    eboId(0),
-    extraVboId(0),
-    // vertCount(0),
-    indciesCount(0),
-    vertType(VertexType::Vector3) {
+    geoType(EPrimitiveGeometryType::Vec3),
+    bound(false) {
 }
 
 RenderGeometry::~RenderGeometry() {
 }
 
-void RenderGeometry::vboData(void* data, size_t bytes) {
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, data);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+void RenderGeometry::setVboData(const void* data, size_t bytes) {
+    assert(!bound && "VAO is bounded");
+    assert(bytes > 0 && "No data to update");
+    assert(data && "Invalid data");
+
+    if(vbo.size >= bytes) {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, data);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    } else {
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+        glBufferData(GL_ARRAY_BUFFER, bytes, data, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        LogDebug("[RenderGeometry::setVboData] Resizing vbo: %d -> %d", vbo.size, bytes);
+        vbo.size = bytes;
+
+        {
+            bind();
+            GLuint currVboId = 0;
+            glGetVertexAttribIuiv(0, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,  &currVboId);
+            unbind();
+
+            if(currVboId != vbo.id) {
+                LogError("[RenderGeometry::setVboData] VAO lost binding to VBO during resizing!");
+            }
+        }
+    }
 }
 
-void RenderGeometry::extraVboData(void* data, size_t bytes) {
-    glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, data);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+void RenderGeometry::setExtraVboData(const void* data, size_t bytes) {
+    assert(!bound && "VAO is bounded");
+    assert(bytes > 0 && "No data to update");
+    assert(data && "Invalid data");
+
+    if(extraVbo.size >= bytes) {
+        glBindBuffer(GL_ARRAY_BUFFER, extraVbo.id);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, data);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    } else {
+        glBindBuffer(GL_ARRAY_BUFFER, extraVbo.id);
+        glBufferData(GL_ARRAY_BUFFER, bytes, data, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        LogDebug("[RenderGeometry::setExtraVboData] Resizing extra vbo: %d -> %d", extraVbo.size, bytes);
+        extraVbo.size = bytes;
+    }
 }
 
 void RenderGeometry::bind() {
+    assert(!bound && "Geometry is already bound");
+
+    bound = true;
     glBindVertexArray(vaoId);
 }
 
 void RenderGeometry::unbind() {
+    assert(bound && "Geometry isn't bound");
+
+    bound = false;
     glBindVertexArray(0);
+}
+
+bool RenderGeometry::isBound() const {
+    return bound;
 }
 
 void RenderGeometry::drawTriangles(int start, int end) {
-    glDrawArrays(GL_TRIANGLES, start, end);
+    assert(bound && "Geometry isn't bound");
+
+    glDrawArrays(GL_TRIANGLES, start, end - start);
 }
 
-void RenderGeometry::drawTrianglesInstanced(int start, int end, int instances) {
-    glDrawArraysInstanced(GL_TRIANGLES, start, end, instances);
+void RenderGeometry::drawTrianglesInstanced(int instances) {
+    assert(bound && "Geometry isn't bound");
+
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instances);
 }
 
 void RenderGeometry::drawLines(int start, int end) {
-    glDrawArrays(GL_LINES, start, end);
+    assert(bound && "Geometry isn't bound");
+
+    glDrawArrays(GL_LINES, start, end - start);
 }
-
-/*
-void RenderGeometry::drawLines(const void* data, unsigned int lineCount) {
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertCount * getVertexSize(vertType) * lineCount, data);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(vaoId);
-    glDrawArrays(GL_LINES, 0, lineCount * vertCount);
-    glBindVertexArray(0);
-}
-
-void RenderGeometry::drawText(const void* textData, unsigned int textVertCount) {
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, getVertexSize(vertType) * textVertCount, textData);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(vaoId);
-    glDrawArrays(GL_TRIANGLES, 0, textVertCount);
-    glBindVertexArray(0);
-}
-
-void RenderGeometry::drawInstanced(const void* instacesData, unsigned int instancesCount) {
-    glBindBuffer(GL_ARRAY_BUFFER, extraVboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, getVertexSize(vertType) * instancesCount, instacesData);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(vaoId);
-    glDrawArraysInstanced(GL_TRIANGLES, 0, vertCount, instancesCount);
-    glBindVertexArray(0);
-}
-
-void RenderGeometry::drawNinePatch(const Vec2& patchPt, const Vec2& patchUV) {
-    float xLeft = Math::Lerp(-1.f, 0.f, patchPt.x);
-    float xRight = Math::Lerp(0.f, 1.f, 1.f - patchPt.x);
-    float yTop = Math::Lerp(0.f, 1.f, 1.f - patchPt.y);
-    float yBot = Math::Lerp(-1.f, 0.f, patchPt.y);
-
-    float uLeft = patchUV.x;
-    float uRight = 1.f - patchUV.x;
-    float vTop = 1.f - patchUV.y;
-    float vBot = patchUV.y;
-
-    Vec4 verticies[] = {
-        Vec4(-1.f, -1.f, 0.f, 0.f),  Vec4(xLeft, -1.f, uLeft, 0.f),  Vec4(xRight, -1.f, uRight, 0.f),  Vec4(1.f, -1.f, 1.f, 0.f),
-        Vec4(-1.f, yBot, 0.f, vBot), Vec4(xLeft, yBot, uLeft, vBot), Vec4(xRight, yBot, uRight, vBot), Vec4(1.f, yBot, 1.f, vBot),
-        Vec4(-1.f, yTop, 0.f, vTop), Vec4(xLeft, yTop, uLeft, vTop), Vec4(xRight, yTop, uRight, vTop), Vec4(1.f, yTop, 1.f, vTop),
-        Vec4(-1.f, 1.f,  0.f, 1.f),  Vec4(xLeft, 1.f,  uLeft, 1.f),  Vec4(xRight, 1.f,  uRight, 1.f),  Vec4(1.f, 1.f,  1.f, 1.f),
-    };
-
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vec4) * 16, verticies[0].getPtr());
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(vaoId);
-    glDrawElements(GL_TRIANGLES, indciesCount, GL_UNSIGNED_SHORT, nullptr);
-    glBindVertexArray(0);
-}
-*/
