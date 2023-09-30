@@ -72,7 +72,7 @@ void InitDeinitAllLogic(EntityId entId, std::vector<Entity::EntityLogicNode>& lo
 Entity::Entity(const char* entityName, EntityRegistry* entityRegistry, EntityId entId) :
     registry(entityRegistry),
     parent(nullptr),
-    name(entityName),
+    name(StringFormat("%s:%d", entityName, entId.getRawId())),
     entityId(entId) {
 
     assert(!name.empty() && "Invalid entity name");
@@ -124,13 +124,12 @@ bool Entity::addLogicWithId(EntityLogicId logicId, Reflect::ClassInstance&& logi
 void* Entity::addLogicByTypeId(Core::TypeId logicTypeId) {
     auto classInfo = GetEnv()->GetClassInfoManager()->findClassInfoByTypeId(logicTypeId);
     if(!classInfo) {
-        LogWarning("[Entity::addLogicByTypeId] Can't find logic with type id: '%d'", logicTypeId);
         return nullptr;
     }
     auto instance = classInfo->createInstance();
     auto logicPtr = instance.get();
     if(!logicPtr) {
-        LogWarning("[Entity::addLogicByTypeId] Can't create instance of logic with type id: '%d'", logicTypeId);
+        LogError("[Entity::addLogicByTypeId] Can't create instance of logic with type id: '%d'", logicTypeId);
         return nullptr;
     }
     addLogic(std::move(instance));

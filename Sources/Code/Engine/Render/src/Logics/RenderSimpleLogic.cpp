@@ -23,8 +23,8 @@ void RenderSimpleLogic::onInit() {
 
     coloredQuadCmd->color = color;
 
-    if(size.x <= 0.f || size.y < 0.f) {
-        LogError("[RenderSimpleLogic::onInit] Negative size: <%.1f, %.1f> (Entity: %s)", size.x, size.y,
+    if(size.x < 0.f || size.y < 0.f) {
+        LogError("[RenderSimpleLogic::onInit] Negative size: <%.1f, %.1f> (Entity: '%s')", size.x, size.y,
             getEntityName());
         size.x = std::max(1.f, size.x);
         size.y = std::max(1.f, size.y);
@@ -51,7 +51,7 @@ void RenderSimpleLogic::ET_setColor(const ColorB& newColor) {
 
 void RenderSimpleLogic::ET_setSize(const Vec2& newSize) {
     Vec2 newSizeCopy = newSize;
-    if(newSizeCopy.x <= 0.f || newSizeCopy.y < 0.f) {
+    if(newSizeCopy.x < 0.f || newSizeCopy.y < 0.f) {
         LogError("[RenderSimpleLogic::ET_setSize] Negative size: <%.1f, %.1f> (Entity: %s)", newSizeCopy.x, newSizeCopy.y,
             getEntityName());
         newSizeCopy.x = std::max(1.f, newSizeCopy.x);

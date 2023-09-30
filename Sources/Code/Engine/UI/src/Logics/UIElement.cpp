@@ -3,6 +3,8 @@
 #include "UIUtils.hpp"
 #include "UI/ETUIAnimation.hpp"
 
+#include <cassert>
+
 void UIElement::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIElement>("UIElement")) {
         classInfo->addField("hidden", &UIElement::isHidden);
@@ -14,7 +16,6 @@ UIElement::UIElement() :
     alpha(1.f),
     parentAlpha(1.f),
     zIndex(0),
-    isIgnoringTransform(false),
     isHidden(false),
     isEnabled(true),
     isParentHidden(false),
@@ -26,8 +27,6 @@ UIElement::~UIElement() {
 }
 
 void UIElement::init() {
-    isIgnoringTransform = true;
-
     if(ET_IsExistNode<ETUIElement>(getEntityId())) {
         LogError("[UIElement::init] There is another UIElement on entity: '%s'",
             getEntityName());
@@ -44,7 +43,6 @@ void UIElement::deinit() {
 }
 
 void UIElement::onLoaded() {
-    isIgnoringTransform = false;
     zIndex -= 1;
     ET_setZIndex(zIndex + 1);
     if(isHidden) {
@@ -57,6 +55,7 @@ void UIElement::onLoaded() {
 }
 
 void UIElement::ET_setHostLayout(EntityId newLayoutId) {
+    assert(hostLayoutId != getEntityId());
     hostLayoutId = newLayoutId;
     if (hostLayoutId == InvalidEntityId) {
         ET_setZIndex(0);
@@ -86,14 +85,14 @@ void UIElement::ET_setLayoutPos(const Vec2& layoutPt) {
 }
 
 void UIElement::updateHostLayout() {
-    if(!ET_isHidden()) {
-        ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
+    if(!ET_isHidden() && hostLayoutId.isValid()) {
+        ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, hostLayoutId);
     }
 }
 
 void UIElement::updateSelfLayout() {
     if(!ET_isHidden()) {
-        ET_SendEvent(getEntityId(), &ETUIElemAligner::ET_reAlign);
+        ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, getEntityId());
     }
 }
 
@@ -108,7 +107,7 @@ void UIElement::ET_show() {
     onHide(false);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, false);
     if(!isParentHidden) {
-        ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
+        updateHostLayout();
     }
 }
 
@@ -123,7 +122,7 @@ void UIElement::ET_hide() {
     onHide(true);
     ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onHidden, true);
     if(!isParentHidden) {
-        ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
+        updateHostLayout();
     }
 }
 
@@ -193,11 +192,6 @@ bool UIElement::ET_isEnabled() const {
     return isEnabled && !isParentDisabled;
 }
 
-void UIElement::ET_setIgnoreTransform(bool flag) {
-    isIgnoringTransform = flag;
-    ET_SendEvent(getEntityId(), &ETUIElementEvents::ET_onIngoreTransform, isIgnoringTransform);
-}
-
 void UIElement::ET_setParentAlpha(float newParentAlpha) {
     parentAlpha = newParentAlpha;
     ET_setAlpha(alpha);
@@ -215,9 +209,7 @@ void UIElement::ET_applyAdditiveTranform() {
     Transform resTm = addTm.tm;
     resTm.addDelta(layoutTm);
 
-    ET_setIgnoreTransform(true);
     setLocalTransform(resTm);
-    ET_setIgnoreTransform(false);
 
     ET_setAlpha(alpha);
 }

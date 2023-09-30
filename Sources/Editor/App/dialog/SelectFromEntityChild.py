@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QTreeWidget, QTreeWidgetItem
+from PyQt6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QTreeWidget, QTreeWidgetItem
 
 class SelectFromEntityChild(QDialog):
     def __init__(self, entity):

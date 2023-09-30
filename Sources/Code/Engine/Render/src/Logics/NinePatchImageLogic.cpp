@@ -2,19 +2,38 @@
 #include "RenderTexture.hpp"
 #include "RenderUtils.hpp"
 #include "Math/MatrixTransform.hpp"
+#include "Reflect/EnumInfo.hpp"
+
+namespace {
+    Vec2 ClampPatchesXY(const Vec2& v) {
+        Vec2 newV = v;
+        newV.x = Math::Clamp(v.x, 0.f, 0.4999f);
+        newV.y = Math::Clamp(v.y, 0.f, 0.4999f);
+        return newV;
+    }
+}
 
 void NinePatchImageLogic::Reflect(ReflectContext& ctx) {
+    if(auto enumInfo = ctx.enumInfo<ENinePatchSizeType>("ENinePatchSizeType")) {
+        enumInfo->addValues<ENinePatchSizeType>({
+            {"SmallestSide", ENinePatchSizeType::SmallestSidePct},
+            {"BiggestSide", ENinePatchSizeType::BiggestSidePct},
+            {"Pixels", ENinePatchSizeType::Pixels}
+        });
+    }
     if(auto classInfo = ctx.classInfo<NinePatchImageLogic>("NinePatchImageLogic")) {
         classInfo->addBaseClass<RenderImageLogic>();
-        classInfo->addField("horizontal", &NinePatchImageLogic::horizontal);
-        classInfo->addField("vertical", &NinePatchImageLogic::vertical);
+        classInfo->addField("patchesTextureCoords", &NinePatchImageLogic::patchesTextureCoords);
+        classInfo->addField("patchSize", &NinePatchImageLogic::patchSize);
+        classInfo->addField("patchSizeType", &NinePatchImageLogic::patchSizeType);
     }
 }
 
 NinePatchImageLogic::NinePatchImageLogic() :
     RenderImageLogic(EDrawCmdType::NinePatch),
-    horizontal(0.3f),
-    vertical(0.3f) {
+    patchesTextureCoords(0.3f),
+    patchSize(0.3f),
+    patchSizeType(ENinePatchSizeType::SmallestSidePct) {
 }
 
 NinePatchImageLogic::~NinePatchImageLogic() {
@@ -23,26 +42,53 @@ NinePatchImageLogic::~NinePatchImageLogic() {
 void NinePatchImageLogic::onInit() {
     RenderImageLogic::onInit();
 
-    horizontal = Math::Clamp(horizontal, 0.f, 0.4999f);
-    vertical = Math::Clamp(vertical, 0.f, 0.4999f);
+    patchesTextureCoords = ClampPatchesXY(patchesTextureCoords);
 
     auto ninePatchCmd = static_cast<DrawNinePatchCmd*>(cmd);
-    ninePatchCmd->ninePatches = Vec2(horizontal, vertical);
+    ninePatchCmd->patchesTextureCoords = patchesTextureCoords;
+    ninePatchCmd->patchSize = patchSize;
+    ninePatchCmd->patchSizeType = patchSizeType;
 
     ETNode<ETNinePatchImageLogic>::connect(getEntityId());
 }
 
-Vec2 NinePatchImageLogic::ET_getPatches() const {
-    return Vec2(horizontal, vertical);
+Vec2 NinePatchImageLogic::ET_getPatchesTextureCoords() const {
+    return patchesTextureCoords;
 }
 
-void NinePatchImageLogic::ET_setPatches(const Vec2& patches) {
-    horizontal = patches.x;
-    horizontal = Math::Clamp(horizontal, 0.f, 0.4999f);
-    vertical = patches.y;
-    vertical = Math::Clamp(vertical, 0.f, 0.4999f);
+void NinePatchImageLogic::ET_setPatchesTextureCoords(const Vec2& newPatchesTextureCoords) {
+    patchesTextureCoords = ClampPatchesXY(newPatchesTextureCoords);
+    DrawNinePatchCmd::QueueNinePatchUpdate(*cmd, patchesTextureCoords, patchSize, patchSizeType);
+}
 
-    DrawNinePatchCmd::QueueNinePatchUpdate(*cmd, Vec2(horizontal, vertical));
+Vec2 NinePatchImageLogic::ET_getPatchesVertCoord() const {
+    auto ninePatchCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
+    if(!ninePatchCmd || !ninePatchCmd->texObj) {
+        return Vec2(0.f);
+    }
+    const auto& tm = getTransform();
+    return RenderUtils::GetNinePatchVertexCoord(ninePatchCmd->texObj->getSize(),
+        Vec2(size.x * tm.scale.x, size.y * tm.scale.y), patchSize, patchSizeType);
+}
+
+void NinePatchImageLogic::ET_setPatchSize(float newPatchSize) {
+    patchSize = newPatchSize;
+    DrawNinePatchCmd::QueueNinePatchUpdate(*cmd, patchesTextureCoords, patchSize, patchSizeType);
+}
+
+float NinePatchImageLogic::ET_getPatchSize() const {
+    return patchSize;
+}
+
+void NinePatchImageLogic::ET_setPatchSizeType(ENinePatchSizeType newPatchSizeType) {
+    if(newPatchSizeType != patchSizeType) {
+        patchSizeType = newPatchSizeType;
+        DrawNinePatchCmd::QueueNinePatchUpdate(*cmd, patchesTextureCoords, patchSize, patchSizeType);
+    }
+}
+
+ENinePatchSizeType NinePatchImageLogic::ET_getPatchSizeType() const {
+    return patchSizeType;
 }
 
 Mat4 NinePatchImageLogic::calcModelMat() const {
@@ -61,8 +107,8 @@ void NinePatchImageLogic::onTransformChanged(const Transform& newTm) {
 
 void NinePatchImageLogic::ET_setSize(const Vec2& newSize) {
     Vec2 newSizeCopy = newSize;
-    if(newSizeCopy.x <= 0.f || newSizeCopy.y < 0.f) {
-        LogError("[NinePatchImageLogic::ET_setSize] Negative size: <%.1f, %.1f> (Entity: %s)", newSizeCopy.x, newSizeCopy.y,
+    if(newSizeCopy.x < 0.f || newSizeCopy.y < 0.f) {
+        LogError("[NinePatchImageLogic::ET_setSize] Negative size: <%.1f, %.1f> (Entity: '%s')", newSizeCopy.x, newSizeCopy.y,
             getEntityName());
         newSizeCopy.x = std::max(1.f, newSizeCopy.x);
         newSizeCopy.y = std::max(1.f, newSizeCopy.y);
@@ -75,14 +121,4 @@ void NinePatchImageLogic::ET_setSize(const Vec2& newSize) {
 void NinePatchImageLogic::ET_setTextureInfo(const TextureInfo& newTexture) {
     textureInfo = newTexture;
     DrawNinePatchCmd::QueueTexInfoUpdate(*cmd, newTexture);
-}
-
-Vec2 NinePatchImageLogic::ET_getPatchesVertCoord() const {
-    auto ninePatchCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
-    if(!ninePatchCmd || !ninePatchCmd->texObj) {
-        return Vec2(0.f);
-    }
-    const auto& tm = getTransform();
-    return RenderUtils::GetNinePatchVertexCoord(ninePatchCmd->texObj->getSize(),
-        Vec2(size.x * tm.scale.x, size.y * tm.scale.y), Vec2(horizontal, vertical));
 }

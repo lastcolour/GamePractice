@@ -56,10 +56,19 @@ struct ETRenderImageLogic {
     virtual void ET_setTextureInfo(const TextureInfo& newTextureInfo) = 0;
 };
 
+enum ENinePatchSizeType {
+    SmallestSidePct = 0,
+    BiggestSidePct,
+    Pixels
+};
+
 struct ETNinePatchImageLogic {
-    virtual ~ETNinePatchImageLogic() = default;
-    virtual Vec2 ET_getPatches() const = 0;
-    virtual void ET_setPatches(const Vec2& patches) = 0;
+    virtual Vec2 ET_getPatchesTextureCoords() const = 0;
+    virtual void ET_setPatchesTextureCoords(const Vec2& newPatchesTextureCoords) = 0;
+    virtual void ET_setPatchSize(float NewSize) = 0;
+    virtual float ET_getPatchSize() const = 0;
+    virtual void ET_setPatchSizeType(ENinePatchSizeType newPatchSizeType) = 0;
+    virtual ENinePatchSizeType ET_getPatchSizeType() const = 0;
     virtual Vec2 ET_getPatchesVertCoord() const = 0;
 };
 

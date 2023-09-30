@@ -4,29 +4,6 @@
 
 #include <cassert>
 
-namespace {
-
-int getVertexSize(EPrimitiveGeometryType geoType) {
-    switch(geoType)
-    {
-    case EPrimitiveGeometryType::Vec2_Tex:
-        return sizeof(Vec4);
-    case EPrimitiveGeometryType::Vec3:
-        return sizeof(Vec3);
-    case EPrimitiveGeometryType::Vec3_Tex:
-        return sizeof(Vec3) + sizeof(Mat3x2);
-    case EPrimitiveGeometryType::Particles:
-        return sizeof(Vec4) + sizeof(Mat3x2);
-    case EPrimitiveGeometryType::Line:
-        return sizeof(Vec2) + sizeof(Vec4);
-    default:
-        assert(false && "Invalid vertex type");
-        return 0;
-    }
-}
-
-} // namespace
-
 RenderGeometry::RenderGeometry() :
     vaoId(0),
     geoType(EPrimitiveGeometryType::Vec3),

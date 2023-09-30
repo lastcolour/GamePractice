@@ -46,6 +46,10 @@ public:
         return top - bot;
     }
 
+    T getArea() const {
+        return (top.x - bot.x) * (top.y - bot.y);
+    }
+
     T getCenter() const {
         return (top + bot) / static_cast<ElemTypeT>(2);
     }
@@ -64,7 +68,7 @@ public:
 
     void setCenterAndSize(const T& c, const T& sz) {
         bot = c - sz / (ElemTypeT)2;
-        top += sz;
+        top = bot + sz;
     }
 
     AABB2D expandBy(const T& v) const {

@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMenu, QAction
+from PyQt6.QtWidgets import QMenu
+from PyQt6.QtGui import QAction
 
 from utils.Managers import GetEventManager
 from utils.Managers import GetCopyPasteManager

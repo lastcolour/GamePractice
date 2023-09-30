@@ -1,11 +1,12 @@
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton, QColorDialog, QFrame
-from PyQt5.QtCore import Qt
-from PyQt5.Qt import QPalette, QColor
+from PyQt6.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton, QColorDialog, QFrame
+from PyQt6.QtCore import Qt 
+from PyQt6.QtGui import QColor, QPalette
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
 
 class EditColorValue(QWidget):
+
     def __init__(self, value):
         super().__init__()
 
@@ -14,13 +15,13 @@ class EditColorValue(QWidget):
         self._rootLayout = QHBoxLayout()
 
         self._colorLineEdit = QLineEdit()
-        self._colorLineEdit.setAlignment(Qt.AlignRight)
+        self._colorLineEdit.setAlignment(Qt.AlignmentFlag.AlignRight)
         self._colorLineEdit.setReadOnly(True)
         self._rootLayout.addWidget(self._colorLineEdit)
 
         self._frame = QFrame()
-        self._frame.setFrameStyle(QFrame.StyledPanel)
-        self._frame.setFrameShadow(QFrame.Plain)
+        self._frame.setFrameStyle(QFrame.Shape.StyledPanel)
+        self._frame.setFrameShadow(QFrame.Shadow.Plain)
         self._frameLayout = QHBoxLayout()
 
         self._colorSelectBt = QPushButton()
@@ -41,7 +42,7 @@ class EditColorValue(QWidget):
 
     def _updateWith(self, col):
         palette = self._colorSelectBt.palette()
-        palette.setColor(QPalette.Button, col)
+        palette.setColor(QPalette.ColorRole.Button, col)
         self._colorSelectBt.setAutoFillBackground(True)
         self._colorSelectBt.setPalette(palette)
         self._colorSelectBt.update()
@@ -51,7 +52,7 @@ class EditColorValue(QWidget):
     def _signal_colorSelectBt_clicked(self):
         r, g, b, a = self._val.getVal()
         resColor = QColorDialog.getColor(QColor(r, g, b, a), self, "Select Color",
-            QColorDialog.ShowAlphaChannel)
+            QColorDialog.ColorDialogOption.ShowAlphaChannel | QColorDialog.ColorDialogOption.DontUseNativeDialog)
         if not resColor.isValid():
             return
         self._push(resColor)

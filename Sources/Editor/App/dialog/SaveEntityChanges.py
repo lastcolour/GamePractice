@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 class SaveEntityChanges(QMessageBox):
     def __init__(self, entity):

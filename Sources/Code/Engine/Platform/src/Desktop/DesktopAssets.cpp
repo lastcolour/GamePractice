@@ -141,7 +141,7 @@ Memory::Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
         return buff;
     }
 
-    auto loadStartT = TimePoint::GetNowTime();
+    auto loadStartT = TimePoint::GetNow();
 
     buff = FileUtils::LoadFileFromDir(assetRootPath, normalAssetName.c_str());
 
@@ -150,8 +150,7 @@ Memory::Buffer DesktopAssets::ET_loadAsset(const char* assetName) {
     }
 
     if(buff) {
-        float msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
-        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %.1f ms", normalAssetName, msValue);
+        LogDebug("[DesktopAssets::ET_loadAsset] Loaded file '%s' in %.1f ms", normalAssetName, loadStartT.getMsDeltaWithNow());
     }
 
     return buff;

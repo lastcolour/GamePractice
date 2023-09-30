@@ -10,13 +10,16 @@ class RunTask;
 class ThreadJob {
 public:
 
-    ThreadJob(RunTask* runTask);
+    ThreadJob(RunTask& runTask);
     ~ThreadJob();
 
+    void init();
     bool tryStartAt(int threadId, const TimePoint& currTime);
     void execute();
     RunTask* getTask();
     const JobRunStats& getRunStats() const;
+    void setPendingCount(int newPendingCount);
+    int getPendingCount() const;
 
 private:
 
@@ -24,14 +27,14 @@ private:
 
 private:
 
+    RunTask& task;
     JobRunStats runStats;
     TimePoint prevStartT;
-    TimePoint prevEndT;
     TimePoint currStartT;
-    std::vector<ThreadJob*> childJobs;
     std::atomic<int> pendingCount;
-    RunTask* task;
     std::chrono::microseconds runDelay;
+    int childrenCount;
+    bool isFirstRun;
 };
 
 #endif /* __THREAD_JOB_HPP__ */

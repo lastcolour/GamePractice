@@ -1,6 +1,7 @@
 #include "Logics/UIProgressBar.hpp"
 #include "UI/ETUIBox.hpp"
 #include "UI/ETUILayout.hpp"
+#include "UI/ETUIView.hpp"
 
 void UIProgressBar::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<UIProgressBar>("UIProgressBar")) {
@@ -33,7 +34,7 @@ void UIProgressBar::ET_setProgress(float newProgress) {
     EntityId hostLayoutId;
     ET_SendEventReturn(hostLayoutId, getEntityId(), &ETUIElement::ET_getHostLayout);
     if(hostLayoutId.isValid()) {
-        ET_SendEvent(hostLayoutId, &ETUIElemAligner::ET_reAlign);
+        ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, getEntityId());
     }
 }
 

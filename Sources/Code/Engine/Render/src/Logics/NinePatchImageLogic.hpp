@@ -18,8 +18,12 @@ public:
     void onTransformChanged(const Transform& newTm) override;
 
     // ETNinePatchImageLogic
-    Vec2 ET_getPatches() const override;
-    void ET_setPatches(const Vec2& patches) override;
+    Vec2 ET_getPatchesTextureCoords() const override;
+    void ET_setPatchesTextureCoords(const Vec2& newPatchesTextureCoords) override;
+    void ET_setPatchSize(float NewSize) override;
+    float ET_getPatchSize() const override;
+    void ET_setPatchSizeType(ENinePatchSizeType newPatchSizeType) override;
+    ENinePatchSizeType ET_getPatchSizeType() const override;
     Vec2 ET_getPatchesVertCoord() const override;
 
     // ETRenderRect
@@ -36,8 +40,9 @@ protected:
 
 private:
 
-    float horizontal;
-    float vertical;
+    Vec2 patchesTextureCoords;
+    float patchSize;
+    ENinePatchSizeType patchSizeType;
 };
 
 #endif /* __NINE_PATCH_IMAGE_LOGIC_HPP__ */

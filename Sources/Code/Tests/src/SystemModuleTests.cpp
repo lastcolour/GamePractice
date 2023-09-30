@@ -5,7 +5,6 @@
 #include "Core/ETApplication.hpp"
 
 #include <tuple>
-#include <iostream>
 
 namespace {
 

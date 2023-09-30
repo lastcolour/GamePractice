@@ -183,7 +183,7 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
         return InvalidEntityId;
     }
 
-    auto loadStartT = TimePoint::GetNowTime();
+    auto loadStartT = TimePoint::GetNow();
 
     bool finishLoad = true;
     auto entity = createEntityImpl(node, entityName, finishLoad);
@@ -192,7 +192,7 @@ EntityId EntityManager::ET_createEntityFromJSON(const JSONNode& node, const char
         return InvalidEntityId;
     }
 
-    float msValue = -loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
+    float msValue = loadStartT.getMsDeltaWithNow();
     if(msValue > ENTITY_LOADING_TIME_LOG_THRESHOLD) {
         LogDebug("[EntityManager::ET_createEntityFromJSON] Create entity: '%s' (%.1f ms)", entityName, msValue);
     }
@@ -489,7 +489,7 @@ Entity* EntityManager::createEntityImpl(const JSONNode& entityNode, const char* 
 }
 
 Entity* EntityManager::createEntity(const char* entityName, bool finishLoad) {
-    auto startTimeP = TimePoint::GetNowTime();
+    auto startTimeP = TimePoint::GetNow();
 
     auto entityNode = loadEntityRootNode(entityName);
     auto entity = createEntityImpl(entityNode, entityName, finishLoad);
@@ -497,7 +497,7 @@ Entity* EntityManager::createEntity(const char* entityName, bool finishLoad) {
         return nullptr;
     }
 
-    auto msValue = -static_cast<int>(startTimeP.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
+    auto msValue = static_cast<int>(startTimeP.getMsDeltaWithNow());
     if(msValue > ENTITY_LOADING_TIME_LOG_THRESHOLD) {
         LogDebug("[EntityManager::createEntity] Create entity: '%s' (%d ms)", entityName, msValue);
     }

@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QLineEdit, QVBoxLayout, QTreeWidgetItem, QStyle
-from PyQt5 import QtCore
+from PyQt6.QtWidgets import QWidget, QTreeWidget, QLineEdit, QVBoxLayout, QTreeWidgetItem, QStyle
+from PyQt6 import QtCore
 
 from menu.FileTreeMenu import FileTreeMenu
 from utils.Managers import GetEventManager
@@ -23,7 +23,7 @@ class EntityFileView(QWidget):
         self._rootLayout.addWidget(self._search)
 
         self._tree = FileTreeView()
-        self._tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self._tree.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._signal_tree_contextMenuRequested)
         self._tree.itemDoubleClicked.connect(self._signal_tree_itemDoublecClicked)
         self._rootLayout.addWidget(self._tree)
@@ -103,10 +103,10 @@ class EntityFileView(QWidget):
 
     def _createEditDirItem(self, treeItem):
         newItem = QTreeWidgetItem(self._getRootItemForEditItem(treeItem))
-        newItem.setIcon(0, self.style().standardIcon(QStyle.SP_DirIcon))
+        newItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon))
         return newItem
 
     def _createEditFileItem(self, treeItem):
         newItem = QTreeWidgetItem(self._getRootItemForEditItem(treeItem))
-        newItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+        newItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon))
         return newItem

@@ -1,5 +1,5 @@
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog, QTreeWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QLabel, QLineEdit, QDialog, QTreeWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
     QTreeWidgetItem, QStyle
 from utils.Managers import GetEventManager
 from utils.ViewUtils import FilterTreeBySearchText
@@ -139,18 +139,18 @@ def ExecResourceSelectDialog(resourceType, infoText=None, filter=_allPassFilter)
                 treeItem = QTreeWidgetItem(currItem)
                 treeItem.setText(0, currNode.getBaseName())
                 treeItem._node = currNode
-                treeItem.setIcon(0, dialog.style().standardIcon(QStyle.SP_FileIcon))
+                treeItem.setIcon(0, dialog.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon))
                 if filter(currNode):
                     treeItem.setDisabled(True)
         else:
             treeItem = QTreeWidgetItem(currItem)
             treeItem.setText(0, currNode.getBaseName())
             treeItem._node = currNode
-            treeItem.setIcon(0, dialog.style().standardIcon(QStyle.SP_DirIcon))
+            treeItem.setIcon(0, dialog.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon))
             for childNode in currNode:
                 addList.append((treeItem, childNode))
     _hideEmptyDirs(dialog._tree.invisibleRootItem())
-    dialog._tree.sortItems(1, QtCore.Qt.DescendingOrder)
+    dialog._tree.sortItems(1, QtCore.Qt.SortOrder.DescendingOrder)
     dialog.exec()
     return dialog.getSelectResult()
 
@@ -182,7 +182,7 @@ def ExecSelectFromChildrenEntities(entity):
         for childEnt in currEnt.getChildren():
             addList.append((currItem, childEnt))
 
-    dialog._tree.sortItems(1, QtCore.Qt.DescendingOrder)
+    dialog._tree.sortItems(1, QtCore.Qt.SortOrder.DescendingOrder)
     dialog.exec()
     return dialog.getSelectResult()
 
@@ -196,13 +196,13 @@ def ExecEntityLogicSelectDialog():
     for module in logicsModel.getLogics():
         moduleItem = QTreeWidgetItem(rootItem)
         moduleItem.setText(0, module.getName())
-        moduleItem.setIcon(0, dialog.style().standardIcon(QStyle.SP_DirIcon))
+        moduleItem.setIcon(0, dialog.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon))
         for logic in module.getLogics():
             logicItem = QTreeWidgetItem(moduleItem)
             logicItem.setText(0, logic.getName())
-            logicItem.setIcon(0, dialog.style().standardIcon(QStyle.SP_FileIcon))
+            logicItem.setIcon(0, dialog.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon))
             logicItem._node = logic
 
-    dialog._tree.sortItems(1, QtCore.Qt.DescendingOrder)
+    dialog._tree.sortItems(1, QtCore.Qt.SortOrder.DescendingOrder)
     dialog.exec()
     return dialog.getSelectResult()

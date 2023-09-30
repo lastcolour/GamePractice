@@ -6,7 +6,7 @@ namespace {
 
 int setupGeometry(DrawNinePatchCmd& cmd, int vertShift, std::vector<Vert_Vec3_Tex>& out) {
     cmd.vertStart = vertShift;
-    cmd.vertEnd = cmd.vertStart + RenderUtils::CreateNinePatchVertData(cmd.vertCoord, cmd.ninePatches, &out[vertShift]);
+    cmd.vertEnd = cmd.vertStart + RenderUtils::CreateNinePatchVertData(cmd.vertCoord, cmd.patchesTextureCoords, &out[vertShift]);
     return cmd.vertEnd;
 }
 
@@ -45,7 +45,7 @@ void DrawNinePatchExecutor::preDraw(RenderState& renderState) {
     std::vector<Vert_Vec3_Tex> vertData;
     vertData.resize(visibleCount * RenderUtils::NinePatchesVertCount);
 
-    for(int i = 0; i < visibleCount; ++i) {
+    for(size_t i = 0; i < visibleCount; ++i) {
         auto ninePatchCmd = static_cast<DrawNinePatchCmd*>(queue[i]);
         vertShift = setupGeometry(*ninePatchCmd, vertShift, vertData);
     }

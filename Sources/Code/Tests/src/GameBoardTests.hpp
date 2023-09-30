@@ -10,7 +10,7 @@ class GameBoardTests : public EngineTests {
 protected:
 
     static void SetUpTestCase() {
-        CreateTestApp(ETestAppModules::CheckRender);
+        CreateTestApp(ETestAppModules::CheckGame);
     }
 
     void SetUp();

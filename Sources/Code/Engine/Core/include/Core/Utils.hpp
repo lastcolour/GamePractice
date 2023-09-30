@@ -3,6 +3,9 @@
 
 namespace Core {
 
+using TypeId = int;
+const TypeId InvalidTypeId = 0;
+
 namespace Impl {
 
 template <typename ... ArgsT, typename FuncT, std::size_t... Idx>
@@ -20,12 +23,12 @@ void ApplyTupleReverse(std::tuple<ArgsT ... >& tuple, FuncT&& func, std::index_s
     };
 }
 
-int GetNextTypeId();
+TypeId GetNextTypeId();
 
 template<typename T>
 class TypeIdHelper {
 public:
-    static int value() {
+    static TypeId value() {
         static const TypeId typeId = GetNextTypeId();
         return typeId;
     }
@@ -49,9 +52,6 @@ void ApplyTupleResult(std::tuple<ArgsT ... >& tuple, FuncT&& func, std::vector<R
         results.emplace_back(static_cast<ResT>(func(elem)));
     });
 }
-
-using TypeId = int;
-const TypeId InvalidTypeId = 0;
 
 template<typename T>
 constexpr TypeId GetTypeId() {

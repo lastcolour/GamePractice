@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
 
 from view.values.UIUitls import FreezeEditButtonSize
 

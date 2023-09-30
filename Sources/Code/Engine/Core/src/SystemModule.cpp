@@ -28,7 +28,7 @@ SystemModule::~SystemModule() {
 bool SystemModule::init() {
     assert(!isInitialized && "Dobule module initializetion");
 
-    auto initStarT = TimePoint::GetNowTime();
+    auto initStarT = TimePoint::GetNow();
 
     createSystemConfigs();
 
@@ -68,8 +68,7 @@ bool SystemModule::init() {
         return false;
     }
 
-    int msValue = -static_cast<int>(initStarT.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
-    LogDebug("[SystemModule::init] Init module: '%s' in %d ms", name, msValue);
+    LogDebug("[SystemModule::init] Init module: '%s' in %.0f ms", name, initStarT.getMsDeltaWithNow());
 
     return true;
 }

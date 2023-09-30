@@ -2,9 +2,39 @@
 #include "Parallel/TasksRunner.hpp"
 #include "Parallel/RunTask.hpp"
 #include "Core/TimePoint.hpp"
+#include "Math/Random.hpp"
+#include "Parallel/src/ThreadJob.hpp"
 
 #include <thread>
 #include <atomic>
+
+TEST_F(TaskRunnerTests, CheckInitialPendingCounts) {
+    TasksRunner runner;
+
+    auto task1 = runner.createTask("Task1", [](){
+    });
+
+    auto task2 = runner.createTask("Task2", [](){
+
+    });
+    auto task3 = runner.createTask("Task3", [](){
+
+    });
+
+    task1->addChild(task2);
+    task1->addChild(task3);
+    task2->addChild(task3);
+
+    int runCount = 0;
+    runner.runUntil(1, [&runCount](){
+        runCount += 1;
+        return runCount <= 1;
+    });
+
+    EXPECT_EQ(task1->getThreadJob()->getPendingCount(), 0);
+    EXPECT_EQ(task2->getThreadJob()->getPendingCount(), 1);
+    EXPECT_EQ(task3->getThreadJob()->getPendingCount(), 2);
+}
 
 TEST_F(TaskRunnerTests, SimpleOneTimeTaskOneThread) {
     TasksRunner runner;
@@ -41,14 +71,16 @@ TEST_F(TaskRunnerTests, RunTwoTasksTwoThreads) {
     EXPECT_LE(value.load(), 110);
 }
 
+#include <iostream>
+
 TEST_F(TaskRunnerTests, RunTenTasksTenThreads) {
     std::atomic<int> value = 0;
     TasksRunner runner;
     for(int i = 0; i < 10; ++i) {
-        runner.createTask("Test", [&value](){
+        runner.createTask("Test", [&value, i](){
             value.fetch_add(1);
             std::this_thread::yield();
-        });
+        })->setFrequency(512);
     }
     runner.runUntil(10, [&value](){
         return value.load() < 10000;
@@ -77,14 +109,13 @@ TEST_F(TaskRunnerTests, TestFrequency) {
     });
     task->setFrequency(TEST_FREQUENCY);
 
-    TimePoint startTime = TimePoint::GetNowTime();
+    TimePoint startTime = TimePoint::GetNow();
     runner.runUntil(1, [&value, &startTime](){
         if(value.load() == 1) {
-            startTime = TimePoint::GetNowTime();
+            startTime = TimePoint::GetNow();
             return true;
         } else {
-            auto currTime = TimePoint::GetNowTime();
-            return currTime.getSecElapsedFrom(startTime) < 1.f;
+            return startTime.getSecDeltaWithNow() < 1.f;
         }
     });
 
@@ -200,4 +231,63 @@ TEST_F(TaskRunnerTests, CheckSuspendRunning) {
 
     runFlag.store(false);
     runThread.join();
+}
+
+TEST_F(TaskRunnerTests, CheckNoIntersections) {
+    TasksRunner runner;
+
+    std::atomic<int> bRunning[201];
+    for(int i = 0; i < 201; ++i) {
+        bRunning[i].store(0);
+    }
+
+    std::atomic<int> cRunning[201];
+    for(int i = 0; i < 201; ++i) {
+        cRunning[i].store(0);
+    }
+
+    int loopCount = 0;
+    const int runFrequency = 240;
+
+    auto taskA = runner.createTask("A", [&bRunning, &cRunning, &loopCount](){
+        for(int i = 0; i < 201; ++i) {
+            ASSERT_EQ(bRunning[i].load(), 0);
+            ASSERT_EQ(cRunning[i].load(), 0);
+        }
+        ++loopCount;
+    });
+
+    taskA->setFrequency(runFrequency);
+
+    Math::RandomIntGenerator bIntGen(0, 200);
+    auto taskB = runner.createTask("B", [&bRunning, &bIntGen](){
+        const int randInt = bIntGen.generate();
+        bRunning[randInt] += 1;
+        std::this_thread::sleep_for(std::chrono::microseconds(250 - randInt));
+        bRunning[randInt] -= 1;
+    });
+    taskB->setFrequency(runFrequency);
+
+    Math::RandomIntGenerator cIntGen(0, 200);
+    auto taskC = runner.createTask("C", [&cRunning, &cIntGen](){
+        const int randInt = cIntGen.generate();
+        cRunning[randInt] += 1;
+        std::this_thread::sleep_for(std::chrono::microseconds(250 - randInt));
+        cRunning[randInt] -= 1;
+    });
+    taskC->setFrequency(runFrequency);
+
+    taskA->addChild(taskB);
+    taskA->addChild(taskC);
+
+    taskB->addChild(taskC);
+
+    const float runDuration = 5.f;
+    auto startT = TimePoint::GetNow();
+    runner.runUntil(4, [&startT, runDuration](){
+        return startT.getSecDeltaWithNow() < runDuration;
+    });
+
+    const int expectedLoopCount = runFrequency * runDuration - 1;
+    EXPECT_GE(loopCount, expectedLoopCount);
 }

@@ -39,6 +39,9 @@ void UITimer::ET_onTick(float dt) {
 
     ET_SendEvent(&ETRenderTickManager::ET_onUITick, dt);
     ET_SendEvent(&ETUITimerEvents::ET_onUITick, dt);
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
     ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_applyAdditiveTranform);
     ET_SendEvent(&ETUIAdditiveAnimationTarget::ET_resetAdditiveTransform);
 }

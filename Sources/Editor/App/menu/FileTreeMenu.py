@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMenu, QAction, QLineEdit, QMessageBox, QApplication
+from PyQt6.QtWidgets import QMenu, QLineEdit, QMessageBox, QApplication
+from PyQt6.QtGui import QAction
 
 from dialog.RemoveFile import RemoveFile
 from utils.ViewUtils import OpenPlatformFileExplorer

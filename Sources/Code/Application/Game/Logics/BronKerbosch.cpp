@@ -244,7 +244,7 @@ void BronKerbosch_Impl(int depth, BronKerboschRequest& req) {
 } // namespace
 
 void BronKerbosch(BronKerboschRequest& req) {
-    auto startT = TimePoint::GetNowTime();
+    auto startT = TimePoint::GetNow();
 
     req.result.clear();
     req.maxCost = 0;
@@ -285,6 +285,6 @@ void BronKerbosch(BronKerboschRequest& req) {
 
     BronKerbosch_Impl(0, req);
 
-    auto endT = TimePoint::GetNowTime();
-    req.duration = endT.getMiliSecElapsedFrom(startT);
+    auto endT = TimePoint::GetNow();
+    req.duration = endT.getMsDeltaWith(startT);
 }

@@ -4,6 +4,7 @@
 #include "RenderConfig.hpp"
 #include "Parallel/TasksRunner.hpp"
 #include "Math/Primitivies.hpp"
+#include "Entity/ETEntityManager.hpp"
 
 namespace {
 
@@ -182,4 +183,10 @@ void TasksStatsTracker::ET_drawDebugInfo(DebugInfoDrawer& dd) {
         DrawTaskRunInfo(dd, pt, taskName, runInfo);
         pt.y -= FONT_SIZE + NEW_LINE_OFFSET;
     }
+
+    int NumEntities = 0;
+    ET_SendEventReturn(NumEntities, &ETEntityManager::ET_getEntitiesCount);
+    auto Enities = StringFormat("Enitties : %d", NumEntities);
+    dd.drawText(pt, FONT_SIZE, ColorB(255, 255, 0), Enities.c_str());
+
 }

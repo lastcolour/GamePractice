@@ -42,9 +42,9 @@ TEST_F(GameElemsPoolTests, CheckPoolDistribution) {
         EXPECT_TRUE(elemId.isValid());
 
         std::string name = EntityUtils::GetEntityName(elemId);
-        if(name == TEST_OBJECT_1) {
+        if(name.rfind(TEST_OBJECT_1) == 0) {
             ++elemType[0];
-        } else if(name == TEST_OBJECT_2) {
+        } else if(name.rfind(TEST_OBJECT_2) == 0) {
             ++elemType[1];
         } else {
             ASSERT_TRUE(false);

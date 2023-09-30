@@ -65,7 +65,9 @@ TEST_F(MathTests, CheckRotate2D) {
     Vec3 testPos(1.f, 0.f, 0.f);
     Vec3 resPos = m * testPos;
 
-    ASSERT_EQ(resPos, Vec3(0.f, 1.f, 0.f));
+    EXPECT_NEAR(resPos.x, 0.f, 0.001f);
+    EXPECT_NEAR(resPos.y, 1.f, 0.001f);
+    EXPECT_NEAR(resPos.z, 0.f, 0.001f);
 }
 
 TEST_F(MathTests, CheckScale2D) {
@@ -100,7 +102,10 @@ TEST_F(MathTests, CheckRotate) {
     Vec4 testPos(1.f, 0.f, 0.f, 0.f);
     Vec4 resPos = m * testPos;
 
-    ASSERT_EQ(resPos, Vec4(0.f, 1.f, 0.f, 0.f));
+    EXPECT_NEAR(resPos.x, 0.f, 0.001f);
+    EXPECT_NEAR(resPos.y, 1.f, 0.001f);
+    EXPECT_NEAR(resPos.z, 0.f, 0.001f);
+    EXPECT_NEAR(resPos.w, 0.f, 0.001f);
 }
 
 TEST_F(MathTests, CheckScale) {

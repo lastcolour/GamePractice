@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMenu, QAction, QLineEdit
+from PyQt6.QtWidgets import QMenu, QLineEdit
+from PyQt6.QtGui import QAction
 
 from dialog.UniversalSelectDialog import ExecAddEntitySelectDialog
 

@@ -101,8 +101,9 @@ UIScrollAreaTests::TestContext UIScrollAreaTests::createTestContext(
 }
 
 void UIScrollAreaTests::SetUpTestCase() {
-    CreateTestApp(ETestAppModules::CheckRender);
+    CreateTestApp(ETestAppModules::CheckUI);
     auto uiConfig = Core::GetGlobal<UIConfig>();
+    ASSERT_TRUE(uiConfig);
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);

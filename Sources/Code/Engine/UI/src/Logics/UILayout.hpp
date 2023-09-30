@@ -22,6 +22,7 @@ public:
     // EntityLogic
     void init() override;
     void deinit() override;
+    void onLoaded() override;
 
     // ETUILayout
     const UILayoutStyle& ET_getStyle() const override;
@@ -39,7 +40,6 @@ public:
     void ET_onAlphaChanged(float newAlpha) override;
     void ET_onHidden(bool flag) override;
     void ET_onDisabled(bool flag) override;
-    void ET_onIngoreTransform(bool flag) override;
 
 private:
 

@@ -7,7 +7,7 @@ class GameEventSequenceTests : public EngineTests {
 public:
 
     static void SetUpTestCase() {
-        CreateTestApp(ETestAppModules::CheckRender);
+        CreateTestApp(ETestAppModules::CheckGame);
     }
 };
 

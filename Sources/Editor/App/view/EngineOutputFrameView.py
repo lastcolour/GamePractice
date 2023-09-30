@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy
-from PyQt5.QtCore import Qt, QSize, QPoint, QTimer
-from PyQt5.QtGui import QPainter, QImage, QResizeEvent
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import Qt, QSize, QPoint, QTimer
+from PyQt6.QtGui import QPainter, QImage, QResizeEvent, QColor
 
 from utils.Managers import GetEventManager
 from utils.Managers import GetEngineViewManager
@@ -30,10 +30,12 @@ class EngineOutputFrameView(QWidget):
         self._tickTimer.timeout.connect(self._onTick)
         self._tickTimer.start()
 
-        self._image = QImage(QSize(_MIN_WIDTH, self._getHeightFromWidth(_MIN_WIDTH)), QImage.Format_RGBA8888)
-        self._image.fill(Qt.black)
+        self._image = QImage(QSize(_MIN_WIDTH, self._getHeightFromWidth(_MIN_WIDTH)), QImage.Format.Format_RGBA8888)
+        self._image.fill(QColor(0, 0, 0))
         self.setMinimumSize(QSize(_MIN_WIDTH, _MIN_WIDTH))
         self.setMouseTracking(True)
+
+        self._painter = QPainter()
 
     def _getHeightFromWidth(self, width):
         x = None
@@ -91,19 +93,18 @@ class EngineOutputFrameView(QWidget):
         w, h = self._image.width(), self._image.height()
         GetEngineViewManager().drawNativeFrameTo(self._image.bits().__int__(), w, h)
 
-        painter = QPainter()
-        painter.begin(self)
-        painter.translate(w / 2, h / 2)
-        painter.rotate(180)
-        painter.scale(-1.0, 1.0) 
-        painter.drawImage(-w / 2, -h / 2, self._image)
-        painter.end()
+        self._painter.begin(self)
+        self._painter.translate(w / 2, h / 2)
+        self._painter.rotate(180)
+        self._painter.scale(-1.0, 1.0)
+        self._painter.drawImage(QPoint(int(-w / 2), int(-h / 2)), self._image)
+        self._painter.end()
 
     def setAspectRatio(self, ratio):
         self._ratio = ratio
         newHeight = self._getHeightFromWidth(self.size().width())
         self._image = self._image.scaled(self._image.width(), newHeight)
-        self._image.fill(Qt.black)
+        self._image.fill(QColor(0, 0, 0))
         self.resizeEvent(QResizeEvent(self.size(), QSize()))
 
     def setOrientation(self, isHorizontal):
@@ -131,7 +132,7 @@ class EngineOutputFrameView(QWidget):
         x, y = self._getPosInside(event)
         if x is None or y is None:
             return
-        if event.button() != Qt.LeftButton:
+        if event.button() != Qt.MouseButton.LeftButton:
             return
         self._lastMousePt = (x, y)
         self._isMousePressed = True
@@ -141,7 +142,7 @@ class EngineOutputFrameView(QWidget):
         x, y = self._getPosInside(event)
         if x is None or y is None:
             return
-        if event.button() != Qt.LeftButton:
+        if event.button() != Qt.MouseButton.LeftButton:
             return
         if self._isMousePressed == False:
             return

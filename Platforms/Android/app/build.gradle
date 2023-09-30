@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     // ndkVersion "22.0.7026061"
 
@@ -14,7 +14,7 @@ android {
         minSdkVersion 23
 
         // Specifies the API level used to test the app.
-        targetSdkVersion 30
+        targetSdkVersion 33
 
         // Defines the version number of your app.
         versionCode 1
@@ -53,6 +53,7 @@ android {
             jniLibs.srcDirs = ["$BuildRootDir/RelWithDebInfo"]
         }
     }
+    namespace 'com.lastcolour.Game01'
 }
 
 dependencies {

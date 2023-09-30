@@ -1,7 +1,5 @@
 #include <cassert>
 
-#include <iostream>
-
 namespace Memory {
 
 namespace Impl {

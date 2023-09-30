@@ -5,6 +5,7 @@
 #include "Render/RenderCommon.hpp"
 #include "Platform/OpenGL.hpp"
 #include "VertTypes.hpp"
+#include "Render/ETRenderNode.hpp"
 
 class ImageBuffer;
 class RenderFramebuffer;
@@ -45,7 +46,8 @@ void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO);
 
 std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& tex, ETextureDataType texType);
 
-Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches);
+Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, float patchSize,
+    ENinePatchSizeType patchSizeType);
 
 int CreateNinePatchVertData(const Vec2& patchPt, const Vec2& patchUV, Vert_Vec3_Tex* out);
 

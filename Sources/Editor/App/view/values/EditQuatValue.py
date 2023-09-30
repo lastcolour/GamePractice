@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
+from PyQt6.QtCore import Qt
 
 from view.values.EditWidgets import EditFloatSpinBox
 

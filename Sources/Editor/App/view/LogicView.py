@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QStyle, QFrame, QHeaderView
-from PyQt5.Qt import QSizePolicy
-from PyQt5.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QStyle, QFrame, QHeaderView
+from PyQt6.QtCore import Qt
 
 from native.ValueNative import ValueType
 from utils.ViewUtils import GetMinimunWidgetTreeHeight
@@ -38,17 +37,17 @@ class LogicViewTopBar(QWidget):
         self._entityLogic = None
 
         self._frame = QFrame()
-        self._frame.setFrameStyle(QFrame.StyledPanel)
-        self._frame.setFrameShadow(QFrame.Plain)
+        self._frame.setFrameStyle(QFrame.Shape.NoFrame)
+        self._frame.setFrameShadow(QFrame.Shadow.Plain)
 
         self._frameLayout = QHBoxLayout()
         self._frameLayout.setSpacing(1)
         self._frameLayout.setContentsMargins(0, 0, 0, 0)
-        self._frame.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._frame.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self._frame.customContextMenuRequested.connect(self._signal_frame_contexMenuRequested)
 
         self._expandLogicBt = QPushButton()
-        self._expandLogicBt.setIcon(self.style().standardIcon(QStyle.SP_TitleBarShadeButton))
+        self._expandLogicBt.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_TitleBarShadeButton))
         self._expandLogicBt.setFlat(True)
         self._frameLayout.addWidget(self._expandLogicBt)
 
@@ -58,7 +57,7 @@ class LogicViewTopBar(QWidget):
         self._frameLayout.addStretch()
 
         self._removeLogicBt = QPushButton()
-        self._removeLogicBt.setIcon(self.style().standardIcon(QStyle.SP_TitleBarCloseButton))
+        self._removeLogicBt.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_TitleBarCloseButton))
         self._removeLogicBt.setFlat(True)
         self._removeLogicBt.clicked.connect(self._signal_removeBt_clicked)
         self._frameLayout.addWidget(self._removeLogicBt)
@@ -97,8 +96,8 @@ class LogicView(QWidget):
         self._entityLogic = entityLogic
 
         self._frame = QFrame()
-        self._frame.setFrameStyle(QFrame.WinPanel)
-        self._frame.setFrameShadow(QFrame.Raised)
+        self._frame.setFrameStyle(QFrame.Shape.WinPanel)
+        self._frame.setFrameShadow(QFrame.Shadow.Raised)
         self._frame.setLineWidth(3)
 
         self._frameLayout = QVBoxLayout()
@@ -109,13 +108,13 @@ class LogicView(QWidget):
         self._frameLayout.addWidget(self._logicTopBar)
 
         self._tree = QTreeWidget()
-        self._tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self._tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         self._tree.setColumnCount(2)
         self._tree.setHeaderHidden(True)
-        self._tree.setSelectionMode(QTreeWidget.NoSelection)
+        self._tree.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
         self._tree.verticalScrollBar().setEnabled(False)
-        self._tree.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._tree.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._tree.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self._tree.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self._tree.itemCollapsed.connect(self._signal_tree_itemCollapseExpanded)
         self._tree.itemExpanded.connect(self._signal_tree_itemCollapseExpanded)
         self._tree.setIndentation(12)

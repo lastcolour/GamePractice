@@ -31,8 +31,8 @@ namespace Memory {
 
 MainMemoryAllocator::MainMemoryAllocator() {
     assert(sizeof(FIXED_POOL_SIZES) / sizeof(size_t) == MAX_FIXED_BLOCK_SIZE && "Invalid amount of pool sizes");
-    for(int i = 0; i < MAX_FIXED_BLOCK_SIZE; ++i) {
-        fixedSizePools[i].setPoolId(static_cast<BaseUintT>(i));
+    for(Memory::BaseUintT i = 0; i < MAX_FIXED_BLOCK_SIZE; ++i) {
+        fixedSizePools[i].setPoolId(i);
         fixedSizePools[i].setObjectSize(FIXED_POOL_SIZES[i]);
         fixedSizePools[i].setUseCentralAllocator(false);
     }
@@ -95,7 +95,7 @@ void MainMemoryAllocator::deallocate(void* ptr) {
         }
         memUnlock();
     } else {
-        assert(0 <= poolId && poolId < MAX_FIXED_BLOCK_SIZE && "Invalid pool id");
+        assert(poolId < MAX_FIXED_BLOCK_SIZE && "Invalid pool id");
         fixedSizePools[poolId].deallocate(ptr);
     }
 }
@@ -145,7 +145,7 @@ void MainMemoryAllocator::deallocateUnsafe(void* ptr) {
             }
         }
     } else {
-        assert(0 <= poolId && poolId < MAX_FIXED_BLOCK_SIZE && "Invalid pool id");
+        assert(poolId < MAX_FIXED_BLOCK_SIZE && "Invalid pool id");
         fixedSizePools[poolId].deallocateUnsafe(ptr);
     }
 }

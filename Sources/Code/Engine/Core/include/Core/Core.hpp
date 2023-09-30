@@ -8,6 +8,8 @@
 #include <unordered_set>
 #include <algorithm>
 #include <string>
+#include <cstring>
+#include <cfloat>
 #include <type_traits>
 #include <functional>
 #include <mutex>

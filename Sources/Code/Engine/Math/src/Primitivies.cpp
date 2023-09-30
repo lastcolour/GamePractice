@@ -4,7 +4,7 @@
 
 namespace Math {
 
-const float PI = 3.14159265f;
+const float PI = 3.141592653589793f;
 
 bool IsEqual(float a, float b, float eps) {
     return abs(a - b) <= eps;

@@ -113,9 +113,7 @@ Vec2 CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2D& parentBo
     return center;
 }
 
-void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2& pos) {
-    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, true);
-
+void Set2DPos(EntityId elemId, const Vec2& pos) {
     Transform tm;
     ET_SendEventReturn(tm, elemId, &ETEntity::ET_getTransform);
 
@@ -123,14 +121,6 @@ void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2& pos) {
     tm.pt.y = pos.y;
 
     ET_SendEvent(elemId, &ETEntity::ET_setTransform, tm);
-
-    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
-}
-
-void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm) {
-    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, true);
-    ET_SendEvent(elemId, &ETEntity::ET_setTransform, tm);
-    ET_SendEvent(elemId, &ETUIElement::ET_setIgnoreTransform, false);
 }
 
 float GetValueOnGrind(float val) {

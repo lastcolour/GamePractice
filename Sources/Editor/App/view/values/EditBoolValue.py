@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QCheckBox, QWidget, QHBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QCheckBox, QWidget, QHBoxLayout
+from PyQt6.QtCore import Qt
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
@@ -23,7 +23,7 @@ class EditBoolValue(QWidget):
         self._pull()
 
     def _signal_checkBox_stateChanged(self, state):
-        if state == Qt.Checked:
+        if state == Qt.CheckState.Checked:
             self._push(True)
         else:
             self._push(False)

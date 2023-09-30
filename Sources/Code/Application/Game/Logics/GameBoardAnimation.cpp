@@ -38,9 +38,7 @@ void GameBoardAnimation::ET_onGameTick(float dt) {
     Transform tm = getLocalTransform();
 
     tm.scale = Vec3(currScale);
-    ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, true);
     setLocalTransform(tm);
-    ET_SendEvent(getEntityId(), &ETUIElement::ET_setIgnoreTransform, false);
 }
 
 void GameBoardAnimation::ET_zoomOut() {

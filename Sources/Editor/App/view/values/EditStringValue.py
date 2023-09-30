@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QLineEdit, QWidget, QHBoxLayout
+from PyQt6.QtCore import Qt
 
 from msg.Messages import MsgOnLogicDataEdited
 from msg.MessageSystem import SendMessage
@@ -14,7 +14,7 @@ class EditStringValue(QWidget):
 
         self._strLineEdit = QLineEdit()
         self._strLineEdit.textEdited.connect(self._signal_lineEdit_textEdited)
-        self._strLineEdit.setAlignment(Qt.AlignRight)
+        self._strLineEdit.setAlignment(Qt.AlignmentFlag.AlignRight)
         self._rootLayout.addWidget(self._strLineEdit)
 
         self._rootLayout.setContentsMargins(1, 1, 1, 1)

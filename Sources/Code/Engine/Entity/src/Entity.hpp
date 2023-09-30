@@ -32,7 +32,6 @@ public:
     bool setLogicValuePolymorphType(EntityLogicId logicId, Reflect::ClassValueId valueId, const char* typeName);
     EntityId getEntityId() const { return entityId; }
     void setName(const char* newName);
-    void* addLogicByTypeId(Core::TypeId logicTypeId);
     void purgeAllRelationships();
     void setLoaded();
 
@@ -72,6 +71,7 @@ private:
 
 private:
 
+    void* addLogicByTypeId(Core::TypeId logicTypeId);
     Reflect::ClassInstance* findLogic(EntityLogicId logicId);
     EntityLogicId createNewLogicId() const;
     EntityChildId createNewChildId() const;

@@ -28,7 +28,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 83.52001953125,
+                "y": 75.36376953125,
                 "z": 0.0
               },
               "scale": {
@@ -104,7 +104,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28.799999237060547,
+                          "fontSize": 25.987499237060547,
                           "text": "Resume"
                         }
                       }
@@ -155,12 +155,15 @@
                       }
                     },
                     "size": {
-                      "x": 403.20001220703125,
-                      "y": 72.0
+                      "x": 363.8249816894531,
+                      "y": 64.96875
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 2.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 },
                 {
@@ -230,7 +233,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": -83.52001953125,
+                "y": -75.36376953125,
                 "z": 0.0
               },
               "scale": {
@@ -306,7 +309,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28.799999237060547,
+                          "fontSize": 25.987499237060547,
                           "text": "Exit"
                         }
                       }
@@ -417,12 +420,15 @@
                       }
                     },
                     "size": {
-                      "x": 403.20001220703125,
-                      "y": 72.0
+                      "x": 363.8249816894531,
+                      "y": 64.96875
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 2.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]
@@ -508,7 +514,7 @@
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 28.799999237060547,
+                          "fontSize": 25.987499237060547,
                           "text": "Restart"
                         }
                       }
@@ -619,12 +625,15 @@
                       }
                     },
                     "size": {
-                      "x": 403.20001220703125,
-                      "y": 72.0
+                      "x": 363.8249816894531,
+                      "y": 64.96875
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 2.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]
@@ -693,12 +702,15 @@
                 }
               },
               "size": {
-                "x": 432.0,
-                "y": 316.79998779296875
+                "x": 389.8125,
+                "y": 285.8625183105469
               },
-              "horizontal": 0.30000001192092896,
-              "vertical": 0.30000001192092896,
-              "patchScale": 0.699999988079071
+              "patchesTextureCoords": {
+                "x": 0.30000001192092896,
+                "y": 0.30000001192092896
+              },
+              "patchSize": 0.20000000298023224,
+              "patchSizeType": "SmallestSide"
             }
           }
         ]
@@ -711,7 +723,7 @@
       "id": 1,
       "data": {
         "hidden": false,
-        "enabled": true,
+        "enabled": false,
         "style": {
           "width": 1.0,
           "widthInv": "Relative",
@@ -752,7 +764,7 @@
       "type": "RenderBlurLogic",
       "id": 8,
       "data": {
-        "isVisible": true,
+        "isVisible": false,
         "alpha": 1.0,
         "zIndex": 0,
         "downScaleFactor": 3,
@@ -788,7 +800,7 @@
           },
           {
             "lerpMode": "Linear",
-            "duration": 0.30000001192092896,
+            "duration": 0.3,
             "offset": {
               "x": 0.0,
               "y": 0.0
@@ -818,7 +830,7 @@
         "frames": [
           {
             "lerpMode": "Linear",
-            "duration": 0.20000000298023224,
+            "duration": 0.2,
             "offset": {
               "x": 0.0,
               "y": 20.0
@@ -838,12 +850,12 @@
       "data": {
         "group": "Music",
         "eqaulizer": {
-          "volume": 0.699999988079071,
-          "low": -0.800000011920929,
-          "lowMid": -0.699999988079071,
-          "mid": -0.800000011920929,
-          "highMid": 0.800000011920929,
-          "high": 0.800000011920929
+          "volume": 0.7,
+          "low": -0.8,
+          "lowMid": -0.7,
+          "mid": -0.8,
+          "highMid": 0.8,
+          "high": 0.8
         },
         "enabled": false
       }
@@ -852,12 +864,12 @@
       "type": "RenderSimple",
       "id": 13,
       "data": {
-        "isVisible": true,
-        "alpha": 0.20000000298023224,
+        "isVisible": false,
+        "alpha": 0.2,
         "zIndex": 0,
         "size": {
-          "x": 600.0,
-          "y": 1024.0
+          "x": 1190.0,
+          "y": 924.0
         },
         "color": {
           "r": 0,

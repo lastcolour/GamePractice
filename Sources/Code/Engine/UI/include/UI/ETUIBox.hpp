@@ -20,7 +20,6 @@ struct ETUIElement {
     virtual void ET_enable() = 0;
     virtual void ET_disable() = 0;
     virtual bool ET_isEnabled() const = 0;
-    virtual void ET_setIgnoreTransform(bool flag) = 0;
     virtual void ET_setParentHidden(bool flag) = 0;
     virtual void ET_setParentDisabled(bool flag) = 0;
     virtual void ET_setParentAlpha(float newParentAlpha) = 0;
@@ -49,7 +48,6 @@ struct ETUIElementEvents {
     virtual void ET_onAlphaChanged(float newAlpha) = 0;
     virtual void ET_onHidden(bool flag) = 0;
     virtual void ET_onDisabled(bool flag) = 0;
-    virtual void ET_onIngoreTransform(bool flag) = 0;
 };
 
 struct ETUIBox {

@@ -26,7 +26,6 @@ void UIBox::init() {
     ETNode<ETUIViewPortEvents>::connect(getEntityId());
 
     boxRenderId = getEntityId();
-    calculateBox();
 }
 
 void UIBox::deinit() {
@@ -95,13 +94,8 @@ void UIBox::onLoaded() {
 
     ET_setRenderId(boxRenderId);
 
+    calculateBox();
     updateSelfLayout();
-}
-
-void UIBox::onTransformChanged(const Transform& newTm) {
-    if(isIgnoringTransform) {
-        calculateBox();
-    }
 }
 
 void UIBox::ET_setRenderId(EntityId newRenderId) {

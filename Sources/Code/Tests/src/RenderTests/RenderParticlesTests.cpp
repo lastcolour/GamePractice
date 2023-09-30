@@ -99,7 +99,7 @@ TEST_F(RenderParticlesTests, CheckParticlesEmitterPlaying) {
 
     {
         auto& emitters = pool->getEmitters();
-        ASSERT_EQ(emitters.size(), 1);
+        ASSERT_EQ(emitters.size(), 1u);
 
         auto& particles = emitters[0];
 

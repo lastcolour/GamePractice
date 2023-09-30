@@ -3,7 +3,7 @@ from utils.Log import Log
 from dialog.SaveEntityChanges import SaveEntityChanges
 from dialog.OverrideFile import OverrideFile
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
 
 from msg.Messages import MsgOpenEntityForEdit, MsgSetEditEntity, \
     MsgOnAddLogicBtPressed, MsgAddLogicToEntity

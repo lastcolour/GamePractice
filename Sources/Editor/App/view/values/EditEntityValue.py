@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QPushButton
+from PyQt6.QtCore import Qt
 
 from dialog.UniversalSelectDialog import ExecSelectFromChildrenEntities
 
@@ -31,7 +31,7 @@ class EditEntityValue(QWidget):
         self._rootLayout = QHBoxLayout()
 
         self._lineEdit = QLineEdit()
-        self._lineEdit.setAlignment(Qt.AlignRight)
+        self._lineEdit.setAlignment(Qt.AlignmentFlag.AlignRight)
         self._lineEdit.setReadOnly(True)
         self._rootLayout.addWidget(self._lineEdit)
 

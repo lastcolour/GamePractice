@@ -87,13 +87,13 @@ struct TestETNode : public ETNode<TestETInterface> {
         for(size_t i = 0; i < count; ++i) {
             auto entId = etSystem.createNewEntityId();
             std::unique_ptr<TestETNode> node(new TestETNode);
-            etSystem.connectNode(*node, entId);
+            etSystem.connectNode(ET::GetETId<TestETInterface>(), node.get(), entId);
             objects.push_back(std::move(node));
         }
     }
 
     void ET_DisconnectObject(TestETNode& etNode, ETSystem& etSystem) override {
-        etSystem.disconnectNode(etNode);
+        etSystem.disconnectNode(ET::GetETId<TestETInterface>(), &etNode);
     }
 
     void ET_IncreaseCounter(int num) override {
@@ -122,6 +122,72 @@ TEST_F(ETSystemTests, CheckEnv) {
     ASSERT_TRUE(env->GetETSystem());
 }
 
+TEST_F(ETSystemTests, CheckETIterator) {
+    Core::GlobalEnvironment env;
+    auto etSystem = env.GetETSystem();
+
+    std::vector<TestETNode> nodes{4};
+    EntityId entIds[4];
+    for(int i = 0; i < 4; ++i) {
+        entIds[i] = etSystem->createNewEntityId();
+        etSystem->connectNode(ET::GetETId<TestETInterface>(), &nodes[i], entIds[i]);
+    }
+
+    for(int i = 0; i < 4; ++i) {
+        int count = 0;
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>(), entIds[i]);
+        while(it) {
+            ++count;
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+
+        EXPECT_EQ(count, 1);
+    }
+
+    {
+        int count = 0;
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>());
+        while(it) {
+            ++count;
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+
+        EXPECT_EQ(count, 4);
+    }
+
+    etSystem->disconnectNode(ET::GetETId<TestETInterface>(), &nodes[1]);
+
+    {
+        int count = 0;
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>());
+        while(it) {
+            ++count;
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+
+        EXPECT_EQ(count, 3);
+    }
+
+    etSystem->disconnectNode(ET::GetETId<TestETInterface>(), &nodes[3]);
+
+    {
+        int count = 0;
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>());
+        while(it) {
+            ++count;
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+
+        EXPECT_EQ(count, 2);
+    }
+
+    nodes.clear();
+}
+
 TEST_F(ETSystemTests, CheckCretaeEntityId) {
     std::unique_ptr<ETSystem> etSystem(new ETSystem);
 
@@ -139,7 +205,7 @@ TEST_F(ETSystemTests, CheckConnectToInvalidAddressId) {
     auto etSystem = env.GetETSystem();
 
     TestETNode node;
-    etSystem->connectNode(node, InvalidEntityId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, InvalidEntityId);
 
     ASSERT_FALSE(ET_IsExistNode<TestETInterface>(InvalidEntityId));
     ASSERT_FALSE(ET_IsExistNode<TestETInterface>());
@@ -151,8 +217,8 @@ TEST_F(ETSystemTests, CheckDobuleConnect) {
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
-    etSystem->connectNode(node, entId);
-    etSystem->connectNode(node, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
 
     auto etNodes = ET_GetAll<TestETInterface>();
     ASSERT_EQ(etNodes.size(), 1u);
@@ -164,12 +230,12 @@ TEST_F(ETSystemTests, CheckDoubleDisconnect) {
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
-    etSystem->connectNode(node, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
 
     ASSERT_TRUE(ET_IsExistNode<TestETInterface>(entId));
 
-    etSystem->disconnectNode(node);
-    etSystem->disconnectNode(node);
+    etSystem->disconnectNode(ET::GetETId<TestETInterface>(), &node);
+    etSystem->disconnectNode(ET::GetETId<TestETInterface>(), &node);
 
     ASSERT_FALSE(ET_IsExistNode<TestETInterface>(entId));
 }
@@ -180,11 +246,11 @@ TEST_F(ETSystemTests, CheckGetAll) {
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
-    etSystem->connectNode(node_1, entId_1);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_1, entId_1);
 
     auto entId_2 = etSystem->createNewEntityId();
     TestETNode node_2;
-    etSystem->connectNode(node_2, entId_2);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_2, entId_2);
 
     auto etNodes = ET_GetAll<TestETInterface>();
     ASSERT_EQ(etNodes.size(), 2u);
@@ -202,10 +268,20 @@ TEST_F(ETSystemTests, CheckSendEvent) {
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
-    etSystem->connectNode(node, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
 
     TestObject inObj;
-    etSystem->sendEvent(entId, &TestETInterface::ET_DoSomething, inObj);
+
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>(), entId);
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_DoSomething(inObj);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
+
 
     EXPECT_EQ(inObj.doSomethingCount, 1u);
     EXPECT_EQ(inObj.voidConstructCount, 1u);
@@ -221,11 +297,20 @@ TEST_F(ETSystemTests, CheckSendEventAfterDisconnect) {
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
-    etSystem->connectNode(node, entId);
-    etSystem->disconnectNode(node);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
+    etSystem->disconnectNode(ET::GetETId<TestETInterface>(), &node);
 
     TestObject inObj;
-    etSystem->sendEvent(entId, &TestETInterface::ET_DoSomething, inObj);
+
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>(), entId);
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_DoSomething(inObj);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     EXPECT_EQ(inObj.doSomethingCount, 0u);
     EXPECT_EQ(inObj.voidConstructCount, 1u);
@@ -241,14 +326,23 @@ TEST_F(ETSystemTests, CheckSendEventAll) {
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
-    etSystem->connectNode(node_1, entId_1);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_1, entId_1);
 
     auto entId_2 = etSystem->createNewEntityId();
     TestETNode node_2;
-    etSystem->connectNode(node_2, entId_2);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_2, entId_2);
 
     TestObject inObj;
-    etSystem->sendEvent(&TestETInterface::ET_DoSomething, inObj);
+
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>());
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_DoSomething(inObj);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     EXPECT_EQ(inObj.doSomethingCount, 2u);
     EXPECT_EQ(inObj.voidConstructCount, 1u);
@@ -264,11 +358,20 @@ TEST_F(ETSystemTests, CheckSendEventReturn) {
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node;
-    etSystem->connectNode(node, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
 
     TestObject inObj;
     TestObject outObj;
-    etSystem->sendEventReturn(outObj, entId, &TestETInterface::ET_DoSomething, inObj);
+
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>(), entId);
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            outObj = obj->ET_DoSomething(inObj);
+            break;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     EXPECT_EQ(outObj.doSomethingCount, 1u);
     EXPECT_EQ(outObj.voidConstructCount, 1u);
@@ -286,14 +389,31 @@ TEST_F(ETSystemTests, CheckRecursiveETNodeCreate) {
     auto entId = etSystem->createNewEntityId();
 
     TestETNode node;
-    etSystem->connectNode(node, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, entId);
 
     std::vector<std::unique_ptr<TestETNode>> testNodes;
-    etSystem->sendEvent(&TestETInterface::ET_CreateObject, 10, testNodes, *etSystem);
+
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>());
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_CreateObject(10, testNodes, *etSystem);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     ASSERT_EQ(testNodes.size(), 10u);
 
-    etSystem->sendEvent(&TestETInterface::ET_CreateObject, 10, testNodes, *etSystem);
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>());
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_CreateObject(10, testNodes, *etSystem);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     ASSERT_EQ(testNodes.size(), 120u);
 }
@@ -304,16 +424,25 @@ TEST_F(ETSystemTests, CheckMultipleETNodesOnSameAdrress) {
 
     auto entId = etSystem->createNewEntityId();
     TestETNode node_1;
-    etSystem->connectNode(node_1, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_1, entId);
 
     TestETNode node_2;
-    etSystem->connectNode(node_2, entId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_2, entId);
 
     auto etNodes = ET_GetAll<TestETInterface>();
     ASSERT_EQ(etNodes.size(), 2u);
 
     TestObject inObj;
-    etSystem->sendEvent(entId, &TestETInterface::ET_DoSomething, inObj);
+
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>(), entId);
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_DoSomething(inObj);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     ASSERT_EQ(inObj.doSomethingCount, 2u);
 }
@@ -324,13 +453,21 @@ TEST_F(ETSystemTests, CheckActiveRounteDisconnect) {
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
-    etSystem->connectNode(node_1, entId_1);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_1, entId_1);
 
     auto entId_2 = etSystem->createNewEntityId();
     TestETNode node_2;
-    etSystem->connectNode(node_2, entId_2);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_2, entId_2);
 
-    etSystem->sendEvent(entId_1, &TestETInterface::ET_DisconnectObject, node_2, *etSystem);
+    {
+        auto it = etSystem->createIterator(ET::GetETId<TestETInterface>(), entId_1);
+        while(it) {
+            auto obj = static_cast<ETNode<TestETInterface>*>(*it);
+            obj->ET_DisconnectObject(node_2, *etSystem);
+            ++it;
+        }
+        etSystem->destroyIterator(it);
+    }
 
     auto activeConn = etSystem->getAll<TestETInterface>();
     ASSERT_EQ(activeConn.size(), 1u);
@@ -342,13 +479,19 @@ TEST_F(ETSystemTests, CheckQueueEvents) {
 
     auto entId_1 = etSystem->createNewEntityId();
     TestETNode node_1;
-    etSystem->connectNode(node_1, entId_1);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_1, entId_1);
 
     auto entId_2 = etSystem->createNewEntityId();
     TestETNode node_2;
-    etSystem->connectNode(node_2, entId_2);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node_2, entId_2);
 
-    etSystem->queueEvent(entId_1, &TestETInterface::ET_IncreaseCounter, 1);
+    {
+        using ObjectT = ETNode<TestETInterface>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(&TestETInterface::ET_IncreaseCounter), int>;
+
+        auto event = etSystem->createDefferedEvent<CallT>(entId_1, &TestETInterface::ET_IncreaseCounter, 1);
+        etSystem->queueEvent(ET::GetETId<TestETInterface>(), event);
+    }
 
     EXPECT_EQ(node_1.counter, 0);
 
@@ -356,7 +499,13 @@ TEST_F(ETSystemTests, CheckQueueEvents) {
 
     EXPECT_EQ(node_1.counter, 1);
 
-    etSystem->queueEvent(&TestETInterface::ET_IncreaseCounter, 1);
+    {
+        using ObjectT = ETNode<TestETInterface>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(&TestETInterface::ET_IncreaseCounter), int>;
+
+        auto event = etSystem->createDefferedEvent<CallT>(InvalidEntityId, &TestETInterface::ET_IncreaseCounter, 1);
+        etSystem->queueEvent(ET::GetETId<TestETInterface>(), event);
+    }
 
     EXPECT_EQ(node_2.counter, 0);
 
@@ -372,12 +521,19 @@ TEST_F(ETSystemTests, CheckQueueEventWithNonCopybaleObject) {
 
     auto addressId = etSystem->createNewEntityId();
     TestETNode node;
-    etSystem->connectNode(node, addressId);
+    etSystem->connectNode(ET::GetETId<TestETInterface>(), &node, addressId);
 
     EXPECT_FALSE(node.object.get());
 
     std::unique_ptr<TestObject> testObject(new TestObject);
-    etSystem->queueEvent(&TestETInterface::ET_acquireObject, std::move(testObject));
+
+    {
+        using ObjectT = ETNode<TestETInterface>;
+        using CallT = ET::ETDefferedCall<ObjectT, decltype(&TestETInterface::ET_acquireObject), std::unique_ptr<TestObject>>;
+
+        auto event = etSystem->createDefferedEvent<CallT>(InvalidEntityId, &TestETInterface::ET_acquireObject, std::move(testObject));
+        etSystem->queueEvent(ET::GetETId<TestETInterface>(), event);
+    }
 
     ET_PollAllEvents<TestETInterface>();
 

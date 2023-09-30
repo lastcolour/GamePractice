@@ -7,81 +7,217 @@
 TEST_F(RenderCmdNinePatchTests, PatchCalc_NoScale) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {300.f, 400.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.3f);
-    EXPECT_FLOAT_EQ(res.y, 0.3f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.6f);
+        EXPECT_FLOAT_EQ(res.y, 0.45f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.8f);
+        EXPECT_FLOAT_EQ(res.y, 0.6f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.13333334f);
+        EXPECT_FLOAT_EQ(res.y, 0.1f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_X_Upscale) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {600.f, 400.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.15f);
-    EXPECT_FLOAT_EQ(res.y, 0.3f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.4f);
+        EXPECT_FLOAT_EQ(res.y, 0.6f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.6f);
+        EXPECT_FLOAT_EQ(res.y, 0.9f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.06666667f);
+        EXPECT_FLOAT_EQ(res.y, 0.1f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_Y_Upscale) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {300.f, 800.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.3f);
-    EXPECT_FLOAT_EQ(res.y, 0.15f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.6f);
+        EXPECT_FLOAT_EQ(res.y, 0.225f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.99980003f);
+        EXPECT_FLOAT_EQ(res.y, 0.37499249f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.13333334f);
+        EXPECT_FLOAT_EQ(res.y, 0.050000001f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_XY_Upscale) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {600.f, 800.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.15f);
-    EXPECT_FLOAT_EQ(res.y, 0.15f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.6f);
+        EXPECT_FLOAT_EQ(res.y, 0.45f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.80000001f);
+        EXPECT_FLOAT_EQ(res.y, 0.6f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.06666667f);
+        EXPECT_FLOAT_EQ(res.y, 0.050000001f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_X_Downscale) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {150.f, 400.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.4999f);
-    EXPECT_FLOAT_EQ(res.y, 0.3f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.6f);
+        EXPECT_FLOAT_EQ(res.y, 0.22500001f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.99980003f);
+        EXPECT_FLOAT_EQ(res.y, 0.37499249f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.26666668f);
+        EXPECT_FLOAT_EQ(res.y, 0.1f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_Y_Downscale) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {300.f, 200.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.3f);
-    EXPECT_FLOAT_EQ(res.y, 0.4999f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.40000004f);
+        EXPECT_FLOAT_EQ(res.y, 0.60000002f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.6f);
+        EXPECT_FLOAT_EQ(res.y, 0.90000004f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.13333334f);
+        EXPECT_FLOAT_EQ(res.y, 0.2f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_XY_Downscale_Uniform) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {150.f, 200.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.4999f);
-    EXPECT_FLOAT_EQ(res.y, 0.4999f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.99980003f);
+        EXPECT_FLOAT_EQ(res.y, 0.99980003f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.99980003f);
+        EXPECT_FLOAT_EQ(res.y, 0.99980003f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.99980003f);
+        EXPECT_FLOAT_EQ(res.y, 0.99980003f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, PatchCalc_XY_Downscale_NonUniform) {
     Vec2i imgSize = {300, 400};
     Vec2 drawSize = {100.f, 100.f};
-    Vec2 patches = {0.3f, 0.3f};
-    Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patches);
+    float patchSize = 0.3f;
 
-    EXPECT_FLOAT_EQ(res.x, 0.374925f);
-    EXPECT_FLOAT_EQ(res.y, 0.4999f);
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::SmallestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.74985003f);
+        EXPECT_FLOAT_EQ(res.y, 0.99980003f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, patchSize, ENinePatchSizeType::BiggestSidePct);
+
+        EXPECT_FLOAT_EQ(res.x, 0.74985003f);
+        EXPECT_FLOAT_EQ(res.y, 0.99980003f);
+    }
+
+    {
+        Vec2 res = RenderUtils::GetNinePatchVertexCoord(imgSize, drawSize, 20.f, ENinePatchSizeType::Pixels);
+
+        EXPECT_FLOAT_EQ(res.x, 0.74985003f);
+        EXPECT_FLOAT_EQ(res.y, 0.99980003f);
+    }
 }
 
 TEST_F(RenderCmdNinePatchTests, RenderNinePatch) {
@@ -94,10 +230,12 @@ TEST_F(RenderCmdNinePatchTests, RenderNinePatch) {
     tm.pt = Vec3(renderPort.x / 2.f, renderPort.y / 2.f, 0.f);
     entity->ET_setTransform(tm);
 
-    Vec2 drawSize = {renderPort.x / 2.f, renderPort.y / 2.f};
+    Vec2 drawSize(std::min(renderPort.x, renderPort.y) * 3 / 10);
 
     logic->ET_setSize(drawSize);
-    logic->ET_setPatches(Vec2(0.333f));
+    logic->ET_setPatchSize(drawSize.x / 3.f);
+    logic->ET_setPatchSizeType(ENinePatchSizeType::Pixels);
+    logic->ET_setPatchesTextureCoords(Vec2(0.333f));
 
     syncWithGame();
 
@@ -132,7 +270,7 @@ TEST_F(RenderCmdNinePatchTests, RenderNinePatch) {
     Vec2i center = renderPort / 2;
     Vec2i size = {static_cast<int>(drawSize.x), static_cast<int>(drawSize.y)};
 
-    int cornerSquareSize = size.y / 3;
+    int cornerSquareSize = size.x / 3;
 
     Vec2i a0 = center - size / 2;
     Vec2i a1 = Vec2i(a0.x + cornerSquareSize, a0.y);
@@ -140,19 +278,19 @@ TEST_F(RenderCmdNinePatchTests, RenderNinePatch) {
     Vec2i a3 = Vec2i(a0.x + size.x, a0.y);
 
     Vec2i b0 = Vec2i(a0.x, a0.y + cornerSquareSize);
-    Vec2i b1 = Vec2i(a1.x, a1.y + cornerSquareSize);
-    Vec2i b2 = Vec2i(a2.x, a2.y + cornerSquareSize);
-    Vec2i b3 = Vec2i(a3.x, a3.y + cornerSquareSize);
+    Vec2i b1 = Vec2i(a1.x, a0.y + cornerSquareSize);
+    Vec2i b2 = Vec2i(a2.x, a0.y + cornerSquareSize);
+    Vec2i b3 = Vec2i(a3.x, a0.y + cornerSquareSize);
 
-    Vec2i c0 = Vec2i(b0.x, b0.y + cornerSquareSize);
-    Vec2i c1 = Vec2i(b1.x, b1.y + cornerSquareSize);
-    Vec2i c2 = Vec2i(b2.x, b2.y + cornerSquareSize);
-    Vec2i c3 = Vec2i(b3.x, b3.y + cornerSquareSize);
+    Vec2i c0 = Vec2i(a0.x, a0.y + size.y - cornerSquareSize);
+    Vec2i c1 = Vec2i(a1.x, a0.y + size.y - cornerSquareSize);
+    Vec2i c2 = Vec2i(a2.x, a0.y + size.y - cornerSquareSize);
+    Vec2i c3 = Vec2i(a3.x, a0.y + size.y - cornerSquareSize);
 
-    Vec2i d0 = Vec2i(c0.x, c0.y + cornerSquareSize);
-    Vec2i d1 = Vec2i(c1.x, c1.y + cornerSquareSize);
-    Vec2i d2 = Vec2i(c2.x, c2.y + cornerSquareSize);
-    Vec2i d3 = Vec2i(c3.x, c3.y + cornerSquareSize);
+    Vec2i d0 = Vec2i(a0.x, a0.y + size.y);
+    Vec2i d1 = Vec2i(a1.x, a0.y + size.y);
+    Vec2i d2 = Vec2i(a2.x, a0.y + size.y);
+    Vec2i d3 = Vec2i(a3.x, a0.y + size.y);
 
     {
         AABB2Di box(a0, b1);
@@ -220,6 +358,6 @@ TEST_F(RenderCmdNinePatchTests, RenderNinePatch) {
         box.bot += Vec2i(1);
         box.top -= Vec2i(1);
 
-        EXPECT_EQ(0u, countNotEqualPixels(box, ColorB(255, 255, 0)));
+        EXPECT_EQ(0u, countNotEqualPixels(box, ColorB(0, 0, 255)));
     }
 }

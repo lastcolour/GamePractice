@@ -31,25 +31,30 @@ public:
     }
 
     void connect() {
-        etSystem->connectNode(static_cast<ETNode<ETObject>&>(*this), entId);
-        etSystem->connectNode(static_cast<ETNode<ETAltObject>&>(*this), entId);
+        etSystem->connectNode(ET::GetETId<ETObject>(), static_cast<ETNode<ETObject>*>(this), entId);
+        etSystem->connectNode(ET::GetETId<ETAltObject>(), static_cast<ETNode<ETAltObject>*>(this), entId);
     }
 
     void disconnect() {
-        ETNode<ETObject>::disconnect();
+        etSystem->disconnectNode(ET::GetETId<ETObject>(), static_cast<ETNode<ETObject>*>(this));
     }
 
     void ET_altTriggerConnect() override {
-        etSystem->connectNode(static_cast<ETNode<ETObject>&>(*this), entId);
+        etSystem->connectNode(ET::GetETId<ETObject>(), static_cast<ETNode<ETObject>*>(this), entId);
     }
 
     void ET_triggerDisconnect() override {
-        ETNode<ETObject>::disconnect();
+        etSystem->disconnectNode(ET::GetETId<ETObject>(), static_cast<ETNode<ETObject>*>(this));
     }
 
     void ET_triggerUpdate() override {
-        etSystem->sendEvent(entId, &ETObject::ET_update);
-
+        auto it = etSystem->createIterator(ET::GetETId<ETObject>(), entId);
+        while(it) {
+            auto obj = static_cast<ETNode<ETObject>*>(*it);
+            obj->ET_update();
+            ++it;
+        }
+        etSystem->destroyIterator(it);
     }
 
     void ET_update() override {
@@ -75,7 +80,13 @@ TEST_F(ETSystemParallelTests, CheckConnectDuringUpdate) {
 
     std::thread t1([&waitThtread, &etSystem, MAX_OBJECTS_COUNT](){
         while(waitThtread.load() != 0) {
-            etSystem.sendEvent(&ETObject::ET_triggerUpdate);
+            auto it = etSystem.createIterator(ET::GetETId<ETObject>());
+            while(it) {
+                auto obj = static_cast<ETNode<ETObject>*>(*it);
+                obj->ET_triggerUpdate();
+                ++it;
+            }
+            etSystem.destroyIterator(it);
         }
     });
 
@@ -121,7 +132,13 @@ TEST_F(ETSystemParallelTests, CheckConnectDisconnectDuringUpdate) {
 
     std::thread t1([&waitThtread, &etSystem](){
         while(waitThtread.load() != 0) {
-            etSystem.sendEvent(&ETObject::ET_triggerUpdate);
+            auto it = etSystem.createIterator(ET::GetETId<ETObject>());
+            while(it) {
+                auto obj = static_cast<ETNode<ETObject>*>(*it);
+                obj->ET_triggerUpdate();
+                ++it;
+            }
+            etSystem.destroyIterator(it);
         }
     });
 
@@ -184,14 +201,26 @@ TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
 
     std::thread t1([&runFlag, &etSystem](){
         while(runFlag.load()){
-            etSystem.sendEvent(&ETObject::ET_triggerDisconnect);
+            auto it = etSystem.createIterator(ET::GetETId<ETObject>());
+            while(it) {
+                auto obj = static_cast<ETNode<ETObject>*>(*it);
+                obj->ET_triggerDisconnect();
+                ++it;
+            }
+            etSystem.destroyIterator(it);
         }
     });
 
     std::thread t2([&runFlag, &objects, &etSystem, CONNECT_LOOPS](){
         for(int i = 0; i < CONNECT_LOOPS; ++i) {
-            for(auto& obj : objects) {
-                etSystem.sendEvent(obj->entId, &ETAltObject::ET_altTriggerConnect);
+            for(auto& etObj : objects) {
+                auto it = etSystem.createIterator(ET::GetETId<ETAltObject>(), etObj->entId);
+                while(it) {
+                    auto obj = static_cast<ETNode<ETAltObject>*>(*it);
+                    obj->ET_altTriggerConnect();
+                    ++it;
+                }
+                etSystem.destroyIterator(it);
             }
         }
         runFlag.store(false);
@@ -200,7 +229,15 @@ TEST_F(ETSystemParallelTests, CheckIndirectConnectDisconnect) {
     t1.join();
     t2.join();
 
-    etSystem.sendEvent(&ETAltObject::ET_altTriggerConnect);
+    {
+        auto it = etSystem.createIterator(ET::GetETId<ETAltObject>());
+        while(it) {
+            auto obj = static_cast<ETNode<ETAltObject>*>(*it);
+            obj->ET_altTriggerConnect();
+            ++it;
+        }
+        etSystem.destroyIterator(it);
+    }
 
     auto etObjects = etSystem.getAll<ETObject>();
     EXPECT_EQ(etObjects.size(), MAX_OBJECTS);

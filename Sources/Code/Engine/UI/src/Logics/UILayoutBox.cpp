@@ -81,28 +81,11 @@ void UILayoutBox::onAlphaChanged(float newAlpha) {
 }
 
 void UILayoutBox::ET_onLayoutChanged(const AABB2D& newCombinedBox) {
-    auto newAabb = UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
-    auto shiftPt = newAabb.getCenter() - newCombinedBox.getCenter();
-
-    std::vector<EntityId> children;
-    ET_SendEventReturn(children, getEntityId(), &ETUILayout::ET_getItems);
-    for(auto childId : children) {
-
-        Transform tm;
-        ET_SendEventReturn(tm, childId, &ETEntity::ET_getTransform);
-
-        tm.pt.x += shiftPt.x;
-        tm.pt.y += shiftPt.y;
-
-        UI::SetTMDoNotUpdateLayout(childId, tm);
-    }
-
     AABB2D prevAabb = aabb;
-    aabb = newAabb;
-    Vec2 newSize = newAabb.getSize();
+    aabb =  UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
+    Vec2 newSize = aabb.getSize();
 
     if(prevAabb.getSize() != newSize) {
-        updateHostLayout();
         ET_SendEvent(boxRenderId, &ETRenderRect::ET_setSize, newSize);
     }
     if(prevAabb.bot != aabb.bot || prevAabb.top != aabb.top) {

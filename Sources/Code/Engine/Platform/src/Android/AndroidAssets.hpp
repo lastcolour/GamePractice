@@ -16,17 +16,17 @@ public:
     void deinit() override;
 
     // ETAssets
-    Buffer ET_loadAsset(const char* assetName) override;
+    Memory::Buffer ET_loadAsset(const char* assetName) override;
     JSONNode ET_loadJSONAsset(const char* assetName) override;
-    Buffer ET_loadLocalFile(const char* fileName) override;
+    Memory::Buffer ET_loadLocalFile(const char* fileName) override;
     JSONNode ET_loadLocalJSONFile(const char* fileName) override;
-    bool ET_saveLocalFile(const char* fileName, const Buffer& buff) override;
+    bool ET_saveLocalFile(const char* fileName, const Memory::Buffer& buff) override;
     bool ET_removeLocalFile(const char* fileName) override;
     bool ET_isLocalFileExists(const char* fileName) const override;
 
 private:
 
-    Buffer loadAssetImpl(const std::string& assetName);
+    Memory::Buffer loadAssetImpl(const std::string& assetName);
 };
 
 #endif /* __ANDROID_ASSETS_HPP__ */

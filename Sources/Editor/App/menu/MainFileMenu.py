@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMenu, QAction
+from PyQt6.QtWidgets import QMenu
+from PyQt6.QtGui import QAction, QShortcut, QKeySequence
 
 from utils.Managers import GetEventManager
 
@@ -8,6 +9,7 @@ class MainFileMenu(QMenu):
 
         self._saveChangesAct = QAction("Save Changes")
         self._saveChangesAct.triggered.connect(self._onSaveChanges)
+        self._saveChangesAct.setShortcut(QKeySequence("Ctrl+S"))
 
         self._closeEntityAct = QAction("Close Entity")
         self._closeEntityAct.triggered.connect(self._onCloseEntity)

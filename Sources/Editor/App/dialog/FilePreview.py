@@ -1,6 +1,6 @@
-from PyQt5 import QtCore
-from PyQt5.QtGui import QPalette, QPixmap
-from PyQt5.QtWidgets import QSizePolicy, QWidget, QVBoxLayout, QLabel, QScrollArea
+from PyQt6 import QtCore
+from PyQt6.QtGui import QPalette, QPixmap
+from PyQt6.QtWidgets import QSizePolicy, QWidget, QVBoxLayout, QLabel, QScrollArea
 
 from model.AssetsModel import FileNodeType, FileNode
 from utils.Log import Log
@@ -16,7 +16,7 @@ def _convertSize(size):
         return "{0:.1f} MB".format(size / (1024 ** 2))
 
 def _scalePixmap(pixmap, w, h):
-    return pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio)
+    return pixmap.scaled(w, h, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
 
 class FilePreview(QWidget):
     def __init__(self):
@@ -27,13 +27,13 @@ class FilePreview(QWidget):
         self._rootLayout = QVBoxLayout()
 
         self._previewLabel = QLabel()
-        self._previewLabel.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self._previewLabel.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
         self._previewLabel.setScaledContents(True)
 
         self._scrollArea = QScrollArea()
-        self._scrollArea.setBackgroundRole(QPalette.Dark)
+        self._scrollArea.setBackgroundRole(QPalette.ColorRole.Dark)
         self._scrollArea.setVisible(True)
-        self._scrollArea.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self._scrollArea.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self._scrollArea.setWidget(self._previewLabel)
 
         self._rootLayout.addWidget(self._scrollArea)

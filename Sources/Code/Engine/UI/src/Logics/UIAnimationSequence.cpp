@@ -130,14 +130,14 @@ void UIAnimationSequence::init() {
     }
 
     if(startDelay < 0.f) {
-        LogWarning("[UIAnimationSequence::init] Animation sequence has negative start delay: %.2f",
+        LogWarning("[UIAnimationSequence::init] Animation sequence has negative start delay: %.2f (Entity: '%s')",
             startDelay, getEntityName());
         startDelay = 0.f;
     }
 
     for(auto& frame : frames) {
         if(frame.duration < 0.f) {
-            LogWarning("[UIAnimationSequence::init] One of the frames has negative duration: %.2f",
+            LogWarning("[UIAnimationSequence::init] One of the frames has negative duration: %.2f (Entity: '%s')",
                 frame.duration, getEntityName());
             frame.duration = 0.f;
         }
@@ -322,6 +322,9 @@ void UIAnimationSequence::ET_playAnimation(EntityId animTriggerId) {
         auto subAnim = UI::GetAnimation(seqType, subAnimId);
         if(subAnim) {
             subAnim->ET_playAnimation(InvalidEntityId);
+        } else {
+            LogError("[UIAnimationSequence::ET_playAnimation] Could not find a sub-anim on entity: '%s' (Entity: '%s')",
+                EntityUtils::GetEntityName(subAnimId), getEntityName());
         }
     }
 

@@ -15,11 +15,11 @@ TaskRunInfo::~TaskRunInfo() {
 }
 
 float GetRunTimeBetween(const Core::CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
-    return timing[i].startT.getMiliSecElapsedFrom(timing[i - 1].startT);
+    return timing[i].startT.getMsDeltaWith(timing[i - 1].startT);
 }
 
 float GetRunDurationAt(const Core::CycleArray<TaskRunInfo::StartEndTime>& timing, size_t i) {
-    return timing[i].endT.getMiliSecElapsedFrom(timing[i].startT);
+    return timing[i].endT.getMsDeltaWith(timing[i].startT);
 }
 
 AvarageRunInfo GetAvgRunInfo(const TaskRunInfo& runInfo) {

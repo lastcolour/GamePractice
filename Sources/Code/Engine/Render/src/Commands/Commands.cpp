@@ -228,10 +228,16 @@ void DrawNinePatchCmd::QueueSizeUpdate(DrawCmd& drawCmd, const Vec2& prevSize, c
     DrawNinePatchCmd::QueueScaleUpdate(drawCmd, scaleChange);
 }
 
-void DrawNinePatchCmd::QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatches) {
-    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, patches=newPatches](BaseDrawCommandExectuor* ex){
+void DrawNinePatchCmd::QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatchesTextureCoords, float newPatchSize,
+    ENinePatchSizeType newPatchesSizeType) {
+
+    ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, patchesTextureCoords=newPatchesTextureCoords,
+        patchSize=newPatchSize, patchSizeType=newPatchesSizeType]
+        (BaseDrawCommandExectuor* ex){
         auto ninePatchesCmd = static_cast<DrawNinePatchCmd*>(cmd);
-        ninePatchesCmd->ninePatches = patches;
+        ninePatchesCmd->patchesTextureCoords = patchesTextureCoords;
+        ninePatchesCmd->patchSize = patchSize;
+        ninePatchesCmd->patchSizeType = patchSizeType;
         ninePatchesCmd->updateVertCoords();
 
         if(DrawTexturedQuadCmd::IsVisible(*ninePatchesCmd)) {
@@ -261,7 +267,7 @@ void DrawNinePatchCmd::updateVertCoords() {
 
     const Vec3 scale = Math::GetScale3D(modelMat);
     const Vec2 drawSize{scale.x * 2.f, scale.y * 2.f};
-    vertCoord = RenderUtils::GetNinePatchVertexCoord(texObj->getSize(), drawSize, ninePatches);
+    vertCoord = RenderUtils::GetNinePatchVertexCoord(texObj->getSize(), drawSize, patchSize, patchSizeType);
 }
 
 void DrawTexturedQuadCmd::QueueSetTexGradient(DrawCmd& drawCmd, const ColorB& startCol, const ColorB& endCol, bool isVertical) {

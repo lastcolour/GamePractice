@@ -60,13 +60,13 @@ public:
     }
 
     T& operator[](size_t idx) {
-        assert(idx >= 0 && idx < count  && "Invalid elem access");
+        assert(idx < count  && "Invalid elem access");
         auto i = (pos + idx) % count;
         return data[i];
     }
 
     const T& operator[](size_t idx) const {
-        assert(idx >= 0 && idx < count  && "Invalid elem access");
+        assert(idx < count  && "Invalid elem access");
         auto i = (pos + idx) % count;
         return data[i];
     }

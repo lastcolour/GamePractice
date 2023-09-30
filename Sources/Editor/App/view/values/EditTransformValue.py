@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QTreeWidget, QVBoxLayout, QTreeWidgetItem
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QLabel, QTreeWidget, QVBoxLayout, QTreeWidgetItem
+from PyQt6.QtCore import Qt
 
 from .EditVec3Value import EditVec3Value
 from .EditQuatValue import EditQuatValue

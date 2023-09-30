@@ -1,10 +1,9 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout
-from PyQt5 import QtCore
+from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout
+from PyQt6 import QtCore
 
 from utils.Log import Log
 from utils.AppConfig import AppConfig
 from utils.Managers import CreateManagers
-from utils.ScreenScale import SetupScreenScale
 
 from view.EntityFileView import EntityFileView
 from view.EntityLogicsView import EntityLogicsView
@@ -58,16 +57,16 @@ class EditorView(QMainWindow):
 
     def _openEntityTreeView(self):
         self._entityTreeView = EntityTreeView()
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityTreeView, "Entity Tree"))
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, WrapMainDockWidget(self._entityTreeView, "Entity Tree"))
 
     def _openFileTreeView(self):
         self._entityFileView = EntityFileView()
         self._entityFileView.setFileTreeModel(self._assetsModel.getEntitiesTree())
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, WrapMainDockWidget(self._entityFileView, "Assets Explorer"))
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, WrapMainDockWidget(self._entityFileView, "Assets Explorer"))
 
     def _openEntityLogicsView(self):
         self._entityLogicsView = EntityLogicsView()
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, WrapMainDockWidget(self._entityLogicsView, "Entity Logics"))
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, WrapMainDockWidget(self._entityLogicsView, "Entity Logics"))
 
     def __del__(self):
         self._deinit()
@@ -97,12 +96,11 @@ class EditorView(QMainWindow):
             self._editorNative.deinit()
 
 def main():
-    SetupScreenScale()
-
     app = QApplication([])
+    app.setStyle("windows")
     editor = EditorView()
     editor.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()

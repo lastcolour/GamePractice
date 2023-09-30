@@ -36,7 +36,9 @@ void UIView::init() {
     UIBox::init();
 
     ETNode<ETUIView>::connect(getEntityId());
+}
 
+void UIView::onLoaded() {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
     ET_onViewPortChanged(viewPort);

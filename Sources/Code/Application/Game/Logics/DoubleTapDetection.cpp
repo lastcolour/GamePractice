@@ -32,7 +32,7 @@ void DoubleTapDetection::onTouchEvent(EntityId targetId, const TouchEvent& event
             if(targetId != prevTap.targetId) {
                 reset();
             }
-            if(event.eventT.getSecElapsedFrom(prevTap.touch.eventT) > TAP_DELTA) {
+            if(event.eventT.getSecDeltaWith(prevTap.touch.eventT) > TAP_DELTA) {
                 reset();
             }
             prevTap = {event, targetId};
@@ -51,7 +51,7 @@ void DoubleTapDetection::onTouchEvent(EntityId targetId, const TouchEvent& event
             if(prevTap.targetId != targetId) {
                 return; 
             }
-            if(event.eventT.getSecElapsedFrom(prevTap.touch.eventT) > PRESS_RELEASE_DELTA) {
+            if(event.eventT.getSecDeltaWith(prevTap.touch.eventT) > PRESS_RELEASE_DELTA) {
                 reset();
             } else {
                 prevTap.touch = event;

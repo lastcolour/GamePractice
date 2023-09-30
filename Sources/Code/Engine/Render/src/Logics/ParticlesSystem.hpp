@@ -22,7 +22,7 @@ public:
     void onLoaded() override;
 
     // DrawCommandProxy
-    void ET_setNormalizationScale(float newNormScale);
+    void ET_setNormalizationScale(float newNormScale) override;
 
     // ETParticlesSystem
     void ET_setColorConfig(const ParticlesEmitterColorConfig& newColorConf) override;

@@ -127,6 +127,7 @@ void drawNinePatchImageHelp(DebugInfoDrawer& dd, const Transform& tm, EntityId e
 
     Vec2 vertCoord(0.f);
     ET_SendEventReturn(vertCoord, entId, &ETNinePatchImageLogic::ET_getPatchesVertCoord);
+    vertCoord /= 2.f;
 
     auto box = getRenderRect(tm, entId);
     auto size = box.getSize();

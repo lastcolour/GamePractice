@@ -8,7 +8,7 @@ public:
 
 public:
 
-    static TimePoint GetNowTime();
+    static TimePoint GetNow();
 
 public:
 
@@ -17,9 +17,13 @@ public:
     TimePoint& operator=(const TimePoint& other);
     ~TimePoint();
 
-    float getSecElapsedFrom(const TimePoint& other) const;
-    float getMiliSecElapsedFrom(const TimePoint& other) const;
+    float getMsDeltaWith(const TimePoint& other) const;
+    float getSecDeltaWith(const TimePoint& other) const;
 
+    float getMsDeltaWithNow() const;
+    float getSecDeltaWithNow() const;
+
+    void addMicroSecDelta(float mcsDelta);
     void addMiliSecDelta(float msDelta);
     void addSecDelta(float secDelta);
 

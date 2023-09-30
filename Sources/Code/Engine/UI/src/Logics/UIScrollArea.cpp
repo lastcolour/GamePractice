@@ -137,14 +137,14 @@ void UIScrollArea::onPress(const Vec2& pt) {
     ETNode<ETUITimerEvents>::connect(getEntityId());
 
     path.clear();
-    path.push_back({TimePoint::GetNowTime(), pt});
+    path.push_back({TimePoint::GetNow(), pt});
 }
 
 void UIScrollArea::onRelease(const Vec2& pt) {
     isPressed = false;
     auto box = getUIBox(getEntityId());
     auto clampPt = box.clamp(pt);
-    path.push_back({TimePoint::GetNowTime(), clampPt});
+    path.push_back({TimePoint::GetNow(), clampPt});
     if(kinematicScrollEnabled) {
         addReleaseImpulse();
     }
@@ -159,7 +159,7 @@ void UIScrollArea::addReleaseImpulse() {
     auto posDt = lastEvent.pt - firstEvent.pt;
     float endVel = 0.f;
 
-    float dt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
+    float dt = lastEvent.timeP.getSecDeltaWith(firstEvent.timeP);
     dt = std::max(dt, 0.008f);
 
     if(style.type == UIScrollType::Horizontal) {
@@ -192,7 +192,7 @@ bool UIScrollArea::onMove(const Vec2& pt) {
         onRelease(pt);
         return false;
     } else {
-        path.push_back({TimePoint::GetNowTime(), pt});
+        path.push_back({TimePoint::GetNow(), pt});
     }
     return true;
 }
@@ -224,10 +224,6 @@ void UIScrollArea::ET_onDisabled(bool flag) {
     ET_SendEvent(targetId, &ETUIElement::ET_setParentDisabled, flag);
 }
 
-void UIScrollArea::ET_onIngoreTransform(bool flag) {
-    ET_SendEvent(targetId, &ETUIElement::ET_setIgnoreTransform, flag);
-}
-
 void UIScrollArea::updateMoveState(float dt) {
     Vec2 newPosDt(0.f);
 
@@ -236,7 +232,7 @@ void UIScrollArea::updateMoveState(float dt) {
         auto lastEvent = path.back();
 
         newPosDt = lastEvent.pt - firstEvent.pt;
-        float eventDt = lastEvent.timeP.getSecElapsedFrom(firstEvent.timeP);
+        float eventDt = lastEvent.timeP.getSecDeltaWith(firstEvent.timeP);
         eventDt = std::max(eventDt, 0.008f);
 
         float newVel = 0.f;
@@ -373,7 +369,7 @@ void UIScrollArea::setPosUpdateProg(const AABB2D& scrollArea, const Vec2& newPt)
     }
 
     scrollProgress = prog;
-    UI::Set2DPositionDoNotUpdateLayout(targetId, newPt);
+    UI::Set2DPos(targetId, newPt);
 }
 
 float UIScrollArea::ET_getScrollProgress() const {

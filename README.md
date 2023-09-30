@@ -38,7 +38,7 @@ There is a list 3rd party dependencies used in Engine
 
 # Editor
 
-The Engine's Editor is PyQt5 app connected to the enigne via 'ctype' API;
+The Engine's Editor is PyQt6 app connected to the enigne via 'ctype' API;
 
 ![Editor](https://github.com/lastcolour/GamePractice/blob/master/Docs/Editor_Example_01.png)
 

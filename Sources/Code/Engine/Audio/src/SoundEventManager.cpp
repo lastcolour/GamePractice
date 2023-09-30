@@ -70,8 +70,8 @@ void SoundEventManager::ET_emitEvent(const char* eventName) {
         return;
     }
     auto& data = it->second;
-    auto currTime = TimePoint::GetNowTime();
-    if(currTime.getSecElapsedFrom(data.lastPlayT) < (data.info->nextDelay + 0.001f)) {
+    auto currTime = TimePoint::GetNow();
+    if(currTime.getSecDeltaWith(data.lastPlayT) < (data.info->nextDelay + 0.001f)) {
         return;
     }
     data.lastPlayT = currTime;

@@ -149,15 +149,14 @@ std::shared_ptr<RenderFont> RenderFontManager::createFont(const FontDescription&
         return it->second;
     }
 
-    auto createStartT = TimePoint::GetNowTime();
+    auto createStartT = TimePoint::GetNow();
 
     auto font = createFontImpl(fontDescr);
     if(!font) {
         return nullptr;
     }
 
-    float msValue = -createStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime());
-    LogDebug("[RenderFontManager::createFont] Font '%s' created in %.1f ms", fontName, msValue);
+    LogDebug("[RenderFontManager::createFont] Font '%s' created in %.1f ms", fontName, createStartT.getMsDeltaWithNow());
 
     fonts[std::move(fontName)] = font;
     return font;

@@ -41,9 +41,9 @@ JSONNode AndroidAssets::ET_loadJSONAsset(const char* assetName) {
     return rootNode;
 }
 
-Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
+Memory::Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
     auto normalAssetName = FileUtils::NormilizeAssetName(assetName);
-    Buffer buff;
+    Memory::Buffer buff;
     if(normalAssetName.empty()) {
         return buff;
     }
@@ -52,7 +52,7 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
         return buff;
     }
 
-    auto loadStartT = TimePoint::GetNowTime();
+    auto loadStartT = TimePoint::GetNow();
 
     buff = loadAssetImpl(normalAssetName);
 
@@ -61,14 +61,13 @@ Buffer AndroidAssets::ET_loadAsset(const char* assetName) {
     }
 
     if(buff) {
-        float msValue = -static_cast<int>(loadStartT.getMiliSecElapsedFrom(TimePoint::GetNowTime()));
-        LogDebug("[AndroidAssets::ET_loadAsset] Loaded file '%s' in %.1f ms", assetName, msValue);
+        LogDebug("[AndroidAssets::ET_loadAsset] Loaded file '%s' in %.1f ms", assetName, static_cast<int>(loadStartT.getMsDeltaWithNow()));
     }
 
     return buff;
 }
 
-Buffer AndroidAssets::loadAssetImpl(const std::string& assetName) {
+Memory::Buffer AndroidAssets::loadAssetImpl(const std::string& assetName) {
     {
         // Load from local file
         std::filesystem::path assetPath = assetName;
@@ -82,15 +81,15 @@ Buffer AndroidAssets::loadAssetImpl(const std::string& assetName) {
     AAsset* androidAsset = AAssetManager_open(assetManager, assetName.c_str(), AASSET_MODE_BUFFER);
     if(!androidAsset) {
         LogError("[AndroidAssets::loadAssetImpl] Can't open asset: '%s'", assetName);
-        return Buffer();
+        return Memory::Buffer();
     }
     off_t assetSize = AAsset_getLength(androidAsset);
-    Buffer buff(assetSize);
+    Memory::Buffer buff(assetSize);
     if(!buff) {
         LogError("[AndroidAssets::loadAssetImpl] Can't allocate buffer of size %d bytes to load asset '%s'",
             assetSize, assetName);
         AAsset_close(androidAsset);
-        return Buffer();
+        return Memory::Buffer();
     }
     off_t currOffset = 0;
     off_t readSize = 0;
@@ -100,13 +99,13 @@ Buffer AndroidAssets::loadAssetImpl(const std::string& assetName) {
     if(readSize < 0) {
         LogError("[AndroidAssets::loadAssetImpl] Unknow platform error when load asset '%s'", assetName);
         AAsset_close(androidAsset);
-        return Buffer();
+        return Memory::Buffer();
     }
     AAsset_close(androidAsset);
     return buff;
 }
 
-Buffer AndroidAssets::ET_loadLocalFile(const char* fileName) {
+Memory::Buffer AndroidAssets::ET_loadLocalFile(const char* fileName) {
     return FileUtils::LoadFileFromDir(GetAndroindPlatformHandler()->getInternalPath(), fileName);
 }
 
@@ -123,7 +122,7 @@ JSONNode AndroidAssets::ET_loadLocalJSONFile(const char* fileName) {
     return rootNode;
 }
 
-bool AndroidAssets::ET_saveLocalFile(const char* fileName, const Buffer& buff) {
+bool AndroidAssets::ET_saveLocalFile(const char* fileName, const Memory::Buffer& buff) {
     return FileUtils::SaveFileToDir(GetAndroindPlatformHandler()->getInternalPath(), fileName, buff);
 }
 

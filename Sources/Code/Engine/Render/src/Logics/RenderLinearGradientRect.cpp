@@ -26,7 +26,7 @@ void RenderLinearGradientRect::onInit() {
     auto texQuadCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
     texQuadCmd->imageType = DrawTexturedQuadCmd::EImageCmdType::Gradient;
 
-    if(size.x <= 0.f || size.y < 0.f) {
+    if(size.x < 0.f || size.y < 0.f) {
         LogError("[RenderLinearGradientRect::onInit] Negative size: <%.1f, %.1f> (Entity: %s)", size.x, size.y,
             getEntityName());
         size.x = std::max(1.f, size.x);
@@ -47,7 +47,7 @@ Mat4 RenderLinearGradientRect::calcModelMat() const {
 
 void RenderLinearGradientRect::ET_setSize(const Vec2& newSize) {
     Vec2 newSizeCopy = newSize;
-    if(newSizeCopy.x <= 0.f || newSizeCopy.y < 0.f) {
+    if(newSizeCopy.x < 0.f || newSizeCopy.y < 0.f) {
         LogError("[RenderLinearGradientRect::ET_setSize] Negative size: <%.1f, %.1f> (Entity: %s)", newSizeCopy.x, newSizeCopy.y,
             getEntityName());
         newSizeCopy.x = std::max(1.f, newSizeCopy.x);

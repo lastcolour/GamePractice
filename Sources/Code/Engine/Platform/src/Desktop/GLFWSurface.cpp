@@ -213,7 +213,7 @@ void GLFWSurface::SetCursorePosCallback(GLFWwindow* window, double x, double y) 
     TouchEvent event;
     event.actionType = EActionType::Move;
     event.pt = pt;
-    event.eventT = TimePoint::GetNowTime();
+    event.eventT = TimePoint::GetNow();
     ET_QueueEvent(&ETInputEvents::ET_onTouch, event);
 }
 
@@ -235,7 +235,7 @@ void GLFWSurface::SetMouseButtonCallback(GLFWwindow* window, int button, int act
 
     TouchEvent event;
     event.pt = pt;
-    event.eventT = TimePoint::GetNowTime();
+    event.eventT = TimePoint::GetNow();
 
     if(action == GLFW_PRESS) {
         event.actionType = EActionType::Press;
@@ -275,7 +275,7 @@ void GLFWSurface::SetKeyboardButtonCallback(GLFWwindow* window, int key, int sca
     }
     ButtonEvent event;
     event.buttonId = EButtonId::Back;
-    event.eventT = TimePoint::GetNowTime();
+    event.eventT = TimePoint::GetNow();
     if(action == GLFW_PRESS) {
         event.actionType = EActionType::Press;
         ET_QueueEvent(&ETInputEvents::ET_onButton, event);

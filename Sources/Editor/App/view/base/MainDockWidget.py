@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QFrame, QWidget, QVBoxLayout, QDockWidget
-from PyQt5 import QtCore
+from PyQt6.QtWidgets import QFrame, QWidget, QVBoxLayout, QDockWidget
+from PyQt6 import QtCore
 
 from utils.Managers import GetMainViewManager
 
@@ -15,8 +15,8 @@ class _MainFrameWidget(QWidget):
         self._frameLayout.addWidget(self._mainWidget)
 
         self._frame = QFrame()
-        self._frame.setFrameStyle(QFrame.StyledPanel)
-        self._frame.setFrameShadow(QFrame.Plain)
+        self._frame.setFrameStyle(QFrame.Shape.StyledPanel)
+        self._frame.setFrameShadow(QFrame.Shadow.Plain)
         self._frame.setLayout(self._frameLayout)
 
         self._rootLayout = QVBoxLayout()
@@ -29,7 +29,7 @@ class _MainFrameWidget(QWidget):
 class _MainDock(QDockWidget):
     def __init__(self):
         super().__init__()
-        self.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
+        self.setAllowedAreas(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea | QtCore.Qt.DockWidgetArea.RightDockWidgetArea)
 
     def closeEvent(self, event):
         GetMainViewManager().onMainViewClosed(self.widget()._mainWidget)

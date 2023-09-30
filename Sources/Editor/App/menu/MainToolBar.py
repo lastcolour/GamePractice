@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QToolBar, QPushButton, QComboBox, QLabel
+from PyQt6.QtWidgets import QToolBar, QPushButton, QComboBox, QLabel
 
 from utils.Managers import GetEngineViewManager
 from utils.Managers import GetGameManager

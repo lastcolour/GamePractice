@@ -35,7 +35,6 @@ public:
     void ET_enable() override;
     void ET_disable() override;
     bool ET_isEnabled() const override;
-    void ET_setIgnoreTransform(bool flag) override;
     void ET_setParentHidden(bool flag) override;
     void ET_setParentDisabled(bool flag) override;
     void ET_setParentAlpha(float newParentAlpha) override;
@@ -66,7 +65,6 @@ protected:
     float alpha;
     float parentAlpha;
     int zIndex;
-    bool isIgnoringTransform;
     bool isHidden;
     bool isEnabled;
     bool isParentHidden;

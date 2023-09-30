@@ -3,46 +3,47 @@
 
 #include <cassert>
 
-ThreadJob::ThreadJob(RunTask* runTask) :
-    pendingCount(0),
+ThreadJob::ThreadJob(RunTask& runTask) :
     task(runTask),
-    runDelay(0) {
-
-    assert(runTask && "Invalid run task");
-
-    auto microSecDelay = static_cast<int>((1000000.0 / (static_cast<double>(runTask->getFrequency()))));
-    runDelay = std::chrono::microseconds(microSecDelay);
+    pendingCount(0),
+    runDelay(0),
+    childrenCount(0),
+    isFirstRun(true) {
 }
 
 ThreadJob::~ThreadJob() {
 }
 
+void ThreadJob::init() {
+    childrenCount = task.getChildren().size();
+    auto microSecDelay = static_cast<int>((1000000.0 / (static_cast<double>(task.getFrequency()))));
+    runDelay = std::chrono::microseconds(microSecDelay);
+}
+
 void ThreadJob::execute() {
-    float dt = currStartT.getSecElapsedFrom(prevStartT);
+    float dt = currStartT.getSecDeltaWith(prevStartT);
     prevStartT = currStartT;
-    task->execute(dt);
+    task.execute(dt);
     onFinished();
 }
 
 void ThreadJob::onFinished() {
-    prevEndT = TimePoint::GetNowTime();
-    runStats.onExecuted(prevStartT, prevEndT);
-    for(auto job : childJobs) {
-        auto val = job->pendingCount.fetch_sub(1);
+    runStats.onExecuted(prevStartT, TimePoint::GetNow());
+    for(auto& childTask : task.getChildren()) {
+        auto childJob = childTask->getThreadJob();
+        auto val = childJob->pendingCount.fetch_sub(1);
         assert(val > 0 && "Invalind pendings count");
     }
-    pendingCount.store(static_cast<int>(childJobs.size()));
+    auto prevPendingCount = pendingCount.exchange(static_cast<int>(childrenCount));
+    assert(prevPendingCount == -1);
 }
 
 RunTask* ThreadJob::getTask() {
-    return task;
+    return &task;
 }
 
 bool ThreadJob::tryStartAt(int threadId, const TimePoint& currTime) {
-    if(pendingCount.load() > 0) {
-        return false;
-    }
-    switch(task->getType()) {
+    switch(task.getType()) {
         case RunTaskType::Default: {
             break;
         }
@@ -62,16 +63,21 @@ bool ThreadJob::tryStartAt(int threadId, const TimePoint& currTime) {
             assert(false && "Invalid job type");
         }
     }
-    if(prevStartT.getStdTimePoint().time_since_epoch().count() == 0) {
-        currStartT = currTime;
-        for(auto job : childJobs) {
-            job->pendingCount.store(static_cast<int>(job->childJobs.size()));
-        }
-        return true;
-    }
-    auto delta = currTime.getStdTimePoint() - prevStartT.getStdTimePoint();
-    if(delta < runDelay) {
+    int numTaskRunning = -1;
+    int numExpected = 0;
+    if(!pendingCount.compare_exchange_weak(numExpected, numTaskRunning)) {
         return false;
+    }
+    if(!isFirstRun) {
+        auto delta = currTime.getStdTimePoint() - prevStartT.getStdTimePoint();
+        if(delta < runDelay) {
+            pendingCount.store(numExpected);
+            return false;
+        }
+    } else {
+        isFirstRun = false;
+        prevStartT = currTime;
+        prevStartT.addMicroSecDelta(-runDelay.count());
     }
     currStartT = currTime;
     return true;
@@ -79,4 +85,12 @@ bool ThreadJob::tryStartAt(int threadId, const TimePoint& currTime) {
 
 const JobRunStats& ThreadJob::getRunStats() const {
     return runStats;
+}
+
+void ThreadJob::setPendingCount(int newPendingCount) {
+    pendingCount.store(newPendingCount);
+}
+
+int ThreadJob::getPendingCount() const {
+    return pendingCount.load();
 }

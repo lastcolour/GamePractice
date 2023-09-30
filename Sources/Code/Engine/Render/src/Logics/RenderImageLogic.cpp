@@ -32,7 +32,7 @@ void RenderImageLogic::onInit() {
             getEntityName());
     }
 
-    if(size.x <= 0.f || size.y < 0.f) {
+    if(size.x < 0.f || size.y < 0.f) {
         LogError("[RenderImageLogic::onInit] Negative size: <%.1f, %.1f> (Entity: %s)", size.x, size.y,
             getEntityName());
         size.x = std::max(1.f, size.x);
@@ -61,7 +61,7 @@ void RenderImageLogic::ET_setTextureInfo(const TextureInfo& newTextureInfo) {
 
 void RenderImageLogic::ET_setSize(const Vec2& newSize) {
     Vec2 newSizeCopy = newSize;
-    if(newSizeCopy.x <= 0.f || newSizeCopy.y < 0.f) {
+    if(newSizeCopy.x < 0.f || newSizeCopy.y < 0.f) {
         LogError("[RenderImageLogic::ET_setSize] Negative size: <%.1f, %.1f> (Entity: %s)", newSizeCopy.x, newSizeCopy.y,
             getEntityName());
         newSizeCopy.x = std::max(1.f, newSizeCopy.x);

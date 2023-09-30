@@ -47,9 +47,10 @@ public:
 } // namespace
 
 void UILayoutTests::SetUpTestCase() {
-    CreateTestApp(ETestAppModules::CheckRender);
+    CreateTestApp(ETestAppModules::CheckUI);
 
     auto uiConfig = Core::GetGlobal<UIConfig>();
+    ASSERT_TRUE(uiConfig);
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);
@@ -118,6 +119,8 @@ TEST_F(UILayoutTests, CheckVerticalLayout) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
     {
         CheckUIBox(firstChild->getEntityId(), Vec2(viewPort.x / 2.f, 5.f * viewPort.y / 8.f),
             Vec2(viewPort.x / 4.f, viewPort.y / 4.f));
@@ -140,6 +143,8 @@ TEST_F(UILayoutTests, CheckHorizontalLayout) {
 
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     {
         CheckUIBox(firstChild->getEntityId(), Vec2(3.f * viewPort.x / 8.f, viewPort.y / 2.f),
@@ -168,6 +173,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
@@ -182,6 +189,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.xAlign = UIXAlign::Center;
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
@@ -198,6 +207,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
@@ -212,6 +223,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.xAlign = UIXAlign::Left;
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
@@ -228,6 +241,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
@@ -242,6 +257,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.xAlign = UIXAlign::Left;
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
@@ -258,6 +275,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
@@ -273,6 +292,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
 
@@ -287,6 +308,8 @@ TEST_F(UILayoutTests, CheckAlign) {
         style.xAlign = UIXAlign::Right;
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         AABB2D box(0.f);
         ET_SendEventReturn(box, child->getEntityId(), &ETUIElementGeom::ET_getBox);
@@ -324,6 +347,8 @@ TEST_F(UILayoutTests, CheckMargin) {
         boxStyle.margin.right = margin;
         ET_SendEvent(first->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         CheckUIBox(first->getEntityId(), Vec2(center.x - halfShift - boxSize.x / 2.f, center.y), boxSize);
         CheckUIBox(second->getEntityId(), Vec2(center.x + halfShift + boxSize.x / 2.f, center.y), boxSize);
     }
@@ -334,6 +359,8 @@ TEST_F(UILayoutTests, CheckMargin) {
 
         boxStyle.margin.left = margin;
         ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         CheckUIBox(first->getEntityId(), Vec2(center.x - halfShift - boxSize.x / 2.f, center.y), boxSize);
         CheckUIBox(second->getEntityId(), Vec2(center.x + halfShift + boxSize.x / 2.f, center.y), boxSize);
@@ -353,6 +380,8 @@ TEST_F(UILayoutTests, CheckMargin) {
         boxStyle.margin.left = 0.f;
         ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         CheckUIBox(first->getEntityId(), Vec2(center.x, center.y + halfShift + boxSize.y / 2.f), boxSize);
         CheckUIBox(second->getEntityId(), Vec2(center.x, center.y - halfShift - boxSize.y / 2.f), boxSize);
     }
@@ -363,6 +392,8 @@ TEST_F(UILayoutTests, CheckMargin) {
 
         boxStyle.margin.top = margin;
         ET_SendEvent(second->getEntityId(), &ETUIBox::ET_setStyle, boxStyle);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         CheckUIBox(first->getEntityId(), Vec2(center.x, center.y + halfShift + boxSize.y / 2.f), boxSize);
         CheckUIBox(second->getEntityId(), Vec2(center.x, center.y - halfShift - boxSize.y / 2.f), boxSize);
@@ -400,6 +431,8 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         CheckUIBox(childEntity->getEntityId(), Vec2(shift + boxSize.x / 2.f, center.y), boxSize);
     }
 
@@ -408,6 +441,8 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.xAlign = UIXAlign::Right;
         style.yAlign = UIYAlign::Center;
         rootLayout->ET_setStyle(style);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         CheckUIBox(childEntity->getEntityId(), Vec2(viewPort.x - boxSize.x / 2.f - shift, center.y), boxSize);
     }
@@ -418,6 +453,8 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.yAlign = UIYAlign::Top;
         rootLayout->ET_setStyle(style);
 
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
         CheckUIBox(childEntity->getEntityId(), Vec2(center.x, viewPort.y - boxSize.y / 2 - shift), boxSize);
     }
 
@@ -426,6 +463,8 @@ TEST_F(UILayoutTests, CheckUILayoutOutMargin) {
         style.xAlign = UIXAlign::Center;
         style.yAlign = UIYAlign::Bot;
         rootLayout->ET_setStyle(style);
+
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
         CheckUIBox(childEntity->getEntityId(), Vec2(center.x, shift + boxSize.y / 2), boxSize);
     }
@@ -440,12 +479,16 @@ TEST_F(UILayoutTests, CheckLayoutOnLayoutBox) {
 
     const Vec2 center = Vec2(viewPort.x / 2.f, viewPort.y / 2.f);
 
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
     {
         CheckUIBox(layoutBox->getEntityId(), center, Vec2(0.f));
     }
 
     auto firstBox = createUIBox(0.5f, 0.5f);
     rootLayout->ET_addItem(firstBox->getEntityId());
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     {
         CheckUIBox(layoutBox->getEntityId(), center, center);
@@ -454,6 +497,8 @@ TEST_F(UILayoutTests, CheckLayoutOnLayoutBox) {
 
     auto secondBox = createUIBox(0.5f, 0.5f);
     rootLayout->ET_addItem(secondBox->getEntityId());
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     {
         CheckUIBox(layoutBox->getEntityId(), center, Vec2(center.x, static_cast<float>(viewPort.y)));
@@ -474,6 +519,8 @@ TEST_F(UILayoutTests, CheckHiddenElemOnLayout) {
     Vec2i viewPort(0);
     ET_SendEventReturn(viewPort, &ETUIViewPort::ET_getViewport);
 
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
     {
         auto box = rootLayout->ET_getCombinedBox();
         auto size = box.getSize();
@@ -483,6 +530,8 @@ TEST_F(UILayoutTests, CheckHiddenElemOnLayout) {
     }
 
     ET_SendEvent(childBox->getEntityId(), &ETUIElement::ET_show);
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     {
         auto box = rootLayout->ET_getCombinedBox();
@@ -503,6 +552,8 @@ TEST_F(UILayoutTests, CheckDoNotRebuildLayoutForHiddenHost) {
     auto rightBox = createUIBox(0.5f, 0.5f);
     rootLayout->ET_addItem(rightBox->getEntityId());
 
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
     ET_SendEvent(rootEntity->getEntityId(), &ETUIElement::ET_hide);
 
     TestLayoutEventListener layoutEventListener;
@@ -521,6 +572,7 @@ TEST_F(UILayoutTests, CheckDoNotRebuildLayoutForHiddenHost) {
     EXPECT_FALSE(layoutEventListener.layoutChanged);
 
     ET_SendEvent(rootEntity->getEntityId(), &ETUIElement::ET_show);
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     EXPECT_TRUE(layoutEventListener.layoutChanged);
 }
@@ -592,6 +644,8 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
         ET_SendEvent(firstId, &ETEntity::ET_setTransform, tm);
     }
 
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
+
     {
         AABB2D box(0.f);
         ET_SendEventReturn(box, secondId, &ETUIElementGeom::ET_getBox);
@@ -614,6 +668,8 @@ TEST_F(UILayoutTests, CheckChildLayoutBoxHideUnhide) {
     ET_SendEvent(firstId, &ETUIElement::ET_show);
     ET_SendEvent(secondId, &ETUIElement::ET_show);
     ET_SendEvent(thirdId, &ETUIElement::ET_show);
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     {
         AABB2D firstBox(0.f);

@@ -104,7 +104,7 @@ TEST_F(JSONNodeTests, CheckForLoopInArray) {
 
     ASSERT_EQ(intVals.size(), 10u);
     for(size_t i=0u,sz=intVals.size(); i<sz; ++i) {
-        ASSERT_EQ(intVals[i], i+1);
+        ASSERT_EQ(intVals[i], static_cast<int>(i+1));
     }
 }
 

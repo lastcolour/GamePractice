@@ -318,7 +318,8 @@ std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo, ETextur
     return texObj;
 }
 
-Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const Vec2& patches) {
+Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, float patchSize,
+    ENinePatchSizeType patchSizeType) {
     Vec2 p{0.f};
 
     const float MaxCoordPt = 0.4999f;
@@ -337,8 +338,31 @@ Vec2 GetNinePatchVertexCoord(const Vec2i& imageSize, const Vec2& drawSize, const
             p.y = MaxCoordPt;
         }
     } else {
-        p.x = patches.x * scale.x;
-        p.y = patches.y * scale.y;
+        const bool isXSmallest = drawSize.x < drawSize.y;
+        const float f = isXSmallest ? drawSize.x / drawSize.y : drawSize.y / drawSize.x;
+        if(patchSizeType == ENinePatchSizeType::SmallestSidePct) {
+            patchSize = Math::Clamp(patchSize, 0.f, 0.49999f);
+            if(isXSmallest) {
+                p.x = patchSize;
+                p.y = patchSize * f;
+            } else {
+                p.x = patchSize * f;
+                p.y = patchSize;
+            }
+        } else if(patchSizeType == ENinePatchSizeType::BiggestSidePct) {
+            patchSize = Math::Clamp(patchSize, 0.f, 0.49999f * f);
+            if(isXSmallest) {
+                p.x = patchSize / f;
+                p.y = patchSize;
+            } else {
+                p.x = patchSize;
+                p.y = patchSize / f;
+            }
+        } else if(patchSizeType == ENinePatchSizeType::Pixels) {
+            patchSize = Math::Clamp(patchSize, 0.f, 7680.f);
+            p.x = patchSize / drawSize.x;
+            p.y = patchSize / drawSize.y;
+        }
     }
 
     p.x = 2.f * std::min(p.x, MaxCoordPt);

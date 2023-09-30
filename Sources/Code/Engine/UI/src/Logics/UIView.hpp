@@ -17,6 +17,7 @@ public:
 
     // EntityLogic
     void init() override;
+    void onLoaded() override;
 
     // ETViewPortEvents
     void ET_onViewPortChanged(const Vec2i& newSize) override;

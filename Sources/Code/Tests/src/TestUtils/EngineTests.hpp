@@ -12,8 +12,11 @@ enum class ETestAppModules {
     CheckAssets,
     CheckRender,
     CheckEntities,
-    CheckSound
+    CheckSound,
+    CheckGame,
+    CheckUI
 };
+
 
 class EngineTests : public ::testing::Test {
 public:

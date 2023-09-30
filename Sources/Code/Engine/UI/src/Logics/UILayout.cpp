@@ -3,6 +3,7 @@
 #include "Render/ETRenderNode.hpp"
 #include "UI/ETUIViewPort.hpp"
 #include "UIUtils.hpp"
+#include "Core/TimePoint.hpp"
 
 #include <cassert>
 
@@ -27,7 +28,6 @@ void UILayout::init() {
     for(auto elemId : children) {
         ET_SendEvent(elemId, &ETUIElement::ET_setHostLayout, getEntityId());
     }
-    calculateLayout();
     ETNode<ETUILayout>::connect(getEntityId());
     ETNode<ETUIElementEvents>::connect(getEntityId());
     ETNode<ETUIElemAligner>::connect(getEntityId());
@@ -39,13 +39,17 @@ void UILayout::deinit() {
     }
 }
 
+void UILayout::onLoaded() {
+    ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, getEntityId());
+}
+
 const UILayoutStyle& UILayout::ET_getStyle() const {
     return style;
 }
 
 void UILayout::ET_setStyle(const UILayoutStyle& newStyle) {
     style = newStyle;
-    calculateLayout();
+    ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, getEntityId());
 }
 
 void UILayout::ET_addItem(EntityId entityId) {
@@ -57,7 +61,7 @@ void UILayout::ET_addItem(EntityId entityId) {
     children.push_back(entityId);
     UI::CopyUIElemAttribsFromParent(getEntityId(), entityId);
     ET_SendEvent(entityId, &ETUIElement::ET_setHostLayout, getEntityId());
-    calculateLayout();
+    ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, getEntityId());
 }
 
 AABB2D UILayout::calculateAligment(std::vector<AABB2D>& childrenBoxes) {
@@ -170,6 +174,7 @@ void UILayout::ET_reAlign() {
 }
 
 void UILayout::calculateLayout() {
+
     combinedBox = AABB2D(0.f);
 
     if(children.empty()) {
@@ -218,7 +223,7 @@ void UILayout::calculateLayout() {
         }
         auto childBox = childBoxes[i];
         auto center = childBox.getCenter();
-        UI::Set2DPositionDoNotUpdateLayout(childId, center);
+        UI::Set2DPos(childId, center);
         ET_SendEvent(childId, &ETUIElement::ET_setLayoutPos, center);
         ET_SendEvent(childId, &ETUIElement::ET_setZIndex, childZIndex);
     }
@@ -245,19 +250,13 @@ void UILayout::ET_onHidden(bool flag) {
         ET_SendEvent(childId, &ETUIElement::ET_setParentHidden, flag);
     }
     if(!flag) {
-        calculateLayout();
+        ET_SendEvent(&ETUIReAlignManager::ET_setLayoutDirty, getEntityId());
     }
 }
 
 void UILayout::ET_onDisabled(bool flag) {
     for(auto childId : children) {
         ET_SendEvent(childId, &ETUIElement::ET_setParentDisabled, flag);
-    }
-}
-
-void UILayout::ET_onIngoreTransform(bool flag) {
-    for(auto childId : children) {
-        ET_SendEvent(childId, &ETUIElement::ET_setIgnoreTransform, flag);
     }
 }
 

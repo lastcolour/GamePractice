@@ -28,8 +28,8 @@ bool isMoveAway(const Vec2i& pressPt, const Vec2i currPt) {
 }
 
 bool isPressTimeRunOut(const TimePoint& pressTime) {
-    auto now = TimePoint::GetNowTime();
-    auto dt = now.getSecElapsedFrom(pressTime);
+    auto now = TimePoint::GetNow();
+    auto dt = now.getSecDeltaWith(pressTime);
     if(dt > TIME_OUT_SEC_DUR) {
         return true;
     }
@@ -127,7 +127,7 @@ bool UIButton::canContinueEvent(const Vec2i& pt) const {
 
 EInputEventResult UIButton::onPress(const Vec2i& pt) {
     pressPt = pt;
-    pressTime = TimePoint::GetNowTime();
+    pressTime = TimePoint::GetNow();
     return EInputEventResult::Accept;
 }
 

@@ -18,6 +18,9 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fPIC -Wall -pedantic -Wextra -Wno-unused-parameter")
 
+    message(STATUS "Generating 'compile_commands.json' is enabled")
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+
     if(COMPILE_FLAGS_SANITIZE_MEMORY)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
     endif()

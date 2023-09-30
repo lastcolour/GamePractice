@@ -4,7 +4,7 @@
 #include "Entity/EntityLogicsRegister.hpp"
 #include "Entity/ETEntityManager.hpp"
 #include "Core/JSONNode.hpp"
-#include "Logics/UIAnimationSequence.hpp"
+#include "Logics/RenderScene.hpp"
 #include "Core/MemoryStream.hpp"
 
 #include <set>
@@ -440,16 +440,16 @@ TEST_F(EntityTests, CheckOnlyUniqueLogicsRegistered) {
         }
     }
 
-    ASSERT_GE(allLogics, 0);
+    ASSERT_GE(allLogics, 0u);
     ASSERT_EQ(allLogics, uniqueLogics.size());
 }
 
 TEST_F(EntityTests, CheckQueryLogicsByTypeId) {
     auto entity = createVoidObject();
-    ET_SendEvent(&ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "UIAnimationSequence");
-    ET_SendEvent(&ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "UIAnimationSequence");
+    ET_SendEvent(&ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "RenderScene");
+    ET_SendEvent(&ETEntityManager::ET_addLogicToEntity, entity->getEntityId(), "RenderScene");
 
-    auto logics = GetEntityLogics<UIAnimationSequence>(entity->getEntityId());
+    auto logics = GetEntityLogics<RenderScene>(entity->getEntityId());
     ASSERT_EQ(logics.size(), 2u);
     ASSERT_TRUE(logics[0]);
     ASSERT_TRUE(logics[1]);

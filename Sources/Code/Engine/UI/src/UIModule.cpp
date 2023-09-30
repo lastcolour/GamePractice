@@ -19,6 +19,7 @@
 #include "Logics/UIScrollFocus.hpp"
 #include "Logics/UIProgressBar.hpp"
 #include "Entity/EntityLogicsRegister.hpp"
+#include "UIReAlignManager.hpp"
 
 UIModule::UIModule() :
     SystemModule("UI") {}
@@ -32,7 +33,8 @@ UIModule::LogicsContainerPtrT UIModule::createSystemLogics() const {
             UIViewTransitionManager,
             UIViewPortManager,
             UIViewCache,
-            LoadingScreenManager>()
+            LoadingScreenManager,
+            UIReAlignManager>()
         );
     return container;
 }

@@ -28,4 +28,4 @@ public:
     float alpha;
 };
 
-#endif /* __UI_ADDITIotherVE_TRANSFORM_HPP__ */
+#endif /* __UI_ADDITIVE_TRANSFORM_HPP__ */

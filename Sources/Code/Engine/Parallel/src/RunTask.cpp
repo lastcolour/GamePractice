@@ -1,8 +1,10 @@
 #include "Parallel/RunTask.hpp"
+#include "ThreadJob.hpp"
 
 #include <cassert>
 
 RunTask::RunTask(const char* taskName, RunTask::CallT callFunc) :
+    threadJob(new ThreadJob(*this)),
     name(taskName),
     func(callFunc),
     frequency(std::numeric_limits<int>::max()),
@@ -45,11 +47,16 @@ void RunTask::addChild(RunTask* other) {
             return;
         }
     }
+    other->threadJob->setPendingCount(other->threadJob->getPendingCount() + 1);
     childrenTasks.push_back(other);
     other->childrenTasks.push_back(this);
 }
 
 std::vector<RunTask*>& RunTask::getChildren() {
+    return childrenTasks;
+}
+
+const std::vector<RunTask*>& RunTask::getChildren() const {
     return childrenTasks;
 }
 
@@ -59,4 +66,8 @@ void RunTask::setFrequency(int newFrequency) {
 
 int RunTask::getFrequency() const {
     return frequency;
+}
+
+ThreadJob* RunTask::getThreadJob() {
+    return threadJob.get();
 }

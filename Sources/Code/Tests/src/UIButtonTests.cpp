@@ -39,9 +39,10 @@ public:
 };
 
 void UIButtonTests::SetUpTestCase() {
-    CreateTestApp(ETestAppModules::CheckRender);
+    CreateTestApp(ETestAppModules::CheckUI);
 
     auto uiConfig = Core::GetGlobal<UIConfig>();
+    ASSERT_TRUE(uiConfig);
 
     uiConfig->baseRatio = Vec2i(1);
     Vec2i portSize(uiConfig->horizontalGrid);
@@ -62,7 +63,6 @@ void UIButtonTests::TearDown() {
 Entity* UIButtonTests::createUIButton(const Vec2i& pos, const Vec2& size) {
     auto entity = createVoidObject();
     HACK_ASSERT_TRUE(entity->addCustomLogic<UIButton>());
-    HACK_ASSERT_TRUE(entity->addCustomLogic<UIBox>());
 
     UIBoxStyle style;
     style.height = size.y;
@@ -282,6 +282,8 @@ TEST_F(UIButtonTests, CheckButtonFromNonFocusedView) {
     }
 
     ET_SendEvent(parent->getEntityId(), &ETUILayout::ET_addItem, child->getEntityId());
+
+    ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
 
     ET_SendEvent(parent->getEntityId(), &ETUIView::ET_setFocus, false);
 

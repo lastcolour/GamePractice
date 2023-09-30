@@ -18,9 +18,7 @@ const char* GetViewTypeName(UIViewType viewType);
 
 Vec2 CalcAligmentCenter(UIXAlign xAlign, UIYAlign yAlign, const AABB2D& parentBox, const AABB2D& box);
 
-void Set2DPositionDoNotUpdateLayout(EntityId elemId, const Vec2& pos);
-
-void SetTMDoNotUpdateLayout(EntityId elemId, const Transform& tm);
+void Set2DPos(EntityId elemId, const Vec2& pos);
 
 float GetValueOnGrind(float val);
 

@@ -9,6 +9,7 @@
 TasksRunner::TasksRunner() :
     predicateFailed(false),
     suspended(false),
+    currentIdx(0),
     mode(RunMode::None) {
 }
 
@@ -31,11 +32,12 @@ RunTask* TasksRunner::createTask(const char* name, std::function<void(void)> fun
 
 void TasksRunner::initJobs() {
     for(auto& task : tasks) {
-        std::unique_ptr<ThreadJob> job(new ThreadJob(task.get()));
-        jobs.push_back(std::move(job));
+        task->getThreadJob()->init();
     }
-    for(auto& job : jobs) {
-        pendingJobs.push_back(job.get());
+
+    for(auto& task : tasks) {
+        LogDebug("[TasksRunner::initJobs] Tasks '%s' initial pending count: %d",
+            task->getName(), task->getThreadJob()->getPendingCount());
     }
 }
 
@@ -100,15 +102,18 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
 
     ThreadJob* nextJob = nullptr;
     {
-        if(prevJob) {
-            std::unique_lock<std::mutex> ulock(mutex);
-            pendingJobs.push_back(prevJob);
-        }
+        const int offset = currentIdx.load();
         while(!predicateFailed.load()) {
-            auto currTime = TimePoint::GetNowTime();
-            {
-                std::unique_lock<std::mutex> ulock(mutex);
-                nextJob = getNextJob(currTime, threadId);
+            auto currTime = TimePoint::GetNow();
+            for(size_t i = 0, sz = tasks.size(); i < sz; ++i) {
+                const int j = (offset + i) % sz;
+                auto& task = tasks[j];
+                auto job = task->getThreadJob();
+                if(job->tryStartAt(threadId, currTime)) {
+                    nextJob = job;
+                    currentIdx.store((j + 1) % sz);
+                    break;
+                }
             }
             if(nextJob) {
                 break;
@@ -122,17 +127,6 @@ ThreadJob* TasksRunner::finishAndGetNext(ThreadJob* prevJob, int threadId) {
         }
     }
     return nextJob;
-}
-
-ThreadJob* TasksRunner::getNextJob(const TimePoint& currTime, int threadId) {
-    for(auto it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it) {
-        auto job = *it;
-        if(job->tryStartAt(threadId, currTime)) {
-            pendingJobs.erase(it);
-            return job;
-        }
-    }
-    return nullptr;
 }
 
 void TasksRunner::suspend(bool flag) {
@@ -182,9 +176,9 @@ void TasksRunner::stopOtherTreads() {
 }
 
 bool TasksRunner::getTaskRunInfo(const std::string& taskName, TaskRunInfo& outInfo) {
-    for(auto& job : jobs) {
-        if(job->getTask()->getName() == taskName) {
-            auto& runStats = job->getRunStats();
+    for(auto& task : tasks) {
+        if(task->getName() == taskName) {
+            auto& runStats = task->getThreadJob()->getRunStats();
             runStats.getRunInfo(outInfo);
             return true;
         }
@@ -192,10 +186,10 @@ bool TasksRunner::getTaskRunInfo(const std::string& taskName, TaskRunInfo& outIn
     return false;
 }
 
-bool TasksRunner::getTaskRunInfo(const RunTask& task, TaskRunInfo& outInfo) {
-    for(auto& job : jobs) {
-        if(job->getTask() == &task) {
-            auto& runStats = job->getRunStats();
+bool TasksRunner::getTaskRunInfo(const RunTask& queryTask, TaskRunInfo& outInfo) {
+    for(auto& task : tasks) {
+        if(task.get() == &queryTask) {
+            auto& runStats = task->getThreadJob()->getRunStats();
             runStats.getRunInfo(outInfo);
             return true;
         }

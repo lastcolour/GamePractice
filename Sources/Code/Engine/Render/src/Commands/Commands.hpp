@@ -3,6 +3,7 @@
 
 #include "Render/RenderCommon.hpp"
 #include "Particles/ParticlesEmittersPool.hpp"
+#include "Render/ETRenderNode.hpp"
 #include "RenderFont.hpp"
 #include "RenderUtils.hpp"
 
@@ -175,13 +176,16 @@ public:
     static void QueueModelMatUpdate(DrawCmd& drawCmd, const Mat4& newModelMat);
     static void QueueScaleUpdate(DrawCmd& drawCmd, const Vec3& newScale);
     static void QueueSizeUpdate(DrawCmd& drawCmd, const Vec2& prevSize, const Vec2& newSize);
-    static void QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatches);
+    static void QueueNinePatchUpdate(DrawCmd& drawCmd, const Vec2& newPatchesTextureCoords, float newPatchSize,
+        ENinePatchSizeType newPatchSizeType);
     static void QueueTexInfoUpdate(DrawCmd& drawCmd, const TextureInfo& newTexInfo);
 
 public:
 
     DrawNinePatchCmd() :
-        ninePatches(0.3f, 0.3f) {}
+        patchesTextureCoords(0.3f, 0.3f),
+        patchSize(0.3f),
+        patchSizeType(ENinePatchSizeType::SmallestSidePct) {}
 
 public:
 
@@ -190,7 +194,9 @@ public:
 public:
 
     Vec2 vertCoord;
-    Vec2 ninePatches;
+    Vec2 patchesTextureCoords;
+    float patchSize;
+    ENinePatchSizeType patchSizeType;
 };
 
 class DrawParticlesExecutor;

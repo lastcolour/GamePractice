@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QStyle
+from PyQt6.QtWidgets import QTreeWidget, QTreeWidgetItem, QStyle
 
 class FileTreeView(QTreeWidget):
     def __init__(self):
@@ -18,7 +18,7 @@ class FileTreeView(QTreeWidget):
             if node.isDir():
                 treeItem = QTreeWidgetItem(parentItem)
                 treeItem.setText(0, node.getBaseName())
-                treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_DirIcon))
+                treeItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon))
                 treeItem._node = node
                 if node.getRelativePath() in self._expandedItems:
                     treeItem.setExpanded(True)
@@ -26,7 +26,7 @@ class FileTreeView(QTreeWidget):
             else:
                 treeItem = QTreeWidgetItem(parentItem)
                 treeItem.setText(0, node.getBaseName())
-                treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+                treeItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon))
                 treeItem._node = node
 
     def _on_itemExpanded(self, item):

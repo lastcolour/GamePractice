@@ -107,7 +107,7 @@ bool AndroidEventManager::hadleMotionEvent(AInputEvent* inputEvent) {
 
     TouchEvent event;
     event.pt = touchPt;
-    event.eventT = TimePoint::GetNowTime();
+    event.eventT = TimePoint::GetNow();
 
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
     switch(eventAction)
@@ -139,7 +139,7 @@ bool AndroidEventManager::handleKeyEvent(AInputEvent* inputEvent) {
     }
 
     ButtonEvent event;
-    event.eventT = TimePoint::GetNowTime();
+    event.eventT = TimePoint::GetNow();
 
     int32_t eventAction = AKeyEvent_getAction(inputEvent);
     if(eventAction == AKEY_EVENT_ACTION_DOWN) {

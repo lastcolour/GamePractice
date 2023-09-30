@@ -38,7 +38,7 @@ public:
     std::vector<std::unique_ptr<RunTask>>& getTasks();
 
     bool getTaskRunInfo(const std::string& taskName, TaskRunInfo& outInfo);
-    bool getTaskRunInfo(const RunTask& task, TaskRunInfo& outInfo);
+    bool getTaskRunInfo(const RunTask& queryTask, TaskRunInfo& outInfo);
 
 private:
 
@@ -60,10 +60,9 @@ private:
     PredicateT predFunc;
     std::unique_ptr<ThreadsPool> threadsPool;
     std::vector<std::unique_ptr<RunTask>> tasks;
-    std::vector<std::unique_ptr<ThreadJob>> jobs;
-    std::vector<ThreadJob*> pendingJobs;
     std::atomic<bool> predicateFailed;
     std::atomic<bool> suspended;
+    std::atomic<int> currentIdx;
     std::condition_variable cond;
     RunMode mode;
 };

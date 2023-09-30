@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QTreeWidget, QVBoxLayout, QTreeWidgetItem, QLineEdit, QStyle
-from PyQt5 import QtCore
+from PyQt6.QtWidgets import QWidget, QTreeWidget, QVBoxLayout, QTreeWidgetItem, QLineEdit, QStyle
+from PyQt6 import QtCore
 
 from menu.EntityTreeMenu import EntityTreeMenu
 from utils.Managers import GetEventManager
@@ -25,7 +25,7 @@ class EntityTreeView(QWidget):
         self._tree = QTreeWidget()
         self._tree.setHeaderHidden(True)
         self._tree.setColumnCount(1)
-        self._tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self._tree.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._signal_tree_contextMenuRequested)
         self._tree.currentItemChanged.connect(self._signal_tree_currentItemChanged)
         self._rootLayout.addWidget(self._tree)
@@ -44,13 +44,13 @@ class EntityTreeView(QWidget):
         treeItem = QTreeWidgetItem(parentItem)
         if entity.isInternal() or entity.getParent() == None:
             treeItem.setText(0, entity.getName())
-            treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+            treeItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon))
         else:
             treeItem.setText(0, "{0} {1}".format(entity.getName(), entity.getNameSuffix()))
             if not entity.isInvalidEntity():
-                treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileLinkIcon))
+                treeItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_FileLinkIcon))
             else:
-                treeItem.setIcon(0, self.style().standardIcon(QStyle.SP_MessageBoxCritical))
+                treeItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxCritical))
         treeItem._entity = entity
         for child in entity.getChildren():
             self._createTreeItem(treeItem, child)
@@ -88,7 +88,7 @@ class EntityTreeView(QWidget):
 
     def _createEditItem(self, treeItem):
         newItem = QTreeWidgetItem(treeItem)
-        newItem.setIcon(0, self.style().standardIcon(QStyle.SP_FileIcon))
+        newItem.setIcon(0, self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon))
         return newItem
 
     def _createNewChildEntity(self, treeItem, childName):

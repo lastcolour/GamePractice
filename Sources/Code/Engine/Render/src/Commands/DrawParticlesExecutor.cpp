@@ -88,7 +88,7 @@ void DrawParticlesExecutor::draw(RenderState& renderState, DrawCmdSlice& slice) 
 
         if(!prevCmd || prevCmd->texObj != cmd.texObj || prevCmd->renderConfig.textureInfo != cmd.renderConfig.textureInfo) {
             shader->setTexture2d(UniformType::Texture, 0, *cmd.texObj,
-                cmd.renderConfig.textureInfo);   
+                cmd.renderConfig.textureInfo);
         }
 
         for(auto& emitter : cmd.emittersPool.getEmitters()) {

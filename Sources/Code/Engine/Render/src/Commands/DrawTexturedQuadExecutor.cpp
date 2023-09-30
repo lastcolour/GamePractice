@@ -51,7 +51,7 @@ void DrawTexturedQuadExecutor::preDraw(RenderState& renderState) {
         return;
     }
     std::vector<Vec4> vertData;
-    for(int i = 0; i <  visibleCount; ++i) {
+    for(size_t i = 0; i < visibleCount; ++i) {
         DrawTexturedQuadCmd* cmd = queue[i];
         setupGeometry(*cmd, vertData);
     }

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QStatusBar, QLabel
+from PyQt6.QtWidgets import QStatusBar, QLabel
 
 class StatusBar(QStatusBar):
     def __init__(self):

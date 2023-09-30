@@ -37,4 +37,10 @@ struct ETUIViewTransitionManager {
     virtual bool ET_hasActiveTransition() const = 0;
 };
 
+struct ETUIReAlignManager {
+    virtual ~ETUIReAlignManager() = default;
+    virtual void ET_setLayoutDirty(EntityId entId) = 0;
+    virtual void ET_doReAlign() = 0;
+};
+
 #endif /* __ET_UI_VIEW_HPP__ */

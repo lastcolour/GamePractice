@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QFrame, QScrollArea
-from PyQt5 import QtCore
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QFrame, QScrollArea
+from PyQt6 import QtCore
 
 from .LogicView import LogicView
 from .values.EditTransformValue import EditTransformValue
@@ -32,12 +32,12 @@ class EntityLogicsView(QWidget):
 
         self._logicsLayout = QVBoxLayout()
 
-        self._frame = QFrame()
         self._frameLayout = QVBoxLayout()
         self._frameLayout.addLayout(self._logicsLayout)
         self._frameLayout.addStretch()
+        self._frame = QFrame()
         self._frame.setLayout(self._frameLayout)
-        self._frame.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self._frame.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self._frame.customContextMenuRequested.connect(self._signal_frame_contexMenuRequested)
 
         self._scroll = QScrollArea()

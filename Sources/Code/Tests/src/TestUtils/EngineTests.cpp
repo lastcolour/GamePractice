@@ -51,8 +51,17 @@ protected:
             modules.emplace_back(new EntityModule);
             modules.emplace_back(new PlatformModule);
             modules.emplace_back(new RenderModule);
-            // modules.emplace_back(new UIModule);
-            // modules.emplace_back(new GameModule);
+        } else if(appModules == ETestAppModules::CheckUI) {
+            modules.emplace_back(new EntityModule);
+            modules.emplace_back(new PlatformModule);
+            modules.emplace_back(new RenderModule);
+            modules.emplace_back(new UIModule);
+        }  else if(appModules == ETestAppModules::CheckGame) {
+            modules.emplace_back(new EntityModule);
+            modules.emplace_back(new PlatformModule);
+            modules.emplace_back(new RenderModule);
+            modules.emplace_back(new UIModule);
+            modules.emplace_back(new GameModule);
         }
     }
 
@@ -86,14 +95,16 @@ void EngineTests::TearDown() {
     }
     tempObject.clear();
 
+    ET_SendEvent(&ETEntityManager::ET_destroyAllEntities);
+
     size_t entitiesCount = 0;
     ET_SendEventReturn(entitiesCount, &ETEntityManager::ET_getEntitiesCount);
 
-    EXPECT_EQ(entitiesCount, 0);
+    EXPECT_EQ(entitiesCount, 0u);
 }
 
 Entity* EngineTests::createVoidObject() {
-    Entity* resEntity;
+    Entity* resEntity = nullptr;
     ET_SendEventReturn(resEntity, &ETEntityManager::ET_createRawEntity, TEST_OBJECT_NAME);
     tempObject.push_back(resEntity->getEntityId());
     return resEntity;

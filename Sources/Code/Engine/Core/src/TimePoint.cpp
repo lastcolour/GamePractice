@@ -1,6 +1,6 @@
 #include "Core/TimePoint.hpp"
 
-TimePoint TimePoint::GetNowTime() {
+TimePoint TimePoint::GetNow() {
     TimePoint timePoint;
     timePoint.value =  ClockT::now();
     return timePoint;
@@ -22,16 +22,32 @@ TimePoint& TimePoint::operator=(const TimePoint& other) {
 TimePoint::~TimePoint() {
 }
 
-float TimePoint::getSecElapsedFrom(const TimePoint& other) const {
-    auto msValue = std::chrono::duration_cast<std::chrono::milliseconds>(value - other.value).count();
+float TimePoint::getMsDeltaWith(const TimePoint& other) const {
+    auto msValue = std::chrono::duration_cast<std::chrono::microseconds>(value - other.value).count();
     auto sValue = static_cast<float>(msValue / 1000.f);
     return sValue;
 }
 
-float TimePoint::getMiliSecElapsedFrom(const TimePoint& other) const {
-    auto mcsValue = std::chrono::duration_cast<std::chrono::microseconds>(value - other.value).count();
+float TimePoint::getSecDeltaWith(const TimePoint& other) const {
+    auto mcsValue = std::chrono::duration_cast<std::chrono::milliseconds>(value - other.value).count();
     auto msValue = static_cast<float>(mcsValue / 1000.f);
     return msValue;
+}
+
+float TimePoint::getMsDeltaWithNow() const {
+    auto mcsValue = std::chrono::duration_cast<std::chrono::microseconds>(ClockT::now() - value).count();
+    auto msValue = static_cast<float>(mcsValue / 1000.f);
+    return msValue;
+}
+
+float TimePoint::getSecDeltaWithNow() const {
+    auto mcsValue = std::chrono::duration_cast<std::chrono::milliseconds>(ClockT::now() - value).count();
+    auto msValue = static_cast<float>(mcsValue / 1000.f);
+    return msValue;
+}
+
+void TimePoint::addMicroSecDelta(float mcsDelta) {
+    value += std::chrono::nanoseconds(static_cast<int>(mcsDelta * 1000.f));
 }
 
 void TimePoint::addMiliSecDelta(float msDelta) {

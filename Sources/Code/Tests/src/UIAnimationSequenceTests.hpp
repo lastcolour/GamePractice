@@ -7,7 +7,7 @@ class UIAnimationSequenceTests : public EngineTests {
 public:
 
     static void SetUpTestCase() {
-        CreateTestApp(ETestAppModules::CheckRender);
+        CreateTestApp(ETestAppModules::CheckUI);
     }
 };
 

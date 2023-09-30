@@ -103,7 +103,7 @@ TEST_F(GameDoubleTapTests, CheckTapExpire) {
     elemLogic->ET_setType(EBoardElemType::Bomb);
 
 
-    auto startT = TimePoint::GetNowTime();
+    auto startT = TimePoint::GetNow();
     DoubleTapDetection tapDetector;
 
     {
@@ -147,7 +147,7 @@ TEST_F(GameDoubleTapTests, CheckLongRelease) {
     elemLogic->ET_setType(EBoardElemType::Bomb);
 
 
-    auto startT = TimePoint::GetNowTime();
+    auto startT = TimePoint::GetNow();
     DoubleTapDetection tapDetector;
 
     {

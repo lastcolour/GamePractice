@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTreeWidgetItemIterator
+from PyQt6.QtWidgets import QTreeWidgetItemIterator
 
 import subprocess
 import platform
