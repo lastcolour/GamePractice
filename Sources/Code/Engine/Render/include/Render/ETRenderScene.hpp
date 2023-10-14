@@ -31,7 +31,7 @@ public:
 
 struct ETRenderScene {
     virtual ~ETRenderScene() = default;
-    virtual void ET_addItem(int zIndexOffset, EntityId entId) = 0;
+    virtual void ET_addItem(EntityId entId, int zIndexOffset) = 0;
     virtual void ET_removeItem(EntityId entId) = 0;
     virtual const RenderSceneParams& ET_getParams() const = 0;
     virtual void ET_setParams(RenderSceneParams& newParams) = 0;

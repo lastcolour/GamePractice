@@ -74,7 +74,7 @@
             "data": {
               "isVisible": true,
               "alpha": 0.5,
-              "zIndex": 2,
+              "zIndex": 0,
               "size": {
                 "x": 600.0,
                 "y": 307.20001220703125
@@ -148,7 +148,7 @@
             "data": {
               "isVisible": true,
               "alpha": 0.4000000059604645,
-              "zIndex": 2,
+              "zIndex": 0,
               "size": {
                 "x": 600.0,
                 "y": 307.20001220703125

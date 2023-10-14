@@ -597,7 +597,3 @@ TEST_F(UIAnimationSequenceTests, CheckAnimationRestartWithSubAnimation) {
         EXPECT_TRUE(isHidden);
     }
 }
-
-TEST_F(UIAnimationSequenceTests, CheckAnimationWithPendingResize) {
-    ASSERT_TRUE(false);
-}

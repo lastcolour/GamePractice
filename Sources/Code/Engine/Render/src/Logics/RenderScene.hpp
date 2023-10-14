@@ -23,7 +23,7 @@ public:
     void onLoaded() override;
 
     // ETRenderScene
-    void ET_addItem(int zIndexOffset, EntityId entId) override;
+    void ET_addItem(EntityId entId, int zIndexOffset) override;
     void ET_removeItem(EntityId entId) override;
     const RenderSceneParams& ET_getParams() const override;
     void ET_setParams(RenderSceneParams& newParams) override;

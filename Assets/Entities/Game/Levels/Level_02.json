@@ -29,7 +29,7 @@
             "type": "NinePatchImageLogic",
             "id": 3,
             "data": {
-              "isVisible": false,
+              "isVisible": true,
               "alpha": 0.8999999761581421,
               "zIndex": 1,
               "textureInfo": {
@@ -43,8 +43,8 @@
                 }
               },
               "size": {
-                "x": 920.0,
-                "y": 920.0
+                "x": 600.0,
+                "y": 600.0
               },
               "patchesTextureCoords": {
                 "x": 0.30000001192092896,
@@ -97,7 +97,7 @@
           "x": 10,
           "y": 10
         },
-        "cellScale": 0.7,
+        "cellScale": 0.699999988079071,
         "backgroundId": [
           1
         ]

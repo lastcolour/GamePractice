@@ -23,6 +23,7 @@ uint32_t Initiliaze() {
 }
 
 void DeInitialize() {
+    INTERNAL_BUFFER.reset();
     if (!EDITOR_APP) {
         return;
     }

@@ -57,11 +57,11 @@ EntityId UILayoutBox::ET_getRenderId(EntityId newRenderId) const {
 }
 
 AABB2D UILayoutBox::ET_getBox() const {
-    return UI::ApplyEntityTmToBox(getEntityId(), aabb);
+    return UI::ApplyTmToBox(getTransform(), aabb);
 }
 
 UIBoxMargin UILayoutBox::ET_getMargin() const {
-    return UI::CalculateMargin(getEntityId(), styleMargin);
+    return UI::CalculateMargin(getTransform(), styleMargin);
 }
 
 void UILayoutBox::onZIndexChanged(int newZIndex) {
@@ -82,7 +82,11 @@ void UILayoutBox::onAlphaChanged(float newAlpha) {
 
 void UILayoutBox::ET_onLayoutChanged(const AABB2D& newCombinedBox) {
     AABB2D prevAabb = aabb;
-    aabb =  UI::SetTmCenterToBox(getEntityId(), newCombinedBox);
+    aabb = newCombinedBox;
+
+    auto& tm = getTransform();
+    aabb.setCenter(tm.pt.x, tm.pt.y);
+
     Vec2 newSize = aabb.getSize();
 
     if(prevAabb.getSize() != newSize) {

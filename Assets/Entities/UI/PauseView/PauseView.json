@@ -97,14 +97,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 25.987499237060547,
+                          "fontSize": 28.799999237060547,
                           "text": "Resume"
                         }
                       }
@@ -143,7 +143,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/pause_button_bg.png",
                       "lerpType": "Point",
@@ -155,8 +155,8 @@
                       }
                     },
                     "size": {
-                      "x": 363.8249816894531,
-                      "y": 64.96875
+                      "x": 403.20001220703125,
+                      "y": 72.0
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -302,14 +302,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 25.987499237060547,
+                          "fontSize": 28.799999237060547,
                           "text": "Exit"
                         }
                       }
@@ -408,7 +408,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/pause_button_bg.png",
                       "lerpType": "Point",
@@ -420,8 +420,8 @@
                       }
                     },
                     "size": {
-                      "x": 363.8249816894531,
-                      "y": 64.96875
+                      "x": 403.20001220703125,
+                      "y": 72.0
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -507,14 +507,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 0,
                             "g": 0,
                             "b": 0,
                             "a": 255
                           },
-                          "fontSize": 25.987499237060547,
+                          "fontSize": 28.799999237060547,
                           "text": "Restart"
                         }
                       }
@@ -613,7 +613,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/pause_button_bg.png",
                       "lerpType": "Point",
@@ -625,8 +625,8 @@
                       }
                     },
                     "size": {
-                      "x": 363.8249816894531,
-                      "y": 64.96875
+                      "x": 403.20001220703125,
+                      "y": 72.0
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -690,7 +690,7 @@
             "data": {
               "isVisible": true,
               "alpha": 0.8999999761581421,
-              "zIndex": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/UI/pause_bg.png",
                 "lerpType": "Point",
@@ -702,8 +702,8 @@
                 }
               },
               "size": {
-                "x": 389.8125,
-                "y": 285.8625183105469
+                "x": 432.0,
+                "y": 316.79998779296875
               },
               "patchesTextureCoords": {
                 "x": 0.30000001192092896,
@@ -800,7 +800,7 @@
           },
           {
             "lerpMode": "Linear",
-            "duration": 0.3,
+            "duration": 0.30000001192092896,
             "offset": {
               "x": 0.0,
               "y": 0.0
@@ -830,7 +830,7 @@
         "frames": [
           {
             "lerpMode": "Linear",
-            "duration": 0.2,
+            "duration": 0.20000000298023224,
             "offset": {
               "x": 0.0,
               "y": 20.0
@@ -850,12 +850,12 @@
       "data": {
         "group": "Music",
         "eqaulizer": {
-          "volume": 0.7,
-          "low": -0.8,
-          "lowMid": -0.7,
-          "mid": -0.8,
-          "highMid": 0.8,
-          "high": 0.8
+          "volume": 0.699999988079071,
+          "low": -0.800000011920929,
+          "lowMid": -0.699999988079071,
+          "mid": -0.800000011920929,
+          "highMid": 0.800000011920929,
+          "high": 0.800000011920929
         },
         "enabled": false
       }
@@ -865,11 +865,11 @@
       "id": 13,
       "data": {
         "isVisible": false,
-        "alpha": 0.2,
+        "alpha": 0.20000000298023224,
         "zIndex": 0,
         "size": {
-          "x": 1190.0,
-          "y": 924.0
+          "x": 600.0,
+          "y": 1024.0
         },
         "color": {
           "r": 0,

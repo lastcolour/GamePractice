@@ -26,7 +26,7 @@ LevelButtonList::~LevelButtonList() {
 
 void LevelButtonList::init() {
     ETNode<ETLevelButtonList>::connect(getEntityId());
-    initLevelProress();
+    initLevelProgress();
 }
 
 void LevelButtonList::deinit() {
@@ -47,7 +47,7 @@ int LevelButtonList::ET_getDoneStars() const {
     return currStarsDone;
 }
 
-void LevelButtonList::initLevelProress() {
+void LevelButtonList::initLevelProgress() {
     bool prevLevelHasStars = true;
     for(auto& button : levelButtons) {
         if(!button.buttonId.isValid()) {
@@ -59,8 +59,7 @@ void LevelButtonList::initLevelProress() {
 
         const LevelProgress* lvlProgress = nullptr;
         ET_SendEventReturn(lvlProgress, &ETLevelsProgression::ET_getLevelProgress, button.levelName.c_str());
-        if(lvlProgress) {
-            assert(lvlProgress->stars > 0 && "Invalid stars amount");
+        if(lvlProgress && lvlProgress->stars > 0) {
             prevLevelHasStars = true;
             ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Unlocked, lvlProgress->stars);
         } else {

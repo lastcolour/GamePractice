@@ -20,7 +20,10 @@ struct BufferImpl {
         }
     }
 
-    BufferImpl(BufferImpl&& other) : size(other.size), data(other.data) {
+    BufferImpl(BufferImpl&& other) {
+        reset();
+        size = other.size;
+        data = other.data;
         other.data = nullptr;
         other.size = 0u;
     }
@@ -28,8 +31,8 @@ struct BufferImpl {
     BufferImpl& operator=(BufferImpl&& other) {
         if(this != &other) {
             reset();
-            data = other.data;
             size = other.size;
+            data = other.data;
 
             other.size = 0;
             other.data = nullptr;
@@ -43,9 +46,11 @@ struct BufferImpl {
     }
 
     void reset() {
-        GetEnv()->GetMemoryAllocator()->deallocate(data);
-        size = 0u;
-        data = nullptr;
+        if(data != nullptr) {
+            GetEnv()->GetMemoryAllocator()->deallocate(data);
+            size = 0u;
+            data = nullptr;
+        }
     }
 };
 

@@ -26,7 +26,7 @@ TEST_F(RenderSceneTests, CheckZIndex) {
         object.logic = object.entity->addCustomLogic<RenderSimpleLogic>();
         objects.push_back(object);
 
-        rootScene->ET_addItem(i + 1, object.entity->getEntityId());
+        rootScene->ET_addItem(object.entity->getEntityId(), i + 1);
     }
 
     for(int i = 0; i < 5; ++i) {
@@ -57,7 +57,7 @@ TEST_F(RenderSceneTests, CheckZIndexRecurive) {
     }
 
     int zIndexOffset = 3;
-    rootScene->ET_addItem(zIndexOffset, objects[0].entity->getEntityId());
+    rootScene->ET_addItem(objects[0].entity->getEntityId(), zIndexOffset);
 
     for(int i = 0; i < 5; ++i) {
         auto& obj = objects[i];
@@ -75,7 +75,7 @@ TEST_F(RenderSceneTests, CheckAddHiddenChild) {
 
     childLogic->ET_hide();
 
-    rootScene->ET_addItem(1, child->getEntityId());
+    rootScene->ET_addItem(child->getEntityId(), 1);
 
     {
         rootLogic->ET_hide();
@@ -113,7 +113,7 @@ TEST_F(RenderSceneTests, CheckRecursiveRemove) {
         objects.push_back(obj);
     }
 
-    rootScene->ET_addItem(1, objects[0].entity->getEntityId());
+    rootScene->ET_addItem(objects[0].entity->getEntityId(), 1);
 
     EXPECT_EQ(rootScene->ET_getItemsCount(), 5);
 
@@ -141,9 +141,9 @@ TEST_F(RenderSceneTests, CheckDoNotOverrideChildRenderScene) {
     }
 
     ET_SendEvent(objects[0].entity->getEntityId(),
-        &ETRenderScene::ET_addItem, 1, objects[1].entity->getEntityId());
+        &ETRenderScene::ET_addItem, objects[1].entity->getEntityId(), 1);
     ET_SendEvent(objects[1].entity->getEntityId(),
-        &ETRenderScene::ET_addItem, 1, objects[2].entity->getEntityId());
+        &ETRenderScene::ET_addItem, objects[2].entity->getEntityId(), 1);
 
     {
         size_t itemCount = 0;

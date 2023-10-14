@@ -62,11 +62,12 @@ class TestAssetsModel(unittest.TestCase):
         fileTree = self._getAssets().getEntitiesTree()
         rootItem = fileTree.getChildren()[0]
         newItem = self._getAssets().createNewDir(rootItem, "TestDir")
+        if newItem != None:
+            self._toRemove.append(newItem.getFullPath())
         self.assertIsNotNone(newItem)
         itemPath = newItem.getFullPath()
         self.assertTrue(os.path.exists(itemPath))
         self.assertTrue(os.path.isdir(itemPath))
-        self._toRemove.append(itemPath)
         self.assertTrue(self._getAssets().removeNode(newItem))
         self.assertFalse(os.path.exists(itemPath))
 
@@ -74,6 +75,8 @@ class TestAssetsModel(unittest.TestCase):
         fileTree = self._getAssets().getEntitiesTree()
         rootItem = fileTree.getChildren()[0]
         newItem = self._getAssets().createNewEntity(rootItem, "TestEntity.json")
+        if newItem != None:
+            self._toRemove.append(newItem.getFullPath())
         self.assertIsNotNone(newItem)
         itemPath = newItem.getFullPath()
         self.assertTrue(os.path.exists(itemPath))

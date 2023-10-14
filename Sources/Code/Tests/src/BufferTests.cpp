@@ -137,3 +137,23 @@ TEST_F(BufferTests, CheckResizeToSameSize) {
 
     ASSERT_EQ(oldPtr, newPtr);
 }
+
+TEST_F(BufferTests, CheckBigBuffer) {
+    Memory::Buffer buff1;
+    buff1.resize(34164);
+
+    EXPECT_EQ(GetEnv()->GetMemoryAllocator()->getNumAliveBigChunks(), 1u);
+
+    Memory::Buffer buff2;
+    buff2 = std::move(buff1); 
+
+    EXPECT_EQ(GetEnv()->GetMemoryAllocator()->getNumAliveBigChunks(), 1u);
+
+    Memory::Buffer buff3(std::move(buff2));
+
+    EXPECT_EQ(GetEnv()->GetMemoryAllocator()->getNumAliveBigChunks(), 1u);
+
+    buff3.resize(0);
+
+    EXPECT_EQ(GetEnv()->GetMemoryAllocator()->getNumAliveBigChunks(), 0u);
+}

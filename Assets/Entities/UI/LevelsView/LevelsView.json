@@ -97,7 +97,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 57,
+                          "zIndex": 56,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -160,7 +160,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 57,
+                          "zIndex": 56,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -222,7 +222,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.949999988079071,
-                    "zIndex": 56,
+                    "zIndex": 55,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_white_bg.png",
                       "lerpType": "Point",
@@ -237,9 +237,12 @@
                       "x": 216.0,
                       "y": 37.439998626708984
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 10.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 },
                 {
@@ -361,7 +364,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 52,
+                          "zIndex": 51,
                           "color": {
                             "r": 0,
                             "g": 0,
@@ -420,7 +423,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.949999988079071,
-                    "zIndex": 51,
+                    "zIndex": 50,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_white_bg.png",
                       "lerpType": "Point",
@@ -435,9 +438,12 @@
                       "x": 345.6000061035156,
                       "y": 57.599998474121094
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 4.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]
@@ -573,7 +579,7 @@
             "transform": {
               "pos": {
                 "x": 0.0,
-                "y": 432.00006103515625,
+                "y": 0.0,
                 "z": 0.0
               },
               "scale": {
@@ -781,7 +787,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 607.6800537109375,
+                      "y": 607.6801147460938,
                       "z": 0.0
                     },
                     "scale": {
@@ -804,7 +810,7 @@
                   "transform": {
                     "pos": {
                       "x": 0.0,
-                      "y": 786.2401123046875,
+                      "y": 786.2401733398438,
                       "z": 0.0
                     },
                     "scale": {

@@ -33,7 +33,7 @@ void UIBox::deinit() {
 }
 
 AABB2D UIBox::ET_getBox() const {
-    return UI::ApplyEntityTmToBox(getEntityId(), aabb);
+    return UI::ApplyTmToBox(getTransform(), aabb);
 }
 
 void UIBox::calculateBox() {
@@ -41,7 +41,9 @@ void UIBox::calculateBox() {
 
     aabb.bot = Vec2(0.f);
     aabb.top = UI::CalculateBoxSize(style);
-    aabb = UI::SetTmCenterToBox(getEntityId(), aabb);
+
+    auto& tm = getTransform();
+    aabb.setCenter(tm.pt.x, tm.pt.y);
 
     if(prevBox.getSize() != aabb.getSize()) {
         Vec2 boxSize = aabb.getSize();
@@ -65,7 +67,7 @@ void UIBox::ET_setStyle(const UIBoxStyle& newStyle) {
 }
 
 UIBoxMargin UIBox::ET_getMargin() const {
-    return UI::CalculateMargin(getEntityId(), style.margin);
+    return UI::CalculateMargin(getTransform(), style.margin);
 }
 
 void UIBox::ET_onViewPortChanged(const Vec2i& newSize) {
@@ -92,9 +94,10 @@ void UIBox::onZIndexChanged(int newZIndex) {
 void UIBox::onLoaded() {
     UIElement::onLoaded();
 
+    calculateBox();
+
     ET_setRenderId(boxRenderId);
 
-    calculateBox();
     updateSelfLayout();
 }
 

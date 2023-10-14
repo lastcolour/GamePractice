@@ -39,6 +39,11 @@ AABB2D getUIBox(EntityId targetId) {
     return resBox;
 }
 
+float convertScrollProgress(float progress, const UIScrollAreaStyle& style) {
+    float v = style.origin == UIScrollOrigin::End ? 1.f - progress : progress;
+    return Math::Clamp(v, 0.f, 1.f);
+}
+
 } // namespace
 
 void UIScrollArea::Reflect(ReflectContext& ctx) {
@@ -160,6 +165,7 @@ void UIScrollArea::addReleaseImpulse() {
     float endVel = 0.f;
 
     float dt = lastEvent.timeP.getSecDeltaWith(firstEvent.timeP);
+
     dt = std::max(dt, 0.008f);
 
     if(style.type == UIScrollType::Horizontal) {
@@ -344,7 +350,8 @@ const UIScrollAreaStyle& UIScrollArea::ET_getStyle() const {
 }
 
 void UIScrollArea::ET_reAlign() {
-    ET_setScrollProgress(scrollProgress);
+    const float alignScrollProgress = convertScrollProgress(scrollProgress, style);
+    ET_setScrollProgress(alignScrollProgress);
 }
 
 void UIScrollArea::ET_enableKinematicScroll(bool flag) {
@@ -373,25 +380,16 @@ void UIScrollArea::setPosUpdateProg(const AABB2D& scrollArea, const Vec2& newPt)
 }
 
 float UIScrollArea::ET_getScrollProgress() const {
-    float resProg = scrollProgress;
-    if(style.origin == UIScrollOrigin::End) {
-        resProg = 1.f - scrollProgress;
-    }
-    return resProg;
+    return convertScrollProgress(scrollProgress, style);
 }
 
 void UIScrollArea::ET_setScrollProgress(float newScrollProgress) {
     resetMoveState();
 
-    scrollProgress = newScrollProgress;
+    scrollProgress = convertScrollProgress(newScrollProgress, style);
     auto scrollArea = ET_getScrollArea();
 
-    float resProg = scrollProgress;
-    if(style.origin == UIScrollOrigin::End) {
-        resProg = 1.f - scrollProgress;
-    }
-
-    Vec2 resPt =  Math::Lerp(scrollArea.bot, scrollArea.top, resProg);
+    Vec2 resPt =  Math::Lerp(scrollArea.bot, scrollArea.top, scrollProgress);
     setPosUpdateProg(scrollArea, resPt);
 }
 

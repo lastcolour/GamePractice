@@ -29,7 +29,7 @@
             "type": "NinePatchImageLogic",
             "id": 3,
             "data": {
-              "isVisible": false,
+              "isVisible": true,
               "alpha": 0.8999999761581421,
               "zIndex": 0,
               "textureInfo": {
@@ -43,8 +43,8 @@
                 }
               },
               "size": {
-                "x": 920.0,
-                "y": 920.0
+                "x": 15.0,
+                "y": 60.0
               },
               "patchesTextureCoords": {
                 "x": 0.30000001192092896,
@@ -83,7 +83,7 @@
           "minScore": 10
         },
         "threeStars": {
-          "minScore": 300
+          "minScore": 992
         }
       }
     },
@@ -94,8 +94,8 @@
         "fallSpeed": 0.0,
         "fallAcceleration": 30.0,
         "size": {
-          "x": 10,
-          "y": 10
+          "x": 2,
+          "y": 5
         },
         "cellScale": 0.699999988079071,
         "backgroundId": [
@@ -109,28 +109,12 @@
       "data": {
         "elems": [
           {
-            "elemType": "Blue",
-            "weight": 10
-          },
-          {
-            "elemType": "Purple",
-            "weight": 10
+            "elemType": "Bomb",
+            "weight": 1
           },
           {
             "elemType": "Green",
-            "weight": 1
-          },
-          {
-            "elemType": "Yellow",
-            "weight": 1
-          },
-          {
-            "elemType": "Red",
-            "weight": 1
-          },
-          {
-            "elemType": "HRocket",
-            "weight": 1
+            "weight": 3
           }
         ]
       }
@@ -139,7 +123,7 @@
       "type": "GameMovesLimitLogic",
       "id": 13,
       "data": {
-        "maxMoves": 20
+        "maxMoves": 30
       }
     }
   ]

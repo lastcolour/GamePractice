@@ -973,9 +973,12 @@
                             "x": 144.0,
                             "y": 144.0
                           },
-                          "horizontal": 0.30000001192092896,
-                          "vertical": 0.30000001192092896,
-                          "patchScale": 1.0
+                          "patchesTextureCoords": {
+                            "x": 0.30000001192092896,
+                            "y": 0.30000001192092896
+                          },
+                          "patchSize": 0.30000001192092896,
+                          "patchSizeType": "SmallestSide"
                         }
                       },
                       {
@@ -1469,9 +1472,12 @@
                             "x": 144.0,
                             "y": 144.0
                           },
-                          "horizontal": 0.30000001192092896,
-                          "vertical": 0.30000001192092896,
-                          "patchScale": 1.0
+                          "patchesTextureCoords": {
+                            "x": 0.30000001192092896,
+                            "y": 0.30000001192092896
+                          },
+                          "patchSize": 0.30000001192092896,
+                          "patchSizeType": "SmallestSide"
                         }
                       },
                       {
@@ -1600,9 +1606,12 @@
                       "x": 144.0,
                       "y": 144.0
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 1.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 },
                 {

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6 import QtCore
 
 from utils.Log import Log
@@ -68,6 +68,10 @@ class EditorView(QMainWindow):
         self._entityLogicsView = EntityLogicsView()
         self.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, WrapMainDockWidget(self._entityLogicsView, "Entity Logics"))
 
+    def closeEvent(self, event):
+        self._deinit()
+        return super().closeEvent(event)
+
     def __del__(self):
         self._deinit()
 
@@ -75,6 +79,7 @@ class EditorView(QMainWindow):
         self._appConfig = AppConfig()
         self._editorNative = EditorNative(self._appConfig)
         if not self._editorNative.init():
+            self._editorNative = None
             Log.error("[EditorView:_init] Can't init native editor")
             return False
         self._assetsModel = AssetsModel(self._appConfig)
@@ -94,6 +99,7 @@ class EditorView(QMainWindow):
     def _deinit(self):
         if self._editorNative is not None:
             self._editorNative.deinit()
+            self._editorNative = None
 
 def main():
     app = QApplication([])

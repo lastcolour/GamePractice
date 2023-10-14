@@ -461,7 +461,7 @@ void GameBoardLogic::initElem(BoardElement& elem, const Vec2i& boardPt) {
     ET_SendEvent(getEntityId(), &ETEntity::ET_addChild, elem.entId);
     setElemBoardPos(elem, boardPt);
     GameUtils::SetElemState(elem.entId, EBoardElemState::Static);
-    ET_SendEvent(backgroundId, &ETRenderScene::ET_addItem, GameUtils::BOARD_ELEM_Z_OFFSET, elem.entId);
+    ET_SendEvent(backgroundId, &ETRenderScene::ET_addItem, elem.entId, GameUtils::BOARD_ELEM_Z_OFFSET);
     ET_SendEvent(elem.entId, &ETGameBoardRenderElem::ET_initRender, objectSize);
 }
 

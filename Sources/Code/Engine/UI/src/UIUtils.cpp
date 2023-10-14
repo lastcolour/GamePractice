@@ -10,10 +10,7 @@
 
 namespace UI {
 
-UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin) {
-    Transform tm;
-    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
-
+UIBoxMargin CalculateMargin(const Transform& tm, const UIBoxStyle::Margin& margin) {
     UIBoxMargin resMargin;
 
     auto uiConfig = Core::GetGlobal<UIConfig>();
@@ -163,20 +160,7 @@ Vec2 CalculateBoxSize(const UIBoxStyle& style) {
     return resSize;
 }
 
-AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box) {
-    Transform tm;
-    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
-
-    auto resBox = box;
-    resBox.setCenter(tm.pt.x, tm.pt.y);
-
-    return resBox;
-}
-
-AABB2D ApplyEntityTmToBox(EntityId entityId, const AABB2D& box) {
-    Transform tm;
-    ET_SendEventReturn(tm, entityId, &ETEntity::ET_getTransform);
-
+AABB2D ApplyTmToBox(const Transform& tm, const AABB2D& box) {
     const auto& scale = tm.scale;
 
     AABB2D resBox;

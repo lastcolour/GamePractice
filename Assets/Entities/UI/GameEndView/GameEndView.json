@@ -123,7 +123,7 @@
                               "data": {
                                 "isVisible": true,
                                 "alpha": 1.0,
-                                "zIndex": 8,
+                                "zIndex": 3,
                                 "textureInfo": {
                                   "filename": "Images/UI/start.png",
                                   "lerpType": "Point",
@@ -135,8 +135,8 @@
                                   }
                                 },
                                 "size": {
-                                  "x": 103.94998168945312,
-                                  "y": 103.94998168945312
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
                                 }
                               }
                             },
@@ -231,7 +231,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "textureInfo": {
                             "filename": "Images/UI/start_bg.png",
                             "lerpType": "Point",
@@ -243,8 +243,8 @@
                             }
                           },
                           "size": {
-                            "x": 90.95626831054688,
-                            "y": 90.95626831054688
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
                           }
                         }
                       }
@@ -326,7 +326,7 @@
                               "data": {
                                 "isVisible": false,
                                 "alpha": 1.0,
-                                "zIndex": 8,
+                                "zIndex": 3,
                                 "textureInfo": {
                                   "filename": "Images/UI/start.png",
                                   "lerpType": "Point",
@@ -338,8 +338,8 @@
                                   }
                                 },
                                 "size": {
-                                  "x": 103.94998168945312,
-                                  "y": 103.94998168945312
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
                                 }
                               }
                             },
@@ -434,7 +434,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "textureInfo": {
                             "filename": "Images/UI/start_bg.png",
                             "lerpType": "Point",
@@ -446,8 +446,8 @@
                             }
                           },
                           "size": {
-                            "x": 90.95626831054688,
-                            "y": 90.95626831054688
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
                           }
                         }
                       }
@@ -529,7 +529,7 @@
                               "data": {
                                 "isVisible": false,
                                 "alpha": 1.0,
-                                "zIndex": 8,
+                                "zIndex": 3,
                                 "textureInfo": {
                                   "filename": "Images/UI/start.png",
                                   "lerpType": "Point",
@@ -541,8 +541,8 @@
                                   }
                                 },
                                 "size": {
-                                  "x": 103.95001220703125,
-                                  "y": 103.94998168945312
+                                  "x": 115.19999694824219,
+                                  "y": 115.19999694824219
                                 }
                               }
                             },
@@ -637,7 +637,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "textureInfo": {
                             "filename": "Images/UI/start_bg.png",
                             "lerpType": "Point",
@@ -649,8 +649,8 @@
                             }
                           },
                           "size": {
-                            "x": 90.95623779296875,
-                            "y": 90.95626831054688
+                            "x": 100.80000305175781,
+                            "y": 100.80000305175781
                           }
                         }
                       }
@@ -778,14 +778,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 31.184999465942383,
+                          "fontSize": 34.560001373291016,
                           "text": "Continue"
                         }
                       }
@@ -824,7 +824,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "zIndex": 6,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/continue_button_bg.png",
                       "lerpType": "Point",
@@ -836,8 +836,8 @@
                       }
                     },
                     "size": {
-                      "x": 363.8249816894531,
-                      "y": 64.96875
+                      "x": 403.20001220703125,
+                      "y": 72.0
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -1026,14 +1026,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "color": {
                             "r": 59,
                             "g": 59,
                             "b": 59,
                             "a": 255
                           },
-                          "fontSize": 44.178749084472656,
+                          "fontSize": 48.959999084472656,
                           "text": "Level 1"
                         }
                       }
@@ -1085,7 +1085,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.8999999761581421,
-                    "zIndex": 6,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_white_bg.png",
                       "lerpType": "Point",
@@ -1097,8 +1097,8 @@
                       }
                     },
                     "size": {
-                      "x": 363.8249816894531,
-                      "y": 51.9749755859375
+                      "x": 403.20001220703125,
+                      "y": 57.599998474121094
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -1184,14 +1184,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 20.790000915527344,
+                          "fontSize": 23.040000915527344,
                           "text": "Score: "
                         }
                       }
@@ -1247,14 +1247,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 20.790000915527344,
+                          "fontSize": 23.040000915527344,
                           "text": "300"
                         }
                       }
@@ -1352,7 +1352,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.800000011920929,
-                    "zIndex": 6,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_black_bg.png",
                       "lerpType": "Point",
@@ -1364,8 +1364,8 @@
                       }
                     },
                     "size": {
-                      "x": 259.875,
-                      "y": 33.78375244140625
+                      "x": 288.0,
+                      "y": 37.439998626708984
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -1451,14 +1451,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 20.790000915527344,
+                          "fontSize": 23.040000915527344,
                           "text": "Time: "
                         }
                       }
@@ -1514,14 +1514,14 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 7,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
                             "b": 255,
                             "a": 255
                           },
-                          "fontSize": 20.790000915527344,
+                          "fontSize": 23.040000915527344,
                           "text": "60s"
                         }
                       }
@@ -1619,7 +1619,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.800000011920929,
-                    "zIndex": 6,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_black_bg.png",
                       "lerpType": "Point",
@@ -1631,8 +1631,8 @@
                       }
                     },
                     "size": {
-                      "x": 259.875,
-                      "y": 33.78375244140625
+                      "x": 288.0,
+                      "y": 37.439998626708984
                     },
                     "patchesTextureCoords": {
                       "x": 0.30000001192092896,
@@ -1702,7 +1702,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 5,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/UI/game_end_view_bg.png",
                 "lerpType": "Point",
@@ -1714,8 +1714,8 @@
                 }
               },
               "size": {
-                "x": 389.8125,
-                "y": 389.8125
+                "x": 432.0,
+                "y": 432.0
               },
               "patchesTextureCoords": {
                 "x": 0.30000001192092896,
@@ -1950,7 +1950,7 @@
       "id": 4,
       "data": {
         "isVisible": false,
-        "alpha": 0.2,
+        "alpha": 0.20000000298023224,
         "zIndex": 0,
         "size": {
           "x": 1098.0,
@@ -2070,7 +2070,7 @@
           },
           {
             "lerpMode": "Linear",
-            "duration": 0.3,
+            "duration": 0.30000001192092896,
             "offset": {
               "x": 0.0,
               "y": 0.0
@@ -2104,7 +2104,7 @@
         "frames": [
           {
             "lerpMode": "Sin",
-            "duration": 0.1,
+            "duration": 0.10000000149011612,
             "offset": {
               "x": 0.0,
               "y": 0.0

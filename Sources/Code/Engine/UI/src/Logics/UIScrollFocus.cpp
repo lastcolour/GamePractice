@@ -51,7 +51,7 @@ void UIScrollFocus::applyFocusToEntity() {
     ET_SendEventReturn(tm, focusEntId, &ETEntity::ET_getTransform);
     Vec2 foucsPt(tm.pt.x, tm.pt.y);
 
-    ET_SendEventReturn(tm, getEntityId(), &ETEntity::ET_getTransform);
+    tm = getTransform();
     Vec2 currAreaPt(tm.pt.x, tm.pt.y);
 
     EntityId scrollTargetId;

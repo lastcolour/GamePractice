@@ -49,7 +49,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 0,
               "color": {
                 "r": 255,
                 "g": 255,
@@ -114,7 +114,7 @@
             "data": {
               "isVisible": true,
               "alpha": 1.0,
-              "zIndex": 1,
+              "zIndex": 0,
               "textureInfo": {
                 "filename": "Images/Base/circle_64x64.png",
                 "lerpType": "Linear",

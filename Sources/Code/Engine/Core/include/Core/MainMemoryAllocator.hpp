@@ -23,6 +23,8 @@ public:
     void memUnlock();
     void update(float dt);
 
+    size_t getNumAliveBigChunks();
+
 private:
 
     MainMemoryAllocator(const MainMemoryAllocator&) = delete;

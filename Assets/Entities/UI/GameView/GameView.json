@@ -99,7 +99,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "textureInfo": {
                             "filename": "Images/UI/time_icon_9x9.png",
                             "lerpType": "Point",
@@ -168,7 +168,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -231,7 +231,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -296,7 +296,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.5,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_white_bg.png",
                       "lerpType": "Point",
@@ -311,9 +311,12 @@
                       "x": 172.8000030517578,
                       "y": 34.560001373291016
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 5.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]
@@ -477,7 +480,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "textureInfo": {
                             "filename": "Images/UI/moves_icon_9x9.png",
                             "lerpType": "Point",
@@ -546,7 +549,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -609,7 +612,7 @@
                         "data": {
                           "isVisible": true,
                           "alpha": 1.0,
-                          "zIndex": 3,
+                          "zIndex": 2,
                           "color": {
                             "r": 255,
                             "g": 255,
@@ -674,7 +677,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 0.5,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/info_box_white_bg.png",
                       "lerpType": "Point",
@@ -689,9 +692,12 @@
                       "x": 172.8000030517578,
                       "y": 34.560001373291016
                     },
-                    "horizontal": 0.30000001192092896,
-                    "vertical": 0.30000001192092896,
-                    "patchScale": 5.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]

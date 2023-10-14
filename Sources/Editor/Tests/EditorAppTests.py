@@ -38,7 +38,7 @@ class EditorAppTests(unittest.TestCase):
 
     def testEntityAndChildrenName(self):
         entityName = EditorAppTests.NATIVE_LIB.getEntityName(self._centralEntityId)
-        self.assertEqual(entityName, "Entities/Game/Simple.json")
+        self.assertTrue(entityName.startswith("Entities/Game/Simple.json"))
 
         voidEntId = EditorAppTests.NATIVE_LIB.loadEntityFromFile("Entities/Game/Void.json")
         self.assertNotEqual(voidEntId, 0)

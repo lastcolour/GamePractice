@@ -5,6 +5,7 @@ from native.EntityNativeLoader import EntityNativeLoader
 from native.ValueNative import *
 from native.EntityNative import EntityNative
 from native.EntityNativeLoader import _DEFAULT_TRANSFORM
+from native.MemoryStream import MemoryStream
 
 from utils.AppConfig import AppConfig
 from view.values.EditQuatValue import _convertToEualerAngles, _convertFromEualerAngles
@@ -126,6 +127,8 @@ class EditorEntityTest(unittest.TestCase):
     def testCreateChildFromData(self):
         entity = self._getEntityLoader().loadEntity("Entities/Game/Void.json")
         self.assertTrue(entity.loadToNative())
+
+        self.assertEqual(len(entity.getChildren()), 0)
         voidData = entity.dumpToDict()
 
         firstChild = entity.addChildEntityFromData("void", voidData)

@@ -12,7 +12,7 @@ enum class EAnimSequenceType;
 
 namespace UI {
 
-UIBoxMargin CalculateMargin(EntityId entityId, const UIBoxStyle::Margin& margin);
+UIBoxMargin CalculateMargin(const Transform& tm, const UIBoxStyle::Margin& margin);
 
 const char* GetViewTypeName(UIViewType viewType);
 
@@ -26,9 +26,7 @@ float ConvertValueFromGrid(float val);
 
 Vec2 CalculateBoxSize(const UIBoxStyle& style);
 
-AABB2D SetTmCenterToBox(EntityId entityId, const AABB2D& box);
-
-AABB2D ApplyEntityTmToBox(EntityId entityId, const AABB2D& box);
+AABB2D ApplyTmToBox(const Transform& tm, const AABB2D& box);
 
 bool IsRootViewHasFocus(EntityId elemId);
 

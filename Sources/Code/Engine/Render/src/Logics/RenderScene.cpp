@@ -91,7 +91,7 @@ void RenderScene::onLoaded() {
     propagateParentState(manualChildren);
 }
 
-void RenderScene::ET_addItem(int zIndexOffset, EntityId entId) {
+void RenderScene::ET_addItem(EntityId entId, int zIndexOffset) {
     if(!entId.isValid()) {
         LogError("[RenderScene::ET_addItem] Can't add invalid entity to entity: '%s'",
             getEntityName());

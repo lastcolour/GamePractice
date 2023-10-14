@@ -75,7 +75,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/logo.png",
                       "lerpType": "Point",
@@ -348,7 +348,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/info_button_bg.png",
                       "lerpType": "Point",
@@ -363,9 +363,12 @@
                       "x": 115.19999694824219,
                       "y": 115.19999694824219
                     },
-                    "horizontal": 0.20000000298023224,
-                    "vertical": 0.20000000298023224,
-                    "patchScale": 1.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]
@@ -469,7 +472,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/option_button_bg.png",
                       "lerpType": "Point",
@@ -484,9 +487,12 @@
                       "x": 115.19999694824219,
                       "y": 115.19999694824219
                     },
-                    "horizontal": 0.20000000298023224,
-                    "vertical": 0.20000000298023224,
-                    "patchScale": 1.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]
@@ -590,7 +596,7 @@
                   "data": {
                     "isVisible": true,
                     "alpha": 1.0,
-                    "zIndex": 2,
+                    "zIndex": 1,
                     "textureInfo": {
                       "filename": "Images/UI/shop_button_bg.png",
                       "lerpType": "Point",
@@ -605,9 +611,12 @@
                       "x": 115.19999694824219,
                       "y": 115.19999694824219
                     },
-                    "horizontal": 0.20000000298023224,
-                    "vertical": 0.20000000298023224,
-                    "patchScale": 1.0
+                    "patchesTextureCoords": {
+                      "x": 0.30000001192092896,
+                      "y": 0.30000001192092896
+                    },
+                    "patchSize": 0.30000001192092896,
+                    "patchSizeType": "SmallestSide"
                   }
                 }
               ]

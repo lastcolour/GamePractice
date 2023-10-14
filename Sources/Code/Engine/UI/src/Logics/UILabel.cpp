@@ -60,7 +60,7 @@ AABB2D UILabel::ET_getBox() const {
 }
 
 UIBoxMargin UILabel::ET_getMargin() const {
-    return UI::CalculateMargin(getEntityId(), style.margin);
+    return UI::CalculateMargin(getTransform(), style.margin);
 }
 
 void UILabel::ET_setRenderId(EntityId newRenderId) {

@@ -70,6 +70,10 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
         return;
     }
 
+    if(freeElem->state == State::Finished) {
+        ET_SendEvent(rootRenderId, &ETRenderScene::ET_addItem, freeElem->entId, GameUtils::ELEM_HIGHLIGHT_Z_OFFSET);
+    }
+
     freeElem->boardPt = cellPt;
     freeElem->duration = 0.f;
     freeElem->state = State::FadeOut;
@@ -77,7 +81,6 @@ void GameBoardElemHighlighter::ET_highlightCell(const Vec2i& cellPt) {
     if(!rootRenderId.isValid()) {
         ET_SendEventReturn(rootRenderId, &ETGameBoard::ET_getRootRenderId);
     }
-    ET_SendEvent(rootRenderId, &ETRenderScene::ET_addItem, GameUtils::ELEM_HIGHLIGHT_Z_OFFSET, freeElem->entId);
 
     Transform tm;
     ET_SendEventReturn(tm.pt, &ETGameBoard::ET_getPosFromBoardPos, cellPt);

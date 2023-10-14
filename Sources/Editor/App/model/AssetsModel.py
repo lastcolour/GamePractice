@@ -136,9 +136,7 @@ class AssetsModel:
             Log.error("[AssetsModel:createNewDir] Can't create dir: '{0}' (Error: {1})".format(dirPath, e.__str__()))
             return None
         Log.debug("[AssetsModel:createNewDir] Create dir: '{0}'".format(dirPath))
-        node = DirNode()
-        node._name = fileName
-        node._parent = parentNode
+        node = DirNode(parentNode, fileName)
         parentNode._children.append(node)
         return node
 
@@ -156,9 +154,7 @@ class AssetsModel:
             Log.error("[AssetsModel:createNewEntity] Can't create file: '{0}' (Error: {1})".format(filePath, e.__str__()))
             return None
         Log.debug("[AssetsModel:createNewEntity] Create file: '{0}'".format(filePath))
-        node = FileNode()
-        node._name = fileName
-        node._parent = parentNode
+        node = FileNode(parentNode, fileName)
         node._type = FileNodeType.Entity
         parentNode._children.append(node)
         return node

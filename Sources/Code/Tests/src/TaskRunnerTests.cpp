@@ -71,8 +71,6 @@ TEST_F(TaskRunnerTests, RunTwoTasksTwoThreads) {
     EXPECT_LE(value.load(), 110);
 }
 
-#include <iostream>
-
 TEST_F(TaskRunnerTests, RunTenTasksTenThreads) {
     std::atomic<int> value = 0;
     TasksRunner runner;
