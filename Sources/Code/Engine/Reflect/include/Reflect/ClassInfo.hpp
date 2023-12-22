@@ -18,6 +18,7 @@ public:
 
     ClassInstance createInstance();
     void removeInstance(void* ptr);
+    bool reCreateInstance(void* ptr);
     const char* getName() const;
     Core::TypeId getIntanceTypeId() const;
     void makeReflectModel(JSONNode& node);
@@ -55,33 +56,14 @@ public:
         auto valueTypeId = Core::InvalidTypeId;
         if constexpr (type == ClassValueType::Array) {
             valueTypeId = Core::GetTypeId<typename ValueT::value_type>();
+        } else if constexpr (type == ClassValueType::Resource) {
+            valueTypeId = Core::GetTypeId<typename ValueT::SpecType>();
         } else if constexpr (type == ClassValueType::PolymorphObject){
             valueTypeId = Core::GetTypeId<typename ValueT::ObjectType>();
         } else {
             valueTypeId = Core::GetTypeId<ValueT>();
         }
-        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), valueTypeId, ResourceType::Invalid, nullptr);
-    }
-
-    template<typename ClassT>
-    void addResourceField(const char* name, ResourceType resType, void (ClassT::*setFunc)(const char*)) {
-        if(!checkIfSameType(Core::GetTypeId<ClassT>())) {
-            return;
-        }
-        ClassValue::SetResourceFuncT valueSetFunc = [setFunc](void* instance, const char* resourceName){
-            (static_cast<ClassT*>(instance)->*setFunc)(resourceName);
-        };
-        registerClassValue(name, ClassValueType::Resource, nullptr,
-            Core::InvalidTypeId, resType, valueSetFunc);
-    }
-
-    template<typename ClassT>
-    void addResourceField(const char* name, ResourceType resType, std::string ClassT::* valuePtr) {
-        if(!checkIfSameType(Core::GetTypeId<ClassT>())) {
-            return;
-        }
-        registerClassValue(name, ClassValueType::Resource, ClassValue::CastToPtr(valuePtr),
-            Core::InvalidTypeId, resType, nullptr);
+        registerClassValue(name, type, ClassValue::CastToPtr(valuePtr), valueTypeId);
     }
 
     template<typename ClassT>
@@ -102,8 +84,7 @@ private:
     ClassValue* findValueById(void*& instance, int valueId);
     ClassValue* findValueByPrimitiveValueId(void*& instance, int valueId);
     void registerBaseClass(Core::TypeId baseClassTypeId);
-    void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, Core::TypeId valueTypeId,
-        ResourceType resType, ClassValue::SetResourceFuncT valueSetFunc);
+    void registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, Core::TypeId valueTypeId);
     void getAllClasses(std::vector<ClassInfo*>& classes);
 
 private:

@@ -8,6 +8,7 @@ EntityLogic::EntityLogic() :
 }
 
 EntityLogic::~EntityLogic() {
+    entity = nullptr;
 }
 
 EntityId EntityLogic::getEntityId() const {

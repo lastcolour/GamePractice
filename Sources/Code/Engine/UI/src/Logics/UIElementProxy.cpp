@@ -24,10 +24,6 @@ void UIElementProxy::init() {
     }
 }
 
-void UIElementProxy::deinit() {
-    UIElement::deinit();
-}
-
 void UIElementProxy::onLoaded() {
     UIElement::onLoaded();
     applyNormScale();

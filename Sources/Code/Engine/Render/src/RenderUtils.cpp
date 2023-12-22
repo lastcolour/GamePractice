@@ -314,7 +314,7 @@ void BlitFromFBOtoDefaultFBO(RenderFramebuffer& fromFBO) {
 std::shared_ptr<RenderTexture> CreateTexture(const TextureInfo& texInfo, ETextureDataType texType) {
     std::shared_ptr<RenderTexture> texObj;
     ET_SendEventReturn(texObj, &ETRenderTextureManager::ET_createFromFile,
-        texInfo.filename.c_str(), texType);
+        texInfo.filename.get().c_str(), texType);
     return texObj;
 }
 

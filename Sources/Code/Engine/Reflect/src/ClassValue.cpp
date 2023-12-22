@@ -1,8 +1,10 @@
 #include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "ArrayInfo.hpp"
+#include "ResourceInfo.hpp"
 #include "Core/JSONNode.hpp"
 #include "PolymorphPtrUtils.hpp"
+#include "Reflect/Resource.hpp"
 
 #include <cassert>
 
@@ -250,30 +252,6 @@ bool readJSONColor(void* valuePtr, const JSONNode& node) {
     return true;
 }
 
-const char* getResourceName(ResourceType resType) {
-    switch(resType) {
-        case ResourceType::Entity: {
-            return "Entity";
-        }
-        case ResourceType::Sound: {
-            return "Sound";
-        }
-        case ResourceType::SoundEvent: {
-            return "SoundEvent";
-        }
-        case ResourceType::Image: {
-            return "Image";
-        }
-        case ResourceType::Invalid: {
-            [[fallthrough]];
-        }
-        default: {
-            assert(false && "Invalid resource type");
-        }
-    }
-    return "";
-}
-
 bool readJSONChildIdSequence(std::vector<EntityChildId>& childIdSequence, const JSONNode& node) {
     if(!node.isArray()) {
         LogError("[ClassValue::readJSONChildIdSequence] Entity value type is not an 'array'");
@@ -297,7 +275,6 @@ ClassValue::ClassValue() :
     type(ClassValueType::Invalid),
     ptr(),
     typeId(Core::InvalidTypeId),
-    resourceType(ResourceType::Invalid),
     primitiveValueCount(0),
     isElement(false) {
 }
@@ -338,16 +315,19 @@ std::string ClassValue::getTypeName() const {
             return "color";
         }
         case ClassValueType::Resource: {
-            std::string typeName = "resource.";
-            typeName += getResourceName(resourceType);
-            return typeName;
+            ResourceInfo* resourceInfo = GetEnv()->GetClassInfoManager()->findResourceInfoByTypeId(typeId);
+            if(resourceInfo) {
+                return resourceInfo->getName();
+            }
+            assert(false && "Can't find resource info for object type value");
+            return nullptr;
         }
         case ClassValueType::Enum: {
             EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(typeId);
             if(enumInfo) {
                 return enumInfo->getName();
             }
-            assert(false && "Can't find enumInfo for object type value");
+            assert(false && "Can't find enum info for object type value");
             return nullptr;
         }
         case ClassValueType::Array: {
@@ -355,7 +335,7 @@ std::string ClassValue::getTypeName() const {
             if(arrayInfo) {
                 return arrayInfo->getName();
             }
-            assert(false && "Can't find arrayInfo for object type value");
+            assert(false && "Can't find array info for object type value");
             return nullptr;
         }
         case ClassValueType::Entity: {
@@ -366,7 +346,7 @@ std::string ClassValue::getTypeName() const {
             if(clsInfo) {
                 return clsInfo->getName();
             }
-            assert(false && "Can't find classInfo for object type value");
+            assert(false && "Can't find class info for object type value");
             return nullptr;
         }
         case ClassValueType::PolymorphObject: {
@@ -383,9 +363,9 @@ std::string ClassValue::getTypeName() const {
     }
 }
 
-bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void* valuePtr, const JSONNode& node) {
+bool ClassValue::readValueFrom(const SerializeContext& ctx, void* valuePtr, const JSONNode& node) {
     if(!isElement) {
-        if(!node.hasKey(name.c_str())) {
+        if(!node.hasNonNullKey(name.c_str())) {
             LogError("[ClassValue::readValueFrom] Can't find required field '%s'", name);
             return false;
         }
@@ -527,7 +507,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
             LogError("[ClassValue::readValueFrom] Array of arrays is not supported: '%s'", name);
             return false;
         }
-        ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);;
+        ArrayInfo* arrayInfo = GetEnv()->GetClassInfoManager()->findArrayInfoByElemTypeId(typeId);
         if(!arrayInfo) {
             LogError("[ClassValue::readValueFrom] Can't find array info for a field '%s'", name);
             return false;
@@ -564,12 +544,14 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return true;
     }
     case ClassValueType::Resource: {
-        std::string value;
-        readJSONValue(isElement, name, value, node);
-        if(setResourceFunc) {
-            setResourceFunc(instance, value.c_str());
-        } else {
-            getRef<std::string>(valuePtr) = value;
+        ResourceInfo* resourceInfo = GetEnv()->GetClassInfoManager()->findResourceInfoByTypeId(typeId);
+        if(!resourceInfo) {
+            LogError("[ClassValue::readValueFrom] Can't find resource info for a field '%s'", name);
+            return false;
+        }
+        if(!resourceInfo->readValuesFrom(ctx, valuePtr, *this, node)) {
+            LogError("[ClassValue::readValueFrom] Can't read resource value from data for a field '%s'", name);
+            return false;
         }
         return true;
     }
@@ -609,7 +591,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
     }
 }
 
-bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, JSONNode& node) {
+bool ClassValue::writeValueTo(const SerializeContext& ctx, void* valuePtr, JSONNode& node) {
     switch(type) {
     case ClassValueType::Bool: {
         if(isElement) {
@@ -741,10 +723,14 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         break;
     }
     case ClassValueType::Resource: {
-        if(isElement) {
-            node.write("");
-        } else {
-            node.write(name.c_str(), "");
+        ResourceInfo* resourceInfo = GetEnv()->GetClassInfoManager()->findResourceInfoByTypeId(typeId);
+        if(!resourceInfo) {
+            LogError("[ClassValue::writeValueTo] Can't find resource info for a field '%s'", name);
+            return false;
+        }
+        if(!resourceInfo->writeValuesTo(ctx, valuePtr, *this, node)) {
+            LogError("[ClassValue::writeValueTo] Can't write resource field '%s'", name);
+            return false;
         }
         break;
     }
@@ -825,7 +811,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
     return true;
 }
 
-bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void* valuePtr, Memory::MemoryStream& stream) {
+bool ClassValue::writeValueTo(const SerializeContext& ctx, void* valuePtr, Memory::MemoryStream& stream) {
     switch(type) {
     case ClassValueType::Bool: {
         stream.write(getRef<bool>(valuePtr));
@@ -895,8 +881,12 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
         return classInfo->writeValueTo(ctx, valuePtr, AllClassValuesId, stream);
     }
     case ClassValueType::Resource: {
-        stream.write("");
-        break;
+        ResourceInfo* resourceInfo = GetEnv()->GetClassInfoManager()->findResourceInfoByTypeId(typeId);
+        if(!resourceInfo) {
+            LogError("[ClassValue::writeValueTo] Can't find resource info for a field '%s'", name);
+            return false;
+        }
+        return resourceInfo->writeValuesTo(ctx, valuePtr, *this, stream);
     }
     case ClassValueType::Enum: {
         stream.write(getRef<int>(valuePtr));
@@ -935,7 +925,7 @@ bool ClassValue::writeValueTo(const SerializeContext& ctx, void* instance, void*
     return true;
 }
 
-bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void* valuePtr, Memory::MemoryStream& stream) {
+bool ClassValue::readValueFrom(const SerializeContext& ctx, void* valuePtr, Memory::MemoryStream& stream) {
     switch(type) {
     case ClassValueType::Bool: {
         bool val = false;
@@ -958,7 +948,7 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
     case ClassValueType::String: {
         std::string val;
         stream.read(val);
-        getRef<std::string>(valuePtr) = val;
+        getRef<std::string>(valuePtr) = std::move(val);
         break;
     }
     case ClassValueType::Vec2i: {
@@ -1033,14 +1023,12 @@ bool ClassValue::readValueFrom(const SerializeContext& ctx, void* instance, void
         return classInfo->readValueFrom(ctx, valuePtr, AllClassValuesId, stream);
     }
     case ClassValueType::Resource: {
-        std::string val;
-        stream.read(val);
-        if(setResourceFunc) {
-            setResourceFunc(instance, val.c_str());
-        } else {
-            getRef<std::string>(valuePtr) = val;
+        ResourceInfo* resourceInfo = GetEnv()->GetClassInfoManager()->findResourceInfoByTypeId(typeId);
+        if(!resourceInfo) {
+            LogError("[ClassValue::readValueFrom] Can't find resource info for a field '%s'", name);
+            return false;
         }
-        break;
+        return resourceInfo->readValuesFrom(ctx, valuePtr, *this, stream);
     }
     case ClassValueType::Enum: {
         int val = 0;
@@ -1168,6 +1156,26 @@ void ClassValue::setDefaultValue(void* valuePtr) {
     default:
         assert(false && "Invalid value type");
     }
+}
+
+bool ClassValue::isSimple() const {
+    switch(type) {
+    case ClassValueType::Bool: {
+        return true;
+    }
+    case ClassValueType::Int: {
+        return true;
+    }
+    case ClassValueType::Float: {
+        return true;
+    }
+    case ClassValueType::String: {
+        return true;
+    }
+    default:
+        break;
+    }
+    return false;
 }
 
 } // namespace Reflect

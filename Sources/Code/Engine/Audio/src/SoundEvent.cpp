@@ -3,7 +3,7 @@
 
 void SoundEvent::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<SoundEvent>("SoundEvent")) {
-        classInfo->addResourceField("event", ResourceType::SoundEvent, &SoundEvent::eventName);
+        classInfo->addField("event", &SoundEvent::event);
     }
 }
 
@@ -11,11 +11,11 @@ SoundEvent::SoundEvent() {
 }
 
 SoundEvent::SoundEvent(const SoundEvent& other) :
-    eventName(other.eventName) {
+    event(other.event) {
 }
 
 SoundEvent& SoundEvent::operator=(const SoundEvent& other) {
-    eventName = other.eventName;
+    event = other.event;
     return *this;
 }
 
@@ -23,8 +23,8 @@ SoundEvent::~SoundEvent() {
 }
 
 void SoundEvent::emit() {
-    if(eventName.empty()) {
+    if(!event.isSet() || event.get().empty()) {
         return;
     }
-    ET_SendEvent(&ETSoundEventManager::ET_emitEvent, eventName.c_str());
+    ET_SendEvent(&ETSoundEventManager::ET_emitEvent, event.get().c_str());
 }

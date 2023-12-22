@@ -15,29 +15,65 @@ void Sound::Reflect(ReflectContext& ctx) {
         });
     }
     if(auto classInfo = ctx.classInfo<Sound>("Sound")) {
-        classInfo->addResourceField("file", ResourceType::Sound, &Sound::setFile);
+        classInfo->addField("file", &Sound::resource);
         classInfo->addField("volume", &Sound::volume);
         classInfo->addField("loop", &Sound::looped);
         classInfo->addField("group", &Sound::group);
     }
 }
 
+void Sound::SoundResourceDescriptor::Convert(const std::string& fileName, SoundProxy*& proxy) {
+    if(fileName.empty()) {
+        if(proxy) {
+            proxy->setNoSound();
+            proxy = nullptr;
+        }
+    } else {
+        if(!proxy) {
+            ET_SendEventReturn(proxy, &ETSoundDataManager::ET_createSoundProxy);
+        }
+        if(proxy) {
+            proxy->setFile(fileName.c_str());
+        }
+    }
+}
+
+void Sound::SoundResourceDescriptor::Convert(SoundProxy* const& proxy, std::string& fileName) {
+    if(proxy) {
+        fileName = proxy->getFile();
+    }
+}
+
+Sound::SoundResource::~SoundResource() {
+    detach();
+}
+
+void Sound::SoundResource::detach() {
+    SoundProxy* proxy = get();
+    if(proxy) {
+        proxy->setNoSound();
+        setAndReset(nullptr);
+    }
+}
+
+void Sound::SoundResource::setFile(const std::string& filePath) {
+    SoundResourceDescriptor::Convert(filePath, get());
+    if(get()) {
+        set(get());
+    }
+}
+
 Sound::Sound() :
-    proxy(nullptr),
     volume(1.f),
     group(ESoundGroup::Music),
     looped(false) {
-
-    ET_SendEventReturn(proxy, &ETSoundDataManager::ET_createSoundProxy);
 }
 
 Sound::Sound(Sound&& other) :
-    proxy(other.proxy),
+    resource(std::move(other.resource)),
     volume(other.volume),
     group(other.group),
     looped(other.looped) {
-
-    other.proxy = nullptr;
 }
 
 Sound& Sound::operator=(Sound&& other) {
@@ -45,70 +81,62 @@ Sound& Sound::operator=(Sound&& other) {
         volume = other.volume;
         looped = other.looped;
         group = other.group;
-        if(proxy) {
-            proxy->setNoSound();
-        }
-        proxy = other.proxy;
-        other.proxy = nullptr;
+        resource = std::move(other.resource);
     }
     return *this;
 }
 
 Sound::~Sound() {
-    if(proxy) {
-        proxy->setNoSound();
-        proxy = nullptr;
-    }
 }
 
 void Sound::fadeInPlay(float duration) {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->fadeInPlay(*this, duration);
+    resource->fadeInPlay(*this, duration);
 }
 
 void Sound::fadeOutStop(float duration) {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->fadeOutStop(duration);
+    resource->fadeOutStop(duration);
 }
 
 void Sound::play() {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->play(*this);
+    resource->play(*this);
 }
 
 void Sound::stop() {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->stop();
+    resource->stop();
 }
 
 void Sound::pause() {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->pause();
+    resource->pause();
 }
 
 void Sound::resume() {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->resume(*this);
+    resource->resume(*this);
 }
 
 void Sound::setLooped(bool flag) {
     looped = flag;
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->writeLooped(flag);
+    resource->writeLooped(flag);
 }
 
 bool Sound::isLooped() const {
@@ -117,10 +145,10 @@ bool Sound::isLooped() const {
 
 void Sound::setVolume(float newVolume) {
     volume = newVolume;
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->writeVolume(volume);
+    resource->writeVolume(volume);
 }
 
 float Sound::getVolume() const {
@@ -128,10 +156,10 @@ float Sound::getVolume() const {
 }
 
 bool Sound::isPlaying() const {
-    if(!proxy) {
+    if(!resource) {
         return false;
     }
-    return proxy->isPlaying();
+    return resource->isPlaying();
 }
 
 ESoundGroup Sound::getGroup() const {
@@ -143,33 +171,30 @@ void Sound::setGroup(ESoundGroup newGroup) {
         return;
     }
     group = newGroup;
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->writeGroup(group);
+    resource->writeGroup(group);
 }
 
 void Sound::setFile(const char* fileName) {
-    if(!proxy) {
-        return;
-    }
-    proxy->setFile(fileName);
+    resource.setFile(fileName);
 }
 
 const char* Sound::getFile() const {
-    if(!proxy) {
+    if(!resource) {
         return "";
     }
-    return proxy->getFile();
+    return resource->getFile();
 }
 
 void Sound::setKeepLoaded(bool flag) {
-    if(!proxy) {
+    if(!resource) {
         return;
     }
-    proxy->setKeepLoaded(flag);
+    resource->setKeepLoaded(flag);
 }
 
 SoundProxy* Sound::getProxy() {
-    return proxy;
+    return resource.getProxy();
 }

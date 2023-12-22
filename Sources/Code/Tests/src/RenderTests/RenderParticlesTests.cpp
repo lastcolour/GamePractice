@@ -9,7 +9,7 @@ const char* TEST_IMAGE = "Images/Base/block_1x1.png";
 
 void makeVisisble(ParticlesSystem& system) {
     auto renderConfig = system.ET_getRenderConfig();
-    renderConfig.textureInfo.filename = TEST_IMAGE;
+    renderConfig.textureInfo.filename.set(TEST_IMAGE);
     system.ET_setRenderConfig(renderConfig);
 }
 
@@ -116,7 +116,7 @@ TEST_F(RenderParticlesTests, CheckParticlesEmitterPlaying) {
 
     {
         auto& emitters = pool->getEmitters();
-        EXPECT_EQ(emitters.size(), 1);
+        EXPECT_EQ(emitters.size(), 1u);
 
         auto& particles = emitters[0];
     
@@ -167,7 +167,7 @@ TEST_F(RenderParticlesTests, CheckWorldTM) {
 
     {
         auto& emitters = pool->getEmitters();
-        ASSERT_EQ(emitters.size(), 1);
+        ASSERT_EQ(emitters.size(), 1u);
 
         auto& particles = *emitters[0];
         ASSERT_EQ(particles.activeCount, 1);
@@ -187,7 +187,7 @@ TEST_F(RenderParticlesTests, CheckWorldTM) {
 
     {
         auto& emitters = pool->getEmitters();
-        ASSERT_EQ(emitters.size(), 1);
+        ASSERT_EQ(emitters.size(), 1u);
 
         auto& particles = *emitters[0];
         ASSERT_EQ(particles.activeCount, 1);

@@ -2,6 +2,7 @@
 #define __RENDER_COMMON_HPP__
 
 #include "Math/Color.hpp"
+#include "Reflect/Resource.hpp"
 
 enum class EStencilOpType {
     Disabled = 0,
@@ -93,6 +94,14 @@ public:
 
 public:
 
+    struct ResourceDescriptor {
+        using RuntimeType = std::string;
+        using StorageType = std::string;
+        const char* TypeName = "Image";
+    };
+
+public:
+
     TextureInfo() :
         wrapType(ETextureWrapType::ClampToEdge),
         lerpType(ETextureLerpType::Linear),
@@ -103,7 +112,7 @@ public:
 
 public:
 
-    std::string filename;
+    Reflect::Resource<ResourceDescriptor> filename;
     ETextureWrapType wrapType;
     ETextureLerpType lerpType;
     ColorB tintColor;

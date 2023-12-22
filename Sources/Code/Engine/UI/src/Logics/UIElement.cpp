@@ -39,7 +39,6 @@ void UIElement::init() {
 }
 
 void UIElement::deinit() {
-    ETNode<ETUIElement>::disconnect();
 }
 
 void UIElement::onLoaded() {

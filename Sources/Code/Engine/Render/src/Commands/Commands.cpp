@@ -45,10 +45,6 @@ const char* GetNameOfDrawCmdType(EDrawCmdType cmdType) {
 
 
 void DrawCmd::updateBlendOpPair() {
-    if(!autoUpdateBlenOp) {
-        return;
-    }
-
     if(alpha >= 0.99999f) {
         blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::None, false);
     } else {
@@ -91,7 +87,9 @@ void DrawCmd::QueueZIndexUpdate(DrawCmd& drawCmd, int newZIndex, EDrawCmdType cm
 void DrawCmd::QueueAlphaUpdate(DrawCmd& drawCmd, float newAlpha, EDrawCmdType cmdType) {
     ET_QueueEvent(&ETDrawCommandsManager::ET_scheduleDrawCmdEvent, [cmd=&drawCmd, alpha=newAlpha](BaseDrawCommandExectuor* ex){
         cmd->alpha = alpha;
-        cmd->updateBlendOpPair();
+        if(cmd->autoUpdateBlenOp) {
+            cmd->updateBlendOpPair();
+        }
     }, cmdType);
 }
 
@@ -173,7 +171,7 @@ void DrawColoredQuadCmd::QueueColorUpdate(DrawCmd& drawCmd, const ColorB& newCol
         static_cast<DrawColoredQuadCmd*>(cmd)->color = color;
         if(color.a != 255) {
             cmd->blendOpPair = RenderUtils::GetBlendOpPair(EBlendMode::Normal, false);
-        } else {
+        } else if(cmd->autoUpdateBlenOp) {
             cmd->updateBlendOpPair();
         }
     }, EDrawCmdType::Quad);

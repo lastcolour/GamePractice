@@ -11,6 +11,38 @@
 
 namespace {
 
+class CounterObject {
+public:
+
+    static int ConstructorCallNum;
+    static int DestructorCallNum;
+
+public:
+
+    static void Reflect(ReflectContext& reflectCtx) {
+        if(auto classInfo = reflectCtx.classInfo<CounterObject>("CounterObject")) {
+            (void)classInfo;
+        }
+    }
+
+public:
+
+    CounterObject() {
+        ConstructorCallNum += 1;
+    }
+
+    ~CounterObject() {
+        DestructorCallNum += 1;
+    }
+
+private:
+
+    CounterObject(const CounterObject&);
+};
+
+int CounterObject::ConstructorCallNum = 0;
+int CounterObject::DestructorCallNum = 0;
+
 class SimpleEntityLogic {
 public:
 
@@ -68,28 +100,6 @@ public:
             classInfo->addBaseClass<SimpleEntityLogic>();
         }
     }
-};
-
-class ObjectWithResource {
-public:
-
-    static void Reflect(ReflectContext& reflectCtx) {
-        if(auto classInfo = reflectCtx.classInfo<ObjectWithResource>("ObjectWithResource")) {
-            classInfo->addResourceField("resource", ResourceType::Entity, &ObjectWithResource::setResource);
-            classInfo->addResourceField("otherResource", ResourceType::Entity, &ObjectWithResource::otherResource);
-        }
-    }
-
-public:
-
-    void setResource(const char* resName) {
-        resource.reset(new std::string(resName));
-    }
-
-public:
-
-    std::shared_ptr<std::string> resource;
-    std::string otherResource;
 };
 
 class ObjectWithEnum {
@@ -241,6 +251,25 @@ TEST_F(ReflectTests, TestSimpleLogic) {
     ASSERT_EQ(GetEnv()->GetClassInfoManager()->getRegisteredClassCount(), 1);
 }
 
+TEST_F(ReflectTests, TestReCreateInPlace) {
+    ReflectContext reflectCtx;
+    ASSERT_TRUE(reflectCtx.reflect<CounterObject>());
+
+    const int StartConstructVal = CounterObject::ConstructorCallNum;
+    const int StartDescructVal = CounterObject::DestructorCallNum;
+
+    auto classInfo = reflectCtx.getRegisteredClassInfo();
+    auto instance = classInfo->createInstance();
+
+    EXPECT_EQ(CounterObject::ConstructorCallNum, StartConstructVal + 1);
+    EXPECT_EQ(CounterObject::DestructorCallNum, StartDescructVal);
+
+    instance.reCreate();
+
+    EXPECT_EQ(CounterObject::ConstructorCallNum, StartConstructVal + 2);
+    EXPECT_EQ(CounterObject::DestructorCallNum, StartDescructVal + 1);
+}
+
 TEST_F(ReflectTests, TestObjectWithObject) {
     ReflectContext reflectCtx;
     ASSERT_TRUE(reflectCtx.reflect<ObjectWithObjectEntity>());
@@ -346,27 +375,6 @@ TEST_F(ReflectTests, TestBaseAndDeriveded) {
     ASSERT_EQ(GetEnv()->GetClassInfoManager()->getRegisteredClassCount(), 2);
 }
 
-TEST_F(ReflectTests, TestResource) {
-    ReflectContext reflectCtx;
-    ASSERT_TRUE(reflectCtx.reflect<ObjectWithResource>());
-
-    auto classInfo = reflectCtx.getRegisteredClassInfo();
-    ASSERT_TRUE(classInfo);
-
-    auto jsonNode = JSONNode::ParseString("{ \"resource\" : \"ObjectWithResource\", \"otherResource\" : \"OtherResourceName\" }");
-    ASSERT_TRUE(jsonNode);
-
-    auto classInstance = classInfo->createInstance();
-    Reflect::SerializeContext ctx;
-    ASSERT_TRUE(classInstance.readAllValuesFrom(ctx, jsonNode));
-    auto object = classInstance.castTo<ObjectWithResource>();
-    ASSERT_TRUE(object);
-
-    ASSERT_TRUE(object->resource);
-    ASSERT_STREQ(object->resource->c_str(), "ObjectWithResource");
-    ASSERT_STREQ(object->otherResource.c_str(), "OtherResourceName");
-}
-
 TEST_F(ReflectTests, TestEnum) {
     ReflectContext reflectCtx;
     ASSERT_TRUE(reflectCtx.reflect<ObjectWithEnum>());
@@ -402,7 +410,7 @@ TEST_F(ReflectTests, TestArray) {
     auto object = classInstance.castTo<ObjectWitArray>();
     ASSERT_TRUE(object);
 
-    ASSERT_EQ(object->array.size(), 2);
+    ASSERT_EQ(object->array.size(), 2u);
     ASSERT_EQ(object->array[0].number, ObjectWithEnum::Numbers::One);
     ASSERT_EQ(object->array[1].number, ObjectWithEnum::Numbers::Two);
 }
@@ -423,7 +431,7 @@ TEST_F(ReflectTests, TestObjectWithStringArray) {
     auto object = static_cast<ObjectWithStringArray*>(classInstance.get());
     ASSERT_TRUE(object);
 
-    ASSERT_EQ(object->array.size(), 2);
+    ASSERT_EQ(object->array.size(), 2u);
     ASSERT_STREQ(object->array[0].c_str(), "one");
     ASSERT_STREQ(object->array[1].c_str(), "two");
 
@@ -473,7 +481,7 @@ TEST_F(ReflectTests, TestArrayOfVec3) {
     auto object = classInstance.castTo<ObjectWithArrayOfVec3>();
     ASSERT_TRUE(object);
 
-    ASSERT_EQ(object->array.size(), 3);
+    ASSERT_EQ(object->array.size(), 3u);
     ASSERT_FLOAT_EQ(object->array[0].x, 1.f);
     ASSERT_FLOAT_EQ(object->array[0].y, 2.f);
     ASSERT_FLOAT_EQ(object->array[0].z, 3.f);
@@ -710,7 +718,7 @@ TEST_F(ReflectTests, TestReadWriteClassValueOfObjectWitArray) {
     Reflect::SerializeContext ctx;
     ASSERT_TRUE(instance.readValueFrom(ctx, 1, stream));
 
-    ASSERT_EQ(objectPtr->array.size(), 3);
+    ASSERT_EQ(objectPtr->array.size(), 3u);
 
     ASSERT_EQ(objectPtr->array[0].number, ObjectWithEnum::Numbers::One);
     ASSERT_EQ(objectPtr->array[1].number, ObjectWithEnum::Numbers::Two);

@@ -21,8 +21,7 @@
 
 namespace {
 
-const int EDITOR_THREADS_COUNT = 3;
-const int MAIN_THREAD_STEP_BEFORE_DRAW = 5;
+const int EDITOR_THREADS_COUNT = 2;
 const int EDITOR_MAX_GAME_TICK_RATE = 60;
 const int EDITOR_AUX_TASK_TICK_RATE = EDITOR_MAX_GAME_TICK_RATE * 2;
 
@@ -30,6 +29,9 @@ const int EDITOR_AUX_TASK_TICK_RATE = EDITOR_MAX_GAME_TICK_RATE * 2;
 
 EditorApp::EditorApp() :
     Application(),
+    tickCount(0),
+    asyncTickingTasks(0),
+    canTickAsync(0),
     updateGame(false) {
 }
 
@@ -78,18 +80,27 @@ void EditorApp::buildTasksRunner() {
         soundUpdate->setFrequency(EDITOR_AUX_TASK_TICK_RATE);
     }
 
-    auto uiUpdate = runner->createTask("UI", [](float dt){
-        ET_SendEvent(&ETUITimer::ET_onTick, dt);
+    auto uiUpdate = runner->createTask("UI", [this](float dt){
+        if(canTickAsync.load()) {
+            ++asyncTickingTasks;
+            ET_SendEvent(&ETUITimer::ET_onTick, dt);
+            --asyncTickingTasks;
+        }
     });
     uiUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
 
-    auto gameUpdate = runner->createTask("Game", [](float dt){
-        ET_SendEvent(&ETGameTimer::ET_onTick, dt);
+    auto gameUpdate = runner->createTask("Game", [this](float dt){
+        if(canTickAsync.load()) {
+            ++asyncTickingTasks;
+            ET_SendEvent(&ETGameTimer::ET_onTick, dt);
+            --asyncTickingTasks;
+        }
     });
     gameUpdate->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
 
-    auto preRender = runner->createTask("PreRender", [](){
+    auto preRender = runner->createTask("PreRender", [this](){
         ET_SendEvent(&ETRenderUpdateTask::ET_PreRender);
+        ++tickCount;
     });
     preRender->setFrequency(EDITOR_MAX_GAME_TICK_RATE);
     preRender->setType(RunTaskType::MainThreadOnly);
@@ -129,6 +140,7 @@ void EditorApp::buildModules(ModuleListT& modules) {
 }
 
 EntityId EditorApp::loadEntityFromFile(const char* entityName) {
+    AsyncTickLock aLock(*this);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);
     EntityId entId;
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntity, entityName);
@@ -146,12 +158,14 @@ EntityId EditorApp::loadEntityFromFile(const char* entityName) {
 }
 
 EntityId EditorApp::loadEntityFromData(const char* entityName, const char* entityData) {
+    AsyncTickLock aLock(*this);
     EntityId entId;
     ET_SendEventReturn(entId, &ETEntityManager::ET_createEntityFromData, entityName, entityData);
     return entId;
 }
 
 void EditorApp::unloadEntity(EntityId entityId) {
+    AsyncTickLock aLock(*this);
     if(!entityId.isValid()) {
         LogError("[EditorApp::unloadEntity] Can't unload entity with invalid id");
         return;
@@ -161,6 +175,7 @@ void EditorApp::unloadEntity(EntityId entityId) {
 }
 
 EntityId EditorApp::getEntityChildEntityId(EntityId entityId, EntityChildId childId) {
+    AsyncTickLock aLock(*this);
     if(!entityId.isValid()) {
         LogError("[EditorApp::getEntityChildren] Can't get children of invalid entity");
         return InvalidEntityId;
@@ -182,24 +197,31 @@ const char* EditorApp::getEntityName(EntityId entityId) {
 void EditorApp::drawFrame(void* out, int32_t width, int32_t height) {
     ET_SendEvent(&ETSurfaceEvents::ET_onSurfaceResized, Vec2i(width, height));
 
-    for(int i = 0; i < MAIN_THREAD_STEP_BEFORE_DRAW; ++i) {
+    const int prevTickCount = tickCount.load();
+    while(true) {
         GetEnv()->GetTasksRunner()->stepMainThread();
+        if(prevTickCount != tickCount.load()) {
+            break;
+        }
     }
 
     ET_SendEvent(&ETRender::ET_drawFrameToBufferRaw, out, Vec2i(width, height), EDrawContentFilter::None);
 }
 
 EntityLogicId EditorApp::addLogicToEntity(EntityId entityId, const char* logicName) {
+    AsyncTickLock aLock(*this);
     EntityLogicId logicId = InvalidEntityLogicId;
     ET_SendEventReturn(logicId, &ETEntityManager::ET_addLogicToEntity, entityId, logicName);
     return static_cast<int32_t>(logicId);
 }
 
 void EditorApp::removeLogicFromEntity(EntityId entityId, EntityLogicId logicId) {
+    AsyncTickLock aLock(*this);
     ET_SendEvent(&ETEntityManager::ET_removeLogicFromEntity, entityId, logicId);
 }
 
 EntityChildId EditorApp::addChilEntityToEntity(EntityId parentEntId, EntityId childEntId) {
+    AsyncTickLock aLock(*this);
     if(!parentEntId.isValid()) {
         LogError("[EditorApp::addChilEntityToEntity] Can't add child entity to parent entity with invalid id");
         return InvalidEntityChildId;
@@ -222,6 +244,7 @@ EntityChildId EditorApp::addChilEntityToEntity(EntityId parentEntId, EntityId ch
 }
 
 void EditorApp::removeChildEntityFromEntity(EntityId parentId, EntityId childId) {
+    AsyncTickLock aLock(*this);
     if(!parentId.isValid()) {
         LogError("[EditorApp::removeChildEntityFromEntity] Can't remove entity from invalid parent entity");
         return;
@@ -243,6 +266,7 @@ void EditorApp::removeChildEntityFromEntity(EntityId parentId, EntityId childId)
 }
 
 Memory::Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId) {
+    AsyncTickLock aLock(*this);
     Memory::MemoryStream stream;
     stream.openForWrite();
     bool res = false;
@@ -254,20 +278,24 @@ Memory::Buffer EditorApp::getEntityLogicData(EntityId entityId, EntityLogicId lo
 }
 
 void EditorApp::setEntityLogicData(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId, Memory::Buffer& buffer) {
+    AsyncTickLock aLock(*this);
     Memory::MemoryStream stream;
     stream.openForRead(buffer);
     ET_SendEvent(&ETEntityManager::ET_writeEntityLogicData, entityId, logicId, valueId, stream);
 }
 
 void EditorApp::addEntityLogicArrayElement(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId) {
+    AsyncTickLock aLock(*this);
     ET_SendEvent(&ETEntityManager::ET_addEntityLogicArrayElement, entityId, logicId, valueId);
 }
 
 void EditorApp::setEntityLogicPolymorphObjectType(EntityId entityId, EntityLogicId logicId, Reflect::ClassValueId valueId, const char* newType) {
+    AsyncTickLock aLock(*this);
     ET_SendEvent(&ETEntityManager::ET_setEntityLogicPolymorphObjectType, entityId, logicId, valueId, newType);
 }
 
 EntityChildId EditorApp::createChildEntity(EntityId entityId, const char* childName) {
+    AsyncTickLock aLock(*this);
     EntityChildId childId = InvalidEntityChildId;
     ET_SendEventReturn(childId, &ETEntityManager::ET_createChildEntity, entityId, childName);
     return childId;
@@ -282,11 +310,13 @@ void EditorApp::mouseInputEvent(EActionType actionType, const Vec2i& pos) {
 }
 
 void EditorApp::unloadAll() {
+    AsyncTickLock aLock(*this);
     ET_SendEvent(&ETEntityManager::ET_destroyAllEntities);
     ET_SendEvent(&ETAssetsCacheManager::ET_clear);
 }
 
 void EditorApp::setTimeScale(float timeScale) {
+    AsyncTickLock aLock(*this);
     ET_SendEvent(&ETUITimer::ET_setScale, timeScale);
     ET_SendEvent(&ETGameTimer::ET_setScale, timeScale);
 }
@@ -304,6 +334,7 @@ void EditorApp::enableGameUpdate(bool flag) {
 }
 
 bool EditorApp::renameEntity(EntityId entityId, const char* newName) {
+    AsyncTickLock aLock(*this);
     bool res = false;
     ET_SendEventReturn(res, &ETEntityManager::ET_renameEntity, entityId, newName);
     return res;

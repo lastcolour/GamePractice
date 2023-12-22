@@ -5,6 +5,7 @@
 #include "Game/ETGameTimer.hpp"
 #include "Game/ETGameBoard.hpp"
 #include "Game/ETGameBoardSpawner.hpp"
+#include "Entity/EntityResource.hpp"
 
 class GameBoardElemHighlighter : public EntityLogic,
     public ETNode<ETGameTimerEvents>,
@@ -56,7 +57,7 @@ private:
 private:
 
     EntityId rootRenderId;
-    std::string highlightEntityName;
+    EntityResource highlightEntityRes;
     std::vector<HighlightElem> elements;
     float fadeOutDuration;
     float cellScale;

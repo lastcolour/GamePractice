@@ -29,11 +29,13 @@ include_directories(${GTEST_INCLUDE_DIR}
 
 file(GLOB TESTS_SOURCES ${TESTS_SOURCES_DIR}/*.cpp
     ${TESTS_SOURCES_DIR}/TestUtils/*.cpp
-    ${TESTS_SOURCES_DIR}/RenderTests/*.cpp)
+    ${TESTS_SOURCES_DIR}/RenderTests/*.cpp
+    ${TESTS_SOURCES_DIR}/GameTests/*.cpp)
 
 file(GLOB TESTS_HEADERS ${TESTS_SOURCES_DIR}/*.hpp
     ${TESTS_SOURCES_DIR}/TestUtils/*.hpp
-    ${TESTS_SOURCES_DIR}/RenderTests/*.hpp)
+    ${TESTS_SOURCES_DIR}/RenderTests/*.hpp
+    ${TESTS_SOURCES_DIR}/GameTests/*.hpp)
 
 add_executable(${PROJECT_NAME}
     ${TESTS_SOURCES}

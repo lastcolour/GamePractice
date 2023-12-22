@@ -1,3 +1,5 @@
+from utils.Log import Log
+
 class MessageSystem:
     _INSTAMCE = None
 
@@ -5,13 +7,19 @@ class MessageSystem:
         MessageSystem._INSTAMCE = self
         self._registry = {}
         self._boundMethods = {}
+        self._activeMessages = set()
 
     def sendMsg(self, msgObj):
         msgType = msgObj.__class__
         if msgType not in self._registry:
             return
+        if msgType in self._activeMessages:
+            Log.error("[MessageSystem:sendMsg] Recursive message dispatch is not allowed. (Msg type: {})".format(msgType))
+            return
+        self._activeMessages.add(msgType)
         for callback in self._registry[msgType]:
             callback(msgObj)
+        self._activeMessages.remove(msgType)
 
     def registerForMsg(self, msgClass, receiver):
         if msgClass not in self._registry:

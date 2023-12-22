@@ -28,10 +28,6 @@ void UILabel::init() {
     labelRenderId = getEntityId();
 }
 
-void UILabel::deinit() {
-    UIElement::deinit();
-}
-
 void UILabel::ET_setText(const char* newText) {
     text = newText;
     ET_SendEvent(labelRenderId, &ETRenderTextLogic::ET_setText, newText);

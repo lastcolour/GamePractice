@@ -60,9 +60,6 @@ void LevelButton::init() {
     ET_setLevelState(ELevelButtonState::Locked, 0);
 }
 
-void LevelButton::deinit() {
-}
-
 EntityId LevelButton::ET_getSenderId() const {
     return unlockedBt.buttonId;
 }

@@ -22,11 +22,8 @@ class EditBoolValue(QWidget):
 
         self._pull()
 
-    def _signal_checkBox_stateChanged(self, state):
-        if state == Qt.CheckState.Checked:
-            self._push(True)
-        else:
-            self._push(False)
+    def _signal_checkBox_stateChanged(self):
+        self._push(self._checkBox.isChecked())
         SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, data):

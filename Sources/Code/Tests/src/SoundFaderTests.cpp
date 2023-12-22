@@ -19,9 +19,9 @@ TEST_F(SoundFaderTests, CheckFadingCurveChangeMono) {
         EXPECT_FLOAT_EQ(resSample, expectedSample);
     }
 
-    int offset = 5;
+    size_t offset = 5;
 
-    for(size_t i = offset; i < offset + 7; ++i) {
+    for(size_t i = offset; i < offset + 7u; ++i) {
         float resSample = samples[i];
         float expectedSample = (i - offset + 7) / static_cast<float>(15);
         EXPECT_FLOAT_EQ(resSample, expectedSample);
@@ -38,7 +38,7 @@ TEST_F(SoundFaderTests, CheckFadingCurveChangeMono) {
 TEST_F(SoundFaderTests, CheckFadeOutFadeInInt16Mono) {
     const size_t SAMPLES_COUNT = 30;
     std::vector<int16_t> samples;
-    for(int i = 0; i < SAMPLES_COUNT; ++i) {
+    for(size_t i = 0u; i < SAMPLES_COUNT; ++i) {
         samples.push_back(std::numeric_limits<int16_t>::max());
     }
 
@@ -75,7 +75,7 @@ TEST_F(SoundFaderTests, CheckFadeOutFadeInInt16Mono) {
 TEST_F(SoundFaderTests, CheckFadeOutFadeFloatMono) {
     const size_t SAMPLES_COUNT = 30;
     std::vector<float> samples;
-    for(int i = 0; i < SAMPLES_COUNT; ++i) {
+    for(size_t i = 0; i < SAMPLES_COUNT; ++i) {
         samples.push_back(1.f);
     }
 
@@ -112,7 +112,7 @@ TEST_F(SoundFaderTests, CheckFadeOutFadeFloatMono) {
 TEST_F(SoundFaderTests, CheckFadeOutFadeInInt16Stereo) {
     const size_t SAMPLES_COUNT = 30;
     std::vector<int16_t> samples;
-    for(int i = 0; i < SAMPLES_COUNT; ++i) {
+    for(size_t i = 0u; i < SAMPLES_COUNT; ++i) {
         samples.push_back(std::numeric_limits<int16_t>::max());
         samples.push_back(std::numeric_limits<int16_t>::min());
     }
@@ -158,7 +158,7 @@ TEST_F(SoundFaderTests, CheckFadeOutFadeInInt16Stereo) {
 TEST_F(SoundFaderTests, CheckFadeOutFadeFloatStereo) {
     const size_t SAMPLES_COUNT = 30;
     std::vector<float> samples;
-    for(int i = 0; i < SAMPLES_COUNT; ++i) {
+    for(size_t i = 0u; i < SAMPLES_COUNT; ++i) {
         samples.push_back(1.f);
         samples.push_back(-1.f);
     }

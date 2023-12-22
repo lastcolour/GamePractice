@@ -37,9 +37,9 @@ TEST_F(GameBoardMatcherTests, TestOnly3HLine) {
     BronKerboschRequest req;
     auto patterns = FindAllMatchPatterns(boardState, req);
 
-    ASSERT_EQ(patterns.size(), 1);
+    ASSERT_EQ(patterns.size(), 1u);
     EXPECT_EQ(patterns[0].patternType, EPatternType::HLine);
-    EXPECT_EQ(patterns[0].points.size(), 3);
+    EXPECT_EQ(patterns[0].points.size(), 3u);
 }
 
 TEST_F(GameBoardMatcherTests, TestOnly3VLine) {
@@ -394,7 +394,7 @@ TEST_F(GameBoardMatcherTests, Test10x10Quad) {
     req.stopIterCount = 500000;
     auto patterns = FindAllMatchPatterns(boardState, req);
 
-    ASSERT_GE(patterns.size(), 20);
+    ASSERT_GE(patterns.size(), 20u);
 
     int starsCount = 0;
     for(int i = 0; i < 20; ++i) {

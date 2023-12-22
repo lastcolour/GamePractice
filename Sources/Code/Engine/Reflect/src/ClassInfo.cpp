@@ -29,8 +29,7 @@ const char* ClassInfo::getName() const {
     return className.c_str();
 }
 
-void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, Core::TypeId valueTypeId,
-    ResourceType resType, ClassValue::SetResourceFuncT valueSetFunc) {
+void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueType, ClassValue::ValuePtrT valuePtr, Core::TypeId valueTypeId) {
     const char* errStr = "[ClassInfo::registerClassValue] Can't register field '%s' for class '%s' (Error: %s)";
     if(!valueName || !valueName[0]) {
         LogError(errStr, valueName, className, "empty name");
@@ -42,18 +41,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
         assert(false && "can't register class value");
         return;
     }
-    if(valueType == ClassValueType::Resource) {
-        if(!valueSetFunc && !valuePtr) {
-            LogError(errStr, valueName, className, "resource without create function or string value");
-            assert(false && "can't register class value");
-            return;
-        }
-        if(resType == ResourceType::Invalid) {
-            LogError(errStr, valueName, className, "resource of invalid type");
-            assert(false && "can't register class value");
-            return;
-        }
-    } else if (valueType == ClassValueType::Enum) {
+    if (valueType == ClassValueType::Enum) {
         EnumInfo* enumInfo = GetEnv()->GetClassInfoManager()->findEnumInfoByTypeId(valueTypeId);
         if(!enumInfo) {
             LogError(errStr, valueName, className, "can't find enum info");
@@ -97,8 +85,6 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
     classValue.type = valueType;
     classValue.ptr = valuePtr;
     classValue.typeId = valueTypeId;
-    classValue.resourceType = resType;
-    classValue.setResourceFunc = valueSetFunc;
     classValue.primitiveValueCount = 1;
 
     if(valueType == ClassValueType::Object) {
@@ -112,7 +98,7 @@ void ClassInfo::registerClassValue(const char* valueName, ClassValueType valueTy
 
     primitiveValueCount += classValue.primitiveValueCount;
     if(primitiveValueCount >= MAX_PRIMITIVE_PROPERTIES) {
-        LogError(errStr, valueName, className, "reach properties limit");
+        LogError(errStr, valueName, className, "too many properties");
         assert(false && "Too many properties");
         return;
     }
@@ -130,6 +116,10 @@ ClassInstance ClassInfo::createInstance() {
         return ClassInstance();
     }
     return ClassInstance(*this, object);
+}
+
+bool ClassInfo::reCreateInstance(void* ptr) {
+    return pool->reCreate(ptr);
 }
 
 void ClassInfo::removeInstance(void* ptr) {
@@ -308,7 +298,7 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Class
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.readValueFrom(ctx, instance, ptr, node)) {
+                if(!value.readValueFrom(ctx, ptr, node)) {
                     LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                         value.name, className);
                 }
@@ -321,7 +311,7 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Class
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->readValueFrom(ctx, instance, ptr, node)) {
+        if(!value->readValueFrom(ctx, ptr, node)) {
             LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                 value->name, className);
             return false;
@@ -349,7 +339,7 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Class
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.readValueFrom(ctx, instance, ptr, stream)) {
+                if(!value.readValueFrom(ctx, ptr, stream)) {
                     LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                         value.name, className);
                     return false;
@@ -363,7 +353,7 @@ bool ClassInfo::readValueFrom(const SerializeContext& ctx, void* instance, Class
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->readValueFrom(ctx, instance, ptr, stream)) {
+        if(!value->readValueFrom(ctx, ptr, stream)) {
             LogError("[ClassInfo::readValueFrom] Can't read value of '%s' from class '%s'",
                 value->name, className);
             return false;
@@ -386,7 +376,7 @@ bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, ClassV
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.writeValueTo(ctx, instance, ptr, node)) {
+                if(!value.writeValueTo(ctx, ptr, node)) {
                     LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
                         value.name, className);
                 }
@@ -399,7 +389,7 @@ bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, ClassV
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->writeValueTo(ctx, instance, ptr, node)) {
+        if(!value->writeValueTo(ctx, ptr, node)) {
             LogError("[ClassInfo::readValueFrom] Can't write value of '%s' from class '%s'",
                 value->name, className);
             return false;
@@ -427,7 +417,7 @@ bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, ClassV
         for(auto classInfo : allClasses) {
             for(auto& value : classInfo->values) {
                 auto ptr = getValueFunc(instance, value.ptr);
-                if(!value.writeValueTo(ctx, instance, ptr, stream)) {
+                if(!value.writeValueTo(ctx, ptr, stream)) {
                     LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
                         value.name, className);
                     return false;
@@ -441,7 +431,7 @@ bool ClassInfo::writeValueTo(const SerializeContext& ctx, void* instance, ClassV
             return false;
         }
         auto ptr = getValueFunc(instance, value->ptr);
-        if(!value->writeValueTo(ctx, instance, ptr, stream)) {
+        if(!value->writeValueTo(ctx, ptr, stream)) {
             LogError("[ClassInfo::writeValueTo] Can't write value of '%s' from class '%s'",
                 value->name, className);
             return false;

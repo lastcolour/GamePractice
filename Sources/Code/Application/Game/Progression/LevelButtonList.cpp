@@ -7,7 +7,7 @@
 void LevelButtonItem::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<LevelButtonItem>("LevelButtonItem")) {
         classInfo->addField("id", &LevelButtonItem::levelId);
-        classInfo->addResourceField("levelName", ResourceType::Entity, &LevelButtonItem::levelName);
+        classInfo->addField("levelName", &LevelButtonItem::levelRes);
         classInfo->addField("buttonId", &LevelButtonItem::buttonId);
     }
 }
@@ -58,7 +58,7 @@ void LevelButtonList::initLevelProgress() {
         ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelId, button.levelId.c_str());
 
         const LevelProgress* lvlProgress = nullptr;
-        ET_SendEventReturn(lvlProgress, &ETLevelsProgression::ET_getLevelProgress, button.levelName.c_str());
+        ET_SendEventReturn(lvlProgress, &ETLevelsProgression::ET_getLevelProgress, button.levelRes.getPath());
         if(lvlProgress && lvlProgress->stars > 0) {
             prevLevelHasStars = true;
             ET_SendEvent(button.buttonId, &ETLevelButton::ET_setLevelState, ELevelButtonState::Unlocked, lvlProgress->stars);
@@ -89,7 +89,7 @@ void LevelButtonList::ET_updateLevelProgress(EventSequence& eventSeq) {
 
     bool nextLevelUnlocked = false;
     for(auto& lvlButton : levelButtons) {
-        if(lvlButton.levelName == progressDelta->current.name) {
+        if(lvlButton.levelRes.getPath() == progressDelta->current.name) {
             progressedLevelId = lvlButton.buttonId;
             nextLevelUnlocked = true;
             continue;
@@ -113,7 +113,7 @@ void LevelButtonList::ET_updateLevelProgress(EventSequence& eventSeq) {
 const char* LevelButtonList::ET_getLevelNameForSender(EntityId senderId) const {
     for(auto& button : levelButtons) {
         if(button.senderId == senderId) {
-            return button.levelName.c_str();
+            return button.levelRes.getPath();
         }
     }
     return "";

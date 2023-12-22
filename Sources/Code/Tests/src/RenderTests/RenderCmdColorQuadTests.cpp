@@ -61,7 +61,7 @@ TEST_F(RenderCmdColorQuadTests, CheckCreateCmd) {
         end.x = static_cast<int>(getRenderResolution().x / 2.f + quadSize.x / 2.f);
         end.y = static_cast<int>(getRenderResolution().y / 2.f + quadSize.y / 2.f);
         auto failPixCount = countNotEqualPixels(start, end, drawColor);
-        EXPECT_EQ(failPixCount, 0);
+        EXPECT_EQ(failPixCount, 0u);
     }
 
     slice.advance();
@@ -93,7 +93,7 @@ TEST_F(RenderCmdColorQuadTests, CheckSimpleLogic) {
         end.x = static_cast<int>(getRenderResolution().x / 2.f + quadSize.x / 2.f);
         end.y = static_cast<int>(getRenderResolution().y / 2.f + quadSize.y / 2.f);
         auto failPixCount = countNotEqualPixels(start, end, drawColor);
-        EXPECT_EQ(failPixCount, 0);
+        EXPECT_EQ(failPixCount, 0u);
     }
 
     simpleLogic->ET_hide();
@@ -106,7 +106,7 @@ TEST_F(RenderCmdColorQuadTests, CheckSimpleLogic) {
         Vec2i end;
         end.x = static_cast<int>(getRenderResolution().x / 2.f + quadSize.x / 2.f);
         end.y = static_cast<int>(getRenderResolution().y / 2.f + quadSize.y / 2.f);
-        auto failPixCount = countNotEqualPixels(start, end, drawColor);
+        int failPixCount = static_cast<int>(countNotEqualPixels(start, end, drawColor));
         EXPECT_GE(failPixCount, (end.x - start.x - 3) * (end.y - start.y - 3));
     }
 }

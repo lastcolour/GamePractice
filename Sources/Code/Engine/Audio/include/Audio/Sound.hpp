@@ -1,6 +1,8 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
+#include "Reflect/Resource.hpp"
+
 class SoundData;
 class SoundProxy;
 
@@ -11,6 +13,53 @@ enum class ESoundGroup {
 };
 
 class Sound {
+public:
+
+    struct SoundResourceDescriptor {
+        using StorageType = std::string;
+        using RuntimeType = SoundProxy*;
+        const char* TypeName = "Sound";
+
+        static void Convert(const std::string& fileName, SoundProxy*& proxy);
+        static void Convert(SoundProxy* const& proxy, std::string& fileName);
+    };
+
+    class SoundResource : private Reflect::Resource<SoundResourceDescriptor> {
+    public:
+
+        using SpecType = SoundResourceDescriptor;
+
+    public:
+
+        SoundResource() {
+            setAndReset(nullptr);
+        }
+
+        SoundResource(SoundResource&& other) {
+            set(other.get());
+            other.set(nullptr);
+        }
+
+        SoundResource& operator=(SoundResource&& other) {
+            if(this != &other) {
+                detach();
+                set(other.get());
+                other.setAndReset(nullptr);
+            }
+            return *this;
+        }
+
+        ~SoundResource();
+
+        void detach();
+        void setFile(const std::string& filePath);
+
+        SoundProxy* operator->() { return get(); }
+        const SoundProxy* operator->() const { return get(); }
+        SoundProxy* getProxy() { return get(); }
+        operator bool() const { return isSet() && get(); }
+    };
+
 public:
 
     static void Reflect(ReflectContext& ctx);
@@ -48,7 +97,7 @@ private:
 
 private:
 
-    SoundProxy* proxy;
+    SoundResource resource;
     float volume;
     ESoundGroup group;
     bool looped;

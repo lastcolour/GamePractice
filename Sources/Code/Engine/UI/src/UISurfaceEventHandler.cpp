@@ -73,8 +73,6 @@ bool UISurfaceEventHandler::init() {
 }
 
 void UISurfaceEventHandler::deinit() {
-    ETNode<ETInputEvents>::disconnect();
-    ETNode<ETSurfaceEvents>::disconnect();
 }
 
 std::vector<EntityId> UISurfaceEventHandler::getHoveredEntities(const Vec2i& pt) const {

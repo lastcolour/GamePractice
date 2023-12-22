@@ -5,7 +5,7 @@
 #include "UI/ETUIViewPort.hpp"
 #include "Render/ETRenderCamera.hpp"
 
-class UIViewPortManager : public SystemLogic, 
+class UIViewPortManager : public SystemLogic,
     public ETNode<ETUIViewPort>,
     public ETNode<ETRenderCameraEvents> {
 public:

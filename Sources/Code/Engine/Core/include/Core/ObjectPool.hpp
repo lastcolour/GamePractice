@@ -1,3 +1,4 @@
+
 #ifndef __OBJECT_POOL_HPP__
 #define __OBJECT_POOL_HPP__
 
@@ -15,6 +16,7 @@ public:
 
     virtual void* simpleCreate() = 0;
     virtual void recycle(void* ptr) = 0;
+    virtual bool reCreate(void* ptr) = 0;
 };
 
 } // namespace Impl
@@ -51,6 +53,15 @@ public:
     void recycle(void* ptr) override {
         reinterpret_cast<T*>(ptr)->~T();
         allocator.deallocate(ptr);
+    }
+
+    bool reCreate(void* ptr) override {
+        if constexpr (std::is_default_constructible<T>::value) {
+            reinterpret_cast<T*>(ptr)->~T();
+            ptr = new (ptr) T();
+            return true;
+        }
+        return false;
     }
 
 private:

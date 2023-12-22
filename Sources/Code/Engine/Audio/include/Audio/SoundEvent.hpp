@@ -1,10 +1,20 @@
 #ifndef __SOUND_EVENT_HPP__
 #define __SOUND_EVENT_HPP__
 
+#include "Reflect/Resource.hpp"
+
 class SoundEvent {
 public:
 
     static void Reflect(ReflectContext& ctx);
+
+public:
+
+    struct ResourceDescriptor {
+        using RuntimeType = std::string;
+        using StorageType = std::string;
+        const char* TypeName = "SoundEvent";
+    };
 
 public:
 
@@ -17,7 +27,7 @@ public:
 
 private:
 
-    std::string eventName;
+    Reflect::Resource<ResourceDescriptor> event;
 };
 
 #endif /* __SOUND_EVENT_HPP__ */

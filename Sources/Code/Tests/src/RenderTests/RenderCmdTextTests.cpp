@@ -26,7 +26,7 @@ TEST_F(RenderCmdTextTests, DrawSingleLetter) {
         Vec2i(static_cast<int>(textBox.top.x), static_cast<int>(textBox.top.y))};
 
     auto pixelsInBounds = countEqualPixels(itextBox, ColorB(255, 255, 255));
-    EXPECT_GT(pixelsInBounds, 0);
+    EXPECT_GT(pixelsInBounds, 0u);
 
     auto biggerBox = itextBox.expandBy(100);
 
@@ -59,7 +59,7 @@ TEST_F(RenderCmdTextTests, DrawMultiLineText) {
         Vec2i(static_cast<int>(textBox.top.x), static_cast<int>(textBox.top.y))};
 
     auto pixelsInBounds = countEqualPixels(itextBox, ColorB(255, 255, 255));
-    EXPECT_GT(pixelsInBounds, 0);
+    EXPECT_GT(pixelsInBounds, 0u);
 
     auto biggerBox = itextBox.expandBy(100);
 
@@ -92,7 +92,7 @@ TEST_F(RenderCmdTextTests, DrawEmptyText) {
         Vec2i(static_cast<int>(textBox.top.x), static_cast<int>(textBox.top.y))};
 
     auto pixelsInBounds = countEqualPixels(itextBox, ColorB(255, 255, 255));
-    EXPECT_EQ(pixelsInBounds, 0);
+    EXPECT_EQ(pixelsInBounds, 0u);
 
     auto biggerBox = itextBox.expandBy(100);
 

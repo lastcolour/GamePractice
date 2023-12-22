@@ -57,6 +57,7 @@ class LogicNative(NativeObject):
         except Exception as e:
             print("[LogicNative:readFromNative] Error occured during deserializtion from native data: '{0}' (Data: {1})".format(
                 self._name, stream._data))
+            print("[LogicNative:readFromNative] Error: {0}".format(e.__str__()))
             traceback.print_tb(e.__traceback__)
 
     def writeToNative(self):

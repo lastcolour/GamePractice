@@ -3,14 +3,14 @@
 namespace Reflect {
 
 ClassInstance::ClassInstance() :
-    classInfo(nullptr),
     instance(nullptr),
+    classInfo(nullptr),
     deleteFunc(nullptr) {
 }
 
 ClassInstance::ClassInstance(ClassInstance&& other) :
-    classInfo(other.classInfo),
     instance(other.instance),
+    classInfo(other.classInfo),
     deleteFunc(other.deleteFunc) {
 
     other.instance = nullptr;
@@ -26,7 +26,7 @@ ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
         if(classInfo) {
             classInfo->removeInstance(instance);
         } else {
-            deleteFunc(instance);
+            deleteFunc(instance, EDelOpType::Delete);
         }
     }
     instance = other.instance;
@@ -39,8 +39,8 @@ ClassInstance& ClassInstance::operator=(ClassInstance&& other) {
 }
 
 ClassInstance::ClassInstance(ClassInfo& clsInfo, void* clsInstance) :
-    classInfo(&clsInfo),
-    instance(clsInstance) {
+    instance(clsInstance),
+    classInfo(&clsInfo) {
 }
 
 ClassInstance::~ClassInstance() {
@@ -48,7 +48,7 @@ ClassInstance::~ClassInstance() {
         if(classInfo) {
             classInfo->removeInstance(instance);
         } else {
-            deleteFunc(instance);
+            deleteFunc(instance, EDelOpType::Delete);
         }
     }
     instance = nullptr;
@@ -172,6 +172,20 @@ bool ClassInstance::setValuePolymorphType(ClassValueId valueId, const char* type
         return false;
     }
     return classInfo->setValuePolymorphType(instance, valueId, typeName);
+}
+
+void ClassInstance::reCreate() {
+    assert(instance && "No instance to re-create!");
+
+    if(classInfo) {
+        if(!classInfo->reCreateInstance(instance)) {
+            assert(false && "Can't re-create instance");
+        }
+    } else {
+        if(!deleteFunc(instance, EDelOpType::ReCreate)) {
+            assert(false && "Can't re-create instance");
+        }
+    }
 }
 
 } // namespace Reflect

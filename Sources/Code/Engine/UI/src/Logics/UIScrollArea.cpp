@@ -83,6 +83,9 @@ void UIScrollArea::init() {
     alignTarget();
 }
 
+void UIScrollArea::deinit() {
+}
+
 void UIScrollArea::alignTarget() {
     resetMoveState();
 
@@ -96,9 +99,6 @@ void UIScrollArea::alignTarget() {
     childZIndex += extraZOffset;
 
     ET_SendEvent(targetId, &ETUIElement::ET_setZIndex, childZIndex);
-}
-
-void UIScrollArea::deinit() {
 }
 
 EInputEventResult UIScrollArea::ET_onInputEvent(EActionType type, const Vec2i& pt) {

@@ -651,38 +651,58 @@ class ObjectValue(ValueNative):
 class ResourceValue(ValueNative):
     def __init__(self):
         super().__init__(ValueType.Resource)
-        self._resType = None
-        self._val = None
+        self._specType = None
+        self._storageVal = None
+        self._isSet = False
 
     def readFromDict(self, node):
         if not self._isArrayElement:
-            self._val = str(node[self._name])
+            if node[self._name] != None:
+                self._storageVal.readFromDict(node)
+                self._isSet = True
+            else:
+                self._isSet = False
         else:
-            self._val = str(node)
+            if node != None:
+                self._storageVal.readFromDict(node)
+                self._isSet = True
+            else:
+                self._isSet = False
 
     def writeToDict(self, node):
-        if self._val is not None:
-            node[self._name] = self._val
+        if not self._isArrayElement:
+            if self._isSet:
+                self._storageVal.writeToDict(node)
+            else:
+                node[self._name] = None
         else:
-            node.append(self._val)
+            if self._isSet:
+               self._storageVal.writeToDict(node)
+            else:
+                node.append(None)
 
     def readFromStream(self, stream):
-        stream.readString()
-        if self._val is None:
-            self._val = ""
+        self._isSet = stream.readBool()
+        if self._isSet:
+            self._storageVal.readFromStream(stream)
 
     def writeToStream(self, stream):
-        stream.writeString(self._val)
+        stream.writeBool(self._isSet)
+        if self._isSet:
+            self._storageVal.writeToStream(stream)
 
-    def getResourceType(self):
-        return self._resType
+    def getSpecType(self):
+        return self._specType
 
-    def setVal(self, val):
-        self._val = str(val)
+    def getStorage(self):
+        return self._storageVal
+
+    def isStorageSet(self):
+        return self._isSet
+
+    def setIsSet(self, isSet):
+        self._isSet = isSet
         self._onValueChanged()
-
-    def getVal(self):
-        return self._val
 
 class EntityValue(ValueNative):
     def __init__(self):
@@ -802,7 +822,7 @@ class PolymorphObject(ValueNative):
         if not self._isArrayElement and self._name is not None:
             node[self._name] = data
         else:
-            node.append(data) 
+            node.append(data)
 
     def readFromStream(self, stream):
         objType = stream.readString()
@@ -841,15 +861,19 @@ def _createValue(valueName, logic, valueType):
         val = ColorValue()
     elif valueType == "entity":
         val = EntityValue()
-    elif len(valueType) > 9 and valueType[:9] == "resource.":
-        val = ResourceValue()
-        val._resType = ResourceType.getResourceType(valueType[9:])
     elif len(valueType) > 6 and valueType[:6] == "array.":
         val = ArrayValue()
         val._elemType = valueType[6:]
     elif len(valueType) > 9 and valueType[:9] == "poly_ptr.":
         val = PolymorphObject()
         val._baseType = valueType[9:]
+    elif len(valueType) > 9 and valueType[:9] == "resource.":
+        valueModel = _getReflectModel().getTypeModel(valueType)
+        if valueModel is None:
+            raise RuntimeError("Can't find type model for a type '{0}'".format(valueType))
+        val = ResourceValue()
+        val._specType = ResourceType.getResourceType(valueModel["spec"])
+        val._storageVal = _createValue(valueName, logic, valueModel["storage"])
     else:
         valueModel = _getReflectModel().getTypeModel(valueType)
         if valueModel is None:

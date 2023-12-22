@@ -62,6 +62,7 @@ public:
     void write(const char* key, float value);
     void write(const char* key, int value);
     void write(const char* key, bool value);
+    void writeNull(const char* key);
 
     void write(float value);
     void write(int value);
@@ -69,10 +70,15 @@ public:
     void write(const char* value);
     void write(const std::string& value);
     void write(const JSONNode& node);
+    void writeNull();
+
+    bool isNull(const char* key) const;
+    bool isNull() const;
 
     const char* key() const;
     JSONNode object(const char* key) const;
     bool hasKey(const char* key) const;
+    bool hasNonNullKey(const char* key) const;
     bool setArray();
 
     bool isArray() const;

@@ -4,6 +4,9 @@
 #include "Application.hpp"
 #include "Platform/ETSurface.hpp"
 
+#include <atomic>
+#include <thread>
+
 class TasksRunner;
 
 class EditorApp : public Application {
@@ -45,7 +48,30 @@ protected:
 
 private:
 
+    std::atomic<int> tickCount;
+    std::atomic<int> asyncTickingTasks;
+    std::atomic<bool> canTickAsync;
     bool updateGame;
+
+private:
+
+    struct AsyncTickLock {
+        AsyncTickLock(EditorApp& inApp) :
+            app(inApp) {
+            app.canTickAsync.store(false);
+            while(app.asyncTickingTasks.load() != 0) {
+                std::this_thread::yield();
+            }
+        }
+        ~AsyncTickLock() {
+            app.canTickAsync.store(true);
+        }
+
+    private:
+
+        EditorApp& app;
+    };
+
 };
 
 #endif /* __EDITOR_APP__ */

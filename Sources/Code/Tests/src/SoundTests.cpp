@@ -12,7 +12,7 @@ namespace {
 
 const char* TEST_SOUND_NAME = "Sounds/Game/Music/8bit_Bossa.ogg";
 const char* TEST_MONO_SOUND = "Sounds/UI/buttonPress_01.ogg";
-const int MAX_PARALLEL_SOUNDS = 16;
+const size_t MAX_PARALLEL_SOUNDS = 16;
 
 void DoAudioSystemStep() {
     for(int i = 0; i < 3; ++i) {
@@ -64,7 +64,7 @@ TEST_F(SoundTests, CheckCreateSound) {
 
 TEST_F(SoundTests, CheckCreateManySound) {
     std::vector<Sound> sounds;
-    for(int i = 0; i < MAX_PARALLEL_SOUNDS; ++i) {
+    for(size_t i = 0; i < MAX_PARALLEL_SOUNDS; ++i) {
         Sound sound;
         sound.setFile(TEST_SOUND_NAME);
         sounds.emplace_back(std::move(sound));
@@ -121,7 +121,7 @@ TEST_F(SoundTests, CheckBufferQueueSingle) {
     for(int i = 0; i < 10; ++i) {
         {
             auto writeBuffs = bufferQueue.peekWrites();
-            ASSERT_EQ(writeBuffs.size(), 1);
+            ASSERT_EQ(writeBuffs.size(), 1u);
             auto buff = writeBuffs[0];
 
             buff->write(&i, sizeof(int));

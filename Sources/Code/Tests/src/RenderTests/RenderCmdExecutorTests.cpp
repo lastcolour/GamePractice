@@ -44,9 +44,9 @@ TEST_F(RenderCmdExecutorTests, CheckAddRemoveCmd) {
         DrawCmdSlice slice = executor.getCmdSlice();
         slice.makeMaxSlice();
 
-        EXPECT_EQ(slice.startIdx, 0);
-        EXPECT_EQ(slice.endIdx, 0);
-        EXPECT_EQ(slice.size, 0);
+        EXPECT_EQ(slice.startIdx, 0u);
+        EXPECT_EQ(slice.endIdx, 0u);
+        EXPECT_EQ(slice.size, 0u);
     }
 
     executor.registerCmdForDraw(cmd);
@@ -56,9 +56,9 @@ TEST_F(RenderCmdExecutorTests, CheckAddRemoveCmd) {
         DrawCmdSlice slice = executor.getCmdSlice();
         slice.makeMaxSlice();
 
-        EXPECT_EQ(slice.startIdx, 0);
-        EXPECT_EQ(slice.endIdx, 1);
-        EXPECT_EQ(slice.size, 1);
+        EXPECT_EQ(slice.startIdx, 0u);
+        EXPECT_EQ(slice.endIdx, 1u);
+        EXPECT_EQ(slice.size, 1u);
     }
 
     executor.destroyCmd(cmd);
@@ -68,9 +68,9 @@ TEST_F(RenderCmdExecutorTests, CheckAddRemoveCmd) {
         DrawCmdSlice slice = executor.getCmdSlice();
         slice.makeMaxSlice();
 
-        EXPECT_EQ(slice.startIdx, 0);
-        EXPECT_EQ(slice.endIdx, 0);
-        EXPECT_EQ(slice.size, 0);
+        EXPECT_EQ(slice.startIdx, 0u);
+        EXPECT_EQ(slice.endIdx, 0u);
+        EXPECT_EQ(slice.size, 0u);
     }
 }
 
@@ -103,8 +103,8 @@ TEST_F(RenderCmdExecutorTests, CheckCmdSorting) {
         DrawCmdSlice slice = executor.getCmdSlice();
         slice.makeMaxSlice();
 
-        EXPECT_EQ(slice.startIdx, 0);
-        EXPECT_EQ(slice.endIdx, 2);
-        EXPECT_EQ(slice.size, 2);
+        EXPECT_EQ(slice.startIdx, 0u);
+        EXPECT_EQ(slice.endIdx, 2u);
+        EXPECT_EQ(slice.size, 2u);
     }
 }

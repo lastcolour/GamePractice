@@ -1,10 +1,3 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QTreeWidget, QVBoxLayout, QTreeWidgetItem
-from PyQt6.QtCore import Qt
-
-from .EditVec3Value import EditVec3Value
-from .EditQuatValue import EditQuatValue
-
-from utils.ViewUtils import GetMinimunWidgetTreeHeight
 from native.ValueNative import ValueType
 from view.LogicView import LogicView
 

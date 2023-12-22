@@ -1,5 +1,6 @@
 #include "Reflect/ClassInfoManager.hpp"
 #include "ArrayInfo.hpp"
+#include "ResourceInfo.hpp"
 
 #include <cassert>
 
@@ -31,6 +32,24 @@ bool RegisterArrayInfo(Core::TypeId elemTypeId, ClassValueType elemType, ArrayCr
         sizeFunc, getElemFunc, resetFunc));
     if(!GetEnv()->GetClassInfoManager()->registerArrayInfo(arrayInfoPtr)) {
         LogError("[Reflect::RegisterArrayInfo] Can't register array info");
+        assert(false && "false register result");
+        return false;
+    }
+    return true;
+}
+
+bool RegisterResourceInfo(Core::TypeId resourceTypeId, ClassValueType elemType, Core::TypeId elemTypeId, const char* name,
+    ResourceConvertFuncT toRuntimeConvertFunc, ResourceConvertFuncT toStoreConvertFunc, ResourceTempBuffInitFuncT tempBufferInitFunc) {
+
+    ResourceInfo* resourceInfo = GetEnv()->GetClassInfoManager()->findResourceInfoByTypeId(resourceTypeId);
+    if(resourceInfo) {
+        return true;
+    }
+
+    std::unique_ptr<ResourceInfo> resourceInfoPtr(new ResourceInfo(resourceTypeId, elemType, elemTypeId, name,
+        toRuntimeConvertFunc, toStoreConvertFunc, tempBufferInitFunc));
+    if(!GetEnv()->GetClassInfoManager()->registerResourceInfo(resourceInfoPtr)) {
+        LogError("[Reflect::RegisterResourceInfo] Can't register resource info");
         assert(false && "false register result");
         return false;
     }

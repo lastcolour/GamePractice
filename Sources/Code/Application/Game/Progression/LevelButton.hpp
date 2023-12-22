@@ -45,7 +45,7 @@ public:
 
     // EntityLogic
     void init() override;
-    void deinit() override;
+    void deinit() override {}
 
     // ETLevelButton
     void ET_setLevelId(const char* levelId) override;

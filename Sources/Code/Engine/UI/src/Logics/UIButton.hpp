@@ -22,7 +22,6 @@ public:
 
     // EntityLogic
     void init() override;
-    void deinit() override;
     void onLoaded() override;
 
     // ETUIInteractionBox

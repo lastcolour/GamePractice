@@ -115,11 +115,11 @@ TEST_F(RenderSceneTests, CheckRecursiveRemove) {
 
     rootScene->ET_addItem(objects[0].entity->getEntityId(), 1);
 
-    EXPECT_EQ(rootScene->ET_getItemsCount(), 5);
+    EXPECT_EQ(rootScene->ET_getItemsCount(), 5u);
 
     rootScene->ET_removeItem(objects[0].entity->getEntityId());
 
-    EXPECT_EQ(rootScene->ET_getItemsCount(), 0);
+    EXPECT_EQ(rootScene->ET_getItemsCount(), 0u);
 }
 
 TEST_F(RenderSceneTests, CheckDoNotOverrideChildRenderScene) {
@@ -150,7 +150,7 @@ TEST_F(RenderSceneTests, CheckDoNotOverrideChildRenderScene) {
         ET_SendEventReturn(itemCount, objects[0].entity->getEntityId(),
             &ETRenderScene::ET_getItemsCount);
 
-        EXPECT_EQ(itemCount, 1);
+        EXPECT_EQ(itemCount, 1u);
     }
 
     {
@@ -158,6 +158,6 @@ TEST_F(RenderSceneTests, CheckDoNotOverrideChildRenderScene) {
         ET_SendEventReturn(itemCount, objects[1].entity->getEntityId(),
             &ETRenderScene::ET_getItemsCount);
 
-        EXPECT_EQ(itemCount, 3);
+        EXPECT_EQ(itemCount, 3u);
     }
 }

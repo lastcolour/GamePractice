@@ -72,12 +72,6 @@ void UIButton::init() {
     ETNode<ETUIAnimationSequenceEvent>::connect(getEntityId());
 }
 
-void UIButton::deinit() {
-    UIBox::deinit();
-    ETNode<ETUIInteractionBox>::disconnect();
-    ETNode<ETUIAnimationSequenceEvent>::disconnect();
-}
-
 void UIButton::onLoaded() {
     UIBox::onLoaded();
     isLoaded = true;

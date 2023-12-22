@@ -176,7 +176,7 @@ class FileTreeMenu(QMenu):
 
     def _onRemove(self):
         res = RemoveFile(self._currentItem._node).exec()
-        if res != QMessageBox.Ok:
+        if res != QMessageBox.StandardButton.Ok:
             return
         self._fileTreeView._removeItem(self._currentItem)
         self._currentItem = None

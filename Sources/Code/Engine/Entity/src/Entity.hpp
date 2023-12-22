@@ -8,7 +8,7 @@ class Entity : public ETNode<ETEntity> {
 public:
 
     struct EntityChildNode {
-        Entity* childEntity;
+        Entity* childEntity{nullptr};
         EntityChildId childId;
     };
 
@@ -77,6 +77,8 @@ private:
     EntityChildId createNewChildId() const;
     EntityChildId addChild(Entity* childEntity);
     void removeChild(Entity* childEntity);
+    void initAllLogic();
+    void deinitAllLogics();
 
 private:
 

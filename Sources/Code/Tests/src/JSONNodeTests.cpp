@@ -22,7 +22,7 @@ TEST_F(JSONNodeTests, ParseStringWithEmptyObject) {
 TEST_F(JSONNodeTests, CheckObjectSize) {
     auto node = JSONNode::ParseString("{\"obj\":{}}");
     ASSERT_TRUE(node);
-    ASSERT_EQ(node.size(), 1);
+    ASSERT_EQ(node.size(), 1u);
 }
 
 TEST_F(JSONNodeTests, CheckSimpleObject) {
@@ -46,7 +46,7 @@ TEST_F(JSONNodeTests, CheckBeginEnd) {
     auto node = JSONNode::ParseString("{\"obj1\": 1}");
 
     ASSERT_TRUE(node);
-    ASSERT_EQ(node.size(), 1);
+    ASSERT_EQ(node.size(), 1u);
 
     auto begIt = node.begin();
     auto endIt = node.end();
@@ -112,7 +112,7 @@ TEST_F(JSONNodeTests, CheckAccessToInvalidElements) {
     auto node = JSONNode::ParseString("{\"obj\": {}}");
 
     ASSERT_TRUE(node);
-    ASSERT_EQ(node.size(), 1);
+    ASSERT_EQ(node.size(), 1u);
 
     auto objNode = node.object("invalid");
     ASSERT_FALSE(objNode);
@@ -141,7 +141,7 @@ TEST_F(JSONNodeTests, CheckAccessToInvalidElements) {
         ++iterCount;
     }
 
-    ASSERT_EQ(iterCount, 0);
+    ASSERT_EQ(iterCount, 0u);
     ASSERT_EQ(objNode.begin(), objNode.end());
 }
 
@@ -225,11 +225,15 @@ TEST_F(JSONNodeTests, CheckCreateReadSame) {
 }
 
 TEST_F(JSONNodeTests, CheckIfHasKey) {
-    auto node = JSONNode::ParseString("{\"obj\": {}}");
+    auto node = JSONNode::ParseString("{\"obj1\": {}, \"obj2\": null}");
 
-    ASSERT_FALSE(node.hasKey("obj1"));
+    ASSERT_TRUE(node.hasKey("obj1"));
+    ASSERT_TRUE(node.hasNonNullKey("obj1"));
+    ASSERT_FALSE(node.isNull("obj1"));
 
-    ASSERT_TRUE(node.hasKey("obj"));
+    ASSERT_TRUE(node.hasKey("obj2"));
+    ASSERT_FALSE(node.hasNonNullKey("obj2"));
+    ASSERT_TRUE(node.isNull("obj2"));
 }
 
 TEST_F(JSONNodeTests, CheckWriteArray) {

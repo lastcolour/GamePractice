@@ -1,6 +1,7 @@
 #include "Reflect/ClassInfoManager.hpp"
 #include "Reflect/EnumInfo.hpp"
 #include "ArrayInfo.hpp"
+#include "ResourceInfo.hpp"
 #include "Core/JSONNode.hpp"
 
 #include <cassert>
@@ -58,6 +59,7 @@ void ClassInfoManager::reset() {
     classInfoMap.clear();
     enumInfoMap.clear();
     arrayInfoMap.clear();
+    resourceInfoMap.clear();
 }
 
 int ClassInfoManager::getRegisteredClassCount() {
@@ -80,6 +82,12 @@ void ClassInfoManager::makeReflectModel(JSONNode& node) {
         JSONNode classNode;
         classInfo->makeReflectModel(classNode);
         node.write(classInfo->getName(), classNode);
+    }
+    for(auto& resourceInfoItem : resourceInfoMap) {
+        auto& resourceInfo = resourceInfoItem.second;
+        JSONNode resourceNode;
+        resourceInfo->makeReflectModel(resourceNode);
+        node.write(resourceInfo->getName(), resourceNode);
     }
 }
 
@@ -119,6 +127,29 @@ bool ClassInfoManager::registerEnumInfo(std::unique_ptr<EnumInfo>& enumInfo) {
     return true;
 }
 
+ResourceInfo* ClassInfoManager::findResourceInfoByTypeId(Core::TypeId resourceSpecTypeId) {
+    auto it = resourceInfoMap.find(resourceSpecTypeId);
+    if(it == resourceInfoMap.end()) {
+        return nullptr;
+    }
+    return it->second.get();
+}
+
+bool ClassInfoManager::registerResourceInfo(std::unique_ptr<ResourceInfo>& resourceInfo) {
+    if(!resourceInfo) {
+        LogError("[ClassInfoManager::registerResourceInfo] Invalid resource info");
+        assert(false && "Invalid resource info");
+        return false;
+    }
+    if(findResourceInfoByTypeId(resourceInfo->getSpecTypeId())) {
+        LogError("[ClassInfoManager::registerResourceInfo] Resouce info already registered");
+        assert(false && "Resource spec typeId duplicate");
+        return false;
+    }
+    resourceInfoMap[resourceInfo->getSpecTypeId()] = std::move(resourceInfo);
+    return true;
+}
+
 ArrayInfo* ClassInfoManager::findArrayInfoByElemTypeId(Core::TypeId elemTypeId) {
     auto it = arrayInfoMap.find(elemTypeId);
     if(it == arrayInfoMap.end()) {
@@ -130,7 +161,7 @@ ArrayInfo* ClassInfoManager::findArrayInfoByElemTypeId(Core::TypeId elemTypeId) 
 bool ClassInfoManager::registerArrayInfo(std::unique_ptr<ArrayInfo>& arrayInfo) {
     if(!arrayInfo) {
         LogError("[ClassInfoManager::registerArrayInfo] Invalid array info");
-        assert(false && "Invalid enum info");
+        assert(false && "Invalid array info");
         return false;
     }
     if(findArrayInfoByElemTypeId(arrayInfo->getElemTypeId())) {

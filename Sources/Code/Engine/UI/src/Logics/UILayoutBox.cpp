@@ -25,10 +25,6 @@ void UILayoutBox::init() {
     boxRenderId = getEntityId();
 }
 
-void UILayoutBox::deinit() {
-    UIElement::deinit();
-}
-
 void UILayoutBox::onLoaded() {
     UIElement::onLoaded();
 

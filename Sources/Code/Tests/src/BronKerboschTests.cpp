@@ -36,7 +36,7 @@ TEST_F(BronKerboschTests, CheckTwoVertexGraph) {
 
     auto& maxClique = req.result;
 
-    ASSERT_EQ(maxClique.size(), 1);
+    ASSERT_EQ(maxClique.size(), 1u);
 }
 
 TEST_F(BronKerboschTests, CheckOneClique) {
@@ -50,7 +50,7 @@ TEST_F(BronKerboschTests, CheckOneClique) {
     BronKerbosch(req);
 
     auto& maxClique = req.result;
-    ASSERT_EQ(maxClique.size(), 3);
+    ASSERT_EQ(maxClique.size(), 3u);
 
     {
         std::set<int> s(maxClique.begin(), maxClique.end());

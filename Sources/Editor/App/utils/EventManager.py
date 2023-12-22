@@ -24,10 +24,10 @@ class EventManager:
     def _askToSaveEntity(self):
         if not self._currentEntity.isModified():
             return True
-        retCode = SaveEntityChanges(self._currentEntity).exec_()
-        if retCode == QMessageBox.Ok:
+        retCode = SaveEntityChanges(self._currentEntity).exec()
+        if retCode == QMessageBox.StandardButton.Ok:
             self._currentEntity.save()
-        elif retCode == QMessageBox.Cancel:
+        elif retCode == QMessageBox.StandardButton.Cancel:
             return False
         return True
 
@@ -98,8 +98,8 @@ class EventManager:
         if os.path.exists(resFile):
             if os.path.isdir(resFile):
                 return False
-            retCode = OverrideFile(resFile).exec_()
-            if retCode != QMessageBox.Ok:
+            retCode = OverrideFile(resFile).exec()
+            if retCode != QMessageBox.StandardButton.Ok:
                 return False
         if not childEntity.extractToFile(resFile):
             return False

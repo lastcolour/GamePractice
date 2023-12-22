@@ -6,16 +6,37 @@ namespace Reflect {
 class ClassInfo;
 
 class ClassInstance {
+private:
 
-    using DeleteFuncT = void(*)(void*);
+    enum class EDelOpType {
+        ReCreate,
+        Delete,
+    };
+
+private:
+
+    using DeleteFuncT = bool(*)(void*&, EDelOpType);
 
 public:
 
     template<typename T>
     static ClassInstance CreateWithoutClassInfo(T* ptr) {
         static_assert(!std::is_same<T,void>::value, "Can't create instance of void*");
-        auto deleteFunc = [](void* objectPtr){
-            delete static_cast<T*>(objectPtr);
+        auto deleteFunc = [](void*& objectPtr, EDelOpType opType) -> bool {
+            if(opType == EDelOpType::Delete) {
+                delete static_cast<T*>(objectPtr);
+                objectPtr = nullptr;
+                return true;
+            } else {
+                if constexpr(std::is_default_constructible<T>::value) {
+                    if(opType == EDelOpType::ReCreate) {
+                        static_cast<T*>(objectPtr)->~T();
+                        objectPtr = new (objectPtr) T();
+                        return true;
+                    }
+                }
+            }
+            return false;
         };
         ClassInstance instance;
         instance.setDeleteFuncAndPtr(static_cast<DeleteFuncT>(deleteFunc), ptr);
@@ -58,6 +79,12 @@ public:
     bool addValueArrayElement(ClassValueId valueId);
     bool setValuePolymorphType(ClassValueId valueId, const char* typeName);
 
+    void reCreate();
+
+    operator bool() const {
+        return instance != nullptr;
+    }
+
 private:
 
     void setDeleteFuncAndPtr(DeleteFuncT deleteF, void* ptr);
@@ -70,8 +97,8 @@ private:
 
 private:
 
-    ClassInfo* classInfo;
     void* instance;
+    ClassInfo* classInfo;
     DeleteFuncT deleteFunc;
 };
 

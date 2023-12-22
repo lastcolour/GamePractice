@@ -34,7 +34,7 @@ bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, cons
     resetFunc(valuePtr);
     for(auto& elemNode : node) {
         auto elem = createFunc(valuePtr);
-        if(!elemValue.readValueFrom(ctx, elem, elem, elemNode)) {
+        if(!elemValue.readValueFrom(ctx, elem, elemNode)) {
             return false;
         }
     }
@@ -47,7 +47,7 @@ bool ArrayInfo::readValuesFrom(const SerializeContext& ctx, void* valuePtr, Memo
     stream.read(sz);
     for(int i = 0; i < sz; ++i) {
         auto elem = createFunc(valuePtr);
-        if(!elemValue.readValueFrom(ctx, elem, elem, stream)) {
+        if(!elemValue.readValueFrom(ctx, elem, stream)) {
             return false;
         }
     }
@@ -59,7 +59,7 @@ bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, Memor
     stream.write(sz);
     for(int i = 0; i < sz; ++i) {
         auto elem = getElemFunc(i, valuePtr);
-        if(!elemValue.writeValueTo(ctx, elem, elem, stream)) {
+        if(!elemValue.writeValueTo(ctx, elem, stream)) {
             return false;
         }
     }
@@ -72,7 +72,7 @@ bool ArrayInfo::writeValuesTo(const SerializeContext& ctx, void* valuePtr, JSONN
     assert(setRes && "Can't set node to array");
     for(int i = 0; i < sz; ++i) {
         auto elem = getElemFunc(i, valuePtr);
-        if(!elemValue.writeValueTo(ctx, elem, elem, node)) {
+        if(!elemValue.writeValueTo(ctx, elem, node)) {
             return false;
         }
     }

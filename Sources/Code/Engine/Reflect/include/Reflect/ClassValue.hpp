@@ -9,7 +9,6 @@ class ClassValue {
 public:
 
     using ValuePtrT = void* ClassValue::*;
-    using SetResourceFuncT = std::function<void(void*, const char*)>;
 
 public:
 
@@ -38,13 +37,14 @@ public:
     ~ClassValue();
 
     std::string getTypeName() const;
-    bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, Memory::MemoryStream& stream);
-    bool writeValueTo(const SerializeContext& cxt, void* instance, void* valuePtr, JSONNode& node);
-    bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, Memory::MemoryStream& stream);
-    bool readValueFrom(const SerializeContext& cxt, void* instance, void* valuePtr, const JSONNode& node);
+    bool writeValueTo(const SerializeContext& cxt, void* valuePtr, Memory::MemoryStream& stream);
+    bool writeValueTo(const SerializeContext& cxt, void* valuePtr, JSONNode& node);
+    bool readValueFrom(const SerializeContext& cxt, void* valuePtr, Memory::MemoryStream& stream);
+    bool readValueFrom(const SerializeContext& cxt, void* valuePtr, const JSONNode& node);
     bool addArrayElement(void* valuePtr);
     bool setPolymorphType(void* valuePtr, const char* typeName);
     void setDefaultValue(void* valuePtr);
+    bool isSimple() const;
 
 public:
 
@@ -52,8 +52,6 @@ public:
     ClassValueType type;
     ValuePtrT ptr;
     Core::TypeId typeId;
-    ResourceType resourceType;
-    SetResourceFuncT setResourceFunc;
     int primitiveValueCount;
     bool isElement;
 };

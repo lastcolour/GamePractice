@@ -28,10 +28,6 @@ void UIBox::init() {
     boxRenderId = getEntityId();
 }
 
-void UIBox::deinit() {
-    UIElement::deinit();
-}
-
 AABB2D UIBox::ET_getBox() const {
     return UI::ApplyTmToBox(getTransform(), aabb);
 }

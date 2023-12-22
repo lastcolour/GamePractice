@@ -47,26 +47,6 @@ bool IsValidLogicId(EntityLogicId logicId, const std::vector<Entity::EntityLogic
     return true;
 }
 
-void InitDeinitAllLogic(EntityId entId, std::vector<Entity::EntityLogicNode>& logics, bool init) {
-    if(init) {
-        LogDebug("[InitDeinitAllLogic] Init all logic on entity: '%s'", EntityUtils::GetEntityName(entId));
-        for(auto& logicNode : logics) {
-            auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
-            logicPtr->init();
-        }
-        for(auto& logicNode : logics) {
-            auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
-            logicPtr->onLoaded();
-        }
-    } else {
-        LogDebug("[InitDeinitAllLogic] Deinit all logic on entity: '%s'", EntityUtils::GetEntityName(entId));
-        for(auto& logicNode : logics) {
-            auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
-            logicPtr->deinit();
-        }
-    }
-}
-
 } // namespace
 
 Entity::Entity(const char* entityName, EntityRegistry* entityRegistry, EntityId entId) :
@@ -91,6 +71,38 @@ Entity::~Entity() {
     for(auto it = logics.rbegin(), end = logics.rend(); it != end; ++it) {
         auto logicPtr = static_cast<EntityLogic*>(it->logic.get());
         logicPtr->deinit();
+    }
+}
+
+void Entity::initAllLogic() {
+    for(auto& logicNode : logics) {
+        auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+        logicPtr->entity = this;
+        logicPtr->init();
+    }
+    for(auto& logicNode : logics) {
+        auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+        logicPtr->onLoaded();
+    }
+}
+
+void Entity::deinitAllLogics() {
+    Memory::MemoryStream memStream;
+    memStream.openForWrite();
+
+    Reflect::SerializeContext serCtx;
+    serCtx.entityId = entityId;
+
+    for(auto& logicNode : logics) {
+        logicNode.logic.writeAllValuesTo(serCtx, memStream);
+        auto logicPtr = static_cast<EntityLogic*>(logicNode.logic.get());
+        logicPtr->deinit();
+        logicNode.logic.reCreate();
+
+        memStream.reopenForRead();
+        logicNode.logic.readAllValuesFrom(serCtx, memStream);
+
+        memStream.reopenForWrite();
     }
 }
 
@@ -190,7 +202,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, Reflect::ClassValueId valueId
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    InitDeinitAllLogic(getEntityId(), logics, false);
+    deinitAllLogics();
     bool res = true;
     Reflect::SerializeContext serCtx;
     serCtx.entityId = entityId;
@@ -199,7 +211,7 @@ bool Entity::writeLogicData(EntityLogicId logicId, Reflect::ClassValueId valueId
              logicId, ET_getName()));
         res = false;
     }
-    InitDeinitAllLogic(getEntityId(), logics, true);
+    initAllLogic();
     return res;
 }
 
@@ -209,12 +221,12 @@ bool Entity::addLogicValueArrayElemet(EntityLogicId logicId, Reflect::ClassValue
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    InitDeinitAllLogic(getEntityId(), logics, false);
+    deinitAllLogics();
     bool res = true;
     if(!logicInstance->addValueArrayElement(valueId)) {
         res = false;
     }
-    InitDeinitAllLogic(getEntityId(), logics, true);
+    initAllLogic();
     return res;
 }
 
@@ -224,12 +236,12 @@ bool Entity::setLogicValuePolymorphType(EntityLogicId logicId, Reflect::ClassVal
     if(!CheckLogicValue(errStr, this, logicId, logicInstance, valueId)) {
         return false;
     }
-    InitDeinitAllLogic(getEntityId(), logics, false);
+    deinitAllLogics();
     bool res = true;
     if(!logicInstance->setValuePolymorphType(valueId, typeName)) {
         res = false;
     }
-    InitDeinitAllLogic(getEntityId(), logics, true);
+    initAllLogic();
     return res;
 }
 

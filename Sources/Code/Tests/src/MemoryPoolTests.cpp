@@ -8,9 +8,9 @@ TEST_F(MemoryPoolTests, CheckAllocateReuse) {
 
     {
         EXPECT_FLOAT_EQ(1.f, allocator.getFillRatio());
-        EXPECT_EQ(0, allocator.getNumBlocks());
-        EXPECT_EQ(0, allocator.getNumObjects());
-        EXPECT_EQ(0, allocator.getAllocatedMemorySize());
+        EXPECT_EQ(0u, allocator.getNumBlocks());
+        EXPECT_EQ(0u, allocator.getNumObjects());
+        EXPECT_EQ(0u, allocator.getAllocatedMemorySize());
     }
 
     auto ptr1 = allocator.allocate();
@@ -18,17 +18,17 @@ TEST_F(MemoryPoolTests, CheckAllocateReuse) {
 
     {
         EXPECT_FLOAT_EQ(1.f, allocator.getFillRatio());
-        EXPECT_EQ(1, allocator.getNumBlocks());
-        EXPECT_EQ(1, allocator.getNumObjects());
-        EXPECT_EQ(8 + 8 + 32, allocator.getAllocatedMemorySize());
+        EXPECT_EQ(1u, allocator.getNumBlocks());
+        EXPECT_EQ(1u, allocator.getNumObjects());
+        EXPECT_EQ(8u + 8u + 32u, allocator.getAllocatedMemorySize());
     }
 
     allocator.deallocate(ptr1);
 
     {
         EXPECT_FLOAT_EQ(0.f, allocator.getFillRatio());
-        EXPECT_EQ(1, allocator.getNumBlocks());
-        EXPECT_EQ(0, allocator.getNumObjects());
+        EXPECT_EQ(1u, allocator.getNumBlocks());
+        EXPECT_EQ(0u, allocator.getNumObjects());
     }
 
     auto ptr2 = allocator.allocate();
@@ -53,11 +53,11 @@ TEST_F(MemoryPoolTests, CheckRemoveBlocks) {
 
     auto ptr = allocator.allocate();
 
-    EXPECT_EQ(allocator.getNumBlocks(), 1);
+    EXPECT_EQ(allocator.getNumBlocks(), 1u);
 
     allocator.deallocate(ptr);
 
-    EXPECT_EQ(allocator.getNumBlocks(), 0);
+    EXPECT_EQ(allocator.getNumBlocks(), 0u);
 }
 
 TEST_F(MemoryPoolTests, CheckAsyncPoolUse) {
@@ -88,5 +88,5 @@ TEST_F(MemoryPoolTests, CheckAsyncPoolUse) {
         std::this_thread::yield();
     }
 
-    EXPECT_EQ(0, allocator.getNumObjects());
+    EXPECT_EQ(0u, allocator.getNumObjects());
 }

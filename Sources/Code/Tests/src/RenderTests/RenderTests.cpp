@@ -267,9 +267,9 @@ TEST_F(RenderTests, CheckRenderWithMask) {
 
     Vec2i c = renderRes / 2;
 
-    EXPECT_EQ(0, countNotEqualPixels(Vec2i(c.x - c.x / 2, c.y - c.y / 2), Vec2i(c.x, c.y + c.y / 2), ColorB{255, 0, 0}));
-    EXPECT_EQ(0, countNotEqualPixels(Vec2i(c.x, c.y - c.y  / 2), Vec2i(c.x + c.x / 2, c.y), ColorB{0, 255, 0}));
-    EXPECT_EQ(0, countNotEqualPixels(Vec2i(c.x, c.y), Vec2i(c.x + c.x / 2, c.y + c.y / 2), ColorB{0, 0, 255}));
+    EXPECT_EQ(0u, countNotEqualPixels(Vec2i(c.x - c.x / 2, c.y - c.y / 2), Vec2i(c.x, c.y + c.y / 2), ColorB{255, 0, 0}));
+    EXPECT_EQ(0u, countNotEqualPixels(Vec2i(c.x, c.y - c.y  / 2), Vec2i(c.x + c.x / 2, c.y), ColorB{0, 255, 0}));
+    EXPECT_EQ(0u, countNotEqualPixels(Vec2i(c.x, c.y), Vec2i(c.x + c.x / 2, c.y + c.y / 2), ColorB{0, 0, 255}));
 }
 
 TEST_F(RenderTests, CheckHideUnhide) {
@@ -293,21 +293,21 @@ TEST_F(RenderTests, CheckHideUnhide) {
 
     {
         syncWithGameAndDrawToImageBuffer();
-        EXPECT_EQ(0, countNotEqualPixels(Vec2i{0}, renderRes, drawColor));
+        EXPECT_EQ(0u, countNotEqualPixels(Vec2i{0}, renderRes, drawColor));
     }
 
     ET_SendEvent(box->getEntityId(), &ETRenderNode::ET_hide);
 
     {
         syncWithGameAndDrawToImageBuffer();
-        EXPECT_EQ(0, countNotEqualPixels(Vec2i{0}, renderRes, getClearColor()));
+        EXPECT_EQ(0u, countNotEqualPixels(Vec2i{0}, renderRes, getClearColor()));
     }
 
     ET_SendEvent(box->getEntityId(), &ETRenderNode::ET_show);
 
     {
         syncWithGameAndDrawToImageBuffer();
-        EXPECT_EQ(0, countNotEqualPixels(Vec2i{0}, renderRes, drawColor));
+        EXPECT_EQ(0u, countNotEqualPixels(Vec2i{0}, renderRes, drawColor));
     }
 }
 
@@ -355,14 +355,14 @@ TEST_F(RenderTests, CheckRenderPriority) {
     checkBox.setCenterAndSize(Vec2i(static_cast<int>(center.x), static_cast<int>(center.y)),
         Vec2i(static_cast<int>(drawSize.x), static_cast<int>(drawSize.y)));
 
-    EXPECT_EQ(0, countNotEqualPixels(checkBox, drawColorA));
+    EXPECT_EQ(0u, countNotEqualPixels(checkBox, drawColorA));
 
     ET_SendEvent(firstEnt->getEntityId(), &ETRenderNode::ET_setZIndex, 0);
     ET_SendEvent(secondEnt->getEntityId(), &ETRenderNode::ET_setZIndex, 1);
 
     syncWithGameAndDrawToImageBuffer();
 
-    EXPECT_EQ(0, countNotEqualPixels(checkBox, drawColorB));
+    EXPECT_EQ(0u, countNotEqualPixels(checkBox, drawColorB));
 }
 
 TEST_F(RenderTests, CheckCreateSameEmptyTexture) {

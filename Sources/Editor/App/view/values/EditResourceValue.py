@@ -36,22 +36,26 @@ class EditResourceValue(QWidget):
         self._pull()
 
     def _signal_clearBt_clicked(self):
-        self._push("")
+        self._val._push(None)
         SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _signal_selectBt_clicked(self):
-        res = ExecResourceSelectDialog(self._val.getResourceType())
+        res = ExecResourceSelectDialog(self._val.getSpecType())
         if res is None:
             return
         self._push(res.getRelativePath())
         SendMessage(MsgOnLogicDataEdited(self._val))
 
     def _push(self, resource):
-        self._val.setVal(resource)
+        if resource != None:
+            storageVal = self._val.getStorage()
+            storageVal.setVal(resource)
+        isSet = resource != None
+        self._val.setIsSet(isSet)
 
     def _pull(self):
-        resource = self._val.getVal()
-        if resource is None:
+        if not self._val.isStorageSet():
             self._lineEdit.setText("")
         else:
-            self._lineEdit.setText(resource)
+            storageVal = self._val.getStorage().getVal()
+            self._lineEdit.setText(storageVal)

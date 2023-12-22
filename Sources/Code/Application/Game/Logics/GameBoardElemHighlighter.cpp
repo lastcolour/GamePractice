@@ -8,8 +8,7 @@
 
 void GameBoardElemHighlighter::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemHighlighter>("GameBoardElemHighlighter")) {
-        classInfo->addResourceField("highlightEntity", ResourceType::Entity,
-            &GameBoardElemHighlighter::highlightEntityName);
+        classInfo->addField("highlightEntity", &GameBoardElemHighlighter::highlightEntityRes);
         classInfo->addField("fadeOutDuration", &GameBoardElemHighlighter::fadeOutDuration);
         classInfo->addField("cellScale", &GameBoardElemHighlighter::cellScale);
     }
@@ -99,9 +98,9 @@ bool GameBoardElemHighlighter::createElemsPool() {
     int poolSize = 10 * 10;
     for(int i = 0; i < poolSize; ++i) {
         HighlightElem elem;
-        ET_SendEventReturn(elem.entId, &ETEntityManager::ET_createEntity, highlightEntityName.c_str());
+        elem.entId = highlightEntityRes.createInstance();
         if(!elem.entId.isValid()) {
-            LogError("[GameBoardElemHighlighter::init] Can't create entity: '%s'", highlightEntityName);
+            LogError("[GameBoardElemHighlighter::init] Can't create entity: '%s'", highlightEntityRes.getPath());
             destroyAllElems();
             return false;
         }
@@ -132,9 +131,10 @@ void GameBoardElemHighlighter::updateElem(HighlightElem& elem, float dt) {
         return;
     }
     elem.duration += dt;
-    float prog = Math::Clamp(elem.duration / fadeOutDuration, 0.f, 1.f);
 
-    float resAlpha = Math::Lerp(1.f, 0.f, prog);
+    const float prog = Math::Clamp(elem.duration / fadeOutDuration, 0.f, 1.f);
+    const float resAlpha = Math::Lerp(1.f, 0.f, prog);
+
     ET_SendEvent(elem.entId, &ETRenderNode::ET_setAlphaMultiplier, resAlpha);
 
     if(elem.duration > fadeOutDuration) {

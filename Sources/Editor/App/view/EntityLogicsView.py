@@ -12,6 +12,8 @@ from msg.Messages import MsgSetEditEntity, MsgChangeEditEntity, MsgOnAddLogicBtP
     MsgAddLogicToEntity, MsgOnLogicDataEdited
 from msg.MessageSystem import RegisterForMessage, SendMessage
 
+from utils.Log import Log
+
 class EntityLogicsView(QWidget):
     def __init__(self):
         super().__init__()
@@ -49,10 +51,15 @@ class EntityLogicsView(QWidget):
         self.setLayout(self._rootLayout)
         self.setMinimumWidth(360)
 
+        self._bSynWithNative = False
+        self._syncWithNativeTimer = QtCore.QTimer()
+        self._syncWithNativeTimer.timeout.connect(self._syncWithNative)
+        self._syncWithNativeTimer.start()
+
         RegisterForMessage(MsgSetEditEntity, self._onSetEditEntity)
         RegisterForMessage(MsgChangeEditEntity, self._onSetEditEntity)
         RegisterForMessage(MsgAddLogicToEntity, self._onAddLogicView)
-        RegisterForMessage(MsgOnLogicDataEdited, self._onFetchDataFromNative)
+        RegisterForMessage(MsgOnLogicDataEdited, self._trySetSyncWithNative)
 
     def _buildLogicsList(self):
         ClearLayout(self._logicsLayout)
@@ -93,16 +100,6 @@ class EntityLogicsView(QWidget):
                     widget.close()
                     return
 
-    def _onFetchDataFromNative(self, msg):
-        if self._editEntity != msg.value.getEntity():
-            return
-        if not self._editEntity.shouldSyncWithNative():
-            return
-        for i in range(self._logicsLayout.count()):
-            item = self._logicsLayout.itemAt(i)
-            widget = item.widget()
-            widget.fetchDataFromNative()
-
     def _signal_addLogicBt_clicked(self):
         SendMessage(MsgOnAddLogicBtPressed(self._editEntity))
 
@@ -114,3 +111,21 @@ class EntityLogicsView(QWidget):
                     return
         globalPt = self._frame.mapToGlobal(pt)
         self._logicMenu.onMenuRequestedOnEntity(globalPt, self._editEntity)
+
+    def _trySetSyncWithNative(self, msg):
+        if self._editEntity != msg.value.getEntity():
+            return
+        if not self._editEntity.shouldSyncWithNative():
+            return
+        self._bSynWithNative = True
+        self._syncWithNativeTimer.start()
+
+    def _syncWithNative(self):
+        if not self._bSynWithNative:
+            return
+        self._syncWithNativeTimer.stop()
+        Log.info("[EntityLogicsView:_syncWithNative] Fetching data from native: {}".format(self._editEntity.getName()))
+        for i in range(self._logicsLayout.count()):
+            item = self._logicsLayout.itemAt(i)
+            widget = item.widget()
+            widget.fetchDataFromNative()

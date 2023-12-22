@@ -6,24 +6,15 @@
 
 void GameBoardElemsPool::Reflect(ReflectContext& ctx) {
     if(auto classInfo = ctx.classInfo<GameBoardElemsPool>("GameBoardElemsPool")) {
-        classInfo->addResourceField("blueEntity", ResourceType::Entity,
-            &GameBoardElemsPool::blueEntity);
-        classInfo->addResourceField("redEntity", ResourceType::Entity,
-            &GameBoardElemsPool::redEntity);
-        classInfo->addResourceField("yellowEntity", ResourceType::Entity,
-            &GameBoardElemsPool::yellowEntity);
-        classInfo->addResourceField("purpleEntity", ResourceType::Entity,
-            &GameBoardElemsPool::purpleEntity);
-        classInfo->addResourceField("greenEntity", ResourceType::Entity,
-            &GameBoardElemsPool::greenEntity);
-        classInfo->addResourceField("vRocketEntity", ResourceType::Entity,
-            &GameBoardElemsPool::vRocketEntity);
-        classInfo->addResourceField("hRocketEntity", ResourceType::Entity,
-            &GameBoardElemsPool::hRocketEntity);
-        classInfo->addResourceField("bombEntity", ResourceType::Entity,
-            &GameBoardElemsPool::bombEntity);
-        classInfo->addResourceField("starEntity", ResourceType::Entity,
-            &GameBoardElemsPool::starEntity);
+        classInfo->addField("blueEntity", &GameBoardElemsPool::blueEntity);
+        classInfo->addField("redEntity", &GameBoardElemsPool::redEntity);
+        classInfo->addField("yellowEntity", &GameBoardElemsPool::yellowEntity);
+        classInfo->addField("purpleEntity", &GameBoardElemsPool::purpleEntity);
+        classInfo->addField("greenEntity", &GameBoardElemsPool::greenEntity);
+        classInfo->addField("vRocketEntity", &GameBoardElemsPool::vRocketEntity);
+        classInfo->addField("hRocketEntity", &GameBoardElemsPool::hRocketEntity);
+        classInfo->addField("bombEntity", &GameBoardElemsPool::bombEntity);
+        classInfo->addField("starEntity", &GameBoardElemsPool::starEntity);
     }
 }
 
@@ -75,16 +66,16 @@ EntityId GameBoardElemsPool::ET_spawnElem(EBoardElemType elemType) {
         }
     }
 
-    auto entityName = getElemEntityName(elemType);
-    if(!entityName || !entityName[0]) {
+    auto entityRes = getEntityResource(elemType);
+    if(!entityRes) {
         LogError("[GameBoardElemsPool::ET_spawnElem] The entity is not set for an elem type: '%d'", elemType);
         return InvalidEntityId;
     }
 
     ElemInfo newElemInfo;
-    ET_SendEventReturn(newElemInfo.entId, &ETEntityManager::ET_createEntity, entityName);
+    newElemInfo.entId = entityRes->createInstance();
     if(!newElemInfo.entId.isValid()) {
-        LogError("[GameBoardElemsPool::ET_spawnElem] Can't create elem entity: '%s'", entityName);
+        LogError("[GameBoardElemsPool::ET_spawnElem] Can't create elem entity: '%s'", entityRes->getPath());
         return InvalidEntityId;
     }
 
@@ -168,44 +159,34 @@ void GameBoardElemsPool::ET_removeElem(EntityId elemId) {
         EntityUtils::GetEntityName(elemId));
 }
 
-const char* GameBoardElemsPool::getElemEntityName(EBoardElemType elemType) const {
-    const char* res = nullptr;
+const EntityResource* GameBoardElemsPool::getEntityResource(EBoardElemType elemType) const {
     switch(elemType) {
         case EBoardElemType::Red: {
-            res = redEntity.c_str();
-            break;
+            return &redEntity;
         }
         case EBoardElemType::Blue: {
-            res = blueEntity.c_str();
-            break;
+            return &blueEntity;
         }
         case EBoardElemType::Green: {
-            res = greenEntity.c_str();
-            break;
+            return &greenEntity;
         }
         case EBoardElemType::Purple: {
-            res = purpleEntity.c_str();
-            break;
+            return &purpleEntity;
         }
         case EBoardElemType::Yellow: {
-            res = yellowEntity.c_str();
-            break;
+            return &yellowEntity;
         }
         case EBoardElemType::HRocket: {
-            res = hRocketEntity.c_str();
-            break;
+            return &hRocketEntity;
         }
         case EBoardElemType::VRocket: {
-            res = vRocketEntity.c_str();
-            break;
+            return &vRocketEntity;
         }
         case EBoardElemType::Bomb: {
-            res = bombEntity.c_str();
-            break;
+            return &bombEntity;
         }
         case EBoardElemType::Star: {
-            res = starEntity.c_str();
-            break;
+            return &starEntity;
         }
         case EBoardElemType::None: {
             [[fallthrough]];
@@ -214,46 +195,45 @@ const char* GameBoardElemsPool::getElemEntityName(EBoardElemType elemType) const
             assert(false && "Invalid elem type");
         }
     }
-
-    return res;
+    return nullptr;
 }
 
 void GameBoardElemsPool::ET_setElemEntity(EBoardElemType elemType, const char* entityName) {
     switch(elemType) {
         case EBoardElemType::Red: {
-            redEntity = entityName;
+            redEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::Blue: {
-            blueEntity = entityName;
+            blueEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::Green: {
-            greenEntity = entityName;
+            greenEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::Purple: {
-            purpleEntity = entityName;
+            purpleEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::Yellow: {
-            yellowEntity = entityName;
+            yellowEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::HRocket: {
-            hRocketEntity = entityName;
+            hRocketEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::VRocket: {
-            vRocketEntity = entityName;
+            vRocketEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::Bomb: {
-            bombEntity = entityName;
+            bombEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::Star: {
-            starEntity = entityName;
+            starEntity.setPath(entityName);
             break;
         }
         case EBoardElemType::None: {

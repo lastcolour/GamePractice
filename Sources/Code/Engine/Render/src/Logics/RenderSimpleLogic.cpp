@@ -30,9 +30,6 @@ void RenderSimpleLogic::onInit() {
         size.y = std::max(1.f, size.y);
     }
 
-    Math::AddScale3D(coloredQuadCmd->modelMat, Vec3(
-        static_cast<float>(size.x), static_cast<float>(size.y), 1.f));
-
     ETNode<ETRenderSimpleLogic>::connect(getEntityId());
     ETNode<ETRenderRect>::connect(getEntityId());
 }

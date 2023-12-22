@@ -2,6 +2,7 @@
 #define __GAME_BOARD_ELEMS_POOL_HPP__
 
 #include "Entity/EntityLogic.hpp"
+#include "Entity/EntityResource.hpp"
 #include "Game/ETGameElemsPool.hpp"
 #include "Math/Random.hpp"
 
@@ -31,7 +32,7 @@ private:
 
     void initPools();
     void cleanUpPools();
-    const char* getElemEntityName(EBoardElemType elemType) const;
+    const EntityResource* getEntityResource(EBoardElemType elemType) const;
 
 private:
 
@@ -45,15 +46,15 @@ private:
     Math::RandomIntGenerator intGenerator;
     std::vector<GameElemPoolInfo> poolsSetup;
     std::unordered_map<EBoardElemType, std::vector<ElemInfo>> poolsElems;
-    std::string blueEntity;
-    std::string redEntity;
-    std::string yellowEntity;
-    std::string purpleEntity;
-    std::string greenEntity;
-    std::string vRocketEntity;
-    std::string hRocketEntity;
-    std::string bombEntity;
-    std::string starEntity;
+    EntityResource blueEntity;
+    EntityResource redEntity;
+    EntityResource yellowEntity;
+    EntityResource purpleEntity;
+    EntityResource greenEntity;
+    EntityResource vRocketEntity;
+    EntityResource hRocketEntity;
+    EntityResource bombEntity;
+    EntityResource starEntity;
 };
 
 #endif /* __GAME_BOARD_ELEMS_POOL_HPP__ */

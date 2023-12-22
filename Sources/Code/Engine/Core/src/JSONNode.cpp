@@ -405,6 +405,18 @@ void JSONNode::write(const char* key, bool value) {
     nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
 }
 
+void JSONNode::writeNull(const char* key) {
+    if(!key || !key[0]) {
+        return;
+    }
+    updateDocRoot();
+    JSONValueT keyObject;
+    keyObject.SetString(key, nodeImpl->root->GetAllocator());
+    JSONValueT valObject;
+    valObject.SetNull();
+    nodeImpl->val->AddMember(keyObject.Move(), valObject.Move(), nodeImpl->root->GetAllocator());
+}
+
 void JSONNode::write(float value) {
     updateDocRoot();
     if(!mutateToArray()) {
@@ -458,6 +470,39 @@ void JSONNode::write(const JSONNode& node) {
     nodeImpl->val->PushBack(copyValue, nodeImpl->root->GetAllocator());
 }
 
+void JSONNode::writeNull() {
+    updateDocRoot();
+    if(!mutateToArray()) {
+        return;
+    }
+    JSONValueT valObject;
+    valObject.SetNull();
+    nodeImpl->val->PushBack(valObject, nodeImpl->root->GetAllocator());
+}
+
+bool JSONNode::isNull(const char* key) const {
+    if(!key || !key[0]) {
+        return false;
+    }
+    if(!nodeImpl->val) {
+        return false;
+    }
+    if(nodeImpl->val->IsObject()) {
+        auto it = nodeImpl->val->FindMember(key);
+        if(it != nodeImpl->val->MemberEnd() && it->value.IsNull()) {
+           return true;
+        }
+    }
+    return false;
+}
+
+bool JSONNode::isNull() const {
+    if(nodeImpl->val) {
+        return nodeImpl->val->IsNull();
+    }
+    return false;
+}
+
 JSONNode JSONNode::object(const char* key) const {
     JSONNode node;
     if(!key || !key[0]) {
@@ -483,6 +528,22 @@ const char* JSONNode::key() const {
 }
 
 bool JSONNode::hasKey(const char* key) const {
+    if(!key || !key[0]) {
+        return false;
+    }
+    if(!nodeImpl->val) {
+        return false;
+    }
+    if(nodeImpl->val->IsObject()) {
+        auto it = nodeImpl->val->FindMember(key);
+        if(it != nodeImpl->val->MemberEnd()) {
+           return true;
+        }
+    }
+    return false;
+}
+
+bool JSONNode::hasNonNullKey(const char* key) const {
     if(!key || !key[0]) {
         return false;
     }

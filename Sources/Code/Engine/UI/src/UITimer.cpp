@@ -27,6 +27,7 @@ void UITimer::ET_onTick(float dt) {
     ET_PollAllEvents<ETUIViewCache>();
 
     if(isPaused) {
+        ET_SendEvent(&ETUIReAlignManager::ET_doReAlign);
         return;
     }
 

@@ -2,6 +2,7 @@
 #define __LEVEL_BUTTON_LIST_HPP__
 
 #include "Entity/EntityLogic.hpp"
+#include "Entity/EntityResource.hpp"
 #include "Game/ETLevelProgress.hpp"
 
 class LevelButtonItem {
@@ -12,7 +13,7 @@ public:
 public:
 
     std::string levelId;
-    std::string levelName;
+    EntityResource levelRes;
     EntityId buttonId;
     EntityId senderId;
 };

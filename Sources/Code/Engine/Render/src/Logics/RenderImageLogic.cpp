@@ -25,7 +25,7 @@ void RenderImageLogic::onInit() {
     auto texQuadCmd = static_cast<DrawTexturedQuadCmd*>(cmd);
     texQuadCmd->imageType = DrawTexturedQuadCmd::EImageCmdType::Image;
 
-    if(!textureInfo.filename.empty()) {
+    if(!textureInfo.filename.get().empty()) {
         texQuadCmd->texInfo = textureInfo;
     } else {
         LogWarning("[RenderImageLogic::onInit] Texture file is empty on entity: '%s'",

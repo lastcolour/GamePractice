@@ -61,7 +61,6 @@ void DrawCommandProxy::deinit() {
     normScale = 1.f;
     stencilData = StencilWirteReadData{};
     alphaMult = 1.f;
-    ETNode<ETRenderNode>::disconnect();
     if(cmd != nullptr) {
         DrawCmd::QueueToRemove(*cmd, cmdType);
         cmd = nullptr;
